@@ -1,0 +1,36 @@
+/* changes to css to display the main content area and the right sidebar only, */ 
+/* hiding the left bar                                                         */
+
+#main {
+    float: left;
+    width: 100%;
+}
+
+* html #main {
+    float: left;
+    width: 100%;
+}
+
+#content {
+    width: 75%;
+}
+
+* html #content {
+    width: 75%;
+}
+
+#sidebar-left {
+    width: 25%;
+}
+
+* html #sidebar-left {
+    width: 25%;
+}
+
+#sidebar-right {
+    display: none;
+}
+
+* html #sidebar-right {
+    display: none;
+}

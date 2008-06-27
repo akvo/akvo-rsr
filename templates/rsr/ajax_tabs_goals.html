@@ -1,0 +1,46 @@
+<div id="tab_goals">
+		<p style="padding-left:0;">{{p.goals_summary}}</p>
+		<br />			
+		<div style="float:left;width:270px">
+			<p class="lightx1"><b>Overall goals</b></p>
+			<ul class="simplelist">
+			{% if p.goal_1 %}
+			<li>{{p.goal_1}}</li>
+			{% endif %}
+			{% if p.goal_2 %}
+			<li>{{p.goal_2}}</li>
+			{% endif %}
+			{% if p.goal_3 %}
+			<li>{{p.goal_3}}</li>
+			{% endif %}
+			</ul>
+		</div>
+		<div style="margin-left:280px;">
+			<p class="lightx1"><b>Target benchmarks</b></p>
+			<ul class="simplelist">
+				{% if p.water_systems %}
+					<li>{{ p.water_systems }} functioning water systems</li>
+				{% endif %}
+				{% if p.sanitation_systems %}
+					<li>{{ p.sanitation_systems }} functioning sanitation systems</li>
+				{% endif %}
+				{% if p.improved_water %}
+					<li>{{ p.improved_water }} persons with access to improved water
+					{% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
+					</li>
+				{% endif %}
+				{% if p.improved_sanitation %}
+					<li>{{ p.improved_sanitation }} persons with access to improved sanitation
+					{% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
+					</li>
+				{% endif %}
+				{% if p.trainees %}
+					<li>{{ p.trainees }} persons who receive training / education per year</li>
+				{% endif %}
+				{% if p.mdg_count %}
+					<li>MDG count:{{ p.mdg_count }}</li>
+				{% endif %}
+			</ul>
+		</div>
+    <div style="clear:left">&#32;</div>
+</div>

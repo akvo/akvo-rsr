@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="07e1ac77-823b-0f4a-9cd6-a3821ed90028" kpf_version="4" name="akvo.kpf">
+<preference-set idref="07e1ac77-823b-0f4a-9cd6-a3821ed90028">
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*;tmp*.html;.DS_Store;.*</string>
+  <string id="import_include_matches">*.py;*.html;*.css</string>
+  <boolean id="import_live">1</boolean>
+  <boolean id="import_recursive">1</boolean>
+  <string id="import_type">useFolders</string>
+  <string id="lastTestPlanName_pref">New test plan #1</string>
+<preference-set id="testPlans">
+<preference-set id="New test plan #1">
+  <string id="command_line"></string>
+  <string relative="url" id="directory"></string>
+  <string id="language">Python</string>
+</preference-set>
+</preference-set>
+</preference-set>
+</project>

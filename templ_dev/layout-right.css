@@ -1,0 +1,10 @@
+/* changes to css to display the main content area and the right sidebar only, */ 
+/* hiding the left bar                                                         */
+
+#content {
+    width: 100%;
+}
+
+#sidebar-left {
+    display: none;
+}

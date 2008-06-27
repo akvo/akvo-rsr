@@ -1,0 +1,432 @@
+/* body-level
+-------------------------------------------------------------------------------------- */
+
+body
+{
+font-family: Arial, Verdana, Helvetica, Sans-serif;     
+font-size: 100%;
+line-height: 1em;
+color: #333;       
+background-color: #fff;
+padding: 20px;
+}
+
+/* wrapper-level
+-------------------------------------------------------------------------------------- */
+
+#wrapper
+{ 
+width: 980px;
+font-size: 0.875em;
+}
+
+/* structural-float-level
+-------------------------------------------------------------------------------------- */
+
+#header
+{
+text-align: right;
+font-size: 0.875em;
+}
+
+#navigation
+{
+padding-top: 20px;
+clear: left;
+font-size: 0.875em;
+}
+
+#outer_leftwing
+{
+float: left;
+width: 710px;
+font-size: 0.875em;
+}
+
+#outer_rightwing
+{
+float: right;
+width: 250px;
+font-size: 0.875em;
+}
+
+#footer
+{
+clear: both;
+color: #666;
+margin: 20px 0;
+border-top: 1px solid #ccc;
+padding-top: 10px;
+font-size: 0.875em;
+}
+
+/* global-navigation
+-------------------------------------------------------------------------------------- */
+
+#navigation ul
+{
+margin-bottom: 30px;
+color: #fff;
+float: left;
+width: 100%;
+background-color: #dbdbdb;
+font-family: arial, helvetica, sans-serif;
+border-bottom: 2px solid #666;
+}
+
+#navigation ul li
+{
+display: inline;
+}
+
+#navigation ul li a
+{
+padding: 0.2em 1em;
+color: #333;
+text-decoration: none;
+float: left;
+border-right: 1px solid #fff;
+font-weight: bold;
+}
+
+#navigation ul li a:hover
+{
+background-color: #ccc;
+}
+
+#navigation ul li a.active
+{ 
+background-color: #666;
+color: #ededed;
+}
+
+/* box-level
+-------------------------------------------------------------------------------------- */
+
+#header_logo 
+{
+float: left;
+}
+
+#subdetailsleft
+{
+width: 343px;
+float: left;
+}
+
+#subdetailsright 
+{
+width: 343px;
+float: right;
+}
+
+.boxhead
+{
+padding: 5px 20px 20px 20px;
+background-color: #dedede;
+}
+
+.boxbody
+{
+background-color: #fff;
+border: 1px solid #dedede;
+margin-bottom: 30px;
+padding: 20px 0;
+}
+
+/* box-elements
+-------------------------------------------------------------------------------------- */
+
+.boxhead p, .boxbody p
+{
+padding: 0 20px 5px 20px;
+}
+
+.boxbody img.photo
+{
+padding: 0 20px;
+}
+
+#project_details_leftwing
+{
+padding-top: 15px;
+width: 220px;
+float: left;
+border-right: 1px solid #dedede;
+}
+
+#project_details_rightwing
+{
+padding-top: 20px;
+margin-left: 230px;
+}
+
+#project_details_rightwing div .leftwing
+{
+float: left;
+width: 100px;
+background-color: green;
+}
+
+#project_details_rightwing div .rightwing
+{
+background-color: blue;
+}
+
+.comment, .update
+{
+margin-bottom: 10px;
+border-bottom: 1px solid #ccc;
+margin: 0 20px 10px 20px;
+}
+
+.comment p, .update p
+{
+padding: 0 0 10px 0;
+}
+
+/* headings
+-------------------------------------------------------------------------------------- */
+
+.section
+{
+font-size: 1.2em;
+font-weight: bold;
+padding: 10px 20px;
+}
+
+.title
+{
+font-size: 1.6em;
+font-weight: bold;
+padding: 0 10px;
+}
+
+.boxhead h1
+{
+font-size: 1.2em;
+font-weight: bold;
+padding: 10px 10px 20px 20px;
+}
+
+h2
+{
+font-weight: bold;
+padding: 10px 20px 10px 20px;
+}
+
+table h2
+{
+font-weight: bold;
+padding: 10px 0;
+}
+
+/* elements
+-------------------------------------------------------------------------------------- */
+
+hr
+{
+margin: 10px 20px;
+height: 0;
+border: 0;
+border-top: 1px solid #ccc;
+}
+
+.status {
+padding: 0 10px 10px 10px;
+}
+
+.members-photo {
+float:left;
+width: 90px;
+margin: 3px 10px 10px 10px;
+}
+
+.small {
+font-size: 85%;
+line-height: 1.1em;
+}
+
+.lightx1 {
+color: #666;
+}
+
+.lightx2 {
+color: #999;
+}
+
+.indentx1 {
+margin-left: 20px;
+}
+
+.indentx2 {
+margin-left: 35px;
+}
+
+.indentx3 {
+margin-left: 100px;
+}
+
+.spaced {
+margin: 10px 0;
+}
+
+.rss {
+background: url('/productions/akvo.org/images/rss.gif') no-repeat right 0.1em;
+padding-right: 1.6em;
+margin: 20px;
+}
+
+
+/* Sliding elements
+-------------------------------------------------------------------------------------- */
+
+#panel {
+	display: none;
+	background-color: #FEFFCD;
+	padding: 10px;
+	margin: -20px 0 20px 0
+}
+
+/* Tables
+-------------------------------------------------------------------------------------- */
+
+table
+{
+margin: 10px 20px;
+}
+
+table#project_showcase {margin-top: -30px;}
+
+table#project_showcase td
+{
+padding: 10px;
+vertical-align: top;
+}
+
+table#project_table
+{
+border-top: 1px solid #999;
+margin: -20px 0;
+border-left: 1px solid #ccc;
+}
+
+table#project_table th
+{
+padding: 10px;
+background-color: #ccc;
+border-right: 1px solid #999;
+}
+
+table#project_table td
+{
+padding: 10px;
+border-right: 1px solid #ccc;
+border-top: 1px solid #ccc;
+vertical-align: top;
+}
+
+/* Links
+-------------------------------------------------------------------------------------- */
+
+a:link, a:visited, a:active
+{
+color: #1D7FC6;
+text-decoration: none;
+}
+
+/* Lists
+-------------------------------------------------------------------------------------- */
+
+ul.simplelist
+{
+margin: 10px 10px 10px 26px;
+list-style-type: disc;
+list-style-position: outside;
+}
+
+/* Form elements
+-------------------------------------------------------------------------------------- */
+
+.input {
+font-size: 0.85em; 
+height: 1.2em;
+padding: 0.1em 0.3em; 
+font-family: Verdana, Arial, Helvetica, sans-serif; 
+background-color: #fff; 
+color: #333;
+border: 1px solid #999;
+margin: 10px;
+vertical-align:top; 
+padding-top: 3px;
+display: block;
+}
+
+.textarea {
+font-size: 0.85em; 
+padding: 0.1em 0.3em; 
+font-family: Verdana, Arial, Helvetica, sans-serif; 
+background-color: #fff; 
+color: #333;
+border: 1px solid #999;
+margin: 0 0 10px 0;
+vertical-align:top; 
+padding-top: 3px;
+display: block;
+}
+
+.radio {
+margin-left: 15px;
+margin-right: 15px;
+}
+
+.submit {
+color: #1D7FC6;
+background-color: #E6ECEF;
+border: 1px solid #ccc;
+padding: 10px 5px;
+margin: 10px;
+font-weight: bold;
+}
+
+/* Buttons
+-------------------------------------------------------------------------------------- 
+Credit to http://www.oscaralexander.com/tutorials/how-to-make-sexy-buttons-with-css.html
+*/
+
+.clear { /* generic container (i.e. div) for floating buttons */
+    overflow: hidden;
+    width: 100%;
+}
+
+a.actionbutton {
+    float: right;
+    background: transparent url('/productions/akvo.org/images/bg_button_a.png') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    font: normal 12px arial, sans-serif;
+    height: 24px;
+    margin-top: 0.6em;
+    margin-right: 6px;
+    padding-right: 18px; /* sliding doors padding */
+    text-decoration: none;
+}
+
+a.actionbutton span {
+    background: transparent url('/productions/akvo.org/images/bg_button_span.png') no-repeat;
+    display: block;
+    line-height: 14px;
+    padding: 5px 0 5px 18px;
+}
+
+a.actionbutton:active {
+    background-position: bottom right;
+    color: #000;
+    outline: none; /* hide dotted outline in Firefox */
+}
+
+a.actionbutton:active span {
+    background-position: bottom left;
+    padding: 6px 0 4px 18px; /* push text down 1px */
+}
+

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block css %}
+th, td {
+    padding: 4px;
+}
+{% endblock css %}
+
+{% block title %}Orgzzz!{% endblock %}
+
+{% block header %}
+    <h1>Organizations</h1>
+{% endblock header %}
+
+{% block content %} 
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+        {% for key in object_list.0.keys %}
+            <th>{{ key }}</th>
+        {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+        <tr class="row1">
+        {% for key, value in object.items %}
+            <td>{{ key }}:<br/>{{ value }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}    
+    </tbody>
+</table>
+
+
+{% endblock content %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+
+<head>
+
+<title>Akvo RSR</title>
+
+</head>
+
+<body>
+
+{% for update in updates %}
+    <h1>UPDATE</h1>
+    <h3>title</h3>
+    <p class="">{{update.title}}</p>
+    <h3>text</h3>
+    <p class="">{{update.text}}</p>
+    <h3>status</h3>
+    <p class="">{{update.status}}</p>
+    <h3>photo</h3>
+    <p class=""><img src="{{MEDIA_URL}}{{update.photo}}"/></p>
+    <h3>photo caption</h3>
+    <p class="">{{update.photo_caption}}</p>
+    <h3>photo credit</h3>
+    <p class="">{{update.photo_credit}}</p>
+    <h3>photo location</h3>
+    <p class="">{{update.photo_location}}</p>
+    <h3>time</h3>
+    <p class="">{{update.time}}</p>
+
+{% endfor %}
+
+</body>
+
+</html>

@@ -1,0 +1,331 @@
+body {
+font-family: arial, Verdana, Helvetica, sans-serif;     
+font-size: 100%;
+}
+
+body {
+color: #333;       
+line-height: 1.3em;
+padding-left: 10px;
+padding-top: 20px;
+background-color: #fff;
+}
+
+/* STRUCTURAL ELEMENTS
+-------------------------------------------------------------------------------------- */
+
+#outer_wrapper { 
+width: 1020px;
+font-size: 0.9em;
+clear: left;
+}
+
+#container {
+font-size:0.875em;
+padding: 10px auto;
+}
+
+#content-left {
+width: 750px;
+}
+
+#content-right {
+width: 250px;
+}
+
+#footer {
+color: #666;
+text-align: left;
+padding: 20px;
+border-top: 1px solid #ccc;
+margin: 20px 0;
+}
+
+/* SPACING
+-------------------------------------------------------------------------------------- */
+
+#content-right .box {
+margin-left: 20px;
+}
+
+/* Lists
+-------------------------------------------------------------------------------------- */
+
+ul.simplelist {
+margin: 10px 10px 10px 26px;
+list-style-type: disc;
+list-style-position: outside;
+}
+
+
+
+/* GLOBAL NAVIGATION
+-------------------------------------------------------------------------------------- */
+
+
+#navcontainer ul
+{
+margin: 20px 0;
+color: #fff;
+background-color: #dbdbdb;
+float: left;
+width: 100%;
+font-family: arial, helvetica, sans-serif;
+border-bottom: 2px solid #666;
+}
+
+#navcontainer ul li { display: inline; }
+
+#navcontainer ul li a
+{
+padding: 0.2em 1em;
+color: #333;
+text-decoration: none;
+float: left;
+border-right: 1px solid #fff;
+}
+
+#navcontainer ul li a:hover
+{
+background-color: #ccc;
+}
+
+#navcontainer ul li a.active { 
+background-color: #666;
+color: #ededed;
+}
+
+
+/* TAB NAVIGATION
+-------------------------------------------------------------------------------------- */
+
+#tabcontainer {
+margin: 20px 0;
+}
+
+ul#tablist
+{
+font-weight: bold;
+font-family: arial, verdana, sans-serif;
+list-style-type: none;
+padding-bottom: 24px;
+border-bottom: 1px solid #999;
+margin: 0;
+}
+
+ul#tablist li
+{
+float: right;
+height: 21px;
+background-color: #ededed;
+margin: 2px 2px 0 2px;
+border: 1px solid #999;
+width: 80px;
+}
+
+ul#tablist li#active
+{
+border-bottom: 1px solid #fff;
+background-color: #fff;
+}
+
+li#active a { color: #000; }
+
+#tablist a
+{
+float: left;
+display: block;
+color: #666;
+text-decoration: none;
+padding: 3px;
+}
+
+#tablist a:hover { background: #fff; }
+
+/* Boxes
+-------------------------------------------------------------------------------------- */
+.box {
+background-color: #fff;
+border: 1px solid #ccc;
+margin: 10px 0 20px 0;
+padding-bottom: 10px;
+}
+
+.box p {
+padding: 0 10px;
+}
+
+#cleft_1-2 {
+float: left;
+width: 360px;
+}
+
+#cleft_2-2 {
+float: right;
+width: 360px;
+}
+
+/* Components
+-------------------------------------------------------------------------------------- */
+
+h1.title {
+font-size: 1.6em;
+font-weight: bold;
+padding: 10px;
+}
+
+h1.box_heading {
+font-size: 1.2em;
+font-weight: bold;
+padding: 10px;
+background-color: #ededed;
+}
+
+h2 {
+font-weight: bold;
+padding: 10px 10px 2px 10px;
+}
+
+hr {
+margin: 10px;
+}
+
+.status {
+background-color: #ededed;
+padding: 0 10px 10px 10px;
+}
+
+.action {
+float:right;
+margin: 5px 10px 0 0;
+padding: 2px 5px;
+background-color: #dedede;
+}
+
+.members-photo {
+float:left;
+width: 90px;
+margin: 3px 10px 10px 10px;
+}
+
+.small {
+font-size: 85%;
+line-height: 1.1em;
+}
+
+.lightx1 {
+color: #666;
+}
+
+.lightx2 {
+color: #999;
+}
+
+.indentx1 {
+margin-left: 10px;
+}
+
+.indentx2 {
+margin-left: 30px;
+}
+
+.indentx3 {
+margin-left: 100px;
+}
+
+.project_left_tab {
+float:left;
+width: 200px;
+padding-top: 15px;
+}
+
+.project_right_tab {
+margin: 10px 10px 10px 200px;
+}
+
+.spaced {
+margin: 10px 0;
+}
+
+
+/* Sliding elements
+-------------------------------------------------------------------------------------- */
+
+#panel {
+	background: #754c24;
+	height: 200px;
+	display: none;
+}
+.slide {
+	margin: 0;
+	padding: 0;
+	border-top: solid 4px #422410;
+	background: url(images/btn-slide.gif) no-repeat center top;
+}
+.btn-slide {
+	background: url(images/white-arrow.gif) no-repeat right -50px;
+	text-align: center;
+	width: 144px;
+	height: 31px;
+	padding: 10px 10px 0 0;
+	margin: 0 auto;
+	display: block;
+	font: bold 120%/100% Arial, Helvetica, sans-serif;
+	color: #fff;
+	text-decoration: none;
+}
+.active {
+	background-position: right 12px;
+}
+
+/* Links
+-------------------------------------------------------------------------------------- */
+
+a:link, a:visited, a:active {
+color: #1D7FC6;
+text-decoration: none;
+}
+
+/* Form elements
+-------------------------------------------------------------------------------------- */
+
+.input {
+font-size: 0.85em; 
+height: 1.2em;
+padding: 0.1em 0.3em; 
+font-family: Verdana, Arial, Helvetica, sans-serif; 
+background-color: #fff; 
+color: #333;
+border: 1px solid #999;
+margin: 10px;
+vertical-align:top; 
+padding-top: 3px;
+display: block;
+}
+
+.textarea {
+font-size: 0.85em; 
+padding: 0.1em 0.3em; 
+font-family: Verdana, Arial, Helvetica, sans-serif; 
+background-color: #fff; 
+color: #333;
+border: 1px solid #999;
+margin: 0 10px 10px 10px;
+vertical-align:top; 
+padding-top: 3px;
+display: block;
+}
+
+.radio {
+margin-left: 15px;
+margin-right: 15px;
+}
+
+.submit {
+color: #1D7FC6;
+background-color: #E6ECEF;
+border: 1px solid #ccc;
+padding: 10px 5px;
+margin: 10px;
+font-weight: bold;
+}

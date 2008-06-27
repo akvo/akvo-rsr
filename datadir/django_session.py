@@ -1,0 +1,14 @@
+table = 'django_session'
+fields = ['session_key', 'session_data', 'expire_date']
+#default item format: "fieldname":("type", "value")
+default = {}
+records = [
+[u'ae2773f479c6d4cf5060ee30b70342ca', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwF1Ljk1YWRjMjZhYTgwNzM2Y2RjODYx\nNmUyMmQyMjU5MjNi\n', '2008-07-03 22:49:04']
+[u'6679abe03eb88707257a2daa199eb7fb', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwF1Ljk1YWRjMjZhYTgwNzM2Y2RjODYx\nNmUyMmQyMjU5MjNi\n', '2008-07-09 11:31:49']
+[u'6025f47deeb93ed33f21c8e3ea7a0a88', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwR1LmFkNmQ2YWIwZmEyY2IwYzRiYjE3\nMGNmYzE4NzVlZTJk\n', '2008-07-09 00:22:06']
+[u'b7d141cc57cb89803ccfc78205e31c97', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwN1LmJiMDExMTMzOGI3NzczOWNlZjhj\nMTQ4YzZlYTk2ZGI4\n', '2008-07-08 22:16:51']
+[u'07bfb47c1ce4eafbda884ca778f1db37', u'gAJ9cQFVCnRlc3Rjb29raWVxAlUGd29ya2VkcQNzLjk1ZDBhMzZmODIzNzM1NzExNDVlZmFmNDA0\nNDgyODU4\n', '2008-07-08 21:04:46']
+[u'48bf77f21e3c89acd5116cd87441fee3', u'gAJ9cQFVCnRlc3Rjb29raWVxAlUGd29ya2VkcQNzLjk1ZDBhMzZmODIzNzM1NzExNDVlZmFmNDA0\nNDgyODU4\n', '2008-07-08 21:26:25']
+[u'99c92c258b6d979d0ef3e56cfa9ad9df', u'gAJ9cQEuMDQ5NWQxNWI1ZmNjZjY3YjM4ZDBjYzRkZWU1OTNjZjM=\n', '2008-07-09 00:22:00']
+[u'0bad639433301f0c8e501c2e1e05adf7', u'gAJ9cQFVCnRlc3Rjb29raWVxAlUGd29ya2VkcQNzLjk1ZDBhMzZmODIzNzM1NzExNDVlZmFmNDA0\nNDgyODU4\n', '2008-07-08 23:21:53']
+]

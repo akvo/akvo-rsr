@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<title>Akvo RSR</title>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/tabs.css" media="screen" />
+
+<!--[if lt IE 7]>
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
+<![endif]-->
+
+<script src="{{MEDIA_URL}}/js/jquery-1.2.3.pack.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}/js/ui.tabs.pack.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}/js/jquery.curvycorners.packed.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	$(function(){
+			
+			$('.box').corner({
+			  tl: { radius: false },
+			  tr: { radius: false },
+			  bl: { radius: 10 },
+			  br: { radius: 10 },
+			  antiAlias: true,
+			  autoPad: false,
+			  validTags: ["div"] });
+
+			$('.boxhead').corner({
+			  tl: { radius: 10 },
+			  tr: { radius: 10 },
+			  bl: { radius: false },
+			  br: { radius: false },
+			  antiAlias: true,
+			  autoPad: false,
+			  validTags: ["div"] });
+
+			$('.topcorners').corner({
+			  tl: { radius: 10 },
+			  tr: { radius: 10 },
+			  bl: { radius: false },
+			  br: { radius: false },
+			  antiAlias: true,
+			  autoPad: false,
+			  validTags: ["li"] });
+			
+			$('.c').corner();
+			$('.c2').corner({
+			  tl: { radius: 16 },
+			  tr: { radius: 16 },
+			  bl: { radius: 16 },
+			  br: { radius: 16 },
+			  antiAlias: true,
+			  autoPad: true,
+			  validTags: ["div"] });
+			$('.c3').corner({
+			  tl: { radius: 16 },
+			  tr: false,
+			  bl: false,
+			  br: { radius: 16 },
+			  antiAlias: true,
+			  autoPad: true,
+			  validTags: ["div"] });
+			  
+			$('#container-1 > ul').tabs();
+	});
+</script>
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+
+<div id="header">
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+
+	<p>Logged in as: verylongname.surname@akvo.org</p>
+</div> <!-- #header -->
+
+<div id="navigation">			
+	<ul id="navlist">
+		<li><a href="#" class="active">Home</a></li>
+		<li><a href="#">Akvopedia</a></li>
+		<li><a href="#">Projects</a></li>
+		<li><a href="#">Find support</a></li>
+		<li><a href="#">Give support</a></li>
+		<li><a href="#">Blog</a></li>
+		<li><a href="#">About</a></li>
+	</ul>
+</div> <!-- #navigation -->
+
+<div id="outer_leftwing">
+
+	<div id="project_details" class="box">
+
+		<div class="boxhead">
+			<a class="actionbutton" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
+			<h1 class="title">{{p.name}}</h1>
+			<div class="status">{{p.subtitle}}</div>
+		</div> <!-- .boxhead -->
+
+	
+		<div id="project_details_leftwing">
+			<h2 class="lightx2">Status</h2>
+			<p>{{p.status}}</p>
+			<h2 class="lightx2">Focus area</h2>
+			<p>
+				{% if p.category_sanitation %}
+    				<img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
+				{% endif %}
+				{% if p.category_water %}
+    				<img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
+				{% endif %}
+				{% if p.category_maintenance %}
+    				<img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 10px 5px 10px 0;" />
+				{% endif %}
+				{% if p.category_training %}
+    				<img src="{{MEDIA_URL}}img/green.png" alt="type" style="margin: 10px 5px 10px 0;" />
+				{% endif %}
+				{% if p.category_education %}
+    				<img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 10px 5px 10px 0;" />		
+				{% endif %}
+			</p>						
+			<h2 class="lightx2">Location</h2>
+			<p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
+			{% if p.map %}
+			<img src="{{MEDIA_URL}}img/map.png" alt="type" style="margin: 10px;" />
+			{% endif %}
+
+		</div> <!-- #project_details_leftwing -->
+					
+		<div id="project_details_rightwing">
+
+			<div id="container-1">
+			<ul>
+			<li><a href="#tab_description"><span>Description</span></a></li>
+			<li><a href="#tab_goals"><span>Goals</span></a></li>
+			<li><a href="#tab_sustainability"><span>Sustainability</span></a></li>
+			<li><a href="#tab_context"><span>Context</span></a></li>
+			<li><a href="#tab_personnel"><span>Personnel</span></a></li>
+		  	</ul>
+  	
+		<div id="tab_description">
+			<p>{{p.project_plan_summary}}</p>
+			<br />		
+			<div style="float:left;width: 270px">
+				<div class="small lightx1">Sum zzriurem erci blandre consed molore veliquatem ipis et qui eriustie magna commy nullaorpeulla. 
+				(Credit: Ipisim Zzrit)</div>
+				<img src="{{MEDIA_URL}}img/fodra-group-1.png" alt="FODRA group" style="margin: 10px" />				
+			</div>	
+			<div style="width: 280px:">
+				<p class="lightx1"><b>Target benchmarks</b></p>
+				<ul class="simplelist">
+				{% if p.water_systems %}
+					<li>{{ p.water_systems }} functioning water systems</li>
+				{% endif %}
+				{% if p.sanitation_systems %}
+					<li>{{ p.sanitation_systems }} functioning sanitation systems</li>
+				{% endif %}
+				{% if p.improved_water %}
+					<li>{{ p.improved_water }} persons with access to improved water
+					{% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
+					</li>
+				{% endif %}
+				{% if p.improved_sanitation %}
+					<li>{{ p.improved_sanitation }} persons with access to improved sanitation
+					{% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
+					</li>
+				{% endif %}
+				{% if p.trainees %}
+					<li>{{ p.trainees }} persons who receive training / education per year</li>
+				{% endif %}
+				{% if p.mdg_count %}
+					<li>MDG count:{{ p.mdg_count }}</li>
+				{% endif %}
+				</ul>			
+			</div>
+
+		<a href="#" style="clear:both">View details</a>
+	</div> <!-- #tab_description -->
+	
+	<div id="tab_goals">
+		<p style="padding-left:0;">{{p.goals_summary}}</p>
+		<br />			
+		<div style="float:left;width:270px">
+			<p class="lightx1"><b>Overall goals</b></p>
+
+			<ul class="simplelist">
+			{% if p.goal_1 %}
+			<li>{{p.goal_1}}</li>
+			{% endif %}
+			{% if p.goal_2 %}
+			<li>{{p.goal_2}}</li>
+			{% endif %}
+			{% if p.goal_3 %}
+			<li>{{p.goal_3}}</li>
+			{% endif %}
+			</ul>
+		</div>			
+		<div style="margin-left:280px;">
+			<p class="lightx1"><b>Target benchmarks</b></p>
+			<ul class="simplelist">
+				{% if p.water_systems %}
+					<li>{{ p.water_systems }} functioning water systems</li>
+				{% endif %}
+				{% if p.sanitation_systems %}
+					<li>{{ p.sanitation_systems }} functioning sanitation systems</li>
+				{% endif %}
+				{% if p.improved_water %}
+					<li>{{ p.improved_water }} persons with access to improved water
+					{% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
+					</li>
+				{% endif %}
+				{% if p.improved_sanitation %}
+					<li>{{ p.improved_sanitation }} persons with access to improved sanitation
+					{% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
+					</li>
+				{% endif %}
+				{% if p.trainees %}
+					<li>{{ p.trainees }} persons who receive training / education per year</li>
+				{% endif %}
+				{% if p.mdg_count %}
+					<li>MDG count:{{ p.mdg_count }}</li>
+				{% endif %}
+			</ul>
+		</div>
+		<a href="#" style="clear:left; display:block">View details</a>
+
+	</div> <!-- #tab_goals -->
+	
+	<div id="tab_sustainability">
+		<p>{{p.sustainability}}</p>
+	</div> <!-- #tab_sustainability -->
+	
+	<div id="tab_context">
+		<p>{{p.context}}</p>
+	</div> <!-- #tab_context -->
+
+	<div id="tab_personnel">
+		Personnel
+	</div> <!-- #tab_personnel -->
+
+</div> <!-- #container-1 -->
+
+</div> <!-- #project_details_rightwing -->
+
+<a href="#" style="clear:left; display:block">View details</a>
+
+</div> <!-- #project_details .box -->
+
+
+<!-----------------------------------------------------------------------------------------------
+Below project_details -->
+
+
+	<div id="project_updates" class="box">
+		<div class="boxhead">
+		<a class="actionbutton" href="#" onclick="this.blur();"><span>Add update</span></a>
+		<h1>Project updates</h1>
+	
+		</div> <!-- .boxhead -->
+	
+		<p style="text-align:right"><a href="#" class="rss">Subscribe via RSS</a></p>						
+	
+		<h2>Ad magna facipsum nimolortin vel ilis ad</h2>
+		<p><span class="lightx1">00/00/0000</span> by <a href="#">Tat Duismodolore Tatie</a></p>
+		<p>Type: Progress update</p>
+	
+		<br />
+		<p>Ut adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el 								ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor 								sustin henit prat vulla</p>
+		<p>Ut adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el 								ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor 								sustin henit prat vulla</p>
+		<img src="{{MEDIA_URL}}img/fodra-group-3.jpg" alt="Akvo.org" style="margin: 20px" />				
+		<p class="small lightx1">Eriustie magna commy nullaorpeulla</p>
+		<hr>
+		<h2>Ad magna facipsum nimolortin vel ilis ad</h2>
+	
+		<p><span class="lightx1">00/00/0000</span> by Tat. Duismodolore TatieLink 1</p>
+		<p>Type: Progress update</p>
+		<br />
+		<p>Ut adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el 								ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor 								sustin henit prat vulla</p>
+		<img src="{{MEDIA_URL}}img/fodra-group-2.png" alt="Akvo.org" style="margin: 20px" />
+		<p class="small lightx1 spaced">Sum zzriurem erci blandre consed molore veliquatem ipis et, qui eriustie magna commy nullaorpeulla.
+		(Credit: Ipisim Zzrit)</p>
+	
+		<hr>
+		<p style="text-align:right;"><a href="#">Earlier updates</a></p>
+						
+	</div> <!-- #project_updates & .box -->
+
+	<div id="project_related" class="box">
+		<div class="boxhead">
+		<h1>Related to this project</h1>
+		</div> <!-- .boxhead -->
+	
+		<h2>Akvopedia Entries</h2>
+		<p><a href="#">Technique 101</a></p>
+		<p><a href="#">Technology 101</a></p>
+		<p><a href="#">Documentation 101</a></p>
+		<hr />
+		<h2>External Links</h2>
+	
+		<p><a href="#">Government of Country</a></p>
+		<p><a href="#">Disasters Emergency Committee</a></p>
+		<p><a href="#">Oxfam</a></p>
+		<p class="small lightx1 spaced">Akvo.org is not responsible for the content of external web sites</p>
+	</div> <!-- #project_related & .box -->
+
+	<div id="project_comments" class="box">
+
+		<div class="boxhead">											
+		<a class="actionbutton" href="#" onclick="this.blur();"><span>Add comment</span></a>
+		<h1>Comments</h1>
+		</div> <!-- .boxhead -->
+		
+		<div style="background-color: #FEFFCD; padding: 10px; margin: -20px 0 20px 0">
+		<p>You must be signed in to add a comment.<br /> <a href="#">Sign In</a> | <a href="#">Register</a></p>
+
+		<textarea name="comment_textfield" rows="10" cols="30" style="width: 280px; margin: 0 auto" class="textarea"></textarea>				
+
+		</div>
+		
+		<p style="margin-bottom: 20px">Questions about this project? <a href="#">Contact project liaison</a></p>
+
+		
+		<div class="members-photo"><div style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;"></div>
+		<p style="margin-top: 10px"><a href="#">Duismodolore Tatie</a></p>
+		</div>						
+		
+		<div style="margin-left: 100px">
+
+		<p class="lightx1">00/00/0000 00:00 gmt</p>
+		<p>Ut adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el 								ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor 								sustin henit prat vulla.</p>
+		</div>
+		<br />
+		<p><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>
+
+		<p style="text-align:right"><a href="#">Report abuse</a></p>
+		<hr />
+		<div class="members-photo"><div style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;"></div>
+		<p style="margin-top: 10px"><a href="#">Duismodolore Tatie</a></p>
+		</div>
+		<div style="margin-left: 100px;">
+		<p class="lightx1">00/00/0000 00:00 gmt</p>
+
+		<p>Ut adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el 								ipit, quisl dolendipisl ea accummolobor sustin henit prat vullaUt adipisit nonse digna faciliquip el ipit, quisl dolendipisl ea accummolobor 								sustin henit prat vulla</p>
+		</div>
+		<br />
+		<p><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>
+		<p style="text-align:right"><a href="#">Report abuse</a></p>
+
+		<hr />
+		<p style="text-align:right;"><a href="#">Older comments</a></p>
+	</div> <!-- #project_comments & .box -->
+
+</div> <!-- #outer_leftwing -->
+
+<div id="outer_rightwing">
+
+	<div id="project_funding" class="box">
+		<div class="boxhead">
+		<a class="actionbutton" href="#" onclick="this.blur();"><span>Fund project</span></a>
+		<h1>Funding</h1>
+		<p><a href="#">Notify me of changes via email</a></p>
+		</div> <!-- .boxhead -->
+	
+		<div style="border: 1px solid #999; margin: 10px 20px"><div style="width: 180px; height: 30px; background-color: #4CAC62;"></div></div>
+		<p>{{p.funding.date_request_posted}} Request posted</p>
+		<p>{{p.funding.date_started}} Funding started</p>
+		{% if p.funding.is_complete %}
+		<p>Ongoing Funding completed</p>
+		{% endif %}
+		<p><b>Total: <span style="margin-left: 10px">{{p.funding.total}}</span></b></p>
+		<p style="text-align: right"><a href="#">View details</a></p>
+	
+		<hr />
+		<p style="margin: 10px 0 10px 0;"><b>Current Funders</b></p>
+		{% for funder in p.fundingpartner_set.all %}
+			{% if not forloop.first %}
+				<hr />
+			{% endif %}
+			{% if funder.funding_organization.logo %}
+				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+			{% endif %}	
+			<p><a href="#">{{funder.funding_organization.name}}</a></p>
+			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
+			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
+		{% endfor %}
+
+	</div> <!-- #project_funding & .box -->
+				
+	<div id="project_partners" class="box">
+		<div class="boxhead">
+		<a class="actionbutton" href="#" onclick="this.blur();"><span>Become a partner</span></a>						
+		<h1>Partners</h1>
+		</div> <!-- .boxhead -->
+		{% if p.fieldpartner_set.count %}
+			{% ifequal p.fieldpartner_set.count 1 %}
+				<p style="margin: 10px 0 10px 0;"><b>Field partner</b></p>
+			{% else %}
+				<p style="margin: 10px 0 10px 0;"><b>Field partners</b></p>
+			{% endifequal %}
+			{% for fp in p.fieldpartner_set.all %}
+				{% if not forloop.first %}
+					<hr />
+				{% endif %}
+				{% if fp.field_organization.logo %}
+					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				{% endif %}	
+				<p><a href="#">{{fp.field_organization.name}}</a></p>
+				<p>{{fp.field_organization.city}}, {{fp.field_organization.country}}</p>
+			{% endfor %}
+		{% endif %}
+
+		{% if p.sponsorpartner_set.count %}
+			{% if p.fieldpartner_set.count %}
+				<hr />
+			{% endif %}
+			{% ifequal p.sponsorpartner_set.count 1 %}
+				<p style="margin: 10px 0 10px 0;"><b>Sponsor partner</b></p>
+			{% else %}
+				<p style="margin: 10px 0 10px 0;"><b>Sponsor partners</b></p>
+			{% endifequal %}
+			{% for sp in p.sponsorpartner_set.all %}
+				{% if not forloop.first %}
+					<hr />
+				{% endif %}
+				{% if sp.sponsor_organization.logo %}
+					<img src="{{MEDIA_URL}}{{ sp.sponsor_organization.logo }}" alt="Logo of {{sp.sponsor_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				{% endif %}	
+				<p><a href="#">{{sp.sponsor_organization.name}}</a></p>
+				<p>{{sp.sponsor_organization.city}}, {{sp.sponsor_organization.country}}</p>
+			{% endfor %}
+		{% endif %}
+	</div> <!-- #project_partners & .box -->
+
+	<div id="project_pagetools" class="box">
+		<div class="boxhead">
+		<h1>Page tools</h1>
+
+		</div> <!-- .boxhead -->
+
+		<p><a href="#">Printable version</a></p>
+		<p><a href="#">Permalink to this project</a></p>
+		<p><a href="#">Email this project's owner</a></p>
+	</div> <!-- #project_pagetools & .box -->
+
+</div> <!-- #outer_rightwing -->
+
+<div id="footer">
+	<p>Site content under <a href="#">Open License</a> | <a href="#">Terms of use</a> | <a href="#">Privacy policy</a> | 
+	Prototype funding by <a href="#">Partners voor Water and others</a><span style="float:right"><a href="#">Contact us</a></span></p>
+
+</div> <!-- #footer -->
+
+</div> <!-- #wrapper -->
+
+</body>
+</html>
