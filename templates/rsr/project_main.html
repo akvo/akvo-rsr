@@ -1,5 +1,10 @@
 {% extends "rsr/project_base.html" %}
 
+{% block script %}
+{{block.super}}
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% endblock script %}
+
 {% block outer_leftwing %}
 <div id="outer_leftwing">
 
@@ -245,7 +250,7 @@
                 <p class="small lightx1">{{u.photo_caption}}</p>
                 <hr />            
             {% endfor %}
-            <p style="text-align:right;"><a href="#">Earlier updates</a></p>
+            <p style="text-align:right;"><a href="updates">Earlier updates</a></p>
         </div> <!-- #project_updates & .boxbody -->
 
 	</div> <!-- #subdetailsright -->

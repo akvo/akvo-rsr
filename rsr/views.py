@@ -116,6 +116,13 @@ class UpdateForm(ModelForm):
 
 #from dbgp.client import brk
 
+def projectupdates(request, project_id):
+    p           = get_object_or_404(Project, pk=project_id)
+    updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')
+    return render_to_response('rsr/project_updates.html',
+                            {'p': p, 'updates': updates, },
+                            context_instance=RequestContext(request))
+    
 @login_required()
 def updateform(request, project_id):
     #brk(host="vnc.datatrassel.se", port=9000)
