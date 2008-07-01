@@ -1,7 +1,8 @@
-{% extends "rsr/base.html" %}
+{% extends "rsr/index_base.html" %}
 
 {% block script %}
-<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
+	{{ block.super }}
+	<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
 {% endblock script %}
 
 {% block style %}
@@ -9,18 +10,24 @@
 	<style type="text/css">
 	/* hide from ie on mac \*/
 	
-	#flashcontent {
+	#home_flash {
 	}
 	/* end hide */
 	</style>
 {% endblock style %}
 
-{% block content %}
-	<h1>Our latest projects</h1>
-	<div id="flashcontent">TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a></div>
+
+{% block page_id %}
+<div id="page_home_flash">
+{% endblock page_id %}
+
+{% block outer_leftwing %}
+
+	<h1 class="title" style="float: left; color: #fff; margin-left: 10px;">Our latest projects</h1>
+	<div id="home_flash">TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a></div>
 	<script type="text/javascript">
 	
-		var fo = new SWFObject("{{MEDIA_URL}}flash/TiltViewer.swf", "viewer", "980px", "550px", "9.0.28", "#000000");			
+		var fo = new SWFObject("{{MEDIA_URL}}flash/TiltViewer.swf", "viewer", "980px", "500px", "9.0.28", "#000000");			
 		
 		// TILTVIEWER CONFIGURATION OPTIONS
 		// To use an option, uncomment it by removing the "//" at the start of the line
@@ -76,15 +83,37 @@
 		// END TILTVIEWER CONFIGURATION OPTIONS
 		
 		fo.addParam("allowFullScreen","true");
-		fo.write("flashcontent");			
+		fo.write("home_flash");			
 	</script>	
 
-<div>
-    <h1>Most recent Akvo blog entry</h1>
-    <h3>{{latest.title}}</h3>
-    <p>{{latest.summary}}</p>
-	<p><img src="{{img_src}}" style="width: 240px;"/></p>
-    <p><a href="http://www.akvo.org/blog/">Full entry</a></p>
-    <p><a href="{{latest.link}}">Permalink</a></p>
-</div>
-{% endblock %}
+<div id="outer_leftwing">
+
+<div class="boxhead">
+<a href="#" class="rss" style="float:right;margin-top:1em;">Subscribe via RSS</a>
+<h1>Most recent Akvo Blog entry</h1>
+</div> <!-- .boxhead -->
+
+<div class="boxbody">
+
+{% if img_src %}
+<div style="float:left; width: 210px;">
+	<img src="{{img_src}}" style="width: 172px; margin: 15px 15px 5px 15px"/>
+	<p class="small lightx1">Image caption</p>
+</div> <!-- style -->
+{% endif %}
+<h2>{{latest.title|safe}}</h2>
+<p class="lightx2">24/06/2008 by <a href="#">{{latest.author|safe}}</a></p>
+<p>{{latest.summary|safe}}</p>
+
+<p><a href="http://www.akvo.org/blog/">Full entry</a></p>
+<hr />
+<p style="text-align: right"><a href="#">View earlier blog entries</a></p>
+<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
+
+<div style="clear:left"></div>
+
+</div> <!-- .boxbody -->
+
+</div> <!-- #outer_leftwing -->
+
+{% endblock outer_leftwing %}

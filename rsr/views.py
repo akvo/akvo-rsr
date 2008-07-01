@@ -19,6 +19,7 @@ def akvo_at_a_glance(projects):
     status_active   = projects.filter(status__exact='A').count()
     status_onhold   = projects.filter(status__exact='H').count()
     status_complete = projects.filter(status__exact='C').count()
+    mdgs            = sum(projects.values_list('mdg_count', flat=True))
     project_count   = projects.count()
     o = Organization.objects.all()
     fieldpartner_count      = o.filter(type__exact='F').count()
@@ -36,33 +37,100 @@ def akvo_at_a_glance(projects):
         'status_active': status_active,
         'status_onhold': status_onhold,
         'status_complete': status_complete,
+        'mdgs': mdgs,
         'project_count': project_count,
         'fieldpartner_count': fieldpartner_count,
         'sponsorpartner_count': sponsorpartner_count,
         'fundingpartner_count': fundingpartner_count,
         'partners_total': partners_total,
         'funding_total': funding_total,
+        'funding_needed': funding_total - funding_pledged,
         'funding_pledged': funding_pledged,
     }
     return stats
 
-def index(request):
-    feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
-    latest = feed.entries[0]
-    soup = BeautifulSoup(latest.content[0].value)
-    img_src = soup('img')[0]['src']
-    return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
+def featured_projects(projects):
+    for i in range(3):
+        pass
 
-def projectlist(request):
+def render_to(template):
+    """
+    Decorator for Django views that sends returned dict to render_to_response function
+    with given template and RequestContext as context instance.
+
+    If view doesn't return dict then decorator simply returns output.
+    Additionally view can return two-tuple, which must contain dict as first
+    element and string with template name as second. This string will
+    override template name, given as parameter
+
+    From: http://www.djangosnippets.org/snippets/821/
+    Parameters:
+
+     - template: template name to use
+    """
+    def renderer(func):
+        def wrapper(request, *args, **kw):
+            output = func(request, *args, **kw)
+            if isinstance(output, (list, tuple)):
+                return render_to_response(output[1], output[0], RequestContext(request))
+            elif isinstance(output, dict):
+                return render_to_response(template, output, RequestContext(request))
+            return output
+        return wrapper
+    return renderer
+
+@render_to('rsr/index.html')
+def index(request):
+    '''
+    The RSR home page.
+    Context:
+    latest: the latest entry from the akvo.org/blog feed
+    soup: the blog entry HTML
+    img_src: the url to the first image of the blog entry
+    '''
+    try:
+        feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        latest = feed.entries[0]
+        soup = BeautifulSoup(latest.content[0].value)
+        img_src = soup('img')[0]['src']
+    except:
+        soup = img_src = ''
+        latest = {
+            'author': '',
+            'summary': 'The blog is not available at the moment.',
+        }
     p = Project.objects.all()
     stats = akvo_at_a_glance(p)
-    return render_to_response('rsr/project_list.html', {'projects': p, 'stats': stats}, context_instance=RequestContext(request))
+    #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
+    return {'latest': latest, 'img_src': img_src, 'soup':soup, 'stats': stats, }
+
+@render_to('rsr/project_directory.html')
+def projectlist(request):
+    '''
+    List of all projects in RSR
+    Context:
+    p: list of all projects
+    stats: the aggregate projects data
+    '''    
+    p = Project.objects.all()
+    try:
+        order_by = request.GET['order_by']
+        p = p.order_by(order_by)
+    except:
+        pass
+    stats = akvo_at_a_glance(p)
+    return {'projects': p, 'stats': stats}
 
 class SigninForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     
 def signin(request):
+    '''
+    Sign in page for RSR
+    Context:
+    form: the sign in form    
+    '''
     form = SigninForm()
     if request.method == 'POST':
         username = request.POST['username']
@@ -84,12 +152,17 @@ def signin(request):
     return render_to_response('rsr/sign_in.html', {'form': form, }, context_instance=context_instance)
 
 def signout(request):
+    '''
+    Sign out URL
+    Redirects to /rsr/
+    '''
     logout(request)
     return HttpResponseRedirect('/rsr/')
 
 def updatelist(request, project_id):
     updates = Project.objects.get(id=project_id).projectupdate_set.all()
-    return render_to_response('rsr/update_list.html', {'updates': updates}, context_instance=RequestContext(request))
+    template = 'rsr/update_list.html'
+    return render_to_response(template, {'updates': updates}, context_instance=RequestContext(request, {'template': template }))
 
     #t = loader.get_template('rsr/update_list.html')
     #c = RequestContext({'updates': updates})
@@ -116,15 +189,27 @@ class UpdateForm(ModelForm):
 
 #from dbgp.client import brk
 
+@render_to('rsr/project_updates.html')
 def projectupdates(request, project_id):
+    '''
+    List of all updates for a project
+    Context:
+    p: project
+    updates: list of updates, ordered by time in reverse
+    '''
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')
-    return render_to_response('rsr/project_updates.html',
-                            {'p': p, 'updates': updates, },
-                            context_instance=RequestContext(request))
+    template = 'project_updates'
+    return {'p': p, 'updates': updates, }
     
 @login_required()
 def updateform(request, project_id):
+    '''
+    Form for creating a project update
+    Context:
+    p: project
+    form: the update form
+    '''
     #brk(host="vnc.datatrassel.se", port=9000)
     p = get_object_or_404(Project, pk=project_id)
     if request.method == 'POST':
@@ -138,8 +223,7 @@ def updateform(request, project_id):
             return HttpResponseRedirect('./')
     else:
         form = UpdateForm()
-    context_instance=RequestContext(request)
-    return render_to_response('rsr/update_form.html', {'form': form, 'project': p, }, context_instance=context_instance)
+    return render_to_response('rsr/update_form.html', {'form': form, 'project': p, }, RequestContext(request))
 
 class CommentForm(ModelForm):
 
@@ -155,22 +239,28 @@ class CommentForm(ModelForm):
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
 
+@render_to('rsr/project_main.html')
 def projectmain(request, project_id):
+    '''
+    The project overview page
+    Context:
+    p: the project
+    updates: the three latest updates
+    comments: the three latest comments
+    form: the comment form
+    '''
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
-    return render_to_response('rsr/project_main.html',
-                            {
-                                'p': p,
-                                'updates': updates,
-                                'comments': comments,
-                                'form': form
-                            },
-                            context_instance=RequestContext(request))
+    return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
     
 @login_required()
 def commentform(request, project_id):
+    '''
+    URL for posting a comment to a project
+    Redirects to the project overview page (/rsr/project/n/ n=project id)
+    '''
     #brk(host="vnc.datatrassel.se", port=9000)
     p = get_object_or_404(Project, pk=project_id)
     if request.method == 'POST':
@@ -183,6 +273,10 @@ def commentform(request, project_id):
             comment.save()
             return HttpResponseRedirect('./')
     return HttpResponseRedirect('./')
+
+def templatedev(request, template_name):
+    "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
+    return render_to_response('dev/%s.html' % template_name, context_instance=RequestContext(request))
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204

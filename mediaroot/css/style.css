@@ -23,31 +23,32 @@ font-size: 0.875em;
 /* structural-float-level
 -------------------------------------------------------------------------------------- */
 
+#wrapper
+{
+font-size: 0.8em;
+}
+
 #header
 {
 text-align: right;
-font-size: 0.875em;
 }
 
 #navigation
 {
 padding-top: 20px;
 clear: left;
-font-size: 0.875em;
 }
 
 #outer_leftwing
 {
 float: left;
 width: 710px;
-font-size: 0.875em;
 }
 
 #outer_rightwing
 {
 float: right;
 width: 250px;
-font-size: 0.875em;
 }
 
 #footer
@@ -57,7 +58,6 @@ color: #666;
 margin: 20px 0;
 border-top: 1px solid #ccc;
 padding-top: 10px;
-font-size: 0.875em;
 }
 
 /* global-navigation
@@ -108,6 +108,13 @@ color: #ededed;
 float: left;
 }
 
+#home_flash
+{
+border-top: 20px solid #fff;
+margin: 20px 0;
+background-color: #009DE4;
+}
+
 #subdetailsleft
 {
 width: 343px;
@@ -122,7 +129,7 @@ float: right;
 
 .boxhead
 {
-padding: 5px 20px 20px 20px;
+padding: 5px 10px 5px 10px;
 background-color: #dedede;
 }
 
@@ -173,18 +180,6 @@ background-color: green;
 background-color: blue;
 }
 
-.comment, .update
-{
-margin-bottom: 10px;
-border-bottom: 1px solid #ccc;
-margin: 0 20px 10px 20px;
-}
-
-.comment p, .update p
-{
-padding: 0 0 10px 0;
-}
-
 /* headings
 -------------------------------------------------------------------------------------- */
 
@@ -206,7 +201,7 @@ padding: 0 10px;
 {
 font-size: 1.2em;
 font-weight: bold;
-padding: 10px 10px 20px 20px;
+padding: 10px 10px 10px 10px;
 }
 
 h2
@@ -293,29 +288,31 @@ margin: 20px;
 
 table
 {
-margin: 10px 20px;
+margin: 0 20px;
 }
-
-table#project_showcase {margin-top: -30px;}
 
 table#project_showcase td
 {
-padding: 10px;
+padding: 0 20px;
 vertical-align: top;
+}
+
+table#project_showcase td p
+{
+margin: 0 0 5px 0;
+padding: 0;
 }
 
 table#project_table
 {
 border-top: 1px solid #999;
 margin: -20px 0;
-border-left: 1px solid #ccc;
 }
 
 table#project_table th
 {
 padding: 10px;
 background-color: #ccc;
-border-right: 1px solid #999;
 }
 
 table#project_table td
@@ -430,3 +427,8 @@ a.actionbutton:active span {
     padding: 6px 0 4px 18px; /* push text down 1px */
 }
 
+.bold { font-weight: bold; }
+.bold td { font-weight: bold; }
+.bold td { padding-top: 5px; }
+.hr td { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+th { font-weight: bold; }

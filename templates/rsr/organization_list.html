@@ -1,16 +1,6 @@
-{% extends "base.html" %}
-
-{% block css %}
-th, td {
-    padding: 4px;
-}
-{% endblock css %}
+{% extends "rsr/rsr_base.html" %}
 
 {% block title %}Orgzzz!{% endblock %}
-
-{% block header %}
-    <h1>Organizations</h1>
-{% endblock header %}
 
 {% block content %} 
 
@@ -32,6 +22,5 @@ th, td {
     {% endfor %}    
     </tbody>
 </table>
-
 
 {% endblock content %}
