@@ -1,5 +1,7 @@
 {% extends "rsr/rsr_base.html" %}
 
+{% block title %}Akvo RSR - Project no. {{p.id}}, {{p.name}}{% endblock title %}
+
 {% block content %}
 
 {% block page_id %}
@@ -32,7 +34,13 @@
 		<p><b>Total: <span style="margin-left: 10px">{{p.funding.total}} {{p.funding.currency}}</span></b></p>
 		<p style="text-align: right"><a href="#">View details</a></p>
 		<hr />
-		<p style="margin: 10px 0 10px 0;"><b>Current Funders</b></p>
+		<p style="margin: 10px 0 10px 0;">
+        {% ifequal p.fundingpartner_set.count 1 %}
+            <b>Current Funder</b>
+        {% else %}
+            <b>Current Funders</b>
+        {% endifequal %}
+        </p>
     
  		{% for funder in p.fundingpartner_set.all %}
 			{% if not forloop.first %}
@@ -41,7 +49,7 @@
 			{% if funder.funding_organization.logo %}
 				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
 			{% endif %}	
-			<p><a href="#">{{funder.funding_organization.name}}</a></p>
+			<p><a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a></p>
 			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
 			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
 		{% endfor %}    
@@ -66,27 +74,27 @@
 				{% if fp.field_organization.logo %}
 					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px 10px 20px;" />
 				{% endif %}	
-				<p><a href="#">{{fp.field_organization.name}}</a></p>
+				<p><a href="../../organization/{{fp.field_organization.id}}/">{{fp.field_organization.name}}</a></p>
 				<p>{{fp.field_organization.city}}, {{fp.field_organization.country}}</p>
 		{% endfor %}
-		{% if p.sponsorpartner_set.count %}
+		{% if p.supportpartner_set.count %}
 			{% if p.fieldpartner_set.count %}
 				<hr />
 			{% endif %}
-			{% ifequal p.sponsorpartner_set.count 1 %}
+			{% ifequal p.supportpartner_set.count 1 %}
 				<h2>Support partner</h2>
 			{% else %}
 				<h2>Support partners</h2>
 			{% endifequal %}
-			{% for sp in p.sponsorpartner_set.all %}
+			{% for sp in p.supportpartner_set.all %}
 				{% if not forloop.first %}
 					<hr />
 				{% endif %}
-				{% if sp.sponsor_organization.logo %}
-					<img src="{{MEDIA_URL}}{{ sp.sponsor_organization.logo }}" alt="Logo of {{sp.sponsor_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				{% if sp.support_organization.logo %}
+					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 20px 10px 20px;" />
 				{% endif %}	
-				<p><a href="#">{{sp.sponsor_organization.name}}</a></p>
-				<p>{{sp.sponsor_organization.city}}, {{sp.sponsor_organization.country}}</p>
+				<p><a href="../../organization/{{sp.support_organization.id}}/">{{sp.support_organization.name}}</a></p>
+				<p>{{sp.support_organization.city}}, {{sp.support_organization.country}}</p>
 			{% endfor %}
 		{% endif %}        
 

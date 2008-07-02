@@ -4,5 +4,6 @@ fields = ['id', 'funding_organization_id', 'funding_amount', 'currency', 'projec
 default = {}
 records = [
 [1, 1, 14921, u'EUR', 1]
-[2, 1, 16000, u'EUR', 2]
+[2, 1, 12000, u'EUR', 2]
+[3, 6, 10000, u'EUR', 3]
 ]

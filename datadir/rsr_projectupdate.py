@@ -15,4 +15,7 @@ records = [
 [12, 1, u'user_id', u'Maintenance training completed', u'We have completed the the maintenance training for the ecosan toilets. We did it for 30 people last saturday.', u'A', u'', u'', u'', u'', '2008-06-23 21:20:55']
 [13, 1, u'user_id', u'Community meeting', u'Completed first community meeting today.', u'A', u'img/2008/06/23/1493799561_8a474eca3f_m.jpg', u'B', u'Pratap Nagar', u'Mark Charmer', '2008-06-23 21:25:04']
 [14, 2, u'user_id', u'Installed new collection facilities', u'This week we have been installing new rain water harvesting equipment in 10 homes. We are still in the process of doing this, but here is a progress picture.', u'A', u'img/2008/06/24/1531738658_e1c104c32e.jpg', u'', u'Rainwater harvesting installation', u'Mark Charmer', '2008-06-24 23:37:17']
+[15, 2, 1, u'dfg', u'df', u'H', u'', u'', u'', u'', '2008-06-25 12:18:10']
+[16, 1, 2, u'Friggin cool!', u'Blah blah', u'H', u'', u'', u'', u'', '2008-06-25 12:21:16']
+[17, 1, 4, u'Absolut!', u'Tjohoo!', u'N', u'', u'', u'', u'', '2008-06-25 12:23:39']
 ]

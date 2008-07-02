@@ -1,5 +1,13 @@
 {% extends "rsr/rsr_base.html" %}
 
+{% block title %}Akvo RSR - Sign in{% endblock title %}
+
+{% block header %}
+<div id="header">
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+</div> <!-- #header -->
+{% endblock header %}
+
 {% block navigation %}
 {% comment removing the main nav-bar for the sign in page %}{% endcomment %}
 {% endblock navigation %}

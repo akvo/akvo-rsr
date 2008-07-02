@@ -1,14 +1,24 @@
-{% extends "rsr/index.html" %}
+{% extends "rsr/rsr_base.html" %}
 
+{% block title %}Akvo RSR - Organization no. {{o.id}}, {{o.name}}{% endblock title %}
+
+{% block content %}
+
+{% block page_id %}
 <div id="page_organisation">
+{% endblock page_id %}
 
 <div id="outer_leftwing">
 	<div class="boxhead">
-		<div style="float: right; width: 30%"><a class="actionbutton" href="#" onclick="this.blur();"><span>Edit project</span></a></div>
+		<div style="float: right; width: 30%"><a class="actionbutton" href="#" onclick="this.blur();"><span>Edit organization</span></a></div>
 
 		<p style="clear: right; float: right; width: 30%; text-align: right; margin-top: 5px;"><a href="#">Notify me of changes via email</a></p>
-		<h1 class="section">Bal Vikas school sanitation project</h1>
-		<p>Within a peri-urban resettlement cluster</p>
+		<h1 class="section">{{o.name}}</h1>
+		{% if o.long_name %}
+		<p>{{o.long_name}}</p>
+		{% else %}
+		<p>&nbsp;</p>
+		{% endif %}
 	</div> <!-- .boxhead -->
 
 <div class="boxbody">
@@ -18,40 +28,47 @@
 	<tr>
 
 	<td style="border-right: 1px solid #ccc; width: 33%">
-	<img src="/productions/akvo.org/2008_06_12a/images/logo_waste.png" alt="Logo of Waste" style="margin: 10px 0;" />
-	<h2 class="lightx2">Activities</h2>
-	<p>Sanitation</p>
-	<h2 class="lightx2">Type</h2>
-	<p>Non-governmental organisation</p>
-
-	<h2 class="lightx2">Scope</h2>
-	<p>National</p>
-	<h2 class="lightx2">Website</h2>
-	<p><a href="#">http://www.basango.org</a></p>
-	<h2 class="lightx2">Akvopedia entry</h2>
-	<p>Bangladesh Association for Social Advancement</p>
+		{% if o.logo %}
+			<img src="{{MEDIA_URL}}{{o.logo}}" alt="Logo of {{o.name}}" style="margin: 10px 0;" />
+		{% endif %}
+		<h2 class="lightx2">Activities</h2>
+		<p>Activity types</p>
+		<h2 class="lightx2">Type</h2>
+		<p>Organization type</p>
+	
+		<h2 class="lightx2">Scope</h2>
+		<p>National</p>
+	
+		{% if o.url %}
+			<h2 class="lightx2">Website</h2>
+			<p><a href="{{o.url}}">{{o.url}}</a></p>
+		{% endif %}
+		{% if o.akvopedia_entry %}
+			<h2 class="lightx2">Akvopedia entry</h2>
+			<p>{{o.akvopedia_entry}}</p>
+		{% endif %}
 
 	</td>
 
 	<td style="border-right: 1px solid #ccc; width: 33%">
 	<h2 class="lightx2">Location</h2>
-	<p>Location<br />House 247, Road 18<br />New Dohs Mohakhali<br />Dhaka 1209<br />Bangladesh</p>
-	<img src="/productions/akvo.org/2008_06_12a/images/map.png" alt="type" style="margin: 20px 0;" />
+	<p>{{o.address_1}}<br />{{o.address_2}}<br />{{o.postcode}}<br />{{o.city}}</p>
+	<!--<img src="/productions/akvo.org/2008_06_12a/images/map.png" alt="type" style="margin: 20px 0;" />-->
 
 	</td>
 
 	<td style="width: 33%">
 	<h2 class="lightx2">Contact</h2>
-	<p>A.K.M. Shirajul Islam</p>
+	<p>{{o.contact_person}}</p>
 	<h2 class="lightx2">Email</h2>
-	<p>edbasa@worldnetbd.net</p>
+	<p>{{o.contact_email}}</p>
 
 	<h2 class="lightx2">Phone</h2>
-	<p>008802-9862464</p>
+	<p>{{o.phone}}</p>
 	<h2 class="lightx2">Mobile</h2>
-	<p>008802-9862464</p>
+	<p>12345678-9</p>
 	<h2 class="lightx2">Fax</h2>
-	<p>008802-9862464</p>
+	<p>{{o.fax}}</p>
 
 	</td>	
 
@@ -76,26 +93,21 @@
 
 <div class="boxbody">
 <table>
-<tr><th colspan="2"><h2>Projects</h2></th></tr>
-<tr><td style="width:50%">000</td><td>Active</td></tr>
-<tr><td>000</td><td>On hold</td></tr>
-
-<tr><td>000</td><td>Complete</td></tr>
-<tr class="bold"><td>000</td><td>Total projects</td></tr>
-<tr class="hr bold"><td>000000</td><td>MDGs</td></tr>
-<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">(3 projects)</span></h2></th></tr>
-<tr style="color: green"><td>&#8364; 000000</td><td>Pledged</td></tr>
-<tr class="hr" style="color: red"><td>&#8364; 000000</td><td>Still needed</td></tr>
-
+	<tr><th colspan="2"><h2>Projects</h2></th></tr>
+	<tr><td style="width: 50%;">{{stats.status_active}}</td><td>Active</td></tr>
+	<tr><td>{{stats.status_onhold}}</td><td>On hold</td></tr>
+	<tr><td>{{stats.status_complete}}</td><td>Complete</td></tr>
+	<tr class="bold"><td>{{stats.project_count}}</td><td>Total projects</td></tr>
+	<tr class="hr bold"><td>{{stats.mdgs}}</td><td>MDGs</td></tr>
+	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{stats.project_count}} projects)</span></h2></th></tr>
+	<tr style="color: green"><td>&#8364; {{stats.funding_pledged}}</td><td>Pledged</td></tr>
+	<tr class="hr" style="color: red"><td>&#8364; {{stats.funding_needed}}</td><td>Still needed</td></tr>		
 </table>
 
 <h2>Project partners</h2>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-
+{% for partner in partners %}
+<p><a href="../../organization/{{partner.id}}">{{partner.name}}</a></p>
+{% endfor %}
 </div> <!-- .boxbody -->
 
 <div class="boxhead">
@@ -103,14 +115,13 @@
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
-<p><a href="#">123456789</a></p>
+{% for project in projects %}
+<p><a href="../../project/{{project.id}}/">{{project.name}}</a></p>
+{% endfor %}
 
 </div> <!-- .boxbody -->
 
 </div> <!-- #outer_rightwing -->
 
 </div> <!-- page id -->
+{% endblock content %}

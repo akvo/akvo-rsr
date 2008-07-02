@@ -15,6 +15,9 @@ from datetime import datetime
 import feedparser
 
 def akvo_at_a_glance(projects):
+    '''
+    Create aggregate data about a collection of projects in a queryset.
+    '''
     status_none     = projects.filter(status__exact='N').count()
     status_active   = projects.filter(status__exact='A').count()
     status_onhold   = projects.filter(status__exact='H').count()
@@ -22,15 +25,15 @@ def akvo_at_a_glance(projects):
     mdgs            = sum(projects.values_list('mdg_count', flat=True))
     project_count   = projects.count()
     o = Organization.objects.all()
-    fieldpartner_count      = o.filter(type__exact='F').count()
-    sponsorpartner_count    = o.filter(type__exact='S').count()
-    fundingpartner_count    = o.filter(type__exact='M').count()
-    partners_total = fieldpartner_count + sponsorpartner_count + fundingpartner_count
-    f = Funding.objects.all()
+    fieldpartner_count      = o.filter(field_partner__exact=True).count()
+    supportpartner_count    = o.filter(support_partner__exact=True).count()
+    fundingpartner_count    = o.filter(funding_partner__exact=True).count()
+    partners_total = fieldpartner_count + supportpartner_count + fundingpartner_count
+    f = Funding.objects.all().filter(project__in = projects)
     funding_total = 0
     for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
         funding_total += sum(f.values_list(field, flat=True))
-    funding_pledged = sum(FundingPartner.objects.all().values_list('funding_amount', flat=True))
+    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
     
     stats ={
         'status_none': status_none,
@@ -40,7 +43,7 @@ def akvo_at_a_glance(projects):
         'mdgs': mdgs,
         'project_count': project_count,
         'fieldpartner_count': fieldpartner_count,
-        'sponsorpartner_count': sponsorpartner_count,
+        'supportpartner_count': supportpartner_count,
         'fundingpartner_count': fundingpartner_count,
         'partners_total': partners_total,
         'funding_total': funding_total,
@@ -238,6 +241,27 @@ class CommentForm(ModelForm):
     class Meta:
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
+
+def org_activities(organization):
+    projs = Project.objects.all()
+    # assoc resolves to all projects associated with organization, where organization can function in any of the three partner functions
+    assoc = (projs.filter(supportpartner__support_organization=organization.id) | \
+             projs.filter(fieldpartner__field_organization=organization.id) | \
+             projs.filter(fundingpartner__funding_organization=organization.id)).distinct()
+    orgz = Organization.objects.all()
+    # partners resolves to all orgz that are partners of any kind to the list of projects in assoc
+    partners = (orgz.filter(field_partners__project__in = assoc.values('pk').query) | \
+                orgz.filter(support_partners__project__in = assoc.values('pk').query) | \
+                orgz.filter(funding_partners__project__in = assoc.values('pk').query)).distinct()
+    # remove organization from queryset
+    return assoc, partners.exclude(id=organization.id)
+
+@render_to('rsr/organization.html')
+def orgdetail(request, org_id):
+    o = get_object_or_404(Organization, pk=org_id)
+    projects, partners = org_activities(o)
+    stats = akvo_at_a_glance(projects)
+    return {'o': o, 'projects': projects, 'partners': partners, 'stats': stats, }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):

@@ -18,7 +18,7 @@
         <th>Funds requested</th>    
         <th>Funds still needed</th>    
         <th>Field partner(s)</th>    
-        <th>Sponsor partner(s)</th>    
+        <th>Support partner(s)</th>    
         <th>Funding partner(s)</th>    
         <th></th>    
     </tr>
@@ -46,8 +46,8 @@
             {% endfor %}
         </td>
         <td style="padding: 10px;">
-            {% for sponsor in p.sponsorpartner_set.all %}
-                <p>{{sponsor.sponsor_organization.name}}</p>
+            {% for support in p.supportpartner_set.all %}
+                <p>{{support.support_organization.name}}</p>
             {% endfor %}
         </td>
         <td style="padding: 10px;">

@@ -8,18 +8,24 @@ from django.utils.safestring import mark_safe
 from datetime import date
 
 class Organization(models.Model):
-    PARNER_TYPES = (
-        ('F', 'Field partner'),
-        ('S', 'Sponsor parner'),
-        ('M', 'Funding parner'),
-    )
-    type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
+    #PARNER_TYPES = (
+    #    ('F', 'Field partner'),
+    #    ('S', 'Sponsor parner'),
+    #    ('M', 'Funding parner'),
+    #)
+    #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
+    field_partner               = models.BooleanField()
+    support_partner             = models.BooleanField()
+    funding_partner             = models.BooleanField()
+
     name                        = models.CharField(max_length=25)
+    long_name                   = models.CharField(blank=True, max_length=75)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
     country                     = models.CharField(max_length=15)
     url                         = models.URLField(blank=True, verify_exists = False)
+    map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     
     address_1                   = models.CharField(blank=True, max_length=35)
     address_2                   = models.CharField(blank=True, max_length=35)
@@ -28,19 +34,27 @@ class Organization(models.Model):
     fax                         = models.CharField(blank=True, max_length=20)
     contact_person              = models.CharField(blank=True, max_length=30)
     contact_email               = models.CharField(blank=True, max_length=50)
-    #notes                       = models.TextField(blank=True)
+    organization_description    = models.TextField(blank=True)
     
     def __unicode__(self):
         return self.name
 
     class Admin:
         fields = (
-            (None, {'fields': ('type', 'name', 'logo', 'city', 'state', 'country', 'url', )}),
+            ('Partnership type(s)', {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
+            ('General information', {'fields': ('name', 'long_name', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
             ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'fax',  'contact_person',  'contact_email',  ), }),
-            #(None, {'fields': ('notes', )}),
+            (None, {'fields': ('organization_description', )}),
         )    
-        list_display = ('name', 'website', 'type', )
-        
+        list_display = ('name', 'long_name', 'website', 'partner_types', )
+    
+    def partner_types(self):
+        pt = ""
+        if self.field_partner: pt += "F"
+        if self.support_partner: pt += "S"
+        if self.funding_partner: pt += "M"
+        return pt
+    
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True              
@@ -161,12 +175,12 @@ class Project(models.Model):
 
     def project_type(self):
         pt = ""
-        if self.category_water: pt += "W";
-        if self.category_sanitation: pt += "S";
-        if self.category_maintenance: pt += "M";
-        if self.category_training: pt += "T";
-        if self.category_education: pt += "E";
-        if self.category_other: pt += "O";
+        if self.category_water: pt += "W"
+        if self.category_sanitation: pt += "S"
+        if self.category_maintenance: pt += "M"
+        if self.category_training: pt += "T"
+        if self.category_education: pt += "E"
+        if self.category_other: pt += "O"
         return pt
     #project_type.allow_tags = True
     
@@ -178,7 +192,7 @@ class Project(models.Model):
         pass
 
 class FundingPartner(models.Model):
-    funding_organization =  models.ForeignKey(Organization, related_name='funding_partners', limit_choices_to = {'type__iexact': 'M'})
+    funding_organization =  models.ForeignKey(Organization, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
     funding_amount = models.IntegerField(core=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, core=True)
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
@@ -186,15 +200,15 @@ class FundingPartner(models.Model):
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organization.name, self.funding_amount, self.currency)
      
-class SponsorPartner(models.Model):
-    sponsor_organization = models.ForeignKey(Organization, related_name='sponsor_partners', limit_choices_to = {'type__iexact': 'S'}, core=True)
+class SupportPartner(models.Model):
+    support_organization = models.ForeignKey(Organization, related_name='support_partners', limit_choices_to = {'support_partner__exact': True}, core=True)
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
 
     def __unicode__(self):
-        return "%s" % (self.sponsor_organization.name, )
+        return "%s" % (self.support_organization.name, )
     
 class FieldPartner(models.Model):
-    field_organization = models.ForeignKey(Organization, related_name='field_partners', limit_choices_to = {'type__iexact': 'F'}, core=True)
+    field_organization = models.ForeignKey(Organization, related_name='field_partners', limit_choices_to = {'field_partner__exact': True}, core=True)
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
 
     def __unicode__(self):

@@ -1,6 +1,8 @@
 {% extends "rsr/index_base.html" %}
 {% load generic_content %}
 
+{% block title %}Akvo RSR - Project listing{% endblock title %}
+
 {% block script %}
 {{block.super}}
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
@@ -83,10 +85,10 @@
 <th><a href="?order_by=country">Country</a></th>
 
 <th><a href="#">Continent</a></th>
-<th><a href="?order_by=funding__total">Total funds requested</a></th>
-<th><a href="?order_by=funding__still_needed">Funding still needed</a></th>
+<th><a href="#">Total funds requested</a></th>
+<th><a href="#">Funding still needed</a></th>
 <th><a href="#">Field partner(s)</a></th>
-<th><a href="#">Sponsor partner(s)</a></th>
+<th><a href="#">Support partner(s)</a></th>
 <th><a href="#">Funding partner(s)</a></th>
 </tr>
 {% for p in projects %}
@@ -136,17 +138,17 @@
 	</td>
 	<td>
 	{% for fieldpartner in p.fieldpartner_set.all %}
-		{{fieldpartner.field_organization.name}}
+		<a href="../organization/{{fieldpartner.field_organization.id}}/">{{fieldpartner.field_organization.name}}</a><br />
 	{% endfor %}
 	</td>
 	<td>
-	{% for sponsor in p.sponsorpartner_set.all %}
-		{{sponsor.sponsor_organization.name}}
+	{% for support in p.supportpartner_set.all %}
+		<a href="../organization/{{support.support_organization.id}}/">{{support.support_organization.name}}</a><br />
 	{% endfor %}
 	</td>
 	<td>
 	{% for funder in p.fundingpartner_set.all %}
-		{{funder.funding_organization.name}}
+		<a href="../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a><br />
 	{% endfor %}		
 	</td>
 </tr>
