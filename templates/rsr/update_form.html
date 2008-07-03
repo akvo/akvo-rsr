@@ -1,5 +1,11 @@
 {% extends "rsr/rsr_base.html" %}
 
+{% block title %}{{block.super}} - Write an update{% endblock title %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="/rsr/projects/">Project listing</a> &raquo; <a href="/rsr/projects/{{p.id}}/">{{p.name}}</a> &raquo; Write an update
+{% endblock breadcrumbs %}
+
 {% block content %}
 
 <div id="outer_leftwing">
@@ -11,7 +17,7 @@
 
 		<h1 class="title">Add update</h1>
 		<p class="lightx1" style="padding-left: 10px">You are updating the project named</p>
-		<p style="padding-left: 10px">{{project.name}}</p>
+		<p style="padding-left: 10px">{{p.name}}</p>
 	</div>
 	
 	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">

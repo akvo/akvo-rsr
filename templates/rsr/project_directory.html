@@ -8,6 +8,10 @@
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
 {% endblock script %}
 
+{% block breadcrumbs %}
+{{block.super}} &raquo; Project listing
+{% endblock breadcrumbs %}
+
 {% block page_id %}
 <div id="page_project_directory">
 {% endblock page_id %}

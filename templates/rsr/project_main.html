@@ -5,6 +5,10 @@
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
 {% endblock script %}
 
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="/rsr/projects/">Project listing</a> &raquo; {{p.name}}
+{% endblock breadcrumbs %}
+
 {% block outer_leftwing %}
 <div id="outer_leftwing">
 

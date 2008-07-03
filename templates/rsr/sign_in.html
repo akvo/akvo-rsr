@@ -11,21 +11,50 @@
 {% block navigation %}
 {% comment removing the main nav-bar for the sign in page %}{% endcomment %}
 {% endblock navigation %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+
+{% block page_id %}
+<div id="page_organisation">
+{% endblock page_id %}
 
 {% block content %}
 <div>
+<div class="boxbody" style="clear:left">
+<h1 class="section">Please sign in</h1>
+
+<div class="boxbody" style="background-color: #D0FFFF; width: 600px; margin: 20px;">
+
+<fieldset>
+
+<h1 class="section">I have an online account</h1>
+<form method="post" action=".">
+<table id="login" style="padding: 20px;">
+<tr>
     {% if form.has_errors %}
-    <p>Your username and password didn't match. Please try again.</p>
+    <tr><td colspan="2">Your username and password didn't match. Please try again.</td></tr>
     {% endif %}
-    
-    <form method="post" action=".">
-        <table>
-            <tr><td><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
-            <tr><td><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
-        </table>
-    
-        <input type="submit" value="Sign in" />
-        <input type="hidden" name="next" value="{{ next }}" />
-    </form>
-</div>
+
+<td style="vertical-align: top"><label for="id_username">Enter username</label></td>
+<td style="vertical-align: top">{{ form.username }}</td>
+<td><a href="#">I forgot my username</a></td>
+</tr>
+<tr>
+<td style="vertical-align: top"><label for="id_password">Enter password</label></td>
+
+<td style="vertical-align: top">{{ form.password }}</td>
+<td><a href="#">I forgot my password</a></td>
+</tr>
+</table>
+<hr />
+<p><a href="#">Cancel</a> | <input type="submit" value="Sign in" /></p>
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+</fieldset>
+
+</div> <!-- boxbody -->
+
+</div> <!-- .boxbody -->
+
 {% endblock %}

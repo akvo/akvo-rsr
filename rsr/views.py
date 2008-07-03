@@ -125,8 +125,8 @@ def projectlist(request):
     return {'projects': p, 'stats': stats}
 
 class SigninForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'}))
     
 def signin(request):
     '''
@@ -226,7 +226,7 @@ def updateform(request, project_id):
             return HttpResponseRedirect('./')
     else:
         form = UpdateForm()
-    return render_to_response('rsr/update_form.html', {'form': form, 'project': p, }, RequestContext(request))
+    return render_to_response('rsr/update_form.html', {'form': form, 'p': p, }, RequestContext(request))
 
 class CommentForm(ModelForm):
 

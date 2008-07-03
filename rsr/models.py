@@ -34,7 +34,7 @@ class Organization(models.Model):
     fax                         = models.CharField(blank=True, max_length=20)
     contact_person              = models.CharField(blank=True, max_length=30)
     contact_email               = models.CharField(blank=True, max_length=50)
-    organization_description    = models.TextField(blank=True)
+    description                 = models.TextField(blank=True)
     
     def __unicode__(self):
         return self.name
@@ -44,7 +44,7 @@ class Organization(models.Model):
             ('Partnership type(s)', {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
             ('General information', {'fields': ('name', 'long_name', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
             ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'fax',  'contact_person',  'contact_email',  ), }),
-            (None, {'fields': ('organization_description', )}),
+            (None, {'fields': ('description', )}),
         )    
         list_display = ('name', 'long_name', 'website', 'partner_types', )
     

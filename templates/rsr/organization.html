@@ -2,6 +2,10 @@
 
 {% block title %}Akvo RSR - Organization no. {{o.id}}, {{o.name}}{% endblock title %}
 
+{% block breadcrumbs %}
+{{block.super}} &raquo; {{o.name}}
+{% endblock breadcrumbs %}
+
 {% block content %}
 
 {% block page_id %}
@@ -76,10 +80,7 @@
 	</table>
 
 	<hr />
-	<p>Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci 
-	liquisse del do od mod tatis acipsustrud miniamet nibh et alit nonsectet alis enisci blaor sissim doloreriurem qui blandipit non vero eugait 
-	ulputet, si. Vulla feugiat. Feu faccum quis ad dolestrud ex ex eum nonum iliquat aliquipit augait lute dolore dunt pratumsan venibh et acipisl ipit 
-	lumsandre magna adit, quis nulputpat alit aliquatem vulla adiam diatum.</p>
+	<p>{{o.description}}</p>
 
 </div> <!-- .boxbody -->
 

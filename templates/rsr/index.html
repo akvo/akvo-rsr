@@ -23,8 +23,9 @@
 
 {% block outer_leftwing %}
 
-	<h1 class="title" style="float: left; color: #fff; margin-left: 10px;">Our latest projects</h1>
-	<div id="home_flash">TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a></div>
+	<h1 class="title" style="position:relative; z-index:1; top: 35px; left: 0px; color: #fff; margin-left: 10px;">Our latest projects</h1>
+	<div id="home_flash">
+	TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a></div>
 	<script type="text/javascript">
 	
 		var fo = new SWFObject("{{MEDIA_URL}}flash/TiltViewer.swf", "viewer", "980px", "500px", "9.0.28", "#000000");			

@@ -3,7 +3,7 @@ fields = ['session_key', 'session_data', 'expire_date']
 #default item format: "fieldname":("type", "value")
 default = {}
 records = [
-[u'ae2773f479c6d4cf5060ee30b70342ca', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwF1Ljk1YWRjMjZhYTgwNzM2Y2RjODYx\nNmUyMmQyMjU5MjNi\n', '2008-07-11 23:37:56']
+[u'ae2773f479c6d4cf5060ee30b70342ca', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwF1Ljk1YWRjMjZhYTgwNzM2Y2RjODYx\nNmUyMmQyMjU5MjNi\n', '2008-07-15 18:44:15']
 [u'6679abe03eb88707257a2daa199eb7fb', u'gAJ9cQFVCnRlc3Rjb29raWVxAlUGd29ya2VkcQNzLjk1ZDBhMzZmODIzNzM1NzExNDVlZmFmNDA0\nNDgyODU4\n', '2008-07-12 17:48:37']
 [u'6025f47deeb93ed33f21c8e3ea7a0a88', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwR1LmFkNmQ2YWIwZmEyY2IwYzRiYjE3\nMGNmYzE4NzVlZTJk\n', '2008-07-09 00:22:06']
 [u'b7d141cc57cb89803ccfc78205e31c97', u'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k\ncy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwN1LmJiMDExMTMzOGI3NzczOWNlZjhj\nMTQ4YzZlYTk2ZGI4\n', '2008-07-08 22:16:51']

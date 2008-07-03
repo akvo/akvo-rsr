@@ -2,6 +2,10 @@
 
 {% block title %}{{block.super}} - All project updates{% endblock title %}
 
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="/rsr/projects/">Projects</a> &raquo; <a href="/rsr/projects/{{p.id}}/">{{p.name}}</a> &raquo;  All project updates
+{% endblock breadcrumbs %}
+
 {% block page_id %}
 <div id="page_project_updates">
 {% endblock page_id %}

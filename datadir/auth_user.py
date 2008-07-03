@@ -3,7 +3,7 @@ fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'is_
 #default item format: "fieldname":("type", "value")
 default = {}
 records = [
-[1, u'gabriel', u'Gabriel', u'von Heijne', u'gabriel@akvo.org', u'sha1$fd8ee$27694e76d429aa4975fa1514613cd67a43f5e377', True, True, True, '2008-06-27 23:37:56', '2008-06-19 22:46:34']
+[1, u'gabriel', u'Gabriel', u'von Heijne', u'gabriel@akvo.org', u'sha1$fd8ee$27694e76d429aa4975fa1514613cd67a43f5e377', True, True, True, '2008-07-01 18:44:15', '2008-06-19 22:46:34']
 [2, u'thomas', u'Thomas', u'Bjelkeman-Pettersson', u'thomas@akvo.org', u'sha1$52c4c$d913444df086e251bc3b0f267688b4877d8b2607', True, True, False, '2008-06-26 07:09:34', '2008-06-24 22:11:52']
 [3, u'gino', u'Gino', u'Lee', u'gino@akvo.org', u'sha1$9acfd$981c88f55a670435608cac0c360dd54f1de14aea', True, True, False, '2008-06-30 21:29:43', '2008-06-24 22:12:05']
 [4, u'malte', u'Malte', u'Beckmann', u'malte@akvo.org', u'sha1$0d646$74c454ab394a09611034d3d97cbeb625225f1502', True, True, False, '2008-06-30 10:19:23', '2008-06-24 22:12:19']
