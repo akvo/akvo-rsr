@@ -22,7 +22,8 @@ def akvo_at_a_glance(projects):
     status_active   = projects.filter(status__exact='A').count()
     status_onhold   = projects.filter(status__exact='H').count()
     status_complete = projects.filter(status__exact='C').count()
-    mdgs            = sum(projects.values_list('mdg_count', flat=True))
+    mdgs_water       = 4711 #sum(projects.values_list('mdg_count_water', flat=True))
+    mdgs_sanitation  = 4713 #sum(projects.values_list('mdg_count_water', flat=True))
     project_count   = projects.count()
     o = Organization.objects.all()
     fieldpartner_count      = o.filter(field_partner__exact=True).count()
@@ -40,7 +41,8 @@ def akvo_at_a_glance(projects):
         'status_active': status_active,
         'status_onhold': status_onhold,
         'status_complete': status_complete,
-        'mdgs': mdgs,
+        'mdgs_water': mdgs_water,
+        'mdgs_sanitation': mdgs_sanitation,
         'project_count': project_count,
         'fieldpartner_count': fieldpartner_count,
         'supportpartner_count': supportpartner_count,
@@ -112,17 +114,17 @@ def projectlist(request):
     '''
     List of all projects in RSR
     Context:
-    p: list of all projects
+    projects: list of all projects
     stats: the aggregate projects data
     '''    
-    p = Project.objects.all()
+    projects = Project.objects.all()
     try:
         order_by = request.GET['order_by']
-        p = p.order_by(order_by)
+        projects = projects.order_by(order_by)
     except:
         pass
-    stats = akvo_at_a_glance(p)
-    return {'projects': p, 'stats': stats}
+    stats = akvo_at_a_glance(projects)
+    return {'projects': projects, 'stats': stats}
 
 class SigninForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
@@ -259,9 +261,9 @@ def org_activities(organization):
 @render_to('rsr/organization.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organization, pk=org_id)
-    projects, partners = org_activities(o)
-    stats = akvo_at_a_glance(projects)
-    return {'o': o, 'projects': projects, 'partners': partners, 'stats': stats, }
+    org_projects, org_partners = org_activities(o)
+    org_stats = akvo_at_a_glance(org_projects)
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
@@ -300,7 +302,22 @@ def commentform(request, project_id):
 
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
-    return render_to_response('dev/%s.html' % template_name, context_instance=RequestContext(request))
+    dev = {'path': 'dev/'}
+    p = Project.objects.get(pk=1)
+    updates     = Project.objects.get(id=1).projectupdate_set.all().order_by('-time')[:3]
+    comments    = Project.objects.get(id=1).projectcomment_set.all().order_by('-time')[:3]    
+
+    projects = Project.objects.all()
+    stats = akvo_at_a_glance(projects)
+
+    orgz = Organization.objects.all()
+
+    o = Organization.objects.get(pk=1)
+    org_projects, org_partners = org_activities(o)
+    org_stats = akvo_at_a_glance(org_projects)
+    
+    return render_to_response('dev/%s.html' % template_name,
+        {'dev': dev, 'p': p, 'updates': updates, 'comments': comments, 'projects': projects, 'stats': stats, 'orgz': orgz, 'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, }, context_instance=RequestContext(request))
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204

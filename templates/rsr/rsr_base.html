@@ -1,7 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-
 <head>
 
 <title>{% block title %}Akvo RSR - Really simple reporting{% endblock %}</title>
@@ -114,8 +113,7 @@
 		<li><a href="/rsr/"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>Home</a></li>
 		<li><a href="#">Akvopedia</a></li>
 		<li><a href="/rsr/projects/"{% ifequal request.path "/rsr/projects/" %} class="active"{% endifequal %}>Projects</a></li>
-		<li><a href="#">Find support</a></li>
-		<li><a href="#">Give support</a></li>
+		<li><a href="#">Get involved</a></li>
 		<li><a href="#">Blog</a></li>
 		<li><a href="#">About</a></li>
 		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="#">My account</a></li>
@@ -126,6 +124,9 @@
 <div id="breadcrumbs">
 	{% block breadcrumbs %}<a href="/rsr/">Akvo RSR home</a>{% endblock breadcrumbs %}
 </div>
+
+{% block page_id %}
+{% endblock page_id %}
 
 {% block content %}
 <h1>Akvo RSR - Really simple reporting!</h1>

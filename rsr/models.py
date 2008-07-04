@@ -8,11 +8,12 @@ from django.utils.safestring import mark_safe
 from datetime import date
 
 class Organization(models.Model):
-    #PARNER_TYPES = (
-    #    ('F', 'Field partner'),
-    #    ('S', 'Sponsor parner'),
-    #    ('M', 'Funding parner'),
-    #)
+    ORG_TYPES = (
+        ('N', 'NGO'),
+        ('G', 'Governmental'),
+        ('C', 'Commercial'),
+        ('K', 'Knowledge institution'),
+    )
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField()
     support_partner             = models.BooleanField()
@@ -20,6 +21,7 @@ class Organization(models.Model):
 
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
+    organization_type           = models.CharField(max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
@@ -109,12 +111,14 @@ class Project(models.Model):
     #Project target benchmarks
     water_systems               = models.IntegerField(default=0)
     sanitation_systems          = models.IntegerField(default=0)
+    hygiene_facilities          = models.IntegerField(default=0)
     improved_water              = models.IntegerField(default=0)
     improved_water_years        = models.IntegerField(default=0)
     improved_sanitation         = models.IntegerField(default=0)
     improved_sanitation_years   = models.IntegerField(default=0)
     trainees                    = models.IntegerField(default=0)
-    mdg_count                   = models.IntegerField(default=0)
+    mdg_count_water             = models.IntegerField(default=0)
+    mdg_count_sanitation        = models.IntegerField(default=0)
 
     location_1                  = models.CharField(blank=True, max_length=50)
     location_2                  = models.CharField(blank=True, max_length=50)
@@ -253,6 +257,11 @@ PHOTO_LOCATIONS = (
     ('E', 'At the end of the update'),
 )
 class ProjectUpdate(models.Model):
+    UPDATE_METHODS= (
+        ('W', 'web'),
+        ('E', 'e-mail'),
+        ('S', 'SMS'),
+    )
     project         = models.ForeignKey(Project)
     user            = models.ForeignKey(User)
     title           = models.CharField(max_length=50)
@@ -262,6 +271,7 @@ class ProjectUpdate(models.Model):
     photo_location  = models.CharField(max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(blank=True, max_length=75)
     photo_credit    = models.CharField(blank=True, max_length=25)
+    update_method   = models.CharField(max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField()
     
     class Admin:

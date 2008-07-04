@@ -242,7 +242,7 @@
             <a href="#" class="rss">Subscribe via RSS</a>
             {% for u in updates %}
                 <h2>{{u.title}}</h2>
-                <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a></p>
+                <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.update_method}}</p>
                 <p><span class="lightx1">Status:</span> {{u.show_status}}</p>
                 <br />
                 {% if u.text %}
@@ -250,8 +250,8 @@
                 {% endif %}
                 {% if u.photo %}
                     <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 240px; margin: 20px" />			
+                    <p class="small lightx1">{{u.photo_caption}}</p>
                 {% endif %}
-                <p class="small lightx1">{{u.photo_caption}}</p>
                 <hr />            
             {% endfor %}
             <p style="text-align:right;"><a href="updates">Earlier updates</a></p>

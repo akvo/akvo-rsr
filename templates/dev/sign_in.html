@@ -1,0 +1,83 @@
+{% extends "dev/rsr_base.html" %}
+
+{% block title %}Akvo RSR - Sign in{% endblock title %}
+
+{% block header %}
+<div id="header">
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+</div> <!-- #header -->
+{% endblock header %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; Sign in
+{% endblock breadcrumbs %}
+
+{% block page_id %}
+<div id="page_organisation">
+{% endblock page_id %}
+
+{% block content %}
+
+<div class="boxbody" style="clear:left">
+<h1 class="section">Please sign in</h1>
+
+{% if form.has_errors %}
+    <div class="boxbody" style="background-color: orange; margin: 20px;">
+    <h1 class="section">Error when signing in</h1>
+    <p>We have a problem:</p>
+    <ul class="indented">
+        {{form.as_ul}}
+    </ul>
+    </div> <!-- .boxbody -->
+{% endif %}
+
+<div class="boxbody" style="background-color: #D0FFFF; width: 600px; margin: 20px; float: left;">
+    <fieldset>
+        <h1 class="section">I have an online account</h1>
+        <form method="post" action=".">
+            <table id="login" style="padding: 20px;">
+            <tr>            
+                <td><label for="id_username">Enter username</label></td>
+                <td>{{ form.username }}</td>
+                <!-- <input type="text" name="username" value="" class="input" size="25" style="margin: 0 20px" /> -->
+                <td><a href="#">I forgot my username</a></td>
+            </tr>
+            <tr>
+                <td><label for="id_password">Enter password</label></td>
+                <td>{{ form.password }}</td>
+                <!-- <input type="password" name="password" value="" class="input" size="25" style="margin: 0 20px" /> -->
+                <td><a href="#">I forgot my password</a></td>
+            </tr>
+            </table>
+            <hr />
+            <div style="text-align: center">
+                <a href="#" style="margin-right: 20px;">Cancel</a>
+                <button type="submit" name="Login" class="login">Login</button>
+            </div>
+           <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+    </fieldset>
+</div> <!-- .boxbody -->
+
+<div class="boxbody lightx2" style="border: none; margin: 20px 20px 20px 630px; padding: 10px; ">
+<h1 class="section">I don't have an online account</h1>
+<p style="margin: 10px 0">By registering with Akvo, you'll be able to:</p>
+
+<ul class="indented">
+<li>Edit and create Akvopedia articles</li>
+<li>Leave comments</li>
+<li>Manage your own project or organization pages</li>
+</ul>
+<p style="margin: 10px 0">And much more! <a href="#">Learn about</a> how Akvo works.</p>
+<div style="text-align: center"><button type="submit" name="Login" class="register">Register</button></div>
+</div> <!-- style .boxbody -->
+
+<div style="clear:left"></div>
+
+
+
+</div> <!-- .boxbody -->
+
+</div> <!-- page id -->
+
+{% endblock %}

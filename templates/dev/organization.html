@@ -1,0 +1,129 @@
+{% extends "dev/rsr_base.html" %}
+
+{% block title %}Akvo RSR - Organization no. {{o.id}}, {{o.name}}{% endblock title %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; {{o.name}}
+{% endblock breadcrumbs %}
+
+{% block content %}
+
+{% block page_id %}
+<div id="page_organisation">
+{% endblock page_id %}
+
+<div id="outer_leftwing">
+	<div class="boxhead">
+		<div style="float: right; width: 30%"><a class="actionbutton" href="#" onclick="this.blur();"><span>Edit organization</span></a></div>
+
+		<p style="clear: right; float: right; width: 30%; text-align: right; margin-top: 5px;"><a href="#">Notify me of changes via email</a></p>
+		<h1 class="section">{{o.name}}</h1>
+		{% if o.long_name %}
+		<p>{{o.long_name}}</p>
+		{% else %}
+		<p>&nbsp;</p>
+		{% endif %}
+	</div> <!-- .boxhead -->
+
+<div class="boxbody">
+
+	<table id="project_showcase">
+
+	<tr>
+
+	<td style="border-right: 1px solid #ccc; width: 33%">
+		{% if o.logo %}
+			<img src="{{MEDIA_URL}}{{o.logo}}" alt="Logo of {{o.name}}" style="margin: 10px 0;" />
+		{% endif %}
+		<h2 class="lightx2">Activities</h2>
+		<p>Activity types</p>
+		<h2 class="lightx2">Type</h2>
+		<p>Organization type</p>
+	
+		<h2 class="lightx2">Scope</h2>
+		<p>National</p>
+	
+		{% if o.url %}
+			<h2 class="lightx2">Website</h2>
+			<p><a href="{{o.url}}">{{o.url}}</a></p>
+		{% endif %}
+		{% if o.akvopedia_entry %}
+			<h2 class="lightx2">Akvopedia entry</h2>
+			<p>{{o.akvopedia_entry}}</p>
+		{% endif %}
+
+	</td>
+
+	<td style="border-right: 1px solid #ccc; width: 33%">
+	<h2 class="lightx2">Location</h2>
+	<p>{{o.address_1}}<br />{{o.address_2}}<br />{{o.postcode}}<br />{{o.city}}</p>
+	<!--<img src="/productions/akvo.org/2008_06_12a/images/map.png" alt="type" style="margin: 20px 0;" />-->
+
+	</td>
+
+	<td style="width: 33%">
+	<h2 class="lightx2">Contact</h2>
+	<p>{{o.contact_person}}</p>
+	<h2 class="lightx2">Email</h2>
+	<p>{{o.contact_email}}</p>
+
+	<h2 class="lightx2">Phone</h2>
+	<p>{{o.phone}}</p>
+	<h2 class="lightx2">Mobile</h2>
+	<p>12345678-9</p>
+	<h2 class="lightx2">Fax</h2>
+	<p>{{o.fax}}</p>
+
+	</td>	
+
+	</tr>
+	</table>
+
+	<hr />
+	<p>{{o.description}}</p>
+
+</div> <!-- .boxbody -->
+
+</div> <!-- #outer_leftwing -->
+
+<div id="outer_rightwing">
+
+<div class="boxhead">
+<h1>Organisation Activities</h1>
+</div> <!-- .boxhead -->
+
+<div class="boxbody">
+<table>
+	<tr><th colspan="2"><h2>Projects</h2></th></tr>
+	<tr><td style="width: 50%;">{{stats.status_active}}</td><td>Active</td></tr>
+	<tr><td>{{stats.status_onhold}}</td><td>On hold</td></tr>
+	<tr><td>{{stats.status_complete}}</td><td>Complete</td></tr>
+	<tr class="bold"><td>{{stats.project_count}}</td><td>Total projects</td></tr>
+	<tr class="bold"><td>{{stats.mdgs_water}}</td><td>water MDGs</td></tr>
+	<tr class="hr bold"><td>{{stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
+	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{stats.project_count}} projects)</span></h2></th></tr>
+	<tr style="color: green"><td>&#8364; {{stats.funding_pledged}}</td><td>Pledged</td></tr>
+	<tr class="hr" style="color: red"><td>&#8364; {{stats.funding_needed}}</td><td>Still needed</td></tr>		
+</table>
+
+<h2>Project partners</h2>
+{% for partner in partners %}
+<p><a href="../../organization/{{partner.id}}">{{partner.name}}</a></p>
+{% endfor %}
+</div> <!-- .boxbody -->
+
+<div class="boxhead">
+<h1>Current projects</h1>
+</div> <!-- .boxhead -->
+
+<div class="boxbody">
+{% for project in projects %}
+<p><a href="../../project/{{project.id}}/">{{project.name}}</a></p>
+{% endfor %}
+
+</div> <!-- .boxbody -->
+
+</div> <!-- #outer_rightwing -->
+
+</div> <!-- page id -->
+{% endblock content %}

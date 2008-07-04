@@ -1,0 +1,118 @@
+{% extends "dev/rsr_base.html" %}
+
+{% block title %}Akvo RSR - Project no. {{p.id}}, {{p.name}}{% endblock title %}
+
+{% block content %}
+
+{% block page_id %}
+<div id="page_project">
+{% endblock page_id %}
+
+{% block outer_leftwing %}
+<div id="outer_leftwing">
+	<h1>I'm left!</h1>
+</div> <!-- #outer_leftwing -->
+{% endblock outer_leftwing %}
+
+{% block outer_rightwing %}
+<div id="outer_rightwing">
+
+	<div class="boxhead">
+		<a class="actionbutton" href="#" onclick="this.blur();"><span>Fund project</span></a>
+		<h1>Funding</h1>
+
+		<p><a href="#">Notify me of changes via email</a></p>
+	</div> <!-- .boxhead -->
+
+	<div id="project_funding" class="boxbody">
+		<div style="border: 1px solid #999; margin: 0 20px 10px 20px"><div style="width: 206px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 206 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>
+        <p>{{p.funding.date_request_posted}} Request posted</p>
+        <p>{{p.funding.date_started}} Funding started</p>
+		{% if p.funding.is_complete %}
+    		<p>Ongoing Funding completed</p>
+		{% endif %}
+		<p><b>Total: <span style="margin-left: 10px">{{p.funding.total}} {{p.funding.currency}}</span></b></p>
+		<p style="text-align: right"><a href="#">View details</a></p>
+		<hr />
+		<p style="margin: 10px 0 10px 0;">
+        {% ifequal p.fundingpartner_set.count 1 %}
+            <b>Current Funder</b>
+        {% else %}
+            <b>Current Funders</b>
+        {% endifequal %}
+        </p>
+    
+ 		{% for funder in p.fundingpartner_set.all %}
+			{% if not forloop.first %}
+				<hr />
+			{% endif %}
+			{% if funder.funding_organization.logo %}
+				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+			{% endif %}	
+			<p><a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a></p>
+			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
+			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
+		{% endfor %}    
+	</div> <!-- #project_funding & .boxbody -->
+
+	<div class="boxhead">
+
+		<a class="actionbutton" href="#" onclick="this.blur();"><span>Become a partner</span></a>						
+		<h1>Partners</h1>
+	</div> <!-- .boxhead -->
+
+	<div id="project_partners" class="boxbody">
+        {% ifequal p.fieldpartner_set.count 1 %}
+            <h2>Field partner</h2>
+        {% else %}
+            <h2>Field partners</h2>
+        {% endifequal %}
+			{% for fp in p.fieldpartner_set.all %}
+				{% if not forloop.first %}
+					<hr />
+				{% endif %}
+				{% if fp.field_organization.logo %}
+					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				{% endif %}	
+				<p><a href="../../organization/{{fp.field_organization.id}}/">{{fp.field_organization.name}}</a></p>
+				<p>{{fp.field_organization.city}}, {{fp.field_organization.country}}</p>
+		{% endfor %}
+		{% if p.supportpartner_set.count %}
+			{% if p.fieldpartner_set.count %}
+				<hr />
+			{% endif %}
+			{% ifequal p.supportpartner_set.count 1 %}
+				<h2>Support partner</h2>
+			{% else %}
+				<h2>Support partners</h2>
+			{% endifequal %}
+			{% for sp in p.supportpartner_set.all %}
+				{% if not forloop.first %}
+					<hr />
+				{% endif %}
+				{% if sp.support_organization.logo %}
+					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				{% endif %}	
+				<p><a href="../../organization/{{sp.support_organization.id}}/">{{sp.support_organization.name}}</a></p>
+				<p>{{sp.support_organization.city}}, {{sp.support_organization.country}}</p>
+			{% endfor %}
+		{% endif %}        
+
+	</div> <!-- #project_partners & .boxbody -->
+
+	<div class="boxhead">
+		<h1>Page tools</h1>
+	</div> <!-- .boxhead -->
+
+	<div id="project_pagetools" class="boxbody">
+		<p><a href="#">Printable version</a></p>
+
+		<p><a href="#">Permalink to this project</a></p>
+		<p><a href="#">Email this project's owner</a></p>
+	</div> <!-- #project_pagetools & .box -->
+
+</div> <!-- #outer_rightwing -->
+{% endblock outer_rightwing %}
+
+</div> <!-- page id -->
+{% endblock content %}
