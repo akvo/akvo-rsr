@@ -1,4 +1,4 @@
-from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, PHOTO_LOCATIONS, STATUSES
+from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 
 from django import newforms as forms
 from django.http import HttpResponse, HttpResponseRedirect
@@ -14,6 +14,24 @@ from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 import feedparser
 
+def mdgs_water_calc(projects):
+    '''
+    Calculate the water MDGs for the projects
+    '''
+    #find the projects with at least 7 years of improved water
+    enough_years = projects.filter(improved_water_years__gte=7)
+    #add up all improved water for the filtered projects
+    return sum(enough_years.values_list('improved_water', flat=True))
+
+def mdgs_sanitation_calc(projects):
+    '''
+    Calculate the sanitation MDGs for the projects
+    '''
+    #find the projects with at least 7 years of improved sanitation
+    enough_years = projects.filter(improved_sanitation_years__gte=7)
+    #add up all improved sanitation for the filtered projects
+    return sum(enough_years.values_list('improved_sanitation', flat=True))
+
 def akvo_at_a_glance(projects):
     '''
     Create aggregate data about a collection of projects in a queryset.
@@ -22,8 +40,8 @@ def akvo_at_a_glance(projects):
     status_active   = projects.filter(status__exact='A').count()
     status_onhold   = projects.filter(status__exact='H').count()
     status_complete = projects.filter(status__exact='C').count()
-    mdgs_water       = 4711 #sum(projects.values_list('mdg_count_water', flat=True))
-    mdgs_sanitation  = 4713 #sum(projects.values_list('mdg_count_water', flat=True))
+    mdgs_water       = mdgs_water_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
+    mdgs_sanitation  = mdgs_sanitation_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
     project_count   = projects.count()
     o = Organization.objects.all()
     fieldpartner_count      = o.filter(field_partner__exact=True).count()
@@ -279,7 +297,10 @@ def projectmain(request, project_id):
     updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
-    return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
+    #return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
+    return render_to_response('rsr/project_main.html',
+        {'p': p, 'updates': updates, 'comments': comments, 'form': form }, context_instance=RequestContext(request))
+
     
 @login_required()
 def commentform(request, project_id):

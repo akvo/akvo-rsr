@@ -95,19 +95,19 @@
 <div class="boxbody">
 <table>
 	<tr><th colspan="2"><h2>Projects</h2></th></tr>
-	<tr><td style="width: 50%;">{{stats.status_active}}</td><td>Active</td></tr>
-	<tr><td>{{stats.status_onhold}}</td><td>On hold</td></tr>
-	<tr><td>{{stats.status_complete}}</td><td>Complete</td></tr>
-	<tr class="bold"><td>{{stats.project_count}}</td><td>Total projects</td></tr>
-	<tr class="bold"><td>{{stats.mdgs_water}}</td><td>water MDGs</td></tr>
-	<tr class="hr bold"><td>{{stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
-	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{stats.project_count}} projects)</span></h2></th></tr>
-	<tr style="color: green"><td>&#8364; {{stats.funding_pledged}}</td><td>Pledged</td></tr>
-	<tr class="hr" style="color: red"><td>&#8364; {{stats.funding_needed}}</td><td>Still needed</td></tr>		
+	<tr><td style="width: 50%;">{{org_stats.status_active}}</td><td>Active</td></tr>
+	<tr><td>{{org_stats.status_onhold}}</td><td>On hold</td></tr>
+	<tr><td>{{org_stats.status_complete}}</td><td>Complete</td></tr>
+	<tr class="bold"><td>{{org_stats.project_count}}</td><td>Total projects</td></tr>
+	<tr class="bold"><td>{{org_stats.mdgs_water}}</td><td>water MDGs</td></tr>
+	<tr class="hr bold"><td>{{org_stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
+	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{org_stats.project_count}} projects)</span></h2></th></tr>
+	<tr style="color: green"><td>&#8364; {{org_stats.funding_pledged}}</td><td>Pledged</td></tr>
+	<tr class="hr" style="color: red"><td>&#8364; {{org_stats.funding_needed}}</td><td>Still needed</td></tr>		
 </table>
 
 <h2>Project partners</h2>
-{% for partner in partners %}
+{% for partner in org_partners %}
 <p><a href="../../organization/{{partner.id}}">{{partner.name}}</a></p>
 {% endfor %}
 </div> <!-- .boxbody -->
@@ -117,7 +117,7 @@
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
-{% for project in projects %}
+{% for project in org_projects %}
 <p><a href="../../project/{{project.id}}/">{{project.name}}</a></p>
 {% endfor %}
 

@@ -31,7 +31,7 @@
             {% endif %}
             <a name={{u.id}} />
             <h2>{{u.title}}</h2>
-            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a></p>
+            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
             <p><span class="lightx1">Status:</span> {{u.show_status}}</p>
             <br />
             {% if u.text %}

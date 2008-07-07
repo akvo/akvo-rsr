@@ -1,43 +1,6 @@
-/* body-level
+
+/* box-level
 -------------------------------------------------------------------------------------- */
-
-body
-{
-font-family: Arial, Verdana, Helvetica, Sans-serif;     
-font-size: 100%;
-line-height: 1em;
-color: #333;       
-background-color: #fff;
-padding: 20px;
-}
-
-/* wrapper-level
--------------------------------------------------------------------------------------- */
-
-#wrapper
-{ 
-width: 980px;
-font-size: 0.875em;
-}
-
-/* structural-float-level
--------------------------------------------------------------------------------------- */
-
-#wrapper
-{
-font-size: 0.8em;
-}
-
-#header
-{
-text-align: right;
-}
-
-#navigation
-{
-padding-top: 20px;
-clear: left;
-}
 
 #outer_leftwing
 {
@@ -51,74 +14,9 @@ float: right;
 width: 250px;
 }
 
-#footer
+#home_flash_box
 {
-clear: both;
-color: #666;
-margin: 20px 0;
-border-top: 1px solid #ccc;
-padding-top: 10px;
-}
-
-/* global-navigation
--------------------------------------------------------------------------------------- */
-
-#navigation ul
-{
-margin-bottom: 8px;
-color: #fff;
-float: left;
-width: 100%;
-background-color: #dbdbdb;
-font-family: arial, helvetica, sans-serif;
-border-bottom: 2px solid #666;
-}
-
-#navigation ul li
-{
-display: inline;
-}
-
-#navigation ul li a
-{
-padding: 0.5em 1.2em;
-color: #333;
-text-decoration: none;
-float: left;
-border-right: 1px solid #fff;
-font-weight: bold;
-}
-
-#navigation ul li a:hover
-{
-background-color: #ccc;
-}
-
-#navigation ul li a.active
-{ 
-background-color: #666;
-color: #ededed;
-}
-
-/* breadcrumbs
--------------------------------------------------------------------------------------- */
-#breadcrumbs {
-    margin-bottom: 8px;
-    margin-left: 10px;
-}
-
-/* box-level
--------------------------------------------------------------------------------------- */
-
-#header_logo 
-{
-float: left;
-}
-
-#home_flash
-{
-/*border-top: 20px solid #fff;
-margin: 20px 0;*/
+margin-bottom:  20px;
 background-color: #009DE4;
 }
 
@@ -277,10 +175,10 @@ margin: 20px;
 -------------------------------------------------------------------------------------- */
 
 #panel {
-	display: none;
-	background-color: #FEFFCD;
-	padding: 10px;
-	margin: -20px 0 20px 0
+display: none;
+background-color: #FEFFCD;
+padding: 10px;
+margin: -20px 0 20px 0
 }
 
 /* Tables
@@ -342,15 +240,6 @@ table#login td
 padding: 10px 0;
 }
 
-/* Links
--------------------------------------------------------------------------------------- */
-
-a:link, a:visited, a:active
-{
-color: #1D7FC6;
-text-decoration: none;
-}
-
 /* Lists
 -------------------------------------------------------------------------------------- */
 
@@ -372,52 +261,10 @@ ul.indented li
 padding-left: 10px;
 }
 
-/* Form elements
--------------------------------------------------------------------------------------- */
-
-.input {
-font-size: 0.85em; 
-height: 1.2em;
-padding: 0.1em 0.3em; 
-font-family: Verdana, Arial, Helvetica, sans-serif; 
-background-color: #fff; 
-color: #333;
-border: 1px solid #999;
-margin: 10px;
-vertical-align:top; 
-padding-top: 3px;
-display: block;
-}
-
-.textarea {
-font-size: 0.85em; 
-padding: 0.1em 0.3em; 
-font-family: Verdana, Arial, Helvetica, sans-serif; 
-background-color: #fff; 
-color: #333;
-border: 1px solid #999;
-margin: 0 0 10px 0;
-vertical-align:top; 
-padding-top: 3px;
-display: block;
-}
-
-.radio {
-margin-left: 15px;
-margin-right: 15px;
-}
-
-/* Buttons
+/* button (styled links)
 -------------------------------------------------------------------------------------- 
 Credit to http://www.oscaralexander.com/tutorials/how-to-make-sexy-buttons-with-css.html
 */
-
-button.login
-{
-cursor: pointer;
-}
-
-/* Legacy buttons */
 
 .clear { /* generic container (i.e. div) for floating buttons */
     overflow: hidden;
@@ -426,7 +273,6 @@ cursor: pointer;
 
 a.actionbutton {
     float: right;
-    background: transparent url('/rsr/media/img/bg_button_a.png') no-repeat scroll top right;
     color: #444;
     display: block;
     font: normal 12px arial, sans-serif;
@@ -438,7 +284,6 @@ a.actionbutton {
 }
 
 a.actionbutton span {
-    background: transparent url('/rsr/media/img/bg_button_span.png') no-repeat;
     display: block;
     line-height: 14px;
     padding: 5px 0 5px 18px;
@@ -454,6 +299,15 @@ a.actionbutton:active span {
     background-position: bottom left;
     padding: 6px 0 4px 18px; /* push text down 1px */
 }
+
+.ab_white 
+{	background: transparent url('/rsr/media/img/bg_button_a_white.png') no-repeat scroll top right;}
+.ab_white span
+{	background: transparent url('/rsr/media/img/bg_button_span_white.png') no-repeat;}
+.ab_grey 
+{	background: transparent url('/rsr/media/img/bg_button_a_grey.png') no-repeat scroll top right;}
+.ab_grey span
+{	background: transparent url('/rsr/media/img/bg_button_span_grey.png') no-repeat;}
 
 .bold { font-weight: bold; }
 .bold td { font-weight: bold; }

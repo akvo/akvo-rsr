@@ -8,7 +8,8 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}{{dev.path}}css/reset.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}{{dev.path}}css/style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}{{dev.path}}css/global.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}{{dev.path}}css/style_rsr.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}{{dev.path}}css/tabs.css" media="screen" />
 
 <!--[if lt IE 7]>
@@ -22,52 +23,6 @@
 <script type="text/javascript">
 
 	$(function(){
-		
-	/*		$('.boxhead').corner({
-			  tl: { radius: 5 },
-			  tr: { radius: 5 },
-			  bl: { radius: false },
-			  br: { radius: false },
-			  antiAlias: true,
-			  autoPad: false,
-			  validTags: ["div"] });
-
-			$('.boxbody').corner({
-			  tl: { radius: 0 },
-			  tr: { radius: 0 },
-			  bl: { radius: 5 },
-			  br: { radius: 5 },
-			  antiAlias: true,
-			  autoPad: true,
-			  validTags: ["div"] });
-
-			$('.topcorners').corner({
-			  tl: { radius: 10 },
-			  tr: { radius: 10 },
-			  bl: { radius: false },
-			  br: { radius: false },
-			  antiAlias: true,
-			  autoPad: false,
-			  validTags: ["li"] });
-			
-			$('.c').corner();
-			$('.c2').corner({
-			  tl: { radius: 16 },
-			  tr: { radius: 16 },
-			  bl: { radius: 16 },
-			  br: { radius: 16 },
-			  antiAlias: true,
-			  autoPad: true,
-			  validTags: ["div"] });
-			$('.c3').corner({
-			  tl: { radius: 16 },
-			  tr: false,
-			  bl: false,
-			  br: { radius: 16 },
-			  antiAlias: true,
-			  autoPad: true,
-			  validTags: ["div"] }); */
-    
 
 	$('#container-1 > ul').tabs();
 	});
@@ -91,19 +46,18 @@
 
 {% block header %}
 <div id="header">
-	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
 	{% if not user.username %}
-	<p>
-        <a class="actionbutton" href="/rsr/signin/?next={{request.path}}" onclick="this.blur();">
+        <a class="actionbutton ab_white" href="/rsr/signin/?next={{request.path}}" onclick="this.blur();">
             <span>Sign in</span>
         </a>
-    </p>
 	{% else %}
-	<p>Signed in as: {{user.username}}
-        <a class="actionbutton" href="/rsr/signout/" onclick="this.blur();">
+	Signed in as: {{user.username}}
+        <a class="actionbutton ab_white" href="/rsr/signout/" onclick="this.blur();">
             <span>Sign out</span>
         </a>
-    </p>
+    <img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+
+
 	{% endif %}
 </div> <!-- #header -->
 {% endblock header %}
@@ -113,8 +67,7 @@
 		<li><a href="/rsr/"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>Home</a></li>
 		<li><a href="#">Akvopedia</a></li>
 		<li><a href="/rsr/projects/"{% ifequal request.path "/rsr/projects/" %} class="active"{% endifequal %}>Projects</a></li>
-		<li><a href="#">Find support</a></li>
-		<li><a href="#">Give support</a></li>
+		<li><a href="#">Get involved</a></li>
 		<li><a href="#">Blog</a></li>
 		<li><a href="#">About</a></li>
 		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="#">My account</a></li>
@@ -135,8 +88,7 @@
 
 {% block footer %}
 <div id="footer">
-		<p>Site content under <a href="#">Open License</a> | <a href="#">Terms of use</a> | <a href="#">Privacy policy</a> | 
-		Prototype funding by <a href="#">Partners voor Water and others</a><span style="float:right"><a href="#">Contact us</a></span></p>
+<span style="float:right"><a href="#">Contact us</a></span><p>Site content under <a href="#">Open License</a> | <a href="#">Terms of use</a> | <a href="#">Privacy policy</a> | Prototype funding by <a href="#">Partners voor Water and others</a></p>
 </div> <!-- #footer -->
 {% endblock footer %}
 

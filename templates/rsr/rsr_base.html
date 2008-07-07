@@ -8,7 +8,8 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style_rsr.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/tabs.css" media="screen" />
 
 <!--[if lt IE 7]>
@@ -21,53 +22,7 @@
 
 <script type="text/javascript">
 
-	$(function(){
-		
-	/*		$('.boxhead').corner({
-			  tl: { radius: 5 },
-			  tr: { radius: 5 },
-			  bl: { radius: false },
-			  br: { radius: false },
-			  antiAlias: true,
-			  autoPad: false,
-			  validTags: ["div"] });
-
-			$('.boxbody').corner({
-			  tl: { radius: 0 },
-			  tr: { radius: 0 },
-			  bl: { radius: 5 },
-			  br: { radius: 5 },
-			  antiAlias: true,
-			  autoPad: true,
-			  validTags: ["div"] });
-
-			$('.topcorners').corner({
-			  tl: { radius: 10 },
-			  tr: { radius: 10 },
-			  bl: { radius: false },
-			  br: { radius: false },
-			  antiAlias: true,
-			  autoPad: false,
-			  validTags: ["li"] });
-			
-			$('.c').corner();
-			$('.c2').corner({
-			  tl: { radius: 16 },
-			  tr: { radius: 16 },
-			  bl: { radius: 16 },
-			  br: { radius: 16 },
-			  antiAlias: true,
-			  autoPad: true,
-			  validTags: ["div"] });
-			$('.c3').corner({
-			  tl: { radius: 16 },
-			  tr: false,
-			  bl: false,
-			  br: { radius: 16 },
-			  antiAlias: true,
-			  autoPad: true,
-			  validTags: ["div"] }); */
-    
+	$(function(){    
 
 	$('#container-1 > ul').tabs();
 	});
@@ -93,7 +48,6 @@
 <div id="header">
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
 	{% if not user.username %}
-	<p>
         <a class="actionbutton" href="/rsr/signin/?next={{request.path}}" onclick="this.blur();">
             <span>Sign in</span>
         </a>
@@ -103,7 +57,6 @@
         <a class="actionbutton" href="/rsr/signout/" onclick="this.blur();">
             <span>Sign out</span>
         </a>
-    </p>
 	{% endif %}
 </div> <!-- #header -->
 {% endblock header %}

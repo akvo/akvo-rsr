@@ -117,8 +117,8 @@ class Project(models.Model):
     improved_sanitation         = models.IntegerField(default=0)
     improved_sanitation_years   = models.IntegerField(default=0)
     trainees                    = models.IntegerField(default=0)
-    mdg_count_water             = models.IntegerField(default=0)
-    mdg_count_sanitation        = models.IntegerField(default=0)
+    #mdg_count_water             = models.IntegerField(default=0)
+    #mdg_count_sanitation        = models.IntegerField(default=0)
 
     location_1                  = models.CharField(blank=True, max_length=50)
     location_2                  = models.CharField(blank=True, max_length=50)
@@ -165,8 +165,8 @@ class Project(models.Model):
                 'fields': ('goals_summary', 'goal_1', 'goal_2', 'goal_3', )
             }),
             ('Project target benchmarks', {
-                'fields': ('water_systems', 'sanitation_systems', ('improved_water', 
-                'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', 'mdg_count', )
+                'fields': ('water_systems', 'sanitation_systems', 'hygiene_facilities', ('improved_water', 
+                'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
             }),
             ('Project info details', {
                 'fields': ('current_status_detail', 'project_plan_detail', 'sustainability', 'context',), #'classes': 'collapse'
@@ -256,12 +256,15 @@ PHOTO_LOCATIONS = (
     ('B', 'At the beginning of the update'),
     ('E', 'At the end of the update'),
 )
+UPDATE_METHODS = (
+    ('W', 'web'),
+    ('E', 'e-mail'),
+    ('S', 'SMS'),
+)
+
+UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
+
 class ProjectUpdate(models.Model):
-    UPDATE_METHODS= (
-        ('W', 'web'),
-        ('E', 'e-mail'),
-        ('S', 'SMS'),
-    )
     project         = models.ForeignKey(Project)
     user            = models.ForeignKey(User)
     title           = models.CharField(max_length=50)
@@ -282,9 +285,9 @@ class ProjectUpdate(models.Model):
         return '<img src="%s" />' % (self.get_image_url(),)
     img.allow_tags = True
     
-    def show_status(self):
-        "Show the current project status"
-        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
+    def show_update_method(self):
+        "Show the update method for this update"
+        return UPDATE_METHODS_DICT[self.update_method]
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project)

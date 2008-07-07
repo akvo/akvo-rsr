@@ -1,0 +1,148 @@
+/* body-level
+-------------------------------------------------------------------------------------- */
+
+body
+{
+font-family: Arial, Verdana, Helvetica, Sans-serif;     
+font-size: 100%;
+line-height: 1em;
+color: #333;       
+background-color: #fff;
+padding: 20px;
+}
+
+/* wrapper-level
+-------------------------------------------------------------------------------------- */
+
+#wrapper
+{ 
+width: 980px;
+font-size: 0.8em;
+}
+
+/* structural-float-level
+-------------------------------------------------------------------------------------- */
+
+#header
+{
+text-align: right;
+}
+
+#navigation
+{
+padding-top: 20px;
+clear: left;
+}
+
+#breadcrumbs
+{
+clear: left;
+margin-bottom: 5px;
+padding: 5px 30px;
+}
+
+#content
+{
+margin-bottom: 20px;
+}
+
+#footer
+{
+clear: both;
+color: #666;
+margin-bottom: 10px;
+border-top: 1px solid #ccc;
+padding-top: 10px;
+}
+
+/* header
+-------------------------------------------------------------------------------------- */
+
+#header_logo 
+{
+float: left;
+}
+
+/* global-navigation
+-------------------------------------------------------------------------------------- */
+
+#navigation ul
+{
+margin-bottom: 5px;
+color: #fff;
+float: left;
+width: 100%;
+background-color: #dbdbdb;
+font-family: arial, helvetica, sans-serif;
+border-bottom: 2px solid #666;
+}
+
+#navigation ul li
+{
+display: inline;
+}
+
+#navigation ul li a
+{
+padding: 0.5em 1.2em;
+color: #333;
+text-decoration: none;
+float: left;
+border-right: 1px solid #fff;
+font-weight: bold;
+}
+
+#navigation ul li a:hover
+{
+background-color: #ccc;
+}
+
+#navigation ul li a.active
+{ 
+background-color: #666;
+color: #ededed;
+}
+
+/* Links
+-------------------------------------------------------------------------------------- */
+
+a:link, a:visited, a:active
+{
+color: #1D7FC6;
+text-decoration: none;
+}
+
+/* Form elements
+-------------------------------------------------------------------------------------- */
+
+.input {
+font-size: 0.85em; 
+height: 1.2em;
+padding: 0.1em 0.3em; 
+font-family: Verdana, Arial, Helvetica, sans-serif; 
+background-color: #fff; 
+color: #333;
+border: 1px solid #999;
+margin: 10px;
+vertical-align:top; 
+padding-top: 3px;
+display: block;
+}
+
+.textarea {
+font-size: 0.85em; 
+padding: 0.1em 0.3em; 
+font-family: Verdana, Arial, Helvetica, sans-serif; 
+background-color: #fff; 
+color: #333;
+border: 1px solid #999;
+margin: 0 0 10px 0;
+vertical-align:top; 
+padding-top: 3px;
+display: block;
+}
+
+.radio {
+margin-left: 15px;
+margin-right: 15px;
+}

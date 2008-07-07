@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from akvo.rsr.models import Organization, Project
+#   from akvo.rsr.models import Organization, Project
 
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
