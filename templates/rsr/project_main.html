@@ -6,17 +6,16 @@
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="/rsr/projects/">Project listing</a> &raquo; {{p.name}}
+{{block.super}} &raquo; <a href="/rsr/projects/all/">Project listing</a> &raquo; {{p.name}}
 {% endblock breadcrumbs %}
 
 {% block outer_leftwing %}
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
-		<h1 class="title">{{p.name}}</h1>
+		<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
+		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
-
 	</div> <!-- .boxhead -->
 
 	<div id="project_details" class="boxbody">
@@ -60,49 +59,26 @@
                 </ul>
                 
                 <div id="tab_description" class="tab">
-                    <p>{{p.project_plan_summary}}</p>
-                    <p style="text-align:right"><a href="#">View details</a></p>
+                    <p>{{p.project_plan_summary|linebreaks}}</p>
+                    <p style="text-align:right"><a href="details">View details</a></p>
                     <br />		
                     <div style="float:left;width: 250px">
                     {% if p.current_image %}
                         <div class="small lightx1">{{p.current_image_caption}}</div>
-                        <img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="margin: 10px" />
+                        <img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 220px; margin: 10px 10px 0 0" />
                     {% endif %}	
                     </div>	
-                    <div style="width: 280px:">
+                    <div style="margin-left: 250px; width: 210px">
                         <p class="lightx1"><b>Target benchmarks</b></p>
-                        <ul class="simplelist">
-                        {% if p.water_systems %}
-                            <li>{{ p.water_systems }} functioning water systems</li>
-                        {% endif %}
-                        {% if p.sanitation_systems %}
-                            <li>{{ p.sanitation_systems }} functioning sanitation systems</li>
-                        {% endif %}
-                        {% if p.improved_water %}
-                            <li>{{ p.improved_water }} persons with access to improved water
-                            {% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
-                            </li>
-                        {% endif %}
-                        {% if p.improved_sanitation %}
-                            <li>{{ p.improved_sanitation }} persons with access to improved sanitation
-                            {% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
-                            </li>
-                        {% endif %}
-                        {% if p.trainees %}
-                            <li>{{ p.trainees }} persons who receive training / education per year</li>
-                        {% endif %}
-                        {% if p.mdg_count %}
-                            <li>MDG count:{{ p.mdg_count }}</li>
-                        {% endif %}
-                        </ul>			
+                        {% include "rsr/inc_target_benchmarks.html" %}
                     </div>
                     <div style="clear:both">&#32;</div>
                 </div> <!-- #tab_description -->
         
             <div id="tab_goals" class="tab">
-                <p style="padding-left:0;">{{p.goals_summary}}</p>
+                <p style="padding-left:0;">{{p.goals_summary|linebreaks}}</p>
                 <br />			
-                <div style="float:left;width:270px">
+                <div style="float:left;width:230px">
                     <p class="lightx1"><b>Overall goals</b></p>
                     <ul class="simplelist">
                     {% if p.goal_1 %}
@@ -116,43 +92,20 @@
                     {% endif %}
                     </ul>
                 </div>			
-                <div style="margin-left:280px;">
+                <div style="margin-left:260px;">
                     <p class="lightx1"><b>Target benchmarks</b></p>
-                    <ul class="simplelist">
-                        {% if p.water_systems %}
-                            <li>{{ p.water_systems }} functioning water systems</li>
-                        {% endif %}
-                        {% if p.sanitation_systems %}
-                            <li>{{ p.sanitation_systems }} functioning sanitation systems</li>
-                        {% endif %}
-                        {% if p.improved_water %}
-                            <li>{{ p.improved_water }} persons with access to improved water
-                            {% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
-                            </li>
-                        {% endif %}
-                        {% if p.improved_sanitation %}
-                            <li>{{ p.improved_sanitation }} persons with access to improved sanitation
-                            {% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
-                            </li>
-                        {% endif %}
-                        {% if p.trainees %}
-                            <li>{{ p.trainees }} persons who receive training / education per year</li>
-                        {% endif %}
-                        {% if p.mdg_count %}
-                            <li>MDG count:{{ p.mdg_count }}</li>
-                        {% endif %}
-                    </ul>
+                    {% include "rsr/inc_target_benchmarks.html" %}
                 </div>
                 <div style="clear:left">&#32;</div>
             </div> <!-- #tab_goals -->
         
             <div id="tab_sustainability" class="tab">
-                <p>{{p.sustainability}}</p>
-                <p style="text-align:right"><a href="#">View details</a></p>
+                <p>{{p.sustainability|linebreaks}}</p>
+                <p style="text-align:right"><a href="details#tab_sustainability">View details</a></p>
             </div> <!-- #tab_sustainability -->
         
             <div id="tab_context" class="tab">
-                <p>{{p.context}}</p>
+                <p>{{p.context|linebreaks}}</p>
             </div> <!-- #tab_context -->
         
             <!--<div id="tab_personnel" class="tab">
@@ -169,7 +122,6 @@
 	<div id="subdetailsleft">
 
         <div class="boxhead">
-    
             <h1>Related to this project</h1>
         </div> <!-- .boxhead -->
     
@@ -189,7 +141,7 @@
         </div> <!-- #project_related & .boxbody -->
     
         <div class="boxhead">											
-            <a class="btn-slide actionbutton" href="#" onclick="this.blur();"><span>Add comment</span></a>
+            <a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add comment</span></a>
             <h1>Comments</h1>
         </div> <!-- .boxhead -->
     
@@ -197,10 +149,11 @@
             
             <div id="panel">
             {% if not user.username %}
-                <p>You must be signed in to add a comment.<br /> <a href="/rsr/signin/?next={{request.path}}">Sign In</a> | <a href="#">Register</a></p>
+                <p>You must be signed in to add a comment.</p>
+                <p><a href="/rsr/signin/?next={{request.path}}">Sign In</a> | <a href="#">Register</a></p>
             {% else %}
                 <form enctype="multipart/form-data" method="post" action="comment">
-                    {{form.comment}}            
+                    {{form.comment}}
                     <p><a href="#" class="btn-slide">Cancel</a></p>
                     <input type="submit" value="Submit" class="submit" />
                 </form>
@@ -217,10 +170,10 @@
                 </div>						
                     <div style="margin-left: 100px">
                     <p class="lightx1">{{c.time|date:"Y-m-d H:i"}}</p>
-                    <p>{{c.comment}}</p>
+                    <p>{{c.comment|linebreaks}}</p>
                 </div>
                 <br />
-                <p><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>
+                <p style="text-align: right"><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>
                 <p style="text-align:right"><a href="#">Report abuse</a></p>
             {% endfor %}
             <hr />
@@ -232,8 +185,7 @@
 	<div id="subdetailsright">
 
         <div class="boxhead">
-    
-            <a class="actionbutton" href="update" onclick="this.blur();"><span>Add update</span></a>
+            <a class="actionbutton ab_grey" href="update" onclick="this.blur();"><span>Add update</span></a>
             <h1>Project updates</h1>
         </div> <!-- .boxhead -->
     
@@ -244,12 +196,20 @@
                 <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
                 <p><span class="lightx1">Status:</span> {{u.show_status}}</p>
                 <br />
+                {% if u.photo %}
+                    {% ifequal u.photo_location 'B' %}
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 240px; margin: 10px 10px 5px 20px" />			
+                    <p class="small lightx1">{{u.photo_caption}}</p>
+                    {% endifequal %}
+                {% endif %}
                 {% if u.text %}
-                    <p>{{u.text}}</p>
+                    <p>{{u.text|linebreaks}}</p>
                 {% endif %}
                 {% if u.photo %}
-                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 240px; margin: 20px" />			
+                    {% ifequal u.photo_location 'E' %}
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 240px; margin: 10px 10px 5px 20px" />			
                     <p class="small lightx1">{{u.photo_caption}}</p>
+                    {% endifequal %}
                 {% endif %}
                 <hr />            
             {% endfor %}

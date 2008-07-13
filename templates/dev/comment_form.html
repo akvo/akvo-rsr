@@ -14,10 +14,9 @@
 		<p style="padding-left: 10px">{{project.name}}</p>
 	</div>
 	
-	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">		
-		
+	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">			
 		<h2 style="margin-left: -50px">Enter comment text</h2>
-		{{form.text}}
+						{{form.text}}
 		{% if form.comment.errors %}
 			<h2 style="color: #D4000D">A problem occurred</h2>
 			<p style="color: #D4000D">{{ form.text.errors.as_text }}</p>

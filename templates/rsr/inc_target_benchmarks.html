@@ -1,0 +1,32 @@
+{# Snippet producing the benchmarks for a project. Context: p the project #}
+{# Used in project_main.html and project_details.html #}
+
+{% load comparison %}
+
+<ul class="simplelist">
+    {% if p.water_systems %}
+        <li>{{ p.water_systems }} functioning water systems</li>
+    {% endif %}
+    {% if p.sanitation_systems %}
+        <li>{{ p.sanitation_systems }} functioning sanitation systems</li>
+    {% endif %}
+    {% if p.improved_water %}
+        <li>{{ p.improved_water }} persons with access to improved water
+        {% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
+        </li>
+    {% endif %}
+    {% if p.improved_sanitation %}
+        <li>{{ p.improved_sanitation }} persons with access to improved sanitation
+        {% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
+        </li>
+    {% endif %}
+    {% if p.trainees %}
+        <li>{{ p.trainees }} persons who receive training / education per year</li>
+    {% endif %}
+    {% if_greater_or_equal p.improved_water_years 7 %}
+        <li>MDG count water: {{ p.improved_water }}</li>
+    {% endif_greater_or_equal %}
+    {% if_greater_or_equal p.improved_sanitation_years 7 %}
+        <li>MDG count sanitation: {{ p.improved_sanitation }}</li>
+    {% endif_greater_or_equal %}
+</ul>

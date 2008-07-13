@@ -1,4 +1,4 @@
-{% extends "dev/index_base.html" %}
+{% extends "rsr/index_base.html" %}
 
 {% block script %}
 	{{ block.super }}
@@ -26,7 +26,6 @@
 	<div id="home_flash_box">
 	<h1 class="section" style="color: #fff; font-size: 1.5em">Our latest projects</h1>
 	<div id="home_flash">
-
 	TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a>
 	</div> <!-- #home_flash -->
 	</div> <!-- #home_flash_box -->
@@ -90,8 +89,7 @@
 		
 		fo.addParam("allowFullScreen","true");
 		fo.write("home_flash");			
-	</script>
-
+	</script>	
 
 <div id="outer_leftwing">
 
@@ -113,9 +111,9 @@
 <p>{{latest.summary|safe}}</p>
 
 <p><a href="http://www.akvo.org/blog/">Full entry</a></p>
+<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
 <hr />
 <p style="text-align: right"><a href="#">View earlier blog entries</a></p>
-<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
 
 <div style="clear:left"></div>
 

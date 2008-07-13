@@ -1,0 +1,225 @@
+{% extends "rsr/project_base.html" %}
+
+{% block title %}{{block.super}} - Project details{% endblock title %}
+
+{% block script %}
+{{block.super}}
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% endblock script %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="/rsr/projects/all/">Project listing</a> &raquo; <a href="/rsr/project/{{p.id}}/">{{p.name}}</a> &raquo; Project details
+{% endblock breadcrumbs %}
+
+{% block outer_leftwing %}
+<div id="outer_leftwing">
+
+	<div class="boxhead">
+		<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
+		<h1 class="section">{{p.name}}</h1>
+		<p>{{p.subtitle}}</p>
+	</div> <!-- .boxhead -->
+
+	<div class="boxbody">
+
+	<div style="float: left; width: 30%; padding-left: 30px;">
+	
+		<div class="lightx2">Status</div>
+		<div>{{p.show_status}}</div>
+
+		{% if p.category_sanitation %}
+		<img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		{% endif %}
+		{% if p.category_water %}
+		<img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		{% endif %}
+		{% if p.category_maintenance %}
+		<img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		{% endif %}
+		{% if p.category_training %}
+		<img src="{{MEDIA_URL}}img/green.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		{% endif %}
+		{% if p.category_education %}
+		<img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 10px 5px 10px 0;" />		
+		{% endif %}
+
+	</div>
+
+	<div style="float: left; width: 30%; padding-left: 20px;">
+		{% if p.location_1 or p.location_2 or p.postcode %}
+		<div class="lightx2">Location</div>
+		{% if p.location_1 %}
+			{{p.location_1}}<br />
+		{% endif %}
+		{% if p.location_2 %}
+			{{p.location_2}}<br />
+		{% endif %}
+		{% if p.postcode %}
+			{{p.postcode}}<br />
+		{% endif %}
+	{% endif %}
+		<div class="lightx2">City</div>
+		{{p.city}}<br />
+		<div class="lightx2">State</div>
+		{{p.state}}<br />
+		<div class="lightx2">Country</div>
+		{{p.country}}<br />
+
+	</div>
+
+	{% if p.map %}
+		<div style="float: left; width: 30%; padding-left: 20px;">
+			<img src="{{MEDIA_URL}}{{p.map}}" alt="location" style="margin: 10px 10px 20px 10px" />
+		</div>
+	{% endif %}
+	
+	<hr style="clear:left; padding-top: 20px" />
+	<p><a href="./">< Back to project summary</a></p>
+
+            <div id="container-1" style="margin-top: 20px; padding-left: 20px;">
+                <ul>
+                    <li><a href="#tab_description"><span>Description</span></a></li>
+                    <li><a href="#tab_goals"><span>Goals</span></a></li>
+                    <li><a href="#tab_sustainability"><span>Sustainability</span></a></li>
+                    <li><a href="#tab_results"><span>Results</span></a></li>
+                    <!--<li><a href="#tab_personnel"><span>Personnel</span></a></li>-->
+                </ul>
+                
+                <div id="tab_description" class="tab">
+                    <p>{{p.project_plan_summary|linebreaks}}</p>
+                    <br />		
+                    <div style="float:left;width: 280px">
+                    {% if p.current_image %}
+                        <p class="small lightx1">{{p.current_image_caption}}</p>
+                        <img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 240px; margin: 10px 10px 0 0" />
+                    {% endif %}	
+                    </div>	
+                    <div style="width: 280px:">
+                        <p class="lightx1"><b>Target benchmarks</b></p>
+                        {% include "rsr/inc_target_benchmarks.html" %}		
+                    </div>
+                    <div style="clear:both; padding-bottom: 20px">&#32;</div>
+                    
+                    
+					<h2 class="lightx2">More information</h2>
+					<p>{{p.project_plan_detail|linebreaks}}</p>
+					<h2 class="lightx2">Current state</h2>
+					<p>{{p.current_status_detail|linebreaks}}</p>
+
+                    
+                    
+                </div> <!-- #tab_description -->
+        
+            <div id="tab_goals" class="tab">
+                <p style="padding-left:0;">{{p.goals_summary|linebreaks}}</p>
+                <br />
+                <div style="float:left;width:270px">
+                    <p class="lightx1"><b>Overall goals</b></p>
+                    <ul class="simplelist">
+                    {% if p.goal_1 %}
+                    <li>{{p.goal_1}}</li>
+                    {% endif %}
+                    {% if p.goal_2 %}
+                    <li>{{p.goal_2}}</li>
+                    {% endif %}
+                    {% if p.goal_3 %}
+                    <li>{{p.goal_3}}</li>
+                    {% endif %}
+                    </ul>
+                </div>			
+                <div style="margin-left:280px;">
+                    <p class="lightx1"><b>Target benchmarks</b></p>
+                    {% include "rsr/inc_target_benchmarks.html" %}
+                </div>
+                <div style="clear:left">&#32;</div>
+            </div> <!-- #tab_goals -->
+        
+            <div id="tab_sustainability" class="tab">
+                <p>{{p.sustainability|linebreaks}}</p>
+
+            </div> <!-- #tab_sustainability -->
+        
+            <div id="tab_results" class="tab">
+				<p class="lightx2">Final report 04 Jan 2009</p>
+				<p>{{p.context|linebreaks}}</p>
+
+				<div class="small lightx1">{{p.current_image_caption}}</div>
+				<img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 240px; margin: 10px 10px 0 0" />
+
+				<hr />
+
+				<div style="float: left; width: 40%;">
+				<h2 class="lightx2">Target goals</h2>
+				<ul class="indented">
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				</ul>
+				</div> <!-- style -->
+
+				<div style="float: left; width: 40%">
+				<h2 class="lightx2">Goals achieved</h2>
+				<ul class="indented">
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				</ul>
+				</div> <!-- style -->
+				
+				<div style="clear:left;"></div>
+
+				<hr style="padding: 10px 0" />
+
+				<div style="float: left; width: 40%;">
+				<h2 class="lightx2">Target benchmarks</h2>
+				<ul class="indented">
+				<li>10 functioning sanitation systems</li>
+				<li>300 persons with access to improved sanitation for ? years </li>
+				<li>40 persons who receive training / education per year</li>
+				<li>MDG Count: ?</li>
+				</ul>
+				</div> <!-- style -->
+
+				<div style="float: left; width: 40%">
+				<h2 class="lightx2">Achieved benchmarks</h2>
+				<ul class="indented">
+				<li>10 functioning sanitation systems</li>
+				<li>300 persons with access to improved sanitation for ? years </li>
+				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
+				<li>40 persons who receive training / education per year</li>
+				<li>MDG Count: ?</li>
+				</ul>
+				</div> <!-- style -->
+
+				<div style="clear:left;"></div>
+
+				<hr style="padding: 10px 0" />
+
+				<div class="small lightx1">{{p.current_image_caption}}</div>
+				<img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 240px; margin: 10px 10px 0 0" />
+
+				
+				<h2 class="lightx2">Results discussion</h2>
+				<p>Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci</p>
+
+				<h2 class="lightx2">Key Learnings</h2>
+				<p>Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci</p>
+
+				<h2 class="lightx2">Further comments</h2>
+				<p>Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci</p>
+
+				<h2 class="lightx2">External links</h2>
+				<p>Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci</p>
+
+            </div> <!-- #tab_context -->
+            
+            </div> <!-- #container-1 -->
+            
+	<p><a href="./">< Back to project summary</a></p>
+
+	</div> <!-- #project_details .boxbody -->
+
+</div> <!-- #outer_leftwing -->
+
+{% endblock outer_leftwing %}
+

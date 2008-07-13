@@ -1,4 +1,4 @@
-{% extends "dev/project_base.html" %}
+{% extends "rsr/project_base.html" %}
 
 {% block title %}{{block.super}} - All project updates{% endblock title %}
 
@@ -14,8 +14,8 @@
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton" href="#" onclick="this.blur();"><span>Add update</span></a>
-		<h1 class="title">{{p.name}}</h1>
+		<a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add update</span></a>
+		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 
 	</div> <!-- .boxhead -->
@@ -31,7 +31,7 @@
             {% endif %}
             <a name={{u.id}} />
             <h2>{{u.title}}</h2>
-            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a></p>
+            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
             <p><span class="lightx1">Status:</span> {{u.show_status}}</p>
             <br />
             {% if u.text %}

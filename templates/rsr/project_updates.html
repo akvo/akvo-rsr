@@ -3,7 +3,7 @@
 {% block title %}{{block.super}} - All project updates{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="/rsr/projects/">Projects</a> &raquo; <a href="/rsr/project/{{p.id}}/">{{p.name}}</a> &raquo;  All project updates
+{{block.super}} &raquo; <a href="/rsr/projects/all/">Projects</a> &raquo; <a href="/rsr/project/{{p.id}}/">{{p.name}}</a> &raquo;  All project updates
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -14,8 +14,8 @@
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton" href="#" onclick="this.blur();"><span>Add update</span></a>
-		<h1 class="title">{{p.name}}</h1>
+		<a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add update</span></a>
+		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 
 	</div> <!-- .boxhead -->
@@ -34,13 +34,21 @@
             <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
             <p><span class="lightx1">Status:</span> {{u.show_status}}</p>
             <br />
+            {% if u.photo %}
+                {% ifequal u.photo_location 'B' %}
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                    <p class="small lightx1">{{u.photo_caption}}</p>
+                {% endifequal %}
+            {% endif %}
             {% if u.text %}
                 <p>{{u.text}}</p>
             {% endif %}
             {% if u.photo %}
-                <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 20px" />			
+                {% ifequal u.photo_location 'E' %}
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                    <p class="small lightx1">{{u.photo_caption}}</p>
+                {% endifequal %}
             {% endif %}
-            <p class="small lightx1">{{u.photo_caption}}</p>
             <p style="text-align:right"><a href="{{request.path}}#{{u.id}}">Permalink</a></p>
         {% endfor %}
 

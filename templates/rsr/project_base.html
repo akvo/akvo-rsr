@@ -17,8 +17,9 @@
 {% block outer_rightwing %}
 <div id="outer_rightwing">
 
+    {% block funding %}
 	<div class="boxhead">
-		<a class="actionbutton" href="#" onclick="this.blur();"><span>Fund project</span></a>
+		<a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Fund project</span></a>
 		<h1>Funding</h1>
 
 		<p><a href="#">Notify me of changes via email</a></p>
@@ -32,7 +33,7 @@
     		<p>Ongoing Funding completed</p>
 		{% endif %}
 		<p><b>Total: <span style="margin-left: 10px">{{p.funding.total}} {{p.funding.currency}}</span></b></p>
-		<p style="text-align: right"><a href="#">View details</a></p>
+		<p style="text-align: right"><a href="funding">View details</a></p>
 		<hr />
 		<p style="margin: 10px 0 10px 0;">
         {% ifequal p.fundingpartner_set.count 1 %}
@@ -54,10 +55,11 @@
 			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
 		{% endfor %}    
 	</div> <!-- #project_funding & .boxbody -->
+    {% endblock funding %}
 
 	<div class="boxhead">
 
-		<a class="actionbutton" href="#" onclick="this.blur();"><span>Become a partner</span></a>						
+		<a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Become a partner</span></a>						
 		<h1>Partners</h1>
 	</div> <!-- .boxhead -->
 

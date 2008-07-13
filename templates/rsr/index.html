@@ -23,9 +23,13 @@
 
 {% block outer_leftwing %}
 
-	<h1 class="title" style="position:relative; z-index:1; top: 35px; left: 0px; color: #fff; margin-left: 10px;">Our latest projects</h1>
+	<div id="home_flash_box">
+	<h1 class="section" style="color: #fff; font-size: 1.5em">Our latest projects</h1>
 	<div id="home_flash">
-	TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a></div>
+	TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a>
+	</div> <!-- #home_flash -->
+	</div> <!-- #home_flash_box -->
+
 	<script type="text/javascript">
 	
 		var fo = new SWFObject("{{MEDIA_URL}}flash/TiltViewer.swf", "viewer", "980px", "500px", "9.0.28", "#000000");			
@@ -107,9 +111,9 @@
 <p>{{latest.summary|safe}}</p>
 
 <p><a href="http://www.akvo.org/blog/">Full entry</a></p>
+<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
 <hr />
 <p style="text-align: right"><a href="#">View earlier blog entries</a></p>
-<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
 
 <div style="clear:left"></div>
 

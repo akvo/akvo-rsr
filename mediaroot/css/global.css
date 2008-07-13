@@ -26,11 +26,14 @@ font-size: 0.8em;
 #header
 {
 text-align: right;
+vertical-align: middle;
+min-height: 55px;
+line-height: 55px;
+margin-bottom: 20px;
 }
 
 #navigation
 {
-padding-top: 20px;
 clear: left;
 }
 
@@ -38,7 +41,7 @@ clear: left;
 {
 clear: left;
 margin-bottom: 5px;
-padding: 5px 30px;
+padding: 5px 20px;
 }
 
 #content
@@ -63,6 +66,11 @@ padding-top: 10px;
 float: left;
 }
 
+#header div.right
+{
+float: right;
+}
+
 /* global-navigation
 -------------------------------------------------------------------------------------- */
 
@@ -74,7 +82,7 @@ float: left;
 width: 100%;
 background-color: #dbdbdb;
 font-family: arial, helvetica, sans-serif;
-border-bottom: 2px solid #666;
+border-bottom: 2px solid #999;
 }
 
 #navigation ul li

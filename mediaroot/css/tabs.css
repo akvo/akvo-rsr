@@ -117,5 +117,10 @@
 {
 padding-top: 20px;
 margin:0;
-min-height: 400px;
+min-height: 300px;
+}
+
+#container-1 div p, #container-1 div h2
+{
+padding-left: 0;
 }

@@ -1,0 +1,109 @@
+{% extends "rsr/project_base.html" %}
+
+{% block title %}{{block.super}} - Funding details{% endblock title %}
+
+{% block script %}
+{{block.super}}
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% endblock script %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="/rsr/projects/all/">Project listing</a> &raquo; <a href="/rsr/project/{{p.id}}/">{{p.name}}</a> &raquo; Funding details
+{% endblock breadcrumbs %}
+
+{% block outer_leftwing %}
+<div id="outer_leftwing">
+
+	<div class="boxhead">
+		<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Fund project</span></a>
+		<h1 class="section">Funding</h1>
+	</div> <!-- .boxhead -->
+
+	<div class="boxbody">	
+
+		<table style="width: 100%">
+		<tr>
+
+		<td style="width: 50%; border-right: 1px solid #ccc; padding-left: 0;">
+		<p style="margin-bottom: 3px"><a href="./">< Back to project summary</a></p>
+		<div style="border: 1px solid #999; margin: 0 20px 10px 20px">
+			<div style="width: 176px;">
+				<div style="width: {% widthratio p.funding.pledged p.funding.total 176 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>
+			<table>
+			<tr>
+			<td>{{p.funding.date_request_posted}}</td>
+			<td>Request posted</td>
+			</tr>
+			<tr>
+			<td>{{p.funding.date_started}}</td>
+			<td>Project started<br />Project ongoing</td>
+			</tr>
+			</table>
+		</td>
+
+		<td style="width: 50%">
+			<p><b>Funding breakdown</b></p>
+			<table style="width: 80%">
+			<tr>
+			<td>Employment costs</td>
+			<td>&#8364; {{p.funding.employment}}</td>
+			</tr>
+			<tr>
+			<td>Building Material costs</td>
+			<td>&#8364; {{p.funding.building}}</td>
+			</tr>
+			<tr>
+			<td>Training costs</td>
+			<td>&#8364; {{p.funding.training}}</td>
+			</tr>
+			<tr>
+			<td>Maintenance costs</td>
+			<td>&#8364; {{p.funding.maintenance}}</td>
+			</tr>
+			<tr>
+			<td>Other costs</td>
+			<td>&#8364; {{p.funding.other}}</td>
+			</tr>
+			<tr>
+			<td><b>Total</b></td>
+			<td>&#8364; {{p.funding.total}}</td>
+			</tr>
+			</table>
+		</td>
+	
+		</tr>
+		</table>
+
+
+		<hr />
+
+		<h2 style="margin-left: 20px;">Current Funders</h2>		
+
+		<div style="padding-left: 20px">
+			
+ 		{% for funder in p.fundingpartner_set.all %}
+			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
+				{% if funder.funding_organization.logo %}
+					<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				{% endif %}	
+				<p><a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a></p>
+				<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
+				<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
+			</div>
+		{% endfor %}    
+			
+		</div> <!-- style -->
+
+		<div style="clear:left"></div>
+
+		<p style="margin: 30px 0 0 20px;"><a href="./">< Back to Project Summary</a></p>
+
+		
+	</div> <!-- .boxbody -->
+
+</div> <!-- #outer_leftwing -->
+
+{% endblock outer_leftwing %}
+
+{% block funding %}
+{% endblock funding %}

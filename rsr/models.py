@@ -7,13 +7,27 @@ from django.utils.safestring import mark_safe
 
 from datetime import date
 
+def funding_aggregate(projects):
+    '''
+    Create funding aggregate data about a collection of projects in a queryset.
+    '''    
+    f = Funding.objects.all().filter(project__in = projects)
+    funding_total = 0 #total requested funding for projects
+    for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
+        funding_total += sum(f.values_list(field, flat=True))
+    # how much has ben pledged so far
+    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
+    return funding_total, funding_pledged
+
+ORG_TYPES = (
+    ('N', 'NGO'),
+    ('G', 'Governmental'),
+    ('C', 'Commercial'),
+    ('K', 'Knowledge institution'),
+)
+ORG_TYPES_DICT = dict(ORG_TYPES)
 class Organization(models.Model):
-    ORG_TYPES = (
-        ('N', 'NGO'),
-        ('G', 'Governmental'),
-        ('C', 'Commercial'),
-        ('K', 'Knowledge institution'),
-    )
+
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField()
     support_partner             = models.BooleanField()
@@ -44,7 +58,7 @@ class Organization(models.Model):
     class Admin:
         fields = (
             ('Partnership type(s)', {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
-            ('General information', {'fields': ('name', 'long_name', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            ('General information', {'fields': ('name', 'long_name', 'organization_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
             ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'fax',  'contact_person',  'contact_email',  ), }),
             (None, {'fields': ('description', )}),
         )    
@@ -59,7 +73,33 @@ class Organization(models.Model):
     
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
-    website.allow_tags = True              
+    website.allow_tags = True
+    
+    def show_organization_type(self):
+        return ORG_TYPES_DICT[self.organization_type]
+    
+    def projects(self):
+        '''
+        returns a queryset with all projects that has self as any kind of partner
+        '''
+        projs = Project.objects.all()
+        return (projs.filter(supportpartner__support_organization=self.id) | \
+                 projs.filter(fieldpartner__field_organization=self.id) | \
+                 projs.filter(fundingpartner__funding_organization=self.id)).distinct()
+
+    def partners(self):
+        '''
+        returns a queryset of all organizations that self has at least one project in common with, excluding self
+        '''
+        projects = self.projects()
+        all = Organization.objects.all()
+        return (all.filter(field_partners__project__in = projects.values('pk').query) | \
+                all.filter(support_partners__project__in = projects.values('pk').query) | \
+                all.filter(funding_partners__project__in = projects.values('pk').query)).distinct()
+    
+    def funding(self):
+        funding_total, funding_pledged = funding_aggregate(self.projects())
+        return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_total - funding_pledged}
 
 #class Contact(models.Model):
 #    name = models.CharField(max_length=50, core=True, blank=True)
@@ -261,7 +301,6 @@ UPDATE_METHODS = (
     ('E', 'e-mail'),
     ('S', 'SMS'),
 )
-
 UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
 
 class ProjectUpdate(models.Model):
@@ -271,10 +310,10 @@ class ProjectUpdate(models.Model):
     text            = models.TextField(blank=True)
     status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
-    photo_location  = models.CharField(max_length=1, choices=PHOTO_LOCATIONS, default='B')
+    photo_location  = models.CharField(blank=True, max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(blank=True, max_length=75)
     photo_credit    = models.CharField(blank=True, max_length=25)
-    update_method   = models.CharField(max_length=1, choices=UPDATE_METHODS, default='W')
+    update_method   = models.CharField(blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField()
     
     class Admin:
@@ -285,6 +324,10 @@ class ProjectUpdate(models.Model):
         return '<img src="%s" />' % (self.get_image_url(),)
     img.allow_tags = True
     
+    def show_status(self):
+        "Show the current project status"
+        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
+        
     def show_update_method(self):
         "Show the update method for this update"
         return UPDATE_METHODS_DICT[self.update_method]

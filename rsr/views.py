@@ -1,4 +1,5 @@
 from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import funding_aggregate
 
 from django import newforms as forms
 from django.http import HttpResponse, HttpResponseRedirect
@@ -32,6 +33,18 @@ def mdgs_sanitation_calc(projects):
     #add up all improved sanitation for the filtered projects
     return sum(enough_years.values_list('improved_sanitation', flat=True))
 
+#def funding_aggregate(projects):
+#    '''
+#    Create funding aggregate data about a collection of projects in a queryset.
+#    '''    
+#    f = Funding.objects.all().filter(project__in = projects)
+#    funding_total = 0 #total requested funding for projects
+#    for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
+#        funding_total += sum(f.values_list(field, flat=True))
+#    # how much has ben pledged so far
+#    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
+#    return funding_total, funding_pledged
+
 def akvo_at_a_glance(projects):
     '''
     Create aggregate data about a collection of projects in a queryset.
@@ -48,11 +61,7 @@ def akvo_at_a_glance(projects):
     supportpartner_count    = o.filter(support_partner__exact=True).count()
     fundingpartner_count    = o.filter(funding_partner__exact=True).count()
     partners_total = fieldpartner_count + supportpartner_count + fundingpartner_count
-    f = Funding.objects.all().filter(project__in = projects)
-    funding_total = 0
-    for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
-        funding_total += sum(f.values_list(field, flat=True))
-    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
+    funding_total, funding_pledged = funding_aggregate(projects)
     
     stats ={
         'status_none': status_none,
@@ -128,14 +137,17 @@ def index(request):
     return {'latest': latest, 'img_src': img_src, 'soup':soup, 'stats': stats, }
 
 @render_to('rsr/project_directory.html')
-def projectlist(request):
+def projectlist(request, org_id=0):
     '''
     List of all projects in RSR
     Context:
     projects: list of all projects
     stats: the aggregate projects data
-    '''    
-    projects = Project.objects.all()
+    '''
+    if org_id != 0:
+        projects = Organization.objects.get(id=org_id).projects()
+    else:
+        projects = Project.objects.all()
     try:
         order_by = request.GET['order_by']
         projects = projects.order_by(order_by)
@@ -143,6 +155,27 @@ def projectlist(request):
         pass
     stats = akvo_at_a_glance(projects)
     return {'projects': projects, 'stats': stats}
+
+@render_to('rsr/organization_directory.html')
+def orglist(request, org_id=0):
+    '''
+    List of all projects in RSR
+    Context:
+    orgz: list of all organizations
+    stats: the aggregate projects data
+    '''
+    if org_id != 0:
+        orgz = Organization.objects.all() #TODO: some sort o orgz filtering...all orgz assosciated with org_id?
+    else:
+        orgz = Organization.objects.all()
+    try:
+        order_by = request.GET['order_by']
+        orgz = orgz.order_by(order_by)
+    except:
+        pass
+    projects = Project.objects.all()
+    stats = akvo_at_a_glance(projects)
+    return {'orgz': orgz, 'stats': stats}
 
 class SigninForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
@@ -210,7 +243,7 @@ class UpdateForm(ModelForm):
         model = ProjectUpdate
         exclude = ('time', 'project', 'user', )
 
-#from dbgp.client import brk
+from dbgp.client import brk
 
 @render_to('rsr/project_updates.html')
 def projectupdates(request, project_id):
@@ -236,12 +269,14 @@ def updateform(request, project_id):
     #brk(host="vnc.datatrassel.se", port=9000)
     p = get_object_or_404(Project, pk=project_id)
     if request.method == 'POST':
+
         form = UpdateForm(request.POST, request.FILES, )
         if form.is_valid():
             update = form.save(commit=False)
             update.project = p
             update.time = datetime.now()
             update.user = request.user
+            update.update_method = 'W'
             update.save()
             return HttpResponseRedirect('./')
     else:
@@ -262,12 +297,19 @@ class CommentForm(ModelForm):
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
 
+#def org_projects(org_id):
+#    '''
+#    returns a queryset with all projects that have the organization org_id
+#    as any kind of partner
+#    '''
+#    projs = Project.objects.all()
+#    return (projs.filter(supportpartner__support_organization=org_id) | \
+#             projs.filter(fieldpartner__field_organization=org_id) | \
+#             projs.filter(fundingpartner__funding_organization=org_id)).distinct()
+
 def org_activities(organization):
-    projs = Project.objects.all()
     # assoc resolves to all projects associated with organization, where organization can function in any of the three partner functions
-    assoc = (projs.filter(supportpartner__support_organization=organization.id) | \
-             projs.filter(fieldpartner__field_organization=organization.id) | \
-             projs.filter(fundingpartner__funding_organization=organization.id)).distinct()
+    assoc = organization.projects()
     orgz = Organization.objects.all()
     # partners resolves to all orgz that are partners of any kind to the list of projects in assoc
     partners = (orgz.filter(field_partners__project__in = assoc.values('pk').query) | \
@@ -279,7 +321,8 @@ def org_activities(organization):
 @render_to('rsr/organization.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organization, pk=org_id)
-    org_projects, org_partners = org_activities(o)
+    org_projects = o.projects()
+    org_partners = o.partners()
     org_stats = akvo_at_a_glance(org_projects)
     return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, }
 
@@ -297,10 +340,19 @@ def projectmain(request, project_id):
     updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
-    #return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
-    return render_to_response('rsr/project_main.html',
-        {'p': p, 'updates': updates, 'comments': comments, 'form': form }, context_instance=RequestContext(request))
+    return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
+    #return render_to_response('rsr/project_main.html',
+    #    {'p': p, 'updates': updates, 'comments': comments, 'form': form }, context_instance=RequestContext(request))
 
+@render_to('rsr/project_details.html')    
+def projectdetails(request, project_id):
+        p       = get_object_or_404(Project, pk=project_id)
+        return {'p': p, }
+    
+@render_to('rsr/project_funding.html')    
+def projectfunding(request, project_id):
+        p       = get_object_or_404(Project, pk=project_id)
+        return {'p': p, }
     
 @login_required()
 def commentform(request, project_id):

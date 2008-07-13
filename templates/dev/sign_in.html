@@ -1,4 +1,4 @@
-{% extends "dev/rsr_base.html" %}
+{% extends "rsr/rsr_base.html" %}
 
 {% block title %}Akvo RSR - Sign in{% endblock title %}
 
@@ -38,13 +38,13 @@
             <table id="login" style="padding: 20px;">
             <tr>            
                 <td><label for="id_username">Enter username</label></td>
-                <td>{{ form.username }}</td>
+                <td style="padding: 0 20px">{{ form.username }}</td>
                 <!-- <input type="text" name="username" value="" class="input" size="25" style="margin: 0 20px" /> -->
                 <td><a href="#">I forgot my username</a></td>
             </tr>
             <tr>
                 <td><label for="id_password">Enter password</label></td>
-                <td>{{ form.password }}</td>
+                <td style="padding: 0 20px">{{ form.password }}</td>
                 <!-- <input type="password" name="password" value="" class="input" size="25" style="margin: 0 20px" /> -->
                 <td><a href="#">I forgot my password</a></td>
             </tr>
@@ -52,7 +52,10 @@
             <hr />
             <div style="text-align: center">
                 <a href="#" style="margin-right: 20px;">Cancel</a>
-                <button type="submit" name="Login" class="login">Login</button>
+               
+                <!-- <button type="submit" name="Login" class="login">Login</button> -->
+				<button><a class="actionbutton ab_grey" href="#" onclick="this.blur();" style=" margin:0"><span>Sign in</span></a></button>
+
             </div>
            <input type="hidden" name="next" value="{{ next }}" />
         </form>
@@ -69,7 +72,7 @@
 <li>Manage your own project or organization pages</li>
 </ul>
 <p style="margin: 10px 0">And much more! <a href="#">Learn about</a> how Akvo works.</p>
-<div style="text-align: center"><button type="submit" name="Login" class="register">Register</button></div>
+<div style="text-align: center"><button type="submit"><a class="actionbutton ab_grey" href="#" onclick="this.blur();" style=" margin:0"><span>Sign in</span></a></button></button></div>
 </div> <!-- style .boxbody -->
 
 <div style="clear:left"></div>

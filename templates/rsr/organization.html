@@ -14,7 +14,7 @@
 
 <div id="outer_leftwing">
 	<div class="boxhead">
-		<div style="float: right; width: 30%"><a class="actionbutton" href="#" onclick="this.blur();"><span>Edit organization</span></a></div>
+		<div style="float: right; width: 30%"><a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Edit organization</span></a></div>
 
 		<p style="clear: right; float: right; width: 30%; text-align: right; margin-top: 5px;"><a href="#">Notify me of changes via email</a></p>
 		<h1 class="section">{{o.name}}</h1>
@@ -36,9 +36,13 @@
 			<img src="{{MEDIA_URL}}{{o.logo}}" alt="Logo of {{o.name}}" style="margin: 10px 0;" />
 		{% endif %}
 		<h2 class="lightx2">Activities</h2>
-		<p>Activity types</p>
+		<p>
+			{% if o.field_partner %}Field partner<br />{% endif %}
+			{% if o.support_partner %}Support partner<br />{% endif %}
+			{% if o.funding_partner %}Funding partner<br />{% endif %}
+		</p>
 		<h2 class="lightx2">Type</h2>
-		<p>Organization type</p>
+		<p>{{o.show_organization_type}}</p>
 	
 		<h2 class="lightx2">Scope</h2>
 		<p>National</p>
@@ -93,17 +97,17 @@
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
-<table>
+<table class="activities">
 	<tr><th colspan="2"><h2>Projects</h2></th></tr>
-	<tr><td style="width: 50%;">{{org_stats.status_active}}</td><td>Active</td></tr>
-	<tr><td>{{org_stats.status_onhold}}</td><td>On hold</td></tr>
-	<tr><td>{{org_stats.status_complete}}</td><td>Complete</td></tr>
-	<tr class="bold"><td>{{org_stats.project_count}}</td><td>Total projects</td></tr>
-	<tr class="bold"><td>{{org_stats.mdgs_water}}</td><td>water MDGs</td></tr>
-	<tr class="hr bold"><td>{{org_stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
+	<tr><td class="padded">{{org_stats.status_active}}</td><td>Active</td></tr>
+	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>On hold</td></tr>
+	<tr><td class="padded">{{org_stats.status_complete}}</td><td>Complete</td></tr>
+	<tr class="bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
+	<tr class="bold"><td class="padded">{{org_stats.mdgs_water}}</td><td>Water MDGs</td></tr>
+	<tr class="hr bold"><td class="padded">{{org_stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
 	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{org_stats.project_count}} projects)</span></h2></th></tr>
-	<tr style="color: green"><td>&#8364; {{org_stats.funding_pledged}}</td><td>Pledged</td></tr>
-	<tr class="hr" style="color: red"><td>&#8364; {{org_stats.funding_needed}}</td><td>Still needed</td></tr>		
+	<tr style="color: green"><td class="padded">&#8364; {{org_stats.funding_pledged}}</td><td>Pledged</td></tr>
+	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{org_stats.funding_needed}}</td><td>Still needed</td></tr>
 </table>
 
 <h2>Project partners</h2>

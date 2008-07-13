@@ -1,8 +1,8 @@
-{% extends "dev/project_base.html" %}
+{% extends "rsr/project_base.html" %}
 
 {% block script %}
 {{block.super}}
-<script src="{{MEDIA_URL}}{{dev.path}}js/ui.tabs.pack.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
 {% endblock script %}
 
 {% block breadcrumbs %}
@@ -13,10 +13,9 @@
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
-		<h1 class="title">{{p.name}}</h1>
+		<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
+		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
-
 	</div> <!-- .boxhead -->
 
 	<div id="project_details" class="boxbody">
@@ -45,7 +44,7 @@
             <h2 class="lightx2">Location</h2>
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
             {% if p.map %}
-                <img src="{{MEDIA_URL}}img/map.png" alt="type" style="margin: 20px;" />
+                <img src="{{MEDIA_URL}}img/delhi.png" alt="type" style="margin: 20px;" />
             {% endif %}
 		</div> <!-- #project_details_leftwing -->
 
@@ -64,11 +63,10 @@
                     <p style="text-align:right"><a href="#">View details</a></p>
                     <br />		
                     <div style="float:left;width: 250px">
-                        <div class="small lightx1">
-                            Sum zzriurem erci blandre consed molore veliquatem ipis et qui eriustie magna commy nullaorpeulla. 
-                            (Credit: Ipisim Zzrit)
-                        </div>
-                        <img src="{{MEDIA_URL}}img/fodra-group-1.png" alt="Akvo.org" style="margin: 10px" />				
+                    {% if p.current_image %}
+                        <div class="small lightx1">{{p.current_image_caption}}</div>
+                        <img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 240px; margin: 10px 10px 0 0" />
+                    {% endif %}	
                     </div>	
                     <div style="width: 280px:">
                         <p class="lightx1"><b>Target benchmarks</b></p>
@@ -170,7 +168,6 @@
 	<div id="subdetailsleft">
 
         <div class="boxhead">
-    
             <h1>Related to this project</h1>
         </div> <!-- .boxhead -->
     
@@ -190,7 +187,7 @@
         </div> <!-- #project_related & .boxbody -->
     
         <div class="boxhead">											
-            <a class="btn-slide actionbutton" href="#" onclick="this.blur();"><span>Add comment</span></a>
+            <a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add comment</span></a>
             <h1>Comments</h1>
         </div> <!-- .boxhead -->
     
@@ -233,8 +230,7 @@
 	<div id="subdetailsright">
 
         <div class="boxhead">
-    
-            <a class="actionbutton" href="update" onclick="this.blur();"><span>Add update</span></a>
+            <a class="actionbutton ab_grey" href="update" onclick="this.blur();"><span>Add update</span></a>
             <h1>Project updates</h1>
         </div> <!-- .boxhead -->
     
@@ -242,7 +238,7 @@
             <a href="#" class="rss">Subscribe via RSS</a>
             {% for u in updates %}
                 <h2>{{u.title}}</h2>
-                <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.update_method}}</p>
+                <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
                 <p><span class="lightx1">Status:</span> {{u.show_status}}</p>
                 <br />
                 {% if u.text %}

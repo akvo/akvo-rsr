@@ -1,0 +1,128 @@
+{% extends "rsr/index_base.html" %}
+{% load generic_content %}
+
+{% block title %}Akvo RSR - Organization listing{% endblock title %}
+
+{% block script %}
+{{block.super}}
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% endblock script %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; Organization listing
+{% endblock breadcrumbs %}
+
+{% block page_id %}
+<div id="page_project_directory">
+{% endblock page_id %}
+
+{% block outer_leftwing %}
+
+<div id="outer_leftwing">
+
+<div class="boxhead">
+    <div style="float:right; margin-top: 0.6em">
+    <label for="display_number_of_entries">Show</label>
+    <select name='display_number_of_entries' class="select">
+    <option value='25'>25</option>
+    <option value='50'>50</option>
+    <option value='75'>75</option>
+    </select>
+    results per page <span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+    </div>
+
+    <h1>Project listing <span class="lightx2" style="font-weight:normal">(223 total)</span></h1>
+</div> <!-- .boxhead -->
+
+<div class="boxbody">
+
+<table id="project_table">
+<tr>
+<th style="background-color: #999"><a href="#">Organization name</a></th>
+<th><a href="?order_by=status">Type</a></th>
+<th><a href="?order_by=country">Country</a></th>
+<th><a href="#">Continent</a></th>
+<th><a href="#">Total projects</a></th>
+<th><a href="#">Funds requested</a></th>
+<th><a href="#">Funds still needed</a></th>
+</tr>
+{% for o in orgz %}
+<tr>
+	<td>
+		
+	
+		{% if o.logo %}
+			<img src="{{MEDIA_URL}}{{o.logo}}" alt="{{o.name}}" style="width: 100px; float:left; margin-right: 10px;" />
+		{% else %}
+			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
+		{% endif %}	
+
+		<a href="../../organization/{{o.id}}/">{{o.name}}</a>
+		<div class="lightx2 small">{{o.long_name}}</div>
+		<div style="clear: left;">
+		{% if o.field_partner %}
+			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		 {% endif %}
+		 {% if o.support_partner %}
+			 <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		 {% endif %}
+		 {% if o.funding_partner %}
+			 <img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 10px 5px 10px 0;" />
+		 {% endif %}
+	 	</div>
+	</td>
+	<td>{{o.show_organization_type}}</td>
+	<td>{{o.country}}</td>
+	<td>Continent</td>
+	<td>
+		<a href="../../projects/{{o.id}}/">{{o.projects.count}}</a><br />
+	</td>
+	<td>
+		{% ifequal o.funding.still_needed 0 %}
+			<span style="color: green">
+		{% else %}
+			<span>
+		{% endifequal %}
+		{{o.funding.total}}
+		</span>
+	</td>
+	<td>
+		{% ifequal o.funding.still_needed 0 %}
+			<span>
+		{% else %}
+			<span style="color: red">
+		{% endifequal %}
+		{{o.funding.still_needed}}
+		</span>
+	</td>
+</tr>
+
+{% endfor %}
+
+<tr>
+	<td colspan="9">
+		<div style="text-align: right"
+			<label for="display_number_of_entries">Show</label>
+			<select name='display_number_of_entries' class="select">
+				<option value='25'>25</option>
+				<option value='50'>50</option>
+				<option value='75'>75</option>
+			</select>
+			results per page
+			<span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span>
+			<span style="margin: 0 10px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+		</div>
+	</td>
+</tr>
+</table>
+
+</div> <!-- .boxbody -->
+
+</div> <!-- #outer_leftwing -->
+{% endblock outer_leftwing %}
+
+{% block projects %}
+
+
+{% endblock projects %}
+
