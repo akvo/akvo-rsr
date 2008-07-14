@@ -25,4 +25,5 @@ records = [
 [21, u'subscriber', u'feedjack', u'subscriber']
 [22, u'project comment', u'rsr', u'projectcomment']
 [23, u'support partner', u'rsr', u'supportpartner']
+[24, u'country', u'rsr', u'country']
 ]

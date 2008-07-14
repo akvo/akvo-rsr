@@ -69,4 +69,7 @@ records = [
 [67, u'Can add support partner', 23, u'add_supportpartner']
 [68, u'Can change support partner', 23, u'change_supportpartner']
 [69, u'Can delete support partner', 23, u'delete_supportpartner']
+[70, u'Can add country', 24, u'add_country']
+[71, u'Can change country', 24, u'change_country']
+[72, u'Can delete country', 24, u'delete_country']
 ]

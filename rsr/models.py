@@ -15,7 +15,6 @@ CONTINENTS = (
     (5, 'North America'),
     (6, 'South America'),
 )
-CONTINENTS_DICT = dict(CONTINENTS)
 class Country(models.Model):
     country_name                = models.CharField(max_length=50)
     continent                   = models.IntegerField(choices=CONTINENTS)
@@ -24,10 +23,8 @@ class Country(models.Model):
         return self.country_name
     
     class Admin:
-        list_display = ('country_name', 'show_continent', )
-        
-    def show_continent(self):
-        return CONTINENTS_DICT[self.continent]
+        list_display = ('country_name', 'continent', )
+        list_filter     = ('country_name', 'continent', )
 
 def funding_aggregate(projects):
     '''
@@ -61,7 +58,7 @@ class Organization(models.Model):
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
-    country                     = models.CharField(max_length=15)
+    country                     = models.CharField(max_length=25)
     url                         = models.URLField(blank=True, verify_exists = False)
     map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     
