@@ -140,17 +140,21 @@ def index(request):
 def projectlist(request, org_id=0):
     '''
     List of all projects in RSR
+    may be filtered on an organisation
     Context:
     projects: list of all projects
     stats: the aggregate projects data
     '''
     if org_id != 0:
+        # get all projects org_id is asociated with
         projects = Organization.objects.get(id=org_id).projects()
     else:
         projects = Project.objects.all()
     try:
         order_by = request.GET['order_by']
-        projects = projects.order_by(order_by)
+        for p in projects:
+            funding_total   = p.funding.total()
+            funding_needed  = p.funding.still_needed()
     except:
         pass
     stats = akvo_at_a_glance(projects)

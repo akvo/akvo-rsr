@@ -35,20 +35,20 @@
     <fieldset>
         <h1 class="section">I have an online account</h1>
         <form method="post" action=".">
+        
             <table id="login" style="padding: 20px;">
             <tr>            
-                <td><label for="id_username">Enter username</label></td>
-                <td style="padding: 5px 20px;">{{ form.username }}</td>
-                <!-- <input type="text" name="username" value="" class="input" size="25" style="margin: 0 20px" /> -->
-                <td><a href="#">I forgot my username</a></td>
+                <td style="width: 15%""><label for="id_username">Enter username</label></td>
+                <td style="width: 20%; padding: 5px 20px;">{{ form.username }}</td>
+                <td style="width: 30%;"><a href="#">I forgot my username</a></td>
             </tr>
             <tr>
                 <td><label for="id_password">Enter password</label></td>
                 <td style="padding: 5px 20px">{{ form.password }}</td>
-                <!-- <input type="password" name="password" value="" class="input" size="25" style="margin: 0 20px" /> -->
                 <td><a href="#">I forgot my password</a></td>
             </tr>
             </table>
+
             <hr />
             <div style="text-align: center">
                 <a href="#" style="margin-right: 20px;">Cancel</a>
@@ -66,13 +66,13 @@
 <h1 class="section">I don't have an online account</h1>
 <p style="margin: 10px 0">By registering with Akvo, you'll be able to:</p>
 
-<ul class="indented">
+<ul class="simplelist">
 <li>Edit and create Akvopedia articles</li>
 <li>Leave comments</li>
 <li>Manage your own project or organization pages</li>
 </ul>
 <p style="margin: 10px 0">And much more! <a href="#">Learn about</a> how Akvo works.</p>
-<div style="text-align: center"><button type="submit"><a class="actionbutton ab_grey" href="#" onclick="this.blur();" style=" margin:0"><span>Sign in</span></a></button></button></div>
+<div style="text-align: center"><button type="submit"><a class="actionbutton ab_grey" href="#" onclick="this.blur();" style=" margin:0"><span>Sign in</span></a></button></div>
 </div> <!-- style .boxbody -->
 
 <div style="clear:left"></div>

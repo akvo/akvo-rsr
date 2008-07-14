@@ -66,7 +66,7 @@
 			</tr>
 			<tr>
 			<td><b>Total</b></td>
-			<td>&#8364; {{p.funding.total}}</td>
+			<td><b>&#8364; {{p.funding.total}}</b></td>
 			</tr>
 			</table>
 		</td>
@@ -84,7 +84,9 @@
  		{% for funder in p.fundingpartner_set.all %}
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 				{% if funder.funding_organization.logo %}
+					<a href="../../organization/{{funder.funding_organization.id}}/">
 					<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+					</a>
 				{% endif %}	
 				<p><a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a></p>
 				<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>

@@ -33,7 +33,9 @@
 		<h2><a href="../../project/{{showcase.id}}/">{{showcase.name}}</a></h2>
 		<div class="small lightx2">{{showcase.subtitle}}</div>
 		{% if showcase.current_image %}
+			<a href="../../project/{{showcase.id}}/">
 			<img src="{{MEDIA_URL}}{{showcase.current_image}}" alt="{{showcase.current_image_caption}}" style="height: 105px; margin: 10px 0" />
+			</a>
 			<p class="small lightx2">{{showcase.current_image_caption}}</p>
 		{% else %}
 			<div style="width: 140px; height: 105px; background-color: #ccc; margin: 10px 0"></div>
@@ -57,7 +59,7 @@
 			 {% endif %}
 		<p class="lightx2">Location</p>
 		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />Continent</p>
-		<div style="border: 1px solid #ccc; width: 100%; margin: 15px 0 5px 0"><div style="background-color: green; width: {% widthratio showcase.funding.pledged showcase.funding.total 100 %}%; height: 20px;"></div></div>
+		<div style="border: 1px solid #ccc; width: 100%; margin: 15px 0 5px 0"><div style="background-color: #4CAC62; width: {% widthratio showcase.funding.pledged showcase.funding.total 100 %}%; height: 20px;"></div></div>
 		<p class="bold">Total <span style="margin-left: 40px;">{{showcase.funding.total}} {{showcase.funding.currency}}</span></p>
 	</td>
 	{% endfor %}
@@ -78,10 +80,10 @@
     <option value='50'>50</option>
     <option value='75'>75</option>
     </select>
-    results per page <span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+    results per page <span style="margin: 0 20px 0 20px">Projects 1-25 of {{projects.count}}</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
     </div>
 
-    <h1>Project listing <span class="lightx2" style="font-weight:normal">(223 total)</span></h1>
+    <h1>Project listing <span class="lightx2" style="font-weight:normal">({{projects.count}} total)</span></h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
@@ -92,12 +94,12 @@
 <th><a href="?order_by=status">Status</a></th>
 <th><a href="?order_by=country">Country</a></th>
 
-<th><a href="#">Continent</a></th>
-<th><a href="#">Total funds requested</a></th>
-<th><a href="#">Funding still needed</a></th>
-<th><a href="#">Field partner(s)</a></th>
-<th><a href="#">Support partner(s)</a></th>
-<th><a href="#">Funding partner(s)</a></th>
+<th>Continent</th>
+<th>Total funds requested</th>
+<th>Funding still needed</th>
+<th>Field partner(s)</th>
+<th>Support partner(s)</th>
+<th>Funding partner(s)</th>
 </tr>
 {% for p in projects %}
 <tr>
@@ -105,7 +107,9 @@
 		
 	
 		{% if p.current_image %}
+			<a href="../../project/{{p.id}}/">
 			<img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 100px; float:left; margin-right: 10px;" />
+			</a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
 		{% endif %}	
@@ -180,7 +184,7 @@
 				<option value='75'>75</option>
 			</select>
 			results per page
-			<span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span>
+			<span style="margin: 0 20px 0 20px">Projects 1-25 of {{projects.count}}</span>
 			<span style="margin: 0 10px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
 		</div>
 	</td>

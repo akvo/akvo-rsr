@@ -18,14 +18,14 @@
 	<div id="overall_statistics" class="boxbody">
 
 	<table>
-		<tr><th colspan="2"><h2>Projects in Akvo</h2></th></tr>
+		<tr><th colspan="2"><a href="{% url akvo.rsr.views.projectlist %}"><h2>Projects in Akvo</h2></a></th></tr>
 		<tr><td style="width: 50%;">{{stats.status_active}}</td><td>Active</td></tr>
 		<tr><td>{{stats.status_onhold}}</td><td>On hold</td></tr>
 		<tr><td>{{stats.status_complete}}</td><td>Complete</td></tr>
 		
 		<tr class="bold"><td>{{stats.project_count}}</td><td>Total projects</td></tr>
-		<tr class="bold"><td>{{stats.mdgs_water}}</td><td>Water MDGs</td></tr>
-		<tr class="hr bold"><td>{{stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
+		<tr class="bold"><td>({{stats.mdgs_water}}) 0</td><td>Water MDGs</td></tr>
+		<tr class="hr bold"><td>({{stats.mdgs_sanitation}}) 0</td><td>Sanitation MDGs</td></tr>
 		<tr><th colspan="2"><a href="{% url akvo.rsr.views.orglist %}"><h2>Partners</h2></a></th></tr>
 		<tr><td>{{stats.fieldpartner_count}}</td><td>Field partners</td></tr>
 		<tr><td>{{stats.supportpartner_count}}</td><td>Support partners</td></tr>

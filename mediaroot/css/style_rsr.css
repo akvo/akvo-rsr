@@ -196,6 +196,7 @@ padding: 2px 15px 2px 0;
 table#login
 {
 vertical-align: middle;
+width: 100%;
 }
 
 table td.padded

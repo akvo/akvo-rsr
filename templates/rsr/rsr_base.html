@@ -36,7 +36,7 @@
 		$(this).toggleClass("active"); return false;
 	});
 	});
-	
+
 </script>
 {% endblock script %}
 </head>
@@ -52,16 +52,14 @@
 	
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
 
-	<div class="right">
 	<a class="actionbutton ab_white" href="{% url django.contrib.auth.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin-top: 1.4em;">
-	<span>Sign in</span>
-	</a>
-	</div>
+	<span>Sign in</span></a>
 
 	{% else %}
 
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
-	<div style="padding-left: 50px"><a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="margin-top: 1.4em; margin-left: 20px"><span>Sign out</span></a></div>
+	<div style="padding-left: 50px">
+	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="margin-top: 1.4em; margin-left: 20px"><span>Sign out</span></a></div>
 	Signed in as: {{user.username}}
 
 	{% endif %}
@@ -75,11 +73,11 @@
 <div id="navigation">			
 	<ul id="navlist">
 		<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>Home</a></li>
-		<li><a href="#">Akvopedia</a></li>
+		<li><a href="http://www.akvo.org/wiki/">Akvopedia</a></li>
 		<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifequal request.path "/rsr/projects/all/" %} class="active"{% endifequal %}>Projects</a></li>
-		<li><a href="#">Get involved</a></li>
-		<li><a href="#">Blog</a></li>
-		<li><a href="#">About</a></li>
+		<li><a href="http://dev.akvo.org:8080/web/get-involved/">Get involved</a></li>
+		<li><a href="http://www.akvo.org/blog/">Blog</a></li>
+		<li><a href="http://dev.akvo.org:8080/web/">About</a></li>
 		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="#">My account</a></li>
 	</ul>
 </div> <!-- #navigation -->

@@ -7,6 +7,28 @@ from django.utils.safestring import mark_safe
 
 from datetime import date
 
+CONTINENTS = (
+    (1, 'Africa'),
+    (2, 'Asia'),
+    (3, 'Australia'),
+    (4, 'Europe'),
+    (5, 'North America'),
+    (6, 'South America'),
+)
+CONTINENTS_DICT = dict(CONTINENTS)
+class Country(models.Model):
+    country_name                = models.CharField(max_length=50)
+    continent                   = models.IntegerField(choices=CONTINENTS)
+
+    def __unicode__(self):
+        return self.country_name
+    
+    class Admin:
+        list_display = ('country_name', 'show_continent', )
+        
+    def show_continent(self):
+        return CONTINENTS_DICT[self.continent]
+
 def funding_aggregate(projects):
     '''
     Create funding aggregate data about a collection of projects in a queryset.

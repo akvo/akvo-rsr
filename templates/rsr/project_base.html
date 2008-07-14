@@ -22,7 +22,7 @@
 		<a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Fund project</span></a>
 		<h1>Funding</h1>
 
-		<p><a href="#">Notify me of changes via email</a></p>
+		<!--<p><a href="#">Notify me of changes via email</a></p>-->
 	</div> <!-- .boxhead -->
 
 	<div id="project_funding" class="boxbody">
@@ -48,7 +48,9 @@
 				<hr />
 			{% endif %}
 			{% if funder.funding_organization.logo %}
+                <a href="../../organization/{{funder.funding_organization.id}}/">
 				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+                </a>
 			{% endif %}	
 			<p><a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a></p>
 			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
@@ -74,7 +76,9 @@
 					<hr />
 				{% endif %}
 				{% if fp.field_organization.logo %}
+                    <a href="../../organization/{{fp.field_organization.id}}/">
 					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+                    </a>
 				{% endif %}	
 				<p><a href="../../organization/{{fp.field_organization.id}}/">{{fp.field_organization.name}}</a></p>
 				<p>{{fp.field_organization.city}}, {{fp.field_organization.country}}</p>
@@ -93,7 +97,9 @@
 					<hr />
 				{% endif %}
 				{% if sp.support_organization.logo %}
+                    <a href="../../organization/{{sp.support_organization.id}}/">
 					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+                    </a>
 				{% endif %}	
 				<p><a href="../../organization/{{sp.support_organization.id}}/">{{sp.support_organization.name}}</a></p>
 				<p>{{sp.support_organization.city}}, {{sp.support_organization.country}}</p>
@@ -107,9 +113,9 @@
 	</div> <!-- .boxhead -->
 
 	<div id="project_pagetools" class="boxbody">
-		<p><a href="#">Printable version</a></p>
+		<!--<p><a href="#">Printable version</a></p>-->
 
-		<p><a href="#">Permalink to this project</a></p>
+		<p><a href="{% url akvo.rsr.views.projectmain project.id %}">Permalink to this project</a></p>
 		<p><a href="#">Email this project's owner</a></p>
 	</div> <!-- #project_pagetools & .box -->
 

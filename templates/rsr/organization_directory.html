@@ -1,7 +1,7 @@
 {% extends "rsr/index_base.html" %}
 {% load generic_content %}
 
-{% block title %}Akvo RSR - Organization listing{% endblock title %}
+{% block title %}Akvo RSR - Organisation listing{% endblock title %}
 
 {% block script %}
 {{block.super}}
@@ -9,7 +9,7 @@
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; Organization listing
+{{block.super}} &raquo; Organisation listing
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -28,10 +28,10 @@
     <option value='50'>50</option>
     <option value='75'>75</option>
     </select>
-    results per page <span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+    results per page <span style="margin: 0 20px 0 20px">Organisations 1-25 of {{orgz.count}}</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
     </div>
 
-    <h1>Project listing <span class="lightx2" style="font-weight:normal">(223 total)</span></h1>
+    <h1>Organisation listing <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
@@ -52,7 +52,9 @@
 		
 	
 		{% if o.logo %}
+            <a href="../../organization/{{o.id}}/">
 			<img src="{{MEDIA_URL}}{{o.logo}}" alt="{{o.name}}" style="width: 100px; float:left; margin-right: 10px;" />
+            </a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
 		{% endif %}	
@@ -109,7 +111,7 @@
 				<option value='75'>75</option>
 			</select>
 			results per page
-			<span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span>
+			<span style="margin: 0 20px 0 20px">Organisations 1-25 of {{orgz.count}}</span>
 			<span style="margin: 0 10px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
 		</div>
 	</td>

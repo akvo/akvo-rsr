@@ -1,6 +1,6 @@
 {% extends "rsr/rsr_base.html" %}
 
-{% block title %}Akvo RSR - Organization no. {{o.id}}, {{o.name}}{% endblock title %}
+{% block title %}Akvo RSR - Organisation no. {{o.id}}, {{o.name}}{% endblock title %}
 
 {% block breadcrumbs %}
 {{block.super}} &raquo; {{o.name}}
@@ -14,9 +14,9 @@
 
 <div id="outer_leftwing">
 	<div class="boxhead">
-		<div style="float: right; width: 30%"><a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Edit organization</span></a></div>
+		<!--<div style="float: right; width: 30%"><a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Edit organisation</span></a></div>-->
 
-		<p style="clear: right; float: right; width: 30%; text-align: right; margin-top: 5px;"><a href="#">Notify me of changes via email</a></p>
+		<!--<p style="clear: right; float: right; width: 30%; text-align: right; margin-top: 5px;"><a href="#">Notify me of changes via email</a></p>-->
 		<h1 class="section">{{o.name}}</h1>
 		{% if o.long_name %}
 		<p>{{o.long_name}}</p>

@@ -18,6 +18,7 @@ padding: 20px;
 { 
 width: 980px;
 font-size: 0.8em;
+margin: 0 auto;
 }
 
 /* structural-float-level
@@ -134,7 +135,6 @@ border: 1px solid #999;
 margin: 10px;
 vertical-align:top; 
 padding-top: 3px;
-display: block;
 }
 
 .textarea {
