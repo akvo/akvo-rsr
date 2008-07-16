@@ -72,4 +72,7 @@ records = [
 [70, u'Can add country', 24, u'add_country']
 [71, u'Can change country', 24, u'change_country']
 [72, u'Can delete country', 24, u'delete_country']
+[73, u'Can add link', 25, u'add_link']
+[74, u'Can change link', 25, u'change_link']
+[75, u'Can delete link', 25, u'delete_link']
 ]

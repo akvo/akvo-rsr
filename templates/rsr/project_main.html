@@ -127,17 +127,18 @@
     
         <div id="project_related" class="boxbody">
             <h2>Akvopedia entries</h2>
-            <p><a href="#">Technique 101</a></p>
-            <p><a href="#">Technology 101</a></p>
-    
-            <p><a href="#">Documentation 101</a></p>
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'A' %}
+		            <p><a href="{{link.url}}">{{link.caption}}</a></p>
+				{% endifequal %}
+			{% endfor %}
             <hr />
             <h2>External links</h2>
-            <p><a href="#">Government of Country</a></p>
-            <p><a href="#">Disasters Emergency Committee</a></p>
-            <p><a href="#">Oxfam</a></p>
-    
-            <p class="small lightx1 spaced">Akvo.org is not responsible for the content of external web sites</p>
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'E' %}
+		            <p><a href="{{link.url}}">{{link.caption}}</a></p>
+				{% endifequal %}
+			{% endfor %}
         </div> <!-- #project_related & .boxbody -->
     
         <div class="boxhead">											

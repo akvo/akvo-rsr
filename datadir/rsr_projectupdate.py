@@ -15,4 +15,5 @@ records = [
 [14, 2, 1, u'Installed new collection facilities', u'This week we have been installing new rain water harvesting equipment in 10 homes. We are still in the process of doing this, but here is a progress picture.', u'A', u'img/2008/06/24/1531738658_e1c104c32e.jpg', u'', u'Rainwater harvesting installation', u'Mark Charmer', u'W', '2008-06-24 23:37:17']
 [15, 3, 1, u'blah', u'foo', u'H', u'', u'E', u'', u'', u'W', '2008-07-10 22:40:33']
 [16, 2, 2, u'Training', u'Performed training session on how to clean the tanks for 10 people today.', u'A', u'', u'', u'', u'', u'W', '2008-07-11 10:21:03']
+[17, 5, 7, u'Rising Mercury...', u'Sure is getting hotter in many places. But not as hot as it is on the planet Mercury.', u'H', u'img/2008/07/15/rnd_n_rnd_sm.jpg', u'B', u'My "Mercury" at home some years ago.', u'mememe', u'W', '2008-07-15 10:17:12']
 ]

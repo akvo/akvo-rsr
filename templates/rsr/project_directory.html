@@ -72,7 +72,9 @@
 {% endblock outer_leftwing %}
 
 {% block projects %}
+
 <div class="boxhead" style="clear:both">
+	<a name="list"></a>
     <div style="float:right; margin-top: 0.6em">
     <label for="display_number_of_entries">Show</label>
     <select name='display_number_of_entries' class="select">
@@ -90,11 +92,11 @@
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="?order_by=name">Project name</a></th>
-<th><a href="?order_by=status">Status</a></th>
-<th><a href="?order_by=country__country_name">Country</a></th>
+<th style="background-color: #999"><a href="{% url akvo.rsr.views.projectlist %}?order_by=name#list">Project name</a></th>
+<th><a href="{% url akvo.rsr.views.projectlist %}?order_by=status#list">Status</a></th>
+<th><a href="{% url akvo.rsr.views.projectlist %}?order_by=country__country_name#list">Country</a></th>
 
-<th><a href="?order_by=country__continent">Continent</a></th>
+<th><a href="{% url akvo.rsr.views.projectlist %}?order_by=country__continent#list">Continent</a></th>
 <th>Total funds requested</th>
 <th>Funding still needed</th>
 <th>Field partner(s)</th>

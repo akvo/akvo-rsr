@@ -7,18 +7,6 @@ from django.utils.safestring import mark_safe
 
 from datetime import date
 
-class Link(models.Model):
-    url = models.URLField()
-    caption = models.CharField(max_length=50)
-    
-    def __unicode__(self):
-        return self.url
-    
-    def show_link(self):
-        return '<a href="%s">%s</a>' % (self.url, self.caption,)
-    
-    class Admin:
-        list_display = ('url', 'caption', 'show_link', )
         
 CONTINENTS = (
     (1, 'Africa'),
@@ -38,7 +26,7 @@ class Country(models.Model):
     
     class Admin:
         list_display = ('country_name', 'continent', )
-        list_filter     = ('country_name', 'continent', )
+        list_filter  = ('country_name', 'continent', )
         
     class Meta:
         verbose_name_plural = "countries"
@@ -154,7 +142,7 @@ CURRENCY_CHOICES = (
 STATUSES = (
     ('N', 'None'),
     ('A', 'Active'),
-    ('H', 'On hold'),
+    ('H', 'Looking for funding'),
     ('C', 'Complete'),
 )
 STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
@@ -251,7 +239,7 @@ class Project(models.Model):
                 'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
             }),
         )
-        list_display = ('name', 'project_type', 'country', 'state', 'city', 'project_plan_summary',)
+        list_display = ('name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary',)
 
     def project_type(self):
         pt = ""
@@ -270,6 +258,25 @@ class Project(models.Model):
         
     class Meta:
         pass
+
+LINK_KINDS = (
+    ('A', 'Akvopedia entry'),
+    ('E', 'External link'),
+)
+class Link(models.Model):
+    kind    = models.CharField(max_length=1, choices=LINK_KINDS)
+    url     = models.URLField(core=True)
+    caption = models.CharField(max_length=50)
+    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=3)
+    
+    def __unicode__(self):
+        return self.url
+    
+    def show_link(self):
+        return '<a href="%s">%s</a>' % (self.url, self.caption,)
+    
+    class Admin:
+        list_display = ('url', 'caption', 'show_link', )
 
 class FundingPartner(models.Model):
     funding_organization =  models.ForeignKey(Organization, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
