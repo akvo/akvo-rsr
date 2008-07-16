@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.newforms import ModelForm
 from django.shortcuts import render_to_response, get_object_or_404
+from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -152,9 +153,7 @@ def projectlist(request, org_id=0):
         projects = Project.objects.all()
     try:
         order_by = request.GET['order_by']
-        for p in projects:
-            funding_total   = p.funding.total()
-            funding_needed  = p.funding.still_needed()
+        projects = projects.order_by(order_by)
     except:
         pass
     stats = akvo_at_a_glance(projects)
@@ -177,11 +176,16 @@ def orglist(request, org_id=0):
         orgz = orgz.order_by(order_by)
     except:
         pass
+    ORGZ_PER_PAGE = 5
+    paginator = Paginator(orgz, ORGZ_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
     projects = Project.objects.all()
     stats = akvo_at_a_glance(projects)
-    return {'orgz': orgz, 'stats': stats}
+    return {'orgz': orgz, 'stats': stats, 'page': page}
 
 class SigninForm(forms.Form):
+    #from dbgp.client import brk
+    #brk(host="vnc.datatrassel.se", port=9000)
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'}))
     

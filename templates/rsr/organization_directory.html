@@ -1,5 +1,6 @@
 {% extends "rsr/index_base.html" %}
 {% load generic_content %}
+{% load addparam %}
 
 {% block title %}Akvo RSR - Organisation listing{% endblock title %}
 
@@ -28,7 +29,30 @@
     <option value='50'>50</option>
     <option value='75'>75</option>
     </select>
-    results per page <span style="margin: 0 20px 0 20px">Organisations 1-25 of {{orgz.count}}</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+    results per page
+    <span style="margin: 0 20px 0 20px">Organisations {{page.start_index}}-{{page.end_index}} of {{orgz.count}}</span>
+    <span style="margin: 0 20px 0 20px">
+        {% ifequal page.number 1 %}
+        First |
+        {% else %}
+        <a href="#">First</a> |
+        {% endifequal %}
+        {% if page.has_previous %}
+        <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.previous_page_number %}">Previous</a> |
+        {% else %}
+        Previous |
+        {% endif %}
+        {% if page.has_next %}
+        <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.next_page_number %}">Next</a> |
+        {% else %}
+        Next |
+        {% endif %}
+        {% ifequal page.number page.paginator.num_pages %}
+        Last |
+        {% else %}
+        <a href="#">Last</a> |
+        {% endifequal %}
+    </span>
     </div>
 
     <h1>Organisation listing <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
@@ -38,13 +62,13 @@
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="#">Organization name</a></th>
-<th><a href="?order_by=status">Type</a></th>
-<th><a href="?order_by=country">Country</a></th>
-<th><a href="#">Continent</a></th>
-<th><a href="#">Total projects</a></th>
-<th><a href="#">Funds requested</a></th>
-<th><a href="#">Funds still needed</a></th>
+<th style="background-color: #999"><a href="?order_by=name">Organization name</a></th>
+<th><a href="?order_by=organization_type">Type</a></th>
+<th><a href="?order_by=country__country_name">Country</a></th>
+<th><a href="?order_by=country__continent">Continent</a></th>
+<th>Total projects</th>
+<th>Funds requested</th>
+<th>Funds still needed</th>
 </tr>
 {% for o in orgz %}
 <tr>
@@ -75,7 +99,7 @@
 	</td>
 	<td>{{o.show_organization_type}}</td>
 	<td>{{o.country}}</td>
-	<td>Continent</td>
+	<td>{{o.country.get_continent_display}}</td>
 	<td>
 		<a href="../../projects/{{o.id}}/">{{o.projects.count}}</a><br />
 	</td>

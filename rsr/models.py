@@ -7,6 +7,19 @@ from django.utils.safestring import mark_safe
 
 from datetime import date
 
+class Link(models.Model):
+    url = models.URLField()
+    caption = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        return self.url
+    
+    def show_link(self):
+        return '<a href="%s">%s</a>' % (self.url, self.caption,)
+    
+    class Admin:
+        list_display = ('url', 'caption', 'show_link', )
+        
 CONTINENTS = (
     (1, 'Africa'),
     (2, 'Asia'),
@@ -16,6 +29,7 @@ CONTINENTS = (
     (6, 'South America'),
 )
 class Country(models.Model):
+    
     country_name                = models.CharField(max_length=50)
     continent                   = models.IntegerField(choices=CONTINENTS)
 
@@ -25,6 +39,9 @@ class Country(models.Model):
     class Admin:
         list_display = ('country_name', 'continent', )
         list_filter     = ('country_name', 'continent', )
+        
+    class Meta:
+        verbose_name_plural = "countries"
 
 def funding_aggregate(projects):
     '''
@@ -58,7 +75,7 @@ class Organization(models.Model):
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
-    country                     = models.CharField(max_length=25)
+    country                     = models.ForeignKey(Country)
     url                         = models.URLField(blank=True, verify_exists = False)
     map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     
@@ -149,7 +166,7 @@ class Project(models.Model):
     status                      = models.CharField(max_length=1, choices=STATUSES, default='N')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
-    country                     = models.CharField(max_length=15)
+    country                     = models.ForeignKey(Country)
     map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     #Project categories
     category_water              = models.BooleanField()
@@ -163,7 +180,7 @@ class Project(models.Model):
     project_plan_summary        = models.TextField(max_length=220)
     current_image               = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     current_image_caption       = models.CharField(blank=True, max_length=50)
-    goals_summary               = models.TextField(max_length=220)
+    goals_summary               = models.TextField(max_length=500)
     goal_1                      = models.CharField(blank=True, max_length=60)
     goal_2                      = models.CharField(blank=True, max_length=60)
     goal_3                      = models.CharField(blank=True, max_length=60)
@@ -187,7 +204,7 @@ class Project(models.Model):
     current_status_detail       = models.TextField(blank=True, max_length=600)
 
     project_plan_detail         = models.TextField(blank=True)
-    sustainability              = models.TextField(max_length=500)
+    sustainability              = models.TextField()
     context                     = models.TextField(max_length=500)
 
     project_rating              = models.IntegerField(default=0)
@@ -279,10 +296,10 @@ class FieldPartner(models.Model):
     
 class Funding(models.Model):
     project = models.OneToOneField(Project)
-    date_next_milestone = models.DateField()
+    date_next_milestone = models.DateField(blank=True)
     date_request_posted = models.DateField()
-    date_started = models.DateField()
-    date_complete = models.DateField()
+    date_started = models.DateField(blank=True)
+    date_complete = models.DateField(blank=True)
     employment = models.IntegerField()
     building = models.IntegerField()
     training = models.IntegerField()
@@ -291,7 +308,7 @@ class Funding(models.Model):
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     
     def __unicode__(self):
-        return self.total()
+        return self.project.__unicode__()
     
     def total(self):
         return self.employment + self.building + self.training + self.maintenance + self.other

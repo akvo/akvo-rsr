@@ -150,6 +150,11 @@ padding-top: 3px;
 display: block;
 }
 
+.input:focus, .input:hover, .textarea:focus, .textarea:hover
+{
+background-color: #F0FFE6;
+}
+
 .radio {
 margin-left: 15px;
 margin-right: 15px;

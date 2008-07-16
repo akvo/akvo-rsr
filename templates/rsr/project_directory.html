@@ -25,7 +25,7 @@
 	</div> <!-- .boxhead -->
 
 <div class="boxbody">
-	<table id="project_showcase">
+	<table id="project_showcase" style="width: 100%">
 	{% get_random_objects rsr.Project 3 as showcases %}
 	<tr>
 	{% for showcase in showcases %}
@@ -90,11 +90,11 @@
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="#">Project name</a></th>
+<th style="background-color: #999"><a href="?order_by=name">Project name</a></th>
 <th><a href="?order_by=status">Status</a></th>
-<th><a href="?order_by=country">Country</a></th>
+<th><a href="?order_by=country__country_name">Country</a></th>
 
-<th>Continent</th>
+<th><a href="?order_by=country__continent">Continent</a></th>
 <th>Total funds requested</th>
 <th>Funding still needed</th>
 <th>Field partner(s)</th>
@@ -118,7 +118,7 @@
 		<div class="lightx2 small">{{p.subtitle}}</div>
 		<div style="clear: left;">
 		{% if p.category_sanitation %}
-			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" title="Purple :-)" style="margin: 10px 5px 10px 0;" />
+			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" title="" style="margin: 10px 5px 10px 0;" />
 		 {% endif %}
 		 {% if p.category_water %}
 			 <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
@@ -136,7 +136,7 @@
 	</td>
 	<td>{{p.show_status}}</td>
 	<td>{{p.country}}</td>
-	<td>Continent</td>
+	<td>{{p.country.get_continent_display}}</td>
 	<td>
 		{% ifequal p.funding.still_needed 0 %}
 			<span style="color: green">
