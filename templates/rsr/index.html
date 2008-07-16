@@ -16,6 +16,7 @@
 	</style>
 {% endblock style %}
 
+{% block breadcrumbs %}{% endblock breadcrumbs %}
 
 {% block page_id %}
 <div id="page_home_flash">
@@ -94,7 +95,7 @@
 <div id="outer_leftwing">
 
 <div class="boxhead">
-<a href="#" class="rss" style="float:right;margin-top:1em;">Subscribe via RSS</a>
+<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">Subscribe via RSS</a>
 <h1>Most recent Akvo Blog entry</h1>
 </div> <!-- .boxhead -->
 
@@ -107,13 +108,13 @@
 </div> <!-- style -->
 {% endif %}
 <h2>{{latest.title|safe}}</h2>
-<p class="lightx2">24/06/2008 by <a href="#">{{latest.author|safe}}</a></p>
+<p class="lightx2">24/06/2008 by {{latest.author|safe}}</p>
 <p>{{latest.summary|safe}}</p>
 
 <p><a href="http://www.akvo.org/blog/">Full entry</a></p>
 <p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
 <hr />
-<p style="text-align: right"><a href="#">View earlier blog entries</a></p>
+<p style="text-align: right"><a href="http://www.akvo.org/blog/">View earlier blog entries</a></p>
 
 <div style="clear:left"></div>
 

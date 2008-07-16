@@ -33,7 +33,7 @@
     		<p>Ongoing Funding completed</p>
 		{% endif %}
 		<p><b>Total: <span style="margin-left: 10px">{{p.funding.total}} {{p.funding.currency}}</span></b></p>
-		<p style="text-align: right"><a href="funding">View details</a></p>
+		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">View details</a></p>
 		<hr />
 		<p style="margin: 10px 0 10px 0;">
         {% ifequal p.fundingpartner_set.count 1 %}
@@ -48,11 +48,11 @@
 				<hr />
 			{% endif %}
 			{% if funder.funding_organization.logo %}
-                <a href="../../organization/{{funder.funding_organization.id}}/">
+                <a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">
 				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
                 </a>
 			{% endif %}	
-			<p><a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a></p>
+			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a></p>
 			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
 			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
 		{% endfor %}    
@@ -76,11 +76,11 @@
 					<hr />
 				{% endif %}
 				{% if fp.field_organization.logo %}
-                    <a href="../../organization/{{fp.field_organization.id}}/">
+                    <a href="{% url akvo.rsr.views.orgdetail fp.field_organization.id %}">
 					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px 10px 20px;" />
                     </a>
 				{% endif %}	
-				<p><a href="../../organization/{{fp.field_organization.id}}/">{{fp.field_organization.name}}</a></p>
+				<p><a href="{% url akvo.rsr.views.orgdetail fp.field_organization.id %}">{{fp.field_organization.name}}</a></p>
 				<p>{{fp.field_organization.city}}, {{fp.field_organization.country}}</p>
 		{% endfor %}
 		{% if p.supportpartner_set.count %}
@@ -97,11 +97,11 @@
 					<hr />
 				{% endif %}
 				{% if sp.support_organization.logo %}
-                    <a href="../../organization/{{sp.support_organization.id}}/">
+                    <a href="{% url akvo.rsr.views.orgdetail sp.support_organization.id %}">
 					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 20px 10px 20px;" />
                     </a>
 				{% endif %}	
-				<p><a href="../../organization/{{sp.support_organization.id}}/">{{sp.support_organization.name}}</a></p>
+				<p><a href="{% url akvo.rsr.views.orgdetail sp.support_organization.id %}">{{sp.support_organization.name}}</a></p>
 				<p>{{sp.support_organization.city}}, {{sp.support_organization.country}}</p>
 			{% endfor %}
 		{% endif %}        
@@ -115,7 +115,7 @@
 	<div id="project_pagetools" class="boxbody">
 		<!--<p><a href="#">Printable version</a></p>-->
 
-		<p><a href="{% url akvo.rsr.views.projectmain project.id %}">Permalink to this project</a></p>
+		<p><a href="{% url akvo.rsr.views.projectmain p.id %}">Permalink to this project</a></p>
 		<p><a href="#">Email this project's owner</a></p>
 	</div> <!-- #project_pagetools & .box -->
 

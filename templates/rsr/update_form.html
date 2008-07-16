@@ -3,7 +3,10 @@
 {% block title %}{{block.super}} - Write an update{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="/rsr/projects/all/">Project listing</a> &raquo; <a href="/rsr/project/{{p.id}}/">{{p.name}}</a> &raquo; Write an update
+	{{block.super}}
+	&raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a>
+	&raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
+	&raquo; Write an update
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -89,7 +92,7 @@
 			{% endif %}
 		
 	<div style="margin: 20px auto; text-align: center;">
-	<a href="./">Cancel</a> <input type="submit" value="Sumbit update" class="submit" />
+	<a href="{% url akvo.rsr.views.projectmain p.id %}">Cancel</a> <input type="submit" value="Sumbit update" class="submit" />
 
 	</div>
 	

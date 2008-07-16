@@ -30,10 +30,10 @@
 	<tr>
 	{% for showcase in showcases %}
 	<td style="width: 33%;{% if not forloop.last %}border-right: 1px solid #ccc;{% endif %}">
-		<h2><a href="../../project/{{showcase.id}}/">{{showcase.name}}</a></h2>
+		<h2><a href="{% url akvo.rsr.views.projectmain showcase.id %}">{{showcase.name}}</a></h2>
 		<div class="small lightx2">{{showcase.subtitle}}</div>
 		{% if showcase.current_image %}
-			<a href="../../project/{{showcase.id}}/">
+			<a href="{% url akvo.rsr.views.projectmain showcase.id %}">
 			<img src="{{MEDIA_URL}}{{showcase.current_image}}" alt="{{showcase.current_image_caption}}" style="height: 105px; margin: 10px 0" />
 			</a>
 			<p class="small lightx2">{{showcase.current_image_caption}}</p>
@@ -109,14 +109,14 @@
 		
 	
 		{% if p.current_image %}
-			<a href="../../project/{{p.id}}/">
+			<a href="{% url akvo.rsr.views.projectmain p.id %}">
 			<img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 100px; float:left; margin-right: 10px;" />
 			</a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
 		{% endif %}	
 
-		<a href="../../project/{{p.id}}/">{{p.name}}</a>
+		<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
 		<div class="lightx2 small">{{p.subtitle}}</div>
 		<div style="clear: left;">
 		{% if p.category_sanitation %}
@@ -159,17 +159,17 @@
 	</td>
 	<td>
 	{% for fieldpartner in p.fieldpartner_set.all %}
-		<a href="../../organization/{{fieldpartner.field_organization.id}}/">{{fieldpartner.field_organization.name}}</a><br />
+		<a href="{% url akvo.rsr.views.orgdetail fieldpartner.field_organization.id %}">{{fieldpartner.field_organization.name}}</a><br />
 	{% endfor %}
 	</td>
 	<td>
 	{% for support in p.supportpartner_set.all %}
-		<a href="../../organization/{{support.support_organization.id}}/">{{support.support_organization.name}}</a><br />
+		<a href="{% url akvo.rsr.views.orgdetail support.support_organization.id %}">{{support.support_organization.name}}</a><br />
 	{% endfor %}
 	</td>
 	<td>
 	{% for funder in p.fundingpartner_set.all %}
-		<a href="../../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a><br />
+		<a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a><br />
 	{% endfor %}		
 	</td>
 </tr>

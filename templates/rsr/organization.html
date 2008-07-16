@@ -112,7 +112,7 @@
 
 <h2>Project partners</h2>
 {% for partner in org_partners %}
-<p><a href="../../organization/{{partner.id}}">{{partner.name}}</a></p>
+<p><a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a></p>
 {% endfor %}
 </div> <!-- .boxbody -->
 
@@ -122,7 +122,7 @@
 
 <div class="boxbody">
 {% for project in org_projects %}
-<p><a href="../../project/{{project.id}}/">{{project.name}}</a></p>
+<p><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a></p>
 {% endfor %}
 
 </div> <!-- .boxbody -->

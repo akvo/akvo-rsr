@@ -51,9 +51,9 @@
 	{% if not user.username %}
 	
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
-
 	<a class="actionbutton ab_white" href="{% url django.contrib.auth.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin-top: 1.4em;">
-	<span>Sign in</span></a>
+		<span>Sign in</span>
+	</a>
 
 	{% else %}
 
@@ -84,7 +84,7 @@
 {% endblock navigation %}
 
 <div id="breadcrumbs">
-	{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">Akvo RSR home</a>{% endblock breadcrumbs %}
+	{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">Home</a>{% endblock breadcrumbs %}
 </div>
 
 <div id="content">

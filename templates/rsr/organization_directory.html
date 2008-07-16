@@ -22,6 +22,7 @@
 <div id="outer_leftwing">
 
 <div class="boxhead">
+    <a name="list"></a>
     <div style="float:right; margin-top: 0.6em">
     <label for="display_number_of_entries">Show</label>
     <select name='display_number_of_entries' class="select">
@@ -62,10 +63,10 @@
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="?order_by=name">Organization name</a></th>
-<th><a href="?order_by=organization_type">Type</a></th>
-<th><a href="?order_by=country__country_name">Country</a></th>
-<th><a href="?order_by=country__continent">Continent</a></th>
+<th style="background-color: #999"><a href="{% url akvo.rsr.views.orglist %}?order_by=name#list">Organization name</a></th>
+<th><a href="{% url akvo.rsr.views.orglist %}?order_by=organization_type#list">Type</a></th>
+<th><a href="{% url akvo.rsr.views.orglist %}?order_by=country__country_name#list">Country</a></th>
+<th><a href="{% url akvo.rsr.views.orglist %}?order_by=country__continent#list">Continent</a></th>
 <th>Total projects</th>
 <th>Funds requested</th>
 <th>Funds still needed</th>
@@ -76,14 +77,14 @@
 		
 	
 		{% if o.logo %}
-            <a href="../../organization/{{o.id}}/">
+            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
 			<img src="{{MEDIA_URL}}{{o.logo}}" alt="{{o.name}}" style="width: 100px; float:left; margin-right: 10px;" />
             </a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
 		{% endif %}	
 
-		<a href="../../organization/{{o.id}}/">{{o.name}}</a>
+		<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
 		<div class="lightx2 small">{{o.long_name}}</div>
 		<div style="clear: left;">
 		{% if o.field_partner %}
@@ -101,7 +102,7 @@
 	<td>{{o.country}}</td>
 	<td>{{o.country.get_continent_display}}</td>
 	<td>
-		<a href="../../projects/{{o.id}}/">{{o.projects.count}}</a><br />
+		<a href="{% url akvo.rsr.views.projectlist o.id %}">{{o.projects.count}}</a><br />
 	</td>
 	<td>
 		{% ifequal o.funding.still_needed 0 %}

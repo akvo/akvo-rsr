@@ -6,7 +6,7 @@
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="/rsr/projects/all/">Project listing</a> &raquo; {{p.name}}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; {{p.name}}
 {% endblock breadcrumbs %}
 
 {% block outer_leftwing %}
@@ -60,7 +60,7 @@
                 
                 <div id="tab_description" class="tab">
                     <p>{{p.project_plan_summary|linebreaks}}</p>
-                    <p style="text-align:right"><a href="details">View details</a></p>
+                    <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}">View details</a></p>
                     <br />		
                     <div style="float:left;width: 250px">
                     {% if p.current_image %}
@@ -101,7 +101,7 @@
         
             <div id="tab_sustainability" class="tab">
                 <p>{{p.sustainability|linebreaks}}</p>
-                <p style="text-align:right"><a href="details#tab_sustainability">View details</a></p>
+                <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}#tab_sustainability">View details</a></p>
             </div> <!-- #tab_sustainability -->
         
             <div id="tab_context" class="tab">
@@ -151,7 +151,7 @@
             <div id="panel">
             {% if not user.username %}
                 <p>You must be signed in to add a comment.</p>
-                <p><a href="/rsr/signin/?next={{request.path}}">Sign In</a> | <a href="#">Register</a></p>
+                <p><a href="{% url django.contrib.auth.views.login %}?next={{request.path}}">Sign In</a> <!--| <a href="#">Register</a></p>-->
             {% else %}
                 <form enctype="multipart/form-data" method="post" action="comment">
                     {{form.comment}}
@@ -186,7 +186,7 @@
 	<div id="subdetailsright">
 
         <div class="boxhead">
-            <a class="actionbutton ab_grey" href="update" onclick="this.blur();"><span>Add update</span></a>
+            <a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>Add update</span></a>
             <h1>Project updates</h1>
         </div> <!-- .boxhead -->
     
@@ -214,7 +214,7 @@
                 {% endif %}
                 <hr />            
             {% endfor %}
-            <p style="text-align:right;"><a href="updates">Earlier updates</a></p>
+            <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectupdates p.id %}">Earlier updates</a></p>
         </div> <!-- #project_updates & .boxbody -->
 
 	</div> <!-- #subdetailsright -->

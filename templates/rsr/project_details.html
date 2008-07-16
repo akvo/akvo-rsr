@@ -8,7 +8,7 @@
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="/rsr/projects/all/">Project listing</a> &raquo; <a href="/rsr/project/{{p.id}}/">{{p.name}}</a> &raquo; Project details
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; Project details
 {% endblock breadcrumbs %}
 
 {% block outer_leftwing %}
@@ -74,7 +74,7 @@
 	{% endif %}
 	
 	<hr style="clear:left; padding-top: 20px" />
-	<p><a href="./">< Back to project summary</a></p>
+	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
 
             <div id="container-1" style="margin-top: 20px; padding-left: 20px;">
                 <ul>
@@ -215,7 +215,7 @@
             
             </div> <!-- #container-1 -->
             
-	<p><a href="./">< Back to project summary</a></p>
+	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
 
 	</div> <!-- #project_details .boxbody -->
 
