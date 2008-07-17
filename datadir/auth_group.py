@@ -4,4 +4,5 @@ fields = ['id', 'name']
 default = {}
 records = [
 [1, u'RSR editors']
+[2, u'RSR users']
 ]

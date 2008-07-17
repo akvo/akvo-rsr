@@ -78,8 +78,12 @@
             <div id="tab_goals" class="tab">
                 <p style="padding-left:0;">{{p.goals_summary|linebreaks}}</p>
                 <br />			
-                <div style="float:left;width:230px">
-                    <p class="lightx1"><b>Overall goals</b></p>
+                <div style="float:left;width:230px;">
+                    <p class="lightx1"><b>Target benchmarks</b></p>
+                    {% include "rsr/inc_target_benchmarks.html" %}
+                </div>
+                <div style="margin-left:240px;">
+                    <p class="lightx1"><b>Goals overview</b></p>
                     <ul class="simplelist">
                     {% if p.goal_1 %}
                     <li>{{p.goal_1}}</li>
@@ -92,10 +96,6 @@
                     {% endif %}
                     </ul>
                 </div>			
-                <div style="margin-left:260px;">
-                    <p class="lightx1"><b>Target benchmarks</b></p>
-                    {% include "rsr/inc_target_benchmarks.html" %}
-                </div>
                 <div style="clear:left">&#32;</div>
             </div> <!-- #tab_goals -->
         
@@ -161,13 +161,12 @@
             {% endif %}
             </div> <!-- #panel -->        
             
-            <p style="margin-bottom: 20px">Questions about this project? <a href="#">Contact project liaison</a></p>
-            {% for c in comments %}
-                <hr />    
+            <!--<p style="margin-bottom: 20px">Questions about this project? <a href="#">Contact project liaison</a></p>-->
+            {% for c in comments %}    
                 <div class="members-photo">
                     <img src="{{MEDIA_URL}}img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" />
                     <!--<div style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;"></div>-->
-                    <p style="margin-top: 10px"><a href="#">{{c.user}}</a></p>
+                    <p style="margin-top: 10px">{{c.user}}</p>
                 </div>						
                     <div style="margin-left: 100px">
                     <p class="lightx1">{{c.time|date:"Y-m-d H:i"}}</p>
@@ -175,10 +174,10 @@
                 </div>
                 <br />
                 <!--<p style="text-align: right"><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>-->
-                <p style="text-align:right"><a href="#">Report abuse</a></p>
+                <p style="text-align:right"><a href="mailto:abuse@akvo.org?subject=Comment abuse in project #{{p.id}}, comment #{{c.id}}">Report abuse</a></p>
+                <hr style="clear: both"/>
             {% endfor %}
-            <hr />
-            <p style="text-align:right;"><a href="#">Older comments</a></p>
+            <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">Older comments</a></p>
         </div> <!-- #project_comments & .boxbody -->
 
 	</div> <!-- #subdetailsleft -->
@@ -194,7 +193,7 @@
             <a href="#" class="rss">Subscribe via RSS</a>
             {% for u in updates %}
                 <h2>{{u.title}}</h2>
-                <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
+                <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by {{u.user}} via {{u.show_update_method}}</p>
                 <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
                 <br />
                 {% if u.photo %}

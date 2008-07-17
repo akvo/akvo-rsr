@@ -124,6 +124,9 @@ class Organization(models.Model):
     def funding(self):
         funding_total, funding_pledged = funding_aggregate(self.projects())
         return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_total - funding_pledged}
+    
+    class Meta:
+        ordering = ['name']
 
 #class Contact(models.Model):
 #    name = models.CharField(max_length=50, core=True, blank=True)
@@ -134,9 +137,9 @@ class Organization(models.Model):
 #        return self.name
         
 CURRENCY_CHOICES = (
-    ('USD', 'US dollars'),
+    #('USD', 'US dollars'),
     ('EUR', 'Euro'),
-    ('GBP', 'British pounds'),
+    #('GBP', 'British pounds'),
 )
 
 STATUSES = (
@@ -168,10 +171,12 @@ class Project(models.Model):
     project_plan_summary        = models.TextField(max_length=220)
     current_image               = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     current_image_caption       = models.CharField(blank=True, max_length=50)
-    goals_summary               = models.TextField(max_length=500)
+    goals_overview              = models.TextField(max_length=500)
     goal_1                      = models.CharField(blank=True, max_length=60)
     goal_2                      = models.CharField(blank=True, max_length=60)
     goal_3                      = models.CharField(blank=True, max_length=60)
+    goal_4                      = models.CharField(blank=True, max_length=60)
+    goal_5                      = models.CharField(blank=True, max_length=60)
     #Project target benchmarks
     water_systems               = models.IntegerField(default=0)
     sanitation_systems          = models.IntegerField(default=0)
@@ -226,7 +231,7 @@ class Project(models.Model):
                 'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
             }),
             ('Goals', {
-                'fields': ('goals_summary', 'goal_1', 'goal_2', 'goal_3', )
+                'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
             }),
             ('Project target benchmarks', {
                 'fields': ('water_systems', 'sanitation_systems', 'hygiene_facilities', ('improved_water', 
@@ -303,10 +308,10 @@ class FieldPartner(models.Model):
     
 class Funding(models.Model):
     project = models.OneToOneField(Project)
-    date_next_milestone = models.DateField(blank=True)
+    #date_next_milestone = models.DateField(blank=True)
     date_request_posted = models.DateField()
-    date_started = models.DateField(blank=True)
-    date_complete = models.DateField(blank=True)
+    #date_started = models.DateField(blank=True)
+    date_complete = models.DateField(null=True, blank=True)
     employment = models.IntegerField()
     building = models.IntegerField()
     training = models.IntegerField()

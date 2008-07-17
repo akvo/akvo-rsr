@@ -266,9 +266,21 @@ def projectupdates(request, project_id):
     '''
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')
-    template = 'project_updates'
     return {'p': p, 'updates': updates, }
     
+@render_to('rsr/project_comments.html')
+def projectcomments(request, project_id):
+    '''
+    List of all updates for a project
+    Context:
+    p: project
+    updates: list of updates, ordered by time in reverse
+    '''
+    p           = get_object_or_404(Project, pk=project_id)
+    comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
+    form        = CommentForm()
+    return {'p': p, 'comments': comments, 'form': form, }
+
 @login_required()
 def updateform(request, project_id):
     '''

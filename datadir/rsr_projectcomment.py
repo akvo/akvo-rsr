@@ -19,4 +19,8 @@ records = [
 [16, 3, 2, u'New comment for Malte', '2008-07-10 14:19:42']
 [17, 1, 2, u'Test of comments', '2008-07-10 18:40:54']
 [18, 2, 1, u'A comment, a comment, my kingdom for a comment', '2008-07-10 22:21:06']
+[19, 1, 1, u"Why is Thomas' comment right aligned...hmmm.", '2008-07-16 16:01:45']
+[20, 1, 1, u'Shorty!', '2008-07-16 16:02:27']
+[21, 1, 1, u'If a comment is too short the previous one goes to the right. Should be a clear on the hr or something.', '2008-07-16 16:03:21']
+[22, 1, 1, u'frogs in space!', '2008-07-17 12:35:05']
 ]

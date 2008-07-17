@@ -1,9 +1,32 @@
 {% extends "rsr/project_base.html" %}
 
-{% block title %}{{block.super}} - All project updates{% endblock title %}
+{% block title %}{{block.super}} - All project comments{% endblock title %}
+
+{% block script %}
+<script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
+<!--<script src="{{MEDIA_URL}}js/jquery.curvycorners.packed.js" type="text/javascript"></script>-->
+
+<!-- stupid javascript and IE6, I don't know what the heck is wrong with this now -->
+
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+        $(".btn-slide").click(function(){
+            $("#panel").slideToggle("slow");
+            $(this).toggleClass("active"); return false;
+        });
+	});
+
+</script>
+<style>
+    #project_updates .textarea {
+        width: 680px;
+    }
+</style>
+{% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; All project updates
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; All project comments
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -14,44 +37,47 @@
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>Add update</span></a>
+		<a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add comment</span></a>
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 
 	</div> <!-- .boxhead -->
+
 	
 	<div id="project_updates" class="boxbody" style="padding-top: 10px;">
 
+        <div id="panel">
+        {% if not user.username %}
+            <p>You must be signed in to add a comment.</p>
+            <p><a href="{% url django.contrib.auth.views.login %}?next={{request.path}}">Sign In</a> <!--| <a href="#">Register</a></p>-->
+        {% else %}
+            <form enctype="multipart/form-data" method="post" action="comment">
+                {{form.comment}}
+                <p><a href="#" class="btn-slide">Cancel</a><input type="submit" value="Submit" class="submit" /></p>
+                
+            </form>
+        {% endif %}
+        </div> <!-- #panel -->        
+
 		<a href="#" class="rss" style="float:right">Subscribe via RSS</a>
-		<h1 class="section">Project updates</h1>
+		<h1 class="section">Project comments</h1>
 
-        {% for u in updates %}
-            {% if not forloop.first %}
-                <hr />
-            {% endif %}
-            <a name={{u.id}} />
-            <h2>{{u.title}}</h2>
-            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
-            <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
-            <br />
-            {% if u.photo %}
-                {% ifequal u.photo_location 'B' %}
-                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
-                    <p class="small lightx1">{{u.photo_caption}}</p>
-                {% endifequal %}
-            {% endif %}
-            {% if u.text %}
-                <p>{{u.text}}</p>
-            {% endif %}
-            {% if u.photo %}
-                {% ifequal u.photo_location 'E' %}
-                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
-                    <p class="small lightx1">{{u.photo_caption}}</p>
-                {% endifequal %}
-            {% endif %}
-            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">Permalink</a></p>
+        {% for c in comments %}
+            <hr style="clear: both"/>    
+            <div class="members-photo">
+                <img src="{{MEDIA_URL}}img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" />
+                <!--<div style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;"></div>-->
+                <p style="margin-top: 10px">{{c.user}}</p>
+            </div>						
+                <div style="margin-left: 100px">
+                <p class="lightx1">{{c.time|date:"Y-m-d H:i"}}</p>
+                <p>{{c.comment|linebreaks}}</p>
+            </div>
+            <br /><br />
+            <!--<p style="text-align: right"><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>-->
+            <p style="text-align:right"><a href="mailto:abuse@akvo.org?subject=Comment abuse in project #{{p.id}}, comment #{{c.id}}">Report abuse</a></p>
         {% endfor %}
-
+            
 	</div> <!-- #project_updates & .boxbody -->
 
 </div> <!-- #outer_leftwing -->

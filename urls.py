@@ -8,13 +8,15 @@ urlpatterns = patterns('',
 
     (r'^rsr/admin/', include('django.contrib.admin.urls')),
     
-    (r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
+    (r'^rsr/projects/$', 'akvo.rsr.views.projectlist', ),
+    #(r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.projectlist', ),
 
     (r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', ),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
     (r'^rsr/project/(?P<project_id>\d+)/comment$', 'akvo.rsr.views.commentform', ),
     (r'^rsr/project/(?P<project_id>\d+)/updates$', 'akvo.rsr.views.projectupdates', ),
+    (r'^rsr/project/(?P<project_id>\d+)/comments$', 'akvo.rsr.views.projectcomments', ),
     (r'^rsr/project/(?P<project_id>\d+)/details$', 'akvo.rsr.views.projectdetails', ),
     (r'^rsr/project/(?P<project_id>\d+)/funding$', 'akvo.rsr.views.projectfunding', ),
     
@@ -27,7 +29,7 @@ urlpatterns = patterns('',
     
     (r'^rsr/organization/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', ),
     
-    (r'^rsr/organizations/all/$', 'akvo.rsr.views.orglist', ),
+    (r'^rsr/organizations/$', 'akvo.rsr.views.orglist', ),
     (r'^rsr/organizations/(?P<org_id>\d+)/$', 'akvo.rsr.views.orglist', ),
 
     (r'^rsr/signin/$', 'django.contrib.auth.views.login', {'template_name': 'rsr/sign_in.html'}),

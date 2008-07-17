@@ -48,6 +48,7 @@
 	<div style="float: left; width: 30%; padding-left: 20px;">
 		{% if p.location_1 or p.location_2 or p.postcode %}
 		<div class="lightx2">Location</div>
+		<div style="margin-bottom: 0.7em">
 		{% if p.location_1 %}
 			{{p.location_1}}<br />
 		{% endif %}
@@ -58,12 +59,13 @@
 			{{p.postcode}}<br />
 		{% endif %}
 	{% endif %}
+		</div> <!-- style -->
 		<div class="lightx2">City</div>
-		{{p.city}}<br />
+		<div style="margin-bottom: 0.7em">{{p.city}}</div>
 		<div class="lightx2">State</div>
-		{{p.state}}<br />
+		<div style="margin-bottom: 0.7em">{{p.state}}</div>
 		<div class="lightx2">Country</div>
-		{{p.country}}<br />
+		<div style="margin-bottom: 0.7em">{{p.country}}</div>
 
 	</div>
 
@@ -82,7 +84,6 @@
                     <li><a href="#tab_goals"><span>Goals</span></a></li>
                     <li><a href="#tab_sustainability"><span>Sustainability</span></a></li>
                     <li><a href="#tab_results"><span>Results</span></a></li>
-                    <!--<li><a href="#tab_personnel"><span>Personnel</span></a></li>-->
                 </ul>
                 
                 <div id="tab_description" class="tab">
@@ -113,8 +114,12 @@
             <div id="tab_goals" class="tab">
                 <p style="padding-left:0;">{{p.goals_summary|linebreaks}}</p>
                 <br />
-                <div style="float:left;width:270px">
-                    <p class="lightx1"><b>Overall goals</b></p>
+                <div style="float:left;width:270px;">
+                    <p class="lightx1"><b>Target benchmarks</b></p>
+                    {% include "rsr/inc_target_benchmarks.html" %}
+                </div>
+                <div style="margin-left:280px;">
+                    <p class="lightx1"><b>Goals overview</b></p>
                     <ul class="simplelist">
                     {% if p.goal_1 %}
                     <li>{{p.goal_1}}</li>
@@ -127,10 +132,6 @@
                     {% endif %}
                     </ul>
                 </div>			
-                <div style="margin-left:280px;">
-                    <p class="lightx1"><b>Target benchmarks</b></p>
-                    {% include "rsr/inc_target_benchmarks.html" %}
-                </div>
                 <div style="clear:left">&#32;</div>
             </div> <!-- #tab_goals -->
         
