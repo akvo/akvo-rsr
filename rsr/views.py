@@ -156,8 +156,11 @@ def projectlist(request, org_id=0):
         projects = projects.order_by(order_by)
     except:
         pass
+    PROJECTS_PER_PAGE = 10
+    paginator = Paginator(projects, PROJECTS_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
     stats = akvo_at_a_glance(projects)
-    return {'projects': projects, 'stats': stats}
+    return {'projects': projects, 'stats': stats, 'page': page}
 
 @render_to('rsr/organization_directory.html')
 def orglist(request, org_id=0):
@@ -176,7 +179,7 @@ def orglist(request, org_id=0):
         orgz = orgz.order_by(order_by)
     except:
         pass
-    ORGZ_PER_PAGE = 5
+    ORGZ_PER_PAGE = 20
     paginator = Paginator(orgz, ORGZ_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projects = Project.objects.all()
@@ -361,6 +364,14 @@ def projectdetails(request, project_id):
 def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
+       
+def flashgallery(request):
+    '''
+    Generate the xml file for TiltViewer
+    '''
+    # Get 18 random projects with a current image
+    projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:18]
+    return render_to_response('rsr/gallery.xml', {'projects': projects, }, context_instance=RequestContext(request), mimetype='text/xml')
     
 @login_required()
 def commentform(request, project_id):

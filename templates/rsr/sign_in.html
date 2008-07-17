@@ -39,12 +39,16 @@
             <table id="login" style="padding: 20px;">
             <tr>            
                 <td style="width: 15%""><label for="id_username">Enter username</label></td>
-                <td style="width: 20%; padding: 5px 20px;">{{ form.username }}</td>
+                <td style="width: 20%; padding: 5px 20px;">
+                    <input type="text" id="id_username" class="input" name="username" value="" maxlength="30" />
+                </td>
                 <td style="width: 30%;"><a href="#">I forgot my username</a></td>
             </tr>
             <tr>
                 <td><label for="id_password">Enter password</label></td>
-                <td style="padding: 5px 20px">{{ form.password }}</td>
+                <td style="padding: 5px 20px">
+                    <input type="password" id="id_password" class="input" name="password" value="" maxlength="30" />
+                </td>
                 <td><a href="#">I forgot my password</a></td>
             </tr>
             </table>

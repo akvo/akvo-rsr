@@ -1,0 +1,10 @@
+<tiltviewergallery>
+	<photos>
+        {% for p in projects %}
+		<photo imageurl="{{MEDIA_URL}}{{p.current_image}}" linkurl="{% url akvo.rsr.views.projectmain p.id %}">
+			<title>{{p.name}}</title>
+			<description>{{p.subtitle}}</description>
+		</photo>
+        {% endfor %}
+	</photos>
+</tiltviewergallery>

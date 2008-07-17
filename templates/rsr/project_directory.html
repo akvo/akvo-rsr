@@ -1,5 +1,6 @@
 {% extends "rsr/index_base.html" %}
 {% load generic_content %}
+{% load addparam %}
 
 {% block title %}Akvo RSR - Project listing{% endblock title %}
 
@@ -76,13 +77,36 @@
 <div class="boxhead" style="clear:both">
 	<a name="list"></a>
     <div style="float:right; margin-top: 0.6em">
-    <label for="display_number_of_entries">Show</label>
+    <!--<label for="display_number_of_entries">Show</label>
     <select name='display_number_of_entries' class="select">
     <option value='25'>25</option>
     <option value='50'>50</option>
     <option value='75'>75</option>
     </select>
-    results per page <span style="margin: 0 20px 0 20px">Projects 1-25 of {{projects.count}}</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+    results per page-->
+		<span style="margin: 0 20px 0 20px">Projects {{page.start_index}}-{{page.end_index}} of {{projects.count}}</span>
+		<span style="margin: 0 20px 0 20px">
+			{% ifequal page.number 1 %}
+			First |
+			{% else %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+			{% endifequal %}
+			{% if page.has_previous %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+			{% else %}
+			Previous |
+			{% endif %}
+			{% if page.has_next %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+			{% else %}
+			Next |
+			{% endif %}
+			{% ifequal page.number page.paginator.num_pages %}
+			Last
+			{% else %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+			{% endifequal %}
+		</span>
     </div>
 
     <h1>Project listing <span class="lightx2" style="font-weight:normal">({{projects.count}} total)</span></h1>
@@ -92,18 +116,18 @@
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="{% url akvo.rsr.views.projectlist %}?order_by=name#list">Project name</a></th>
-<th><a href="{% url akvo.rsr.views.projectlist %}?order_by=status#list">Status</a></th>
-<th><a href="{% url akvo.rsr.views.projectlist %}?order_by=country__country_name#list">Country</a></th>
+<th style="background-color: #999"><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list">Project name</a></th>
+<th><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list">Status</a></th>
+<th><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list">Country</a></th>
 
-<th><a href="{% url akvo.rsr.views.projectlist %}?order_by=country__continent#list">Continent</a></th>
+<th><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list">Continent</a></th>
 <th>Total funds requested</th>
 <th>Funding still needed</th>
 <th>Field partner(s)</th>
 <th>Support partner(s)</th>
 <th>Funding partner(s)</th>
 </tr>
-{% for p in projects %}
+{% for p in page.object_list %}
 <tr>
 	<td>
 		
@@ -178,16 +202,37 @@
 
 <tr>
 	<td colspan="9">
-		<div style="text-align: right"
-			<label for="display_number_of_entries">Show</label>
+		<div style="text-align: right">
+			<!--<label for="display_number_of_entries">Show</label>
 			<select name='display_number_of_entries' class="select">
 				<option value='25'>25</option>
 				<option value='50'>50</option>
 				<option value='75'>75</option>
 			</select>
-			results per page
-			<span style="margin: 0 20px 0 20px">Projects 1-25 of {{projects.count}}</span>
-			<span style="margin: 0 10px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+			results per page-->
+		<span style="margin: 0 20px 0 20px">Projects {{page.start_index}}-{{page.end_index}} of {{projects.count}}</span>
+		<span style="margin: 0 20px 0 20px">
+			{% ifequal page.number 1 %}
+			First |
+			{% else %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+			{% endifequal %}
+			{% if page.has_previous %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+			{% else %}
+			Previous |
+			{% endif %}
+			{% if page.has_next %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+			{% else %}
+			Next |
+			{% endif %}
+			{% ifequal page.number page.paginator.num_pages %}
+			Last
+			{% else %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+			{% endifequal %}
+		</span>
 		</div>
 	</td>
 </tr>

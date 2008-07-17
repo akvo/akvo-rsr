@@ -51,7 +51,7 @@
 		// XML GALLERY OPTIONS
 		// To use local images defined in an XML document, use this block		
 		fo.addVariable("useFlickr", "false");
-		fo.addVariable("xmlURL", "{{MEDIA_URL}}flash/gallery.xml");
+		fo.addVariable("xmlURL", "http://dev.akvo.org:8080{% url akvo.rsr.views.flashgallery %}");
 		fo.addVariable("maxJPGSize","480");
 		
 		//GENERAL OPTIONS		

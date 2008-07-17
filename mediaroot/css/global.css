@@ -132,7 +132,7 @@ font-family: Verdana, Arial, Helvetica, sans-serif;
 background-color: #fff; 
 color: #333;
 border: 1px solid #999;
-margin: 10px;
+margin: 0.4em 0;
 vertical-align:top; 
 padding-top: 3px;
 }
@@ -150,7 +150,17 @@ padding-top: 3px;
 display: block;
 }
 
-.input:focus, .input:hover, .textarea:focus, .textarea:hover
+.input:focus
+{
+background-color: blue;
+}
+
+.input:hover, .textarea:hover
+{
+
+}
+
+.input:focus, .textarea:focus
 {
 background-color: #F0FFE6;
 }

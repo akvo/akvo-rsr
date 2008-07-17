@@ -1,0 +1,58 @@
+{% extends "rsr/project_base.html" %}
+
+{% block title %}{{block.super}} - All project updates{% endblock title %}
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; All project updates
+{% endblock breadcrumbs %}
+
+{% block page_id %}
+<div id="page_project_updates">
+{% endblock page_id %}
+
+{% block outer_leftwing %}
+<div id="outer_leftwing">
+
+	<div class="boxhead">
+		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>Add update</span></a>
+		<h1 class="section">{{p.name}}</h1>
+		<p>{{p.subtitle}}</p>
+
+	</div> <!-- .boxhead -->
+	
+	<div id="project_updates" class="boxbody" style="padding-top: 10px;">
+
+		<a href="#" class="rss" style="float:right">Subscribe via RSS</a>
+		<h1 class="section">Project updates</h1>
+
+        {% for u in updates %}
+            {% if not forloop.first %}
+                <hr />
+            {% endif %}
+            <a name={{u.id}} />
+            <h2>{{u.title}}</h2>
+            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by <a href="#">{{u.user}}</a> via {{u.show_update_method}}</p>
+            <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
+            <br />
+            {% if u.photo %}
+                {% ifequal u.photo_location 'B' %}
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                    <p class="small lightx1">{{u.photo_caption}}</p>
+                {% endifequal %}
+            {% endif %}
+            {% if u.text %}
+                <p>{{u.text}}</p>
+            {% endif %}
+            {% if u.photo %}
+                {% ifequal u.photo_location 'E' %}
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                    <p class="small lightx1">{{u.photo_caption}}</p>
+                {% endifequal %}
+            {% endif %}
+            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">Permalink</a></p>
+        {% endfor %}
+
+	</div> <!-- #project_updates & .boxbody -->
+
+</div> <!-- #outer_leftwing -->
+{% endblock outer_leftwing %}
