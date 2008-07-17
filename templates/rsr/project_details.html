@@ -119,7 +119,9 @@
                     {% include "rsr/inc_target_benchmarks.html" %}
                 </div>
                 <div style="margin-left:280px;">
+                    {% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
                     <p class="lightx1"><b>Goals overview</b></p>
+                    {% endf %}
                     <ul class="simplelist">
                     {% if p.goal_1 %}
                     <li>{{p.goal_1}}</li>
@@ -130,7 +132,14 @@
                     {% if p.goal_3 %}
                     <li>{{p.goal_3}}</li>
                     {% endif %}
+                    {% if p.goal_4 %}
+                    <li>{{p.goal_4}}</li>
+                    {% endif %}
+                    {% if p.goal_5 %}
+                    <li>{{p.goal_5}}</li>
+                    {% endif %}
                     </ul>
+                   </ul>
                 </div>			
                 <div style="clear:left">&#32;</div>
             </div> <!-- #tab_goals -->

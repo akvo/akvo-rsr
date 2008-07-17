@@ -137,30 +137,47 @@ def index(request):
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
     return {'latest': latest, 'img_src': img_src, 'soup':soup, 'stats': stats, }
 
-@render_to('rsr/project_directory.html')
-def projectlist(request, org_id=0):
-    '''
-    List of all projects in RSR
-    may be filtered on an organisation
-    Context:
-    projects: list of all projects
-    stats: the aggregate projects data
-    '''
-    if org_id != 0:
-        # get all projects org_id is asociated with
-        projects = Organization.objects.get(id=org_id).projects()
-    else:
-        projects = Project.objects.all()
+def project_list_data(request, projects):
     try:
-        order_by = request.GET['order_by']
-        projects = projects.order_by(order_by)
+        order_by = request.GET.get('order_by', 'name')
+        projects = projects.order_by(order_by, 'name')
     except:
         pass
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     stats = akvo_at_a_glance(projects)
-    return {'projects': projects, 'stats': stats, 'page': page}
+    return page, stats
+    
+@render_to('rsr/project_directory.html')
+def projectlist(request):
+    '''
+    List of all projects in RSR
+    Context:
+    projects: list of all projects
+    stats: the aggregate projects data
+    page: paginator
+    '''
+    projects = Project.objects.all()
+    page, stats = project_list_data(request, projects)
+    return {'projects': projects, 'stats': stats, 'page': page, }
+
+@render_to('rsr/project_directory.html')
+def filteredprojectlist(request, org_id):
+    '''
+    List of  projects in RSR
+    filtered on an organisation
+    Context:
+    projects: list of all projects
+    stats: the aggregate projects data
+    page: paginator
+    o: organisation
+    '''
+    # get all projects org_id is asociated with
+    o = Organization.objects.get(id=org_id)
+    projects = o.projects()
+    page, stats = project_list_data(request, projects)
+    return {'projects': projects, 'stats': stats, 'page': page, 'o': o, }
 
 @render_to('rsr/organization_directory.html')
 def orglist(request, org_id=0):
@@ -175,8 +192,8 @@ def orglist(request, org_id=0):
     else:
         orgz = Organization.objects.all()
     try:
-        order_by = request.GET['order_by']
-        orgz = orgz.order_by(order_by)
+        order_by = request.GET.get('order_by', 'name')
+        orgz = orgz.order_by(order_by, 'name')
     except:
         pass
     ORGZ_PER_PAGE = 20
@@ -382,7 +399,7 @@ def flashgallery(request):
     Generate the xml file for TiltViewer
     '''
     # Get 18 random projects with a current image
-    projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:18]
+    projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
     return render_to_response('rsr/gallery.xml', {'projects': projects, }, context_instance=RequestContext(request), mimetype='text/xml')
     
 @login_required()
@@ -409,7 +426,8 @@ def templatedev(request, template_name):
     dev = {'path': 'dev/'}
     p = Project.objects.get(pk=1)
     updates     = Project.objects.get(id=1).projectupdate_set.all().order_by('-time')[:3]
-    comments    = Project.objects.get(id=1).projectcomment_set.all().order_by('-time')[:3]    
+    comments    = Project.objects.get(id=1).projectcomment_set.all().order_by('-time')[:3]
+    grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
     projects = Project.objects.all()
     stats = akvo_at_a_glance(projects)
@@ -421,7 +439,7 @@ def templatedev(request, template_name):
     org_stats = akvo_at_a_glance(org_projects)
     
     return render_to_response('dev/%s.html' % template_name,
-        {'dev': dev, 'p': p, 'updates': updates, 'comments': comments, 'projects': projects, 'stats': stats, 'orgz': orgz, 'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, }, context_instance=RequestContext(request))
+        {'dev': dev, 'p': p, 'updates': updates, 'comments': comments, 'projects': projects, 'stats': stats, 'orgz': orgz, 'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, 'grid_projects': grid_projects, }, context_instance=RequestContext(request))
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204

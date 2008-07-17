@@ -89,43 +89,87 @@
 			{% ifequal page.number 1 %}
 			First |
 			{% else %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}#list">First</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+				{% endif %}
 			{% endifequal %}
 			{% if page.has_previous %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+				{% endif %}
 			{% else %}
 			Previous |
 			{% endif %}
 			{% if page.has_next %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+				{% endif %}
 			{% else %}
 			Next |
 			{% endif %}
 			{% ifequal page.number page.paginator.num_pages %}
 			Last
 			{% else %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+				{% endif %}
 			{% endifequal %}
 		</span>
     </div>
 
-    <h1>Project listing <span class="lightx2" style="font-weight:normal">({{projects.count}} total)</span></h1>
+    <h1>Project listing
+		{% if o %}
+			for {{o.name}}
+		{% endif %}
+		<span class="lightx2" style="font-weight:normal">({{projects.count}} total)</span>
+	</h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list">Project name</a></th>
-<th><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list">Status</a></th>
-<th><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list">Country</a></th>
-
-<th><a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list">Continent</a></th>
-<th>Total funds requested</th>
-<th>Funding still needed</th>
-<th>Field partner(s)</th>
-<th>Support partner(s)</th>
-<th>Funding partner(s)</th>
+	<th style="background-color: #999">
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list">Project name</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list">Project name</a>
+	{% endif %}
+	</th>
+	<th style="background-color: #999">
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list">Status</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list">Status</a>
+	{% endif %}
+	</th>
+	<th style="background-color: #999">
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list">Country</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list">Country</a>
+	{% endif %}
+	</th>
+	<th style="background-color: #999">
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list">Continent</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list">Continent</a>
+	{% endif %}
+	</th>
+	<th>Total funds requested</th>
+	<th>Funding still needed</th>
+	<th>Field partner(s)</th>
+	<th>Support partner(s)</th>
+	<th>Funding partner(s)</th>
 </tr>
 {% for p in page.object_list %}
 <tr>

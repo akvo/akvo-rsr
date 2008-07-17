@@ -9,8 +9,8 @@ urlpatterns = patterns('',
     (r'^rsr/admin/', include('django.contrib.admin.urls')),
     
     (r'^rsr/projects/$', 'akvo.rsr.views.projectlist', ),
+    (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
     #(r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
-    (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.projectlist', ),
 
     (r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', ),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
