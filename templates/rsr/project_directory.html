@@ -89,6 +89,7 @@
 			{% ifequal page.number 1 %}
 			First |
 			{% else %}
+				{# if we have an organisation in the context, we are diplaying the list filtered on that org, url have to conform to that #}
 				{% if o %}
 					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}#list">First</a> |
 				{% else %}

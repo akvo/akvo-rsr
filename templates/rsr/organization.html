@@ -3,7 +3,7 @@
 {% block title %}Akvo RSR - Organisation no. {{o.id}}, {{o.name}}{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; {{o.name}}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.orglist %}">Organisation listing</a> &raquo; {{o.name}}
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -99,7 +99,7 @@
 <div class="boxbody">
 <table class="activities">
 	<tr><th colspan="2"><h2>Projects</h2></th></tr>
-	<tr><td class="padded">{{org_stats.status_active}}</td><td>Active</td></tr>
+	<tr><td class="padded" style="width: 40%;">{{org_stats.status_active}}</td><td>Active</td></tr>
 	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>On hold</td></tr>
 	<tr><td class="padded">{{org_stats.status_complete}}</td><td>Complete</td></tr>
 	<tr class="bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
@@ -117,7 +117,7 @@
 </div> <!-- .boxbody -->
 
 <div class="boxhead">
-<h1>Current projects</h1>
+<h1><a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">Current projects</a></h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">

@@ -25,19 +25,23 @@
 		<tr>
 
 		<td style="width: 50%; border-right: 1px solid #ccc; padding-left: 0;">
-		<p style="margin-bottom: 3px"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
-		<div style="border: 1px solid #999; margin: 0 20px 10px 20px">
-			<div style="width: 176px;">
-				<div style="width: {% widthratio p.funding.pledged p.funding.total 176 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>
+			<p style="margin-bottom: 3px"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
+			<div style="border: 1px solid #999; margin: 0 20px 10px 20px">
+				<div style="width: 176px;">
+					<div style="width: {% widthratio p.funding.pledged p.funding.total 176 %}px; height: 30px; background-color: #4CAC62;"></div>
+				</div>
+			</div>
 			<table>
-			<tr>
-			<td>{{p.funding.date_request_posted}}</td>
-			<td>Request posted</td>
-			</tr>
-			<tr>
-			<td>{{p.funding.date_started}}</td>
-			<td>Project started<br />Project ongoing</td>
-			</tr>
+				<tr>
+					<td>{{p.funding.date_request_posted}}</td>
+					<td>Request posted</td>
+				</tr>
+				{% if p.funding.date_complete %}
+					<tr>
+						<td>{{p.funding.date_complete}}</td>
+						<td>Project started<br />Project ongoing</td>
+					</tr>
+				{% endif %}
 			</table>
 		</td>
 
@@ -98,7 +102,7 @@
 
 		<div style="clear:left"></div>
 
-		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to Project Summary</a></p>
+		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project pummary</a></p>
 
 		
 	</div> <!-- .boxbody -->

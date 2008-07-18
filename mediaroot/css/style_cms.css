@@ -1,0 +1,14 @@
+/* box-level
+-------------------------------------------------------------------------------------- */
+
+#outer_leftwing
+{
+float: left;
+width: 250px;
+}
+
+#outer_rightwing
+{
+float: right;
+width: 710px;
+}

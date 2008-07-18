@@ -112,6 +112,18 @@ def render_to(template):
         return wrapper
     return renderer
 
+def set_low_bandwidth(request):
+    request.session['bandwidth'] = 'low'
+    return HttpResponseRedirect('/rsr/')
+
+def set_high_bandwidth(request):
+    request.session['bandwidth'] = 'high'
+    return HttpResponseRedirect('/rsr/')
+
+def set_test_cookie(request):
+    request.session.set_test_cookie()
+    return HttpResponseRedirect('/rsr/?nocookie=test')
+
 @render_to('rsr/index.html')
 def index(request):
     '''
@@ -121,6 +133,26 @@ def index(request):
     soup: the blog entry HTML
     img_src: the url to the first image of the blog entry
     '''
+    #from dbgp.client import brk
+    #brk(host="192.168.1.123", port=9000)
+    bandwidth = request.session.get('bandwidth', False)
+    # is this a returned user?
+    if not bandwidth:
+        # nope, no session. so are we returning from cookie test?
+        if request.session.test_cookie_worked():
+            # new user, with cookies enabled
+            bandwidth = 'ask'
+            request.session.delete_test_cookie()
+        else:
+            # virgin user or no cookies?
+            no_cookie = request.GET.get('nocookie')
+            if not no_cookie:
+                # brand new user, test for cookieness
+                return HttpResponseRedirect('/rsr/settestcookie/')
+            elif no_cookie == 'test':
+                return HttpResponseRedirect('/rsr/?nocookie=True')
+            elif no_cookie == 'True':
+                bandwidth = 'low'
     try:
         feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
         latest = feed.entries[0]
@@ -132,10 +164,14 @@ def index(request):
             'author': '',
             'summary': 'The blog is not available at the moment.',
         }
-    p = Project.objects.all()
+    p = Project.objects.all()        
+    if bandwidth == 'low':
+        grid_projects = p.filter(current_image__startswith='img').order_by('?')[:12]
+    else:
+        grid_projects = None
     stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
-    return {'latest': latest, 'img_src': img_src, 'soup':soup, 'stats': stats, }
+    return {'latest': latest, 'img_src': img_src, 'soup':soup, 'stats': stats, 'bandwidth': bandwidth, 'grid_projects': grid_projects}
 
 def project_list_data(request, projects):
     try:

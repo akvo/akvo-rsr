@@ -32,6 +32,10 @@ urlpatterns = patterns('',
     (r'^rsr/organizations/$', 'akvo.rsr.views.orglist', ),
     (r'^rsr/organizations/(?P<org_id>\d+)/$', 'akvo.rsr.views.orglist', ),
 
+    (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
+    (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
+    (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
+
     (r'^rsr/signin/$', 'django.contrib.auth.views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
     

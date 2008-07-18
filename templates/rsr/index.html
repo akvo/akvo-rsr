@@ -1,7 +1,17 @@
 {% extends "rsr/index_base.html" %}
 
 {% block script %}
-	{{ block.super }}
+
+	{% ifequal bandwidth 'ask' %}
+	<script type="text/javascript">
+		msg = "Welcome to Akvo. Please indicate if you want to use the high bandwidth home page by clicking OK, or the low bandwidth home page by clicking Cancel.";
+		if (confirm(msg))
+			window.location.assign("{% url akvo.rsr.views.set_high_bandwidth %}");
+		else
+			window.location.assign("{% url akvo.rsr.views.set_low_bandwidth %}");
+	</script>
+	{% endifequal %}	
+
 	<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
 {% endblock script %}
 
@@ -24,10 +34,15 @@
 
 {% block outer_leftwing %}
 
+	{% ifequal bandwidth 'high' %}
 	<div id="home_flash_box">
+	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">View static home page</a>
 	<div style="color: #fff; font-size: 1.5em; float: left; padding: 20px;">Our latest projects</div>
-	<div id="home_flash">
-	TiltViewer requires JavaScript and the latest Flash player. <a href="http://www.macromedia.com/go/getflashplayer/">Get Flash here.</a>
+	<div id="home_flash" style="color: #fff;">
+		You are being re-directed to the static Akvo home page. If nothing happens, click <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">here!</a>
+		<noscript>
+			<meta http-equiv="refresh" content="0;url={% url akvo.rsr.views.set_low_bandwidth %}"/>
+		</noscript>
 	</div> <!-- #home_flash -->
 	</div> <!-- #home_flash_box -->
 
@@ -35,6 +50,8 @@
 	
 		var fo = new SWFObject("{{MEDIA_URL}}flash/TiltViewer.swf", "viewer", "980px", "350px", "9.0.28", "#000000");			
 		
+		if (!fo)
+			window.location.assign("{% url akvo.rsr.views.set_low_bandwidth %}");
 		// TILTVIEWER CONFIGURATION OPTIONS
 		// To use an option, uncomment it by removing the "//" at the start of the line
 		// For a description of config options, go to: 
@@ -83,7 +100,35 @@
 		fo.addParam("allowFullScreen","true");
 		fo.write("home_flash");			
 	</script>	
+	{% endifequal %}
+	{% ifequal bandwidth 'low' %}
 
+	<div id="home_flash_box">
+		<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">View flash-enabled home page</a>
+		<div style="color: #fff; font-size: 1.5em; padding: 20px;">Our latest projects</div>
+		<table>
+			{% for p in grid_projects %}
+				{% ifequal forloop.counter 1 %}
+				<tr>
+				{% endifequal %}
+				{% ifequal forloop.counter 7 %}
+				<tr>
+				{% endifequal %}
+				<td align="center">
+					<a href="{% url akvo.rsr.views.projectmain p.id %}">
+						<img width="145" src="{{MEDIA_URL}}{{p.current_image}}" title="{{p.name}}" alt="{{p.name}}"/>
+					</a>
+				</td>
+				{% ifequal forloop.counter 6 %}
+				</tr>
+				{% endifequal %}
+			{% endfor %}
+				</tr>
+		</table>
+	
+	</div> <!-- #home_flash_box -->
+	{% endifequal %}
+	
 <div id="outer_leftwing">
 
 <div class="boxhead">
