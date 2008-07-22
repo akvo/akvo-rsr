@@ -103,7 +103,7 @@
 	{% endifequal %}
 	{% ifequal bandwidth 'low' %}
 
-	<div id="home_flash_box">
+	<div id="home_flash_box" style="padding-bottom:20px;">
 		<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">View flash-enabled home page</a>
 		<div style="color: #fff; font-size: 1.5em; padding: 20px;">Our latest projects</div>
 		<table>
@@ -116,7 +116,7 @@
 				{% endifequal %}
 				<td align="center">
 					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-						<img width="145" src="{{MEDIA_URL}}{{p.current_image}}" title="{{p.name}}" alt="{{p.name}}"/>
+						<img width="132" style="padding: 6px;" src="{{MEDIA_URL}}{{p.current_image}}" title="{{p.name}}" alt="{{p.name}}"/>
 					</a>
 				</td>
 				{% ifequal forloop.counter 6 %}
@@ -133,24 +133,38 @@
 
 <div class="boxhead">
 <a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">Subscribe via RSS</a>
-<h1>Most recent Akvo Blog entry</h1>
+<h1>Most recent Akvo Blog article</h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
 
-{% if img_src %}
+{% if img_src1 %}
 <div style="float:left; width: 210px;">
-	<img src="{{img_src}}" style="width: 172px; margin: 15px 15px 5px 15px"/>
+	<img src="{{img_src1}}" style="width: 172px; margin: 15px 15px 5px 15px"/>
 	<!--<p class="small lightx1">Image caption</p>-->
 </div> <!-- style -->
 {% endif %}
-<h2>{{latest.title|safe}}</h2>
-<p class="lightx2">24/06/2008 by {{latest.author|safe}}</p>
-<p>{{latest.summary|safe}}</p>
 
-<p><a href="http://www.akvo.org/blog/">Full entry</a></p>
-<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>
-<hr />
+<h2><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
+<p class="lightx2">24/06/2008 by {{latest1.author|safe}}</p>
+<p>{{latest1.summary|safe}}</p>
+
+<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">Read more</a></p>
+<!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
+<hr style="clear:both"/>
+
+{% if img_src2 %}
+<div style="float:left; width: 210px;">
+	<img src="{{img_src2}}" style="width: 172px; margin: 15px 15px 5px 15px"/>
+	<!--<p class="small lightx1">Image caption</p>-->
+</div> <!-- style -->
+{% endif %}
+<h2><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
+<p class="lightx2">24/06/2008 by {{latest2.author|safe}}</p>
+<p>{{latest2.summary|safe}}</p>
+
+<p><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">Read more</a></p>
+<hr style="clear:both" />
 <p style="text-align: right"><a href="http://www.akvo.org/blog/">View earlier blog entries</a></p>
 
 <div style="clear:left"></div>

@@ -22,7 +22,7 @@
 	
 	<div id="project_updates" class="boxbody" style="padding-top: 10px;">
 
-		<a href="#" class="rss" style="float:right">Subscribe via RSS</a>
+		<a href="/rsr/rss/updates/{{p.id}}/" class="rss" style="float:right">Subscribe via RSS</a>
 		<h1 class="section">Project updates</h1>
 
         {% for u in updates %}
@@ -37,7 +37,14 @@
             {% if u.photo %}
                 {% ifequal u.photo_location 'B' %}
                     <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
-                    <p class="small lightx1">{{u.photo_caption}}</p>
+                    <p class="small lightx1">
+                        {% if u.photo_caption %}
+                            {{u.photo_caption}}
+                        {% endif %}
+                        {% if u.photo_credit %}
+                            Photo credit: {{u.photo_credit}}
+                        {% endif %}
+                    </p>
                 {% endifequal %}
             {% endif %}
             {% if u.text %}
@@ -46,7 +53,14 @@
             {% if u.photo %}
                 {% ifequal u.photo_location 'E' %}
                     <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
-                    <p class="small lightx1">{{u.photo_caption}}</p>
+                    <p class="small lightx1">
+                        {% if u.photo_caption %}
+                            {{u.photo_caption}}
+                        {% endif %}
+                        {% if u.photo_credit %}
+                            Photo credit: {{u.photo_credit}}
+                        {% endif %}
+                    </p>
                 {% endifequal %}
             {% endif %}
             <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">Permalink</a></p>

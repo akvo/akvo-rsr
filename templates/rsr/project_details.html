@@ -15,7 +15,7 @@
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>
+		<!--<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>-->
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 	</div> <!-- .boxhead -->
@@ -68,13 +68,15 @@
 		<div style="margin-bottom: 0.7em">{{p.country}}</div>
 
 	</div>
-
 	{% if p.map %}
 		<div style="float: left; width: 30%; padding-left: 20px;">
 			<img src="{{MEDIA_URL}}{{p.map}}" alt="location" style="margin: 10px 10px 20px 10px" />
 		</div>
+	{% else %}
+		<div style="float: left; width: 30%; padding-left: 20px;">
+			<img src="{{MEDIA_URL}}img/nomap.jpg" alt="location" style="margin: 10px 10px 20px 10px" />
+		</div>
 	{% endif %}
-	
 	<hr style="clear:left; padding-top: 20px" />
 	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
 
@@ -83,7 +85,7 @@
                     <li><a href="#tab_description"><span>Description</span></a></li>
                     <li><a href="#tab_goals"><span>Goals</span></a></li>
                     <li><a href="#tab_sustainability"><span>Sustainability</span></a></li>
-                    <li><a href="#tab_results"><span>Results</span></a></li>
+                    <!--<li><a href="#tab_results"><span>Results</span></a></li>-->
                 </ul>
                 
                 <div id="tab_description" class="tab">
@@ -101,18 +103,23 @@
                     </div>
                     <div style="clear:both; padding-bottom: 20px">&#32;</div>
                     
-                    
-					<h2 class="lightx2">More information</h2>
-					<p>{{p.project_plan_detail|linebreaks}}</p>
-					<h2 class="lightx2">Current state</h2>
-					<p>{{p.current_status_detail|linebreaks}}</p>
-
-                    
+                    {% if p.project_plan_detail %}
+						<h2 class="lightx2">More information</h2>
+						<p>{{p.project_plan_detail|linebreaks}}</p>
+					{% endif %}
+                    {% if p.current_status_detail %}
+						<h2 class="lightx2">Current state</h2>
+						<p>{{p.current_status_detail|linebreaks}}</p>
+					{% endif %}
+                    {% if p.context %}
+						<h2 class="lightx2">Context</h2>
+						<p>{{p.context|linebreaks}}</p>
+					{% endif %}
                     
                 </div> <!-- #tab_description -->
         
             <div id="tab_goals" class="tab">
-                <p style="padding-left:0;">{{p.goals_summary|linebreaks}}</p>
+                <p style="padding-left:0;">{{p.goals_overview|linebreaks}}</p>
                 <br />
                 <div style="float:left;width:270px;">
                     <p class="lightx1"><b>Target benchmarks</b></p>
@@ -149,7 +156,7 @@
 
             </div> <!-- #tab_sustainability -->
         
-            <div id="tab_results" class="tab">
+            <!--<div id="tab_results" class="tab">
 				<p class="lightx2">Final report 04 Jan 2009</p>
 				<p>{{p.context|linebreaks}}</p>
 
@@ -165,7 +172,7 @@
 				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
 				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
 				</ul>
-				</div> <!-- style -->
+				</div>
 
 				<div style="float: left; width: 40%">
 				<h2 class="lightx2">Goals achieved</h2>
@@ -174,7 +181,7 @@
 				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
 				<li>123456789 123456789 123456789 123456789 123456789 123456789</li>
 				</ul>
-				</div> <!-- style -->
+				</div>
 				
 				<div style="clear:left;"></div>
 
@@ -188,7 +195,7 @@
 				<li>40 persons who receive training / education per year</li>
 				<li>MDG Count: ?</li>
 				</ul>
-				</div> <!-- style -->
+				</div>
 
 				<div style="float: left; width: 40%">
 				<h2 class="lightx2">Achieved benchmarks</h2>
@@ -199,7 +206,7 @@
 				<li>40 persons who receive training / education per year</li>
 				<li>MDG Count: ?</li>
 				</ul>
-				</div> <!-- style -->
+				</div>
 
 				<div style="clear:left;"></div>
 
@@ -221,7 +228,7 @@
 				<h2 class="lightx2">External links</h2>
 				<p>Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci. Prat praesse quatum etumsandre core eriure modolor ercinim iurem ad ea faciduisis essequi tet num dip ex eum nim do del et, si tatinci</p>
 
-            </div> <!-- #tab_context -->
+            </div>--> <!-- #tab_context -->
             
             </div> <!-- #container-1 -->
             

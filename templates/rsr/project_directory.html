@@ -41,7 +41,7 @@
 		{% else %}
 			<div style="width: 140px; height: 105px; background-color: #ccc; margin: 10px 0"></div>
 		{% endif %}	
-		<p><span class="lightx2">Status</span><br />{{showcase.show_status}}</p>
+		<p><span class="lightx2">Status:</span> {{showcase.show_status}}</p>
 		<p class="lightx2">Focus areas</p>
 			{% if showcase.category_sanitation %}
 				 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
@@ -61,7 +61,7 @@
 		<p class="lightx2">Location</p>
 		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />Continent</p>
 		<div style="border: 1px solid #ccc; width: 100%; margin: 15px 0 5px 0"><div style="background-color: #4CAC62; width: {% widthratio showcase.funding.pledged showcase.funding.total 100 %}%; height: 20px;"></div></div>
-		<p class="bold">Total <span style="margin-left: 40px;">{{showcase.funding.total}} {{showcase.funding.currency}}</span></p>
+		<p class="bold">Total <span style="margin-left: 40px;">{{showcase.funding.get_currency_display|safe}} {{showcase.funding.total}}</span></p>
 	</td>
 	{% endfor %}
 	
@@ -214,7 +214,7 @@
 		{% else %}
 			<span>
 		{% endifequal %}
-		{{p.funding.total}} {{p.funding.currency}}
+		<b>{{p.funding.get_currency_display|safe}} {{p.funds_requested}}</b>
 		</span>
 	</td>
 	<td>
@@ -223,7 +223,7 @@
 		{% else %}
 			<span style="color: red">
 		{% endifequal %}
-		{{p.funding.still_needed}} {{p.funding.currency}}
+		<b>{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</b>
 		</span>
 	</td>
 	<td>

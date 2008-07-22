@@ -18,20 +18,41 @@
 	<div id="overall_statistics" class="boxbody">
 
 	<table>
-		<tr><th colspan="2"><a href="{% url akvo.rsr.views.projectlist %}"><h2>Projects in Akvo</h2></a></th></tr>
+		<tr>
+			<th colspan="2">
+				{% ifequal request.path '/rsr/projects/' %}
+					<h2>Projects in Akvo</h2>
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}">
+						<h2>Projects in Akvo</h2>
+					</a>
+				{% endifequal %}
+			</th>
+		</tr>
 		<tr><td style="width: 40%;">{{stats.status_active}}</td><td>Active</td></tr>
-		<tr><td>{{stats.status_onhold}}</td><td>On hold</td></tr>
+		<tr><td>{{stats.status_onhold}}</td><td>Need funding</td></tr>
 		<tr><td>{{stats.status_complete}}</td><td>Complete</td></tr>
 		
 		<tr class="bold"><td>{{stats.project_count}}</td><td>Total projects</td></tr>
 		<tr class="bold"><td>({{stats.mdgs_water}}) 0</td><td>Water MDGs</td></tr>
 		<tr class="hr bold"><td>({{stats.mdgs_sanitation}}) 0</td><td>Sanitation MDGs</td></tr>
-		<tr><th colspan="2"><a href="{% url akvo.rsr.views.orglist %}"><h2>Partners</h2></a></th></tr>
+		<tr>
+			<th colspan="2">
+				{% ifequal request.path '/rsr/organizations/' %}
+					<h2>Partners</h2>
+				{% else %}
+					<a href="{% url akvo.rsr.views.orglist %}">
+						<h2>Partners</h2>
+					</a>
+				{% endifequal %}
+			</th>
+		</tr>
+
 		<tr><td>{{stats.fieldpartner_count}}</td><td>Field partners</td></tr>
 		<tr><td>{{stats.supportpartner_count}}</td><td>Support partners</td></tr>
 		<tr><td>{{stats.fundingpartner_count}}</td><td>Funding partners</td></tr>
 		
-		<tr class="hr bold"><td>{{stats.partners_total}}</td><td>Total partners</td></tr>
+		<tr class="hr bold"><td>{{stats.num_organisations}}</td><td>Organisations</td></tr>
 		<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{stats.project_count}} projects)</span></h2></th></tr>
 		<tr style="color: green"><td>&#8364; {{stats.funding_pledged}}</td><td>Pledged</td></tr>
 		<tr style="color: red"><td>&#8364; {{stats.funding_needed}}</td><td>Still needed</td></tr>		

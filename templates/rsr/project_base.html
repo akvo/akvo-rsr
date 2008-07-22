@@ -19,27 +19,33 @@
 
     {% block funding %}
 	<div class="boxhead">
+        {% if not p.funding.date_complete %}
 		<a class="actionbutton ab_grey" href="#" onclick="this.blur();"><span>Fund project</span></a>
+        {% endif %}
 		<h1>Funding</h1>
 
 		<!--<p><a href="#">Notify me of changes via email</a></p>-->
 	</div> <!-- .boxhead -->
 
 	<div id="project_funding" class="boxbody">
-		<div style="border: 1px solid #999; margin: 0 20px 10px 20px"><div style="width: 206px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 206 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>
+		<div style="border: 1px solid #999; margin: 0 0 10px 0"><div style="width: 206px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 206 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>
         <p>{{p.funding.date_request_posted}} Request posted</p>
 		{% if p.funding.date_complete %}
-    		<p>{{p.funding.date_complete}} Funding completed, Ongoing</p>
+    		<p>{{p.funding.date_complete}} Funding completed</p>
 		{% endif %}
-		<p><b>Total: <span style="margin-left: 10px">{{p.funding.total}} {{p.funding.currency}}</span></b></p>
+		<p><b>Total: <span style="margin-left: 10px">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</span></b></p>
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">View details</a></p>
 		<hr />
 		<p style="margin: 10px 0 10px 0;">
-        {% ifequal p.fundingpartner_set.count 1 %}
-            <b>Current Funder</b>
-        {% else %}
-            <b>Current Funders</b>
-        {% endifequal %}
+                {% ifequal p.fundingpartner_set.count 1 %}
+                    <b>Current Funder</b>
+                {% else %}
+                    {% ifequal p.fundingpartner_set.count 0 %}
+                        <b style="color: red;">You could fund this project!</b>
+                    {% else %}
+                        <b>Current Funders</b>
+                    {% endifequal %}
+                {% endifequal %}
         </p>
     
  		{% for funder in p.fundingpartner_set.all %}
@@ -48,12 +54,12 @@
 			{% endif %}
 			{% if funder.funding_organization.logo %}
                 <a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">
-				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 0;" />
                 </a>
 			{% endif %}	
 			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a></p>
 			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
-			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.funding_amount}} {{funder.currency}}</span></b></p>
+			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount}}</span></b></p>
 		{% endfor %}    
 	</div> <!-- #project_funding & .boxbody -->
     {% endblock funding %}
@@ -76,7 +82,7 @@
 				{% endif %}
 				{% if fp.field_organization.logo %}
                     <a href="{% url akvo.rsr.views.orgdetail fp.field_organization.id %}">
-					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 0;" />
                     </a>
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail fp.field_organization.id %}">{{fp.field_organization.name}}</a></p>
@@ -97,7 +103,7 @@
 				{% endif %}
 				{% if sp.support_organization.logo %}
                     <a href="{% url akvo.rsr.views.orgdetail sp.support_organization.id %}">
-					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 20px 10px 20px;" />
+					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 0" />
                     </a>
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail sp.support_organization.id %}">{{sp.support_organization.name}}</a></p>

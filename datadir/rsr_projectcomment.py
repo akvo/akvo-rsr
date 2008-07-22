@@ -23,4 +23,5 @@ records = [
 [20, 1, 1, u'Shorty!', '2008-07-16 16:02:27']
 [21, 1, 1, u'If a comment is too short the previous one goes to the right. Should be a clear on the hr or something.', '2008-07-16 16:03:21']
 [22, 1, 1, u'frogs in space!', '2008-07-17 12:35:05']
+[23, 1, 2, u'What happens if one puts a URL in this field? \r\n\r\nhttp://www.akvo.org/', '2008-07-18 20:00:32']
 ]

@@ -4,10 +4,11 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Gabriel von Heijne', 'gabriel@akvo.org'),
+     ('Gabriel von Heijne', 'gabriel@akvo.org'),
 )
 
 MANAGERS = ADMINS
+SEND_BROKEN_LINK_EMAILS = True
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = '/var/dev/akvo/data/akvo.sqlite' # Or path to database file if using sqlite3.
@@ -75,6 +76,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 ROOT_URLCONF = 'akvo.urls'
 
+#Additional information about a User
+AUTH_PROFILE_MODULE = 'rsr.userprofile'
+
+# Accounts not activated in a week get purged. Used by registration app.
+ACCOUNT_ACTIVATION_DAYS = 7
+
 import os.path
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -89,9 +96,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'django.contrib.humanize',
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
-    'template_utils', #See http://code.google.com/p/django-template-utils/
+    'template_utils', #see http://code.google.com/p/django-template-utils/
+    'registration', #see http://code.google.com/p/django-registration/
 #    'akvo.status',
 )

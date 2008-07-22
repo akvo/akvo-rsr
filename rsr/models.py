@@ -1,9 +1,10 @@
 from django import newforms as forms
 from django.db import models
 from django.contrib import admin
-from django.core import validators
 from django.contrib.auth.models import User
+from django.core import validators
 from django.utils.safestring import mark_safe
+
 
 from datetime import date
 
@@ -71,6 +72,7 @@ class Organization(models.Model):
     address_2                   = models.CharField(blank=True, max_length=35)
     postcode                    = models.CharField(blank=True, max_length=10)
     phone                       = models.CharField(blank=True, max_length=20)
+    mobile                      = models.CharField(blank=True, max_length=20)
     fax                         = models.CharField(blank=True, max_length=20)
     contact_person              = models.CharField(blank=True, max_length=30)
     contact_email               = models.CharField(blank=True, max_length=50)
@@ -83,7 +85,7 @@ class Organization(models.Model):
         fields = (
             ('Partnership type(s)', {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
             ('General information', {'fields': ('name', 'long_name', 'organization_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'fax',  'contact_person',  'contact_email',  ), }),
+            ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
             (None, {'fields': ('description', )}),
         )    
         list_display = ('name', 'long_name', 'website', 'partner_types', )
@@ -119,7 +121,7 @@ class Organization(models.Model):
         all = Organization.objects.all()
         return (all.filter(field_partners__project__in = projects.values('pk').query) | \
                 all.filter(support_partners__project__in = projects.values('pk').query) | \
-                all.filter(funding_partners__project__in = projects.values('pk').query)).distinct()
+                all.filter(funding_partners__project__in = projects.values('pk').query)).exclude(id__exact=self.id).distinct()
     
     def funding(self):
         funding_total, funding_pledged = funding_aggregate(self.projects())
@@ -128,24 +130,23 @@ class Organization(models.Model):
     class Meta:
         ordering = ['name']
 
-#class Contact(models.Model):
-#    name = models.CharField(max_length=50, core=True, blank=True)
-#    email = models.CharField(max_length=50, core=True, blank=True)
-#    organization = models.ForeignKey(Organization, edit_inline = models.TABULAR, num_in_admin=2)
-#
-#    def __unicode__(self):
-#        return self.name
-        
+#class UserProfile(modelss.Model):
+#    '''
+#    Extra info about a user, currently only Organisation affiliation.
+#    '''
+#    user = models.ForeignKey(User, unique=True)
+#    organisation = models.ForeignKey(Organization)
+            
 CURRENCY_CHOICES = (
     #('USD', 'US dollars'),
-    ('EUR', 'Euro'),
+    ('EUR', '&#8364;'),
     #('GBP', 'British pounds'),
 )
 
 STATUSES = (
     ('N', 'None'),
     ('A', 'Active'),
-    ('H', 'Looking for funding'),
+    ('H', 'Need funding'),
     ('C', 'Complete'),
 )
 STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
@@ -198,7 +199,7 @@ class Project(models.Model):
 
     project_plan_detail         = models.TextField(blank=True)
     sustainability              = models.TextField()
-    context                     = models.TextField(max_length=500)
+    context                     = models.TextField(blank=True, max_length=500)
 
     project_rating              = models.IntegerField(default=0)
     notes                       = models.TextField(blank=True)
@@ -290,7 +291,7 @@ class FundingPartner(models.Model):
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
     
     def __unicode__(self):
-        return "%s %d %s" % (self.funding_organization.name, self.funding_amount, self.currency)
+        return "%s %d %s" % (self.funding_organization.name, self.funding_amount, self.get_currency_display())
      
 class SupportPartner(models.Model):
     support_organization = models.ForeignKey(Organization, related_name='support_partners', limit_choices_to = {'support_partner__exact': True}, core=True)
@@ -309,7 +310,7 @@ class FieldPartner(models.Model):
 class Funding(models.Model):
     project = models.OneToOneField(Project)
     #date_next_milestone = models.DateField(blank=True)
-    date_request_posted = models.DateField()
+    date_request_posted = models.DateField(default=date.today)
     #date_started = models.DateField(blank=True)
     date_complete = models.DateField(null=True, blank=True)
     employment = models.IntegerField()

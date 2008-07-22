@@ -61,7 +61,7 @@ def akvo_at_a_glance(projects):
     fieldpartner_count      = o.filter(field_partner__exact=True).count()
     supportpartner_count    = o.filter(support_partner__exact=True).count()
     fundingpartner_count    = o.filter(funding_partner__exact=True).count()
-    partners_total = fieldpartner_count + supportpartner_count + fundingpartner_count
+    num_organisations = o.count()
     funding_total, funding_pledged = funding_aggregate(projects)
     
     stats ={
@@ -75,7 +75,7 @@ def akvo_at_a_glance(projects):
         'fieldpartner_count': fieldpartner_count,
         'supportpartner_count': supportpartner_count,
         'fundingpartner_count': fundingpartner_count,
-        'partners_total': partners_total,
+        'num_organisations': num_organisations,
         'funding_total': funding_total,
         'funding_needed': funding_total - funding_pledged,
         'funding_pledged': funding_pledged,
@@ -155,9 +155,12 @@ def index(request):
                 bandwidth = 'low'
     try:
         feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
-        latest = feed.entries[0]
-        soup = BeautifulSoup(latest.content[0].value)
-        img_src = soup('img')[0]['src']
+        latest1 = feed.entries[0]
+        soup = BeautifulSoup(latest1.content[0].value)
+        img_src1 = soup('img')[0]['src']
+        latest2 = feed.entries[1]
+        soup = BeautifulSoup(latest2.content[0].value)
+        img_src2 = soup('img')[0]['src']
     except:
         soup = img_src = ''
         latest = {
@@ -171,18 +174,18 @@ def index(request):
         grid_projects = None
     stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
-    return {'latest': latest, 'img_src': img_src, 'soup':soup, 'stats': stats, 'bandwidth': bandwidth, 'grid_projects': grid_projects}
+    return {'latest1': latest1, 'img_src1': img_src1, 'latest2': latest2, 'img_src2': img_src2, 'stats': stats, 'bandwidth': bandwidth, 'grid_projects': grid_projects}
 
 def project_list_data(request, projects):
-    try:
-        order_by = request.GET.get('order_by', 'name')
+    order_by = request.GET.get('order_by', 'name')
+    if order_by in ['funds_requested']:
+        projects = projects.extra(order_by = [order_by, 'name'])
+    else:
         projects = projects.order_by(order_by, 'name')
-    except:
-        pass
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
-    stats = akvo_at_a_glance(projects)
+    stats = akvo_at_a_glance(Project.objects.all())
     return page, stats
     
 @render_to('rsr/project_directory.html')
@@ -194,7 +197,9 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projects = Project.objects.all()
+    projects = Project.objects.all().extra(
+        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'}
+    )
     page, stats = project_list_data(request, projects)
     return {'projects': projects, 'stats': stats, 'page': page, }
 

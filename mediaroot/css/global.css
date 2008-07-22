@@ -8,7 +8,6 @@ font-size: 100%;
 line-height: 1em;
 color: #333;       
 background-color: #fff;
-padding: 20px;
 }
 
 /* wrapper-level
@@ -43,6 +42,8 @@ clear: left;
 clear: left;
 margin-bottom: 5px;
 padding: 5px 20px;
+margin: 0;
+padding: 20px 0;
 }
 
 #content
@@ -184,7 +185,7 @@ background-color: #dedede;
 background-color: #fff;
 border: 1px solid #dedede;
 margin-bottom: 20px;
-padding: 20px 0;
+padding: 0;
 }
 
 .boxhead p
@@ -215,7 +216,7 @@ padding: 10px 20px;
 h2
 {
 font-weight: bold;
-padding: 10px 20px 10px 20px;
+padding: 10px 20px;
 }
 
 table h2
@@ -229,7 +230,7 @@ padding: 10px 0;
 
 hr
 {
-margin: 10px 20px;
+margin: 10px 0;
 height: 0;
 border: 0;
 border-top: 1px solid #ccc;
@@ -446,3 +447,4 @@ a.actionbutton:active span {
 .bold td { padding-top: 5px; }
 .hr td { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
 th { font-weight: bold; }
+

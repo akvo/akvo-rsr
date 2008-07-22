@@ -1,5 +1,10 @@
 from django.conf.urls.defaults import *
+from akvo.rsr.feeds import ProjectUpdates 
 #   from akvo.rsr.models import Organization, Project
+
+feeds = {
+    'updates': ProjectUpdates,
+}
 
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
@@ -38,6 +43,10 @@ urlpatterns = patterns('',
 
     (r'^rsr/signin/$', 'django.contrib.auth.views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
+    
+    (r'^rsr/accounts/', include('registration.urls')),
+    
+    (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
     
     #feedjack
     #(r'', include('feedjack.urls')),

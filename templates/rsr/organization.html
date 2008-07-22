@@ -71,12 +71,18 @@
 	<h2 class="lightx2">Email</h2>
 	<p>{{o.contact_email}}</p>
 
+	{% if o.phone %}
 	<h2 class="lightx2">Phone</h2>
 	<p>{{o.phone}}</p>
+	{% endif %}
+	{% if o.mobile %}
 	<h2 class="lightx2">Mobile</h2>
-	<p>12345678-9</p>
+	<p>{{o.mobile}}</p>
+	{% endif %}
+	{% if o.fax %}
 	<h2 class="lightx2">Fax</h2>
 	<p>{{o.fax}}</p>
+	{% endif %}
 
 	</td>	
 
@@ -100,7 +106,7 @@
 <table class="activities">
 	<tr><th colspan="2"><h2>Projects</h2></th></tr>
 	<tr><td class="padded" style="width: 40%;">{{org_stats.status_active}}</td><td>Active</td></tr>
-	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>On hold</td></tr>
+	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>Need funding</td></tr>
 	<tr><td class="padded">{{org_stats.status_complete}}</td><td>Complete</td></tr>
 	<tr class="bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
 	<tr class="bold"><td class="padded">{{org_stats.mdgs_water}}</td><td>Water MDGs</td></tr>
