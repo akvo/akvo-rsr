@@ -3,7 +3,7 @@
 {% block title %}Akvo RSR - Sign in{% endblock title %}
 
 {% block header %}
-<div id="header">
+<div id="header" class="clearfix">
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
 </div> <!-- #header -->
 {% endblock header %}
@@ -42,14 +42,13 @@
                 <td style="width: 20%; padding: 5px 20px;">
                     <input type="text" id="id_username" class="input" name="username" value="" maxlength="30" />
                 </td>
-                <td style="width: 30%;"><a href="#">I forgot my username</a></td>
+                <td style="width: 30%;"><a href="/rsr/accounts/password/reset/">I forgot my username and/or password</a></td>
             </tr>
             <tr>
                 <td><label for="id_password">Enter password</label></td>
-                <td style="padding: 5px 20px">
+                <td style="padding: 5px 20px" colspan="2">
                     <input type="password" id="id_password" class="input" name="password" value="" maxlength="30" />
                 </td>
-                <td><a href="#">I forgot my password</a></td>
             </tr>
             </table>
 
@@ -58,7 +57,7 @@
                 <span style="margin: -20px 0 0 0;"><a href="#" style="margin-right: 20px;">Cancel</a></span>
                
                 <!-- <button type="submit" name="Login" class="login">Login</button> -->
-				<button type="submit"><a class="actionbutton ab_grey" onclick="this.blur();" style="margin: 0"><span>Sign in</span></a></button>
+				<button type="submit"><a class="actionbutton ab_d0ffff" onclick="this.blur();" style="margin: 0"><span>Sign in</span></a></button>
 
             </div>
            <input type="hidden" name="next" value="{{ next }}" />
@@ -68,14 +67,14 @@
 
 <div class="boxbody lightx2" style="border: none; margin: 20px 20px 20px 630px; padding: 10px; ">
 <h1 class="section">I don't have an online account</h1>
-<p style="margin: 10px 0">By registering with Akvo, you'll be able to:</p>
+<p style="margin: 10px 0">By <a href="/rsr/accounts/register1/">registering</a> with Akvo, you'll be able to:</p>
 
 <ul class="simplelist">
 <li>Edit and create Akvopedia articles</li>
 <li>Leave comments</li>
 <li>Manage your own project or organization pages</li>
 </ul>
-<p style="margin: 10px 0">And much more! <a href="#">Learn about</a> how Akvo works.</p>
+<p style="margin: 10px 0">And much more! <a href="http://dev.akvo.org:8080/web/">Learn about</a> how Akvo works.</p>
 </div> <!-- style .boxbody -->
 
 <div style="clear:left"></div>

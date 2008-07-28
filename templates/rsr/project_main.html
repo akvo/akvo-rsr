@@ -23,23 +23,28 @@
             <h2 class="lightx2">Status</h2>
             <p>{{p.show_status}}</p>
             <h2 class="lightx2">Focus area</h2>
-    
+
             <p>
-                {% if p.category_sanitation %}
-                    <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
-                {% endif %}
                 {% if p.category_water %}
-                    <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
+					<img src="{{MEDIA_URL}}img/blue.png" title="Water" alt="type" style="margin: 5px 5px 10px 0;" />
                 {% endif %}
-                {% if p.category_maintenance %}
-                    <img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 10px 5px 10px 0;" />
+
+                {% if p.category_sanitation %}
+					<img src="{{MEDIA_URL}}img/orange.png" title="Sanitation" alt="type" style="margin: 5px 5px 10px 0;" />
                 {% endif %}
+
                 {% if p.category_training %}
-                    <img src="{{MEDIA_URL}}img/green.png" alt="type" style="margin: 10px 5px 10px 0;" />
+					<img src="{{MEDIA_URL}}img/purple.png" title="Training" alt="type" style="margin: 5px 5px 10px 0;" />
                 {% endif %}
+
                 {% if p.category_education %}
-                    <img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 10px 5px 10px 0;" />		
+                    <img src="{{MEDIA_URL}}img/green.png" title="Education" alt="type" style="margin: 5px 5px 10px 0;" />
                 {% endif %}
+
+                {% if p.category_maintenance %}
+                    <img src="{{MEDIA_URL}}img/olive.png" title="Maintenance" alt="type" style="margin: 5px 5px 10px 0;" />		
+                {% endif %}
+
             </p>						
             <h2 class="lightx2">Location</h2>
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>

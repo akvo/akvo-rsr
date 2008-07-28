@@ -3,13 +3,13 @@
 {% block script %}
 
 	{% ifequal bandwidth 'ask' %}
-	<script type="text/javascript">
+	<!--<script type="text/javascript">
 		msg = "Welcome to Akvo. Please indicate if you want to use the high bandwidth home page by clicking OK, or the low bandwidth home page by clicking Cancel.";
 		if (confirm(msg))
 			window.location.assign("{% url akvo.rsr.views.set_high_bandwidth %}");
 		else
 			window.location.assign("{% url akvo.rsr.views.set_low_bandwidth %}");
-	</script>
+	</script>-->
 	{% endifequal %}	
 
 	<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
@@ -23,6 +23,9 @@
 	#home_flash {
 	}
 	/* end hide */
+	#breadcrumbs {
+		display:none;
+	}
 	</style>
 {% endblock style %}
 
@@ -72,8 +75,8 @@
 		fo.addVariable("linkLabel", "Go to project page");
 		//fo.addVariable("frameColor", "0xff0000");
 		//fo.addVariable("backColor", "0xDDDDDD");
-		fo.addVariable("bkgndInnerColor", "0x51C4FF");
-		fo.addVariable("bkgndOuterColor", "0x0094E0");				
+		fo.addVariable("bkgndInnerColor", "0x009DE4");
+		fo.addVariable("bkgndOuterColor", "0x009DE4");				
  		//fo.addVariable("langGoFull", "Go Fullscreen");
 		//fo.addVariable("langExitFull", "Exit Fullscreen");
 		//fo.addVariable("langAbout", "About");	

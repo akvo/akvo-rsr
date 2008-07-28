@@ -2,16 +2,25 @@
 
 {% block title %}Akvo RSR - Register with Akvo RSR{% endblock %}
 
+{% block header %}
+<div id="header" class="clearfix">
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+</div> <!-- #header -->
+{% endblock header %}
+
 {% block content %}
+
+  <h1>Set up your account</h1>
 
   {% if form.errors %}
   <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
   {% endif %}
-
-  <h1>Create an account</h1>
   
   <form method="post" action="">
     <dl>
+      <dt>
+        Organisation: {{organisation.name}}
+      </dt>
       <dt>
         <label for="id_username">Username:</label>
       </dt>
@@ -23,22 +32,32 @@
       </dd>
   
       <dt>
-        <label for="id_email">Email address:</label>
-      </dd>
+        <label for="id_first_name">First name:</label>
+      </dt>
       <dd>
-        {{ form.email }}
-        {% if form.email.errors %}
-          <span class="error">* {{ form.email.errors|join:", " }}</span>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+          <span class="error">* {{ form.first_name.errors|join:", " }}</span>
         {% endif %}
       </dd>
-  
+
+      <dt>
+        <label for="id_first_name">Last name:</label>
+      </dt>
+      <dd>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}
+          <span class="error">* {{ form.last_name.errors|join:", " }}</span>
+        {% endif %}
+      </dd>
+
       <dt>
         <label for="id_password1">Password:</label>
       </dt>
       <dd>
         {{ form.password1 }}
         {% if form.password1.errors %}
-          <span class="error">* {{ form.password2.errors|join:", " }}</span>
+          <span class="error">* {{ form.password1.errors|join:", " }}</span>
         {% endif %}
       </dd>
   
@@ -52,18 +71,31 @@
         {% endif %}
       </dd>
 
+      <dt>
+        <label for="id_email1">Email address:</label>
+      </dd>
+      <dd>
+        {{ form.email1 }}
+        {% if form.email1.errors %}
+          <span class="error">* {{ form.email1.errors|join:", " }}</span>
+        {% endif %}
+      </dd>
+  
+      <dt>
+        <label for="id_email2">Email address  (type again to catch typos):</label>
+      </dd>
+      <dd>
+        {{ form.email2 }}
+        {% if form.email2.errors %}
+          <span class="error">* {{ form.email2.errors|join:", " }}</span>
+        {% endif %}
+      </dd>
+
+      {{ form.org_id }}
+
       <dt><input type="submit" value="Register" /></dt>
     </dl>
   </form>
   
 {% endblock %}
 
-<p>Fill out the form to the left (all fields are required), and your
-account will be created; you'll be sent an email with instructions on how
-to finish your registration.</p>
-
-<p>We'll only use your email to send you signup instructions. We hate spam
-as much as you do.</p>
-
-<p>This account will let you log into the ticket tracker, claim tickets,
-and be exempt from spam filtering.</p>

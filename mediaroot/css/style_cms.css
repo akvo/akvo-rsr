@@ -4,13 +4,13 @@
 #outer_leftwing
 {
 float: left;
-width: 250px;
+width: 210px;
 }
 
 #outer_rightwing
 {
 float: right;
-width: 710px;
+width: 750px;
 }
 
 /* Drupal
@@ -19,24 +19,22 @@ width: 710px;
 ul.menu,
 ul.item-list
 {
-padding: 20px 20px;
+padding: 0 20px;
+margin: 0;
+list-style-type: none;
+}
+
+ul.menu li,
+ul.item-list li
+{
+background-image: url(/rsr/media/img/arrow.png);
+background-repeat: no-repeat;
+background-position: 0 .2em;
+padding-left: 1.2em;
+padding-bottom: 0.5em
 }
 
 .item-list
 {
 padding: 20px 20px;
-}
-
-#header, #navigation 
-{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
-	background-color: #fff;
 }

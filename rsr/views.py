@@ -1,5 +1,6 @@
 from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
-from akvo.rsr.models import funding_aggregate
+from akvo.rsr.models import funding_aggregate, UserProfile
+from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm
 
 from django import newforms as forms
 from django.http import HttpResponse, HttpResponseRedirect
@@ -151,7 +152,7 @@ def index(request):
                 return HttpResponseRedirect('/rsr/settestcookie/')
             elif no_cookie == 'test':
                 return HttpResponseRedirect('/rsr/?nocookie=True')
-            elif no_cookie == 'True':
+            else:
                 bandwidth = 'low'
     try:
         feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
@@ -260,12 +261,12 @@ def signin(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        next     = request.POST['next']
+        next     = request.POST.get('next', '/rsr/')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(request.POST['next'])
+                return HttpResponseRedirect(next)
             else:
                 return HttpResponseRedirect('http://www.akvo.org/')
         else:
@@ -284,6 +285,68 @@ def signout(request):
     logout(request)
     return HttpResponseRedirect('/rsr/')
 
+def register1(request):
+    '''
+    The user chooses organisation as a preliminary step to registering an Akvo RSR account.
+    '''
+    if request.method == 'POST':
+        form = OrganisationForm(data=request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect('/rsr/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
+    else:
+        form = OrganisationForm()    
+    context = RequestContext(request)
+    return render_to_response('registration/organization_form.html', { 'form': form }, context_instance=context)
+    
+def register2(request,
+             form_class=RSR_RegistrationForm,
+             profile_callback=None,
+             template_name='registration/registration_form.html',
+            ):
+    org_id = request.GET.get('org_id', None)
+    if not org_id:
+        return HttpResponseRedirect('/rsr/accounts/register1/')
+    organisation = Organization.objects.get(pk=org_id)
+    if request.method == 'POST':
+        #from dbgp.client import brk
+        #brk(host="vnc.datatrassel.se", port=9000)
+        form = form_class(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            new_user = form.save(profile_callback=profile_callback)
+            return HttpResponseRedirect('/rsr/accounts/register/complete/')
+    else:
+        form = form_class(initial={'org_id': org_id})    
+    context = RequestContext(request)
+    return render_to_response(template_name,
+                              { 'form': form, 'organisation': organisation, },
+                              context_instance=context)
+
+@login_required
+def update_user_profile(request,
+                        success_url='/rsr/accounts/update/complete/',
+                        form_class=RSR_ProfileUpdateForm,
+                        template_name='registration/update_form.html',
+                        extra_context=None
+                       ):
+
+                        
+    if request.method == 'POST':
+        form = form_class(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            updated_user = form.update(request.user)
+            return HttpResponseRedirect(success_url)
+    else:
+        form = form_class(initial={
+            'first_name':request.user.first_name,
+            'last_name':request.user.last_name,
+        })
+    if extra_context is None:
+        extra_context = {}
+    context = RequestContext(request)
+    for key, value in extra_context.items():
+        context[key] = callable(value) and value() or value
+    return render_to_response(template_name, {'form': form}, context_instance=context)    
+
 def updatelist(request, project_id):
     updates = Project.objects.get(id=project_id).projectupdate_set.all()
     template = 'rsr/update_list.html'
@@ -293,26 +356,6 @@ def updatelist(request, project_id):
     #c = RequestContext({'updates': updates})
     #return HttpResponse(t.render(c))
 
-class UpdateForm(ModelForm):
-
-    js_snippet = "return taCount(this,'myCounter')"
-    js_snippet = mark_safe(js_snippet)    
-    title           = forms.CharField(
-                        widget=forms.TextInput(
-                            attrs={'class':'input', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
-                      ))
-    text            = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
-    status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
-    photo           = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
-    photo_location  = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
-    photo_caption   = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
-    photo_credit    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
-    
-    class Meta:
-        model = ProjectUpdate
-        exclude = ('time', 'project', 'user', )
-
-from dbgp.client import brk
 
 @render_to('rsr/project_updates.html')
 def projectupdates(request, project_id):
@@ -338,6 +381,25 @@ def projectcomments(request, project_id):
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
     return {'p': p, 'comments': comments, 'form': form, }
+
+class UpdateForm(ModelForm):
+
+    js_snippet = "return taCount(this,'myCounter')"
+    js_snippet = mark_safe(js_snippet)    
+    title           = forms.CharField(
+                        widget=forms.TextInput(
+                            attrs={'class':'input', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+                      ))
+    text            = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
+    status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
+    photo           = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
+    photo_location  = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
+    photo_caption   = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
+    photo_credit    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
+    
+    class Meta:
+        model = ProjectUpdate
+        exclude = ('time', 'project', 'user', )
 
 @login_required()
 def updateform(request, project_id):

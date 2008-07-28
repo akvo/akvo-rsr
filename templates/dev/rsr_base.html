@@ -46,7 +46,7 @@
 <div id="wrapper">
 
 {% block header %}
-<div id="header">
+<div id="header" class="clearfix">
 
 	{% if not user.username %}
 	
@@ -72,7 +72,7 @@
 {% endblock header %}
 
 {% block navigation %}
-<div id="navigation">			
+<div id="navigation" class="clearfix">			
 	<ul id="navlist">
 		<li><a href="/rsr/"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>Home</a></li>
 		<li><a href="#">Akvopedia</a></li>

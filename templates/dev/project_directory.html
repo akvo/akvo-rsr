@@ -1,5 +1,7 @@
 {% extends "rsr/index_base.html" %}
 {% load generic_content %}
+{% load addparam %}
+{% load funding_bar %}
 
 {% block title %}Akvo RSR - Project listing{% endblock title %}
 
@@ -25,20 +27,22 @@
 	</div> <!-- .boxhead -->
 
 <div class="boxbody">
-	<table id="project_showcase">
+	<table id="project_showcase" style="width: 95%;">
 	{% get_random_objects rsr.Project 3 as showcases %}
 	<tr>
 	{% for showcase in showcases %}
 	<td style="width: 33%;{% if not forloop.last %}border-right: 1px solid #ccc;{% endif %}">
-		<h2><a href="../project/{{showcase.id}}/">{{showcase.name}}</a></h2>
+		<h2><a href="{% url akvo.rsr.views.projectmain showcase.id %}">{{showcase.name}}</a></h2>
 		<div class="small lightx2">{{showcase.subtitle}}</div>
 		{% if showcase.current_image %}
+			<a href="{% url akvo.rsr.views.projectmain showcase.id %}">
 			<img src="{{MEDIA_URL}}{{showcase.current_image}}" alt="{{showcase.current_image_caption}}" style="height: 105px; margin: 10px 0" />
+			</a>
 			<p class="small lightx2">{{showcase.current_image_caption}}</p>
 		{% else %}
 			<div style="width: 140px; height: 105px; background-color: #ccc; margin: 10px 0"></div>
 		{% endif %}	
-		<p><span class="lightx2">Status</span><br />{{showcase.show_status}}</p>
+		<p><span class="lightx2">Status:</span> {{showcase.show_status}}</p>
 		<p class="lightx2">Focus areas</p>
 			{% if showcase.category_sanitation %}
 				 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
@@ -56,9 +60,9 @@
 				 <img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 10px 5px 10px 0;" />		
 			 {% endif %}
 		<p class="lightx2">Location</p>
-		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />Continent</p>
-		<div style="border: 1px solid #ccc; width: 100%; margin: 15px 0 5px 0"><div style="background-color: green; width: {% widthratio showcase.funding.pledged showcase.funding.total 100 %}%; height: 20px;"></div></div>
-		<p class="bold">Total <span style="margin-left: 40px;">{{showcase.funding.total}} {{showcase.funding.currency}}</span></p>
+		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />{{showcase.country.get_continent_display}}</p>
+	
+		{% funding_bar showcase %}
 	</td>
 	{% endfor %}
 	
@@ -70,51 +74,123 @@
 {% endblock outer_leftwing %}
 
 {% block projects %}
+
 <div class="boxhead" style="clear:both">
-    <div style="float:right; margin-top: 0.6em">
-    <label for="display_number_of_entries">Show</label>
+	<a name="list"></a>
+    <div style="float:right; margin: 1em">
+    <!--<label for="display_number_of_entries">Show</label>
     <select name='display_number_of_entries' class="select">
     <option value='25'>25</option>
     <option value='50'>50</option>
     <option value='75'>75</option>
     </select>
-    results per page <span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span> <span style="margin: 0 20px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+    results per page-->
+		<span style="margin: 0 20px 0 20px">Projects {{page.start_index}}-{{page.end_index}} of {{projects.count}}</span>
+		<span style="margin: 0 20px 0 20px">
+			{% ifequal page.number 1 %}
+			First |
+			{% else %}
+				{# if we have an organisation in the context, we are diplaying the list filtered on that org, url have to conform to that #}
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}#list">First</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+				{% endif %}
+			{% endifequal %}
+			{% if page.has_previous %}
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+				{% endif %}
+			{% else %}
+			Previous |
+			{% endif %}
+			{% if page.has_next %}
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+				{% endif %}
+			{% else %}
+			Next |
+			{% endif %}
+			{% ifequal page.number page.paginator.num_pages %}
+			Last
+			{% else %}
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+				{% endif %}
+			{% endifequal %}
+		</span>
     </div>
 
-    <h1>Project listing <span class="lightx2" style="font-weight:normal">(223 total)</span></h1>
+    <h1>Project listing
+		{% if o %}
+			for {{o.name}}
+		{% endif %}
+		<span class="lightx2" style="font-weight:normal">({{projects.count}} total)</span>
+	</h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="#">Project name</a></th>
-<th><a href="?order_by=status">Status</a></th>
-<th><a href="?order_by=country">Country</a></th>
-
-<th><a href="#">Continent</a></th>
-<th><a href="#">Total funds requested</a></th>
-<th><a href="#">Funding still needed</a></th>
-<th><a href="#">Field partner(s)</a></th>
-<th><a href="#">Support partner(s)</a></th>
-<th><a href="#">Funding partner(s)</a></th>
+	<th>
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list">Project name</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list">Project name</a>
+	{% endif %}
+	</th>
+	<th>
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list">Status</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list">Status</a>
+	{% endif %}
+	</th>
+	<th>
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list">Country</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list">Country</a>
+	{% endif %}
+	</th>
+	<th>
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list">Continent</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list">Continent</a>
+	{% endif %}
+	</th>
+	<th>Total funds requested</th>
+	<th>Funding still needed</th>
+	<th>Field partner(s)</th>
+	<th>Support partner(s)</th>
+	<th>Funding partner(s)</th>
 </tr>
-{% for p in projects %}
+{% for p in page.object_list %}
 <tr>
 	<td>
 		
 	
 		{% if p.current_image %}
+			<a href="{% url akvo.rsr.views.projectmain p.id %}">
 			<img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 100px; float:left; margin-right: 10px;" />
+			</a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
 		{% endif %}	
 
-		<a href="../project/{{p.id}}/">{{p.name}}</a>
+		<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
 		<div class="lightx2 small">{{p.subtitle}}</div>
 		<div style="clear: left;">
 		{% if p.category_sanitation %}
-			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
+			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" title="" style="margin: 10px 5px 10px 0;" />
 		 {% endif %}
 		 {% if p.category_water %}
 			 <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
@@ -132,14 +208,14 @@
 	</td>
 	<td>{{p.show_status}}</td>
 	<td>{{p.country}}</td>
-	<td>Continent</td>
+	<td>{{p.country.get_continent_display}}</td>
 	<td>
 		{% ifequal p.funding.still_needed 0 %}
 			<span style="color: green">
 		{% else %}
 			<span>
 		{% endifequal %}
-		{{p.funding.total}} {{p.funding.currency}}
+		<b>{{p.funding.get_currency_display|safe}} {{p.funds_requested}}</b>
 		</span>
 	</td>
 	<td>
@@ -148,23 +224,35 @@
 		{% else %}
 			<span style="color: red">
 		{% endifequal %}
-		{{p.funding.still_needed}} {{p.funding.currency}}
+		<b>{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</b>
 		</span>
 	</td>
 	<td>
-	{% for fieldpartner in p.fieldpartner_set.all %}
-		<a href="../organization/{{fieldpartner.field_organization.id}}/">{{fieldpartner.field_organization.name}}</a><br />
-	{% endfor %}
+	{% if p.fieldpartner_set.all %}
+		{% for fieldpartner in p.fieldpartner_set.all %}
+			<a href="{% url akvo.rsr.views.orgdetail fieldpartner.field_organization.id %}">{{fieldpartner.field_organization.name}}</a><br />
+		{% endfor %}
+	{% else %}
+		&nbsp;
+	{% endif %}
 	</td>
 	<td>
-	{% for support in p.supportpartner_set.all %}
-		<a href="../organization/{{support.support_organization.id}}/">{{support.support_organization.name}}</a><br />
-	{% endfor %}
+	{% if p.supportpartner_set.all %}
+		{% for support in p.supportpartner_set.all %}
+			<a href="{% url akvo.rsr.views.orgdetail support.support_organization.id %}">{{support.support_organization.name}}</a><br />
+		{% endfor %}
+	{% else %}
+		&nbsp;
+	{% endif %}
 	</td>
 	<td>
-	{% for funder in p.fundingpartner_set.all %}
-		<a href="../organization/{{funder.funding_organization.id}}/">{{funder.funding_organization.name}}</a><br />
-	{% endfor %}		
+	{% if p.fundingpartner_set.all %}
+		{% for funder in p.fundingpartner_set.all %}
+			<a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a><br />
+		{% endfor %}		
+	{% else %}
+		&nbsp;
+	{% endif %}
 	</td>
 </tr>
 
@@ -172,16 +260,37 @@
 
 <tr>
 	<td colspan="9">
-		<div style="text-align: right"
-			<label for="display_number_of_entries">Show</label>
+		<div style="text-align: right">
+			<!--<label for="display_number_of_entries">Show</label>
 			<select name='display_number_of_entries' class="select">
 				<option value='25'>25</option>
 				<option value='50'>50</option>
 				<option value='75'>75</option>
 			</select>
-			results per page
-			<span style="margin: 0 20px 0 20px">Projects 1-25 of 223</span>
-			<span style="margin: 0 10px 0 20px">First | Previous | <a href="#">Next</a> | <a href="#">Last</a></span>
+			results per page-->
+		<span style="margin: 0 20px 0 20px">Projects {{page.start_index}}-{{page.end_index}} of {{projects.count}}</span>
+		<span style="margin: 0 20px 0 20px">
+			{% ifequal page.number 1 %}
+			First |
+			{% else %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+			{% endifequal %}
+			{% if page.has_previous %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+			{% else %}
+			Previous |
+			{% endif %}
+			{% if page.has_next %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+			{% else %}
+			Next |
+			{% endif %}
+			{% ifequal page.number page.paginator.num_pages %}
+			Last
+			{% else %}
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+			{% endifequal %}
+		</span>
 		</div>
 	</td>
 </tr>

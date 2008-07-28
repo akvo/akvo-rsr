@@ -1,0 +1,50 @@
+{% extends "rsr/rsr_base.html" %}
+
+{% block title %}Akvo RSR - Update your Akvo RSR account information{% endblock %}
+
+{% block content %}
+
+    {% if form.errors %}
+        <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
+        {% for bug in form.errors %}
+            {{bug}}: {{bug.as_text}}
+        {% endfor %}
+    {% endif %}
+
+    <h1>Update your Akvo RSR account information</h1>
+    
+    <p><a href="/rsr/accounts/password/change/">Change your password</a></p>
+  
+    <form method="post" action="">
+
+    {{ form.username }}
+  
+    <dl>
+      
+        <dt>
+            <label for="id_first_name">First name:</label>
+        </dt>
+        <dd>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+                <span class="error">* {{ form.first_name.errors|join:", " }}</span>
+            {% endif %}
+        </dd>
+        
+        <dt>
+            <label for="id_first_name">Last name:</label>
+        </dt>
+        <dd>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+                <span class="error">* {{ form.last_name.errors|join:", " }}</span>
+            {% endif %}
+        </dd>
+                
+        <dt>
+            <input type="submit" value="Save changes" />
+        </dt>
+    </dl>
+    </form>
+  
+{% endblock %}

@@ -46,48 +46,52 @@
 <div id="wrapper">
 
 {% block header %}
-<div id="header">
+<div id="header" class="clearfix">
 
 	{% if not user.username %}
 	
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+	<div style="padding-top: 15px;">
 	<a class="actionbutton ab_white" href="{% url django.contrib.auth.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin-top: 1.4em;">
 		<span>Sign in</span>
 	</a>
+	</div>
 
 	{% else %}
 
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
-	<div style="padding-left: 50px">
+	<div style="padding-left: 50px; padding-top: 15px;">
 	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="margin-top: 1.4em; margin-left: 20px"><span>Sign out</span></a></div>
 	Signed in as: {{user.username}}
 
 	{% endif %}
-	
-<div style="clear: both"></div>
 
 </div> <!-- #header -->
 {% endblock header %}
 
 {% block navigation %}
-<div id="navigation">			
+<div id="navigation" class="clearfix">			
 	<ul id="navlist">
 		<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>Home</a></li>
-		<li><a href="http://www.akvo.org/wiki/">Akvopedia</a></li>
+		<li><a href="http://dev.akvo.org:8080/wiki/">Akvopedia</a></li>
 		<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifnotequal request.path "/rsr/" %} class="active"{% endifnotequal %}>Projects</a></li>
-		<li><a href="http://dev.akvo.org:8080/web/get-involved/">Get involved</a></li>
-		<li><a href="http://www.akvo.org/blog/">Blog</a></li>
+		<li><a href="/web/?q=node/17">Get involved</a></li>
+		<li><a href="http://dev.akvo.org:8080/blog/">Blog</a></li>
 		<li><a href="http://dev.akvo.org:8080/web/">About</a></li>
-		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="#">My account</a></li>
+	{% if not user.username %}
+		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">Register</a></li>
+	{% else %}
+		<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">My account</a></li>
+	{% endif %}
 	</ul>
 </div> <!-- #navigation -->
 {% endblock navigation %}
 
-<div id="breadcrumbs">
+<div class="clearfix" id="breadcrumbs">
 	{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">Home</a>{% endblock breadcrumbs %}
 </div>
 
-<div id="content">
+<div class="clearfix" id="content">
 {% block page_id %}
 {% endblock page_id %}
 
@@ -98,9 +102,9 @@
 </div> <!-- #content -->
 
 {% block footer %}
-<div id="footer">
-		<p>Site content under <a href="#">Open License</a> | <a href="#">Terms of use</a> | <a href="#">Privacy policy</a> | 
-		Prototype funding by <a href="#">Partners voor Water and others</a><span style="float:right"><a href="#">Contact us</a></span></p>
+<div id="footer" class="clearfix">
+	<div style="float:left">Site content under <a href="/web/?q=node/29">Open License</a> | <a href="/web/?q=node/30">Terms of use</a> | <a href="/web/?q=node/31">Privacy policy</a></div>
+	<div style="float:right"><a href="/web/?q=node/32">Contact us</a></div>
 </div> <!-- #footer -->
 {% endblock footer %}
 

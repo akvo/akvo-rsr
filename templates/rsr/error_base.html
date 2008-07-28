@@ -1,0 +1,33 @@
+{% extends "rsr/rsr_base.html" %}
+
+{% block title %}Akvo RSR - Error: 404 - the page is not available{% endblock title %}
+
+{% block content %}
+
+{% block page_id %}
+    <div id="page_project">
+{% endblock page_id %}
+
+{% block outer_leftwing %}
+
+    <div id="error">
+        <div class="boxbody">
+            <h1 class="c1">
+                {% block error_head %}404: We're sorry, we can't find the page you requested{% endblock %}
+            </h1>
+
+            <div class="c2">
+                {% block error_body %}
+
+                {% endblock error_body %}
+
+                <p>Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.</p>
+
+                <p>Return to the <a href="{% url akvo.rsr.views.index %">Akvo home page</a></p>
+            </div>
+        </div>
+    </div>
+
+{% endblock outer_leftwing %}
+
+{% endblock content %}

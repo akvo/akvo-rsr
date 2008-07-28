@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
-from akvo.rsr.feeds import ProjectUpdates 
-#   from akvo.rsr.models import Organization, Project
+from django.views.generic.simple import direct_to_template
+from akvo.rsr.feeds import ProjectUpdates
+from akvo.rsr.models import create_rsr_profile
 
 feeds = {
     'updates': ProjectUpdates,
@@ -44,6 +45,10 @@ urlpatterns = patterns('',
     (r'^rsr/signin/$', 'django.contrib.auth.views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
     
+    (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),
+    (r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', {'profile_callback': create_rsr_profile,}),
+    (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
+    (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),
     (r'^rsr/accounts/', include('registration.urls')),
     
     (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
@@ -52,7 +57,7 @@ urlpatterns = patterns('',
     #(r'', include('feedjack.urls')),
     
     #template dev urls
-    (r'^rsr/dev/(?P<template_name>[_a-zA-Z]+)/$', 'akvo.rsr.views.templatedev', ),
+    (r'^rsr/dev/(?P<template_name>[_a-zA-Z0-9]+)/$', 'akvo.rsr.views.templatedev', ),
     #(r'^rsr/dev/project_main/$', 'django.views.generic.simple.direct_to_template', {'template': 'dev/project_main.html'}),
 
     # serving media in the dev server environment TODO: set up real media serving

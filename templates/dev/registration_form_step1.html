@@ -1,0 +1,47 @@
+{% extends "rsr/rsr_base.html" %}
+
+{% block content %}
+
+<div class="boxbody">
+
+<div class="clearfix">
+<div class="form_error" style="margin-right: 70px">
+<p><b>A problem occurred</b></p>
+<p>Please review messages below.</p>
+</div> <!-- .form_error -->
+
+<h1 class="section" style="font-size: 1.4em;">Setup your account</h1>
+<p class="lightx2">Step 2 of 2</p>
+</div> <!-- .clearfix -->
+
+<hr />
+
+<fieldset class="form">
+
+<div id="organization" class="clearfix">
+<label>Select organisation that you belong to</label>
+<div class="form_error">
+<p><b>A problem occurred</b></p>
+<p>No organisation selected.</p>
+</div> <!-- .form_error -->
+<select name="select1" class="select" style="margin: 20px 50px; display: block; width: 400px">
+<option value="#">Organisation 1</option>
+<option value="#">Organisation 2</option>
+<option value="#">Organisation 3</option>
+<option value="#">Organisation 4</option>
+</select>
+<p class="about_field">Important:</p>
+<p class="about_field">To set up your account, your organisation must be already registered with Akvo. If you do not see your organisation on the list above, click this link to email us to begin registering your organisation. After registration is complete, please return to set up your account.</p>
+</div> <!-- #organization -->
+<hr />
+
+<div style="text-align: center">
+<a href="#" style="margin-right: 20px;">Cancel</a> 
+<button><a class="actionbutton ab_white" href="#" onclick="this.blur();" style=" margin:0"><span>Submit</span></a></button>
+</div> <!-- style -->
+
+</fieldset>
+
+</div> <!-- boxbody -->
+
+{% endblock %}

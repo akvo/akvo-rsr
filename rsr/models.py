@@ -1,14 +1,17 @@
+from datetime import date
+
 from django import newforms as forms
+from django.conf import settings
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core import validators
 from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
 
+from registration.models import RegistrationProfile, RegistrationManager
 
-from datetime import date
-
-        
 CONTINENTS = (
     (1, 'Africa'),
     (2, 'Asia'),
@@ -130,12 +133,90 @@ class Organization(models.Model):
     class Meta:
         ordering = ['name']
 
-#class UserProfile(modelss.Model):
-#    '''
-#    Extra info about a user, currently only Organisation affiliation.
-#    '''
-#    user = models.ForeignKey(User, unique=True)
-#    organisation = models.ForeignKey(Organization)
+class RSR_RegistrationManager(RegistrationManager):
+    '''
+    Customized registration manager modifying create_inactive_user() to take a
+    callback profile_callback() that takes two arguments, a user and a userprofile.
+    Used by RSR_RegistrationProfile.
+    '''
+    def create_inactive_user(self, username, password, email, first_name='',
+                             last_name='', send_email=True, profile_callback=None, profile_data=None):
+        """
+        Create a new, inactive ``User``, generates a
+        ``RegistrationProfile`` and email its activation key to the
+        ``User``, returning the new ``User``.
+        
+        To disable the email, call with ``send_email=False``.
+        
+        To enable creation of a custom user profile along with the
+        ``User`` (e.g., the model specified in the
+        ``AUTH_PROFILE_MODULE`` setting), define a function which
+        knows how to create and save an instance of that model and
+        pass it as the keyword argument ``profile_callback``.
+        This function should accept two keyword arguments:
+
+        ``user``
+            The ``User`` to relate the profile to.
+        
+        ``profile``
+            The data from which to create a ``UserProfile`` instance
+        
+        
+        """
+        #from dbgp.client import brk
+        #brk(host="192.168.1.123", port=9000)
+        new_user = User.objects.create_user(username, email, password)
+        new_user.is_active = False
+        new_user.first_name = first_name
+        new_user.last_name = last_name
+        new_user.save()
+        
+        registration_profile = self.create_profile(new_user)
+        
+        if profile_callback is not None:
+            profile_callback(user=new_user, profile=profile_data)
+        
+        if send_email:
+            from django.core.mail import send_mail
+            current_site = Site.objects.get_current()
+            
+            subject = render_to_string('registration/activation_email_subject.txt',
+                                       { 'site': current_site })
+            # Email subject *must not* contain newlines
+            subject = ''.join(subject.splitlines())
+            
+            message = render_to_string('registration/activation_email.txt',
+                                       { 'activation_key': registration_profile.activation_key,
+                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                         'site': current_site })
+            
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_user.email])
+        return new_user
+    
+    def update_active_user(self, user, first_name, last_name):
+        user.first_name = first_name
+        user.last_name  = last_name
+        user.save()        
+        return user
+        
+class RSR_RegistrationProfile(RegistrationProfile):
+    '''
+    customized registration profile allowing us to create a user profile at the same time a user is registered.
+    '''
+    objects = RSR_RegistrationManager()
+        
+class UserProfile(models.Model):
+    '''
+    Extra info about a user, currently only Organisation affiliation.
+    '''
+    user = models.ForeignKey(User, unique=True)
+    organisation = models.ForeignKey(Organization)
+    
+    class Admin:
+        pass
+    
+def create_rsr_profile(user, profile):
+    return UserProfile.objects.create(user=user, organisation=Organization.objects.get(pk=profile['org_id']))
             
 CURRENCY_CHOICES = (
     #('USD', 'US dollars'),

@@ -18,6 +18,7 @@ background-color: #fff;
 width: 980px;
 font-size: 0.8em;
 margin: 0 auto;
+padding: 0 20px;
 }
 
 /* structural-float-level
@@ -29,26 +30,23 @@ text-align: right;
 vertical-align: middle;
 min-height: 55px;
 line-height: 55px;
-margin-bottom: 20px;
+margin: 10px 0 15px 5px;
 }
 
 #navigation
 {
-clear: left;
+padding-bottom: 10px;
 }
 
 #breadcrumbs
 {
-clear: left;
-margin-bottom: 5px;
 padding: 5px 20px;
-margin: 0;
-padding: 20px 0;
 }
 
 #content
 {
-margin-bottom: 20px;
+margin-top: 10px;
+margin-bottom: 10px;
 }
 
 #footer
@@ -78,7 +76,6 @@ float: right;
 
 #navigation ul
 {
-margin-bottom: 5px;
 color: #fff;
 float: left;
 width: 100%;
@@ -125,6 +122,16 @@ text-decoration: none;
 /* Form elements
 -------------------------------------------------------------------------------------- */
 
+.form {
+margin: 0 20px;
+}
+
+.form label {
+padding: 40px 50px 20px 50px;
+font-weight: bold;
+font-size: 1.2em;
+}
+
 .input {
 font-size: 0.85em; 
 height: 1.2em;
@@ -133,9 +140,48 @@ font-family: Verdana, Arial, Helvetica, sans-serif;
 background-color: #fff; 
 color: #333;
 border: 1px solid #999;
-margin: 0.3em 0;
-vertical-align:top; 
-padding-top: 3px;
+margin: 10px 0;
+vertical-align:top;
+display: block;
+}
+
+.form .input, .form .textfield, .form .select {
+margin: 20px 100px 5px 100px;
+}
+
+h2.paddedbottom {
+padding: 20px 20px 20px 20px;
+}
+
+.form p {
+margin: 0px 100px;
+}
+
+p.about_field {
+color: #999;
+padding: 0;
+margin: 0px 80px;
+}
+
+p.about_field_extended {
+color: #999;
+margin: 20px 80px;
+padding-top: 20px;
+}
+
+
+.form_error {
+float: right;
+width: 250px;
+background-color: #FFEBE7;
+border: 1px solid #FFCDD1;
+padding: 20px 0;
+color: red;
+margin-right: 50px;
+}
+
+.form_error p {
+margin: 0;
 }
 
 .textarea {
@@ -151,8 +197,7 @@ padding-top: 3px;
 display: block;
 }
 
-.input:focus
-{
+.input:focus {
 background-color: blue;
 }
 
@@ -185,7 +230,7 @@ background-color: #dedede;
 background-color: #fff;
 border: 1px solid #dedede;
 margin-bottom: 20px;
-padding: 0;
+padding: 20px 0;
 }
 
 .boxhead p
@@ -216,8 +261,29 @@ padding: 10px 20px;
 h2
 {
 font-weight: bold;
-padding: 10px 20px;
+font-size: 1em;
+padding: 20px 20px 5px 20px;
 }
+
+h3
+{
+font-weight: bold;
+padding: 20px 20px 10px 0px;
+}
+
+.caption
+{
+color: #999;
+font-size: 0.75em;
+}
+
+blockquote 
+{
+margin: 20px 30px 20px;
+background-color:#fef9db;
+padding:8px
+}
+
 
 table h2
 {
@@ -230,7 +296,7 @@ padding: 10px 0;
 
 hr
 {
-margin: 10px 0;
+margin: 10px 20px;
 height: 0;
 border: 0;
 border-top: 1px solid #ccc;
@@ -340,13 +406,16 @@ padding: 0;
 table#project_table
 {
 border-top: 1px solid #999;
-margin: -20px 0;
+margin: 0 0;
+width: 100%;
 }
 
 table#project_table th
 {
 padding: 10px;
 background-color: #ccc;
+text-align: center;
+border-right: 1px solid #999;
 }
 
 table#project_table td
@@ -379,6 +448,21 @@ ul.indented
 padding-left: 1em;
 list-style-type: disc;
 list-style-position: outside;
+}
+
+ul.indented {
+padding: 0 20px;
+margin: 0;
+list-style-type: none;
+}
+
+ul.item-list li
+{
+background-image: url(/rsr/media/img/arrow.png);
+background-repeat: no-repeat;
+background-position: 0 .2em;
+padding-left: 1.2em;
+padding-bottom: 0.5em
 }
 
 ul.indented li
@@ -441,6 +525,11 @@ a.actionbutton:active span {
 {	background: transparent url('/rsr/media/img/bg_button_a_grey.png') no-repeat scroll top right;}
 .ab_grey span
 {	background: transparent url('/rsr/media/img/bg_button_span_grey.png') no-repeat;}
+.ab_d0ffff 
+{	background: transparent url('/rsr/media/img/bg_button_a_d0ffff.png') no-repeat scroll top right;}
+.ab_d0ffff span
+{	background: transparent url('/rsr/media/img/bg_button_span_d0ffff.png') no-repeat;}
+
 
 .bold { font-weight: bold; }
 .bold td { font-weight: bold; }
@@ -448,3 +537,18 @@ a.actionbutton:active span {
 .hr td { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
 th { font-weight: bold; }
 
+/* IE-disaster prevention unit (IE-DPU)
+-------------------------------------------------------------------------------------- */
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {display:inline-block;}
+/* Hide from IE Mac \*/
+.clearfix {display:block;}
+/* End hide from IE Mac */
