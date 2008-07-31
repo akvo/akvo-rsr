@@ -1,50 +1,70 @@
 {% extends "rsr/rsr_base.html" %}
 
-{% block title %}Akvo RSR - Update your Akvo RSR account information{% endblock %}
+{% block title %}Update your Akvo RSR account information{% endblock %}
 
+{% block header %}
+    <div id="header" class="clearfix">
+        <img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" name="header_logo">
+    </div>
+{% endblock header %}
+    
 {% block content %}
 
-    {% if form.errors %}
-        <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
-        {% for bug in form.errors %}
-            {{bug}}: {{bug.as_text}}
-        {% endfor %}
-    {% endif %}
 
-    <h1>Update your Akvo RSR account information</h1>
-    
-    <p><a href="/rsr/accounts/password/change/">Change your password</a></p>
-  
-    <form method="post" action="">
+    <div class="boxbody">
+        <div class="clearfix">
 
-    {{ form.username }}
-  
-    <dl>
-      
-        <dt>
-            <label for="id_first_name">First name:</label>
-        </dt>
-        <dd>
-            {{ form.first_name }}
-            {% if form.first_name.errors %}
-                <span class="error">* {{ form.first_name.errors|join:", " }}</span>
-            {% endif %}
-        </dd>
-        
-        <dt>
-            <label for="id_first_name">Last name:</label>
-        </dt>
-        <dd>
-            {{ form.last_name }}
-            {% if form.last_name.errors %}
-                <span class="error">* {{ form.last_name.errors|join:", " }}</span>
-            {% endif %}
-        </dd>
+          {% if form.errors %}
+            <div class="form_error" style="margin-right: 70px;">
+                <p class="c1">A problem occurred</p>
+
+                <p>{{ form.non_field_errors }}</p>
                 
-        <dt>
-            <input type="submit" value="Save changes" />
-        </dt>
-    </dl>
-    </form>
-  
-{% endblock %}
+                <p>Please review messages below.</p>
+            </div>
+          {% endif %}            
+
+            <h1 class="section c1">Update your Akvo RSR account information</h1>
+
+            <p>Change your password <a href="/rsr/accounts/password/change/" class="c5">here</a>.</p>
+            
+        <hr>
+            
+        
+        <form method="post" action="">
+        {{ form.username }}
+        <fieldset class="form">
+
+            <div id="fist_last_names" class="clearfix">
+                <label style="padding-top: 10px;">Enter changes to your first and last name</label>
+
+                {% if form.first_name.errors or form.last_name.errors %}
+                <div class="form_error">
+                    <p class="c1">A problem occurred</p>
+                    {% if form.first_name.errors %}
+                    <p>{{ form.first_name.errors|join:", " }}</p>
+                    {% endif %}
+                    {% if form.last_name.errors %}
+                    <p>{{ form.last_name.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}              
+                {{ form.first_name }}
+                <p class="about_field">Your first (given) name.</p>
+                
+                {{ form.last_name }}
+                <p class="about_field">Your last (family) name.</p>
+
+                <p class="about_field_extended">Your first and last name will be displayed when you post comments or updates to Akvo.</p>
+            </div>
+            <hr>
+
+            <div class="c7">
+                <a href="{% url akvo.rsr.views.index %}" class="c5">Cancel</a> <button type="submit"><a class="actionbutton ab_white c6" href="#" onclick="this.blur();"><span>Submit</span></a></button>
+            </div>
+        </fieldset>
+        </form>
+    </div>
+{% endblock content %}
+
+

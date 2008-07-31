@@ -1,0 +1,124 @@
+{% extends "rsr/rsr_base.html" %}
+    
+{% block header %}
+    <div id="header" class="clearfix">
+        <img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" name="header_logo">
+    </div>
+{% endblock header %}
+    
+{% block content %}
+
+    <div class="boxbody">
+        <div class="clearfix">
+
+          {% if form.errors %}
+            <div class="form_error" style="margin-right: 70px;">
+                <p class="c1">A problem occurred</p>
+
+                <p>{{ form.non_field_errors }}</p>
+                
+                <p>Please review messages below.</p>
+            </div>
+          {% endif %}            
+
+            <h1 class="section">Setup your account</h1>
+
+            <p class="lightx2">Step 2 of 2</p>
+        </div>
+        <hr>
+            
+        <form method="post" action="">
+        <fieldset class="form">
+            <div id="username" class="clearfix">
+                <label>Enter a username</label>
+                {% if form.username.errors %}
+                <div class="form_error">
+                    <p class="c1">A problem occurred</p>
+
+                    <p>{{ form.username.errors|join:", " }}</p>
+                </div>
+                {% endif %}
+                {{ form.username }}
+                <!--<input class="input c4" name="input">-->
+
+                <p class="about_field">Your user name will be permanent. Use this to log into Akvo.</p>
+            </div>
+            <hr>
+
+            <div id="fist_last_names" class="clearfix">
+                <label>Enter your first and last name</label>
+
+                {% if form.first_name.errors or form.last_name.errors %}
+                <div class="form_error">
+                    <p class="c1">A problem occurred</p>
+                    {% if form.first_name.errors %}
+                    <p>{{ form.first_name.errors|join:", " }}</p>
+                    {% endif %}
+                    {% if form.last_name.errors %}
+                    <p>{{ form.last_name.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}              
+                {{ form.first_name }}
+                <p class="about_field">Enter first (given) name.</p>
+                
+                {{ form.last_name }}
+                <p class="about_field">Enter last (family) name.</p>
+
+                <p class="about_field_extended">Your first and last name will be displayed when you post comments or updates to Akvo.</p>
+            </div>
+            <hr>
+
+            <div id="password" class="clearfix">
+                <label>Enter a password</label>
+
+                {% if form.password1.errors or form.password2.errors %}
+                 <div class="form_error">
+                    <p class="c1">A problem occurred</p>
+                    {% if form.password1.errors %}
+                    <p>{{ form.password1.errors|join:", " }}</p>
+                    {% endif %}
+                    {% if form.password2.errors %}
+                    <p>{{ form.password2.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}              
+                {{ form.password1 }}
+                <p class="about_field">Enter password.</p>
+                
+                {{ form.password2 }}
+                <p class="about_field">Retype password to verify.</p>
+            </div>
+            <hr>
+
+            <div id="email" class="clearfix">
+                <label>Enter your email address</label>
+
+                {% if form.email1.errors or form.email2.errors %}
+                 <div class="form_error">
+                    <p class="c1">A problem occurred</p>
+                    {% if form.email1.errors %}
+                    <p>{{ form.email1.errors|join:", " }}</p>
+                    {% endif %}
+                    {% if form.email2.errors %}
+                    <p>{{ form.email2.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}              
+                {{ form.email1 }}
+                <p class="about_field">Enter email address.</p>
+                
+                {{ form.email2 }}
+
+                <p class="about_field">Retype email address to verify.</p>
+            </div>
+            <hr>
+            {{ form.org_id }}
+            <div class="c7">
+                <a href="{% url akvo.rsr.views.index %}" class="c5">Cancel</a> <button type="submit"><a class="actionbutton ab_white c6" href="#" onclick="this.blur();"><span>Submit</span></a></button>
+            </div>
+        </fieldset>
+        </form>
+    </div>
+{% endblock content %}
+

@@ -20,4 +20,6 @@ records = [
 [15, u'Romania', 4]
 [16, u'Georgia', 4]
 [17, u'Ukraine', 4]
+[18, u'Sweden', 4]
+[19, u'Uzbekistan', 4]
 ]

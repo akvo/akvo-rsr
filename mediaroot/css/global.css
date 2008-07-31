@@ -82,6 +82,8 @@ width: 100%;
 background-color: #dbdbdb;
 font-family: arial, helvetica, sans-serif;
 border-bottom: 2px solid #999;
+padding: 0;
+margin: 0;
 }
 
 #navigation ul li

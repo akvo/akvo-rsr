@@ -1,4 +1,5 @@
 {% extends "rsr/project_base.html" %}
+{% load funding_bar %}
 
 {% block title %}{{block.super}} - Funding details{% endblock title %}
 
@@ -28,11 +29,14 @@
 
 		<td style="width: 50%; border-right: 1px solid #ccc; padding-left: 0;">
 			<p style="margin-bottom: 3px"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
-			<div style="border: 1px solid #999; margin: 0 20px 10px 20px">
+			<div style="margin: 0 20px 10px 20px">
+				{% funding_bar p %}
+			</div>
+			<!--<div style="border: 1px solid #999; margin: 0 20px 10px 20px">
 				<div style="width: 176px;">
 					<div style="width: {% widthratio p.funding.pledged p.funding.total 176 %}px; height: 30px; background-color: #4CAC62;"></div>
 				</div>
-			</div>
+			</div>-->
 			<table>
 				<tr>
 					<td>{{p.funding.date_request_posted}}</td>

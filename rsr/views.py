@@ -1,8 +1,9 @@
 from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile
-from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm
+from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm
 
 from django import newforms as forms
+from django import oldforms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.newforms import ModelForm
@@ -250,32 +251,66 @@ class SigninForm(forms.Form):
     #brk(host="vnc.datatrassel.se", port=9000)
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'}))
-    
-def signin(request):
-    '''
-    Sign in page for RSR
-    Context:
-    form: the sign in form    
-    '''
-    form = SigninForm()
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        next     = request.POST.get('next', '/rsr/')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(next)
-            else:
-                return HttpResponseRedirect('http://www.akvo.org/')
-        else:
-            form.has_errors = True
-            # Return an 'invalid login' error message.
-    elif request.method == 'GET':
-        next     = request.GET['next']
-    context_instance=RequestContext(request, {'next': next})
-    return render_to_response('rsr/sign_in.html', {'form': form, }, context_instance=context_instance)
+
+#not used...    
+#def signin(request):
+#    '''
+#    Sign in page for RSR
+#    Context:
+#    form: the sign in form    
+#    '''
+#    form = SigninForm()
+#    if request.method == 'POST':
+#        username = request.POST['username']
+#        password = request.POST['password']
+#        next     = request.POST.get('next', '/rsr/')
+#        user = authenticate(username=username, password=password)
+#        if user is not None:
+#            if user.is_active:
+#                login(request, user)
+#                return HttpResponseRedirect(next)
+#            else:
+#                return HttpResponseRedirect('http://www.akvo.org/')
+#        else:
+#            form.has_errors = True
+#            # Return an 'invalid login' error message.
+#    elif request.method == 'GET':
+#        next     = request.GET['next']
+#    context_instance=RequestContext(request, {'next': next})
+#    return render_to_response('rsr/sign_in.html', {'form': form, }, context_instance=context_instance)
+
+from django.contrib.auth import REDIRECT_FIELD_NAME
+#copied from django.contrib.auth.views to be able to use a custom Form
+def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
+    "Displays the login form and handles the login action."    
+    manipulator = RSR_AuthenticationForm() # this line is changed
+    redirect_to = request.REQUEST.get(redirect_field_name, '')
+    if request.POST:
+        errors = manipulator.get_validation_errors(request.POST)
+        if not errors:
+            # Light security check -- make sure redirect_to isn't garbage.
+            if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
+                from django.conf import settings
+                redirect_to = settings.LOGIN_REDIRECT_URL
+            from django.contrib.auth import login
+            login(request, manipulator.get_user())
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+            return HttpResponseRedirect(redirect_to)
+    else:
+        errors = {}
+    request.session.set_test_cookie()
+
+    if Site._meta.installed:
+        current_site = Site.objects.get_current()
+    else:
+        current_site = RequestSite(request)
+
+    return render_to_response(template_name, {
+        'form': oldforms.FormWrapper(manipulator, request.POST, errors),
+        redirect_field_name: redirect_to,
+        'site_name': current_site.name,
+    }, context_instance=RequestContext(request))
 
 def signout(request):
     '''
@@ -296,12 +331,12 @@ def register1(request):
     else:
         form = OrganisationForm()    
     context = RequestContext(request)
-    return render_to_response('registration/organization_form.html', { 'form': form }, context_instance=context)
+    return render_to_response('registration/registration_form1.html', { 'form': form }, context_instance=context)
     
 def register2(request,
              form_class=RSR_RegistrationForm,
              profile_callback=None,
-             template_name='registration/registration_form.html',
+             template_name='registration/registration_form2.html',
             ):
     org_id = request.GET.get('org_id', None)
     if not org_id:
@@ -321,6 +356,20 @@ def register2(request,
                               { 'form': form, 'organisation': organisation, },
                               context_instance=context)
 
+#copied from django.contrib.auth.views to be able to use a custom Form
+def password_change(request, template_name='registration/password_change_form.html'):
+    new_data, errors = {}, {}
+    form = RSR_PasswordChangeForm(request.user) #this line is changed!
+    if request.POST:
+        new_data = request.POST.copy()
+        errors = form.get_validation_errors(new_data)
+        if not errors:
+            form.save(new_data)
+            return HttpResponseRedirect('%sdone/' % request.path)
+    return render_to_response(template_name, {'form': oldforms.FormWrapper(form, new_data, errors)},
+        context_instance=RequestContext(request))
+password_change = login_required(password_change)
+
 @login_required
 def update_user_profile(request,
                         success_url='/rsr/accounts/update/complete/',
@@ -328,8 +377,6 @@ def update_user_profile(request,
                         template_name='registration/update_form.html',
                         extra_context=None
                        ):
-
-                        
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
@@ -345,7 +392,7 @@ def update_user_profile(request,
     context = RequestContext(request)
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
-    return render_to_response(template_name, {'form': form}, context_instance=context)    
+    return render_to_response(template_name, {'form': form}, context_instance=context)
 
 def updatelist(request, project_id):
     updates = Project.objects.get(id=project_id).projectupdate_set.all()
@@ -411,6 +458,10 @@ def updateform(request, project_id):
     '''
     #brk(host="vnc.datatrassel.se", port=9000)
     p = get_object_or_404(Project, pk=project_id)
+    # check that the current user is allowed to edit
+    if not p.connected_to_user(request.user):
+        return HttpResponseRedirect('/rsr/error/access_denied/')
+        
     if request.method == 'POST':
 
         form = UpdateForm(request.POST, request.FILES, )
@@ -439,6 +490,25 @@ class CommentForm(ModelForm):
     class Meta:
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
+
+@login_required()
+def commentform(request, project_id):
+    '''
+    URL for posting a comment to a project
+    Redirects to the project overview page (/rsr/project/n/ n=project id)
+    '''
+    #brk(host="vnc.datatrassel.se", port=9000)
+    p = get_object_or_404(Project, pk=project_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, )
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.project = p
+            comment.time = datetime.now()
+            comment.user = request.user
+            comment.save()
+            return HttpResponseRedirect('./')
+    return HttpResponseRedirect('./')
 
 #def org_projects(org_id):
 #    '''
@@ -505,25 +575,6 @@ def flashgallery(request):
     projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
     return render_to_response('rsr/gallery.xml', {'projects': projects, }, context_instance=RequestContext(request), mimetype='text/xml')
     
-@login_required()
-def commentform(request, project_id):
-    '''
-    URL for posting a comment to a project
-    Redirects to the project overview page (/rsr/project/n/ n=project id)
-    '''
-    #brk(host="vnc.datatrassel.se", port=9000)
-    p = get_object_or_404(Project, pk=project_id)
-    if request.method == 'POST':
-        form = CommentForm(request.POST, )
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.project = p
-            comment.time = datetime.now()
-            comment.user = request.user
-            comment.save()
-            return HttpResponseRedirect('./')
-    return HttpResponseRedirect('./')
-
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
     dev = {'path': 'dev/'}

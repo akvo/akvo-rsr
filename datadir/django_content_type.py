@@ -27,4 +27,7 @@ records = [
 [23, u'support partner', u'rsr', u'supportpartner']
 [24, u'country', u'rsr', u'country']
 [25, u'link', u'rsr', u'link']
+[26, u'registration profile', u'registration', u'registrationprofile']
+[27, u'rs r_ registration profile', u'rsr', u'rsr_registrationprofile']
+[28, u'user profile', u'rsr', u'userprofile']
 ]

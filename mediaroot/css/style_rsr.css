@@ -61,3 +61,36 @@ background-color: green;
 background-color: blue;
 }
 
+/* system message and error pages
+-------------------------------------------------------------------------------------- */
+.c1
+{
+font-size: 1.4em;    
+}
+
+.c2
+{
+margin: 40px auto 50px auto;
+width: 400px;
+}
+
+.c3
+{
+text-align: center;
+margin: 20px 0 20px 0    
+}
+
+#error .c1
+{
+font-size: 1.6em;
+color: red;
+font-weight: bold;
+text-align: center;
+margin: 30px 0;    
+}
+
+#error .c2
+{
+margin: 0 auto;
+width: 40%
+}

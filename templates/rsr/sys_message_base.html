@@ -1,0 +1,19 @@
+{% extends "rsr/rsr_base.html" %}
+
+{% block page_id %}
+<div id="system_message">
+{% endblock page_id %}
+
+{% block content %}
+
+    <div class="boxbody">
+        {% block message %}
+        {% endblock message %}
+        <div class="c3">
+            <p>Return to the <a href="{% url akvo.rsr.views.index %}">Akvo home page</a></p>
+        </div>    
+    </div>
+
+</div>
+
+{% endblock content %}

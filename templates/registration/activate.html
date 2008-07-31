@@ -1,17 +1,41 @@
-{% extends "rsr/rsr_base.html" %}
+{% extends "rsr/user_message_base.html" %}
 
-{% block title %}Akvo RSR - Account activated{% endblock %}
-
-{% block content %}
-  {% load humanize %}
-  {% if account %}
-    <h1>Account activated.</h1>
-    <p>Thank you for signing up! Now you can <a href="{% url django.contrib.auth.views.login %}">sign in</a>.</p>
-  {% else %}
-    <h1>Account activation failed.</h1>
-    <p>Sorry, it didn't work. Either your activation link was incorrect, or
-    the activation key for your account has expired; activation keys are
-    only valid for {{ expiration_days|apnumber }} days after
-    registration.</p>
-  {% endif %}
+{% block title %}
+    {% if account %}
+        Account activated
+    {% else %}
+        Account activation failed
+    {% endif %}
 {% endblock %}
+
+{% load humanize %}
+{% block message %}
+
+{% if account %}
+
+    <h1 class="section c1">{% block h1 %}Thank you!{% endblock h1 %}</h1>
+    <hr>
+    
+    <div class="c2">
+        <h2 class="paddedbottom">Your account has been activated.</h2>
+    
+        <p class="lightx2">Now you can <a href="{% url django.contrib.auth.views.login %}">sign in</a> to Akvo RSR.</p>
+    </div>
+    <hr>
+    
+{% else %}
+
+    <h1 class="section c1">We're sorry!</h1>
+    <hr>
+    
+    <div class="c2">
+        <h2 class="paddedbottom">The account activation failed.</h2>
+    
+        <p class="lightx2">Either your activation link was incorrect, or the activation key for your account has expired. Activation keys are only valid for {{ expiration_days|apnumber }} days after registration.</p>
+        <p class="lightx2">Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.</p>
+    </div>
+    <hr>
+
+{% endif %}
+
+{% endblock message %}

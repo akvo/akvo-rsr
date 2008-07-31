@@ -42,14 +42,18 @@ urlpatterns = patterns('',
     (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
     (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
 
+    #(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signin/$', 'django.contrib.auth.views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
     
     (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),
     (r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', {'profile_callback': create_rsr_profile,}),
     (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
+    (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),
     (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),
     (r'^rsr/accounts/', include('registration.urls')),
+    
+    (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     
     (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
     

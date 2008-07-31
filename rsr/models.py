@@ -342,9 +342,16 @@ class Project(models.Model):
     def show_status(self):
         "Show the current project status"
         return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
+    
+    def connected_to_user(self, user):
+        '''
+        Test if a user is connected to self through an arganisation
+        '''
+        return self in user.userprofile_set.filter(user__exact = user)[0].organisation.projects()
         
     class Meta:
         pass
+    
 
 LINK_KINDS = (
     ('A', 'Akvopedia entry'),

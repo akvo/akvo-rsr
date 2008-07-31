@@ -3,9 +3,14 @@ Forms and validation code for user registration and updating.
 
 """
 from django import newforms as forms
+from django import oldforms
+from django.core import validators
 from django.core.validators import alnum_re
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 
 from registration.models import RegistrationProfile
 
@@ -15,14 +20,60 @@ from akvo.rsr.models import RSR_RegistrationProfile, UserProfile, Organization
 # on them with CSS or JavaScript if they have a class of "required"
 # in the HTML. Your mileage may vary. If/when Django ticket #3515
 # lands in trunk, this will no longer be necessary.
-attrs_dict = {}
+attrs_dict = {'class': 'input c4',}
+
+class RSR_TextField(oldforms.TextField):
+    # hack to enable class attribute customization on some forms
+    def render(self, data):
+        if data is None:
+            data = u''
+        max_length = u''
+        if self.max_length:
+            max_length = u'maxlength="%s" ' % self.max_length
+        return mark_safe(u'<input type="%s" id="%s" name="%s" size="%s" value="%s" class="input c4" %s/>' % \
+            (self.input_type, self.get_id(), self.field_name, self.length, escape(data), max_length))
+
+class RSR_PasswordField(RSR_TextField):
+    input_type = "password"
+
+class RSR_AuthenticationForm(AuthenticationForm):
+    """
+    Base class for authenticating users. Extend this to get a form that accepts
+    username/password logins.
+    """
+    def __init__(self, request=None):
+        """
+        If request is passed in, the manipulator will validate that cookies are
+        enabled. Note that the request (a HttpRequest object) must have set a
+        cookie with the key TEST_COOKIE_NAME and value TEST_COOKIE_VALUE before
+        running this validator.
+        """
+        self.request = request
+        self.fields = [
+            RSR_TextField(field_name="username", length=15, max_length=30, is_required=True,
+                validator_list=[self.isValidUser, self.hasCookiesEnabled]),
+            RSR_PasswordField(field_name="password", length=15, max_length=30, is_required=True),
+        ]
+        self.user_cache = None    
+
+class RSR_PasswordChangeForm(PasswordChangeForm):
+
+    def __init__(self, user):
+        self.user = user
+        self.fields = (
+            RSR_PasswordField(field_name="old_password", length=30, max_length=30, is_required=True,
+                validator_list=[self.isValidOldPassword]),
+            RSR_PasswordField(field_name="new_password1", length=30, max_length=30, is_required=True,
+                validator_list=[validators.AlwaysMatchesOtherField('new_password2', _("The two 'new password' fields didn't match."))]),
+            RSR_PasswordField(field_name="new_password2", length=30, max_length=30, is_required=True),
+        )
 
 class OrganisationForm(forms.Form):
     organisation = forms.ModelChoiceField(queryset=Organization.objects.all(), widget=forms.Select(attrs={ 'style': 'margin: 10px 50px; display: block' }))
 
 class ProfileFormBase(forms.Form):
-    first_name  = forms.CharField(max_length=30, widget=forms.TextInput())
-    last_name   = forms.CharField(max_length=30, widget=forms.TextInput())
+    first_name  = forms.CharField(max_length=30, widget=forms.TextInput(attrs=attrs_dict))
+    last_name   = forms.CharField(max_length=30, widget=forms.TextInput(attrs=attrs_dict))
     #initial form data must set the organisation e.g. initial={'org_id': org_id)}
 
     def save(self, profile_callback=None):

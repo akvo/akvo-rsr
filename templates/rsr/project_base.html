@@ -1,5 +1,5 @@
 {% extends "rsr/rsr_base.html" %}
-
+{% load funding_bar %}
 {% block title %}Akvo RSR - Project no. {{p.id}}, {{p.name}}{% endblock title %}
 
 {% block content %}
@@ -28,12 +28,13 @@
 	</div> <!-- .boxhead -->
 
 	<div id="project_funding" class="boxbody">
-		<div style="border: 1px solid #999; margin: 20px 20px 10px 20px"><div style="width: 186px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 186 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>
+        <div style="margin: 20px 20px 10px 20px">{% funding_bar p %}</div>
+		<!--<div style="border: 1px solid #999; margin: 20px 20px 10px 20px"><div style="width: 186px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 186 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>-->
         <p>{{p.funding.date_request_posted}} Request posted</p>
 		{% if p.funding.date_complete %}
     		<p>{{p.funding.date_complete}} Funding completed</p>
 		{% endif %}
-		<p><b>Total: <span style="margin-left: 10px">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</span></b></p>
+		<!--<p><b>Total: <span style="margin-left: 10px">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">View details</a></p>
 		<hr />
 		<p style="margin: 10px 0 10px 0;">

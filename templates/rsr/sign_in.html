@@ -24,10 +24,7 @@
 {% if form.has_errors %}
     <div class="boxbody" style="background-color: orange; margin: 20px;">
     <h1 class="section">Error when signing in</h1>
-    <p>We have a problem:</p>
-    <ul class="indented">
-        {{form.as_ul}}
-    </ul>
+    <p>Please correct the errors below.</p>
     </div> <!-- .boxbody -->
 {% endif %}
 
@@ -40,14 +37,18 @@
             <tr>            
                 <td style="width: 15%""><label for="id_username">Enter username</label></td>
                 <td style="width: 20%; padding: 5px 20px;">
-                    <input type="text" id="id_username" class="input" name="username" value="" maxlength="30" />
+                    {{ form.username }}
+                    <br/>
+                    <span style="color:red;">{{ form.username.errors|join:", " }}</span>
                 </td>
                 <td style="width: 30%;"><a href="/rsr/accounts/password/reset/">I forgot my username and/or password</a></td>
             </tr>
             <tr>
                 <td><label for="id_password">Enter password</label></td>
                 <td style="padding: 5px 20px" colspan="2">
-                    <input type="password" id="id_password" class="input" name="password" value="" maxlength="30" />
+                    {{ form.password }}
+                    <br/>
+                    <span style="color:red;">{{ form.password.errors|join:", " }}</span>
                 </td>
             </tr>
             </table>
