@@ -56,6 +56,9 @@ urlpatterns = patterns('',
     (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     
     (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
+
+    (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),
+    
     
     #feedjack
     #(r'', include('feedjack.urls')),

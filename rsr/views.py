@@ -1,4 +1,4 @@
-from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm
 
@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 
 from BeautifulSoup import BeautifulSoup
 from datetime import datetime
+import time
 import feedparser
 
 def mdgs_water_calc(projects):
@@ -403,7 +404,6 @@ def updatelist(request, project_id):
     #c = RequestContext({'updates': updates})
     #return HttpResponse(t.render(c))
 
-
 @render_to('rsr/project_updates.html')
 def projectupdates(request, project_id):
     '''
@@ -476,6 +476,26 @@ def updateform(request, project_id):
     else:
         form = UpdateForm()
     return render_to_response('rsr/update_form.html', {'form': form, 'p': p, }, RequestContext(request))
+
+def sms_update(request):
+    '''
+    Create a project update from incoming SMS
+    Returns a simple "OK" to the SMS gateway
+    '''
+    raw = {}
+    request.encoding = 'iso-8859-1'
+    for f in MoSmsRaw._meta.fields:
+        if f.name != 'id':
+            raw[f.name] = request.GET[f.name]
+    MoSmsRaw.objects.create(**raw)
+    u = UserProfile.objects.get(phone_number__exact=request["sender"])
+    #if u:
+    sms_data = {
+        'time':  time.localtime(float(request["delivered"])),
+        'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
+    }
+    success = u.create_sms_update(sms_data)
+    return HttpResponse("OK")
 
 class CommentForm(ModelForm):
 

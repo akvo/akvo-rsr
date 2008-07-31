@@ -23,4 +23,5 @@ records = [
 [23, 7, 4, u'Working as expected', u"Happy days, it's all worked out.\r\n", u'A', u'img/2008/07/23/project3_.jpg', u'B', u'At work', u'Luuk', u'W', '2008-07-23 11:45:32']
 [24, 7, 4, u'Working as expected', u"Happy days, it's all worked out.\r\n", u'A', u'img/2008/07/23/project3__.jpg', u'B', u'At work', u'Luuk', u'W', '2008-07-23 11:45:33']
 [25, 3, 6, u'Work in the field', u'Everything is going fine.', u'A', u'img/2008/07/24/project3.jpg', u'B', u'Me at work', u'Luuk', u'W', '2008-07-24 11:50:52']
+[26, 7, 12, u'mars update', u'blah blah blah will it work?', u'N', u'', u'', u'', u'', u'W', '2008-07-30 21:46:25']
 ]

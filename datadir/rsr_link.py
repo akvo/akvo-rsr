@@ -26,4 +26,5 @@ records = [
 [24, u'A', u'http://www.akvo.org/wiki/index.php/Groundwater_-_Rota_sludge_well_drilling', u'Rota Sludge Well Drilling', 30]
 [25, u'A', u'http://www.akvo.org/wiki/index.php/Rainwater_harvesting', u'Rainwater Harvesting', 30]
 [26, u'A', u'http://www.akvo.org/wiki/index.php/Dry_urine_diversion_toilet', u'Dry Urine Diversion Toilet', 37]
+[27, u'E', u'http://www.irc.nl/home/themes/sanitation/wash_in_schools', u'IRC: WASH in schools', 25]
 ]

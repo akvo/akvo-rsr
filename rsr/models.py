@@ -133,91 +133,7 @@ class Organization(models.Model):
     class Meta:
         ordering = ['name']
 
-class RSR_RegistrationManager(RegistrationManager):
-    '''
-    Customized registration manager modifying create_inactive_user() to take a
-    callback profile_callback() that takes two arguments, a user and a userprofile.
-    Used by RSR_RegistrationProfile.
-    '''
-    def create_inactive_user(self, username, password, email, first_name='',
-                             last_name='', send_email=True, profile_callback=None, profile_data=None):
-        """
-        Create a new, inactive ``User``, generates a
-        ``RegistrationProfile`` and email its activation key to the
-        ``User``, returning the new ``User``.
-        
-        To disable the email, call with ``send_email=False``.
-        
-        To enable creation of a custom user profile along with the
-        ``User`` (e.g., the model specified in the
-        ``AUTH_PROFILE_MODULE`` setting), define a function which
-        knows how to create and save an instance of that model and
-        pass it as the keyword argument ``profile_callback``.
-        This function should accept two keyword arguments:
 
-        ``user``
-            The ``User`` to relate the profile to.
-        
-        ``profile``
-            The data from which to create a ``UserProfile`` instance
-        
-        
-        """
-        #from dbgp.client import brk
-        #brk(host="192.168.1.123", port=9000)
-        new_user = User.objects.create_user(username, email, password)
-        new_user.is_active = False
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-        new_user.save()
-        
-        registration_profile = self.create_profile(new_user)
-        
-        if profile_callback is not None:
-            profile_callback(user=new_user, profile=profile_data)
-        
-        if send_email:
-            from django.core.mail import send_mail
-            current_site = Site.objects.get_current()
-            
-            subject = render_to_string('registration/activation_email_subject.txt',
-                                       { 'site': current_site })
-            # Email subject *must not* contain newlines
-            subject = ''.join(subject.splitlines())
-            
-            message = render_to_string('registration/activation_email.txt',
-                                       { 'activation_key': registration_profile.activation_key,
-                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                         'site': current_site })
-            
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_user.email])
-        return new_user
-    
-    def update_active_user(self, user, first_name, last_name):
-        user.first_name = first_name
-        user.last_name  = last_name
-        user.save()        
-        return user
-        
-class RSR_RegistrationProfile(RegistrationProfile):
-    '''
-    customized registration profile allowing us to create a user profile at the same time a user is registered.
-    '''
-    objects = RSR_RegistrationManager()
-        
-class UserProfile(models.Model):
-    '''
-    Extra info about a user, currently only Organisation affiliation.
-    '''
-    user = models.ForeignKey(User, unique=True)
-    organisation = models.ForeignKey(Organization)
-    
-    class Admin:
-        pass
-    
-def create_rsr_profile(user, profile):
-    return UserProfile.objects.create(user=user, organisation=Organization.objects.get(pk=profile['org_id']))
-            
 CURRENCY_CHOICES = (
     #('USD', 'US dollars'),
     ('EUR', '&#8364;'),
@@ -247,6 +163,7 @@ class Project(models.Model):
     category_maintenance        = models.BooleanField()
     category_training           = models.BooleanField()
     category_education          = models.BooleanField()
+    category_product_development= models.BooleanField()
     category_other              = models.BooleanField()
     
     #current_status_summary = models.TextField()
@@ -326,7 +243,7 @@ class Project(models.Model):
                 'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
             }),
         )
-        list_display = ('name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary',)
+        list_display = ('name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
 
     def project_type(self):
         pt = ""
@@ -343,6 +260,14 @@ class Project(models.Model):
         "Show the current project status"
         return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
     
+    def show_current_image(self):
+        return '<img src="%s" />' % (self.get_current_image_url(),)
+    show_current_image.allow_tags = True
+    
+    def show_map(self):
+        return '<img src="%s" />' % (self.get_map_url(),)
+    show_map.allow_tags = True
+    
     def connected_to_user(self, user):
         '''
         Test if a user is connected to self through an arganisation
@@ -352,7 +277,6 @@ class Project(models.Model):
     class Meta:
         pass
     
-
 LINK_KINDS = (
     ('A', 'Akvopedia entry'),
     ('E', 'External link'),
@@ -440,12 +364,146 @@ UPDATE_METHODS = (
 )
 UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
 
+class RSR_RegistrationManager(RegistrationManager):
+    '''
+    Customized registration manager modifying create_inactive_user() to take a
+    callback profile_callback() that takes two arguments, a user and a userprofile.
+    Used by RSR_RegistrationProfile.
+    '''
+    def create_inactive_user(self, username, password, email, first_name='',
+                             last_name='', send_email=True, profile_callback=None, profile_data=None):
+        """
+        Create a new, inactive ``User``, generates a
+        ``RegistrationProfile`` and email its activation key to the
+        ``User``, returning the new ``User``.
+        
+        To disable the email, call with ``send_email=False``.
+        
+        To enable creation of a custom user profile along with the
+        ``User`` (e.g., the model specified in the
+        ``AUTH_PROFILE_MODULE`` setting), define a function which
+        knows how to create and save an instance of that model and
+        pass it as the keyword argument ``profile_callback``.
+        This function should accept two keyword arguments:
+
+        ``user``
+            The ``User`` to relate the profile to.
+        
+        ``profile``
+            The data from which to create a ``UserProfile`` instance
+        
+        
+        """
+        #from dbgp.client import brk
+        #brk(host="192.168.1.123", port=9000)
+        new_user = User.objects.create_user(username, email, password)
+        new_user.is_active = False
+        new_user.first_name = first_name
+        new_user.last_name = last_name
+        new_user.save()
+        
+        registration_profile = self.create_profile(new_user)
+        
+        if profile_callback is not None:
+            profile_callback(user=new_user, profile=profile_data)
+        
+        if send_email:
+            from django.core.mail import send_mail
+            current_site = Site.objects.get_current()
+            
+            subject = render_to_string('registration/activation_email_subject.txt',
+                                       { 'site': current_site })
+            # Email subject *must not* contain newlines
+            subject = ''.join(subject.splitlines())
+            
+            message = render_to_string('registration/activation_email.txt',
+                                       { 'activation_key': registration_profile.activation_key,
+                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                         'site': current_site })
+            
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_user.email])
+        return new_user
+    
+    def update_active_user(self, user, first_name, last_name):
+        user.first_name = first_name
+        user.last_name  = last_name
+        user.save()        
+        return user
+        
+class RSR_RegistrationProfile(RegistrationProfile):
+    '''
+    customized registration profile allowing us to create a user profile at the same time a user is registered.
+    '''
+    objects = RSR_RegistrationManager()
+
+def isValidGSMnumber(field_data, all_data):
+	if not field_data.startswith("467"):
+		raise validators.ValidationError("The phone number must start with 467")
+	if not len(field_data) == 11:
+		raise validators.ValidationError("The phone number must be 11 digits long.")
+    
+class UserProfile(models.Model):
+    '''
+    Extra info about a user.
+    '''
+    user = models.ForeignKey(User, unique=True)
+    organisation = models.ForeignKey(Organization)
+    phone_number = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
+        <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
+        validator_list = [isValidGSMnumber]
+    )
+    project = models.ForeignKey(Project, null=True, blank=True, )
+    
+    def __unicode__(self):
+        return self.user.username
+
+    def user_name(self):
+        return self.__unicode__()
+    
+    def organisation_name(self):
+        return self.organisation.name
+    
+    def create_sms_update(self, sms_data):
+        if self.project:
+            update_data = {
+                'project': self.project,
+                'user': self.user,
+                'title': 'SMS update',
+                'update_method': 'S',
+            }
+            update_data.update(sms_data)
+            ProjectUpdate.objects.create(**update_data)
+            return True
+        return False
+        
+    class Admin:
+        list_display = ('user_name', 'organisation_name', )
+    
+def create_rsr_profile(user, profile):
+    return UserProfile.objects.create(user=user, organisation=Organization.objects.get(pk=profile['org_id']))
+
+class MoSmsRaw(models.Model):
+    '''
+    all request data from an mo-sms callback
+    '''
+    text        = models.CharField(max_length=200)
+    sender      = models.CharField(max_length=20)
+    to          = models.CharField(max_length=20)
+    delivered   = models.CharField(max_length=50)
+    incsmsid    = models.CharField(max_length=100)
+    
+    class Admin:
+        list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
+
 class ProjectUpdate(models.Model):
     project         = models.ForeignKey(Project)
     user            = models.ForeignKey(User)
     title           = models.CharField(max_length=50)
     text            = models.TextField(blank=True)
-    status          = models.CharField(max_length=1, choices=STATUSES, default='N')
+    #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     photo_location  = models.CharField(blank=True, max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(blank=True, max_length=75)
