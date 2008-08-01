@@ -251,6 +251,9 @@ class RSR_RegistrationForm(RegistrationFormUniqueEmail):
 
 class RSR_ProfileUpdateForm(ProfileFormBase):
 
+    #phone_number   = forms.CharField(max_length=30, widget=forms.TextInput(attrs=attrs_dict))
+    #organisation   = forms.CharField(max_length=30, widget=forms.TextInput(attrs=attrs_dict))
+
     def update(self, user):
         updated_user =  RSR_RegistrationProfile.objects.update_active_user(
                         user,

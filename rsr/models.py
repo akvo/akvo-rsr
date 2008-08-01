@@ -272,7 +272,12 @@ class Project(models.Model):
         '''
         Test if a user is connected to self through an arganisation
         '''
-        return self in user.userprofile_set.filter(user__exact = user)[0].organisation.projects()
+        is_connected = False
+        try:
+            is_connected = self in user.userprofile_set.filter(user__exact = user)[0].organisation.projects()
+        except:
+            pass
+        return is_connected
         
     class Meta:
         pass
@@ -441,7 +446,7 @@ def isValidGSMnumber(field_data, all_data):
 		raise validators.ValidationError("The phone number must start with 467")
 	if not len(field_data) == 11:
 		raise validators.ValidationError("The phone number must be 11 digits long.")
-    
+
 class UserProfile(models.Model):
     '''
     Extra info about a user.
@@ -475,12 +480,12 @@ class UserProfile(models.Model):
                 'update_method': 'S',
             }
             update_data.update(sms_data)
-            ProjectUpdate.objects.create(**update_data)
-            return True
+            pu = ProjectUpdate.objects.create(**update_data)
+            return pu
         return False
         
     class Admin:
-        list_display = ('user_name', 'organisation_name', )
+        list_display = ('user_name', 'organisation_name', 'phone_number', 'project', )
     
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organization.objects.get(pk=profile['org_id']))
@@ -493,6 +498,7 @@ class MoSmsRaw(models.Model):
     sender      = models.CharField(max_length=20)
     to          = models.CharField(max_length=20)
     delivered   = models.CharField(max_length=50)
+    saved_at    = models.DateTimeField()
     incsmsid    = models.CharField(max_length=100)
     
     class Admin:

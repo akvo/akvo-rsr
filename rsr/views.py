@@ -485,17 +485,17 @@ def sms_update(request):
     raw = {}
     request.encoding = 'iso-8859-1'
     for f in MoSmsRaw._meta.fields:
-        if f.name != 'id':
-            raw[f.name] = request.GET[f.name]
+        raw[f.name] = request.GET.get(f.name)
+    raw['saved_at'] = datetime.now()
     MoSmsRaw.objects.create(**raw)
     u = UserProfile.objects.get(phone_number__exact=request["sender"])
-    #if u:
-    sms_data = {
-        'time':  time.localtime(float(request["delivered"])),
-        'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
-    }
-    success = u.create_sms_update(sms_data)
-    return HttpResponse("OK")
+    if u:
+        sms_data = {
+            'time':  datetime.fromtimestamp(float(request["delivered"])),
+            'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
+        }
+        success = u.create_sms_update(sms_data)
+    return HttpResponse("not OK")
 
 class CommentForm(ModelForm):
 

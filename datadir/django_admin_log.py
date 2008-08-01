@@ -705,4 +705,5 @@ records = [
 [700, '2008-07-30 23:59:56', 7, 3, u'16', u'TEST_1', 2, u'Changed e-mail address, last login and date joined.']
 [701, '2008-07-31 00:13:26', 7, 3, u'15', u'TESTtabs2', 2, u'Changed e-mail address, active, last login and date joined.']
 [702, '2008-07-31 00:14:00', 7, 3, u'10', u'TESTvanilla', 2, u'Changed e-mail address.']
+[703, '2008-07-31 13:23:21', 1, 28, u'3', u'gabriel', 2, u'Changed phone number and project.']
 ]
