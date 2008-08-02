@@ -438,7 +438,7 @@ class UpdateForm(ModelForm):
                             attrs={'class':'input', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
                       ))
     text            = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
-    status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
+    #status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
     photo           = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
     photo_location  = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
     photo_caption   = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
@@ -482,20 +482,28 @@ def sms_update(request):
     Create a project update from incoming SMS
     Returns a simple "OK" to the SMS gateway
     '''
-    raw = {}
-    request.encoding = 'iso-8859-1'
-    for f in MoSmsRaw._meta.fields:
-        raw[f.name] = request.GET.get(f.name)
-    raw['saved_at'] = datetime.now()
-    MoSmsRaw.objects.create(**raw)
-    u = UserProfile.objects.get(phone_number__exact=request["sender"])
-    if u:
-        sms_data = {
-            'time':  datetime.fromtimestamp(float(request["delivered"])),
-            'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
-        }
-        success = u.create_sms_update(sms_data)
-    return HttpResponse("not OK")
+    # see if message already has been recieved for some reason, if so ignore
+    mo = MoSmsRaw.objects.get(incsmsid__exact=request.GET.get('incsmsid'))
+    if mo:
+        try:
+            raw = {}
+            request.encoding = 'iso-8859-1'
+            # loop over all query variables and put them in a dict to use as data for MoSmsRaw object creation
+            for f in MoSmsRaw._meta.fields:
+                raw[f.name] = request.GET.get(f.name)
+            raw['saved_at'] = datetime.now()
+            mo = MoSmsRaw.objects.create(**raw)
+            # find the user owning the phone number. If found create an update
+            u = UserProfile.objects.get(phone_number__exact=request.GET.get("sender"))
+            if u:
+                #sms_data = {
+                #    'time':  datetime.fromtimestamp(float(request["delivered"])),
+                #    'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
+                #}
+                success = u.create_sms_update(mo)
+        except:
+            pass #TODO: logging!
+    return HttpResponse("OK") #return OK under all conditions
 
 class CommentForm(ModelForm):
 

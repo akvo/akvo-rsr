@@ -1,25 +1,6 @@
 table = 'rsr_mosmsraw'
-fields = ['id', 'text', 'sender', 'to', 'delivered', 'incsmsid']
+fields = ['id', 'text', 'sender', 'to', 'delivered', 'saved_at', 'incsmsid']
 #default item format: "fieldname":("type", "value")
 default = {}
 records = [
-[1, u'Testar r\ufffdm\ufffdsen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[2, u'Testar r\ufffdm\ufffdsen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[3, u'Mera r\ufffdm\ufffds!?', u'46707277477', u'467301203262115', u'1217507817', u'304c1d1353d21293ccbee72d78730c57']
-[4, u'Mera r\ufffdm\ufffds!?', u'46707277477', u'467301203262115', u'1217503684', u'a7fe6e7a312507c39908fb06f39ce78f']
-[5, u'Testar r\ufffdm\ufffdsen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[6, u'Mera r\ufffdm\ufffds!?', u'46707277477', u'467301203262115', u'1217507817', u'304c1d1353d21293ccbee72d78730c57']
-[7, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[8, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[9, u'Mera r\xe4ksm\xf6rg\xe5s!?', u'46707277477', u'467301203262115', u'1217503684', u'a7fe6e7a312507c39908fb06f39ce78f']
-[10, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[11, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[12, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[13, u'Mera r\xe4ksm\xf6rg\xe5s!?', u'46707277477', u'467301203262115', u'1217507817', u'304c1d1353d21293ccbee72d78730c57']
-[14, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[15, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[16, u'Mera r\xe4ksm\xf6rg\xe5s!?', u'46707277477', u'467301203262115', u'1217507817', u'304c1d1353d21293ccbee72d78730c57']
-[17, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[18, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
-[19, u'Testar r\xe4ksm\xf6rg\xe5sen!', u'46707277477', u'467301203262115', u'1217503425', u'cfd0e955ef2f245ac8b9f36c1e2326b9']
 ]

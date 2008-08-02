@@ -216,7 +216,7 @@ class Project(models.Model):
                     'subtitle',
                     'status',
                     ('category_water', 'category_sanitation', 'category_maintenance', 
-                        'category_training', 'category_education', 'category_other',
+                        'category_training', 'category_education', 'category_product_development', 'category_other',
                     ),
                 )
             }),
@@ -471,15 +471,18 @@ class UserProfile(models.Model):
     def organisation_name(self):
         return self.organisation.name
     
-    def create_sms_update(self, sms_data):
+    def create_sms_update(self, mo_sms_raw):
+        # does the user
         if self.project:
             update_data = {
                 'project': self.project,
                 'user': self.user,
                 'title': 'SMS update',
                 'update_method': 'S',
+                'text': mo_sms_raw.text,
+                'time': datetime.fromtimestamp(float(mo_sms_raw.delivered)),
             }
-            update_data.update(sms_data)
+            #update_data.update(sms_data)
             pu = ProjectUpdate.objects.create(**update_data)
             return pu
         return False

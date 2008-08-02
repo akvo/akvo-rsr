@@ -1,7 +1,7 @@
 {% extends "rsr/index_base.html" %}
 {% load generic_content %}
 {% load addparam %}
-{% load funding_bar %}
+{% load rsr_tags %}
 
 {% block title %}Akvo RSR - Project listing{% endblock title %}
 
@@ -46,6 +46,8 @@
 		{% endif %}	
 		<h2 class="lightx2" style="display: inline">Status:</h2> {{showcase.show_status}}</h2>
 		<h2 class="lightx2">Focus areas</h2>
+			{% category_icons showcase %}
+			<!--
 			{% if showcase.category_sanitation %}
 				 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 0 5px 10px 0;" />
 			 {% endif %}
@@ -61,6 +63,7 @@
 			 {% if showcase.category_education %}
 				 <img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 0 5px 10px 0;" />		
 			 {% endif %}
+			 -->
 		<h2 class="lightx2">Location</h2>
 		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />{{showcase.country.get_continent_display}}</p>
 		{% funding_bar showcase %}
@@ -193,6 +196,8 @@
 		<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
 		<div class="lightx2 small">{{p.subtitle}}</div>
 		<div style="clear: left;">
+			{% category_icons p %}
+			<!--
                 {% if p.category_water %}
 					<img src="{{MEDIA_URL}}img/blue.png" title="Water" alt="type" style="margin: 10px 5px 10px 0;" />
                 {% endif %}
@@ -212,6 +217,7 @@
                 {% if p.category_maintenance %}
                     <img src="{{MEDIA_URL}}img/olive.png" title="Maintenance" alt="type" style="margin: 10px 5px 10px 0;" />		
                 {% endif %}
+			-->
 	 	</div>
 	</td>
 	<td>{{p.show_status}}</td>

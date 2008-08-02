@@ -15,9 +15,14 @@
 		<h1>Akvo at a glance</h1>
 	</div> <!-- .boxhead -->
 
-	<div id="overall_statistics" class="boxbody">
+	<div class="boxbody">
 
 	<table>
+	<tr><td>Cell 1</td></tr>
+	<tr><td>Cell 1</td></tr>
+	</table>
+
+	<table id="overall_statistics" style="margin: 20px;">
 		<tr>
 			<th colspan="2">
 				{% ifequal request.path '/rsr/projects/' %}
@@ -61,7 +66,7 @@
 	</table>
 
 	
-	</div> <!-- #overall_statistics & .boxbody -->
+	</div> <!-- .boxbody -->
 
 </div> <!-- #outer_rightwing -->
 

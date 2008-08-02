@@ -1,5 +1,7 @@
 {% extends "rsr/project_base.html" %}
 
+{% load rsr_tags %}
+
 {% block title %}{{block.super}} - Project details{% endblock title %}
 
 {% block script %}
@@ -26,7 +28,8 @@
 	
 		<div class="lightx2">Status</div>
 		<div>{{p.show_status}}</div>
-
+		{% category_icons p %}
+		<!--
 		{% if p.category_sanitation %}
 		<img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
 		{% endif %}
@@ -42,6 +45,7 @@
 		{% if p.category_education %}
 		<img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 10px 5px 10px 0;" />		
 		{% endif %}
+		-->
 
 	</div>
 

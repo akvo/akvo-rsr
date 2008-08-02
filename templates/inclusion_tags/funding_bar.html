@@ -1,9 +1,13 @@
-<div style="border: 1px solid #999; width: 100%; margin: 5px 0 5px 0" class="clearfix">
-    <span style="float: left;padding: 3px 0 0 3px;">&#8364; {{p.funding.pledged}}</span>
-    <span style="float: right;color: red; padding: 3px 3px 0 0;">&#8364; {{p.funding.still_needed}}</span>
+<div class="clearfix">
+<div style="border: 1px solid #999; margin: 5px 0 5px 0">
+    <span style="float: right;color: red; ">&#8364; {{p.funding.still_needed}}</span>
+    <span style="float: left;">&#8364; {{p.funding.pledged}}</span>
     <div style="background-color: #4CAC62; width: {% widthratio p.funding.pledged p.funding.total 100 %}%; height: 20px;"></div>
 </div>
+</div>
+
 <div class="bold clearfix">
     <div style="float: left;">Total</div>
     <div style="float: right; padding-right: 3px;">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</div>
 </div>
+
