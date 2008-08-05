@@ -14,7 +14,7 @@ from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 
 from registration.models import RegistrationProfile
 
-from akvo.rsr.models import RSR_RegistrationProfile, UserProfile, Organization
+from akvo.rsr.models import RSR_RegistrationProfile, UserProfile, Organisation
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -69,7 +69,7 @@ class RSR_PasswordChangeForm(PasswordChangeForm):
         )
 
 class OrganisationForm(forms.Form):
-    organisation = forms.ModelChoiceField(queryset=Organization.objects.all(), widget=forms.Select(attrs={ 'style': 'margin: 10px 50px; display: block' }))
+    organisation = forms.ModelChoiceField(queryset=Organisation.objects.all(), widget=forms.Select(attrs={ 'style': 'margin: 10px 50px; display: block' }))
 
 class ProfileFormBase(forms.Form):
     first_name  = forms.CharField(max_length=30, widget=forms.TextInput(attrs=attrs_dict))

@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<div class="clearfix">
+
 {% block outer_leftwing %}
 <div id="outer_leftwing">
 	<h1>I'm left!</h1>
@@ -17,12 +19,9 @@
 
 	<div class="boxbody">
 
-	<table>
-	<tr><td>Cell 1</td></tr>
-	<tr><td>Cell 1</td></tr>
-	</table>
+	<div></div>
 
-	<table id="overall_statistics" style="margin: 20px;">
+	<table id="overall_statistics">
 		<tr>
 			<th colspan="2">
 				{% ifequal request.path '/rsr/projects/' %}
@@ -37,16 +36,18 @@
 		<tr><td style="width: 40%;">{{stats.status_active}}</td><td>Active</td></tr>
 		<tr><td>{{stats.status_onhold}}</td><td>Need funding</td></tr>
 		<tr><td>{{stats.status_complete}}</td><td>Complete</td></tr>
-		
-		<tr class="bold"><td>{{stats.project_count}}</td><td>Total projects</td></tr>
-		<tr class="bold"><td>({{stats.mdgs_water}}) 0</td><td>get water</td></tr>
-		<tr class="hr bold"><td>({{stats.mdgs_sanitation}}) 0</td><td>get sanitation</td></tr>
+
+		<tr class="hr bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
+		<tr><td colspan="2" style="padding: 15px 0 10px 0"><b>People who get</b> (<a href="#">planned</a>) <a href="#">actual</a></td></tr>
+		<tr><td class="padded">({{stats.mdgs_water}}) 0</td><td>Water</td></tr>
+		<tr class="hr"><td class="padded">({{stats.mdgs_sanitation}}) 0</td><td>Sanitation</td></tr>
+
 		<tr>
 			<th colspan="2">
-				{% ifequal request.path '/rsr/organizations/' %}
+				{% ifequal request.path '/rsr/organisations/' %}
 					<h2>Partners</h2>
 				{% else %}
-					<a href="{% url akvo.rsr.views.orglist %}">
+					<a href="{% url rsr_org_list %}">
 						<h2>Partners</h2>
 					</a>
 				{% endifequal %}
@@ -69,6 +70,8 @@
 	</div> <!-- .boxbody -->
 
 </div> <!-- #outer_rightwing -->
+
+</div> <!-- .clearfix to prevent floated elements above to collide with projects table -->
 
 {% endblock outer_rightwing %}
 

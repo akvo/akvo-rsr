@@ -1,5 +1,5 @@
 table = 'rsr_fundingpartner'
-fields = ['id', 'funding_organization_id', 'funding_amount', 'currency', 'project_id']
+fields = ['id', 'funding_organisation_id', 'funding_amount', 'currency', 'project_id']
 #default item format: "fieldname":("type", "value")
 default = {}
 records = [

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django import newforms as forms
 from django.conf import settings
@@ -54,7 +54,7 @@ ORG_TYPES = (
     ('K', 'Knowledge institution'),
 )
 ORG_TYPES_DICT = dict(ORG_TYPES)
-class Organization(models.Model):
+class Organisation(models.Model):
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField()
@@ -63,7 +63,7 @@ class Organization(models.Model):
 
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
-    organization_type           = models.CharField(max_length=1, choices=ORG_TYPES)
+    organisation_type           = models.CharField(max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
@@ -87,7 +87,7 @@ class Organization(models.Model):
     class Admin:
         fields = (
             ('Partnership type(s)', {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
-            ('General information', {'fields': ('name', 'long_name', 'organization_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            ('General information', {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
             ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
             (None, {'fields': ('description', )}),
         )    
@@ -104,24 +104,24 @@ class Organization(models.Model):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
     
-    def show_organization_type(self):
-        return ORG_TYPES_DICT[self.organization_type]
+    def show_organisation_type(self):
+        return ORG_TYPES_DICT[self.organisation_type]
     
     def projects(self):
         '''
         returns a queryset with all projects that has self as any kind of partner
         '''
         projs = Project.objects.all()
-        return (projs.filter(supportpartner__support_organization=self.id) | \
-                 projs.filter(fieldpartner__field_organization=self.id) | \
-                 projs.filter(fundingpartner__funding_organization=self.id)).distinct()
+        return (projs.filter(supportpartner__support_organisation=self.id) | \
+                 projs.filter(fieldpartner__field_organisation=self.id) | \
+                 projs.filter(fundingpartner__funding_organisation=self.id)).distinct()
 
     def partners(self):
         '''
-        returns a queryset of all organizations that self has at least one project in common with, excluding self
+        returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
         projects = self.projects()
-        all = Organization.objects.all()
+        all = Organisation.objects.all()
         return (all.filter(field_partners__project__in = projects.values('pk').query) | \
                 all.filter(support_partners__project__in = projects.values('pk').query) | \
                 all.filter(funding_partners__project__in = projects.values('pk').query)).exclude(id__exact=self.id).distinct()
@@ -252,6 +252,7 @@ class Project(models.Model):
         if self.category_maintenance: pt += "M"
         if self.category_training: pt += "T"
         if self.category_education: pt += "E"
+        if self.category_product_development: pt += "P"
         if self.category_other: pt += "O"
         return pt
     #project_type.allow_tags = True
@@ -302,27 +303,27 @@ class Link(models.Model):
         list_display = ('url', 'caption', 'show_link', )
 
 class FundingPartner(models.Model):
-    funding_organization =  models.ForeignKey(Organization, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
+    funding_organisation =  models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
     funding_amount = models.IntegerField(core=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, core=True)
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
     
     def __unicode__(self):
-        return "%s %d %s" % (self.funding_organization.name, self.funding_amount, self.get_currency_display())
+        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
      
 class SupportPartner(models.Model):
-    support_organization = models.ForeignKey(Organization, related_name='support_partners', limit_choices_to = {'support_partner__exact': True}, core=True)
+    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True}, core=True)
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
 
     def __unicode__(self):
-        return "%s" % (self.support_organization.name, )
+        return "%s" % (self.support_organisation.name, )
     
 class FieldPartner(models.Model):
-    field_organization = models.ForeignKey(Organization, related_name='field_partners', limit_choices_to = {'field_partner__exact': True}, core=True)
+    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True}, core=True)
     project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
 
     def __unicode__(self):
-        return "%s" % (self.field_organization.name, )
+        return "%s" % (self.field_organisation.name, )
     
 class Funding(models.Model):
     project = models.OneToOneField(Project)
@@ -452,7 +453,7 @@ class UserProfile(models.Model):
     Extra info about a user.
     '''
     user = models.ForeignKey(User, unique=True)
-    organisation = models.ForeignKey(Organization)
+    organisation = models.ForeignKey(Organisation)
     phone_number = models.IntegerField(
         null=True,
         blank=True,
@@ -472,7 +473,7 @@ class UserProfile(models.Model):
         return self.organisation.name
     
     def create_sms_update(self, mo_sms_raw):
-        # does the user
+        # does the user have a project to update? TODO: security!
         if self.project:
             update_data = {
                 'project': self.project,
@@ -487,12 +488,43 @@ class UserProfile(models.Model):
             return pu
         return False
         
+    def create_mms_update(self, mo_mms_raw):
+        return False
+        
     class Admin:
         list_display = ('user_name', 'organisation_name', 'phone_number', 'project', )
     
 def create_rsr_profile(user, profile):
-    return UserProfile.objects.create(user=user, organisation=Organization.objects.get(pk=profile['org_id']))
+    return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
 
+class MoMmsRaw(models.Model):
+    '''
+    base data from an mms callback
+    '''
+    mmsid           = models.CharField(max_length=100)
+    subject         = models.CharField(max_length=200)
+    sender          = models.CharField(max_length=20) #qs variable name is "from" but we can't use that
+    to              = models.CharField(max_length=20)
+    time            = models.CharField(max_length=50)
+    saved_at        = models.DateTimeField()
+    mmsversion      = models.CharField(max_length=20)
+    messageclass    = models.IntegerField()
+    priority        = models.IntegerField()
+    filecount       = models.IntegerField()
+    
+    class Admin:
+        list_display = ('subject', 'sender', 'to', 'delivered', 'mmsid', 'filecount',)
+
+class MoMmsFile(models.Model):
+    '''
+    raw info about an mms file attachement
+    '''
+    mms         = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR)
+    name        = models.CharField(max_length=200)
+    contet_type = models.CharField(max_length=50)
+    contentid   = models.CharField(max_length=50)
+    size        = models.IntegerField()
+    
 class MoSmsRaw(models.Model):
     '''
     all request data from an mo-sms callback

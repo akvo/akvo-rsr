@@ -5,8 +5,22 @@
 {% block title %}{{block.super}} - Project details{% endblock title %}
 
 {% block script %}
-{{block.super}}
+<script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	$(function(){
+    	$('#container-1 > ul').tabs();
+	});
+	
+	$(document).ready(function(){
+    	$(".btn-slide").click(function(){
+    		$("#panel").slideToggle("slow");
+    		$(this).toggleClass("active"); return false;
+    	});
+	});
+
+</script>
 {% endblock script %}
 
 {% block breadcrumbs %}

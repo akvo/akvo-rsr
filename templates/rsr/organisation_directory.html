@@ -36,37 +36,53 @@
         {% ifequal page.number 1 %}
         First |
         {% else %}
-        <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" 1 %}#list">First</a> |
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">First</a> |
         {% endifequal %}
         {% if page.has_previous %}
-        <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
         {% else %}
         Previous |
         {% endif %}
         {% if page.has_next %}
-        <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">Next</a> |
         {% else %}
         Next |
         {% endif %}
         {% ifequal page.number page.paginator.num_pages %}
         Last
         {% else %}
-        <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
         {% endifequal %}
     </span>
     </div>
-
-    <h1>Organisation listing <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
+	{% if org_type %}
+		{% ifnotequal org_type 'all' %}
+			{% ifequal org_type 'funding' %}
+			<h1>Funding partners <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
+			{% endifequal %}
+			{% ifequal org_type 'support' %}
+			<h1>Support partners <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
+			{% endifequal %}
+			{% ifequal org_type 'field' %}
+			<h1>Field partners <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
+			{% endifequal %}
+		{% else %}
+			<h1>Organisation listing <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
+		{% endifnotequal %}
+	{% else %}
+		<h1>Organisation listing <span class="lightx2" style="font-weight:normal">({{orgz.count}} total)</span></h1>
+	{% endif %}
+			
 </div> <!-- .boxhead -->
 
-<div class="boxbody">
+<div class="boxbody" style="padding:0">
 
 <table id="project_table">
 <tr>
-<th style="background-color: #999"><a href="{% url akvo.rsr.views.orglist %}{% addparam "order_by" "name" %}#list">Organization name</a></th>
-<th><a href="{% url akvo.rsr.views.orglist %}{% addparam "order_by" "organization_type" %}#list">Type</a></th>
-<th><a href="{% url akvo.rsr.views.orglist %}{% addparam "order_by" "country__country_name" %}#list">Country</a></th>
-<th><a href="{% url akvo.rsr.views.orglist %}{% addparam "order_by" "country__continent" %}#list">Continent</a></th>
+<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "name" %}#list">Organisation name</a></th>
+<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "organisation_type" %}#list">Type</a></th>
+<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__country_name" %}#list">Country</a></th>
+<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__continent" %}#list">Continent</a></th>
 <th>Total projects</th>
 <th>Funds requested</th>
 <th>Funds still needed</th>
@@ -98,7 +114,7 @@
 		 {% endif %}
 	 	</div>
 	</td>
-	<td>{{o.show_organization_type}}</td>
+	<td>{{o.show_organisation_type}}</td>
 	<td>{{o.country}}</td>
 	<td>{{o.country.get_continent_display}}</td>
 	<td>
@@ -129,34 +145,27 @@
 <tr>
 	<td colspan="9">
 		<div style="text-align: right"
-			<!--<label for="display_number_of_entries">Show</label>
-			<select name='display_number_of_entries' class="select">
-				<option value='25'>25</option>
-				<option value='50'>50</option>
-				<option value='75'>75</option>
-			</select>
-			results per page-->
             <span style="margin: 0 20px 0 20px">Organisations {{page.start_index}}-{{page.end_index}} of {{orgz.count}}</span>
             <span style="margin: 0 20px 0 20px">
                 {% ifequal page.number 1 %}
                 First |
                 {% else %}
-                <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" 1 %}#list">First</a> |
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">First</a> |
                 {% endifequal %}
                 {% if page.has_previous %}
-                <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
                 {% else %}
                 Previous |
                 {% endif %}
                 {% if page.has_next %}
-                <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">Next</a> |
                 {% else %}
                 Next |
                 {% endif %}
                 {% ifequal page.number page.paginator.num_pages %}
                 Last
                 {% else %}
-                <a href="{% url akvo.rsr.views.orglist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
                 {% endifequal %}
             </span>
 		</div>

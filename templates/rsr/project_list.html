@@ -42,17 +42,17 @@
         </td>
         <td style="padding: 10px;">
             {% for fieldpartner in p.fieldpartner_set.all %}
-                <p>{{fieldpartner.field_organization.name}}</p>
+                <p>{{fieldpartner.field_organisation.name}}</p>
             {% endfor %}
         </td>
         <td style="padding: 10px;">
             {% for support in p.supportpartner_set.all %}
-                <p>{{support.support_organization.name}}</p>
+                <p>{{support.support_organisation.name}}</p>
             {% endfor %}
         </td>
         <td style="padding: 10px;">
             {% for funder in p.fundingpartner_set.all %}
-                <p>{{funder.funding_organization.name}}</p>
+                <p>{{funder.funding_organisation.name}}</p>
             {% endfor %}
         </td>
     </tr>

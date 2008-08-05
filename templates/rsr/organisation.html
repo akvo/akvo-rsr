@@ -3,7 +3,7 @@
 {% block title %}Akvo RSR - Organisation no. {{o.id}}, {{o.name}}{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.orglist %}">Organisation listing</a> &raquo; {{o.name}}
+{{block.super}} &raquo; <a href="{% url rsr_org_list %}">Organisation listing</a> &raquo; {{o.name}}
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -42,7 +42,7 @@
 			{% if o.funding_partner %}Funding partner<br />{% endif %}
 		</p>
 		<h2 class="lightx2">Type</h2>
-		<p>{{o.show_organization_type}}</p>
+		<p>{{o.show_organisation_type}}</p>
 	
 		<!--<h2 class="lightx2">Scope</h2>
 		<p>National</p>-->
@@ -104,23 +104,27 @@
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
-<table class="activities">
+
+<div></div> <!-- IE requires something above -->
+<table class="activities" width="208px" style="margin: 0 20px; padding: 0;">
 	<tr><th colspan="2"><h2>Projects</h2></th></tr>
 	<tr><td class="padded" style="width: 40%;">{{org_stats.status_active}}</td><td>Active</td></tr>
 	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>Need funding</td></tr>
 	<tr><td class="padded">{{org_stats.status_complete}}</td><td>Complete</td></tr>
-	<tr class="bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
-	<tr class="bold"><td class="padded">{{org_stats.mdgs_water}}</td><td>Water MDGs</td></tr>
-	<tr class="hr bold"><td class="padded">{{org_stats.mdgs_sanitation}}</td><td>Sanitation MDGs</td></tr>
+	<tr class="hr bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
+	<tr><td colspan="2" style="padding: 15px 0 10px 0"><b>People who get</b> (<a href="#">planned</a>) <a href="#">actual</a></td></tr>
+	<!-- <tr><td class="padded" colspan="2">(<a href="#">projected</a>) <a href="#">actual</a></td></tr> -->
+	<!-- <tr><td></td><td class="padded">(<a href="#">projected</a>) <a href="#">actual</a></td></tr> -->
+	<tr><td class="padded">({{org_stats.mdgs_water}}) 0</td><td>Water</td></tr>
+	<tr class="hr"><td class="padded">({{org_stats.mdgs_sanitation}}) 0</td><td>Sanitation</td></tr>
 	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{org_stats.project_count}} projects)</span></h2></th></tr>
 	<tr style="color: green"><td class="padded">&#8364; {{org_stats.funding_pledged}}</td><td>Pledged</td></tr>
 	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{org_stats.funding_needed}}</td><td>Still needed</td></tr>
+	<tr><td class="padded" colspan="2"><h2>Project partners</h2></td></tr>
+	<tr><td class="padded" colspan="2">{% for partner in org_partners %}<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a><br />{% endfor %}</td></tr>
 </table>
 
-<h2>Project partners</h2>
-{% for partner in org_partners %}
-<p><a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a></p>
-{% endfor %}
+
 </div> <!-- .boxbody -->
 
 <div class="boxhead">

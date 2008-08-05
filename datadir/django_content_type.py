@@ -16,7 +16,7 @@ records = [
 [11, u'field partner', u'rsr', u'fieldpartner']
 [12, u'project', u'rsr', u'project']
 [13, u'project update', u'rsr', u'projectupdate']
-[14, u'organization', u'rsr', u'organization']
+[14, u'organisation', u'rsr', u'organisation']
 [16, u'link', u'feedjack', u'link']
 [17, u'site', u'feedjack', u'site']
 [18, u'feed', u'feedjack', u'feed']

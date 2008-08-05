@@ -1,4 +1,5 @@
 # Django settings for akvo project.
+# Alphabetically ordered (more or less...)
 
 # Accounts not activated in a week get purged. Used by registration app.
 ACCOUNT_ACTIVATION_DAYS = 7
@@ -39,6 +40,10 @@ INSTALLED_APPS = (
     'template_utils', #see http://code.google.com/p/django-template-utils/
     'registration', #see http://code.google.com/p/django-registration/
 #    'akvo.status',
+)
+
+INTERNAL_IPS = (
+    '87.227.60.54',
 )
 
 # Language code for this installation. All choices can be found here:

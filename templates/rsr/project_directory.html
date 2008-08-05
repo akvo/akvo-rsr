@@ -5,11 +5,6 @@
 
 {% block title %}Akvo RSR - Project listing{% endblock title %}
 
-{% block script %}
-{{block.super}}
-<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
-{% endblock script %}
-
 {% block breadcrumbs %}
 {{block.super}} &raquo; Project listing
 {% endblock breadcrumbs %}
@@ -148,34 +143,48 @@
 <tr>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list">Project name</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list" title="Sort projects by name">Project name</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list">Project name</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list" title="Sort projects by name">Project name</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list">Status</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list" title="Sort projects by status">Status</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list">Status</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list" title="Sort projects by status">Status</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list">Country</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list" title="Sort projects by country">Country</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list">Country</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list" title="Sort projects by country">Country</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list">Continent</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list" title="Sort projects by continent">Continent</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list">Continent</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list" title="Sort projects by continent">Continent</a>
 	{% endif %}
 	</th>
-	<th>Total funds requested</th>
-	<th>Funding still needed</th>
+	<th>
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_requested" %}#list" title="Sort projects by total funds requested">Total funds requested</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_requested" %}#list" title="Sort projects by total funds requested">Total funds requested</a>
+	{% endif %}
+	</th>
+	<th>
+	{% if o %}
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_needed" %}#list" title="Sort projects by funding still needed">Funding still needed</a>
+	{% else %}
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_needed" %}#list" title="Sort projects by funding still needed">Funding still needed</a>
+	{% endif %}
+	</th>
+	<!--<th>Total funds requested</th>
+	<th>Funding still needed</th>-->
 	<th>Field partner(s)</th>
 	<th>Support partner(s)</th>
 	<th style="border-right: 0">Funding partner(s)</th>
@@ -224,7 +233,7 @@
 	<td>{{p.country}}</td>
 	<td>{{p.country.get_continent_display}}</td>
 	<td>
-		{% ifequal p.funding.still_needed 0 %}
+		{% ifequal p.funds_needed 0 %}
 			<span style="color: green">
 		{% else %}
 			<span>
@@ -233,18 +242,18 @@
 		</span>
 	</td>
 	<td>
-		{% ifequal p.funding.still_needed 0 %}
+		{% ifequal p.funds_needed 0 %}
 			<span>
 		{% else %}
 			<span style="color: red">
 		{% endifequal %}
-		<b>{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</b>
+		<b>{{p.funding.get_currency_display|safe}} {{p.funds_needed}}</b>
 		</span>
 	</td>
 	<td>
 	{% if p.fieldpartner_set.all %}
 		{% for fieldpartner in p.fieldpartner_set.all %}
-			<a href="{% url akvo.rsr.views.orgdetail fieldpartner.field_organization.id %}">{{fieldpartner.field_organization.name}}</a><br />
+			<a href="{% url akvo.rsr.views.orgdetail fieldpartner.field_organisation.id %}">{{fieldpartner.field_organisation.name}}</a><br />
 		{% endfor %}
 	{% else %}
 		&nbsp;
@@ -253,7 +262,7 @@
 	<td>
 	{% if p.supportpartner_set.all %}
 		{% for support in p.supportpartner_set.all %}
-			<a href="{% url akvo.rsr.views.orgdetail support.support_organization.id %}">{{support.support_organization.name}}</a><br />
+			<a href="{% url akvo.rsr.views.orgdetail support.support_organisation.id %}">{{support.support_organisation.name}}</a><br />
 		{% endfor %}
 	{% else %}
 		&nbsp;
@@ -262,7 +271,7 @@
 	<td style="border-right: 0;">
 	{% if p.fundingpartner_set.all %}
 		{% for funder in p.fundingpartner_set.all %}
-			<a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a><br />
+			<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a><br />
 		{% endfor %}		
 	{% else %}
 		&nbsp;

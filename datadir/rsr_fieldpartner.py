@@ -1,5 +1,5 @@
 table = 'rsr_fieldpartner'
-fields = ['id', 'field_organization_id', 'project_id']
+fields = ['id', 'field_organisation_id', 'project_id']
 #default item format: "fieldname":("type", "value")
 default = {}
 records = [

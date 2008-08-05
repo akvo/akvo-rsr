@@ -365,6 +365,7 @@ margin: -20px 0 20px 0
 table
 {
 margin: 0 20px;
+border-collapse:collapse;
 }
 
 table td
@@ -458,7 +459,21 @@ margin: 0;
 list-style-type: none;
 }
 
-ul.item-list li
+ul.indented li
+{
+padding-left: 10px;
+padding-top: 10px;
+}
+
+.node ul
+{
+margin: 10px 20px 10px 0;
+list-style-type: none;
+list-style-position: inside;
+padding-left: 2em;
+}
+
+.node ul li
 {
 background-image: url(/rsr/media/img/arrow.png);
 background-repeat: no-repeat;
@@ -467,10 +482,14 @@ padding-left: 1.2em;
 padding-bottom: 0.5em
 }
 
-ul.indented li
+
+ul.item-list li
 {
-padding-left: 10px;
-padding-top: 10px;
+background-image: url(/rsr/media/img/arrow.png);
+background-repeat: no-repeat;
+background-position: 0 .2em;
+padding-left: 1.2em;
+padding-bottom: 0.5em
 }
 
 /* button (styled links)

@@ -1,4 +1,4 @@
-from akvo.rsr.models import Organization, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm
 
@@ -60,7 +60,7 @@ def akvo_at_a_glance(projects):
     mdgs_water       = mdgs_water_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
     mdgs_sanitation  = mdgs_sanitation_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
     project_count   = projects.count()
-    o = Organization.objects.all()
+    o = Organisation.objects.all()
     fieldpartner_count      = o.filter(field_partner__exact=True).count()
     supportpartner_count    = o.filter(support_partner__exact=True).count()
     fundingpartner_count    = o.filter(funding_partner__exact=True).count()
@@ -144,15 +144,16 @@ def index(request):
         # nope, no session. so are we returning from cookie test?
         if request.session.test_cookie_worked():
             # new user, with cookies enabled
-            bandwidth = 'ask'
+            request.session['bandwidth'] = bandwidth = 'low'
             request.session.delete_test_cookie()
+            return HttpResponseRedirect('/rsr/')
         else:
             # virgin user or no cookies?
             no_cookie = request.GET.get('nocookie')
             if not no_cookie:
                 # brand new user, test for cookieness
                 return HttpResponseRedirect('/rsr/settestcookie/')
-            elif no_cookie == 'test':
+            elif no_cookie != 'True':
                 return HttpResponseRedirect('/rsr/?nocookie=True')
             else:
                 bandwidth = 'low'
@@ -165,8 +166,8 @@ def index(request):
         soup = BeautifulSoup(latest2.content[0].value)
         img_src2 = soup('img')[0]['src']
     except:
-        soup = img_src = ''
-        latest = {
+        soup = img_src1 = img_src2 = ''
+        latest1 = latest2 = {
             'author': '',
             'summary': 'The blog is not available at the moment.',
         }
@@ -181,8 +182,8 @@ def index(request):
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
-    if order_by in ['funds_requested']:
-        projects = projects.extra(order_by = [order_by, 'name'])
+    if order_by in ['funds_requested', 'funds_needed']:
+        projects = projects.extra(order_by = ['-%s' % order_by, 'name'])
     else:
         projects = projects.order_by(order_by, 'name')
     PROJECTS_PER_PAGE = 10
@@ -201,7 +202,8 @@ def projectlist(request):
     page: paginator
     '''
     projects = Project.objects.all().extra(
-        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'}
+        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
+                'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
     )
     page, stats = project_list_data(request, projects)
     return {'projects': projects, 'stats': stats, 'page': page, }
@@ -218,23 +220,42 @@ def filteredprojectlist(request, org_id):
     o: organisation
     '''
     # get all projects org_id is asociated with
-    o = Organization.objects.get(id=org_id)
+    o = Organisation.objects.get(id=org_id)
     projects = o.projects()
+    projects = projects.extra(
+        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
+                'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
+    )
     page, stats = project_list_data(request, projects)
     return {'projects': projects, 'stats': stats, 'page': page, 'o': o, }
 
-@render_to('rsr/organization_directory.html')
-def orglist(request, org_id=0):
+@render_to('rsr/organisation_directory.html')
+def orglist(request, org_type='all'):
     '''
     List of all projects in RSR
     Context:
-    orgz: list of all organizations
+    orgz: list of all organisations
     stats: the aggregate projects data
+    page: paginated orgz
     '''
-    if org_id != 0:
-        orgz = Organization.objects.all() #TODO: some sort o orgz filtering...all orgz assosciated with org_id?
-    else:
-        orgz = Organization.objects.all()
+    #from dbgp.client import brk
+    #brk(host="vnc.datatrassel.se", port=9000)
+    orgz = Organisation.objects.all()
+    if org_type != 'all':
+        if org_type == 'field':
+            orgz = orgz.filter(field_partner__exact=True)
+        elif org_type == 'support':
+            orgz = orgz.filter(support_partner__exact=True)
+        elif org_type == 'funding':
+            orgz = orgz.filter(funding_partner__exact=True)
+        elif org_type == 'ngo':
+            orgz = orgz.filter(organisation_type__exact='N')
+        elif org_type == 'governmental':
+            orgz = orgz.filter(organisation_type__exact='G')
+        elif org_type == 'commercial':
+            orgz = orgz.filter(organisation_type__exact='C')
+        elif org_type == 'knowledge':
+            orgz = orgz.filter(organisation_type__exact='K')
     try:
         order_by = request.GET.get('order_by', 'name')
         orgz = orgz.order_by(order_by, 'name')
@@ -245,7 +266,7 @@ def orglist(request, org_id=0):
     page = paginator.page(request.GET.get('page', 1))
     projects = Project.objects.all()
     stats = akvo_at_a_glance(projects)
-    return {'orgz': orgz, 'stats': stats, 'page': page}
+    return {'orgz': orgz, 'org_type': org_type, 'stats': stats, 'page': page}
 
 class SigninForm(forms.Form):
     #from dbgp.client import brk
@@ -342,7 +363,7 @@ def register2(request,
     org_id = request.GET.get('org_id', None)
     if not org_id:
         return HttpResponseRedirect('/rsr/accounts/register1/')
-    organisation = Organization.objects.get(pk=org_id)
+    organisation = Organisation.objects.get(pk=org_id)
     if request.method == 'POST':
         #from dbgp.client import brk
         #brk(host="vnc.datatrassel.se", port=9000)
@@ -477,14 +498,59 @@ def updateform(request, project_id):
         form = UpdateForm()
     return render_to_response('rsr/update_form.html', {'form': form, 'p': p, }, RequestContext(request))
 
+def mms_update(request):
+    '''
+    Create a project update from incoming MMS
+    Returns a simple "OK" to the gateway
+    '''
+    # see if message already has been recieved for some reason, if so ignore
+    from dbgp.client import brk
+    #brk(host="vnc.datatrassel.se", port=9000)
+    try:
+        #mms = MoMmsRaw.objects.get(mmsid__exact=request.GET.get('mmsid'))
+        raise NameError, 'Foo'
+    except:
+        try:
+            raw = {}
+            request.encoding = 'iso-8859-1'
+            # loop over all query variables and put them in a dict to use as data for MoSmsRaw object creation
+            for f in MoMmsRaw._meta.fields:
+                if f.name == 'sender': #can't have a field named "from", python keyword...
+                    raw[f.name] = request.GET.get('from')
+                else:
+                    raw[f.name] = request.GET.get(f.name)
+            raw['saved_at'] = datetime.now()
+            mms = MoSmsRaw.objects.create(**raw)
+            for i in mms.filecount:
+                fileraw = {}
+                for f in MoMmsFile._meta.fields:
+                    if f.name != 'mms':
+                        fileraw[f.name] = request.GET.get('%s[%d]' % (f.name, i))
+                fileraw['mms'] = mms
+                mmsfile = MoMmsFile.objects.create(**fileraw)
+            # find the user owning the phone number. If found create an update
+            u = UserProfile.objects.get(phone_number__exact=mms.sender)
+            if u:
+                #sms_data = {
+                #    'time':  datetime.fromtimestamp(float(request["delivered"])),
+                #    'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
+                #}
+                success = u.create_mms_update(mms)
+        except:
+            pass #TODO: logging!
+    return HttpResponse("OK") #return OK under all conditions
+
 def sms_update(request):
     '''
     Create a project update from incoming SMS
-    Returns a simple "OK" to the SMS gateway
+    Returns a simple "OK" to the gateway
     '''
     # see if message already has been recieved for some reason, if so ignore
-    mo = MoSmsRaw.objects.get(incsmsid__exact=request.GET.get('incsmsid'))
-    if mo:
+    from dbgp.client import brk
+    #brk(host="vnc.datatrassel.se", port=9000)
+    try:
+        mo = MoSmsRaw.objects.get(incsmsid__exact=request.GET.get('incsmsid'))
+    except:
         try:
             raw = {}
             request.encoding = 'iso-8859-1'
@@ -540,28 +606,28 @@ def commentform(request, project_id):
 
 #def org_projects(org_id):
 #    '''
-#    returns a queryset with all projects that have the organization org_id
+#    returns a queryset with all projects that have the organisation org_id
 #    as any kind of partner
 #    '''
 #    projs = Project.objects.all()
-#    return (projs.filter(supportpartner__support_organization=org_id) | \
-#             projs.filter(fieldpartner__field_organization=org_id) | \
-#             projs.filter(fundingpartner__funding_organization=org_id)).distinct()
+#    return (projs.filter(supportpartner__support_organisation=org_id) | \
+#             projs.filter(fieldpartner__field_organisation=org_id) | \
+#             projs.filter(fundingpartner__funding_organisation=org_id)).distinct()
 
-def org_activities(organization):
-    # assoc resolves to all projects associated with organization, where organization can function in any of the three partner functions
-    assoc = organization.projects()
-    orgz = Organization.objects.all()
+def org_activities(organisation):
+    # assoc resolves to all projects associated with organisation, where organisation can function in any of the three partner functions
+    assoc = organisation.projects()
+    orgz = Organisation.objects.all()
     # partners resolves to all orgz that are partners of any kind to the list of projects in assoc
     partners = (orgz.filter(field_partners__project__in = assoc.values('pk').query) | \
                 orgz.filter(support_partners__project__in = assoc.values('pk').query) | \
                 orgz.filter(funding_partners__project__in = assoc.values('pk').query)).distinct()
-    # remove organization from queryset
-    return assoc, partners.exclude(id=organization.id)
+    # remove organisation from queryset
+    return assoc, partners.exclude(id=organisation.id)
 
-@render_to('rsr/organization.html')
+@render_to('rsr/organisation.html')
 def orgdetail(request, org_id):
-    o = get_object_or_404(Organization, pk=org_id)
+    o = get_object_or_404(Organisation, pk=org_id)
     org_projects = o.projects()
     org_partners = o.partners()
     org_stats = akvo_at_a_glance(org_projects)
@@ -614,9 +680,9 @@ def templatedev(request, template_name):
     projects = Project.objects.all()
     stats = akvo_at_a_glance(projects)
 
-    orgz = Organization.objects.all()
+    orgz = Organisation.objects.all()
 
-    o = Organization.objects.get(pk=1)
+    o = Organisation.objects.get(pk=1)
     org_projects, org_partners = org_activities(o)
     org_stats = akvo_at_a_glance(org_projects)
     

@@ -234,7 +234,7 @@
 	<td>
 	{% if p.fieldpartner_set.all %}
 		{% for fieldpartner in p.fieldpartner_set.all %}
-			<a href="{% url akvo.rsr.views.orgdetail fieldpartner.field_organization.id %}">{{fieldpartner.field_organization.name}}</a><br />
+			<a href="{% url akvo.rsr.views.orgdetail fieldpartner.field_organisation.id %}">{{fieldpartner.field_organisation.name}}</a><br />
 		{% endfor %}
 	{% else %}
 		&nbsp;
@@ -243,7 +243,7 @@
 	<td>
 	{% if p.supportpartner_set.all %}
 		{% for support in p.supportpartner_set.all %}
-			<a href="{% url akvo.rsr.views.orgdetail support.support_organization.id %}">{{support.support_organization.name}}</a><br />
+			<a href="{% url akvo.rsr.views.orgdetail support.support_organisation.id %}">{{support.support_organisation.name}}</a><br />
 		{% endfor %}
 	{% else %}
 		&nbsp;
@@ -252,7 +252,7 @@
 	<td style="border-right: 0;">
 	{% if p.fundingpartner_set.all %}
 		{% for funder in p.fundingpartner_set.all %}
-			<a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a><br />
+			<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a><br />
 		{% endfor %}		
 	{% else %}
 		&nbsp;

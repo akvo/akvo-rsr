@@ -53,13 +53,13 @@
 			{% if not forloop.first %}
 				<hr />
 			{% endif %}
-			{% if funder.funding_organization.logo %}
-                <a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">
-				<img src="{{MEDIA_URL}}{{ funder.funding_organization.logo }}" alt="Logo of {{funder.funding_organization.name}}" style="margin: 10px 20px;" />
+			{% if funder.funding_organisation.logo %}
+                <a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
+				<img src="{{MEDIA_URL}}{{ funder.funding_organisation.logo }}" alt="Logo of {{funder.funding_organisation.name}}" style="margin: 10px 20px;" />
                 </a>
 			{% endif %}	
-			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organization.id %}">{{funder.funding_organization.name}}</a></p>
-			<p>{{funder.funding_organization.city}}, {{funder.funding_organization.country}}</p>
+			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
+			<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
 			<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount}}</span></b></p>
 		{% endfor %}    
 	</div> <!-- #project_funding & .boxbody -->
@@ -81,13 +81,13 @@
 				{% if not forloop.first %}
 					<hr />
 				{% endif %}
-				{% if fp.field_organization.logo %}
-                    <a href="{% url akvo.rsr.views.orgdetail fp.field_organization.id %}">
-					<img src="{{MEDIA_URL}}{{ fp.field_organization.logo }}" alt="Logo of {{fp.field_organization.name}}" style="margin: 10px 20px;" />
+				{% if fp.field_organisation.logo %}
+                    <a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
+					<img src="{{MEDIA_URL}}{{ fp.field_organisation.logo }}" alt="Logo of {{fp.field_organisation.name}}" style="margin: 10px 20px;" />
                     </a>
 				{% endif %}	
-				<p><a href="{% url akvo.rsr.views.orgdetail fp.field_organization.id %}">{{fp.field_organization.name}}</a></p>
-				<p>{{fp.field_organization.city}}, {{fp.field_organization.country}}</p>
+				<p><a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">{{fp.field_organisation.name}}</a></p>
+				<p>{{fp.field_organisation.city}}, {{fp.field_organisation.country}}</p>
 		{% endfor %}
 		{% if p.supportpartner_set.count %}
 			{% if p.fieldpartner_set.count %}
@@ -102,13 +102,13 @@
 				{% if not forloop.first %}
 					<hr />
 				{% endif %}
-				{% if sp.support_organization.logo %}
-                    <a href="{% url akvo.rsr.views.orgdetail sp.support_organization.id %}">
-					<img src="{{MEDIA_URL}}{{ sp.support_organization.logo }}" alt="Logo of {{sp.support_organization.name}}" style="margin: 10px 20px" />
+				{% if sp.support_organisation.logo %}
+                    <a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">
+					<img src="{{MEDIA_URL}}{{ sp.support_organisation.logo }}" alt="Logo of {{sp.support_organisation.name}}" style="margin: 10px 20px" />
                     </a>
 				{% endif %}	
-				<p><a href="{% url akvo.rsr.views.orgdetail sp.support_organization.id %}">{{sp.support_organization.name}}</a></p>
-				<p>{{sp.support_organization.city}}, {{sp.support_organization.country}}</p>
+				<p><a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">{{sp.support_organisation.name}}</a></p>
+				<p>{{sp.support_organisation.city}}, {{sp.support_organisation.country}}</p>
 			{% endfor %}
 		{% endif %}        
 

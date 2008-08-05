@@ -6,6 +6,7 @@
 <title>Akvo RSR - {% block title %}Really simple reporting{% endblock %}</title>
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
@@ -16,29 +17,10 @@
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
 <![endif]-->
 {% endblock style %}
+
 {% block script %}
-<script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
-<!--<script src="{{MEDIA_URL}}js/jquery.curvycorners.packed.js" type="text/javascript"></script>-->
-
-<!-- stupid javascript and IE6, I don't know what the heck is wrong with this now -->
-
-<script type="text/javascript">
-
-	$(function(){
-
-	$('#container-1 > ul').tabs();
-	});
-	
-	$(document).ready(function(){
-
-	$(".btn-slide").click(function(){
-		$("#panel").slideToggle("slow");
-		$(this).toggleClass("active"); return false;
-	});
-	});
-
-</script>
 {% endblock script %}
+
 </head>
 
 <body>
@@ -113,5 +95,8 @@
 <!--
 	{% debug %}
 -->
+	{{ sql_queries }}
+	{{ request.sql_queries }}
+
 </body>
 </html>
