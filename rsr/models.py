@@ -497,33 +497,33 @@ class UserProfile(models.Model):
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
 
-class MoMmsRaw(models.Model):
-    '''
-    base data from an mms callback
-    '''
-    mmsid           = models.CharField(max_length=100)
-    subject         = models.CharField(max_length=200)
-    sender          = models.CharField(max_length=20) #qs variable name is "from" but we can't use that
-    to              = models.CharField(max_length=20)
-    time            = models.CharField(max_length=50)
-    saved_at        = models.DateTimeField()
-    mmsversion      = models.CharField(max_length=20)
-    messageclass    = models.IntegerField()
-    priority        = models.IntegerField()
-    filecount       = models.IntegerField()
-    
-    class Admin:
-        list_display = ('subject', 'sender', 'to', 'delivered', 'mmsid', 'filecount',)
-
-class MoMmsFile(models.Model):
-    '''
-    raw info about an mms file attachement
-    '''
-    mms         = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR)
-    name        = models.CharField(max_length=200)
-    contet_type = models.CharField(max_length=50)
-    contentid   = models.CharField(max_length=50)
-    size        = models.IntegerField()
+#class MoMmsRaw(models.Model):
+#    '''
+#    base data from an mms callback
+#    '''
+#    mmsid           = models.CharField(max_length=100)
+#    subject         = models.CharField(max_length=200)
+#    sender          = models.CharField(max_length=20) #qs variable name is "from" but we can't use that
+#    to              = models.CharField(max_length=20)
+#    time            = models.CharField(max_length=50)
+#    saved_at        = models.DateTimeField()
+#    mmsversion      = models.CharField(max_length=20)
+#    messageclass    = models.IntegerField()
+#    priority        = models.IntegerField()
+#    filecount       = models.IntegerField()
+#    
+#    class Admin:
+#        list_display = ('subject', 'sender', 'to', 'delivered', 'mmsid', 'filecount',)
+#
+#class MoMmsFile(models.Model):
+#    '''
+#    raw info about an mms file attachement
+#    '''
+#    mms         = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR)
+#    name        = models.CharField(max_length=200)
+#    contet_type = models.CharField(max_length=50)
+#    contentid   = models.CharField(max_length=50)
+#    size        = models.IntegerField()
     
 class MoSmsRaw(models.Model):
     '''
