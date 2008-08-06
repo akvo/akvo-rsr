@@ -35,6 +35,20 @@ class RSR_TextField(oldforms.TextField):
 
 class RSR_PasswordField(RSR_TextField):
     input_type = "password"
+    
+class RSR_SigninTextField(oldforms.TextField):
+    # hack to enable class attribute customization on some forms
+    def render(self, data):
+        if data is None:
+            data = u''
+        max_length = u''
+        if self.max_length:
+            max_length = u'maxlength="%s" ' % self.max_length
+        return mark_safe(u'<input type="%s" id="%s" name="%s" size="%s" value="%s" class="signin_field" %s/>' % \
+            (self.input_type, self.get_id(), self.field_name, self.length, escape(data), max_length))
+
+class RSR_SigninPasswordField(RSR_SigninTextField):
+    input_type = "password"
 
 class RSR_AuthenticationForm(AuthenticationForm):
     """
@@ -50,11 +64,11 @@ class RSR_AuthenticationForm(AuthenticationForm):
         """
         self.request = request
         self.fields = [
-            RSR_TextField(field_name="username", length=15, max_length=30, is_required=True,
+            RSR_SigninTextField(field_name="username", length=15, max_length=30, is_required=True,
                 validator_list=[self.isValidUser, self.hasCookiesEnabled]),
-            RSR_PasswordField(field_name="password", length=15, max_length=30, is_required=True),
+            RSR_SigninPasswordField(field_name="password", length=15, max_length=30, is_required=True),
         ]
-        self.user_cache = None    
+        self.user_cache = None
 
 class RSR_PasswordChangeForm(PasswordChangeForm):
 

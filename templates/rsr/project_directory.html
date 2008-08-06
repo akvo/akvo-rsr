@@ -205,7 +205,8 @@
 		<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
 		<div class="lightx2 small">{{p.subtitle}}</div>
 		<div style="clear: left;">
-			{% category_icons p %}
+			
+			<div style="padding-top: 5px"{% category_icons p %}</div>
 			<!--
                 {% if p.category_water %}
 					<img src="{{MEDIA_URL}}img/blue.png" title="Water" alt="type" style="margin: 10px 5px 10px 0;" />

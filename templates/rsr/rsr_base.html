@@ -34,7 +34,7 @@
 	
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
 	<div style="padding-top: 15px;">
-	<a class="actionbutton ab_white" href="{% url django.contrib.auth.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin-top: 1.4em;">
+	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin-top: 1.4em;">
 		<span>Sign in</span>
 	</a>
 	</div>

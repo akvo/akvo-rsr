@@ -1,3 +1,5 @@
+import urllib2
+import string
 from datetime import date, datetime
 
 from django import newforms as forms
@@ -11,6 +13,8 @@ from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
 from registration.models import RegistrationProfile, RegistrationManager
+
+from akvo.settings import MEDIA_ROOT
 
 CONTINENTS = (
     (1, 'Africa'),
@@ -489,6 +493,19 @@ class UserProfile(models.Model):
         return False
         
     def create_mms_update(self, mo_mms_raw):
+        # does the user have a project to update? TODO: security!
+        if self.project:
+            update_data = {
+                'project': self.project,
+                'user': self.user,
+                'title': mo_mms_raw.subject,
+                'update_method': 'S',
+                'time': datetime.fromtimestamp(float(mo_mms_raw.time)),
+            }
+            attachements = mo_mms_raw.get_mms_files()
+            update_data.update(attachements)
+            pu = ProjectUpdate.objects.create(**update_data)
+            return pu
         return False
         
     class Admin:
@@ -497,33 +514,53 @@ class UserProfile(models.Model):
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
 
-#class MoMmsRaw(models.Model):
-#    '''
-#    base data from an mms callback
-#    '''
-#    mmsid           = models.CharField(max_length=100)
-#    subject         = models.CharField(max_length=200)
-#    sender          = models.CharField(max_length=20) #qs variable name is "from" but we can't use that
-#    to              = models.CharField(max_length=20)
-#    time            = models.CharField(max_length=50)
-#    saved_at        = models.DateTimeField()
-#    mmsversion      = models.CharField(max_length=20)
-#    messageclass    = models.IntegerField()
-#    priority        = models.IntegerField()
-#    filecount       = models.IntegerField()
-#    
-#    class Admin:
-#        list_display = ('subject', 'sender', 'to', 'delivered', 'mmsid', 'filecount',)
-#
-#class MoMmsFile(models.Model):
-#    '''
-#    raw info about an mms file attachement
-#    '''
-#    mms         = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR)
-#    name        = models.CharField(max_length=200)
-#    contet_type = models.CharField(max_length=50)
-#    contentid   = models.CharField(max_length=50)
-#    size        = models.IntegerField()
+class MoMmsRaw(models.Model):
+    '''
+    base data from an mms callback
+    '''
+    mmsid           = models.CharField(max_length=100)
+    subject         = models.CharField(max_length=200)
+    sender          = models.CharField(max_length=20) #qs variable name is "from" but we can't use that
+    to              = models.CharField(max_length=20)
+    time            = models.CharField(max_length=50)
+    saved_at        = models.DateTimeField()
+    mmsversion      = models.CharField(max_length=20)
+    messageclass    = models.IntegerField()
+    priority        = models.IntegerField()
+    filecount       = models.IntegerField()
+    
+    def get_mms_files(self):
+        update_data ={}
+        SMS_USERNAME = 'Concinnity'
+        SMS_PASSWORD = '9391167'
+        url_pattern = 'http://server1.msgtoolbox.com/api/current/mms/getfile.php?username=%s&password=%s&mmsid=%s&filename=%s'
+        #try:
+        files = MoMmsFile.objects.filter(mms__exact=self)
+        for f in files:
+            url = url_pattern % (SMS_USERNAME, SMS_PASSWORD, self.mmsid, f.file)
+            if string.lower(f.filecontent) in ('image/gif', 'image/jpeg', 'image/png',):
+                path = 'mmsupdateimages/%d_%s' % (self.id, f.file) #TODO: spread images over folder sub-tree
+                img = open('%s%s' % (MEDIA_ROOT, path), 'w')
+                img.write(urllib2.urlopen(url).read())
+                update_data['photo'] = path
+            elif string.lower(f.filecontent) == 'text/plain':
+                update_data['text'] = urllib2.urlopen(url).read()
+        #except:
+        #    pass
+        return update_data
+
+    class Admin:
+        list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
+
+class MoMmsFile(models.Model):
+    '''
+    raw info about an mms file attachement
+    '''
+    mms             = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR, core=True)
+    file            = models.CharField(max_length=200, verbose_name='File name') 
+    filecontent     = models.CharField(max_length=50, verbose_name='Content type') 
+    filecontentid   = models.CharField(blank=True, max_length=50, verbose_name='Content ID') 
+    filesize        = models.IntegerField(verbose_name='File size') 
     
 class MoSmsRaw(models.Model):
     '''

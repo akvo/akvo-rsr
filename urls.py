@@ -26,6 +26,8 @@ urlpatterns = patterns('',
     (r'^rsr/project/(?P<project_id>\d+)/details$', 'akvo.rsr.views.projectdetails', ),
     (r'^rsr/project/(?P<project_id>\d+)/funding$', 'akvo.rsr.views.projectfunding', ),
     
+    url(r'^rsr/fundingbar/$', 'akvo.rsr.views.fundingbarimg', name='fundingbar'),    
+
     #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_goals$', 'akvo.rsr.views.ajax_tab_goals', ),
     #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_sustainability$', 'akvo.rsr.views.ajax_tab_sustainability', ),
     #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_context$', 'akvo.rsr.views.ajax_tab_context', ),
@@ -43,7 +45,7 @@ urlpatterns = patterns('',
     (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
 
     #(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}),
-    (r'^rsr/signin/$', 'django.contrib.auth.views.login', {'template_name': 'rsr/sign_in.html'}),
+    (r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
     
     (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),

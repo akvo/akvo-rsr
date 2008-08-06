@@ -31,4 +31,6 @@ records = [
 [27, u'rs r_ registration profile', u'rsr', u'rsr_registrationprofile']
 [28, u'user profile', u'rsr', u'userprofile']
 [29, u'mo sms raw', u'rsr', u'mosmsraw']
+[30, u'mo mms raw', u'rsr', u'mommsraw']
+[31, u'mo mms file', u'rsr', u'mommsfile']
 ]

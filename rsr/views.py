@@ -1,6 +1,6 @@
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
-from akvo.rsr.models import funding_aggregate, UserProfile
-from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm
+from akvo.rsr.models import funding_aggregate, UserProfile, MoMmsRaw, MoMmsFile
+from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm, RSR_AuthenticationForm
 
 from django import newforms as forms
 from django import oldforms
@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
 from BeautifulSoup import BeautifulSoup
@@ -505,10 +506,10 @@ def mms_update(request):
     '''
     # see if message already has been recieved for some reason, if so ignore
     from dbgp.client import brk
-    #brk(host="vnc.datatrassel.se", port=9000)
+    #brk(host="192.168.1.123", port=9000)
     try:
-        #mms = MoMmsRaw.objects.get(mmsid__exact=request.GET.get('mmsid'))
-        raise NameError, 'Foo'
+        # if we find an mms already, do nuthin...
+        mms = MoMmsRaw.objects.get(mmsid__exact=request.GET.get('mmsid'))
     except:
         try:
             raw = {}
@@ -519,9 +520,9 @@ def mms_update(request):
                     raw[f.name] = request.GET.get('from')
                 else:
                     raw[f.name] = request.GET.get(f.name)
-            raw['saved_at'] = datetime.now()
-            mms = MoSmsRaw.objects.create(**raw)
-            for i in mms.filecount:
+            raw['saved_at'] = datetime.now() #our own time stamp
+            mms = MoMmsRaw.objects.create(**raw)
+            for i in range(int(mms.filecount)): #BUG: mms.filecount SHOULD be an int already, but gets fetched as unicode! sql schema says the field is an integer field...
                 fileraw = {}
                 for f in MoMmsFile._meta.fields:
                     if f.name != 'mms':
@@ -529,13 +530,11 @@ def mms_update(request):
                 fileraw['mms'] = mms
                 mmsfile = MoMmsFile.objects.create(**fileraw)
             # find the user owning the phone number. If found create an update
-            u = UserProfile.objects.get(phone_number__exact=mms.sender)
-            if u:
-                #sms_data = {
-                #    'time':  datetime.fromtimestamp(float(request["delivered"])),
-                #    'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
-                #}
+            try:
+                u = UserProfile.objects.get(phone_number__exact=mms.sender)
                 success = u.create_mms_update(mms)
+            except:
+                pass #no user with a matching mobile phone number...
         except:
             pass #TODO: logging!
     return HttpResponse("OK") #return OK under all conditions
@@ -668,6 +667,32 @@ def flashgallery(request):
     # Get 18 random projects with a current image
     projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
     return render_to_response('rsr/gallery.xml', {'projects': projects, }, context_instance=RequestContext(request), mimetype='text/xml')
+
+def fundingbarimg(request):
+    '''
+    create an image for use in the funding bar graphic
+    '''
+    import Image, ImageDraw 
+
+    size = (100,20)             # size of the image to create
+    im = Image.new('RGB', size, '#fff') # create the image
+    draw = ImageDraw.Draw(im)   # create a drawing object that is
+                                # used to draw on the new image
+    # Now, we'll do the drawing:
+    pct = int(request.GET.get('pct', 0))
+    if pct:
+        box = [(0,0),(pct,20)]
+        draw.rectangle(box, fill='#99ff99')
+    
+    del draw # I'm done drawing so I don't need this anymore
+    
+    # We need an HttpResponse object with the correct mimetype
+    response = HttpResponse(mimetype="image/png")
+    # now, we tell the image to save as a PNG to the 
+    # provided file-like object
+    im.save(response, 'PNG')
+
+    return response # and we're done!
     
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
