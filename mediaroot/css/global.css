@@ -29,7 +29,7 @@ padding: 0 20px;
 text-align: right;
 vertical-align: middle;
 min-height: 55px;
-line-height: 55px;
+line-height: 1em;
 margin: 10px 0 15px 5px;
 }
 
@@ -97,6 +97,7 @@ padding: 0.5em 1.2em;
 color: #333;
 text-decoration: none;
 float: left;
+line-height: 1.5em;
 border-right: 1px solid #fff;
 font-weight: bold;
 }
@@ -155,22 +156,11 @@ h2.paddedbottom {
 padding: 20px 20px 20px 20px;
 }
 
-.form p {
-margin: 0px 100px;
+body p.block
+{
+padding: 0 0 5px 0;
+margin: 0;
 }
-
-p.about_field {
-color: #999;
-padding: 0;
-margin: 0px 80px;
-}
-
-p.about_field_extended {
-color: #999;
-margin: 20px 80px;
-padding-top: 20px;
-}
-
 
 .form_error {
 float: right;
@@ -203,14 +193,14 @@ display: block;
 background-color: blue;
 }
 
-.input:hover, .textarea:hover
-{
-
-}
-
 .input:focus, .textarea:focus
 {
 background-color: #F0FFE6;
+}
+
+.signin_field
+{
+width: 130px;
 }
 
 .radio {
@@ -437,59 +427,40 @@ padding: 10px 0;
 /* Lists
 -------------------------------------------------------------------------------------- */
 
+.node ol
+{
+padding: 0 20px;
+list-style-type: decimal;
+}
+
 ul.simplelist
 {
-margin: 10px 10px 10px 0;
-list-style-type: disc;
-list-style-position: inside;
-padding-left: 1em;
-text-indent: -1em;
+padding: 20px;
+margin: 0;
+list-style-type: none;
 }
 
 ul.indented
 {
-padding-left: 1em;
-list-style-type: disc;
-list-style-position: outside;
-}
-
-ul.indented {
 padding: 0 20px;
 margin: 0;
 list-style-type: none;
 }
 
-ul.indented li
-{
-padding-left: 10px;
-padding-top: 10px;
-}
-
 .node ul
 {
-margin: 10px 20px 10px 0;
+padding: 0 20px;
+margin: 0;
 list-style-type: none;
-list-style-position: inside;
-padding-left: 2em;
 }
 
-.node ul li
+.node ul li, ul.item-list li, ul.indented li, ul.simplelist li
 {
 background-image: url(/rsr/media/img/arrow.png);
 background-repeat: no-repeat;
 background-position: 0 .2em;
 padding-left: 1.2em;
-padding-bottom: 0.5em
-}
-
-
-ul.item-list li
-{
-background-image: url(/rsr/media/img/arrow.png);
-background-repeat: no-repeat;
-background-position: 0 .2em;
-padding-left: 1.2em;
-padding-bottom: 0.5em
+padding-bottom: 0.5em;
 }
 
 /* button (styled links)
@@ -573,3 +544,4 @@ th { font-weight: bold; }
 /* Hide from IE Mac \*/
 .clearfix {display:block;}
 /* End hide from IE Mac */
+

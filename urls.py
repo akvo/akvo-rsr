@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     
     (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),
     (r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', {'profile_callback': create_rsr_profile,}),
+    url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate'),
     (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
     (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),
     (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),

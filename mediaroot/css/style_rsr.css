@@ -101,3 +101,61 @@ width: 40%
 table#overall_statistics {
 margin: 0 20px;
 }
+
+
+/* funding bar
+-------------------------------------------------------------------------------------- */
+
+.funding_bar
+{
+border: 1px solid #999;
+margin: 5px 0 5px 0;
+padding: 0;
+position: relative;
+line-height: 0;
+}
+
+.funding_pledged
+{
+line-height: 1.1em;
+position:absolute;
+top: 5px;
+left: 10px;
+margin: 0px;
+color: #008000;
+background-color: transparent;
+}
+
+.funding_still_needed
+{
+line-height: 1.1em;
+position:absolute;
+top: 5px;
+right: 10px;
+margin: 0px;
+color: red;
+}
+
+/* forms
+-------------------------------------------------------------------------------------- */
+
+.submit_section_A
+{
+text-align: center;
+width: 200px;
+margin: 30px auto;
+}
+
+.submit_section_cancel
+{
+margin-right: 20px; 
+line-height: 2em; 
+display: block; 
+float: left
+}
+
+.submit_section_button
+{
+margin: 0; 
+float: right;
+}

@@ -149,7 +149,7 @@
 {% endif %}
 
 <h2><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
-<p class="lightx2">24/06/2008 by {{latest1.author|safe}}</p>
+<p class="lightx2">{{latest1.updated|safe}} by {{latest1.author|safe}}</p>
 <p>{{latest1.summary|safe}}</p>
 
 <p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">Read more</a></p>
@@ -163,7 +163,7 @@
 </div> <!-- style -->
 {% endif %}
 <h2><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
-<p class="lightx2">24/06/2008 by {{latest2.author|safe}}</p>
+<p class="lightx2">{{latest2.updated|safe}} by {{latest2.author|safe}}</p>
 <p>{{latest2.summary|safe}}</p>
 
 <p><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">Read more</a></p>

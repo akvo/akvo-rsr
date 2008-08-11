@@ -1,6 +1,7 @@
 {% extends "rsr/rsr_base.html" %}
+{% load rsr_tags %}
 
-{% block title %}Akvo RSR - Sign in{% endblock title %}
+{% block title %}Sign in{% endblock title %}
 
 {% block header %}
 <div id="header" class="clearfix">
@@ -55,11 +56,11 @@
 
             <hr />
             <div style="text-align: center">
-                <span style="margin: -20px 0 0 0;"><a href="#" style="margin-right: 20px;">Cancel</a></span>
+                <!--<span style="margin: -20px 0 0 0;"><a href="#" style="margin-right: 20px;">Cancel</a></span>
                
-                <!-- <button type="submit" name="Login" class="login">Login</button> -->
 				<button type="submit"><a class="actionbutton ab_d0ffff" onclick="this.blur();" style="margin: 0"><span>Sign in</span></a></button>
-
+                -->
+                {% submit_button 'Sign in' 'ab_d0ffff' %}
             </div>
            <input type="hidden" name="next" value="{{ next }}" />
         </form>

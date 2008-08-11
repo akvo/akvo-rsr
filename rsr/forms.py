@@ -44,7 +44,7 @@ class RSR_SigninTextField(oldforms.TextField):
         max_length = u''
         if self.max_length:
             max_length = u'maxlength="%s" ' % self.max_length
-        return mark_safe(u'<input type="%s" id="%s" name="%s" size="%s" value="%s" class="signin_field" %s/>' % \
+        return mark_safe(u'<input type="%s" id="%s" name="%s" size="%s" value="%s" class="signin_field input" %s/>' % \
             (self.input_type, self.get_id(), self.field_name, self.length, escape(data), max_length))
 
 class RSR_SigninPasswordField(RSR_SigninTextField):

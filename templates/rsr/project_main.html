@@ -84,7 +84,7 @@
                     <!--<li><a href="#tab_personnel"><span>Personnel</span></a></li>-->
                 </ul>
                 
-                <div id="tab_description" class="tab">
+                <div id="tab_description" class="tab clearfix">
                     <p>{{p.project_plan_summary|linebreaks}}</p>
                     <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}">View details</a></p>
                     <br />		
@@ -98,10 +98,9 @@
                         <p class="lightx1"><b>Target benchmarks</b></p>
                         {% include "rsr/inc_target_benchmarks.html" %}
                     </div>
-                    <div style="clear:both">&#32;</div>
                 </div> <!-- #tab_description -->
         
-            <div id="tab_goals" class="tab">
+            <div id="tab_goals" class="tab clearfix">
                 <p style="padding-left:0;">{{p.goals_overview|linebreaks}}</p>
                 <br />			
                 <div style="float:left;width:230px;">
@@ -130,10 +129,9 @@
                     {% endif %}
                     </ul>
                 </div>			
-                <div style="clear:left">&#32;</div>
             </div> <!-- #tab_goals -->
         
-            <div id="tab_sustainability" class="tab">
+            <div id="tab_sustainability" class="tab clearfix">
                 <p>{{p.sustainability|linebreaks}}</p>
                 <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}#tab_sustainability">View details</a></p>
             </div> <!-- #tab_sustainability -->
@@ -153,20 +151,23 @@
 
 	</div> <!-- #project_details .boxbody -->
 
-	<div id="subdetailsleft">
+	<div id="subdetailsleft" class="clearfix">
 
         <div class="boxhead">
             <h1>Related to this project</h1>
         </div> <!-- .boxhead -->
     
         <div id="project_related" class="boxbody">
-            <h2>Akvopedia entries</h2>
+
+			<h2>Akvopedia entries</h2>
 			{% for link in p.link_set.all %}
 				{% ifequal link.kind 'A' %}
 		            <p><a href="{{link.url}}">{{link.caption}}</a></p>
 				{% endifequal %}
 			{% endfor %}
+
             <hr />
+            
             <h2>External links</h2>
 			{% for link in p.link_set.all %}
 				{% ifequal link.kind 'E' %}
@@ -185,7 +186,7 @@
             <div id="panel">
             {% if not user.username %}
                 <p>You must be signed in to add a comment.</p>
-                <p><a href="{% url django.contrib.auth.views.login %}?next={{request.path}}">Sign In</a> <!--| <a href="#">Register</a></p>-->
+                <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">Sign In</a> <!--| <a href="#">Register</a></p>-->
             {% else %}
                 <form enctype="multipart/form-data" method="post" action="comment">
                     {{form.comment}}
@@ -212,6 +213,7 @@
                 <hr style="clear: both"/>
             {% endfor %}
             <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">Older comments</a></p>
+            <p class="lightx1">The comments are owned by whoever posted them. We are not responsible for them in any way.</p>
             {% else %}
                 <span style="padding-left: 20px;" class="lightx1">No comments yet.</span>
             {% endif %}
@@ -266,6 +268,7 @@
                     <hr />            
                 {% endfor %}
                 <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectupdates p.id %}">Earlier updates</a></p>
+                <p class="lightx1">The updates are owned by whoever posted them. We are not responsible for them in any way.</p>
             {% else %}
                 <span style="padding-left: 20px;" class="lightx1">No updates yet.</span>
             {% endif %}

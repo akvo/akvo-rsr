@@ -1,4 +1,5 @@
 {% extends "rsr/rsr_base.html" %}
+{% load rsr_tags %}
     
 {% block header %}
     <div id="header" class="clearfix">
@@ -14,10 +15,11 @@
           {% if form.errors %}
             <div class="form_error" style="margin-right: 70px;">
                 <p class="c1">A problem occurred</p>
-
-                <p>{{ form.non_field_errors }}</p>
-                
-                <p>Please review messages below.</p>
+                {% if form.non_field_errors %}
+                    <p>{{ form.non_field_errors }}.</p>
+                {% else %}
+                    <p>Please review messages below.</p>
+                {% endif %}
             </div>
           {% endif %}            
 
@@ -114,9 +116,9 @@
             </div>
             <hr>
             {{ form.org_id }}
-            <div class="c7">
-                <a href="{% url akvo.rsr.views.index %}" class="c5">Cancel</a> <button type="submit"><a class="actionbutton ab_white c6" href="#" onclick="this.blur();"><span>Submit</span></a></button>
-            </div>
+
+			{% submit_button 'Register' 'ab_white' %}
+
         </fieldset>
         </form>
     </div>

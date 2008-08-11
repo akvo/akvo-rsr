@@ -3,4 +3,6 @@ Someone, hopefully you, signed up for a new account at {{ site }} using this ema
 
 http://{{ site }}/rsr/accounts/activate/{{ activation_key }}/
 
+Note: After you have activated your account, we will review your application and possibly contact you to ensure that the account was created correctly, before the account is enabled.
+
 If you didn't request this, you don't need to do anything; you won't receive any more email from us, and the account will expire automatically in {{ expiration_days|apnumber }} days.

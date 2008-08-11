@@ -15,3 +15,10 @@ def category_icons(context, project):
     show icons for the categories the project entails
     '''
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+
+@register.inclusion_tag('inclusion_tags/submit_button.html')
+def submit_button(caption, css_class):
+    '''
+    form submit and cancel buttons, with caption for the submit button
+    '''
+    return {'caption': caption, 'css_class': css_class}

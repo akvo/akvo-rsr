@@ -1,102 +1,113 @@
 {% extends "rsr/rsr_base.html" %}
+{% load rsr_tags %}
 
-{% block title %}{{block.super}} - Write an update{% endblock title %}
+{% block title %}Register with Akvo RSR - Step 1{% endblock %}
 
-{% block breadcrumbs %}
-	{{block.super}}
-	&raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a>
-	&raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
-	&raquo; Write an update
-{% endblock breadcrumbs %}
+{% block header %}
+<div id="header" class="clearfix">
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+</div> <!-- #header -->
+{% endblock header %}
 
 {% block content %}
 
-<div id="outer_leftwing">
-
+<div class="boxbody">
 <form enctype="multipart/form-data" method="post" action="">
 
-<div class="box">
-	<div class="indentx2" style="border-bottom: 1px solid #ccc; padding: 20px; width: 625px">
-
-		<h1 class="title">Add update</h1>
-		<p class="lightx1" style="padding-left: 10px">You are updating the project named</p>
-		<p style="padding-left: 10px">{{p.name}}</p>
-	</div>
+<div class="clearfix">
+    
+	{% if form.errors %}
+		<div style="float: right; width: 300px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+			<p><b>A problem occurred:</b></p>
+			<p>Please review message below. {{ form.non_field_errors }}</p>
+		</div> <!-- style -->
+	{% endif %}
 	
-	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">
-		<br />
-		<h2 style="margin-left: -50px">Enter update title</h2>
-		
-						{{form.title|safe}}
-						
-		<p>50 characters max (<span id=myCounter>50</span> charaters left)</p>
+	<h1 class="section" style="font-size: 1.4em;">Add update</h1>
+</div> <!-- .clearfix -->
 
-		{% if form.title.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
-			<p style="color: #D4000D">{{ form.title.errors.as_text }}</p>
-		{% endif %}
-	</div>			
+<hr />
 
-	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">			
-		<h2 style="margin-left: -50px">Enter update text</h2>
-						{{form.text}}
-		{% if form.text.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
-			<p style="color: #D4000D">{{ form.text.errors.as_text }}</p>
-		{% endif %}
-	</div>
+<fieldset style="margin: 0 100px">
 
-	
-	<!--<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">
-		<h2 style="padding-bottom: 15px">Assign project status <span class="lightx2">(optional)</span></h2>
-		{{form.status}}
-		{% if form.status.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
-			<p style="color: #D4000D">{{ form.status.errors.as_text }}</p>
-		{% endif %}
-	</div>-->
-	
-	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">			
-		<h2 style="margin-left: -50px">Add photo <span class="lightx2">(optional)</span></h2>
-		<h2>Locate photo:</h2>
-		{{form.photo}}
-		{% if form.photo.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
-			<p style="color: #D4000D">{{ form.photo.errors.as_text }}</p>
-		{% endif %}
+<label style="font-weight:bold; padding: 20px 0 10px 0; display: block">Enter an update title</label>
+<div class="clearfix">
+{% if form.title.errors %}
+<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+<p><b>A problem occurred:</b></p>
+<p>{{ form.title.errors.as_text }}</p>
+</div> <!-- style -->		  
+{% endif %}
+{{form.title|safe}}
+<p class="block">50 characters max</p>
+</div> <!-- .clearfix -->
 
-			<br />
-			<h2>Select where the photo will be placed:</h2>
-			
-			{{form.photo_location}}
-			{% if form.photo_location.errors %}
-				<h2 style="color: #D4000D">A problem occurred</h2>
-				<p style="color: #D4000D">{{ form.photo_location.errors.as_text }}</p>
-			{% endif %}
-			
-			<br />
-			<h2>Photo caption (optional):</h2>
-			{{form.photo_caption}}
-			<p>75 characters max</p>
-			{% if form.photo_caption.errors %}
-				<h2 style="color: #D4000D">A problem occurred</h2>
-				<p style="color: #D4000D">{{ form.photo_caption.errors.as_text }}</p>
-			{% endif %}
-			<br />
-			<h2>Photo credit (optional):</h2>
-			{{form.photo_credit}}
-			<p>25 characters max</p>
-			{% if form.photo_credit.errors %}
-				<h2 style="color: #D4000D">A problem occurred</h2>
-				<p style="color: #D4000D">{{ form.photo_credit.errors.as_text }}</p>
-			{% endif %}
-		
-	<div style="margin: 20px auto; text-align: center;">
-	<a href="{% url akvo.rsr.views.projectmain p.id %}">Cancel</a> <input type="submit" value="Submit update" class="submit" />
 
-	</div>
-	
-</div> <!-- .box -->
-</form>
-</div> <!-- .outer_leftwing -->
-{% endblock content %}
+<label style="font-weight:bold; padding: 20px 0 10px 0; display: block">Enter update text</label>
+<div class="clearfix">
+{% if form.text.errors %}
+<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+<p><b>A problem occurred:</b></p>
+<p>{{ form.text.errors.as_text }}</p>
+</div> <!-- style -->		  
+{% endif %}
+{{form.text}}
+</div> <!-- .clearfix -->
+
+<label style="font-weight:bold; padding: 20px 0 10px 0; display: block">Add photo <span class="lightx2" style="font-weight: normal">(optional)</span></label>
+<div class="clearfix">
+{% if form.photo.errors %}
+<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+<p><b>A problem occurred:</b></p>
+<p>{{ form.photo.errors.as_text }}</p>
+</div> <!-- style -->
+{% endif %}
+{{form.photo}}
+</div> <!-- .clearfix -->
+
+<label style="font-weight:bold; padding: 20px 0 10px 0; display: block">Select where the photo will be placed:</label>
+<div class="clearfix">
+{% if form.photo_location.errors %}
+<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+<p><b>A problem occurred:</b></p>
+<p>{{ form.photo_location.errors.as_text }}</p>
+</div> <!-- style -->
+{% endif %}
+{{form.photo_location}}
+</div> <!-- .clearfix -->
+
+<label style="font-weight:bold; padding: 20px 0 10px 0; display: block">Photo caption <span class="lightx2" style="font-weight: normal">(optional)</span></label>
+<div class="clearfix">
+{% if form.photo_location.errors %}
+<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+<p><b>A problem occurred:</b></p>
+<p>{{ form.photo_location.errors.as_text }}</p>
+</div> <!-- style -->
+{% endif %}
+<div style="padding-bottom: 20px;">
+{{form.photo_caption}}
+</div>
+</div> <!-- .clearfix -->
+
+<label style="font-weight:bold; padding: 20px 0 10px 0; display: block">Photo credit <span class="lightx2" style="font-weight: normal">(optional)</span></label>
+<div class="clearfix">
+{% if form.photo_location.errors %}
+<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
+<p><b>A problem occurred:</b></p>
+<p>{{ form.photo_credit.errors.as_text }}</p>
+</div> <!-- style -->
+{% endif %}
+{{form.photo_credit}}
+<p>25 characters max</p>
+</div> <!-- .clearfix -->
+
+</fieldset>
+
+<hr />
+
+{% submit_button 'Submit update' 'ab_white' %}
+
+<form method="post" action="">
+</div> <!-- boxbody -->
+
+{% endblock %}

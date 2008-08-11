@@ -1,5 +1,6 @@
 import urllib2
 import string
+import re
 from datetime import date, datetime
 
 from django import newforms as forms
@@ -330,7 +331,7 @@ class FieldPartner(models.Model):
         return "%s" % (self.field_organisation.name, )
     
 class Funding(models.Model):
-    project = models.OneToOneField(Project)
+    project = models.OneToOneField(Project, primary_key=True)
     #date_next_milestone = models.DateField(blank=True)
     date_request_posted = models.DateField(default=date.today)
     #date_started = models.DateField(blank=True)
@@ -374,12 +375,53 @@ UPDATE_METHODS = (
 )
 UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
 
+SHA1_RE = re.compile('^[a-f0-9]{40}$')
 class RSR_RegistrationManager(RegistrationManager):
     '''
     Customized registration manager modifying create_inactive_user() to take a
     callback profile_callback() that takes two arguments, a user and a userprofile.
     Used by RSR_RegistrationProfile.
     '''
+    def activate_user(self, activation_key):
+        """
+        Validate an activation key and activate the corresponding
+        ``User`` if valid.
+        
+        If the key is valid and has not expired, return the ``User``
+        after activating.
+        
+        If the key is not valid or has expired, return ``False``.
+        
+        If the key is valid but the ``User`` is already active,
+        return ``False``.
+        
+        To prevent reactivation of an account which has been
+        deactivated by site administrators, the activation key is
+        reset to the string ``ALREADY_ACTIVATED`` after successful
+        activation.
+        
+        """
+        # Make sure the key we're trying conforms to the pattern of a
+        # SHA1 hash; if it doesn't, no point trying to look it up in
+        # the database.
+        if SHA1_RE.search(activation_key):
+            try:
+                profile = self.get(activation_key=activation_key)
+            except self.model.DoesNotExist:
+                return False
+            if not profile.activation_key_expired():
+                user = profile.user
+                #user.is_active = True
+                user.save()
+                profile.activation_key = "ALREADY_ACTIVATED"
+                profile.save()
+                from django.core.mail import send_mail
+                subject = 'Akvo user email confirmed'                
+                message = 'A user, %s, has confirmed her email. Check it out!' % user.username
+                send_mail(subject, message, 'noreply@akvo.org', ['gabriel@akvo.org', 'thomas@akvo.org'])                
+                return user
+        return False
+    
     def create_inactive_user(self, username, password, email, first_name='',
                              last_name='', send_email=True, profile_callback=None, profile_data=None):
         """

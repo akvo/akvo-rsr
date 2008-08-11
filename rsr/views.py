@@ -1,9 +1,10 @@
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile, MoMmsRaw, MoMmsFile
-from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm, RSR_AuthenticationForm
+from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
 from django import newforms as forms
 from django import oldforms
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.newforms import ModelForm
@@ -373,10 +374,55 @@ def register2(request,
             new_user = form.save(profile_callback=profile_callback)
             return HttpResponseRedirect('/rsr/accounts/register/complete/')
     else:
-        form = form_class(initial={'org_id': org_id})    
+        form = form_class(initial={'org_id': org_id})
     context = RequestContext(request)
     return render_to_response(template_name,
                               { 'form': form, 'organisation': organisation, },
+                              context_instance=context)
+
+#from registraion.views, to use custom manager RSR_RegistrationProfile
+def activate(request, activation_key,
+             template_name='registration/activate.html',
+             extra_context=None):
+    """
+    Activate a ``User``'s account, if their key is valid and hasn't
+    expired.
+    
+    By default, uses the template ``registration/activate.html``; to
+    change this, pass the name of a template as the keyword argument
+    ``template_name``.
+    
+    **Context:**
+    
+    account
+        The ``User`` object corresponding to the account, if the
+        activation was successful. ``False`` if the activation was not
+        successful.
+    
+    expiration_days
+        The number of days for which activation keys stay valid after
+        registration.
+    
+    Any values passed in the keyword argument ``extra_context`` (which
+    must be a dictionary) will be added to the context as well; any
+    values in ``extra_context`` which are callable will be called
+    prior to being added to the context.
+
+    **Template:**
+    
+    registration/activate.html or ``template_name`` keyword argument.
+    
+    """
+    activation_key = activation_key.lower() # Normalize before trying anything with it.
+    account = RSR_RegistrationProfile.objects.activate_user(activation_key)
+    if extra_context is None:
+        extra_context = {}
+    context = RequestContext(request)
+    for key, value in extra_context.items():
+        context[key] = callable(value) and value() or value
+    return render_to_response(template_name,
+                              { 'account': account,
+                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
                               context_instance=context)
 
 #copied from django.contrib.auth.views to be able to use a custom Form
@@ -457,7 +503,7 @@ class UpdateForm(ModelForm):
     js_snippet = mark_safe(js_snippet)    
     title           = forms.CharField(
                         widget=forms.TextInput(
-                            attrs={'class':'input', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+                            attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
                       ))
     text            = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
     #status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))

@@ -3,10 +3,17 @@
 {% load addparam %}
 {% load rsr_tags %}
 
-{% block title %}Akvo RSR - Project listing{% endblock title %}
+{% block title %}Project listing
+{% if o %}
+	for {{o.name}}
+{% endif %}
+{% endblock title %}
 
 {% block breadcrumbs %}
 {{block.super}} &raquo; Project listing
+{% if o %}
+	for {{o.name}}
+{% endif %}
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -39,7 +46,7 @@
 		{% else %}
 			<div style="width: 140px; height: 105px; background-color: #ccc; margin: 10px 0"></div>
 		{% endif %}	
-		<h2 class="lightx2" style="display: inline">Status:</h2> {{showcase.show_status}}</h2>
+		<div class="lightx2" style="margin-top: 5px;"><span style="font-weight:bold">Status:</span> {{showcase.show_status}}</div>
 		<h2 class="lightx2">Focus areas</h2>
 			{% category_icons showcase %}
 			<!--

@@ -22,13 +22,11 @@
 	
 	<div id="project_updates" class="boxbody" style="padding-top: 10px;">
 
-		<a href="/rsr/rss/updates/{{p.id}}/" class="rss" style="float:right">Subscribe via RSS</a>
+		<a href="/rsr/rss/updates/{{p.id}}/" class="rss" style="float:right; margin-top: 12px">Subscribe via RSS</a>
 		<h1 class="section">Project updates</h1>
-
+        <p class="lightx1">The updates are owned by whoever posted them. We are not responsible for them in any way.</p>
         {% for u in updates %}
-            {% if not forloop.first %}
-                <hr />
-            {% endif %}
+            <hr />
             <a name={{u.id}} />
             <h2>{{u.title}}</h2>
             <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by {{u.user.get_full_name}} via {{u.show_update_method}}</p>

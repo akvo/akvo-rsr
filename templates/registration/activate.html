@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if account %}
-        Account activated
+        Account email confirmed
     {% else %}
-        Account activation failed
+        Account confirmation failed
     {% endif %}
 {% endblock %}
 
@@ -17,9 +17,9 @@
     <hr>
     
     <div class="c2">
-        <h2 class="paddedbottom">Your account has been activated.</h2>
+        <h2 class="paddedbottom">Your account will be activated as soon as we have reviewed your request.</h2>
     
-        <p class="lightx2">Now you can <a href="{% url django.contrib.auth.views.login %}">sign in</a> to Akvo RSR.</p>
+        <!--<p class="lightx2">Now you can <a href="{% url django.contrib.auth.views.login %}">sign in</a> to Akvo RSR.</p>-->
     </div>
     <hr>
     
