@@ -1,4 +1,7 @@
 # Django settings for akvo project.
+# settings_base.py contains non-server specific settings and
+# is imported into settings.py.
+
 # Alphabetically ordered (more or less...)
 
 # Accounts not activated in a week get purged. Used by registration app.
@@ -16,16 +19,16 @@ ADMINS = (
 #Additional information about a User
 AUTH_PROFILE_MODULE = 'rsr.userprofile'
 
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = '/var/dev/akvo/data/akvo.sqlite' # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+#DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#DATABASE_NAME = '/var/dev/akvo/data/akvo.sqlite' # Or path to database file if using sqlite3.
+#DATABASE_USER = ''             # Not used with sqlite3.
+#DATABASE_PASSWORD = ''         # Not used with sqlite3.
+#DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+#DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-DEBUG = True
+#DEBUG = True
 
-DEFAULT_FROM_EMAIL = 'noreply@akvo.og'
+#DEFAULT_FROM_EMAIL = 'noreply@akvo.og'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -57,12 +60,12 @@ MANAGERS = ADMINS
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
+#MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://dev.akvo.org:8080/rsr/media/'
+#MEDIA_URL = 'http://dev.akvo.org:8080/rsr/media/'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -88,7 +91,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
 )
 
-TEMPLATE_DEBUG = DEBUG
+#TEMPLATE_DEBUG = DEBUG
 
 import os.path
 TEMPLATE_DIRS = (

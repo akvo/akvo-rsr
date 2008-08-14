@@ -5,7 +5,7 @@ from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUp
 from django import newforms as forms
 from django import oldforms
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template import RequestContext
 from django.newforms import ModelForm
 from django.shortcuts import render_to_response, get_object_or_404
@@ -181,6 +181,10 @@ def index(request):
     stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
     return {'latest1': latest1, 'img_src1': img_src1, 'latest2': latest2, 'img_src2': img_src2, 'stats': stats, 'bandwidth': bandwidth, 'grid_projects': grid_projects}
+
+def oldindex(request):
+    "Fix for old url of old rsr front that has become the akvo home page"
+    return HttpResponsePermanentRedirect('/')
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')

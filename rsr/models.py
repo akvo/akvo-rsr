@@ -500,13 +500,20 @@ class UserProfile(models.Model):
     '''
     user = models.ForeignKey(User, unique=True)
     organisation = models.ForeignKey(Organisation)
-    phone_number = models.IntegerField(
-        null=True,
+    #phone_number = models.IntegerField(
+    #    null=True,
+    #    blank=True,
+    #    help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
+    #    <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
+    #    validator_list = [isValidGSMnumber]
+    #)
+    phone_number = models.CharField(
+        max_length=50,
         blank=True,
         help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
         <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
         validator_list = [isValidGSMnumber]
-    )
+    )    
     project = models.ForeignKey(Project, null=True, blank=True, )
     
     def __unicode__(self):

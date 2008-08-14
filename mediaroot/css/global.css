@@ -31,6 +31,7 @@ vertical-align: middle;
 min-height: 55px;
 line-height: 1em;
 margin: 10px 0 15px 5px;
+position: relative;
 }
 
 #navigation
@@ -61,14 +62,36 @@ padding-top: 10px;
 /* header
 -------------------------------------------------------------------------------------- */
 
+#header
+{
+height: 70px;
+}
+
 #header_logo 
 {
-float: left;
+position: absolute;
+top: 0;
+left: 0;
 }
 
 #header div.right
 {
 float: right;
+}
+
+#header_button
+{
+position: absolute;
+top:1.5em;
+right: 0;
+}
+
+#header_logged_text
+{
+width: 200px;
+position: absolute;
+top: 1.2em;
+right: 100px;
 }
 
 /* global-navigation
@@ -201,6 +224,8 @@ background-color: #F0FFE6;
 .signin_field
 {
 width: 130px;
+display: inline;
+margin: 1em 2em;
 }
 
 .radio {
@@ -370,9 +395,14 @@ vertical-align: middle;
 width: 100%;
 }
 
+table#login td
+{
+background-color: red;
+}
+
 table td.padded
 {
-padding-right: 10px;
+padding: 0 10px 0 0;
 }
 
 .l33, .r33 {width: 33%;}
@@ -429,8 +459,14 @@ padding: 10px 0;
 
 .node ol
 {
+margin: 1em 0 1em 20px;
 padding: 0 20px;
 list-style-type: decimal;
+}
+
+.node ol li
+{
+padding-left: 1em;
 }
 
 ul.simplelist

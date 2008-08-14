@@ -10,7 +10,8 @@ feeds = {
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
-    (r'^rsr/$', 'akvo.rsr.views.index', ),
+    (r'^$', 'akvo.rsr.views.index', ),
+    (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
 
     (r'^rsr/admin/', include('django.contrib.admin.urls')),
     
