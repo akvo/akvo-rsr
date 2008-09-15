@@ -555,7 +555,7 @@ def mms_update(request):
     Returns a simple "OK" to the gateway
     '''
     # see if message already has been recieved for some reason, if so ignore
-    from dbgp.client import brk
+    #from dbgp.client import brk
     #brk(host="192.168.1.123", port=9000)
     try:
         # if we find an mms already, do nuthin...
@@ -595,7 +595,7 @@ def sms_update(request):
     Returns a simple "OK" to the gateway
     '''
     # see if message already has been recieved for some reason, if so ignore
-    from dbgp.client import brk
+    #from dbgp.client import brk
     #brk(host="vnc.datatrassel.se", port=9000)
     try:
         mo = MoSmsRaw.objects.get(incsmsid__exact=request.GET.get('incsmsid'))

@@ -248,7 +248,7 @@ class Project(models.Model):
                 'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
             }),
         )
-        list_display = ('name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
+        list_display = ('id', 'name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
 
     def project_type(self):
         pt = ""
