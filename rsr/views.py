@@ -1,3 +1,7 @@
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile, MoMmsRaw, MoMmsFile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
@@ -766,6 +770,9 @@ def templatedev(request, template_name):
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
+    
+def test_widget(request):
+    return render_to_response('widgets/featured_project.html', context_instance=RequestContext(request))
     
 def ajax_tab_goals(request, project_id):
     try:

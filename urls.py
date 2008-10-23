@@ -1,3 +1,7 @@
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 from akvo.rsr.feeds import ProjectUpdates
@@ -56,6 +60,8 @@ urlpatterns = patterns('',
     (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),
     (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),
     (r'^rsr/accounts/', include('registration.urls')),
+
+    (r'^rsr/widget/$', 'akvo.rsr.views.test_widget', ),
     
     (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     

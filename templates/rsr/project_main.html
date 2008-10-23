@@ -1,5 +1,10 @@
 {% extends "rsr/project_base.html" %}
 
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
 {% load rsr_tags %}
 
 {% block script %}
@@ -229,8 +234,8 @@
         </div> <!-- .boxhead -->
     
         <div id="project_updates" class="boxbody">
-            {% if updates %}
             <a href="/rsr/rss/updates/{{p.id}}/" class="rss">Subscribe via RSS</a>
+            {% if updates %}
                 {% for u in updates %}
                     <h2>{{u.title}}</h2>
                     <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by {{u.user.get_full_name}} via {{u.show_update_method}}</p>
