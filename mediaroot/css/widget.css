@@ -1,0 +1,96 @@
+/* 
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+ */
+
+body
+{
+font-family: Arial, Verdana, Helvetica, Sans-serif;     
+font-size: 100%;
+line-height:1em;
+color: #333;       
+background-color: #fff;
+}
+
+.widget 
+{
+font-size: 0.75em;
+padding: 10px;
+}
+
+h2
+{
+font-weight: bold;
+font-size: 1em;
+padding: 10px 20px 5px 0;
+}
+
+.lightx2 {
+color: #999;
+}
+
+.small {
+font-size: 85%;
+line-height: 1.1em;
+}
+
+
+/* funding bar
+-------------------------------------------------------------------------------------- */
+
+.funding_bar
+{
+border: 1px solid #999;
+margin: 5px 0 5px 0;
+padding: 0;
+position: relative;
+line-height: 0;
+}
+
+.funding_pledged
+{
+line-height: 1.1em;
+position:absolute;
+top: 5px;
+left: 10px;
+margin: 0px;
+color: #008000;
+background-color: transparent;
+}
+
+.funding_still_needed
+{
+line-height: 1.1em;
+position:absolute;
+top: 5px;
+right: 10px;
+margin: 0px;
+color: red;
+}
+
+
+/* Links
+-------------------------------------------------------------------------------------- */
+
+a:link, a:visited, a:active
+{
+color: #1D7FC6;
+text-decoration: none;
+}
+
+/* IE-disaster prevention unit (IE-DPU)
+-------------------------------------------------------------------------------------- */
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {display:inline-block;}
+/* Hide from IE Mac \*/
+.clearfix {display:block;}
+/* End hide from IE Mac */
+

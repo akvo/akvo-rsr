@@ -1,21 +1,23 @@
+{% extends "rsr/index_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/index_base.html" %}
+{% load i18n %}
 {% load generic_content %}
 {% load addparam %}
 {% load rsr_tags %}
 
-{% block title %}Project listing
+{% block title %}{% trans 'Project listing' %}
 {% if o %}
 	for {{o.name}}
 {% endif %}
 {% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; Project listing
+{{block.super}} &raquo; {% trans 'Project listing' %}
 {% if o %}
 	for {{o.name}}
 {% endif %}
@@ -30,7 +32,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<h1 class="section">Featured projects</h1>
+		<h1 class="section">{% trans 'Featured projects' %}</h1>
 	</div> <!-- .boxhead -->
 
 <div class="boxbody">
@@ -51,8 +53,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% else %}
 			<div style="width: 140px; height: 105px; background-color: #ccc; margin: 10px 0"></div>
 		{% endif %}	
-		<div class="lightx2" style="margin-top: 5px;"><span style="font-weight:bold">Status:</span> {{showcase.show_status}}</div>
-		<h2 class="lightx2">Focus areas</h2>
+		<div class="lightx2" style="margin-top: 5px;"><span style="font-weight:bold">{% trans 'Status' %}:</span> {{showcase.show_status}}</div>
+		<h2 class="lightx2">{% trans 'Focus areas' %}</h2>
 			{% category_icons showcase %}
 			<!--
 			{% if showcase.category_sanitation %}
@@ -71,7 +73,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				 <img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 0 5px 10px 0;" />		
 			 {% endif %}
 			 -->
-		<h2 class="lightx2">Location</h2>
+		<h2 class="lightx2">{% trans 'Location' %}</h2>
 		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />{{showcase.country.get_continent_display}}</p>
 		{% funding_bar showcase %}
 		<!--<div style="border: 1px solid #ccc; width: 100%; margin: 15px 0 5px 0"><div style="background-color: #4CAC62; width: {% widthratio showcase.funding.pledged showcase.funding.total 100 %}%; height: 20px;"></div></div>
@@ -98,53 +100,57 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     <option value='75'>75</option>
     </select>
     results per page-->
-		<span style="margin: 0 20px 0 20px">Projects {{page.start_index}}-{{page.end_index}} of {{projects.count}}</span>
+		<span style="margin: 0 20px 0 20px">
+			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projects.count as p_count %}
+				Projects {{page_start}}-{{page_end}} of {{p_count}}
+			{% endblocktrans %}
+		</span>
 		<span style="margin: 0 20px 0 20px">
 			{% ifequal page.number 1 %}
-			First |
+			{% trans 'First' %} |
 			{% else %}
 				{# if we have an organisation in the context, we are diplaying the list filtered on that org, url have to conform to that #}
 				{% if o %}
-					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}#list">First</a> |
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
 				{% else %}
-					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
 				{% endif %}
 			{% endifequal %}
 			{% if page.has_previous %}
 				{% if o %}
-					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
 				{% else %}
-					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
 				{% endif %}
 			{% else %}
-			Previous |
+			{% trans 'Previous' %} |
 			{% endif %}
 			{% if page.has_next %}
 				{% if o %}
-					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
 				{% else %}
-					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
 				{% endif %}
 			{% else %}
-			Next |
+			{% trans 'Next' %} |
 			{% endif %}
 			{% ifequal page.number page.paginator.num_pages %}
-			Last
+			{% trans 'Last' %}
 			{% else %}
 				{% if o %}
-					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 				{% else %}
-					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 				{% endif %}
 			{% endifequal %}
 		</span>
     </div>
 
-    <h1>Project listing
+    <h1>{% trans 'Project listing' %}
 		{% if o %}
 			for {{o.name}}
 		{% endif %}
-		<span class="lightx2" style="font-weight:normal">({{projects.count}} total)</span>
+		<span class="lightx2" style="font-weight:normal">{% blocktrans with projects.count as p_count %}({{p_count}} total){% endblocktrans %}</span>
 	</h1>
 </div> <!-- .boxhead -->
 
@@ -155,51 +161,51 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <tr>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list" title="Sort projects by name">Project name</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project name' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list" title="Sort projects by name">Project name</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project name' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list" title="Sort projects by status">Status</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list" title="Sort projects by status">Status</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list" title="Sort projects by country">Country</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list" title="Sort projects by country">Country</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list" title="Sort projects by continent">Continent</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list" title="Sort projects by continent">Continent</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_requested" %}#list" title="Sort projects by total funds requested">Total funds requested</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_requested" %}#list" title="{% trans 'Sort projects by total funds requested' %}">{% trans 'Total funds requested' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_requested" %}#list" title="Sort projects by total funds requested">Total funds requested</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_requested" %}#list" title="{% trans 'Sort projects by total funds requested' %}">{% trans 'Total funds requested' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_needed" %}#list" title="Sort projects by funding still needed">Funding still needed</a>
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_needed" %}#list" title="{% trans 'Sort projects by funding still needed' %}">{% trans 'Funding still needed' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_needed" %}#list" title="Sort projects by funding still needed">Funding still needed</a>
+		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_needed" %}#list" title="{% trans 'Sort projects by funding still needed' %}">{% trans 'Funding still needed' %}</a>
 	{% endif %}
 	</th>
 	<!--<th>Total funds requested</th>
 	<th>Funding still needed</th>-->
-	<th>Field partner(s)</th>
-	<th>Support partner(s)</th>
-	<th style="border-right: 0">Funding partner(s)</th>
+	<th>{% trans 'Field partner(s)' %}</th>
+	<th>{% trans 'Support partner(s)' %}</th>
+	<th style="border-right: 0">{% trans 'Funding partner(s)' %}</th>
 </tr>
 </thead>
 {% for p in page.object_list %}
@@ -304,27 +310,31 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<option value='75'>75</option>
 			</select>
 			results per page-->
-		<span style="margin: 0 20px 0 20px">Projects {{page.start_index}}-{{page.end_index}} of {{projects.count}}</span>
+		<span style="margin: 0 20px 0 20px">
+			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projects.count as p_count %}
+				Projects {{page_start}}-{{page_end}} of {{p_count}}
+			{% endblocktrans %}
+		</span>
 		<span style="margin: 0 20px 0 20px">
 			{% ifequal page.number 1 %}
-			First |
+			{% trans 'First' %} |
 			{% else %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">First</a> |
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
 			{% endifequal %}
 			{% if page.has_previous %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">Previous</a> |
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
 			{% else %}
-			Previous |
+			{% trans 'Previous' %} |
 			{% endif %}
 			{% if page.has_next %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">Next</a> |
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
 			{% else %}
-			Next |
+			{% trans 'Next' %} |
 			{% endif %}
 			{% ifequal page.number page.paginator.num_pages %}
-			Last
+			{% trans 'Last' %}
 			{% else %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">Last</a>
+			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 			{% endifequal %}
 		</span>
 		</div>

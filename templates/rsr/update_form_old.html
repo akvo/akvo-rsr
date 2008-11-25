@@ -1,17 +1,19 @@
+{% extends "rsr/rsr_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/rsr_base.html" %}
+{% load i18n %}
 
-{% block title %}{{block.super}} - Write an update{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Write an update' %}{% endblock title %}
 
 {% block breadcrumbs %}
 	{{block.super}}
-	&raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a>
+	&raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a>
 	&raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
-	&raquo; Write an update
+	&raquo; {% trans 'Write an update' %}
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -23,30 +25,30 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div class="box">
 	<div class="indentx2" style="border-bottom: 1px solid #ccc; padding: 20px; width: 625px">
 
-		<h1 class="title">Add update</h1>
-		<p class="lightx1" style="padding-left: 10px">You are updating the project named</p>
+		<h1 class="title">{% trans 'Add update' %}</h1>
+		<p class="lightx1" style="padding-left: 10px">{% trans 'You are updating the project named' %}</p>
 		<p style="padding-left: 10px">{{p.name}}</p>
 	</div>
 	
 	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">
 		<br />
-		<h2 style="margin-left: -50px">Enter update title</h2>
+		<h2 style="margin-left: -50px">{% trans 'Enter update title' %}</h2>
 		
 						{{form.title|safe}}
 						
-		<p>50 characters max (<span id=myCounter>50</span> charaters left)</p>
+		<p>50 {% trans 'characters max' %} (<span id=myCounter>50</span> charaters left)</p>
 
 		{% if form.title.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
+			<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 			<p style="color: #D4000D">{{ form.title.errors.as_text }}</p>
 		{% endif %}
 	</div>			
 
 	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">			
-		<h2 style="margin-left: -50px">Enter update text</h2>
+		<h2 style="margin-left: -50px">{% trans 'Enter update text' %}</h2>
 						{{form.text}}
 		{% if form.text.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
+			<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 			<p style="color: #D4000D">{{ form.text.errors.as_text }}</p>
 		{% endif %}
 	</div>
@@ -56,48 +58,48 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<h2 style="padding-bottom: 15px">Assign project status <span class="lightx2">(optional)</span></h2>
 		{{form.status}}
 		{% if form.status.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
+			<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 			<p style="color: #D4000D">{{ form.status.errors.as_text }}</p>
 		{% endif %}
 	</div>-->
 	
 	<div style="margin: 20px auto; border-bottom: 1px solid #ccc; padding-bottom: 20px; width: 350px">			
-		<h2 style="margin-left: -50px">Add photo <span class="lightx2">(optional)</span></h2>
-		<h2>Locate photo:</h2>
+		<h2 style="margin-left: -50px">{% trans 'Add photo' %} <span class="lightx2">({% trans 'optional' %})</span></h2>
+		<h2>{% trans 'Locate photo' %}:</h2>
 		{{form.photo}}
 		{% if form.photo.errors %}
-			<h2 style="color: #D4000D">A problem occurred</h2>
+			<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 			<p style="color: #D4000D">{{ form.photo.errors.as_text }}</p>
 		{% endif %}
 
 			<br />
-			<h2>Select where the photo will be placed:</h2>
+			<h2>{% trans 'Select where the photo will be placed' %}:</h2>
 			
 			{{form.photo_location}}
 			{% if form.photo_location.errors %}
-				<h2 style="color: #D4000D">A problem occurred</h2>
+				<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 				<p style="color: #D4000D">{{ form.photo_location.errors.as_text }}</p>
 			{% endif %}
 			
 			<br />
-			<h2>Photo caption (optional):</h2>
+			<h2>{% trans 'Photo caption' %} ({% trans 'optional' %}):</h2>
 			{{form.photo_caption}}
-			<p>75 characters max</p>
+			<p>75 {% trans 'characters max' %}</p>
 			{% if form.photo_caption.errors %}
-				<h2 style="color: #D4000D">A problem occurred</h2>
+				<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 				<p style="color: #D4000D">{{ form.photo_caption.errors.as_text }}</p>
 			{% endif %}
 			<br />
-			<h2>Photo credit (optional):</h2>
+			<h2>{% trans 'Photo credit' %} ({% trans 'optional' %}):</h2>
 			{{form.photo_credit}}
-			<p>25 characters max</p>
+			<p>25 {% trans 'characters max' %}</p>
 			{% if form.photo_credit.errors %}
-				<h2 style="color: #D4000D">A problem occurred</h2>
+				<h2 style="color: #D4000D">{% trans 'A problem occurred' %}</h2>
 				<p style="color: #D4000D">{{ form.photo_credit.errors.as_text }}</p>
 			{% endif %}
 		
 	<div style="margin: 20px auto; text-align: center;">
-	<a href="{% url akvo.rsr.views.projectmain p.id %}">Cancel</a> <input type="submit" value="Submit update" class="submit" />
+	<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a> <input type="submit" value="{% trans 'Submit update' %}" class="submit" />
 
 	</div>
 	

@@ -15,6 +15,7 @@ from django.newforms import ModelForm
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -55,9 +56,10 @@ def mdgs_sanitation_calc(projects):
 #    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
 #    return funding_total, funding_pledged
 
-def akvo_at_a_glance(projects):
+def akvo_at_a_glance(projects, org=None):
     '''
     Create aggregate data about a collection of projects in a queryset.
+    If org is supplied modify funding aggregate to reflect that orgs commitment to the projects.
     '''
     status_none     = projects.filter(status__exact='N').count()
     status_active   = projects.filter(status__exact='A').count()
@@ -71,7 +73,7 @@ def akvo_at_a_glance(projects):
     supportpartner_count    = o.filter(support_partner__exact=True).count()
     fundingpartner_count    = o.filter(funding_partner__exact=True).count()
     num_organisations = o.count()
-    funding_total, funding_pledged = funding_aggregate(projects)
+    funding_total, funding_pledged, funding_needed = funding_aggregate(projects, organisation=org)
     
     stats ={
         'status_none': status_none,
@@ -86,7 +88,7 @@ def akvo_at_a_glance(projects):
         'fundingpartner_count': fundingpartner_count,
         'num_organisations': num_organisations,
         'funding_total': funding_total,
-        'funding_needed': funding_total - funding_pledged,
+        'funding_needed': funding_needed,
         'funding_pledged': funding_pledged,
     }
     return stats
@@ -175,7 +177,7 @@ def index(request):
         soup = img_src1 = img_src2 = ''
         latest1 = latest2 = {
             'author': '',
-            'summary': 'The blog is not available at the moment.',
+            'summary': _('The blog is not available at the moment.'),
         }
     p = Project.objects.all()        
     if bandwidth == 'low':
@@ -683,8 +685,9 @@ def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
     org_projects = o.projects()
     org_partners = o.partners()
-    org_stats = akvo_at_a_glance(org_projects)
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, }
+    org_stats = akvo_at_a_glance(org_projects, o)
+    #proj_count = org_stats['project_count'] #'extracted' for use in pluralised blocktrans
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, } #'proj_count': proj_count, }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):

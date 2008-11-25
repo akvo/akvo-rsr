@@ -5,7 +5,9 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% block title %}Error: 404 - the page is not available{% endblock title %}
+{% load i18n %}
+
+{% block title %}{% trans 'Error: 404 - the page is not available' %}{% endblock title %}
 
 {% block page_id %}
 <div id="error">
@@ -13,7 +15,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block message %}
     <h1 class="c1">
-        {% block error_head %}404: We're sorry, we can't find the page you requested{% endblock %}
+        {% block error_head %}{% trans "404: We're sorry, we can't find the page you requested" %}{% endblock %}
     </h1>
 
     <div class="c2">
@@ -21,7 +23,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
         {% endblock error_body %}
 
-        <p>Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.</p>
+        <p>{% trans 'Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.' %}</p>
 
     </div>
 {% endblock message %}

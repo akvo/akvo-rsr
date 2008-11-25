@@ -1,13 +1,15 @@
+{% extends "rsr/project_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/project_base.html" %}
-
 {% load rsr_tags %}
 
-{% block title %}{{block.super}} - Project details{% endblock title %}
+{% load i18n %}
+
+{% block title %}{{block.super}} - {% trans 'Project details' %}{% endblock title %}
 
 {% block script %}
 <script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
@@ -29,7 +31,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; Project details
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Project details' %}
 {% endblock breadcrumbs %}
 
 {% block outer_leftwing %}
@@ -45,7 +47,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div style="float: left; width: 200px; padding-left: 30px">
 	
-		<div class="lightx2">Status</div>
+		<div class="lightx2">{% trans 'Status' %}</div>
 		<div>{{p.show_status}}</div>
 		{% category_icons p %}
 		<!--
@@ -70,7 +72,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div style="float: left; width: 200px; padding-left: 20px">
 		{% if p.location_1 or p.location_2 or p.postcode %}
-		<div class="lightx2">Location</div>
+		<div class="lightx2">{% trans 'Location' %}</div>
 		{% if p.location_1 %}
 			{{p.location_1}}<br />
 		{% endif %}
@@ -81,7 +83,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{{p.postcode}}<br />
 		{% endif %}
 	{% endif %}
-		<div class="lightx2">City</div>
+		<div class="lightx2">{% trans 'City' %}</div>
 		<div style="margin-bottom: 0.7em">{{p.city}}</div>
 		<div class="lightx2">State</div>
 		<div style="margin-bottom: 0.7em">{{p.state}}</div>
@@ -91,21 +93,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	{% if p.map %}
 		<div style="float: left; width: 200px; padding-left: 20px">
-			<img src="{{MEDIA_URL}}{{p.map}}" alt="location" style="margin: 10px 10px 20px 10px" />
+			<img src="{{MEDIA_URL}}{{p.map}}" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
 		</div>
 	{% else %}
 		<div style="float: left; width: 200px; padding-left: 20px">
-			<img src="{{MEDIA_URL}}img/nomap.jpg" alt="location" style="margin: 10px 10px 20px 10px" />
+			<img src="{{MEDIA_URL}}img/nomap.jpg" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
 		</div>
 	{% endif %}
 	<hr style="clear:left; padding-top: 20px" />
-	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
+	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 
             <div id="container-1" style="margin-top: 20px; padding-left: 20px;">
                 <ul>
-                    <li><a href="#tab_description"><span>Description</span></a></li>
-                    <li><a href="#tab_goals"><span>Goals</span></a></li>
-                    <li><a href="#tab_sustainability"><span>Sustainability</span></a></li>
+                    <li><a href="#tab_description"><span>{% trans 'Description' %}</span></a></li>
+                    <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
+                    <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
                     <!--<li><a href="#tab_results"><span>Results</span></a></li>-->
                 </ul>
                 
@@ -119,21 +121,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     {% endif %}	
                     </div>	
                     <div style="width: 280px:">
-                        <p class="lightx1"><b>Target benchmarks</b></p>
+                        <p class="lightx1"><b>{% trans 'Target benchmarks' %}</b></p>
                         {% include "rsr/inc_target_benchmarks.html" %}		
                     </div>
                     <div style="clear:both; padding-bottom: 20px">&#32;</div>
                     
                     {% if p.project_plan_detail %}
-						<h2 class="lightx2">More information</h2>
+						<h2 class="lightx2">{% trans 'More information' %}</h2>
 						<p>{{p.project_plan_detail|linebreaks}}</p>
 					{% endif %}
                     {% if p.current_status_detail %}
-						<h2 class="lightx2">Current state</h2>
+						<h2 class="lightx2">{% trans 'Current state' %}</h2>
 						<p>{{p.current_status_detail|linebreaks}}</p>
 					{% endif %}
                     {% if p.context %}
-						<h2 class="lightx2">Context</h2>
+						<h2 class="lightx2">{% trans 'Context' %}</h2>
 						<p>{{p.context|linebreaks}}</p>
 					{% endif %}
                     
@@ -143,12 +145,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 <p style="padding-left:0;">{{p.goals_overview|linebreaks}}</p>
                 <br />
                 <div style="float:left;width:270px;">
-                    <p class="lightx1"><b>Target benchmarks</b></p>
+                    <p class="lightx1"><b>{% trans 'Target benchmarks' %}</b></p>
                     {% include "rsr/inc_target_benchmarks.html" %}
                 </div>
                 <div style="margin-left:280px;">
                     {% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
-                    <p class="lightx1"><b>Goals overview</b></p>
+                    <p class="lightx1"><b>{% trans 'Goals overview' %}</b></p>
                     {% endif %}
                     <ul class="simplelist">
                     {% if p.goal_1 %}
@@ -253,7 +255,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             
             </div> <!-- #container-1 -->
             
-	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
+	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 
 	</div> <!-- #project_details .boxbody -->
 

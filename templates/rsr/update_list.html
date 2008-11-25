@@ -3,34 +3,36 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+{% load i18n %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 
 <head>
 
-<title>Akvo RSR</title>
+<title>{% trans 'Akvo RSR' %}</title>
 
 </head>
 
 <body>
 
 {% for update in updates %}
-    <h1>UPDATE</h1>
-    <h3>title</h3>
+    <h1>{% trans 'UPDATE' %}</h1>
+    <h3>{% trans 'title' %}</h3>
     <p class="">{{update.title}}</p>
-    <h3>text</h3>
+    <h3>{% trans 'text' %}</h3>
     <p class="">{{update.text}}</p>
-    <h3>status</h3>
+    <h3>{% trans 'status' %}</h3>
     <p class="">{{update.status}}</p>
-    <h3>photo</h3>
+    <h3>{% trans 'photo' %}</h3>
     <p class=""><img src="{{MEDIA_URL}}{{update.photo}}"/></p>
-    <h3>photo caption</h3>
+    <h3>{% trans 'photo caption' %}</h3>
     <p class="">{{update.photo_caption}}</p>
-    <h3>photo credit</h3>
+    <h3>{% trans 'photo credit' %}</h3>
     <p class="">{{update.photo_credit}}</p>
-    <h3>photo location</h3>
+    <h3>{% trans 'photo location' %}</h3>
     <p class="">{{update.photo_location}}</p>
-    <h3>time</h3>
+    <h3>{% trans 'time' %}</h3>
     <p class="">{{update.time}}</p>
 
 {% endfor %}

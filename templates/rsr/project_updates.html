@@ -1,14 +1,16 @@
+{% extends "rsr/project_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/project_base.html" %}
+{% load i18n %}
 
-{% block title %}{{block.super}} - All project updates{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'All project updates' %}{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; All project updates
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'All project updates' %}
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -19,7 +21,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>Add update</span></a>
+		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>{% trans 'Add update' %}</span></a>
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 
@@ -27,14 +29,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	<div id="project_updates" class="boxbody" style="padding-top: 10px;">
 
-		<a href="/rsr/rss/updates/{{p.id}}/" class="rss" style="float:right; margin-top: 12px">Subscribe via RSS</a>
-		<h1 class="section">Project updates</h1>
-        <p class="lightx1">The updates are owned by whoever posted them. We are not responsible for them in any way.</p>
+		<a href="/rsr/rss/updates/{{p.id}}/" class="rss" style="float:right; margin-top: 12px">{% trans 'Subscribe via RSS' %}</a>
+		<h1 class="section">{% trans 'Project updates' %}</h1>
+        <p class="lightx1">{% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
         {% for u in updates %}
             <hr />
             <a name={{u.id}} />
             <h2>{{u.title}}</h2>
-            <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by {{u.user.get_full_name}} via {{u.show_update_method}}</p>
+            <p>
+                <span class="lightx1">
+                    {{u.time|date:"Y-m-d H:i" }}
+                </span>
+                {% blocktrans with u.user.get_full_name as user_name and u.show_update_method as update_meth %}
+                    by {{user_name}} via {{update_meth}}
+                {% endblocktrans %}
+            </p>
             <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
             <br />
             {% if u.photo %}
@@ -45,7 +54,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                             {{u.photo_caption}}
                         {% endif %}
                         {% if u.photo_credit %}
-                            Photo credit: {{u.photo_credit}}
+                            {% trans 'Photo credit' %}: {{u.photo_credit}}
                         {% endif %}
                     </p>
                 {% endifequal %}
@@ -66,7 +75,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     </p>
                 {% endifequal %}
             {% endif %}
-            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">Permalink</a></p>
+            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">{% trans 'Permalink' %}</a></p>
         {% endfor %}
 
 	</div> <!-- #project_updates & .boxbody -->

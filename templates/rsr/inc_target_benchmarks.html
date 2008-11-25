@@ -6,32 +6,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {# Snippet producing the benchmarks for a project. Context: p the project #}
 {# Used in project_main.html and project_details.html #}
 
+{% load i18n %}
+
 {% load comparison %}
 
 <ul class="simplelist">
     {% if p.water_systems %}
-        <li>{{ p.water_systems }} functioning water systems</li>
+        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
     {% endif %}
     {% if p.sanitation_systems %}
-        <li>{{ p.sanitation_systems }} functioning sanitation systems</li>
+        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
     {% endif %}
     {% if p.improved_water %}
-        <li>{{ p.improved_water }} persons with access to improved water
-        {% if p.improved_water_years %} for {{ p.improved_water_years }} years{% endif %}
+        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
+        {% if p.improved_water_years %}
+            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
+        {% endif %}
         </li>
     {% endif %}
     {% if p.improved_sanitation %}
-        <li>{{ p.improved_sanitation }} persons with access to improved sanitation
-        {% if p.improved_sanitation_years %} for {{ p.improved_sanitation_years }} years{% endif %}
+        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
+        {% if p.improved_sanitation_years %}
+            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
+        {% endif %}
         </li>
     {% endif %}
     {% if p.trainees %}
-        <li>{{ p.trainees }} persons who receive training / education per year</li>
+        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
     {% endif %}
-    {% if_greater_or_equal p.improved_water_years 7 %}
-        <li>MDG count water: {{ p.improved_water }}</li>
-    {% endif_greater_or_equal %}
-    {% if_greater_or_equal p.improved_sanitation_years 7 %}
-        <li>MDG count sanitation: {{ p.improved_sanitation }}</li>
-    {% endif_greater_or_equal %}
 </ul>

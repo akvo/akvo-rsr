@@ -5,12 +5,13 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+{% load i18n %}
 {% load rsr_tags %}
 
-{% block title %}{{block.super}} - Funding details{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Funding details' %}{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; Funding details
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Funding details' %}
 {% endblock breadcrumbs %}
 
 {% block outer_leftwing %}
@@ -18,9 +19,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div class="boxhead">
 		{% if not p.funding.date_complete %}
-			<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" style="float: right" onclick="this.blur();"><span>Fund project</span></a>
+			<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" style="float: right" onclick="this.blur();"><span>{% trans 'Fund project' %}</span></a>
 		{% endif %}
-		<h1 class="section">Funding</h1>
+		<h1 class="section">{% trans 'Funding' %}</h1>
 	</div> <!-- .boxhead -->
 
 	<div class="boxbody">	
@@ -29,7 +30,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<tr>
 
 		<td style="width: 50%; border-right: 1px solid #ccc; padding-left: 0;">
-			<p style="margin-bottom: 3px"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project summary</a></p>
+			<p style="margin-bottom: 3px"><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 			<div style="margin: 0 20px 10px 20px">
 				{% funding_bar p %}
 			</div>
@@ -46,37 +47,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.funding.date_complete %}
 					<tr>
 						<td>{{p.funding.date_complete}}</td>
-						<td>Project started</td>
+						<td>{% trans 'Project started' %}</td>
 					</tr>
 				{% endif %}
 			</table>
 		</td>
 
 		<td style="width: 50%">
-			<p><b>Funding breakdown</b></p>
+			<p><b>{% trans 'Funding breakdown' %}</b></p>
 			<table style="width: 80%">
 			<tr>
-			<td>Employment costs</td>
+			<td>{% trans 'Employment costs' %}</td>
 			<td>&#8364; {{p.funding.employment}}</td>
 			</tr>
 			<tr>
-			<td>Building Material costs</td>
+			<td>{% trans 'Building Material costs' %}</td>
 			<td>&#8364; {{p.funding.building}}</td>
 			</tr>
 			<tr>
-			<td>Training costs</td>
+			<td>{% trans 'Training costs' %}</td>
 			<td>&#8364; {{p.funding.training}}</td>
 			</tr>
 			<tr>
-			<td>Maintenance costs</td>
+			<td>{% trans 'Maintenance costs' %}</td>
 			<td>&#8364; {{p.funding.maintenance}}</td>
 			</tr>
 			<tr>
-			<td>Other costs</td>
+			<td>{% trans 'Other costs' %}</td>
 			<td>&#8364; {{p.funding.other}}</td>
 			</tr>
 			<tr>
-			<td><b>Total</b></td>
+			<td><b>{% trans 'Total' %}</b></td>
 			<td><b>&#8364; {{p.funding.total}}</b></td>
 			</tr>
 			</table>
@@ -88,7 +89,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		<hr />
 
-		<h2 style="margin-left: 20px;">Current Funders</h2>		
+		<h2 style="margin-left: 20px;">{% trans 'Current Funders' %}</h2>		
 
 		<div style="padding-left: 20px">
 			
@@ -96,7 +97,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 				{% if funder.funding_organisation.logo %}
 					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
-					<img src="{{MEDIA_URL}}{{ funder.funding_organisation.logo }}" alt="Logo of {{funder.funding_organisation.name}}" style="margin: 10px 20px 10px 20px;" />
+					<img src="{{MEDIA_URL}}{{ funder.funding_organisation.logo }}" alt="{% blocktrans %}Logo of {{funder.funding_organisation.name}}{% endblocktrans %}" style="margin: 10px 20px 10px 20px;" />
 					</a>
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
@@ -109,7 +110,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		<div style="clear:left"></div>
 
-		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">< Back to project pummary</a></p>
+		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 
 		
 	</div> <!-- .boxbody -->

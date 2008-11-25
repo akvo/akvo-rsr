@@ -1,11 +1,13 @@
+{% extends "rsr/project_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/project_base.html" %}
+{% load i18n %}
 
-{% block title %}{{block.super}} - All project comments{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'All project comments' %}{% endblock title %}
 
 {% block script %}
 <script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
@@ -32,7 +34,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; All project comments
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'All project comments' %}
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -43,7 +45,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 	<div class="boxhead">
-		<a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add comment</span></a>
+		<a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>{% trans 'Add comment' %}</span></a>
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 
@@ -54,20 +56,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
         <div id="panel">
         {% if not user.username %}
-            <p>You must be signed in to add a comment.</p>
-            <p><a href="{% url django.contrib.auth.views.login %}?next={{request.path}}">Sign In</a> <!--| <a href="#">Register</a></p>-->
+            <p>{% trans 'You must be signed in to add a comment.' %}</p>
+            <p><a href="{% url django.contrib.auth.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
         {% else %}
             <form enctype="multipart/form-data" method="post" action="comment">
                 {{form.comment}}
-                <p><a href="#" class="btn-slide">Cancel</a><input type="submit" value="Submit" class="submit" /></p>
+                <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a><input type="submit" value="{% trans 'Submit' %}" class="submit" /></p>
                 
             </form>
         {% endif %}
         </div> <!-- #panel -->        
 
 		<!--<a href="#" class="rss" style="float:right">Subscribe via RSS</a>-->
-		<h1 class="section">Project comments</h1>
-        <p class="lightx1">The comments are owned by whoever posted them. We are not responsible for them in any way.</p>
+		<h1 class="section">{% trans 'Project comments' %}</h1>
+        <p class="lightx1">{% trans 'The comments are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
         
         {% for c in comments %}
             <hr style="clear: both"/>    
@@ -82,7 +84,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             </div>
             <br /><br />
             <!--<p style="text-align: right"><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>-->
-            <p style="text-align:right"><a href="mailto:abuse@akvo.org?subject=Comment abuse in project #{{p.id}}, comment #{{c.id}}">Report abuse</a></p>
+            <p style="text-align:right">{% blocktrans %}<a href="mailto:abuse@akvo.org?subject=Comment abuse in project #{{p.id}}, comment #{{c.id}}">Report abuse</a>{% endblocktrans %}</p>
         {% endfor %}
             
 	</div> <!-- #project_updates & .boxbody -->

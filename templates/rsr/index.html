@@ -5,6 +5,8 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+{% load i18n %}
+
 {% block script %}
 
 	{% ifequal bandwidth 'ask' %}
@@ -44,10 +46,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	{% ifequal bandwidth 'high' %}
 	<div id="home_flash_box">
-	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">View static home page</a>
-	<div style="color: #fff; font-size: 1.5em; float: left; padding: 20px;">Our latest projects</div>
+	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'View static home page' %}</a>
+	<div style="color: #fff; font-size: 1.5em; float: left; padding: 20px;">{% trans 'Our latest projects' %}</div>
 	<div id="home_flash" style="color: #fff;">
-		You are being re-directed to the static Akvo home page. If nothing happens, click <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">here!</a>
+		{% trans 'You are being re-directed to the static Akvo home page. If nothing happens,' %} <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'click here' %}!</a>
 		<noscript>
 			<meta http-equiv="refresh" content="0;url={% url akvo.rsr.views.set_low_bandwidth %}"/>
 		</noscript>
@@ -112,8 +114,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% ifequal bandwidth 'low' %}
 
 	<div id="home_flash_box" style="padding-bottom:20px;">
-		<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">View flash-enabled home page</a>
-		<div style="color: #fff; font-size: 1.5em; padding: 20px;">Our latest projects</div>
+		<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>
+		<div style="color: #fff; font-size: 1.5em; padding: 20px;">{% trans 'Our latest projects' %}</div>
 		<table>
 			{% for p in grid_projects %}
 				{% ifequal forloop.counter 1 %}
@@ -140,8 +142,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 <div class="boxhead">
-<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">Subscribe via RSS</a>
-<h1>Most recent Akvo Blog article</h1>
+<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
+<h1>{% trans 'Most recent Akvo Blog article' %}</h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
@@ -154,10 +156,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endif %}
 
 <h2><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
-<p class="lightx2">{{latest1.updated|safe}} by {{latest1.author|safe}}</p>
+{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
+<p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
 <p>{{latest1.summary|safe}}</p>
 
-<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">Read more</a></p>
+<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
 <!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
 <hr style="clear:both"/>
 
@@ -168,12 +171,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- style -->
 {% endif %}
 <h2><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
-<p class="lightx2">{{latest2.updated|safe}} by {{latest2.author|safe}}</p>
+{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
+<p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
 <p>{{latest2.summary|safe}}</p>
 
-<p><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">Read more</a></p>
+<p><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
 <hr style="clear:both" />
-<p style="text-align: right"><a href="http://www.akvo.org/blog/">View earlier blog entries</a></p>
+<p style="text-align: right"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
 
 <div style="clear:left"></div>
 

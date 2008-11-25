@@ -163,3 +163,46 @@ float: left
 margin: 0; 
 float: right;
 }
+
+
+
+
+form#sign_in {
+   	background-color: #D0FFFF;
+	width: 500px;
+	margin: 20px;
+	float: left;
+}
+form#sign_in fieldset {
+
+}
+form#sign_in legend {
+	padding: 0 2px;
+	font-weight: bold;
+	font-size: 1.2em;
+	padding: 10px 20px;
+}
+form#sign_in fieldset ul {
+	margin: 0 0 0 50px;
+    padding: 0;
+    line-height: 1em;
+}
+form#sign_in fieldset li {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    line-height: 1em;
+}
+
+form#sign_in label {
+    font-weight: bold;
+    float: left;
+    text-align:right;
+    line-height: 1em;
+    margin: 1.2em 2em 0 0;
+}
+form#sign_in p.error {
+    color: red;
+    padding: 0.5em;
+    margin: 0.5em;
+}

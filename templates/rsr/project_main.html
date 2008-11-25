@@ -5,6 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+{% load i18n %}
 {% load rsr_tags %}
 
 {% block script %}
@@ -27,7 +28,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">Project listing</a> &raquo; {{p.name}}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; {{p.name}}
 {% endblock breadcrumbs %}
 
 {% block outer_leftwing %}
@@ -41,9 +42,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div id="project_details" class="boxbody">
 		<div id="project_details_leftwing">
-            <h2 class="lightx2">Status</h2>
+            <h2 class="lightx2">{% trans 'Status' %}</h2>
             <p>{{p.show_status}}</p>
-            <h2 class="lightx2">Focus area</h2>
+            <h2 class="lightx2">{% trans 'Focus area' %}</h2>
 
             <p>
                 {% category_icons p %}
@@ -70,7 +71,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 -->
 
             </p>						
-            <h2 class="lightx2">Location</h2>
+            <h2 class="lightx2">{% trans 'Location' %}</h2>
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
             {% if p.map %}
                 <img src="{{MEDIA_URL}}{{p.map}}" style="margin: 20px 20px 0px 20px;" />
@@ -82,16 +83,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         <div id="project_details_rightwing">
             <div id="container-1">
                 <ul>
-                    <li><a href="#tab_description"><span>Description</span></a></li>
-                    <li><a href="#tab_goals"><span>Goals</span></a></li>
-                    <li><a href="#tab_sustainability"><span>Sustainability</span></a></li>
-                    <!--<li><a href="#tab_context"><span>Context</span></a></li>-->
-                    <!--<li><a href="#tab_personnel"><span>Personnel</span></a></li>-->
+                    <li><a href="#tab_description"><span>{% trans 'Description' %}</span></a></li>
+                    <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
+                    <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
+                    <!--<li><a href="#tab_context"><span>{% trans 'Context' %}</span></a></li>-->
+                    <!--<li><a href="#tab_personnel"><span>{% trans 'Personnel' %}</span></a></li>-->
                 </ul>
                 
                 <div id="tab_description" class="tab clearfix">
                     <p>{{p.project_plan_summary|linebreaks}}</p>
-                    <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}">View details</a></p>
+                    <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}">{% trans 'View details' %}</a></p>
                     <br />		
                     <div style="float:left;width: 250px">
                     {% if p.current_image %}
@@ -100,7 +101,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     {% endif %}	
                     </div>	
                     <div style="margin-left: 240px; width: 200px">
-                        <p class="lightx1"><b>Target benchmarks</b></p>
+                        <p class="lightx1"><b>{% trans 'Target benchmarks' %}</b></p>
                         {% include "rsr/inc_target_benchmarks.html" %}
                     </div>
                 </div> <!-- #tab_description -->
@@ -109,12 +110,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 <p style="padding-left:0;">{{p.goals_overview|linebreaks}}</p>
                 <br />			
                 <div style="float:left;width:230px;">
-                    <p class="lightx1"><b>Target benchmarks</b></p>
+                    <p class="lightx1"><b>{% trans 'Target benchmarks' %}</b></p>
                     {% include "rsr/inc_target_benchmarks.html" %}
                 </div>
                 <div style="margin-left:240px;">
                     {% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
-                    <p class="lightx1"><b>Goals overview</b></p>
+                    <p class="lightx1"><b>{% trans 'Goals overview' %}</b></p>
                     {% endif %}
                     <ul class="simplelist">
                     {% if p.goal_1 %}
@@ -138,7 +139,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         
             <div id="tab_sustainability" class="tab clearfix">
                 <p>{{p.sustainability|linebreaks}}</p>
-                <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}#tab_sustainability">View details</a></p>
+                <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}#tab_sustainability">{% trans 'View details' %}</a></p>
             </div> <!-- #tab_sustainability -->
         
             <!--<div id="tab_context" class="tab">
@@ -159,12 +160,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="subdetailsleft" class="clearfix">
 
         <div class="boxhead">
-            <h1>Related to this project</h1>
+            <h1>{% trans 'Related to this project' %}</h1>
         </div> <!-- .boxhead -->
     
         <div id="project_related" class="boxbody">
 
-			<h2>Akvopedia entries</h2>
+			<h2>{% trans 'Akvopedia entries' %}</h2>
 			{% for link in p.link_set.all %}
 				{% ifequal link.kind 'A' %}
 		            <p><a href="{{link.url}}">{{link.caption}}</a></p>
@@ -173,7 +174,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
             <hr />
             
-            <h2>External links</h2>
+            <h2>{% trans 'External links' %}</h2>
 			{% for link in p.link_set.all %}
 				{% ifequal link.kind 'E' %}
 		            <p><a href="{{link.url}}">{{link.caption}}</a></p>
@@ -182,21 +183,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         </div> <!-- #project_related & .boxbody -->
     
         <div class="boxhead">											
-            <a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>Add comment</span></a>
-            <h1>Comments</h1>
+            <a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>{% trans 'Add comment' %}</span></a>
+            <h1>{% trans 'Comments' %}</h1>
         </div> <!-- .boxhead -->
     
         <div id="project_comments" class="boxbody">
             
             <div id="panel">
             {% if not user.username %}
-                <p>You must be signed in to add a comment.</p>
-                <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">Sign In</a> <!--| <a href="#">Register</a></p>-->
+                <p>{% trans 'You must be signed in to add a comment' %}</p>
+                <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
             {% else %}
                 <form enctype="multipart/form-data" method="post" action="comment">
                     {{form.comment}}
-                    <p><a href="#" class="btn-slide">Cancel</a></p>
-                    <input type="submit" value="Submit" class="submit" />
+                    <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a></p>
+                    <input type="submit" value="{% trans 'Submit' %}" class="submit" />
                 </form>
             {% endif %}
             </div> <!-- #panel -->        
@@ -217,10 +218,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 <p style="text-align:right"><a href="mailto:abuse@akvo.org?subject=Comment abuse in project #{{p.id}}, comment #{{c.id}}">Report abuse</a></p>
                 <hr style="clear: both"/>
             {% endfor %}
-            <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">Older comments</a></p>
-            <p class="lightx1">The comments are owned by whoever posted them. We are not responsible for them in any way.</p>
+            <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">{% trans 'Older comments' %}</a></p>
+            <p class="lightx1">{% trans 'The comments are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
             {% else %}
-                <span style="padding-left: 20px;" class="lightx1">No comments yet.</span>
+                <span style="padding-left: 20px;" class="lightx1">{% trans 'No comments yet.' %}</span>
             {% endif %}
         </div> <!-- #project_comments & .boxbody -->
 
@@ -229,16 +230,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="subdetailsright">
 
         <div class="boxhead">
-            <a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>Add update</span></a>
-            <h1>Project updates</h1>
+            <a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>{% trans 'Add update' %}</span></a>
+            <h1>{% trans 'Project updates' %}</h1>
         </div> <!-- .boxhead -->
     
         <div id="project_updates" class="boxbody">
-            <a href="/rsr/rss/updates/{{p.id}}/" class="rss">Subscribe via RSS</a>
+            <a href="/rsr/rss/updates/{{p.id}}/" class="rss">{% trans 'Subscribe via RSS' %}</a>
             {% if updates %}
                 {% for u in updates %}
                     <h2>{{u.title}}</h2>
-                    <p><span class="lightx1">{{u.time|date:"Y-m-d H:i"}}</span> by {{u.user.get_full_name}} via {{u.show_update_method}}</p>
+                    <p>
+                        <span class="lightx1">
+                            {{u.time|date:"Y-m-d H:i" }}
+                        </span>
+                        {% blocktrans with u.user.get_full_name as user_name and u.show_update_method as update_meth %}
+                            by {{user_name}} via {{update_meth}}
+                        {% endblocktrans %}
+                    </p>
                     <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
                     <br />
                     {% if u.photo %}
@@ -272,10 +280,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     {% endif %}
                     <hr />            
                 {% endfor %}
-                <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectupdates p.id %}">Earlier updates</a></p>
-                <p class="lightx1">The updates are owned by whoever posted them. We are not responsible for them in any way.</p>
+                <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectupdates p.id %}">{% trans 'Earlier updates' %}</a></p>
+                <p class="lightx1">{% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
             {% else %}
-                <span style="padding-left: 20px;" class="lightx1">No updates yet.</span>
+                <span style="padding-left: 20px;" class="lightx1">{% trans 'No updates yet.' %}</span>
             {% endif %}
         </div> <!-- #project_updates & .boxbody -->
 

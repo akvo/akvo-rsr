@@ -17,6 +17,8 @@ from django.core import validators
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
+from django.utils.translation import ugettext_lazy as _
+
 from registration.models import RegistrationProfile, RegistrationManager
 
 from akvo.settings import MEDIA_ROOT
@@ -31,8 +33,8 @@ CONTINENTS = (
 )
 class Country(models.Model):
     
-    country_name                = models.CharField(max_length=50)
-    continent                   = models.IntegerField(choices=CONTINENTS)
+    country_name                = models.CharField(_("country name"), max_length=50)
+    continent                   = models.IntegerField("continent", choices=CONTINENTS)
 
     def __unicode__(self):
         return self.country_name
@@ -42,19 +44,28 @@ class Country(models.Model):
         list_filter  = ('country_name', 'continent', )
         
     class Meta:
+        verbose_name = "country"
         verbose_name_plural = "countries"
 
-def funding_aggregate(projects):
+def funding_aggregate(projects, organisation=None):
     '''
     Create funding aggregate data about a collection of projects in a queryset.
-    '''    
+    '''
+    # calculate sum of all project budgets
     f = Funding.objects.all().filter(project__in = projects)
     funding_total = 0 #total requested funding for projects
     for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
         funding_total += sum(f.values_list(field, flat=True))
-    # how much has ben pledged so far
-    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
-    return funding_total, funding_pledged
+    # get all funding partners to the projects
+    fp = FundingPartner.objects.all().filter(project__in = projects)
+    # how much has ben pledged so far?
+    #how much has been pledged in total these projects?
+    total_pledged = pledged = sum(fp.values_list('funding_amount', flat=True))
+    if organisation:
+        #how much has been pledged by a certain org for these projects?
+        pledged = sum(fp.filter(funding_organisation__exact = organisation).values_list('funding_amount', flat=True))
+    # return sum of funds needed, amount pledged (by the org if supplied), and how much is still needed
+    return funding_total, pledged, funding_total - total_pledged
 
 ORG_TYPES = (
     ('N', 'NGO'),
@@ -66,17 +77,17 @@ ORG_TYPES_DICT = dict(ORG_TYPES)
 class Organisation(models.Model):
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
-    field_partner               = models.BooleanField()
-    support_partner             = models.BooleanField()
-    funding_partner             = models.BooleanField()
+    field_partner               = models.BooleanField(_('field partner'))
+    support_partner             = models.BooleanField(_('support_partner'))
+    funding_partner             = models.BooleanField(_('funding_partner'))
 
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
-    organisation_type           = models.CharField(max_length=1, choices=ORG_TYPES)
+    organisation_type           = models.CharField(_("organisation_type"), max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
-    country                     = models.ForeignKey(Country)
+    country                     = models.ForeignKey(Country, verbose_name=_('country'))
     url                         = models.URLField(blank=True, verify_exists = False)
     map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     
@@ -95,9 +106,9 @@ class Organisation(models.Model):
 
     class Admin:
         fields = (
-            ('Partnership type(s)', {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
-            ('General information', {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            ('Contact information', {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            (_('Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
+            (_('General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            (_('Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
             (None, {'fields': ('description', )}),
         )    
         list_display = ('name', 'long_name', 'website', 'partner_types', )
@@ -136,7 +147,7 @@ class Organisation(models.Model):
                 all.filter(funding_partners__project__in = projects.values('pk').query)).exclude(id__exact=self.id).distinct()
     
     def funding(self):
-        funding_total, funding_pledged = funding_aggregate(self.projects())
+        funding_total, funding_pledged, funding_needed = funding_aggregate(self.projects(), organisation=self)
         return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_total - funding_pledged}
     
     class Meta:
@@ -161,7 +172,7 @@ STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', }
 class Project(models.Model):
     name                        = models.CharField(max_length=45)
     subtitle                    = models.CharField(max_length=75)
-    status                      = models.CharField(max_length=1, choices=STATUSES, default='N')
+    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
     country                     = models.ForeignKey(Country)
@@ -219,7 +230,7 @@ class Project(models.Model):
 
     class Admin:
         fields = (
-            ('Project description', {
+            (_('Project description'), {
                 'fields': (
                     'name',
                     'subtitle',
@@ -229,26 +240,26 @@ class Project(models.Model):
                     ),
                 )
             }),
-            ('Location', {
+            (_('Location'), {
                 'fields': ('city', 'state', 'country',)
             }),
-            ('Location extra', {
+            (_('Location extra'), {
                 'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',), #'classes': 'collapse'
             }),
-            ('Project info', {
+            (_('Project info'), {
                 'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
             }),
-            ('Goals', {
+            (_('Goals'), {
                 'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
             }),
-            ('Project target benchmarks', {
+            (_('Project target benchmarks'), {
                 'fields': ('water_systems', 'sanitation_systems', 'hygiene_facilities', ('improved_water', 
                 'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
             }),
-            ('Project info details', {
+            (_('Project info details'), {
                 'fields': ('current_status_detail', 'project_plan_detail', 'sustainability', 'context',), #'classes': 'collapse'
             }),
-            ('Project meta info', {
+            (_('Project meta info'), {
                 'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
             }),
         )
@@ -571,16 +582,16 @@ class MoMmsRaw(models.Model):
     '''
     base data from an mms callback
     '''
-    mmsid           = models.CharField(max_length=100)
-    subject         = models.CharField(max_length=200)
-    sender          = models.CharField(max_length=20) #qs variable name is "from" but we can't use that
-    to              = models.CharField(max_length=20)
-    time            = models.CharField(max_length=50)
+    mmsid           = models.CharField(_('mms id'), max_length=100)
+    subject         = models.CharField(_('subject'), max_length=200)
+    sender          = models.CharField(_('sender'), max_length=20) #qs variable name is "from" but we can't use that
+    to              = models.CharField(_('to'), max_length=20)
+    time            = models.CharField(_('time'), max_length=50)
     saved_at        = models.DateTimeField()
-    mmsversion      = models.CharField(max_length=20)
-    messageclass    = models.IntegerField()
-    priority        = models.IntegerField()
-    filecount       = models.IntegerField()
+    mmsversion      = models.CharField(_('mms version'), max_length=20)
+    messageclass    = models.IntegerField(_('message class'))
+    priority        = models.IntegerField(_('priority'))
+    filecount       = models.IntegerField(_('file count'))
     
     def get_mms_files(self):
         update_data ={}
@@ -609,38 +620,38 @@ class MoMmsFile(models.Model):
     '''
     raw info about an mms file attachement
     '''
-    mms             = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR, core=True)
-    file            = models.CharField(max_length=200, verbose_name='File name') 
-    filecontent     = models.CharField(max_length=50, verbose_name='Content type') 
-    filecontentid   = models.CharField(blank=True, max_length=50, verbose_name='Content ID') 
-    filesize        = models.IntegerField(verbose_name='File size') 
+    mms             = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR, core=True, verbose_name=_('mms'))
+    file            = models.CharField(max_length=200, verbose_name=_('file name')) 
+    filecontent     = models.CharField(max_length=50, verbose_name=_('content type')) 
+    filecontentid   = models.CharField(blank=True, max_length=50, verbose_name=_('content ID')) 
+    filesize        = models.IntegerField(verbose_name=_('file size')) 
     
 class MoSmsRaw(models.Model):
     '''
     all request data from an mo-sms callback
     '''
-    text        = models.CharField(max_length=200)
-    sender      = models.CharField(max_length=20)
-    to          = models.CharField(max_length=20)
-    delivered   = models.CharField(max_length=50)
-    saved_at    = models.DateTimeField()
-    incsmsid    = models.CharField(max_length=100)
+    text        = models.CharField(_('text'), max_length=200)
+    sender      = models.CharField(_('sender'), max_length=20)
+    to          = models.CharField(_('to'), max_length=20)
+    delivered   = models.CharField(_('delivered'), max_length=50)
+    saved_at    = models.DateTimeField(_('saved at'))
+    incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
     
     class Admin:
         list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
 
 class ProjectUpdate(models.Model):
-    project         = models.ForeignKey(Project)
-    user            = models.ForeignKey(User)
-    title           = models.CharField(max_length=50)
-    text            = models.TextField(blank=True)
+    project         = models.ForeignKey(Project, verbose_name=_('project'))
+    user            = models.ForeignKey(User, verbose_name=_('user'))
+    title           = models.CharField(_('title'), max_length=50)
+    text            = models.TextField(_('text'), blank=True)
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
-    photo_location  = models.CharField(blank=True, max_length=1, choices=PHOTO_LOCATIONS, default='B')
-    photo_caption   = models.CharField(blank=True, max_length=75)
-    photo_credit    = models.CharField(blank=True, max_length=25)
-    update_method   = models.CharField(blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time            = models.DateTimeField()
+    photo_location  = models.CharField(_('photo location'), blank=True, max_length=1, choices=PHOTO_LOCATIONS, default='B')
+    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
+    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
+    update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
+    time            = models.DateTimeField(_('time'))
     
     class Admin:
         list_display    = ('project', 'user', 'text', 'time', 'photo',)    
@@ -659,10 +670,10 @@ class ProjectUpdate(models.Model):
         return UPDATE_METHODS_DICT[self.update_method]
 
 class ProjectComment(models.Model):
-    project         = models.ForeignKey(Project)
-    user            = models.ForeignKey(User)
-    comment         = models.TextField()
-    time            = models.DateTimeField()
+    project         = models.ForeignKey(Project, verbose_name=_('project'))
+    user            = models.ForeignKey(User, verbose_name=_('user'))
+    comment         = models.TextField(_('comment'))
+    time            = models.DateTimeField(_('time'))
     
     class Admin:
         list_display    = ('project', 'user', 'comment', 'time', )    

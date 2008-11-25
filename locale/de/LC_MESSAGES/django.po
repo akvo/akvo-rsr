@@ -1,0 +1,217 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-10-24 13:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: rsr/forms.py:85
+msgid "The two 'new password' fields didn't match."
+msgstr "Die Eingaben in den 'neues Passwort' Feldern stimmen nicht überein."
+
+#: rsr/forms.py:133
+msgid "username"
+msgstr "Benutzername"
+
+#: rsr/forms.py:135
+msgid "password"
+msgstr "Passwort"
+
+#: rsr/forms.py:137
+msgid "password (again)"
+msgstr "Password (noch einmal eingeben)"
+
+#: rsr/forms.py:140
+msgid "email address"
+msgstr "E-Mail-Adresse"
+
+#: rsr/forms.py:143
+msgid "email address (again)"
+msgstr "E-Mail-Adresse (noch einmal eingeben)"
+
+#: rsr/forms.py:155
+msgid "You must type the same password each time"
+msgstr "Bitte geben Sie dasselbe Passwort ein"
+
+#: rsr/forms.py:158
+msgid "You must type the same email address each time"
+msgstr "Bitte geben Sie jeweils dieselbe E-Mail-Adresse ein."
+
+#: rsr/forms.py:168
+msgid "Usernames can only contain letters, numbers and underscores"
+msgstr "Benutzernamen dürfen nur Buchstaben, Nummern und Unterstriche erhalten"
+
+#: rsr/forms.py:173
+msgid "This username is already taken. Please choose another."
+msgstr "Dieser Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen."
+
+#: rsr/forms.py:184
+msgid "I have read and agree to the Terms of Service"
+msgstr "Ich habe die Benutzerbedingungen gelesen und bin einverstanden"
+
+#: rsr/forms.py:193
+msgid "You must agree to the terms to register"
+msgstr "Sie müssen den Bedinungen zustimmen, um sich zu registrieren"
+
+#: rsr/forms.py:216
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr "Diese E-Mail-Adresse ist bereits in Gebrauch. Bitte geben sie eine andere Adresse an."
+
+#: rsr/forms.py:241
+msgid ""
+"Registration using free email addresses is prohibited. Please supply a "
+"different email address."
+msgstr "Die Registration mit einer kostenlosen E-Mail-Adresse ist nicht gestattet. Bitte geben Sie eine andere Adresse ein."
+
+#: templates/admin/base_site.html:10 templates/rsr/base_site.html:9
+msgid "Akvo RSR site admin"
+msgstr "Akvo RSR Administrator"
+
+#: templates/admin/base_site.html:13 templates/rsr/base_site.html:12
+msgid "Akvo RSR administration"
+msgstr "Akvo RSR Administration"
+
+#: templates/rsr/comment_form.html:17 templates/rsr/project_main.html:186
+msgid "Add comment"
+msgstr "Kommentar abgeben"
+
+#: templates/rsr/comment_form.html:18
+msgid "You are commenting the project named"
+msgstr "Sie kommentieren das Project"
+
+#: templates/rsr/comment_form.html:24
+msgid "Enter comment text"
+msgstr "Geben Sie den Kommentar ein"
+
+#: templates/rsr/comment_form.html:27
+msgid "A problem occurred"
+msgstr "Ein Fehler ist aufgetreten"
+
+#: templates/rsr/comment_form.html:33 templates/rsr/project_main.html:199
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: templates/rsr/comment_form.html:33
+msgid "Sumbit changes"
+msgstr "Änderungen absenden"
+
+#: templates/rsr/project_main.html:31
+msgid "Project listing"
+msgstr "Projektliste"
+
+#: templates/rsr/project_main.html:45
+msgid "Status"
+msgstr "Status"
+
+#: templates/rsr/project_main.html:47
+msgid "Focus area"
+msgstr "Schwerpunkt"
+
+#: templates/rsr/project_main.html:74
+msgid "Location"
+msgstr "Standort"
+
+#: templates/rsr/project_main.html:86
+msgid "Description"
+msgstr "Beschreibung"
+
+#: templates/rsr/project_main.html:87
+msgid "Goals"
+msgstr "Ziele"
+
+#: templates/rsr/project_main.html:88
+msgid "Sustainability"
+msgstr "Nachhaltigkeit"
+
+#: templates/rsr/project_main.html:89
+msgid "Context"
+msgstr "Kontext"
+
+#: templates/rsr/project_main.html:90
+msgid "Personnel"
+msgstr "Personal"
+
+#: templates/rsr/project_main.html:95
+msgid "View details"
+msgstr "Details anzeigen"
+
+#: templates/rsr/project_main.html:104 templates/rsr/project_main.html:113
+msgid "Target benchmarks"
+msgstr "Zielvorgaben"
+
+#: templates/rsr/project_main.html:118
+msgid "Goals overview"
+msgstr "Zielübersicht"
+
+#: templates/rsr/project_main.html:163
+msgid "Related to this project"
+msgstr "Verwandt mit diesem Projekt"
+
+#: templates/rsr/project_main.html:168
+msgid "Akvopedia entries"
+msgstr "Akvopedia Einträge"
+
+#: templates/rsr/project_main.html:177
+msgid "External links"
+msgstr "Externe Links"
+
+#: templates/rsr/project_main.html:187
+msgid "Comments"
+msgstr "Kommentare"
+
+#: templates/rsr/project_main.html:194
+msgid "You must be signed in to add a comment"
+msgstr "Sie müssen angemeldet sein, um einen Kommentar zu abzugeben"
+
+#: templates/rsr/project_main.html:200
+msgid "Submit"
+msgstr "Absenden"
+
+#: templates/rsr/project_main.html:221
+msgid "Older comments"
+msgstr "Vorhergehende Kommentare"
+
+#: templates/rsr/project_main.html:222
+msgid ""
+"The comments are owned by whoever posted them. We are not responsible for "
+"them in any way."
+msgstr "Kommentare gehören dem Author. Wir sind in keinem Fall für Kommentare verantwortlich."
+
+#: templates/rsr/project_main.html:224
+msgid "No comments yet."
+msgstr "Es wurden noch keine Kommentare abgegeben."
+
+#: templates/rsr/project_main.html:233
+msgid "Add update"
+msgstr "Aktualisierung hinzufügen"
+
+#: templates/rsr/project_main.html:234
+msgid "Project updates"
+msgstr "Projekt Aktualisierungen"
+
+#: templates/rsr/project_main.html:238
+msgid "Subscribe via RSS"
+msgstr "Mit RSS abonnieren"
+
+#: templates/rsr/project_main.html:277
+msgid ""
+"The updates are owned by whoever posted them. We are not responsible for "
+"them in any way."
+msgstr "Aktualisierungen gehören dem Author. Wir sind in keinem Fall für Aktualisierungen verantwortlich."
+
+#: templates/rsr/project_main.html:279
+msgid "No updates yet."
+msgstr "Es gibt noch keine Aktualisierungen."

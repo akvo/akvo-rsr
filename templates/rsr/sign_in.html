@@ -5,18 +5,19 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+{% load i18n %}
 {% load rsr_tags %}
 
 {% block title %}Sign in{% endblock title %}
 
 {% block header %}
 <div id="header" class="clearfix">
-	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" />
 </div> <!-- #header -->
 {% endblock header %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; Sign in
+{{block.super}} &raquo; {% trans 'Sign in' %}
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -26,62 +27,48 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 
 <div class="boxbody" style="clear:left">
-<h1 class="section">Please sign in</h1>
+<h1 class="section">{% trans 'Please sign in' %}</h1>
 
 {% if form.has_errors %}
     <div class="boxbody" style="background-color: orange; margin: 20px;">
-    <h1 class="section">Error when signing in</h1>
-    <p>Please correct the errors below.</p>
+    <h1 class="section">{% trans 'Error when signing in' %}</h1>
+    <p>{% trans 'Please correct the errors below.' %}</p>
     </div> <!-- .boxbody -->
 {% endif %}
 
-<div class="boxbody" style="background-color: #D0FFFF; width: 600px; margin: 20px; float: left;">
+<form id="sign_in" class="boxbody" method="post" action="">
     <fieldset>
-        <h1 class="section">I have an online account</h1>
-        <form method="post" action="">
-        
-            <table id="login" style="padding: 20px;">
-            <tr>            
-                <td style="width: 15%""><label for="id_username">Enter username</label></td>
-                <td style="width: 20%; padding: 5px 20px;">
-                    {{ form.username }}
-                    <br/>
-                    <span style="color:red;">{{ form.username.errors|join:", " }}</span>
-                </td>
-                <td style="width: 30%;"><a href="/rsr/accounts/password/reset/">I forgot my username and/or password</a></td>
-            </tr>
-            <tr>
-                <td><label for="id_password">Enter password</label></td>
-                <td style="padding: 5px 20px" colspan="2">
-                    {{ form.password }}
-                    <br/>
-                    <span style="color:red;">{{ form.password.errors|join:", " }}</span>
-                </td>
-            </tr>
-            </table>
-
-            <hr />
-            <div style="text-align: center">
-                <!--<span style="margin: -20px 0 0 0;"><a href="#" style="margin-right: 20px;">Cancel</a></span>
-               
-				<button type="submit"><a class="actionbutton ab_d0ffff" onclick="this.blur();" style="margin: 0"><span>Sign in</span></a></button>
-                -->
-                {% submit_button 'Sign in' 'ab_d0ffff' %}
-            </div>
-           <input type="hidden" name="next" value="{{ next }}" />
-        </form>
+        <legend>{% trans 'I have an online account' %}</legend>
+        <ul>
+            <li class="clearfix">
+                <label for="id_username">{% trans 'Enter username' %}</label>
+				{{ form.username }}<br />
+				{{ form.username.errors|join:", " }}
+            </li>
+            <li class="clearfix">
+                <label for="id_password">{% trans 'Enter password' %}</label>
+				{{ form.password }}<br />
+				{{ form.password.errors|join:", " }}
+            </li>
+			<li class="clearfix">
+				<a href="/rsr/accounts/password/reset/">{% trans 'I forgot my username and/or password' %}</a>
+			</li>
+        </ul>
     </fieldset>
-</div> <!-- .boxbody -->
+    <hr />
+    {% submit_button 'Sign in' 'ab_d0ffff' %}
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
 
-<div class="boxbody lightx2" style="border: none; margin: 20px 20px 20px 630px; padding: 10px; ">
-<h1 class="section">I don't have an online account</h1>
-<p style="margin: 10px 0">By <a href="/rsr/accounts/register1/">registering</a> with Akvo, you'll be able to:</p>
+<div class="boxbody lightx2" style="border: none; margin: 20px 20px 20px 530px; padding: 10px; ">
+<h1 class="section">{% trans "I don't have an online account" %}</h1>
+<p style="margin: 10px 0">{% trans "By <a href='/rsr/accounts/register1/'>registering</a> with Akvo, you'll be able to:" %}</p>
 
 <ul class="simplelist">
-<li>Create updates on your organisation's projects</li>
-<li>Leave comments on projects</li>
+<li>{% trans "Create updates on your organisation's projects" %}</li>
+<li>{% trans 'Leave comments on projects' %}</li>
 </ul>
-<p style="margin: 10px 0">And much more! <a href="http://dev.akvo.org:8080/web/">Learn about</a> how Akvo works.</p>
+<p style="margin: 10px 0">{% trans 'And much more! <a href="http://dev.akvo.org:8080/web/">Learn about</a> how Akvo works.' %}</p>
 </div> <!-- style .boxbody -->
 
 <div style="clear:left"></div>

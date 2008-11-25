@@ -1,1 +1,1 @@
-Activate your Akvo RSR account
+{% trans 'Activate your Akvo RSR account' %}

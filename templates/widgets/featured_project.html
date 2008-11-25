@@ -1,0 +1,54 @@
+{% extends "widgets/widget_base.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n %}
+{% load generic_content %}
+{% load rsr_tags %}
+
+{% block content %}
+
+{% get_random_objects rsr.Project 1 as showcases %}
+{% for showcase in showcases %}
+    <div class="widget">
+    <h2><a target="_blank" href="{% url akvo.rsr.views.projectmain showcase.id %}">{{showcase.name}}</a></h2>
+    <div class="small lightx2">{{showcase.subtitle}}</div>
+    {% if showcase.current_image %}
+        <a href="{% url akvo.rsr.views.projectmain showcase.id %}">
+        <img src="{{MEDIA_URL}}{{showcase.current_image}}" alt="{{showcase.current_image_caption}}" style="height: 105px; margin: 10px 0" />
+        </a>
+        <p class="small lightx2">{{showcase.current_image_caption}}</p>
+    {% else %}
+        <div style="width: 140px; height: 105px; background-color: #ccc; margin: 10px 0"></div>
+    {% endif %}	
+    <div class="lightx2" style="margin-top: 5px;"><span style="font-weight:bold">{% trans 'Status' %}:</span> {{showcase.show_status}}</div>
+    <h2 class="lightx2">{% trans 'Focus areas' %}</h2>
+        {% category_icons showcase %}
+        <!--
+        {% if showcase.category_sanitation %}
+             <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 0 5px 10px 0;" />
+         {% endif %}
+         {% if showcase.category_water %}
+             <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 0 5px 10px 0;" />
+         {% endif %}
+         {% if showcase.category_maintenance %}
+             <img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 0 5px 10px 0;" />
+         {% endif %}
+         {% if showcase.category_training %}
+             <img src="{{MEDIA_URL}}img/green.png" alt="type" style="margin: 0 5px 10px 0;" />
+         {% endif %}
+         {% if showcase.category_education %}
+             <img src="{{MEDIA_URL}}img/olive.png" alt="type" style="margin: 0 5px 10px 0;" />		
+         {% endif %}
+         -->
+    <h2 class="lightx2">{% trans 'Location' %}</h2>
+    <p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />{{showcase.country.get_continent_display}}</p>
+    {% funding_bar showcase %}
+	<img src="{{MEDIA_URL}}img/logo_akvo_250_widget2.png" alt="{% trans 'Akvo' %}" style="margin: 10px auto; " />
+    </div>
+{% endfor %}
+
+{% endblock content %}

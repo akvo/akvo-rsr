@@ -1,0 +1,1761 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-13 21:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: sv <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: settings_base.py:63
+msgid "German"
+msgstr "Tyska"
+
+#: settings_base.py:64
+msgid "English"
+msgstr "Engelska"
+
+#: rsr/forms.py:85
+msgid "The two 'new password' fields didn't match."
+msgstr "De två fälten för nytt lösenord matchade inte."
+
+#: rsr/forms.py:133
+msgid "username"
+msgstr "användarnamn"
+
+#: rsr/forms.py:135
+msgid "password"
+msgstr "lösenord"
+
+#: rsr/forms.py:137
+msgid "password (again)"
+msgstr "lösenord (igen)"
+
+#: rsr/forms.py:140
+msgid "email address"
+msgstr "epostadress"
+
+#: rsr/forms.py:143
+msgid "email address (again)"
+msgstr "epostadress (igen)"
+
+#: rsr/forms.py:155
+msgid "You must type the same password each time"
+msgstr "Du måste skriva samma lösenord i bägge fälten"
+
+#: rsr/forms.py:158
+msgid "You must type the same email address each time"
+msgstr "Du måste skriva samma epostadress i bägge fälten"
+
+#: rsr/forms.py:168
+msgid "Usernames can only contain letters, numbers and underscores"
+msgstr "Användarnamn får bara innehålla bokstäver, siffror och understreck (_)"
+
+#: rsr/forms.py:173
+msgid "This username is already taken. Please choose another."
+msgstr "Det användarnamnet är upptaget. Vänligen välj ett annat."
+
+#: rsr/forms.py:184
+msgid "I have read and agree to the Terms of Service"
+msgstr "Jag har läst och godkänner användarvillkoren"
+
+#: rsr/forms.py:193
+msgid "You must agree to the terms to register"
+msgstr "För att registrera dig måste du godkänna villkoren"
+
+#: rsr/forms.py:216
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr "Denna epostadress är redan upptagen. Vänligen använd en annan adress."
+
+#: rsr/forms.py:241
+msgid ""
+"Registration using free email addresses is prohibited. Please supply a "
+"different email address."
+msgstr ""
+
+#: rsr/models.py:36
+msgid "country name"
+msgstr ""
+
+#: rsr/models.py:72
+msgid "field partner"
+msgstr ""
+
+#: rsr/models.py:73
+msgid "support_partner"
+msgstr ""
+
+#: rsr/models.py:74
+msgid "funding_partner"
+msgstr ""
+
+#: rsr/models.py:78
+msgid "organisation_type"
+msgstr ""
+
+#: rsr/models.py:82
+msgid "country"
+msgstr ""
+
+#: rsr/models.py:101
+msgid "Partnership type(s)"
+msgstr ""
+
+#: rsr/models.py:102
+msgid "General information"
+msgstr ""
+
+#: rsr/models.py:103
+msgid "Contact information"
+msgstr ""
+
+#: rsr/models.py:167 templates/rsr/update_list.html:25
+msgid "status"
+msgstr ""
+
+#: rsr/models.py:225
+msgid "Project description"
+msgstr ""
+
+#: rsr/models.py:235 templates/rsr/organisation.html:69
+#: templates/rsr/project_details.html:75
+#: templates/rsr/project_directory.html:76
+#: templates/rsr/project_directory_backup.html:69
+#: templates/rsr/project_main.html:74
+#: templates/widgets/featured_project.html:47
+msgid "Location"
+msgstr ""
+
+#: rsr/models.py:238
+msgid "Location extra"
+msgstr ""
+
+#: rsr/models.py:241
+msgid "Project info"
+msgstr ""
+
+#: rsr/models.py:244 templates/rsr/project_details.html:109
+#: templates/rsr/project_main.html:87
+msgid "Goals"
+msgstr ""
+
+#: rsr/models.py:247
+msgid "Project target benchmarks"
+msgstr ""
+
+#: rsr/models.py:251
+msgid "Project info details"
+msgstr ""
+
+#: rsr/models.py:254
+msgid "Project meta info"
+msgstr ""
+
+#: rsr/models.py:577
+msgid "mms id"
+msgstr ""
+
+#: rsr/models.py:578
+msgid "subject"
+msgstr ""
+
+#: rsr/models.py:579 rsr/models.py:626
+msgid "sender"
+msgstr ""
+
+#: rsr/models.py:580 rsr/models.py:627
+msgid "to"
+msgstr ""
+
+#: rsr/models.py:581 rsr/models.py:646 rsr/models.py:668
+#: templates/rsr/update_list.html:35
+msgid "time"
+msgstr ""
+
+#: rsr/models.py:583
+msgid "mms version"
+msgstr ""
+
+#: rsr/models.py:584
+msgid "message class"
+msgstr ""
+
+#: rsr/models.py:585
+msgid "priority"
+msgstr ""
+
+#: rsr/models.py:586
+msgid "file count"
+msgstr ""
+
+#: rsr/models.py:615
+msgid "mms"
+msgstr ""
+
+#: rsr/models.py:616
+msgid "file name"
+msgstr ""
+
+#: rsr/models.py:617
+msgid "content type"
+msgstr ""
+
+#: rsr/models.py:618
+msgid "content ID"
+msgstr ""
+
+#: rsr/models.py:619
+msgid "file size"
+msgstr ""
+
+#: rsr/models.py:625 rsr/models.py:639 templates/rsr/update_list.html:23
+msgid "text"
+msgstr ""
+
+#: rsr/models.py:628
+msgid "delivered"
+msgstr ""
+
+#: rsr/models.py:629
+msgid "saved at"
+msgstr ""
+
+#: rsr/models.py:630
+msgid "incoming sms id"
+msgstr ""
+
+#: rsr/models.py:636 rsr/models.py:665
+msgid "project"
+msgstr ""
+
+#: rsr/models.py:637 rsr/models.py:666
+msgid "user"
+msgstr ""
+
+#: rsr/models.py:638 templates/rsr/update_list.html:21
+msgid "title"
+msgstr ""
+
+#: rsr/models.py:642 templates/rsr/update_list.html:33
+msgid "photo location"
+msgstr ""
+
+#: rsr/models.py:643 templates/rsr/update_list.html:29
+msgid "photo caption"
+msgstr ""
+
+#: rsr/models.py:644 templates/rsr/update_list.html:31
+msgid "photo credit"
+msgstr ""
+
+#: rsr/models.py:645
+msgid "update method"
+msgstr ""
+
+#: rsr/models.py:667
+msgid "comment"
+msgstr ""
+
+#: rsr/views.py:179
+msgid "The blog is not available at the moment."
+msgstr ""
+
+#: templates/500.html:10 templates/rsr/error_500.html:10
+msgid "Error: 500 - internal server error"
+msgstr ""
+
+#: templates/500.html:12
+msgid "500: We're sorry, our servers encountered an internal error."
+msgstr ""
+
+#: templates/500.html:15 templates/rsr/error_500.html:15
+msgid ""
+"Our staff has been notified and will look into the problem as soon as "
+"possible."
+msgstr ""
+
+#: templates/admin/base_site.html:10 templates/rsr/base_site.html:10
+msgid "Akvo RSR site admin"
+msgstr ""
+
+#: templates/admin/base_site.html:13 templates/rsr/base_site.html:13
+msgid "Akvo RSR administration"
+msgstr ""
+
+#: templates/inclusion_tags/category_icons.html:9
+#: templates/rsr/organisation.html:125
+#: templates/rsr/project_directory_beta.html:201
+msgid "Water"
+msgstr ""
+
+#: templates/inclusion_tags/category_icons.html:9
+#: templates/inclusion_tags/category_icons.html:13
+#: templates/inclusion_tags/category_icons.html:17
+#: templates/inclusion_tags/category_icons.html:21
+#: templates/inclusion_tags/category_icons.html:25
+msgid "Project category"
+msgstr ""
+
+#: templates/inclusion_tags/category_icons.html:13
+#: templates/rsr/index_base.html:50 templates/rsr/organisation.html:126
+#: templates/rsr/project_directory_beta.html:205
+msgid "Sanitation"
+msgstr ""
+
+#: templates/inclusion_tags/category_icons.html:17
+#: templates/rsr/project_directory_beta.html:209
+msgid "Training"
+msgstr ""
+
+#: templates/inclusion_tags/category_icons.html:21
+#: templates/rsr/project_directory_beta.html:213
+msgid "Education"
+msgstr ""
+
+#: templates/inclusion_tags/category_icons.html:25
+#: templates/rsr/project_directory_beta.html:217
+msgid "Maintenance"
+msgstr ""
+
+#: templates/inclusion_tags/funding_bar.html:15
+#: templates/rsr/project_directory_backup.html:72
+#: templates/rsr/project_directory_beta.html:74
+#: templates/rsr/project_funding.html:80
+msgid "Total"
+msgstr ""
+
+#: templates/inclusion_tags/submit_button.html:8
+#: templates/registration/organisation_form.html:65
+#: templates/rsr/comment_form.html:35 templates/rsr/project_comments.html:64
+#: templates/rsr/project_main.html:199 templates/rsr/update_form_old.html:102
+msgid "Cancel"
+msgstr ""
+
+#: templates/registration/activate.html:12
+msgid "Account email confirmed"
+msgstr ""
+
+#: templates/registration/activate.html:14
+msgid "Account confirmation failed"
+msgstr ""
+
+#: templates/registration/activate.html:23
+#: templates/registration/registration_complete.html:15
+msgid "Thank you!"
+msgstr ""
+
+#: templates/registration/activate.html:27
+msgid ""
+"Your account will be activated as soon as we have reviewed your request."
+msgstr ""
+
+#: templates/registration/activate.html:35
+msgid "We're sorry!"
+msgstr ""
+
+#: templates/registration/activate.html:39
+msgid "The account activation failed."
+msgstr ""
+
+#: templates/registration/activate.html:41
+#, python-format
+msgid ""
+"Either your activation link was incorrect, or the activation key for your "
+"account has expired. Activation keys are only valid for %(exp_days)s days "
+"after registration."
+msgstr ""
+
+#: templates/registration/activate.html:42 templates/rsr/error_base.html:26
+msgid ""
+"Please <a href=\"mailto:support@akvo.org\">contact us</a> if you have any "
+"questions."
+msgstr ""
+
+#: templates/registration/organisation_form.html:10
+#: templates/registration/registration_form1.html:12
+#: templates/rsr/update_form.html:11
+msgid "Register with Akvo RSR - Step 1"
+msgstr ""
+
+#: templates/registration/organisation_form.html:26
+#: templates/registration/organisation_form.html:43
+msgid "A problem occurred:"
+msgstr ""
+
+#: templates/registration/organisation_form.html:27
+#, python-format
+msgid "Please review message below. %(form.non_field_errors)s"
+msgstr ""
+
+#: templates/registration/organisation_form.html:31
+#: templates/registration/registration_form1.html:33
+#: templates/registration/registration_form2.html:34
+msgid "Setup your account"
+msgstr ""
+
+#: templates/registration/organisation_form.html:32
+#: templates/registration/registration_form1.html:34
+msgid "Step 1 of 2"
+msgstr ""
+
+#: templates/registration/organisation_form.html:39
+msgid "Select organisation that you belong to"
+msgstr ""
+
+#: templates/registration/organisation_form.html:57
+#: templates/registration/registration_form1.html:60
+msgid "Important"
+msgstr ""
+
+#: templates/registration/organisation_form.html:58
+msgid ""
+"To set up your account, your organisation must be already registered with "
+"Akvo. If you do not see your organisation on the list above, <a href=\"#"
+"\">click this link</a> to email us to begin registering your organisation. "
+"After registration is complete, please return to set up  your account."
+msgstr ""
+
+#: templates/registration/organisation_form.html:67
+msgid "Continue"
+msgstr ""
+
+#: templates/registration/password_change_done.html:10
+#: templates/registration/password_change_done.html:12
+msgid "Password change successful"
+msgstr ""
+
+#: templates/registration/password_change_done.html:15
+msgid "Your password was changed."
+msgstr ""
+
+#: templates/registration/password_change_form.html:11
+msgid "Change password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:26
+#: templates/registration/password_change_form.html:47
+#: templates/registration/password_change_form.html:63
+#: templates/registration/password_reset_form.html:27
+#: templates/registration/password_reset_form.html:48
+#: templates/registration/registration_form1.html:28
+#: templates/registration/registration_form1.html:45
+#: templates/registration/registration_form2.html:25
+#: templates/registration/registration_form2.html:46
+#: templates/registration/registration_form2.html:63
+#: templates/registration/registration_form2.html:87
+#: templates/registration/registration_form2.html:109
+#: templates/registration/update_form.html:28
+#: templates/registration/update_form.html:56
+#: templates/rsr/comment_form.html:29 templates/rsr/update_form.html:28
+#: templates/rsr/update_form.html.py:44 templates/rsr/update_form.html:57
+#: templates/rsr/update_form.html.py:68 templates/rsr/update_form.html:79
+#: templates/rsr/update_form.html.py:90 templates/rsr/update_form.html:103
+#: templates/rsr/update_form_old.html:42 templates/rsr/update_form_old.html:51
+#: templates/rsr/update_form_old.html:61 templates/rsr/update_form_old.html:71
+#: templates/rsr/update_form_old.html:80 templates/rsr/update_form_old.html:89
+#: templates/rsr/update_form_old.html:97
+msgid "A problem occurred"
+msgstr ""
+
+#: templates/registration/password_change_form.html:30
+#: templates/registration/password_reset_form.html:31
+#: templates/registration/registration_form2.html:29
+#: templates/registration/update_form.html:32
+msgid "Please review messages below."
+msgstr ""
+
+#: templates/registration/password_change_form.html:34
+msgid "Change your password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:36
+msgid ""
+"Please enter your current password and then enter your new password twice so "
+"we can verify you typed it in correctly."
+msgstr ""
+
+#: templates/registration/password_change_form.html:37
+msgid ""
+"If you have lost your password we can send it to you <a href=\"/rsr/accounts/"
+"password/reset/\">here</a>."
+msgstr ""
+
+#: templates/registration/password_change_form.html:44
+msgid "Enter your current password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:54
+msgid "Verify the change with your current password."
+msgstr ""
+
+#: templates/registration/password_change_form.html:59
+#: templates/registration/registration_form2.html:83
+msgid "Enter a password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:73
+msgid "Enter the new password."
+msgstr ""
+
+#: templates/registration/password_change_form.html:76
+msgid "Retype the password to avoid mistakes."
+msgstr ""
+
+#: templates/registration/password_reset_done.html:10
+#: templates/registration/password_reset_done.html:14
+msgid "Password reset successful"
+msgstr ""
+
+#: templates/registration/password_reset_done.html:16
+msgid ""
+"We've e-mailed a new password to the e-mail address you submitted. You "
+"should be receiving it shortly."
+msgstr ""
+
+#: templates/registration/password_reset_email.html:6
+#, python-format
+msgid ""
+"\n"
+"You're receiving this e-mail because you requested a password reset\n"
+"for your user account at %(site_name)s.\n"
+"\n"
+"Your new password is: %(new_password)s\n"
+"\n"
+"Feel free to change this password by going to this page:\n"
+"\n"
+"http://%(domain)s/rsr/accounts/password/change/\n"
+"\n"
+"Your username, in case you've forgotten: %(user_name)s\n"
+"\n"
+"\n"
+"The %(site_name)s team\n"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:12
+msgid "Reset password"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:35
+msgid "Reset your password"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:37
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll reset "
+"your password and e-mail the new one to you."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:45
+#: templates/registration/registration_form2.html:105
+msgid "Enter your email address"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:55
+msgid "Enter the email address of your Akvo RSR account."
+msgstr ""
+
+#: templates/registration/registration_complete.html:11
+msgid "Registration complete"
+msgstr ""
+
+#: templates/registration/registration_complete.html:19
+msgid "Please check your email account."
+msgstr ""
+
+#: templates/registration/registration_complete.html:23
+msgid ""
+"A confirmation will be sent to you via email. Please click the link in the "
+"email to complete the setup of your account."
+msgstr ""
+
+#: templates/registration/registration_form.html:20
+msgid "Set up your account"
+msgstr ""
+
+#: templates/registration/registration_form.html:23
+msgid "Please correct the errors below"
+msgstr ""
+
+#: templates/registration/registration_form.html:29
+msgid "Organisation"
+msgstr ""
+
+#: templates/registration/registration_form.html:32
+msgid "Username"
+msgstr ""
+
+#: templates/registration/registration_form.html:42
+msgid "First name"
+msgstr ""
+
+#: templates/registration/registration_form.html:52
+msgid "Last name"
+msgstr ""
+
+#: templates/registration/registration_form.html:62
+msgid "Password"
+msgstr ""
+
+#: templates/registration/registration_form.html:72
+msgid "Password (type again to avoid typos)"
+msgstr ""
+
+#: templates/registration/registration_form.html:82
+msgid "Email address"
+msgstr ""
+
+#: templates/registration/registration_form.html:92
+msgid "Email address (type again to avoid typos)"
+msgstr ""
+
+#: templates/registration/registration_form.html:103
+#: templates/rsr/rsr_base.html:83
+msgid "Register"
+msgstr ""
+
+#: templates/registration/registration_form1.html:29
+#: templates/rsr/update_form.html:29
+msgid "Please review message below."
+msgstr ""
+
+#: templates/registration/registration_form1.html:41
+msgid "Select the organisation that you belong to"
+msgstr ""
+
+#: templates/registration/registration_form1.html:61
+msgid ""
+"To set up your account, your organisation must be already registered with "
+"Akvo. If you do not see your organisation on the list above, <a href=\"/web/?"
+"q=node/14\">click this link</a> to contact us to begin registering your "
+"organisation. After registration is complete, please return to set up your "
+"account."
+msgstr ""
+
+#: templates/registration/registration_form2.html:36
+msgid "Step 2 of 2"
+msgstr ""
+
+#: templates/registration/registration_form2.html:43
+msgid "Enter a username"
+msgstr ""
+
+#: templates/registration/registration_form2.html:54
+msgid "Your user name will be permanent. Use this to log into Akvo."
+msgstr ""
+
+#: templates/registration/registration_form2.html:59
+msgid "Enter your first and last name"
+msgstr ""
+
+#: templates/registration/registration_form2.html:73
+msgid "Enter first (given) name."
+msgstr ""
+
+#: templates/registration/registration_form2.html:76
+msgid "Enter last (family) name."
+msgstr ""
+
+#: templates/registration/registration_form2.html:78
+#: templates/registration/update_form.html:71
+msgid ""
+"Your first and last name will be displayed when you post comments or updates "
+"to Akvo."
+msgstr ""
+
+#: templates/registration/registration_form2.html:97
+#: templates/rsr/sign_in.html:49
+msgid "Enter password"
+msgstr ""
+
+#: templates/registration/registration_form2.html:100
+msgid "Retype password to verify"
+msgstr ""
+
+#: templates/registration/registration_form2.html:119
+msgid "Enter email address."
+msgstr ""
+
+#: templates/registration/registration_form2.html:123
+msgid "Retype email address to verify."
+msgstr ""
+
+#: templates/registration/update_complete.html:10
+#: templates/registration/update_complete.html:12
+msgid "Update complete"
+msgstr ""
+
+#: templates/registration/update_complete.html:15
+msgid "Your account has been updated."
+msgstr ""
+
+#: templates/registration/update_form.html:12
+#: templates/registration/update_form.html:36
+msgid "Update your Akvo RSR account information"
+msgstr ""
+
+#: templates/registration/update_form.html:38
+msgid "Your user name is"
+msgstr ""
+
+#: templates/registration/update_form.html:40
+msgid "Your organisation is"
+msgstr ""
+
+#: templates/registration/update_form.html:42
+msgid ""
+"Change your password <a href=\"/rsr/accounts/password/change/\" class=\"c5"
+"\">here</a>."
+msgstr ""
+
+#: templates/registration/update_form.html:52
+msgid "Enter changes to your first and last name"
+msgstr ""
+
+#: templates/registration/update_form.html:66
+msgid "Your first (given) name"
+msgstr ""
+
+#: templates/registration/update_form.html:69
+msgid "Your last (family) name"
+msgstr ""
+
+#: templates/rsr/comment_form.html:19 templates/rsr/project_comments.html:48
+#: templates/rsr/project_main.html:186
+msgid "Add comment"
+msgstr ""
+
+#: templates/rsr/comment_form.html:20
+msgid "You are commenting the project named"
+msgstr ""
+
+#: templates/rsr/comment_form.html:26
+msgid "Enter comment text"
+msgstr ""
+
+#: templates/rsr/comment_form.html:35
+msgid "Sumbit changes"
+msgstr ""
+
+#: templates/rsr/error_500.html:12
+msgid "500: We"
+msgstr ""
+
+#: templates/rsr/error_access_denied.html:10
+msgid "Error: premission denied"
+msgstr ""
+
+#: templates/rsr/error_access_denied.html:12
+msgid "Error: Permission denied."
+msgstr ""
+
+#: templates/rsr/error_access_denied.html:15
+msgid ""
+"Project updates may only be made for projects where your organisation is a "
+"partner."
+msgstr ""
+
+#: templates/rsr/error_base.html:10
+msgid "Error: 404 - the page is not available"
+msgstr ""
+
+#: templates/rsr/error_base.html:18
+msgid "404: We"
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:15
+msgid "functioning water systems"
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:18
+msgid "functioning sanitation systems"
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:21
+msgid "persons with access to improved water"
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:23
+#, python-format
+msgid ""
+"\n"
+"                for %(improved_water_years)s years\n"
+"            "
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:30
+msgid "persons with access to improved sanitation"
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:32
+#, python-format
+msgid ""
+"\n"
+"                for %(improved_sanitation_years)s years\n"
+"            "
+msgstr ""
+
+#: templates/rsr/inc_target_benchmarks.html:39
+msgid "persons who receive training / education per year"
+msgstr ""
+
+#: templates/rsr/index.html:49
+msgid "View static home page"
+msgstr ""
+
+#: templates/rsr/index.html:50 templates/rsr/index.html.py:118
+msgid "Our latest projects"
+msgstr ""
+
+#: templates/rsr/index.html:52
+msgid ""
+"You are being re-directed to the static Akvo home page. If nothing happens,"
+msgstr ""
+
+#: templates/rsr/index.html:52
+msgid "click here"
+msgstr ""
+
+#: templates/rsr/index.html:117
+msgid "View flash-enabled home page"
+msgstr ""
+
+#: templates/rsr/index.html:145 templates/rsr/project_main.html:238
+#: templates/rsr/project_updates.html:32
+msgid "Subscribe via RSS"
+msgstr ""
+
+#: templates/rsr/index.html:146
+msgid "Most recent Akvo Blog article"
+msgstr ""
+
+#: templates/rsr/index.html:160 templates/rsr/index.html.py:175
+msgid "by"
+msgstr ""
+
+#: templates/rsr/index.html:163 templates/rsr/index.html.py:178
+msgid "Read more"
+msgstr ""
+
+#: templates/rsr/index.html:180
+msgid "View earlier blog entries"
+msgstr ""
+
+#: templates/rsr/index_base.html:24 templates/rsr/project_list.html:14
+msgid "Akvo at a glance"
+msgstr ""
+
+#: templates/rsr/index_base.html:35 templates/rsr/index_base.html.py:38
+msgid "Projects in Akvo"
+msgstr ""
+
+#: templates/rsr/index_base.html:43 templates/rsr/organisation.html:118
+msgid "Active"
+msgstr ""
+
+#: templates/rsr/index_base.html:44 templates/rsr/organisation.html:119
+msgid "Need funding"
+msgstr ""
+
+#: templates/rsr/index_base.html:45 templates/rsr/organisation.html:120
+msgid "Complete"
+msgstr ""
+
+#: templates/rsr/index_base.html:47 templates/rsr/organisation.html:121
+#: templates/rsr/organisation_directory.html:98
+msgid "Total projects"
+msgstr ""
+
+#: templates/rsr/index_base.html:48 templates/rsr/organisation.html:122
+msgid ""
+"<b>People who get</b> (<a href=\"/web/help_akvo_at_a_glance\">planned</a>) "
+"<a href=\"/web/help_akvo_at_a_glance\">actual</a>"
+msgstr ""
+
+#: templates/rsr/index_base.html:55 templates/rsr/index_base.html.py:58
+#: templates/rsr/project_base.html:80
+msgid "Partners"
+msgstr ""
+
+#: templates/rsr/index_base.html:64
+#: templates/rsr/organisation_directory.html:79
+#: templates/rsr/project_base.html:87
+msgid "Field partners"
+msgstr ""
+
+#: templates/rsr/index_base.html:65
+#: templates/rsr/organisation_directory.html:76
+#: templates/rsr/project_base.html:108
+msgid "Support partners"
+msgstr ""
+
+#: templates/rsr/index_base.html:66
+#: templates/rsr/organisation_directory.html:73
+msgid "Funding partners"
+msgstr ""
+
+#: templates/rsr/index_base.html:68
+msgid "Organisations"
+msgstr ""
+
+#: templates/rsr/index_base.html:69 templates/rsr/project_base.html:34
+#: templates/rsr/project_funding.html:24
+msgid "Funding"
+msgstr ""
+
+#: templates/rsr/index_base.html:69
+msgid "projects"
+msgstr ""
+
+#: templates/rsr/index_base.html:70 templates/rsr/organisation.html:140
+msgid "Pledged"
+msgstr ""
+
+#: templates/rsr/index_base.html:71 templates/rsr/organisation.html:141
+msgid "Still needed"
+msgstr ""
+
+#: templates/rsr/organisation.html:10
+msgid "Organisation no."
+msgstr ""
+
+#: templates/rsr/organisation.html:13
+#: templates/rsr/organisation_directory.html:21
+#: templates/rsr/organisation_directory.html:82
+#: templates/rsr/organisation_directory.html:85
+msgid "Organisation listing"
+msgstr ""
+
+#: templates/rsr/organisation.html:45
+msgid "Activities"
+msgstr ""
+
+#: templates/rsr/organisation.html:47 templates/rsr/project_base.html:85
+msgid "Field partner"
+msgstr ""
+
+#: templates/rsr/organisation.html:48 templates/rsr/project_base.html:106
+msgid "Support partner"
+msgstr ""
+
+#: templates/rsr/organisation.html:49
+msgid "Funding partner"
+msgstr ""
+
+#: templates/rsr/organisation.html:51
+#: templates/rsr/organisation_directory.html:95
+msgid "Type"
+msgstr ""
+
+#: templates/rsr/organisation.html:58
+msgid "Website"
+msgstr ""
+
+#: templates/rsr/organisation.html:62
+msgid "Akvopedia entry"
+msgstr ""
+
+#: templates/rsr/organisation.html:77
+msgid "Contact"
+msgstr ""
+
+#: templates/rsr/organisation.html:79
+msgid "Email"
+msgstr ""
+
+#: templates/rsr/organisation.html:83
+msgid "Phone"
+msgstr ""
+
+#: templates/rsr/organisation.html:87
+msgid "Mobile"
+msgstr ""
+
+#: templates/rsr/organisation.html:91
+msgid "Fax"
+msgstr ""
+
+#: templates/rsr/organisation.html:110
+msgid "Organisation Activities"
+msgstr ""
+
+#: templates/rsr/organisation.html:117
+#: templates/rsr/project_list_generic.html:19 templates/rsr/rsr_base.html:78
+msgid "Projects"
+msgstr ""
+
+#: templates/rsr/organisation.html:131
+#, python-format
+msgid ""
+"\n"
+"\t\t\t\t\t\t(1 project)\n"
+"\t\t\t\t\t"
+msgid_plural ""
+"\n"
+"\t\t\t\t\t\t(%(proj_count)s projects)\n"
+"\t\t\t\t\t"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/rsr/organisation.html:142
+msgid "Project partners"
+msgstr ""
+
+#: templates/rsr/organisation.html:150
+msgid "Current projects"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:43
+#, python-format
+msgid ""
+"\n"
+"            Organisations %(page_start)s-%(page_end)s of %(o_count)s\n"
+"        "
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:49
+#: templates/rsr/organisation_directory.html:51
+#: templates/rsr/organisation_directory.html:167
+#: templates/rsr/organisation_directory.html:169
+#: templates/rsr/project_directory.html:110
+#: templates/rsr/project_directory.html:114
+#: templates/rsr/project_directory.html:116
+#: templates/rsr/project_directory.html:320
+#: templates/rsr/project_directory.html:322
+#: templates/rsr/project_directory_backup.html:98
+#: templates/rsr/project_directory_backup.html:102
+#: templates/rsr/project_directory_backup.html:104
+#: templates/rsr/project_directory_backup.html:281
+#: templates/rsr/project_directory_backup.html:283
+#: templates/rsr/project_directory_beta.html:100
+#: templates/rsr/project_directory_beta.html:104
+#: templates/rsr/project_directory_beta.html:106
+#: templates/rsr/project_directory_beta.html:286
+#: templates/rsr/project_directory_beta.html:288
+msgid "First"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:54
+#: templates/rsr/organisation_directory.html:56
+#: templates/rsr/organisation_directory.html:172
+#: templates/rsr/organisation_directory.html:174
+#: templates/rsr/project_directory.html:121
+#: templates/rsr/project_directory.html:123
+#: templates/rsr/project_directory.html:126
+#: templates/rsr/project_directory.html:325
+#: templates/rsr/project_directory.html:327
+#: templates/rsr/project_directory_backup.html:109
+#: templates/rsr/project_directory_backup.html:111
+#: templates/rsr/project_directory_backup.html:114
+#: templates/rsr/project_directory_backup.html:286
+#: templates/rsr/project_directory_backup.html:288
+#: templates/rsr/project_directory_beta.html:111
+#: templates/rsr/project_directory_beta.html:113
+#: templates/rsr/project_directory_beta.html:116
+#: templates/rsr/project_directory_beta.html:291
+#: templates/rsr/project_directory_beta.html:293
+msgid "Previous"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:59
+#: templates/rsr/organisation_directory.html:61
+#: templates/rsr/organisation_directory.html:177
+#: templates/rsr/organisation_directory.html:179
+#: templates/rsr/project_directory.html:130
+#: templates/rsr/project_directory.html:132
+#: templates/rsr/project_directory.html:135
+#: templates/rsr/project_directory.html:330
+#: templates/rsr/project_directory.html:332
+#: templates/rsr/project_directory_backup.html:118
+#: templates/rsr/project_directory_backup.html:120
+#: templates/rsr/project_directory_backup.html:123
+#: templates/rsr/project_directory_backup.html:291
+#: templates/rsr/project_directory_backup.html:293
+#: templates/rsr/project_directory_beta.html:120
+#: templates/rsr/project_directory_beta.html:122
+#: templates/rsr/project_directory_beta.html:125
+#: templates/rsr/project_directory_beta.html:296
+#: templates/rsr/project_directory_beta.html:298
+msgid "Next"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:64
+#: templates/rsr/organisation_directory.html:66
+#: templates/rsr/organisation_directory.html:182
+#: templates/rsr/organisation_directory.html:184
+#: templates/rsr/project_directory.html:138
+#: templates/rsr/project_directory.html:141
+#: templates/rsr/project_directory.html:143
+#: templates/rsr/project_directory.html:335
+#: templates/rsr/project_directory.html:337
+#: templates/rsr/project_directory_backup.html:126
+#: templates/rsr/project_directory_backup.html:129
+#: templates/rsr/project_directory_backup.html:131
+#: templates/rsr/project_directory_backup.html:296
+#: templates/rsr/project_directory_backup.html:298
+#: templates/rsr/project_directory_beta.html:128
+#: templates/rsr/project_directory_beta.html:131
+#: templates/rsr/project_directory_beta.html:301
+#: templates/rsr/project_directory_beta.html:303
+msgid "Last"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:73
+#: templates/rsr/organisation_directory.html:76
+#: templates/rsr/organisation_directory.html:79
+#: templates/rsr/organisation_directory.html:82
+#: templates/rsr/organisation_directory.html:85
+#: templates/rsr/project_directory_backup.html:141
+msgid "total"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:94
+msgid "Organisation name"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:96
+#: templates/rsr/project_directory.html:178
+#: templates/rsr/project_directory.html:180
+#: templates/rsr/project_directory_backup.html:165
+#: templates/rsr/project_directory_backup.html:167
+#: templates/rsr/project_directory_beta.html:167
+#: templates/rsr/project_directory_beta.html:169
+#: templates/rsr/project_list.html:24
+msgid "Country"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:97
+#: templates/rsr/project_directory.html:185
+#: templates/rsr/project_directory.html:187
+#: templates/rsr/project_directory_backup.html:172
+#: templates/rsr/project_directory_backup.html:174
+#: templates/rsr/project_directory_beta.html:174
+#: templates/rsr/project_directory_beta.html:176
+msgid "Continent"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:99
+#: templates/rsr/project_list.html:25
+msgid "Funds requested"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:100
+#: templates/rsr/project_list.html:26
+msgid "Funds still needed"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:161
+#, python-format
+msgid ""
+"\n"
+"                    Organisations %(page_start)s-%(page_end)s of %(o_count)"
+"s\n"
+"                "
+msgstr ""
+
+#: templates/rsr/project_base.html:12
+msgid "Project no."
+msgstr ""
+
+#: templates/rsr/project_base.html:32 templates/rsr/project_funding.html:22
+msgid "Fund project"
+msgstr ""
+
+#: templates/rsr/project_base.html:44
+msgid "Funding completed"
+msgstr ""
+
+#: templates/rsr/project_base.html:47 templates/rsr/project_main.html:95
+#: templates/rsr/project_main.html:142
+msgid "View details"
+msgstr ""
+
+#: templates/rsr/project_base.html:51
+msgid "Current Funder"
+msgstr ""
+
+#: templates/rsr/project_base.html:54
+msgid "You could fund this project!"
+msgstr ""
+
+#: templates/rsr/project_base.html:56 templates/rsr/project_funding.html:92
+msgid "Current Funders"
+msgstr ""
+
+#: templates/rsr/project_base.html:67 templates/rsr/project_base.html.py:95
+#: templates/rsr/project_base.html:116
+msgid "Logo of"
+msgstr ""
+
+#: templates/rsr/project_base.html:79
+msgid "Become a partner"
+msgstr ""
+
+#: templates/rsr/project_base.html:127
+msgid "Page tools"
+msgstr ""
+
+#: templates/rsr/project_base.html:133
+msgid "Permalink to this project"
+msgstr ""
+
+#: templates/rsr/project_comments.html:10
+#: templates/rsr/project_comments.html:37
+msgid "All project comments"
+msgstr ""
+
+#: templates/rsr/project_comments.html:37
+#: templates/rsr/project_details.html:34
+#: templates/rsr/project_directory.html:13
+#: templates/rsr/project_directory.html:20
+#: templates/rsr/project_directory.html:149
+#: templates/rsr/project_directory_backup.html:13
+#: templates/rsr/project_directory_backup.html:21
+#: templates/rsr/project_directory_backup.html:137
+#: templates/rsr/project_directory_beta.html:13
+#: templates/rsr/project_directory_beta.html:21
+#: templates/rsr/project_funding.html:14 templates/rsr/project_main.html:31
+#: templates/rsr/project_updates.html:13 templates/rsr/update_form_old.html:14
+msgid "Project listing"
+msgstr ""
+
+#: templates/rsr/project_comments.html:59
+msgid "You must be signed in to add a comment."
+msgstr ""
+
+#: templates/rsr/project_comments.html:60 templates/rsr/project_main.html:195
+msgid "Sign In"
+msgstr ""
+
+#: templates/rsr/project_comments.html:64 templates/rsr/project_main.html:200
+msgid "Submit"
+msgstr ""
+
+#: templates/rsr/project_comments.html:71
+msgid "Project comments"
+msgstr ""
+
+#: templates/rsr/project_comments.html:72 templates/rsr/project_main.html:222
+msgid ""
+"The comments are owned by whoever posted them. We are not responsible for "
+"them in any way."
+msgstr ""
+
+#: templates/rsr/project_comments.html:87
+#, python-format
+msgid ""
+"<a href=\"mailto:abuse@akvo.org?subject=Comment abuse in project #%(p.id)s, "
+"comment #%(c.id)s\">Report abuse</a>"
+msgstr ""
+
+#: templates/rsr/project_details.html:12 templates/rsr/project_details.html:34
+msgid "Project details"
+msgstr ""
+
+#: templates/rsr/project_details.html:50
+#: templates/rsr/project_directory.html:56
+#: templates/rsr/project_directory.html:171
+#: templates/rsr/project_directory.html:173
+#: templates/rsr/project_directory_backup.html:158
+#: templates/rsr/project_directory_backup.html:160
+#: templates/rsr/project_directory_beta.html:54
+#: templates/rsr/project_directory_beta.html:160
+#: templates/rsr/project_directory_beta.html:162
+#: templates/rsr/project_list.html:23 templates/rsr/project_main.html:45
+#: templates/widgets/featured_project.html:27
+msgid "Status"
+msgstr ""
+
+#: templates/rsr/project_details.html:86
+msgid "City"
+msgstr ""
+
+#: templates/rsr/project_details.html:96
+#: templates/rsr/project_details.html:100
+msgid "location"
+msgstr ""
+
+#: templates/rsr/project_details.html:104
+#: templates/rsr/project_details.html:258
+#: templates/rsr/project_funding.html:33
+#: templates/rsr/project_funding.html:113
+msgid "Back to project summary"
+msgstr ""
+
+#: templates/rsr/project_details.html:108 templates/rsr/project_main.html:86
+msgid "Description"
+msgstr ""
+
+#: templates/rsr/project_details.html:110 templates/rsr/project_main.html:88
+msgid "Sustainability"
+msgstr ""
+
+#: templates/rsr/project_details.html:124
+#: templates/rsr/project_details.html:148 templates/rsr/project_main.html:104
+#: templates/rsr/project_main.html:113
+msgid "Target benchmarks"
+msgstr ""
+
+#: templates/rsr/project_details.html:130
+msgid "More information"
+msgstr ""
+
+#: templates/rsr/project_details.html:134
+msgid "Current state"
+msgstr ""
+
+#: templates/rsr/project_details.html:138 templates/rsr/project_main.html:89
+msgid "Context"
+msgstr ""
+
+#: templates/rsr/project_details.html:153 templates/rsr/project_main.html:118
+msgid "Goals overview"
+msgstr ""
+
+#: templates/rsr/project_directory.html:35
+#: templates/rsr/project_directory_backup.html:33
+#: templates/rsr/project_directory_beta.html:33
+msgid "Featured projects"
+msgstr ""
+
+#: templates/rsr/project_directory.html:57
+#: templates/rsr/project_directory_backup.html:53
+#: templates/rsr/project_directory_beta.html:55
+#: templates/widgets/featured_project.html:28
+msgid "Focus areas"
+msgstr ""
+
+#: templates/rsr/project_directory.html:104
+#: templates/rsr/project_directory.html:314
+#, python-format
+msgid ""
+"\n"
+"\t\t\t\tProjects %(page_start)s-%(page_end)s of %(p_count)s\n"
+"\t\t\t"
+msgstr ""
+
+#: templates/rsr/project_directory.html:153
+#, python-format
+msgid "(%(p_count)s total)"
+msgstr ""
+
+#: templates/rsr/project_directory.html:164
+#: templates/rsr/project_directory.html:166
+msgid "Sort projects by name"
+msgstr ""
+
+#: templates/rsr/project_directory.html:164
+#: templates/rsr/project_directory.html:166
+#: templates/rsr/project_directory_backup.html:151
+#: templates/rsr/project_directory_backup.html:153
+#: templates/rsr/project_directory_beta.html:153
+#: templates/rsr/project_directory_beta.html:155
+#: templates/rsr/project_list.html:22
+msgid "Project name"
+msgstr ""
+
+#: templates/rsr/project_directory.html:171
+#: templates/rsr/project_directory.html:173
+msgid "Sort projects by status"
+msgstr ""
+
+#: templates/rsr/project_directory.html:178
+#: templates/rsr/project_directory.html:180
+msgid "Sort projects by country"
+msgstr ""
+
+#: templates/rsr/project_directory.html:185
+#: templates/rsr/project_directory.html:187
+msgid "Sort projects by continent"
+msgstr ""
+
+#: templates/rsr/project_directory.html:192
+#: templates/rsr/project_directory.html:194
+msgid "Sort projects by total funds requested"
+msgstr ""
+
+#: templates/rsr/project_directory.html:192
+#: templates/rsr/project_directory.html:194
+#: templates/rsr/project_directory_backup.html:177
+#: templates/rsr/project_directory_beta.html:179
+msgid "Total funds requested"
+msgstr ""
+
+#: templates/rsr/project_directory.html:199
+#: templates/rsr/project_directory.html:201
+msgid "Sort projects by funding still needed"
+msgstr ""
+
+#: templates/rsr/project_directory.html:199
+#: templates/rsr/project_directory.html:201
+#: templates/rsr/project_directory_backup.html:178
+#: templates/rsr/project_directory_beta.html:180
+msgid "Funding still needed"
+msgstr ""
+
+#: templates/rsr/project_directory.html:206
+#: templates/rsr/project_directory_backup.html:179
+#: templates/rsr/project_directory_beta.html:181
+#: templates/rsr/project_list.html:27
+msgid "Field partner(s)"
+msgstr ""
+
+#: templates/rsr/project_directory.html:207
+#: templates/rsr/project_directory_backup.html:180
+#: templates/rsr/project_directory_beta.html:182
+#: templates/rsr/project_list.html:28
+msgid "Support partner(s)"
+msgstr ""
+
+#: templates/rsr/project_directory.html:208
+#: templates/rsr/project_directory_backup.html:181
+#: templates/rsr/project_directory_beta.html:183
+#: templates/rsr/project_list.html:29
+msgid "Funding partner(s)"
+msgstr ""
+
+#: templates/rsr/project_directory_backup.html:95
+#: templates/rsr/project_directory_backup.html:278
+#: templates/rsr/project_directory_beta.html:97
+#: templates/rsr/project_directory_beta.html:283
+#, python-format
+msgid "Projects %(page.start_index)s-%(page.end_index)s of %(projects.count)s"
+msgstr ""
+
+#: templates/rsr/project_directory_beta.html:143
+#, python-format
+msgid "(%(projects.count)s total)"
+msgstr ""
+
+#: templates/rsr/project_funding.html:11 templates/rsr/project_funding.html:14
+msgid "Funding details"
+msgstr ""
+
+#: templates/rsr/project_funding.html:50
+msgid "Project started"
+msgstr ""
+
+#: templates/rsr/project_funding.html:57
+msgid "Funding breakdown"
+msgstr ""
+
+#: templates/rsr/project_funding.html:60
+msgid "Employment costs"
+msgstr ""
+
+#: templates/rsr/project_funding.html:64
+msgid "Building Material costs"
+msgstr ""
+
+#: templates/rsr/project_funding.html:68
+msgid "Training costs"
+msgstr ""
+
+#: templates/rsr/project_funding.html:72
+msgid "Maintenance costs"
+msgstr ""
+
+#: templates/rsr/project_funding.html:76
+msgid "Other costs"
+msgstr ""
+
+#: templates/rsr/project_funding.html:100
+#, python-format
+msgid "Logo of %(funder.funding_organisation.name)s"
+msgstr ""
+
+#: templates/rsr/project_list.html:10
+msgid "Project list"
+msgstr ""
+
+#: templates/rsr/project_main.html:47
+msgid "Focus area"
+msgstr ""
+
+#: templates/rsr/project_main.html:90
+msgid "Personnel"
+msgstr ""
+
+#: templates/rsr/project_main.html:163
+msgid "Related to this project"
+msgstr ""
+
+#: templates/rsr/project_main.html:168
+msgid "Akvopedia entries"
+msgstr ""
+
+#: templates/rsr/project_main.html:177
+msgid "External links"
+msgstr ""
+
+#: templates/rsr/project_main.html:187
+msgid "Comments"
+msgstr ""
+
+#: templates/rsr/project_main.html:194
+msgid "You must be signed in to add a comment"
+msgstr ""
+
+#: templates/rsr/project_main.html:221
+msgid "Older comments"
+msgstr ""
+
+#: templates/rsr/project_main.html:224
+msgid "No comments yet."
+msgstr ""
+
+#: templates/rsr/project_main.html:233 templates/rsr/project_updates.html:24
+#: templates/rsr/update_form.html:33 templates/rsr/update_form_old.html:28
+msgid "Add update"
+msgstr ""
+
+#: templates/rsr/project_main.html:234 templates/rsr/project_updates.html:33
+msgid "Project updates"
+msgstr ""
+
+#: templates/rsr/project_main.html:246
+#, python-format
+msgid ""
+"\n"
+"                            by %(user_name)s via %(update_meth)s\n"
+"                        "
+msgstr ""
+
+#: templates/rsr/project_main.html:283
+msgid "Earlier updates"
+msgstr ""
+
+#: templates/rsr/project_main.html:284 templates/rsr/project_updates.html:34
+msgid ""
+"The updates are owned by whoever posted them. We are not responsible for "
+"them in any way."
+msgstr ""
+
+#: templates/rsr/project_main.html:286
+msgid "No updates yet."
+msgstr ""
+
+#: templates/rsr/project_updates.html:10 templates/rsr/project_updates.html:13
+msgid "All project updates"
+msgstr ""
+
+#: templates/rsr/project_updates.html:43
+#, python-format
+msgid ""
+"\n"
+"                    by %(user_name)s via %(update_meth)s\n"
+"                "
+msgstr ""
+
+#: templates/rsr/project_updates.html:57 templates/rsr/update_form.html:99
+#: templates/rsr/update_form_old.html:93
+msgid "Photo credit"
+msgstr ""
+
+#: templates/rsr/project_updates.html:78
+msgid "Permalink"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:13 templates/rsr/rsr_base.html.py:18
+#: templates/widgets/widget_base.html:13 templates/widgets/widget_base.html:16
+msgid "Akvo.org - the open source for water and sanitation"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:15 templates/rsr/update_list.html:13
+msgid "Akvo RSR"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:15
+msgid "Really simple reporting"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:19 templates/widgets/widget_base.html:17
+msgid "water, sanitation, open source, development aid"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:50 templates/rsr/rsr_base.html.py:60
+#: templates/rsr/sign_in.html:15
+msgid "Akvo.org"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:54 templates/rsr/sign_in.html:20
+msgid "Sign in"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:64
+msgid "Sign out"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:65
+msgid "Signed in as"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:76 templates/rsr/rsr_base.html.py:92
+msgid "Home"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:77
+msgid "Akvopedia"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:79
+msgid "Get involved"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:80
+msgid "Blog"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:81
+msgid "About"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:85
+msgid "My account"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:100 templates/widgets/widget_base.html:32
+msgid "Akvo RSR - Really simple reporting"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:107
+msgid "Site content under <a href=\"/web/open_license\">Open License</a>"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:107
+msgid "Terms of use"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:107
+msgid "Privacy policy"
+msgstr ""
+
+#: templates/rsr/rsr_base.html:108
+msgid "Contact us"
+msgstr ""
+
+#: templates/rsr/sign_in.html:30
+msgid "Please sign in"
+msgstr ""
+
+#: templates/rsr/sign_in.html:34
+msgid "Error when signing in"
+msgstr ""
+
+#: templates/rsr/sign_in.html:35
+msgid "Please correct the errors below."
+msgstr ""
+
+#: templates/rsr/sign_in.html:41
+msgid "I have an online account"
+msgstr ""
+
+#: templates/rsr/sign_in.html:44
+msgid "Enter username"
+msgstr ""
+
+#: templates/rsr/sign_in.html:54
+msgid "I forgot my username and/or password"
+msgstr ""
+
+#: templates/rsr/sign_in.html:64
+msgid "I don't have an online account"
+msgstr ""
+
+#: templates/rsr/sign_in.html:65
+msgid ""
+"By <a href='/rsr/accounts/register1/'>registering</a> with Akvo, you'll be "
+"able to:"
+msgstr ""
+
+#: templates/rsr/sign_in.html:68
+msgid "Create updates on your organisation's projects"
+msgstr ""
+
+#: templates/rsr/sign_in.html:69
+msgid "Leave comments on projects"
+msgstr ""
+
+#: templates/rsr/sign_in.html:71
+msgid ""
+"And much more! <a href=\"http://dev.akvo.org:8080/web/\">Learn about</a> how "
+"Akvo works."
+msgstr ""
+
+#: templates/rsr/update_form.html:40
+msgid "Enter an update title"
+msgstr ""
+
+#: templates/rsr/update_form.html:49 templates/rsr/update_form.html.py:108
+#: templates/rsr/update_form_old.html:39 templates/rsr/update_form_old.html:87
+#: templates/rsr/update_form_old.html:95
+msgid "characters max"
+msgstr ""
+
+#: templates/rsr/update_form.html:53 templates/rsr/update_form_old.html:48
+msgid "Enter update text"
+msgstr ""
+
+#: templates/rsr/update_form.html:64 templates/rsr/update_form_old.html:67
+msgid "Add photo"
+msgstr ""
+
+#: templates/rsr/update_form.html:64 templates/rsr/update_form.html.py:86
+#: templates/rsr/update_form.html:99 templates/rsr/update_form_old.html:67
+#: templates/rsr/update_form_old.html:85 templates/rsr/update_form_old.html:93
+msgid "optional"
+msgstr ""
+
+#: templates/rsr/update_form.html:75 templates/rsr/update_form_old.html:76
+msgid "Select where the photo will be placed"
+msgstr ""
+
+#: templates/rsr/update_form.html:86 templates/rsr/update_form_old.html:85
+msgid "Photo caption"
+msgstr ""
+
+#: templates/rsr/update_form_old.html:10 templates/rsr/update_form_old.html:16
+msgid "Write an update"
+msgstr ""
+
+#: templates/rsr/update_form_old.html:29
+msgid "You are updating the project named"
+msgstr ""
+
+#: templates/rsr/update_form_old.html:35
+msgid "Enter update title"
+msgstr ""
+
+#: templates/rsr/update_form_old.html:68
+msgid "Locate photo"
+msgstr ""
+
+#: templates/rsr/update_form_old.html:102
+msgid "Submit update"
+msgstr ""
+
+#: templates/rsr/update_list.html:20
+msgid "UPDATE"
+msgstr ""
+
+#: templates/rsr/update_list.html:27
+msgid "photo"
+msgstr ""
+
+#: templates/rsr/user_message_base.html:12
+msgid "Message header"
+msgstr ""
+
+#: templates/widgets/featured_project.html:50
+msgid "Akvo"
+msgstr ""

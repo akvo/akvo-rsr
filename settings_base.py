@@ -57,6 +57,13 @@ INTERNAL_IPS = (
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+gettext = lambda s: s
+
+LANGUAGES = (
+    ('de', gettext('German')),
+    ('en', gettext('English')),
+)
+
 LOGIN_URL = '/rsr/signin/'
 LOGIN_REDIRECT_URL = '/rsr/'
 
@@ -72,8 +79,9 @@ MANAGERS = ADMINS
 #MEDIA_URL = 'http://dev.akvo.org:8080/rsr/media/'
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )

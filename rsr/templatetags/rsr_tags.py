@@ -3,6 +3,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django import template
+from django.utils.translation import ugettext_lazy as _
 register = template.Library()
 
 @register.inclusion_tag('inclusion_tags/funding_bar.html')

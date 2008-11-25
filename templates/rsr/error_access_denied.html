@@ -1,14 +1,16 @@
+{% extends "rsr/error_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/error_base.html" %}
+{% load i18n %}
 
-{% block title %}Error: premission denied{% endblock title %}
+{% block title %}{% trans 'Error: premission denied' %}{% endblock title %}
 
-{% block error_head %}Error: Permission denied.{% endblock %}
+{% block error_head %}{% trans 'Error: Permission denied.' %}{% endblock %}
 
 {% block error_body %}
-    <p>Project updates may only be made for projects where your organisation is a partner.</p>
+    <p>{% trans 'Project updates may only be made for projects where your organisation is a partner.' %}</p>
 {% endblock error_body %}

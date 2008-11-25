@@ -5,10 +5,12 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% block title %}Organisation no. {{o.id}}, {{o.name}}{% endblock title %}
+{% load i18n %}
+
+{% block title %}{% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url rsr_org_list %}">Organisation listing</a> &raquo; {{o.name}}
+{{block.super}} &raquo; <a href="{% url rsr_org_list %}">{% trans 'Organisation listing' %}</a> &raquo; {{o.name}}
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -40,31 +42,31 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if o.logo %}
 			<img src="{{MEDIA_URL}}{{o.logo}}" alt="Logo of {{o.name}}" style="margin: 10px 0;" />
 		{% endif %}
-		<h2 class="lightx2">Activities</h2>
+		<h2 class="lightx2">{% trans 'Activities' %}</h2>
 		<p>
-			{% if o.field_partner %}Field partner<br />{% endif %}
-			{% if o.support_partner %}Support partner<br />{% endif %}
-			{% if o.funding_partner %}Funding partner<br />{% endif %}
+			{% if o.field_partner %}{% trans 'Field partner' %}<br />{% endif %}
+			{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
+			{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
 		</p>
-		<h2 class="lightx2">Type</h2>
+		<h2 class="lightx2">{% trans 'Type' %}</h2>
 		<p>{{o.show_organisation_type}}</p>
 	
 		<!--<h2 class="lightx2">Scope</h2>
 		<p>National</p>-->
 	
 		{% if o.url %}
-			<h2 class="lightx2">Website</h2>
+			<h2 class="lightx2">{% trans 'Website' %}</h2>
 			<p><a href="{{o.url}}">{{o.url}}</a></p>
 		{% endif %}
 		{% if o.akvopedia_entry %}
-			<h2 class="lightx2">Akvopedia entry</h2>
+			<h2 class="lightx2">{% trans 'Akvopedia entry' %}</h2>
 			<p>{{o.akvopedia_entry}}</p>
 		{% endif %}
 
 	</td>
 
 	<td style="border-right: 1px solid #ccc; width: 33%">
-	<h2 class="lightx2">Location</h2>
+	<h2 class="lightx2">{% trans 'Location' %}</h2>
 	<p>{{o.address_1}}<br />{{o.address_2}}<br />{{o.postcode}}<br />{{o.city}}<br />{{o.state}}<br />{{o.country}}</p>
 	{% if o.map %}
 	<img src="{{MEDIA_URL}}{{o.map}}" alt="type" style="margin: 20px 0;" />
@@ -72,21 +74,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</td>
 
 	<td style="width: 33%">
-	<h2 class="lightx2">Contact</h2>
+	<h2 class="lightx2">{% trans 'Contact' %}</h2>
 	<p>{{o.contact_person}}</p>
-	<h2 class="lightx2">Email</h2>
+	<h2 class="lightx2">{% trans 'Email' %}</h2>
 	<p>{{o.contact_email}}</p>
 
 	{% if o.phone %}
-	<h2 class="lightx2">Phone</h2>
+	<h2 class="lightx2">{% trans 'Phone' %}</h2>
 	<p>{{o.phone}}</p>
 	{% endif %}
 	{% if o.mobile %}
-	<h2 class="lightx2">Mobile</h2>
+	<h2 class="lightx2">{% trans 'Mobile' %}</h2>
 	<p>{{o.mobile}}</p>
 	{% endif %}
 	{% if o.fax %}
-	<h2 class="lightx2">Fax</h2>
+	<h2 class="lightx2">{% trans 'Fax' %}</h2>
 	<p>{{o.fax}}</p>
 	{% endif %}
 
@@ -105,27 +107,39 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_rightwing">
 
 <div class="boxhead">
-<h1>Organisation Activities</h1>
+<h1>{% trans 'Organisation Activities' %}</h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">
 
 <div></div> <!-- IE requires something above -->
 <table class="activities" width="208px" style="margin: 0 20px; padding: 0;">
-	<tr><th colspan="2"><h2>Projects</h2></th></tr>
-	<tr><td class="padded" style="width: 40%;">{{org_stats.status_active}}</td><td>Active</td></tr>
-	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>Need funding</td></tr>
-	<tr><td class="padded">{{org_stats.status_complete}}</td><td>Complete</td></tr>
-	<tr class="hr bold"><td class="padded">{{org_stats.project_count}}</td><td>Total projects</td></tr>
-	<tr><td colspan="2" style="padding: 15px 0 10px 0"><b>People who get</b> (<a href="/web/help_akvo_at_a_glance">planned</a>) <a href="/web/help_akvo_at_a_glance">actual</a></td></tr>
+	<tr><th colspan="2"><h2>{% trans 'Projects' %}</h2></th></tr>
+	<tr><td class="padded" style="width: 40%;">{{org_stats.status_active}}</td><td>{% trans 'Active' %}</td></tr>
+	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>{% trans 'Need funding' %}</td></tr>
+	<tr><td class="padded">{{org_stats.status_complete}}</td><td>{% trans 'Complete' %}</td></tr>
+	<tr class="hr bold"><td class="padded">{{org_stats.project_count}}</td><td>{% trans 'Total projects' %}</td></tr>
+	<tr><td colspan="2" style="padding: 15px 0 10px 0">{% trans '<b>People who get</b> (<a href="/web/help_akvo_at_a_glance">planned</a>) <a href="/web/help_akvo_at_a_glance">actual</a>' %}</td></tr>
 	<!-- <tr><td class="padded" colspan="2">(<a href="#">projected</a>) <a href="#">actual</a></td></tr> -->
 	<!-- <tr><td></td><td class="padded">(<a href="#">projected</a>) <a href="#">actual</a></td></tr> -->
-	<tr><td class="padded">({{org_stats.mdgs_water}}) 0</td><td>Water</td></tr>
-	<tr class="hr"><td class="padded">({{org_stats.mdgs_sanitation}}) 0</td><td>Sanitation</td></tr>
-	<tr><th colspan="2"><h2>Funding <span class="lightx2" style="font-weight: normal">({{org_stats.project_count}} projects)</span></h2></th></tr>
-	<tr style="color: green"><td class="padded">&#8364; {{org_stats.funding_pledged}}</td><td>Pledged</td></tr>
-	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{org_stats.funding_needed}}</td><td>Still needed</td></tr>
-	<tr><td class="padded" colspan="2"><h2>Project partners</h2></td></tr>
+	<tr><td class="padded">({{org_stats.mdgs_water}}) 0</td><td>{% trans 'Water' %}</td></tr>
+	<tr class="hr"><td class="padded">({{org_stats.mdgs_sanitation}}) 0</td><td>{% trans 'Sanitation' %}</td></tr>
+	<tr>
+		<th colspan="2">
+			<h2>Funding
+				<span class="lightx2" style="font-weight: normal">
+					{% blocktrans count org_stats.project_count as proj_count %}
+						(1 project)
+					{% plural %}
+						({{proj_count}} projects)
+					{% endblocktrans %}
+				</span>
+			</h2>
+		</th>
+	</tr>
+	<tr style="color: green"><td class="padded">&#8364; {{org_stats.funding_pledged}}</td><td>{% trans 'Pledged' %}</td></tr>
+	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{org_stats.funding_needed}}</td><td>{% trans 'Still needed' %}</td></tr>
+	<tr><td class="padded" colspan="2"><h2>{% trans 'Project partners' %}</h2></td></tr>
 	<tr><td class="padded" colspan="2">{% for partner in org_partners %}<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a><br />{% endfor %}</td></tr>
 </table>
 
@@ -133,7 +147,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- .boxbody -->
 
 <div class="boxhead">
-<h1><a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">Current projects</a></h1>
+<h1><a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{% trans 'Current projects' %}</a></h1>
 </div> <!-- .boxhead -->
 
 <div class="boxbody">

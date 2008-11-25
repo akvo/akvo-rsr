@@ -1,13 +1,15 @@
+{% extends "rsr/sys_message_base.html" %}        
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/sys_message_base.html" %}        
-        
+{% load i18n %}        
+
 {% block message %}
         
-<h1 class="section c1">{% block h1 %}Message header{% endblock h1 %}</h1>
+<h1 class="section c1">{% block h1 %}{% trans 'Message header' %}{% endblock h1 %}</h1>
 <hr>
 
 <div class="c2">

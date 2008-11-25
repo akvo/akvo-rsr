@@ -1,11 +1,13 @@
+{% extends "rsr/rsr_base.html" %}
+
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% extends "rsr/rsr_base.html" %}
+{% load i18n %}
 
-{% block title %}Register with Akvo RSR - Step 1{% endblock %}
+{% block title %}{% trans 'Register with Akvo RSR - Step 1' %}{% endblock %}
 
 {% block header %}
 <div id="header" class="clearfix">
@@ -21,28 +23,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     
 	{% if form.errors %}
 		<div style="float: right; width: 300px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
-			<p><b>A problem occurred:</b></p>
-			<p>Please review message below. {{ form.non_field_errors }}</p>
+			<p><b>{% trans 'A problem occurred:' %}</b></p>
+			<p>{% blocktrans %}Please review message below. {{ form.non_field_errors }}{% endblocktrans %}</p>
 		</div> <!-- style -->
 	{% endif %}
 	
-	<h1 class="section" style="font-size: 1.4em;">Setup your account</h1>
-	<p class="lightx2">Step 1 of 2</p>
+	<h1 class="section" style="font-size: 1.4em;">{% trans 'Setup your account' %}</h1>
+	<p class="lightx2">{% trans 'Step 1 of 2' %}</p>
 </div> <!-- .clearfix -->
 
 <hr />
 
 <fieldset style="margin: 0 100px">
 
-<label style="font-weight:bold; padding-bottom: 20px; display: block">Select organisation that you belong to</label>
+<label style="font-weight:bold; padding-bottom: 20px; display: block">{% trans 'Select organisation that you belong to' %}</label>
 	<div class="clearfix">
         {% if form.organisation.errors %}
 		<div style="float: right; width: 200px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
-		<p><b>A problem occurred:</b></p>
+		<p><b>{% trans 'A problem occurred:' %}</b></p>
 		<p>{{ form.organisation.errors|join:", " }}</p>
 		</div> <!-- style -->		  
         {% endif %}
-
 
 {{ form.organisation }}
 <!--<select name="select1" class="select" style="margin: 10px 50px; display: block">
@@ -53,17 +54,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </select>-->
 </div> <!-- .clearfix -->
 
-<p class="lightx2" style="margin: 20px 30px 0 30px">Important:</p>
-<p class="lightx2" style="margin: 0 30px">To set up your account, your organisation must be already registered with Akvo. If  you do not see your organisation on the list above, <a href="#">click this link</a> to email us to begin  registering your organisation. After registration is complete, please return to set up  your account.</p>
+<p class="lightx2" style="margin: 20px 30px 0 30px">{% trans 'Important' %}:</p>
+<p class="lightx2" style="margin: 0 30px">{% trans 'To set up your account, your organisation must be already registered with Akvo. If you do not see your organisation on the list above, <a href="#">click this link</a> to email us to begin registering your organisation. After registration is complete, please return to set up  your account.' %}</p>
 
 </fieldset>
 
 <hr />
 
 <div style="text-align: center">
-<a href="{% url akvo.rsr.views.index %}" style="margin-right: 20px;">Cancel</a>
+<a href="{% url akvo.rsr.views.index %}" style="margin-right: 20px;">{% trans 'Cancel' %}</a>
 
-<button type="submit"><a class="actionbutton ab_white" onclick="this.blur();" style=" margin:0"><span>Continue</span></a></button>
+<button type="submit"><a class="actionbutton ab_white" onclick="this.blur();" style="margin:0"><span>{% trans 'Continue' %}</span></a></button>
 </div> <!-- style -->
 <form method="post" action="">
 </div> <!-- boxbody -->

@@ -3,18 +3,20 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+{% load i18n %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
 {% ifequal request.path "/" %}
-<title>Akvo.org - the open source for water and sanitation</title>
+<title>{% trans 'Akvo.org - the open source for water and sanitation' %}</title>
 {% else %}
-<title>Akvo RSR - {% block title %}Really simple reporting{% endblock %}</title>
+<title>{% trans 'Akvo RSR' %} - {% block title %}{% trans 'Really simple reporting' %}{% endblock %}</title>
 {% endifequal %}
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="description" content="Akvo.org - the open source for water and sanitation" />
-<meta name="keywords" content="water, sanitation, open source, development aid" />
+<meta name="description" content="{% trans 'Akvo.org - the open source for water and sanitation' %}" />
+<meta name="keywords" content="{% trans 'water, sanitation, open source, development aid' %}" />
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
@@ -45,22 +47,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	{% if not user.username %}
 	
-	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" />
 
 	<div id="header_button">
 	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin: 0;">
-		<span>Sign in</span>
+		<span>{% trans 'Sign in' %}</span>
 	</a>
 	</div>
 
 	{% else %}
 
-	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" />
+	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" />
 
 
 	<div id="header_button">
-	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="display: inline; vertical-align: middle; margin-left: 20px"><span>Sign out</span></a>
-	<span id="header_logged_text">Signed in as: {{user.username}}</span>
+	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="display: inline; vertical-align: middle; margin-left: 20px"><span>{% trans 'Sign out' %}</span></a>
+	<span id="header_logged_text">{% trans 'Signed in as' %}: {{user.username}}</span>
 	</div>
 
 	{% endif %}
@@ -71,23 +73,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block navigation %}
 <div id="navigation" class="clearfix">			
 	<ul id="navlist">
-		<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>Home</a></li>
-		<li><a href="/wiki">Akvopedia</a></li>
-		<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifnotequal request.path "/rsr/" %} class="active"{% endifnotequal %}>Projects</a></li>
-		<li><a href="/web/get_involved">Get involved</a></li>
-		<li><a href="/blog">Blog</a></li>
-		<li><a href="/web/what_we_do">About</a></li>
+		<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/rsr/" %} class="active"{% endifequal %}>{% trans 'Home' %}</a></li>
+		<li><a href="/wiki">{% trans 'Akvopedia' %}</a></li>
+		<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifnotequal request.path "/rsr/" %} class="active"{% endifnotequal %}>{% trans 'Projects' %}</a></li>
+		<li><a href="/web/get_involved">{% trans 'Get involved' %}</a></li>
+		<li><a href="/blog">{% trans 'Blog' %}</a></li>
+		<li><a href="/web/what_we_do">{% trans 'About' %}</a></li>
 	{% if not user.username %}
-		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">Register</a></li>
+		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
 	{% else %}
-		<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">My account</a></li>
+		<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
 	{% endif %}
 	</ul>
 </div> <!-- #navigation -->
 {% endblock navigation %}
 
 <div class="clearfix" id="breadcrumbs">
-	{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">Home</a>{% endblock breadcrumbs %}
+	{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">{% trans 'Home' %}</a>{% endblock breadcrumbs %}
 </div>
 
 <div class="clearfix" id="content">
@@ -95,15 +97,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock page_id %}
 
 {% block content %}
-<h1>Akvo RSR - Really simple reporting!</h1>
+<h1>{% trans 'Akvo RSR - Really simple reporting' %}!</h1>
 {% endblock content %}
 
 </div> <!-- #content -->
 
 {% block footer %}
 <div id="footer" class="clearfix">
-	<div style="float:left">Site content under <a href="/web/open_license">Open License</a> | <a href="/web/terms_of_use">Terms of use</a> | <a href="/web/privacy_policy">Privacy policy</a></div>
-	<div style="float:right"><a href="/web/contact_us">Contact us</a></div>
+	<div style="float:left">{% trans 'Site content under <a href="/web/open_license">Open License</a>' %} | <a href="/web/terms_of_use">{% trans 'Terms of use' %}</a> | <a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a></div>
+	<div style="float:right"><a href="/web/contact_us">{% trans 'Contact us' %}</a></div>
 </div> <!-- #footer -->
 {% endblock footer %}
 
