@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-24 11:46+0100\n"
+"POT-Creation-Date: 2008-11-28 10:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: nl <LL@li.org>\n"
@@ -88,47 +88,47 @@ msgstr ""
 msgid "country name"
 msgstr ""
 
-#: rsr/models.py:72
+#: rsr/models.py:80
 msgid "field partner"
 msgstr ""
 
-#: rsr/models.py:73
+#: rsr/models.py:81
 msgid "support_partner"
 msgstr ""
 
-#: rsr/models.py:74
+#: rsr/models.py:82
 msgid "funding_partner"
 msgstr ""
 
-#: rsr/models.py:78
+#: rsr/models.py:86
 msgid "organisation_type"
 msgstr ""
 
-#: rsr/models.py:82
+#: rsr/models.py:90
 msgid "country"
 msgstr ""
 
-#: rsr/models.py:101
+#: rsr/models.py:109
 msgid "Partnership type(s)"
 msgstr ""
 
-#: rsr/models.py:102
+#: rsr/models.py:110
 msgid "General information"
 msgstr ""
 
-#: rsr/models.py:103
+#: rsr/models.py:111
 msgid "Contact information"
 msgstr ""
 
-#: rsr/models.py:167 templates/rsr/update_list.html:25
+#: rsr/models.py:175 templates/rsr/update_list.html:25
 msgid "status"
 msgstr ""
 
-#: rsr/models.py:225
+#: rsr/models.py:233
 msgid "Project description"
 msgstr ""
 
-#: rsr/models.py:235 templates/rsr/organisation.html:69
+#: rsr/models.py:243 templates/rsr/organisation.html:69
 #: templates/rsr/project_details.html:75
 #: templates/rsr/project_directory.html:76
 #: templates/rsr/project_directory_backup.html:69
@@ -137,137 +137,137 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: rsr/models.py:238
+#: rsr/models.py:246
 msgid "Location extra"
 msgstr ""
 
-#: rsr/models.py:241
+#: rsr/models.py:249
 msgid "Project info"
 msgstr ""
 
-#: rsr/models.py:244 templates/rsr/project_details.html:109
+#: rsr/models.py:252 templates/rsr/project_details.html:109
 #: templates/rsr/project_main.html:87
 msgid "Goals"
 msgstr ""
 
-#: rsr/models.py:247
+#: rsr/models.py:255
 msgid "Project target benchmarks"
 msgstr ""
 
-#: rsr/models.py:251
+#: rsr/models.py:259
 msgid "Project info details"
 msgstr ""
 
-#: rsr/models.py:254
+#: rsr/models.py:262
 msgid "Project meta info"
 msgstr ""
 
-#: rsr/models.py:577
+#: rsr/models.py:585
 msgid "mms id"
 msgstr ""
 
-#: rsr/models.py:578
+#: rsr/models.py:586
 msgid "subject"
 msgstr ""
 
-#: rsr/models.py:579 rsr/models.py:626
+#: rsr/models.py:587 rsr/models.py:634
 msgid "sender"
 msgstr ""
 
-#: rsr/models.py:580 rsr/models.py:627
+#: rsr/models.py:588 rsr/models.py:635
 msgid "to"
 msgstr ""
 
-#: rsr/models.py:581 rsr/models.py:646 rsr/models.py:668
+#: rsr/models.py:589 rsr/models.py:654 rsr/models.py:676
 #: templates/rsr/update_list.html:35
 msgid "time"
 msgstr ""
 
-#: rsr/models.py:583
+#: rsr/models.py:591
 msgid "mms version"
 msgstr ""
 
-#: rsr/models.py:584
+#: rsr/models.py:592
 msgid "message class"
 msgstr ""
 
-#: rsr/models.py:585
+#: rsr/models.py:593
 msgid "priority"
 msgstr ""
 
-#: rsr/models.py:586
+#: rsr/models.py:594
 msgid "file count"
 msgstr ""
 
-#: rsr/models.py:615
+#: rsr/models.py:623
 msgid "mms"
 msgstr ""
 
-#: rsr/models.py:616
+#: rsr/models.py:624
 msgid "file name"
 msgstr ""
 
-#: rsr/models.py:617
+#: rsr/models.py:625
 msgid "content type"
 msgstr ""
 
-#: rsr/models.py:618
+#: rsr/models.py:626
 msgid "content ID"
 msgstr ""
 
-#: rsr/models.py:619
+#: rsr/models.py:627
 msgid "file size"
 msgstr ""
 
-#: rsr/models.py:625 rsr/models.py:639 templates/rsr/update_list.html:23
+#: rsr/models.py:633 rsr/models.py:647 templates/rsr/update_list.html:23
 msgid "text"
 msgstr ""
 
-#: rsr/models.py:628
+#: rsr/models.py:636
 msgid "delivered"
 msgstr ""
 
-#: rsr/models.py:629
+#: rsr/models.py:637
 msgid "saved at"
 msgstr ""
 
-#: rsr/models.py:630
+#: rsr/models.py:638
 msgid "incoming sms id"
 msgstr ""
 
-#: rsr/models.py:636 rsr/models.py:665
+#: rsr/models.py:644 rsr/models.py:673
 msgid "project"
 msgstr ""
 
-#: rsr/models.py:637 rsr/models.py:666
+#: rsr/models.py:645 rsr/models.py:674
 msgid "user"
 msgstr ""
 
-#: rsr/models.py:638 templates/rsr/update_list.html:21
+#: rsr/models.py:646 templates/rsr/update_list.html:21
 msgid "title"
 msgstr ""
 
-#: rsr/models.py:642 templates/rsr/update_list.html:33
+#: rsr/models.py:650 templates/rsr/update_list.html:33
 msgid "photo location"
 msgstr ""
 
-#: rsr/models.py:643 templates/rsr/update_list.html:29
+#: rsr/models.py:651 templates/rsr/update_list.html:29
 msgid "photo caption"
 msgstr ""
 
-#: rsr/models.py:644 templates/rsr/update_list.html:31
+#: rsr/models.py:652 templates/rsr/update_list.html:31
 msgid "photo credit"
 msgstr ""
 
-#: rsr/models.py:645
+#: rsr/models.py:653
 msgid "update method"
 msgstr ""
 
-#: rsr/models.py:667
+#: rsr/models.py:675
 msgid "comment"
 msgstr ""
 
-#: rsr/views.py:179
+#: rsr/views.py:180
 msgid "The blog is not available at the moment."
 msgstr ""
 
@@ -783,25 +783,19 @@ msgstr ""
 
 #: templates/rsr/inc_target_benchmarks.html:23
 #, python-format
-msgid ""
-"\n"
-"                for %(improved_water_years)s years\n"
-"            "
+msgid "for %(improved_water_years)s years"
 msgstr ""
 
-#: templates/rsr/inc_target_benchmarks.html:30
+#: templates/rsr/inc_target_benchmarks.html:28
 msgid "persons with access to improved sanitation"
 msgstr ""
 
-#: templates/rsr/inc_target_benchmarks.html:32
+#: templates/rsr/inc_target_benchmarks.html:30
 #, python-format
-msgid ""
-"\n"
-"                for %(improved_sanitation_years)s years\n"
-"            "
+msgid "for %(improved_sanitation_years)s years"
 msgstr ""
 
-#: templates/rsr/inc_target_benchmarks.html:39
+#: templates/rsr/inc_target_benchmarks.html:35
 msgid "persons who receive training / education per year"
 msgstr ""
 
