@@ -165,6 +165,7 @@ STATUSES = (
     ('A', 'Active'),
     ('H', 'Need funding'),
     ('C', 'Complete'),
+    ('L', 'Cancelled'),
 )
 STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
 STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', }
