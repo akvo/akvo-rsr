@@ -647,7 +647,7 @@ class ProjectUpdate(models.Model):
     text            = models.TextField(_('text'), blank=True)
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
-    photo_location  = models.CharField(_('photo location'), blank=True, max_length=1, choices=PHOTO_LOCATIONS, default='B')
+    photo_location  = models.CharField(_('photo location'), max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
