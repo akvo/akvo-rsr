@@ -146,25 +146,29 @@ def index(request):
     '''
     #from dbgp.client import brk
     #brk(host="192.168.1.123", port=9000)
-    bandwidth = request.session.get('bandwidth', False)
+    
+    ##### old code supporting two versions of the home page. removed for now #####
+    #bandwidth = request.session.get('bandwidth', False)
     # is this a returned user?
-    if not bandwidth:
-        # nope, no session. so are we returning from cookie test?
-        if request.session.test_cookie_worked():
-            # new user, with cookies enabled
-            request.session['bandwidth'] = bandwidth = 'low'
-            request.session.delete_test_cookie()
-            return HttpResponseRedirect('/rsr/')
-        else:
-            # virgin user or no cookies?
-            no_cookie = request.GET.get('nocookie')
-            if not no_cookie:
-                # brand new user, test for cookieness
-                return HttpResponseRedirect('/rsr/settestcookie/')
-            elif no_cookie != 'True':
-                return HttpResponseRedirect('/rsr/?nocookie=True')
-            else:
-                bandwidth = 'low'
+    #if not bandwidth:
+    #    # nope, no session. so are we returning from cookie test?
+    #    if request.session.test_cookie_worked():
+    #        # new user, with cookies enabled
+    #        request.session['bandwidth'] = bandwidth = 'low'
+    #        request.session.delete_test_cookie()
+    #        return HttpResponseRedirect('/rsr/')
+    #    else:
+    #        # virgin user or no cookies?
+    #        no_cookie = request.GET.get('nocookie')
+    #        if not no_cookie:
+    #            # brand new user, test for cookieness
+    #            return HttpResponseRedirect('/rsr/settestcookie/')
+    #        elif no_cookie != 'True':
+    #            return HttpResponseRedirect('/rsr/?nocookie=True')
+    #        else:
+    #            bandwidth = 'low'
+    ###############################################################################
+    bandwidth = 'low'
     try:
         feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
         latest1 = feed.entries[0]
