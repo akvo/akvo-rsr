@@ -80,7 +80,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <p>{{ form.photo_location.errors.as_text }}</p>
 </div> <!-- style -->
 {% endif %}
-{{form.photo_location}}
+<!-- Bugfix for radio not setting defult value {{form.photo_location}}-->
+<ul>
+<li><label for="id_photo_location_0"><input value="B" type="radio" class="radio" checked="checked" name="photo_location" id="id_photo_location_0" /> At the beginning of the update</label></li>
+<li><label for="id_photo_location_1"><input value="E" type="radio" class="radio" name="photo_location" id="id_photo_location_1" /> At the end of the update</label></li>
+</ul>
 </div> <!-- .clearfix -->
 
 <label style="font-weight:bold; padding: 20px 0 10px 0; display: block">{% trans 'Photo caption' %} <span class="lightx2" style="font-weight: normal">({% trans 'optional' %})</span></label>
