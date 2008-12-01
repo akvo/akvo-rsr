@@ -170,6 +170,7 @@ def index(request):
     ###############################################################################
     bandwidth = 'low'
     try:
+        raise
         feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
