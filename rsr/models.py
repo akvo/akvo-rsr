@@ -168,7 +168,7 @@ STATUSES = (
     ('L', 'Cancelled'),
 )
 STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
-STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'grey', }
+STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
 
 class Project(models.Model):
     name                        = models.CharField(max_length=45)
