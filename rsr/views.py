@@ -518,7 +518,7 @@ class UpdateForm(ModelForm):
     text            = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
     #status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
     photo           = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
-    photo_location  = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, default="B", attrs={'class':'radio'}))
+    photo_location  = forms.CharField(required=False, default="B", widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
     photo_caption   = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
     photo_credit    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25',}))
     
