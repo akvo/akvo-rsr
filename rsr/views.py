@@ -65,6 +65,7 @@ def akvo_at_a_glance(projects, org=None):
     status_active   = projects.filter(status__exact='A').count()
     status_onhold   = projects.filter(status__exact='H').count()
     status_complete = projects.filter(status__exact='C').count()
+    status_cancelled= projects.filter(status__exact='L').count()
     mdgs_water       = mdgs_water_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
     mdgs_sanitation  = mdgs_sanitation_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
     project_count   = projects.count()

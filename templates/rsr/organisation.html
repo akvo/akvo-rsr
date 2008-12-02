@@ -49,7 +49,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
 		</p>
 		<h2 class="lightx2">{% trans 'Type' %}</h2>
-		<p>{{o.show_organisation_type}}</p>
+		<p>{{o.get_organisation_type_display}}</p>
 	
 		<!--<h2 class="lightx2">Scope</h2>
 		<p>National</p>-->

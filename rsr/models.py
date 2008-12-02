@@ -67,14 +67,22 @@ def funding_aggregate(projects, organisation=None):
     # return sum of funds needed, amount pledged (by the org if supplied), and how much is still needed
     return funding_total, pledged, funding_total - total_pledged
 
-ORG_TYPES = (
-    ('N', 'NGO'),
-    ('G', 'Governmental'),
-    ('C', 'Commercial'),
-    ('K', 'Knowledge institution'),
-)
-ORG_TYPES_DICT = dict(ORG_TYPES)
 class Organisation(models.Model):
+    """
+    There are three types of organisations in RSR, called Field partner,
+    Support partner and Funding partner respectively.
+    """
+    ORG_TYPE_NGO = 'N'
+    ORG_TYPE_GOV = 'G'
+    ORG_TYPE_COM = 'C'
+    ORG_TYPE_KNO = 'K'
+    ORG_TYPES = (
+        (ORG_TYPE_NGO, 'NGO'),
+        (ORG_TYPE_GOV, 'Governmental'),
+        (ORG_TYPE_COM, 'Commercial'),
+        (ORG_TYPE_KNO, 'Knowledge institution'),
+    )
+    #ORG_TYPES_DICT = dict(ORG_TYPES)
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField(_('field partner'))
@@ -124,8 +132,8 @@ class Organisation(models.Model):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
     
-    def show_organisation_type(self):
-        return ORG_TYPES_DICT[self.organisation_type]
+    #def show_organisation_type(self):
+    #    return ORG_TYPES_DICT[self.organisation_type]
     
     def projects(self):
         '''
