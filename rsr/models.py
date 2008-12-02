@@ -156,7 +156,7 @@ class Organisation(models.Model):
     
     def funding(self):
         funding_total, funding_pledged, funding_needed = funding_aggregate(self.projects(), organisation=self)
-        return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_total - funding_pledged}
+        return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_needed}
     
     class Meta:
         ordering = ['name']
