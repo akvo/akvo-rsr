@@ -440,9 +440,11 @@ class RSR_RegistrationManager(RegistrationManager):
                 profile.activation_key = "ALREADY_ACTIVATED"
                 profile.save()
                 from django.core.mail import send_mail
+                from django.contrib.sites.models import Site
+                current_site = Site.objects.get_current()
                 subject = 'Akvo user email confirmed'                
                 message = 'A user, %s, has confirmed her email. Check it out!' % user.username
-                send_mail(subject, message, 'noreply@akvo.org', ['gabriel@akvo.org', 'thomas@akvo.org'])                
+                send_mail(subject, message, 'noreply@%s' % current_site, ['gabriel@akvo.org', 'thomas@akvo.org'])                
                 return user
         return False
     
