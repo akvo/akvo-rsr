@@ -14,9 +14,9 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core import validators
-from django.utils.safestring import mark_safe
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
-
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from registration.models import RegistrationProfile, RegistrationManager
@@ -439,8 +439,6 @@ class RSR_RegistrationManager(RegistrationManager):
                 user.save()
                 profile.activation_key = "ALREADY_ACTIVATED"
                 profile.save()
-                from django.core.mail import send_mail
-                from django.contrib.sites.models import Site
                 current_site = Site.objects.get_current()
                 subject = 'Akvo user email confirmed'                
                 message = 'A user, %s, has confirmed her email. Check it out!' % user.username
@@ -499,7 +497,7 @@ class RSR_RegistrationManager(RegistrationManager):
                                          'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
                                          'site': current_site })
             
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_user.email])
+            send_mail(subject, message, 'noreply@%s' % current_site, [new_user.email])
         return new_user
     
     def update_active_user(self, user, first_name, last_name):
