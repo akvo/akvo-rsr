@@ -51,7 +51,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 {{ form.username }}
                 <!--<input class="input c4" name="input">-->
 
-                <p class="about_field">{% trans 'Your user name will be permanent. Use this to log into Akvo.' %}</p>
+                <p class="about_field">
+                    {% trans 'Your user name will be permanent. Use this to log into Akvo.' %}
+                    <br />
+                    {% trans 'Remember that user names as well as passwords are case sensitive.' %}
+                </p>
             </div>
             <hr>
 
