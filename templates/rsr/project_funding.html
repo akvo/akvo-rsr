@@ -97,7 +97,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 				{% if funder.funding_organisation.logo %}
 					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
-					<img src="{{MEDIA_URL}}{{ funder.funding_organisation.logo }}" alt="{% blocktrans %}Logo of {{funder.funding_organisation.name}}{% endblocktrans %}" style="margin: 10px 20px 10px 20px;" />
+					<img src="{{MEDIA_URL}}{{ funder.funding_organisation.logo }}" alt="{% blocktrans with funder.funding_organisation.name as funding_org_name %}Logo of {{funding_org_name}}{% endblocktrans %}" style="margin: 10px 20px 10px 20px;" />
 					</a>
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
