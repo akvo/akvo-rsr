@@ -852,30 +852,30 @@ msgstr "Personen mit besserem Zugang zu Wasser"
 
 #: templates/rsr/inc_target_benchmarks.html:23
 #, python-format
-msgid "for %(improved_water_years)s years"
-msgstr ""
+msgid "for %(improved_water_years) years"
+msgstr "für %(improved_water_years) Jahre"
 
 #: templates/rsr/inc_target_benchmarks.html:28
 msgid "persons with access to improved sanitation"
-msgstr ""
+msgstr "Personen mit Zugang zu besserer Abwasserentsorgung"
 
 #: templates/rsr/inc_target_benchmarks.html:30
 #, python-format
-msgid "for %(improved_sanitation_years)s years"
-msgstr ""
+msgid "for %(improved_sanitation_years) years"
+msgstr "für %(improved_sanitation_years) Jahre"
 
 #: templates/rsr/inc_target_benchmarks.html:35
 msgid "persons who receive training / education per year"
-msgstr "Leute die Training / Bildung"
+msgstr "Personen, die pro Jahr Training / Bildung erhalten"
 
 #: templates/rsr/index.html:49
 msgid "View static home page"
-msgstr ""
+msgstr "Statische Homepage zeigen"
 
 #: templates/rsr/index.html:50 templates/rsr/index.html.py:118
 #, fuzzy
 msgid "Our latest projects"
-msgstr "Verwandt mit diesem Projekt"
+msgstr "Unsere neuesten Projekte"
 
 #: templates/rsr/index.html:52
 msgid ""
@@ -888,55 +888,55 @@ msgstr ""
 
 #: templates/rsr/index.html:117
 msgid "View flash-enabled home page"
-msgstr ""
+msgstr "Flash Homepage zeigen"
 
 #: templates/rsr/index.html:145 templates/rsr/project_main.html:238
 #: templates/rsr/project_updates.html:32
 msgid "Subscribe via RSS"
-msgstr "Mit RSS abonnieren"
+msgstr "Via RSS abonnieren"
 
 #: templates/rsr/index.html:146
 msgid "Most recent Akvo Blog article"
-msgstr ""
+msgstr "Neuester Akvo Blogeintrag"
 
 #: templates/rsr/index.html:160 templates/rsr/index.html.py:175
 msgid "by"
-msgstr ""
+msgstr "von"
 
 #: templates/rsr/index.html:163 templates/rsr/index.html.py:178
 msgid "Read more"
-msgstr ""
+msgstr "Mehr lesen"
 
 #: templates/rsr/index.html:180
 msgid "View earlier blog entries"
-msgstr ""
+msgstr "Vorhergehende Blogeinträge anzeigen"
 
 #: templates/rsr/index_base.html:24 templates/rsr/project_list.html:14
 msgid "Akvo at a glance"
-msgstr ""
+msgstr "Akvo auf einen Blick"
 
 #: templates/rsr/index_base.html:35 templates/rsr/index_base.html.py:38
 #, fuzzy
 msgid "Projects in Akvo"
-msgstr "Projektliste"
+msgstr "Projekte in Akvo"
 
 #: templates/rsr/index_base.html:43 templates/rsr/organisation.html:118
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 #: templates/rsr/index_base.html:44 templates/rsr/organisation.html:119
 msgid "Need funding"
-msgstr ""
+msgstr "Benötigt Finanzierung"
 
 #: templates/rsr/index_base.html:45 templates/rsr/organisation.html:120
 #, fuzzy
 msgid "Complete"
-msgstr "Kommentare"
+msgstr "Abgeschlossen"
 
 #: templates/rsr/index_base.html:47 templates/rsr/organisation.html:121
 #: templates/rsr/organisation_directory.html:98
 msgid "Total projects"
-msgstr ""
+msgstr "Projekte gesamt"
 
 #: templates/rsr/index_base.html:48 templates/rsr/organisation.html:122
 msgid ""
@@ -947,46 +947,46 @@ msgstr ""
 #: templates/rsr/index_base.html:55 templates/rsr/index_base.html.py:58
 #: templates/rsr/project_base.html:80
 msgid "Partners"
-msgstr ""
+msgstr "Partner"
 
 #: templates/rsr/index_base.html:64
 #: templates/rsr/organisation_directory.html:79
 #: templates/rsr/project_base.html:87
 msgid "Field partners"
-msgstr ""
+msgstr "Vorortpartner"
 
 #: templates/rsr/index_base.html:65
 #: templates/rsr/organisation_directory.html:76
 #: templates/rsr/project_base.html:108
 msgid "Support partners"
-msgstr ""
+msgstr "Hilfspartner"
 
 #: templates/rsr/index_base.html:66
 #: templates/rsr/organisation_directory.html:73
 msgid "Funding partners"
-msgstr ""
+msgstr "Finanzpartner"
 
 #: templates/rsr/index_base.html:68
 msgid "Organisations"
-msgstr ""
+msgstr "Organisationen"
 
 #: templates/rsr/index_base.html:69 templates/rsr/project_base.html:34
 #: templates/rsr/project_funding.html:24
 msgid "Funding"
-msgstr ""
+msgstr "Finanzierung"
 
 #: templates/rsr/index_base.html:69
 #, fuzzy
 msgid "projects"
-msgstr "Projektliste"
+msgstr "Projekte"
 
 #: templates/rsr/index_base.html:70 templates/rsr/organisation.html:140
 msgid "Pledged"
-msgstr ""
+msgstr "Zugesagt"
 
 #: templates/rsr/index_base.html:71 templates/rsr/organisation.html:141
 msgid "Still needed"
-msgstr ""
+msgstr "Ausstehend"
 
 #: templates/rsr/organisation.html:10
 msgid "Organisation no."
@@ -997,37 +997,37 @@ msgstr ""
 #: templates/rsr/organisation_directory.html:82
 #: templates/rsr/organisation_directory.html:85
 msgid "Organisation listing"
-msgstr ""
+msgstr "Organisationsliste"
 
 #: templates/rsr/organisation.html:45
 msgid "Activities"
-msgstr ""
+msgstr "Aktivitäten"
 
 #: templates/rsr/organisation.html:47 templates/rsr/project_base.html:85
 msgid "Field partner"
-msgstr ""
+msgstr "Vorortpartner"
 
 #: templates/rsr/organisation.html:48 templates/rsr/project_base.html:106
 msgid "Support partner"
-msgstr ""
+msgstr "Hilfspartner"
 
 #: templates/rsr/organisation.html:49
 msgid "Funding partner"
-msgstr ""
+msgstr "Finanzpartner"
 
 #: templates/rsr/organisation.html:51
 #: templates/rsr/organisation_directory.html:95
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: templates/rsr/organisation.html:58
 msgid "Website"
-msgstr ""
+msgstr "Webpräsenz"
 
 #: templates/rsr/organisation.html:62
 #, fuzzy
 msgid "Akvopedia entry"
-msgstr "Akvopedia Einträge"
+msgstr "Akvopedia Eintrag"
 
 #: templates/rsr/organisation.html:77
 #, fuzzy
@@ -1036,29 +1036,29 @@ msgstr "Kontext"
 
 #: templates/rsr/organisation.html:79
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: templates/rsr/organisation.html:83
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 #: templates/rsr/organisation.html:87
 msgid "Mobile"
-msgstr ""
+msgstr "Mobil"
 
 #: templates/rsr/organisation.html:91
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #: templates/rsr/organisation.html:110
 msgid "Organisation Activities"
-msgstr ""
+msgstr "Organisationsaktivitäten"
 
 #: templates/rsr/organisation.html:117
 #: templates/rsr/project_list_generic.html:19 templates/rsr/rsr_base.html:78
 #, fuzzy
 msgid "Projects"
-msgstr "Projektliste"
+msgstr "Projekte"
 
 #: templates/rsr/organisation.html:131
 #, python-format

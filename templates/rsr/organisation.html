@@ -128,11 +128,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<th colspan="2">
 			<h2>Funding
 				<span class="lightx2" style="font-weight: normal">
-					{% blocktrans count org_stats.project_count as proj_count %}
-						(1 project)
-					{% plural %}
-						({{proj_count}} projects)
-					{% endblocktrans %}
+					{% blocktrans count org_stats.project_count as proj_count %}(1 project){% plural %}({{proj_count}} projects){% endblocktrans %}
 				</span>
 			</h2>
 		</th>
