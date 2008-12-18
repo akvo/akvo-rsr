@@ -6,10 +6,11 @@
 Forms and validation code for user registration and updating.
 
 """
-from django import newforms as forms
-from django import oldforms
-from django.core import validators
-from django.core.validators import alnum_re
+from django import forms
+#TODO fix for django 1.0
+#from django import oldforms
+#from django.core import validators
+#from django.core.validators import alnum_re
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -26,7 +27,8 @@ from akvo.rsr.models import RSR_RegistrationProfile, UserProfile, Organisation
 # lands in trunk, this will no longer be necessary.
 attrs_dict = {'class': 'input c4',}
 
-class RSR_TextField(oldforms.TextField):
+#TODO fix for django 1.0
+class RSR_TextField():#oldforms.TextField):
     # hack to enable class attribute customization on some forms
     def render(self, data):
         if data is None:
@@ -39,8 +41,9 @@ class RSR_TextField(oldforms.TextField):
 
 class RSR_PasswordField(RSR_TextField):
     input_type = "password"
-    
-class RSR_SigninTextField(oldforms.TextField):
+
+#TODO fix for django 1.0    
+class RSR_SigninTextField():#oldforms.TextField):
     # hack to enable class attribute customization on some forms
     def render(self, data):
         if data is None:

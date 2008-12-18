@@ -26,6 +26,6 @@ MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://newdev.akvo.org/rsr/media/'
+MEDIA_URL = 'http://sandbox.akvo.org/rsr/media/'
 
 TEMPLATE_DEBUG = DEBUG

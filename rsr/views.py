@@ -6,12 +6,12 @@ from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment
 from akvo.rsr.models import funding_aggregate, UserProfile, MoMmsRaw, MoMmsFile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
-from django import newforms as forms
-from django import oldforms
+from django import forms
+#from django import oldforms
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template import RequestContext
-from django.newforms import ModelForm
+from django.forms import ModelForm
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe

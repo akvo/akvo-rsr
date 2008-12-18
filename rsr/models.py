@@ -7,13 +7,13 @@ import string
 import re
 from datetime import date, datetime
 
-from django import newforms as forms
+from django import forms
 from django.conf import settings
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.core import validators
+#from django.core import validators
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -24,28 +24,24 @@ from registration.models import RegistrationProfile, RegistrationManager
 from akvo.settings import MEDIA_ROOT
 
 CONTINENTS = (
-    (1, 'Africa'),
-    (2, 'Asia'),
-    (3, 'Australia'),
-    (4, 'Europe'),
-    (5, 'North America'),
-    (6, 'South America'),
+    (1, u'Africa'),
+    (2, u'Asia'),
+    (3, u'Australia'),
+    (4, u'Europe'),
+    (5, u'North America'),
+    (6, u'South America'),
 )
 class Country(models.Model):
     
-    country_name                = models.CharField(_("country name"), max_length=50)
-    continent                   = models.IntegerField("continent", choices=CONTINENTS)
+    country_name                = models.CharField(_(u'country name'), max_length=50)
+    continent                   = models.IntegerField(u'continent', choices=CONTINENTS)
 
     def __unicode__(self):
         return self.country_name
-    
-    class Admin:
-        list_display = ('country_name', 'continent', )
-        list_filter  = ('country_name', 'continent', )
-        
+
     class Meta:
-        verbose_name = "country"
-        verbose_name_plural = "countries"
+        verbose_name = u'country'
+        verbose_name_plural = u'countries'
 
 def funding_aggregate(projects, organisation=None):
     '''
@@ -77,25 +73,25 @@ class Organisation(models.Model):
     ORG_TYPE_COM = 'C'
     ORG_TYPE_KNO = 'K'
     ORG_TYPES = (
-        (ORG_TYPE_NGO, 'NGO'),
-        (ORG_TYPE_GOV, 'Governmental'),
-        (ORG_TYPE_COM, 'Commercial'),
-        (ORG_TYPE_KNO, 'Knowledge institution'),
+        (ORG_TYPE_NGO, u'NGO'),
+        (ORG_TYPE_GOV, u'Governmental'),
+        (ORG_TYPE_COM, u'Commercial'),
+        (ORG_TYPE_KNO, u'Knowledge institution'),
     )
     #ORG_TYPES_DICT = dict(ORG_TYPES)
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
-    field_partner               = models.BooleanField(_('field partner'))
-    support_partner             = models.BooleanField(_('support_partner'))
-    funding_partner             = models.BooleanField(_('funding_partner'))
+    field_partner               = models.BooleanField(_(u'field partner'))
+    support_partner             = models.BooleanField(_(u'support_partner'))
+    funding_partner             = models.BooleanField(_(u'funding_partner'))
 
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
-    organisation_type           = models.CharField(_("organisation_type"), max_length=1, choices=ORG_TYPES)
+    organisation_type           = models.CharField(_(u'organisation_type'), max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
-    country                     = models.ForeignKey(Country, verbose_name=_('country'))
+    country                     = models.ForeignKey(Country, verbose_name=_(u'country'))
     url                         = models.URLField(blank=True, verify_exists = False)
     map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     
@@ -112,15 +108,6 @@ class Organisation(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Admin:
-        fields = (
-            (_('Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
-            (_('General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_('Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
-            (None, {'fields': ('description', )}),
-        )    
-        list_display = ('name', 'long_name', 'website', 'partner_types', )
-    
     def partner_types(self):
         pt = ""
         if self.field_partner: pt += "F"
@@ -237,43 +224,6 @@ class Project(models.Model):
     def project_type(self):
         return "%s project" % (self.get_category_display(),)        
 
-    class Admin:
-        fields = (
-            (_('Project description'), {
-                'fields': (
-                    'name',
-                    'subtitle',
-                    'status',
-                    ('category_water', 'category_sanitation', 'category_maintenance', 
-                        'category_training', 'category_education', 'category_product_development', 'category_other',
-                    ),
-                )
-            }),
-            (_('Location'), {
-                'fields': ('city', 'state', 'country',)
-            }),
-            (_('Location extra'), {
-                'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',), #'classes': 'collapse'
-            }),
-            (_('Project info'), {
-                'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
-            }),
-            (_('Goals'), {
-                'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
-            }),
-            (_('Project target benchmarks'), {
-                'fields': ('water_systems', 'sanitation_systems', 'hygiene_facilities', ('improved_water', 
-                'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
-            }),
-            (_('Project info details'), {
-                'fields': ('current_status_detail', 'project_plan_detail', 'sustainability', 'context',), #'classes': 'collapse'
-            }),
-            (_('Project meta info'), {
-                'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
-            }),
-        )
-        list_display = ('id', 'name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
-
     def project_type(self):
         pt = ""
         if self.category_water: pt += "W"
@@ -318,9 +268,9 @@ LINK_KINDS = (
 )
 class Link(models.Model):
     kind    = models.CharField(max_length=1, choices=LINK_KINDS)
-    url     = models.URLField(core=True)
+    url     = models.URLField()
     caption = models.CharField(max_length=50)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=3)
+    project = models.ForeignKey(Project,)
     
     def __unicode__(self):
         return self.url
@@ -328,28 +278,25 @@ class Link(models.Model):
     def show_link(self):
         return '<a href="%s">%s</a>' % (self.url, self.caption,)
     
-    class Admin:
-        list_display = ('url', 'caption', 'show_link', )
-
 class FundingPartner(models.Model):
     funding_organisation =  models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount = models.IntegerField(core=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, core=True)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
+    funding_amount = models.IntegerField()
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    project = models.ForeignKey(Project,)
     
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
      
 class SupportPartner(models.Model):
-    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True}, core=True)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
+    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
     
 class FieldPartner(models.Model):
-    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True}, core=True)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
+    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
@@ -384,9 +331,6 @@ class Funding(models.Model):
     
     def is_complete(self):
         return self.date_complete < date.today()
-    
-    class Admin:
-        list_display = ('project', 'employment', 'building', 'training', 'maintenance', 'other', 'total', ) 
         
 PHOTO_LOCATIONS = (
     ('B', 'At the beginning of the update'),
@@ -513,10 +457,12 @@ class RSR_RegistrationProfile(RegistrationProfile):
     objects = RSR_RegistrationManager()
 
 def isValidGSMnumber(field_data, all_data):
-	if not field_data.startswith("467"):
-		raise validators.ValidationError("The phone number must start with 467")
-	if not len(field_data) == 11:
-		raise validators.ValidationError("The phone number must be 11 digits long.")
+    #TODO: fix for django 1.0
+    pass
+	#if not field_data.startswith("467"):
+	#	raise validators.ValidationError("The phone number must start with 467")
+	#if not len(field_data) == 11:
+	#	raise validators.ValidationError("The phone number must be 11 digits long.")
 
 class UserProfile(models.Model):
     '''
@@ -536,7 +482,8 @@ class UserProfile(models.Model):
         blank=True,
         help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
         <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
-        validator_list = [isValidGSMnumber]
+        #TODO: fix to django 1.0
+        #validator_list = [isValidGSMnumber]
     )    
     project = models.ForeignKey(Project, null=True, blank=True, )
     
@@ -580,9 +527,6 @@ class UserProfile(models.Model):
             pu = ProjectUpdate.objects.create(**update_data)
             return pu
         return False
-        
-    class Admin:
-        list_display = ('user_name', 'organisation_name', 'phone_number', 'project', )
     
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
@@ -622,14 +566,11 @@ class MoMmsRaw(models.Model):
         #    pass
         return update_data
 
-    class Admin:
-        list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
-
 class MoMmsFile(models.Model):
     '''
     raw info about an mms file attachement
     '''
-    mms             = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR, core=True, verbose_name=_('mms'))
+    mms             = models.ForeignKey(MoMmsRaw, verbose_name=_('mms'))
     file            = models.CharField(max_length=200, verbose_name=_('file name')) 
     filecontent     = models.CharField(max_length=50, verbose_name=_('content type')) 
     filecontentid   = models.CharField(blank=True, max_length=50, verbose_name=_('content ID')) 
@@ -645,9 +586,6 @@ class MoSmsRaw(models.Model):
     delivered   = models.CharField(_('delivered'), max_length=50)
     saved_at    = models.DateTimeField(_('saved at'))
     incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
-    
-    class Admin:
-        list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
 
 class ProjectUpdate(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
@@ -661,10 +599,6 @@ class ProjectUpdate(models.Model):
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
-    
-    class Admin:
-        list_display    = ('project', 'user', 'text', 'time', 'photo',)    
-        list_filter     = ('project', 'time', )
 
     def img(self):
         return '<img src="%s" />' % (self.get_image_url(),)
@@ -683,8 +617,4 @@ class ProjectComment(models.Model):
     user            = models.ForeignKey(User, verbose_name=_('user'))
     comment         = models.TextField(_('comment'))
     time            = models.DateTimeField(_('time'))
-    
-    class Admin:
-        list_display    = ('project', 'user', 'comment', 'time', )    
-        list_filter     = ('project', 'time', )
         

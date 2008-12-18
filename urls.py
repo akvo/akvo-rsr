@@ -2,10 +2,15 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 from akvo.rsr.feeds import ProjectUpdates
 from akvo.rsr.models import create_rsr_profile
+
+# The next two lines enable the admin and load each admin.py file:
+from django.contrib import admin
+admin.autodiscover()
 
 feeds = {
     'updates': ProjectUpdates,
@@ -17,7 +22,8 @@ urlpatterns = patterns('',
     (r'^$', 'akvo.rsr.views.index', ),
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
 
-    (r'^rsr/admin/', include('django.contrib.admin.urls')),
+    (r'^rsr/admin/(.*)', admin.site.root),
+    #(r'^rsr/admin/', include('django.contrib.admin.urls')),
     
     (r'^rsr/projects/$', 'akvo.rsr.views.projectlist', ),
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
