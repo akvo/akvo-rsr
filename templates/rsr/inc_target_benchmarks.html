@@ -17,6 +17,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     {% if p.sanitation_systems %}
         <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
     {% endif %}
+    {% if p.hygiene_facilities %}
+        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
+    {% endif %}
     {% if p.improved_water %}
         <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
         {% if p.improved_water_years %}

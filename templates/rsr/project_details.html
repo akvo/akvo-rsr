@@ -47,9 +47,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div style="float: left; width: 200px; padding-left: 30px">
 	
-		<div class="lightx2">{% trans 'Status' %}</div>
+		<div class="lightx2"><b>{% trans 'Status' %}</b></div>
 		<div>{{p.show_status}}</div>
+		<br />
+		<div class="lightx2"><b>{% trans 'Focus area' %}</b></div>
+
 		{% category_icons p %}
+
 		<!--
 		{% if p.category_sanitation %}
 		<img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />

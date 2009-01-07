@@ -101,9 +101,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     </select>
     results per page-->
 		<span style="margin: 0 20px 0 20px">
-			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projects.count as p_count %}
-				Projects {{page_start}}-{{page_end}} of {{p_count}}
-			{% endblocktrans %}
+			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projects.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
 		</span>
 		<span style="margin: 0 20px 0 20px">
 			{% ifequal page.number 1 %}
@@ -311,9 +309,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</select>
 			results per page-->
 		<span style="margin: 0 20px 0 20px">
-			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projects.count as p_count %}
-				Projects {{page_start}}-{{page_end}} of {{p_count}}
-			{% endblocktrans %}
+			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projects.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
 		</span>
 		<span style="margin: 0 20px 0 20px">
 			{% ifequal page.number 1 %}

@@ -40,9 +40,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     </select>
     results per page-->
     <span style="margin: 0 20px 0 20px">
-        {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgz.count as o_count %}
-            Organisations {{page_start}}-{{page_end}} of {{o_count}}
-        {% endblocktrans %}
+        {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgz.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
     </span>
     <span style="margin: 0 20px 0 20px">
         {% ifequal page.number 1 %}
@@ -158,9 +156,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<td colspan="9">
 		<div style="text-align: right">
             <span style="margin: 0 20px 0 20px">
-                {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgz.count as o_count %}
-                    Organisations {{page_start}}-{{page_end}} of {{o_count}}
-                {% endblocktrans %}
+                {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgz.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
             </span>
             <span style="margin: 0 20px 0 20px">
                 {% ifequal page.number 1 %}

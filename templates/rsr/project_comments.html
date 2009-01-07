@@ -84,7 +84,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             </div>
             <br /><br />
             <!--<p style="text-align: right"><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>-->
-            <p style="text-align:right"><a href="{% blocktrans with p.id as p_id and c.id as c_id %}mailto:abuse@akvo.org?subject=Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a></p>
+            <p style="text-align:right"><a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a></p>
         {% endfor %}
             
 	</div> <!-- #project_updates & .boxbody -->

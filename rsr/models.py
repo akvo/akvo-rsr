@@ -169,13 +169,13 @@ CURRENCY_CHOICES = (
 )
 
 STATUSES = (
-    ('N', 'None'),
-    ('A', 'Active'),
-    ('H', 'Need funding'),
-    ('C', 'Complete'),
-    ('L', 'Cancelled'),
+    ('N', _('None')),
+    ('A', _('Active')),
+    ('H', _('Need funding')),
+    ('C', _('Complete')),
+    ('L', _('Cancelled')),
 )
-STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
+#STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
 STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
 
 class Project(models.Model):
@@ -288,7 +288,7 @@ class Project(models.Model):
     
     def show_status(self):
         "Show the current project status"
-        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
+        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
     
     def show_current_image(self):
         return '<img src="%s" />' % (self.get_current_image_url(),)
@@ -389,15 +389,15 @@ class Funding(models.Model):
         list_display = ('project', 'employment', 'building', 'training', 'maintenance', 'other', 'total', ) 
         
 PHOTO_LOCATIONS = (
-    ('B', 'At the beginning of the update'),
-    ('E', 'At the end of the update'),
+    ('B', _('At the beginning of the update')),
+    ('E', _('At the end of the update')),
 )
 UPDATE_METHODS = (
-    ('W', 'web'),
-    ('E', 'e-mail'),
-    ('S', 'SMS'),
+    ('W', _('web')),
+    ('E', _('e-mail')),
+    ('S', _('SMS')),
 )
-UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
+#UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 class RSR_RegistrationManager(RegistrationManager):
@@ -670,13 +670,13 @@ class ProjectUpdate(models.Model):
         return '<img src="%s" />' % (self.get_image_url(),)
     img.allow_tags = True
     
-    def show_status(self):
-        "Show the current project status"
-        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
+    #def show_status(self):
+    #    "Show the current project status"
+    #    return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
         
-    def show_update_method(self):
-        "Show the update method for this update"
-        return UPDATE_METHODS_DICT[self.update_method]
+    #def show_update_method(self):
+    #    "Show the update method for this update"
+    #    return UPDATE_METHODS_DICT[self.update_method]
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
