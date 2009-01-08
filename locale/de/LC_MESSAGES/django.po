@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-06 20:27+0000\n"
+"POT-Creation-Date: 2009-01-07 21:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -580,8 +580,9 @@ msgstr ""
 "Bitte geben sie ihr Passwort erneut ein um mögliche Tippfehler zu vermeiden."
 
 #: templates/registration/password_change_form.html:82
-msgid "Submit change"
-msgstr "Änderung bestätigen"
+#, fuzzy
+msgid "Change"
+msgstr "Abbrechen"
 
 #: templates/registration/password_reset_done.html:10
 #: templates/registration/password_reset_done.html:14
@@ -623,7 +624,6 @@ msgid "The %(site_name)s team"
 msgstr "Das %(site_name)s Team"
 
 #: templates/registration/password_reset_form.html:12
-#: templates/registration/password_reset_form.html:59
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
@@ -648,6 +648,11 @@ msgstr "Geben sie ihre E-Mail-Adresse ein"
 #: templates/registration/password_reset_form.html:55
 msgid "Enter the email address of your Akvo RSR account."
 msgstr "Geben sie die E-Mail-Adresse ihres Akvo RSR Kontos ein."
+
+#: templates/registration/password_reset_form.html:59
+#, fuzzy
+msgid "Reset"
+msgstr "Registrieren"
 
 #: templates/registration/registration_complete.html:11
 msgid "Registration complete"
@@ -1679,7 +1684,6 @@ msgid "Akvo.org"
 msgstr "Akvo.org"
 
 #: templates/rsr/rsr_base.html:54 templates/rsr/sign_in.html:20
-#: templates/rsr/sign_in.html.py:59
 msgid "Sign in"
 msgstr "Anmelden"
 
@@ -1760,6 +1764,10 @@ msgstr "Benutzername eingeben"
 #: templates/rsr/sign_in.html:54
 msgid "I forgot my username and/or password"
 msgstr "Ich habe meinen Benutzernamen und/oder Passwort vergessen"
+
+#: templates/rsr/sign_in.html:59
+msgid "Signin"
+msgstr "Anmelden"
 
 #: templates/rsr/sign_in.html:65
 msgid "I don't have an online account"
@@ -1864,3 +1872,6 @@ msgstr "Nachrichtenkopf"
 #: templates/widgets/featured_project.html:50
 msgid "Akvo"
 msgstr "Akvo"
+
+#~ msgid "Submit change"
+#~ msgstr "Änderung bestätigen"

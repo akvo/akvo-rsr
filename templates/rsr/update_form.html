@@ -82,8 +82,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endif %}
 <!-- Bugfix for radio not setting defult value {{form.photo_location}}-->
 <ul>
-<li><label for="id_photo_location_0"><input value="B" type="radio" class="radio" checked="checked" name="photo_location" id="id_photo_location_0" /> At the beginning of the update</label></li>
-<li><label for="id_photo_location_1"><input value="E" type="radio" class="radio" name="photo_location" id="id_photo_location_1" /> At the end of the update</label></li>
+<li><label for="id_photo_location_0"><input value="B" type="radio" class="radio" checked="checked" name="photo_location" id="id_photo_location_0" />{% trans 'At the beginning of the update' %}</label></li>
+<li><label for="id_photo_location_1"><input value="E" type="radio" class="radio" name="photo_location" id="id_photo_location_1" />{% trans 'At the end of the update' %}</label></li>
 </ul>
 </div> <!-- .clearfix -->
 
@@ -116,7 +116,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <hr />
 
-{% submit_button 'Submit update' 'ab_white' %}
+{% submit_button _('Update') 'ab_white' %}
 
 <form method="post" action="">
 </div> <!-- boxbody -->

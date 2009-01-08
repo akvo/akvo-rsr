@@ -17,7 +17,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 
 DEBUG = True
 
-DEFAULT_FROM_EMAIL = 'noreply@dev.akvo.org'
+DEFAULT_FROM_EMAIL = 'noreply@newdev.akvo.org'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

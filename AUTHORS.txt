@@ -1,29 +1,36 @@
+AUTHORS.txt v1.0, 8 January 2009, tbp
+
 AUTHORS of Akvo RSR
 
 The PRIMARY AUTHORS are (and/or have been):
 
-	Malte Beckmann
-	Thomas Bjelkeman-Pettersson
-	Mark Charmer
-	Gabriel von Heijne
-	Gino Lee
-	Peter van der Linde
-	Elizabeth Whiteside
+- Malte Beckmann
+- Thomas Bjelkeman-Pettersson
+- Mark Charmer
+- Gabriel von Heijne
+- Gino Lee
+- Peter van der Linde
+- Ellizabeth Whiteside
 
-Contributors, here is an inevitably incomplete list of MUCH APPRECIATED CONTRIBUTORS whom without, Akvo RSR would not have been the same:
+Contributors, here is an inevitably incomplete list of MUCH APPRECIATED
+CONTRIBUTORS whom without, Akvo RSR would not have been the same:
 
-	Luuk Diphoorn
-	Akhila Jambagi
-	Jeroen van der Sommen
+- Luuk Diphoorn
+- Akhila Jambagi
+- Jeroen van der Sommen
 
-Funding partners
+Further team members can be found at < http://www.akvo.org/web/team >
 
-	Dutch Ministry of Foreign Affairs / Schoklandfonds
-	Partners for Water (PvW)
-	Netherlands Water Partnership
-	ASN Bank
-	Aqua for All
-	Nedap
-	Simavi
+Funding partners, without them Akvo RSR could not have happened
 
-Many more partners, who all have greatly contributed to Akvo RSR in many ways can be found at: < http://www.akvo.org/web/ngo_partners > and < http://www.akvo.org/web/become_a_project_partner >
+- Dutch Ministry of Foreign Affairs / Schoklandfonds
+- Partners for Water (PvW)
+- Netherlands Water Partnership
+- ASN Bank
+- Aqua for All
+- Nedap
+- Simavi
+
+Many more partners, who all have greatly contributed to Akvo RSR in many ways
+can be found at: < http://www.akvo.org/web/ngo_partners > and
+< http://www.akvo.org/web/become_a_project_partner >

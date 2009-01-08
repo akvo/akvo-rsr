@@ -215,7 +215,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 </div>
                 <br />
                 <!--<p style="text-align: right"><span class="lightx1">Agree:</span> <a href="#">(21)</a> <span class="lightx1 indent">Disagree:</span> <a href="#">(3)</a></p>-->
-                <p style="text-align:right"><a href="mailto:abuse@akvo.org?subject=Comment abuse in project #{{p.id}}, comment #{{c.id}}">Report abuse</a></p>
+                <p style="text-align:right">
+					<a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
                 <hr style="clear: both"/>
             {% endfor %}
             <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">{% trans 'Older comments' %}</a></p>

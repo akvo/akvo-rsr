@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-06 21:55+0000\n"
+"POT-Creation-Date: 2009-01-08 20:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: sv <LL@li.org>\n"
@@ -185,11 +185,11 @@ msgstr ""
 msgid "Project meta info"
 msgstr ""
 
-#: rsr/models.py:392
+#: rsr/models.py:392 templates/rsr/update_form.html:85
 msgid "At the beginning of the update"
 msgstr ""
 
-#: rsr/models.py:393
+#: rsr/models.py:393 templates/rsr/update_form.html:86
 msgid "At the end of the update"
 msgstr ""
 
@@ -557,7 +557,7 @@ msgid "Retype the password to avoid mistakes."
 msgstr ""
 
 #: templates/registration/password_change_form.html:82
-msgid "Submit change"
+msgid "Change"
 msgstr ""
 
 #: templates/registration/password_reset_done.html:10
@@ -596,7 +596,6 @@ msgid "The %(site_name)s team"
 msgstr ""
 
 #: templates/registration/password_reset_form.html:12
-#: templates/registration/password_reset_form.html:59
 msgid "Reset password"
 msgstr ""
 
@@ -617,6 +616,10 @@ msgstr ""
 
 #: templates/registration/password_reset_form.html:55
 msgid "Enter the email address of your Akvo RSR account."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:59
+msgid "Reset"
 msgstr ""
 
 #: templates/registration/registration_complete.html:11
@@ -888,7 +891,7 @@ msgstr ""
 msgid "View flash-enabled home page"
 msgstr ""
 
-#: templates/rsr/index.html:145 templates/rsr/project_main.html:238
+#: templates/rsr/index.html:145 templates/rsr/project_main.html:239
 #: templates/rsr/project_updates.html:32
 msgid "Subscribe via RSS"
 msgstr ""
@@ -1212,7 +1215,7 @@ msgstr ""
 msgid "Fund project"
 msgstr ""
 
-#: templates/rsr/project_base.html:42
+#: templates/rsr/project_base.html:42 templates/rsr/project_funding.html:45
 msgid "Request posted"
 msgstr ""
 
@@ -1291,18 +1294,18 @@ msgstr ""
 msgid "Project comments"
 msgstr ""
 
-#: templates/rsr/project_comments.html:72 templates/rsr/project_main.html:222
+#: templates/rsr/project_comments.html:72 templates/rsr/project_main.html:223
 msgid ""
 "The comments are owned by whoever posted them. We are not responsible for "
 "them in any way."
 msgstr ""
 
-#: templates/rsr/project_comments.html:87
+#: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:219
 #, python-format
 msgid "Comment abuse in project #%(p_id)s, comment #%(c_id)s"
 msgstr ""
 
-#: templates/rsr/project_comments.html:87
+#: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:219
 msgid "Report abuse"
 msgstr ""
 
@@ -1551,39 +1554,39 @@ msgstr ""
 msgid "You must be signed in to add a comment"
 msgstr ""
 
-#: templates/rsr/project_main.html:221
+#: templates/rsr/project_main.html:222
 msgid "Older comments"
 msgstr ""
 
-#: templates/rsr/project_main.html:224
+#: templates/rsr/project_main.html:225
 msgid "No comments yet."
 msgstr ""
 
-#: templates/rsr/project_main.html:233 templates/rsr/project_updates.html:24
+#: templates/rsr/project_main.html:234 templates/rsr/project_updates.html:24
 #: templates/rsr/update_form.html:33 templates/rsr/update_form_old.html:28
 msgid "Add update"
 msgstr ""
 
-#: templates/rsr/project_main.html:234 templates/rsr/project_updates.html:33
+#: templates/rsr/project_main.html:235 templates/rsr/project_updates.html:33
 msgid "Project updates"
 msgstr ""
 
-#: templates/rsr/project_main.html:246 templates/rsr/project_updates.html:43
+#: templates/rsr/project_main.html:247 templates/rsr/project_updates.html:43
 #, python-format
 msgid "by %(user_name)s via %(update_meth)s"
 msgstr ""
 
-#: templates/rsr/project_main.html:281
+#: templates/rsr/project_main.html:282
 msgid "Earlier updates"
 msgstr ""
 
-#: templates/rsr/project_main.html:282 templates/rsr/project_updates.html:34
+#: templates/rsr/project_main.html:283 templates/rsr/project_updates.html:34
 msgid ""
 "The updates are owned by whoever posted them. We are not responsible for "
 "them in any way."
 msgstr ""
 
-#: templates/rsr/project_main.html:284
+#: templates/rsr/project_main.html:285
 msgid "No updates yet."
 msgstr ""
 
@@ -1768,6 +1771,10 @@ msgstr ""
 
 #: templates/rsr/update_form.html:90 templates/rsr/update_form_old.html:85
 msgid "Photo caption"
+msgstr ""
+
+#: templates/rsr/update_form.html:119
+msgid "Update"
 msgstr ""
 
 #: templates/rsr/update_form_old.html:10 templates/rsr/update_form_old.html:16

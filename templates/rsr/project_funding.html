@@ -42,7 +42,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<table>
 				<tr>
 					<td>{{p.funding.date_request_posted}}</td>
-					<td>Request posted</td>
+					<td>{% trans 'Request posted' %}</td>
 				</tr>
 				{% if p.funding.date_complete %}
 					<tr>
@@ -102,7 +102,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
 				<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
-				<p style="margin:10px 0"><b>Grant: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount}}</span></b></p>
+				<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount}}</span></b></p>
 			</div>
 		{% endfor %}    
 			
