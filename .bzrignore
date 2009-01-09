@@ -67,3 +67,14 @@ templates/rsr/project_list.html
 templates/rsr/project_list_generic.html
 templates/rsr/round.html
 mediaroot/dev
+conf/locale/de/LC_MESSAGES/django.mo
+conf/locale/es/LC_MESSAGES/django.mo
+conf/locale/fr/LC_MESSAGES/django.mo
+conf/locale/hi/LC_MESSAGES/django.mo
+conf/locale/nl/LC_MESSAGES/django.mo
+conf/locale/sv/LC_MESSAGES/django.mo
+conf/locale/de/LC_MESSAGES/django.po.bu
+locale/de/LC_MESSAGES/django.mo.old
+locale/de/LC_MESSAGES/django.po.old
+locale/de/LC_MESSAGES/django.moo
+mediaroot/img/2009

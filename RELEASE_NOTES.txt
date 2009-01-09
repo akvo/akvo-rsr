@@ -1,0 +1,75 @@
+RELEASE_NOTES.txt, v0.9, 8 January 2009, tbp
+
+Akvo RSR v 0.9 release notes
+============================
+
+Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The
+Akvo Platform is used on Akvo.org to combat poverty through
+small-scale water and sanitation projects. We believe that Akvo RSR
+can be used in many other development aid scenarios like: education,
+health care, agriculture projects etc.
+
+To read more about the Akvo Platform:
+http://www.akvo.org/web/akvo_platform_overview
+
+New features 
+------------ 
+- First public release THIS is the first public release of Akvo RSR.
+
+- Internationalization for the user interface.  
+We have tagged all the user interface text, so that the Django
+translation engine can pick up the text strings and produce a
+translation file. While the interface is translated, some emails from
+the system remain in English; these will be fixed in a later relese.
+We have tested the implementation with one initial language,
+German. You can participate and help translate the Akvo RSR user
+interface to your language by downloading the translation files from:
+https://translations.launchpad.net/akvo.rsr
+
+- Licensing.
+Inserted the GNU AGPL license in the distribution and tagged all the
+files with license information.
+
+- Akvo at a glance portlet
+Field partners, Support partners and Funding partners are now linked
+to a listing showing only those partners (the feature existed before,
+but there were no links to it).
+
+- Project updates 
+Projects with no updates now have an RSS icon and a link (previously
+you had to wait for the first update for the icon and link to show
+up). So you can subscribe with an RSS reader to projects which have
+not been updated yet.
+
+- (Bug 269400) We have changed how funders contributions are displayed
+  in the Organisation activities portlet. Now only the funders
+  proportion of a project is displayed.
+
+Highlights of bugs fixed
+------------------------
+
+296702    Remove MDG count terminology Medium Fix Released
+
+274658 Photos in Project Update have no default placement, so do not
+show up. Medium Fix Released
+
+269400 Portlet: "Organisation activities" shows easy to
+miss-understand Funding pledged Medium Fix Released
+
+269402 Organisation description box do not use line breaks. Medium Fix
+Released
+
+274099 Partner types (example: funding partner) should be link to the
+URL which lists them Low Fix Released
+
+279243 Actual number in Akvo at a glance portlet gives ugly linebreak
+Wishlist Fix Released
+
+292932 Describe in user interface that user names are
+case-sensitive. Wishlist Fix Released
+
+
+A detailed list (including in process development bugs) can be found
+at: http://snurl.com/9lqvk
+
+====END OF RELEASE NOTES====

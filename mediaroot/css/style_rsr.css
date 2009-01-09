@@ -165,7 +165,21 @@ float: right;
 }
 
 
+/* registration form
+-------------------------------------------------------------------------------------- */
 
+.about_field {
+	margin-left: 82px;
+	padding-left: 0;
+}
+
+.about_field_extended {
+	margin-left: 80px;
+	padding-left: 0;	
+}
+
+/* sign-in form
+-------------------------------------------------------------------------------------- */
 
 form#sign_in {
    	background-color: #D0FFFF;

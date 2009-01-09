@@ -602,8 +602,8 @@ msgid ""
 "You're receiving this e-mail because you requested a password reset for your "
 "user account at %(site_name)s."
 msgstr ""
-"Sie erhalten diese E-Mail weil sie für ihr Benutzerkonto bei %(site_name)s "
-"ein neues Passwort angefragt haben."
+"Sie erhalten diese E-Mail, weil sie für ihr Benutzerkonto bei %(site_name)s "
+"ein neues Passwort beantragt haben."
 
 #: templates/registration/password_reset_email.html:9
 msgid "Your new password is"
@@ -611,7 +611,7 @@ msgstr "Ihr neues Passwort ist"
 
 #: templates/registration/password_reset_email.html:11
 msgid "Feel free to change this password by going to this page"
-msgstr "Bitte besuchen Sie diese Seit um ihr Passwort zu ändern"
+msgstr "Bitte besuchen Sie die folgende Seite um ihr Passwort zu ändern"
 
 #: templates/registration/password_reset_email.html:15
 msgid "Your username, in case you've forgotten"
