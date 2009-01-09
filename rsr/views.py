@@ -171,7 +171,10 @@ def index(request):
     ###############################################################################
     bandwidth = 'low'
     try:
-        raise
+        # Create exception to avoid loading the blogs whe we run in debug mode.
+        # Speeds up the home page considerably when pulling over the inteweb
+        if settings.DEBUG:
+            raise
         feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
