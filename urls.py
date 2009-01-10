@@ -2,10 +2,18 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.conf.urls.defaults import *
+from django.core.urlresolvers import reverse
+from django.contrib.auth import views as auth_views
 from django.views.generic.simple import direct_to_template
 from akvo.rsr.feeds import ProjectUpdates
 from akvo.rsr.models import create_rsr_profile
+from akvo.rsr.forms import RSR_PasswordResetForm
+
+# The next two lines enable the admin and load each admin.py file:
+from django.contrib import admin
+admin.autodiscover()
 
 feeds = {
     'updates': ProjectUpdates,
@@ -17,7 +25,8 @@ urlpatterns = patterns('',
     (r'^$', 'akvo.rsr.views.index', ),
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
 
-    (r'^rsr/admin/', include('django.contrib.admin.urls')),
+    (r'^rsr/admin/(.*)', admin.site.root),
+    #(r'^rsr/admin/', include('django.contrib.admin.urls')),
     
     (r'^rsr/projects/$', 'akvo.rsr.views.projectlist', ),
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
@@ -50,14 +59,24 @@ urlpatterns = patterns('',
     (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
 
     #(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}),
-    (r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}),
+    url(r'^rsr/signin/$',
+                           'akvo.rsr.views.login',
+                           {'template_name': 'rsr/sign_in.html'},
+                           name='signin'),
+    #(r'^rsr/signin/$', 'auth_views.login', {'template_name': 'rsr/sign_in.html'}),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
     
     (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),
-    (r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', {'profile_callback': create_rsr_profile,}),
+    (r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', ),
     url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate'),
     (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
     (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),
+    url(r'^rsr/accounts/password/reset/$',
+        auth_views.password_reset,
+        {'password_reset_form': RSR_PasswordResetForm,
+            'post_reset_redirect': '/rsr/accounts/password/reset/done/'},
+        name='rsr_password_reset'
+    ),
     (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),
     (r'^rsr/accounts/', include('registration.urls')),
 

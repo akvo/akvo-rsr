@@ -7,13 +7,13 @@ import string
 import re
 from datetime import date, datetime
 
-from django import newforms as forms
+from django import forms
 from django.conf import settings
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.core import validators
+#from django.core import validators
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -24,28 +24,24 @@ from registration.models import RegistrationProfile, RegistrationManager
 from akvo.settings import MEDIA_ROOT
 
 CONTINENTS = (
-    (1, 'Africa'),
-    (2, 'Asia'),
-    (3, 'Australia'),
-    (4, 'Europe'),
-    (5, 'North America'),
-    (6, 'South America'),
+    (1, u'Africa'),
+    (2, u'Asia'),
+    (3, u'Australia'),
+    (4, u'Europe'),
+    (5, u'North America'),
+    (6, u'South America'),
 )
 class Country(models.Model):
     
-    country_name                = models.CharField(_("country name"), max_length=50)
-    continent                   = models.IntegerField("continent", choices=CONTINENTS)
+    country_name                = models.CharField(_(u'country name'), max_length=50)
+    continent                   = models.IntegerField(u'continent', choices=CONTINENTS)
 
     def __unicode__(self):
         return self.country_name
-    
-    class Admin:
-        list_display = ('country_name', 'continent', )
-        list_filter  = ('country_name', 'continent', )
-        
+
     class Meta:
-        verbose_name = "country"
-        verbose_name_plural = "countries"
+        verbose_name = u'country'
+        verbose_name_plural = u'countries'
 
 def funding_aggregate(projects, organisation=None):
     '''
@@ -77,25 +73,25 @@ class Organisation(models.Model):
     ORG_TYPE_COM = 'C'
     ORG_TYPE_KNO = 'K'
     ORG_TYPES = (
-        (ORG_TYPE_NGO, 'NGO'),
-        (ORG_TYPE_GOV, 'Governmental'),
-        (ORG_TYPE_COM, 'Commercial'),
-        (ORG_TYPE_KNO, 'Knowledge institution'),
+        (ORG_TYPE_NGO, u'NGO'),
+        (ORG_TYPE_GOV, u'Governmental'),
+        (ORG_TYPE_COM, u'Commercial'),
+        (ORG_TYPE_KNO, u'Knowledge institution'),
     )
     #ORG_TYPES_DICT = dict(ORG_TYPES)
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
-    field_partner               = models.BooleanField(_('field partner'))
-    support_partner             = models.BooleanField(_('support_partner'))
-    funding_partner             = models.BooleanField(_('funding_partner'))
+    field_partner               = models.BooleanField(_(u'field partner'))
+    support_partner             = models.BooleanField(_(u'support_partner'))
+    funding_partner             = models.BooleanField(_(u'funding_partner'))
 
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
-    organisation_type           = models.CharField(_("organisation_type"), max_length=1, choices=ORG_TYPES)
+    organisation_type           = models.CharField(_(u'organisation_type'), max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
-    country                     = models.ForeignKey(Country, verbose_name=_('country'))
+    country                     = models.ForeignKey(Country, verbose_name=_(u'country'))
     url                         = models.URLField(blank=True, verify_exists = False)
     map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     
@@ -112,15 +108,6 @@ class Organisation(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Admin:
-        fields = (
-            (_('Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
-            (_('General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_('Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
-            (None, {'fields': ('description', )}),
-        )    
-        list_display = ('name', 'long_name', 'website', 'partner_types', )
-    
     def partner_types(self):
         pt = ""
         if self.field_partner: pt += "F"
@@ -196,7 +183,7 @@ class Project(models.Model):
     category_other              = models.BooleanField()
     
     #current_status_summary = models.TextField()
-    project_plan_summary        = models.TextField(max_length=220)
+    project_plan_summary        = models.TextField(max_length=220, )
     current_image               = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     current_image_caption       = models.CharField(blank=True, max_length=50)
     goals_overview              = models.TextField(max_length=500)
@@ -237,43 +224,6 @@ class Project(models.Model):
     def project_type(self):
         return "%s project" % (self.get_category_display(),)        
 
-    class Admin:
-        fields = (
-            (_('Project description'), {
-                'fields': (
-                    'name',
-                    'subtitle',
-                    'status',
-                    ('category_water', 'category_sanitation', 'category_maintenance', 
-                        'category_training', 'category_education', 'category_product_development', 'category_other',
-                    ),
-                )
-            }),
-            (_('Location'), {
-                'fields': ('city', 'state', 'country',)
-            }),
-            (_('Location extra'), {
-                'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',), #'classes': 'collapse'
-            }),
-            (_('Project info'), {
-                'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
-            }),
-            (_('Goals'), {
-                'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
-            }),
-            (_('Project target benchmarks'), {
-                'fields': ('water_systems', 'sanitation_systems', 'hygiene_facilities', ('improved_water', 
-                'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
-            }),
-            (_('Project info details'), {
-                'fields': ('current_status_detail', 'project_plan_detail', 'sustainability', 'context',), #'classes': 'collapse'
-            }),
-            (_('Project meta info'), {
-                'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
-            }),
-        )
-        list_display = ('id', 'name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
-
     def project_type(self):
         pt = ""
         if self.category_water: pt += "W"
@@ -291,11 +241,17 @@ class Project(models.Model):
         return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
     
     def show_current_image(self):
-        return '<img src="%s" />' % (self.get_current_image_url(),)
+        try:
+            return '<img src="%s" />' % (self.current_image.url,)
+        except:
+            return ''
     show_current_image.allow_tags = True
     
     def show_map(self):
-        return '<img src="%s" />' % (self.get_map_url(),)
+        try:
+            return '<img src="%s" />' % (self.map.url,)
+        except:
+            return ''
     show_map.allow_tags = True
     
     def connected_to_user(self, user):
@@ -318,9 +274,9 @@ LINK_KINDS = (
 )
 class Link(models.Model):
     kind    = models.CharField(max_length=1, choices=LINK_KINDS)
-    url     = models.URLField(core=True)
+    url     = models.URLField()
     caption = models.CharField(max_length=50)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=3)
+    project = models.ForeignKey(Project,)
     
     def __unicode__(self):
         return self.url
@@ -328,28 +284,25 @@ class Link(models.Model):
     def show_link(self):
         return '<a href="%s">%s</a>' % (self.url, self.caption,)
     
-    class Admin:
-        list_display = ('url', 'caption', 'show_link', )
-
 class FundingPartner(models.Model):
     funding_organisation =  models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount = models.IntegerField(core=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, core=True)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
+    funding_amount = models.IntegerField()
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    project = models.ForeignKey(Project,)
     
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
      
 class SupportPartner(models.Model):
-    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True}, core=True)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
+    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
     
 class FieldPartner(models.Model):
-    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True}, core=True)
-    project = models.ForeignKey(Project, edit_inline = models.TABULAR, num_in_admin=1)
+    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
@@ -384,9 +337,6 @@ class Funding(models.Model):
     
     def is_complete(self):
         return self.date_complete < date.today()
-    
-    class Admin:
-        list_display = ('project', 'employment', 'building', 'training', 'maintenance', 'other', 'total', ) 
         
 PHOTO_LOCATIONS = (
     ('B', _('At the beginning of the update')),
@@ -399,124 +349,14 @@ UPDATE_METHODS = (
 )
 #UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
 
-SHA1_RE = re.compile('^[a-f0-9]{40}$')
-class RSR_RegistrationManager(RegistrationManager):
-    '''
-    Customized registration manager modifying create_inactive_user() to take a
-    callback profile_callback() that takes two arguments, a user and a userprofile.
-    Used by RSR_RegistrationProfile.
-    '''
-    def activate_user(self, activation_key):
-        """
-        Validate an activation key and activate the corresponding
-        ``User`` if valid.
-        
-        If the key is valid and has not expired, return the ``User``
-        after activating.
-        
-        If the key is not valid or has expired, return ``False``.
-        
-        If the key is valid but the ``User`` is already active,
-        return ``False``.
-        
-        To prevent reactivation of an account which has been
-        deactivated by site administrators, the activation key is
-        reset to the string ``ALREADY_ACTIVATED`` after successful
-        activation.
-        
-        """
-        # Make sure the key we're trying conforms to the pattern of a
-        # SHA1 hash; if it doesn't, no point trying to look it up in
-        # the database.
-        if SHA1_RE.search(activation_key):
-            try:
-                profile = self.get(activation_key=activation_key)
-            except self.model.DoesNotExist:
-                return False
-            if not profile.activation_key_expired():
-                user = profile.user
-                #user.is_active = True
-                user.save()
-                profile.activation_key = "ALREADY_ACTIVATED"
-                profile.save()
-                current_site = Site.objects.get_current()
-                subject = 'Akvo user email confirmed'                
-                message = 'A user, %s, has confirmed her email. Check it out!' % user.username
-                send_mail(subject, message, 'noreply@%s' % current_site, ['gabriel@akvo.org', 'thomas@akvo.org'])                
-                return user
-        return False
-    
-    def create_inactive_user(self, username, password, email, first_name='',
-                             last_name='', send_email=True, profile_callback=None, profile_data=None):
-        """
-        Create a new, inactive ``User``, generates a
-        ``RegistrationProfile`` and email its activation key to the
-        ``User``, returning the new ``User``.
-        
-        To disable the email, call with ``send_email=False``.
-        
-        To enable creation of a custom user profile along with the
-        ``User`` (e.g., the model specified in the
-        ``AUTH_PROFILE_MODULE`` setting), define a function which
-        knows how to create and save an instance of that model and
-        pass it as the keyword argument ``profile_callback``.
-        This function should accept two keyword arguments:
-
-        ``user``
-            The ``User`` to relate the profile to.
-        
-        ``profile``
-            The data from which to create a ``UserProfile`` instance
-        
-        
-        """
-        #from dbgp.client import brk
-        #brk(host="192.168.1.123", port=9000)
-        new_user = User.objects.create_user(username, email, password)
-        new_user.is_active = False
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-        new_user.save()
-        
-        registration_profile = self.create_profile(new_user)
-        
-        if profile_callback is not None:
-            profile_callback(user=new_user, profile=profile_data)
-        
-        if send_email:
-            from django.core.mail import send_mail
-            current_site = Site.objects.get_current()
-            
-            subject = render_to_string('registration/activation_email_subject.txt',
-                                       { 'site': current_site })
-            # Email subject *must not* contain newlines
-            subject = ''.join(subject.splitlines())
-            
-            message = render_to_string('registration/activation_email.txt',
-                                       { 'activation_key': registration_profile.activation_key,
-                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                         'site': current_site })
-            
-            send_mail(subject, message, 'noreply@%s' % current_site, [new_user.email])
-        return new_user
-    
-    def update_active_user(self, user, first_name, last_name):
-        user.first_name = first_name
-        user.last_name  = last_name
-        user.save()        
-        return user
-        
-class RSR_RegistrationProfile(RegistrationProfile):
-    '''
-    customized registration profile allowing us to create a user profile at the same time a user is registered.
-    '''
-    objects = RSR_RegistrationManager()
 
 def isValidGSMnumber(field_data, all_data):
-	if not field_data.startswith("467"):
-		raise validators.ValidationError("The phone number must start with 467")
-	if not len(field_data) == 11:
-		raise validators.ValidationError("The phone number must be 11 digits long.")
+    #TODO: fix for django 1.0
+    pass
+	#if not field_data.startswith("467"):
+	#	raise validators.ValidationError("The phone number must start with 467")
+	#if not len(field_data) == 11:
+	#	raise validators.ValidationError("The phone number must be 11 digits long.")
 
 class UserProfile(models.Model):
     '''
@@ -536,7 +376,8 @@ class UserProfile(models.Model):
         blank=True,
         help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
         <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
-        validator_list = [isValidGSMnumber]
+        #TODO: fix to django 1.0
+        #validator_list = [isValidGSMnumber]
     )    
     project = models.ForeignKey(Project, null=True, blank=True, )
     
@@ -580,9 +421,6 @@ class UserProfile(models.Model):
             pu = ProjectUpdate.objects.create(**update_data)
             return pu
         return False
-        
-    class Admin:
-        list_display = ('user_name', 'organisation_name', 'phone_number', 'project', )
     
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
@@ -596,7 +434,7 @@ class MoMmsRaw(models.Model):
     sender          = models.CharField(_('sender'), max_length=20) #qs variable name is "from" but we can't use that
     to              = models.CharField(_('to'), max_length=20)
     time            = models.CharField(_('time'), max_length=50)
-    saved_at        = models.DateTimeField()
+    saved_at        = models.DateTimeField(_('saved at'))
     mmsversion      = models.CharField(_('mms version'), max_length=20)
     messageclass    = models.IntegerField(_('message class'))
     priority        = models.IntegerField(_('priority'))
@@ -622,18 +460,15 @@ class MoMmsRaw(models.Model):
         #    pass
         return update_data
 
-    class Admin:
-        list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
-
 class MoMmsFile(models.Model):
     '''
     raw info about an mms file attachement
     '''
-    mms             = models.ForeignKey(MoMmsRaw, edit_inline=models.TABULAR, core=True, verbose_name=_('mms'))
-    file            = models.CharField(max_length=200, verbose_name=_('file name')) 
-    filecontent     = models.CharField(max_length=50, verbose_name=_('content type')) 
-    filecontentid   = models.CharField(blank=True, max_length=50, verbose_name=_('content ID')) 
-    filesize        = models.IntegerField(verbose_name=_('file size')) 
+    mms             = models.ForeignKey(MoMmsRaw, verbose_name=_('MMS'))
+    file            = models.CharField(_('file name'), max_length=200) 
+    filecontent     = models.CharField(_('content type'), max_length=50) 
+    filecontentid   = models.CharField(_('content ID'), blank=True, max_length=50) 
+    filesize        = models.IntegerField(_('file size')) 
     
 class MoSmsRaw(models.Model):
     '''
@@ -645,9 +480,6 @@ class MoSmsRaw(models.Model):
     delivered   = models.CharField(_('delivered'), max_length=50)
     saved_at    = models.DateTimeField(_('saved at'))
     incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
-    
-    class Admin:
-        list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
 
 class ProjectUpdate(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
@@ -661,13 +493,12 @@ class ProjectUpdate(models.Model):
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
-    
-    class Admin:
-        list_display    = ('project', 'user', 'text', 'time', 'photo',)    
-        list_filter     = ('project', 'time', )
 
     def img(self):
-        return '<img src="%s" />' % (self.get_image_url(),)
+        try:
+            return '<img src="%s" />' % (self.photo.url,)
+        except:
+            return ''
     img.allow_tags = True
     
     #def show_status(self):
@@ -683,8 +514,4 @@ class ProjectComment(models.Model):
     user            = models.ForeignKey(User, verbose_name=_('user'))
     comment         = models.TextField(_('comment'))
     time            = models.DateTimeField(_('time'))
-    
-    class Admin:
-        list_display    = ('project', 'user', 'comment', 'time', )    
-        list_filter     = ('project', 'time', )
         

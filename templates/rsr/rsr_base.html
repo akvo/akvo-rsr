@@ -50,7 +50,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" />
 
 	<div id="header_button">
-	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.login %}?next={{request.path}}" onclick="this.blur();" style="margin: 0;">
+	<a class="actionbutton ab_white" href="{% url signin %}?next={{request.path}}" onclick="this.blur();" style="margin: 0;">
 		<span>{% trans 'Sign in' %}</span>
 	</a>
 	</div>

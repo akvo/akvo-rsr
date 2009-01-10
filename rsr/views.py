@@ -4,16 +4,19 @@
 
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile, MoMmsRaw, MoMmsFile
-from akvo.rsr.forms import OrganisationForm, RSR_RegistrationForm, RSR_ProfileUpdateForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.forms import OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
-from django import newforms as forms
-from django import oldforms
+from django import forms
+#from django import oldforms
 from django.conf import settings
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template import RequestContext
-from django.newforms import ModelForm
+from django.forms import ModelForm
 from django.shortcuts import render_to_response, get_object_or_404
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login, logout
@@ -25,6 +28,7 @@ from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 import time
 import feedparser
+from registration.models import RegistrationProfile
 
 def mdgs_water_calc(projects):
     '''
@@ -295,65 +299,43 @@ class SigninForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'}))
 
-#not used...    
-#def signin(request):
-#    '''
-#    Sign in page for RSR
-#    Context:
-#    form: the sign in form    
-#    '''
-#    form = SigninForm()
-#    if request.method == 'POST':
-#        username = request.POST['username']
-#        password = request.POST['password']
-#        next     = request.POST.get('next', '/rsr/')
-#        user = authenticate(username=username, password=password)
-#        if user is not None:
-#            if user.is_active:
-#                login(request, user)
-#                return HttpResponseRedirect(next)
-#            else:
-#                return HttpResponseRedirect('http://www.akvo.org/')
-#        else:
-#            form.has_errors = True
-#            # Return an 'invalid login' error message.
-#    elif request.method == 'GET':
-#        next     = request.GET['next']
-#    context_instance=RequestContext(request, {'next': next})
-#    return render_to_response('rsr/sign_in.html', {'form': form, }, context_instance=context_instance)
 
 from django.contrib.auth import REDIRECT_FIELD_NAME
-#copied from django.contrib.auth.views to be able to use a custom Form
+from django.views.decorators.cache import never_cache
+#copied from django.contrib.auth.views to be able to customize the form widget attrs
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
-    "Displays the login form and handles the login action."    
-    manipulator = RSR_AuthenticationForm() # this line is changed
+    "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-    if request.POST:
-        errors = manipulator.get_validation_errors(request.POST)
-        if not errors:
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        # RSR mod to add css class to widgets
+        form.fields['username'].widget.attrs = {'class': 'signin_field input'}
+        form.fields['password'].widget.attrs = {'class': 'signin_field input'}
+        if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                from django.conf import settings
                 redirect_to = settings.LOGIN_REDIRECT_URL
             from django.contrib.auth import login
-            login(request, manipulator.get_user())
+            login(request, form.get_user())
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             return HttpResponseRedirect(redirect_to)
     else:
-        errors = {}
+        form = AuthenticationForm(request)
+        # RSR mod to add css class to widgets
+        form.fields['username'].widget.attrs = {'class': 'signin_field input'}
+        form.fields['password'].widget.attrs = {'class': 'signin_field input'}
     request.session.set_test_cookie()
-
     if Site._meta.installed:
         current_site = Site.objects.get_current()
     else:
         current_site = RequestSite(request)
-
     return render_to_response(template_name, {
-        'form': oldforms.FormWrapper(manipulator, request.POST, errors),
+        'form': form,
         redirect_field_name: redirect_to,
         'site_name': current_site.name,
     }, context_instance=RequestContext(request))
+login = never_cache(login)
 
 def signout(request):
     '''
@@ -377,10 +359,10 @@ def register1(request):
     return render_to_response('registration/registration_form1.html', { 'form': form }, context_instance=context)
     
 def register2(request,
-             form_class=RSR_RegistrationForm,
-             profile_callback=None,
-             template_name='registration/registration_form2.html',
-            ):
+        form_class=RSR_RegistrationFormUniqueEmail,
+        profile_callback=None,
+        template_name='registration/registration_form2.html',
+    ):
     org_id = request.GET.get('org_id', None)
     if not org_id:
         return HttpResponseRedirect('/rsr/accounts/register1/')
@@ -399,7 +381,7 @@ def register2(request,
                               { 'form': form, 'organisation': organisation, },
                               context_instance=context)
 
-#from registraion.views, to use custom manager RSR_RegistrationProfile
+#from registraion.views, to change user.is_active and send an admin email
 def activate(request, activation_key,
              template_name='registration/activate.html',
              extra_context=None):
@@ -433,29 +415,48 @@ def activate(request, activation_key,
     
     """
     activation_key = activation_key.lower() # Normalize before trying anything with it.
-    account = RSR_RegistrationProfile.objects.activate_user(activation_key)
+    user = RegistrationProfile.objects.activate_user(activation_key)
+    if user:
+        #Since we want to verify the user before letting anyone in we set is_active
+        #to False (it is set to True by RegistrationProfile.objects.activate_user)
+        user.is_active = False
+        user.save()
+        current_site = Site.objects.get_current()
+        subject = 'Akvo user email confirmed'                
+        message = 'A user, %s, has confirmed her email. Check it out!' % user.username
+        send_mail(subject, message, 'noreply@%s' % current_site, ['gabriel@akvo.org', 'thomas@akvo.org'])
     if extra_context is None:
         extra_context = {}
     context = RequestContext(request)
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
     return render_to_response(template_name,
-                              { 'account': account,
+                              { 'account': user,
                                 'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
                               context_instance=context)
 
-#copied from django.contrib.auth.views to be able to use a custom Form
-def password_change(request, template_name='registration/password_change_form.html'):
-    new_data, errors = {}, {}
-    form = RSR_PasswordChangeForm(request.user) #this line is changed!
-    if request.POST:
-        new_data = request.POST.copy()
-        errors = form.get_validation_errors(new_data)
-        if not errors:
-            form.save(new_data)
-            return HttpResponseRedirect('%sdone/' % request.path)
-    return render_to_response(template_name, {'form': oldforms.FormWrapper(form, new_data, errors)},
-        context_instance=RequestContext(request))
+
+#copied from django.contrib.auth.views to be able to customize the form widget attrs
+def password_change(request, template_name='registration/password_change_form.html',
+                    post_change_redirect=None):
+    if post_change_redirect is None:
+        post_change_redirect = reverse('django.contrib.auth.views.password_change_done')
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        form.fields['old_password'].widget.attrs = {'class': 'input'}
+        form.fields['new_password1'].widget.attrs = {'class': 'input'}
+        form.fields['new_password2'].widget.attrs = {'class': 'input'}
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(post_change_redirect)
+    else:
+        form = PasswordChangeForm(request.user)
+        form.fields['old_password'].widget.attrs = {'class': 'input'}
+        form.fields['new_password1'].widget.attrs = {'class': 'input'}
+        form.fields['new_password2'].widget.attrs = {'class': 'input'}
+    return render_to_response(template_name, {
+        'form': form,
+    }, context_instance=RequestContext(request))
 password_change = login_required(password_change)
 
 @login_required

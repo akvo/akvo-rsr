@@ -91,7 +91,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 </ul>
                 
                 <div id="tab_description" class="tab clearfix">
-                    <p>{{p.project_plan_summary|linebreaks}}</p>
+                    <p>{{p.project_plan_summary|safe}}</p>
                     <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}">{% trans 'View details' %}</a></p>
                     <br />		
                     <div style="float:left;width: 250px">
