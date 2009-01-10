@@ -29,10 +29,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div class="boxbody" style="clear:left">
 <h1 class="section">{% trans 'Please sign in' %}</h1>
 
-{% if form.has_errors %}
+{% if form.non_field_errors %}
     <div class="boxbody" style="background-color: orange; margin: 20px;">
     <h1 class="section">{% trans 'Error when signing in' %}</h1>
-    <p>{% trans 'Please correct the errors below.' %}</p>
+	{% for e in form.non_field_errors %}
+	<p>{{e}}</p>
+	{% endfor %}
     </div> <!-- .boxbody -->
 {% endif %}
 
@@ -43,12 +45,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <li class="clearfix">
                 <label for="id_username">{% trans 'Enter username' %}</label>
 				{{ form.username }}<br />
-				{{ form.username.errors|join:", " }}
             </li>
             <li class="clearfix">
                 <label for="id_password">{% trans 'Enter password' %}</label>
 				{{ form.password }}<br />
-				{{ form.password.errors|join:", " }}
             </li>
 			<li class="clearfix">
 				<a href="/rsr/accounts/password/reset/">{% trans 'I forgot my username and/or password' %}</a>

@@ -183,7 +183,7 @@ class Project(models.Model):
     category_other              = models.BooleanField()
     
     #current_status_summary = models.TextField()
-    project_plan_summary        = models.TextField(max_length=220)
+    project_plan_summary        = models.TextField(max_length=220, )
     current_image               = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     current_image_caption       = models.CharField(blank=True, max_length=50)
     goals_overview              = models.TextField(max_length=500)
@@ -241,11 +241,17 @@ class Project(models.Model):
         return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
     
     def show_current_image(self):
-        return '<img src="%s" />' % (self.get_current_image_url(),)
+        try:
+            return '<img src="%s" />' % (self.current_image.url,)
+        except:
+            return ''
     show_current_image.allow_tags = True
     
     def show_map(self):
-        return '<img src="%s" />' % (self.get_map_url(),)
+        try:
+            return '<img src="%s" />' % (self.map.url,)
+        except:
+            return ''
     show_map.allow_tags = True
     
     def connected_to_user(self, user):
@@ -343,118 +349,118 @@ UPDATE_METHODS = (
 )
 UPDATE_METHODS_DICT = dict(UPDATE_METHODS) #used to output UPDATE_METHODS text
 
-SHA1_RE = re.compile('^[a-f0-9]{40}$')
-class RSR_RegistrationManager(RegistrationManager):
-    '''
-    Customized registration manager modifying create_inactive_user() to take a
-    callback profile_callback() that takes two arguments, a user and a userprofile.
-    Used by RSR_RegistrationProfile.
-    '''
-    def activate_user(self, activation_key):
-        """
-        Validate an activation key and activate the corresponding
-        ``User`` if valid.
+#SHA1_RE = re.compile('^[a-f0-9]{40}$')
+#class RSR_RegistrationManager(RegistrationManager):
+#    '''
+#    Customized registration manager modifying create_inactive_user() to take a
+#    callback profile_callback() that takes two arguments, a user and a userprofile.
+#    Used by RSR_RegistrationProfile.
+#    '''
+#    def activate_user(self, activation_key):
+#        """
+#        Validate an activation key and activate the corresponding
+#        ``User`` if valid.
+#        
+#        If the key is valid and has not expired, return the ``User``
+#        after activating.
+#        
+#        If the key is not valid or has expired, return ``False``.
+#        
+#        If the key is valid but the ``User`` is already active,
+#        return ``False``.
+#        
+#        To prevent reactivation of an account which has been
+#        deactivated by site administrators, the activation key is
+#        reset to the string ``ALREADY_ACTIVATED`` after successful
+#        activation.
+#        
+#        """
+#        # Make sure the key we're trying conforms to the pattern of a
+#        # SHA1 hash; if it doesn't, no point trying to look it up in
+#        # the database.
+#        if SHA1_RE.search(activation_key):
+#            try:
+#                profile = self.get(activation_key=activation_key)
+#            except self.model.DoesNotExist:
+#                return False
+#            if not profile.activation_key_expired():
+#                user = profile.user
+#                #user.is_active = True
+#                user.save()
+#                profile.activation_key = "ALREADY_ACTIVATED"
+#                profile.save()
+#                current_site = Site.objects.get_current()
+#                subject = 'Akvo user email confirmed'                
+#                message = 'A user, %s, has confirmed her email. Check it out!' % user.username
+#                send_mail(subject, message, 'noreply@%s' % current_site, ['gabriel@akvo.org', 'thomas@akvo.org'])                
+#                return user
+#        return False
+#    
+#    def create_inactive_user(self, username, password, email, first_name='',
+#                             last_name='', send_email=True, profile_callback=None, profile_data=None):
+#        """
+#        Create a new, inactive ``User``, generates a
+#        ``RegistrationProfile`` and email its activation key to the
+#        ``User``, returning the new ``User``.
+#        
+#        To disable the email, call with ``send_email=False``.
+#        
+#        To enable creation of a custom user profile along with the
+#        ``User`` (e.g., the model specified in the
+#        ``AUTH_PROFILE_MODULE`` setting), define a function which
+#        knows how to create and save an instance of that model and
+#        pass it as the keyword argument ``profile_callback``.
+#        This function should accept two keyword arguments:
+#
+#        ``user``
+#            The ``User`` to relate the profile to.
+#        
+#        ``profile``
+#            The data from which to create a ``UserProfile`` instance
+#        
+#        
+#        """
+#        #from dbgp.client import brk
+#        #brk(host="192.168.1.123", port=9000)
+#        new_user = User.objects.create_user(username, email, password)
+#        new_user.is_active = False
+#        new_user.first_name = first_name
+#        new_user.last_name = last_name
+#        new_user.save()
+#        
+#        registration_profile = self.create_profile(new_user)
+#        
+#        if profile_callback is not None:
+#            profile_callback(user=new_user, profile=profile_data)
+#        
+#        if send_email:
+#            from django.core.mail import send_mail
+#            current_site = Site.objects.get_current()
+#            
+#            subject = render_to_string('registration/activation_email_subject.txt',
+#                                       { 'site': current_site })
+#            # Email subject *must not* contain newlines
+#            subject = ''.join(subject.splitlines())
+#            
+#            message = render_to_string('registration/activation_email.txt',
+#                                       { 'activation_key': registration_profile.activation_key,
+#                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+#                                         'site': current_site })
+#            
+#            send_mail(subject, message, 'noreply@%s' % current_site, [new_user.email])
+#        return new_user
+#    
+#    def update_active_user(self, user, first_name, last_name):
+#        user.first_name = first_name
+#        user.last_name  = last_name
+#        user.save()        
+#        return user
         
-        If the key is valid and has not expired, return the ``User``
-        after activating.
-        
-        If the key is not valid or has expired, return ``False``.
-        
-        If the key is valid but the ``User`` is already active,
-        return ``False``.
-        
-        To prevent reactivation of an account which has been
-        deactivated by site administrators, the activation key is
-        reset to the string ``ALREADY_ACTIVATED`` after successful
-        activation.
-        
-        """
-        # Make sure the key we're trying conforms to the pattern of a
-        # SHA1 hash; if it doesn't, no point trying to look it up in
-        # the database.
-        if SHA1_RE.search(activation_key):
-            try:
-                profile = self.get(activation_key=activation_key)
-            except self.model.DoesNotExist:
-                return False
-            if not profile.activation_key_expired():
-                user = profile.user
-                #user.is_active = True
-                user.save()
-                profile.activation_key = "ALREADY_ACTIVATED"
-                profile.save()
-                current_site = Site.objects.get_current()
-                subject = 'Akvo user email confirmed'                
-                message = 'A user, %s, has confirmed her email. Check it out!' % user.username
-                send_mail(subject, message, 'noreply@%s' % current_site, ['gabriel@akvo.org', 'thomas@akvo.org'])                
-                return user
-        return False
-    
-    def create_inactive_user(self, username, password, email, first_name='',
-                             last_name='', send_email=True, profile_callback=None, profile_data=None):
-        """
-        Create a new, inactive ``User``, generates a
-        ``RegistrationProfile`` and email its activation key to the
-        ``User``, returning the new ``User``.
-        
-        To disable the email, call with ``send_email=False``.
-        
-        To enable creation of a custom user profile along with the
-        ``User`` (e.g., the model specified in the
-        ``AUTH_PROFILE_MODULE`` setting), define a function which
-        knows how to create and save an instance of that model and
-        pass it as the keyword argument ``profile_callback``.
-        This function should accept two keyword arguments:
-
-        ``user``
-            The ``User`` to relate the profile to.
-        
-        ``profile``
-            The data from which to create a ``UserProfile`` instance
-        
-        
-        """
-        #from dbgp.client import brk
-        #brk(host="192.168.1.123", port=9000)
-        new_user = User.objects.create_user(username, email, password)
-        new_user.is_active = False
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-        new_user.save()
-        
-        registration_profile = self.create_profile(new_user)
-        
-        if profile_callback is not None:
-            profile_callback(user=new_user, profile=profile_data)
-        
-        if send_email:
-            from django.core.mail import send_mail
-            current_site = Site.objects.get_current()
-            
-            subject = render_to_string('registration/activation_email_subject.txt',
-                                       { 'site': current_site })
-            # Email subject *must not* contain newlines
-            subject = ''.join(subject.splitlines())
-            
-            message = render_to_string('registration/activation_email.txt',
-                                       { 'activation_key': registration_profile.activation_key,
-                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                         'site': current_site })
-            
-            send_mail(subject, message, 'noreply@%s' % current_site, [new_user.email])
-        return new_user
-    
-    def update_active_user(self, user, first_name, last_name):
-        user.first_name = first_name
-        user.last_name  = last_name
-        user.save()        
-        return user
-        
-class RSR_RegistrationProfile(RegistrationProfile):
-    '''
-    customized registration profile allowing us to create a user profile at the same time a user is registered.
-    '''
-    objects = RSR_RegistrationManager()
+#class RSR_RegistrationProfile(RegistrationProfile):
+#    '''
+#    customized registration profile allowing us to create a user profile at the same time a user is registered.
+#    '''
+#    objects = RSR_RegistrationManager()
 
 def isValidGSMnumber(field_data, all_data):
     #TODO: fix for django 1.0
@@ -540,7 +546,7 @@ class MoMmsRaw(models.Model):
     sender          = models.CharField(_('sender'), max_length=20) #qs variable name is "from" but we can't use that
     to              = models.CharField(_('to'), max_length=20)
     time            = models.CharField(_('time'), max_length=50)
-    saved_at        = models.DateTimeField()
+    saved_at        = models.DateTimeField(_('saved at'))
     mmsversion      = models.CharField(_('mms version'), max_length=20)
     messageclass    = models.IntegerField(_('message class'))
     priority        = models.IntegerField(_('priority'))
@@ -570,11 +576,11 @@ class MoMmsFile(models.Model):
     '''
     raw info about an mms file attachement
     '''
-    mms             = models.ForeignKey(MoMmsRaw, verbose_name=_('mms'))
-    file            = models.CharField(max_length=200, verbose_name=_('file name')) 
-    filecontent     = models.CharField(max_length=50, verbose_name=_('content type')) 
-    filecontentid   = models.CharField(blank=True, max_length=50, verbose_name=_('content ID')) 
-    filesize        = models.IntegerField(verbose_name=_('file size')) 
+    mms             = models.ForeignKey(MoMmsRaw, verbose_name=_('MMS'))
+    file            = models.CharField(_('file name'), max_length=200) 
+    filecontent     = models.CharField(_('content type'), max_length=50) 
+    filecontentid   = models.CharField(_('content ID'), blank=True, max_length=50) 
+    filesize        = models.IntegerField(_('file size')) 
     
 class MoSmsRaw(models.Model):
     '''
@@ -601,7 +607,10 @@ class ProjectUpdate(models.Model):
     time            = models.DateTimeField(_('time'))
 
     def img(self):
-        return '<img src="%s" />' % (self.get_image_url(),)
+        try:
+            return '<img src="%s" />' % (self.photo.url,)
+        except:
+            return ''
     img.allow_tags = True
     
     def show_status(self):
