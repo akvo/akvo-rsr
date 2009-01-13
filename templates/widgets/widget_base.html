@@ -4,33 +4,39 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load i18n %}
+{% load rsr_tags %}
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
+	<title>{% block title %}{% endblock title %}</title>
+	
+	{% block links %}
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/widget.css" media="screen" />
+	<!--[if IE 6]>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie6.css" media="screen" />
+	<![endif]--> 
 
-<title>{% trans 'Akvo.org - the open source for water and sanitation' %}</title>
-
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="description" content="{% trans 'Akvo.org - the open source for water and sanitation' %}" />
-<meta name="keywords" content="{% trans 'water, sanitation, open source, development aid' %}" />
-
-{% block style %}
-<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/widget.css" media="screen" />
-{% endblock style %}
-
-{% block script %}
-{% endblock script %}
-
+	<!--[if lt IE 7]>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
+	<![endif]-->
+	{% endblock links %}
 </head>
 
 <body>
-
-{% block content %}
-<h1>{% trans 'Akvo RSR - Really simple reporting' %}!</h1>
-{% endblock content %}
-
+	<div class="widget">
+        {% block head %}
+		<div class="widgetHead">
+			<p>Widget head</p>
+		</div>
+		{% endblock head %}
+        {% block body %}
+		<div class="widgetBody">
+			<p>Widget body</p>
+		</div>
+		{% endblock body %}
+	</div>	
 </body>
+
 </html>

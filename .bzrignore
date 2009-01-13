@@ -67,3 +67,7 @@ templates/rsr/project_list.html
 templates/rsr/project_list_generic.html
 templates/rsr/round.html
 mediaroot/dev
+rsr_data.dump
+rsr_data.py
+templates/widgets/widget_base.html
+mediaroot/css/widget_old.css

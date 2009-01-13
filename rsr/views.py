@@ -722,7 +722,11 @@ def projectdetails(request, project_id):
 def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
-       
+
+def widget_project(request, template='widgets/project.html'):
+    projects = Project.objects.all()
+    return render_to_response(template, {'projects': projects}, context_instance=RequestContext(request))
+
 def flashgallery(request):
     '''
     Generate the xml file for TiltViewer

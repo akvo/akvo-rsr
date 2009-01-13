@@ -1,0 +1,88 @@
+{% extends "widgets/widget_base.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n %}
+{% load rsr_tags %}
+{% load generic_content %}
+
+
+{% block head %}
+<div class="widgetHead">
+	<p>{% trans "Today's Featured Project" %}</p>
+</div>
+{% endblock head %}
+
+{% block body %}
+
+{% get_random_object rsr.Project as p %}
+<div class="widgetBody">
+	<h1>{{p.name}}</h1>
+	<p class="widgetGreyText">{{p.subtitle}}</p>
+    {% if p.current_image %}
+    	<img class="photo" src="{{MEDIA_URL}}{{p.current_image}}" width="194" height="143" alt="{{p.current_image_caption}}" />
+    {% endif %}	
+
+
+	<p class="widgetGreyText">{% trans 'Location' %}</p>
+	<p>{{p.city}}, {{p.state}}, {{p.country}}</p>
+	
+	<p class="widgetGreyText">{% trans 'Status' %}</p>
+	<p>{{p.show_status}}</p>
+	
+	<p class="widgetGreyText">{% trans 'Funding' %}</p>
+	<table id="widgetfoundingTable" class="widgetTable">
+		<thead>
+			<tr>
+				<th>{% trans 'Raised:' %}</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
+			</tr>  
+		</thead>
+		<tfoot> 
+			<tr>
+				<th>Still Needed:</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</td>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr>
+				<th>Pledged:</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.pledged}}</td>
+			</tr>
+		</tbody>
+	</table>  
+	
+	<div id="widgetProgressBar">
+		<img src="{{MEDIA_URL}}img/fundingbar.png" width="100" height="20" alt="Fundingbar" />
+	</div>
+	
+	<table id="widgetTotalBudget" class="widgetTable">
+		<tbody>
+			<tr>
+				<th>{% trans 'Total budget' %}</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="widgetTwoColumnWraper">
+		<div class="widgetTwoColumnLeftCell">
+			<p><a class="widgetBlueLink" href="http://www.akvo.org">View details</a></p>
+		</div>
+		<div class="widgetTwoColumnRightCell">
+			<a href="#"><img src="{{MEDIA_URL}}img/donate_now.png" width="95" height="29" alt="Donate Now" /></a>
+		</div>
+		<div class="widgetClear"></div>
+	</div>
+	
+	<div id="widgetFooter">
+		<p class="widgetGreyText">Powered by</p>
+		<a href="#"><img src="{{MEDIA_URL}}img/akvo_org.png" width="76" height="21" alt="Akvo Org" /></a>
+	</div>
+</div>
+
+{% endblock body %}
+
+
