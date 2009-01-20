@@ -768,9 +768,11 @@ def fundingbarimg(request):
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
     dev = {'path': 'dev/'}
-    p = Project.objects.get(pk=1)
-    updates     = Project.objects.get(id=1).projectupdate_set.all().order_by('-time')[:3]
-    comments    = Project.objects.get(id=1).projectcomment_set.all().order_by('-time')[:3]
+    SAMPLE_PROJECT_ID = 2
+    SAMPLE_ORG_ID = 42
+    p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
+    updates     = Project.objects.get(id=SAMPLE_PROJECT_ID).projectupdate_set.all().order_by('-time')[:3]
+    comments    = Project.objects.get(id=SAMPLE_PROJECT_ID).projectcomment_set.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
     projects = Project.objects.all()
@@ -778,7 +780,7 @@ def templatedev(request, template_name):
 
     orgz = Organisation.objects.all()
 
-    o = Organisation.objects.get(pk=1)
+    o = Organisation.objects.get(pk=SAMPLE_ORG_ID)
     org_projects, org_partners = org_activities(o)
     org_stats = akvo_at_a_glance(org_projects)
     
@@ -790,7 +792,21 @@ class HttpResponseNoContent(HttpResponse):
     
 def test_widget(request):
     return render_to_response('widgets/featured_project.html', context_instance=RequestContext(request))
-    
+
+def widget_project_list(request, template='widgets/project_list.html'):
+    hexcolor = request.GET.get('hexcolor', 'EC008D')
+    color = request.GET.get('color', "#%s" % hexcolor)
+    org_id = request.GET.get('org_id', False)
+    if org_id:
+        try:
+            o = Organisation.objects.get(pk=org_id)
+            p = o.projects()
+        except:
+            p = Project.objects.filter()
+    else:
+        p = Project.objects.filter()
+    return render_to_response(template, {'color': color, 'projects': p}, context_instance=RequestContext(request))
+        
 def ajax_tab_goals(request, project_id):
     try:
         p = Project.objects.get(pk=project_id)

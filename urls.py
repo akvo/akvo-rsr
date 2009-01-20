@@ -82,6 +82,7 @@ urlpatterns = patterns('',
 
     url(r'^rsr/widget/project$', 'akvo.rsr.views.widget_project', {'template':'widgets/project.html'}, name='widget_project', ),
     url(r'^rsr/widget/projectsmall$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_small.html'}, name='widget_project_small', ),
+    url(r'^rsr/widget/projectlist$', 'akvo.rsr.views.widget_project_list', name='widget_project_list', ),
     
     (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     
