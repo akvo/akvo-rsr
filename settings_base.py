@@ -62,6 +62,7 @@ gettext = lambda s: s
 LANGUAGES = (
     ('de', gettext('German')),
     ('en', gettext('English')),
+    ('nl', gettext('Dutch')),
 )
 
 LOGIN_URL = '/rsr/signin/'

@@ -1,4 +1,4 @@
-AUTHORS.txt v1.0, 8 January 2009, tbp
+AUTHORS.txt v1.1, 9 February 2009, tbp
 
 AUTHORS of Akvo RSR
 
@@ -10,7 +10,12 @@ The PRIMARY AUTHORS are (and/or have been):
 - Gabriel von Heijne
 - Gino Lee
 - Peter van der Linde
-- Ellizabeth Whiteside
+- Elizabeth Whiteside
+
+Translation support by:
+
+- Malte Beckmann
+- Anke van Lenteren
 
 Contributors, here is an inevitably incomplete list of MUCH APPRECIATED
 CONTRIBUTORS whom without, Akvo RSR would not have been the same:
@@ -31,6 +36,6 @@ Funding partners, without them Akvo RSR could not have happened
 - Nedap
 - Simavi
 
-Many more partners, who all have greatly contributed to Akvo RSR in many ways
-can be found at: < http://www.akvo.org/web/ngo_partners > and
-< http://www.akvo.org/web/become_a_project_partner >
+Many more partners, who all have greatly contributed to Akvo RSR in
+many ways can be found at: < http://www.akvo.org/web/ngo_partners >
+and < http://www.akvo.org/web/become_a_project_partner >

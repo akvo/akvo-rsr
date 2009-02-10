@@ -26,7 +26,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% if form.errors %}
 		<div style="float: right; width: 300px; background-color: #FFEBE7; border: 1px solid #FFCDD1; padding: 20px; color: red; margin-right: 200px;">
 			<p><b>{% trans 'A problem occurred' %}:</b></p>
-			<p>{% trans 'Please review message below.' %} {{ form.non_field_errors }}</p>
+			<p>{% trans 'Please review the message below.' %} {{ form.non_field_errors }}</p>
 		</div> <!-- style -->
 	{% endif %}
 	
@@ -46,7 +46,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- style -->		  
 {% endif %}
 {{form.title|safe}}
-<p class="block">50 {% trans 'characters max' %}</p>
+<p class="block">{% trans '50 characters max' %}</p>
 </div> <!-- .clearfix -->
 
 

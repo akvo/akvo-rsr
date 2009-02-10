@@ -158,7 +158,7 @@ margin: 0 20px;
 }
 
 .form label {
-padding: 40px 50px 20px 50px;
+padding: 10px 50px 20px 50px;
 font-weight: bold;
 font-size: 1.2em;
 }
@@ -268,49 +268,6 @@ padding: 0 20px 5px 20px;
 .boxbody img.photo
 {
 padding: 0 20px;
-}
-
-/* headings
--------------------------------------------------------------------------------------- */
-
-h1.section, .boxhead h1
-{
-font-size: 1.2em;
-font-weight: bold;
-padding: 10px 20px;
-}
-
-h2
-{
-font-weight: bold;
-font-size: 1em;
-padding: 20px 20px 5px 20px;
-}
-
-h3
-{
-font-weight: bold;
-padding: 20px 20px 10px 0px;
-}
-
-.caption
-{
-color: #999;
-font-size: 0.75em;
-}
-
-blockquote 
-{
-margin: 20px 30px 20px;
-background-color:#fef9db;
-padding:8px
-}
-
-
-table h2
-{
-font-weight: bold;
-padding: 10px 0;
 }
 
 /* elements

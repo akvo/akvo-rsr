@@ -50,3 +50,45 @@ padding: 20px 20px;
 #store-footer {
   display:none;
 }
+
+/* Headings
+-------------------------------------------------------------------------------------- */
+
+h1.section, .boxhead h1
+{
+font-size: 1.2em;
+font-weight: bold;
+padding: 10px 20px;
+}
+
+h2
+{
+font-weight: bold;
+font-size: 1.2em;
+padding: 20px 20px 10px 20px;
+}
+
+h3
+{
+font-weight: bold;
+font-size: 1em;
+padding: 20px 20px 5px 20px;
+}
+
+/* generic tags
+-------------------------------------------------------------------------------------- */
+
+blockquote 
+{
+margin: 20px 30px 20px;
+background-color:#fef9db;
+padding:8px
+}
+
+code
+{
+margin: 20px 30px 20px;
+background-color:#fef9db;
+line-height: 1.5em;
+padding: 10px;
+}

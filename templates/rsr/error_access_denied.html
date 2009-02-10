@@ -7,10 +7,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n %}
 
-{% block title %}{% trans 'Error: premission denied' %}{% endblock title %}
+{% block title %}{% trans 'Error: permission denied' %}{% endblock title %}
 
 {% block error_head %}{% trans 'Error: Permission denied.' %}{% endblock %}
 
 {% block error_body %}
-    <p>{% trans 'Project updates may only be made for projects where your organisation is a partner.' %}</p>
+    <p>{% trans "Project updates can only be posted on your organisation's projects." %}</p>
 {% endblock error_body %}

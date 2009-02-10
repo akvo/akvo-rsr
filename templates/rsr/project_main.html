@@ -256,7 +256,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                                     {{u.photo_caption}}
                                 {% endif %}
                                 {% if u.photo_credit %}
-                                    Photo credit: {{u.photo_credit}}
+                                    {% trans 'Photo credit' %}: {{u.photo_credit}}
                                 {% endif %}
                             </p>
                         {% endifequal %}
@@ -272,7 +272,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                                     {{u.photo_caption}}
                                 {% endif %}
                                 {% if u.photo_credit %}
-                                    Photo credit: {{u.photo_credit}}
+                                    {% trans 'Photo credit' %}: {{u.photo_credit}}
                                 {% endif %}
                             </p>
                         {% endifequal %}
@@ -282,7 +282,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectupdates p.id %}">{% trans 'Earlier updates' %}</a></p>
                 <p class="lightx1">{% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
             {% else %}
-                <span style="padding-left: 20px;" class="lightx1">{% trans 'No updates yet.' %}</span>
+                <div style="padding-left: 20px; padding-top: 20px;" class="lightx1">{% trans 'No updates yet.' %}</div>
             {% endif %}
         </div> <!-- #project_updates & .boxbody -->
 

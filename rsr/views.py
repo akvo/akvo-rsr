@@ -30,6 +30,8 @@ import time
 import feedparser
 from registration.models import RegistrationProfile
 
+REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
+
 def mdgs_water_calc(projects):
     '''
     Calculate the water MDGs for the projects
@@ -360,7 +362,6 @@ def register1(request):
     
 def register2(request,
         form_class=RSR_RegistrationFormUniqueEmail,
-        profile_callback=None,
         template_name='registration/registration_form2.html',
     ):
     org_id = request.GET.get('org_id', None)
@@ -372,7 +373,7 @@ def register2(request,
         #brk(host="vnc.datatrassel.se", port=9000)
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_user = form.save(profile_callback=profile_callback)
+            new_user = form.save()
             return HttpResponseRedirect('/rsr/accounts/register/complete/')
     else:
         form = form_class(initial={'org_id': org_id})
@@ -424,7 +425,7 @@ def activate(request, activation_key,
         current_site = Site.objects.get_current()
         subject = 'Akvo user email confirmed'                
         message = 'A user, %s, has confirmed her email. Check it out!' % user.username
-        send_mail(subject, message, 'noreply@%s' % current_site, ['gabriel@akvo.org', 'thomas@akvo.org'])
+        send_mail(subject, message, 'noreply@%s' % current_site, REGISTRATION_RECEIVERS)
     if extra_context is None:
         extra_context = {}
     context = RequestContext(request)
@@ -764,9 +765,11 @@ def fundingbarimg(request):
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
     dev = {'path': 'dev/'}
-    p = Project.objects.get(pk=1)
-    updates     = Project.objects.get(id=1).projectupdate_set.all().order_by('-time')[:3]
-    comments    = Project.objects.get(id=1).projectcomment_set.all().order_by('-time')[:3]
+    SAMPLE_PROJECT_ID = 2
+    SAMPLE_ORG_ID = 42
+    p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
+    updates     = Project.objects.get(id=SAMPLE_PROJECT_ID).projectupdate_set.all().order_by('-time')[:3]
+    comments    = Project.objects.get(id=SAMPLE_PROJECT_ID).projectcomment_set.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
     projects = Project.objects.all()
@@ -774,7 +777,7 @@ def templatedev(request, template_name):
 
     orgz = Organisation.objects.all()
 
-    o = Organisation.objects.get(pk=1)
+    o = Organisation.objects.get(pk=SAMPLE_ORG_ID)
     org_projects, org_partners = org_activities(o)
     org_stats = akvo_at_a_glance(org_projects)
     
@@ -786,7 +789,7 @@ class HttpResponseNoContent(HttpResponse):
     
 def test_widget(request):
     return render_to_response('widgets/featured_project.html', context_instance=RequestContext(request))
-    
+
 def ajax_tab_goals(request, project_id):
     try:
         p = Project.objects.get(pk=project_id)

@@ -1,16 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Akvo RSR Translation.
+# Copyright (C) 2008, 2009 Stichting Akvo
+# This file is distributed under the same license as the Akvo RSR package.
+# Beth Whiteside <beth@akvo.org>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-08 20:54+0000\n"
+"POT-Creation-Date: 2009-02-07 01:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: de <LL@li.org>\n"
+"Last-Translator: Malte Beckmann <malte@akvo.org>\n"
+"Language-Team: translation <translation@akvo.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,298 +23,284 @@ msgstr "Deutsch"
 msgid "English"
 msgstr "Englisch"
 
-#: rsr/forms.py:85
+#: settings_base.py:65
+msgid "Dutch"
+msgstr "Niederländisch"
+
+#: rsr/admin.py:31
+msgid "Partnership type(s)"
+msgstr "Art der Partnerschaft"
+
+#: rsr/admin.py:32
+msgid "General information"
+msgstr "Generelle Informationen"
+
+#: rsr/admin.py:33
+msgid "Contact information"
+msgstr "Kontaktdaten"
+
+#: rsr/admin.py:81
+msgid "Project description"
+msgstr "Projektbeschreibung"
+
+#: rsr/admin.py:91 templates/rsr/organisation.html:69
+#: templates/rsr/project_details.html:79
+#: templates/rsr/project_directory.html:76 templates/rsr/project_main.html:74
+#: templates/widgets/featured_project.html:47
+msgid "Location"
+msgstr "Standort"
+
+#: rsr/admin.py:94
+msgid "Location extra"
+msgstr "Standort extra"
+
+#: rsr/admin.py:97
+msgid "Project info"
+msgstr "Projektinformationen"
+
+#: rsr/admin.py:100 templates/rsr/project_details.html:113
+#: templates/rsr/project_main.html:87
+msgid "Goals"
+msgstr "Ziele"
+
+#: rsr/admin.py:103
+msgid "Project target benchmarks"
+msgstr "Zielvorgaben des Projekts"
+
+#: rsr/admin.py:107
+msgid "Project info details"
+msgstr "Details zum Projekt"
+
+#: rsr/admin.py:110
+msgid "Project meta info"
+msgstr "Metainformationen zum Projekt"
+
+#: rsr/forms.py:92
 msgid "The two 'new password' fields didn't match."
 msgstr "Die Eingaben in den 'neuen Passwort' Feldern stimmen nicht überein."
 
-#: rsr/forms.py:133
+#: rsr/forms.py:107
 msgid "username"
 msgstr "Benutzername"
 
-#: rsr/forms.py:135
+#: rsr/forms.py:111
 msgid "password"
 msgstr "Passwort"
 
-#: rsr/forms.py:137
+#: rsr/forms.py:115
 msgid "password (again)"
 msgstr "Password (noch einmal eingeben)"
 
-#: rsr/forms.py:140
+#: rsr/forms.py:127
 msgid "email address"
 msgstr "E-Mail-Adresse"
 
-#: rsr/forms.py:143
+#: rsr/forms.py:131
 msgid "email address (again)"
 msgstr "E-Mail-Adresse (noch einmal eingeben)"
 
-#: rsr/forms.py:155
-msgid "You must type the same password each time"
-msgstr "Bitte geben Sie dasselbe Passwort ein"
-
-#: rsr/forms.py:158
-msgid "You must type the same email address each time"
-msgstr "Bitte geben Sie jeweils dieselbe E-Mail-Adresse ein."
-
-#: rsr/forms.py:168
-msgid "Usernames can only contain letters, numbers and underscores"
-msgstr "Benutzernamen dürfen nur Buchstaben, Nummern und Unterstriche erhalten"
-
-#: rsr/forms.py:173
-msgid "This username is already taken. Please choose another."
+#: rsr/forms.py:145
+msgid "Passwords do not match. Please enter the same password in both fields."
 msgstr ""
-"Dieser Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen."
+"Passwörter stimmen nicht überein. Bitte dasselbe Passwort in beiden Feldern "
+"eingeben."
 
-#: rsr/forms.py:184
-msgid "I have read and agree to the Terms of Service"
-msgstr "Ich habe die Benutzerbedingungen gelesen und bin einverstanden"
+#: rsr/forms.py:148
+msgid ""
+"Email addresses do not match. Please enter the email address in both fields."
+msgstr ""
+"E-Mail-Adressen stimmen nicht überein. Bitte dieselbe E-Mail-Adresse in "
+"beiden Feldern eingeben."
+
+#: rsr/forms.py:192
+msgid "New password"
+msgstr "Neues Passwort"
 
 #: rsr/forms.py:193
-msgid "You must agree to the terms to register"
-msgstr "Sie müssen den Bedinungen zustimmen, um sich zu registrieren"
-
-#: rsr/forms.py:216
-msgid ""
-"This email address is already in use. Please supply a different email "
-"address."
+msgid "New password confirmation"
 msgstr ""
-"Diese E-Mail-Adresse ist bereits in Gebrauch. Bitte geben sie eine andere "
-"Adresse an."
 
-#: rsr/forms.py:241
-msgid ""
-"Registration using free email addresses is prohibited. Please supply a "
-"different email address."
-msgstr ""
-"Die Registration mit einer kostenlosen E-Mail-Adresse ist nicht gestattet. "
-"Bitte geben Sie eine andere Adresse ein."
+#: rsr/forms.py:197
+msgid "E-mail"
+msgstr "E-Mail"
 
 #: rsr/models.py:36
 msgid "country name"
 msgstr "Name des Landes"
 
-#: rsr/models.py:88
+#: rsr/models.py:84
 msgid "field partner"
 msgstr "Vorortpartner"
 
-#: rsr/models.py:89
-msgid "support_partner"
+#: rsr/models.py:85
+msgid "support partner"
 msgstr "Hilfspartner"
 
-#: rsr/models.py:90
-msgid "funding_partner"
+#: rsr/models.py:86
+msgid "funding partner"
 msgstr "Finanzpartner"
 
-#: rsr/models.py:94
-msgid "organisation_type"
+#: rsr/models.py:90
+msgid "organisation type"
 msgstr "Organisationstyp"
 
-#: rsr/models.py:98
+#: rsr/models.py:94
 msgid "country"
 msgstr "Land"
 
-#: rsr/models.py:117
-msgid "Partnership type(s)"
-msgstr "Art der Partnerschaft"
-
-#: rsr/models.py:118
-msgid "General information"
-msgstr "Generelle Informationen"
-
-#: rsr/models.py:119
-msgid "Contact information"
-msgstr "Kontaktdaten"
-
-#: rsr/models.py:172
+#: rsr/models.py:159
 msgid "None"
 msgstr "Ohne"
 
-#: rsr/models.py:173 templates/rsr/index_base.html:43
+#: rsr/models.py:160 templates/rsr/index_base.html:43
 #: templates/rsr/organisation.html:118
 msgid "Active"
 msgstr "Aktiv"
 
-#: rsr/models.py:174 templates/rsr/index_base.html:44
+#: rsr/models.py:161 templates/rsr/index_base.html:44
 #: templates/rsr/organisation.html:119
 msgid "Need funding"
 msgstr "Benötigen Finanzierung"
 
-#: rsr/models.py:175 templates/rsr/index_base.html:45
+#: rsr/models.py:162 templates/rsr/index_base.html:45
 #: templates/rsr/organisation.html:120
 msgid "Complete"
 msgstr "Abgeschlossen"
 
-#: rsr/models.py:176
+#: rsr/models.py:163
 msgid "Cancelled"
 msgstr "Abgebrochen"
 
-#: rsr/models.py:184 templates/rsr/update_list.html:25
+#: rsr/models.py:171 templates/rsr/update_list.html:25
 msgid "status"
 msgstr "Status"
 
-#: rsr/models.py:242
-msgid "Project description"
-msgstr "Projektbeschreibung"
-
-#: rsr/models.py:252 templates/rsr/organisation.html:69
-#: templates/rsr/project_details.html:79
-#: templates/rsr/project_directory.html:76
-#: templates/rsr/project_directory_backup.html:69
-#: templates/rsr/project_main.html:74
-#: templates/widgets/featured_project.html:47
-msgid "Location"
-msgstr "Standort"
-
-#: rsr/models.py:255
-msgid "Location extra"
-msgstr "Standort extra"
-
-#: rsr/models.py:258
-msgid "Project info"
-msgstr "Projektinformationen"
-
-#: rsr/models.py:261 templates/rsr/project_details.html:113
-#: templates/rsr/project_main.html:87
-msgid "Goals"
-msgstr "Ziele"
-
-#: rsr/models.py:264
-msgid "Project target benchmarks"
-msgstr "Zielvorgaben des Projekts"
-
-#: rsr/models.py:268
-msgid "Project info details"
-msgstr "Details zum Projekt"
-
-#: rsr/models.py:271
-msgid "Project meta info"
-msgstr "Metainformationen zum Projekt"
-
-#: rsr/models.py:392 templates/rsr/update_form.html:85
+#: rsr/models.py:342 templates/rsr/update_form.html:85
 msgid "At the beginning of the update"
 msgstr "Am Kopf der Aktualisierung"
 
-#: rsr/models.py:393 templates/rsr/update_form.html:86
+#: rsr/models.py:343 templates/rsr/update_form.html:86
 msgid "At the end of the update"
 msgstr "Am Fuße der Aktualisierung"
 
-#: rsr/models.py:396
+#: rsr/models.py:346
 msgid "web"
 msgstr "Netz"
 
-#: rsr/models.py:397
+#: rsr/models.py:347
 msgid "e-mail"
 msgstr "E-mail"
 
-#: rsr/models.py:398
+#: rsr/models.py:348
 msgid "SMS"
 msgstr "SMS"
 
-#: rsr/models.py:594
+#: rsr/models.py:432
 msgid "mms id"
 msgstr "mms id"
 
-#: rsr/models.py:595
+#: rsr/models.py:433
 msgid "subject"
 msgstr "Betreff"
 
-#: rsr/models.py:596 rsr/models.py:643
+#: rsr/models.py:434 rsr/models.py:478
 msgid "sender"
 msgstr "Sender"
 
-#: rsr/models.py:597 rsr/models.py:644
+#: rsr/models.py:435 rsr/models.py:479
 msgid "to"
 msgstr "An"
 
-#: rsr/models.py:598 rsr/models.py:663 rsr/models.py:685
+#: rsr/models.py:436 rsr/models.py:495 rsr/models.py:516
 #: templates/rsr/update_list.html:35
 msgid "time"
 msgstr "Zeit"
 
-#: rsr/models.py:600
-msgid "mms version"
-msgstr "mms Version"
-
-#: rsr/models.py:601
-msgid "message class"
-msgstr "Nachrichtenklasse"
-
-#: rsr/models.py:602
-msgid "priority"
-msgstr "Priorität"
-
-#: rsr/models.py:603
-msgid "file count"
-msgstr "Anzahl der Dateien"
-
-#: rsr/models.py:632
-msgid "mms"
-msgstr "mms"
-
-#: rsr/models.py:633
-msgid "file name"
-msgstr "Dateiname"
-
-#: rsr/models.py:634
-msgid "content type"
-msgstr "Inhaltstyp"
-
-#: rsr/models.py:635
-msgid "content ID"
-msgstr "Inhalts ID"
-
-#: rsr/models.py:636
-msgid "file size"
-msgstr "Dateigröße"
-
-#: rsr/models.py:642 rsr/models.py:656 templates/rsr/update_list.html:23
-msgid "text"
-msgstr "Text"
-
-#: rsr/models.py:645
-msgid "delivered"
-msgstr "abgesendet"
-
-#: rsr/models.py:646
+#: rsr/models.py:437 rsr/models.py:481
 msgid "saved at"
 msgstr "gespeichert um"
 
-#: rsr/models.py:647
+#: rsr/models.py:438
+msgid "mms version"
+msgstr "mms Version"
+
+#: rsr/models.py:439
+msgid "message class"
+msgstr "Nachrichtenklasse"
+
+#: rsr/models.py:440
+msgid "priority"
+msgstr "Priorität"
+
+#: rsr/models.py:441
+msgid "file count"
+msgstr "Anzahl der Dateien"
+
+#: rsr/models.py:467
+msgid "MMS"
+msgstr "MMS"
+
+#: rsr/models.py:468
+msgid "file name"
+msgstr "Dateiname"
+
+#: rsr/models.py:469
+msgid "content type"
+msgstr "Inhaltstyp"
+
+#: rsr/models.py:470
+msgid "content ID"
+msgstr "Inhalts ID"
+
+#: rsr/models.py:471
+msgid "file size"
+msgstr "Dateigröße"
+
+#: rsr/models.py:477 rsr/models.py:488 templates/rsr/update_list.html:23
+msgid "text"
+msgstr "Text"
+
+#: rsr/models.py:480
+msgid "delivered"
+msgstr "abgesendet"
+
+#: rsr/models.py:482
 msgid "incoming sms id"
 msgstr "eingehende sms id"
 
-#: rsr/models.py:653 rsr/models.py:682
+#: rsr/models.py:485 rsr/models.py:513
 msgid "project"
 msgstr "Projekt"
 
-#: rsr/models.py:654 rsr/models.py:683
+#: rsr/models.py:486 rsr/models.py:514
 msgid "user"
 msgstr "Benutzer"
 
-#: rsr/models.py:655 templates/rsr/update_list.html:21
+#: rsr/models.py:487 templates/rsr/update_list.html:21
 msgid "title"
 msgstr "Titel"
 
-#: rsr/models.py:659 templates/rsr/update_list.html:33
+#: rsr/models.py:491 templates/rsr/update_list.html:33
 msgid "photo location"
 msgstr "Aufnahmeort"
 
-#: rsr/models.py:660 templates/rsr/update_list.html:29
+#: rsr/models.py:492 templates/rsr/update_list.html:29
 msgid "photo caption"
 msgstr "Bildunterschrift"
 
-#: rsr/models.py:661 templates/rsr/update_list.html:31
+#: rsr/models.py:493 templates/rsr/update_list.html:31
 msgid "photo credit"
 msgstr "Fotorecht"
 
-#: rsr/models.py:662
+#: rsr/models.py:494
 msgid "update method"
 msgstr "Aktualisierungsmethode"
 
-#: rsr/models.py:684
+#: rsr/models.py:515
 msgid "comment"
 msgstr "Kommentar"
 
-#: rsr/views.py:186
+#: rsr/views.py:195
 msgid "The blog is not available at the moment."
 msgstr "Der Blog ist steht zu diesem Zeitpunkt nicht zur Verfügung"
 
@@ -334,17 +320,16 @@ msgstr ""
 "Unsere Personal ist benachrichtigt worden und wird sich so bald wie möglich "
 "um dieses Problem kümmern."
 
-#: templates/admin/base_site.html:10 templates/rsr/base_site.html:10
+#: templates/admin/base_site.html:10
 msgid "Akvo RSR site admin"
 msgstr "Akvo RSR Administrator"
 
-#: templates/admin/base_site.html:13 templates/rsr/base_site.html:13
+#: templates/admin/base_site.html:13
 msgid "Akvo RSR administration"
 msgstr "Akvo RSR Administration"
 
 #: templates/inclusion_tags/category_icons.html:9
 #: templates/rsr/index_base.html:49 templates/rsr/organisation.html:125
-#: templates/rsr/project_directory_beta.html:201
 msgid "Water"
 msgstr "Wasser"
 
@@ -358,36 +343,30 @@ msgstr "Projekt-Kategorie"
 
 #: templates/inclusion_tags/category_icons.html:13
 #: templates/rsr/index_base.html:50 templates/rsr/organisation.html:126
-#: templates/rsr/project_directory_beta.html:205
 msgid "Sanitation"
 msgstr "Abwasser"
 
 #: templates/inclusion_tags/category_icons.html:17
-#: templates/rsr/project_directory_beta.html:209
 msgid "Training"
 msgstr "Training"
 
 #: templates/inclusion_tags/category_icons.html:21
-#: templates/rsr/project_directory_beta.html:213
 msgid "Education"
 msgstr "Bildung"
 
 #: templates/inclusion_tags/category_icons.html:25
-#: templates/rsr/project_directory_beta.html:217
 msgid "Maintenance"
 msgstr "Instandhaltung"
 
 #: templates/inclusion_tags/funding_bar.html:15
-#: templates/rsr/project_directory_backup.html:72
-#: templates/rsr/project_directory_beta.html:74
 #: templates/rsr/project_funding.html:80
 msgid "Total"
 msgstr "Insgesamt"
 
 #: templates/inclusion_tags/submit_button.html:8
 #: templates/registration/organisation_form.html:65
-#: templates/rsr/comment_form.html:35 templates/rsr/project_comments.html:64
-#: templates/rsr/project_main.html:199 templates/rsr/update_form_old.html:102
+#: templates/rsr/project_comments.html:64 templates/rsr/project_main.html:199
+#: templates/rsr/update_form_old.html:102
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -456,8 +435,8 @@ msgstr ""
 
 #: templates/registration/organisation_form.html:31
 #: templates/registration/registration_form1.html:33
-#: templates/registration/registration_form2.html:34
-msgid "Setup your account"
+#: templates/registration/registration_form2.html:35
+msgid "Set up your account"
 msgstr "Konto einrichten"
 
 #: templates/registration/organisation_form.html:32
@@ -502,46 +481,47 @@ msgid "Your password was changed."
 msgstr "Ihr Passwort wurde geändert."
 
 #: templates/registration/password_change_form.html:11
+#: templates/registration/password_reset_confirm.html:11
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: templates/registration/password_change_form.html:26
-#: templates/registration/password_change_form.html:47
-#: templates/registration/password_change_form.html:63
+#: templates/registration/password_change_form.html:25
+#: templates/registration/password_change_form.html:46
+#: templates/registration/password_change_form.html:62
+#: templates/registration/password_reset_confirm.html:39
 #: templates/registration/password_reset_form.html:27
 #: templates/registration/password_reset_form.html:48
 #: templates/registration/registration_form1.html:28
 #: templates/registration/registration_form1.html:45
-#: templates/registration/registration_form2.html:25
-#: templates/registration/registration_form2.html:46
-#: templates/registration/registration_form2.html:67
-#: templates/registration/registration_form2.html:91
-#: templates/registration/registration_form2.html:113
+#: templates/registration/registration_form2.html:26
+#: templates/registration/registration_form2.html:47
+#: templates/registration/registration_form2.html:68
+#: templates/registration/registration_form2.html:92
+#: templates/registration/registration_form2.html:114
 #: templates/registration/update_form.html:28
 #: templates/registration/update_form.html:56
-#: templates/rsr/comment_form.html:29 templates/rsr/update_form.html:28
-#: templates/rsr/update_form.html.py:44 templates/rsr/update_form.html:57
-#: templates/rsr/update_form.html.py:68 templates/rsr/update_form.html:79
-#: templates/rsr/update_form.html.py:94 templates/rsr/update_form.html:107
-#: templates/rsr/update_form_old.html:42 templates/rsr/update_form_old.html:51
-#: templates/rsr/update_form_old.html:61 templates/rsr/update_form_old.html:71
-#: templates/rsr/update_form_old.html:80 templates/rsr/update_form_old.html:89
-#: templates/rsr/update_form_old.html:97
+#: templates/rsr/update_form.html:28 templates/rsr/update_form.html.py:44
+#: templates/rsr/update_form.html:57 templates/rsr/update_form.html.py:68
+#: templates/rsr/update_form.html:79 templates/rsr/update_form.html.py:94
+#: templates/rsr/update_form.html:107 templates/rsr/update_form_old.html:42
+#: templates/rsr/update_form_old.html:51 templates/rsr/update_form_old.html:61
+#: templates/rsr/update_form_old.html:71 templates/rsr/update_form_old.html:80
+#: templates/rsr/update_form_old.html:89 templates/rsr/update_form_old.html:97
 msgid "A problem occurred"
 msgstr "Ein Fehler ist aufgetreten"
 
-#: templates/registration/password_change_form.html:30
+#: templates/registration/password_change_form.html:29
 #: templates/registration/password_reset_form.html:31
-#: templates/registration/registration_form2.html:29
+#: templates/registration/registration_form2.html:30
 #: templates/registration/update_form.html:32
 msgid "Please review messages below."
 msgstr "Bitte überprüfen sie die folgende Nachricht."
 
-#: templates/registration/password_change_form.html:34
+#: templates/registration/password_change_form.html:33
 msgid "Change your password"
 msgstr "Passwort ändern"
 
-#: templates/registration/password_change_form.html:36
+#: templates/registration/password_change_form.html:35
 msgid ""
 "Please enter your current password and then enter your new password twice so "
 "we can verify you typed it in correctly."
@@ -549,7 +529,7 @@ msgstr ""
 "Bitte ändern sie ihr aktuelles Passwort und das neue Passwort zwei Mal um "
 "bei ihrer Eingabe Tippfehler auszuschliessen."
 
-#: templates/registration/password_change_form.html:37
+#: templates/registration/password_change_form.html:36
 msgid ""
 "If you have lost your password we can send it to you <a href=\"/rsr/accounts/"
 "password/reset/\">here</a>."
@@ -557,46 +537,70 @@ msgstr ""
 "Falls sie ihr Password verloren haben sollten, können sie es <a href=\"/rsr/"
 "accounts/password/reset/\">hier</a> ein neues Passwort erstellen."
 
-#: templates/registration/password_change_form.html:44
+#: templates/registration/password_change_form.html:43
 msgid "Enter your current password"
 msgstr "Bitte geben sie ihr aktuelles Passwort ein"
 
-#: templates/registration/password_change_form.html:54
+#: templates/registration/password_change_form.html:53
 msgid "Verify the change with your current password."
 msgstr "Bitte bestätigen sie die Änderung mit ihrem aktuellen Passwort."
 
-#: templates/registration/password_change_form.html:59
-#: templates/registration/registration_form2.html:87
+#: templates/registration/password_change_form.html:58
+#: templates/registration/registration_form2.html:88
 msgid "Enter a password"
 msgstr "Geben sie ein Passwort ein"
 
-#: templates/registration/password_change_form.html:73
+#: templates/registration/password_change_form.html:72
+#: templates/registration/password_reset_confirm.html:49
 msgid "Enter the new password."
 msgstr "Geben sie ein neues Passwort ein."
 
-#: templates/registration/password_change_form.html:76
+#: templates/registration/password_change_form.html:75
+#: templates/registration/password_reset_confirm.html:52
 msgid "Retype the password to avoid mistakes."
 msgstr ""
 "Bitte geben sie ihr Passwort erneut ein um mögliche Tippfehler zu vermeiden."
 
-#: templates/registration/password_change_form.html:82
+#: templates/registration/password_change_form.html:81
+#: templates/registration/password_reset_confirm.html:58
 msgid "Change"
 msgstr "Ändern"
 
+#: templates/registration/password_reset_complete.html:10
+#: templates/registration/password_reset_complete.html:16
 #: templates/registration/password_reset_done.html:10
-#: templates/registration/password_reset_done.html:14
 msgid "Password reset successful"
 msgstr "Passwort wurde erfolgreich geändert"
 
+#: templates/registration/password_reset_complete.html:18
+msgid "Your password was reset successfully."
+msgstr "Ihr Passwort wurde erfolgreich geändert"
+
+#: templates/registration/password_reset_confirm.html:25
+msgid "Password reset"
+msgstr "Passwort zurücksetzen"
+
+#: templates/registration/password_reset_confirm.html:27
+msgid "Please choose a new password."
+msgstr "Geben sie ein neues Passwort ein."
+
+#: templates/registration/password_reset_confirm.html:35
+msgid "Enter new password"
+msgstr "Neues Passwort eingeben"
+
 #: templates/registration/password_reset_done.html:16
+msgid "Please check for new e-mails"
+msgstr "Bitte checken sie nach neuen E-Mails."
+
+#: templates/registration/password_reset_done.html:18
 msgid ""
-"We've e-mailed a new password to the e-mail address you submitted. You "
-"should be receiving it shortly."
+"We've e-mailed a temporary password to your e-mail address. You should be "
+"receiving it shortly."
 msgstr ""
-"Wir haben ihr neues Passwort an ihre E-Mail-Adresse gesendet. Sie sollten es "
+"Wir haben ein temporäres Passwort an ihre E-Mail-Adresse versendet. Sie sollten es "
 "in Kürze erhalten."
 
-#: templates/registration/password_reset_email.html:7
+#: templates/registration/password_reset_email.html:9
 #, python-format
 msgid ""
 "You're receiving this e-mail because you requested a password reset for your "
@@ -605,19 +609,19 @@ msgstr ""
 "Sie erhalten diese E-Mail, weil sie für ihr Benutzerkonto bei %(site_name)s "
 "ein neues Passwort beantragt haben."
 
-#: templates/registration/password_reset_email.html:9
-msgid "Your new password is"
-msgstr "Ihr neues Passwort ist"
-
 #: templates/registration/password_reset_email.html:11
-msgid "Feel free to change this password by going to this page"
-msgstr "Bitte besuchen Sie die folgende Seite um ihr Passwort zu ändern"
+msgid "Please go to the following page and choose a new password:"
+msgstr "Bitte gehen sie zur folgenden Seite und wählen ein neues Passwort aus:"
 
 #: templates/registration/password_reset_email.html:15
-msgid "Your username, in case you've forgotten"
-msgstr "Ihr Benutzername, falls Sie ihn vergessen haben sollten"
+msgid "Your username, in case you've forgotten:"
+msgstr "Ihr Benutzername, falls Sie ihn vergessen haben sollten:"
 
 #: templates/registration/password_reset_email.html:17
+msgid "Thanks for using our site!"
+msgstr "Danke, dass sie unsere neue Website besucht haben!"
+
+#: templates/registration/password_reset_email.html:19
 #, python-format
 msgid "The %(site_name)s team"
 msgstr "Das %(site_name)s Team"
@@ -640,7 +644,7 @@ msgstr ""
 "neues zu."
 
 #: templates/registration/password_reset_form.html:45
-#: templates/registration/registration_form2.html:109
+#: templates/registration/registration_form2.html:110
 msgid "Enter your email address"
 msgstr "Geben sie ihre E-Mail-Adresse ein"
 
@@ -668,54 +672,7 @@ msgstr ""
 "Eine Bestätigung wird an ihre E-Mail-Adresse versendet. Bitte folgen sie dem "
 "Link in der Email um die Einrichtung ihres Kontos fertig zu stellen."
 
-#: templates/registration/registration_form.html:20
-msgid "Set up your account"
-msgstr "Konto einrichten"
-
-#: templates/registration/registration_form.html:23
-msgid "Please correct the errors below"
-msgstr "Bitte beheben sie die folgenden Fehler"
-
-#: templates/registration/registration_form.html:29
-msgid "Organisation"
-msgstr "Organisation"
-
-#: templates/registration/registration_form.html:32
-msgid "Username"
-msgstr "Benutzername"
-
-#: templates/registration/registration_form.html:42
-msgid "First name"
-msgstr "Vorname"
-
-#: templates/registration/registration_form.html:52
-msgid "Last name"
-msgstr "Nachname"
-
-#: templates/registration/registration_form.html:62
-msgid "Password"
-msgstr "Passwort"
-
-#: templates/registration/registration_form.html:72
-msgid "Password (type again to avoid typos)"
-msgstr "Passwort (noch einmal eingeben, um Tippfehler zu vermeiden)"
-
-#: templates/registration/registration_form.html:82
-msgid "Email address"
-msgstr "E-Mail-Adresse"
-
-#: templates/registration/registration_form.html:92
-msgid "Email address (type again to avoid typos)"
-msgstr "E-Mail-Adresse (noch einmal eingeben, um Tippfehler zu vermeiden)"
-
-#: templates/registration/registration_form.html:103
-#: templates/registration/registration_form2.html:132
-#: templates/rsr/rsr_base.html:83
-msgid "Register"
-msgstr "Registrieren"
-
 #: templates/registration/registration_form1.html:29
-#: templates/rsr/update_form.html:29
 msgid "Please review message below."
 msgstr "Bitte überprüfen sie die folgende Nachricht."
 
@@ -737,39 +694,39 @@ msgstr ""
 "um ihre Organisation zu registrieren. Bitte kommen sie auf diese Seite "
 "zurück, nachdem ihre Organisation registriert ist."
 
-#: templates/registration/registration_form2.html:36
+#: templates/registration/registration_form2.html:37
 msgid "Step 2 of 2"
 msgstr "Schritt 2 von 2"
 
-#: templates/registration/registration_form2.html:43
+#: templates/registration/registration_form2.html:44
 msgid "Enter a username"
 msgstr "Geben sie einen Benutzernamen ein"
 
-#: templates/registration/registration_form2.html:55
+#: templates/registration/registration_form2.html:56
 msgid "Your user name will be permanent. Use this to log into Akvo."
 msgstr ""
 "Ihr Benutzername wird permanent sein. Sie brauchen ihn, um sich in Akvo "
 "einzuloggen."
 
-#: templates/registration/registration_form2.html:57
+#: templates/registration/registration_form2.html:58
 msgid "Remember that user names as well as passwords are case sensitive."
 msgstr ""
 "Bitte achten sie bei der Wahl des Benutzernamens und Passworts auf Groß-/"
 "Kleinschreibung."
 
-#: templates/registration/registration_form2.html:63
+#: templates/registration/registration_form2.html:64
 msgid "Enter your first and last name"
 msgstr "Geben sie ihren Vor- und Nachnamen ein"
 
-#: templates/registration/registration_form2.html:77
+#: templates/registration/registration_form2.html:78
 msgid "Enter first (given) name."
 msgstr "Geben sie ihren Vornamen ein."
 
-#: templates/registration/registration_form2.html:80
+#: templates/registration/registration_form2.html:81
 msgid "Enter last (family) name."
 msgstr "Geben sie ihren Nachnahmen ein."
 
-#: templates/registration/registration_form2.html:82
+#: templates/registration/registration_form2.html:83
 #: templates/registration/update_form.html:71
 msgid ""
 "Your first and last name will be displayed when you post comments or updates "
@@ -778,22 +735,27 @@ msgstr ""
 "Ihr Vor- und Nachname wird zu ihren Kommentaren und Aktualisierungen "
 "angezeigt."
 
-#: templates/registration/registration_form2.html:101
-#: templates/rsr/sign_in.html:49
+#: templates/registration/registration_form2.html:102
+#: templates/rsr/sign_in.html:50
 msgid "Enter password"
 msgstr "Passwort eingeben"
 
-#: templates/registration/registration_form2.html:104
+#: templates/registration/registration_form2.html:105
 msgid "Retype password to verify"
 msgstr "Passwort noch einmal eingeben"
 
-#: templates/registration/registration_form2.html:123
+#: templates/registration/registration_form2.html:124
 msgid "Enter email address."
 msgstr "E-Mail-Adresse eingeben."
 
-#: templates/registration/registration_form2.html:127
+#: templates/registration/registration_form2.html:128
 msgid "Retype email address to verify."
 msgstr "E-Mail-Adresse noch einmal eingeben."
+
+#: templates/registration/registration_form2.html:133
+#: templates/rsr/rsr_base.html:83
+msgid "Register"
+msgstr "Registrieren"
 
 #: templates/registration/update_complete.html:10
 #: templates/registration/update_complete.html:12
@@ -842,25 +804,8 @@ msgstr "Geben sie ihren Nachnamen ein"
 msgid "Submit"
 msgstr "Absenden"
 
-#: templates/rsr/comment_form.html:19 templates/rsr/project_comments.html:48
-#: templates/rsr/project_main.html:186
-msgid "Add comment"
-msgstr "Kommentar abgeben"
-
-#: templates/rsr/comment_form.html:20
-msgid "You are commenting the project named"
-msgstr "Sie kommentieren das Project"
-
-#: templates/rsr/comment_form.html:26
-msgid "Enter comment text"
-msgstr "Geben Sie den Kommentar ein"
-
-#: templates/rsr/comment_form.html:35
-msgid "Sumbit changes"
-msgstr "Änderungen absenden"
-
 #: templates/rsr/error_access_denied.html:10
-msgid "Error: premission denied"
+msgid "Error: permission denied"
 msgstr "Fehler: Zugang verweigert"
 
 #: templates/rsr/error_access_denied.html:12
@@ -868,9 +813,7 @@ msgid "Error: Permission denied."
 msgstr "Fehler: Zugang verweigert."
 
 #: templates/rsr/error_access_denied.html:15
-msgid ""
-"Project updates may only be made for projects where your organisation is a "
-"partner."
+msgid "Project updates can only be posted on your organisation's projects."
 msgstr ""
 "Sie können nur Projektaktualisierungen abgeben für Projekte, die von ihrer "
 "Organisation betreut werden."
@@ -962,7 +905,7 @@ msgstr "Mehr lesen"
 msgid "View earlier blog entries"
 msgstr "Vorhergehende Blogeinträge anzeigen"
 
-#: templates/rsr/index_base.html:24 templates/rsr/project_list.html:14
+#: templates/rsr/index_base.html:24
 msgid "Akvo at a glance"
 msgstr "Akvo auf einen Blick"
 
@@ -1094,8 +1037,7 @@ msgstr "Fax"
 msgid "Organisation Activities"
 msgstr "Organisationsaktivitäten"
 
-#: templates/rsr/organisation.html:117
-#: templates/rsr/project_list_generic.html:19 templates/rsr/rsr_base.html:78
+#: templates/rsr/organisation.html:117 templates/rsr/rsr_base.html:78
 msgid "Projects"
 msgstr "Projekte"
 
@@ -1137,16 +1079,6 @@ msgstr "Organisationen %(page_start)s-%(page_end)s von %(o_count)s"
 #: templates/rsr/project_directory.html:114
 #: templates/rsr/project_directory.html:316
 #: templates/rsr/project_directory.html:318
-#: templates/rsr/project_directory_backup.html:98
-#: templates/rsr/project_directory_backup.html:102
-#: templates/rsr/project_directory_backup.html:104
-#: templates/rsr/project_directory_backup.html:281
-#: templates/rsr/project_directory_backup.html:283
-#: templates/rsr/project_directory_beta.html:100
-#: templates/rsr/project_directory_beta.html:104
-#: templates/rsr/project_directory_beta.html:106
-#: templates/rsr/project_directory_beta.html:286
-#: templates/rsr/project_directory_beta.html:288
 msgid "First"
 msgstr "Erste"
 
@@ -1159,16 +1091,6 @@ msgstr "Erste"
 #: templates/rsr/project_directory.html:124
 #: templates/rsr/project_directory.html:321
 #: templates/rsr/project_directory.html:323
-#: templates/rsr/project_directory_backup.html:109
-#: templates/rsr/project_directory_backup.html:111
-#: templates/rsr/project_directory_backup.html:114
-#: templates/rsr/project_directory_backup.html:286
-#: templates/rsr/project_directory_backup.html:288
-#: templates/rsr/project_directory_beta.html:111
-#: templates/rsr/project_directory_beta.html:113
-#: templates/rsr/project_directory_beta.html:116
-#: templates/rsr/project_directory_beta.html:291
-#: templates/rsr/project_directory_beta.html:293
 msgid "Previous"
 msgstr "Vorherige"
 
@@ -1181,16 +1103,6 @@ msgstr "Vorherige"
 #: templates/rsr/project_directory.html:133
 #: templates/rsr/project_directory.html:326
 #: templates/rsr/project_directory.html:328
-#: templates/rsr/project_directory_backup.html:118
-#: templates/rsr/project_directory_backup.html:120
-#: templates/rsr/project_directory_backup.html:123
-#: templates/rsr/project_directory_backup.html:291
-#: templates/rsr/project_directory_backup.html:293
-#: templates/rsr/project_directory_beta.html:120
-#: templates/rsr/project_directory_beta.html:122
-#: templates/rsr/project_directory_beta.html:125
-#: templates/rsr/project_directory_beta.html:296
-#: templates/rsr/project_directory_beta.html:298
 msgid "Next"
 msgstr "Nächste"
 
@@ -1203,15 +1115,6 @@ msgstr "Nächste"
 #: templates/rsr/project_directory.html:141
 #: templates/rsr/project_directory.html:331
 #: templates/rsr/project_directory.html:333
-#: templates/rsr/project_directory_backup.html:126
-#: templates/rsr/project_directory_backup.html:129
-#: templates/rsr/project_directory_backup.html:131
-#: templates/rsr/project_directory_backup.html:296
-#: templates/rsr/project_directory_backup.html:298
-#: templates/rsr/project_directory_beta.html:128
-#: templates/rsr/project_directory_beta.html:131
-#: templates/rsr/project_directory_beta.html:301
-#: templates/rsr/project_directory_beta.html:303
 msgid "Last"
 msgstr "Letzte"
 
@@ -1220,7 +1123,6 @@ msgstr "Letzte"
 #: templates/rsr/organisation_directory.html:77
 #: templates/rsr/organisation_directory.html:80
 #: templates/rsr/organisation_directory.html:83
-#: templates/rsr/project_directory_backup.html:141
 msgid "total"
 msgstr "insgesamt"
 
@@ -1231,31 +1133,20 @@ msgstr "Name der Organisation"
 #: templates/rsr/organisation_directory.html:94
 #: templates/rsr/project_directory.html:176
 #: templates/rsr/project_directory.html:178
-#: templates/rsr/project_directory_backup.html:165
-#: templates/rsr/project_directory_backup.html:167
-#: templates/rsr/project_directory_beta.html:167
-#: templates/rsr/project_directory_beta.html:169
-#: templates/rsr/project_list.html:24
 msgid "Country"
 msgstr "Land"
 
 #: templates/rsr/organisation_directory.html:95
 #: templates/rsr/project_directory.html:183
 #: templates/rsr/project_directory.html:185
-#: templates/rsr/project_directory_backup.html:172
-#: templates/rsr/project_directory_backup.html:174
-#: templates/rsr/project_directory_beta.html:174
-#: templates/rsr/project_directory_beta.html:176
 msgid "Continent"
 msgstr "Kontinent"
 
 #: templates/rsr/organisation_directory.html:97
-#: templates/rsr/project_list.html:25
 msgid "Funds requested"
 msgstr "Beantragte Finanzierung"
 
 #: templates/rsr/organisation_directory.html:98
-#: templates/rsr/project_list.html:26
 msgid "Funds still needed"
 msgstr "Noch benötigte Gelder"
 
@@ -1297,7 +1188,7 @@ msgstr "Derzeigige Finanzierer"
 msgid "Logo of"
 msgstr "Logo von"
 
-#: templates/rsr/project_base.html:72
+#: templates/rsr/project_base.html:72 templates/rsr/project_funding.html:105
 msgid "Grant"
 msgstr "Beihilfe"
 
@@ -1323,15 +1214,14 @@ msgstr "Alle Kommentare zu Projekten"
 #: templates/rsr/project_directory.html:13
 #: templates/rsr/project_directory.html:20
 #: templates/rsr/project_directory.html:147
-#: templates/rsr/project_directory_backup.html:13
-#: templates/rsr/project_directory_backup.html:21
-#: templates/rsr/project_directory_backup.html:137
-#: templates/rsr/project_directory_beta.html:13
-#: templates/rsr/project_directory_beta.html:21
 #: templates/rsr/project_funding.html:14 templates/rsr/project_main.html:31
 #: templates/rsr/project_updates.html:13 templates/rsr/update_form_old.html:14
 msgid "Project listing"
 msgstr "Projektliste"
+
+#: templates/rsr/project_comments.html:48 templates/rsr/project_main.html:186
+msgid "Add comment"
+msgstr "Kommentar abgeben"
 
 #: templates/rsr/project_comments.html:59
 msgid "You must be signed in to add a comment."
@@ -1369,13 +1259,7 @@ msgstr "Projekt-Details"
 #: templates/rsr/project_details.html:50
 #: templates/rsr/project_directory.html:56
 #: templates/rsr/project_directory.html:169
-#: templates/rsr/project_directory.html:171
-#: templates/rsr/project_directory_backup.html:158
-#: templates/rsr/project_directory_backup.html:160
-#: templates/rsr/project_directory_beta.html:54
-#: templates/rsr/project_directory_beta.html:160
-#: templates/rsr/project_directory_beta.html:162
-#: templates/rsr/project_list.html:23 templates/rsr/project_main.html:45
+#: templates/rsr/project_directory.html:171 templates/rsr/project_main.html:45
 #: templates/widgets/featured_project.html:27
 msgid "Status"
 msgstr "Status"
@@ -1431,14 +1315,10 @@ msgid "Goals overview"
 msgstr "Zielübersicht"
 
 #: templates/rsr/project_directory.html:35
-#: templates/rsr/project_directory_backup.html:33
-#: templates/rsr/project_directory_beta.html:33
 msgid "Featured projects"
 msgstr "Hervorgehobene Projekt"
 
 #: templates/rsr/project_directory.html:57
-#: templates/rsr/project_directory_backup.html:53
-#: templates/rsr/project_directory_beta.html:55
 #: templates/widgets/featured_project.html:28
 msgid "Focus areas"
 msgstr "Schwerpunkt"
@@ -1461,11 +1341,6 @@ msgstr "Projekte nach Namen sortieren"
 
 #: templates/rsr/project_directory.html:162
 #: templates/rsr/project_directory.html:164
-#: templates/rsr/project_directory_backup.html:151
-#: templates/rsr/project_directory_backup.html:153
-#: templates/rsr/project_directory_beta.html:153
-#: templates/rsr/project_directory_beta.html:155
-#: templates/rsr/project_list.html:22
 msgid "Project name"
 msgstr "Projektname"
 
@@ -1491,8 +1366,6 @@ msgstr "Projekte nach angeforderter Summe sortieren"
 
 #: templates/rsr/project_directory.html:190
 #: templates/rsr/project_directory.html:192
-#: templates/rsr/project_directory_backup.html:177
-#: templates/rsr/project_directory_beta.html:179
 msgid "Total funds requested"
 msgstr "Total angeforderte Summe"
 
@@ -1503,45 +1376,20 @@ msgstr "Projekte nach noch benötigter Summe sortieren"
 
 #: templates/rsr/project_directory.html:197
 #: templates/rsr/project_directory.html:199
-#: templates/rsr/project_directory_backup.html:178
-#: templates/rsr/project_directory_beta.html:180
 msgid "Funding still needed"
 msgstr "Noch benötige Summe"
 
 #: templates/rsr/project_directory.html:204
-#: templates/rsr/project_directory_backup.html:179
-#: templates/rsr/project_directory_beta.html:181
-#: templates/rsr/project_list.html:27
 msgid "Field partner(s)"
 msgstr "Vorortpartner"
 
 #: templates/rsr/project_directory.html:205
-#: templates/rsr/project_directory_backup.html:180
-#: templates/rsr/project_directory_beta.html:182
-#: templates/rsr/project_list.html:28
 msgid "Support partner(s)"
 msgstr "Hilfspartner"
 
 #: templates/rsr/project_directory.html:206
-#: templates/rsr/project_directory_backup.html:181
-#: templates/rsr/project_directory_beta.html:183
-#: templates/rsr/project_list.html:29
 msgid "Funding partner(s)"
 msgstr "Finanzpartner"
-
-#: templates/rsr/project_directory_backup.html:95
-#: templates/rsr/project_directory_backup.html:278
-#: templates/rsr/project_directory_beta.html:97
-#: templates/rsr/project_directory_beta.html:283
-#, python-format
-msgid "Projects %(page.start_index)s-%(page.end_index)s of %(projects.count)s"
-msgstr ""
-"Projekte %(page.start_index)s-%(page.end_index)s aus %(projects.count)s"
-
-#: templates/rsr/project_directory_beta.html:143
-#, python-format
-msgid "(%(projects.count)s total)"
-msgstr "(%(projects.count)s insgesamt)"
 
 #: templates/rsr/project_funding.html:11 templates/rsr/project_funding.html:14
 msgid "Funding details"
@@ -1579,10 +1427,6 @@ msgstr "Andere Kosten"
 #, python-format
 msgid "Logo of %(funding_org_name)s"
 msgstr "Logo von %(funding_org_name)s"
-
-#: templates/rsr/project_list.html:10
-msgid "Project list"
-msgstr "Projektliste"
 
 #: templates/rsr/project_main.html:90
 msgid "Personnel"
@@ -1630,6 +1474,12 @@ msgstr "Projekt Aktualisierungen"
 msgid "by %(user_name)s via %(update_meth)s"
 msgstr "von %(user_name)s via %(update_meth)s"
 
+#: templates/rsr/project_main.html:259 templates/rsr/project_main.html:275
+#: templates/rsr/project_updates.html:55 templates/rsr/update_form.html:103
+#: templates/rsr/update_form_old.html:93
+msgid "Photo credit"
+msgstr "Foto-Akkreditierung"
+
 #: templates/rsr/project_main.html:282
 msgid "Earlier updates"
 msgstr "Vorhergehende Aktualisierungen"
@@ -1649,11 +1499,6 @@ msgstr "Es gibt noch keine Aktualisierungen."
 #: templates/rsr/project_updates.html:10 templates/rsr/project_updates.html:13
 msgid "All project updates"
 msgstr "Alle Projekt-Aktualisierungen"
-
-#: templates/rsr/project_updates.html:55 templates/rsr/update_form.html:103
-#: templates/rsr/update_form_old.html:93
-msgid "Photo credit"
-msgstr "Foto-Akkreditierung"
 
 #: templates/rsr/project_updates.html:76
 msgid "Permalink"
@@ -1747,15 +1592,11 @@ msgstr "Bitte anmelden"
 msgid "Error when signing in"
 msgstr "Fehler bei der Anmeldung"
 
-#: templates/rsr/sign_in.html:35
-msgid "Please correct the errors below."
-msgstr "Bitte verbessern sie die folgenden Fehler"
-
-#: templates/rsr/sign_in.html:41
+#: templates/rsr/sign_in.html:43
 msgid "I have an online account"
 msgstr "Ich habe ein Online-Konto"
 
-#: templates/rsr/sign_in.html:44
+#: templates/rsr/sign_in.html:46
 msgid "Enter username"
 msgstr "Benutzername eingeben"
 
@@ -1803,15 +1644,17 @@ msgstr "Zurück zur"
 msgid "Akvo home page"
 msgstr "Akvo Startseite"
 
+#: templates/rsr/update_form.html:29
+msgid "Please review the message below."
+msgstr "Bitte überprüfen sie die folgende Nachricht."
+
 #: templates/rsr/update_form.html:40
 msgid "Enter an update title"
 msgstr "Geben sie einen Titel für die Aktualisierung ein"
 
-#: templates/rsr/update_form.html:49 templates/rsr/update_form.html.py:112
-#: templates/rsr/update_form_old.html:39 templates/rsr/update_form_old.html:87
-#: templates/rsr/update_form_old.html:95
-msgid "characters max"
-msgstr "max. Zeichen"
+#: templates/rsr/update_form.html:49
+msgid "50 characters max"
+msgstr "max. 50 Zeichen"
 
 #: templates/rsr/update_form.html:53 templates/rsr/update_form_old.html:48
 msgid "Enter update text"
@@ -1834,6 +1677,11 @@ msgstr "Wählen Sie wo das Foto plaziert werden soll"
 #: templates/rsr/update_form.html:90 templates/rsr/update_form_old.html:85
 msgid "Photo caption"
 msgstr "Bildunterschrift"
+
+#: templates/rsr/update_form.html:112 templates/rsr/update_form_old.html:39
+#: templates/rsr/update_form_old.html:87 templates/rsr/update_form_old.html:95
+msgid "characters max"
+msgstr "max. Zeichen"
 
 #: templates/rsr/update_form.html:119
 msgid "Update"
@@ -1874,6 +1722,100 @@ msgstr "Nachrichtenkopf"
 #: templates/widgets/featured_project.html:50
 msgid "Akvo"
 msgstr "Akvo"
+
+#~ msgid "You must type the same password each time"
+#~ msgstr "Bitte geben Sie dasselbe Passwort ein"
+
+#~ msgid "You must type the same email address each time"
+#~ msgstr "Bitte geben Sie jeweils dieselbe E-Mail-Adresse ein."
+
+#~ msgid "Setup your account"
+#~ msgstr "Konto einrichten"
+
+#~ msgid "Usernames can only contain letters, numbers and underscores"
+#~ msgstr ""
+#~ "Benutzernamen dürfen nur Buchstaben, Nummern und Unterstriche erhalten"
+
+#~ msgid "This username is already taken. Please choose another."
+#~ msgstr ""
+#~ "Dieser Benutzername wird bereits verwendet. Bitte wählen Sie einen "
+#~ "anderen."
+
+#~ msgid "I have read and agree to the Terms of Service"
+#~ msgstr "Ich habe die Benutzerbedingungen gelesen und bin einverstanden"
+
+#~ msgid "You must agree to the terms to register"
+#~ msgstr "Sie müssen den Bedinungen zustimmen, um sich zu registrieren"
+
+#~ msgid ""
+#~ "This email address is already in use. Please supply a different email "
+#~ "address."
+#~ msgstr ""
+#~ "Diese E-Mail-Adresse ist bereits in Gebrauch. Bitte geben sie eine andere "
+#~ "Adresse an."
+
+#~ msgid ""
+#~ "Registration using free email addresses is prohibited. Please supply a "
+#~ "different email address."
+#~ msgstr ""
+#~ "Die Registration mit einer kostenlosen E-Mail-Adresse ist nicht "
+#~ "gestattet. Bitte geben Sie eine andere Adresse ein."
+
+#~ msgid "mms"
+#~ msgstr "mms"
+
+#~ msgid "Your new password is"
+#~ msgstr "Ihr neues Passwort ist"
+
+#~ msgid "Feel free to change this password by going to this page"
+#~ msgstr "Bitte besuchen Sie die folgende Seite um ihr Passwort zu ändern"
+
+#~ msgid "Please correct the errors below"
+#~ msgstr "Bitte beheben sie die folgenden Fehler"
+
+#~ msgid "Organisation"
+#~ msgstr "Organisation"
+
+#~ msgid "Username"
+#~ msgstr "Benutzername"
+
+#~ msgid "First name"
+#~ msgstr "Vorname"
+
+#~ msgid "Last name"
+#~ msgstr "Nachname"
+
+#~ msgid "Password (type again to avoid typos)"
+#~ msgstr "Passwort (noch einmal eingeben, um Tippfehler zu vermeiden)"
+
+#~ msgid "Email address"
+#~ msgstr "E-Mail-Adresse"
+
+#~ msgid "Email address (type again to avoid typos)"
+#~ msgstr "E-Mail-Adresse (noch einmal eingeben, um Tippfehler zu vermeiden)"
+
+#~ msgid "You are commenting the project named"
+#~ msgstr "Sie kommentieren das Project"
+
+#~ msgid "Enter comment text"
+#~ msgstr "Geben Sie den Kommentar ein"
+
+#~ msgid "Sumbit changes"
+#~ msgstr "Änderungen absenden"
+
+#~ msgid ""
+#~ "Projects %(page.start_index)s-%(page.end_index)s of %(projects.count)s"
+#~ msgstr ""
+#~ "Projekte %(page.start_index)s-%(page.end_index)s aus %(projects.count)s"
+
+#~ msgid "(%(projects.count)s total)"
+#~ msgstr "(%(projects.count)s insgesamt)"
+
+#~ msgid "Project list"
+#~ msgstr "Projektliste"
+
+#~ msgid "Please correct the errors below."
+#~ msgstr "Bitte verbessern sie die folgenden Fehler"
 
 #~ msgid "Submit change"
 #~ msgstr "Änderung bestätigen"

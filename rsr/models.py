@@ -82,12 +82,12 @@ class Organisation(models.Model):
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField(_(u'field partner'))
-    support_partner             = models.BooleanField(_(u'support_partner'))
-    funding_partner             = models.BooleanField(_(u'funding_partner'))
+    support_partner             = models.BooleanField(_(u'support partner'))
+    funding_partner             = models.BooleanField(_(u'funding partner'))
 
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
-    organisation_type           = models.CharField(_(u'organisation_type'), max_length=1, choices=ORG_TYPES)
+    organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)

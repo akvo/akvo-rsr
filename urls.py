@@ -9,7 +9,7 @@ from django.contrib.auth import views as auth_views
 from django.views.generic.simple import direct_to_template
 from akvo.rsr.feeds import ProjectUpdates
 from akvo.rsr.models import create_rsr_profile
-from akvo.rsr.forms import RSR_PasswordResetForm
+from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
@@ -77,6 +77,10 @@ urlpatterns = patterns('',
             'post_reset_redirect': '/rsr/accounts/password/reset/done/'},
         name='rsr_password_reset'
     ),
+    url(r'^rsr/accounts/password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        auth_views.password_reset_confirm,
+        {'set_password_form': RSR_SetPasswordForm},
+        name='auth_password_reset_confirm'),
     (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),
     (r'^rsr/accounts/', include('registration.urls')),
 

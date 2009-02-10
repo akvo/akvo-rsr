@@ -17,6 +17,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     
 {% block content %}
 
+    Debug: {{ form.errors }}
     <div class="boxbody">
         <div class="clearfix">
 
@@ -31,7 +32,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             </div>
           {% endif %}            
 
-            <h1 class="section">{% trans 'Setup your account' %}</h1>
+            <h1 class="section">{% trans 'Set up your account' %}</h1>
 
             <p class="lightx2">{% trans 'Step 2 of 2' %}</p>
         </div>
@@ -108,18 +109,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <div id="email" class="clearfix">
                 <label>{% trans 'Enter your email address' %}</label>
 
-                {% if form.email1.errors or form.email2.errors %}
+                {% if form.email.errors or form.email2.errors %}
                  <div class="form_error">
                     <p class="c1">{% trans 'A problem occurred' %}</p>
-                    {% if form.email1.errors %}
-                    <p>{{ form.email1.errors|join:", " }}</p>
+                    {% if form.email.errors %}
+                    <p>{{ form.email.errors|join:", " }}</p>
                     {% endif %}
                     {% if form.email2.errors %}
                     <p>{{ form.email2.errors|join:", " }}</p>
                     {% endif %}
                 </div>
                 {% endif %}              
-                {{ form.email1 }}
+                {{ form.email }}
                 <p class="about_field">{% trans 'Enter email address.' %}</p>
                 
                 {{ form.email2 }}

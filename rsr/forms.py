@@ -13,7 +13,7 @@ from django import forms
 #from django.core.validators import alnum_re
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.db.models import get_model
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -122,7 +122,7 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         max_length=30,
         widget=forms.TextInput(attrs=attrs_dict)
     )
-    email1      = forms.EmailField(
+    email      = forms.EmailField(
         widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
         label=_(u'email address')
     )
@@ -142,14 +142,14 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         """
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise forms.ValidationError(_(u'You must type the same password each time'))
+                raise forms.ValidationError(_(u'Passwords do not match. Please enter the same password in both fields.'))
         if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
             if self.cleaned_data['email'] != self.cleaned_data['email2']:
-                raise forms.ValidationError(_(u'You must type the same email address each time'))        
+                raise forms.ValidationError(_(u'Email addresses do not match. Please enter the email address in both fields.'))        
         return self.cleaned_data
     
     
-    def save(self, profile_callback=None):
+    def save(self):
         """
         Create the new ``User`` and ``RegistrationProfile``, and
         returns the ``User``.
@@ -166,8 +166,7 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         new_user =  RegistrationProfile.objects.create_inactive_user(
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
-            email=self.cleaned_data['email'],
-            profile_callback=profile_callback
+            email=self.cleaned_data['email']
         )
         new_user.first_name = first_name=self.cleaned_data['first_name']
         new_user.last_name  = last_name=self.cleaned_data['last_name']
@@ -187,7 +186,12 @@ class RSR_ProfileUpdateForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name  = self.cleaned_data['last_name']
         user.save()        
-        return user        
+        return user
+
+class RSR_SetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(label=_("New password"), widget=forms.PasswordInput(attrs={'class': 'input'}))
+    new_password2 = forms.CharField(label=_("New password confirmation"), widget=forms.PasswordInput(attrs={'class': 'input'}))
+
 
 class RSR_PasswordResetForm(PasswordResetForm):
     email = forms.EmailField(label=_("E-mail"), max_length=75, widget=forms.TextInput(attrs={'class': 'input'}))

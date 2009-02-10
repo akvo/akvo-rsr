@@ -1,27 +1,60 @@
-RELEASE_NOTES.txt, v0.9, 8 January 2009, tbp
-
-Akvo RSR v 0.9 release notes
-============================
+ RELEASE_NOTES.txt, v0.9.1, 9 February 2009, bw
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The
 Akvo Platform is used on Akvo.org to combat poverty through
 small-scale water and sanitation projects. We believe that Akvo RSR
-can be used in many other development aid scenarios like: education,
-health care, agriculture projects etc.
+can be used in many other development aid scenarios, in areas such as
+education, health care, agriculture, etc.
 
 To read more about the Akvo Platform:
 http://www.akvo.org/web/akvo_platform_overview
 
-New features 
------------- 
-- First public release THIS is the first public release of Akvo RSR.
+Akvo RSR v 0.9.1 release notes
+=============================
+v0.9.1, 9 February 2009, bw
 
-- Internationalization for the user interface.  
+New features
+------------
+- Django framework upgrade. 
+This version of Akvo RSR uses the latest Django framework, version
+1.0.2. The new form-handling library, django.forms, was designed with
+extensibility and customization in mind, and will permit us to more
+quickly and easily develop RSR's administration user interface. To
+read more about Django 1.0 please see:
+http://docs.djangoproject.com/en/dev/releases/1.0/
+
+Parts of RSR have been rewritten to accomodate the frameworks
+upgrade. RSR should not look or behave any differently than it did in
+0.9. If you experience anything new, please let us know so we can
+address problems!
+
+- Internationalization.
+Dutch translation files have been added. A big thanks to our Dutch
+translator, Anke van Lenteren, for helping us as we work out our
+translation process.
+
+- Miscellaneous
+The wording of some text and error messages has been changed in the
+interest of greater clarity (and proper English). There are also some
+minor tweaks to style sheets to fix display glitches and layout
+irregularities across browsers.
+
+
+Akvo RSR v 0.9 release notes
+============================
+v0.9, 8 January 2009, tbp
+
+New features
+------------
+- First public release
+This is the first public release of Akvo RSR. 
+
+- Internationalization for the user interface.
 We have tagged all the user interface text, so that the Django
 translation engine can pick up the text strings and produce a
 translation file. While the interface is translated, some emails from
-the system remain in English; these will be fixed in a later relese.
-We have tested the implementation with one initial language,
+the system remain in English; these will be fixed in a later
+release. We have tested the implementation with one initial language,
 German. You can participate and help translate the Akvo RSR user
 interface to your language by downloading the translation files from:
 https://translations.launchpad.net/akvo.rsr
@@ -30,25 +63,25 @@ https://translations.launchpad.net/akvo.rsr
 Inserted the GNU AGPL license in the distribution and tagged all the
 files with license information.
 
-- Akvo at a glance portlet
+- Akvo at a glance portlet.
 Field partners, Support partners and Funding partners are now linked
 to a listing showing only those partners (the feature existed before,
 but there were no links to it).
 
-- Project updates 
+- Project updates.
 Projects with no updates now have an RSS icon and a link (previously
 you had to wait for the first update for the icon and link to show
 up). So you can subscribe with an RSS reader to projects which have
 not been updated yet.
 
-- (Bug 269400) We have changed how funders contributions are displayed
-  in the Organisation activities portlet. Now only the funders
-  proportion of a project is displayed.
+- We have changed how funders contributions are displayed in the
+  Organisation activities portlet. Now only the funders proportion of
+  a project is displayed (Bug 269400).
 
 Highlights of bugs fixed
 ------------------------
 
-296702    Remove MDG count terminology Medium Fix Released
+296702 Remove MDG count terminology Medium Fix Released
 
 274658 Photos in Project Update have no default placement, so do not
 show up. Medium Fix Released
@@ -68,8 +101,11 @@ Wishlist Fix Released
 292932 Describe in user interface that user names are
 case-sensitive. Wishlist Fix Released
 
-
 A detailed list (including in process development bugs) can be found
 at: http://snurl.com/9lqvk
 
+
 ====END OF RELEASE NOTES====
+
+
+
