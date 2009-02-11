@@ -333,7 +333,7 @@ class Funding(models.Model):
         return pledged
     
     def still_needed(self):
-        return self.total() - self.pledged()
+        return max(self.total() - self.pledged(), 0)
     
     def is_complete(self):
         return self.date_complete < date.today()
@@ -493,6 +493,9 @@ class ProjectUpdate(models.Model):
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
+    
+    class Meta:
+        get_latest_by = "time"
 
     def img(self):
         try:

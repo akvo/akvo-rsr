@@ -44,9 +44,54 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div> <!-- .boxhead -->
 
 	<div class="boxbody">
+		{% comment %}
+			Fixed a problem with IE7 / Daniel 
+		{% endcomment %}
+		<div id="outerContainer">
+			<div id="innerContainer" style=" width:450px; float:left;">
+				<div id="name" style="width:200px; padding-left:30px; float:left;">
+					<div class="lightx2"><b>{% trans 'Status' %}</b></div>
+					<div>{{p.show_status}}</div>
+					<br />
+					<div class="lightx2"><b>{% trans 'Focus area' %}</b></div>
 
-	<div style="float: left; width: 200px; padding-left: 30px">
-	
+					{% category_icons p %}
+				</div>
+		
+				<div id="name" style="width:200px; margin-left:230px;">
+					{% if p.location_1 or p.location_2 or p.postcode %}
+					<div class="lightx2">{% trans 'Location' %}</div>
+					{% if p.location_1 %}
+						{{p.location_1}}<br />
+					{% endif %}
+					{% if p.location_2 %}
+						{{p.location_2}}<br />
+					{% endif %}
+					{% if p.postcode %}
+						{{p.postcode}}<br />
+					{% endif %}
+				{% endif %}
+					<div class="lightx2">{% trans 'City' %}</div>
+					<div style="margin-bottom: 0.7em">{{p.city}}</div>
+					<div class="lightx2">State</div>
+					<div style="margin-bottom: 0.7em">{{p.state}}</div>
+					<div class="lightx2">Country</div>
+					<div style="margin-bottom: 0.7em">{{p.country}}</div>
+				</div>
+			</div>
+			<div style="width:180px; margin-left:470px;">
+				{% if p.map %}
+						<img src="{{MEDIA_URL}}{{p.map}}" alt="{% trans 'location' %}" />
+				{% else %}
+						<img src="{{MEDIA_URL}}img/nomap.jpg" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
+				{% endif %}
+			</div>
+		</div>
+		
+	{% comment %}
+		
+	<div style="float: left; width: 200px; padding-left: 30px;">
+			
 		<div class="lightx2"><b>{% trans 'Status' %}</b></div>
 		<div>{{p.show_status}}</div>
 		<br />
@@ -104,6 +149,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<img src="{{MEDIA_URL}}img/nomap.jpg" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
 		</div>
 	{% endif %}
+	
+	{% endcomment %}	
 	<hr style="clear:left; padding-top: 20px" />
 	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 
