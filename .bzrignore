@@ -85,3 +85,6 @@ conf/locale/l/LC_MESSAGES/django.mo
 conf/locale/l/LC_MESSAGES/django.po
 conf/locale/l/LC_MESSAGES/django.po
 conf/locale/l/LC_MESSAGES/django.mo
+mediaroot/css/three_projects_widget.css
+templates/dev/three_projects_widget.html
+templates/dev

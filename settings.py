@@ -15,9 +15,13 @@ DATABASE_PASSWORD = 'u5r6vKSBwUxE4EMB'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-DEBUG = True
+DEBUG = False
 
 DEFAULT_FROM_EMAIL = 'noreply@newdev.akvo.org'
+
+INTERNAL_IPS = (
+    '87.227.60.54', '192.168.38.68',
+)
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

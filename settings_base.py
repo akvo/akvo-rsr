@@ -49,9 +49,9 @@ INSTALLED_APPS = (
 #    'akvo.status',
 )
 
-INTERNAL_IPS = (
-    '87.227.60.54',
-)
+#INTERNAL_IPS = (
+#    '87.227.60.54', '125.27.250.14', '192.168.38.68',
+#)
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
