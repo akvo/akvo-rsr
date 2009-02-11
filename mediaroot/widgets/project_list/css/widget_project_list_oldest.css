@@ -1,0 +1,340 @@
+/*------------------------------------------------------------------ 
+[Table of contents] 
+ 
+1. Body
+2. Header 
+3. Content 		
+4. Table
+-------------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------------ 
+[1. Body] 
+*/
+
+#container {
+	width:800px;
+	min-width:798px;
+	max-width:800px;
+}
+
+#akvo_logo {
+	height:21px;
+	text-align: right;
+	padding-top:2px;
+	margin-bottom:5px;
+}
+
+#akvo_logo img {
+	vertical-align: text-bottom;
+}
+
+
+
+.page-form p {
+	font-size:0.9em;
+}
+
+.page-form form p {
+	font-size: 0.9em;
+}
+
+.page-form form p select {
+	margin:0; 
+	padding:0;
+	vertical-align: middle;
+}
+
+.projects-spec {
+	padding-top:2px;
+}
+
+.projects-spec p {
+	font-size: 0.9em;
+}
+
+.project-nav {
+	float:right !important;
+	margin-right:10px !important;
+	text-align:right; 
+	font-size: 0.9em;
+}
+
+/*------------------------------------------------------------------ 
+[1. Content] 
+*/
+
+#container a {
+	color: #0073bc;
+	text-decoration:none;
+}
+
+#container a:hover {
+	text-decoration:underline;
+	color: #0073bc;
+}
+
+#tableHeader {
+	border:1px solid #9b99ac;
+	background-color:#e4e4e9;
+	overflow: hidden;
+}
+
+.tableHeaderCell
+{
+	background: transparent url('../img/bordercolor.png') repeat-y left;
+	text-align:center;
+	font-size:0.8em;
+	padding:5px;
+	margin:0;
+	font-weight: normal;
+	vertical-align: top;
+}
+
+#projectColumnHeader {
+	background: #d7d6df url('../img/header_down_arrow.gif') no-repeat scroll bottom right;
+	width:196px;
+	min-width:196px;
+	max-width:196px;
+	border-left:none !important;
+	margin:0;
+	font-size:0.8em;
+	text-align:center;
+	height:40px;
+	vertical-align: top;
+	padding:5px;
+}
+
+#locationColumnHeader {	width:64px; min-width:64px; max-width:64px; }
+#statusColumnHeader   { width:59px; min-width:59px; max-width:59px; }
+#activityColumnHeader { width:56px; min-width:56px; max-width:56px;}
+#partnerColumnHeader  { width:85px; min-width:85px; max-width:85px; }
+#fundingColumnHeader { width:192px; min-width:192px; max-width:192px; padding-left:0; padding-right:0;}
+
+#descriptionColumnHeader { width:auto; }
+
+.tableRow { 
+	border-bottom:2px solid #E8EBF1;
+	vertical-align:top;
+	font-size:0.9em;
+	padding:5px;
+}
+
+tr.row {
+	background-color:#fff;
+}
+
+tr.altrow {
+	background-color:#eff4f9;
+}
+
+
+td.tableRow {
+	margin:0;
+}
+
+.tableRow h3 {
+	font-size:1.0em;
+	margin:0;
+	padding:0;
+	padding-top:7px;
+	padding-bottom:3px;
+}
+
+.projectCell { 
+	width:196px;
+	min-width:196px;
+	max-width:196px;
+}
+
+.projectCell h2 {
+	color:#EC008D;
+	margin: 5px 0px 10px 0px;
+	padding:0;
+	font-size:1.1em !important;
+}
+
+.projectCell img {
+	float:left;
+	margin-right:5px;
+}
+
+.projectCell a {
+	color:#EC008D !important;
+}
+
+.category-icons {
+	float:right; 
+	width:80px;
+}
+
+.category-icons img {
+	margin-bottom:5px;
+}
+
+.tableRowExplanation {
+	clear:both;
+	padding-top:5px;
+	line-height:1.3em;
+}
+
+.locationCell {	
+	width:64px; 
+	min-width:64px; 
+	max-width:64px;
+}
+.locationCell h3 { 
+	text-transform: uppercase; 
+	line-height:1.4em;
+}
+.statusCell { 
+	width:59px; 
+	min-width:59px; 
+	max-width:59px; 
+}
+.statusCell h3 {
+	text-transform: capitalize;
+}
+.activityCell {	
+	width:56px; 
+	min-width:56px; 
+	max-width:56px; 
+	padding-top:5px;
+}
+.activityCell p { 
+	padding-top:7px;
+}
+.fundingCell { 
+	width:182px; 
+	min-width:182px;
+	max-width:182px;
+	padding-left:0; padding-right:0;
+}
+.partnerCell { 
+	width:86px; 
+	min-width:86px; 
+	max-width:86px;
+}
+.descriptionCell {
+	width:auto;
+}
+
+.funding-header {
+	height:7px;
+	background: transparent url('../img/funding-header.gif') no-repeat top left;
+	margin: 7px auto 0px auto;
+	overflow:hidden;
+	width:182px;
+}
+
+.funding-footer {
+	height:7px;
+	background: transparent url('../img/funding-footer.gif') no-repeat top left;
+	margin: 0px auto 5px auto;
+	padding:0px;
+	width:182px;
+}
+
+.funding-content {
+	background: transparent url('../img/funding-content.gif') repeat-y left;
+	margin: 0px auto 0px auto;
+	width:182px;
+	overflow: hidden;
+}
+
+table.funding  {
+	margin:0 !important;
+	padding:0;
+}
+
+.funding th {
+	border:none !important;
+	padding:0;
+	padding-left:10px;
+	width:auto !important;
+	text-align:left !important;
+}
+
+.funding td {
+	width:50px;
+	text-align:right;
+	font-weight:bold !important;
+}
+
+.progressBar {
+	background-color:#ffefeb;
+	border:1px solid #625e5b;
+	margin:0;
+	padding:0;
+	margin-left:10px;
+	margin-right:10px;
+	height:12px;
+	overflow:hidden;
+}
+
+.progress {
+	background-color:#00b200 !important;
+	height:12px;
+}
+
+
+.funding-donate {
+	margin-left:auto;
+	margin-right:auto;
+	margin-left:10px;
+	margin-top:5px;
+	width:162px;
+	color:#9b99ac;
+	border-top:1px solid #9b99ac;
+	padding-top:5px;
+	text-align:center;
+}
+
+.funding-donate-left {
+	float:left;
+	width:77px;
+}
+
+.donate-button {
+	display:block;
+	background: transparent url('../img/donate-button.png') no-repeat;
+	height:18px;
+	margin: 3px auto 0px auto;
+	padding-top:4px;
+	padding-bottom:3px;
+	width:75px;
+}
+
+.donate-button a  {
+	color:#000 !important;
+	padding-bottom:3px;
+}
+
+.donate-button a:hover {
+	color:#000;
+	text-decoration:underline;
+}
+
+.funding-donate-right {
+	width:77px;
+	margin-left:82px;
+}
+
+.sponor-link {
+	display: block;
+	width:70px;
+	margin: 3px auto 2px auto;
+	padding-top:4px;
+	text-align:center;
+}
+
+.funding-donate div p {
+	margin:0;
+	padding:0;
+}
+
+
+
+
+

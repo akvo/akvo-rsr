@@ -1,0 +1,4 @@
+The catalog blueprint-css includes a bare-bones version of the Blueprint CSS framework. The validator feature is stripped from the official version. This since it's not used and the validator scripts took almost 10MiB. In lib/settings.yml the settings used when creating the compressed script can be seen. If Ruby is available one can generate the grid and compress the style into the appropriate destination folder with the following command: ruby compress.rb -p widget_project_list.
+
+
+For more information please see http://www.blueprintcss.org

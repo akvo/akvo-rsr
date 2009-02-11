@@ -1,0 +1,157 @@
+/*------------------------------------------------------------------ 
+[Table of contents] 
+ 
+1. Body
+2. Header 
+3. Content 		
+4. Table
+-------------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------------ 
+[1. Body] 
+*/
+
+#container {
+	/*width:800px;*/
+	width:740px;
+	min-width:740px;
+	max-width:740px;
+	/*font-size:1.2em;*/
+}
+
+
+/*------------------------------------------------------------------ 
+[1. table] 
+*/
+
+#tableHeader {
+	background-color:#e4e4e9;
+	overflow: hidden;
+	height:44px;
+}
+
+.tableHeaderCell
+{
+	text-align:center;
+	padding:5px;
+	padding-left:8px;
+	margin:0;
+	font-weight: normal;
+	vertical-align: top;
+	height:44px;
+	line-height:13px;
+	border-bottom:1px solid #9B9AAC;
+	border-left:1px solid #9B99AC;
+}
+
+#projectColumnHeader {
+	width:205px;
+	min-width:205px;
+	max-width:205px;
+	border-left:none !important;
+	margin:0;
+	text-align:center;
+	height:40px;
+	vertical-align: top;
+	padding:5px;
+	border-bottom:1px solid #9B9AAC;
+	font-weight:normal;
+	
+}
+
+#locationColumnHeader {	width:80px; min-width:80px; max-width:80px; }
+#statusColumnHeader   { width:85px; min-width:85px; max-width:85px; }
+#partnerColumnHeader  { width:110px; min-width:110px; max-width:110px; }
+#fundingColumnHeader { 
+	min-width:182;
+	width:auto;
+}
+
+.activeTableHeaderProjectCell {
+	
+}
+
+.activeTableHeader {
+	background: #d7d6df url('../img/header_down_arrow.gif') no-repeat scroll bottom right;
+	/*border-left:1px solid #9B99AC;*/
+	font-weight:bold !important;
+}
+
+.tableRow { 
+	border-bottom:2px solid #E8EBF1;
+	vertical-align:top;
+	/*font-size:0.9em;*/
+	padding: 10px 5px 10px 8px;
+}
+
+tr.row {
+	background-color:#fff;
+}
+
+tr.altrow {
+	background-color:#eff4f9;
+}
+
+
+td.tableRow {
+	margin:0;
+}
+
+/* Project Cell */
+
+.projectCell { 
+	/* This should really be 245px*/
+	width:205px;
+	min-width:205px;
+	max-width:205px;
+}
+
+.projectCell h2 {
+	font-size:1.2em !important;
+	line-height:1.2em;
+}
+
+.category-icons {
+	float:right;
+	width:95px;
+}
+
+.category-icons img {
+	margin-bottom:5px;
+}
+
+/* Location Cell */
+.locationCell {	
+	width:80px; 
+	min-width:80px; 
+	max-width:80px;
+}
+
+/* Status Cell */
+.statusCell { 
+	width:85px; 
+	min-width:85px; 
+	max-width:85px; 
+}
+
+/* Partner Cell */
+.partnerCell { 
+	width:110px; 
+	min-width:110px; 
+	max-width:110px;
+}
+
+/* Funding Cell */
+.fundingCell { 
+	padding-left:0 !important;
+	padding-right:0 !important;
+	width:auto;
+	min-width:182;
+	/*
+	width:192px; 
+	min-width:192px;
+	max-width:192px;
+	*/
+}

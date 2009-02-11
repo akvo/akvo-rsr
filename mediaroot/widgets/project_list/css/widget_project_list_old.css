@@ -1,0 +1,151 @@
+/*------------------------------------------------------------------ 
+[Table of contents] 
+ 
+1. Body
+2. Header 
+3. Content 		
+4. Table
+-------------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------------ 
+[1. Body] 
+*/
+
+#container {
+	width:800px;
+	min-width:798px;
+	max-width:800px;
+}
+
+
+/*------------------------------------------------------------------ 
+[1. table] 
+*/
+
+#tableHeader {
+	background-color:#e4e4e9;
+	overflow: hidden;
+	height:44px;
+}
+
+.tableHeaderCell
+{
+	background: transparent url('../img/bordercolor.png') repeat-y left;
+	text-align:center;
+	font-size:0.9em;
+	padding:5px;
+	margin:0;
+	font-weight: normal;
+	vertical-align: top;
+	height:44px;
+	line-height:13px;
+	border-bottom:1px solid #9B9AAC;
+}
+
+#projectColumnHeader {
+	background: #d7d6df url('../img/header_down_arrow.gif') no-repeat scroll bottom right;
+	/* This should really be 245px !!!!*/
+	width:210px;
+	min-width:210px;
+	max-width:210px;
+	border-left:none !important;
+	margin:0;
+	font-size:0.8em;
+	text-align:center;
+	height:40px;
+	vertical-align: top;
+	padding:5px;
+	border-bottom:1px solid #9B9AAC;
+}
+#locationColumnHeader {	width:110px; min-width:110px; max-width:110px; }
+#statusColumnHeader   { width:110px; min-width:110px; max-width:110px; }
+#partnerColumnHeader  { width:110px; min-width:110px; max-width:110px; }
+#fundingColumnHeader { 
+	/*
+	width:192px; 
+	min-width:192px; 
+	max-width:192px;
+	*/
+	min-width:192;
+	width:auto;
+}
+
+
+.tableRow { 
+	border-bottom:2px solid #E8EBF1;
+	vertical-align:top;
+	font-size:0.9em;
+	padding: 10px 5px 10px 5px;
+}
+
+tr.row {
+	background-color:#fff;
+}
+
+tr.altrow {
+	background-color:#eff4f9;
+}
+
+
+td.tableRow {
+	margin:0;
+}
+
+/* Project Cell */
+.projectCell { 
+	/* This should really be 245px*/
+	width:210px;
+	min-width:210px;
+	max-width:210px;
+}
+.category-icons {
+	float:right; 
+	width:100px;
+}
+
+.category-icons img {
+	margin-bottom:5px;
+}
+
+/* Location Cell */
+.locationCell {	
+	width:110px; 
+	min-width:110px; 
+	max-width:110px;
+}
+
+/* Status Cell */
+.statusCell { 
+	width:110px; 
+	min-width:110px; 
+	max-width:110px; 
+}
+
+/* Partner Cell */
+.partnerCell { 
+	width:110px; 
+	min-width:110px; 
+	max-width:110px;
+}
+
+/* Funding Cell */
+.fundingCell { 
+	width:auto;
+	min-width:192;
+	/*
+	width:192px; 
+	min-width:192px;
+	max-width:192px;
+	*/
+}
+
+
+
+
+
+
+
+
+

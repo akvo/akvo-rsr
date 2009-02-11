@@ -81,6 +81,8 @@ urlpatterns = patterns('',
     (r'^rsr/accounts/', include('registration.urls')),
 
     url(r'^rsr/widget/project$', 'akvo.rsr.views.widget_project', {'template':'widgets/project.html'}, name='widget_project', ),
+	url(r'^rsr/widget/projectupdates$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_updates.html'}, name='widget_project_updates', ),
+	url(r'^rsr/widget/projectcontribute$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_contribute.html'}, name='widget_project_contribute', ),
     url(r'^rsr/widget/projectsmall$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_small.html'}, name='widget_project_small', ),
     url(r'^rsr/widget/projectlist$', 'akvo.rsr.views.widget_project_list', name='widget_project_list', ),
     

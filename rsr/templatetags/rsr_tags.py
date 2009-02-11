@@ -27,3 +27,10 @@ def submit_button(caption, css_class):
     form submit and cancel buttons, with caption for the submit button
     '''
     return {'caption': caption, 'css_class': css_class}
+
+@register.inclusion_tag('inclusion_tags/funding_box.html', takes_context=True)
+def funding_box(context, project):
+    '''
+	show the funding box used in the widgets. Css definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}

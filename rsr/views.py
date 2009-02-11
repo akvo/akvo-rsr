@@ -29,6 +29,7 @@ from datetime import datetime
 import time
 import feedparser
 from registration.models import RegistrationProfile
+import random
 
 def mdgs_water_calc(projects):
     '''
@@ -727,10 +728,6 @@ def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
 
-def widget_project(request, template='widgets/project.html'):
-    projects = Project.objects.all()
-    return render_to_response(template, {'projects': projects}, context_instance=RequestContext(request))
-
 def flashgallery(request):
     '''
     Generate the xml file for TiltViewer
@@ -794,18 +791,66 @@ def test_widget(request):
     return render_to_response('widgets/featured_project.html', context_instance=RequestContext(request))
 
 def widget_project_list(request, template='widgets/project_list.html'):
-    hexcolor = request.GET.get('hexcolor', 'EC008D')
-    color = request.GET.get('color', "#%s" % hexcolor)
-    org_id = request.GET.get('org_id', False)
-    if org_id:
-        try:
-            o = Organisation.objects.get(pk=org_id)
-            p = o.projects()
-        except:
-            p = Project.objects.filter()
-    else:
-        p = Project.objects.filter()
-    return render_to_response(template, {'color': color, 'projects': p}, context_instance=RequestContext(request))
+	color = request.GET.get('color', 'B50000')
+	textcolor = request.GET.get('textcolor', 'FFFFFF')
+	org_id = request.GET.get('org_id', False)
+	if org_id:
+		try:
+			o = Organisation.objects.get(pk=org_id)
+			p = o.projects()
+		except:
+			p = Project.objects.filter()
+	else:
+		p = Project.objects.filter()
+	order_by = request.GET.get('order_by', 'name')
+	if order_by == 'country__continent':		
+		p = p.order_by(order_by, 'country__country_name','name')
+	elif order_by == 'country__country_name':
+		p = p.order_by(order_by,'name')
+	elif order_by == 'status':
+		p = p.order_by(order_by,'name')
+	elif order_by == 'last_update': # this sql does not work, have to figure out how to only return one row e.g. have to add some *.id = *.id somewhere...
+		p = p.extra(select={'last_update':'SELECT (CASE WHEN last_update IS NULL THEN 0 ELSE last_update END) AS last_update FROM ( SELECT last_table.last_update FROM (SELECT supertable.time AS last_update FROM (SELECT rsr_project.id AS project_id, subtable2.update_id, rsr_project.name, time, time is NULL AS isnull FROM rsr_project LEFT JOIN ( SELECT id AS update_id, project_id, time FROM (SELECT * FROM rsr_projectupdate ORDER BY id DESC) AS project_update_table GROUP BY project_id ) AS subtable2 ON subtable2.project_id = rsr_project.id	ORDER BY isnull ASC, time DESC, project_id ASC) AS supertable) AS last_table ) AS table44'})
+		p = p.order_by(order_by,'name')
+	elif order_by == 'total_budget':
+		p = p.extra(select={'total_budget':'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
+		p = p.order_by(order_by,'name')
+	elif order_by == 'funds_needed':
+		p = p.extra(select={'funds_needed':'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
+		p = p.order_by('-funds_needed','name')	
+	else:
+		p = p.order_by(order_by, 'name')
+	return render_to_response(template, {'color': color, 'textcolor': textcolor,  'projects': p, 'request_get': request.GET}, context_instance=RequestContext(request))	
+
+'''
+p = p.extra(select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id', 'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id','last_update':'SELECT time FROM rsr_projectupdate where rsr_projectupdate.project_id = rsr_project.id ORDER BY CASE time WHEN time IS NULL THEN 2 ELSE 1 END ASC LIMIT 1'})			
+	p = p.order_by(order_by, 'name')
+'''
+
+
+def widget_project(request, template='widgets/project.html'):
+	color = request.GET.get('color', 'B50000')
+	org_id = request.GET.get('org_id', False)
+	proj_id = request.GET.get('proj_id', False)
+	if proj_id:
+		ok = True
+		try:
+			project = Project.objects.get(pk=proj_id)
+		except:
+			ok = False
+		finally:
+			if ok:
+				return render_to_response(template, {'color': color, 'project': project}, context_instance=RequestContext(request))
+	if org_id:
+		try:
+			o = Organisation.objects.get(pk=org_id)
+			projects = o.projects()
+		except:
+			projects = Project.objects.all()
+	else:
+		projects = Project.objects.all()
+	project = random.choice(projects)
+	return render_to_response(template, {'color': color, 'project': project}, context_instance=RequestContext(request))
         
 def ajax_tab_goals(request, project_id):
     try:

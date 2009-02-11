@@ -1,5 +1,4 @@
-{% extends "widgets/widget_base.html" %}
-
+{% extends "widgets/base_widget.html" %}
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
@@ -9,80 +8,89 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load rsr_tags %}
 {% load generic_content %}
 
+{% block title %}project@{{block.super}}{% endblock title %}
 
-{% block head %}
-<div class="widgetHead">
-	<p>{% trans "Today's Featured Project" %}</p>
-</div>
-{% endblock head %}
+{% block style %}
+	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project/css/screen.css" type="text/css" media="screen, projection" />
+{% endblock style %}
 
-{% block body %}
-
-{% get_random_object rsr.Project as p %}
-<div class="widgetBody">
-	<h1>{{p.name}}</h1>
-	<p class="widgetGreyText">{{p.subtitle}}</p>
-    {% if p.current_image %}
-    	<img class="photo" src="{{MEDIA_URL}}{{p.current_image}}" width="194" height="143" alt="{{p.current_image_caption}}" />
-    {% endif %}	
-
-
-	<p class="widgetGreyText">{% trans 'Location' %}</p>
-	<p>{{p.city}}, {{p.state}}, {{p.country}}</p>
+{% block inline_styles %}
+{{block.super}}
+	#heightconstrain {
+		height: expression( this.scrollHeight > 809 ? "810px" : "auto" ); /* sets max-height for IE */
+		max-height:810px;
+		overflow:hidden;
+	}
+	.fundingbox-content {
+		height: expression( this.scrollHeight > 4 ? "123px" : "auto" ); /* sets max-height for IE */
+		max-height:121px;
+		height:121px;
+	}
+	{% comment %}
+	h2#project_title {
+		height: expression( this.scrollHeight > 27 ? "28px" : "auto" ); /* sets max-height for IE */
+		max-height:28px;
+	}
+	p#project_subtitle {
+		height: expression( this.scrollHeight > 26 ? "27px" : "auto" ); /* sets max-height for IE */
+		max-height:27px;
+	}
+	{% endcomment %}
 	
-	<p class="widgetGreyText">{% trans 'Status' %}</p>
-	<p>{{p.show_status}}</p>
+{% endblock inline_styles %}
 	
-	<p class="widgetGreyText">{% trans 'Funding' %}</p>
-	<table id="widgetfoundingTable" class="widgetTable">
-		<thead>
-			<tr>
-				<th>{% trans 'Raised:' %}</th>
-				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
-			</tr>  
-		</thead>
-		<tfoot> 
-			<tr>
-				<th>Still Needed:</th>
-				<td>{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</td>
-			</tr>
-		</tfoot>
-		<tbody>
-			<tr>
-				<th>Pledged:</th>
-				<td>{{p.funding.get_currency_display|safe}} {{p.funding.pledged}}</td>
-			</tr>
-		</tbody>
-	</table>  
+{% block header %}
+	<h1>{% trans 'Project' %}</h1>
+{% endblock header %}
+
+{% block content %}
+<div id="heightconstrain">
+		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|truncatewords:10}}</a></h2>
+		<p id="project_subtitle" class="grey">{{project.subtitle|truncatewords:10}}</p>
+		{% if project.current_image %}
+			<div class="photo_frame">
+	    		<img src="{{MEDIA_URL}}{{project.current_image}}" width="190" height="139" alt="{{project.current_image_caption}}" />
+			</div>
+	    {% endif %}
 	
-	<div id="widgetProgressBar">
-		<img src="{{MEDIA_URL}}img/fundingbar.png" width="100" height="20" alt="Fundingbar" />
-	</div>
-	
-	<table id="widgetTotalBudget" class="widgetTable">
-		<tbody>
-			<tr>
-				<th>{% trans 'Total budget' %}</th>
-				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
-			</tr>
-		</tbody>
-	</table>
-	<div class="widgetTwoColumnWraper">
-		<div class="widgetTwoColumnLeftCell">
-			<p><a class="widgetBlueLink" href="http://www.akvo.org">View details</a></p>
+		<p id="project_plan_summary" >
+			{{project.project_plan_summary|safe|truncatewords:20}}
+			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+		</p>
+		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+		<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+			{{project.country}}, {{project.city}}
+		</p>
+		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
+		<p class="smallFont">{{project.show_status}}</p>
+		<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
+		{% with project.projectupdate_set.latest as latest_update %}
+			{% if latest_update %}
+				<p class="smallFont"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a></p>
+			{% else %}
+				<p class="smallFont">{% trans 'Not yet' %}</p>
+			{% endif %}
+		{% endwith %}
+		<hr class="divider" />
+		<p class="smallFont grey">{% trans 'Funding' %}</p>
+		<div>
+			{% funding_box project %}
 		</div>
-		<div class="widgetTwoColumnRightCell">
-			<a href="#"><img src="{{MEDIA_URL}}img/donate_now.png" width="95" height="29" alt="Donate Now" /></a>
+		<div id="name" style="clear:both; height:3px;">
+			
 		</div>
-		<div class="widgetClear"></div>
-	</div>
-	
-	<div id="widgetFooter">
-		<p class="widgetGreyText">Powered by</p>
-		<a href="#"><img src="{{MEDIA_URL}}img/akvo_org.png" width="76" height="21" alt="Akvo Org" /></a>
-	</div>
+		<p class="miniFont lightgrey right" style="padding-right:9px;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
+		<div id="name" style="clear:both; height:7px;">
+			
+		</div>
+		{% comment %}
+		<hr class="divider"/>		
+		<div id="next_control">
+			<a href="#" target="_self">&#x25C4;&nbsp;Previous</a>
+		</div>
+		<div id="prev_control">
+			<a href="#" target="_self">Next&nbsp;&#x25BA;</span></a>
+		</div>
+		{% endcomment %}
 </div>
-
-{% endblock body %}
-
-
+{% endblock content %}

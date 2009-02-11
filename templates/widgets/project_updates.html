@@ -1,0 +1,108 @@
+{% extends "widgets/base_widget.html" %}
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n %}
+{% load rsr_tags %}
+{% load generic_content %}
+
+{% block title %}updates@{{block.super}}{% endblock title %}
+
+{% block style %}
+	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_updates/css/screen.css" type="text/css" media="screen, projection" />
+{% endblock style %}
+	
+{% block inline_styles %}
+{{block.super}}
+	#heightconstrain {
+		height: expression( this.scrollHeight > 829 ? "830px" : "auto" ); 
+		max-height:830px;
+		overflow:hidden;
+	}
+	.fundingbox-content {
+		height: expression( this.scrollHeight > 4 ? "123px" : "auto" );
+		max-height:121px;
+		height:121px;
+	}
+	{% comment %}
+	h2#project_title {
+		height: expression( this.scrollHeight > 27 ? "28px" : "auto" ); 
+		max-height:28px;
+	}
+	p#project_subtitle {
+		height: expression( this.scrollHeight > 26 ? "27px" : "auto" );
+		max-height:27px;
+	}
+	{% endcomment %}
+		
+{% endblock inline_styles %}
+
+	
+{% block header %}
+	<h1>{% trans 'Most Recent Update' %}</h1>
+{% endblock header %}
+
+{% block content %}<div id="heightconstrain">
+		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|truncatewords:10}}</a></h2>
+		<p id="project_subtitle" class="grey">{{project.subtitle|truncatewords:10}}</p>
+		
+		{% if project.current_image %}
+			<div class="photo_frame">
+	    		<img src="{{MEDIA_URL}}{{project.current_image}}" width="190" height="139" alt="{{project.current_image_caption}}" />
+			</div>
+	    {% endif %}
+	
+		<p id="project_plan_summary">
+			{{project.project_plan_summary|safe|truncatewords:20}}
+			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+		</p>
+		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+		<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+			{{project.country}}, {{project.city}}
+		</p>
+		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
+		<p class="smallFont">{{project.show_status}}</p>
+			
+		
+		<hr class="divider"/>	
+
+		<p class="smallFont grey">{% trans 'Last Update' %}</p>
+		{% with project.projectupdate_set.latest as latest_update %}
+			{% if latest_update %}
+				<p class="smallFont">
+					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a>
+					{% trans 'Via' %}
+					{% ifequal latest_update.update_method "W"  %}
+						{% trans 'Web' %}
+					{% endifequal %}
+					{% ifequal latest_update.update_method "E"  %}
+						{% trans 'E-mail' %}
+					{% endifequal %}
+					{% ifequal latest_update.update_method "S"  %}
+						{% trans 'SMS' %}
+					{% endifequal %}
+				</p>
+				<h2 id="project_title" style="margin-top:margin-top:10px !important;"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.title|truncatewords:10}}</a></h2>
+				{% comment %}
+				<p class="smallFont" style="font-weight:bold; text-transform: capitalize; margin-bottom:3px;">
+					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.title}}</a>
+				</p>		
+				{% endcomment %}		
+				{% if latest_update.photo %}
+					<div class="photo_frame">
+			    		<img src="{{MEDIA_URL}}{{latest_update.photo}}" width="190" height="139" alt="{{latest_update.photo_caption}}" />
+					</div>
+			    {% endif %}
+				<p class="smallFont" style="margin-top:3px;">
+					{{latest_update.text|truncatewords:20}}
+					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
+				</p>
+			{% else %}
+				<p class="smallFont">{% trans 'Not yet' %}</p>
+			{% endif %}
+		{% endwith %}
+		<p class="miniFont lightgrey right" style="margin-top:5px; margin-bottom:10px; padding-right:9px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+</div>
+{% endblock content %}

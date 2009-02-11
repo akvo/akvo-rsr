@@ -78,3 +78,6 @@ locale/de/LC_MESSAGES/django.mo.old
 locale/de/LC_MESSAGES/django.po.old
 locale/de/LC_MESSAGES/django.moo
 mediaroot/img/2009
+.TemporaryItems
+templates/dev
+templates/inclusion_tags/funding_box_backup.html

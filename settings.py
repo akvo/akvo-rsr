@@ -9,7 +9,7 @@
 from settings_base import *
 
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'rsrdb' # Or path to database file if using sqlite3.
+DATABASE_NAME = 'rsrdb' 			# Or path to database file if using sqlite3.
 DATABASE_USER = 'rsruser'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'u5r6vKSBwUxE4EMB'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.

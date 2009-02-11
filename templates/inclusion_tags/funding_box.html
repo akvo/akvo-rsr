@@ -1,0 +1,83 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n %}
+<div class="fundingwrap">
+
+<div class="fundingbox-header"> </div>
+	<div class="fundingbox-content">
+		{% ifequal p.funding.still_needed 0 %}
+		<div class="fundingbox-funded">	
+			<div class="fullyfunded-text">
+				<p style="">
+				{% trans 'Raised' %}:&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.pledged}}
+				</p>
+				{% comment %}
+				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
+					<tr class="green">
+						<th>{% trans 'Raised' %}:</th>
+						<td>&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.pledged}}</td>
+					</tr>
+				</table>
+				{% endcomment %}
+			</div>
+			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
+				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
+			</p>
+		</div>
+	
+		{% else %}
+		<table class="fundingbox-table" cellspacing="0">
+			<tr class="green">
+				<th>{% trans 'Raised' %}:</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.pledged}}</td>
+			</tr>
+			<tr class="red">
+				<th>{% trans 'Still needed' %}:</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</td>
+			</tr>	
+		</table>
+		<div class="fundingbox-progress-bar">
+			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding.pledged p.funding.total 100 %}%"> </div>
+		</div>
+		<table class="fundingbox-table">
+			<tr>
+				<th>{% trans 'Total budget' %}:</th>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
+			</tr>					
+		</table>
+		<div id="donate_individual">
+			<p class="grey" style="line-height:1.0em;">
+				{% trans 'Individuals' %}<br />
+			<a href="#" class="donate_button" onclick="this.blur();"><span>Donate</span></a>
+			</p>
+		</div>
+		<div id="donate_institutions">
+			<p class="grey" style="line-height:1.0em;">
+				{% trans 'Institutions' %}<br />
+				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="#">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
+			</p>
+		</div>
+		<div id="name" style="clear: both;"></div>
+		{% comment %}
+		<div class="fundingbox-donate-container" style="margin-top:10px">
+				<div class="widget_donate_box-span-1 widget_donate_box-first fundingbox-donate-left">
+					<p class="grey" style="line-height:1.0em;">
+						{% trans 'Individuals' %}<br />
+						<a href="#" class="fundingbox-donate-left-button">{% trans 'Donate' %}</a>	
+					</p>
+				</div>
+				<div class="widget_donate_box-span-1 widget_donate_box-last fundingbox-donate-right">
+					<p class="grey" style="line-height:1.0em;">
+						{% trans 'Institutions' %}<br />
+						<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="#">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
+					</p>
+				</div>
+		</div>
+		{% endcomment %}
+		{% endifequal%}
+	</div>
+	<div class="fundingbox-footer"> </div>
+</div>
