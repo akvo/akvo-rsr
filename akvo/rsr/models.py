@@ -482,7 +482,7 @@ class MoSmsRaw(models.Model):
     incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
 
 class ProjectUpdate(models.Model):
-    project         = models.ForeignKey(Project, verbose_name=_('project'))
+    project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
     user            = models.ForeignKey(User, verbose_name=_('user'))
     title           = models.CharField(_('title'), max_length=50)
     text            = models.TextField(_('text'), blank=True)

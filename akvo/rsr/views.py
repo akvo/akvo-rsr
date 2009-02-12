@@ -486,7 +486,7 @@ def update_user_profile(request,
     return render_to_response(template_name, {'form': form}, context_instance=context)
 
 def updatelist(request, project_id):
-    updates = Project.objects.get(id=project_id).projectupdate_set.all()
+    updates = Project.objects.get(id=project_id).project_updates.all()
     template = 'rsr/update_list.html'
     return render_to_response(template, {'updates': updates}, context_instance=RequestContext(request, {'template': template }))
 
@@ -503,7 +503,7 @@ def projectupdates(request, project_id):
     updates: list of updates, ordered by time in reverse
     '''
     p           = get_object_or_404(Project, pk=project_id)
-    updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')
+    updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
     return {'p': p, 'updates': updates, }
     
 @render_to('rsr/project_comments.html')
@@ -712,7 +712,7 @@ def projectmain(request, project_id):
     form: the comment form
     '''
     p           = get_object_or_404(Project, pk=project_id)
-    updates     = Project.objects.get(id=project_id).projectupdate_set.all().order_by('-time')[:3]
+    updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
     return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
@@ -769,7 +769,7 @@ def templatedev(request, template_name):
     SAMPLE_PROJECT_ID = 2
     SAMPLE_ORG_ID = 42
     p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
-    updates     = Project.objects.get(id=SAMPLE_PROJECT_ID).projectupdate_set.all().order_by('-time')[:3]
+    updates     = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=SAMPLE_PROJECT_ID).projectcomment_set.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
@@ -791,6 +791,8 @@ class HttpResponseNoContent(HttpResponse):
 def test_widget(request):
     return render_to_response('widgets/featured_project.html', context_instance=RequestContext(request))
 
+from django.db.models import Max
+
 def widget_project_list(request, template='widgets/project_list.html'):
 	color = request.GET.get('color', 'B50000')
 	textcolor = request.GET.get('textcolor', 'FFFFFF')
@@ -800,9 +802,9 @@ def widget_project_list(request, template='widgets/project_list.html'):
 			o = Organisation.objects.get(pk=org_id)
 			p = o.projects()
 		except:
-			p = Project.objects.filter()
+			p = Project.objects.all()
 	else:
-		p = Project.objects.filter()
+		p = Project.objects.all()
 	order_by = request.GET.get('order_by', 'name')
 	if order_by == 'country__continent':		
 		p = p.order_by(order_by, 'country__country_name','name')
@@ -810,9 +812,14 @@ def widget_project_list(request, template='widgets/project_list.html'):
 		p = p.order_by(order_by,'name')
 	elif order_by == 'status':
 		p = p.order_by(order_by,'name')
-	elif order_by == 'last_update': # this sql does not work, have to figure out how to only return one row e.g. have to add some *.id = *.id somewhere...
-		p = p.extra(select={'last_update':'SELECT (CASE WHEN last_update IS NULL THEN 0 ELSE last_update END) AS last_update FROM ( SELECT last_table.last_update FROM (SELECT supertable.time AS last_update FROM (SELECT rsr_project.id AS project_id, subtable2.update_id, rsr_project.name, time, time is NULL AS isnull FROM rsr_project LEFT JOIN ( SELECT id AS update_id, project_id, time FROM (SELECT * FROM rsr_projectupdate ORDER BY id DESC) AS project_update_table GROUP BY project_id ) AS subtable2 ON subtable2.project_id = rsr_project.id	ORDER BY isnull ASC, time DESC, project_id ASC) AS supertable) AS last_table ) AS table44'})
-		p = p.order_by(order_by,'name')
+	#elif order_by == 'last_update': # this sql does not work, have to figure out how to only return one row e.g. have to add some *.id = *.id somewhere...
+	#	p = p.extra(select={'last_update':'SELECT (CASE WHEN last_update IS NULL THEN 0 ELSE last_update END) AS last_update FROM ( SELECT last_table.last_update FROM (SELECT supertable.time AS last_update FROM (SELECT rsr_project.id AS project_id, subtable2.update_id, rsr_project.name, time, time is NULL AS isnull FROM rsr_project LEFT JOIN ( SELECT id AS update_id, project_id, time FROM (SELECT * FROM rsr_projectupdate ORDER BY id DESC) AS project_update_table GROUP BY project_id ) AS subtable2 ON subtable2.project_id = rsr_project.id	ORDER BY isnull ASC, time DESC, project_id ASC) AS supertable) AS last_table ) AS table44'})
+	#	p = p.order_by(order_by,'name')
+	elif order_by == 'last_update':
+		#p = p.extra(select={'has_update': "project_updates__isnull=False"})
+		p = p.annotate(last_update=Max('project_updates__time'))
+		#p = p.extra({'update': 'project_updates__time__exact=last_update'})
+		p = p.order_by('-last_update', 'name')
 	elif order_by == 'total_budget':
 		p = p.extra(select={'total_budget':'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
 		p = p.order_by(order_by,'name')

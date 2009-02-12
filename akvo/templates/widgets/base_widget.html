@@ -46,5 +46,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% endblock footer %}
 		</div>
 	</div>	
+	{% if debug %}
+		Debug:{% debug %}
+	
+		Sql_queries: {{ sql_queries }}
+	{% endif %}
 </body>
 </html>

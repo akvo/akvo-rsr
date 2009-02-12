@@ -104,12 +104,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					</p>
 					
 					<p class="topmargin">{% trans 'Last Update' %}<br />
-					{% with project.projectupdate_set.latest as latest_update %}						
-						{% if latest_update %}
-							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a>
-						{% else %}
+					{% with project.last_update as last_update %}						
+						{% ifequal last_update None %}
 							<span style="color:#000;">{% trans 'Not yet' %}</span>
-						{% endif %}
+						{% else %}
+							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{project.project_updates.latest.id}}">{{last_update|date:"j M y"}}</a>
+						{% endifequal %}
 					{% endwith %}
 					</p>
 				</td>

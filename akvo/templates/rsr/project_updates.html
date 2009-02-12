@@ -46,7 +46,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <br />
             {% if u.photo %}
                 {% ifequal u.photo_location 'B' %}
-                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 650px; margin: 10px 10px 5px 20px" />
                     <p class="small lightx1">
                         {% if u.photo_caption %}
                             {{u.photo_caption}}
@@ -62,7 +62,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             {% endif %}
             {% if u.photo %}
                 {% ifequal u.photo_location 'E' %}
-                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                    <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 650px; margin: 10px 10px 5px 20px" />
                     <p class="small lightx1">
                         {% if u.photo_caption %}
                             {{u.photo_caption}}
