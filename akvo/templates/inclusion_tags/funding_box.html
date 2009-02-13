@@ -48,6 +48,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
 			</tr>					
 		</table>
+		<div >
+			<br />
+			<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Get Involved' %}&nbsp;&#x25BA;</a></span>
+		</div>
+		{% comment %}
+			
+		
 		<div id="donate_individual">
 			<p class="grey" style="line-height:1.0em;">
 				{% trans 'Individuals' %}<br />
@@ -57,25 +64,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div id="donate_institutions">
 			<p class="grey" style="line-height:1.0em;">
 				{% trans 'Institutions' %}<br />
-				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="#">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
+				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
 			</p>
 		</div>
 		<div id="name" style="clear: both;"></div>
-		{% comment %}
-		<div class="fundingbox-donate-container" style="margin-top:10px">
-				<div class="widget_donate_box-span-1 widget_donate_box-first fundingbox-donate-left">
-					<p class="grey" style="line-height:1.0em;">
-						{% trans 'Individuals' %}<br />
-						<a href="#" class="fundingbox-donate-left-button">{% trans 'Donate' %}</a>	
-					</p>
-				</div>
-				<div class="widget_donate_box-span-1 widget_donate_box-last fundingbox-donate-right">
-					<p class="grey" style="line-height:1.0em;">
-						{% trans 'Institutions' %}<br />
-						<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="#">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
-					</p>
-				</div>
-		</div>
 		{% endcomment %}
 		{% endifequal%}
 	</div>

@@ -44,18 +44,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table cellspacing="0">
 				<tr>
 					<th scope="col" id="projectColumnHeader" class="{% if not request_get.order_by %}activeTableHeader{% endif %}">
-						<a href="{% url akvo.rsr.views.widget_project_list %}" target="_self">{% trans 'Project' %}</a>							
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/" target="_self">{% trans 'Project' %}</a>								
 					</th>
 					<th scope="col" id="locationColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'country__continent' %}activeTableHeader{% endifequal %}{% ifequal request_get.order_by 'country__country_name' %}activeTableHeader{% endifequal %}">
-						<a href="{% url akvo.rsr.views.widget_project_list %}{% addparam "order_by" "country__continent"%}" target="_self">{% trans 'Continent' %}</a> /<br /> 
-						<a href="{% url akvo.rsr.views.widget_project_list %}{% addparam "order_by" "country__country_name" %}" target="_self">{% trans 'Country' %}</a></th>
-					<th scope="col" id="statusColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'status' %}activeTableHeader{% endifequal %}">
-						<a href="{% url akvo.rsr.views.widget_project_list %}{% addparam "order_by" "status" %}" target="_self">{% trans 'Status' %}</a> /<br /> 
-						{% comment %}
-							<a href="{% url akvo.rsr.views.widget_project_list %}{% addparam "order_by" "last_update" %}" target="_self">{% trans 'Last update' %}</a>
-						{% endcomment %}
-						{% trans 'Last Update' %}
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "country__continent"%}" target="_self" {% ifequal request_get.order_by 'country__country_name'%} style="font-weight:normal;" {% endifequal %}>{% trans 'Continent' %}</a> 
+						
+						<span style="font-weight:normal;">/</span><br /> 
+						
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "country__country_name" %}" target="_self" {% ifequal request_get.order_by 'country__continent' %}style="font-weight:normal" {% endifequal %} >{% trans 'Country' %}</a>
+					</th>
+					<th scope="col" id="statusColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'status' %}activeTableHeader{% endifequal %} {% ifequal request_get.order_by 'last_update' %}activeTableHeader{% endifequal %}">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "status" %}" target="_self" {% ifequal request_get.order_by 'last_update' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Status' %}</a> <span style="font-weight:normal;">/</span><br /> 
 
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "last_update" %}" target="_self"  {% ifequal request_get.order_by 'status' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Last update' %}</a>
+						
 					</th>
 					<th scope="col" id="partnerColumnHeader" class="tableHeaderCell">
 						{% comment %}
@@ -64,8 +66,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% trans 'Partners' %}
 					</th>
 					<th scope="col" id="fundingColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'total_budget' %}activeTableHeader{% endifequal %}{% ifequal request_get.order_by 'funds_needed' %}activeTableHeader{% endifequal %}">
-						<a href="{% url akvo.rsr.views.widget_project_list %}{% addparam "order_by" "total_budget" %}" target="_self">{% trans 'Total Budget' %}</a> /<br /> 
-						<a href="{% url akvo.rsr.views.widget_project_list %}{% addparam "order_by" "funds_needed" %}" target="_self">{% trans 'Funding Needed' %}</a><br />
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "total_budget" %}" target="_self" {% ifequal request_get.order_by 'funds_needed' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Total Budget' %}</a> <span style="font-weight: normal;">/</span><br /> 
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "funds_needed" %}" target="_self" {% ifequal request_get.order_by 'total_budget' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Funding Needed' %}</a><br />
 					</th>
 				</tr>
 		</table>

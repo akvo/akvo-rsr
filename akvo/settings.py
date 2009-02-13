@@ -20,7 +20,7 @@ DEBUG = True
 DEFAULT_FROM_EMAIL = 'noreply@newdev.akvo.org'
 
 INTERNAL_IPS = (
-    '87.227.60.54', '192.168.38.68',
+    #'87.227.60.54', '192.168.38.68',
 )
 
 # Absolute path to the directory that holds media.
