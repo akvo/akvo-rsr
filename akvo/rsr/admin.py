@@ -113,7 +113,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
 
-    form = ProjectAdminModelForm
+    #form = ProjectAdminModelForm
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #admin.site.register(Project, ProjectAdmin)

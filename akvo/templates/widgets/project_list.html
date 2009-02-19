@@ -44,7 +44,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table cellspacing="0">
 				<tr>
 					<th scope="col" id="projectColumnHeader" class="{% if not request_get.order_by %}activeTableHeader{% endif %}">
-						<a href="/rsr/widget/project-list/organisation/{{org_id}}/" target="_self">{% trans 'Project' %}</a>								
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "bgcolor" bgcolor %}" target="_self">{% trans 'Project' %}</a>								
 					</th>
 					<th scope="col" id="locationColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'country__continent' %}activeTableHeader{% endifequal %}{% ifequal request_get.order_by 'country__country_name' %}activeTableHeader{% endifequal %}">
 						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "country__continent"%}" target="_self" {% ifequal request_get.order_by 'country__country_name'%} style="font-weight:normal;" {% endifequal %}>{% trans 'Continent' %}</a> 
