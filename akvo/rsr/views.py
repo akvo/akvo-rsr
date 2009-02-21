@@ -748,9 +748,9 @@ def fundingbarimg(request):
     draw = ImageDraw.Draw(im)   # create a drawing object that is
                                 # used to draw on the new image
     # Now, we'll do the drawing:
-    pct = int(request.GET.get('pct', 0))
+    pct = request.GET.get('pct', 0)
     if pct:
-        box = [(0,0),(pct,20)]
+        box = [(0,0),(min(int(pct), 100),20)]
         draw.rectangle(box, fill='#99ff99')
     
     del draw # I'm done drawing so I don't need this anymore
