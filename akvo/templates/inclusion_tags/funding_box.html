@@ -48,13 +48,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
 			</tr>					
 		</table>
+		{% comment %}
+			Temporary "Get involved" link below.
+		{% endcomment %}		
 		<div >
 			<br />
 			<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Get Involved' %}&nbsp;&#x25BA;</a></span>
 		</div>
-		{% comment %}
-			
 		
+		{% comment %}
 		<div id="donate_individual">
 			<p class="grey" style="line-height:1.0em;">
 				{% trans 'Individuals' %}<br />
@@ -69,6 +71,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div id="name" style="clear: both;"></div>
 		{% endcomment %}
+		
+		
 		{% endifequal%}
 	</div>
 	<div class="fundingbox-footer"> </div>
