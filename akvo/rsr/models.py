@@ -63,6 +63,7 @@ def funding_aggregate(projects, organisation=None):
     # return sum of funds needed, amount pledged (by the org if supplied), and how much is still needed
     return funding_total, pledged, funding_total - total_pledged
 
+
 class Organisation(models.Model):
     """
     There are three types of organisations in RSR, called Field partner,
@@ -149,6 +150,15 @@ class Organisation(models.Model):
         ordering = ['name']
 
 
+class OrganisationMeta(models.Model):
+    ACCOUNT_LEVEL = (
+        ('free', _('Free')),
+        ('plus', _('Plus')),
+        ('premium', _('Premium')),
+    )
+    organisation    = models.OneToOneField(Organisation, primary_key=True)
+    account_level   = models.CharField(max_length=12, choices=ACCOUNT_LEVEL, default='free')
+
 CURRENCY_CHOICES = (
     #('USD', 'US dollars'),
     ('EUR', '&#8364;'),
@@ -166,7 +176,7 @@ STATUSES = (
 STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
 
 class Project(models.Model):
-    name                        = models.CharField(max_length=45)
+    name                        = models.CharField(max_length=45, help_text='')
     subtitle                    = models.CharField(max_length=75)
     status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N')
     city                        = models.CharField(max_length=25)
@@ -362,16 +372,11 @@ class UserProfile(models.Model):
     '''
     Extra info about a user.
     '''
-    user = models.ForeignKey(User, unique=True)
-    organisation = models.ForeignKey(Organisation)
-    #phone_number = models.IntegerField(
-    #    null=True,
-    #    blank=True,
-    #    help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
-    #    <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
-    #    validator_list = [isValidGSMnumber]
-    #)
-    phone_number = models.CharField(
+    user            = models.ForeignKey(User, unique=True)
+    organisation    = models.ForeignKey(Organisation)
+    is_org_admin    = models.BooleanField(_(u'organisation administrator'))
+    is_org_editor   = models.BooleanField(_(u'organisation project editor'))
+    phone_number    = models.CharField(
         max_length=50,
         blank=True,
         help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
@@ -379,7 +384,7 @@ class UserProfile(models.Model):
         #TODO: fix to django 1.0
         #validator_list = [isValidGSMnumber]
     )    
-    project = models.ForeignKey(Project, null=True, blank=True, )
+    project         = models.ForeignKey(Project, null=True, blank=True, )
     
     def __unicode__(self):
         return self.user.username
@@ -424,6 +429,7 @@ class UserProfile(models.Model):
     
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
+
 
 class MoMmsRaw(models.Model):
     '''

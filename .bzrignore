@@ -85,3 +85,6 @@ templates/dev
 templates/inclusion_tags/funding_box_backup.html
 akvo/mediaroot/img/2008
 akvo/mediaroot/img/2009
+akvo/partner_admin.kpf
+akvo/datadump.json
+akvo/django-granular-permissions
