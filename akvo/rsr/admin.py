@@ -441,3 +441,12 @@ class ProjectCommentAdmin(admin.ModelAdmin):
     list_filter     = ('project', 'time', )
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
+
+# PAUL
+# PayPal Integration
+
+class PayPalInvoiceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'complete',)
+    list_filter = ('complete',)
+
+admin.site.register(get_model('rsr', 'paypalinvoice'), PayPalInvoiceAdmin)

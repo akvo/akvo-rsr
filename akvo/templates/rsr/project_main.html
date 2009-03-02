@@ -159,6 +159,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div id="subdetailsleft" class="clearfix">
 
+        {# render the PayPal button #}
+        {{ pp_form.sandbox }}
+
         <div class="boxhead">
             <h1>{% trans 'Related to this project' %}</h1>
         </div> <!-- .boxhead -->
@@ -186,7 +189,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <a class="btn-slide actionbutton ab_grey" href="#" onclick="this.blur();"><span>{% trans 'Add comment' %}</span></a>
             <h1>{% trans 'Comments' %}</h1>
         </div> <!-- .boxhead -->
-    
+
         <div id="project_comments" class="boxbody">
             
             <div id="panel">

@@ -11,6 +11,9 @@ from akvo.rsr.feeds import ProjectUpdates
 from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
+# PAUL
+from django.views.generic.simple import direct_to_template
+
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
 admin.autodiscover()
@@ -21,6 +24,12 @@ feeds = {
 
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
+
+    # PAUL
+    # PayPal Integration
+    (r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.donate'),
+    (r'^rsr/ipn/thanks/$', direct_to_template, {'template': 'rsr/paypal_thanks.html'}),
+    (r'^rsr/ipn/$', 'paypal.standard.views.ipn'),
 
     (r'^$', 'akvo.rsr.views.index', ),
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),

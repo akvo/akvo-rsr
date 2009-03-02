@@ -47,6 +47,8 @@ INSTALLED_APPS = (
     'template_utils', #see http://code.google.com/p/django-template-utils/
     'registration', #see http://code.google.com/p/django-registration/
 #    'akvo.status',
+    # Added by Paul 09/02/2009
+    'paypal.standard',
 )
 
 #INTERNAL_IPS = (
@@ -86,6 +88,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )
+
+# PAUL
+PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
 ROOT_URLCONF = 'akvo.urls'
 

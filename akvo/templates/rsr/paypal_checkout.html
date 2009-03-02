@@ -1,0 +1,20 @@
+<h1>Please confirm your donation</h1>
+
+<h2>Your information:</h2>
+
+{% if user.is_authenticated %}
+    <p>Your name: {# We need to handle cases where the user might not have filled in First Name, Last Name #}
+        {% if user.first_name and user.last_name %}
+            {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p>
+        {% else %}
+            {{ user.username }}{% endif %}</p>
+    <p>Your email: {{ user.email }}.</p>
+{% else %}
+    <p>Your credentials are {{ name }}, {{ email }}</p>
+{% endif %}
+
+<p>You are donating &euro;{{ amount }} to the project "{{ p }}"</p>
+<p>FOR TESTING ONLY: Your invoice number is {{ invoice_id }}.</p>
+<p>Click on Donate to proceed to PayPal checkout.</p>
+<hr />
+{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
