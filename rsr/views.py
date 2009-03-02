@@ -30,6 +30,11 @@ import time
 import feedparser
 from registration.models import RegistrationProfile
 
+# PAUL
+from akvo.rsr.models import PayPalInvoice
+from paypal.standard.forms import PayPalPaymentsForm
+
+
 def mdgs_water_calc(projects):
     '''
     Calculate the water MDGs for the projects
@@ -807,3 +812,60 @@ def ajax_tab_context(request, project_id):
         return render_to_response('rsr/ajax_tab_context.html', {'p': p,}, context_instance=RequestContext(request))        
     except Project.DoesNotExist:
         return HttpResponseNoContent()
+
+# PAUL
+# PayPal Integration
+
+from akvo.rsr.forms import PayPalInvoiceForm
+
+# URL: /rsr/project/<id>/donate/
+# TODO: Redirect to a signin page if the user is not authenticated
+def donate(request, project_id):
+    # Define some fixed global context for the view
+    p = get_object_or_404(Project, pk=project_id)
+    u = request.user
+    t = datetime.now()
+    fn = funding_aggregate(project_id)[2]
+
+    # Validate if the form was POSTed...
+    if request.method == 'POST':
+        donate_form = PayPalInvoiceForm(data=request.POST, user=u, project=p)
+        # Validate the form
+        if donate_form.is_valid():
+            invoice = donate_form.save(commit=False)
+            invoice.project = p
+            if u.is_authenticated():
+                invoice.user = u
+            else:
+                invoice.name = donate_form.cleaned_data['name']
+                invoice.email = donate_form.cleaned_data['email']     
+            invoice.time = t
+            invoice.save()
+            # Proceed to initialise the PayPalPaymentsForm
+            pp_dict = {'cmd': '_donations',
+                'currency_code': 'EUR',
+                'business': 'paul.b_1235480200_biz@gmail.com', # German Test Store (EUR)
+                'amount': invoice.amount,
+                'item_name': 'Akvo Project Donation: ' + invoice.project.name,
+                'invoice': invoice.id,
+                'notify_url': 'http://dev.akvo.org:8080/rsr/ipn/', # or wherever we hook up the view
+                'return_url': 'http://dev.akvo.org:8080/rsr/ipn/thanks/', # or wherever else
+                'cancel_url': 'http://dev.akvo.org:8080/'} # where to go if the whole thing is cancelled
+            pp_form = PayPalPaymentsForm(initial=pp_dict)
+            pp_form.sandbox() # Change to pp_form.render() in production
+            return render_to_response('rsr/paypal_checkout.html',
+                                        {'name': invoice.name, 
+                                         'email': invoice.email, 
+                                         'pp_form': pp_form, 
+                                         'invoice_id': invoice.id, 
+                                         'p': p, 
+                                         'amount': invoice.amount, },
+                                        context_instance=RequestContext(request))
+    else:
+        # ... otherwise initialise an empty form
+        donate_form = PayPalInvoiceForm(user=u, project=p)
+
+    # Display the form for non-POST requests or borked validations
+    return render_to_response('rsr/project_donate.html', 
+                              {'funding_still_needed': fn, 'donate_form': donate_form, 'p': p, }, 
+                              context_instance=RequestContext(request))

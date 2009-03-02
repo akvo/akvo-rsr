@@ -29,3 +29,7 @@ MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
 MEDIA_URL = 'http://sandbox.akvo.org/rsr/media/'
 
 TEMPLATE_DEBUG = DEBUG
+
+# PAUL
+# PayPal Integration
+SANDBOX_IMAGE = "https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif"

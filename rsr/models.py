@@ -306,7 +306,7 @@ class FieldPartner(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
-    
+
 class Funding(models.Model):
     project = models.OneToOneField(Project, primary_key=True)
     #date_next_milestone = models.DateField(blank=True)
@@ -515,3 +515,40 @@ class ProjectComment(models.Model):
     comment         = models.TextField(_('comment'))
     time            = models.DateTimeField(_('time'))
         
+# PAUL
+# PayPal Integration
+
+from paypal.standard.models import PayPalIPN
+from paypal.standard.signals import payment_was_flagged #, payment_was_successful
+
+class PayPalInvoice(models.Model):
+    user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
+    project = models.ForeignKey(Project) # project can have many invoices
+    amount = models.IntegerField(verbose_name=_(u'Amount you wish to donate (in Euros)')) # should this be a DecimalField?
+    #amount = models.DecimalField(max_digits=7, decimal_places=2) # "XXXXX.XX"
+    ipn = models.OneToOneField(PayPalIPN, blank=True, null=True) # an ipn can only belong to one invoice and vice versa
+    time = models.DateTimeField()
+    name = models.CharField(max_length=30, blank=True, null=True) # handle non-authenticated users
+    email = models.EmailField(blank=True, null=True) # handle non-authenticated users
+    complete = models.BooleanField()
+
+# PayPal IPN Listener
+from akvo.rsr.utils import send_paypal_confirmation_email
+def process_paypal_ipn(sender, **kwargs):
+    ipn = sender
+    if ipn.payment_status == 'Completed':
+        # Get the related PayPalInvoice object from the IPN
+        ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
+        # Associate the IPN with the PayPalInvoice
+        ppi.ipn = ipn # this works in the shell but refuses to work here (???)
+        # Mark the PayPalInvoice as complete
+        ppi.complete = True
+        ppi.save()
+        # Send a confirmation email to wrap everything up
+        send_paypal_confirmation_email(ppi.id)
+# We have to connect to 'payment_was_flagged' in development because the return email won't validate
+# Connect to 'payment_was_successful' in production
+payment_was_flagged.connect(process_paypal_ipn)
+
+# TODO: Subtract the donated amount from the funding the project still needs.
+#  - Create a new function in utils.py to handle this
