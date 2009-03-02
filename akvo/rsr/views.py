@@ -729,6 +729,32 @@ def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
 
+'''
+Don't know if we need two views for the machinery, but will wait with optimizations!
+user_level is None, 1 or 2!!!
+'''
+def getwidget(request, project_id):
+    p = get_object_or_404(Project, pk=project_id)
+    user_level = 2
+    orgs = p.organisations()
+    return render_to_response('rsr/machinery_step1.html', {'project': p, 'user_level': user_level, 'organisations': orgs}, context_instance=RequestContext(request))
+    
+def customisewidget(request, project_id):
+    if not request.POST:
+        return HttpResponseRedirect('/rsr/project/' + project_id + '/get-widget')
+    widget_type = request.POST['widget-type']
+    widget_choice = request.POST['widget-choice']
+    widget_site = request.POST['widget-site']
+    if widget_choice == 'random-from-org':
+        widget_organisation = request.POST['widget-organisations']
+    elif widget_choice == 'project-list':
+        widget_organisation = request.POST['widget-organisations']
+    else:
+        widget_organisation = 0
+    p = get_object_or_404(Project, pk=project_id)
+    return render_to_response('rsr/machinery_step2.html', {'project': p, 'widget_organisation': widget_organisation, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
+    
+
 def flashgallery(request):
     '''
     Generate the xml file for TiltViewer

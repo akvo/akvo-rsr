@@ -264,7 +264,13 @@ class Project(models.Model):
         except:
             pass
         return is_connected
-        
+
+    def organisations(self):
+        orgs = Organisation.objects.all()
+        return (orgs.filter(support_partners__project__exact=self.id) | \
+                orgs.filter(field_partners__project__exact=self.id) | \
+                orgs.filter(funding_partners__project__exact=self.id)).distinct()
+         
     class Meta:
         pass
     
