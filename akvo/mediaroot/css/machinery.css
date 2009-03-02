@@ -1,0 +1,79 @@
+.sides {
+	border:1px solid #BFBEC9;
+}
+/*
+body {
+	background-color:#fff;
+	color:#9B99AC;
+	font: 75% Arial, "MS Trebuchet", sans-serif;
+	margin-top:20px;
+}
+*/
+#machinery-content {
+	border:1px solid #DEDEDE;
+	margin-top:30px;	
+	padding-top:20px;
+}
+
+p {
+	margin:0;
+	padding:0;
+}
+a {
+	color:#0073BC;
+	text-decoration:none;
+}
+a:visited {
+	color:#0073BC;
+	text-decoration:none;
+}
+a:hover {
+	color:#0073BC;
+	text-decoration:underline;
+}
+
+.clear {
+	clear:both;
+}
+h1,h2 {
+	color:#000;
+}
+
+h1 {
+	font-size:16px;
+	font-weight:bold;
+	line-height:1.5em;
+}
+
+.machinerygrey {
+	color:#9B99AC !important;
+}
+
+div.pit {
+	background-color:#FFFAD8;
+	border:1px solid #BEBDC8;
+	width:850px;
+	margin-left:100px;
+	margin-top: 30px;
+	padding: 5px 30px 40px 30px;
+}
+.pit-left-margin {
+	margin-left:100px;
+}
+div.pit-sidebar {
+	margin:0;
+	margin-top:30px;
+	width:202px;
+	float:left;
+}
+div.pit-right {
+	margin:0;
+	margin-top:60px;
+	margin-right:60px;
+	/*background-color:#f3f3f3;*/
+	float:right;
+	width:480px;
+}
+.pit-right p {
+	color:#000;
+}
