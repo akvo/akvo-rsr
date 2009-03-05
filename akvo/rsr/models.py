@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
@@ -11,7 +13,7 @@ from django import forms
 from django.conf import settings
 from django.db import models
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 #from django.core import validators
 from django.core.mail import send_mail
@@ -22,6 +24,11 @@ from django.utils.translation import ugettext_lazy as _
 from registration.models import RegistrationProfile, RegistrationManager
 
 from akvo.settings import MEDIA_ROOT
+
+from utils import RSR_LIMITED_CHANGE
+from utils import GROUP_RSR_PARTNER_ADMINS
+from utils import GROUP_RSR_PARTNER_EDITORS
+from utils import groups_from_user
 
 CONTINENTS = (
     (1, u'Africa'),
@@ -123,7 +130,16 @@ class Organisation(models.Model):
     #def show_organisation_type(self):
     #    return ORG_TYPES_DICT[self.organisation_type]
     
-    def projects(self):
+    def published_projects(self):
+        '''
+        returns a queryset with published projects that has self as any kind of partner
+        '''
+        projs = Project.objects.published()
+        return (projs.filter(supportpartner__support_organisation=self.id) | \
+                 projs.filter(fieldpartner__field_organisation=self.id) | \
+                 projs.filter(fundingpartner__funding_organisation=self.id)).distinct()
+
+    def all_projects(self):
         '''
         returns a queryset with all projects that has self as any kind of partner
         '''
@@ -136,21 +152,29 @@ class Organisation(models.Model):
         '''
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
-        projects = self.projects()
+        projects = self.published_projects()
         all = Organisation.objects.all()
         return (all.filter(field_partners__project__in = projects.values('pk').query) | \
                 all.filter(support_partners__project__in = projects.values('pk').query) | \
                 all.filter(funding_partners__project__in = projects.values('pk').query)).exclude(id__exact=self.id).distinct()
     
     def funding(self):
-        funding_total, funding_pledged, funding_needed = funding_aggregate(self.projects(), organisation=self)
+        funding_total, funding_pledged, funding_needed = funding_aggregate(self.published_projects(), organisation=self)
         return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_needed}
     
     class Meta:
         ordering = ['name']
+        permissions = (
+            ("%s_organisation" % RSR_LIMITED_CHANGE, u'RSR limited change organisation'),
+        )
+        
 
-
-class OrganisationMeta(models.Model):
+class OrganisationAccount(models.Model):
+    """
+    This model keps track of organisation account levels and other relevant data.
+    The reason for having this in a separate model form Organisation is to hide
+    it from the org admins.
+    """
     ACCOUNT_LEVEL = (
         ('free', _('Free')),
         ('plus', _('Plus')),
@@ -159,9 +183,19 @@ class OrganisationMeta(models.Model):
     organisation    = models.OneToOneField(Organisation, primary_key=True)
     account_level   = models.CharField(max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
+
+class ProjectManager(models.Manager):
+    def published(self):
+        return super(ProjectManager, self).get_query_set().filter(publishingstatus__status='published')
+
+    def unpublished(self):
+        return super(ProjectManager, self).get_query_set().filter(publishingstatus__status='unpublished')
+
+
 CURRENCY_CHOICES = (
     #('USD', 'US dollars'),
-    ('EUR', '&#8364;'),
+    #('EUR', '&#8364;'),
+    ('EUR', '€'),
     #('GBP', 'British pounds'),
 )
 
@@ -228,6 +262,9 @@ class Project(models.Model):
     project_rating              = models.IntegerField(default=0)
     notes                       = models.TextField(blank=True)
     
+    #Custom manager
+    objects = ProjectManager()
+    
     def __unicode__(self):
         return self.name
         
@@ -270,13 +307,41 @@ class Project(models.Model):
         '''
         is_connected = False
         try:
-            is_connected = self in user.userprofile_set.filter(user__exact = user)[0].organisation.projects()
+            is_connected = self in user.userprofile_set.filter(user__exact = user)[0].organisation.published_projects()
         except:
             pass
         return is_connected
-        
+
+    def is_published(self):
+        #from dbgp.client import brk
+        #brk(host="localhost", port=9000)
+        if self.publishingstatus:
+            return self.publishingstatus.status == 'published'
+        return False
+    is_published.boolean = True
+
     class Meta:
-        pass
+        permissions = (
+            ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
+        )
+
+
+class PublishingStatus(models.Model):
+    """
+    Keep track of publishing status. Only for projects now, but possible to
+    extend to other object types.
+    """
+    PUBLISHING_STATUS = (
+        ('unpublished', 'Unpublished'),
+        ('published', 'Published'),
+    )
+    #TODO: change to a generic relation if we want to have publishing stats on
+    #other objects than projects
+    project = models.OneToOneField(Project,)
+    status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+    class Meta:
+        verbose_name_plural = 'publishing statuses'
+    
     
 LINK_KINDS = (
     ('A', 'Akvopedia entry'),
@@ -348,6 +413,12 @@ class Funding(models.Model):
     def is_complete(self):
         return self.date_complete < date.today()
         
+    class Meta:
+        permissions = (
+            ("%s_funding" % RSR_LIMITED_CHANGE, u'RSR limited change funding'),
+        )
+
+        
 PHOTO_LOCATIONS = (
     ('B', _('At the beginning of the update')),
     ('E', _('At the end of the update')),
@@ -374,8 +445,8 @@ class UserProfile(models.Model):
     '''
     user            = models.ForeignKey(User, unique=True)
     organisation    = models.ForeignKey(Organisation)
-    is_org_admin    = models.BooleanField(_(u'organisation administrator'))
-    is_org_editor   = models.BooleanField(_(u'organisation project editor'))
+    #is_org_admin    = models.BooleanField(_(u'organisation administrator'))
+    #is_org_editor   = models.BooleanField(_(u'organisation project editor'))
     phone_number    = models.CharField(
         max_length=50,
         blank=True,
@@ -395,6 +466,26 @@ class UserProfile(models.Model):
     def organisation_name(self):
         return self.organisation.name
     
+    def is_org_admin(self):
+        return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
+    is_org_admin.boolean = True #make pretty icons in the admin list view
+    
+    def is_org_editor(self):
+        return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
+    is_org_editor.boolean = True #make pretty icons in the admin list view
+        
+    def add_user_to_group(self, group_name):
+        group = Group.objects.get(name=group_name)
+        if not group in self.user.groups.all():
+            self.user.groups.add(group)
+            self.user.save()
+
+    def remove_user_from_group(self, group_name):
+        group = Group.objects.get(name=group_name)
+        if group in self.user.groups.all():
+            self.user.groups.remove(group)
+            self.user.save()
+
     def create_sms_update(self, mo_sms_raw):
         # does the user have a project to update? TODO: security!
         if self.project:
@@ -426,6 +517,12 @@ class UserProfile(models.Model):
             pu = ProjectUpdate.objects.create(**update_data)
             return pu
         return False
+
+    class Meta:
+        permissions = (
+            ("%s_userprofile" % RSR_LIMITED_CHANGE, u'RSR limited change user profile'),
+        )
+    
     
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))

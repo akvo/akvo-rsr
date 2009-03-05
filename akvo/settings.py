@@ -30,6 +30,6 @@ MEDIA_ROOT = '/Users/gabriel/dev/partner_admin/akvo/mediaroot/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://newdev.akvo.org/rsr/media/'
+MEDIA_URL = 'http://localhost:8000/rsr/media/'
 
 TEMPLATE_DEBUG = DEBUG
