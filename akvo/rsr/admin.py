@@ -10,7 +10,10 @@ from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from util import groups_from_request
+from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import get_rsr_limited_change_permission
+from utils import groups_from_user
+
 #used by WYMeditor not in use right now
 #from forms import ProjectAdminModelForm
 
@@ -29,11 +32,8 @@ from util import groups_from_request
 #from models import ProjectUpdate
 #from models import ProjectComment
 
-GROUP_RSR_PARTNER_ADMINS    = 'RSR partner admins'#can edit organisation info
-GROUP_RSR_PARTNER_EDITORS   = 'RSR partner editors' #can edit an org's projects
-GROUP_RSR_EDITORS           = 'RSR editors'
-GROUP_RSR_USERS             = 'RSR users'
 
+admin.site.register(get_model('auth', 'permission'))
 
 class CountryAdmin(admin.ModelAdmin):
     list_display = (u'country_name', u'continent', )
@@ -51,126 +51,48 @@ class OrganisationAdmin(admin.ModelAdmin):
     )    
     list_display = ('name', 'long_name', 'website', 'partner_types', )
 
+    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def queryset(self, request):
-        qs = super(OrganisationAdmin, self).queryset(request)
-        if request.user.is_superuser:
-            return qs
-        else:
-            groupnames = groups_from_request(request)
-            if GROUP_RSR_EDITORS in groupnames:
-                return qs
-            elif GROUP_RSR_PARTNER_ADMINS in groupnames:
-                organisation = request.user.userprofile_set.all()[0].organisation
-                return qs.filter(pk=organisation.id)
-            else:
-                raise PermissionDenied
-            
-    def has_row_change_permission(self, request, obj=None):
-        """
-        Check that the current user is associated with the project. Otherwise editing is not allowed.
-        """
-        groupnames = groups_from_request(request)
-        if GROUP_RSR_EDITORS in groupnames:
-            return True
-        elif GROUP_RSR_PARTNER_ADMINS in groupnames or GROUP_RSR_PARTNER_EDITORS in groupnames:
-            return obj == request.user.userprofile_set.all()[0].organisation
-        else:
-            return False
-
-    def change_view(self, request, object_id, extra_context=None):
-        """
-        The 'change' admin view for this model.
-        
-        Modified from django/contrib/admin/options.py
-        """
-        model = self.model
-        opts = model._meta
-        
-        try:
-            obj = model._default_manager.get(pk=unquote(object_id))
-        except model.DoesNotExist:
-            # Don't raise Http404 just yet, because we haven't checked
-            # permissions yet. We don't want an unauthenticated user to be able
-            # to determine whether a given object exists.
-            obj = None
-        
-        #This is the modified line:
-        if not self.has_change_permission(request, obj) or not self.has_row_change_permission(request, obj):
-            raise PermissionDenied
-        
-        if obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-        
-        if request.method == 'POST' and request.POST.has_key("_saveasnew"):
-            return self.add_view(request, form_url='../../add/')
-
         #from dbgp.client import brk
         #brk(host="localhost", port=9000)            
-        
-        ModelForm = self.get_form(request, obj)
-        formsets = []
-        if request.method == 'POST':
-            form = ModelForm(request.POST, request.FILES, instance=obj)
-            if form.is_valid():
-                form_validated = True
-                new_object = self.save_form(request, form, change=True)
-            else:
-                form_validated = False
-                new_object = obj
-            for FormSet in self.get_formsets(request, new_object):
-                formset = FormSet(request.POST, request.FILES,
-                                  instance=new_object)
-                formsets.append(formset)
-            
-            if all_valid(formsets) and form_validated:
-                self.save_model(request, new_object, form, change=True)
-                form.save_m2m()
-                for formset in formsets:
-                    self.save_formset(request, form, formset, change=True)
-                
-                change_message = self.construct_change_message(request, form, formsets)
-                self.log_change(request, new_object, change_message)
-                return self.response_change(request, new_object)
-        
+        qs = super(OrganisationAdmin, self).queryset(request)
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            organisation = request.user.userprofile_set.all()[0].organisation
+            return qs.filter(pk=organisation.id)
         else:
-            form = ModelForm(instance=obj)
-            for FormSet in self.get_formsets(request, obj):
-                formset = FormSet(instance=obj)
-                formsets.append(formset)
+            raise PermissionDenied
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
         
-        adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
-        media = self.media + adminForm.media
-        
-        inline_admin_formsets = []
-        for inline, formset in zip(self.inline_instances, formsets):
-            fieldsets = list(inline.get_fieldsets(request, obj))
-            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
-            inline_admin_formsets.append(inline_admin_formset)
-            media = media + inline_admin_formset.media
-        
-        context = {
-            'title': _('Change %s') % force_unicode(opts.verbose_name),
-            'adminform': adminForm,
-            'object_id': object_id,
-            'original': obj,
-            'is_popup': request.REQUEST.has_key('_popup'),
-            'media': mark_safe(media),
-            'inline_admin_formsets': inline_admin_formsets,
-            'errors': helpers.AdminErrorList(form, formsets),
-            'root_path': self.admin_site.root_path,
-            'app_label': opts.app_label,
-        }
-        context.update(extra_context or {})
-        return self.render_change_form(request, context, change=True, obj=obj)
-    change_view = transaction.commit_on_success(change_view)
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+
+        get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
+        "own" projects, organisation and user profiles
+        """
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return True
+        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            if obj:
+                return obj == request.user.get_profile().organisation
+            else:
+                return True
+        return False
     
 admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
 
 
-class OrganisationMetaAdmin(admin.ModelAdmin):
+class OrganisationAccountAdmin(admin.ModelAdmin):
     list_display = (u'organisation', u'account_level', )
     
-admin.site.register(get_model('rsr', 'organisationmeta'), OrganisationMetaAdmin)
+admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
 #class LinkAdmin(admin.ModelAdmin):
@@ -210,6 +132,12 @@ class SupportPartnerInline(admin.TabularInline):
 
 class FundingAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'funding')
+
+
+class PublishingStatusAdmin(admin.ModelAdmin):
+    list_display = (u'project', u'status', )
+    
+admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
 
 class ProjectAdminForm(forms.ModelForm):
@@ -258,128 +186,49 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
         }),
     )
-    list_display = ('id', 'name', 'project_type', 'status', 'country', 'state', 'city', 'project_plan_summary', 'show_current_image', 'show_map', )
+    list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
+                    'city', 'project_plan_summary', 'show_current_image',
+                    'show_map', 'is_published')
     
     #form = ProjectAdminModelForm
     form = ProjectAdminForm
-
-    #overridden methods from django.contrib.admin.optons
+    
+    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
         """
         qs = super(ProjectAdmin, self).queryset(request)
-        if request.user.is_superuser:
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            projects = request.user.get_profile().organisation.all_projects()
+            return qs.filter(pk__in=projects)
         else:
-            groupnames = groups_from_request(request)
-            if GROUP_RSR_EDITORS in groupnames:
-                return qs
-            elif GROUP_RSR_PARTNER_ADMINS in groupnames or GROUP_RSR_PARTNER_EDITORS in groupnames:
-                projects = request.user.userprofile_set.all()[0].organisation.projects()
-                return qs.filter(pk__in=projects)
-            else:
-                raise PermissionDenied
-    
-    def has_row_change_permission(self, request, obj=None):
-        """
-        Check that the current user is associated with the project. Otherwise editing is not allowed.
-        """
-        groupnames = groups_from_request(request)
-        if GROUP_RSR_EDITORS in groupnames:
-            return True
-        elif GROUP_RSR_PARTNER_ADMINS in groupnames or GROUP_RSR_PARTNER_EDITORS in groupnames:
-            projects = request.user.userprofile_set.all()[0].organisation.projects()
-            return obj in projects
-        else:
-            return False
-
-    def change_view(self, request, object_id, extra_context=None):
-        """
-        The 'change' admin view for this model.
-        
-        Modified from django/contrib/admin/options.py
-        """
-        model = self.model
-        opts = model._meta
-        
-        try:
-            obj = model._default_manager.get(pk=unquote(object_id))
-        except model.DoesNotExist:
-            # Don't raise Http404 just yet, because we haven't checked
-            # permissions yet. We don't want an unauthenticated user to be able
-            # to determine whether a given object exists.
-            obj = None
-        
-        #This is the modified line:
-        if not self.has_change_permission(request, obj) or not self.has_row_change_permission(request, obj):
             raise PermissionDenied
-        
-        if obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-        
-        if request.method == 'POST' and request.POST.has_key("_saveasnew"):
-            return self.add_view(request, form_url='../../add/')
 
-        #from dbgp.client import brk
-        #brk(host="localhost", port=9000)            
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
         
-        ModelForm = self.get_form(request, obj)
-        formsets = []
-        if request.method == 'POST':
-            form = ModelForm(request.POST, request.FILES, instance=obj)
-            if form.is_valid():
-                form_validated = True
-                new_object = self.save_form(request, form, change=True)
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+
+        get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
+        "own" projects, organisation and user profiles
+        """
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return True
+        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            projects = request.user.get_profile().organisation.all_projects()
+            if obj:
+                return obj in projects
             else:
-                form_validated = False
-                new_object = obj
-            for FormSet in self.get_formsets(request, new_object):
-                formset = FormSet(request.POST, request.FILES,
-                                  instance=new_object)
-                formsets.append(formset)
-            
-            if all_valid(formsets) and form_validated:
-                self.save_model(request, new_object, form, change=True)
-                form.save_m2m()
-                for formset in formsets:
-                    self.save_formset(request, form, formset, change=True)
-                
-                change_message = self.construct_change_message(request, form, formsets)
-                self.log_change(request, new_object, change_message)
-                return self.response_change(request, new_object)
-        
-        else:
-            form = ModelForm(instance=obj)
-            for FormSet in self.get_formsets(request, obj):
-                formset = FormSet(instance=obj)
-                formsets.append(formset)
-        
-        adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
-        media = self.media + adminForm.media
-        
-        inline_admin_formsets = []
-        for inline, formset in zip(self.inline_instances, formsets):
-            fieldsets = list(inline.get_fieldsets(request, obj))
-            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
-            inline_admin_formsets.append(inline_admin_formset)
-            media = media + inline_admin_formset.media
-        
-        context = {
-            'title': _('Change %s') % force_unicode(opts.verbose_name),
-            'adminform': adminForm,
-            'object_id': object_id,
-            'original': obj,
-            'is_popup': request.REQUEST.has_key('_popup'),
-            'media': mark_safe(media),
-            'inline_admin_formsets': inline_admin_formsets,
-            'errors': helpers.AdminErrorList(form, formsets),
-            'root_path': self.admin_site.root_path,
-            'app_label': opts.app_label,
-        }
-        context.update(extra_context or {})
-        return self.render_change_form(request, context, change=True, obj=obj)
-    change_view = transaction.commit_on_success(change_view)
+                return True
+        return False
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #admin.site.register(Project, ProjectAdmin)
@@ -390,24 +239,172 @@ admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #
 #admin.site.register(get_model('rsr', 'funding'), FundingAdmin)
 
+class UserProfileAdminForm(forms.ModelForm):
+    """
+    This form dispalys two extra fields that show if the ser belongs to the groups
+    GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
+    """
+    class Meta:
+        model = get_model('rsr', 'userprofile')
+
+    is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
+    is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
+
+    def __init__(self, *args, **kwargs):
+        #request is needed to populate is_org_admin and is_org_editor
+        initial_data = {}
+        initial_data['is_org_admin']    = kwargs['instance'].is_org_admin()
+        initial_data['is_org_editor']   = kwargs['instance'].is_org_editor()
+        kwargs.update({'initial': initial_data})
+        super(UserProfileAdminForm, self).__init__(*args, **kwargs)
+
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'is_org_admin', 'is_org_editor', )
+    list_display = ('user_name', 'organisation', 'is_org_admin', 'is_org_editor',)
     list_filter  = ('organisation', )
+    form = UserProfileAdminForm
 
+
+    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def queryset(self, request):
-        qs = super(UserProfileAdmin, self).queryset(request)        
-        if request.user.is_superuser:
+        """
+        Return a queryset possibly filtered depending on current user's group(s)
+        """
+        qs = super(UserProfileAdmin, self).queryset(request)
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            organisation = request.user.get_profile().organisation
+            return qs.filter(organisation=organisation)
         else:
-            groupnames = groups_from_request(request)
-            if GROUP_RSR_EDITORS in groupnames:
-                return qs
-            elif GROUP_RSR_PARTNER_ADMINS in groupnames:
-                organisation = request.user.userprofile_set.all()[0].organisation
-                return qs.filter(organisation=organisation)
-            else: 
-                raise PermissionDenied
+            raise PermissionDenied
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
+        
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+        
+        get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
+        "own" projects, organisation and user profiles
+        """
+        #from dbgp.client import brk
+        #brk(host="localhost", port=9000)            
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return True
+        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            my_org = request.user.get_profile().organisation
+            if obj:
+                return obj.organisation == my_org
+            else:
+                return True
+        return False
+
+    def save_form(self, request, form, change):
+        """
+        Given a ModelForm return an unsaved instance. ``change`` is True if
+        the object is being changed, and False if it's being added.
+        """
+        #from dbgp.client import brk
+        #brk(host="localhost", port=9000)            
+        #self.request = request
+        up = form.save(commit=False) #returns a user profile
+        if form.cleaned_data['is_org_admin']:
+            up.add_user_to_group(GROUP_RSR_PARTNER_ADMINS)
+        else:
+            up.remove_user_from_group(GROUP_RSR_PARTNER_ADMINS)
+        if form.cleaned_data['is_org_editor']:
+            up.add_user_to_group(GROUP_RSR_PARTNER_EDITORS)
+        else:
+            up.remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
+        return form.save(commit=False)
+
+
+    #def change_view(self, request, object_id, extra_context=None):
+    #    "The 'change' admin view for this model."
+    #    model = self.model
+    #    opts = model._meta
+    #    
+    #    try:
+    #        obj = model._default_manager.get(pk=unquote(object_id))
+    #    except model.DoesNotExist:
+    #        # Don't raise Http404 just yet, because we haven't checked
+    #        # permissions yet. We don't want an unauthenticated user to be able
+    #        # to determine whether a given object exists.
+    #        obj = None
+    #    
+    #    if not self.has_change_permission(request, obj):
+    #        raise PermissionDenied
+    #    
+    #    if obj is None:
+    #        raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+    #    
+    #    if request.method == 'POST' and request.POST.has_key("_saveasnew"):
+    #        return self.add_view(request, form_url='../../add/')
+    #    
+    #    #from dbgp.client import brk
+    #    #brk(host="localhost", port=9000)            
+    #    
+    #    ModelForm = self.get_form(request, obj)
+    #    formsets = []
+    #    if request.method == 'POST':
+    #        form = ModelForm(request, request.POST, request.FILES, instance=obj)
+    #        if form.is_valid():
+    #            form_validated = True
+    #            new_object = self.save_form(request, form, change=True)
+    #        else:
+    #            form_validated = False
+    #            new_object = obj
+    #        for FormSet in self.get_formsets(request, new_object):
+    #            formset = FormSet(request.POST, request.FILES,
+    #                              instance=new_object)
+    #            formsets.append(formset)
+    #        
+    #        if all_valid(formsets) and form_validated:
+    #            self.save_model(request, new_object, form, change=True)
+    #            form.save_m2m()
+    #            for formset in formsets:
+    #                self.save_formset(request, form, formset, change=True)
+    #            
+    #            change_message = self.construct_change_message(request, form, formsets)
+    #            self.log_change(request, new_object, change_message)
+    #            return self.response_change(request, new_object)
+    #    
+    #    else:
+    #        form = ModelForm(instance=obj, request=request)
+    #        for FormSet in self.get_formsets(request, obj):
+    #            formset = FormSet(instance=obj)
+    #            formsets.append(formset)
+    #    
+    #    adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
+    #    media = self.media + adminForm.media
+    #    
+    #    inline_admin_formsets = []
+    #    for inline, formset in zip(self.inline_instances, formsets):
+    #        fieldsets = list(inline.get_fieldsets(request, obj))
+    #        inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
+    #        inline_admin_formsets.append(inline_admin_formset)
+    #        media = media + inline_admin_formset.media
+    #    
+    #    context = {
+    #        'title': _('Change %s') % force_unicode(opts.verbose_name),
+    #        'adminform': adminForm,
+    #        'object_id': object_id,
+    #        'original': obj,
+    #        'is_popup': request.REQUEST.has_key('_popup'),
+    #        'media': mark_safe(media),
+    #        'inline_admin_formsets': inline_admin_formsets,
+    #        'errors': helpers.AdminErrorList(form, formsets),
+    #        'root_path': self.admin_site.root_path,
+    #        'app_label': opts.app_label,
+    #    }
+    #    context.update(extra_context or {})
+    #    return self.render_change_form(request, context, change=True, obj=obj)
+    #change_view = transaction.commit_on_success(change_view)
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 

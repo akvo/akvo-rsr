@@ -130,3 +130,9 @@ urlpatterns = patterns('',
     #    'django.views.static.serve', 
     #    {'document_root': '/var/dev/akvo/mediaroot/', 'show_indexes': True}),
 )
+
+from django.conf import settings
+if settings.DEBUG:
+    urlpatterns += patterns('',
+		(r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/Users/gabriel/dev/partner_admin/akvo/mediaroot/'}),
+    )

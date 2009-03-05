@@ -128,7 +128,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<td>{{o.country}}</td>
 	<td>{{o.country.get_continent_display}}</td>
 	<td>
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.projects.count}}</a><br />
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a><br />
 	</td>
 	<td>
 		{% ifequal o.funding.still_needed 0 %}

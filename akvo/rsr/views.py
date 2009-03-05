@@ -200,7 +200,7 @@ def index(request):
             'author': '',
             'summary': _('The blog is not available at the moment.'),
         }
-    p = Project.objects.all()        
+    p = Project.objects.published()        
     if bandwidth == 'low':
         grid_projects = p.filter(current_image__startswith='img').order_by('?')[:12]
     else:
@@ -222,7 +222,7 @@ def project_list_data(request, projects):
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
-    stats = akvo_at_a_glance(Project.objects.all())
+    stats = akvo_at_a_glance(Project.objects.published())
     return page, stats
     
 @render_to('rsr/project_directory.html')
@@ -234,7 +234,7 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projects = Project.objects.all().extra(
+    projects = Project.objects.published().extra(
         select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
                 'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
     )
@@ -254,7 +254,7 @@ def filteredprojectlist(request, org_id):
     '''
     # get all projects org_id is asociated with
     o = Organisation.objects.get(id=org_id)
-    projects = o.projects()
+    projects = o.published_projects()
     projects = projects.extra(
         select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
                 'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
@@ -297,7 +297,7 @@ def orglist(request, org_type='all'):
     ORGZ_PER_PAGE = 20
     paginator = Paginator(orgz, ORGZ_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
-    projects = Project.objects.all()
+    projects = Project.objects.published()
     stats = akvo_at_a_glance(projects)
     return {'orgz': orgz, 'org_type': org_type, 'stats': stats, 'page': page}
 
@@ -681,14 +681,14 @@ def commentform(request, project_id):
 #    returns a queryset with all projects that have the organisation org_id
 #    as any kind of partner
 #    '''
-#    projs = Project.objects.all()
+#    projs = Project.objects.published()
 #    return (projs.filter(supportpartner__support_organisation=org_id) | \
 #             projs.filter(fieldpartner__field_organisation=org_id) | \
 #             projs.filter(fundingpartner__funding_organisation=org_id)).distinct()
 
 def org_activities(organisation):
     # assoc resolves to all projects associated with organisation, where organisation can function in any of the three partner functions
-    assoc = organisation.projects()
+    assoc = organisation.published_projects()
     orgz = Organisation.objects.all()
     # partners resolves to all orgz that are partners of any kind to the list of projects in assoc
     partners = (orgz.filter(field_partners__project__in = assoc.values('pk').query) | \
@@ -700,7 +700,7 @@ def org_activities(organisation):
 @render_to('rsr/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
-    org_projects = o.projects()
+    org_projects = o.published_projects()
     org_partners = o.partners()
     org_stats = akvo_at_a_glance(org_projects, o)
     #proj_count = org_stats['project_count'] #'extracted' for use in pluralised blocktrans
@@ -801,7 +801,7 @@ def templatedev(request, template_name):
     comments    = Project.objects.get(id=SAMPLE_PROJECT_ID).projectcomment_set.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
-    projects = Project.objects.all()
+    projects = Project.objects.published()
     stats = akvo_at_a_glance(projects)
 
     orgz = Organisation.objects.all()
@@ -823,7 +823,7 @@ from django.db.models import Max
 
 def select_project_widget(request, org_id, template=''):
     o = get_object_or_404(Organisation, pk=org_id) #TODO: better error handling for widgets than straight 404
-    org_projects = o.projects()
+    org_projects = o.published_projects()
     project = random.choice(org_projects)
     get = request.GET.copy() #needed to be able to modify the dict
     template = get.pop('widget', ['feature-side'])[0] #get.pop returns a list
@@ -833,7 +833,7 @@ def project_widget(request, template='feature-side', project_id=None):
     if project_id:    
         p = get_object_or_404(Project, pk=project_id)
     else:
-        p = random.choice(Project.objects.all())
+        p = random.choice(Project.objects.published())
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
@@ -847,9 +847,9 @@ def project_list_widget(request, template='project-list', org_id=0):
 	site = request.GET.get('site', 'www.akvo.org')
 	if int(org_id):
 		o = get_object_or_404(Organisation, pk=org_id)
-		p = o.projects()
+		p = o.published_projects()
 	else:
-		p = Project.objects.all()
+		p = Project.objects.published()
 	order_by = request.GET.get('order_by', 'name')
 	p = p.annotate(last_update=Max('project_updates__time'))
 	if order_by == 'country__continent':		
@@ -882,11 +882,11 @@ def widget_project_list(request, template='widgets/project_list.html'):
 	if org_id:
 		try:
 			o = Organisation.objects.get(pk=org_id)
-			p = o.projects()
+			p = o.published_projects()
 		except:
-			p = Project.objects.all()
+			p = Project.objects.published()
 	else:
-		p = Project.objects.all()
+		p = Project.objects.published()
 	order_by = request.GET.get('order_by', 'name')
 	if order_by == 'country__continent':		
 		p = p.order_by(order_by, 'country__country_name','name')
@@ -925,11 +925,11 @@ def widget_project(request, template='widgets/project.html'):
 	if org_id:
 		try:
 			o = Organisation.objects.get(pk=org_id)
-			projects = o.projects()
+			projects = o.published_projects()
 		except:
-			projects = Project.objects.all()
+			projects = Project.objects.published()
 	else:
-		projects = Project.objects.all()
+		projects = Project.objects.published()
 	project = random.choice(projects)
 	return render_to_response(template, {'color': color, 'project': project}, context_instance=RequestContext(request))
 
