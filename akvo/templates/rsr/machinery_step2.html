@@ -14,6 +14,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block style %}
 {{block.super}}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
 
 {% endblock style%}
 
@@ -24,7 +25,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	var akvo_project_id = {{project.id}};
 	var akvo_widget_type = '{{widget_type}}';
 	var akvo_widget_choice = '{{widget_choice}}';
-	var akvo_widget_organisation = '{{widget_organisation}}';
+	var akvo_widget_organisation = '{{organisation.id}}';
 	var akvo_widget_site = '{{widget_site}}';
 	
 	
@@ -37,12 +38,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 </script>
 
-<script src="{{MEDIA_URL}}js/machinery.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}js/machinery2.js" type="text/javascript"></script>
 {% endblock script %}
 
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; <a href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Get widget' %}</a> &raquo; {% trans 'Customise Widget' %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get a widget' %}
 {% endblock breadcrumbs %}
 
 
@@ -53,12 +54,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="width:50%; float:left;">
 			<h1>Customise Project List Widget</h1>
 			<p style="margin-top:15px;">
-				<span style="color:#A9A7B8;">This widget will show the project</span><br />{{project.name}}
+				{% ifequal widget_choice 'specific-project'  %}
+					<span style="color:#A9A7B8;">This widget will show the project</span><br />{{project.name}}
+				{% else %}
+					<span style="color:#A9A7B8;">This widget will show the organisation</span><br />{{organisation.name}}
+				{% endifequal %}
 			</p>
 		</div>
-		<div id="warning_main" style="float:right; width:380px; margin-right:40px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+		<div id="machinery_step2_warning_main" style="float:right; width:380px; margin-right:40px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 			<p>
-				<span style="font-weight:bold;">A problem occurred</span><br />Please review message below.
+				<span style="font-weight:bold;">A problem occurred</span><br />
+				<div id="machinery_step2_warning_main_message" style="display:inline;">
+					<p>
+						We're sorry, but you must have Javascript enabled in your browser to proceed.
+					</p>
+				</div>
 			</p>
 		</div>
 	</div>
@@ -67,7 +77,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% comment %} Bottom part{% endcomment %}
 	<hr style="margin-left:30px; margin-right:30px; clear:both;" />
 	<a id="preview_position"></a>
-	<form method="post">
+	<form>
 		
 		{% comment %} site start {% endcomment %}
 		{% comment %}
@@ -87,7 +97,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="width:45%; float:left;">
 				<h3>Step 2: Select colours for your widget and preview</h3>
 			</div>
-			<div id="warning_color" style="float:right; margin-top:10px; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+			<div id="warning_color" style="float:right; margin-top:10px; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display: none;">
 				<p>
 					A color you entered is not recognized. Please change and try again.
 				</p>
@@ -151,10 +161,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="clear:both; padding-bottom:20px;"> </div>
 
-					<div style="width:100%; text-align:center; padding-bottom:30px;">
-						<a href="#">Cancel</a>
+					<div style="width:80%; text-align:center; padding-bottom:20px;">
+						<div style="float:left; width:45%; padding-top:5px; text-align:right;">
+							<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+						</div>
+						<div style="float:right; width:45%; text-align:left;">
+							<a id="preview" class="march_button" href="javascript:this.blur();" onclick="preview_widget();"><span>Preview</span></a>
+						</div>
+						<div style="clear:both;"> </div>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<input id="preview" type="button" value="Preview" onclick="preview_widget();" />
 					</div>	
 			</div>
 		</div>			
@@ -177,16 +192,47 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				You may repeat the steps above until you are satisﬁed with the appearance of your widget.
 			</p>
 			<div style="width:100%; text-align:center; margin-top:20px; margin-bottom:40px;">
-				<textarea style="background-color:#FFFAD8;" name="code" rows="8" cols="50" id="code"> </textarea>
+				<textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="50" id="code"> </textarea>
 			</div>
 		</div>
 	</form>
 	<br />
-	
-	<form action="{% url akvo.rsr.views.projectmain project.id %}" method="post" accept-charset="utf-8">
+	{% comment %}
+	<form name="returnFromMachinery" action="{% url akvo.rsr.views.projectmain project.id %}" method="post" accept-charset="utf-8">
+		<p>
+			<a class="march_button" href="javascript:document.featureSideForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
+		</p>
 		<p><input type="submit" value="Done"></p>
 	</form>
+	{% endcomment %}
 </div>
+
+<div style="text-align:center; padding-bottom:20px; padding-top:20px; margin-left:40px;">
+	<div style="float:left; width:45%; padding-top:5px; text-align:right;">
+		<a href="{% url akvo.rsr.views.getwidget project.id %}">Back</a>
+	</div>
+	<div style="float:right; width:45%; text-align:left;">
+		<a class="march_button" href="{% url akvo.rsr.views.projectmain project.id %}" onclick="this.blur();"><span>Done</span></a>
+	</div>
+	<div style="clear:both;"> </div>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+
+{% comment %}
+
+<div style="background-color:yellow; margin-top:20px; height:40px; text-align:center;">
+	<a class="march_button" href="{% url akvo.rsr.views.projectmain project.id %}" onclick="this.blur();"><span>Done</span></a>
+</div>
+{% endcomment %}
+
+{% comment %}
+<div style="width:100%; margin-top:20px; padding-bottom:50px;">
+	<div style="width:150px; margin-left:auto; margin-right:auto; text-align:center;">
+		<a class="march_button" href="{% url akvo.rsr.views.projectmain project.id %}" onclick="this.blur();"><span>Done</span></a>
+	</div>
+</div>
+{% endcomment %}
+
 
 
 {% endblock content %}

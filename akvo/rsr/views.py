@@ -735,30 +735,27 @@ def projectfunding(request, project_id):
         return {'p': p, }
 
 '''
-Don't know if we need two views for the machinery, but will wait with optimizations!
-user_level is None, 1 or 2!!!
+user_level is None, 1 or 2. No user level check on step 2
 '''
 def getwidget(request, project_id):
-    p = get_object_or_404(Project, pk=project_id)
-    user_level = 2
-    orgs = p.organisations()
-    return render_to_response('rsr/machinery_step1.html', {'project': p, 'user_level': user_level, 'organisations': orgs}, context_instance=RequestContext(request))
-    
-def customisewidget(request, project_id):
     if not request.POST:
-        return HttpResponseRedirect('/rsr/project/' + project_id + '/get-widget')
-    widget_type = request.POST['widget-type']
-    widget_choice = request.POST['widget-choice']
-    widget_site = request.POST['widget-site']
-    if widget_choice == 'random-from-org':
-        widget_organisation = request.POST['widget-organisations']
-    elif widget_choice == 'project-list':
-        widget_organisation = request.POST['widget-organisations']
+        p = get_object_or_404(Project, pk=project_id)
+        user_level = 2
+        orgs = p.organisations()
+        return render_to_response('rsr/machinery_step1.html', {'project': p, 'user_level': user_level, 'organisations': orgs}, context_instance=RequestContext(request))
     else:
-        widget_organisation = 0
-    p = get_object_or_404(Project, pk=project_id)
-    return render_to_response('rsr/machinery_step2.html', {'project': p, 'widget_organisation': widget_organisation, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
-    
+        widget_type = request.POST['widget-type']
+        widget_choice = request.POST['widget-choice']
+        widget_site = request.POST['widget-site']
+        if widget_choice == 'random-from-org':
+            o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
+        elif widget_choice == 'project-list':
+            o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
+        else:
+            o = None
+        p = get_object_or_404(Project, pk=project_id)
+        return render_to_response('rsr/machinery_step2.html', {'project': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
+
 
 def flashgallery(request):
     '''
@@ -992,9 +989,9 @@ def donate(request, project_id):
                 'amount': invoice.amount,
                 'item_name': 'Akvo Project Donation: ' + invoice.project.name,
                 'invoice': invoice.id,
-                'notify_url': 'http://dev.akvo.org:8080/rsr/ipn/', # or wherever we hook up the view
-                'return_url': 'http://dev.akvo.org:8080/rsr/ipn/thanks/', # or wherever else
-                'cancel_url': 'http://dev.akvo.org:8080/'} # where to go if the whole thing is cancelled
+                'notify_url': 'http://newdev.akvo.org/rsr/ipn/', # or wherever we hook up the view
+                'return_url': 'http://newdev.akvo.org/rsr/ipn/thanks/', # or wherever else
+                'cancel_url': 'http://newdev.akvo.org/'} # where to go if the whole thing is cancelled
             pp_form = PayPalPaymentsForm(initial=pp_dict)
             pp_form.sandbox() # Change to pp_form.render() in production
             return render_to_response('rsr/paypal_checkout.html',

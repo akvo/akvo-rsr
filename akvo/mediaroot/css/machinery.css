@@ -46,7 +46,8 @@ h1 {
 }
 
 .machinerygrey {
-	color:#9B99AC !important;
+	/*color:#9B99AC !important;*/
+	color:#999 !important;
 }
 
 div.pit {

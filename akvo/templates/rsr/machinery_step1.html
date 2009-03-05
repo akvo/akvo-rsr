@@ -3,6 +3,7 @@
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 {% endcomment %}
 
 {% load rsr_tags %}
@@ -14,6 +15,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block style %}
 {{block.super}}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
 
 <meta http-equiv="pragma" content="no-cache"/>
 <meta http-equiv="cache-control" content="no-cache"/>
@@ -27,12 +29,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	var akvo_project_id = {{project.id}};
 </script>
 
-<script src="{{MEDIA_URL}}js/machinery.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}js/machinery1.js" type="text/javascript"></script>
 {% endblock script %}
 
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get a widget' %}
 {% endblock breadcrumbs %}
 
 
@@ -41,14 +43,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% comment %} Top part starts {% endcomment %}
 	<div style="margin-left:30px; margin-right:30px;">
 		<div style="width:50%; float:left;">
-			<h1>Create a Widget to Use on Your Web Site</h1>
+			<h1>Get a Widget to Use on Your Web Site</h1>
 			<p style="margin-top:15px;">
-				<span style="color:#A9A7B8;">This widget will show the project</span><br />{{project.name}}
+				<span class="marchGrey">These widgets will display the project</span><br />
+				<span style="font-weight:bold">{{project.name}}</span>
 			</p>
 		</div>
-		<div id="warning_main" style="float:right; width:380px; margin-right:40px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+		<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 			<p>
-				<span style="font-weight:bold;">A problem occurred</span><br />This page requires Javascript to run. 
+				<span style="font-weight:bold;">A problem occurred</span><br />We're sorry, but you must have Javascript enabled in your browser to proceed. 
 			</p>
 		</div>
 	</div>
@@ -58,6 +61,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	
 		<div class="machinery_customization" style="margin-left:110px; margin-right:50px;">
+		<h3 style="padding-bottom:0;">Step 1: Select the type of widget you wish to use</h3>
+		<p class="marchGrey" style="margin:0;padding:0;">
+			You can customise the top and bottom bar and title text colours on the next step
+		</p>
+		
+		{% comment %}
 		<div style="width:45%; float:left;" >
 			<h3 style="margin-bottom:0; padding-bottom:0;">Step 1: Select the type of widget you wish to use</h3>
 			<p class="machinerygrey" style="margin:0;padding:0;">
@@ -70,13 +79,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</p>
 		</div>
 		<div style="padding-bottom:15px; clear:both;"> </div>
+		{% endcomment %}
 				
 		{% comment %}
 			Start project widget with donation (feature-side)
 		{% endcomment %}
-		<div style="background-color:#FFFAD8; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #dedede; margin-bottom:30px; margin-top:30px;">
+			{% comment %}
 			<form action="customise-widget" method="post">
-				<h3 style="margin-bottom:0; padding-bottom:0;">A: Project widget with Donation link (202 pixel width by 840 pixel height)</h3>
+			{% endcomment %}
+			<form name="featureSideForm" action="get-a-widget" method="post">
+				<h3 style="padding-bottom:0;">Type A: Project widget with Donation link (202 pixels wide by 840 pixels high)</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.
 				</p>
@@ -92,7 +105,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<script type="text/javascript" charset="utf-8">
 						// think about refactor this to a general method in machinery.js
 						document.write('<iframe src="http://'+ location.host +'/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>');
-							
 					</script>
 					{% comment %}
 					<iframe src="http://sandbox.akvo.org/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>
@@ -100,30 +112,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="float:right; width:430px; padding-top:0px;">
 					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto;" />
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
 					<p style="font-weight:bold;">
 						Enter the web address where you will embed this widget
 					</p>
-					<input type="text" name="widget-site" value="akvo.org"> This will help us track statistics for you
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
 					<br />
-					<p class="machinerygrey">www.akvo.org</p>
+					<p class="machinerygrey">Example: www.akvo.org</p>
 						
-					<hr style="margin-left:0; margin-right:auto;"/>
+					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 					
 					<input type="hidden" name="widget-type" value="feature-side">
-					<input type="radio" id="feature-side-specific-project" name="widget-choice" value="specific-project" checked /> Use the {{project.name}} project
+					<input type="radio" id="feature-side-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
 					<br>
-					<input type="radio" id="feature-side-random-from-org" name="widget-choice" value="random-from-org" /> Use random project from organisation:
+					<input type="radio" id="feature-side-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
 					<br />
-					<select name="widget-organisations" id="feature-side-organisations" size="1" style="margin-left:20px;" disabled >
+					<select name="widget-organisations" id="feature-side-organisations" size="1" style="margin-left:23px;" disabled >
 						{% for organisation in organisations  %}
 						<option value="{{organisation.id}}">{{organisation.name}}</option>
 						{% endfor %}
 					</select><br />
 					<br />
-					<hr style="margin-left:0; margin-right:auto;" />
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Select and Proceed...">
-					<hr style="margin-left:0; margin-right:auto;" />			 
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+					</div>
+					<a class="march_button" href="javascript:document.featureSideForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
 				</div>
 				<div style="clear:both;"> </div>
 			</form>
@@ -147,9 +161,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			Start project widget with update  
 		{% endcomment %}
 		
-		<div style="background-color:#FFFAD8; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
-			<form action="customise-widget" method="post">
-				<h3 style="margin-bottom:0; padding-bottom:0;">B: Project widget with updates (202 pixel width by 900 pixel height)</h3>
+		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+			<form name="projectUpdatesForm" action="get-a-widget" method="post">
+				<h3 style="padding-bottom:0;">B: Project widget with updates (202 pixels wide by 900 pixels high)</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					Shows basic description and updates. Users who click on this widget will go to Akvo.org.
 				</p>
@@ -173,31 +187,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="float:right; width:430px; padding-top:0px;">
 					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto;" />
-					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
 					<p style="font-weight:bold;">
 						Enter the web address where you will embed this widget
 					</p>
-					<input type="text" name="widget-site" value="akvo.org"> This will help us track statistics for you
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
 					<br />
-					<p class="machinerygrey">www.akvo.org</p>
+					<p class="machinerygrey">Example: www.akvo.org</p>
 						
-					<hr style="margin-left:0; margin-right:auto;"/>
+					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 					
 					<input type="hidden" name="widget-type" value="project-updates">
-					<input type="radio" id="project-updates-specific-project" name="widget-choice" value="specific-project" checked /> Use the {{project.name}} project
+					<input type="radio" id="project-updates-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
 					<br>
-					<input type="radio" id="project-updates-random-from-org" name="widget-choice" value="random-from-org" /> Use random project from organisation:
+					<input type="radio" id="project-updates-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
 					<br />
-					<select name="widget-organisations" id="project-updates-organisations" size="1" style="margin-left:20px;" disabled >
+					<select name="widget-organisations" id="project-updates-organisations" size="1" style="margin-left:23px;" disabled >
 						{% for organisation in organisations  %}
 						<option value="{{organisation.id}}">{{organisation.name}}</option>
 						{% endfor %}
 					</select><br />
 					<br />
-					<hr style="margin-left:0; margin-right:auto;" />
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Select and Proceed...">
-					<hr style="margin-left:0; margin-right:auto;" />	 
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+					</div>
+					<a class="march_button" href="javascript:document.projectUpdatesForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
 				</div>
 				<div style="clear:both;"> </div>
 			</form>
@@ -207,9 +222,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			Start project widget with contribution  
 		{% endcomment %}
 		
-		<div style="background-color:#FFFAD8; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
-			<form action="customise-widget" method="post">
-				<h3 style="margin-bottom:0; padding-bottom:0;">C: Project with Donation Link (202 pixel width by 570 pixel height)</h3>
+		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+			<form name="projectContributeForm" action="get-a-widget" method="post">
+				<h3 style="padding-bottom:0;">C: Project with Donation Link (202 pixels wide by 570 pixels high)</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.
 				</p>
@@ -230,31 +245,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="float:right; width:430px; padding-top:0px;">
 					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto;" />
-					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
 					<p style="font-weight:bold;">
 						Enter the web address where you will embed this widget
 					</p>
-					<input type="text" name="widget-site" value="akvo.org"> This will help us track statistics for you
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
 					<br />
-					<p class="machinerygrey">www.akvo.org</p>
+					<p class="machinerygrey">Example: www.akvo.org</p>
 						
-					<hr style="margin-left:0; margin-right:auto;"/>
+					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 					
 					<input type="hidden" name="widget-type" value="project-contribute">
-					<input type="radio" id="project-contribute-specific-project" name="widget-choice" value="specific-project" checked /> Use the {{project.name}} project
+					<input type="radio" id="project-contribute-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
 					<br>
-					<input type="radio" id="project-contribute-random-from-org" name="widget-choice" value="random-from-org" /> Use random project from organisation:
+					<input type="radio" id="project-contribute-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
 					<br />
-					<select name="widget-organisations" id="project-contribute-organisations" size="1" style="margin-left:20px;" disabled >
+					<select name="widget-organisations" id="project-contribute-organisations" size="1" style="margin-left:23px;" disabled >
 						{% for organisation in organisations  %}
 						<option value="{{organisation.id}}">{{organisation.name}}</option>
 						{% endfor %}
 					</select><br />
 					<br />
-					<hr style="margin-left:0; margin-right:auto;" />
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Select and Proceed...">
-					<hr style="margin-left:0; margin-right:auto;" />	 
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+					</div>
+					<a class="march_button" href="javascript:document.projectContributeForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
 				</div>
 				<div style="clear:both;"> </div>
 			</form>
@@ -271,9 +287,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			Start project list widget
 		{% endcomment %}
 		
-		<div style="background-color:#FFFAD8; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
-			<form action="customise-widget" method="post">
-				<h3 style="margin-bottom:0; padding-bottom:0;">D: Project list widget (745 pixel width by 730 pixel height)</h3>
+		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+			<form name="projectListForm" action="get-a-widget" method="post">
+				<h3 style="padding-bottom:0;">D: Project list widget (745 pixels wide by 730 pixels high)</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org
 				</p>
@@ -293,28 +309,33 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="float:right; width:430px; padding-top:0px; padding-bottom:20px;">
 					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto;" />
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
 					<p style="font-weight:bold;">
 						Enter the web address where you will embed this widget
 					</p>
-					<input type="text" name="widget-site" value="akvo.org"> This will help us track statistics for you
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
 					<br />
-					<p class="machinerygrey">www.akvo.org</p>
+					<p class="machinerygrey">Example: www.akvo.org</p>
 						
-					<hr style="margin-left:0; margin-right:auto;"/>
-					<p style="font-weight:bold;">Choose organisation</p>
-					<select name="widget-organisations" id="feature-side-organisations" size="1" >
+					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
+					
+					<input type="hidden" name="widget-type" value="project-list">
+					<input type="hidden" name="widget-choice" value="project-list" /> 
+ 					Display a project list from this organisation:
+					<br />
+					<select name="widget-organisations" id="project-list-organisations" size="1" >
 						{% for organisation in organisations  %}
 						<option value="{{organisation.id}}">{{organisation.name}}</option>
 						{% endfor %}
-					</select>
-					<input type="hidden" name="widget-type" value="project-list" />
-					<input type="hidden" name="widget-choice" value="project-list" /> 
-					<hr style="margin-left:0; margin-right:auto;"/>
-		
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Select and Proceed...">
-					
+					</select><br />
+					<br />
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+					</div>
+					<a class="march_button" href="javascript:document.projectListForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
 				</div>
+				
 				<div style="clear:both;"> </div>
 				<p class="machinerygrey" style="margin-bottom:4px;">
 					Sample

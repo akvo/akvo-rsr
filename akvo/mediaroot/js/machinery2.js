@@ -32,12 +32,15 @@ function getWidth(widget_type)
 $(document).ready(function() 
 {	
     // Hide customize other and warning section
+    $('#machinery_step2_warning_main').hide();
+    
 	$('#backgroundcolor_other_section').hide();
 	$('#textcolor_other_section').hide();
-	$('#warning_main').hide();
+	//$('#warning_main').hide();
 	$('#warning_color').hide();
 	
 	// Enaable the project / organisation list on the first page	
+	/*
 	$("#feature-side-random-from-org").click(function() { $('#feature-side-organisations').removeAttr("disabled"); });
 	$("#feature-side-specific-project").click(function() {	$('#feature-side-organisations').attr("disabled", true); });
 	
@@ -46,7 +49,7 @@ $(document).ready(function()
 	
 	$("#project-contribute-random-from-org").click(function() { $('#project-contribute-organisations').removeAttr("disabled"); });
 	$("#project-contribute-specific-project").click(function() {	$('#project-contribute-organisations').attr("disabled", true); });
-	
+	*/
 	
 	
 	// Toggle other selections for the colours		
@@ -88,7 +91,7 @@ function preview_widget()
 	var warning_color = document.getElementById('warning_color');
 	if (warning_color.hasChildNodes()) { warning_color.innerHTML = '';}
 	
-	$('#warning_main').animate({ opacity: "hide" }, "fast"); 
+	$('#machinery_step2_warning_main').animate({ opacity: "hide" }, "fast"); 
 	$('#warning_color').animate({ opacity: "hide" }, "fast"); 
 	
 	
@@ -143,8 +146,16 @@ function preview_widget()
 	var codefield = document.getElementById('code');
 	
 	if(!colorsValidate) {
-		$('#warning_main').animate({ opacity: "show" }, "slow");
+		// Change the texts.
+		var machinery_step2_warning_main_message_p = document.getElementById('machinery_step2_warning_main_message'); 
+		if (machinery_step2_warning_main_message_p.hasChildNodes()) { 
+			machinery_step2_warning_main_message_p.innerHTML = '';
+		}
 		
+		$('machinery_step2_warning_main_message').append("Please review message below");
+		$('#machinery_step2_warning_main').animate({ opacity: "show" }, "slow");
+		
+					
 		//alert('remove widget and copy code');
 		if (akvo_widget_container.hasChildNodes()) { 
 			akvo_widget_container.innerHTML = '';
