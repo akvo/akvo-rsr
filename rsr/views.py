@@ -65,7 +65,7 @@ def mdgs_sanitation_calc(projects):
 #    funding_pledged = sum(FundingPartner.objects.all().filter(project__in = projects).values_list('funding_amount', flat=True))
 #    return funding_total, funding_pledged
 
-def akvo_at_a_glance(projects, org=None):
+def akvo_at_a_glance(projects, org=None): # Modified by Paul
     '''
     Create aggregate data about a collection of projects in a queryset.
     If org is supplied modify funding aggregate to reflect that orgs commitment to the projects.
@@ -825,7 +825,8 @@ def donate(request, project_id):
     p = get_object_or_404(Project, pk=project_id)
     u = request.user
     t = datetime.now()
-    fn = funding_aggregate(project_id)[2]
+    #fn = funding_aggregate(project_id)[3]
+    fn = Funding.objects.get(project=p).still_needed()
 
     # Validate if the form was POSTed...
     if request.method == 'POST':
@@ -838,7 +839,7 @@ def donate(request, project_id):
                 invoice.user = u
             else:
                 invoice.name = donate_form.cleaned_data['name']
-                invoice.email = donate_form.cleaned_data['email']     
+                invoice.email = donate_form.cleaned_data['email']   
             invoice.time = t
             invoice.save()
             # Proceed to initialise the PayPalPaymentsForm
@@ -859,12 +860,13 @@ def donate(request, project_id):
                                          'pp_form': pp_form, 
                                          'invoice_id': invoice.id, 
                                          'p': p, 
-                                         'amount': invoice.amount, },
+                                         'amount': invoice.amount,},
                                         context_instance=RequestContext(request))
     else:
         # ... otherwise initialise an empty form
+        # TODO: handle redirect to paypal signin page if user is not authenticated
         donate_form = PayPalInvoiceForm(user=u, project=p)
-
+        
     # Display the form for non-POST requests or borked validations
     return render_to_response('rsr/project_donate.html', 
                               {'funding_still_needed': fn, 'donate_form': donate_form, 'p': p, }, 
