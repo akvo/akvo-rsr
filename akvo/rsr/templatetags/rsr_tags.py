@@ -34,3 +34,18 @@ def funding_box(context, project):
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+
+@register.inclusion_tag('inclusion_tags/funding_table.html', takes_context=True)
+def funding_table(context, project):
+    '''
+	show the funding box used in the widgets. Css definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+
+@register.inclusion_tag('inclusion_tags/funding_box_march.html', takes_context=True)
+def funding_box_march(context, project):
+    '''
+	show the funding box used in the widgets. Css definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+

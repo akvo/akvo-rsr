@@ -17,6 +17,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 #from django.core import validators
 from django.core.mail import send_mail
+from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -631,11 +632,12 @@ class ProjectComment(models.Model):
 
 from paypal.standard.models import PayPalIPN
 from paypal.standard.signals import payment_was_flagged #, payment_was_successful
-
+        
 class PayPalInvoice(models.Model):
     user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
-    amount = models.IntegerField(verbose_name=_(u'Amount you wish to donate (in Euros)')) # should this be a DecimalField?
+    #amount = models.IntegerField(verbose_name=_(u'Amount you wish to donate (in Euros)')) # should this be a DecimalField?
+    amount = models.IntegerField()
     #amount = models.DecimalField(max_digits=7, decimal_places=2) # "XXXXX.XX"
     ipn = models.OneToOneField(PayPalIPN, blank=True, null=True) # an ipn can only belong to one invoice and vice versa
     time = models.DateTimeField()
@@ -643,18 +645,36 @@ class PayPalInvoice(models.Model):
     email = models.EmailField(blank=True, null=True) # handle non-authenticated users
     complete = models.BooleanField()
 
+def send_paypal_confirmation_email(id):
+    ppi = PayPalInvoice.objects.get(pk=id)
+    t = loader.get_template('rsr/paypal_confirmation_email.html')
+    c = Context({
+        'anon_name': ppi.name,
+        'anon_email': ppi.email,
+        'u': ppi.user,
+        'project': ppi.project,
+        'amount': ppi.amount,
+        'invoice': ppi.id,
+        'timestamp': ppi.time,
+    })
+    if ppi.user is not None:
+        send_mail('Thank you from Akvo.org!', t.render(c), 'noreply@akvo.org', [ppi.user.email], fail_silently=False)
+    else:
+        send_mail('Thank you from Akvo.org!', t.render(c), 'noreply@akvo.org', [ppi.email], fail_silently=False)
+
 # PayPal IPN Listener
-from akvo.rsr.utils import send_paypal_confirmation_email
 def process_paypal_ipn(sender, **kwargs):
+    #from dbgp.client import brk
+    #brk(host="vnc.datatrassel.se", port=9000)            
     ipn = sender
     if ipn.payment_status == 'Completed':
         # Get the related PayPalInvoice object from the IPN
         ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
-        # Associate the IPN with the PayPalInvoice
-        ppi.ipn = ipn # this works in the shell but refuses to work here (???)
         # Mark the PayPalInvoice as complete
         ppi.complete = True
         ppi.save()
+        # Associate the IPN with the PayPalInvoice
+        #ipn.paypalinvoice = ppi
         # Send a confirmation email to wrap everything up
         send_paypal_confirmation_email(ppi.id)
 # We have to connect to 'payment_was_flagged' in development because the return email won't validate
@@ -663,3 +683,4 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 # TODO: Subtract the donated amount from the funding the project still needs.
 #  - Create a new function in utils.py to handle this
+  

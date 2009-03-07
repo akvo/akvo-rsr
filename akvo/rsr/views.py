@@ -966,7 +966,8 @@ def donate(request, project_id):
     p = get_object_or_404(Project, pk=project_id)
     u = request.user
     t = datetime.now()
-    fn = funding_aggregate(project_id)[2]
+    #fn = funding_aggregate(project_id)[2] #changed by daniel by Pauls instructions
+    fn = Funding.objects.get(project=p).still_needed()
 
     # Validate if the form was POSTed...
     if request.method == 'POST':
@@ -985,7 +986,8 @@ def donate(request, project_id):
             # Proceed to initialise the PayPalPaymentsForm
             pp_dict = {'cmd': '_donations',
                 'currency_code': 'EUR',
-                'business': 'paul.b_1235480200_biz@gmail.com', # German Test Store (EUR)
+                #'business': 'paul.b_1235480200_biz@gmail.com', # German Test Store (EUR) 
+                'business': 'paul.b_1236355985_biz@gmail.com', # German Test Store (EUR) # daniel
                 'amount': invoice.amount,
                 'item_name': 'Akvo Project Donation: ' + invoice.project.name,
                 'invoice': invoice.id,
@@ -1010,3 +1012,25 @@ def donate(request, project_id):
     return render_to_response('rsr/project_donate.html', 
                               {'funding_still_needed': fn, 'donate_form': donate_form, 'p': p, }, 
                               context_instance=RequestContext(request))
+
+# daniel
+def paypal_thanks(request):
+    if request.GET['invoice']:
+        invoice = request.GET['invoice']
+        invoice = get_object_or_404(PayPalInvoice, pk=invoice)
+        if invoice.user_id:
+            u = User.objects.get(id=invoice.user_id)
+        else:
+            u = None        
+        p = get_object_or_404(Project, pk=invoice.project.id)
+        return render_to_response('rsr/paypal_thanks2.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('rsr/paypal_thanks.html',{}, context_instance=RequestContext(request))
+    
+    
+    
+    
+    
+    
+    
+    

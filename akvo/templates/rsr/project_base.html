@@ -11,6 +11,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block title %}{% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
 
+{% block style %}
+{{block.super}}
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
+{% endblock style %}
+
 {% block page_id %}
 <div id="page_project">
 {% endblock page_id %}
@@ -37,7 +42,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div> <!-- .boxhead -->
 
 	<div id="project_funding" class="boxbody">
-        <div style="margin: 20px 20px 10px 20px">{% funding_bar p %}</div>
+		<div style="margin: 20px 20px 10px 20px">{% funding_box_march p %}</div>
+        {#<div style="margin: 20px 20px 10px 20px">{% funding_bar p %}</div>#}
 		<!--<div style="border: 1px solid #999; margin: 20px 20px 10px 20px"><div style="width: 186px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 186 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>-->
         <p>{{p.funding.date_request_posted}} {% trans 'Request posted' %}</p>
 		{% if p.funding.date_complete %}

@@ -28,7 +28,8 @@ urlpatterns = patterns('',
     # PAUL
     # PayPal Integration
     (r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.donate'),
-    (r'^rsr/ipn/thanks/$', direct_to_template, {'template': 'rsr/paypal_thanks.html'}),
+    #(r'^rsr/ipn/thanks/$', direct_to_template, {'template': 'rsr/paypal_thanks.html'}),
+    (r'^rsr/ipn/thanks/$', 'akvo.rsr.views.paypal_thanks', ),
     (r'^rsr/ipn/$', 'paypal.standard.views.ipn'),
 
     (r'^$', 'akvo.rsr.views.index', ),

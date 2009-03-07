@@ -14,6 +14,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block style %}
 {{block.super}}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
 
 <meta http-equiv="pragma" content="no-cache"/>
 <meta http-equiv="cache-control" content="no-cache"/>
@@ -23,8 +24,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block script %}
 <script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8">
+	var akvo_project_id = {{p.id}};
+</script>
 
-<script src="{{MEDIA_URL}}js/machinery.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}js/paypal.js" type="text/javascript"></script>
 {% endblock script %}
 
 
@@ -35,123 +39,168 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% endblock breadcrumbs %}
 
+
 {% block content %}
-<div id="machinery-content" style="padding-left:30px; padding-right:30px;">
+<div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<div style="width:50%; float:left;">
-		<h1>Thank you for your donation!</h1>
-		<p>Your donation has been processed.</p>
-		<p>You will shortly receive emails from PayPal and from Akvo confirming your donation.</p>
-		
+		<h1 style="color:#00960F;">{% trans 'Thank you for your Donation!' %}</h1>
 	</div>
-	<div id="paypal_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display:none;">
 		<p>
-			<span style="font-weight:bold;">A problem occurred</span><br />This page requires Javascript to run. 
+			<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />{% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
 		</p>
 	</div>
 	<div style="padding-bottom:15px; clear:both;"> </div>
 	<hr style="width:100%; margin-left:0; clear:both;" />
 	<div style="margin-left:40px">
 		<div style="margin-left:40px;">
-			<h2 style="padding-left:0;">Transaction information</h2>
-			<p>Akvo transaction number:X</p>
-			<p>Date and time:y</p>
-			
-			<h2 style="padding-left:0;">Your information</h2>
+			<h3>{% trans 'Your information' %}</h3>
 			{% if user.is_authenticated %}
-				&euro;
-				<p> 
-					Your Name:
-					{% if user.first_name and user.last_name %}
-			    		{{ user.first_name }} {{ user.last_name }} ({{ user.username }})
-			        {% else %}
-					{{ user.username }}{% endif %}
-				</p>
+			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+				<p class="marchGrey">{% trans 'Your name' %}:</p>
+				<p class="marchGrey">{% trans 'Your email' %}:</p>
+			</div>
+			<div style="float:left;">
+				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
+				<p style="font-weight:bold">{{ user.email }}</p>
+			</div>
+			
 			{% else %}
-				<p>Your credentials are: {{ name }}, {{ email }}</p>
-			{% endif %}			
+			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+				<p class="marchGrey">{% trans 'Your name' %}:</p>
+				<p class="marchGrey">{% trans 'Your email' %}:</p>
+			</div>
+			<div style="float:left;">
+				<p style="font-weight:bold">{{ name }}</p>
+				<p style="font-weight:bold">{{ email }}</p>				
+			</div>
+				
+			{% endif%}
+			<div style="clear:both;"> </div>			
 		</div>
-		
-		<hr style="width:100%; margin-left:0; margin-right:0;"/>
+		<div style="clear:both;"> &nbsp; </div>
+		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
 		<div style="margin-left:40px;">
-			<h2 style="padding-left:0;">Project to which you donated</h2>
-			<p>Project name: X </p>
-			<p>Location: Y</p>
-			<p>Akvo ref: Z</p>
-			{% comment %}
+			<h3>{% trans 'Project to which you are donating' %}</h3>
 			
-			{% if p.current_image %}
-				<div>
-					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-		    			<img src="{{MEDIA_URL}}{{p.current_image}}" width="190" height="139" alt="{{p.current_image_caption}}" />
-					</a>
-				</div>
-		    {% endif %}
-			{% endcomment %}
-
-			<div style="background-color:#efefef;">
+			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+				<p class="marchGrey">{% trans 'Project name' %}:</p>
+				<p class="marchGrey">{% trans 'Location' %}:</p>
+				<p class="marchGrey">{% trans 'Akvo ref' %}:</p>
+			</div>
+			<div style="float:left;">
 				{% comment %}
-				{% funding_box p %}					
-				{% endcomment %}
+					
 
-			</div>		
+				<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
+				<p>{{ p.country.get_continent_display }} / {{p.country}}, {{p.city}}</p>
+				<p>{{ p.id }}</p>
+				{% if p.current_image %}
+					<div style="margin-top:5px;">
+						<a href="{% url akvo.rsr.views.projectmain p.id %}">
+							<img src="{{MEDIA_URL}}{{p.current_image}}" width="172" height="125" alt="{{p.current_image_caption}}" />			    			
+						</a>
+					</div>
+			    {% endif %}
+
+				<div style="width:172px;">
+					{% funding_table p %}
+				</div>
+				{% endcomment %}
+			</div>
+		</div>
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
+			<p class="marchGrey">
+				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
+			</p>
+			<ul class="marchGrey" style="margin-top:15px; list-style-type: disc;">
+				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederlands)' %}</li>
+			</ul>
 		</div>
 		
-		<hr style="width:100%; margin-left:0; clear:both;" />
-		<div style="margin-left:40px; float:left; width:300px;">
-			<h2 style="padding-left:0;">Amount you donated (in Euros / &euro;)</h2>
-			<p>Amount: &euro;</p>
-			
-		</div>
-		<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:40px;">
-			<p>
-				<span style="font-weight:bold;">A problem occurred</span><br />This page requires Javascript to run. 
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
+			<p class="marchGrey">
+				{% trans 'Akvo will not charge a fee from your donation, but when you donate to a project through PayPal, they will. Their fee to you depends on the total monthly volume of donations Akvo collects through PayPal, which is difficult to predict, but it can be up to 3.4%+30 Euro cents of your donation. So if you donate 100 Euro, 96.30 Euro will get to the selected project.' %}
 			</p>
 		</div>
+		
+		
+		<div style="clear:both;"> &nbsp; </div>
+				
+		<hr style="width:100%; margin-left:0; clear:both; margin-top:10px;" />
+		
+		<div style="margin-left:40px; float:left; width:300px;">
+			<h3>{% trans 'Amount you are donating' %}</h3>
+			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:3px;">
+				<p class="marchGrey"> {% trans 'amount' %}:</p>
+			</div>
+			<div style="float:left;">
+				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{amount}}</p>
+			</div>
+			
+			{% comment %}
+			
+			<div style="text-align:right;">
+				<form method="post" action="." name="donate_form">
+					{{ donate_form.as_p }}	
+				</form>
+				
+			</div>
+			{% endcomment %}
+
+		</div>
+		{% comment %}
+		<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:40px; display:none;">
+			<p>
+				<span style="font-weight:bold;">A problem occurred</span><br />Amount problem
+			</p>
+		</div>
+		{% endcomment %}
 		<div style="clear:both;"> </div>
 	</div>
+	
+	<div style="clear:both;"> &nbsp; </div>
+	
 	<hr style="width:100%; margin-left:0; clear:both;" />
-	<div style="text-align:center;">
-		Back to where you started
+	
+	<div style="margin-left:auto;margin-right:auto; padding-top:20px; text-align:center; width:400px;">
 		
-		{% comment %}
-		<p style="margin-bottom:40px;">Click the Donate button to proceed to Paypal checkout</p>
-		<div style="float:left; width:45%; text-align:right;">
-			<a href="{% url akvo.rsr.views.projectmain p.id %}">Cancel</a>
-			&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url akvo.rsr.views.donate p.id %}">Back</a>
+		<a href="{% url akvo.rsr.views.index %}">{% trans 'Back to Akvo home' %}</a>
+		{% comment %}		
+		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout' %}</p>
+		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
+			<a href="#">{% trans 'Cancel' %}</a>
 		</div>
-		<div style="float:right; width:45%; text-align:left;">
-				{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
+		<a class="march_button" href="#" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
+		
+		<div style="float:right; padding-left:100px;">
+			{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
 		</div>
-		<div style="clear:both; padding-bottom:30px;"> </div>
+		<div style="clear:both;"> </div>
 		{% endcomment %}
 	</div>
 
+	<div style="clear:both;"> &nbsp;</div>
+	
+	
+	
+	{% comment %}
+		
+
+	<div style="float:left; text-align:center; margin-top:20px; background-color:#eee; width:100%">
+
+		<p>You will be able to review and confirm your donation on the next page</p>
+		
+
+		<div style="height:24px; padding-top:5px; padding-right:30px; display:inline;">
+			<a href="{% url akvo.rsr.views.projectmain p.id %}">Cancel</a>
+		</div>
+		<a class="march_button" href="" onclick="this.blur(); document.donate_form.submit();"><span>Next</span></a>
+	</div>
+	<div style="clear:both;"> </div>
+	{% endcomment %}
+	
 </div>
-
-{% comment %}
-
-<h1>Please confirm your donation</h1>
-
-<h2>Your information:</h2>
-
-{% if user.is_authenticated %}
-    <p>Your name: {# We need to handle cases where the user might not have filled in First Name, Last Name #}
-        {% if user.first_name and user.last_name %}
-            {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p>
-        {% else %}
-            {{ user.username }}{% endif %}</p>
-    <p>Your email: {{ user.email }}.</p>
-{% else %}
-    <p>Your credentials are {{ name }}, {{ email }}</p>
-{% endif %}
-
-<p>You are donating &euro;{{ amount }} to the project "{{ p }}"</p>
-<p>FOR TESTING ONLY: Your invoice number is {{ invoice_id }}.</p>
-<p>Click on Donate to proceed to PayPal checkout.</p>
-<hr />
-{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
-
-{% endcomment %}
 
 {% endblock content %}
 

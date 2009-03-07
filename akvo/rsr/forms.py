@@ -24,6 +24,7 @@ from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
 
 from akvo.rsr.models import UserProfile, Organisation, Project#, RSR_RegistrationProfile, 
+from akvo.rsr.models import Funding # by daniel
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -255,7 +256,8 @@ class PayPalInvoiceForm(forms.ModelForm):
     # Also check that the user enters the same email address in both email fields.
     def clean(self):
         project = str(self.project.id)
-        funding_needed = funding_aggregate(project)[2]
+        #funding_needed = funding_aggregate(project)[2] # changed by daniel by Pauls instructions
+        funding_needed = Funding.objects.get(project=project).still_needed()
         if 'amount' in self.cleaned_data:
             if self.cleaned_data['amount'] > funding_needed:
                 raise forms.ValidationError(_(u'You cannot donate more than the project actually needs!'))

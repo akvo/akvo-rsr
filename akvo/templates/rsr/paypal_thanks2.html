@@ -43,7 +43,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Confirm Donation Details' %}</h1>
+		<h1 style="color:#00960F;">{% trans 'Thank you for your Donation!' %}</h1>
 	</div>
 	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display:none;">
 		<p>
@@ -54,16 +54,34 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<hr style="width:100%; margin-left:0; clear:both;" />
 	<div style="margin-left:40px">
 		<div style="margin-left:40px;">
-			<h3>{% trans 'Your information' %}</h3>
-			{% if user.is_authenticated %}
+			<h3>{% trans 'Transaction information' %}</h3>
+			<div style="float:left; width:100px; text-align:right; padding-right:10px; ">
+				<p class="marchGrey">{% trans 'Akvo transaction number' %}:</p>
+			</div>
+			<div style="float:left; padding-top:1.1em;">
+				<p style="font-weight:bold; color:#00960F; font-size:1.6em;">{{ invoice.id }}</p>
+			</div>
+			<div style="clear:both;"> &nbsp; </div>
+			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<p class="marchGrey">{% trans 'Your name' %}:</p>
-				<p class="marchGrey">{% trans 'Your email' %}:</p>
+				<p class="marchGrey">{% trans 'Date and time' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
-				<p style="font-weight:bold">{{ user.email }}</p>
+				<p style="font-weight:bold">{{ invoice.time|date:"l, j F Y" }}</p>
 			</div>
+			
+		</div>
+		<div style="clear:both;"> &nbsp; </div>
+			
+			
+			{% comment %}
+				If logged in use user details otherwise use invoice name 
+			{% endcomment %}
+
+		<div style="margin-left:40px;">	
+			<h3>{% trans 'Your information' %}</h3>
+			{% if not user %}
+				was registred user
 			
 			{% else %}
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
@@ -71,17 +89,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ name }}</p>
-				<p style="font-weight:bold">{{ email }}</p>				
-			</div>
-				
-			{% endif%}
-			<div style="clear:both;"> </div>			
+				<p style="font-weight:bold">{{ invoice.name }}</p>
+				<p style="font-weight:bold">{{ invoice.email }}</p>
+			</div>	
+			{% endif %}
 		</div>
 		<div style="clear:both;"> &nbsp; </div>
-		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
+		
 		<div style="margin-left:40px;">
-			<h3>{% trans 'Project to which you are donating' %}</h3>
+			<h3>{% trans 'Project to which you donated' %}</h3>
 			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Project name' %}:</p>
@@ -89,27 +105,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey">{% trans 'Akvo ref' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
-				<p>{{ p.country.get_continent_display }} / {{p.country}}, {{p.city}}</p>
-				<p>{{ p.id }}</p>
-				{% if p.current_image %}
+				<p><a href="{% url akvo.rsr.views.projectmain project.id %}">{{ project.name }}</a></p>
+				<p>{{ project.country.get_continent_display }} / {{project.country}}, {{project.city}}</p>
+				<p>{{ project.id }}</p>
+				{% if project.current_image %}
 					<div style="margin-top:5px;">
-						<a href="{% url akvo.rsr.views.projectmain p.id %}">
-							<img src="{{MEDIA_URL}}{{p.current_image}}" width="172" height="125" alt="{{p.current_image_caption}}" />			    			
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">
+							<img src="{{MEDIA_URL}}{{project.current_image}}" width="172" height="125" alt="{{project.current_image_caption}}" />			    			
 						</a>
 					</div>
 			    {% endif %}
 
 				<div style="width:172px;">
-					{% funding_table p %}
+					{% funding_table project %}
 				</div>
+				
 			</div>
-		</div>
-		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<p class="marchGrey">
-				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="float:right;"/>
-				{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations. ' %}
-			</p>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
 			<p class="marchGrey">
@@ -120,12 +131,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</ul>
 		</div>
 		
-		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
 			<p class="marchGrey">
-				{% trans 'Akvo will not charge a fee from your donation, but when you donate to a project through PayPal, they will. Their fee to you depends on the total monthly volume of donations Akvo collects through PayPal, which is difficult to predict, but it can be up to 3.4%+30 Euro cents of your donation. So if you donate 100 Euro, 96.30 Euro will get to the selected project.' %}
+				{% trans 'We have already updated the Akvo site to reflect your contribution!' %}
 			</p>
 		</div>
-		
 		
 		<div style="clear:both;"> &nbsp; </div>
 				
@@ -137,7 +147,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey"> {% trans 'amount' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{amount}}</p>
+				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{ invoice.amount}}</p>
 			</div>
 			
 			{% comment %}
@@ -166,16 +176,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<hr style="width:100%; margin-left:0; clear:both;" />
 	
 	<div style="margin-left:auto;margin-right:auto; padding-top:20px; text-align:center; width:400px;">
+		
+		<a href="{% url akvo.rsr.views.projectmain invoice.project.id %}">{% trans 'Back to Project' %}</a>
+		{% comment %}		
 		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout' %}</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
-			<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+			<a href="#">{% trans 'Cancel' %}</a>
 		</div>
-		<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
+		<a class="march_button" href="#" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
 			{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
 		</div>
 		<div style="clear:both;"> </div>
+		{% endcomment %}
 	</div>
 
 	<div style="clear:both;"> &nbsp;</div>

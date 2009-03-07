@@ -48,31 +48,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
 			</tr>					
 		</table>
-		{% comment %}
-			Temporary "Get involved" link below.
-				
-		<div >
-			<br />
-			<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Get Involved' %}&nbsp;&#x25BA;</a></span>
-		</div>
-		{% endcomment %}
-		
-
-		<div id="donate_individual">
-			<p class="grey" style="line-height:1.0em;">
-				{% trans 'Individuals' %}<br />
-			<a href="{% url akvo.rsr.views.donate p.id %}" class="donate_button" onclick="this.blur();"><span>Donate</span></a>
-			</p>
-		</div>
-		<div id="donate_institutions">
-			<p class="grey" style="line-height:1.0em;">
-				{% trans 'Institutions' %}<br />
-				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
-			</p>
-		</div>
-		<div id="name" style="clear: both;"></div>
-		
-		
 		{% endifequal%}
 	</div>
 	<div class="fundingbox-footer"> </div>
