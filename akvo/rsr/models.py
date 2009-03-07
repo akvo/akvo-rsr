@@ -12,6 +12,7 @@ from datetime import date, datetime
 from django import forms
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum # added by Paul
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
@@ -51,25 +52,75 @@ class Country(models.Model):
         verbose_name = u'country'
         verbose_name_plural = u'countries'
 
+#def funding_aggregate(projects, organisation=None):
+#    '''
+#    Create funding aggregate data about a collection of projects in a queryset.
+#    '''
+#    # calculate sum of all project budgets
+#    f = Funding.objects.all().filter(project__in = projects)
+#    funding_total = 0 #total requested funding for projects
+#    for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
+#        funding_total += sum(f.values_list(field, flat=True))
+#    # get all funding partners to the projects
+#    fp = FundingPartner.objects.all().filter(project__in = projects)
+#    # how much has ben pledged so far?
+#    #how much has been pledged in total these projects?
+#    total_pledged = pledged = sum(fp.values_list('funding_amount', flat=True))
+#    if organisation:
+#        #how much has been pledged by a certain org for these projects?
+#        pledged = sum(fp.filter(funding_organisation__exact = organisation).values_list('funding_amount', flat=True))
+#    # return sum of funds needed, amount pledged (by the org if supplied), and how much is still needed
+#    return funding_total, pledged, funding_total - total_pledged
+
+# Paul's attempt at refactoring funding_aggregate() with django aggregates:
+# Filter out NoneType returns!
 def funding_aggregate(projects, organisation=None):
     '''
     Create funding aggregate data about a collection of projects in a queryset.
     '''
     # calculate sum of all project budgets
-    f = Funding.objects.all().filter(project__in = projects)
-    funding_total = 0 #total requested funding for projects
-    for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
-        funding_total += sum(f.values_list(field, flat=True))
+    f = Funding.objects.filter(project__in = projects).exclude(employment__isnull=True,
+                                                               building__isnull=True,
+                                                               training__isnull=True,
+                                                               maintenance__isnull=True,
+                                                               other__isnull=True)
+    funding_total = 0
+    if f:
+        for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
+            qs = f.aggregate(Sum(field))
+            total = sum(qs.values())
+        funding_total += total
+    else:
+        funding_total = funding_total
     # get all funding partners to the projects
-    fp = FundingPartner.objects.all().filter(project__in = projects)
-    # how much has ben pledged so far?
-    #how much has been pledged in total these projects?
-    total_pledged = pledged = sum(fp.values_list('funding_amount', flat=True))
+    fp = FundingPartner.objects.all().filter(project__in = projects).exclude(funding_amount__isnull=True)
+    # how much has been pledged so far?
+    # how much has been pledged in total to these projects?
+    total_pledged = 0
+    if fp:
+        qs = fp.aggregate(total_pledged=Sum('funding_amount'))
+        total_pledged += qs['total_pledged']
+        pledged = total_pledged
+    else:
+        total_pledged = pledged = total_pledged
     if organisation:
-        #how much has been pledged by a certain org for these projects?
-        pledged = sum(fp.filter(funding_organisation__exact = organisation).values_list('funding_amount', flat=True))
-    # return sum of funds needed, amount pledged (by the org if supplied), and how much is still needed
-    return funding_total, pledged, funding_total - total_pledged
+    # how much has been pledged by a certain org for these projects?
+        fo = fp.filter(funding_organisation__exact = organisation).exclude(funding_amount__isnull=True)
+        if fo:
+            qs = fo.aggregate(pledged=Sum('funding_amount'))
+            pledged += qs['pledged']
+        else:
+            pledged = pledged
+    # how much has been donated to these projects?
+    donated = 0
+    d = Funding.objects.filter(project__in = projects).exclude(project__paypalinvoice__amount__isnull=True)
+    if d:
+        qs = f.aggregate(donated=Sum('project__paypalinvoice__amount'))
+        donated += qs['donated']
+    else:
+        donated = donated
+    #return funding_total, pledged, donated, funding_total - (total_pledged + donated)
+    return funding_total, (pledged + donated), funding_total - (total_pledged + donated)
 
 
 class Organisation(models.Model):
@@ -407,14 +458,26 @@ class Funding(models.Model):
     def total(self):
         return self.employment + self.building + self.training + self.maintenance + self.other
     
-    def pledged(self):
+    def pledged(self): # Modified by Paul
         pledged = 0
-        for funder in self.project.fundingpartner_set.all():
-            pledged += funder.funding_amount
+        qs = self.project.fundingpartner_set.aggregate(pledged=Sum('funding_amount'))
+        if qs['pledged'] is not None:
+            pledged += qs['pledged']
+        else:
+            pledged = pledged
         return pledged
-    
-    def still_needed(self):
-        return max(self.total() - self.pledged(), 0)
+
+    def donated(self): # Added by Paul
+        donated = 0
+        qs = self.project.paypalinvoice_set.aggregate(donated=Sum('amount'))
+        if qs['donated'] is not None:
+        	donated += qs['donated']
+        else:
+            donated = donated
+        return donated
+   
+    def still_needed(self): # Modified by Paul
+        return self.total() - (self.pledged() + self.donated())
     
     def is_complete(self):
         return self.date_complete < date.today()
@@ -636,14 +699,12 @@ from paypal.standard.signals import payment_was_flagged #, payment_was_successfu
 class PayPalInvoice(models.Model):
     user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
-    #amount = models.IntegerField(verbose_name=_(u'Amount you wish to donate (in Euros)')) # should this be a DecimalField?
     amount = models.IntegerField()
-    #amount = models.DecimalField(max_digits=7, decimal_places=2) # "XXXXX.XX"
     ipn = models.OneToOneField(PayPalIPN, blank=True, null=True) # an ipn can only belong to one invoice and vice versa
     time = models.DateTimeField()
     name = models.CharField(max_length=30, blank=True, null=True) # handle non-authenticated users
     email = models.EmailField(blank=True, null=True) # handle non-authenticated users
-    complete = models.BooleanField()
+    complete = models.BooleanField() # needs to change to a choices field
 
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)
@@ -670,12 +731,14 @@ def process_paypal_ipn(sender, **kwargs):
     if ipn.payment_status == 'Completed':
         # Get the related PayPalInvoice object from the IPN
         ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
+        # Associate the PayPalInvoice with the PayPalIPN
         # Mark the PayPalInvoice as complete
         ppi.complete = True
         ppi.save()
         # Associate the IPN with the PayPalInvoice
         #ipn.paypalinvoice = ppi
         # Send a confirmation email to wrap everything up
+
         send_paypal_confirmation_email(ppi.id)
 # We have to connect to 'payment_was_flagged' in development because the return email won't validate
 # Connect to 'payment_was_successful' in production
@@ -683,4 +746,3 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 # TODO: Subtract the donated amount from the funding the project still needs.
 #  - Create a new function in utils.py to handle this
-  
