@@ -33,9 +33,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
     {% block funding %}
 	<div class="boxhead">
+		{% comment %}
         {% if not p.funding.date_complete %}
 		<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" onclick="this.blur();"><span>{% trans 'Fund project' %}</span></a>
         {% endif %}
+		{% endcomment %}
 		<h1>{% trans 'Funding' %}</h1>
 
 		<!--<p><a href="#">Notify me of changes via email</a></p>-->

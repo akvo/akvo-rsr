@@ -6,8 +6,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load rsr_tags %}
-
 {% load i18n %}
+{% load addparam %}
 
 {% block title %}{{block.super}} - {% trans 'Project details' %}{% endblock title %}
 
@@ -122,7 +122,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
 			<p class="marchGrey">
-				{% trans 'Akvo will not charge a fee from your donation, but when you donate to a project through PayPal, they will. Their fee to you depends on the total monthly volume of donations Akvo collects through PayPal, which is difficult to predict, but it can be up to 3.4%+30 Euro cents of your donation. So if you donate 100 Euro, 96.30 Euro will get to the selected project.' %}
+				{% trans 'PayPal charges upto 3.4%+30 Euro cents of your donation in transaction fees. So if you donate 100 Euro, at least 96.30 Euro will go towards the selected project.' %}
 			</p>
 		</div>
 		
@@ -134,7 +134,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="margin-left:40px; float:left; width:300px;">
 			<h3>{% trans 'Amount you are donating' %}</h3>
 			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:3px;">
-				<p class="marchGrey"> {% trans 'amount' %}:</p>
+				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
 				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{amount}}</p>
@@ -166,11 +166,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<hr style="width:100%; margin-left:0; clear:both;" />
 	
 	<div style="margin-left:auto;margin-right:auto; padding-top:20px; text-align:center; width:400px;">
-		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout' %}</p>
+		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout' %}.
+		{% trans 'By clicking on the "Donate" button you agree to the' %} <a href="http://akvo.org/web/donate_terms_and_conditions" target="_blank">{% trans 'Terms and Conditions' %}</a> {% trans 'for the donation' %}.
+		</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
 			<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
 		</div>
-		<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
+		{% if user.is_authenticated %}
+			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
+		{% else %}
+			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount "name" name|urlencode "email" email|urlencode %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
+		{% endif%}
 		
 		<div style="float:right; padding-left:100px;">
 			{{ pp_form.sandbox }} {# Change to pp_form.render in production #}

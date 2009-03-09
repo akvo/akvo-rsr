@@ -6,8 +6,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load rsr_tags %}
-
 {% load i18n %}
+
 
 {% block title %}{{block.super}} - {% trans 'Project details' %}{% endblock title %}
 
@@ -22,13 +22,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <style type="text/css" media="screen">
 	ul.errorlist li {
 		color:red !important;
-		display:inline;
+		display:inline !important;
 	}
 	ul.errorlist {
 		margin:0;
 		padding:0;
+		display:inline !important;
+	}
+	ul.errorlist p {
 		display:inline;
 	}
+	
 </style>
 
 {% endblock style%}
@@ -37,7 +41,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block script %}
 <script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
 <script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{p.id}};
+	var akvo_project_id = {{p.id}};	
 </script>
 
 <script src="{{MEDIA_URL}}js/paypal.js" type="text/javascript"></script>
@@ -56,7 +60,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<form method="post" action="." name="donate_form">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Donate to project: Enter Amount' %}</h1>
+		<h1>{% trans 'Donate to Project: Enter Amount' %}</h1>
 	</div>
 	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 		<p>
@@ -80,54 +84,62 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 			
 			{% else %}
-			<p>{% trans 'You are not logged into akvo.org' %}</p>
+			<p>{% trans 'You are not logged into' %} Akvo.org.</p>
 		    <p><a href="/rsr/signin/?next={% url akvo.rsr.views.donate p.id %}">{% trans 'Sign in' %}</a> {% trans 'or provide your full name and email address below.' %}</p>
 			<br /><br />
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<div class="fieldWrapper" style="margin-bottom:9px">	
+				<div class="fieldWrapper" style="margin-bottom:23px; margin-top:4px;">	
 					<p class="marchGrey">{% trans 'Your name' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:9px">	
+				<div class="fieldWrapper" style="margin-bottom:7px">	
 					<p class="marchGrey">{% trans 'Your email' %}:</p>
 				</div>
 				<div class="fieldWrapper" style="margin-bottom:9px">
-					<p class="marchGrey">{% trans 'Email (confirm)' %}:</p>
+					<p class="marchGrey">{% trans 'Confirm email' %}:</p>
 				</div>
+				
 			</div>
-			<div style="float:left; width:200px;">
-				{{ donate_form.name }}<br />
+			<div style="float:left;">
+				{{ donate_form.name }}<br /><br />
 				{{ donate_form.email }}<br />
 				{{ donate_form.email2 }}
-				{% comment %}
-				
-				<div class="fieldWrapper">						
-					<label for="id_name">Full Name:</label>
-					{{ donate_form.name }}
-				</div>
-				<div class="fieldWrapper">						
-					<label for="id_email">Email:</label>
-					{{ donate_form.email }}
-				</div>
-				<div class="fieldWrapper">						
-					<label for="id_email2">Email (confirm):</label>
-					{{ donate_form.email2 }}
-				</div>
-				{% endcomment %}
 			</div>
 			{% endif%}
-			
+			{% comment %}
 			{% for error in donate_form.errors %}
+			{% endcomment %}
+			{% if donate_form.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
-				<p>
-					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span>
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+					{% if donate_form.non_field_errors %}
+						{{ donate_form.non_field_errors }}<br />
+					{% endif %}
+
+					{% if donate_form.name.errors %}
+						{% trans 'Name' %}: {{ donate_form.name.errors }}<br />
+					{% endif %}
+					
+					{% if donate_form.email.errors %}
+						{% trans 'Email' %}: {{ donate_form.email.errors }}<br />
+					{% endif %}
+					
+					{% if donate_form.email2.errors %}
+						{% trans 'Email confirmation' %}: {{ donate_form.email2.errors }}<br />
+					{% endif %}
+					
+					{% comment %}
 					{% if donate_form.name.errors %}
 						{{ donate_form.name.errors }}<br />						
 					{% endif %}
 					{{ donate_form.non_field_errors }}
 					<br />
-				</p>
+					{% endcomment %}
 			</div>
-			{% endfor %}
+			{% endif %}
+			{% comment %}
+			{% endfor %}				
+			{% endcomment %}
+
 			
 			<div style="clear:both;"> </div>			
 		</div>
@@ -174,7 +186,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
 			<p class="marchGrey">
-				{% trans "Akvo will not charge a fee from your donation, but when you donate to a project through PayPal, they will. Their fee to you depends on the total monthly volume of donations Akvo collects through PayPal, which is difficult to predict, but it can be up to 3.4%+30 Euro cents of your donation. So if you donate 100 Euro, 96.30 Euro will get to the selected project." %}
+				{% trans 'PayPal charges upto 3.4%+30 Euro cents of your donation in transaction fees. So if you donate 100 Euro, at least 96.30 Euro will go towards the selected project.' %}
 			</p>
 		</div>
 		
@@ -184,7 +196,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		<div style="margin-left:40px; float:left; width:300px;">
 			<h3>{% trans 'Amount you wish to donate (in Euros' %} / &euro;)</h3>
+			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:4px;">
+				<p class="marchGrey">{% trans 'Amount' %}:</p>
+			</div>
+			<div style="float:left;">
+				{{ donate_form.amount }}<br />
+				<span class="marchGrey">
+				{% trans 'Only whole Euro amounts please' %}
+				</span>
+			</div>
 			
+			{% comment %}
+				
+
 			<div style="text-align:right;">
 				
 				<div class="fieldWrapper">						
@@ -192,26 +216,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{{ donate_form.amount }}
 				</div>
 
-				{% comment %}
 				{{ donate_form.as_p }}					
-				{% endcomment %}
+			
 
 			</div>
+			{% endcomment %}
 
 		</div>
 		
-		{% for error in donate_form.errors %}
+		{% if donate_form.amount.errors %}
 		<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:40px;">
 			<p>
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-				{% if donate_form.amount.errors %}
 					{{ donate_form.amount.errors }}<br />
-				{% endif %}
-				{{ donate_form.non_field_errors }}
 				<br />
 			</p>
 		</div>
-		{% endfor %}
+		{% endif %}
 	
 		<div style="clear:both;"> </div>
 	</div>

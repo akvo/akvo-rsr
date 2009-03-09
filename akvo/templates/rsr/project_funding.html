@@ -18,9 +18,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 	<div class="boxhead">
+		{% comment %}
 		{% if not p.funding.date_complete %}
 			<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" style="float: right" onclick="this.blur();"><span>{% trans 'Fund project' %}</span></a>
 		{% endif %}
+		{% endcomment %}
 		<h1 class="section">{% trans 'Funding' %}</h1>
 	</div> <!-- .boxhead -->
 
@@ -32,7 +34,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<td style="width: 50%; border-right: 1px solid #ccc; padding-left: 0;">
 			<p style="margin-bottom: 3px"><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 			<div style="margin: 0 20px 10px 20px">
-				{% funding_bar p %}
+				{% funding_box_march p %}
+				{% comment %}
+				{% funding_bar p %}	
+				{% endcomment %}
+				
 			</div>
 			<!--<div style="border: 1px solid #999; margin: 0 20px 10px 20px">
 				<div style="width: 176px;">

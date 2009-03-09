@@ -16,6 +16,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endif %}
 {% endblock title %}
 
+{% block style %}
+{{block.super}}
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
+
+<meta http-equiv="pragma" content="no-cache"/>
+<meta http-equiv="cache-control" content="no-cache"/>
+
+<style type="text/css" media="screen">
+	ul.errorlist li {
+		color:red !important;
+		display:inline;
+	}
+	ul.errorlist {
+		margin:0;
+		padding:0;
+		display:inline;
+	}
+</style>
+
+{% endblock style%}
+
 {% block breadcrumbs %}
 {{block.super}} &raquo; {% trans 'Project listing' %}
 {% if o %}
@@ -75,7 +97,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			 -->
 		<h2 class="lightx2">{% trans 'Location' %}</h2>
 		<p>{{showcase.state}}<br />{{showcase.city}}, {{showcase.country}}<br />{{showcase.country.get_continent_display}}</p>
-		{% funding_bar showcase %}
+		<div style="width:172px;">
+			{% funding_box_march_directory showcase %}
+		</div>	
 		<!--<div style="border: 1px solid #ccc; width: 100%; margin: 15px 0 5px 0"><div style="background-color: #4CAC62; width: {% widthratio showcase.funding.pledged showcase.funding.total 100 %}%; height: 20px;"></div></div>
 		<p class="bold">Total <span style="margin-left: 40px;">{{showcase.funding.get_currency_display|safe}} {{showcase.funding.total}}</span></p>-->
 	</td>

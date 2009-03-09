@@ -262,7 +262,7 @@ class PayPalInvoiceForm(forms.ModelForm):
             elif self.cleaned_data['amount'] == 0:
                 raise forms.ValidationError(_(u'You cannot donate nothing!'))
         if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
-            if self.cleaned_data['email'] != self.cleaned_data['email2']:
+            if self.cleaned_data.get('email', 0) != self.cleaned_data['email2']:
                 raise forms.ValidationError(_(u'You must type the same email address each time!'))
         return self.cleaned_data
 

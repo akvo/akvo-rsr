@@ -738,11 +738,16 @@ def projectfunding(request, project_id):
 user_level is None, 1 or 2. No user level check on step 2
 '''
 def getwidget(request, project_id):
+    #from dbgp.client import brk
+    #brk(host="vnc.datatrassel.se", port=9000)
     if not request.POST:
+        try:
+            account_level = request.user.get_profile().organisation.organisationaccount.account_level
+        except:
+            account_level = 'free'
         p = get_object_or_404(Project, pk=project_id)
-        user_level = 2
         orgs = p.organisations()
-        return render_to_response('rsr/machinery_step1.html', {'project': p, 'user_level': user_level, 'organisations': orgs}, context_instance=RequestContext(request))
+        return render_to_response('rsr/machinery_step1.html', {'project': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
     else:
         widget_type = request.POST['widget-type']
         widget_choice = request.POST['widget-choice']
@@ -988,7 +993,7 @@ def donate(request, project_id):
                 #'business': 'paul.b_1235480200_biz@gmail.com', # German Test Store (EUR) 
                 'business': 'paul.b_1236355985_biz@gmail.com', # German Test Store (EUR) # daniel
                 'amount': invoice.amount,
-                'item_name': 'Akvo Project Donation: ' + invoice.project.name,
+                'item_name': 'Akvo Project Donation: Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
                 'invoice': invoice.id,
                 'notify_url': 'http://newdev.akvo.org/rsr/ipn/', # or wherever we hook up the view
                 'return_url': 'http://newdev.akvo.org/rsr/ipn/thanks/', # or wherever else
@@ -1013,24 +1018,21 @@ def donate(request, project_id):
                               {'funding_still_needed': fn, 'donate_form': donate_form, 'p': p, }, 
                               context_instance=RequestContext(request))
 
-# daniel
+# Presents the landing page after PayPal
 def paypal_thanks(request):
-    if request.GET['invoice']:
-        invoice = request.GET['invoice']
-        invoice = get_object_or_404(PayPalInvoice, pk=invoice)
-        if invoice.user_id:
+    if request.GET:
+        try:
+            invoice_id = request.GET['invoice']
+            invoice = PayPalInvoice.objects.get(id=invoice_id)
+            p = Project.objects.get(id=invoice.project.id)
+        except:
+            return HttpResponseRedirect('/')
+            
+        try:
             u = User.objects.get(id=invoice.user_id)
-        else:
-            u = None        
-        p = get_object_or_404(Project, pk=invoice.project.id)
-        return render_to_response('rsr/paypal_thanks2.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
+        except:
+            u = None
+            
+        return render_to_response('rsr/paypal_thanks.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
     else:
-        return render_to_response('rsr/paypal_thanks.html',{}, context_instance=RequestContext(request))
-    
-    
-    
-    
-    
-    
-    
-    
+        return HttpResponseRedirect('/')

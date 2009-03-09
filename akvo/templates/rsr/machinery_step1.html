@@ -39,6 +39,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 {% block content %}
+
 <div id="machinery-content" style="padding-left:30px">
 	{% comment %} Top part starts {% endcomment %}
 	<div style="margin-left:30px; margin-right:30px;">
@@ -144,214 +145,215 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 			
 		
-		{% if not user_level %}
+		{% ifequal account_level 'free' %}
 			<p style="color:red;">
 			Login for more content!
-			</p>
-		{% endif %}
+			</p>		
 		
+			{% comment %}
+				Start restricted widgets
+			{% endcomment %}
 		
-		{% comment %}
-			Start restricted widgets
-		{% endcomment %}
-		
-		{% if user_level %}
+		{% else %}
 			
-		{% comment %}
-			Start project widget with update  
-		{% endcomment %}
-		
-		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
-			<form name="projectUpdatesForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">B: Project widget with updates (202 pixels wide by 900 pixels high)</h3>
-				<p class="machinerygrey" style="margin:0;padding:0;">
-					Shows basic description and updates. Users who click on this widget will go to Akvo.org.
-				</p>
+			{% comment %}
+				Start project widget with update  
+			{% endcomment %}
 			
-				<div style="padding-bottom:20px;">
+			<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+				<form name="projectUpdatesForm" action="get-a-widget" method="post">
+					<h3 style="padding-bottom:0;">B: Project widget with updates (202 pixels wide by 900 pixels high)</h3>
+					<p class="machinerygrey" style="margin:0;padding:0;">
+						Shows basic description and updates. Users who click on this widget will go to Akvo.org.
+					</p>
 				
-				</div>
-				<p class="machinerygrey" style="margin-bottom:4px;">
-					Sample
-				</p>
-			
-				<div style="float:left; width:205px;">
-					<script type="text/javascript" charset="utf-8">
-						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-updates/project/{{project.id}}/" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
+					<div style="padding-bottom:20px;">
+					
+					</div>
+					<p class="machinerygrey" style="margin-bottom:4px;">
+						Sample
+					</p>
+				
+					<div style="float:left; width:205px;">
+						<script type="text/javascript" charset="utf-8">
+							// think about refactor this to a general method in machinery.js
+							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-updates/project/{{project.id}}/" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
+								
+						</script>
+						{% comment %}
+						<iframe src="http://sandbox.akvo.org/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>
+						{% endcomment %}
+					</div>
+					<div style="float:right; width:430px; padding-top:0px;">
+						<h3 style="margin-top:0; padding-top:0;">Settings</h3>
+						<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+						<p style="font-weight:bold;">
+							Enter the web address where you will embed this widget
+						</p>
+						<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
+						<br />
+						<p class="machinerygrey">Example: www.akvo.org</p>
 							
-					</script>
-					{% comment %}
-					<iframe src="http://sandbox.akvo.org/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>
-					{% endcomment %}
-				</div>
-				<div style="float:right; width:430px; padding-top:0px;">
-					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
-					<p style="font-weight:bold;">
-						Enter the web address where you will embed this widget
-					</p>
-					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
-					<br />
-					<p class="machinerygrey">Example: www.akvo.org</p>
+						<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 						
-					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
-					
-					<input type="hidden" name="widget-type" value="project-updates">
-					<input type="radio" id="project-updates-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
-					<br>
-					<input type="radio" id="project-updates-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
-					<br />
-					<select name="widget-organisations" id="project-updates-organisations" size="1" style="margin-left:23px;" disabled >
-						{% for organisation in organisations  %}
-						<option value="{{organisation.id}}">{{organisation.name}}</option>
-						{% endfor %}
-					</select><br />
-					<br />
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
-					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+						<input type="hidden" name="widget-type" value="project-updates">
+						<input type="radio" id="project-updates-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
+						<br>
+						<input type="radio" id="project-updates-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
+						<br />
+						<select name="widget-organisations" id="project-updates-organisations" size="1" style="margin-left:23px;" disabled >
+							{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select><br />
+						<br />
+						<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+						<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+							<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+						</div>
+						<a class="march_button" href="javascript:document.projectUpdatesForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
 					</div>
-					<a class="march_button" href="javascript:document.projectUpdatesForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
-				</div>
-				<div style="clear:both;"> </div>
-			</form>
-		</div>
-		
-		{% comment %}
-			Start project widget with contribution  
-		{% endcomment %}
-		
-		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
-			<form name="projectContributeForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">C: Project with Donation Link (202 pixels wide by 570 pixels high)</h3>
-				<p class="machinerygrey" style="margin:0;padding:0;">
-					Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.
-				</p>
+					<div style="clear:both;"> </div>
+				</form>
+			</div>
 			
-				<div style="padding-bottom:20px;">
+			{% comment %}
+				Start project widget with contribution  
+			{% endcomment %}
+			
+			<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+				<form name="projectContributeForm" action="get-a-widget" method="post">
+					<h3 style="padding-bottom:0;">C: Project with Donation Link (202 pixels wide by 570 pixels high)</h3>
+					<p class="machinerygrey" style="margin:0;padding:0;">
+						Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.
+					</p>
 				
-				</div>
-				<p class="machinerygrey" style="margin-bottom:4px;">
-					Sample
-				</p>
-			
-				<div style="float:left; width:205px;">
-					<script type="text/javascript" charset="utf-8">
-						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-contribute/project/{{project.id}}/" width="202" height="570" frameborder="0" allowTransparency="true"> </iframe>');
+					<div style="padding-bottom:20px;">
+					
+					</div>
+					<p class="machinerygrey" style="margin-bottom:4px;">
+						Sample
+					</p>
+				
+					<div style="float:left; width:205px;">
+						<script type="text/javascript" charset="utf-8">
+							// think about refactor this to a general method in machinery.js
+							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-contribute/project/{{project.id}}/" width="202" height="570" frameborder="0" allowTransparency="true"> </iframe>');
+								
+						</script>
+					</div>
+					<div style="float:right; width:430px; padding-top:0px;">
+						<h3 style="margin-top:0; padding-top:0;">Settings</h3>
+						<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+						<p style="font-weight:bold;">
+							Enter the web address where you will embed this widget
+						</p>
+						<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
+						<br />
+						<p class="machinerygrey">Example: www.akvo.org</p>
 							
-					</script>
-				</div>
-				<div style="float:right; width:430px; padding-top:0px;">
-					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
-					<p style="font-weight:bold;">
-						Enter the web address where you will embed this widget
-					</p>
-					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
-					<br />
-					<p class="machinerygrey">Example: www.akvo.org</p>
+						<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 						
-					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
-					
-					<input type="hidden" name="widget-type" value="project-contribute">
-					<input type="radio" id="project-contribute-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
-					<br>
-					<input type="radio" id="project-contribute-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
-					<br />
-					<select name="widget-organisations" id="project-contribute-organisations" size="1" style="margin-left:23px;" disabled >
-						{% for organisation in organisations  %}
-						<option value="{{organisation.id}}">{{organisation.name}}</option>
-						{% endfor %}
-					</select><br />
-					<br />
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
-					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+						<input type="hidden" name="widget-type" value="project-contribute">
+						<input type="radio" id="project-contribute-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
+						<br>
+						<input type="radio" id="project-contribute-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
+						<br />
+						<select name="widget-organisations" id="project-contribute-organisations" size="1" style="margin-left:23px;" disabled >
+							{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select><br />
+						<br />
+						<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+						<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+							<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+						</div>
+						<a class="march_button" href="javascript:document.projectContributeForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
 					</div>
-					<a class="march_button" href="javascript:document.projectContributeForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
-				</div>
-				<div style="clear:both;"> </div>
-			</form>
-		</div>
-		
-		
-		
-		{% comment %}
-			Restrict to user level 2
-		{% endcomment %}
-		{% ifequal user_level 2   %}
+					<div style="clear:both;"> </div>
+				</form>
+			</div>
 			
-		{% comment %}
-			Start project list widget
-		{% endcomment %}
-		
-		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
-			<form name="projectListForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">D: Project list widget (745 pixels wide by 730 pixels high)</h3>
-				<p class="machinerygrey" style="margin:0;padding:0;">
-					Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org
-				</p>
-			
-				<div style="padding-bottom:20px;">
-				
-				</div>
-				<p class="machinerygrey" style="margin-bottom:4px;">
+			{% comment %}
+				Restrict to premium accounts
+			{% endcomment %}
+
+			{% comment %}
+			{% ifequal account_level 'premium'   %}
+			{% endcomment %}
 					
-				</p>
-			
-				<div style="float:left; width:205px;">
+				{% comment %}
+					Start project list widget
+				{% endcomment %}
 				
-					{% comment %}
-					<iframe src="http://sandbox.akvo.org/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>
-					{% endcomment %}
-				</div>
-				<div style="float:right; width:430px; padding-top:0px; padding-bottom:20px;">
-					<h3 style="margin-top:0; padding-top:0;">Settings</h3>
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
-					<p style="font-weight:bold;">
-						Enter the web address where you will embed this widget
-					</p>
-					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
-					<br />
-					<p class="machinerygrey">Example: www.akvo.org</p>
+				<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+					<form name="projectListForm" action="get-a-widget" method="post">
+						<h3 style="padding-bottom:0;">D: Project list widget (745 pixels wide by 730 pixels high)</h3>
+						<p class="machinerygrey" style="margin:0;padding:0;">
+							Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org
+						</p>
+					
+						<div style="padding-bottom:20px;">
 						
-					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
+						</div>
+						<p class="machinerygrey" style="margin-bottom:4px;">
+							
+						</p>
 					
-					<input type="hidden" name="widget-type" value="project-list">
-					<input type="hidden" name="widget-choice" value="project-list" /> 
- 					Display a project list from this organisation:
-					<br />
-					<select name="widget-organisations" id="project-list-organisations" size="1" >
-						{% for organisation in organisations  %}
-						<option value="{{organisation.id}}">{{organisation.name}}</option>
-						{% endfor %}
-					</select><br />
-					<br />
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
-					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
-					</div>
-					<a class="march_button" href="javascript:document.projectListForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
+						<div style="float:left; width:205px;">
+						
+							{% comment %}
+							<iframe src="http://sandbox.akvo.org/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>
+							{% endcomment %}
+						</div>
+						<div style="float:right; width:430px; padding-top:0px; padding-bottom:20px;">
+							<h3 style="margin-top:0; padding-top:0;">Settings</h3>
+							<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+							<p style="font-weight:bold;">
+								Enter the web address where you will embed this widget
+							</p>
+							<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
+							<br />
+							<p class="machinerygrey">Example: www.akvo.org</p>
+								
+							<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
+							
+							<input type="hidden" name="widget-type" value="project-list">
+							<input type="hidden" name="widget-choice" value="project-list" /> 
+							Display a project list from this organisation:
+							<br />
+							<select name="widget-organisations" id="project-list-organisations" size="1" >
+								{% for organisation in organisations  %}
+								<option value="{{organisation.id}}">{{organisation.name}}</option>
+								{% endfor %}
+							</select><br />
+							<br />
+							<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+							<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+								<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+							</div>
+							<a class="march_button" href="javascript:document.projectListForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
+						</div>
+						
+						<div style="clear:both;"> </div>
+						<p class="machinerygrey" style="margin-bottom:4px;">
+							Sample
+						</p>
+						<div>
+							<script type="text/javascript" charset="utf-8">
+							// think about refactor this to a general method in machinery.js
+							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-list/organisation/{% for organisation in organisations %}{% if forloop.first %}{{organisation.id}}{% endif %}{% endfor %}/" width="745" height="730" frameborder="0" allowTransparency="true"> </iframe>');
+							</script>
+						</div>
+						
+					</form>
 				</div>
-				
-				<div style="clear:both;"> </div>
-				<p class="machinerygrey" style="margin-bottom:4px;">
-					Sample
-				</p>
-				<div>
-					<script type="text/javascript" charset="utf-8">
-					// think about refactor this to a general method in machinery.js
-					document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-list/organisation/{% for organisation in organisations %}{% if forloop.first %}{{organisation.id}}{% endif %}{% endfor %}/" width="745" height="730" frameborder="0" allowTransparency="true"> </iframe>');
-					</script>
-				</div>
-				
-			</form>
-		</div>
-					
+			{% comment %}
+			{% endifequal %}
+			{% endcomment %}
+
 		{% endifequal %}
-		{% endif %}
 
 	
 	<div style="padding-top:40px;"> &nbsp;</div>

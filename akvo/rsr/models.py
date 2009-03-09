@@ -89,7 +89,7 @@ def funding_aggregate(projects, organisation=None):
         for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
             qs = f.aggregate(Sum(field))
             total = sum(qs.values())
-        funding_total += total
+            funding_total += total
     else:
         funding_total = funding_total
     # get all funding partners to the projects
@@ -377,6 +377,13 @@ class Project(models.Model):
         return False
     is_published.boolean = True
 
+
+    def funding_pledged(self):
+        return self.funding.pledged()
+
+    def funding_donated(self):
+        return self.funding.donated()
+
     class Meta:
         permissions = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
@@ -459,23 +466,16 @@ class Funding(models.Model):
         return self.employment + self.building + self.training + self.maintenance + self.other
     
     def pledged(self): # Modified by Paul
-        pledged = 0
         qs = self.project.fundingpartner_set.aggregate(pledged=Sum('funding_amount'))
-        if qs['pledged'] is not None:
-            pledged += qs['pledged']
-        else:
-            pledged = pledged
-        return pledged
+        return qs.get('pledged', 0) or 0 #qs['pledged'] may be None
 
     def donated(self): # Added by Paul
-        donated = 0
         qs = self.project.paypalinvoice_set.aggregate(donated=Sum('amount'))
-        if qs['donated'] is not None:
-        	donated += qs['donated']
-        else:
-            donated = donated
-        return donated
-   
+        return qs.get('donated', 0) or 0 #qs['donated'] may be None
+
+    def total_given(self):
+        return self.donated() + self.pledged()
+    
     def still_needed(self): # Modified by Paul
         return self.total() - (self.pledged() + self.donated())
     
@@ -700,9 +700,10 @@ class PayPalInvoice(models.Model):
     user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
     amount = models.IntegerField()
-    ipn = models.OneToOneField(PayPalIPN, blank=True, null=True) # an ipn can only belong to one invoice and vice versa
+    #ipn = models.OneToOneField(PayPalIPN, blank=True, null=True, editable=False) # an ipn can only belong to one invoice and vice versa
+    ipn = models.CharField(blank=True, null=True, max_length=75)
     time = models.DateTimeField()
-    name = models.CharField(max_length=30, blank=True, null=True) # handle non-authenticated users
+    name = models.CharField(max_length=75, blank=True, null=True) # handle non-authenticated users
     email = models.EmailField(blank=True, null=True) # handle non-authenticated users
     complete = models.BooleanField() # needs to change to a choices field
 
@@ -717,6 +718,7 @@ def send_paypal_confirmation_email(id):
         'amount': ppi.amount,
         'invoice': ppi.id,
         'timestamp': ppi.time,
+        'paypal_reference': ppi.ipn,
     })
     if ppi.user is not None:
         send_mail('Thank you from Akvo.org!', t.render(c), 'noreply@akvo.org', [ppi.user.email], fail_silently=False)
@@ -732,13 +734,12 @@ def process_paypal_ipn(sender, **kwargs):
         # Get the related PayPalInvoice object from the IPN
         ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
         # Associate the PayPalInvoice with the PayPalIPN
+        ppi.ipn = ipn.txn_id
         # Mark the PayPalInvoice as complete
         ppi.complete = True
+        # Commit the changes
         ppi.save()
-        # Associate the IPN with the PayPalInvoice
-        #ipn.paypalinvoice = ppi
         # Send a confirmation email to wrap everything up
-
         send_paypal_confirmation_email(ppi.id)
 # We have to connect to 'payment_was_flagged' in development because the return email won't validate
 # Connect to 'payment_was_successful' in production

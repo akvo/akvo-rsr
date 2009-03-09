@@ -188,7 +188,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
                     'city', 'project_plan_summary', 'show_current_image',
-                    'show_map', 'is_published')
+                    'show_map', 'is_published',)
     
     #form = ProjectAdminModelForm
     form = ProjectAdminForm
@@ -229,7 +229,7 @@ class ProjectAdmin(admin.ModelAdmin):
             else:
                 return True
         return False
-
+    
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #admin.site.register(Project, ProjectAdmin)
 

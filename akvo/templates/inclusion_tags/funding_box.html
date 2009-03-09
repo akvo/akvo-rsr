@@ -12,7 +12,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
 				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.pledged}}
+				{% trans 'Raised' %}:&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.total_given}}
 				</p>
 				{% comment %}
 				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
@@ -32,7 +32,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" cellspacing="0">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
-				<td>{{p.funding.get_currency_display|safe}} {{p.funding.pledged}}</td>
+				<td>{{p.funding.get_currency_display|safe}} {{p.funding.total_given}}</td>
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
@@ -40,7 +40,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
-			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding.pledged p.funding.total 100 %}%"> </div>
+			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding.total_given p.funding.total 100 %}%"> </div>
 		</div>
 		<table class="fundingbox-table">
 			<tr>
@@ -67,7 +67,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div id="donate_institutions">
 			<p class="grey" style="line-height:1.0em;">
 				{% trans 'Institutions' %}<br />
-				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
+				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
 			</p>
 		</div>
 		<div id="name" style="clear: both;"></div>

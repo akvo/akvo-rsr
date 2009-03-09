@@ -29,10 +29,10 @@ And please tell your friends about Akvo.org!  :)
 
 A summary of your contribution:
 
-Your gift will help:            {{ project }}
-Total Contribution Amount:      {{ amount }} Euro
+Your gift will help:            {{ project }} (http://akvo.org/rsr/project/{{ project.id }}/)
+Total Contribution Amount:      {{ amount }} Euro{{ amount|pluralize:"s" }}
 Akvo Reference ID:              {{ invoice }}
-{# PayPal Reference ID:         {{ paypal_reference }} #}
+PayPal Reference ID:         	{{ paypal_reference }}
 
 Visit the project at the link above to see progress and updates.
 
