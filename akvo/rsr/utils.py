@@ -1,4 +1,5 @@
 # utility functions for RSR
+
 from django.core.mail import send_mail
 from django.template import loader, Context
 
@@ -9,7 +10,6 @@ GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
 GROUP_RSR_PARTNER_EDITORS   = u'RSR partner editors' #can edit an org's projects
 GROUP_RSR_EDITORS           = u'RSR editors'
 GROUP_RSR_USERS             = u'RSR users'
-
 
 def groups_from_user(user):
     """

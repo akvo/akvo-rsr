@@ -6,6 +6,7 @@ from django.contrib.admin import helpers
 from django.contrib.admin.util import unquote
 from django.db.models import get_model
 from django.forms.formsets import all_valid
+from django.forms.util import ErrorList
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -13,6 +14,9 @@ from django.utils.translation import ugettext_lazy as _
 from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import get_rsr_limited_change_permission
 from utils import groups_from_user
+
+NON_FIELD_ERRORS = '__all__'
+
 
 #used by WYMeditor not in use right now
 #from forms import ProjectAdminModelForm
@@ -109,25 +113,62 @@ class LinkInline(admin.TabularInline):
 #class FundingPartnerAdmin(admin.ModelAdmin):
 #    pass
 
+def partner_clean(obj, field_name):
+    user_profile = obj.request.user.get_profile()
+    if user_profile.is_org_admin() or user_profile.is_org_editor():
+        my_org = user_profile.organisation
+        found = False
+        for i in range(0, obj._total_form_count):
+            form = obj.forms[i]
+            try:
+                form_org = form.cleaned_data[field_name]
+                if my_org == form_org:
+                    found = True
+                    break
+            except:
+                pass
+    else:
+        found = True
+    try:
+        if not obj.instance.found:
+            obj.instance.found = found
+    except:    
+        obj.instance.found = found
+    try:
+        foo = obj.instance.partner_formsets
+    except:
+        obj.instance.partner_formsets = []
+    obj.instance.partner_formsets.append(obj)
+    
+
+class RSR_FundingPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        partner_clean(self, 'funding_organisation')  
+            
 class FundingPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'fundingpartner')
     extra = 1
+    formset = RSR_FundingPartnerInlineFormFormSet
 
-#admin.site.register(FundingPartner, FundingPartnerAdmin)
 
+class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        partner_clean(self, 'field_organisation')  
 
 class FieldPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'fieldpartner')
     extra = 1
+    formset = RSR_FieldPartnerInlineFormFormSet
 
-#admin.site.register(FieldPartner, FieldPartnerAdmin)
 
+class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        partner_clean(self, 'support_organisation')  
 
 class SupportPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'supportpartner')
     extra = 1
-
-#admin.site.register(SupportPartner, SupportPartnerAdmin)
+    formset = RSR_SupportPartnerInlineFormFormSet
 
 
 class FundingAdminInLine(admin.TabularInline):
@@ -141,12 +182,19 @@ admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
 
 class ProjectAdminForm(forms.ModelForm):
+    def __init__(self, request, *args, **kwargs):
+        # request is needed when validating
+        self.request = request
+        super(ProjectAdminForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = get_model('rsr', 'project')
 
-    def clean_name(self):
-        # do something that validates your data
-        return self.cleaned_data["name"]
+    def clean(self):
+        return self.cleaned_data
+    
+class RSR_FormSet(forms.formsets.BaseFormSet):
+    pass
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
@@ -229,7 +277,174 @@ class ProjectAdmin(admin.ModelAdmin):
             else:
                 return True
         return False
+
+    def add_view(self, request, form_url='', extra_context=None):
+        "The 'add' admin view for this model."
+        model = self.model
+        opts = model._meta
+        
+        if not self.has_add_permission(request):
+            raise PermissionDenied
+        
+        ModelForm = self.get_form(request)
+        formsets = []
+        if request.method == 'POST':
+            form = ModelForm(request, request.POST, request.FILES)
+            if form.is_valid():
+                form_validated = True
+                new_object = self.save_form(request, form, change=False)
+            else:
+                form_validated = False
+                new_object = self.model()
+            for FormSet in self.get_formsets(request):
+                formset = FormSet(data=request.POST, files=request.FILES,
+                                  instance=new_object,
+                                  save_as_new=request.POST.has_key("_saveasnew"))
+                #added to make request available for formset.clean()
+                formset.request = request
+                formsets.append(formset)
+            #from dbgp.client import brk
+            #brk(host="localhost", port=9000)            
+            if all_valid(formsets) and form_validated:
+                if not new_object.found:
+                    form._errors[NON_FIELD_ERRORS] = ErrorList([u'Your org should be apart the partner orgs!'])
+                    for fs in new_object.partner_formsets:
+                        fs._non_form_errors = ErrorList([u'Your org should be somewhere here!'])
+                else:
+                    self.save_model(request, new_object, form, change=False)
+                    form.save_m2m()
+                    for formset in formsets:
+                        self.save_formset(request, form, formset, change=False)
+                    
+                    self.log_addition(request, new_object)
+                    return self.response_add(request, new_object)
+        else:
+            # Prepare the dict of initial data from the request.
+            # We have to special-case M2Ms as a list of comma-separated PKs.
+            initial = dict(request.GET.items())
+            for k in initial:
+                try:
+                    f = opts.get_field(k)
+                except models.FieldDoesNotExist:
+                    continue
+                if isinstance(f, models.ManyToManyField):
+                    initial[k] = initial[k].split(",")
+            form = ModelForm(request, initial=initial)
+            for FormSet in self.get_formsets(request):
+                formset = FormSet(instance=self.model())
+                formsets.append(formset)
+        
+        adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)), self.prepopulated_fields)
+        media = self.media + adminForm.media
+        
+        inline_admin_formsets = []
+        for inline, formset in zip(self.inline_instances, formsets):
+            fieldsets = list(inline.get_fieldsets(request))
+            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
+            inline_admin_formsets.append(inline_admin_formset)
+            media = media + inline_admin_formset.media
+        
+        context = {
+            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'adminform': adminForm,
+            'is_popup': request.REQUEST.has_key('_popup'),
+            'show_delete': False,
+            'media': mark_safe(media),
+            'inline_admin_formsets': inline_admin_formsets,
+            'errors': helpers.AdminErrorList(form, formsets),
+            'root_path': self.admin_site.root_path,
+            'app_label': opts.app_label,
+        }
+        context.update(extra_context or {})
+        return self.render_change_form(request, context, add=True)
+    add_view = transaction.commit_on_success(add_view)
     
+    def change_view(self, request, object_id, extra_context=None):
+        "The 'change' admin view for this model."
+        model = self.model
+        opts = model._meta
+        
+        try:
+            obj = model._default_manager.get(pk=unquote(object_id))
+        except model.DoesNotExist:
+            # Don't raise Http404 just yet, because we haven't checked
+            # permissions yet. We don't want an unauthenticated user to be able
+            # to determine whether a given object exists.
+            obj = None
+        
+        if not self.has_change_permission(request, obj):
+            raise PermissionDenied
+        
+        if obj is None:
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+        
+        if request.method == 'POST' and request.POST.has_key("_saveasnew"):
+            return self.add_view(request, form_url='../../add/')
+        
+        ModelForm = self.get_form(request, obj)
+        formsets = []
+        if request.method == 'POST':
+            form = ModelForm(request, request.POST, request.FILES, instance=obj)
+            if form.is_valid():
+                form_validated = True
+                new_object = self.save_form(request, form, change=True)
+            else:
+                form_validated = False
+                new_object = obj
+            for FormSet in self.get_formsets(request, new_object):
+                formset = FormSet(request.POST, request.FILES,
+                                  instance=new_object)
+                #added to make request available for formset.clean()
+                formset.request = request
+                formsets.append(formset)
+            
+            if all_valid(formsets) and form_validated:
+                if not new_object.found:
+                    form._errors[NON_FIELD_ERRORS] = ErrorList([u'Your org should be apart the partner orgs!'])
+                    for fs in new_object.partner_formsets:
+                        fs._non_form_errors = ErrorList([u'Your org should be somewhere here!'])
+                else:
+                    self.save_model(request, new_object, form, change=True)
+                    form.save_m2m()
+                    for formset in formsets:
+                        self.save_formset(request, form, formset, change=True)
+                    
+                    change_message = self.construct_change_message(request, form, formsets)
+                    self.log_change(request, new_object, change_message)
+                    return self.response_change(request, new_object)
+        
+        else:
+            form = ModelForm(request, instance=obj)
+            for FormSet in self.get_formsets(request, obj):
+                formset = FormSet(instance=obj)
+                formsets.append(formset)
+        
+        adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
+        media = self.media + adminForm.media
+        
+        inline_admin_formsets = []
+        for inline, formset in zip(self.inline_instances, formsets):
+            fieldsets = list(inline.get_fieldsets(request, obj))
+            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
+            inline_admin_formsets.append(inline_admin_formset)
+            media = media + inline_admin_formset.media
+        
+        context = {
+            'title': _('Change %s') % force_unicode(opts.verbose_name),
+            'adminform': adminForm,
+            'object_id': object_id,
+            'original': obj,
+            'is_popup': request.REQUEST.has_key('_popup'),
+            'media': mark_safe(media),
+            'inline_admin_formsets': inline_admin_formsets,
+            'errors': helpers.AdminErrorList(form, formsets),
+            'root_path': self.admin_site.root_path,
+            'app_label': opts.app_label,
+        }
+        context.update(extra_context or {})
+        return self.render_change_form(request, context, change=True, obj=obj)
+    change_view = transaction.commit_on_success(change_view)
+
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #admin.site.register(Project, ProjectAdmin)
 
@@ -322,89 +537,6 @@ class UserProfileAdmin(admin.ModelAdmin):
         else:
             up.remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
         return form.save(commit=False)
-
-
-    #def change_view(self, request, object_id, extra_context=None):
-    #    "The 'change' admin view for this model."
-    #    model = self.model
-    #    opts = model._meta
-    #    
-    #    try:
-    #        obj = model._default_manager.get(pk=unquote(object_id))
-    #    except model.DoesNotExist:
-    #        # Don't raise Http404 just yet, because we haven't checked
-    #        # permissions yet. We don't want an unauthenticated user to be able
-    #        # to determine whether a given object exists.
-    #        obj = None
-    #    
-    #    if not self.has_change_permission(request, obj):
-    #        raise PermissionDenied
-    #    
-    #    if obj is None:
-    #        raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-    #    
-    #    if request.method == 'POST' and request.POST.has_key("_saveasnew"):
-    #        return self.add_view(request, form_url='../../add/')
-    #    
-    #    #from dbgp.client import brk
-    #    #brk(host="localhost", port=9000)            
-    #    
-    #    ModelForm = self.get_form(request, obj)
-    #    formsets = []
-    #    if request.method == 'POST':
-    #        form = ModelForm(request, request.POST, request.FILES, instance=obj)
-    #        if form.is_valid():
-    #            form_validated = True
-    #            new_object = self.save_form(request, form, change=True)
-    #        else:
-    #            form_validated = False
-    #            new_object = obj
-    #        for FormSet in self.get_formsets(request, new_object):
-    #            formset = FormSet(request.POST, request.FILES,
-    #                              instance=new_object)
-    #            formsets.append(formset)
-    #        
-    #        if all_valid(formsets) and form_validated:
-    #            self.save_model(request, new_object, form, change=True)
-    #            form.save_m2m()
-    #            for formset in formsets:
-    #                self.save_formset(request, form, formset, change=True)
-    #            
-    #            change_message = self.construct_change_message(request, form, formsets)
-    #            self.log_change(request, new_object, change_message)
-    #            return self.response_change(request, new_object)
-    #    
-    #    else:
-    #        form = ModelForm(instance=obj, request=request)
-    #        for FormSet in self.get_formsets(request, obj):
-    #            formset = FormSet(instance=obj)
-    #            formsets.append(formset)
-    #    
-    #    adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
-    #    media = self.media + adminForm.media
-    #    
-    #    inline_admin_formsets = []
-    #    for inline, formset in zip(self.inline_instances, formsets):
-    #        fieldsets = list(inline.get_fieldsets(request, obj))
-    #        inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
-    #        inline_admin_formsets.append(inline_admin_formset)
-    #        media = media + inline_admin_formset.media
-    #    
-    #    context = {
-    #        'title': _('Change %s') % force_unicode(opts.verbose_name),
-    #        'adminform': adminForm,
-    #        'object_id': object_id,
-    #        'original': obj,
-    #        'is_popup': request.REQUEST.has_key('_popup'),
-    #        'media': mark_safe(media),
-    #        'inline_admin_formsets': inline_admin_formsets,
-    #        'errors': helpers.AdminErrorList(form, formsets),
-    #        'root_path': self.admin_site.root_path,
-    #        'app_label': opts.app_label,
-    #    }
-    #    context.update(extra_context or {})
-    #    return self.render_change_form(request, context, change=True, obj=obj)
-    #change_view = transaction.commit_on_success(change_view)
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
