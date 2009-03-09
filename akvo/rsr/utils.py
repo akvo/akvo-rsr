@@ -1,6 +1,6 @@
 # utility functions for RSR
 
-RSR_LIMITED_CHANGE   = u'rsr_limited_change'
+RSR_LIMITED_CHANGE          = u'rsr_limited_change'
 GROUP_RSR_PARTNER_ADMINS    = 'RSR partner admins'#can edit organisation info
 GROUP_RSR_PARTNER_EDITORS   = 'RSR partner editors' #can edit an org's projects
 GROUP_RSR_EDITORS           = 'RSR editors'

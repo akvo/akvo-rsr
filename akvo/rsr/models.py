@@ -341,8 +341,23 @@ class PublishingStatus(models.Model):
     status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
     class Meta:
         verbose_name_plural = 'publishing statuses'
+
+from django.db.models.signals import post_save
+
+def new_project_callback(sender, **kwargs):
+    """
+    called when a new project is saved so an associated published record for the
+    project is created
+    """
+    if kwargs['created']:
+        new_project = kwargs['instance']
+        ps = PublishingStatus(status='unpublished')
+        ps.project = new_project
+        ps.save()
     
-    
+post_save.connect(new_project_callback, sender=Project)
+
+
 LINK_KINDS = (
     ('A', 'Akvopedia entry'),
     ('E', 'External link'),
@@ -466,6 +481,10 @@ class UserProfile(models.Model):
     def organisation_name(self):
         return self.organisation.name
     
+    def is_active(self):
+        return self.user.is_active
+    is_active.boolean = True #make pretty icons in the admin list view
+
     def is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
     is_org_admin.boolean = True #make pretty icons in the admin list view
@@ -473,18 +492,28 @@ class UserProfile(models.Model):
     def is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
     is_org_editor.boolean = True #make pretty icons in the admin list view
+    
+    def set_active(self):
+        self.user.is_active = True
+        self.user.save()
+        
+    def set_inactive(self):
+        self.user.is_active = False
+        self.user.save()
         
     def add_user_to_group(self, group_name):
         group = Group.objects.get(name=group_name)
-        if not group in self.user.groups.all():
-            self.user.groups.add(group)
-            self.user.save()
+        user = self.user
+        if not group in user.groups.all():
+            user.groups.add(group)
+            user.save()
 
     def remove_user_from_group(self, group_name):
         group = Group.objects.get(name=group_name)
-        if group in self.user.groups.all():
-            self.user.groups.remove(group)
-            self.user.save()
+        user = self.user
+        if group in user.groups.all():
+            user.groups.remove(group)
+            user.save()
 
     def create_sms_update(self, mo_sms_raw):
         # does the user have a project to update? TODO: security!
