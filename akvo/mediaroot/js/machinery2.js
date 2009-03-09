@@ -109,13 +109,17 @@ function preview_widget()
 	if (!(bgcolor.length == 3 || bgcolor.length == 6))
 	{ 
 		$('#warning_color').animate({ opacity: "show" },"slow");
-		$('#warning_color').append("A: Hex color values should be 3 or 6 characters.<br />");
+		//$('#warning_color').append("A: Hex color values should be 3 or 6 characters.<br />");
+		//$('#warning_color').append(akvo_widget_error_colorlenght + ".<br />");
+		//alert('error:' + error1);
+		$('#warning_color').append(error1 + ".<br />");
+		
 		
 		colorsValidate=false;
 	}
 	else if (!hex_validator(bgcolor))
 	{
-		$('#warning_color').animate({ opacity: "show" }, "slow").append("A: Not a valid hex number.<br />");
+		$('#warning_color').animate({ opacity: "show" }, "slow").append(error2 + ".<br />");
 		colorsValidate=false;
 	}
 	
@@ -130,14 +134,14 @@ function preview_widget()
 	if (!(txtcolor.length == 3 || txtcolor.length == 6))
 	{ 
 		$('#warning_color').animate({ opacity: "show" },"slow");
-		$('#warning_color').append("B: Hex color values should be 3 or 6 characters.<br />");
+		$('#warning_color').append(error3 + ".<br />");
 		
 		colorsValidate=false;
 	}
 	else if (!hex_validator(txtcolor))
 	{
 		//$('#warning_color').append("Not a valid hex number");
-		$('#warning_color').animate({ opacity: "show" }, "slow").append("B: Not a valid hex number.<br />");
+		$('#warning_color').animate({ opacity: "show" }, "slow").append(error4 +".<br />");
 		colorsValidate=false;
 	}
 	
@@ -152,7 +156,7 @@ function preview_widget()
 			machinery_step2_warning_main_message_p.innerHTML = '';
 		}
 		
-		$('machinery_step2_warning_main_message').append("Please review message below");
+		$('machinery_step2_warning_main_message').append(error0);
 		$('#machinery_step2_warning_main').animate({ opacity: "show" }, "slow");
 		
 					
