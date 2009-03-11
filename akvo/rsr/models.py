@@ -342,6 +342,9 @@ class PublishingStatus(models.Model):
     class Meta:
         verbose_name_plural = 'publishing statuses'
 
+    def project_info(self):
+        return '%d - %s' % (self.project.pk, self.project,)
+
 from django.db.models.signals import post_save
 
 def new_project_callback(sender, **kwargs):
