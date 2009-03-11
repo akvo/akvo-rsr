@@ -1,17 +1,20 @@
 from django import forms
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
 from django.contrib import admin
+from django.contrib import auth
 from django.contrib.admin import helpers
 from django.contrib.admin.util import unquote
+from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
+from django.forms.models import modelform_factory
 from django.forms.util import ErrorList
 from django.utils.encoding import force_unicode
+from django.utils.functional import curry
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import get_rsr_limited_change_permission
 from utils import groups_from_user
 
@@ -36,8 +39,13 @@ NON_FIELD_ERRORS = '__all__'
 #from models import ProjectUpdate
 #from models import ProjectComment
 
+class PermissionAdmin(admin.ModelAdmin):
+    list_display = (u'__unicode__', u'content_type', )
+    list_filter  = (u'content_type', )
+    ordering = (u'content_type', )
 
-admin.site.register(get_model('auth', 'permission'))
+admin.site.register(get_model('auth', 'permission'), PermissionAdmin)
+
 
 class CountryAdmin(admin.ModelAdmin):
     list_display = (u'country_name', u'continent', )
@@ -114,7 +122,17 @@ class LinkInline(admin.TabularInline):
 #    pass
 
 def partner_clean(obj, field_name):
+    """
+    this function firgures out if a given user's organisation is a partner in some function
+    associated with the current project. This is to avoid the situation where a user
+    who is a partner admin creates a project without the own org as a partner
+    resulting in a project that can't be edited by that usur or anyone else form the org.
+    params:
+        obj: a formset for one of the partner types
+        field_name: the filed name of the foreign key field that points to the org
+    """
     user_profile = obj.request.user.get_profile()
+    # if the user is a partner org we try to avoid foot shooting
     if user_profile.is_org_admin() or user_profile.is_org_editor():
         my_org = user_profile.organisation
         found = False
@@ -123,6 +141,7 @@ def partner_clean(obj, field_name):
             try:
                 form_org = form.cleaned_data[field_name]
                 if my_org == form_org:
+                    # found our own org, all is well move on!
                     found = True
                     break
             except:
@@ -130,27 +149,36 @@ def partner_clean(obj, field_name):
     else:
         found = True
     try:
+        #obj instance is the Project instance. We use it to store the info about
+        #wether we have found our own org in the found attribute.
         if not obj.instance.found:
             obj.instance.found = found
-    except:    
+    except AttributeError:    
         obj.instance.found = found
     try:
-        foo = obj.instance.partner_formsets
-    except:
+        # add the formset to attribute partner_formsets. This is to conveniently
+        # be able to dig up these formsets later for error assignment
+        obj.instance.partner_formsets
+    except AttributeError:
         obj.instance.partner_formsets = []
     obj.instance.partner_formsets.append(obj)
     
 
 class RSR_FundingPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+    # do cleaning looking for the user's org in the funding partner forms
     def clean(self):
         partner_clean(self, 'funding_organisation')  
             
 class FundingPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'fundingpartner')
     extra = 1
+    # put custom formset in chain of inheritance. the formset creation ends up
+    # returning a formset of type FundingPartnerFormForm (I think...) but the
+    # RSR_FundingPartnerInlineFormFormSet is a parent to it and thus we can access
+    # the custom clean()
     formset = RSR_FundingPartnerInlineFormFormSet
 
-
+#see above
 class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         partner_clean(self, 'field_organisation')  
@@ -160,7 +188,7 @@ class FieldPartnerInline(admin.TabularInline):
     extra = 1
     formset = RSR_FieldPartnerInlineFormFormSet
 
-
+#see above
 class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         partner_clean(self, 'support_organisation')  
@@ -176,7 +204,7 @@ class FundingAdminInLine(admin.TabularInline):
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):
-    list_display = (u'project', u'status', )
+    list_display = (u'project_info', u'status', )
     
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
@@ -459,6 +487,8 @@ class UserProfileAdminForm(forms.ModelForm):
     This form dispalys two extra fields that show if the ser belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
+    #from dbgp.client import brk
+    #brk(host="localhost", port=9000)            
     class Meta:
         model = get_model('rsr', 'userprofile')
 
@@ -479,8 +509,39 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_filter  = ('organisation', )
     form = UserProfileAdminForm
 
-
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Returns a Form class for use in the admin add view. This is used by
+        add_view and change_view.
+        """
+        #from dbgp.client import brk
+        #brk(host="localhost", port=9000)            
+        if self.declared_fieldsets:
+            fields = flatten_fieldsets(self.declared_fieldsets)
+        else:
+            fields = None
+        # hide phone_number and project from non-userusers
+        if not request.user.is_superuser:
+            self.exclude =  ('phone_number', 'project', )
+        # this is needed to remove some kind of caching on exclude, resulting in
+        # the above fields being hidden from superusers after a vanilla user has accessed the form!
+        else:
+            self.exclude =  None
+        if self.exclude is None:
+            exclude = []
+        else:
+            exclude = list(self.exclude)
+        defaults = {
+            "form": self.form,
+            "fields": fields,
+            "exclude": exclude + kwargs.get("exclude", []),
+            "formfield_callback": curry(self.formfield_for_dbfield, request=request),
+        }
+        defaults.update(kwargs)
+        foo = modelform_factory(self.model, **defaults)
+        return foo
+    
     def queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)

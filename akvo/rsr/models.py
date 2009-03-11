@@ -411,6 +411,8 @@ class PublishingStatus(models.Model):
     class Meta:
         verbose_name_plural = 'publishing statuses'
 
+    def project_info(self):
+        return '%d - %s' % (self.project.pk, self.project,)
 
 from django.db.models.signals import post_save
 
@@ -734,7 +736,7 @@ from paypal.standard.signals import payment_was_flagged #, payment_was_successfu
 class PayPalInvoice(models.Model):
     user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
-    amount = models.IntegerField()
+    amount = models.PositiveIntegerField()
     #ipn = models.OneToOneField(PayPalIPN, blank=True, null=True, editable=False) # an ipn can only belong to one invoice and vice versa
     ipn = models.CharField(blank=True, null=True, max_length=75)
     time = models.DateTimeField()

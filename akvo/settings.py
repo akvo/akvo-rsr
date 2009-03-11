@@ -19,9 +19,9 @@ DEBUG = True
 
 DEFAULT_FROM_EMAIL = 'noreply@sandbox.akvo.org'
 
-INTERNAL_IPS = (
-    '87.227.60.54', '125.27.250.14', '192.168.38.68', '192.168.1.123',
-)
+#INTERNAL_IPS = (
+#    '87.227.60.54', '125.27.250.14', '192.168.38.68', '192.168.1.123',
+#)
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
