@@ -43,7 +43,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Confirm Donation Details' %}</h1>
+		<h1>{% trans 'Confirm donation details' %}</h1>
 	</div>
 	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display:none;">
 		<p>
@@ -166,8 +166,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<hr style="width:100%; margin-left:0; clear:both;" />
 	
 	<div style="margin-left:auto;margin-right:auto; padding-top:20px; text-align:center; width:400px;">
-		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout' %}.
-		{% trans 'By clicking on the "Donate" button you agree to the' %} <a href="http://akvo.org/web/donate_terms_and_conditions" target="_blank">{% trans 'Terms and Conditions' %}</a> {% trans 'for the donation' %}.
+		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout.' %}
+		{% trans 'By clicking on the "Donate" button you agree to the' %} <a href="http://akvo.org/web/donate_terms_and_conditions" target="_blank">{% trans 'Terms and Conditions' %}</a> {% trans 'for the donation.' %}
 		</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
 			<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
@@ -179,7 +179,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% endif%}
 		
 		<div style="float:right; padding-left:100px;">
-			{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
+			{% if sandbox %}
+			   {{ pp_form.sandbox }}
+			{% else %}
+			   {{ pp_form.render }}
+			{% endif %}
 		</div>
 		<div style="clear:both;"> </div>
 	</div>

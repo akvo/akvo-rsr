@@ -91,7 +91,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 # PAUL
-PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
+# PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
 ROOT_URLCONF = 'akvo.urls'
 

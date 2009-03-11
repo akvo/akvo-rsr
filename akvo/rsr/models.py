@@ -13,6 +13,7 @@ from django import forms
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum # added by Paul
+from django.conf import settings # added by Daniel
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
@@ -22,6 +23,7 @@ from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+
 
 from registration.models import RegistrationProfile, RegistrationManager
 
@@ -383,6 +385,9 @@ class Project(models.Model):
 
     def funding_donated(self):
         return self.funding.donated()
+
+    def funding_still_needed(self):
+        return self.funding.still_needed()
 
     class Meta:
         permissions = (
@@ -751,9 +756,9 @@ def send_paypal_confirmation_email(id):
         'paypal_reference': ppi.ipn,
     })
     if ppi.user is not None:
-        send_mail('Thank you from Akvo.org!', t.render(c), 'noreply@akvo.org', [ppi.user.email], fail_silently=False)
+        send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.user.email], fail_silently=False)
     else:
-        send_mail('Thank you from Akvo.org!', t.render(c), 'noreply@akvo.org', [ppi.email], fail_silently=False)
+        send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.email], fail_silently=False)
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):

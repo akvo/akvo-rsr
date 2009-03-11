@@ -103,7 +103,7 @@ urlpatterns = patterns('',
 	
 	#url(r'^rsr/widget/list-from-organisation/(?P<org_id>)\d+)$', 'akvo.rsr.views.select_list_widget', name='select_list_widget', ),
 	#url(r'^rsr/widget/organisation/(?P<org_id>\d+)/(?P<template>[\w-]+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
-	#url(r'^rsr/widget/(?P<template>[\w-]+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
+	url(r'^rsr/widget/(?P<template>[\w-]+)/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	
     #url(r'^rsr/widget/project$', 'akvo.rsr.views.widget_project', {'template':'widgets/project.html'}, name='widget_project', ),

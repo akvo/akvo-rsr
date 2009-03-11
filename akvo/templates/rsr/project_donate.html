@@ -60,7 +60,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<form method="post" action="." name="donate_form">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Donate to Project: Enter Amount' %}</h1>
+		<h1>{% trans 'Donate to project: Enter amount' %}</h1>
 	</div>
 	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 		<p>
@@ -145,6 +145,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div style="clear:both;"> &nbsp; </div>
 		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
+		{# start project aera - extra div for IE #}
+		<div style="margin:0; paddin:0;">
 		<div style="margin-left:40px;">
 			<h3>{% trans 'Project to which you are donating' %}</h3>
 			
@@ -170,6 +172,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 		</div>
+		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
 			<p class="marchGrey">
 				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="float:right;"/>
@@ -191,7 +194,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		
 		<div style="clear:both;"> &nbsp; </div>
-				
+
+		</div>
+		{# stop project area - extra div for IE #}
 		<hr style="width:100%; margin-left:0; clear:both; margin-top:10px;" />
 		
 		<div style="margin-left:40px; float:left; width:300px;">
@@ -224,13 +229,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		</div>
 		
+		
+		
 		{% if donate_form.amount.errors %}
 		<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:40px;">
-			<p>
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-					{{ donate_form.amount.errors }}<br />
+					{% trans 'Amount' %}: {{ donate_form.amount.errors }}<br />
 				<br />
-			</p>
 		</div>
 		{% endif %}
 	
@@ -242,7 +247,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<hr style="width:100%; margin-left:0; clear:both;" />
 		
 	<div style="margin-left:300px; padding-top:20px;">
-		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'You will be able to review and confirm your donation on the next page' %}</p>
+		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'You will be able to review and confirm your donation on the next page.' %}</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
 			<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
 		</div>

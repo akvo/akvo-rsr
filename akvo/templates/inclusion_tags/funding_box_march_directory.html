@@ -8,6 +8,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div class="fundingbox-header"> </div>
 	<div class="fundingbox-content">
+		{% if not p.funding %}
+		<div class="fundingbox-funded">	
+			<div class="fullyfunded-text">
+				<p style="">
+				{% trans 'Raised' %}:&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.total_given}}
+				</p>
+				{% comment %}
+				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
+					<tr class="green">
+						<th>{% trans 'Raised' %}:</th>
+						<td>&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.pledged}}</td>
+					</tr>
+				</table>
+				{% endcomment %}
+			</div>
+			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
+				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
+				<br /><br /> {% comment %} simple size fix, have to be updated {% endcomment %}
+			</p>
+		</div>
+		{% else %}
+		
 		{% ifequal p.funding.still_needed 0 %}
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
@@ -72,6 +94,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div id="name" style="clear: both;"></div>
 		
 		{% endifequal%}
+		{% endif %}
 	</div>
 	<div class="fundingbox-footer"> </div>
 </div>

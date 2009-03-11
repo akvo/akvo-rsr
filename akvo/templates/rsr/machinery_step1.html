@@ -20,6 +20,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <meta http-equiv="pragma" content="no-cache"/>
 <meta http-equiv="cache-control" content="no-cache"/>
 
+<style type="text/css" media="screen">
+	ul.machinery_steps {
+		list-style: disc inside;
+		margin:1.0em;
+	}
+</style>
+
 {% endblock style%}
 
 
@@ -44,10 +51,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% comment %} Top part starts {% endcomment %}
 	<div style="margin-left:30px; margin-right:30px;">
 		<div style="width:50%; float:left;">
-			<h1>{% trans 'Get a Widget to Use on Your Web Site' %}</h1>
+			<h1>{% trans 'Get a widget to use on your web site' %}</h1>
 			<p style="margin-top:15px;">
+				<span class="marchGrey">
+					{% trans 'The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site&#x27;s code.' %}<br />
+					<ul class="machinery_steps">
+						<li>{% trans 'Step 1: Select the type of widget you wish to use.' %}</li>
+						<li>{% trans 'Step 2: Select colours and preview your widget.' %}</li>
+						<li>{% trans 'Step 3: Copy the HTML code to your web site.' %}</li>
+					</ul>
+				</span>
+				{% comment %}
 				<span class="marchGrey">{% trans 'These widgets will display the project' %}</span><br />
 				<span style="font-weight:bold">{{project.name}}</span>
+				{% endcomment %}
 			</p>
 		</div>
 		<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
@@ -68,7 +85,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="machinery_customization" style="margin-left:110px; margin-right:50px;">
 		<h3 style="padding-bottom:0;">{% trans 'Step 1: Select the type of widget you wish to use' %}</h3>
 		<p class="marchGrey" style="margin:0;padding:0;">
-			{% trans 'You can customise the top and bottom bar and title text colours on the next step' %}
+			{% trans 'You can customise the top and bottom bar and title text colours on the next step.' %}
 		</p>
 		
 		{% comment %}
@@ -94,7 +111,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<form action="customise-widget" method="post">
 			{% endcomment %}
 			<form name="featureSideForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">{% trans 'Type A: Project widget with Donation link (202 pixels wide by 840 pixels high)' %}</h3>
+				<h3 style="padding-bottom:0;">{% trans 'A: Project widget with Donation link (202 pixels wide by 840 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
 				</p>
@@ -121,14 +138,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<p style="font-weight:bold;">
 						{% trans 'Enter the web address where you will embed this widget' %}
 					</p>
-					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you' %}
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you.' %}
 					<br />
 					<p class="machinerygrey">{% trans 'Example' %}: www.akvo.org</p>
 						
 					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 					
 					<input type="hidden" name="widget-type" value="feature-side">
-					<input type="radio" id="feature-side-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> {% trans 'Use the' %} {{project.name}} project
+					<input type="radio" id="feature-side-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 					<br>
 					<input type="radio" id="feature-side-random-from-org" name="widget-choice" value="random-from-org" /> {% trans 'Display a random project from this organisation' %}:
 					<br />
@@ -151,7 +168,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		{% ifequal account_level 'free' %}
 			<p>
-			<a href="/rsr/signin/?next={% url akvo.rsr.views.getwidget project.id %}">{% trans 'Sign in' %}</a> {% trans 'for more content' %}.
+			<a href="/rsr/signin/?next={% url akvo.rsr.views.getwidget project.id %}">{% trans 'Sign in' %}</a> {% trans 'for more content.' %}
 			</p>		
 		
 			{% comment %}
@@ -181,6 +198,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<div style="float:left; width:205px;">
 						<script type="text/javascript" charset="utf-8">
 							// think about refactor this to a general method in machinery.js
+
 							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-updates/project/{{project.id}}/" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
 								
 						</script>
@@ -194,14 +212,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<p style="font-weight:bold;">
 							{% trans 'Enter the web address where you will embed this widget' %}
 						</p>
-						<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you' %}
+						<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you.' %}
 						<br />
 						<p class="machinerygrey">{% trans 'Example' %}: www.akvo.org</p>
 							
 						<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 						
 						<input type="hidden" name="widget-type" value="project-updates">
-						<input type="radio" id="project-updates-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> {% trans 'Use the' %} {{project.name}} project
+						<input type="radio" id="project-updates-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 						<br>
 						<input type="radio" id="project-updates-random-from-org" name="widget-choice" value="random-from-org" /> {% trans 'Display a random project from this organisation' %}:
 						<br />
@@ -252,16 +270,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<p style="font-weight:bold;">
 							{% trans 'Enter the web address where you will embed this widget' %}
 						</p>
-						<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you' %}
+						<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you.' %}
 						<br />
-						<p class="machinerygrey">Example: www.akvo.org</p>
+						<p class="machinerygrey">{% trans 'Example:' %} www.akvo.org</p>
 							
 						<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 						
 						<input type="hidden" name="widget-type" value="project-contribute">
-						<input type="radio" id="project-contribute-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> Use the {{project.name}} project
+						<input type="radio" id="project-contribute-specific-project" name="widget-choice" value="specific-project" checked style="margin-bottom:10px;"/> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 						<br>
-						<input type="radio" id="project-contribute-random-from-org" name="widget-choice" value="random-from-org" /> Display a random project from this organisation:
+						<input type="radio" id="project-contribute-random-from-org" name="widget-choice" value="random-from-org" /> {% trans 'Display a random project from this organisation:' %}
 						<br />
 						<select name="widget-organisations" id="project-contribute-organisations" size="1" style="margin-left:23px;" disabled >
 							{% for organisation in organisations  %}
@@ -271,9 +289,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<br />
 						<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
 						<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
-							<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+							<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
 						</div>
-						<a class="march_button" href="javascript:document.projectContributeForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
+						<a class="march_button" href="javascript:document.projectContributeForm.submit();" onclick="this.blur();"><span>{% trans 'Select and Proceed...' %}</span></a>
 					</div>
 					<div style="clear:both;"> </div>
 				</form>
@@ -293,9 +311,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				
 				<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 					<form name="projectListForm" action="get-a-widget" method="post">
-						<h3 style="padding-bottom:0;">D: Project list widget (745 pixels wide by 730 pixels high)</h3>
+						<h3 style="padding-bottom:0;">{% trans 'D: Project list widget (745 pixels wide by 730 pixels high)' %}</h3>
 						<p class="machinerygrey" style="margin:0;padding:0;">
-							Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org
+							{% trans 'Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org.' %}
 						</p>
 					
 						<div style="padding-bottom:20px;">
@@ -312,20 +330,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							{% endcomment %}
 						</div>
 						<div style="float:right; width:430px; padding-top:0px; padding-bottom:20px;">
-							<h3 style="margin-top:0; padding-top:0;">Settings</h3>
+							<h3 style="margin-top:0; padding-top:0;">{% trans 'Settings' %}</h3>
 							<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
 							<p style="font-weight:bold;">
-								Enter the web address where you will embed this widget
+								{% trans 'Enter the web address where you will embed this widget' %}
 							</p>
-							<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> This will help us track statistics for you
+							<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;"> {% trans 'This will help us track statistics for you.' %}
 							<br />
-							<p class="machinerygrey">Example: www.akvo.org</p>
+							<p class="machinerygrey">{% trans 'Example' %}: www.akvo.org</p>
 								
 							<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;"/>
 							
 							<input type="hidden" name="widget-type" value="project-list">
 							<input type="hidden" name="widget-choice" value="project-list" /> 
-							Display a project list from this organisation:
+							{% trans 'Display a project list from this organisation:' %}
 							<br />
 							<select name="widget-organisations" id="project-list-organisations" size="1" >
 								{% for organisation in organisations  %}
@@ -335,14 +353,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<br />
 							<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
 							<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
-								<a href="{% url akvo.rsr.views.projectmain project.id %}">Cancel</a>
+								<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
 							</div>
-							<a class="march_button" href="javascript:document.projectListForm.submit();" onclick="this.blur();"><span>Select and Proceed...</span></a>
+							<a class="march_button" href="javascript:document.projectListForm.submit();" onclick="this.blur();"><span>{% trans 'Select and Proceed...' %}</span></a>
 						</div>
 						
 						<div style="clear:both;"> </div>
 						<p class="machinerygrey" style="margin-bottom:4px;">
-							Sample
+							{% trans 'Sample' %}
 						</p>
 						<div>
 							<script type="text/javascript" charset="utf-8">

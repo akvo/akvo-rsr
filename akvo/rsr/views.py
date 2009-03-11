@@ -24,6 +24,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
+
 from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 import time
@@ -238,8 +239,9 @@ def projectlist(request):
         select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
                 'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
     )
+    showcases = projects.order_by('?')[:3]
     page, stats = project_list_data(request, projects)
-    return {'projects': projects, 'stats': stats, 'page': page, }
+    return {'projects': projects, 'stats': stats, 'page': page, 'showcases': showcases,}
 
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
@@ -880,6 +882,10 @@ def project_list_widget(request, template='project-list', org_id=0):
 	return render_to_response('widgets/%s.html' % template.replace('-', '_'),
 								{'bgcolor': bgcolor, 'textcolor': textcolor,  'projects': p, 'org_id': org_id, 'request_get': request.GET, 'site': site}, context_instance=RequestContext(request))
 
+
+'''
+Is this used???
+'''
 def widget_project_list(request, template='widgets/project_list.html'):
 	color = request.GET.get('color', 'B50000')
 	textcolor = request.GET.get('textcolor', 'FFFFFF')
@@ -961,11 +967,9 @@ def ajax_tab_context(request, project_id):
 
 # PAUL
 # PayPal Integration
-
 from akvo.rsr.forms import PayPalInvoiceForm
 
 # URL: /rsr/project/<id>/donate/
-# TODO: Redirect to a signin page if the user is not authenticated
 def donate(request, project_id):
     # Define some fixed global context for the view
     p = get_object_or_404(Project, pk=project_id)
@@ -988,35 +992,53 @@ def donate(request, project_id):
             invoice.time = t
             invoice.save()
             # Proceed to initialise the PayPalPaymentsForm
-            pp_dict = {'cmd': '_donations',
-                'currency_code': 'EUR',
-                #'business': 'paul.b_1235480200_biz@gmail.com', # German Test Store (EUR) 
-                'business': 'paul.b_1236355985_biz@gmail.com', # German Test Store (EUR) # daniel
-                'amount': invoice.amount,
-                'item_name': 'Akvo Project Donation: Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
-                'invoice': invoice.id,
-                'notify_url': 'http://newdev.akvo.org/rsr/ipn/', # or wherever we hook up the view
-                'return_url': 'http://newdev.akvo.org/rsr/ipn/thanks/', # or wherever else
-                'cancel_url': 'http://newdev.akvo.org/'} # where to go if the whole thing is cancelled
+            if settings.PAYPAL_DEBUG:
+                pp_dict = {
+                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
+                    'currency_code': getattr(settings, 'PAYPAL_CURRENCY_CODE', 'EUR'),
+                    'business': settings.PAYPAL_SANDBOX_BUSINESS,
+                    'amount': invoice.amount,
+                    'item_name': settings.PAYPAL_SANDBOX_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
+                    'invoice': invoice.id,
+                    'notify_url': settings.PAYPAL_SANDBOX_NOTIFY_URL,
+                    'return_url': settings.PAYPAL_SANDBOX_RETURN_URL,
+                    'cancel_url': settings.PAYPAL_SANDBOX_CANCEL_URL}
+            else:
+                pp_dict = {
+                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
+                    'currency_code': getattr(settings, 'PAYPAL_CURRENCY_CODE', 'EUR'),
+                    'business': settings.PAYPAL_BUSINESS,
+                    'amount': invoice.amount,
+                    'item_name': PAYPAL_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
+                    'invoice': invoice.id,
+                    'notify_url': settings.PAYPAL_NOTIFY_URL,
+                    'return_url': settings.PAYPAL_RETURN_URL,
+                    'cancel_url': settings.PAYPAL_CANCEL_URL}
             pp_form = PayPalPaymentsForm(initial=pp_dict)
-            pp_form.sandbox() # Change to pp_form.render() in production
+            if settings.PAYPAL_DEBUG:
+                # Render the sandbox button
+                pp_form.sandbox()
+            else:
+                # Render the button
+                pp_form.render()
             return render_to_response('rsr/paypal_checkout.html',
                                         {'name': invoice.name, 
                                          'email': invoice.email, 
                                          'pp_form': pp_form, 
                                          'invoice_id': invoice.id, 
                                          'p': p, 
-                                         'amount': invoice.amount,},
+                                         'amount': invoice.amount,
+                                         'sandbox': settings.PAYPAL_DEBUG,},
                                         context_instance=RequestContext(request))
     else:
         # ... otherwise initialise an empty form
-        # TODO: handle redirect to paypal signin page if user is not authenticated
         donate_form = PayPalInvoiceForm(user=u, project=p)
         
     # Display the form for non-POST requests or borked validations
     return render_to_response('rsr/project_donate.html', 
                               {'funding_still_needed': fn, 'donate_form': donate_form, 'p': p, }, 
                               context_instance=RequestContext(request))
+
 
 # Presents the landing page after PayPal
 def paypal_thanks(request):

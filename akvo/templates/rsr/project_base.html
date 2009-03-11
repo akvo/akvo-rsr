@@ -56,12 +56,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<hr />
 		<p style="margin: 10px 0 10px 0;">
                 {% ifequal p.fundingpartner_set.count 1 %}
-                    <b>{% trans 'Current Funder' %}</b>
+                    <b>{% trans 'Current funder' %}</b>
                 {% else %}
                     {% ifequal p.fundingpartner_set.count 0 %}
                         <b style="color: red;">{% trans 'You could fund this project!' %}</b>
                     {% else %}
-                        <b>{% trans 'Current Funders' %}</b>
+                        <b>{% trans 'Current funders' %}</b>
                     {% endifequal %}
                 {% endifequal %}
         </p>

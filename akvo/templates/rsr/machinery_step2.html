@@ -58,7 +58,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% comment %} Top part {% endcomment %}
 	<div style="margin-left:30px; margin-right:30px;">
 		<div style="width:50%; float:left;">
-			<h1>{% trans 'Customise Widget' %}</h1>
+			<h1>{% trans 'Customise your widget' %}</h1>
 			<p style="margin-top:15px;">
 				{% ifequal widget_choice 'specific-project'  %}
 					<span class="marchGrey">{% trans 'This widget will show the project' %}</span><br /><span style="font-weight:bold;">{{project.name}}</span>
@@ -72,7 +72,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
 				<div id="machinery_step2_warning_main_message" style="display:inline;">
 					<p>
-						{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed' %}.
+						{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed.' %}
 					</p>
 				</div>
 				<script type="text/javascript" charset="utf-8">
@@ -108,7 +108,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 			<div id="warning_color" style="float:right; margin-top:10px; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display: none;">
 				<p>
-					{% trans 'A color you entered is not recognized. Please change and try again' %}.
+					{% trans 'A color you entered is not recognized. Please change and try again.' %}
 				</p>
 			</div>
 			<div style="padding-bottom:15px; clear:both;"> </div>
@@ -117,23 +117,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="float:left; margin-left:50px; width:200px;">
 					<p class="machinerygrey">
 						<select name="backgroundcolor_pulldown" id="backgroundcolor_pulldown" size="1">
-							<option value="B50000">Akvo Red (#B50000)</option>
-							<option value="FFD700">Gold (#FFD700)</option>
-							<option value="B8860B">DarkGoldenrod (#B8860B)</option>
-							<option value="FF0000">Red (#FF0000)</option>
-							<option value="8B0000">Dark Red (#8B0000)</option>
-							<option value="8B008B">DarkMagenta (#8B008B)</option>
-							<option value="4B0082">Indigo (#4B0082)</option>
-							<option value="191970">MidnightBlue (#191970)</option>
-							<option value="0000CD">MediumBlue (#0000CD)</option>
-							<option value="1E90FF">DodgerBlue (#1E90FF)</option>
-							<option value="008080">Teal (#008080)</option>
-							<option value="2E8B57">SeaGreen (#2E8B57)</option>
-							<option value="556B2F">DarkOliveGreen (#556B2F)</option>
-							<option value="696969">DimGray (#696969)</option>
-							<option value="708090">SlateGray (#708090)</option>
-							<option value="000000">Black (#000000)</option>
-							<option value="x">Other...</option>
+							<option value="B50000">{% trans 'Akvo Red' %} (#B50000)</option>
+							<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
+							<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
+							<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
+							<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
+							<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
+							<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
+							<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
+							<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
+							<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
+							<option value="008080">{% trans 'Teal' %} (#008080)</option>
+							<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
+							<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
+							<option value="696969">{% trans 'DimGray' %} (#696969)</option>
+							<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
+							<option value="000000">{% trans 'string' %} (#000000)</option>
+							<option value="x">{% trans 'Other...' %}</option>
 							{% comment %}
 							
 							<option value="040404">Bergwerk Black (#040404)</option>
@@ -150,12 +150,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="float:right; width:465px;">
 					<div id="backgroundcolor_other_section" style="margin:0; padding:0; float:left; width:100%;">
 						<div style="width:350px; float:right; padding-top:4px;">
-							{% trans 'View a list of' %} <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">{% trans 'standard colours' %}</a> ({% trans 'external link, new window' %})
+							{% trans 'View a list of' %} <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">{% trans 'standard colours' %}</a> ({% trans 'external link, new window' %}).
 						</div>
 						<p class="machinerygrey" style="margin:0; padding:0;">
 							<!--<span id="backgroundcolor_warning" style="color:red;"></span><br />-->
 							<input type="text" name="bgcolor" value="B50000" id="backgroundcolor_text" size="10" /><br />
-							{% trans 'Enter a hex number' %}
+							{% trans 'Enter a hex number' %}.
 						</p>
 					</div>
 				</div>
@@ -164,23 +164,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="float:left; margin-left:50px; width:200px;">
 					<p class="machinerygrey">
 						<select name="textcolor_pulldown" id="textcolor_pulldown" size="1" >
-							<option value="FFFFFF">White (#FFFFFF)</option>
-							<option value="FFD700">Gold (#FFD700)</option>
-							<option value="B8860B">DarkGoldenrod (#B8860B)</option>
-							<option value="FF0000">Red (#FF0000)</option>
-							<option value="8B0000">Dark Red (#8B0000)</option>
-							<option value="8B008B">DarkMagenta (#8B008B)</option>
-							<option value="4B0082">Indigo (#4B0082)</option>
-							<option value="191970">MidnightBlue (#191970)</option>
-							<option value="0000CD">MediumBlue (#0000CD)</option>
-							<option value="1E90FF">DodgerBlue (#1E90FF)</option>
-							<option value="008080">Teal (#008080)</option>
-							<option value="2E8B57">SeaGreen (#2E8B57)</option>
-							<option value="556B2F">DarkOliveGreen (#556B2F)</option>
-							<option value="696969">DimGray (#696969)</option>
-							<option value="708090">SlateGray (#708090)</option>
-							<option value="000000">Black (#000000)</option>
-							<option value="x">Other...</option>
+							<option value="FFFFFF">{% trans 'White' %} (#FFFFFF)</option>
+							<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
+							<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
+							<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
+							<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
+							<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
+							<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
+							<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
+							<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
+							<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
+							<option value="008080">{% trans 'Teal' %} (#008080)</option>
+							<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
+							<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
+							<option value="696969">{% trans 'DimGray' %} (#696969)</option>
+							<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
+							<option value="000000">{% trans 'Black' %} (#000000)</option>
+							<option value="x">{% trans 'Other...' %}</option>
 							{% comment %}
 							<option value="FCFCFC">Sky White(#FCFCFC)</option>
 							<option value="0066ff">Ocean Blue (#0066ff)</option>
@@ -197,12 +197,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="float:right; width:465px;">
 					<div id="textcolor_other_section" style="margin:0; padding:0; float:left; width:100%;">
 						<div style="width:350px; float:right; padding-top:4px;">
-							{% trans 'View a list of' %} <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">{% trans 'standard colours' %}</a> ({% trans 'external link, new window' %})
+							{% trans 'View a list of' %} <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">{% trans 'standard colours' %}</a> ({% trans 'external link, new window' %}).
 						</div>
 						<p class="machinerygrey" style="margin:0; padding:0;">
 							<!--<span id="backgroundcolor_warning" style="color:red;"></span><br />-->
 							<input type="text" name="textcolor" value="ffffff" id="textcolor_text" size="10" /><br />
-							{% trans 'Enter a hex number' %}
+							{% trans 'Enter a hex number' %}.
 						</p>
 					</div>
 				</div>
@@ -223,20 +223,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<hr style="margin-left:80px; margin-right:70px" />
 		<!-- review part starts -->
 		<div class="machinery_customization" style=" margin-left:140px; margin-right:70px;">
-			<h3>{% trans 'Step 3: Review your widget' %}</h3>
+			<h3>{% trans 'Review your widget' %}</h3>
 			
 			<p class="machinerygrey">
 				{% ifequal widget_type 'feature-side' %}
-					{% trans 'How your widget will appear. (202 pixels wide by 840 pixels high)' %}
+					{% trans 'How your widget will appear (202 pixels wide by 840 pixels high).' %}
 				{% endifequal %}
 				{% ifequal widget_type 'project-contribute' %}
-					{% trans 'How your widget will appear. (202 pixels wide by 570 pixels high)' %}
+					{% trans 'How your widget will appear (202 pixels wide by 570 pixels high).' %}
 				{% endifequal %}
 				{% ifequal widget_type 'project-updates' %}
-					{% trans 'How your widget will appear. (202 pixels wide by 900 pixels high)' %}
+					{% trans 'How your widget will appear (202 pixels wide by 900 pixels high).' %}
 				{% endifequal %}
 				{% ifequal widget_type 'project-list' %}
-					{% trans 'How your widget will appear. (745 pixels wide by 730 pixels high)' %}
+					{% trans 'How your widget will appear (745 pixels wide by 730 pixels high).' %}
 				{% endifequal %}
 			</p>
 			{% comment %} #akvo_widget_container is an anchor for the widget! {% endcomment %}
@@ -246,7 +246,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<hr style="margin-left:80px; margin-right:70px" />
 	
 		<div class="machinery_customization" style="margin-left:140px; margin-right:70px;">
-			<h3>{% trans 'Step 4: Copy the HTML code below for use on your web site' %}</h3>
+			<h3>{% trans 'Step 3: Copy the HTML code below for use on your web site' %}</h3>
 			<p class="machinerygrey">
 				{% trans 'You may repeat the steps above until you are satisﬁed with the appearance of your widget.' %}
 			</p>
