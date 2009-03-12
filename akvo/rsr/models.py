@@ -731,7 +731,7 @@ class ProjectComment(models.Model):
 # PayPal Integration
 
 from paypal.standard.models import PayPalIPN
-from paypal.standard.signals import payment_was_flagged #, payment_was_successful
+from paypal.standard.signals import payment_was_flagged, payment_was_successful
         
 class PayPalInvoice(models.Model):
     user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
@@ -779,8 +779,11 @@ def process_paypal_ipn(sender, **kwargs):
         # Send a confirmation email to wrap everything up
         send_paypal_confirmation_email(ppi.id)
 # We have to connect to 'payment_was_flagged' in development because the return email won't validate
-# Connect to 'payment_was_successful' in production
-payment_was_flagged.connect(process_paypal_ipn)
+if settings.PAYPAL_DEBUG:
+    payment_was_flagged.connect(process_paypal_ipn)
+else:
+    # Connect to 'payment_was_successful' in production
+    payment_was_successful.connect(process_paypal_ipn)
 
 # TODO: Subtract the donated amount from the funding the project still needs.
 #  - Create a new function in utils.py to handle this

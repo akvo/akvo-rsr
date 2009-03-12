@@ -15,13 +15,24 @@ DATABASE_PASSWORD = 'u5r6vKSBwUxE4EMB'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-DEBUG = True
+# has to be defined _after_ DATABASE_ENGINE
+from django.contrib.sites.models import Site
 
-DEFAULT_FROM_EMAIL = 'noreply@sandbox.akvo.org'
+DEBUG = False
 
-#INTERNAL_IPS = (
-#    '87.227.60.54', '125.27.250.14', '192.168.38.68', '192.168.1.123',
-#)
+SITE_ID = 1
+try:
+    DOMAIN_NAME = Site.objects.get(pk=SITE_ID)
+except:
+    DOMAIN_NAME = 'newdev.akvo.org'
+if not DOMAIN_NAME:
+    DOMAIN_NAME = 'newdev.akvo.org'
+    
+DEFAULT_FROM_EMAIL = 'noreply@%s' % DOMAIN_NAME
+
+INTERNAL_IPS = (
+    #'87.227.60.54', '192.168.38.68',
+)
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -30,7 +41,7 @@ MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://sandbox.akvo.org/rsr/media/'
+MEDIA_URL = 'http://%s/rsr/media/' % DOMAIN_NAME
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -39,17 +50,18 @@ PAYPAL_DEBUG = True # Set to False in production
 #PAYPAL_COMMAND = '_donations' # This defaults to '_donations'
 #PAYPAL_CURRENCY_CODE = 'EUR' # This defaults to 'EUR'
 PAYPAL_BUSINESS = 'thomas@akvo.org'
-PAYPAL_SANDBOX_BUSINESS = 'paul.b_1236517924_biz@gmail.com'
+#PAYPAL_SANDBOX_BUSINESS = 'paul.b_1236517924_biz@gmail.com'
+PAYPAL_SANDBOX_BUSINESS = 'paul.b_1236803589_biz@gmail.com'
 PAYPAL_PRODUCT_DESCRIPTION_PREFIX = 'Akvo Project Donation: '
 PAYPAL_SANDBOX_PRODUCT_DESCRIPTION_PREFIX = 'Akvo Project Test Donation: '
-PAYPAL_NOTIFY_URL = 'http://sandbox.akvo.org/rsr/ipn/'
-PAYPAL_RETURN_URL = 'http://sandbox.akvo.org/rsr/ipn/thanks/'
-PAYPAL_CANCEL_URL = 'http://sandbox.akvo.org/'
-PAYPAL_SANDBOX_NOTIFY_URL = 'http://sandbox.akvo.org/rsr/ipn/'
-PAYPAL_SANDBOX_RETURN_URL = 'http://sandbox.akvo.org/rsr/ipn/thanks/'
-PAYPAL_SANDBOX_CANCEL_URL = 'http://sandbox.akvo.org/'
+PAYPAL_NOTIFY_URL = 'http://%s/rsr/ipn/' % DOMAIN_NAME
+PAYPAL_RETURN_URL = 'http://%s/rsr/ipn/thanks/' % DOMAIN_NAME
+PAYPAL_CANCEL_URL = 'http://%s/' % DOMAIN_NAME
+PAYPAL_SANDBOX_NOTIFY_URL = 'http://%s/rsr/ipn/' % DOMAIN_NAME
+PAYPAL_SANDBOX_RETURN_URL = 'http://%s/rsr/ipn/thanks/' % DOMAIN_NAME
+PAYPAL_SANDBOX_CANCEL_URL = 'http://%s/' % DOMAIN_NAME
 #PAYPAL_IMAGE = 'https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif'
 #PAYPAL_SANDBOX_IMAGE = 'https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif'
-PAYPAL_IMAGE = 'http://sandbox.akvo.org/rsr/media/img/paypal_donate.gif'
-PAYPAL_SANDBOX_IMAGE = 'http://sandbox.akvo.org/rsr/media/img/paypal_donate.gif'
+PAYPAL_IMAGE = 'http://%s/rsr/media/img/paypal_donate.gif' % DOMAIN_NAME
+PAYPAL_SANDBOX_IMAGE = 'http://%s/rsr/media/img/paypal_donate.gif' % DOMAIN_NAME
 PAYPAL_RECEIVER_EMAIL = DEFAULT_FROM_EMAIL
