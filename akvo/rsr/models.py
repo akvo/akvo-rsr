@@ -783,7 +783,8 @@ if settings.PAYPAL_DEBUG:
     payment_was_flagged.connect(process_paypal_ipn)
 else:
     # Connect to 'payment_was_successful' in production
-    payment_was_successful.connect(process_paypal_ipn)
+    # Connecting to flagged for the time being, since PP seesour emails as invalid for some reason...
+    payment_was_flagged.connect(process_paypal_ipn)
 
 # TODO: Subtract the donated amount from the funding the project still needs.
 #  - Create a new function in utils.py to handle this

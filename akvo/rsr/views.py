@@ -1000,6 +1000,7 @@ def donate(request, project_id):
                     'amount': invoice.amount,
                     'item_name': settings.PAYPAL_SANDBOX_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
                     'invoice': invoice.id,
+                    'lc': 'US',
                     'notify_url': settings.PAYPAL_SANDBOX_NOTIFY_URL,
                     'return_url': settings.PAYPAL_SANDBOX_RETURN_URL,
                     'cancel_url': settings.PAYPAL_SANDBOX_CANCEL_URL}
@@ -1009,8 +1010,9 @@ def donate(request, project_id):
                     'currency_code': getattr(settings, 'PAYPAL_CURRENCY_CODE', 'EUR'),
                     'business': settings.PAYPAL_BUSINESS,
                     'amount': invoice.amount,
-                    'item_name': PAYPAL_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
+                    'item_name': settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
                     'invoice': invoice.id,
+                    'lc': 'US',
                     'notify_url': settings.PAYPAL_NOTIFY_URL,
                     'return_url': settings.PAYPAL_RETURN_URL,
                     'cancel_url': settings.PAYPAL_CANCEL_URL}
