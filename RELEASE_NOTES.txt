@@ -1,4 +1,4 @@
- RELEASE_NOTES.txt, v0.9.1, 9 February 2009, bw
+RELEASE_NOTES.txt, v0.9.3, 12 March 2009, tbp
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The
 Akvo Platform is used on Akvo.org to combat poverty through
@@ -8,6 +8,86 @@ education, health care, agriculture, etc.
 
 To read more about the Akvo Platform:
 http://www.akvo.org/web/akvo_platform_overview
+
+Akvo RSR v 0.9.3 release notes
+==============================
+v0.9.3, 12 March 2009, tbp
+
+New required software: django-paypal. 
+For the PayPal integration you now need the following software:
+http://github.com/johnboxall/django-paypal/
+
+New features
+------------
+- Akvo RSR Widgets user interface
+There is now a user interface to select and customize widgets. The
+tool can be found under Page tools on each project page. The widgets
+can be placed on any web site to promote a particular project or
+highlight progress.
+
+- Akvo RSR delegated project and user administration beta
+We have started creating the ability for project owners to edit their
+own project descriptions and manage their own users. The tools are
+fairly basic so far, but it is a start.
+
+- Akvo Direct PayPal integration, using django-paypal
+Support added for making donations to projects via PayPal
+Standard. Instances of a new PayPalInvoice class are created which
+capture details of the payment and track it all the way through to
+PayPal and back again. Invoices are "completed" and the end user is
+sent a confirmation email on receipt of a confirmation callback from
+PayPal.
+
+Behaviour of PayPal donations can be defined by several environment
+variables in settings.py, making it straightforward to select
+currency, PayPal command flow, specify custom PayPal buttons and
+switch between sandbox settings for testing and production settings.
+
+Limitations in PayPal integration
+
+There are a couple of limitations with the PayPal integration at this
+point.
+
+Donation committments
+When performing a donation we committ a portion of the funding the
+project needs, to ensure that the project isn't overfunded. We
+currently have no routines to take down "stale" donations,
+i.e. donations which were never completed. This is a priority set of
+routines which will be created as soon as possible.
+
+PayPal charges
+Project funding is currently done as integers. This will have to
+change, as when donations come in from PayPal a certain percentage of
+the donation has been deducted from the donation. This very seldom is
+a whole number. We don't deduct this at this point from the project,
+which means that the project will always be short of some funds if
+donations have been made to it. This is a fairly large thing to fix,
+so due to deadlines we have punted this for a later release. Each
+transaction that is completed has a record of how much PayPal charged,
+so we can fix the accounting later.
+
+
+Infrastructure
+--------------
+The way funding of a project was calculated has been changed. We have
+included the donations into the funding.
+
+Bugs
+----
+Fixed a bug in the project-list widget. When you sorted on anything
+else than project name it was impossible to resort on project name.
+
+
+Akvo RSR v 0.9.2 release notes
+==============================
+v0.9.2, 13 February 2009, tbp
+
+New feature
+-----------
+- Akvo RSR Widgets
+Beta-release of the Akvo RSR Widget backend. This allows you to post
+iFrame based widgets of projects and project listings. A user
+interface should be added to the next release.
 
 Akvo RSR v 0.9.1 release notes
 =============================
