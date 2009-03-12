@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-07 01:16+0000\n"
+"POT-Creation-Date: 2009-03-11 20:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: ANKE VAN LENTEREN <anke@vanlenteren.com>\n"
 "Language-Team: translation <translation@akvo.org>\n"
@@ -15,65 +15,91 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: settings_base.py:63
+#: settings_base.py:66
 msgid "German"
 msgstr "Duits"
 
-#: settings_base.py:64
+#: settings_base.py:67
 msgid "English"
 msgstr "Engels"
 
-#: settings_base.py:65
+#: settings_base.py:68
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: rsr/admin.py:31
+#: rsr/admin.py:59
 msgid "Partnership type(s)"
 msgstr "Soort partner"
 
-#: rsr/admin.py:32
+#: rsr/admin.py:60
 msgid "General information"
 msgstr "Algemene informatie"
 
-#: rsr/admin.py:33
+#: rsr/admin.py:61
 msgid "Contact information"
 msgstr "Contactgegevens"
 
-#: rsr/admin.py:81
+#: rsr/admin.py:232
 msgid "Project description"
 msgstr "Projectbeschrijving"
 
-#: rsr/admin.py:91 templates/rsr/organisation.html:69
-#: templates/rsr/project_details.html:79
-#: templates/rsr/project_directory.html:76 templates/rsr/project_main.html:74
-#: templates/widgets/featured_project.html:47
+#: rsr/admin.py:242 templates/rsr/organisation.html:69
+#: templates/rsr/paypal_checkout.html:88 templates/rsr/paypal_thanks.html:117
+#: templates/rsr/project_details.html:63
+#: templates/rsr/project_details.html:124
+#: templates/rsr/project_directory.html:103
+#: templates/rsr/project_donate.html:155 templates/rsr/project_main.html:74
+#: templates/widgets/feature_side.html:62 templates/widgets/project.html:62
+#: templates/widgets/project_updates.html:63
 msgid "Location"
 msgstr "Locatie"
 
-#: rsr/admin.py:94
+#: rsr/admin.py:245
 msgid "Location extra"
 msgstr "Locatie - extra gegevens"
 
-#: rsr/admin.py:97
+#: rsr/admin.py:248
 msgid "Project info"
 msgstr "Projectinformatie"
 
-#: rsr/admin.py:100 templates/rsr/project_details.html:113
+#: rsr/admin.py:251 templates/rsr/project_details.html:160
 #: templates/rsr/project_main.html:87
 msgid "Goals"
 msgstr "Doelstellingen"
 
-#: rsr/admin.py:103
+#: rsr/admin.py:254
 msgid "Project target benchmarks"
 msgstr "Doelstellingen in detail"
 
-#: rsr/admin.py:107
+#: rsr/admin.py:258
 msgid "Project info details"
 msgstr "Projectinformatie - details"
 
-#: rsr/admin.py:110
+#: rsr/admin.py:261
 msgid "Project meta info"
 msgstr "Project meta-informatie"
+
+#: rsr/admin.py:376
+#, python-format
+msgid "Add %s"
+msgstr "%s toevoegen"
+
+#: rsr/admin.py:407
+#, python-format
+msgid "%(name)s object with primary key %(key)r does not exist."
+msgstr "%(name)s object met \"primary key %(key)r\" bestaat niet."
+
+#: rsr/admin.py:461
+msgid "Change %s"
+msgstr "%s wijzigen"
+
+#: rsr/admin.py:495
+msgid "organisation administrator"
+msgstr "administrator van organisatie"
+
+#: rsr/admin.py:496
+msgid "organisation project editor"
+msgstr "project-editor van organisatie"
 
 #: rsr/forms.py:92
 msgid "The two 'new password' fields didn't match."
@@ -121,187 +147,223 @@ msgstr "Nieuw wachtwoord"
 msgid "New password confirmation"
 msgstr "Bevestiging van het nieuwe wachtwoord"
 
-#: rsr/forms.py:197
+#: rsr/forms.py:197 templates/widgets/project_updates.html:83
 msgid "E-mail"
 msgstr "Email"
 
-#: rsr/models.py:36
+#: rsr/forms.py:244
+msgid "Full name"
+msgstr "Voor- en achternaam"
+
+#: rsr/forms.py:245
+msgid "Email address"
+msgstr "Emailadres"
+
+#: rsr/forms.py:246
+msgid "Email address (confirm)"
+msgstr "Emailadres (herhalen a.u.b.)"
+
+#: rsr/forms.py:261
+msgid "You cannot donate more than the project actually needs!"
+msgstr "Uw donatie mag niet hoger zijn dan de voor dit project benodigde financiering."
+
+#: rsr/forms.py:263
+msgid "You cannot donate nothing!"
+msgstr "U kunt niet niets doneren."
+
+#: rsr/forms.py:266
+msgid "You must type the same email address each time!"
+msgstr "U moet elke keer hetzelfde emailadres opgeven."
+
+#: rsr/models.py:47
 msgid "country name"
 msgstr "naam van land"
 
-#: rsr/models.py:84
+#: rsr/models.py:146
 msgid "field partner"
 msgstr "field partner"
 
-#: rsr/models.py:85
+#: rsr/models.py:147
 msgid "support partner"
 msgstr "support partner"
 
-#: rsr/models.py:86
+#: rsr/models.py:148
 msgid "funding partner"
 msgstr "funding partner"
 
-#: rsr/models.py:90
+#: rsr/models.py:152
 msgid "organisation type"
 msgstr "Type van organisatie"
 
-#: rsr/models.py:94
+#: rsr/models.py:156
 msgid "country"
 msgstr "land"
 
-#: rsr/models.py:159
+#: rsr/models.py:233
+msgid "Free"
+msgstr "Gratis"
+
+#: rsr/models.py:234
+msgid "Plus"
+msgstr "Premium"
+
+#: rsr/models.py:235
+msgid "Premium"
+msgstr "Premium"
+
+#: rsr/models.py:257
 msgid "None"
 msgstr "Geen"
 
-#: rsr/models.py:160 templates/rsr/index_base.html:43
+#: rsr/models.py:258 templates/rsr/index_base.html:43
 #: templates/rsr/organisation.html:118
 msgid "Active"
 msgstr "In uitvoering"
 
-#: rsr/models.py:161 templates/rsr/index_base.html:44
+#: rsr/models.py:259 templates/rsr/index_base.html:44
 #: templates/rsr/organisation.html:119
 msgid "Need funding"
 msgstr "Financiering benodigd"
 
-#: rsr/models.py:162 templates/rsr/index_base.html:45
+#: rsr/models.py:260 templates/rsr/index_base.html:45
 #: templates/rsr/organisation.html:120
 msgid "Complete"
 msgstr "Afgerond"
 
-#: rsr/models.py:163
+#: rsr/models.py:261
 msgid "Cancelled"
 msgstr "Geannuleerd"
 
-#: rsr/models.py:171 templates/rsr/update_list.html:25
+#: rsr/models.py:269 templates/rsr/update_list.html:25
 msgid "status"
 msgstr "status"
 
-#: rsr/models.py:342 templates/rsr/update_form.html:85
+#: rsr/models.py:515 templates/rsr/update_form.html:85
 msgid "At the beginning of the update"
 msgstr "Aan het begin van de update"
 
-#: rsr/models.py:343 templates/rsr/update_form.html:86
+#: rsr/models.py:516 templates/rsr/update_form.html:86
 msgid "At the end of the update"
 msgstr "Aan het einde van de update"
 
-#: rsr/models.py:346
+#: rsr/models.py:519
 msgid "web"
 msgstr "website"
 
-#: rsr/models.py:347
+#: rsr/models.py:520
 msgid "e-mail"
 msgstr "email"
 
-#: rsr/models.py:348
+#: rsr/models.py:521 templates/widgets/project_updates.html:86
 msgid "SMS"
 msgstr "SMS"
 
-#: rsr/models.py:432
+#: rsr/models.py:641
 msgid "mms id"
 msgstr "mms-id"
 
-#: rsr/models.py:433
+#: rsr/models.py:642
 msgid "subject"
 msgstr "onderwerp"
 
-#: rsr/models.py:434 rsr/models.py:478
+#: rsr/models.py:643 rsr/models.py:687
 msgid "sender"
 msgstr "afzender"
 
-#: rsr/models.py:435 rsr/models.py:479
+#: rsr/models.py:644 rsr/models.py:688
 msgid "to"
 msgstr "aan"
 
-#: rsr/models.py:436 rsr/models.py:495 rsr/models.py:516
+#: rsr/models.py:645 rsr/models.py:704 rsr/models.py:728
 #: templates/rsr/update_list.html:35
 msgid "time"
 msgstr "tijd"
 
-#: rsr/models.py:437 rsr/models.py:481
+#: rsr/models.py:646 rsr/models.py:690
 msgid "saved at"
 msgstr "opgeslagen om"
 
-#: rsr/models.py:438
+#: rsr/models.py:647
 msgid "mms version"
 msgstr "mmm-versie"
 
-#: rsr/models.py:439
+#: rsr/models.py:648
 msgid "message class"
 msgstr "berichtklasse"
 
-#: rsr/models.py:440
+#: rsr/models.py:649
 msgid "priority"
 msgstr "urgentie"
 
-#: rsr/models.py:441
+#: rsr/models.py:650
 msgid "file count"
 msgstr "aantal bestanden"
 
-#: rsr/models.py:467
+#: rsr/models.py:676
 msgid "MMS"
 msgstr "MMS"
 
-#: rsr/models.py:468
+#: rsr/models.py:677
 msgid "file name"
 msgstr "bestandnaam"
 
-#: rsr/models.py:469
+#: rsr/models.py:678
 msgid "content type"
 msgstr "soort inhoud"
 
-#: rsr/models.py:470
+#: rsr/models.py:679
 msgid "content ID"
 msgstr "inhoud-ID"
 
-#: rsr/models.py:471
+#: rsr/models.py:680
 msgid "file size"
 msgstr "bestandgrootte"
 
-#: rsr/models.py:477 rsr/models.py:488 templates/rsr/update_list.html:23
+#: rsr/models.py:686 rsr/models.py:697 templates/rsr/update_list.html:23
 msgid "text"
 msgstr "tekst"
 
-#: rsr/models.py:480
+#: rsr/models.py:689
 msgid "delivered"
 msgstr "verstuurd"
 
-#: rsr/models.py:482
+#: rsr/models.py:691
 msgid "incoming sms id"
 msgstr "inkomende sms-id"
 
-#: rsr/models.py:485 rsr/models.py:513
+#: rsr/models.py:694 rsr/models.py:725
 msgid "project"
 msgstr "project"
 
-#: rsr/models.py:486 rsr/models.py:514
+#: rsr/models.py:695 rsr/models.py:726
 msgid "user"
 msgstr "gebruiker"
 
-#: rsr/models.py:487 templates/rsr/update_list.html:21
+#: rsr/models.py:696 templates/rsr/update_list.html:21
 msgid "title"
 msgstr "titel"
 
-#: rsr/models.py:491 templates/rsr/update_list.html:33
+#: rsr/models.py:700 templates/rsr/update_list.html:33
 msgid "photo location"
 msgstr "fotopositie"
 
-#: rsr/models.py:492 templates/rsr/update_list.html:29
+#: rsr/models.py:701 templates/rsr/update_list.html:29
 msgid "photo caption"
 msgstr "foto-onderschrift"
 
-#: rsr/models.py:493 templates/rsr/update_list.html:31
+#: rsr/models.py:702 templates/rsr/update_list.html:31
 msgid "photo credit"
 msgstr "foto genomen door"
 
-#: rsr/models.py:494
+#: rsr/models.py:703
 msgid "update method"
 msgstr "update-methode"
 
-#: rsr/models.py:515
+#: rsr/models.py:727
 msgid "comment"
 msgstr "aantekening"
 
-#: rsr/views.py:195
+#: rsr/views.py:202
 msgid "The blog is not available at the moment."
 msgstr "De blog is op het ogenblik helaas niet beschikbaar"
 
@@ -360,13 +422,100 @@ msgid "Maintenance"
 msgstr "Onderhoud"
 
 #: templates/inclusion_tags/funding_bar.html:15
-#: templates/rsr/project_funding.html:80
+#: templates/rsr/project_funding.html:86
 msgid "Total"
 msgstr "In totaal"
 
+#: templates/inclusion_tags/funding_box.html:15
+#: templates/inclusion_tags/funding_box.html:20
+#: templates/inclusion_tags/funding_box.html:35
+#: templates/inclusion_tags/funding_box.html:40
+#: templates/inclusion_tags/funding_box.html:54
+#: templates/inclusion_tags/funding_box_march.html:15
+#: templates/inclusion_tags/funding_box_march.html:20
+#: templates/inclusion_tags/funding_box_march.html:37
+#: templates/inclusion_tags/funding_box_march.html:42
+#: templates/inclusion_tags/funding_box_march.html:56
+#: templates/inclusion_tags/funding_box_march_directory.html:15
+#: templates/inclusion_tags/funding_box_march_directory.html:20
+#: templates/inclusion_tags/funding_box_march_directory.html:37
+#: templates/inclusion_tags/funding_box_march_directory.html:42
+#: templates/inclusion_tags/funding_box_march_directory.html:57
+#: templates/inclusion_tags/funding_table.html:15
+#: templates/inclusion_tags/funding_table.html:20
+#: templates/inclusion_tags/funding_table.html:34
+msgid "Raised"
+msgstr "Bedrag binnen"
+
+#: templates/inclusion_tags/funding_box.html:26
+#: templates/inclusion_tags/funding_box.html:46
+#: templates/inclusion_tags/funding_box_march.html:26
+#: templates/inclusion_tags/funding_box_march.html:48
+#: templates/inclusion_tags/funding_box_march_directory.html:26
+#: templates/inclusion_tags/funding_box_march_directory.html:48
+#: templates/inclusion_tags/funding_table.html:26
+msgid "This project is"
+msgstr "Dit project is"
+
+#: templates/inclusion_tags/funding_box.html:27
+#: templates/inclusion_tags/funding_box.html:47
+#: templates/inclusion_tags/funding_box_march.html:27
+#: templates/inclusion_tags/funding_box_march.html:49
+#: templates/inclusion_tags/funding_box_march_directory.html:27
+#: templates/inclusion_tags/funding_box_march_directory.html:49
+#: templates/inclusion_tags/funding_table.html:27
+msgid "Fully funded"
+msgstr "Volledig gefinancierd"
+
+#: templates/inclusion_tags/funding_box.html:58
+#: templates/inclusion_tags/funding_box_march.html:60
+#: templates/inclusion_tags/funding_box_march_directory.html:61
+#: templates/inclusion_tags/funding_table.html:38
+#: templates/rsr/index_base.html:71 templates/rsr/organisation.html:137
+msgid "Still needed"
+msgstr "Nog benodigd"
+
+#: templates/inclusion_tags/funding_box.html:67
+#: templates/inclusion_tags/funding_box_march.html:69
+#: templates/inclusion_tags/funding_box_march_directory.html:70
+#: templates/inclusion_tags/funding_table.html:47
+msgid "Total budget"
+msgstr "Totale budget"
+
+#: templates/inclusion_tags/funding_box.html:76
+#: templates/inclusion_tags/funding_box_march.html:78
+#: templates/inclusion_tags/funding_box_march_directory.html:78
+msgid "Get Involved"
+msgstr "Doe mee"
+
+#: templates/inclusion_tags/funding_box.html:83
+#: templates/inclusion_tags/funding_box_march.html:85
+#: templates/inclusion_tags/funding_box_march_directory.html:84
+msgid "Individuals"
+msgstr "Particulieren"
+
+#: templates/inclusion_tags/funding_box.html:89
+#: templates/inclusion_tags/funding_box_march.html:94
+#: templates/inclusion_tags/funding_box_march_directory.html:90
+msgid "Institutions"
+msgstr "Instellingen"
+
+#: templates/inclusion_tags/funding_box.html:90
+#: templates/inclusion_tags/funding_box_march.html:96
+#: templates/inclusion_tags/funding_box_march_directory.html:91
+msgid "Sponsor"
+msgstr "Sponsoren"
+
 #: templates/inclusion_tags/submit_button.html:8
 #: templates/registration/organisation_form.html:65
-#: templates/rsr/project_comments.html:64 templates/rsr/project_main.html:199
+#: templates/rsr/machinery_step1.html:160
+#: templates/rsr/machinery_step1.html:234
+#: templates/rsr/machinery_step1.html:292
+#: templates/rsr/machinery_step1.html:356
+#: templates/rsr/machinery_step2.html:213
+#: templates/rsr/paypal_checkout.html:173 templates/rsr/paypal_thanks.html:197
+#: templates/rsr/project_comments.html:64
+#: templates/rsr/project_donate.html:252 templates/rsr/project_main.html:202
 #: templates/rsr/update_form_old.html:102
 msgid "Cancel"
 msgstr "Annuleren"
@@ -498,13 +647,17 @@ msgstr "Wachtwoord wijzigen"
 #: templates/registration/registration_form2.html:114
 #: templates/registration/update_form.html:28
 #: templates/registration/update_form.html:56
-#: templates/rsr/update_form.html:28 templates/rsr/update_form.html.py:44
-#: templates/rsr/update_form.html:57 templates/rsr/update_form.html.py:68
-#: templates/rsr/update_form.html:79 templates/rsr/update_form.html.py:94
-#: templates/rsr/update_form.html:107 templates/rsr/update_form_old.html:42
-#: templates/rsr/update_form_old.html:51 templates/rsr/update_form_old.html:61
-#: templates/rsr/update_form_old.html:71 templates/rsr/update_form_old.html:80
-#: templates/rsr/update_form_old.html:89 templates/rsr/update_form_old.html:97
+#: templates/rsr/machinery_step1.html:72 templates/rsr/machinery_step2.html:72
+#: templates/rsr/paypal_checkout.html:50 templates/rsr/paypal_thanks.html:54
+#: templates/rsr/project_donate.html:67 templates/rsr/project_donate.html:113
+#: templates/rsr/project_donate.html:236 templates/rsr/update_form.html:28
+#: templates/rsr/update_form.html.py:44 templates/rsr/update_form.html:57
+#: templates/rsr/update_form.html.py:68 templates/rsr/update_form.html:79
+#: templates/rsr/update_form.html.py:94 templates/rsr/update_form.html:107
+#: templates/rsr/update_form_old.html:42 templates/rsr/update_form_old.html:51
+#: templates/rsr/update_form_old.html:61 templates/rsr/update_form_old.html:71
+#: templates/rsr/update_form_old.html:80 templates/rsr/update_form_old.html:89
+#: templates/rsr/update_form_old.html:97
 msgid "A problem occurred"
 msgstr "Er is een probleem"
 
@@ -793,7 +946,7 @@ msgid "Your last (family) name"
 msgstr "Uw achternaam"
 
 #: templates/registration/update_form.html:75
-#: templates/rsr/project_comments.html:64 templates/rsr/project_main.html:200
+#: templates/rsr/project_comments.html:64 templates/rsr/project_main.html:203
 msgid "Submit"
 msgstr "Verzenden"
 
@@ -876,7 +1029,7 @@ msgstr "klik dan hier"
 msgid "View flash-enabled home page"
 msgstr "Flash-enabled startpagina tonen"
 
-#: templates/rsr/index.html:145 templates/rsr/project_main.html:239
+#: templates/rsr/index.html:145 templates/rsr/project_main.html:242
 #: templates/rsr/project_updates.html:32
 msgid "Subscribe via RSS"
 msgstr "Via RSS abonneren"
@@ -923,19 +1076,20 @@ msgid "actual"
 msgstr "verwezenlijkt"
 
 #: templates/rsr/index_base.html:55 templates/rsr/index_base.html.py:58
-#: templates/rsr/project_base.html:80
+#: templates/rsr/project_base.html:88 templates/widgets/project_list.html:81
+#: templates/widgets/project_list.html:83
 msgid "Partners"
 msgstr "Partners"
 
 #: templates/rsr/index_base.html:64
 #: templates/rsr/organisation_directory.html:77
-#: templates/rsr/project_base.html:87
+#: templates/rsr/project_base.html:95
 msgid "Field partners"
 msgstr "Field partners"
 
 #: templates/rsr/index_base.html:65
 #: templates/rsr/organisation_directory.html:74
-#: templates/rsr/project_base.html:108
+#: templates/rsr/project_base.html:116
 msgid "Support partners"
 msgstr "Support partners"
 
@@ -948,8 +1102,10 @@ msgstr "Funding partners"
 msgid "Organisations"
 msgstr "Organisaties"
 
-#: templates/rsr/index_base.html:69 templates/rsr/project_base.html:34
-#: templates/rsr/project_funding.html:24
+#: templates/rsr/index_base.html:69 templates/rsr/project_base.html:41
+#: templates/rsr/project_funding.html:26
+#: templates/widgets/feature_side.html:77 templates/widgets/project.html:77
+#: templates/widgets/project_contribute.html:58
 msgid "Funding"
 msgstr "Financiering"
 
@@ -961,9 +1117,425 @@ msgstr "projecten"
 msgid "Pledged"
 msgstr "Toegezegd"
 
-#: templates/rsr/index_base.html:71 templates/rsr/organisation.html:137
-msgid "Still needed"
-msgstr "Nog benodigd"
+#: templates/rsr/machinery_step1.html:13 templates/rsr/machinery_step2.html:12
+#: templates/rsr/paypal_checkout.html:12 templates/rsr/paypal_thanks.html:12
+#: templates/rsr/project_details.html:12 templates/rsr/project_details.html:34
+#: templates/rsr/project_donate.html:12
+msgid "Project details"
+msgstr "Projectdetails"
+
+#: templates/rsr/machinery_step1.html:44 templates/rsr/machinery_step2.html:52
+#: templates/rsr/paypal_checkout.html:37 templates/rsr/paypal_thanks.html:37
+#: templates/rsr/project_comments.html:37
+#: templates/rsr/project_details.html:34
+#: templates/rsr/project_directory.html:13
+#: templates/rsr/project_directory.html:48
+#: templates/rsr/project_directory.html:176
+#: templates/rsr/project_donate.html:53 templates/rsr/project_funding.html:14
+#: templates/rsr/project_main.html:31 templates/rsr/project_updates.html:13
+#: templates/rsr/update_form_old.html:14
+msgid "Project listing"
+msgstr "Lijst van projecten"
+
+#: templates/rsr/machinery_step1.html:44 templates/rsr/machinery_step2.html:52
+#: templates/rsr/project_base.html:142
+msgid "Get a widget"
+msgstr "Een widget halen"
+
+#: templates/rsr/machinery_step1.html:54
+msgid "Get a widget to use on your web site"
+msgstr "Hier kunt u een widget voor uw website halen"
+
+#: templates/rsr/machinery_step1.html:57
+msgid ""
+"The following steps will produce a snippet of Akvo widget code you can copy "
+"and paste into your own web site&#x27;s code."
+msgstr ""
+"Het eindresultaat van de volgende stappen is een stukje code voor een "
+"Akvo-widget dat u op uw eigen website kunt plakken."
+
+#: templates/rsr/machinery_step1.html:59
+msgid "Step 1: Select the type of widget you wish to use."
+msgstr "Stap 1: Kies het soort widget dat u wilt gebruiken."
+
+#: templates/rsr/machinery_step1.html:60
+msgid "Step 2: Select colours and preview your widget."
+msgstr "Stap 2: Kies de widget-kleuren en kijk naar een voorproefje."
+
+#: templates/rsr/machinery_step1.html:61
+msgid "Step 3: Copy the HTML code to your web site."
+msgstr "Stap 3: Kopieer de HTML-code voor gebruik op uw website."
+
+#: templates/rsr/machinery_step1.html:65
+msgid "These widgets will display the project"
+msgstr "Deze widgets tonen project"
+
+#: templates/rsr/machinery_step1.html:72
+msgid ""
+"We are sorry, but you must have Javascript enabled in your browser to "
+"proceed. "
+msgstr ""
+"Het spijt ons, maar u moet Javascript in uw browser activeren "
+"om verder te gaan."
+
+#: templates/rsr/machinery_step1.html:86
+msgid "Step 1: Select the type of widget you wish to use"
+msgstr "Stap 1: Kies het soort widget dat u wilt gebruiken."
+
+#: templates/rsr/machinery_step1.html:88
+msgid ""
+"You can customise the top and bottom bar and title text colours on the next "
+"step."
+msgstr ""
+"In de volgende stap kunt de kleuren van de boven- en onderbalk "
+"en de titel zelf aanpassen."
+
+#: templates/rsr/machinery_step1.html:114
+msgid ""
+"A: Project widget with Donation link (202 pixels wide by 840 pixels high)"
+msgstr ""
+"A: Project-widget met donatie-link (202 pixels breed x 840 pixels hoog)"
+
+#: templates/rsr/machinery_step1.html:116
+msgid ""
+"Shows basic description and allows donations. Users who click on this widget "
+"will go to Akvo.org."
+msgstr ""
+"De widget toont een korte beschrijving en er kunnen donaties gemaakt worden. "
+"Gebruikers die op de widget klikken gaan naar Akvo.org."
+
+#: templates/rsr/machinery_step1.html:123
+#: templates/rsr/machinery_step1.html:195
+#: templates/rsr/machinery_step1.html:257
+#: templates/rsr/machinery_step1.html:363
+msgid "Sample"
+msgstr "Voorbeeld"
+
+#: templates/rsr/machinery_step1.html:136
+#: templates/rsr/machinery_step1.html:210
+#: templates/rsr/machinery_step1.html:268
+#: templates/rsr/machinery_step1.html:333
+msgid "Settings"
+msgstr "Instellingen"
+
+#: templates/rsr/machinery_step1.html:139
+#: templates/rsr/machinery_step1.html:213
+#: templates/rsr/machinery_step1.html:271
+#: templates/rsr/machinery_step1.html:336
+msgid "Enter the web address where you will embed this widget"
+msgstr "Geef het adres van de website waarop deze widget geplakt gaat worden."
+
+#: templates/rsr/machinery_step1.html:141
+#: templates/rsr/machinery_step1.html:215
+#: templates/rsr/machinery_step1.html:273
+#: templates/rsr/machinery_step1.html:338
+msgid "This will help us track statistics for you."
+msgstr "Dit helpt ons gegevens over het gebruik van de widget voor u bij te houden."
+
+#: templates/rsr/machinery_step1.html:143
+#: templates/rsr/machinery_step1.html:217
+#: templates/rsr/machinery_step1.html:340
+msgid "Example"
+msgstr "Bijvoorbeeld"
+
+#: templates/rsr/machinery_step1.html:148
+#: templates/rsr/machinery_step1.html:222
+#: templates/rsr/machinery_step1.html:280
+msgid "Use the"
+msgstr "Gebruik het"
+
+#: templates/rsr/machinery_step1.html:148
+#: templates/rsr/machinery_step1.html:222
+#: templates/rsr/machinery_step1.html:280
+msgid "project."
+msgstr "project."
+
+#: templates/rsr/machinery_step1.html:150
+#: templates/rsr/machinery_step1.html:224
+msgid "Display a random project from this organisation"
+msgstr "Toon een willekeurig project van deze organisatie"
+
+#: templates/rsr/machinery_step1.html:162
+#: templates/rsr/machinery_step1.html:236
+#: templates/rsr/machinery_step1.html:294
+#: templates/rsr/machinery_step1.html:358
+msgid "Select and Proceed..."
+msgstr "Selecteren en verder gaan..."
+
+#: templates/rsr/machinery_step1.html:171 templates/rsr/project_donate.html:88
+#: templates/rsr/rsr_base.html:54 templates/rsr/sign_in.html:20
+msgid "Sign in"
+msgstr "Inloggen"
+
+#: templates/rsr/machinery_step1.html:171
+msgid "for more content."
+msgstr "om meer details te zien."
+
+#: templates/rsr/machinery_step1.html:186
+msgid "B: Project widget with updates (202 pixels wide by 900 pixels high)"
+msgstr "B: Project-widget met updates (202 pixels breed x 900 pixels hoog)"
+
+#: templates/rsr/machinery_step1.html:188
+msgid ""
+"Shows basic description and updates. Users who click on this widget will go "
+"to Akvo.org."
+msgstr ""
+"De widget toont een korte beschrijving en updates. "
+"Gebruikers die op de widget klikken gaan naar Akvo.org."
+
+#: templates/rsr/machinery_step1.html:248
+msgid "C: Project with Donation Link (202 pixels wide by 570 pixels high)"
+msgstr "C: Project-widget met donatie-link (202 pixels breed x 570 pixels hoog)"
+
+#: templates/rsr/machinery_step1.html:250
+msgid ""
+"Shows project title and subtitle. Allows donations. Users who click on this "
+"widget will go to Akvo.org."
+msgstr ""
+"De widget toont de titel en ondertitel van het project. Er kunnen donaties gemaakt worden. "
+"Gebruikers die op de widget klikken gaan naar Akvo.org."
+
+#: templates/rsr/machinery_step1.html:275
+msgid "Example:"
+msgstr "Voorbeeld:"
+
+#: templates/rsr/machinery_step1.html:282
+msgid "Display a random project from this organisation:"
+msgstr "Toon een willekeurig project van deze organisatie:"
+
+#: templates/rsr/machinery_step1.html:314
+msgid "D: Project list widget (745 pixels wide by 730 pixels high)"
+msgstr "D: Widget met lijst van projecten (745 pixels breed x 730 pixels hoog)"
+
+#: templates/rsr/machinery_step1.html:316
+msgid ""
+"Shows list of projects from your organisation. Users who click on this "
+"widget will go to Akvo.org."
+msgstr ""
+"De widget toont een lijst met projecten van uw organisatie. "
+"Gebruikers die op de widget klikken gaan naar Akvo.org."
+
+#: templates/rsr/machinery_step1.html:346
+msgid "Display a project list from this organisation:"
+msgstr "Toon een lijst met projecten van deze organisatie:"
+
+#: templates/rsr/machinery_step2.html:31
+msgid "Please review message below"
+msgstr "Zie onderstaand bericht."
+
+#: templates/rsr/machinery_step2.html:32
+msgid "A: Hex color values should be 3 or 6 characters"
+msgstr "A: De hexadecimale waarde moet uit 3 of 6 tekens bestaan"
+
+#: templates/rsr/machinery_step2.html:33
+msgid "A: Not a valid hex number"
+msgstr "A: Geen geldige hexadecimale waarde"
+
+#: templates/rsr/machinery_step2.html:34
+msgid "B: Hex color values should be 3 or 6 characters"
+msgstr "B: De hexadecimale waarde moet uit 3 of 6 tekens bestaan"
+
+#: templates/rsr/machinery_step2.html:35
+msgid "B: Not a valid hex number"
+msgstr "B: Geen geldige hexadecimale waarde"
+
+#: templates/rsr/machinery_step2.html:61
+msgid "Customise your widget"
+msgstr "Hier kunt u uw widget aanpassen"
+
+#: templates/rsr/machinery_step2.html:64
+msgid "This widget will show the project"
+msgstr "Deze widget toont project"
+
+#: templates/rsr/machinery_step2.html:66
+msgid "This widget will show projects from the following organisation"
+msgstr "Deze widget toont projecten van onderstaande organisatie"
+
+#: templates/rsr/machinery_step2.html:75
+msgid ""
+"We are sorry, but you must have Javascript enabled in your browser to "
+"proceed."
+msgstr ""
+"Het spijt ons, maar u moet Javascript in uw browser activeren "
+"om verder te gaan."
+
+#: templates/rsr/machinery_step2.html:107
+msgid "Step 2: Select colours for your widget and preview"
+msgstr "Stap 2: Kies de widget-kleuren en kijk naar een voorproefje."
+
+#: templates/rsr/machinery_step2.html:111
+msgid "A color you entered is not recognized. Please change and try again."
+msgstr "De kleur die u hebt ingevoerd, wordt niet herkend. Gelieve een andere te proberen."
+
+#: templates/rsr/machinery_step2.html:116
+msgid "A: Top and bottom coloured bars"
+msgstr "A: Kleur voor boven- en onderbalk"
+
+#: templates/rsr/machinery_step2.html:120
+msgid "Akvo Red"
+msgstr "Akvo Red"
+
+#: templates/rsr/machinery_step2.html:121
+#: templates/rsr/machinery_step2.html:168
+msgid "Gold"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:122
+#: templates/rsr/machinery_step2.html:169
+msgid "DarkGoldenrod"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:123
+#: templates/rsr/machinery_step2.html:170
+msgid "Red"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:124
+#: templates/rsr/machinery_step2.html:171
+msgid "Dark Red"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:125
+#: templates/rsr/machinery_step2.html:172
+msgid "DarkMagenta"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:126
+#: templates/rsr/machinery_step2.html:173
+msgid "Indigo"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:127
+#: templates/rsr/machinery_step2.html:174
+msgid "MidnightBlue"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:128
+#: templates/rsr/machinery_step2.html:175
+msgid "MediumBlue"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:129
+#: templates/rsr/machinery_step2.html:176
+msgid "DodgerBlue"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:130
+#: templates/rsr/machinery_step2.html:177
+msgid "Teal"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:131
+#: templates/rsr/machinery_step2.html:178
+msgid "SeaGreen"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:132
+#: templates/rsr/machinery_step2.html:179
+msgid "DarkOliveGreen"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:133
+#: templates/rsr/machinery_step2.html:180
+msgid "DimGray"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:134
+#: templates/rsr/machinery_step2.html:181
+msgid "SlateGray"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:135
+msgid "string"
+msgstr "string"
+
+#: templates/rsr/machinery_step2.html:136
+#: templates/rsr/machinery_step2.html:183
+msgid "Other..."
+msgstr "Andere kleur..."
+
+#: templates/rsr/machinery_step2.html:147
+#: templates/rsr/machinery_step2.html:194
+msgid "Select colour"
+msgstr "Kies een kleur"
+
+#: templates/rsr/machinery_step2.html:153
+#: templates/rsr/machinery_step2.html:200
+msgid "View a list of"
+msgstr "Ga naar lijst met"
+
+#: templates/rsr/machinery_step2.html:153
+#: templates/rsr/machinery_step2.html:200
+msgid "standard colours"
+msgstr "standaardkleuren"
+
+#: templates/rsr/machinery_step2.html:153
+#: templates/rsr/machinery_step2.html:200
+msgid "external link, new window"
+msgstr "externe link, nieuw venster"
+
+#: templates/rsr/machinery_step2.html:158
+#: templates/rsr/machinery_step2.html:205
+msgid "Enter a hex number"
+msgstr "Geeft een hexadecimale waarde in"
+
+#: templates/rsr/machinery_step2.html:163
+msgid "B: Widget title on top bar"
+msgstr "B: Kleur van de titel in bovenbalk"
+
+#: templates/rsr/machinery_step2.html:167
+msgid "White"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:182
+msgid "Black"
+msgstr ""
+
+#: templates/rsr/machinery_step2.html:216
+msgid "Preview"
+msgstr "Voorproefje"
+
+#: templates/rsr/machinery_step2.html:226
+msgid "Review your widget"
+msgstr "Voorproefje van uw widget"
+
+#: templates/rsr/machinery_step2.html:230
+msgid "How your widget will appear (202 pixels wide by 840 pixels high)."
+msgstr "Zo gaat uw widget eruit zien (202 pixels breed x 840 pixels hoog)"
+
+#: templates/rsr/machinery_step2.html:233
+msgid "How your widget will appear (202 pixels wide by 570 pixels high)."
+msgstr "Zo gaat uw widget eruit zien (202 pixels breed x 570 pixels hoog)"
+
+#: templates/rsr/machinery_step2.html:236
+msgid "How your widget will appear (202 pixels wide by 900 pixels high)."
+msgstr "Zo gaat uw widget eruit zien (202 pixels breed x 900 pixels hoog)"
+
+#: templates/rsr/machinery_step2.html:239
+msgid "How your widget will appear (745 pixels wide by 730 pixels high)."
+msgstr "Zo gaat uw widget eruit zien (745 pixels breed x 730 pixels hoog)"
+
+#: templates/rsr/machinery_step2.html:249
+msgid "Step 3: Copy the HTML code below for use on your web site"
+msgstr "Stap 3: Kopieer de HTML-code voor gebruik op uw website."
+
+#: templates/rsr/machinery_step2.html:251
+msgid ""
+"You may repeat the steps above until you are satisﬁed with the appearance of "
+"your widget."
+msgstr ""
+"U kunt bovenstaande stappen net zo vaak herhalen tot u "
+"tevreden bent met hoe de widget eruit ziet."
+
+#: templates/rsr/machinery_step2.html:271
+#: templates/rsr/paypal_checkout.html:176
+#: templates/rsr/paypal_checkout.html:178 templates/rsr/paypal_thanks.html:199
+msgid "Back"
+msgstr "Terug"
+
+#: templates/rsr/machinery_step2.html:274
+msgid "Done"
+msgstr "Klaar"
 
 #: templates/rsr/organisation.html:10
 msgid "Organisation no."
@@ -980,11 +1552,11 @@ msgstr "Lijst van organisaties"
 msgid "Activities"
 msgstr "Activiteiten"
 
-#: templates/rsr/organisation.html:47 templates/rsr/project_base.html:85
+#: templates/rsr/organisation.html:47 templates/rsr/project_base.html:93
 msgid "Field partner"
 msgstr "Field partner"
 
-#: templates/rsr/organisation.html:48 templates/rsr/project_base.html:106
+#: templates/rsr/organisation.html:48 templates/rsr/project_base.html:114
 msgid "Support partner"
 msgstr "Support partner"
 
@@ -1009,7 +1581,7 @@ msgstr "Akvopedia-bijdrage"
 msgid "Contact"
 msgstr "Contact"
 
-#: templates/rsr/organisation.html:79
+#: templates/rsr/organisation.html:79 templates/rsr/project_donate.html:123
 msgid "Email"
 msgstr "Email"
 
@@ -1066,11 +1638,11 @@ msgstr "Organisatie %(page_start)s-%(page_end)s van %(o_count)s"
 #: templates/rsr/organisation_directory.html:49
 #: templates/rsr/organisation_directory.html:163
 #: templates/rsr/organisation_directory.html:165
-#: templates/rsr/project_directory.html:108
-#: templates/rsr/project_directory.html:112
-#: templates/rsr/project_directory.html:114
-#: templates/rsr/project_directory.html:316
-#: templates/rsr/project_directory.html:318
+#: templates/rsr/project_directory.html:137
+#: templates/rsr/project_directory.html:141
+#: templates/rsr/project_directory.html:143
+#: templates/rsr/project_directory.html:346
+#: templates/rsr/project_directory.html:348
 msgid "First"
 msgstr "Eerste"
 
@@ -1078,11 +1650,11 @@ msgstr "Eerste"
 #: templates/rsr/organisation_directory.html:54
 #: templates/rsr/organisation_directory.html:168
 #: templates/rsr/organisation_directory.html:170
-#: templates/rsr/project_directory.html:119
-#: templates/rsr/project_directory.html:121
-#: templates/rsr/project_directory.html:124
-#: templates/rsr/project_directory.html:321
-#: templates/rsr/project_directory.html:323
+#: templates/rsr/project_directory.html:148
+#: templates/rsr/project_directory.html:150
+#: templates/rsr/project_directory.html:153
+#: templates/rsr/project_directory.html:351
+#: templates/rsr/project_directory.html:353
 msgid "Previous"
 msgstr "Vorige"
 
@@ -1090,11 +1662,11 @@ msgstr "Vorige"
 #: templates/rsr/organisation_directory.html:59
 #: templates/rsr/organisation_directory.html:173
 #: templates/rsr/organisation_directory.html:175
-#: templates/rsr/project_directory.html:128
-#: templates/rsr/project_directory.html:130
-#: templates/rsr/project_directory.html:133
-#: templates/rsr/project_directory.html:326
-#: templates/rsr/project_directory.html:328
+#: templates/rsr/project_directory.html:157
+#: templates/rsr/project_directory.html:159
+#: templates/rsr/project_directory.html:162
+#: templates/rsr/project_directory.html:356
+#: templates/rsr/project_directory.html:358
 msgid "Next"
 msgstr "Volgende"
 
@@ -1102,11 +1674,11 @@ msgstr "Volgende"
 #: templates/rsr/organisation_directory.html:64
 #: templates/rsr/organisation_directory.html:178
 #: templates/rsr/organisation_directory.html:180
-#: templates/rsr/project_directory.html:136
-#: templates/rsr/project_directory.html:139
-#: templates/rsr/project_directory.html:141
-#: templates/rsr/project_directory.html:331
-#: templates/rsr/project_directory.html:333
+#: templates/rsr/project_directory.html:165
+#: templates/rsr/project_directory.html:168
+#: templates/rsr/project_directory.html:170
+#: templates/rsr/project_directory.html:361
+#: templates/rsr/project_directory.html:363
 msgid "Last"
 msgstr "Laatste"
 
@@ -1115,6 +1687,7 @@ msgstr "Laatste"
 #: templates/rsr/organisation_directory.html:77
 #: templates/rsr/organisation_directory.html:80
 #: templates/rsr/organisation_directory.html:83
+#: templates/widgets/project_list.html:38
 msgid "total"
 msgstr "in totaal"
 
@@ -1123,14 +1696,16 @@ msgid "Organisation name"
 msgstr "Naam van organisatie"
 
 #: templates/rsr/organisation_directory.html:94
-#: templates/rsr/project_directory.html:176
-#: templates/rsr/project_directory.html:178
+#: templates/rsr/project_directory.html:205
+#: templates/rsr/project_directory.html:207
+#: templates/widgets/project_list.html:71
 msgid "Country"
 msgstr "Land"
 
 #: templates/rsr/organisation_directory.html:95
-#: templates/rsr/project_directory.html:183
-#: templates/rsr/project_directory.html:185
+#: templates/rsr/project_directory.html:212
+#: templates/rsr/project_directory.html:214
+#: templates/widgets/project_list.html:67
 msgid "Continent"
 msgstr "Werelddeel"
 
@@ -1142,57 +1717,206 @@ msgstr "Financiering aangevraagd voor"
 msgid "Funds still needed"
 msgstr "Nog benodigde financiering"
 
+#: templates/rsr/paypal_checkout.html:37 templates/rsr/paypal_thanks.html:37
+#: templates/rsr/project_donate.html:53
+msgid "Get widget"
+msgstr "Widget halen"
+
+#: templates/rsr/paypal_checkout.html:46
+msgid "Confirm donation details"
+msgstr "Donatie-details bevestigen"
+
+#: templates/rsr/paypal_checkout.html:50 templates/rsr/paypal_thanks.html:54
+#: templates/rsr/project_donate.html:68
+msgid ""
+"We&#x27;re sorry, but you must have Javascript enabled in your browser to "
+"proceed."
+msgstr ""
+"Het spijt ons, maar u moet Javascript in uw browser activeren "
+"om verder te gaan."
+
+#: templates/rsr/paypal_checkout.html:57 templates/rsr/paypal_thanks.html:87
+#: templates/rsr/project_donate.html:75
+msgid "Your information"
+msgstr "Uw gegevens"
+
+#: templates/rsr/paypal_checkout.html:60 templates/rsr/paypal_checkout.html:70
+#: templates/rsr/paypal_thanks.html:91 templates/rsr/paypal_thanks.html:100
+#: templates/rsr/project_donate.html:78 templates/rsr/project_donate.html:92
+msgid "Your name"
+msgstr "Uw naam"
+
+#: templates/rsr/paypal_checkout.html:61 templates/rsr/paypal_checkout.html:71
+#: templates/rsr/paypal_thanks.html:92 templates/rsr/paypal_thanks.html:101
+#: templates/rsr/project_donate.html:79 templates/rsr/project_donate.html:95
+msgid "Your email"
+msgstr "Uw emailadres"
+
+#: templates/rsr/paypal_checkout.html:84 templates/rsr/project_donate.html:151
+msgid "Project to which you are donating"
+msgstr "Project waaraan u geld wilt doneren"
+
+#: templates/rsr/paypal_checkout.html:87 templates/rsr/paypal_thanks.html:116
+#: templates/rsr/project_directory.html:191
+#: templates/rsr/project_directory.html:193
+#: templates/rsr/project_donate.html:154
+msgid "Project name"
+msgstr "Naam van project"
+
+#: templates/rsr/paypal_checkout.html:89 templates/rsr/paypal_thanks.html:118
+#: templates/rsr/project_donate.html:156
+#: templates/widgets/project_updates.html:110
+msgid "Akvo ref"
+msgstr "Akvo-ref"
+
+#: templates/rsr/paypal_checkout.html:111
+#: templates/rsr/project_donate.html:179
+msgid "Akvo.org uses the PayPal Secure Payment&trade; system for donations. "
+msgstr "Akvo.org maakt gebruik van het PayPal Secure Payment&trade; systeem voor donaties. "
+
+#: templates/rsr/paypal_checkout.html:116 templates/rsr/paypal_thanks.html:140
+#: templates/rsr/project_donate.html:184
+msgid ""
+"At this time, only residents of the following countries will be able to "
+"treat this donation as a tax-deductible charitable contribution. We are "
+"working hard to expand this list all the time!"
+msgstr ""
+"Op het ogenblik zijn donaties alleen voor inwoners van onderstaande "
+"landen fiscaal aftrekbaar. Wij zullen de lijst zo snel mogelijk uitbreiden."
+
+#: templates/rsr/paypal_checkout.html:119 templates/rsr/paypal_thanks.html:143
+#: templates/rsr/project_donate.html:187
+msgid "The Netherlands (Nederland)"
+msgstr "Nederland"
+
+#: templates/rsr/paypal_checkout.html:125
+#: templates/rsr/project_donate.html:192
+msgid ""
+"PayPal charges upto 3.4%+30 Euro cents of your donation in transaction fees. "
+"So if you donate 100 Euro, at least 96.30 Euro will go towards the selected "
+"project."
+msgstr ""
+"PayPal houdt per transactie maximaal 3,4% + 30 eurocent van uw donatie in. "
+"Als u bijv. 100 euro doneert, gaat daarvan tenminste 96.30 euro naar "
+"het door u gekozen project."
+
+#: templates/rsr/paypal_checkout.html:135 templates/rsr/paypal_thanks.html:158
+msgid "Amount you are donating"
+msgstr "Bedrag dat u wilt doneren"
+
+#: templates/rsr/paypal_checkout.html:137 templates/rsr/paypal_thanks.html:160
+#: templates/rsr/project_donate.html:205 templates/rsr/project_donate.html:237
+msgid "Amount"
+msgstr "Bedrag"
+
+#: templates/rsr/paypal_checkout.html:169
+msgid "Click the Donate button to proceed to PayPal checkout."
+msgstr "Klik op \"Donate\" (donatie) om naar de Paypal-checkout te gaan."
+
+#: templates/rsr/paypal_checkout.html:170
+msgid "By clicking on the \"Donate\" button you agree to the"
+msgstr "Door op \"Donate\" te klikken gaat u akkoord met de"
+
+#: templates/rsr/paypal_checkout.html:170
+msgid "Terms and Conditions"
+msgstr "Algemene voorwaarden"
+
+#: templates/rsr/paypal_checkout.html:170
+msgid "for the donation."
+msgstr "voor de donatie."
+
+#: templates/rsr/paypal_thanks.html:46
+msgid "Thank you for your donation!"
+msgstr "Wij danken u voor uw donatie!"
+
+#: templates/rsr/paypal_thanks.html:48
+msgid ""
+"You will receive email confirmation from both Akvo.org and PayPal shortly."
+msgstr "U zult een email-bevestiging van zowel Akvo.org als PayPal ontvangen."
+
+#: templates/rsr/paypal_thanks.html:49
+msgid "You may wish to print this page for your records."
+msgstr "We raden u aan deze pagina af te drukken."
+
+#: templates/rsr/paypal_thanks.html:61
+msgid "Transaction information"
+msgstr "Transactiegegevens"
+
+#: templates/rsr/paypal_thanks.html:63
+msgid "Akvo transaction number"
+msgstr "Akvo transactienummer"
+
+#: templates/rsr/paypal_thanks.html:71
+msgid "Date"
+msgstr "Datum"
+
+#: templates/rsr/paypal_thanks.html:113
+msgid "Project to which you donated"
+msgstr "Project waaraan u heeft gedoneerd"
+
+#: templates/rsr/paypal_thanks.html:149
+msgid "We have already updated the Akvo site to reflect your contribution."
+msgstr "Op de Akvo-website is al te zien dat u heeft bijgedragen."
+
+#: templates/rsr/paypal_thanks.html:193
+msgid "Back to Project"
+msgstr "Terug naar project"
+
+#: templates/rsr/paypal_thanks.html:195
+msgid "Click the Donate button to proceed to PayPal checkout"
+msgstr "Klik op \"Donate\" (donatie) om naar de Paypal-checkout te gaan."
+
 #: templates/rsr/project_base.html:12
 msgid "Project no."
 msgstr "Projectnr."
 
-#: templates/rsr/project_base.html:32 templates/rsr/project_funding.html:22
+#: templates/rsr/project_base.html:38 templates/rsr/project_funding.html:23
 msgid "Fund project"
 msgstr "Project financieren"
 
-#: templates/rsr/project_base.html:42 templates/rsr/project_funding.html:45
+#: templates/rsr/project_base.html:50 templates/rsr/project_funding.html:51
 msgid "Request posted"
 msgstr "Aanvraag verzonden"
 
-#: templates/rsr/project_base.html:44
+#: templates/rsr/project_base.html:52
 msgid "Funding completed"
 msgstr "Financiering afgerond"
 
-#: templates/rsr/project_base.html:47 templates/rsr/project_main.html:95
+#: templates/rsr/project_base.html:55 templates/rsr/project_main.html:95
 #: templates/rsr/project_main.html:142
 msgid "View details"
 msgstr "Details tonen"
 
-#: templates/rsr/project_base.html:51
-msgid "Current Funder"
+#: templates/rsr/project_base.html:59
+msgid "Current funder"
 msgstr "Momentele funding partner"
 
-#: templates/rsr/project_base.html:54
+#: templates/rsr/project_base.html:62
 msgid "You could fund this project!"
 msgstr "U zou dit project kunnen financieren!"
 
-#: templates/rsr/project_base.html:56 templates/rsr/project_funding.html:92
-msgid "Current Funders"
+#: templates/rsr/project_base.html:64
+msgid "Current funders"
 msgstr "Momentele funding partners"
 
-#: templates/rsr/project_base.html:67 templates/rsr/project_base.html.py:95
-#: templates/rsr/project_base.html:116
+#: templates/rsr/project_base.html:75 templates/rsr/project_base.html:103
+#: templates/rsr/project_base.html:124
 msgid "Logo of"
 msgstr "Logo van"
 
-#: templates/rsr/project_base.html:72 templates/rsr/project_funding.html:105
+#: templates/rsr/project_base.html:80 templates/rsr/project_funding.html:111
 msgid "Grant"
 msgstr "Subsidie"
 
-#: templates/rsr/project_base.html:79
+#: templates/rsr/project_base.html:87
 msgid "Become a partner"
 msgstr "Partner worden"
 
-#: templates/rsr/project_base.html:127
+#: templates/rsr/project_base.html:135
 msgid "Page tools"
 msgstr "Hulpmiddelen"
 
-#: templates/rsr/project_base.html:133
+#: templates/rsr/project_base.html:141
 msgid "Permalink to this project"
 msgstr "Permalink naar dit project"
 
@@ -1201,17 +1925,7 @@ msgstr "Permalink naar dit project"
 msgid "All project comments"
 msgstr "Alle projectaantekeningen"
 
-#: templates/rsr/project_comments.html:37
-#: templates/rsr/project_details.html:34
-#: templates/rsr/project_directory.html:13
-#: templates/rsr/project_directory.html:20
-#: templates/rsr/project_directory.html:147
-#: templates/rsr/project_funding.html:14 templates/rsr/project_main.html:31
-#: templates/rsr/project_updates.html:13 templates/rsr/update_form_old.html:14
-msgid "Project listing"
-msgstr "Lijst van projecten"
-
-#: templates/rsr/project_comments.html:48 templates/rsr/project_main.html:186
+#: templates/rsr/project_comments.html:48 templates/rsr/project_main.html:189
 msgid "Add comment"
 msgstr "Aantekening maken"
 
@@ -1219,7 +1933,7 @@ msgstr "Aantekening maken"
 msgid "You must be signed in to add a comment."
 msgstr "Om een aantekening te maken moet u eerst inloggen"
 
-#: templates/rsr/project_comments.html:60 templates/rsr/project_main.html:195
+#: templates/rsr/project_comments.html:60 templates/rsr/project_main.html:198
 msgid "Sign In"
 msgstr "Inloggen"
 
@@ -1227,7 +1941,7 @@ msgstr "Inloggen"
 msgid "Project comments"
 msgstr "Projectaantekeningen"
 
-#: templates/rsr/project_comments.html:72 templates/rsr/project_main.html:223
+#: templates/rsr/project_comments.html:72 templates/rsr/project_main.html:226
 msgid ""
 "The comments are owned by whoever posted them. We are not responsible for "
 "them in any way."
@@ -1235,187 +1949,227 @@ msgstr ""
 "De persoon die de aantekening maakt, draagt hiervoor de verantwoording. Akvo "
 "is niet verantwoordelijk voor de aantekeningen."
 
-#: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:219
+#: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:222
 #, python-format
 msgid "Comment abuse in project #%(p_id)s, comment #%(c_id)s"
 msgstr "Taalmisbruik in project #%(p_id)s, aantekening #%(c_id)s"
 
-#: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:219
+#: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:222
 msgid "Report abuse"
 msgstr "Taalmisbruik melden"
 
-#: templates/rsr/project_details.html:12 templates/rsr/project_details.html:34
-msgid "Project details"
-msgstr "Projectdetails"
-
-#: templates/rsr/project_details.html:50
-#: templates/rsr/project_directory.html:56
-#: templates/rsr/project_directory.html:169
-#: templates/rsr/project_directory.html:171 templates/rsr/project_main.html:45
-#: templates/widgets/featured_project.html:27
+#: templates/rsr/project_details.html:53 templates/rsr/project_details.html:95
+#: templates/rsr/project_directory.html:83
+#: templates/rsr/project_directory.html:198
+#: templates/rsr/project_directory.html:200 templates/rsr/project_main.html:45
+#: templates/widgets/feature_side.html:66 templates/widgets/project.html:66
+#: templates/widgets/project_list.html:74
+#: templates/widgets/project_list.html:121
+#: templates/widgets/project_updates.html:67
 msgid "Status"
 msgstr "Momentele status"
 
-#: templates/rsr/project_details.html:53 templates/rsr/project_main.html:47
+#: templates/rsr/project_details.html:56 templates/rsr/project_details.html:98
+#: templates/rsr/project_main.html:47
 msgid "Focus area"
 msgstr "Projecttype"
 
-#: templates/rsr/project_details.html:90
+#: templates/rsr/project_details.html:74
+#: templates/rsr/project_details.html:135
 msgid "City"
 msgstr "Stad"
 
-#: templates/rsr/project_details.html:100
-#: templates/rsr/project_details.html:104
+#: templates/rsr/project_details.html:84 templates/rsr/project_details.html:86
+#: templates/rsr/project_details.html:145
+#: templates/rsr/project_details.html:149
 msgid "location"
 msgstr "locatie"
 
-#: templates/rsr/project_details.html:108
-#: templates/rsr/project_details.html:262
-#: templates/rsr/project_funding.html:33
-#: templates/rsr/project_funding.html:113
+#: templates/rsr/project_details.html:155
+#: templates/rsr/project_details.html:309
+#: templates/rsr/project_funding.html:35
+#: templates/rsr/project_funding.html:119
 msgid "Back to project summary"
 msgstr "Terug naar de projectbeschrijving"
 
-#: templates/rsr/project_details.html:112 templates/rsr/project_main.html:86
+#: templates/rsr/project_details.html:159 templates/rsr/project_main.html:86
 msgid "Description"
 msgstr "Beschrijving"
 
-#: templates/rsr/project_details.html:114 templates/rsr/project_main.html:88
+#: templates/rsr/project_details.html:161 templates/rsr/project_main.html:88
 msgid "Sustainability"
 msgstr "Duurzaamheid"
 
-#: templates/rsr/project_details.html:128
-#: templates/rsr/project_details.html:152 templates/rsr/project_main.html:104
+#: templates/rsr/project_details.html:175
+#: templates/rsr/project_details.html:199 templates/rsr/project_main.html:104
 #: templates/rsr/project_main.html:113
 msgid "Target benchmarks"
 msgstr "Doelstelling in details"
 
-#: templates/rsr/project_details.html:134
+#: templates/rsr/project_details.html:181
 msgid "More information"
 msgstr "Meer informatie"
 
-#: templates/rsr/project_details.html:138
+#: templates/rsr/project_details.html:185
 msgid "Current state"
 msgstr "Momentele stand van zaken"
 
-#: templates/rsr/project_details.html:142 templates/rsr/project_main.html:89
+#: templates/rsr/project_details.html:189 templates/rsr/project_main.html:89
 msgid "Context"
 msgstr "Context"
 
-#: templates/rsr/project_details.html:157 templates/rsr/project_main.html:118
+#: templates/rsr/project_details.html:204 templates/rsr/project_main.html:118
 msgid "Goals overview"
 msgstr "Overzicht van doelstellingen"
 
-#: templates/rsr/project_directory.html:35
+#: templates/rsr/project_directory.html:63
 msgid "Featured projects"
 msgstr "Uitgelichte projecten"
 
-#: templates/rsr/project_directory.html:57
-#: templates/widgets/featured_project.html:28
+#: templates/rsr/project_directory.html:84
 msgid "Focus areas"
 msgstr "Projecttype"
 
-#: templates/rsr/project_directory.html:104
-#: templates/rsr/project_directory.html:312
+#: templates/rsr/project_directory.html:133
+#: templates/rsr/project_directory.html:342
 #, python-format
 msgid "Projects %(page_start)s-%(page_end)s of %(p_count)s"
 msgstr "Project %(page_start)s-%(page_end)s van %(p_count)s"
 
-#: templates/rsr/project_directory.html:151
+#: templates/rsr/project_directory.html:180
 #, python-format
 msgid "(%(p_count)s total)"
 msgstr "(%(p_count)s in totaal)"
 
-#: templates/rsr/project_directory.html:162
-#: templates/rsr/project_directory.html:164
+#: templates/rsr/project_directory.html:191
+#: templates/rsr/project_directory.html:193
 msgid "Sort projects by name"
 msgstr "Projecten op naam sorteren"
 
-#: templates/rsr/project_directory.html:162
-#: templates/rsr/project_directory.html:164
-msgid "Project name"
-msgstr "Naam van project"
-
-#: templates/rsr/project_directory.html:169
-#: templates/rsr/project_directory.html:171
+#: templates/rsr/project_directory.html:198
+#: templates/rsr/project_directory.html:200
 msgid "Sort projects by status"
 msgstr "Projecten op status sorteren"
 
-#: templates/rsr/project_directory.html:176
-#: templates/rsr/project_directory.html:178
+#: templates/rsr/project_directory.html:205
+#: templates/rsr/project_directory.html:207
 msgid "Sort projects by country"
 msgstr "Projecten op naam sorteren"
 
-#: templates/rsr/project_directory.html:183
-#: templates/rsr/project_directory.html:185
+#: templates/rsr/project_directory.html:212
+#: templates/rsr/project_directory.html:214
 msgid "Sort projects by continent"
 msgstr "Projecten op werelddeel sorteren"
 
-#: templates/rsr/project_directory.html:190
-#: templates/rsr/project_directory.html:192
+#: templates/rsr/project_directory.html:219
+#: templates/rsr/project_directory.html:221
 msgid "Sort projects by total funds requested"
 msgstr "Op totaal aangevraagde financiering sorteren"
 
-#: templates/rsr/project_directory.html:190
-#: templates/rsr/project_directory.html:192
+#: templates/rsr/project_directory.html:219
+#: templates/rsr/project_directory.html:221
 msgid "Total funds requested"
 msgstr "Totaal aangevraagde financiering"
 
-#: templates/rsr/project_directory.html:197
-#: templates/rsr/project_directory.html:199
+#: templates/rsr/project_directory.html:226
+#: templates/rsr/project_directory.html:228
 msgid "Sort projects by funding still needed"
 msgstr "Op nog benodigd bedrag sorteren"
 
-#: templates/rsr/project_directory.html:197
-#: templates/rsr/project_directory.html:199
+#: templates/rsr/project_directory.html:226
+#: templates/rsr/project_directory.html:228
 msgid "Funding still needed"
 msgstr "Nog benodigd bedrag"
 
-#: templates/rsr/project_directory.html:204
+#: templates/rsr/project_directory.html:233
 msgid "Field partner(s)"
 msgstr "Field partner(s)"
 
-#: templates/rsr/project_directory.html:205
+#: templates/rsr/project_directory.html:234
 msgid "Support partner(s)"
 msgstr "Support partner(s)"
 
-#: templates/rsr/project_directory.html:206
+#: templates/rsr/project_directory.html:235
 msgid "Funding partner(s)"
 msgstr "Funding partner(s)"
+
+#: templates/rsr/project_donate.html:63
+msgid "Donate to project: Enter amount"
+msgstr "Aan een project doneren: Bedrag ingeven"
+
+#: templates/rsr/project_donate.html:87
+msgid "You are not logged into"
+msgstr "U bent niet ingelogd bij"
+
+#: templates/rsr/project_donate.html:88
+msgid "or provide your full name and email address below."
+msgstr "of onderstaand uw voor- en achternaam en emailadres ingeven."
+
+#: templates/rsr/project_donate.html:98
+msgid "Confirm email"
+msgstr "Emailadres nogmaals ingeven"
+
+#: templates/rsr/project_donate.html:119
+msgid "Name"
+msgstr "Naam"
+
+#: templates/rsr/project_donate.html:127
+msgid "Email confirmation"
+msgstr "Email-bevestiging"
+
+#: templates/rsr/project_donate.html:203
+msgid "Amount you wish to donate (in Euros"
+msgstr "Bedrag dat u wenst te doneren (in euro's"
+
+#: templates/rsr/project_donate.html:210
+msgid "Only whole Euro amounts please"
+msgstr "Alleen hele (euro)bedragen a.u.b."
+
+#: templates/rsr/project_donate.html:250
+msgid "You will be able to review and confirm your donation on the next page."
+msgstr "U kunt uw donatie op de volgende pagina herzien en bevestigen."
+
+#: templates/rsr/project_donate.html:254
+msgid "Next..."
+msgstr "Volgende..."
 
 #: templates/rsr/project_funding.html:11 templates/rsr/project_funding.html:14
 msgid "Funding details"
 msgstr "Financieringsdetails"
 
-#: templates/rsr/project_funding.html:50
+#: templates/rsr/project_funding.html:56
 msgid "Project started"
 msgstr "Project begonnen"
 
-#: templates/rsr/project_funding.html:57
+#: templates/rsr/project_funding.html:63
 msgid "Funding breakdown"
 msgstr "Kostenverdeling"
 
-#: templates/rsr/project_funding.html:60
+#: templates/rsr/project_funding.html:66
 msgid "Employment costs"
 msgstr "Personeel"
 
-#: templates/rsr/project_funding.html:64
+#: templates/rsr/project_funding.html:70
 msgid "Building Material costs"
 msgstr "Bouwmateriaal"
 
-#: templates/rsr/project_funding.html:68
+#: templates/rsr/project_funding.html:74
 msgid "Training costs"
 msgstr "Training"
 
-#: templates/rsr/project_funding.html:72
+#: templates/rsr/project_funding.html:78
 msgid "Maintenance costs"
 msgstr "Onderhoud"
 
-#: templates/rsr/project_funding.html:76
+#: templates/rsr/project_funding.html:82
 msgid "Other costs"
 msgstr "Andere kosten"
 
-#: templates/rsr/project_funding.html:100
+#: templates/rsr/project_funding.html:98
+msgid "Current Funders"
+msgstr "Momentele funding partners"
+
+#: templates/rsr/project_funding.html:106
 #, python-format
 msgid "Logo of %(funding_org_name)s"
 msgstr "Logo van %(funding_org_name)s"
@@ -1424,59 +2178,59 @@ msgstr "Logo van %(funding_org_name)s"
 msgid "Personnel"
 msgstr "Medewerkers"
 
-#: templates/rsr/project_main.html:163
+#: templates/rsr/project_main.html:166
 msgid "Related to this project"
 msgstr "Aan dit project verbonden"
 
-#: templates/rsr/project_main.html:168
+#: templates/rsr/project_main.html:171
 msgid "Akvopedia entries"
 msgstr "Akvopedia-bijdragen"
 
-#: templates/rsr/project_main.html:177
+#: templates/rsr/project_main.html:180
 msgid "External links"
 msgstr "Externe links"
 
-#: templates/rsr/project_main.html:187
+#: templates/rsr/project_main.html:190
 msgid "Comments"
 msgstr "Aantekeningen"
 
-#: templates/rsr/project_main.html:194
+#: templates/rsr/project_main.html:197
 msgid "You must be signed in to add a comment"
 msgstr "Om een aantekening te maken moet u eerst inloggen"
 
-#: templates/rsr/project_main.html:222
+#: templates/rsr/project_main.html:225
 msgid "Older comments"
 msgstr "Eerdere aantekeningen"
 
-#: templates/rsr/project_main.html:225
+#: templates/rsr/project_main.html:228
 msgid "No comments yet."
 msgstr "Nog geen aantekeningen."
 
-#: templates/rsr/project_main.html:234 templates/rsr/project_updates.html:24
+#: templates/rsr/project_main.html:237 templates/rsr/project_updates.html:24
 #: templates/rsr/update_form.html:33 templates/rsr/update_form_old.html:28
 msgid "Add update"
 msgstr "Update toevoegen"
 
-#: templates/rsr/project_main.html:235 templates/rsr/project_updates.html:33
+#: templates/rsr/project_main.html:238 templates/rsr/project_updates.html:33
 msgid "Project updates"
 msgstr "Project-updates"
 
-#: templates/rsr/project_main.html:247 templates/rsr/project_updates.html:43
+#: templates/rsr/project_main.html:250 templates/rsr/project_updates.html:43
 #, python-format
 msgid "by %(user_name)s via %(update_meth)s"
 msgstr "door %(user_name)s via %(update_meth)s"
 
-#: templates/rsr/project_main.html:259 templates/rsr/project_main.html:275
+#: templates/rsr/project_main.html:262 templates/rsr/project_main.html:278
 #: templates/rsr/project_updates.html:55 templates/rsr/update_form.html:103
 #: templates/rsr/update_form_old.html:93
 msgid "Photo credit"
 msgstr "Foto genomen door"
 
-#: templates/rsr/project_main.html:282
+#: templates/rsr/project_main.html:285
 msgid "Earlier updates"
 msgstr "Eerdere updates"
 
-#: templates/rsr/project_main.html:283 templates/rsr/project_updates.html:34
+#: templates/rsr/project_main.html:286 templates/rsr/project_updates.html:34
 msgid ""
 "The updates are owned by whoever posted them. We are not responsible for "
 "them in any way."
@@ -1484,7 +2238,7 @@ msgstr ""
 "De persoon die de update toevoegt, draagt hiervoor de verantwoording. Akvo "
 "is niet verantwoordelijk voor updates."
 
-#: templates/rsr/project_main.html:285
+#: templates/rsr/project_main.html:288
 msgid "No updates yet."
 msgstr "Nog geen updates"
 
@@ -1497,7 +2251,6 @@ msgid "Permalink"
 msgstr "Permalink"
 
 #: templates/rsr/rsr_base.html:13 templates/rsr/rsr_base.html.py:18
-#: templates/widgets/widget_base.html:13 templates/widgets/widget_base.html:16
 msgid "Akvo.org - the open source for water and sanitation"
 msgstr "Akvo.org - open source voor schoon water en sanitaire voorzieningen"
 
@@ -1509,7 +2262,7 @@ msgstr "Akvo RSR"
 msgid "Really simple reporting"
 msgstr "Really simple reporting"
 
-#: templates/rsr/rsr_base.html:19 templates/widgets/widget_base.html:17
+#: templates/rsr/rsr_base.html:19
 msgid "water, sanitation, open source, development aid"
 msgstr ""
 "schoon water, sanitaire voorzieningen, open source, ontwikkelingssamenwerking"
@@ -1518,10 +2271,6 @@ msgstr ""
 #: templates/rsr/sign_in.html:15
 msgid "Akvo.org"
 msgstr "Akvo.org"
-
-#: templates/rsr/rsr_base.html:54 templates/rsr/sign_in.html:20
-msgid "Sign in"
-msgstr "Inloggen"
 
 #: templates/rsr/rsr_base.html:64
 msgid "Sign out"
@@ -1555,7 +2304,7 @@ msgstr "Over Akvo"
 msgid "My account"
 msgstr "Mijn account"
 
-#: templates/rsr/rsr_base.html:100 templates/widgets/widget_base.html:32
+#: templates/rsr/rsr_base.html:100
 msgid "Akvo RSR - Really simple reporting"
 msgstr "Akvo RSR - Really simple reporting"
 
@@ -1711,15 +2460,83 @@ msgstr "foto"
 msgid "Message header"
 msgstr "Berichtnaam"
 
-#: templates/widgets/featured_project.html:50
-msgid "Akvo"
-msgstr "Akvo"
+#: templates/widgets/feature_side.html:43 templates/widgets/project.html:43
+#: templates/widgets/project_contribute.html:43
+#: templates/widgets/project_list.html:48
+#: templates/widgets/project_list.html:53
+#: templates/widgets/project_list.html:57
+#: templates/widgets/project_list.html:63
+msgid "Project"
+msgstr "Project"
+
+#: templates/widgets/feature_side.html:60 templates/widgets/project.html:60
+#: templates/widgets/project_list.html:104
+#: templates/widgets/project_updates.html:61
+#: templates/widgets/project_updates.html:104
+#, fuzzy
+msgid "More"
+msgstr "Meer"
+
+#: templates/widgets/feature_side.html:68 templates/widgets/project.html:68
+#: templates/widgets/project_list.html:76
+msgid "Last update"
+msgstr "Meest recente update"
+
+#: templates/widgets/feature_side.html:73 templates/widgets/project.html:73
+#: templates/widgets/project_list.html:128
+#: templates/widgets/project_updates.html:107
+msgid "Not yet"
+msgstr "Nog geen updates"
+
+#: templates/widgets/feature_side.html:84 templates/widgets/project.html:84
+#: templates/widgets/project_contribute.html:65
+#: templates/widgets/project_list.html:117
+msgid "Akvo Ref"
+msgstr "Akvo-Ref"
+
+#: templates/widgets/project_list.html:38
+msgid "Project List"
+msgstr "Lijst van projecten"
+
+#: templates/widgets/project_list.html:86
+msgid "Total Budget"
+msgstr "Totale budget"
+
+#: templates/widgets/project_list.html:87
+msgid "Funding Needed"
+msgstr "Benodigde financiering"
+
+#: templates/widgets/project_list.html:125
+#: templates/widgets/project_updates.html:73
+msgid "Last Update"
+msgstr "Meest recente update"
+
+#: templates/widgets/project_list.html:138
+msgid "Field Partner"
+msgstr "Field partner"
+
+#: templates/widgets/project_list.html:147
+msgid "Funding Partner"
+msgstr "Funding partner"
+
+#: templates/widgets/project_list.html:156
+msgid "Support Partner"
+msgstr "Support partner"
+
+#: templates/widgets/project_updates.html:44
+msgid "Most Recent Update"
+msgstr "Meest recente update"
+
+#: templates/widgets/project_updates.html:78
+msgid "Via"
+msgstr "Via"
+
+#: templates/widgets/project_updates.html:80
+msgid "Web"
+msgstr "website"
 
 #~ msgid "You must type the same password each time"
 #~ msgstr "U moet elke keer hetzelfde wachtwoord opgeven"
-
-#~ msgid "You must type the same email address each time"
-#~ msgstr "U moet elke keer hetzelfde emailadres opgeven"
 
 #~ msgid "Usernames can only contain letters, numbers and underscores"
 #~ msgstr ""
@@ -1774,14 +2591,8 @@ msgstr "Akvo"
 #~ msgid "First name"
 #~ msgstr "Voornaam"
 
-#~ msgid "Last name"
-#~ msgstr "Achternaam"
-
 #~ msgid "Password (type again to avoid typos)"
 #~ msgstr "Wachtwoord (herhalen om tikfouten te voorkomen)"
-
-#~ msgid "Email address"
-#~ msgstr "Emailadres"
 
 #~ msgid "Email address (type again to avoid typos)"
 #~ msgstr "Emailadres (herhalen om tikfouten te voorkomen)"
@@ -1802,9 +2613,6 @@ msgstr "Akvo"
 
 #~ msgid "(%(projects.count)s total)"
 #~ msgstr "(%(projects.count)s in totaal)"
-
-#~ msgid "Project list"
-#~ msgstr "Lijst van projecten"
 
 #~ msgid "Please correct the errors below."
 #~ msgstr "Gelieve onderstaande fouten te verbeteren"
