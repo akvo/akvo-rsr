@@ -8,10 +8,10 @@
 
 from settings_base import *
 
-DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'rsrdb' # Or path to database file if using sqlite3.
-DATABASE_USER = 'rsruser'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'u5r6vKSBwUxE4EMB'         # Not used with sqlite3.
+DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = '/Users/gabriel/dev/restruct/akvo/data/akvo.sqlite3' # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
@@ -24,9 +24,9 @@ SITE_ID = 1
 try:
     DOMAIN_NAME = Site.objects.get(pk=SITE_ID)
 except:
-    DOMAIN_NAME = 'newdev.akvo.org'
+    DOMAIN_NAME = 'localhost:8000'
 if not DOMAIN_NAME:
-    DOMAIN_NAME = 'newdev.akvo.org'
+    DOMAIN_NAME = 'localhost:8000'
     
 DEFAULT_FROM_EMAIL = 'noreply@%s' % DOMAIN_NAME
 
@@ -36,11 +36,12 @@ DEFAULT_FROM_EMAIL = 'noreply@%s' % DOMAIN_NAME
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
+MEDIA_ROOT = '/Users/gabriel/dev/restruct/akvo/mediaroot/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
+
 MEDIA_URL = 'http://%s/rsr/media/' % DOMAIN_NAME
 
 TEMPLATE_DEBUG = DEBUG

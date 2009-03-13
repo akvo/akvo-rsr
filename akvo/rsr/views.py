@@ -261,8 +261,9 @@ def filteredprojectlist(request, org_id):
         select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
                 'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
     )
+    showcases = projects.order_by('?')[:3]
     page, stats = project_list_data(request, projects)
-    return {'projects': projects, 'stats': stats, 'page': page, 'o': o, }
+    return {'projects': projects, 'stats': stats, 'page': page, 'o': o, 'showcases': showcases,}
 
 @render_to('rsr/organisation_directory.html')
 def orglist(request, org_type='all'):
