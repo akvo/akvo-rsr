@@ -12,5 +12,4 @@ except ImportError:
     sys.exit(1)
 
 if __name__ == "__main__":
-    print 'Media root: ', settings.MEDIA_ROOT
     execute_manager(settings)

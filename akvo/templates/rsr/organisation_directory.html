@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
+{% load i18n thumbnail %}
 
 {% load generic_content %}
 {% load addparam %}
@@ -104,7 +104,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 		{% if o.logo %}
             <a href="{% url akvo.rsr.views.orgdetail o.id %}">
-			<img src="{{MEDIA_URL}}{{o.logo}}" alt="{{o.name}}" style="width: 100px; float:left; margin-right: 10px;" />
+			<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
             </a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>

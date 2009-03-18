@@ -5,8 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
-{% load rsr_tags %}
+{% load i18n rsr_tags thumbnail %}
 
 {% block script %}
 <script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
@@ -48,33 +47,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
             <p>
                 {% category_icons p %}
-                <!--
-                {% if p.category_water %}
-					<img src="{{MEDIA_URL}}img/blue.png" title="Water" alt="type" style="margin: 5px 5px 10px 0;" />
-                {% endif %}
-
-                {% if p.category_sanitation %}
-					<img src="{{MEDIA_URL}}img/orange.png" title="Sanitation" alt="type" style="margin: 5px 5px 10px 0;" />
-                {% endif %}
-
-                {% if p.category_training %}
-					<img src="{{MEDIA_URL}}img/purple.png" title="Training" alt="type" style="margin: 5px 5px 10px 0;" />
-                {% endif %}
-
-                {% if p.category_education %}
-                    <img src="{{MEDIA_URL}}img/green.png" title="Education" alt="type" style="margin: 5px 5px 10px 0;" />
-                {% endif %}
-
-                {% if p.category_maintenance %}
-                    <img src="{{MEDIA_URL}}img/olive.png" title="Maintenance" alt="type" style="margin: 5px 5px 10px 0;" />		
-                {% endif %}
-                -->
-
             </p>						
             <h2 class="lightx2">{% trans 'Location' %}</h2>
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
             {% if p.map %}
-                <img src="{{MEDIA_URL}}{{p.map}}" style="margin: 20px 20px 0px 20px;" />
+                <img src="{% thumbnail p.map 140x140 %}" style="margin: 20px 20px 0px 20px;" />
             {% else %}
                 <img src="{{MEDIA_URL}}img/nomap.jpg" style="margin: 20px 20px 0px 20px;" />
             {% endif %}
@@ -97,7 +74,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <div style="float:left;width: 250px">
                     {% if p.current_image %}
                         <div class="small lightx1">{{p.current_image_caption}}</div>
-                        <img src="{{MEDIA_URL}}{{p.current_image}}" alt="{{p.current_image_caption}}" style="width: 220px; margin: 10px 10px 0 0" />
+                        <img src="{% thumbnail p.current_image 220x165 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="margin: 10px 10px 0 0" />
                     {% endif %}	
                     </div>	
                     <div style="margin-left: 240px; width: 200px">
@@ -253,7 +230,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <br />
                     {% if u.photo %}
                         {% ifequal u.photo_location 'B' %}
-                            <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 240px; margin: 10px 10px 5px 20px" />
+                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
                             <p class="small lightx1">
                                 {% if u.photo_caption %}
                                     {{u.photo_caption}}
@@ -269,7 +246,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     {% endif %}
                     {% if u.photo %}
                         {% ifequal u.photo_location 'E' %}
-                            <img src="{{MEDIA_URL}}{{u.photo}}" alt="{{u.photo_caption}}" style="width: 240px; margin: 10px 10px 5px 20px" />
+                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
                             <p class="small lightx1">
                                 {% if u.photo_caption %}
                                     {{u.photo_caption}}

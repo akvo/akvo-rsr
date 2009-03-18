@@ -20,3 +20,19 @@ def groups_from_user(user):
 #Modeled on Options method get_change_permission in django/db/models/options.py
 def get_rsr_limited_change_permission(obj):
     return '%s_%s' % (RSR_LIMITED_CHANGE, obj.object_name.lower())
+
+
+def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
+    """
+    Use to set ImageField upload_to attribute.
+    Create path for image storing. When a new object instance is created we save
+    in MEDIA_ROOT/db/project/temp/img_name.ext first and then immediately call
+    save on the ImageFieldFile when the object instance has been saved to the db,
+    so the path changes to MEDIA_ROOT/db/project/org.pk/img_name.ext.
+    Modify path by supplying a path_tempate string
+    """
+    if instance.pk:
+        return path_template % (str(instance.pk), file_name)
+    else:
+        return path_template % ('temp', file_name)
+

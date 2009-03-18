@@ -50,6 +50,7 @@ INSTALLED_APPS = (
 #    'akvo.status',
     # Added by Paul 09/02/2009
     'paypal.standard',
+    'sorl.thumbnail',
 )
 
 #INTERNAL_IPS = (

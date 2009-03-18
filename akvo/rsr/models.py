@@ -26,13 +26,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 from registration.models import RegistrationProfile, RegistrationManager
-
+from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
-from utils import RSR_LIMITED_CHANGE
-from utils import GROUP_RSR_PARTNER_ADMINS
-from utils import GROUP_RSR_PARTNER_EDITORS
-from utils import groups_from_user
+from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import groups_from_user, rsr_image_path
 
 CONTINENTS = (
     (1, u'Africa'),
@@ -124,7 +122,6 @@ def funding_aggregate(projects, organisation=None):
     #return funding_total, pledged, donated, funding_total - (total_pledged + donated)
     return funding_total, (pledged + donated), funding_total - (total_pledged + donated)
 
-
 class Organisation(models.Model):
     """
     There are three types of organisations in RSR, called Field partner,
@@ -140,7 +137,8 @@ class Organisation(models.Model):
         (ORG_TYPE_COM, u'Commercial'),
         (ORG_TYPE_KNO, u'Knowledge institution'),
     )
-    #ORG_TYPES_DICT = dict(ORG_TYPES)
+    def org_image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/org/%s/%s')
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField(_(u'field partner'))
@@ -150,13 +148,20 @@ class Organisation(models.Model):
     name                        = models.CharField(max_length=25)
     long_name                   = models.CharField(blank=True, max_length=75)
     organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
-    logo                        = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
+    logo                        = models.ImageField(
+                                    blank=True,
+                                    upload_to=org_image_path,
+                                    help_text = 'The logo should not 120x90 pixels to avoid resizing',
+                                )
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
     country                     = models.ForeignKey(Country, verbose_name=_(u'country'))
     url                         = models.URLField(blank=True, verify_exists = False)
-    map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
-    
+    map                         = models.ImageField(
+                                    blank=True,
+                                    upload_to=org_image_path,
+                                    help_text = 'The map image should have a dimension of 140x140 pixels',
+                                )
     address_1                   = models.CharField(blank=True, max_length=35)
     address_2                   = models.CharField(blank=True, max_length=35)
     postcode                    = models.CharField(blank=True, max_length=10)
@@ -215,7 +220,7 @@ class Organisation(models.Model):
     def funding(self):
         funding_total, funding_pledged, funding_needed = funding_aggregate(self.published_projects(), organisation=self)
         return {'total': funding_total, 'pledged': funding_pledged, 'still_needed': funding_needed}
-    
+
     class Meta:
         ordering = ['name']
         permissions = (
@@ -264,13 +269,20 @@ STATUSES = (
 STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
 
 class Project(models.Model):
+    def proj_image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/project/%s/%s')
+
     name                        = models.CharField(max_length=45, help_text='')
     subtitle                    = models.CharField(max_length=75)
     status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
     country                     = models.ForeignKey(Country)
-    map                         = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
+    map                         = models.ImageField(
+                                    blank=True,
+                                    upload_to=proj_image_path,
+                                    help_text = 'The map image should have a dimension of 140x140 pixels',
+                                )
     #Project categories
     category_water              = models.BooleanField()
     category_sanitation         = models.BooleanField()
@@ -281,8 +293,13 @@ class Project(models.Model):
     category_other              = models.BooleanField()
     
     #current_status_summary = models.TextField()
-    project_plan_summary        = models.TextField(max_length=220, )
-    current_image               = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
+    project_plan_summary        = models.TextField(max_length=220,)
+    current_image               = ImageWithThumbnailsField(
+                                    blank=True,
+                                    upload_to=proj_image_path,
+                                    thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
+                                    help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+                                )
     current_image_caption       = models.CharField(blank=True, max_length=50)
     goals_overview              = models.TextField(max_length=500)
     goal_1                      = models.CharField(blank=True, max_length=60)
@@ -343,7 +360,7 @@ class Project(models.Model):
     
     def show_current_image(self):
         try:
-            return '<img src="%s" />' % (self.current_image.url,)
+            return self.current_image.thumbnail_tag
         except:
             return ''
     show_current_image.allow_tags = True
@@ -628,8 +645,8 @@ class UserProfile(models.Model):
         permissions = (
             ("%s_userprofile" % RSR_LIMITED_CHANGE, u'RSR limited change user profile'),
         )
-    
-    
+
+
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))
 
@@ -659,7 +676,7 @@ class MoMmsRaw(models.Model):
         for f in files:
             url = url_pattern % (SMS_USERNAME, SMS_PASSWORD, self.mmsid, f.file)
             if string.lower(f.filecontent) in ('image/gif', 'image/jpeg', 'image/png',):
-                path = 'mmsupdateimages/%d_%s' % (self.id, f.file) #TODO: spread images over folder sub-tree
+                path = 'db/mmsupdateimages/%d_%s' % (self.id, f.file) #TODO: spread images over folder sub-tree
                 img = open('%s%s' % (MEDIA_ROOT, path), 'w')
                 img.write(urllib2.urlopen(url).read())
                 update_data['photo'] = path
@@ -691,12 +708,22 @@ class MoSmsRaw(models.Model):
     incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
 
 class ProjectUpdate(models.Model):
+    def update_image_path(instance, file_name):
+        "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
+        path = 'db/project/%d/update/%%s/%%s' % instance.project.pk
+        return rsr_image_path(instance, file_name, path)
+
     project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
     user            = models.ForeignKey(User, verbose_name=_('user'))
     title           = models.CharField(_('title'), max_length=50)
     text            = models.TextField(_('text'), blank=True)
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
-    photo           = models.ImageField(blank=True, upload_to='img/%Y/%m/%d')
+    photo           = ImageWithThumbnailsField(
+                        blank=True,
+                        upload_to=update_image_path,
+                        thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+                        help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+                    )
     photo_location  = models.CharField(_('photo location'), max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
@@ -708,7 +735,7 @@ class ProjectUpdate(models.Model):
 
     def img(self):
         try:
-            return '<img src="%s" />' % (self.photo.url,)
+            return self.photo.thumbnail_tag
         except:
             return ''
     img.allow_tags = True

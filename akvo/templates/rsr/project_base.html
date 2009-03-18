@@ -5,9 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load rsr_tags %}
-
-{% load i18n %}
+{% load i18n rsr_tags thumbnail %}
 
 {% block title %}{% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
 
@@ -72,7 +70,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}
 			{% if funder.funding_organisation.logo %}
                 <a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
-				<img src="{{MEDIA_URL}}{{ funder.funding_organisation.logo }}" alt="{% trans 'Logo of' %} {{funder.funding_organisation.name}}" style="margin: 10px 20px;" />
+				<img src="{% thumbnail funder.funding_organisation.logo 120x90 %}" alt="{% trans 'Logo of' %} {{funder.funding_organisation.name}}" style="margin: 10px 20px;" />
                 </a>
 			{% endif %}	
 			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
@@ -100,7 +98,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endif %}
 				{% if fp.field_organisation.logo %}
                     <a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
-					<img src="{{MEDIA_URL}}{{ fp.field_organisation.logo }}" alt="{% trans 'Logo of' %}{{fp.field_organisation.name}}" style="margin: 10px 20px;" />
+					<img src="{% thumbnail fp.field_organisation.logo 120x90 %}" alt="{% trans 'Logo of' %}{{fp.field_organisation.name}}" style="margin: 10px 20px;" />
                     </a>
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">{{fp.field_organisation.name}}</a></p>
@@ -121,7 +119,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endif %}
 				{% if sp.support_organisation.logo %}
                     <a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">
-					<img src="{{MEDIA_URL}}{{ sp.support_organisation.logo }}" alt="{% trans 'Logo of' %} {{sp.support_organisation.name}}" style="margin: 10px 20px" />
+					<img src="{% thumbnail sp.support_organisation.logo 120x90 %}" alt="{% trans 'Logo of' %} {{sp.support_organisation.name}}" style="margin: 10px 20px" />
                     </a>
 				{% endif %}	
 				<p><a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">{{sp.support_organisation.name}}</a></p>

@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import PermissionDenied
 from django.contrib import admin
 from django.contrib import auth
-from django.contrib.admin import helpers
+from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
 from django.db import models, transaction
 from django.db.models import get_model
@@ -14,30 +14,18 @@ from django.utils.functional import curry
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
 from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import get_rsr_limited_change_permission
 from utils import groups_from_user
 
-NON_FIELD_ERRORS = '__all__'
 
+NON_FIELD_ERRORS = '__all__'
 
 #used by WYMeditor not in use right now
 #from forms import ProjectAdminModelForm
 
-#from models import Country
-#from models import Organisation
-#from models import Project
-#from models import Link
-#from models import FundingPartner
-#from models import FieldPartner
-#from models import SupportPartner
-#from models import Funding
-#from models import UserProfile
-#from models import MoMmsRaw
-#from models import MoMmsFile
-#from models import MoSmsRaw
-#from models import ProjectUpdate
-#from models import ProjectComment
 
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (u'__unicode__', u'content_type', )
@@ -53,6 +41,17 @@ class CountryAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
+class OrganisationAdminForm(forms.ModelForm):
+    pass
+    #def save(self, *args, **kwargs):
+    #    from dbgp.client import brk
+    #    brk(host="localhost", port=9000)
+    #    foo = super(OrganisationAdminForm, self).save(commit=False, *args, **kwargs)
+    #    pass        
+
+    #def __init__(self, *args, **kwargs):
+    #    # request is needed when validating
+    #    super(OrganisationAdminForm, self).__init__(*args, **kwargs)
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -62,8 +61,17 @@ class OrganisationAdmin(admin.ModelAdmin):
         (None, {'fields': ('description', )}),
     )    
     list_display = ('name', 'long_name', 'website', 'partner_types', )
+    form = OrganisationAdminForm
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+    def __init__(self, model, admin_site):
+        """
+        Override to add self.formfield_overrides.
+        Needed to get the ImageWithThumbnailsField working in the admin.
+        """
+        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+        super(OrganisationAdmin, self).__init__(model, admin_site)
+
     def queryset(self, request):
         #from dbgp.client import brk
         #brk(host="localhost", port=9000)            
@@ -97,6 +105,86 @@ class OrganisationAdmin(admin.ModelAdmin):
             else:
                 return True
         return False
+
+    def add_view(self, request, form_url='', extra_context=None):
+        "The 'add' admin view for this model."
+        model = self.model
+        opts = model._meta
+        
+        if not self.has_add_permission(request):
+            raise PermissionDenied
+        
+        ModelForm = self.get_form(request)
+        formsets = []
+        if request.method == 'POST':
+            form = ModelForm(request.POST, request.FILES)
+            if form.is_valid():
+                form_validated = True
+                new_object = self.save_form(request, form, change=False)
+            else:
+                form_validated = False
+                new_object = self.model()
+            for FormSet in self.get_formsets(request):
+                formset = FormSet(data=request.POST, files=request.FILES,
+                                  instance=new_object,
+                                  save_as_new=request.POST.has_key("_saveasnew"))
+                formsets.append(formset)
+            if all_valid(formsets) and form_validated:
+                self.save_model(request, new_object, form, change=False)
+                #add by gvh:
+                #loop over all images and do a new save of them.
+                #this has to be done since the initial save puts the images in
+                #img/org/temp/ as we have no primary key to the org at that time
+                for field_name, uploaded_file in request.FILES.items():
+                    model_field = getattr(new_object, field_name)
+                    model_field.save(uploaded_file.name, uploaded_file)
+                #end add
+                form.save_m2m()
+                for formset in formsets:
+                    self.save_formset(request, form, formset, change=False)
+                
+                self.log_addition(request, new_object)
+                return self.response_add(request, new_object)
+        else:
+            # Prepare the dict of initial data from the request.
+            # We have to special-case M2Ms as a list of comma-separated PKs.
+            initial = dict(request.GET.items())
+            for k in initial:
+                try:
+                    f = opts.get_field(k)
+                except models.FieldDoesNotExist:
+                    continue
+                if isinstance(f, models.ManyToManyField):
+                    initial[k] = initial[k].split(",")
+            form = ModelForm(initial=initial)
+            for FormSet in self.get_formsets(request):
+                formset = FormSet(instance=self.model())
+                formsets.append(formset)
+        
+        adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)), self.prepopulated_fields)
+        media = self.media + adminForm.media
+        
+        inline_admin_formsets = []
+        for inline, formset in zip(self.inline_instances, formsets):
+            fieldsets = list(inline.get_fieldsets(request))
+            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
+            inline_admin_formsets.append(inline_admin_formset)
+            media = media + inline_admin_formset.media
+        
+        context = {
+            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'adminform': adminForm,
+            'is_popup': request.REQUEST.has_key('_popup'),
+            'show_delete': False,
+            'media': mark_safe(media),
+            'inline_admin_formsets': inline_admin_formsets,
+            'errors': helpers.AdminErrorList(form, formsets),
+            'root_path': self.admin_site.root_path,
+            'app_label': opts.app_label,
+        }
+        context.update(extra_context or {})
+        return self.render_change_form(request, context, add=True)
+    add_view = transaction.commit_on_success(add_view)
     
 admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
 
@@ -270,6 +358,14 @@ class ProjectAdmin(admin.ModelAdmin):
     form = ProjectAdminForm
     
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+    def __init__(self, model, admin_site):
+        """
+        Override to add self.formfield_overrides.
+        Needed to get the ImageWithThumbnailsField working in the admin.
+        """
+        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+        super(ProjectAdmin, self).__init__(model, admin_site)
+
     def queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
@@ -515,8 +611,6 @@ class UserProfileAdmin(admin.ModelAdmin):
         Returns a Form class for use in the admin add view. This is used by
         add_view and change_view.
         """
-        #from dbgp.client import brk
-        #brk(host="localhost", port=9000)            
         if self.declared_fieldsets:
             fields = flatten_fieldsets(self.declared_fieldsets)
         else:
@@ -620,7 +714,17 @@ admin.site.register(get_model('rsr', 'mosmsraw'), MoSmsRawAdmin)
 
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
-    list_display    = ('project', 'user', 'text', 'time', 'photo',)    
+
+    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+    def __init__(self, model, admin_site):
+        """
+        Override to add self.formfield_overrides.
+        Needed to get the ImageWithThumbnailsField working in the admin.
+        """
+        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+        super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+
+    list_display    = ('project', 'user', 'text', 'time', 'img',)    
     list_filter     = ('project', 'time', )
 
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
