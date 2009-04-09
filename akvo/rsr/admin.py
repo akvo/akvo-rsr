@@ -594,9 +594,11 @@ class UserProfileAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         #request is needed to populate is_org_admin and is_org_editor
         initial_data = {}
-        initial_data['is_org_admin']    = kwargs['instance'].is_org_admin()
-        initial_data['is_org_editor']   = kwargs['instance'].is_org_editor()
-        kwargs.update({'initial': initial_data})
+        instance = kwargs.get('instance', None)
+        if instance:
+            initial_data['is_org_admin']    = kwargs.get('instance').is_org_admin()
+            initial_data['is_org_editor']   = kwargs['instance'].is_org_editor()
+            kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 
