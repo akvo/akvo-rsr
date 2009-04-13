@@ -1,0 +1,9 @@
+A new user, {{user.get_full_name}} with the username {{user.username}} and email
+{{user.email}} has registered with {{organisation.name}}.
+
+Please check the credentials of this user and then activate here:
+
+http://{{site}}/rsr/admin/rsr/userprofile/{{user.get_profile.pk}}/
+
+Thank you,
+Akvo.org

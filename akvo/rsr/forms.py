@@ -19,7 +19,6 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-
 from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
 
@@ -266,3 +265,28 @@ class PayPalInvoiceForm(forms.ModelForm):
                 raise forms.ValidationError(_(u'You must type the same email address each time!'))
         return self.cleaned_data
 
+
+# based on http://www.djangosnippets.org/snippets/1008/
+# a form field that only displays the __unicode__ of the foreign key field and
+# hides the pk in a hidden input
+class ReadonlyFKWidget(forms.HiddenInput):
+    def __init__(self, admin_site, original_object):
+        self.admin_site = admin_site
+        self.original_object = original_object
+        super(ReadonlyFKWidget,self).__init__()
+
+    def render(self, name, value, attrs=None):
+        if self.original_object is not None:
+            return super(ReadonlyFKWidget, self).render(
+                name, value, attrs) + mark_safe('<span>%s</span>' % (escape(unicode(self.original_object)),))
+        else:
+            return "None"
+                                                                
+class ReadonlyFKAdminField(object):
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(ReadonlyFKAdminField, self).get_form(request, obj, **kwargs)
+        if hasattr(self, 'readonly_fk'):
+            for field_name in self.readonly_fk:
+                if field_name in form.base_fields:
+                    form.base_fields[field_name].widget = ReadonlyFKWidget(self.admin_site, getattr(obj, field_name, ''))
+        return form
