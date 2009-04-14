@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
+{% load i18n thumbnail %}
 
 {% block script %}
 
@@ -113,7 +113,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endifequal %}
 	{% ifequal bandwidth 'low' %}
 
-	<div id="home_flash_box" style="padding-bottom:20px;">
+	<div id="home_flash_box" style="padding-bottom:20px; width: 710px; float: left;">
 		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
 		<div style="color: #fff; font-size: 1.5em; padding: 20px;">{% trans 'Our latest projects' %}</div>
 		<table>
@@ -121,15 +121,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% ifequal forloop.counter 1 %}
 				<tr>
 				{% endifequal %}
-				{% ifequal forloop.counter 7 %}
+				{% ifequal forloop.counter 5 %}
 				<tr>
 				{% endifequal %}
 				<td align="center">
 					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-						<img width="132" style="padding: 6px;" src="{{MEDIA_URL}}{{p.current_image}}" title="{{p.name}}" alt="{{p.name}}"/>
+						<img style="padding: 6px;" src="{% thumbnail p.current_image 144x108 crop,upscale,sharpen %}" title="{{p.name}}" alt="{{p.name}}"/>
 					</a>
 				</td>
-				{% ifequal forloop.counter 6 %}
+				{% ifequal forloop.counter 4 %}
 				</tr>
 				{% endifequal %}
 			{% endfor %}
@@ -137,6 +137,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</table>
 	
 	</div> <!-- #home_flash_box -->
+	<div style="float: right; width: 250px;">
+		<div class="boxhead">
+			<h1>{% trans 'Learn about Akvo' %}</h1>
+		</div>
+		<div class="boxbody">
+			<p>Donec gravida posuere arcu. Nulla facilisi. Phasellus imperdiet. Vestibulum at metus. Integer euismod. Nullam placerat rhoncus sapien. Ut euismod. Praesent libero. Morbi pellentesque libero sit amet ante. Maecenas tellus. Maecenas erat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+			<p>Donec gravida posuere arcu. Nulla facilisi. Phasellus imperdiet. Vestibulum at metus. Integer euismod. Nullam placerat rhoncus sapien. Ut euismod. Praesent libero. Morbi pellentesque libero sit amet ante. Maecenas tellus.</p>
+		</div>
+	</div>
+
 	{% endifequal %}
 	
 <div id="outer_leftwing">
