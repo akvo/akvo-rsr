@@ -203,7 +203,8 @@ def index(request):
         }
     p = Project.objects.published()        
     if bandwidth == 'low':
-        grid_projects = p.filter(current_image__startswith='img').order_by('?')[:12]
+        #TODO: better filtering criteria, we want to find all projects that have an image
+        grid_projects = p.filter(current_image__startswith='db').order_by('?')[:12]
     else:
         grid_projects = None
     stats = akvo_at_a_glance(p)
