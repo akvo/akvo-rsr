@@ -464,40 +464,40 @@ class Link(models.Model):
         return '<a href="%s">%s</a>' % (self.url, self.caption,)
     
 class FundingPartner(models.Model):
-    funding_organisation =  models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount = models.IntegerField()
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
-    project = models.ForeignKey(Project,)
+    funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
+    funding_amount          = models.IntegerField()
+    currency                = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    project                 = models.ForeignKey(Project,)
     
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
      
 class SupportPartner(models.Model):
-    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
-    project = models.ForeignKey(Project,)
+    support_organisation    = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
+    project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
     
 class FieldPartner(models.Model):
-    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
-    project = models.ForeignKey(Project,)
+    field_organisation      = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
+    project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
 
 class Funding(models.Model):
-    project = models.OneToOneField(Project, primary_key=True)
-    #date_next_milestone = models.DateField(blank=True)
+    project             = models.OneToOneField(Project, primary_key=True)
     date_request_posted = models.DateField(default=date.today)
-    #date_started = models.DateField(blank=True)
-    date_complete = models.DateField(null=True, blank=True)
-    employment = models.IntegerField()
-    building = models.IntegerField()
-    training = models.IntegerField()
-    maintenance = models.IntegerField()
-    other = models.IntegerField()
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    date_complete       = models.DateField(null=True, blank=True)
+    # budget itmes
+    employment          = models.IntegerField()
+    building            = models.IntegerField()
+    training            = models.IntegerField()
+    maintenance         = models.IntegerField()
+    other               = models.IntegerField()
+    
+    currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     
     def __unicode__(self):
         return self.project.__unicode__()
