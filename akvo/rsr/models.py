@@ -145,13 +145,15 @@ class Organisation(models.Model):
     support_partner             = models.BooleanField(_(u'support partner'))
     funding_partner             = models.BooleanField(_(u'funding partner'))
 
-    name                        = models.CharField(max_length=25)
-    long_name                   = models.CharField(blank=True, max_length=75)
+    name                        = models.CharField(max_length=25, help_text='Short name which will appear in organisation and partner listings (25 characters).'
+    							)
+    long_name                   = models.CharField(blank=True, max_length=75, help_text='Full name of organisation (75 characters).'
+    							)
     organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
     logo                        = models.ImageField(
                                     blank=True,
                                     upload_to=org_image_path,
-                                    help_text = 'The logo should not 120x90 pixels to avoid resizing',
+                                    help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',	
                                 )
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
@@ -160,7 +162,7 @@ class Organisation(models.Model):
     map                         = models.ImageField(
                                     blank=True,
                                     upload_to=org_image_path,
-                                    help_text = 'The map image should have a dimension of 140x140 pixels',
+                                    help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).',
                                 )
     address_1                   = models.CharField(blank=True, max_length=35)
     address_2                   = models.CharField(blank=True, max_length=35)
@@ -170,7 +172,7 @@ class Organisation(models.Model):
     fax                         = models.CharField(blank=True, max_length=20)
     contact_person              = models.CharField(blank=True, max_length=30)
     contact_email               = models.CharField(blank=True, max_length=50)
-    description                 = models.TextField(blank=True)
+    description                 = models.TextField(blank=True, help_text = 'Describe what your organisation does in the water and sanitation sector.' )
     
     def __unicode__(self):
         return self.name
@@ -272,8 +274,8 @@ class Project(models.Model):
     def proj_image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
-    name                        = models.CharField(max_length=45, help_text='')
-    subtitle                    = models.CharField(max_length=75)
+    name                        = models.CharField(max_length=45, help_text = 'Enter a descriptive name for your project (45 characters).')
+    subtitle                    = models.CharField(max_length=75, help_text = 'Enter a subtitle for your project (75 characters).')
     status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N')
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
@@ -281,7 +283,7 @@ class Project(models.Model):
     map                         = models.ImageField(
                                     blank=True,
                                     upload_to=proj_image_path,
-                                    help_text = 'The map image should have a dimension of 140x140 pixels',
+                                    help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'
                                 )
     #Project categories
     category_water              = models.BooleanField()
@@ -293,15 +295,15 @@ class Project(models.Model):
     category_other              = models.BooleanField()
     
     #current_status_summary = models.TextField()
-    project_plan_summary        = models.TextField(max_length=220,)
+    project_plan_summary        = models.TextField(max_length=220, help_text='Briefly summarize the project (220 characters).')
     current_image               = ImageWithThumbnailsField(
                                     blank=True,
                                     upload_to=proj_image_path,
                                     thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                    help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+                                    help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
                                 )
-    current_image_caption       = models.CharField(blank=True, max_length=50)
-    goals_overview              = models.TextField(max_length=500)
+    current_image_caption       = models.CharField(blank=True, max_length=50, help_text='Enter a caption for your project picture (50 characters).')
+    goals_overview              = models.TextField(max_length=500, help_text='Describe what the project hopes to accomplish. (500 characters).')
     goal_1                      = models.CharField(blank=True, max_length=60)
     goal_2                      = models.CharField(blank=True, max_length=60)
     goal_3                      = models.CharField(blank=True, max_length=60)
@@ -324,11 +326,11 @@ class Project(models.Model):
     postcode                    = models.CharField(blank=True, max_length=10)
     longitude                   = models.CharField(blank=True, max_length=20)
     latitude                    = models.CharField(blank=True, max_length=20)
-    current_status_detail       = models.TextField(blank=True, max_length=600)
+    current_status_detail       = models.TextField(blank=True, max_length=600, help_text='Describe the current situation of the affected local community (600 characters).')
 
-    project_plan_detail         = models.TextField(blank=True)
-    sustainability              = models.TextField()
-    context                     = models.TextField(blank=True, max_length=500)
+    project_plan_detail         = models.TextField(blank=True, help_text='Describe in detail the what, how, who and when of the project.')
+    sustainability              = models.TextField(help_text='Describe plans for sustaining/maintaining project goals.')
+    context                     = models.TextField(blank=True, max_length=500, help_text='Describe the broader situation in the project area. (500 characters).')
 
     project_rating              = models.IntegerField(default=0)
     notes                       = models.TextField(blank=True)
