@@ -7,17 +7,20 @@
 import urllib2
 import string
 import re
+import os
 from datetime import date, datetime
 
 from django import forms
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum # added by Paul
+from django.db.models.signals import pre_save, post_save
 from django.conf import settings # added by Daniel
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 #from django.core import validators
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.mail import send_mail
 from django.template import loader, Context
 from django.template.loader import render_to_string
@@ -31,6 +34,7 @@ from akvo.settings import MEDIA_ROOT
 
 from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import groups_from_user, rsr_image_path
+from signals import change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status
 
 CONTINENTS = (
     (1, u'Africa'),
@@ -137,6 +141,7 @@ class Organisation(models.Model):
         (ORG_TYPE_COM, u'Commercial'),
         (ORG_TYPE_KNO, u'Knowledge institution'),
     )
+    
     def org_image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%s/%s')
 
@@ -270,6 +275,7 @@ STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red'
 
 class Project(models.Model):
     def proj_image_path(instance, file_name):
+        #from django.template.defaultfilters import slugify
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
     name                        = models.CharField(max_length=45, help_text='')
@@ -431,20 +437,8 @@ class PublishingStatus(models.Model):
     def project_info(self):
         return '%d - %s' % (self.project.pk, self.project,)
 
-from django.db.models.signals import post_save
-
-def new_project_callback(sender, **kwargs):
-    """
-    called when a new project is saved so an associated published record for the
-    project is created
-    """
-    if kwargs['created']:
-        new_project = kwargs['instance']
-        ps = PublishingStatus(status='unpublished')
-        ps.project = new_project
-        ps.save()
     
-post_save.connect(new_project_callback, sender=Project)
+
 
 
 LINK_KINDS = (
@@ -739,14 +733,6 @@ class ProjectUpdate(models.Model):
         except:
             return ''
     img.allow_tags = True
-    
-    #def show_status(self):
-    #    "Show the current project status"
-    #    return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], STATUSES_DICT[self.status]))
-        
-    #def show_update_method(self):
-    #    "Show the update method for this update"
-    #    return UPDATE_METHODS_DICT[self.update_method]
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
@@ -815,3 +801,15 @@ else:
 
 # TODO: Subtract the donated amount from the funding the project still needs.
 #  - Create a new function in utils.py to handle this
+
+# signals!
+post_save.connect(create_publishing_status, sender=Project)
+
+post_save.connect(change_name_of_file_on_create, sender=Organisation)
+post_save.connect(change_name_of_file_on_create, sender=Project)
+post_save.connect(change_name_of_file_on_create, sender=ProjectUpdate)
+
+pre_save.connect(change_name_of_file_on_change, sender=Organisation)
+pre_save.connect(change_name_of_file_on_change, sender=Project)
+pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
+
