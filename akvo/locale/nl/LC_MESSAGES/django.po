@@ -69,7 +69,7 @@ msgstr "Doelstellingen"
 
 #: rsr/admin.py:254
 msgid "Project target benchmarks"
-msgstr "Doelstellingen in detail"
+msgstr "Verwachte resultaten"
 
 #: rsr/admin.py:258
 msgid "Project info details"
@@ -129,15 +129,15 @@ msgstr "emailadres (herhalen a.u.b.)"
 #: rsr/forms.py:145
 msgid "Passwords do not match. Please enter the same password in both fields."
 msgstr ""
-"De door u ingegeven wachtwoorden waren niet hetzelfde. Gelieve twee maal "
-"precies hetzelfde wachtwoord in te geven."
+"De door u ingegeven wachtwoorden waren niet hetzelfde. "
+"Graag twee keer precies hetzelfde wachtwoord invullen."
 
 #: rsr/forms.py:148
 msgid ""
 "Email addresses do not match. Please enter the email address in both fields."
 msgstr ""
-"De door u ingegeven emailadressen waren niet hetzelfde. Gelieve twee maal "
-"precies hetzelfde emailadres in te geven."
+"De door u ingegeven emailadressen waren niet hetzelfde. "
+"Graag twee keer precies hetzelfde emailadres invullen."
 
 #: rsr/forms.py:192
 msgid "New password"
@@ -177,7 +177,7 @@ msgstr "U moet elke keer hetzelfde emailadres opgeven."
 
 #: rsr/models.py:47
 msgid "country name"
-msgstr "naam van land"
+msgstr "land"
 
 #: rsr/models.py:146
 msgid "field partner"
@@ -193,7 +193,7 @@ msgstr "funding partner"
 
 #: rsr/models.py:152
 msgid "organisation type"
-msgstr "Type van organisatie"
+msgstr "organisatie"
 
 #: rsr/models.py:156
 msgid "country"
@@ -223,7 +223,7 @@ msgstr "In uitvoering"
 #: rsr/models.py:259 templates/rsr/index_base.html:44
 #: templates/rsr/organisation.html:119
 msgid "Need funding"
-msgstr "Financiering benodigd"
+msgstr "Nog financiering nodig"
 
 #: rsr/models.py:260 templates/rsr/index_base.html:45
 #: templates/rsr/organisation.html:120
@@ -361,7 +361,7 @@ msgstr "update-methode"
 
 #: rsr/models.py:727
 msgid "comment"
-msgstr "aantekening"
+msgstr "opmerking"
 
 #: rsr/views.py:202
 msgid "The blog is not available at the moment."
@@ -473,7 +473,7 @@ msgstr "Volledig gefinancierd"
 #: templates/inclusion_tags/funding_table.html:38
 #: templates/rsr/index_base.html:71 templates/rsr/organisation.html:137
 msgid "Still needed"
-msgstr "Nog benodigd"
+msgstr "Nog nodig"
 
 #: templates/inclusion_tags/funding_box.html:67
 #: templates/inclusion_tags/funding_box_march.html:69
@@ -522,7 +522,7 @@ msgstr "Annuleren"
 
 #: templates/registration/activate.html:12
 msgid "Account email confirmed"
-msgstr "Account-email bevestigd"
+msgstr "Email-account bevestigd"
 
 #: templates/registration/activate.html:14
 msgid "Account confirmation failed"
@@ -531,7 +531,7 @@ msgstr "Account-bevestiging is helaas mislukt"
 #: templates/registration/activate.html:23
 #: templates/registration/registration_complete.html:15
 msgid "Thank you!"
-msgstr "Met dank!"
+msgstr "Bedankt!"
 
 #: templates/registration/activate.html:27
 msgid ""
@@ -574,7 +574,7 @@ msgstr "Registratie voor Akvo RSR - Stap 1"
 #: templates/registration/organisation_form.html:26
 #: templates/registration/organisation_form.html:43
 msgid "A problem occurred:"
-msgstr "Er is een probleem:"
+msgstr "Er is een probleem opgetreden:"
 
 #: templates/registration/organisation_form.html:27
 #, python-format
@@ -585,7 +585,7 @@ msgstr "Zie onderstaand bericht. %(form.non_field_errors)s"
 #: templates/registration/registration_form1.html:33
 #: templates/registration/registration_form2.html:35
 msgid "Set up your account"
-msgstr "Account opzetten"
+msgstr "Account aanmaken"
 
 #: templates/registration/organisation_form.html:32
 #: templates/registration/registration_form1.html:34
@@ -594,7 +594,7 @@ msgstr "Stap 1 van 2"
 
 #: templates/registration/organisation_form.html:39
 msgid "Select organisation that you belong to"
-msgstr "Kies de organisatie waartoe u behoort"
+msgstr "Kies uw organisatie"
 
 #: templates/registration/organisation_form.html:57
 #: templates/registration/registration_form1.html:60
@@ -608,10 +608,10 @@ msgid ""
 "\">click this link</a> to email us to begin registering your organisation. "
 "After registration is complete, please return to set up  your account."
 msgstr ""
-"Voordat u een account kunt opzetten, moet uw organisatie zelf al bij Akvo "
+"Voordat u een account kunt aanmaken, moet uw organisatie zelf al bij Akvo "
 "geregistreerd zijn. Als uw organisatie niet op de lijst voorkomt, <a href=\"#"
 "\">klik dan hier</a> om uw organisatie te registreren. Na registratie kunt u "
-"uw account opzetten."
+"uw account aanmaken."
 
 #: templates/registration/organisation_form.html:67
 #: templates/registration/registration_form1.html:67
@@ -621,7 +621,7 @@ msgstr "Verder"
 #: templates/registration/password_change_done.html:10
 #: templates/registration/password_change_done.html:12
 msgid "Password change successful"
-msgstr "De wachtwoordwijziging is goed verlopen"
+msgstr "Uw wachtwoord is succesvol gewijzigd"
 
 #: templates/registration/password_change_done.html:15
 msgid "Your password was changed."
@@ -659,7 +659,7 @@ msgstr "Wachtwoord wijzigen"
 #: templates/rsr/update_form_old.html:80 templates/rsr/update_form_old.html:89
 #: templates/rsr/update_form_old.html:97
 msgid "A problem occurred"
-msgstr "Er is een probleem"
+msgstr "Er is een probleem opgetreden"
 
 #: templates/registration/password_change_form.html:29
 #: templates/registration/password_reset_form.html:31
@@ -677,8 +677,8 @@ msgid ""
 "Please enter your current password and then enter your new password twice so "
 "we can verify you typed it in correctly."
 msgstr ""
-"Gelieve eerst uw momentele wachtwoord in te geven, gevold door het nieuwe "
-"wachtwoord (twee maal) om tikfouten te voorkomen."
+"Graag eerst uw huidige wachtwoord invullen, gevolgd door het nieuwe "
+"wachtwoord (twee keer) om tikfouten te voorkomen."
 
 #: templates/registration/password_change_form.html:36
 msgid ""
@@ -690,26 +690,26 @@ msgstr ""
 
 #: templates/registration/password_change_form.html:43
 msgid "Enter your current password"
-msgstr "Momentele wachtwoord ingeven"
+msgstr "Huidige wachtwoord"
 
 #: templates/registration/password_change_form.html:53
 msgid "Verify the change with your current password."
-msgstr "De wijziging goedkeuren met uw momentele wachtwoord"
+msgstr "Bevestig de wijziging met uw huidige wachtwoord"
 
 #: templates/registration/password_change_form.html:58
 #: templates/registration/registration_form2.html:88
 msgid "Enter a password"
-msgstr "Een wachtwoord ingeven"
+msgstr "Vul een wachtwoord in"
 
 #: templates/registration/password_change_form.html:72
 #: templates/registration/password_reset_confirm.html:49
 msgid "Enter the new password."
-msgstr "Het nieuwe wachtwoord ingeven."
+msgstr "Vul uw nieuw wachtwoord in."
 
 #: templates/registration/password_change_form.html:75
 #: templates/registration/password_reset_confirm.html:52
 msgid "Retype the password to avoid mistakes."
-msgstr "Het wachtwoord nogmaals ingeven om tikfouten te voorkomen."
+msgstr "Vul ter controle nogmaals uw wachtwoord in."
 
 #: templates/registration/password_change_form.html:81
 #: templates/registration/password_reset_confirm.html:58
@@ -720,7 +720,7 @@ msgstr "Wijzigen"
 #: templates/registration/password_reset_complete.html:16
 #: templates/registration/password_reset_done.html:10
 msgid "Password reset successful"
-msgstr "De wachtwoordwijziging is goed verlopen"
+msgstr "Uw wachtwoord is succesvol gewijzigd"
 
 #: templates/registration/password_reset_complete.html:18
 msgid "Your password was reset successfully."
@@ -732,11 +732,11 @@ msgstr "Wachtwoord gewijzigd"
 
 #: templates/registration/password_reset_confirm.html:27
 msgid "Please choose a new password."
-msgstr "Gelieve een nieuw wachtwoord te kiezen."
+msgstr "Kies een nieuw wachtwoord."
 
 #: templates/registration/password_reset_confirm.html:35
 msgid "Enter new password"
-msgstr "Een wachtwoord ingeven"
+msgstr "Vul nieuw wachtwoord in"
 
 #: templates/registration/password_reset_done.html:16
 msgid "Please check for new e-mails"
@@ -782,28 +782,28 @@ msgstr "Wachtwoord wijzigen"
 
 #: templates/registration/password_reset_form.html:35
 msgid "Reset your password"
-msgstr "Uw wachtwoord wijzigen"
+msgstr "Nieuw wachtwoord"
 
 #: templates/registration/password_reset_form.html:37
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll reset "
 "your password and e-mail the new one to you."
 msgstr ""
-"Wachtwoord vergeten? Geef uw emailadres onderstaand in. We zullen u een "
-"nieuw wachtwoord sturen."
+"Wachtwoord vergeten? Vul uw emailadres in en "
+"u ontvangt een nieuw wachtwoord."
 
 #: templates/registration/password_reset_form.html:45
 #: templates/registration/registration_form2.html:110
 msgid "Enter your email address"
-msgstr "Uw emailadres ingeven."
+msgstr "Vul uw emailadres in."
 
 #: templates/registration/password_reset_form.html:55
 msgid "Enter the email address of your Akvo RSR account."
-msgstr "Het emailadres van uw Akvo RSR account ingeven."
+msgstr "Gebruik het emailadres van uw Akvo RSR account."
 
 #: templates/registration/password_reset_form.html:59
 msgid "Reset"
-msgstr "Wijzigen"
+msgstr "Verstuur"
 
 #: templates/registration/registration_complete.html:11
 msgid "Registration complete"
@@ -827,7 +827,7 @@ msgstr "Zie onderstaand bericht."
 
 #: templates/registration/registration_form1.html:41
 msgid "Select the organisation that you belong to"
-msgstr "Kies de organisatie waartoe u behoort"
+msgstr "Kies uw organisatie"
 
 #: templates/registration/registration_form1.html:61
 msgid ""
@@ -837,10 +837,10 @@ msgid ""
 "organisation. After registration is complete, please return to set up your "
 "account."
 msgstr ""
-"Voordat u een account kunt opzetten, moet uw organisatie zelf al bij Akvo "
+"Voordat u een account kunt aanmaken, moet uw organisatie zelf al bij Akvo "
 "geregistreerd zijn. Als uw organisatie niet op de lijst voorkomt, <a href=\"/"
 "web/?q=node/14\">klik dan hier</a> om uw organisatie te registreren. Na "
-"registratie kunt u uw account opzetten."
+"registratie kunt u uw account aanmaken."
 
 #: templates/registration/registration_form2.html:37
 msgid "Step 2 of 2"
@@ -848,29 +848,31 @@ msgstr "Stap 2 van 2"
 
 #: templates/registration/registration_form2.html:44
 msgid "Enter a username"
-msgstr "Een gebruikersnaam ingeven"
+msgstr "Vul een gebruikersnaam in"
 
 #: templates/registration/registration_form2.html:56
 msgid "Your user name will be permanent. Use this to log into Akvo."
-msgstr "Uw Akvo-gebruikersnaam is blijvend en wordt gebruikt om in te loggen."
+msgstr ""
+"Uw Akvo-gebruikersnaam is definitief. U kunt deze gebruiken om in te loggen "
+"op de Akvo website."
 
 #: templates/registration/registration_form2.html:58
 msgid "Remember that user names as well as passwords are case sensitive."
 msgstr ""
-"Vergeet niet dat de gebruikersnaam en het wachtwoord altijd met precies "
-"dezelfde GROTE en kleine letters moeten worden ingegeven. "
+"ÒLet op gebruik van hoofdletters en kleine letters bij "
+"het invullen van de gebruikersnaam en wachtwoord. "
 
 #: templates/registration/registration_form2.html:64
 msgid "Enter your first and last name"
-msgstr "Uw voor- en achternaam ingeven"
+msgstr "Vul uw voor- en achternaam in"
 
 #: templates/registration/registration_form2.html:78
 msgid "Enter first (given) name."
-msgstr "Uw voornaam ingeven."
+msgstr "Voornaam."
 
 #: templates/registration/registration_form2.html:81
 msgid "Enter last (family) name."
-msgstr "Uw achternaam ingeven."
+msgstr "Achternaam."
 
 #: templates/registration/registration_form2.html:83
 #: templates/registration/update_form.html:71
@@ -878,25 +880,25 @@ msgid ""
 "Your first and last name will be displayed when you post comments or updates "
 "to Akvo."
 msgstr ""
-"Uw voor- en achternaam worden getoond als u aantekeningen en updates naar "
-"Akvo stuurt."
+"Uw voor- en achternaam worden getoond als u opmerkingen "
+"of updates plaatst op de Akvo website."
 
 #: templates/registration/registration_form2.html:102
 #: templates/rsr/sign_in.html:50
 msgid "Enter password"
-msgstr "Wachtwoord ingeven"
+msgstr "Wachtwoord"
 
 #: templates/registration/registration_form2.html:105
 msgid "Retype password to verify"
-msgstr "Wachtwoord nogmaals ingeven"
+msgstr "Vul ter controle nogmaals uw wachtwoord in"
 
 #: templates/registration/registration_form2.html:124
 msgid "Enter email address."
-msgstr "Emailadres ingeven"
+msgstr "Emailadres."
 
 #: templates/registration/registration_form2.html:128
 msgid "Retype email address to verify."
-msgstr "Emailadres nogmaals ingeven."
+msgstr "Vul ter controle nogmaals uw emailadres in."
 
 #: templates/registration/registration_form2.html:133
 #: templates/rsr/rsr_base.html:83
@@ -952,11 +954,11 @@ msgstr "Verzenden"
 
 #: templates/rsr/error_access_denied.html:10
 msgid "Error: permission denied"
-msgstr "Foutmelding: toegang gewijgerd"
+msgstr "Foutmelding: toegang geweigerd"
 
 #: templates/rsr/error_access_denied.html:12
 msgid "Error: Permission denied."
-msgstr "Foutmelding: toegang gewijgerd."
+msgstr "Foutmelding: toegang geweigerd."
 
 #: templates/rsr/error_access_denied.html:15
 msgid "Project updates can only be posted on your organisation's projects."
@@ -1036,7 +1038,7 @@ msgstr "Via RSS abonneren"
 
 #: templates/rsr/index.html:146
 msgid "Most recent Akvo Blog article"
-msgstr "Meest recente Akvo blog-bijdrage"
+msgstr "Akvo blog"
 
 #: templates/rsr/index.html:160 templates/rsr/index.html.py:175
 msgid "by"
@@ -1044,11 +1046,11 @@ msgstr "door"
 
 #: templates/rsr/index.html:163 templates/rsr/index.html.py:178
 msgid "Read more"
-msgstr "Verder lezen"
+msgstr "Lees verder"
 
 #: templates/rsr/index.html:180
 msgid "View earlier blog entries"
-msgstr "Voorgaande blog-bijdragen"
+msgstr "Bekijk eerdere blogs"
 
 #: templates/rsr/index_base.html:24
 msgid "Akvo at a glance"
@@ -1065,7 +1067,7 @@ msgstr "Totaal aantal projecten"
 
 #: templates/rsr/index_base.html:48
 msgid "People who get"
-msgstr "Zoveel mensen krijgen"
+msgstr "Aantal mensen voorzien van"
 
 #: templates/rsr/index_base.html:48
 msgid "planned"
@@ -1073,7 +1075,7 @@ msgstr "gepland"
 
 #: templates/rsr/index_base.html:48
 msgid "actual"
-msgstr "verwezenlijkt"
+msgstr "gerealiseerd"
 
 #: templates/rsr/index_base.html:55 templates/rsr/index_base.html.py:58
 #: templates/rsr/project_base.html:88 templates/widgets/project_list.html:81
@@ -1521,7 +1523,7 @@ msgstr "Stap 3: Kopieer de HTML-code voor gebruik op uw website."
 
 #: templates/rsr/machinery_step2.html:251
 msgid ""
-"You may repeat the steps above until you are satisﬁed with the appearance of "
+"You may repeat the steps above until you are satisï¬ed with the appearance of "
 "your widget."
 msgstr ""
 "U kunt bovenstaande stappen net zo vaak herhalen tot u "
@@ -1567,7 +1569,7 @@ msgstr "Funding partner"
 #: templates/rsr/organisation.html:51
 #: templates/rsr/organisation_directory.html:93
 msgid "Type"
-msgstr "Soort"
+msgstr "Soort organisatie"
 
 #: templates/rsr/organisation.html:58
 msgid "Website"
@@ -1579,7 +1581,7 @@ msgstr "Akvopedia-bijdrage"
 
 #: templates/rsr/organisation.html:77
 msgid "Contact"
-msgstr "Contact"
+msgstr "Contactpersoon"
 
 #: templates/rsr/organisation.html:79 templates/rsr/project_donate.html:123
 msgid "Email"
@@ -1587,19 +1589,19 @@ msgstr "Email"
 
 #: templates/rsr/organisation.html:83
 msgid "Phone"
-msgstr "Telefoonnr."
+msgstr "Telefoonnummer"
 
 #: templates/rsr/organisation.html:87
 msgid "Mobile"
-msgstr "Mobiele telefoonnr."
+msgstr "Mobiele telefoonnummer"
 
 #: templates/rsr/organisation.html:91
 msgid "Fax"
-msgstr "Faxnr."
+msgstr "Faxnummer"
 
 #: templates/rsr/organisation.html:110
 msgid "Organisation Activities"
-msgstr "Akviteiten van de organisatie"
+msgstr "Activiteiten van de organisatie"
 
 #: templates/rsr/organisation.html:117 templates/rsr/rsr_base.html:78
 msgid "Projects"
@@ -1610,8 +1612,8 @@ msgid ""
 "<b>People who get</b> (<a href=\"/web/help_akvo_at_a_glance\">planned</a>) "
 "<a href=\"/web/help_akvo_at_a_glance\">actual</a>"
 msgstr ""
-"<b>Zoveel mensen krijgen</b> (<a href=\"/web/help_akvo_at_a_glance"
-"\">gepland</a>) <a href=\"/web/help_akvo_at_a_glance\">verwezenlijkt</a>"
+"<b>Aantal mensen voorzien van</b> (<a href=\"/web/help_akvo_at_a_glance"
+"\">gepland</a>) <a href=\"/web/help_akvo_at_a_glance\"> gerealiseerd </a>"
 
 #: templates/rsr/organisation.html:131
 #, python-format
@@ -1626,7 +1628,7 @@ msgstr "Project partners"
 
 #: templates/rsr/organisation.html:146
 msgid "Current projects"
-msgstr "Momentele projecten"
+msgstr "Huidige projecten"
 
 #: templates/rsr/organisation_directory.html:43
 #: templates/rsr/organisation_directory.html:159
@@ -1693,7 +1695,7 @@ msgstr "in totaal"
 
 #: templates/rsr/organisation_directory.html:92
 msgid "Organisation name"
-msgstr "Naam van organisatie"
+msgstr "Organisatie"
 
 #: templates/rsr/organisation_directory.html:94
 #: templates/rsr/project_directory.html:205
@@ -1707,11 +1709,11 @@ msgstr "Land"
 #: templates/rsr/project_directory.html:214
 #: templates/widgets/project_list.html:67
 msgid "Continent"
-msgstr "Werelddeel"
+msgstr "Continent"
 
 #: templates/rsr/organisation_directory.html:97
 msgid "Funds requested"
-msgstr "Financiering aangevraagd voor"
+msgstr "Aangevraagde financiering"
 
 #: templates/rsr/organisation_directory.html:98
 msgid "Funds still needed"
@@ -1827,7 +1829,7 @@ msgstr "voor de donatie."
 
 #: templates/rsr/paypal_thanks.html:46
 msgid "Thank you for your donation!"
-msgstr "Wij danken u voor uw donatie!"
+msgstr "Bedankt voor uw donatie!"
 
 #: templates/rsr/paypal_thanks.html:48
 msgid ""
@@ -1885,19 +1887,19 @@ msgstr "Financiering afgerond"
 #: templates/rsr/project_base.html:55 templates/rsr/project_main.html:95
 #: templates/rsr/project_main.html:142
 msgid "View details"
-msgstr "Details tonen"
+msgstr "Toon details"
 
 #: templates/rsr/project_base.html:59
 msgid "Current funder"
-msgstr "Momentele funding partner"
+msgstr "Funding partner"
 
 #: templates/rsr/project_base.html:62
 msgid "You could fund this project!"
-msgstr "U zou dit project kunnen financieren!"
+msgstr "U kunt dit project nog financieren!"
 
 #: templates/rsr/project_base.html:64
 msgid "Current funders"
-msgstr "Momentele funding partners"
+msgstr "Funding partners"
 
 #: templates/rsr/project_base.html:75 templates/rsr/project_base.html:103
 #: templates/rsr/project_base.html:124
@@ -1914,24 +1916,24 @@ msgstr "Partner worden"
 
 #: templates/rsr/project_base.html:135
 msgid "Page tools"
-msgstr "Hulpmiddelen"
+msgstr "Page tools"
 
 #: templates/rsr/project_base.html:141
 msgid "Permalink to this project"
-msgstr "Permalink naar dit project"
+msgstr "Permanente link naar dit project"
 
 #: templates/rsr/project_comments.html:10
 #: templates/rsr/project_comments.html:37
 msgid "All project comments"
-msgstr "Alle projectaantekeningen"
+msgstr "Alle projectopmerkingen"
 
 #: templates/rsr/project_comments.html:48 templates/rsr/project_main.html:189
 msgid "Add comment"
-msgstr "Aantekening maken"
+msgstr "Opmerking plaatsen"
 
 #: templates/rsr/project_comments.html:59
 msgid "You must be signed in to add a comment."
-msgstr "Om een aantekening te maken moet u eerst inloggen"
+msgstr "Om een opmerking te plaatsen, moet u eerst inloggen."
 
 #: templates/rsr/project_comments.html:60 templates/rsr/project_main.html:198
 msgid "Sign In"
@@ -1939,20 +1941,20 @@ msgstr "Inloggen"
 
 #: templates/rsr/project_comments.html:71
 msgid "Project comments"
-msgstr "Projectaantekeningen"
+msgstr "Projectopmerkingen"
 
 #: templates/rsr/project_comments.html:72 templates/rsr/project_main.html:226
 msgid ""
 "The comments are owned by whoever posted them. We are not responsible for "
 "them in any way."
 msgstr ""
-"De persoon die de aantekening maakt, draagt hiervoor de verantwoording. Akvo "
-"is niet verantwoordelijk voor de aantekeningen."
+"Opmerkingen vallen onder de verantwoordelijkheid van degene die ze plaatst. "
+"Akvo is op geen enkele manier aansprakelijk voor deze opmerkingen."
 
 #: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:222
 #, python-format
 msgid "Comment abuse in project #%(p_id)s, comment #%(c_id)s"
-msgstr "Taalmisbruik in project #%(p_id)s, aantekening #%(c_id)s"
+msgstr "Taalmisbruik in project #%(p_id)s, opmerking #%(c_id)s"
 
 #: templates/rsr/project_comments.html:87 templates/rsr/project_main.html:222
 msgid "Report abuse"
@@ -1967,12 +1969,12 @@ msgstr "Taalmisbruik melden"
 #: templates/widgets/project_list.html:121
 #: templates/widgets/project_updates.html:67
 msgid "Status"
-msgstr "Momentele status"
+msgstr "Status"
 
 #: templates/rsr/project_details.html:56 templates/rsr/project_details.html:98
 #: templates/rsr/project_main.html:47
 msgid "Focus area"
-msgstr "Projecttype"
+msgstr "Aandachtsgebieden"
 
 #: templates/rsr/project_details.html:74
 #: templates/rsr/project_details.html:135
@@ -2004,7 +2006,7 @@ msgstr "Duurzaamheid"
 #: templates/rsr/project_details.html:199 templates/rsr/project_main.html:104
 #: templates/rsr/project_main.html:113
 msgid "Target benchmarks"
-msgstr "Doelstelling in details"
+msgstr "Verwachte resultaten"
 
 #: templates/rsr/project_details.html:181
 msgid "More information"
@@ -2012,7 +2014,7 @@ msgstr "Meer informatie"
 
 #: templates/rsr/project_details.html:185
 msgid "Current state"
-msgstr "Momentele stand van zaken"
+msgstr "Stand van zaken"
 
 #: templates/rsr/project_details.html:189 templates/rsr/project_main.html:89
 msgid "Context"
@@ -2028,7 +2030,7 @@ msgstr "Uitgelichte projecten"
 
 #: templates/rsr/project_directory.html:84
 msgid "Focus areas"
-msgstr "Projecttype"
+msgstr "Aandachtsgebieden"
 
 #: templates/rsr/project_directory.html:133
 #: templates/rsr/project_directory.html:342
@@ -2054,17 +2056,17 @@ msgstr "Projecten op status sorteren"
 #: templates/rsr/project_directory.html:205
 #: templates/rsr/project_directory.html:207
 msgid "Sort projects by country"
-msgstr "Projecten op naam sorteren"
+msgstr "Projecten op land sorteren"
 
 #: templates/rsr/project_directory.html:212
 #: templates/rsr/project_directory.html:214
 msgid "Sort projects by continent"
-msgstr "Projecten op werelddeel sorteren"
+msgstr "Projecten op continent sorteren"
 
 #: templates/rsr/project_directory.html:219
 #: templates/rsr/project_directory.html:221
 msgid "Sort projects by total funds requested"
-msgstr "Op totaal aangevraagde financiering sorteren"
+msgstr "Projecten op totaal aangevraagde financiering sorteren"
 
 #: templates/rsr/project_directory.html:219
 #: templates/rsr/project_directory.html:221
@@ -2139,7 +2141,7 @@ msgstr "Financieringsdetails"
 
 #: templates/rsr/project_funding.html:56
 msgid "Project started"
-msgstr "Project begonnen"
+msgstr "Start project"
 
 #: templates/rsr/project_funding.html:63
 msgid "Funding breakdown"
@@ -2163,11 +2165,11 @@ msgstr "Onderhoud"
 
 #: templates/rsr/project_funding.html:82
 msgid "Other costs"
-msgstr "Andere kosten"
+msgstr "Overige kosten"
 
 #: templates/rsr/project_funding.html:98
 msgid "Current Funders"
-msgstr "Momentele funding partners"
+msgstr "Funding partners"
 
 #: templates/rsr/project_funding.html:106
 #, python-format
@@ -2180,7 +2182,7 @@ msgstr "Medewerkers"
 
 #: templates/rsr/project_main.html:166
 msgid "Related to this project"
-msgstr "Aan dit project verbonden"
+msgstr "Gerelateerde informatie aan dit project"
 
 #: templates/rsr/project_main.html:171
 msgid "Akvopedia entries"
@@ -2192,19 +2194,19 @@ msgstr "Externe links"
 
 #: templates/rsr/project_main.html:190
 msgid "Comments"
-msgstr "Aantekeningen"
+msgstr "Opmerkingen"
 
 #: templates/rsr/project_main.html:197
 msgid "You must be signed in to add a comment"
-msgstr "Om een aantekening te maken moet u eerst inloggen"
+msgstr "Om een opmerking te plaatsen moet u eerst inloggen"
 
 #: templates/rsr/project_main.html:225
 msgid "Older comments"
-msgstr "Eerdere aantekeningen"
+msgstr "Eerdere opmerkingen"
 
 #: templates/rsr/project_main.html:228
 msgid "No comments yet."
-msgstr "Nog geen aantekeningen."
+msgstr "Nog geen opmerkingen."
 
 #: templates/rsr/project_main.html:237 templates/rsr/project_updates.html:24
 #: templates/rsr/update_form.html:33 templates/rsr/update_form_old.html:28
@@ -2235,8 +2237,8 @@ msgid ""
 "The updates are owned by whoever posted them. We are not responsible for "
 "them in any way."
 msgstr ""
-"De persoon die de update toevoegt, draagt hiervoor de verantwoording. Akvo "
-"is niet verantwoordelijk voor updates."
+"Updates vallen onder de verantwoordelijkheid van degene die ze plaatst. "
+"Akvo is op geen enkele manier aansprakelijk voor deze updates."
 
 #: templates/rsr/project_main.html:288
 msgid "No updates yet."
@@ -2311,7 +2313,7 @@ msgstr "Akvo RSR - Really simple reporting"
 #: templates/rsr/rsr_base.html:107
 msgid "Site content under <a href=\"/web/open_license\">Open License</a>"
 msgstr ""
-"Inhoud beschikbaar onder meerdere <a href=\"/web/open_license\">Open "
+"Inhoud website beschikbaar onder meerdere <a href=\"/web/open_license\">Open "
 "licenties</a>"
 
 #: templates/rsr/rsr_base.html:107
@@ -2328,7 +2330,7 @@ msgstr "Contact"
 
 #: templates/rsr/sign_in.html:30
 msgid "Please sign in"
-msgstr "Inloggen a.u.b."
+msgstr "Inloggen"
 
 #: templates/rsr/sign_in.html:34
 msgid "Error when signing in"
@@ -2340,11 +2342,11 @@ msgstr "Ik heb een online account"
 
 #: templates/rsr/sign_in.html:46
 msgid "Enter username"
-msgstr "Gebruikersnaam ingeven"
+msgstr "Gebruikersnaam"
 
 #: templates/rsr/sign_in.html:54
 msgid "I forgot my username and/or password"
-msgstr "Ik ben mijn gebruikersnaam en/of wachtwoord vergeten"
+msgstr "Gebruikersnaam en/of wachtwoord vergeten?"
 
 #: templates/rsr/sign_in.html:59
 msgid "Signin"
@@ -2359,23 +2361,23 @@ msgid ""
 "By <a href='/rsr/accounts/register1/'>registering</a> with Akvo, you'll be "
 "able to:"
 msgstr ""
-"Door bij Akvo te <a href='/rsr/accounts/register1/'>registreren</a>, kunt u:"
+"Met een <a href='/rsr/accounts/register1/'>Akvo-account</a> kunt u:"
 
 #: templates/rsr/sign_in.html:69
 msgid "Create updates on your organisation's projects"
-msgstr "Updates voor de projecten van uw organisatie achterlaten"
+msgstr "Updates toevoegen aan uw projecten"
 
 #: templates/rsr/sign_in.html:70
 msgid "Leave comments on projects"
-msgstr "Aantekingen over projecten achterlaten"
+msgstr "Opmerkingen plaatsen over projecten"
 
 #: templates/rsr/sign_in.html:72
 msgid ""
 "And much more! <a href=\"http://dev.akvo.org:8080/web/\">Learn about</a> how "
 "Akvo works."
 msgstr ""
-"En nog veel meer! <a href=\"http://dev.akvo.org:8080/web/\">Leer</a> hoe "
-"Akvo werkt."
+"Lees meer over <a href=\"http://dev.akvo.org:8080/web/\">Akvo</a> en "
+"en de vele mogelijkheden!"
 
 #: templates/rsr/sys_message_base.html:20
 msgid "Return to the"
@@ -2598,10 +2600,10 @@ msgstr "website"
 #~ msgstr "Emailadres (herhalen om tikfouten te voorkomen)"
 
 #~ msgid "You are commenting the project named"
-#~ msgstr "U bent een aantekening aan het maken voor project"
+#~ msgstr "U bent een opmerking aan het plaatsen voor project"
 
 #~ msgid "Enter comment text"
-#~ msgstr "Tekst voor aantekening ingeven"
+#~ msgstr "Tekst voor opmerking ingeven"
 
 #~ msgid "Sumbit changes"
 #~ msgstr "Wijzigingen verzenden"
