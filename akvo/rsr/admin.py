@@ -133,14 +133,14 @@ class OrganisationAdmin(admin.ModelAdmin):
                 formsets.append(formset)
             if all_valid(formsets) and form_validated:
                 self.save_model(request, new_object, form, change=False)
-                #add by gvh:
-                #loop over all images and do a new save of them.
-                #this has to be done since the initial save puts the images in
-                #img/org/temp/ as we have no primary key to the org at that time
-                for field_name, uploaded_file in request.FILES.items():
-                    model_field = getattr(new_object, field_name)
-                    model_field.save(uploaded_file.name, uploaded_file)
-                #end add
+                ##add by gvh:
+                ##loop over all images and do a new save of them.
+                ##this has to be done since the initial save puts the images in
+                ##img/org/temp/ as we have no primary key to the org at that time
+                #for field_name, uploaded_file in request.FILES.items():
+                #    model_field = getattr(new_object, field_name)
+                #    model_field.save(uploaded_file.name, uploaded_file)
+                ##end add
                 form.save_m2m()
                 for formset in formsets:
                     self.save_formset(request, form, formset, change=False)

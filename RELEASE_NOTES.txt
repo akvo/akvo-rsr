@@ -1,4 +1,4 @@
-RELEASE_NOTES.txt, v0.9.3, 12 March 2009, tbp
+RELEASE_NOTES.txt, v0.9.5, 20 April 2009, tbp
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The
 Akvo Platform is used on Akvo.org to combat poverty through
@@ -8,6 +8,67 @@ education, health care, agriculture, etc.
 
 To read more about the Akvo Platform:
 http://www.akvo.org/web/akvo_platform_overview
+
+Akvo RSR v 0.9.5 release notes
+==============================
+v0.9.5, 20 April 2009, (Code name: Juno) tbp
+
+New required software: sorl-thumbnail.
+For the image handling integration you now need the following software:
+http://code.google.com/p/sorl-thumbnail/
+
+New features
+------------
+- Akvo RSR image upload improvements
+When uploading images to the Akvo RSR system there are now a number of
+improvements to how the system handle images.
+
+1) Images are scaled to the appropriate size the first time they are
+viewed. This is done via the sorl-thumbnail toolkit.
+2) Images are now renamed according to the use in the system. The
+naming is based on
+ModelName_instance.pk_FieldName_YYYY-MM-DD_HH.MM.SS.ext. Example: a
+map image uploaded to project no 17 gets the name
+Project_17_map_2009-04-17_12.13.14.jpg.
+3) Images are stored in the subdirectory related to the project and
+the update. /var/www/akvo/db/project/NN/update/MM
+
+- Akvo RSR admin link
+A link to the administration login can now be found on the footer of
+the page "Admin". (Note, that if you are on the non-RSR pages of the
+Akvo.org site, the Admin link leads to the Drupal system admin pages.)
+
+Infrastructure
+--------------
+The file hierarcy has changed. To read more about it, check out the 
+document: http://www.akvo.org/web/akvo-rsr-installation
+
+Bugs
+----
+Fixed two bugs where the maxlength attribute was missing on the input
+field for photo_credit and photo_caption.
+
+Limitations
+-----------
+See comments about limitations in the PayPal integration under release
+notes for 0.9.3.
+
+
+Akvo RSR v 0.9.4 release notes
+==============================
+v0.9.4, 15 March 2009, tbp
+
+New features
+------------
+Added Dutch and German translations of Akvo RSR user interface for
+Widgets and Paypal donations. (Thanks Anke and Malte!)
+
+Bugs
+----
+Fixed a bug where featured projects were not shown when looking at a
+project list from a specific organisation.
+
+
 
 Akvo RSR v 0.9.3 release notes
 ==============================
