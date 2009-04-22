@@ -226,7 +226,7 @@ def partner_clean(obj, field_name):
     if user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
         my_org = user_profile.organisation
         found = False
-        for i in range(0, obj._total_form_count):
+        for i in range(0, obj.total_form_count()):
             form = obj.forms[i]
             try:
                 form_org = form.cleaned_data[field_name]
