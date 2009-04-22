@@ -203,11 +203,6 @@ class LinkInline(admin.TabularInline):
     extra = 3
     list_display = ('url', 'caption', 'show_link', )    
 
-#admin.site.register(Link, LinkAdmin)
-
-
-#class FundingPartnerAdmin(admin.ModelAdmin):
-#    pass
 
 def partner_clean(obj, field_name):
     """
@@ -287,8 +282,8 @@ class SupportPartnerInline(admin.TabularInline):
     formset = RSR_SupportPartnerInlineFormFormSet
 
 
-class FundingAdminInLine(admin.TabularInline):
-    model = get_model('rsr', 'funding')
+class BudgetAdminInLine(admin.TabularInline):
+    model = get_model('rsr', 'budget')
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):
@@ -314,7 +309,7 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = [LinkInline, FundingPartnerInline, FieldPartnerInline, SupportPartnerInline, FundingAdminInLine, ]
+    inlines = [LinkInline, FundingPartnerInline, FieldPartnerInline, SupportPartnerInline, BudgetAdminInLine, ]
 
     fieldsets = (
         (_(u'Project description'), {
@@ -570,13 +565,7 @@ class ProjectAdmin(admin.ModelAdmin):
     change_view = transaction.commit_on_success(change_view)
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
-#admin.site.register(Project, ProjectAdmin)
 
-
-#class FundingAdmin(admin.ModelAdmin):
-#    list_display = ('project', 'employment', 'building', 'training', 'maintenance', 'other', 'total', ) 
-#
-#admin.site.register(get_model('rsr', 'funding'), FundingAdmin)
 
 class UserProfileAdminForm(forms.ModelForm):
     """

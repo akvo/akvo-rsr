@@ -76,22 +76,21 @@ class Country(models.Model):
 # Filter out NoneType returns!
 def funding_aggregate(projects, organisation=None):
     '''
-    Create funding aggregate data about a collection of projects in a queryset.
+    Create funding and budget aggregate data about a collection of projects in a queryset.
     '''
     # calculate sum of all project budgets
-    f = Funding.objects.filter(project__in = projects).exclude(employment__isnull=True,
+    f = Budget.objects.filter(project__in = projects).exclude(employment__isnull=True,
                                                                building__isnull=True,
                                                                training__isnull=True,
                                                                maintenance__isnull=True,
                                                                other__isnull=True)
-    funding_total = 0
+    budget_total = 0
     if f:
         for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
             qs = f.aggregate(Sum(field))
             total = sum(qs.values())
-            funding_total += total
-    else:
-        funding_total = funding_total
+            budget_total += total
+
     # get all funding partners to the projects
     fp = FundingPartner.objects.all().filter(project__in = projects).exclude(funding_amount__isnull=True)
     # how much has been pledged so far?
@@ -113,14 +112,14 @@ def funding_aggregate(projects, organisation=None):
             pledged = pledged
     # how much has been donated to these projects?
     donated = 0
-    d = Funding.objects.filter(project__in = projects).exclude(project__paypalinvoice__amount__isnull=True)
+    d = Budget.objects.filter(project__in = projects).exclude(project__paypalinvoice__amount__isnull=True)
     if d:
         qs = f.aggregate(donated=Sum('project__paypalinvoice__amount'))
         donated += qs['donated']
     else:
         donated = donated
     #return funding_total, pledged, donated, funding_total - (total_pledged + donated)
-    return funding_total, (pledged + donated), funding_total - (total_pledged + donated)
+    return budget_total, (pledged + donated), budget_total - (total_pledged + donated)
 
 class Organisation(models.Model):
     """
@@ -398,13 +397,13 @@ class Project(models.Model):
 
 
     def funding_pledged(self):
-        return self.funding.pledged()
+        return self.budget.pledged()
 
     def funding_donated(self):
-        return self.funding.donated()
+        return self.budget.donated()
 
     def funding_still_needed(self):
-        return self.funding.still_needed()
+        return self.budget.still_needed()
 
     class Meta:
         permissions = (
@@ -486,7 +485,7 @@ class FieldPartner(models.Model):
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
 
-class Funding(models.Model):
+class Budget(models.Model):
     project             = models.OneToOneField(Project, primary_key=True)
     date_request_posted = models.DateField(default=date.today)
     date_complete       = models.DateField(null=True, blank=True)
@@ -524,7 +523,7 @@ class Funding(models.Model):
         
     class Meta:
         permissions = (
-            ("%s_funding" % RSR_LIMITED_CHANGE, u'RSR limited change funding'),
+            ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
 
         

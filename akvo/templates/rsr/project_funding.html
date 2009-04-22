@@ -19,7 +19,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div class="boxhead">
 		{% comment %}
-		{% if not p.funding.date_complete %}
+		{% if not p.budget.date_complete %}
 			<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" style="float: right" onclick="this.blur();"><span>{% trans 'Fund project' %}</span></a>
 		{% endif %}
 		{% endcomment %}
@@ -47,12 +47,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>-->
 			<table>
 				<tr>
-					<td>{{p.funding.date_request_posted}}</td>
+					<td>{{p.budget.date_request_posted}}</td>
 					<td>{% trans 'Request posted' %}</td>
 				</tr>
-				{% if p.funding.date_complete %}
+				{% if p.budget.date_complete %}
 					<tr>
-						<td>{{p.funding.date_complete}}</td>
+						<td>{{p.budget.date_complete}}</td>
 						<td>{% trans 'Project started' %}</td>
 					</tr>
 				{% endif %}
@@ -64,27 +64,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<table style="width: 80%">
 			<tr>
 			<td>{% trans 'Employment costs' %}</td>
-			<td>&#8364; {{p.funding.employment}}</td>
+			<td>&#8364; {{p.budget.employment}}</td>
 			</tr>
 			<tr>
 			<td>{% trans 'Building Material costs' %}</td>
-			<td>&#8364; {{p.funding.building}}</td>
+			<td>&#8364; {{p.budget.building}}</td>
 			</tr>
 			<tr>
 			<td>{% trans 'Training costs' %}</td>
-			<td>&#8364; {{p.funding.training}}</td>
+			<td>&#8364; {{p.budget.training}}</td>
 			</tr>
 			<tr>
 			<td>{% trans 'Maintenance costs' %}</td>
-			<td>&#8364; {{p.funding.maintenance}}</td>
+			<td>&#8364; {{p.budget.maintenance}}</td>
 			</tr>
 			<tr>
 			<td>{% trans 'Other costs' %}</td>
-			<td>&#8364; {{p.funding.other}}</td>
+			<td>&#8364; {{p.budget.other}}</td>
 			</tr>
 			<tr>
 			<td><b>{% trans 'Total' %}</b></td>
-			<td><b>&#8364; {{p.funding.total}}</b></td>
+			<td><b>&#8364; {{p.budget.total}}</b></td>
 			</tr>
 			</table>
 		</td>

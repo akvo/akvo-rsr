@@ -32,7 +32,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     {% block funding %}
 	<div class="boxhead">
 		{% comment %}
-        {% if not p.funding.date_complete %}
+        {% if not p.budget.date_complete %}
 		<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" onclick="this.blur();"><span>{% trans 'Fund project' %}</span></a>
         {% endif %}
 		{% endcomment %}
@@ -45,9 +45,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="margin: 20px 20px 10px 20px">{% funding_box_march p %}</div>
         {#<div style="margin: 20px 20px 10px 20px">{% funding_bar p %}</div>#}
 		<!--<div style="border: 1px solid #999; margin: 20px 20px 10px 20px"><div style="width: 186px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 186 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>-->
-        <p>{{p.funding.date_request_posted}} {% trans 'Request posted' %}</p>
-		{% if p.funding.date_complete %}
-    		<p>{{p.funding.date_complete}} {% trans 'Funding completed' %}</p>
+        <p>{{p.budget.date_request_posted}} {% trans 'Request posted' %}</p>
+		{% if p.budget.date_complete %}
+    		<p>{{p.budget.date_complete}} {% trans 'Funding completed' %}</p>
 		{% endif %}
 		<!--<p><b>Total: <span style="margin-left: 10px">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>

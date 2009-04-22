@@ -2,7 +2,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Funding, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, Budget, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import funding_aggregate, UserProfile, MoMmsRaw, MoMmsFile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
@@ -237,8 +237,8 @@ def projectlist(request):
     page: paginator
     '''
     projects = Project.objects.published().extra(
-        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
-                'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
+        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id',
+                'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id',}
     )
     showcases = projects.order_by('?')[:3]
     page, stats = project_list_data(request, projects)
@@ -259,8 +259,8 @@ def filteredprojectlist(request, org_id):
     o = Organisation.objects.get(id=org_id)
     projects = o.published_projects()
     projects = projects.extra(
-        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',
-                'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id',}
+        select={'funds_requested': 'SELECT employment+building+training+maintenance+other FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id',
+                'funds_needed': 'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id',}
     )
     showcases = projects.order_by('?')[:3]
     page, stats = project_list_data(request, projects)
@@ -873,11 +873,11 @@ def project_list_widget(request, template='project-list', org_id=0):
 		#p = p.extra({'update': 'project_updates__time__exact=last_update'})
 		p = p.order_by('-last_update', 'name')
 	elif order_by == 'total_budget':
-		p = p.extra(select={'total_budget':'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
+		p = p.extra(select={'total_budget':'SELECT employment+building+training+maintenance+other FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id'})
 		p = p.order_by('-total_budget','name')
 		#p = p.order_by(order_by,'name')
 	elif order_by == 'funds_needed':
-		p = p.extra(select={'funds_needed':'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
+		p = p.extra(select={'funds_needed':'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id'})
 		p = p.order_by('-funds_needed','name')	
 	else:
 		p = p.order_by(order_by, 'name')
@@ -913,10 +913,10 @@ def widget_project_list(request, template='widgets/project_list.html'):
 		#p = p.extra({'update': 'project_updates__time__exact=last_update'})
 		p = p.order_by('-last_update', 'name')
 	elif order_by == 'total_budget':
-		p = p.extra(select={'total_budget':'SELECT employment+building+training+maintenance+other FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
+		p = p.extra(select={'total_budget':'SELECT employment+building+training+maintenance+other FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id'})
 		p = p.order_by(order_by,'name')
 	elif order_by == 'funds_needed':
-		p = p.extra(select={'funds_needed':'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_funding WHERE rsr_funding.project_id = rsr_project.id'})
+		p = p.extra(select={'funds_needed':'SELECT DISTINCT employment+building+training+maintenance+other-(SELECT (CASE WHEN SUM(funding_amount) IS NULL THEN 0 ELSE SUM(funding_amount) END) FROM rsr_fundingpartner WHERE rsr_fundingpartner.project_id = rsr_project.id) FROM rsr_budget WHERE rsr_budget.project_id = rsr_project.id'})
 		p = p.order_by('-funds_needed','name')	
 	else:
 		p = p.order_by(order_by, 'name')
@@ -977,7 +977,7 @@ def donate(request, project_id):
     p = get_object_or_404(Project, pk=project_id)
     u = request.user
     t = datetime.now()
-    fn = Funding.objects.get(project=p).still_needed()
+    fn = Budget.objects.get(project=p).still_needed()
 
     # Validate if the form was POSTed...
     if request.method == 'POST':

@@ -12,13 +12,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
 				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.total_given}}
+				{% trans 'Raised' %}:&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.total_given}}
 				</p>
 				{% comment %}
 				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
 					<tr class="green">
 						<th>{% trans 'Raised' %}:</th>
-						<td>&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.pledged}}</td>
+						<td>&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.pledged}}</td>
 					</tr>
 				</table>
 				{% endcomment %}
@@ -30,17 +30,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		{% else %}
 		
-		{% ifequal p.funding.still_needed 0 %}
+		{% ifequal p.budget.still_needed 0 %}
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
 				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.total_given}}
+				{% trans 'Raised' %}:&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.total_given}}
 				</p>
 				{% comment %}
 				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
 					<tr class="green">
 						<th>{% trans 'Raised' %}:</th>
-						<td>&nbsp;{{p.funding.get_currency_display|safe}}&nbsp;{{p.funding.pledged}}</td>
+						<td>&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.pledged}}</td>
 					</tr>
 				</table>
 				{% endcomment %}
@@ -55,20 +55,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" cellspacing="0" >
 			<tr class="green">
 				<th style="padding-left:3px;">{% trans 'Raised' %}:</th>
-				<td style="padding-right:3px;">{{p.funding.get_currency_display|safe}} {{p.funding.total_given}}</td>
+				<td style="padding-right:3px;">{{p.budget.get_currency_display|safe}} {{p.budget.total_given}}</td>
 			</tr>
 			<tr class="red">
 				<th style="padding-left:3px;">{% trans 'Still needed' %}:</th>
-				<td style="padding-right:3px;">{{p.funding.get_currency_display|safe}} {{p.funding.still_needed}}</td>
+				<td style="padding-right:3px;">{{p.budget.get_currency_display|safe}} {{p.budget.still_needed}}</td>
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
-			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding.total_given p.funding.total 100 %}%"> </div>
+			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.budget.total_given p.budget.total 100 %}%"> </div>
 		</div>
 		<table class="fundingbox-table">
 			<tr>
 				<th style="padding-left:3px;">{% trans 'Total budget' %}:</th>
-				<td style="padding-right:3px;">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</td>
+				<td style="padding-right:3px;">{{p.budget.get_currency_display|safe}} {{p.budget.total}}</td>
 			</tr>					
 		</table>
 		{% comment %}
