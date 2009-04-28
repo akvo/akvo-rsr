@@ -33,7 +33,8 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
 from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
-from utils import groups_from_user, rsr_image_path
+from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users
+
 from signals import change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status
 
 CONTINENTS = (
@@ -259,10 +260,9 @@ class ProjectManager(models.Manager):
 
 
 CURRENCY_CHOICES = (
-    #('USD', 'US dollars'),
-    #('EUR', '&#8364;'),
+    #('USD', '$'),
     ('EUR', '€'),
-    #('GBP', 'British pounds'),
+    #('GBP', '£'),
 )
 
 STATUSES = (
@@ -550,8 +550,6 @@ class UserProfile(models.Model):
     '''
     user            = models.ForeignKey(User, unique=True)
     organisation    = models.ForeignKey(Organisation)
-    #is_org_admin    = models.BooleanField(_(u'organisation administrator'))
-    #is_org_editor   = models.BooleanField(_(u'organisation project editor'))
     phone_number    = models.CharField(
         max_length=50,
         blank=True,
@@ -571,39 +569,61 @@ class UserProfile(models.Model):
     def organisation_name(self):
         return self.organisation.name
     
-    def is_active(self):
+    #methods that insteract with the User model
+    def get_is_active(self):
         return self.user.is_active
-    is_active.boolean = True #make pretty icons in the admin list view
+    get_is_active.boolean = True #make pretty icons in the admin list view
+    get_is_active.short_description = 'user is activated (may log in)'
 
-    def is_org_admin(self):
+    def set_is_active(self, set_it):
+        self.user.is_active = set_it
+        self.user.save()
+    
+    def get_is_staff(self):
+        return self.user.is_staff
+    get_is_staff.boolean = True #make pretty icons in the admin list view
+    
+    def set_is_staff(self, set_it):
+        self.user.is_staff = set_it
+        self.user.save()
+        
+    def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
-    is_org_admin.boolean = True #make pretty icons in the admin list view
+    get_is_org_admin.boolean = True #make pretty icons in the admin list view
+    get_is_org_admin.short_description = 'user is an organisation administrator'
+
+    def set_is_org_admin(self, set_it):
+        if set_it:
+            self._add_user_to_group(GROUP_RSR_PARTNER_ADMINS)
+        else:
+            self._remove_user_from_group(GROUP_RSR_PARTNER_ADMINS)
     
-    def is_org_editor(self):
+    def get_is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
-    is_org_editor.boolean = True #make pretty icons in the admin list view
+    get_is_org_editor.boolean = True #make pretty icons in the admin list view
+    get_is_org_editor.short_description = 'user is a project editor'
+
+    def set_is_org_editor(self, set_it):
+        if set_it:
+            self._add_user_to_group(GROUP_RSR_PARTNER_EDITORS)
+        else:
+            self._remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
     
-    def set_active(self):
-        self.user.is_active = True
-        self.user.save()
-        
-    def set_inactive(self):
-        self.user.is_active = False
-        self.user.save()
-        
-    def add_user_to_group(self, group_name):
+    def _add_user_to_group(self, group_name):
         group = Group.objects.get(name=group_name)
         user = self.user
         if not group in user.groups.all():
             user.groups.add(group)
             user.save()
 
-    def remove_user_from_group(self, group_name):
+    def _remove_user_from_group(self, group_name):
         group = Group.objects.get(name=group_name)
         user = self.user
         if group in user.groups.all():
             user.groups.remove(group)
             user.save()
+    
+    #mobile akvo
 
     def create_sms_update(self, mo_sms_raw):
         # does the user have a project to update? TODO: security!
@@ -642,6 +662,26 @@ class UserProfile(models.Model):
             ("%s_userprofile" % RSR_LIMITED_CHANGE, u'RSR limited change user profile'),
         )
 
+def user_activated_callback(sender, **kwargs):
+    #from dbgp.client import brk
+    #brk(host="localhost", port=9000)            
+    user = kwargs.get("user", False)
+    if user:
+        org = user.get_profile().organisation
+        users = User.objects.all()
+        #find all users that are 1) superusers 2) org admins for the same org as
+        #the just activated user
+        notify = users.filter(is_superuser=True) | \
+            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])
+        rsr_send_mail_to_users(notify,
+                               subject='email/new_user_registered_subject.txt',
+                               message='email/new_user_registered_message.txt',
+                               subject_context={'organisation': org},
+                               msg_context={'user': user, 'organisation': org}
+                              )
+
+from registration.signals import user_activated
+user_activated.connect(user_activated_callback)
 
 def create_rsr_profile(user, profile):
     return UserProfile.objects.create(user=user, organisation=Organisation.objects.get(pk=profile['org_id']))

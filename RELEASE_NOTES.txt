@@ -1,252 +1,206 @@
-RELEASE_NOTES.txt, v0.9.5, 20 April 2009, tbp
+RELEASE_NOTES.txt, v0.9.6, 27 April 2009, tbp
 
-Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The
-Akvo Platform is used on Akvo.org to combat poverty through
-small-scale water and sanitation projects. We believe that Akvo RSR
-can be used in many other development aid scenarios, in areas such as
-education, health care, agriculture, etc.
+Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
-To read more about the Akvo Platform:
-http://www.akvo.org/web/akvo_platform_overview
+To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview)
 
-Akvo RSR v 0.9.5 release notes
-==============================
-v0.9.5, 20 April 2009, (Code name: Juno) tbp
+---
 
-New required software: sorl-thumbnail.
-For the image handling integration you now need the following software:
-http://code.google.com/p/sorl-thumbnail/
+Akvo RSR v 0.9.6 release notes
+------------------------------
+v0.9.6, 27 April 2009, (Code name: Sword) tbp
+
+**New required software: django-10553**
+We have upgraded the version of Django which we use to rev. 10553. There are some features in Django which has changed and will break Akvo RSR if you don't update to this version.
 
 New features
 ------------
-- Akvo RSR image upload improvements
-When uploading images to the Akvo RSR system there are now a number of
-improvements to how the system handle images.
+### New user roles
+Two new user roles have been introduced: organisation project editor and organisation administrator
 
-1) Images are scaled to the appropriate size the first time they are
-viewed. This is done via the sorl-thumbnail toolkit.
-2) Images are now renamed according to the use in the system. The
-naming is based on
-ModelName_instance.pk_FieldName_YYYY-MM-DD_HH.MM.SS.ext. Example: a
-map image uploaded to project no 17 gets the name
-Project_17_map_2009-04-17_12.13.14.jpg.
-3) Images are stored in the subdirectory related to the project and
-the update. /var/www/akvo/db/project/NN/update/MM
+An organisation administrator can do the following:
 
-- Akvo RSR admin link
-A link to the administration login can now be found on the footer of
-the page "Admin". (Note, that if you are on the non-RSR pages of the
-Akvo.org site, the Admin link leads to the Drupal system admin pages.)
+* Create new projects
+* Edit projects
+* Edit the organisation page
+* Activate new users attached to the organisation
+* Promote new users to be project editor or organisation administrator
+* Add countries to the country list
 
-Infrastructure
---------------
-The file hierarcy has changed. To read more about it, check out the 
-document: http://www.akvo.org/web/akvo-rsr-installation
+The organisation administrator get an email each time a new user signs up for an Akvo RSR account and selects the organisation administrator's organisation. In this email there is a clickable link directly to the user profile for the new user, where the user can be activated.
+
+An organisation editor can do the following:
+
+* Edit projects
+* Add countries to the country list
+
+Documentation about how to use the new features can be found in the Akvo Labs Wiki: [Akvo HOWTOs](http://www.akvo.org/labs/index.php/Akvo_HOWTOs)
+
+Miscellaneous
+-------------
+### New home page layout
+We have added a new box on the home page: Learn about Akvo.
+
+### Updated Dutch translation
+The Dutch translation has been updated with some changes to the use of language.
+
+### Release notes
+We are now coding the release notes in [markdown](http://daringfireball.net/projects/markdown/), to make it easier to convert to an HTML page, as well as read in the raw text format.
+
+---
+
+Akvo RSR v 0.9.5 release notes
+------------------------------
+v0.9.5, 20 April 2009, (Code name: Juno) tbp
+
+**New required software: sorl-thumbnail.**
+For the image handling integration you now need the following software:[sorl-thumbnail](http://code.google.com/p/sorl-thumbnail/)
+
+New features
+------------
+### Akvo RSR image upload improvements
+When uploading images to the Akvo RSR system there are now a number of improvements to how the system handle images.
+
+1. Images are scaled to the appropriate size the first time they are viewed. This is done via the sorl-thumbnail toolkit.
+2. Images are now renamed according to the use in the system. The naming is based on ModelName_instance.pk_FieldName_YYYY-MM-DD_HH.MM.SS.ext. Example: a map image uploaded to project no 17 gets the name Project_17_map_2009-04-17_12.13.14.jpg.
+3. Images are stored in the subdirectory related to the project and the update. /var/www/akvo/db/project/NN/update/MM
+
+### Akvo RSR admin link
+A link to the administration login can now be found on the footer of the page "Admin". (Note, that if you are on the non-RSR pages of the Akvo.org site, the Admin link leads to the Drupal system admin pages.)
 
 Bugs
 ----
-Fixed two bugs where the maxlength attribute was missing on the input
-field for photo_credit and photo_caption.
+Fixed two bugs where the maxlength attribute was missing on the input field for `photo_credit` and `photo_caption`.
 
 Limitations
 -----------
-See comments about limitations in the PayPal integration under release
-notes for 0.9.3.
+See comments about limitations in the PayPal integration under release notes for 0.9.3.
 
+----
 
 Akvo RSR v 0.9.4 release notes
-==============================
+------------------------------
 v0.9.4, 15 March 2009, tbp
 
 New features
 ------------
-Added Dutch and German translations of Akvo RSR user interface for
-Widgets and Paypal donations. (Thanks Anke and Malte!)
+Added Dutch and German translations of Akvo RSR user interface for Widgets and Paypal donations. (Thanks Anke and Malte!)
 
 Bugs
 ----
-Fixed a bug where featured projects were not shown when looking at a
-project list from a specific organisation.
+Fixed a bug where featured projects were not shown when looking at a project list from a specific organisation.
 
-
+----
 
 Akvo RSR v 0.9.3 release notes
-==============================
+------------------------------
 v0.9.3, 12 March 2009, tbp
 
-New required software: django-paypal. 
-For the PayPal integration you now need the following software:
-http://github.com/johnboxall/django-paypal/
+**New required software: django-paypal.**
+For the PayPal integration you now need the following software:[django-paypal](http://github.com/johnboxall/django-paypal/)
 
 New features
 ------------
-- Akvo RSR Widgets user interface
-There is now a user interface to select and customize widgets. The
-tool can be found under Page tools on each project page. The widgets
-can be placed on any web site to promote a particular project or
-highlight progress.
+### Akvo RSR Widgets user interface
+There is now a user interface to select and customize widgets. The tool can be found under Page tools on each project page. The widgets can be placed on any web site to promote a particular project or highlight progress.
 
-- Akvo RSR delegated project and user administration beta
-We have started creating the ability for project owners to edit their
-own project descriptions and manage their own users. The tools are
-fairly basic so far, but it is a start.
+### Akvo RSR delegated project and user administration beta
+We have started creating the ability for project owners to edit their own project descriptions and manage their own users. The tools are fairly basic so far, but it is a start.
 
-- Akvo Direct PayPal integration, using django-paypal
-Support added for making donations to projects via PayPal
-Standard. Instances of a new PayPalInvoice class are created which
-capture details of the payment and track it all the way through to
-PayPal and back again. Invoices are "completed" and the end user is
-sent a confirmation email on receipt of a confirmation callback from
-PayPal.
+### Akvo Direct PayPal integration, using django-paypal
+Support added for making donations to projects via PayPal Standard. Instances of a new PayPalInvoice class are created which capture details of the payment and track it all the way through to PayPal and back again. Invoices are "completed" and the end user is sent a confirmation email on receipt of a confirmation callback from PayPal.
 
-Behaviour of PayPal donations can be defined by several environment
-variables in settings.py, making it straightforward to select
-currency, PayPal command flow, specify custom PayPal buttons and
-switch between sandbox settings for testing and production settings.
+Behaviour of PayPal donations can be defined by several environment variables in settings.py, making it straightforward to select currency, PayPal command flow, specify custom PayPal buttons and switch between sandbox settings for testing and production settings.
 
 Limitations in PayPal integration
+----------------------------------
+There are a couple of limitations with the PayPal integration at this point.
 
-There are a couple of limitations with the PayPal integration at this
-point.
+### Donation committments
+When performing a donation we committ a portion of the funding the project needs, to ensure that the project isn't overfunded. We currently have no routines to take down "stale" donations, i.e. donations which were never completed. This is a priority set of routines which will be created as soon as possible.
 
-Donation committments
-When performing a donation we committ a portion of the funding the
-project needs, to ensure that the project isn't overfunded. We
-currently have no routines to take down "stale" donations,
-i.e. donations which were never completed. This is a priority set of
-routines which will be created as soon as possible.
-
-PayPal charges
-Project funding is currently done as integers. This will have to
-change, as when donations come in from PayPal a certain percentage of
-the donation has been deducted from the donation. This very seldom is
-a whole number. We don't deduct this at this point from the project,
-which means that the project will always be short of some funds if
-donations have been made to it. This is a fairly large thing to fix,
-so due to deadlines we have punted this for a later release. Each
-transaction that is completed has a record of how much PayPal charged,
-so we can fix the accounting later.
+### PayPal charges
+Project funding is currently done as integers. This will have to change, as when donations come in from PayPal a certain percentage of the donation has been deducted from the donation. This very seldom is a whole number. We don't deduct this at this point from the project, which means that the project will always be short of some funds if donations have been made to it. This is a fairly large thing to fix, so due to deadlines we have punted this for a later release. Each transaction that is completed has a record of how much PayPal charged, so we can fix the accounting later.
 
 
 Infrastructure
 --------------
-The way funding of a project was calculated has been changed. We have
-included the donations into the funding.
+The way funding of a project was calculated has been changed. We have included the donations into the funding.
 
 Bugs
 ----
-Fixed a bug in the project-list widget. When you sorted on anything
-else than project name it was impossible to resort on project name.
+Fixed a bug in the project-list widget. When you sorted on anything else than project name it was impossible to resort on project name.
 
+----
 
 Akvo RSR v 0.9.2 release notes
-==============================
+------------------------------
 v0.9.2, 13 February 2009, tbp
 
 New feature
 -----------
-- Akvo RSR Widgets
-Beta-release of the Akvo RSR Widget backend. This allows you to post
-iFrame based widgets of projects and project listings. A user
-interface should be added to the next release.
+### Akvo RSR Widgets
+Beta-release of the Akvo RSR Widget backend. This allows you to post iFrame based widgets of projects and project listings. A user interface should be added to the next release.
+
+----
 
 Akvo RSR v 0.9.1 release notes
-=============================
-v0.9.1, 9 February 2009, bw
+------------------------------
+v0.9.1, 6 February 2009, bw
 
 New features
 ------------
-- Django framework upgrade. 
-This version of Akvo RSR uses the latest Django framework, version
-1.0.2. The new form-handling library, django.forms, was designed with
-extensibility and customization in mind, and will permit us to more
-quickly and easily develop RSR's administration user interface. To
-read more about Django 1.0 please see:
+### Django framework upgrade.
+This version of Akvo RSR uses the latest Django framework, version 1.0.x. The new form-handling library, django.forms, was designed with extensibility and customization in mind, and will permit us to more quickly and easily develop RSR's administration user interface. To read more about Django 1.0.x please see:
 http://docs.djangoproject.com/en/dev/releases/1.0/
 
-Parts of RSR have been rewritten to accomodate the frameworks
-upgrade. RSR should not look or behave any differently than it did in
-0.9. If you experience anything new, please let us know so we can
-address problems!
+Parts of RSR have been rewritten to accomodate the frameworks upgrade. RSR should not look or behave any differently than it did in 0.90. If you experience anything new, please let us know so we can address problems!
 
-- Internationalization.
-Dutch translation files have been added. A big thanks to our Dutch
-translator, Anke van Lenteren, for helping us as we work out our
-translation process.
+### Internationalization
+Dutch translation files have been added. A big thanks to our Dutch translator, Anke van Lenteren, for helping us as we work out our translation process.
 
-- Miscellaneous
-The wording of some text and error messages has been changed in the
-interest of greater clarity (and proper English). There are also some
-minor tweaks to style sheets to fix display glitches and layout
-irregularities across browsers.
+### Miscellaneous
+The wording of some text and error messages has been changed in the interest of greater clarity (and proper English). There are also some minor tweaks to style sheets to fix display glitches and layout irregularities across browsers.
 
+----
 
 Akvo RSR v 0.9 release notes
-============================
+----------------------------
 v0.9, 8 January 2009, tbp
 
 New features
 ------------
-- First public release
-This is the first public release of Akvo RSR. 
+### First public release
+This is the first public release of Akvo RSR.
 
-- Internationalization for the user interface.
-We have tagged all the user interface text, so that the Django
-translation engine can pick up the text strings and produce a
-translation file. While the interface is translated, some emails from
-the system remain in English; these will be fixed in a later
-release. We have tested the implementation with one initial language,
-German. You can participate and help translate the Akvo RSR user
-interface to your language by downloading the translation files from:
-https://translations.launchpad.net/akvo.rsr
+### Internationalization for the user interface.
+We have tagged all the user interface text, so that the Django translation engine can pick up the text strings and produce a translation file. While the interface is translated, some emails from the system remain in English; these will be fixed in a later release. We have tested the implementation with one initial language, German. You can participate and help translate the Akvo RSR user interface to your language by downloading the translation files from: https://translations.launchpad.net/akvo.rsr
 
-- Licensing.
-Inserted the GNU AGPL license in the distribution and tagged all the
-files with license information.
+### Licensing
+Inserted the GNU AGPL license in the distribution and tagged all the files with license information.
 
-- Akvo at a glance portlet.
-Field partners, Support partners and Funding partners are now linked
-to a listing showing only those partners (the feature existed before,
-but there were no links to it).
+### Akvo at a glance portlet
+Field partners, Support partners and Funding partners are now linked to a listing showing only those partners (the feature existed before, but there were no links to it).
 
-- Project updates.
-Projects with no updates now have an RSS icon and a link (previously
-you had to wait for the first update for the icon and link to show
-up). So you can subscribe with an RSS reader to projects which have
-not been updated yet.
+### Project updates
+Projects with no updates now have an RSS icon and a link (previously you had to wait for the first update for the icon and link to show up). So you can subscribe with an RSS reader to projects which have not been updated yet.
 
-- We have changed how funders contributions are displayed in the
-  Organisation activities portlet. Now only the funders proportion of
-  a project is displayed (Bug 269400).
+Bugs
+----
+We have changed how funders contributions are displayed in the Organisation activities portlet. Now only the funders proportion of a project is displayed (Bug 269400).
 
 Highlights of bugs fixed
 ------------------------
 
-296702 Remove MDG count terminology Medium Fix Released
+296702    Remove MDG count terminology Medium Fix Released
+274658    Photos in Project Update have no default placement, so do not show up. Medium Fix Released
+269400    Portlet: "Organisation activities" shows easy to miss-understand Funding pledged Medium Fix Released
+269402    Organisation description box do not use line breaks. Medium Fix Released
+274099    Partner types (example: funding partner) should be link to the URL which lists them Low Fix Released
+279243    Actual number in Akvo at a glance portlet gives ugly linebreak Wishlist Fix Released
+292932    Describe in user interface that user names are case-sensitive. Wishlist Fix Released
 
-274658 Photos in Project Update have no default placement, so do not
-show up. Medium Fix Released
-
-269400 Portlet: "Organisation activities" shows easy to
-miss-understand Funding pledged Medium Fix Released
-
-269402 Organisation description box do not use line breaks. Medium Fix
-Released
-
-274099 Partner types (example: funding partner) should be link to the
-URL which lists them Low Fix Released
-
-279243 Actual number in Akvo at a glance portlet gives ugly linebreak
-Wishlist Fix Released
-
-292932 Describe in user interface that user names are
-case-sensitive. Wishlist Fix Released
-
-A detailed list (including in process development bugs) can be found
-at: http://snurl.com/9lqvk
+A detailed list (including in process development bugs) can be found at: http://snurl.com/9lqvk
 
 
 ====END OF RELEASE NOTES====
-
-
-

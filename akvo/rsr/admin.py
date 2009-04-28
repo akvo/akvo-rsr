@@ -16,6 +16,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
+from forms import ReadonlyFKAdminField
+
 from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import get_rsr_limited_change_permission
 from utils import groups_from_user
@@ -221,10 +223,10 @@ def partner_clean(obj, field_name):
     """
     user_profile = obj.request.user.get_profile()
     # if the user is a partner org we try to avoid foot shooting
-    if user_profile.is_org_admin() or user_profile.is_org_editor():
+    if user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
         my_org = user_profile.organisation
         found = False
-        for i in range(0, obj._total_form_count):
+        for i in range(0, obj.total_form_count()):
             form = obj.forms[i]
             try:
                 form_org = form.cleaned_data[field_name]
@@ -583,59 +585,47 @@ class UserProfileAdminForm(forms.ModelForm):
     This form dispalys two extra fields that show if the ser belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)            
     class Meta:
         model = get_model('rsr', 'userprofile')
 
+    #user            = ReadOnlyField(label=_(u'Username'))
+    is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
 
     def __init__(self, *args, **kwargs):
         #request is needed to populate is_org_admin and is_org_editor
         initial_data = {}
-        initial_data['is_org_admin']    = kwargs['instance'].is_org_admin()
-        initial_data['is_org_editor']   = kwargs['instance'].is_org_editor()
-        kwargs.update({'initial': initial_data})
+        instance = kwargs.get('instance', None)
+        if instance:
+            initial_data['is_active']       = instance.get_is_active()
+            initial_data['is_org_admin']    = instance.get_is_org_admin()
+            initial_data['is_org_editor']   = instance.get_is_org_editor()
+            kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
-
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'is_org_admin', 'is_org_editor',)
+class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
+    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor',)
     list_filter  = ('organisation', )
     form = UserProfileAdminForm
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def get_form(self, request, obj=None, **kwargs):
-        """
-        Returns a Form class for use in the admin add view. This is used by
-        add_view and change_view.
-        """
-        if self.declared_fieldsets:
-            fields = flatten_fieldsets(self.declared_fieldsets)
-        else:
-            fields = None
-        # hide phone_number and project from non-userusers
+        # non-superusers don't get to see it all
         if not request.user.is_superuser:
+            # hide sms-realted stuff
             self.exclude =  ('phone_number', 'project', )
-        # this is needed to remove some kind of caching on exclude, resulting in
-        # the above fields being hidden from superusers after a vanilla user has accessed the form!
+            # user and org are only shown as text, not select widget
+            self.readonly_fk = ('user', 'organisation',)
+        # this is needed to remove some kind of caching on exclude and readonly_fk,
+        # resulting in the above fields being hidden/changed from superusers after
+        # a vanilla user has accessed the form!
         else:
             self.exclude =  None
-        if self.exclude is None:
-            exclude = []
-        else:
-            exclude = list(self.exclude)
-        defaults = {
-            "form": self.form,
-            "fields": fields,
-            "exclude": exclude + kwargs.get("exclude", []),
-            "formfield_callback": curry(self.formfield_for_dbfield, request=request),
-        }
-        defaults.update(kwargs)
-        foo = modelform_factory(self.model, **defaults)
-        return foo
-    
+            self.readonly_fk = ()
+        form = super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
     def queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
@@ -661,8 +651,6 @@ class UserProfileAdmin(admin.ModelAdmin):
         get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
         "own" projects, organisation and user profiles
         """
-        #from dbgp.client import brk
-        #brk(host="localhost", port=9000)            
         opts = self.opts
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return True
@@ -678,19 +666,17 @@ class UserProfileAdmin(admin.ModelAdmin):
         """
         Given a ModelForm return an unsaved instance. ``change`` is True if
         the object is being changed, and False if it's being added.
+        
+        Act upon the checkboxes that fake admin settings for the partner users.
         """
-        #from dbgp.client import brk
-        #brk(host="localhost", port=9000)            
-        #self.request = request
-        up = form.save(commit=False) #returns a user profile
-        if form.cleaned_data['is_org_admin']:
-            up.add_user_to_group(GROUP_RSR_PARTNER_ADMINS)
-        else:
-            up.remove_user_from_group(GROUP_RSR_PARTNER_ADMINS)
-        if form.cleaned_data['is_org_editor']:
-            up.add_user_to_group(GROUP_RSR_PARTNER_EDITORS)
-        else:
-            up.remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
+        userprofile = form.save(commit=False) #returns a user profile
+        is_active = form.cleaned_data['is_active']
+        is_admin =  form.cleaned_data['is_org_admin']
+        is_editor = form.cleaned_data['is_org_editor']
+        userprofile.set_is_active(is_active) #master switch
+        userprofile.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
+        userprofile.set_is_org_editor(is_editor) #can edit projects
+        userprofile.set_is_staff(is_admin or is_editor) #implicitly needed to log in to admin
         return form.save(commit=False)
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)

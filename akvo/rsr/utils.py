@@ -1,7 +1,10 @@
 # utility functions for RSR
 
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.template import loader, Context
+
 
 from paypal.standard.models import PayPalIPN
 
@@ -36,3 +39,28 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     else:
         return path_template % ('temp', file_name)
 
+def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
+                  message='templates/email/test_message.txt', subject_context={}, msg_context={}):
+    """
+    Send template driven email.
+        to_list is a list of email addresses
+        subject and message are templates for use as email subject and message body
+        subject_context and msg_context are dicts used when renedering the respective templates
+    Site.objects.get_current() is added to both contexts as current_site
+    """
+    current_site = Site.objects.get_current()
+    subject_context.update({'site': current_site})
+    subject = loader.render_to_string(subject, subject_context)
+    # Email subject *must not* contain newlines
+    subject = ''.join(subject.splitlines())
+    msg_context.update({'site': current_site})
+    message = loader.render_to_string(message, msg_context)    
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, to_list)
+
+def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
+                  message='templates/email/test_message.txt', subject_context={}, msg_context={}):
+    """
+    Send mail to many users supllied through a queryset
+    """
+    to_list = [user.email for user in users if user.email]
+    rsr_send_mail(to_list, subject, message, subject_context, msg_context)
