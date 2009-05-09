@@ -12,7 +12,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% ifequal request.path "/" %}
 <title>{% trans 'Akvo.org - the open source for water and sanitation' %}</title>
 {% else %}
-<title>{% trans 'Akvo RSR' %} - {% block title %}{% trans 'Really simple reporting' %}{% endblock %}</title>
+<title>{% trans 'Akvo RSR' %} - {% block title %}{% trans 'Really simple reporting' %}{% endblock title %}</title>
 {% endifequal %}
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="{% trans 'Akvo.org - the open source for water and sanitation' %}" />
