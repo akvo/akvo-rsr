@@ -39,6 +39,19 @@ from akvo.rsr.models import PayPalInvoice
 from paypal.standard.forms import PayPalPaymentsForm
 
 
+'''
+Daniel
+Overwrites the default error 500 view to pass MEDIA_URL to the template
+'''
+from django import http
+from django.template import Context, loader
+def server_error(request, template_name='500.html'):
+    t = loader.get_template(template_name) # You need to create a 500.html template.
+    return http.HttpResponseServerError(t.render(Context({
+        'MEDIA_URL': settings.MEDIA_URL
+    })))
+
+
 def mdgs_water_calc(projects):
     '''
     Calculate the water MDGs for the projects
