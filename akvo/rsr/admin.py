@@ -57,7 +57,7 @@ class OrganisationAdminForm(forms.ModelForm):
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
+        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
         (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
         (None, {'fields': ('description', )}),
@@ -205,11 +205,6 @@ class LinkInline(admin.TabularInline):
     extra = 3
     list_display = ('url', 'caption', 'show_link', )    
 
-#admin.site.register(Link, LinkAdmin)
-
-
-#class FundingPartnerAdmin(admin.ModelAdmin):
-#    pass
 
 def partner_clean(obj, field_name):
     """
@@ -288,9 +283,27 @@ class SupportPartnerInline(admin.TabularInline):
     extra = 1
     formset = RSR_SupportPartnerInlineFormFormSet
 
+#see above
+class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        partner_clean(self, 'sponsor_organisation')  
 
-class FundingAdminInLine(admin.TabularInline):
-    model = get_model('rsr', 'funding')
+class SponsorPartnerInline(admin.TabularInline):
+    model = get_model('rsr', 'sponsorpartner')
+    extra = 1
+    formset = RSR_SponsorPartnerInlineFormFormSet
+
+
+class BudgetItemAdminInLine(admin.TabularInline):
+    model = get_model('rsr', 'budgetitem')
+    extra = 5
+    max_num = 5
+
+#admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
+
+
+class BudgetAdminInLine(admin.TabularInline):
+    model = get_model('rsr', 'budget')
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):
@@ -316,7 +329,8 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = [LinkInline, FundingPartnerInline, FieldPartnerInline, SupportPartnerInline, FundingAdminInLine, ]
+    inlines = [BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
+               FieldPartnerInline, SupportPartnerInline, LinkInline, ]
 
     fieldsets = (
         (_(u'Project description'), {
@@ -351,6 +365,9 @@ class ProjectAdmin(admin.ModelAdmin):
         (_(u'Project meta info'), {
             'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
         }),
+        (_(u'Project budget'), {
+            'fields': ('date_request_posted', 'date_complete', ), #'classes': 'collapse'
+        }),
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
                     'city', 'project_plan_summary', 'show_current_image',
@@ -378,6 +395,7 @@ class ProjectAdmin(admin.ModelAdmin):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
             projects = request.user.get_profile().organisation.all_projects()
+            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
             return qs.filter(pk__in=projects)
         else:
             raise PermissionDenied
@@ -398,6 +416,7 @@ class ProjectAdmin(admin.ModelAdmin):
             return True
         if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
             projects = request.user.get_profile().organisation.all_projects()
+            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
             if obj:
                 return obj in projects
             else:
@@ -572,13 +591,7 @@ class ProjectAdmin(admin.ModelAdmin):
     change_view = transaction.commit_on_success(change_view)
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
-#admin.site.register(Project, ProjectAdmin)
 
-
-#class FundingAdmin(admin.ModelAdmin):
-#    list_display = ('project', 'employment', 'building', 'training', 'maintenance', 'other', 'total', ) 
-#
-#admin.site.register(get_model('rsr', 'funding'), FundingAdmin)
 
 class UserProfileAdminForm(forms.ModelForm):
     """

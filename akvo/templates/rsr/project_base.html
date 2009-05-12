@@ -31,37 +31,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
     {% block funding %}
 	<div class="boxhead">
-		{% comment %}
-        {% if not p.funding.date_complete %}
-		<a class="actionbutton ab_grey" href="/web/how_to_fund_a_project" onclick="this.blur();"><span>{% trans 'Fund project' %}</span></a>
-        {% endif %}
-		{% endcomment %}
 		<h1>{% trans 'Funding' %}</h1>
-
-		<!--<p><a href="#">Notify me of changes via email</a></p>-->
 	</div> <!-- .boxhead -->
 
 	<div id="project_funding" class="boxbody">
 		<div style="margin: 20px 20px 10px 20px">{% funding_box_march p %}</div>
-        {#<div style="margin: 20px 20px 10px 20px">{% funding_bar p %}</div>#}
-		<!--<div style="border: 1px solid #999; margin: 20px 20px 10px 20px"><div style="width: 186px;"><div style="width: {% widthratio p.funding.pledged p.funding.total 186 %}px; height: 30px; background-color: #4CAC62;"></div></div></div>-->
-        <p>{{p.funding.date_request_posted}} {% trans 'Request posted' %}</p>
-		{% if p.funding.date_complete %}
-    		<p>{{p.funding.date_complete}} {% trans 'Funding completed' %}</p>
+        <p>{{p.date_request_posted}} {% trans 'Request posted' %}</p>
+		{% if p.date_complete %}
+    		<p>{{p.date_complete}} {% trans 'Funding completed' %}</p>
 		{% endif %}
 		<!--<p><b>Total: <span style="margin-left: 10px">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>
 		<hr />
 		<p style="margin: 10px 0 10px 0;">
-                {% ifequal p.fundingpartner_set.count 1 %}
-                    <b>{% trans 'Current funder' %}</b>
-                {% else %}
-                    {% ifequal p.fundingpartner_set.count 0 %}
-                        <b style="color: red;">{% trans 'You could fund this project!' %}</b>
-                    {% else %}
-                        <b>{% trans 'Current funders' %}</b>
-                    {% endifequal %}
-                {% endifequal %}
+			{% ifequal p.fundingpartner_set.count 1 %}
+				<b>{% trans 'Current funder' %}</b>
+			{% else %}
+				{% ifequal p.fundingpartner_set.count 0 %}
+					<b style="color: red;">{% trans 'You could fund this project!' %}</b>
+				{% else %}
+					<b>{% trans 'Current funders' %}</b>
+				{% endifequal %}
+			{% endifequal %}
         </p>
     
  		{% for funder in p.fundingpartner_set.all %}
@@ -76,7 +67,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
 			<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
 			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount}}</span></b></p>
-		{% endfor %}    
+		{% endfor %}
+
+		{% if p.funding_donated %}
+			<hr />
+			<p style="margin: 10px 0 10px 0;">
+				<b>{% trans 'Donations from individuals' %}</b>
+			</p>
+			<p style="margin:10px 0">
+				<b>{% trans 'Total' %}:
+					<span style="margin-left: 10px">
+						{{p.budgetitem_set.all.0.get_currency_display|safe}}
+						{{p.funding_donated}}
+					</span>
+				</b>
+			</p>
+		{% endif %}
 	</div> <!-- #project_funding & .boxbody -->
     {% endblock funding %}
 
