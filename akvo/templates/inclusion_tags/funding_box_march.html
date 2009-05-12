@@ -8,99 +8,52 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div class="fundingbox-header"> </div>
 	<div class="fundingbox-content">
-		{% if not p.funding %}
-		<div class="fundingbox-funded">	
-			<div class="fullyfunded-text">
-				<p style="">
-				{% trans 'Raised' %}:&nbsp; {{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.total_given}}
+		{% ifequal p.funding_still_needed 0 %}
+			<div class="fundingbox-funded">	
+				<div class="fullyfunded-text">
+					<p style="">
+					{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given}}
+					</p>
+				</div>
+				<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
+					<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
 				</p>
-				{% comment %}
-				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
-					<tr class="green">
-						<th>{% trans 'Raised' %}:</th>
-						<td>&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.pledged}}</td>
-					</tr>
-				</table>
-				{% endcomment %}
 			</div>
-			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
-				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
-			</p>
-		</div>
-		
-		{% else %}		
-		
-		{% ifequal p.budget.still_needed 0 %}
-		<div class="fundingbox-funded">	
-			<div class="fullyfunded-text">
-				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.total_given}}
-				</p>
-				{% comment %}
-				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
-					<tr class="green">
-						<th>{% trans 'Raised' %}:</th>
-						<td>&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.pledged}}</td>
-					</tr>
-				</table>
-				{% endcomment %}
-			</div>
-			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
-				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
-			</p>
-		</div>
-		
 		{% else %}
-		<table class="fundingbox-table" cellspacing="0">
-			<tr class="green">
-				<th>{% trans 'Raised' %}:</th>
-				<td>{{p.budget.get_currency_display|safe}} {{p.budget.total_given}}</td>
-			</tr>
-			<tr class="red">
-				<th>{% trans 'Still needed' %}:</th>
-				<td>{{p.budget.get_currency_display|safe}} {{p.budget.still_needed}}</td>
-			</tr>	
-		</table>
-		<div class="fundingbox-progress-bar">
-			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.budget.total_given p.budget.total 100 %}%"> </div>
-		</div>
-		<table class="fundingbox-table">
-			<tr>
-				<th>{% trans 'Total budget' %}:</th>
-				<td>{{p.budget.get_currency_display|safe}} {{p.budget.total}}</td>
-			</tr>					
-		</table>
-		{% comment %}
-			Temporary "Get involved" link below.
-				
-		<div >
-			<br />
-			<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://www.akvo.org/web/how_to_fund_a_project">{% trans 'Get Involved' %}&nbsp;&#x25BA;</a></span>
-		</div>
-		{% endcomment %}
-		
-
-		<div id="donate_individual" style="padding-left:0; padding-right:0;">
-			<p class="grey" style="line-height:1.0em;">
-				{% trans 'Individuals' %}<br />
-			</p>
-			<a href="{% url akvo.rsr.views.donate p.id %}" class="donate_button" onclick="this.blur();" style="margin-left:7px;"><span>Donate</span></a>
-		</div>
-		{% comment %}
-		<div id="donate_institutions" style="padding-left:0; padding-right:12px; text-align:center; background-color:yellow;">			
-		{% endcomment %}
-		<div id="donate_institutions" style="padding-left:0; padding-right:0px; text-align:center; margin-right:4px;">
-			<p class="grey" style="line-height:1.0em; padding-right:7px; text-align:left !important; padding-left:12px;">
-				{% trans 'Institutions' %}<br />
-			</p>
-			<span class="fundingbox-donate-right-sponsor" style="margin-top:7px;">&nbsp;&nbsp;<a style="margin-left:2px;" href="http://akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>			
-		</div>
-		<div id="name" style="clear: both;"></div>
-		
-		
+			<table class="fundingbox-table" cellspacing="0">
+				<tr class="green">
+					<th>{% trans 'Raised' %}:</th>
+					<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given}}</td>
+				</tr>
+				<tr class="red">
+					<th>{% trans 'Still needed' %}:</th>
+					<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed}}</td>
+				</tr>	
+			</table>
+			<div class="fundingbox-progress-bar">
+				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+			</div>
+			<table class="fundingbox-table">
+				<tr>
+					<th>{% trans 'Total budget' %}:</th>
+					<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total}}</td>
+				</tr>					
+			</table>
+	
+			<div id="donate_individual" style="padding-left:0; padding-right:0;">
+				<p class="grey" style="line-height:1.0em;">
+					{% trans 'Individuals' %}<br />
+				</p>
+				<a href="{% url akvo.rsr.views.donate p.id %}" class="donate_button" onclick="this.blur();" style="margin-left:7px;"><span>Donate</span></a>
+			</div>
+			<div id="donate_institutions" style="padding-left:0; padding-right:0px; text-align:center; margin-right:4px;">
+				<p class="grey" style="line-height:1.0em; padding-right:7px; text-align:left !important; padding-left:12px;">
+					{% trans 'Institutions' %}<br />
+				</p>
+				<span class="fundingbox-donate-right-sponsor" style="margin-top:7px;">&nbsp;&nbsp;<a style="margin-left:2px;" href="http://akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>			
+			</div>
+			<div id="name" style="clear: both;"></div>
 		{% endifequal%}
-		
-		{% endif%}
 	</div>
 	<div class="fundingbox-footer"> </div>
 </div>

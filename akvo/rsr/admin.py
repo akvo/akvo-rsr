@@ -282,6 +282,14 @@ class SupportPartnerInline(admin.TabularInline):
     formset = RSR_SupportPartnerInlineFormFormSet
 
 
+class BudgetItemAdminInLine(admin.TabularInline):
+    model = get_model('rsr', 'budgetitem')
+    extra = 5
+    max_num = 5
+
+#admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
+
+
 class BudgetAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budget')
 
@@ -309,7 +317,8 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = [LinkInline, FundingPartnerInline, FieldPartnerInline, SupportPartnerInline, BudgetAdminInLine, ]
+    inlines = [BudgetItemAdminInLine, FundingPartnerInline,
+               FieldPartnerInline, SupportPartnerInline, LinkInline, ]
 
     fieldsets = (
         (_(u'Project description'), {
@@ -344,6 +353,9 @@ class ProjectAdmin(admin.ModelAdmin):
         (_(u'Project meta info'), {
             'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
         }),
+        (_(u'Project budget'), {
+            'fields': ('date_request_posted', 'date_complete', ), #'classes': 'collapse'
+        }),
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
                     'city', 'project_plan_summary', 'show_current_image',
@@ -371,6 +383,7 @@ class ProjectAdmin(admin.ModelAdmin):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
             projects = request.user.get_profile().organisation.all_projects()
+            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
             return qs.filter(pk__in=projects)
         else:
             raise PermissionDenied
@@ -391,6 +404,7 @@ class ProjectAdmin(admin.ModelAdmin):
             return True
         if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
             projects = request.user.get_profile().organisation.all_projects()
+            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
             if obj:
                 return obj in projects
             else:

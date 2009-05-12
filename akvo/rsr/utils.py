@@ -36,3 +36,6 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     else:
         return path_template % ('temp', file_name)
 
+def qs_column_sum(qs, col):
+    "return sum of a queryset column"
+    return sum(qs.values_list(col, flat=True))

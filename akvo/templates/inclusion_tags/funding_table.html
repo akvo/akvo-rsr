@@ -12,16 +12,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
 				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.total_given}}
+				{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given}}
 				</p>
-				{% comment %}
-				<table class="fundingbox-table fullyfunded-table" cellspacing="0">
-					<tr class="green">
-						<th>{% trans 'Raised' %}:</th>
-						<td>&nbsp;{{p.budget.get_currency_display|safe}}&nbsp;{{p.budget.pledged}}</td>
-					</tr>
-				</table>
-				{% endcomment %}
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
 				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
@@ -32,20 +24,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" cellspacing="0">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
-				<td>{{p.budget.get_currency_display|safe}} {{p.budget.total_given}}</td>
+				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given}}</td>
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
-				<td>{{p.budget.get_currency_display|safe}} {{p.budget.still_needed}}</td>
+				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed}}</td>
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
-			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.budget.total_given p.budget.total 100 %}%"> </div>
+			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
 		</div>
 		<table class="fundingbox-table">
 			<tr>
 				<th>{% trans 'Total budget' %}:</th>
-				<td>{{p.budget.get_currency_display|safe}} {{p.budget.total}}</td>
+				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total}}</td>
 			</tr>					
 		</table>
 		{% endifequal%}

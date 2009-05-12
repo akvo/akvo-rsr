@@ -27,9 +27,9 @@ EMAIL_HOST          = 'mail.outbox.se'
 EMAIL_HOST_USER     = 'gabriel@zezame.com'
 EMAIL_HOST_PASSWORD = '40robberS'
 
-#INTERNAL_IPS = (
-#    #'87.227.60.54', '192.168.38.68',
-#)
+INTERNAL_IPS = (
+    '192.168.1.68   ', #'87.227.60.54', '192.168.38.68',
+)
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
