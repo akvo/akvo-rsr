@@ -70,76 +70,6 @@ class Country(models.Model):
         verbose_name = u'country'
         verbose_name_plural = u'countries'
 
-#def funding_aggregate(projects, organisation=None):
-#    '''
-#    Create funding aggregate data about a collection of projects in a queryset.
-#    '''
-#    # calculate sum of all project budgets
-#    f = Funding.objects.all().filter(project__in = projects)
-#    funding_total = 0 #total requested funding for projects
-#    for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
-#        funding_total += sum(f.values_list(field, flat=True))
-#    # get all funding partners to the projects
-#    fp = FundingPartner.objects.all().filter(project__in = projects)
-#    # how much has ben pledged so far?
-#    #how much has been pledged in total these projects?
-#    total_pledged = pledged = sum(fp.values_list('funding_amount', flat=True))
-#    if organisation:
-#        #how much has been pledged by a certain org for these projects?
-#        pledged = sum(fp.filter(funding_organisation__exact = organisation).values_list('funding_amount', flat=True))
-#    # return sum of funds needed, amount pledged (by the org if supplied), and how much is still needed
-#    return funding_total, pledged, funding_total - total_pledged
-
-# Paul's attempt at refactoring funding_aggregate() with django aggregates:
-# Filter out NoneType returns!
-def funding_aggregate(projects, organisation=None):
-    '''
-    Create funding and budget aggregate data about a collection of projects in a queryset.
-    '''
-    # calculate sum of all project budgets
-    f = Budget.objects.filter(project__in = projects).exclude(employment__isnull=True,
-                                                               building__isnull=True,
-                                                               training__isnull=True,
-                                                               maintenance__isnull=True,
-                                                               other__isnull=True)
-    budget_total = 0
-    if f:
-        for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
-            qs = f.aggregate(Sum(field))
-            total = sum(qs.values())
-            budget_total += total
-
-    # get all funding partners to the projects
-    fp = FundingPartner.objects.all().filter(project__in = projects).exclude(funding_amount__isnull=True)
-    # how much has been pledged so far?
-    # how much has been pledged in total to these projects?
-    total_pledged = pledged = 0
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)            
-    if fp:
-        qs = fp.aggregate(total_pledged=Sum('funding_amount'))
-        total_pledged += qs['total_pledged']
-    #    pledged = total_pledged
-    #else:
-    #    total_pledged = pledged = total_pledged
-    if organisation:
-    # how much has been pledged by a certain org for these projects?
-        fo = fp.filter(funding_organisation__exact = organisation).exclude(funding_amount__isnull=True)
-        if fo:
-            qs = fo.aggregate(pledged=Sum('funding_amount'))
-            pledged += qs['pledged']
-        #else:
-        #    pledged = pledged
-    # how much has been donated to these projects?
-    donated = 0
-    d = Budget.objects.filter(project__in = projects).exclude(project__paypalinvoice__amount__isnull=True)
-    if d:
-        qs = f.aggregate(donated=Sum('project__paypalinvoice__amount'))
-        donated += qs['donated']
-    #else:
-    #    donated = donated
-    #return funding_total, pledged, donated, funding_total - (total_pledged + donated)
-    return budget_total, (pledged + donated), budget_total - (total_pledged + donated)
 
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
@@ -168,6 +98,7 @@ class Organisation(models.Model):
     field_partner               = models.BooleanField(_(u'field partner'))
     support_partner             = models.BooleanField(_(u'support partner'))
     funding_partner             = models.BooleanField(_(u'funding partner'))
+    sponsor_partner             = models.BooleanField(_(u'sponsor partner'))
 
     name                        = models.CharField(max_length=25, help_text='Short name which will appear in organisation and partner listings (25 characters).'
     							)
@@ -210,6 +141,9 @@ class Organisation(models.Model):
         def supportpartners(self):
             return self.filter(support_partner__exact=True)
 
+        def sponsorpartners(self):
+            return self.filter(sponsor_partner__exact=True)
+
         def fundingpartners(self):
             return self.filter(funding_partner__exact=True)
 
@@ -232,6 +166,7 @@ class Organisation(models.Model):
             projs = Project.objects.published()
             return (projs.filter(supportpartner__support_organisation__in=self) | \
                      projs.filter(fieldpartner__field_organisation__in=self) | \
+                     projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
                      projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
         def all(self):
@@ -242,6 +177,7 @@ class Organisation(models.Model):
             projs = Project.objects.all()
             return (projs.filter(supportpartner__support_organisation__in=self) | \
                      projs.filter(fieldpartner__field_organisation__in=self) | \
+                     projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
                      projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
     def __unicode__(self):
@@ -251,15 +187,13 @@ class Organisation(models.Model):
         pt = ""
         if self.field_partner: pt += "F"
         if self.support_partner: pt += "S"
+        if self.sponsor_partner: pt += "P"
         if self.funding_partner: pt += "M"
         return pt
     
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
-    
-    #def show_organisation_type(self):
-    #    return ORG_TYPES_DICT[self.organisation_type]
     
     def published_projects(self):
         '''
@@ -278,11 +212,6 @@ class Organisation(models.Model):
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
-        #projects = self.published_projects()
-        #all = Organisation.objects.all()
-        #return (all.filter(field_partners__project__in = projects.values('pk').query) | \
-        #        all.filter(support_partners__project__in = projects.values('pk').query) | \
-        #        all.filter(funding_partners__project__in = projects.values('pk').query)).exclude(id__exact=self.id).distinct()
     
     def funding(self):
         #funding_total, funding_pledged, funding_needed = funding_aggregate(self.published_projects(), organisation=self)
@@ -315,59 +244,6 @@ class OrganisationAccount(models.Model):
     organisation    = models.OneToOneField(Organisation, primary_key=True)
     account_level   = models.CharField(max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
-#def akvo_at_a_glance(projects, org=None): # Modified by Paul
-#    '''
-#    Create aggregate data about a collection of projects in a queryset.
-#    If org is supplied modify funding aggregate to reflect that orgs commitment to the projects.
-#    '''
-#    status_none     = projects.filter(status__exact='N').count()
-#    status_active   = projects.filter(status__exact='A').count()
-#    status_onhold   = projects.filter(status__exact='H').count()
-#    status_complete = projects.filter(status__exact='C').count()
-#    status_cancelled= projects.filter(status__exact='L').count()
-#    mdgs_water       = mdgs_water_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
-#    mdgs_sanitation  = mdgs_sanitation_calc(projects) #sum(projects.values_list('mdg_count_water', flat=True))
-#    project_count   = projects.count()
-#    o = Organisation.objects.all()
-#    fieldpartner_count      = o.filter(field_partner__exact=True).count()
-#    supportpartner_count    = o.filter(support_partner__exact=True).count()
-#    fundingpartner_count    = o.filter(funding_partner__exact=True).count()
-#    num_organisations = o.count()
-#    funding_total, funding_pledged, funding_needed = funding_aggregate(projects, organisation=org)
-
-#from http://www.djangosnippets.org/snippets/562/
-#class QuerySetManager(models.Manager):
-#    def __init__(self, qs_class):
-#        super(QuerySetManager, self).__init__()
-#        print "Cls: ", qs_class
-#        self.queryset_class = qs_class
-#        
-#    def get_query_set(self):
-#        return self.queryset_class(self.model)
-#        
-#    def __getattr__(self, attr, *args):
-#        try:
-#            return getattr(self.__class__, attr, *args)
-#        except AttributeError:
-#            return getattr(self.get_query_set(), attr, *args)
-
-    
-#class ProjectStatsQuerySet(models.query.QuerySet):
-#
-#    def status_active(self):
-#        return self.filter(status__exact='A')
-
-    #def status_none(self):
-    #    return super(ProjectStatsManager, self).get_query_set().filter(status__exact='N').count()
-    #
-    #def status_onhold(self):
-    #    return super(ProjectStatsManager, self).get_query_set().filter(status__exact='H').count()
-    #
-    #def status_complete(self):
-    #    return super(ProjectStatsManager, self).get_query_set().filter(status__exact='C').count()
-    #
-    #def status_cancelled(self):
-    #    return super(ProjectStatsManager, self).get_query_set().filter(status__exact='L').count()
 
 CURRENCY_CHOICES = (
     #('USD', 'US dollars'),
@@ -387,65 +263,9 @@ STATUSES = (
 STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
 
 
-
-class StatsQuerySetManager(QuerySetManager):
-    def get_query_set(self):
-        return self.model.StatsQuerySet(self.model)
-
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
-
-# Paul's attempt at refactoring funding_aggregate() with django aggregates:
-# Filter out NoneType returns!
-def funding_aggregate(projects, organisation=None):
-    '''
-    Create funding and budget aggregate data about a collection of projects in a queryset.
-    '''
-    # calculate sum of all project budgets
-    f = Budget.objects.filter(project__in = projects).exclude(employment__isnull=True,
-                                                               building__isnull=True,
-                                                               training__isnull=True,
-                                                               maintenance__isnull=True,
-                                                               other__isnull=True)
-    budget_total = 0
-    if f:
-        for field in ('employment', 'building', 'training', 'maintenance', 'other', ):
-            qs = f.aggregate(Sum(field))
-            total = sum(qs.values())
-            budget_total += total
-
-    # get all funding partners to the projects
-    fp = FundingPartner.objects.all().filter(project__in = projects).exclude(funding_amount__isnull=True)
-    # how much has been pledged so far?
-    # how much has been pledged in total to these projects?
-    total_pledged = pledged = 0
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)            
-    if fp:
-        qs = fp.aggregate(total_pledged=Sum('funding_amount'))
-        total_pledged += qs['total_pledged']
-    #    pledged = total_pledged
-    #else:
-    #    total_pledged = pledged = total_pledged
-    if organisation:
-    # how much has been pledged by a certain org for these projects?
-        fo = fp.filter(funding_organisation__exact = organisation).exclude(funding_amount__isnull=True)
-        if fo:
-            qs = fo.aggregate(pledged=Sum('funding_amount'))
-            pledged += qs['pledged']
-        #else:
-        #    pledged = pledged
-    # how much has been donated to these projects?
-    donated = 0
-    d = Budget.objects.filter(project__in = projects).exclude(project__paypalinvoice__amount__isnull=True)
-    if d:
-        qs = f.aggregate(donated=Sum('project__paypalinvoice__amount'))
-        donated += qs['donated']
-    #else:
-    #    donated = donated
-    #return funding_total, pledged, donated, funding_total - (total_pledged + donated)
-    return budget_total, (pledged + donated), budget_total - (total_pledged + donated)
     
 class Project(models.Model):
     def proj_image_path(instance, file_name):
@@ -521,7 +341,6 @@ class Project(models.Model):
     #based on http://www.djangosnippets.org/snippets/562/ and
     #http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
-    #stats   = StatsQuerySetManager()
     organisations = OrganisationsQuerySetManager()
     
     class QuerySet(QuerySet):
@@ -583,47 +402,6 @@ class Project(models.Model):
             if org:
                 self.filter(funding_organisation__exact=organisation)
             return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
-
-        #def finance(self):
-        #    return self.annotate(
-        #        total_budget=Sum('budgetitem__amount'),
-        #    ).annotate(
-        #        total_donated=Sum('paypalinvoice__amount'),
-        #    )
-
-            #return self.exclude(
-            #    budgetitem__amount__isnull=True,
-            #).exclude(
-            #    paypalinvoice__amount__isnull=True,
-            #).annotate(
-            #    total_budget=Sum('budgetitem__amount'),
-            #    total_donated=Sum('paypalinvoice__amount'),
-            #)
-
-            ##Tried to get this working with annotate, but it wouldn't play :-(
-            #return self.extra(
-            #    select={
-            #        'total_budget':
-            #            '''SELECT employment + building + training + maintenance + other
-            #               FROM rsr_budget
-            #               WHERE rsr_budget.project_id = rsr_project.id''',
-            #        'employment':
-            #            '''SELECT employment FROM rsr_budget
-            #               WHERE rsr_budget.project_id = rsr_project.id''',
-            #        'building':
-            #            '''SELECT building FROM rsr_budget
-            #               WHERE rsr_budget.project_id = rsr_project.id''',
-            #        'training':
-            #            '''SELECT training FROM rsr_budget
-            #               WHERE rsr_budget.project_id = rsr_project.id''',
-            #        'maintenance':
-            #            '''SELECT maintenance FROM rsr_budget
-            #               WHERE rsr_budget.project_id = rsr_project.id''',
-            #        'other':
-            #            '''SELECT other FROM rsr_budget
-            #               WHERE rsr_budget.project_id = rsr_project.id''',
-            #    }
-            #)
 
         def funding(self, organisation=None):
             '''create extra columns "funds_needed", "pledged" and "donated"
@@ -745,6 +523,10 @@ class Project(models.Model):
             o = Organisation.objects.all()
             return o.filter(support_partners__project__in=self)
 
+        def sponsor_partners(self):
+            o = Organisation.objects.all()
+            return o.filter(sponsor_partners__project__in=self)
+
         def funding_partners(self):
             o = Organisation.objects.all()
             return o.filter(funding_partners__project__in=self)
@@ -754,12 +536,17 @@ class Project(models.Model):
             return o.filter(field_partners__project__in=self)
 
         def all_partners(self):
-            return (self.support_partners() | self.funding_partners() | self.field_partners()).distinct()
+            return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
 
+    #TODO: is this relly needed? the default QS has identical methods
     class OrganisationsQuerySet(QuerySet):
         def support_partners(self):
             orgs = Organisation.objects.all()
             return orgs.filter(support_partners__project__in=self)
+
+        def sponsor_partners(self):
+            orgs = Organisation.objects.all()
+            return orgs.filter(sponsor_partners__project__in=self)
 
         def funding_partners(self):
             orgs = Organisation.objects.all()
@@ -772,6 +559,7 @@ class Project(models.Model):
         def all_partners(self):
             orgs = Organisation.objects.all()
             return (orgs.filter(support_partners__project__in=self) | \
+                    orgs.filter(sponsor_partners__project__in=self) | \
                     orgs.filter(funding_partners__project__in=self) | \
                     orgs.filter(field_partners__project__in=self)).distinct()
             #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
@@ -820,34 +608,11 @@ class Project(models.Model):
             pass
         return is_connected
 
-    #def organisations(self):
-    #    "Return all orgs conected to this project"
-    #    orgs = Organisation.objects.all()
-    #    return (orgs.filter(support_partners__project__exact=self.pk) | \
-    #            orgs.filter(field_partners__project__exact=self.pk) | \
-    #            orgs.filter(funding_partners__project__exact=self.pk)).distinct()
-         
     def is_published(self):
         if self.publishingstatus:
             return self.publishingstatus.status == 'published'
         return False
     is_published.boolean = True
-
-    #def pledged(self):
-    #    return Project.objects.funding().get(pk=self.project.pk).pledged
-    #    #qs = self.project.fundingpartner_set.aggregate(pledged=Sum('funding_amount'))
-    #    #return qs.get('pledged', 0) or 0 #qs['pledged'] may be None
-    #
-    #def donated(self):
-    #    return Project.objects.funding().get(pk=self.project.pk).donated
-    #    #qs = self.project.paypalinvoice_set.aggregate(donated=Sum('amount'))
-    #    #return qs.get('donated', 0) or 0 #qs['donated'] may be None
-    #
-    #def total_given(self):
-    #    return self.donated() + self.pledged()
-    #
-    #def still_needed(self):
-    #    return self.total() - total_given()
 
     #shortcuts to funding/budget data for a single project
     def funding_pledged(self, organisation=None):
@@ -880,8 +645,12 @@ class Project(models.Model):
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
 
+    #shortcuts to linked orgs for a single project
     def support_partners(self):
         return Project.objects.filter(pk=self.pk).support_partners()
+
+    def sponsor_partners(self):
+        return Project.objects.filter(pk=self.pk).sponsor_partners()
 
     def funding_partners(self):
         return Project.objects.filter(pk=self.pk).funding_partners()
@@ -961,14 +730,21 @@ class FundingPartner(models.Model):
 
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
-     
+
+class SponsorPartner(models.Model):
+    sponsor_organisation    = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
+    project                 = models.ForeignKey(Project,)
+
+    def __unicode__(self):
+        return "%s" % (self.sponsor_organisation.name, )
+
 class SupportPartner(models.Model):
     support_organisation    = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
     project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
-    
+
 class FieldPartner(models.Model):
     field_organisation      = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
     project                 = models.ForeignKey(Project,)
@@ -977,45 +753,22 @@ class FieldPartner(models.Model):
         return "%s" % (self.field_organisation.name, )
 
 
-#class Budget(models.Model):
-#    project             = models.OneToOneField(Project, primary_key=True)
-#    date_request_posted = models.DateField(default=date.today)
-#    date_complete       = models.DateField(null=True, blank=True)
-#    # budget itmes
-#    employment          = models.IntegerField()
-#    building            = models.IntegerField()
-#    training            = models.IntegerField()
-#    maintenance         = models.IntegerField()
-#    other               = models.IntegerField()
-#    
-#    
-#    def __unicode__(self):
-#        return self.project.__unicode__()
-#    
-#    def total(self):
-#        return self.employment + self.building + self.training + self.maintenance + self.other
-    
-    #def pledged(self):
-    #    return Project.objects.funding().get(pk=self.project.pk).pledged
-    #    #qs = self.project.fundingpartner_set.aggregate(pledged=Sum('funding_amount'))
-    #    #return qs.get('pledged', 0) or 0 #qs['pledged'] may be None
-    #
-    #def donated(self):
-    #    return Project.objects.funding().get(pk=self.project.pk).donated
-    #    #qs = self.project.paypalinvoice_set.aggregate(donated=Sum('amount'))
-    #    #return qs.get('donated', 0) or 0 #qs['donated'] may be None
-    #
-    #def total_given(self):
-    #    return self.donated() + self.pledged()
-    #
-    #def still_needed(self):
-    #    return self.total() - total_given()
-    
-    #def is_complete(self):
-    #    return self.date_complete < date.today()
+    # kept for updating database. may be renamed Funding for certain DBs
+    #class Budget(models.Model):
+    #    project             = models.OneToOneField(Project, primary_key=True)
+    #    date_request_posted = models.DateField(default=date.today)
+    #    date_complete       = models.DateField(null=True, blank=True)
+    #    # budget itmes
+    #    employment          = models.IntegerField()
+    #    building            = models.IntegerField()
+    #    training            = models.IntegerField()
+    #    maintenance         = models.IntegerField()
+    #    other               = models.IntegerField()
     #    
-    #class Meta:
-    #    verbose_name_plural = _('budget') #Since we're one-to-one with the project
+    #    
+    #    def __unicode__(self):
+    #        return self.project.__unicode__()
+
 
         
 PHOTO_LOCATIONS = (

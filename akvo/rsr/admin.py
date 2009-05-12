@@ -55,7 +55,7 @@ class OrganisationAdminForm(forms.ModelForm):
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', ),)}),
+        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
         (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
         (None, {'fields': ('description', )}),
@@ -281,6 +281,16 @@ class SupportPartnerInline(admin.TabularInline):
     extra = 1
     formset = RSR_SupportPartnerInlineFormFormSet
 
+#see above
+class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        partner_clean(self, 'sponsor_organisation')  
+
+class SponsorPartnerInline(admin.TabularInline):
+    model = get_model('rsr', 'sponsorpartner')
+    extra = 1
+    formset = RSR_SponsorPartnerInlineFormFormSet
+
 
 class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
@@ -317,7 +327,7 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = [BudgetItemAdminInLine, FundingPartnerInline,
+    inlines = [BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
                FieldPartnerInline, SupportPartnerInline, LinkInline, ]
 
     fieldsets = (
