@@ -167,13 +167,36 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 {% comment %} Start sponsor partner {% endcomment %}
+{% comment %}
+	
 <div class="boxhead">
 <a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
 <h1>{% trans 'Sponsor partner blog posts' %}</h1>
 </div> <!-- .boxhead -->
+{% endcomment %}
 
-<div class="boxbody">
-<p>First sponsor partner blog post</p>
+<div id="index_sponsor_box" class="boxbody">
+	<div id="sponsor_box_left" style="">
+		<h1>{% trans 'Live Earth and Akvo announce partnership' %}</h1>
+		<ul>
+			<li><a href="#">{% trans 'Press release' %}</a></li>
+			<li><a href="#">{% trans 'View Live Earth projects on Akvo' %}</a></li>
+		</ul>
+	</div>
+	<div id="sponsor_box_right" style="">
+		<h2>{% trans 'Latest articles' %}</h2>
+		<ul>
+			<li><a href="#">Title of blog goes here, can be longish</a></li>
+			<li><a href="#">Title of another blog goes here, can be longish</a></li>
+		</ul>
+	</div>
+	<div class="clearfix">
+	</div>
+	{% comment %}
+	<div id="name" style="background-color:#ccc;">
+		<img src="http://10.0.1.3/~daniel/akvo/media/img/le-water-logo.png" width="70" height="67" alt="Le Water Logo" />
+	</div>
+	{% endcomment %}
 </div>
 {% comment %} stop sponsor partner {% endcomment %}
 

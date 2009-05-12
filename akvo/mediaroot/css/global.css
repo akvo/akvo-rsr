@@ -251,6 +251,7 @@ background-color: #dedede;
 {
 background-color: #fff;
 border: 1px solid #dedede;
+border-bottom: 2px solid #c1c1c1;
 margin-bottom: 20px;
 padding: 20px 0;
 }
@@ -543,3 +544,48 @@ th { font-weight: bold; }
 .clearfix {display:block;}
 /* End hide from IE Mac */
 
+/* Sponsor partner */
+#index_sponsor_box {
+    background: transparent url('../img/index_sponsor_background.png') repeat-x;
+    padding:0; 
+    padding-bottom:20px; 
+    margin-bottom:20px;
+}
+
+#sponsor_box_left {
+    background: transparent url('../img/le-water-logo.png') no-repeat 20px 10px;
+    float:left;
+    padding-left:120px;
+    width:280px; 
+    background-color:cyan;
+}
+
+#sponsor_box_left h1 {
+    font-size:1.4em;
+    margin:10px 0px;
+    color:#DE481C;
+}
+
+#index_sponsor_box ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-bottom:10px;
+    color:#1263A7;
+}
+
+#index_sponsor_box ul li{
+    margin-left:15px;
+    margin-bottom:3px;
+
+}
+
+
+#sponsor_box_right {
+    width:300px;
+    float:right; 
+    background-color:yellow;
+}
+
+#sponsor_box_right h2 {
+    padding-left:0;
+}
