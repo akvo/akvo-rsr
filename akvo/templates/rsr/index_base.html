@@ -27,9 +27,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div class="boxbody">
 	<div></div>
 	
-	<table id="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="background-color:#efefef; width:210px;">
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<th>
+			<th colspan="2">
 				{% ifequal request.path '/rsr/projects/' %}
 				<h2>{% trans 'Projects in Akvo' %}</h2>
 				{% else %}
@@ -43,8 +43,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<td>
 				{% trans 'Active' %}
 			</td>
-			<td style="text-align:right; padding:0;">
-				00
+			<td style="text-align:right;">
+				{{stats.status_active}}
 			</td>
 		</tr>
 		<tr>
@@ -52,7 +52,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'On hold' %}
 			</td>
 			<td style="text-align:right;">
-				000
+				{{stats.status_onhold}}
 			</td>
 		</tr>
 		<tr>
@@ -60,7 +60,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Complete' %}
 			</td>
 			<td style="text-align:right;">
-				0000
+				{{stats.status_complete}}
 			</td>
 		</tr>
 		<tr>
@@ -68,12 +68,91 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Cancelled' %}
 			</td>
 			<td style="text-align:right;">
-				0000
+				?
 			</td>
+		</tr>
+		<tr class="hr bold">
+			<td style="padding-top:2px; padding-bottom:20px;">
+				{% trans 'Total projects' %}
+			</td>
+			<td style="text-align:right; padding-top:3px;">
+				{{stats.project_count}}
+			</td>
+		</tr>
+		
+	</table>
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 	
+		<tr>
+			<th colspan="3">
+				<h2>{% trans 'People who get...' %}</h2>
+			</th>
+		</tr>
+		<tr>
+			<td style="width:50px;">&nbsp;</td>
+			<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Upcomming' %}</a></td>
+			<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Delivered' %}</a></td>
+		</tr>
+		<tr>
+			<td style="font-weight:bold;">{% trans 'Water' %}</td>
+			<td style="text-align:right;">{{stats.mdgs_water}}</td>
+			<td style="text-align:right;">?</td>
+		</tr>
+		<tr class="hr">
+			<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
+			<td style="text-align:right;">{{stats.mdgs_sanitation}}</td>
+			<td style="text-align:right;">?</td>
+		</tr>
+	</table>
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">	
+		<tr>
+			<th colspan="3">
+				{% ifequal request.path '/rsr/projects/' %}
+					<h2>{% trans 'Projects in Akvo' %}</h2>
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}">
+						<h2>{% trans 'Projects in Akvo' %}</h2>
+					</a>
+				{% endifequal %}
+			</th>
+		</tr>
+		<tr class="bold">
+			<td colspan="2" style="padding-bottom:5px;">{% trans 'Total organisations' %}</td>
+			<td colspan="2" style="text-align:right;">00000</td>
+		</tr>
+		<tr>
+			<td><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td>
+			<td style="text-align:right;">{{stats.fieldpartner_count}}</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="{% url rsr_org_list_filtered "support" %}">{% trans 'Support partners' %}</a></td>
+			<td style="text-align:right;">{{stats.supportpartner_count}}</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr class="hr">
+			<td style="padding-bottom:20px;"><a href="{% url rsr_org_list_filtered "funding" %}">{% trans 'Funding partners' %}</a></td>
+			<td style="text-align:right;">{{stats.fundingpartner_count}}</td>
+			<td>&nbsp;</td>
+		</tr>
+	</table>
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
+		<tr class="font-weight:bold;">
+			<th colspan="2" style="padding-bottom:10px;">
+				{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{stats.num_organisations}} {% trans 'Projects' %})</span>
+			</th>
+		</tr>
+		<tr style="color:green;">
+			<td>{% trans 'Pledged' %}</td>
+			<td style="text-align:right;">&#8364; {{stats.funding_pledged}}</td>
+		</tr>
+		<tr style="color:red;">
+			<td style="padding-bottom:5px;">{% trans 'Pledged' %}</td>
+			<td style="text-align:right;">&#8364; {{stats.funding_pledged}}</td>
 		</tr>
 	</table>
 	
-	
+
+	{% comment %}
 	<table id="overall_statistics">
 		<tr>
 			<th colspan="2">
@@ -110,15 +189,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<tr><td>{{stats.fieldpartner_count}}</td><td><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td></tr>
 		<tr><td>{{stats.supportpartner_count}}</td><td><a href="{% url rsr_org_list_filtered "support" %}">{% trans 'Support partners' %}</a></td></tr>
 		<tr><td>{{stats.fundingpartner_count}}</td><td><a href="{% url rsr_org_list_filtered "funding" %}">{% trans 'Funding partners' %}</a></td></tr>
-		
 		<tr class="hr bold"><td>{{stats.num_organisations}}</td><td>{% trans 'Organisations' %}</td></tr>
 		<tr><th colspan="2"><h2>{% trans 'Funding' %} <span class="lightx2" style="font-weight: normal">({{stats.project_count}} {% trans 'projects' %})</span></h2></th></tr>
 		<tr style="color: green"><td>&#8364; {{stats.funding_pledged}}</td><td>{% trans 'Pledged' %}</td></tr>
 		<tr style="color: red"><td>&#8364; {{stats.funding_needed}}</td><td>{% trans 'Still needed' %}</td></tr>		
 		
-
 	</table>
-
+	{% endcomment %}
 	
 	</div> <!-- .boxbody -->
 

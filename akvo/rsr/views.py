@@ -208,6 +208,10 @@ def index(request):
         latest2 = feed.entries[1]
         soup = BeautifulSoup(latest2.content[0].value)
         img_src2 = soup('img')[0]['src']
+        
+        le_feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        le_latest1 = le_feed.entries[0]
+        le_latest2 = le_feed.entries[1]
     except:
         soup = img_src1 = img_src2 = ''
         latest1 = latest2 = {
@@ -222,7 +226,7 @@ def index(request):
         grid_projects = None
     stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
-    return {'latest1': latest1, 'img_src1': img_src1, 'latest2': latest2, 'img_src2': img_src2, 'stats': stats, 'bandwidth': bandwidth, 'grid_projects': grid_projects}
+    return {'latest1': latest1, 'img_src1': img_src1, 'latest2': latest2, 'img_src2': img_src2, 'stats': stats, 'bandwidth': bandwidth, 'grid_projects': grid_projects,'le_latest1': le_latest1, 'le_latest2': le_latest2}
 
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"

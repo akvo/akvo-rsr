@@ -193,8 +193,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="sponsor_box_right" style="">
 		<h2>{% trans 'Latest articles' %}</h2>
 		<ul>
-			<li><a href="#">Title of blog goes here, can be longish</a></li>
-			<li><a href="#">Title of another blog goes here, can be longish</a></li>
+			<li><a href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
+			<li><a href="{{le_latest2.link}}">{{le_latest2.title|safe}}</a></li>
 		</ul>
 		<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
 	</div>
@@ -224,7 +224,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <h2><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
 {% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
 <p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
-<p>{{latest1.summary|safe}}</p>
+<p>{{latest1.summary|safe|truncatewords:45}}</p>
 
 <p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
 <!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
@@ -239,7 +239,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <h2><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
 {% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
 <p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
-<p>{{latest2.summary|safe}}</p>
+<p>{{latest2.summary|safe|truncatewords:45}}</p>
 
 <p><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
 <hr style="clear:both" />

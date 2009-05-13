@@ -106,15 +106,25 @@ padding: 20px;
 
 /* tables
 -------------------------------------------------------------------------------------- */
+table.overall_statistics {
+    margin: 0 20px;
+    width:210px;
+}
 
+table.overall_statistics tr td {
+    padding:0;
+}
+
+
+/*
 table#overall_statistics {
 margin: 0 20px;
 }
 
 table#overall_statistics tr td {
-    padding:1px 0;
+    padding:0;
 }
-
+*/
 
 /* funding bar
 -------------------------------------------------------------------------------------- */
