@@ -111,6 +111,10 @@ table#overall_statistics {
 margin: 0 20px;
 }
 
+table#overall_statistics tr td {
+    padding:1px 0;
+}
+
 
 /* funding bar
 -------------------------------------------------------------------------------------- */

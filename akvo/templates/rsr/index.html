@@ -113,9 +113,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endifequal %}
 	{% ifequal bandwidth 'low' %}
 
-	<div id="home_flash_box" style="padding-bottom:20px; width: 710px; float: left;">
+	<div id="home_flash_box" style="padding-bottom:14px; width: 710px; float: left;">
 		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
-		<div style="color: #fff; font-size: 1.5em; padding: 20px;">{% trans 'Our latest projects' %}</div>
+		<div style="color: #fff; font-size: 1.5em; padding: 15px 20px ;">{% trans 'Our latest projects' %}</div>
 		<table>
 			{% for p in grid_projects %}
 				{% ifequal forloop.counter 1 %}
@@ -126,7 +126,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endifequal %}
 				<td align="center">
 					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-						<img style="padding: 6px;" src="{% thumbnail p.current_image 144x108 crop,upscale,sharpen %}" title="{{p.name}}" alt="{{p.name}}"/>
+						<img style="padding: 2px 6px;" src="{% thumbnail p.current_image 144x108 crop,upscale,sharpen %}" title="{{p.name}}" alt="{{p.name}}"/>
 					</a>
 				</td>
 				{% ifequal forloop.counter 4 %}
@@ -142,23 +142,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<h1>{% trans 'Learn about Akvo' %}</h1>
 		</div>
 		<div class="boxbody" style="padding-top:0; padding-bottom:15px;">
-			<h2 style="padding-bottom:0; padding-top:25px;"><a href="http://akvo.org/web/what_we_do">{% trans 'What we do' %}</a></h2>
-			<p style="font-size:0.9em; padding-bottom:0;">
+			<h2 style="padding-bottom:0; padding-top:20px;">
+				<a style="float:left;" href="http://akvo.org/web/what_we_do">{% trans 'What we do' %}</a>
+				<a style="float:right; font-size:0.9em" href="http://akvo.org/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
+			</h2>
+			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
 				{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}
 			</p>
-			<p style="text-align: right; font-size:0.9em; padding-bottom:0;"><a href="http://akvo.org/web/what_we_do">{% trans 'Learn more' %} &gt;</a></p>
 			
-			<h2 style="padding-bottom:0; padding-top:5px;"><a href="http://akvo.org/web/how_akvo_works">{% trans 'How Akvo works' %}</a></h2>
-			<p style="font-size:0.9em; padding-bottom:0;">
-				{% trans 'Find projects to fund. Find donors to fund your projects. Report on project progress. Share water and sanitation knowledge.' %}
+			<h2 style="padding-bottom:0; padding-top:20px;">
+				<a style="float:left;" href="http://akvo.org/web/how_akvo_works">{% trans 'How Akvo works' %}</a>
+				<a style="float:right; font-size:0.9em" href="http://akvo.org/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
+			</h2>
+			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
+				{% trans 'Find projects to fund, or donors to fund projects. Report on projects. Share knowledge.' %}
 			</p>
-			<p style="text-align: right; font-size:0.9em;"><a href="http://akvo.org/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a></p>
 			
-			<h2 style="padding-bottom:0; padding-top:5px;"><a href="http://akvo.org/web/why_we_do_it">{% trans 'Why we do it' %}</a></h2>
-			<p style="font-size:0.9em; padding-bottom:0;">
-				{% trans 'The Akvo approach - a large number of small projects works best' %}
+			<h2 style="padding-bottom:0; padding-top:20px;">
+				<a style="float:left;" href="http://akvo.org/web/why_we_do_it">{% trans 'Why we do it' %}</a>
+				<a style="float:right; font-size:0.9em" href="http://akvo.org/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
+			</h2>
+			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
+				{% trans 'Akvo&#x27;s approach: a large number of small projects work best.' %}
 			</p>
-			<p style="text-align: right; font-size:0.9em;"><a href="http://akvo.org/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a></p>
 		</div>
 	</div>
 
@@ -176,6 +182,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 <div id="index_sponsor_box" class="boxbody">
+	<div class="clearfix" style="margin:0;">
 	<div id="sponsor_box_left" style="">
 		<h1>{% trans 'Live Earth and Akvo announce partnership' %}</h1>
 		<ul>
@@ -189,8 +196,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<li><a href="#">Title of blog goes here, can be longish</a></li>
 			<li><a href="#">Title of another blog goes here, can be longish</a></li>
 		</ul>
+		<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
 	</div>
-	<div class="clearfix">
 	</div>
 	{% comment %}
 	<div id="name" style="background-color:#ccc;">

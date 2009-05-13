@@ -322,7 +322,7 @@ margin: 10px 0;
 }
 
 .rss {
-background: url('/rsr/media/img/rss.gif') no-repeat right 0.1em;
+background: url('../img/rss.gif') no-repeat right 0.1em;
 padding-right: 1.6em;
 margin: 20px;
 }
@@ -455,7 +455,7 @@ list-style-type: none;
 
 .node ul li, ul.item-list li, ul.indented li, ul.simplelist li
 {
-background-image: url(/rsr/media/img/arrow.png);
+background-image: url('../img/arrow.png');
 background-repeat: no-repeat;
 background-position: 0 .2em;
 padding-left: 1.2em;
@@ -509,6 +509,20 @@ a.actionbutton:active span {
 }
 
 .ab_white 
+{	background: transparent url('../img/bg_button_a_white.png') no-repeat scroll top right;}
+.ab_white span
+{	background: transparent url('../img/bg_button_span_white.png') no-repeat;}
+.ab_grey 
+{	background: transparent url('../img/bg_button_a_grey.png') no-repeat scroll top right;}
+.ab_grey span
+{	background: transparent url('../img/bg_button_span_grey.png') no-repeat;}
+.ab_d0ffff 
+{	background: transparent url('../img/bg_button_a_d0ffff.png') no-repeat scroll top right;}
+.ab_d0ffff span
+{	background: transparent url('../img/bg_button_span_d0ffff.png') no-repeat;}
+
+/*
+.ab_white 
 {	background: transparent url('/rsr/media/img/bg_button_a_white.png') no-repeat scroll top right;}
 .ab_white span
 {	background: transparent url('/rsr/media/img/bg_button_span_white.png') no-repeat;}
@@ -520,7 +534,7 @@ a.actionbutton:active span {
 {	background: transparent url('/rsr/media/img/bg_button_a_d0ffff.png') no-repeat scroll top right;}
 .ab_d0ffff span
 {	background: transparent url('/rsr/media/img/bg_button_span_d0ffff.png') no-repeat;}
-
+*/
 
 .bold { font-weight: bold; }
 .bold td { font-weight: bold; }
@@ -547,21 +561,20 @@ th { font-weight: bold; }
 /* Sponsor partner */
 #index_sponsor_box {
     background: transparent url('../img/index_sponsor_background.png') repeat-x;
-    padding:0; 
-    padding-bottom:20px; 
+    padding:0;
     margin-bottom:20px;
 }
 
 #sponsor_box_left {
-    background: transparent url('../img/le-water-logo.png') no-repeat 20px 10px;
+    background: transparent url('../img/le-water-logo.gif') no-repeat 20px 10px;
     float:left;
     padding-left:120px;
-    width:280px; 
-    background-color:cyan;
+    width:260px; 
 }
 
 #sponsor_box_left h1 {
-    font-size:1.4em;
+    font-size:1.2em;
+    font-weight:bold;
     margin:10px 0px;
     color:#DE481C;
 }
@@ -575,17 +588,17 @@ th { font-weight: bold; }
 
 #index_sponsor_box ul li{
     margin-left:15px;
-    margin-bottom:3px;
-
+    margin-bottom:1px;
 }
 
-
 #sponsor_box_right {
-    width:300px;
+    width:320px;
     float:right; 
-    background-color:yellow;
 }
 
 #sponsor_box_right h2 {
+    font-size:1.1em;
     padding-left:0;
+    padding-top:0px;
+    margin-top:10px;
 }

@@ -25,9 +25,55 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div> <!-- .boxhead -->
 
 	<div class="boxbody">
-
 	<div></div>
-
+	
+	<table id="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="background-color:#efefef; width:210px;">
+		<tr>
+			<th>
+				{% ifequal request.path '/rsr/projects/' %}
+				<h2>{% trans 'Projects in Akvo' %}</h2>
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}">
+						<h2>{% trans 'Projects in Akvo' %}</h2>
+					</a>
+				{% endifequal %}
+			</th>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'Active' %}
+			</td>
+			<td style="text-align:right; padding:0;">
+				00
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'On hold' %}
+			</td>
+			<td style="text-align:right;">
+				000
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'Complete' %}
+			</td>
+			<td style="text-align:right;">
+				0000
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'Cancelled' %}
+			</td>
+			<td style="text-align:right;">
+				0000
+			</td>
+		</tr>
+	</table>
+	
+	
 	<table id="overall_statistics">
 		<tr>
 			<th colspan="2">
