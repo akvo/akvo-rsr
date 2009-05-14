@@ -214,7 +214,10 @@ def index(request):
         le_latest2 = le_feed.entries[1]
     except:
         soup = img_src1 = img_src2 = ''
-        latest1 = latest2 = le_latest1 = le_latest2 {
+        le_latest1 = le_latest2 = {
+            'title': _('The blog is not available at the moment.'),
+        }
+        latest1 = latest2 = {
             'author': '',
             'summary': _('The blog is not available at the moment.'),
         }

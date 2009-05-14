@@ -138,7 +138,7 @@ from django.conf import settings
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',
-        (r'^500/$', 'projectname.views.server_error'),
+        (r'^500/$', 'akvo.rsr.views.server_error'),
     )
 
 from django.conf import settings
