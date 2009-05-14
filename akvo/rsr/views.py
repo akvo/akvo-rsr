@@ -163,7 +163,7 @@ def projectlist(request):
     page: paginator
     '''
     projs = Project.objects.published().funding()
-    showcases = projs.order_by('?')[:3]
+    showcases = projs.need_funding().order_by('?')[:3]
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
 
@@ -195,24 +195,25 @@ def orglist(request, org_type='all'):
     stats: the aggregate projects data
     page: paginated orgs
     '''
-    orgs = Organisation.objects.all()
-    if org_type != 'all':
-        if org_type == 'field':
-            orgs = orgs.filter(field_partner__exact=True)
-        elif org_type == 'support':
-            orgs = orgs.filter(support_partner__exact=True)
-        elif org_type == 'funding':
-            orgs = orgs.filter(funding_partner__exact=True)
-        elif org_type == 'sponsor':
-            orgs = orgs.filter(sponsor_partner__exact=True)
-        elif org_type == 'ngo':
-            orgs = orgs.filter(organisation_type__exact='N')
-        elif org_type == 'governmental':
-            orgs = orgs.filter(organisation_type__exact='G')
-        elif org_type == 'commercial':
-            orgs = orgs.filter(organisation_type__exact='C')
-        elif org_type == 'knowledge':
-            orgs = orgs.filter(organisation_type__exact='K')
+    orgs = Organisation.objects
+    if org_type == 'field':
+        orgs = orgs.fieldpartners()
+    elif org_type == 'support':
+        orgs = orgs.supportpartners()
+    elif org_type == 'funding':
+        orgs = orgs.fundingpartners()
+    elif org_type == 'sponsor':
+        orgs = orgs.sponsorpartners()
+    elif org_type == 'ngos':
+        orgs = orgs.ngos()
+    elif org_type == 'governmental':
+        orgs = orgs.governmental()
+    elif org_type == 'commercial':
+        orgs = orgs.commercial()
+    elif org_type == 'knowledge':
+        orgs = orgs.knowledge()
+    else:
+        orgs = orgs.all()
     try:
         order_by = request.GET.get('order_by', 'name')
         orgs = orgs.order_by(order_by, 'name')

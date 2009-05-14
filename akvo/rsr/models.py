@@ -147,6 +147,18 @@ class Organisation(models.Model):
         def fundingpartners(self):
             return self.filter(funding_partner__exact=True)
 
+        def ngos(self):
+            return self.filter(organisation_type__exact='N')
+
+        def governmental(self):
+            return self.filter(organisation_type__exact='G')
+
+        def commercial(self):
+            return self.filter(organisation_type__exact='C')
+
+        def knowledge(self):
+            return self.filter(organisation_type__exact='K')
+
     class ProjectsQuerySet(QuerySet):
         """
         used for the projects manager on the Organisation
@@ -474,9 +486,13 @@ class Project(models.Model):
             #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
             return self.extra(select=funding_queries)
         
+        def need_funding(self):
+            "projects that projects need funding"
+            return self.funding().extra(where=['funds_needed > 0'])
+
         def need_funding_count(self):
             "how many projects need funding"
-            return len(self.funding().extra(where=['funds_needed > 0']))
+            return len(self.need_funding())
 
         def total_funds_needed(self):
             "how much money the projects still need"
