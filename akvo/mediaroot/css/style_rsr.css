@@ -115,6 +115,10 @@ table.overall_statistics tr td {
     padding:0;
 }
 
+p#view_earlier_blog_entries {
+    text-align: right; 
+    padding-top:15px;   
+}
 
 /*
 table#overall_statistics {

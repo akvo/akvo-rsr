@@ -216,34 +216,35 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% if img_src1 %}
 <div style="float:left; width: 210px;">
-	<img src="{{img_src1}}" style="width: 172px; margin: 15px 15px 5px 15px"/>
+	<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
 	<!--<p class="small lightx1">Image caption</p>-->
 </div> <!-- style -->
 {% endif %}
 
-<h2><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
+<h2 style="padding-top:12px;"><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
 {% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
 <p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
 <p>{{latest1.summary|safe|truncatewords:45}}</p>
 
-<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
+<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
 <!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
-<hr style="clear:both"/>
+<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
 
 {% if img_src2 %}
 <div style="float:left; width: 210px;">
-	<img src="{{img_src2}}" style="width: 172px; margin: 15px 15px 5px 15px"/>
+	<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
 	<!--<p class="small lightx1">Image caption</p>-->
 </div> <!-- style -->
 {% endif %}
-<h2><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
+
+<h2 style="padding-top:12px;"><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
 {% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
 <p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
 <p>{{latest2.summary|safe|truncatewords:45}}</p>
 
-<p><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
-<hr style="clear:both" />
-<p style="text-align: right"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
+<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
+<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
+<p id="view_earlier_blog_entries"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
 
 <div style="clear:left"></div>
 
