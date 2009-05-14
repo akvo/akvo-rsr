@@ -804,7 +804,7 @@ def donate(request, project_id):
     p = get_object_or_404(Project, pk=project_id)
     u = request.user
     t = datetime.now()
-    fn = Budget.objects.get(project=p).still_needed()
+    fn = p.funding_still_needed()
 
     # Validate if the form was POSTed...
     if request.method == 'POST':
