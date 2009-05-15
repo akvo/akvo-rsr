@@ -1,1 +1,1 @@
-../../static/settings_fr.py
+../../static/settings.py
