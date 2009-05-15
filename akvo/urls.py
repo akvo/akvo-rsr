@@ -7,9 +7,11 @@ from django.conf.urls.defaults import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.views.generic.simple import direct_to_template
+
 from akvo.rsr.feeds import ProjectUpdates
 from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
+
 
 # PAUL
 from django.views.generic.simple import direct_to_template
@@ -131,6 +133,13 @@ urlpatterns = patterns('',
     #    'django.views.static.serve', 
     #    {'document_root': '/var/dev/akvo/mediaroot/', 'show_indexes': True}),
 )
+
+from django.conf import settings
+handler500 = 'akvo.rsr.views.server_error'
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^500/$', 'akvo.rsr.views.server_error'),
+    )
 
 from django.conf import settings
 if settings.DEBUG:

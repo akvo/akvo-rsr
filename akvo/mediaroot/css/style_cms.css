@@ -32,7 +32,7 @@ list-style-type: none;
 ul.menu li,
 ul.item-list li
 {
-background-image: url(/rsr/media/img/arrow.png);
+background-image: url('../img/arrow.png');
 background-repeat: no-repeat;
 background-position: 0 .2em;
 padding-left: 1.2em;

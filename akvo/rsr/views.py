@@ -38,6 +38,19 @@ REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org'
 from akvo.rsr.models import PayPalInvoice
 from paypal.standard.forms import PayPalPaymentsForm
 
+from django import http
+from django.template import Context, loader
+
+def server_error(request, template_name='500.html'):
+    '''
+    Daniel
+    Overwrites the default error 500 view to pass MEDIA_URL to the template
+    '''
+    t = loader.get_template(template_name) # You need to create a 500.html template.
+    return http.HttpResponseServerError(t.render(Context({
+        'MEDIA_URL': settings.MEDIA_URL
+    })))
+
 def render_to(template):
     """
     Decorator for Django views that sends returned dict to render_to_response function
@@ -122,8 +135,15 @@ def index(request):
         latest2 = feed.entries[1]
         soup = BeautifulSoup(latest2.content[0].value)
         img_src2 = soup('img')[0]['src']
+        
+        le_feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        le_latest1 = le_feed.entries[0]
+        le_latest2 = le_feed.entries[1]
     except:
         soup = img_src1 = img_src2 = ''
+        le_latest1 = le_latest2 = {
+            'title': _('The blog is not available at the moment.'),
+        }
         latest1 = latest2 = {
             'author': '',
             'summary': _('The blog is not available at the moment.'),
@@ -136,7 +156,19 @@ def index(request):
         grid_projects = None
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
-    return {'latest1': latest1, 'img_src1': img_src1, 'latest2': latest2, 'img_src2': img_src2, 'bandwidth': bandwidth, 'grid_projects': grid_projects, 'orgs': Organisation.objects, 'projs': projs, 'version': settings.URL_VALIDATOR_USER_AGENT}
+    return {
+        'latest1': latest1,
+        'img_src1': img_src1,
+        'latest2': latest2,
+        'img_src2': img_src2,
+        'le_latest1': le_latest1,
+        'le_latest2': le_latest2,
+        'bandwidth': bandwidth,
+        'grid_projects': grid_projects,
+        'orgs': Organisation.objects,
+        'projs': projs,
+        'version': settings.URL_VALIDATOR_USER_AGENT,
+    }
 
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"
