@@ -292,7 +292,8 @@ padding: 10px 0;
 
 div#live_earth_show {
     background: transparent url('../img/LE-bar-water-bkg.png') no-repeat;
-    padding-top:220px;
+    padding-top:240px;
+    height:178px;
 }
 
 #live_earth_show h1 {
@@ -308,6 +309,7 @@ div#live_earth_show {
     background:transparent;
     color:#999;
     margin:15px 0;
+    line-height:1.6em;
 }
 
 

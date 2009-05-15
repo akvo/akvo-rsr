@@ -121,7 +121,7 @@ urlpatterns = patterns('',
     (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
     
-    (r'^live-earth/$', 'akvo.rsr.views.live_earth', ),    
+    (r'^liveearth/$', 'akvo.rsr.views.liveearth', ),    
     
     #feedjack
     #(r'', include('feedjack.urls')),

@@ -54,7 +54,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block outer_leftwing %}
 
-<div id="outer_leftwing">
+<div id="outer_leftwing" style="margin-bottom:20px;">
 	<div id="live_earth_show" class="boxbody">
 		<h1>Live Earth projects at Akvo.org</h1>
 		<p>
@@ -69,9 +69,88 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- #outer_leftwing -->
 {% endblock outer_leftwing %}
 
-{% block projects %}
+{% block outer_rightwing %}
+<div id="outer_rightwing">
+	<div class="boxhead">
+		<h1>{% trans 'Live Earth projects' %}</h1>
+	</div> <!-- .boxhead -->
+	<div class="boxbody">
+		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0"> 
+			<tr class="bold hr">
+				<td style="padding-bottom:20px;">
+					{% trans 'Total projects in Akvo' %}
+				</td>
+				<td style="text-align:right">
+					0
+				</td>
+			</tr>
+		</table>
+		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 	
+			<tr>
+				<th colspan="3">
+					<h2>{% trans 'People who get...' %}</h2>
+				</th>
+			</tr>
+			<tr>
+				<td style="width:50px;">&nbsp;</td>
+				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Upcomming' %}</a></td>
+				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Delivered' %}</a></td>
+			</tr>
+			<tr>
+				<td style="font-weight:bold;">{% trans 'Water' %}</td>
+				<td style="text-align:right;">{{projs.get_planned_water_calc}}</td>
+				<td style="text-align:right;">{{projs.get_actual_water_calc}}</td>
+			</tr>
+			<tr class="hr">
+				<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
+				<td style="text-align:right;">{{projs.get_planned_sanitation_calc}}</td>
+				<td style="text-align:right;">{{projs.get_actual_sanitation_calc}}</td>
+			</tr>
+		</table>
+		
+		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 
+			<tr>
+				<th colspan="3">
+					<h2>{% trans 'Partners' %}</h2>
+				</th>
+			</tr>
+			<tr>
+				<td><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td>
+				<td style="text-align:right;">{{orgs.fieldpartners.count}}</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="{% url rsr_org_list_filtered "support" %}">{% trans 'Support partners' %}</a></td>
+				<td style="text-align:right;">{{orgs.supportpartners.count}}</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr class="hr">
+				<td style="padding-bottom:20px;"><a href="{% url rsr_org_list_filtered "funding" %}">{% trans 'Funding partners' %}</a></td>
+				<td style="text-align:right;">{{orgs.fundingpartners.count}}</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
+			<tr class="font-weight:bold;">
+				<th colspan="2" style="padding-bottom:10px;">
+					{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>
+				</th>
+			</tr>
+			<tr style="color:green;">
+				<td>{% trans 'Pledged' %}</td>
+				<td style="text-align:right;">&#8364; {{projs.total_pledged}}</td>
+			</tr>
+			<tr style="color:red;">
+				<td style="padding-bottom:5px;">{% trans 'Pledged' %}</td>
+				<td style="text-align:right;">&#8364; {{projs.total_funds_needed}}</td>
+			</tr>
+		</table>
+	</div>
+</div>
+{% endblock outer_rightwing %}
 
-<div class="boxhead" style="clear: left" class="clearfix">
+{% block projects %}
+<div class="boxhead" style="clear: left;" class="clearfix">
 	<a name="list"></a>
     <div style="float:right; margin: 1em; width: 40%;">
     <!--<label for="display_number_of_entries">Show</label>

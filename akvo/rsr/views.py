@@ -189,8 +189,8 @@ def project_list_data(request, projects):
     page = paginator.page(request.GET.get('page', 1))
     return page
 
-@render_to('rsr/live_earth.html')
-def live_earth(request):
+@render_to('rsr/liveearth.html')
+def liveearth(request):
     '''
     List of all projects in RSR
     Context:
