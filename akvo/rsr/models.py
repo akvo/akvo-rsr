@@ -488,7 +488,9 @@ class Project(models.Model):
         
         def need_funding(self):
             "projects that projects need funding"
-            return self.funding().extra(where=['funds_needed > 0'])
+            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
+            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
+            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
 
         def need_funding_count(self):
             "how many projects need funding"
