@@ -44,7 +44,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Active' %}
 			</td>
 			<td style="text-align:right;">
-				{{stats.status_active}}
+				{{projs.status_active.count}}
 			</td>
 		</tr>
 		<tr>
@@ -52,7 +52,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'On hold' %}
 			</td>
 			<td style="text-align:right;">
-				{{stats.status_onhold}}
+				{{projs.status_onhold.count}}
 			</td>
 		</tr>
 		<tr>
@@ -60,7 +60,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Complete' %}
 			</td>
 			<td style="text-align:right;">
-				{{stats.status_complete}}
+				{{projs.status_complete.count}}
 			</td>
 		</tr>
 		<tr>
@@ -68,7 +68,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Cancelled' %}
 			</td>
 			<td style="text-align:right;">
-				?
+				{{projs.status_cancelled.count}}
 			</td>
 		</tr>
 		<tr class="hr bold">
@@ -76,7 +76,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Total projects' %}
 			</td>
 			<td style="text-align:right; padding-top:3px;">
-				{{stats.project_count}}
+				{{projs.published.count}}
 			</td>
 		</tr>
 		
@@ -94,13 +94,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</tr>
 		<tr>
 			<td style="font-weight:bold;">{% trans 'Water' %}</td>
-			<td style="text-align:right;">{{stats.mdgs_water}}</td>
-			<td style="text-align:right;">?</td>
+			<td style="text-align:right;">{{projs.get_planned_water_calc}}</td>
+			<td style="text-align:right;">{{projs.get_actual_water_calc}}</td>
 		</tr>
 		<tr class="hr">
 			<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
-			<td style="text-align:right;">{{stats.mdgs_sanitation}}</td>
-			<td style="text-align:right;">?</td>
+			<td style="text-align:right;">{{projs.get_planned_sanitation_calc}}</td>
+			<td style="text-align:right;">{{projs.get_actual_sanitation_calc}}</td>
 		</tr>
 	</table>
 	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">	
@@ -117,37 +117,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</tr>
 		<tr class="bold">
 			<td colspan="2" style="padding-bottom:5px;">{% trans 'Total organisations' %}</td>
-			<td colspan="2" style="text-align:right;">00000</td>
+			<td colspan="2" style="text-align:right;">{{orgs.all.count}}</td>
 		</tr>
 		<tr>
 			<td><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td>
-			<td style="text-align:right;">{{stats.fieldpartner_count}}</td>
+			<td style="text-align:right;">{{orgs.fieldpartners.count}}</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td><a href="{% url rsr_org_list_filtered "support" %}">{% trans 'Support partners' %}</a></td>
-			<td style="text-align:right;">{{stats.supportpartner_count}}</td>
+			<td style="text-align:right;">{{orgs.supportpartners.count}}</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr class="hr">
 			<td style="padding-bottom:20px;"><a href="{% url rsr_org_list_filtered "funding" %}">{% trans 'Funding partners' %}</a></td>
-			<td style="text-align:right;">{{stats.fundingpartner_count}}</td>
+			<td style="text-align:right;">{{orgs.fundingpartners.count}}</td>
 			<td>&nbsp;</td>
 		</tr>
 	</table>
 	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
 		<tr class="font-weight:bold;">
 			<th colspan="2" style="padding-bottom:10px;">
-				{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{stats.num_organisations}} {% trans 'Projects' %})</span>
+				{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>
 			</th>
 		</tr>
 		<tr style="color:green;">
 			<td>{% trans 'Pledged' %}</td>
-			<td style="text-align:right;">&#8364; {{stats.funding_pledged}}</td>
+			<td style="text-align:right;">&#8364; {{projs.total_pledged}}</td>
 		</tr>
 		<tr style="color:red;">
 			<td style="padding-bottom:5px;">{% trans 'Pledged' %}</td>
-			<td style="text-align:right;">&#8364; {{stats.funding_pledged}}</td>
+			<td style="text-align:right;">&#8364; {{projs.total_funds_needed}}</td>
 		</tr>
 	</table>
 	

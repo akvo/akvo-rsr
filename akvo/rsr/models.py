@@ -33,7 +33,7 @@ from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
-from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status
 
@@ -927,16 +927,16 @@ class UserProfile(models.Model):
         )
 
 def user_activated_callback(sender, **kwargs):
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)            
+    from dbgp.client import brk
+    brk(host="localhost", port=9000)            
     user = kwargs.get("user", False)
     if user:
         org = user.get_profile().organisation
         users = User.objects.all()
-        #find all users that are 1) superusers 2) org admins for the same org as
-        #the just activated user
-        notify = users.filter(is_superuser=True) | \
-            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])
+        #find all users that are 1) superusers 2) RSR editors
+        #3) org admins for the same org as the just activated user
+        notify = (users.filter(is_superuser=True) | users.filter(groups__name__in=[GROUP_RSR_EDITORS]) | \
+            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
         rsr_send_mail_to_users(notify,
                                subject='email/new_user_registered_subject.txt',
                                message='email/new_user_registered_message.txt',
