@@ -286,3 +286,31 @@ table h2
 font-weight: bold;
 padding: 10px 0;
 }
+
+/* Live earth
+-------------------------------------------------------------------------------------- */
+
+div#live_earth_show {
+    background: transparent url('../img/LE-bar-water-bkg.png') no-repeat;
+    padding-top:220px;
+}
+
+#live_earth_show h1 {
+    background: transparent;
+    color:#DE481C;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-left:20px;
+    margin-bottom:15px;
+}
+
+#live_earth_show p {
+    background:transparent;
+    color:#999;
+    margin:15px 0;
+}
+
+
+
+
+

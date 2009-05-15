@@ -188,6 +188,22 @@ def project_list_data(request, projects):
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     return page
+
+@render_to('rsr/live_earth.html')
+def live_earth(request):
+    '''
+    List of all projects in RSR
+    Context:
+    projects: list of all projects
+    stats: the aggregate projects data
+    page: paginator
+    '''
+    projs = Project.objects.published().funding()
+    showcases = projs.need_funding().order_by('?')[:3]
+    page = project_list_data(request, projs)
+    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
+
+
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):

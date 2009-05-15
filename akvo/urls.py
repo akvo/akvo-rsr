@@ -119,7 +119,9 @@ urlpatterns = patterns('',
     (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
 
     (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
-    (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),    
+    (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
+    
+    (r'^live-earth/$', 'akvo.rsr.views.live_earth', ),    
     
     #feedjack
     #(r'', include('feedjack.urls')),
