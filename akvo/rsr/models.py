@@ -33,7 +33,7 @@ from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
-from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status
 
@@ -488,7 +488,9 @@ class Project(models.Model):
         
         def need_funding(self):
             "projects that projects need funding"
-            return self.funding().extra(where=['funds_needed > 0'])
+            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
+            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
+            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
 
         def need_funding_count(self):
             "how many projects need funding"
@@ -925,16 +927,16 @@ class UserProfile(models.Model):
         )
 
 def user_activated_callback(sender, **kwargs):
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)            
+    from dbgp.client import brk
+    brk(host="localhost", port=9000)            
     user = kwargs.get("user", False)
     if user:
         org = user.get_profile().organisation
         users = User.objects.all()
-        #find all users that are 1) superusers 2) org admins for the same org as
-        #the just activated user
-        notify = users.filter(is_superuser=True) | \
-            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])
+        #find all users that are 1) superusers 2) RSR editors
+        #3) org admins for the same org as the just activated user
+        notify = (users.filter(is_superuser=True) | users.filter(groups__name__in=[GROUP_RSR_EDITORS]) | \
+            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
         rsr_send_mail_to_users(notify,
                                subject='email/new_user_registered_subject.txt',
                                message='email/new_user_registered_message.txt',
