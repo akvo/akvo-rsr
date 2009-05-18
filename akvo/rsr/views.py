@@ -198,12 +198,10 @@ def liveearth(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    live_earth = Organisation.objects.get(pk=settings.LIVE_EARTH_ID)
+    live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
     projs = live_earth.all_projects().funding()
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, }
-
-
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):
