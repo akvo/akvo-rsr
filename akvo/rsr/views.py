@@ -198,10 +198,10 @@ def liveearth(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projs = Project.objects.published().funding()
-    showcases = projs.need_funding().order_by('?')[:3]
+    live_earth = Organisation.objects.get(pk=settings.LIVE_EARTH_ID)
+    projs = live_earth.all_projects().funding()
     page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
+    return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, }
 
 
     
@@ -827,7 +827,7 @@ def project_list_widget(request, template='project-list', org_id=0):
         p = Project.objects.published().funding()
     order_by = request.GET.get('order_by', 'name')
     #p = p.annotate(last_update=Max('project_updates__time'))
-    #p = p.extra(select=Max('project_updates__time'))
+    p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     if order_by == 'country__continent':		
         p = p.order_by(order_by, 'country__country_name','name')
     #elif order_by == 'country__country_name':
