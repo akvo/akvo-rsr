@@ -19,6 +19,8 @@ DEBUG = True
 
 SITE_ID = 1
 
+LIVE_EARTH_ID = 98
+
 DOMAIN_NAME = 'localhost:8000'
     
 DEFAULT_FROM_EMAIL = 'noreply@%s' % DOMAIN_NAME
