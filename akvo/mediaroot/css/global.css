@@ -565,6 +565,10 @@ th { font-weight: bold; }
     margin-bottom:20px;
 }
 
+#index_sponsor_box a {
+    font-size:0.9em;
+}
+
 #sponsor_box_left {
     background: transparent url('../img/le-water-logo.gif') no-repeat 20px 10px;
     float:left;

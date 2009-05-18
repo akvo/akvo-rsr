@@ -61,7 +61,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			Live Earth has partnered with Akvo to display projects for you to see Alit at.The Ramblin' Wreck is the official mascot of the student body at the Georgia Institute of Technology. The Ramblin' Wreck is a 1930 Ford Model A Sports coupe and it embodies the spirit, tradition, and passion of the Tech student body.
 		</p>
 		<p style="line-height:1.9em;">	
-		Visit Live Earth&#x27;s web site to see <a href="http://liveearth.org/">list of event</a> in yoyu rarea and around the world<br />
+		Visit Live Earth&#x27;s web site to see <a href="http://liveearth.org/">lists of events</a> in your area and around the world<br />
 		To learn more, read about <a href="http://liveearth.org/">our partnership</a>.
 		</p>
 	</div>
@@ -93,7 +93,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>
 			<tr>
 				<td style="width:50px;">&nbsp;</td>
-				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Upcomming' %}</a></td>
+				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Upcoming' %}</a></td>
 				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Delivered' %}</a></td>
 			</tr>
 			<tr>
@@ -115,8 +115,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</th>
 			</tr>
 			<tr>
-				<td><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td>
-				<td style="text-align:right;">{{orgs.fieldpartners.count}}</td>
+				<td style="width:50%"><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td>
+				<td style="text-align:right; width:25%">{{orgs.fieldpartners.count}}</td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
@@ -141,7 +141,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td style="text-align:right;">&#8364; {{projs.total_pledged}}</td>
 			</tr>
 			<tr style="color:red;">
-				<td style="padding-bottom:5px;">{% trans 'Pledged' %}</td>
+				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
 				<td style="text-align:right;">&#8364; {{projs.total_funds_needed}}</td>
 			</tr>
 		</table>

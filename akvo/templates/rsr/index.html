@@ -47,7 +47,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% ifequal bandwidth 'high' %}
 	<div id="home_flash_box">
 	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'View static home page' %}</a>
-	<div style="color: #fff; font-size: 1.5em; float: left; padding: 20px;">{% trans 'Our latest projects' %}</div>
+	<div style="color: #fff; font-size: 1.2em; font-weight:bold; float: left; padding: 20px;">{% trans 'Our latest projects' %}</div>
 	<div id="home_flash" style="color: #fff;">
 		{% trans 'You are being re-directed to the static Akvo home page. If nothing happens,' %} <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'click here' %}!</a>
 		<noscript>
@@ -115,7 +115,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div id="home_flash_box" style="padding-bottom:14px; width: 710px; float: left;">
 		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
-		<div style="color: #fff; font-size: 1.5em; padding: 15px 20px ;">{% trans 'Our latest projects' %}</div>
+		<div style="color: #fff; font-size: 1.2em; font-weight:bold; padding: 15px 20px ;">{% trans 'Our latest projects' %}</div>
 		<table>
 			{% for p in grid_projects %}
 				{% ifequal forloop.counter 1 %}
@@ -144,7 +144,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="boxbody" style="padding-top:0; padding-bottom:15px;">
 			<h2 style="padding-bottom:0; padding-top:20px;">
 				<a style="float:left;" href="http://akvo.org/web/what_we_do">{% trans 'What we do' %}</a>
-				<a style="float:right; font-size:0.9em" href="http://akvo.org/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
+				<a style="float:right; font-size:0.9em; font-weight:normal;" href="http://akvo.org/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
 			</h2>
 			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
 				{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}
@@ -152,7 +152,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<h2 style="padding-bottom:0; padding-top:20px;">
 				<a style="float:left;" href="http://akvo.org/web/how_akvo_works">{% trans 'How Akvo works' %}</a>
-				<a style="float:right; font-size:0.9em" href="http://akvo.org/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
+				<a style="float:right; font-size:0.9em; font-weight:normal;" href="http://akvo.org/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
 			</h2>
 			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
 				{% trans 'Find projects to fund, or donors to fund projects. Report on projects. Share knowledge.' %}
@@ -160,7 +160,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<h2 style="padding-bottom:0; padding-top:20px;">
 				<a style="float:left;" href="http://akvo.org/web/why_we_do_it">{% trans 'Why we do it' %}</a>
-				<a style="float:right; font-size:0.9em" href="http://akvo.org/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
+				<a style="float:right; font-size:0.9em; font-weight:normal;" href="http://akvo.org/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
 			</h2>
 			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
 				{% trans 'Akvo&#x27;s approach: a large number of small projects work best.' %}
