@@ -331,13 +331,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% if p.fundingpartner_set.all %}
 		{% for funder in p.fundingpartner_set.all %}
 			<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a><br />
-		{% endfor %}		
+		{% endfor %}	
 	{% else %}
 		&nbsp;
 	{% endif %}
 	</td>
 </tr>
-
 {% endfor %}
 
 <tr>
