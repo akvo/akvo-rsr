@@ -323,6 +323,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% else %}
 		&nbsp;
 	{% endif %}
+		<a href="{% url akvo.rsr.views.liveearth %}">
+		<img src="{% thumbnail live_earth.logo 67x50 autocrop,upscale,sharpen %}" style="margin-top:10px">
+		</a>
 	</td>
 	<td style="border-right: 0;">
 	{% if p.fundingpartner_set.all %}

@@ -105,10 +105,23 @@ class Organisation(models.Model):
     long_name                   = models.CharField(blank=True, max_length=75, help_text='Full name of organisation (75 characters).'
     							)
     organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
+    '''
+    current_image               = ImageWithThumbnailsField(
+                                    blank=True,
+                                    upload_to=proj_image_path,
+                                    thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
+                                    help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
+                                )
     logo                        = models.ImageField(
                                     blank=True,
                                     upload_to=org_image_path,
                                     help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',	
+                                )
+    '''
+    logo                        = ImageWithThumbnailsField(
+                                    blank=True,
+                                    upload_to=org_image_path,
+                                    help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',
                                 )
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
