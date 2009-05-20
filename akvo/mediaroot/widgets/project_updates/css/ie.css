@@ -15,7 +15,7 @@
 body {text-align:center;}
 .widget_project_updates-container {text-align:left;}
 * html .widget_project_updates-column, * html div.widget_project_updates-span-1, * html div.widget_project_updates-span-2, * html div.widget_project_updates-span-3, * html div.widget_project_updates-span-4, * html div.widget_project_updates-span-5, * html div.widget_project_updates-span-6, * html div.widget_project_updates-span-7, * html div.widget_project_updates-span-8, * html div.widget_project_updates-span-9, * html div.widget_project_updates-span-10, * html div.widget_project_updates-span-11, * html div.widget_project_updates-span-12, * html div.widget_project_updates-span-13, * html div.widget_project_updates-span-14, * html div.widget_project_updates-span-15, * html div.widget_project_updates-span-16, * html div.widget_project_updates-span-17, * html div.widget_project_updates-span-18, * html div.widget_project_updates-span-19, * html div.widget_project_updates-span-20, * html div.widget_project_updates-span-21, * html div.widget_project_updates-span-22, * html div.widget_project_updates-span-23, * html div.widget_project_updates-span-24 {overflow-x:hidden;}
-* html legend {margin:-18px -8px 16px 0;padding:0;}
+* html legend {margin:0px -8px 16px 0;padding:0;}
 ol {margin-left:2em;}
 sup {vertical-align:text-top;}
 sub {vertical-align:text-bottom;}

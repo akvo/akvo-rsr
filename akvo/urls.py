@@ -106,12 +106,6 @@ urlpatterns = patterns('',
 	url(r'^rsr/widget/(?P<template>[\w-]+)/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	
-    #url(r'^rsr/widget/project$', 'akvo.rsr.views.widget_project', {'template':'widgets/project.html'}, name='widget_project', ),
-	#url(r'^rsr/widget/projectupdates$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_updates.html'}, name='widget_project_updates', ),
-	#url(r'^rsr/widget/projectcontribute$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_contribute.html'}, name='widget_project_contribute', ),
-    #url(r'^rsr/widget/projectsmall$', 'akvo.rsr.views.widget_project', {'template':'widgets/project_small.html'}, name='widget_project_small', ),
-    #url(r'^rsr/widget/projectlist/$', 'akvo.rsr.views.widget_project_list', name='widget_project_list', ),
-    
     (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     
     (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
