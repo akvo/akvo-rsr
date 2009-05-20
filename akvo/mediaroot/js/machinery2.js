@@ -12,6 +12,7 @@ function getHeight(widget_type)
 		case 'project-contribute':  return 570; break; 
 		case 'project-updates': 	return 900; break; 
 		case 'project-list': 		return 730; break; 
+		case 'project-narrow': 		return 840; break; 
 		default: 					return 840;
 	}	
 }
@@ -23,7 +24,8 @@ function getWidth(widget_type)
 		case 'feature-side': 		return 202; break; 
 		case 'project-contribute': 	return 202; break; 
 		case 'project-updates': 	return 202; break; 
-		case 'project-list': 		return 745; break; 
+		case 'project-list': 		return 745; break;
+		case 'project-narrow': 		return 172; break; 
 		default: 					return 202;
 	}	
 }

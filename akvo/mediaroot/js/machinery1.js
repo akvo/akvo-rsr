@@ -11,7 +11,8 @@ function getHeight(widget_type)
 		case 'feature-side': 		return 840; break; 
 		case 'project-contribute':  return 570; break; 
 		case 'project-updates': 	return 900; break; 
-		case 'project-list': 		return 730; break; 
+		case 'project-list': 		return 730; break;
+		case 'project-narrow': 		return 840; break; 
 		default: 					return 840;
 	}	
 }
@@ -24,6 +25,7 @@ function getWidth(widget_type)
 		case 'project-contribute': 	return 202; break; 
 		case 'project-updates': 	return 202; break; 
 		case 'project-list': 		return 745; break; 
+		case 'project-narrow': 		return 172; break; 
 		default: 					return 202;
 	}	
 }
@@ -45,6 +47,9 @@ $(document).ready(function()
 	// Enaable the project / organisation list on the first page	
 	$("#feature-side-random-from-org").click(function() { $('#feature-side-organisations').removeAttr("disabled"); });
 	$("#feature-side-specific-project").click(function() {	$('#feature-side-organisations').attr("disabled", true); });
+	
+	$("#project-narrow-random-from-org").click(function() { $('#project-narrow-organisations').removeAttr("disabled"); });
+	$("#project-narrow-specific-project").click(function() {	$('#project-narrow-organisations').attr("disabled", true); });
 	
 	$("#project-updates-random-from-org").click(function() { $('#project-updates-organisations').removeAttr("disabled"); });
 	$("#project-updates-specific-project").click(function() {	$('#project-updates-organisations').attr("disabled", true); });
