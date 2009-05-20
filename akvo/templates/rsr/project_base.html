@@ -131,7 +131,48 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p><a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">{{sp.support_organisation.name}}</a></p>
 				<p>{{sp.support_organisation.city}}, {{sp.support_organisation.country}}</p>
 			{% endfor %}
-		{% endif %}        
+		{% endif %}     
+		
+		{% if p.sponsorpartner_set.count %}
+			<hr />
+			 {% ifequal p.sponsorpartner_set.count 1 %}
+			<h2> {% trans 'Sponsor partner' %}</h2>
+			{% else %}
+			<h2> {% trans 'Sponsor partners' %}</h2>
+			{% endifequal %}
+			{% for sponsor in p.sponsorpartner_set.all %}
+			
+				{% if sponsor.sponsor_organisation.logo %}
+					<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">
+						<img src="{% thumbnail sponsor.sponsor_organisation.logo 120x90 autocrop,upscale,sharpen %}" style="margin:10px 20px;">
+					</a>
+				{% endif %}
+				<p>
+					<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{ sponsor.sponsor_organisation.name }}</a><br />
+					{{ sponsor.sponsor_organisation.city }}, {{ sponsor.sponsor_organisation.state }}. {{ sponsor.sponsor_organisation.country }}
+				</p>
+				
+				{% comment %}
+				<ul style="margin-left:35px; list-style-position: outside; list-style-type: disc; color:#367FC6; margin-right:20px; font-size:0.9em;">
+					<li><a href="#">How Live Earth and Akvo work together</a></li>
+					<li><a href="{% url akvo.rsr.views.liveearth %}">View all Live Earth projects in Akvo</a></li>
+					<li><a href="http://liveearth.org/">Go to Live Earth&#x27;s web site</a></li>
+				</ul>
+				{% endcomment %}
+						
+			{% endfor %}
+			
+			{% comment %}
+			<img src="{% thumbnail sp.sponsor_organisation.logo 67x50 autocrop,upscale,sharpen %}">
+			{% if sp.sponsor_organisation.logo %}
+				<img src="{% thumbnail sp.sponsor_organisation.logo 67x50 autocrop,upscale,sharpen %}">
+			{% endif %}	
+			{% endcomment %}
+			
+			
+		
+		{% endif %}     
+		   
 
 	</div> <!-- #project_partners & .boxbody -->
 

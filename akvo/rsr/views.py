@@ -38,6 +38,19 @@ REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org'
 from akvo.rsr.models import PayPalInvoice
 from paypal.standard.forms import PayPalPaymentsForm
 
+from django import http
+from django.template import Context, loader
+
+def server_error(request, template_name='500.html'):
+    '''
+    Daniel
+    Overwrites the default error 500 view to pass MEDIA_URL to the template
+    '''
+    t = loader.get_template(template_name) # You need to create a 500.html template.
+    return http.HttpResponseServerError(t.render(Context({
+        'MEDIA_URL': settings.MEDIA_URL
+    })))
+
 def render_to(template):
     """
     Decorator for Django views that sends returned dict to render_to_response function
@@ -122,8 +135,15 @@ def index(request):
         latest2 = feed.entries[1]
         soup = BeautifulSoup(latest2.content[0].value)
         img_src2 = soup('img')[0]['src']
+        
+        le_feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        le_latest1 = le_feed.entries[0]
+        le_latest2 = le_feed.entries[1]
     except:
         soup = img_src1 = img_src2 = ''
+        le_latest1 = le_latest2 = {
+            'title': _('The blog is not available at the moment.'),
+        }
         latest1 = latest2 = {
             'author': '',
             'summary': _('The blog is not available at the moment.'),
@@ -131,12 +151,28 @@ def index(request):
     projs = Project.objects.published()
     if bandwidth == 'low':
         #TODO: better filtering criteria, we want to find all projects that have an image
-        grid_projects = projs.filter(current_image__startswith='db').order_by('?')[:8]
+        unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
+        if len(unfunded_visible_projs) > 7:
+            grid_projects = unfunded_visible_projs.order_by('?')[:8]
+        else:
+            grid_projects = projs.filter(current_image__startswith='db').order_by('?')[:8]
     else:
         grid_projects = None
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
-    return {'latest1': latest1, 'img_src1': img_src1, 'latest2': latest2, 'img_src2': img_src2, 'bandwidth': bandwidth, 'grid_projects': grid_projects, 'orgs': Organisation.objects, 'projs': projs, 'version': settings.URL_VALIDATOR_USER_AGENT}
+    return {
+        'latest1': latest1,
+        'img_src1': img_src1,
+        'latest2': latest2,
+        'img_src2': img_src2,
+        'le_latest1': le_latest1,
+        'le_latest2': le_latest2,
+        'bandwidth': bandwidth,
+        'grid_projects': grid_projects,
+        'orgs': Organisation.objects,
+        'projs': projs,
+        'version': settings.URL_VALIDATOR_USER_AGENT,
+    }
 
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"
@@ -152,6 +188,20 @@ def project_list_data(request, projects):
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     return page
+
+@render_to('rsr/liveearth.html')
+def liveearth(request):
+    '''
+    List of all projects in RSR
+    Context:
+    projects: list of all projects
+    stats: the aggregate projects data
+    page: paginator
+    '''
+    live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
+    projs = live_earth.all_projects().funding()
+    page = project_list_data(request, projs)
+    return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):
@@ -775,7 +825,7 @@ def project_list_widget(request, template='project-list', org_id=0):
         p = Project.objects.published().funding()
     order_by = request.GET.get('order_by', 'name')
     #p = p.annotate(last_update=Max('project_updates__time'))
-    #p = p.extra(select=Max('project_updates__time'))
+    p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     if order_by == 'country__continent':		
         p = p.order_by(order_by, 'country__country_name','name')
     #elif order_by == 'country__country_name':

@@ -33,7 +33,7 @@ from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
-from utils import RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status
 
@@ -105,10 +105,23 @@ class Organisation(models.Model):
     long_name                   = models.CharField(blank=True, max_length=75, help_text='Full name of organisation (75 characters).'
     							)
     organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
+    '''
+    current_image               = ImageWithThumbnailsField(
+                                    blank=True,
+                                    upload_to=proj_image_path,
+                                    thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
+                                    help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
+                                )
     logo                        = models.ImageField(
                                     blank=True,
                                     upload_to=org_image_path,
                                     help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',	
+                                )
+    '''
+    logo                        = ImageWithThumbnailsField(
+                                    blank=True,
+                                    upload_to=org_image_path,
+                                    help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',
                                 )
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
@@ -927,16 +940,16 @@ class UserProfile(models.Model):
         )
 
 def user_activated_callback(sender, **kwargs):
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)            
+    from dbgp.client import brk
+    brk(host="localhost", port=9000)            
     user = kwargs.get("user", False)
     if user:
         org = user.get_profile().organisation
         users = User.objects.all()
-        #find all users that are 1) superusers 2) org admins for the same org as
-        #the just activated user
-        notify = users.filter(is_superuser=True) | \
-            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])
+        #find all users that are 1) superusers 2) RSR editors
+        #3) org admins for the same org as the just activated user
+        notify = (users.filter(is_superuser=True) | users.filter(groups__name__in=[GROUP_RSR_EDITORS]) | \
+            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
         rsr_send_mail_to_users(notify,
                                subject='email/new_user_registered_subject.txt',
                                message='email/new_user_registered_message.txt',

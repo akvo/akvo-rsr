@@ -25,14 +25,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div> <!-- .boxhead -->
 
 	<div class="boxbody">
-
 	<div></div>
-
-	<table id="overall_statistics">
+	
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<th colspan="2">
 				{% ifequal request.path '/rsr/projects/' %}
-					<h2>{% trans 'Projects in Akvo' %}</h2>
+				<h2>{% trans 'Projects in Akvo' %}</h2>
 				{% else %}
 					<a href="{% url akvo.rsr.views.projectlist %}">
 						<h2>{% trans 'Projects in Akvo' %}</h2>
@@ -40,39 +39,117 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endifequal %}
 			</th>
 		</tr>
-		<tr><td style="width: 40%;">{{projs.status_active.count}}</td><td>{% trans 'Active' %}</td></tr>
-		<tr><td>{{projs.status_onhold.count}}</td><td>{% trans 'Need funding' %}</td></tr>
-		<tr><td>{{projs.status_complete.count}}</td><td>{% trans 'Complete' %}</td></tr>
-
-		<tr class="hr bold"><td>{{projs.published.count}}</td><td>{% trans 'Total projects' %}</td></tr>
-		<tr><td colspan="2" style="padding: 15px 0 10px 0"><b>{% trans 'People who get' %}</b> (<a href="/web/help_akvo_at_a_glance">{% trans 'planned' %}</a>) <a href="/web/help_akvo_at_a_glance">{% trans 'actual' %}</a></td></tr>
-		<tr><td>({{projs.get_planned_water_calc}})<br />{{projs.get_actual_water_calc}}</td><td>{% trans 'Water' %}</td></tr>
-		<tr class="hr"><td>({{projs.get_planned_sanitation_calc}})<br />{{projs.get_actual_sanitation_calc}}</td><td>{% trans 'Sanitation' %}</td></tr>
-
 		<tr>
-			<th colspan="2">
+			<td>
+				{% trans 'Active' %}
+			</td>
+			<td style="text-align:right;">
+				{{projs.status_active.count}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'On hold' %}
+			</td>
+			<td style="text-align:right;">
+				{{projs.status_onhold.count}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'Complete' %}
+			</td>
+			<td style="text-align:right;">
+				{{projs.status_complete.count}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{% trans 'Cancelled' %}
+			</td>
+			<td style="text-align:right;">
+				{{projs.status_cancelled.count}}
+			</td>
+		</tr>
+		<tr class="hr bold">
+			<td style="padding-top:2px; padding-bottom:20px;">
+				{% trans 'Total projects' %}
+			</td>
+			<td style="text-align:right; padding-top:3px;">
+				{{projs.published.count}}
+			</td>
+		</tr>
+		
+	</table>
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 	
+		<tr>
+			<th colspan="3">
+				<h2>{% trans 'People who get...' %}</h2>
+			</th>
+		</tr>
+		<tr>
+			<td style="width:50px;">&nbsp;</td>
+			<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Upcoming' %}</a></td>
+			<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Delivered' %}</a></td>
+		</tr>
+		<tr>
+			<td style="font-weight:bold;">{% trans 'Water' %}</td>
+			<td style="text-align:right;">{{projs.get_planned_water_calc}}</td>
+			<td style="text-align:right;">{{projs.get_actual_water_calc}}</td>
+		</tr>
+		<tr class="hr">
+			<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
+			<td style="text-align:right;">{{projs.get_planned_sanitation_calc}}</td>
+			<td style="text-align:right;">{{projs.get_actual_sanitation_calc}}</td>
+		</tr>
+	</table>
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">	
+		<tr>
+			<th colspan="3">
 				{% ifequal request.path '/rsr/organisations/' %}
 					<h2>{% trans 'Partners' %}</h2>
 				{% else %}
-					<a href="{% url rsr_org_list %}">
+					<a href="{% url akvo.rsr.views.orglist %}">
 						<h2>{% trans 'Partners' %}</h2>
 					</a>
 				{% endifequal %}
 			</th>
 		</tr>
-
-		<tr><td>{{orgs.fieldpartners.count}}</td><td><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td></tr>
-		<tr><td>{{orgs.supportpartners.count}}</td><td><a href="{% url rsr_org_list_filtered "support" %}">{% trans 'Support partners' %}</a></td></tr>
-		<tr><td>{{orgs.fundingpartners.count}}</td><td><a href="{% url rsr_org_list_filtered "funding" %}">{% trans 'Funding partners' %}</a></td></tr>
-		
-		<tr class="hr bold"><td>{{orgs.all.count}}</td><td>{% trans 'Organisations' %}</td></tr>
-		<tr><th colspan="2"><h2>{% trans 'Funding' %} <span class="lightx2" style="font-weight: normal">({{projs.published.count}} {% trans 'projects' %})</span></h2></th></tr>
-		<tr style="color: green"><td>&#8364; {{projs.total_pledged}}</td><td>{% trans 'Pledged' %}</td></tr>
-		<tr style="color: red"><td>&#8364; {{projs.total_funds_needed}}</td><td>{% trans 'Still needed' %}</td></tr>		
-		
-
+		<tr class="bold">
+			<td colspan="2" style="padding-bottom:5px;">{% trans 'Total organisations' %}</td>
+			<td colspan="2" style="text-align:right;">{{orgs.all.count}}</td>
+		</tr>
+		<tr>
+			<td style="width:50%;"><a href="{% url rsr_org_list_filtered "field" %}">{% trans 'Field partners' %}</a></td>
+			<td style="text-align:right; width:25%;">{{orgs.fieldpartners.count}}</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="{% url rsr_org_list_filtered "support" %}">{% trans 'Support partners' %}</a></td>
+			<td style="text-align:right;">{{orgs.supportpartners.count}}</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr class="hr">
+			<td style="padding-bottom:20px;"><a href="{% url rsr_org_list_filtered "funding" %}">{% trans 'Funding partners' %}</a></td>
+			<td style="text-align:right;">{{orgs.fundingpartners.count}}</td>
+			<td>&nbsp;</td>
+		</tr>
 	</table>
-
+	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
+		<tr class="font-weight:bold;">
+			<th colspan="2" style="padding-bottom:10px;">
+				{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>
+			</th>
+		</tr>
+		<tr style="color:green;">
+			<td>{% trans 'Pledged' %}</td>
+			<td style="text-align:right;">&#8364; {{projs.total_pledged}}</td>
+		</tr>
+		<tr style="color:red;">
+			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
+			<td style="text-align:right;">&#8364; {{projs.total_funds_needed}}</td>
+		</tr>
+	</table>
 	
 	</div> <!-- .boxbody -->
 

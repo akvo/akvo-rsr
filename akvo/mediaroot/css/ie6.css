@@ -12,3 +12,8 @@ right: 30px;
 {
 height: 1%;
 }
+
+p#view_earlier_blog_entries {
+    text-align: right; 
+    padding-top:5px;   
+}

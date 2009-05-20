@@ -3,7 +3,7 @@
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
-{% load i18n rsr_tags generic_content addparam thumbnail %}
+{% load i18n rsr_tags rsr_filters generic_content addparam thumbnail %}
 
 {% block title %}projects@{{block.super}}{% endblock title %}
 
@@ -118,13 +118,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<p style="margin-top:2px;">{% trans 'Status' %}<br />
 						{{project.show_status}}
 					</p>
-					
 					<p class="topmargin">{% trans 'Last Update' %}<br />
 					{% with project.last_update as last_update %}						
 						{% ifequal last_update None %}
 							<span style="color:#000;">{% trans 'Not yet' %}</span>
 						{% else %}
-							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{project.project_updates.latest.id}}">{{last_update|date:"j M y"}}</a>
+							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{project.project_updates.latest.id}}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
 						{% endifequal %}
 					{% endwith %}
 					</p>
