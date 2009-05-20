@@ -6,14 +6,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load i18n %}
 
 <div class="funding_bar">
-	<img border="0" style="width: 100%; height: 20px;" src="{% url fundingbar %}?pct={% widthratio p.funding.pledged p.funding.total 100 %}">
-	<div class="funding_pledged">&#8364; {{p.funding.pledged}}</div>
-	<div class="funding_still_needed">&#8364; {{p.funding.still_needed}}</div>
+	<img border="0" style="width: 100%; height: 20px;" src="{% url fundingbar %}?pct={% widthratio p.budget_pledged p.budget_total 100 %}">
+	<div class="funding_pledged">&#8364; {{p.budget_pledged}}</div>
+	<div class="funding_still_needed">&#8364; {{p.funding_still_needed}}</div>
 </div>
 
 <div class="bold clearfix">
     <div style="float: left;">{% trans 'Total' %}</div>
-    <div style="float: right; padding-right: 3px;">{{p.funding.get_currency_display|safe}} {{p.funding.total}}</div>
+    <div style="float: right; padding-right: 3px;">{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total}}</div>
 </div>
 
 <!-- background: #99ff99 url('/rsr/media/img/bg_funding_bar.png') no-repeat 20px top -->

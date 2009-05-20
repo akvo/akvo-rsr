@@ -64,3 +64,7 @@ def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
     """
     to_list = [user.email for user in users if user.email]
     rsr_send_mail(to_list, subject, message, subject_context, msg_context)
+
+def qs_column_sum(qs, col):
+    "return sum of a queryset column"
+    return sum(qs.values_list(col, flat=True))

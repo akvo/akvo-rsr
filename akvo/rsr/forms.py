@@ -22,7 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
 
-from akvo.rsr.models import UserProfile, Organisation, Project, Funding #, RSR_RegistrationProfile, 
+from akvo.rsr.models import (UserProfile, Organisation, Project,)
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -231,8 +231,6 @@ class ProjectAdminModelForm(forms.ModelForm):
 # PAUL
 # PayPal Integration
 
-from akvo.rsr.models import funding_aggregate
-
 class PayPalInvoiceForm(forms.ModelForm):
     def __init__(self, user, project, *args, **kwargs):
         # Form should always know which project it's being called from
@@ -253,8 +251,8 @@ class PayPalInvoiceForm(forms.ModelForm):
     # nor should it be 0.
     # Also check that the user enters the same email address in both email fields.
     def clean(self):
-        project = str(self.project.id)
-        funding_needed = Funding.objects.get(project=project).still_needed()
+        #project = str(self.project.id)
+        funding_needed = self.project.funding_still_needed()
         if 'amount' in self.cleaned_data:
             if self.cleaned_data['amount'] > funding_needed:
                 raise forms.ValidationError(_(u'You cannot donate more than the project actually needs!'))
