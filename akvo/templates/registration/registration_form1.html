@@ -17,6 +17,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- #header -->
 {% endblock header %}
 
+{% block breadcrumbs %}
+	{{block.super}} &raquo; {% trans 'Register with Akvo RSR - Step 1' %}
+{% endblock breadcrumbs %}
+
 {% block content %}
 
 <div class="boxbody">

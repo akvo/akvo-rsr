@@ -7,11 +7,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n generic_content addparam rsr_tags thumbnail %}
 
-{% block title %}{% trans 'Project listing' %}
-{% if o %}
-	for {{o.name}}
-{% endif %}
+{% block title %}
+	{{block.super}} - {% trans 'Project listing' %}
+	{% if o %}
+		for {{o.name}}
+	{% endif %}
 {% endblock title %}
+
 
 {% block style %}
 {{block.super}}

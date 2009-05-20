@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n %}
 
-{% block title %}{{block.super}} - {% trans 'Project details' %}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Get a widget - step 2' %}{% endblock title %}
 
 {% block style %}
 {{block.super}}
@@ -49,7 +49,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get a widget' %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get a widget - step 2' %}
 {% endblock breadcrumbs %}
 
 
