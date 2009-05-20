@@ -115,26 +115,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div></div> <!-- IE requires something above -->
 <table class="activities" width="208px" style="margin: 0 20px; padding: 0;">
 	<tr><th colspan="2"><h2>{% trans 'Projects' %}</h2></th></tr>
-	<tr><td class="padded" style="width: 40%;">{{org_stats.status_active}}</td><td>{% trans 'Active' %}</td></tr>
-	<tr><td class="padded">{{org_stats.status_onhold}}</td><td>{% trans 'Need funding' %}</td></tr>
-	<tr><td class="padded">{{org_stats.status_complete}}</td><td>{% trans 'Complete' %}</td></tr>
-	<tr class="hr bold"><td class="padded">{{org_stats.project_count}}</td><td>{% trans 'Total projects' %}</td></tr>
-	<tr><td colspan="2" style="padding: 15px 0 10px 0">{% trans '<b>People who get</b> (<a href="/web/help_akvo_at_a_glance">planned</a>) <a href="/web/help_akvo_at_a_glance">actual</a>' %}</td></tr>
-	<!-- <tr><td class="padded" colspan="2">(<a href="#">projected</a>) <a href="#">actual</a></td></tr> -->
-	<!-- <tr><td></td><td class="padded">(<a href="#">projected</a>) <a href="#">actual</a></td></tr> -->
-	<tr><td class="padded">({{org_stats.mdgs_water}}) 0</td><td>{% trans 'Water' %}</td></tr>
-	<tr class="hr"><td class="padded">({{org_stats.mdgs_sanitation}}) 0</td><td>{% trans 'Sanitation' %}</td></tr>
+	<tr><td class="padded" style="width: 40%;">{{o.published_projects.status_active.count}}</td><td>{% trans 'Active' %}</td></tr>
+	<tr><td class="padded">{{o.published_projects.status_onhold.count}}</td><td>{% trans 'Need funding' %}</td></tr>
+	<tr><td class="padded">{{o.published_projects.status_complete.count}}</td><td>{% trans 'Complete' %}</td></tr>
+	<tr class="hr bold"><td class="padded">{{o.published_projects.count}}</td><td>{% trans 'Total projects' %}</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 15px 0 10px 0">{% trans '<b>People who get</b> (<a href="/web/help_akvo_at_a_glance">planned</a>) <a href="/web/help_akvo_at_a_glance">actual</a>' %}</td>
+	</tr>
+	<tr><td class="padded">({{o.published_projects.get_planned_water_calc}}) {{o.published_projects.get_actual_water_calc}}</td><td>{% trans 'Water' %}</td></tr>
+	<tr class="hr"><td class="padded">({{o.published_projects.get_planned_sanitation_calc}}) {{o.published_projects.get_actual_sanitation_calc}}</td><td>{% trans 'Sanitation' %}</td></tr>
 	<tr>
 		<th colspan="2">
 			<h2>Funding
 				<span class="lightx2" style="font-weight: normal">
-					{% blocktrans count org_stats.project_count as proj_count %}(1 project){% plural %}({{proj_count}} projects){% endblocktrans %}
+					{% blocktrans count o.published_projects.count as proj_count %}
+						(1 project){% plural %}({{proj_count}} projects)
+					{% endblocktrans %}
 				</span>
 			</h2>
 		</th>
 	</tr>
-	<tr style="color: green"><td class="padded">&#8364; {{org_stats.funding_pledged}}</td><td>{% trans 'Pledged' %}</td></tr>
-	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{org_stats.funding_needed}}</td><td>{% trans 'Still needed' %}</td></tr>
+	<tr style="color: green"><td class="padded">&#8364; {{o.funding.pledged}}</td><td>{% trans 'Pledged' %}</td></tr>
+	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{o.funding.still_needed}}</td><td>{% trans 'Still needed' %}</td></tr>
 	<tr><td class="padded" colspan="2"><h2>{% trans 'Project partners' %}</h2></td></tr>
 	<tr><td class="padded" colspan="2">{% for partner in org_partners %}<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a><br />{% endfor %}</td></tr>
 </table>

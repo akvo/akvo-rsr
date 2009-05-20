@@ -40,7 +40,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     </select>
     results per page-->
     <span style="margin: 0 20px 0 20px">
-        {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgz.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
+        {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
     </span>
     <span style="margin: 0 20px 0 20px">
         {% ifequal page.number 1 %}
@@ -68,19 +68,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% if org_type %}
 		{% ifnotequal org_type 'all' %}
 			{% ifequal org_type 'funding' %}
-			<h1>{% trans 'Funding partners' %} <span class="lightx2" style="font-weight:normal">({{orgz.count}} {% trans 'total' %})</span></h1>
+			<h1>{% trans 'Funding partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
 			{% endifequal %}
 			{% ifequal org_type 'support' %}
-			<h1>{% trans 'Support partners' %} <span class="lightx2" style="font-weight:normal">({{orgz.count}} {% trans 'total' %})</span></h1>
+			<h1>{% trans 'Support partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
 			{% endifequal %}
 			{% ifequal org_type 'field' %}
-			<h1>{% trans 'Field partners' %} <span class="lightx2" style="font-weight:normal">({{orgz.count}} {% trans 'total' %})</span></h1>
+			<h1>{% trans 'Field partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
 			{% endifequal %}
 		{% else %}
-			<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgz.count}} {% trans 'total' %})</span></h1>
+			<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
 		{% endifnotequal %}
 	{% else %}
-		<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgz.count}} {% trans 'total' %})</span></h1>
+		<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
 	{% endif %}
 			
 </div> <!-- .boxhead -->
@@ -156,7 +156,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<td colspan="9">
 		<div style="text-align: right">
             <span style="margin: 0 20px 0 20px">
-                {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgz.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
+                {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
             </span>
             <span style="margin: 0 20px 0 20px">
                 {% ifequal page.number 1 %}
