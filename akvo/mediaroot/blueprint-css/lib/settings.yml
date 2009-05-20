@@ -49,8 +49,8 @@ widget_project_narrow:
   namespace: widget_project_narrow-
   custom_css:
     screen.css:
-      - widget_project_narrow.css
       - "../../widget_global.css"
+      - widget_project_narrow.css
   custom_layout:
     column_count: 2
     column_width: 75

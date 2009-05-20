@@ -43,10 +43,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block content %}
 <div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|truncatewords:10}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|truncatewords:10}}</p>
+		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|slice:":40"}}</a></h2>
+		<p id="project_subtitle" class="grey">{{project.subtitle|slice:":40"}}</p>
 		{% if project.current_image %}
-			<div class="photo_frame">
+			<div class="photo_frame" style="background-color:cyan;">
 				<a href="{% url akvo.rsr.views.projectmain project.id %}">
 					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
 					{% comment %}
@@ -57,7 +57,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	    {% endif %}
 	
 		<p id="project_plan_summary" >
-			{{project.project_plan_summary|safe|truncatewords:20}}
+			{{project.project_plan_summary|safe|slice:":100"}}...
 			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
@@ -77,7 +77,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<hr class="divider" />
 		<p class="smallFont grey">{% trans 'Funding' %}</p>
 		<div>
-			{% funding_box project %}
+			{% funding_box_narrow project %}
 		</div>
 		<div id="name" style="clear:both; height:3px;">
 			
