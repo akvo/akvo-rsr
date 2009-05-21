@@ -4,7 +4,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags generic_content thumbnail %}
+{% load i18n rsr_tags  generic_content thumbnail %}
 
 {% block title %}project@{{block.super}}{% endblock title %}
 
@@ -24,16 +24,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		max-height:121px;
 		height:121px;
 	}
-	{% comment %}
-	h2#project_title {
-		height: expression( this.scrollHeight > 27 ? "28px" : "auto" ); /* sets max-height for IE */
-		max-height:28px;
-	}
-	p#project_subtitle {
-		height: expression( this.scrollHeight > 26 ? "27px" : "auto" ); /* sets max-height for IE */
-		max-height:27px;
-	}
-	{% endcomment %}
 	
 {% endblock inline_styles %}
 	
@@ -67,7 +57,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
 		<p class="smallFont">{{project.show_status}}</p>
 		<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
-		{% with project.projectupdate_set.latest as latest_update %}
+		{% with project.project_updates.latest as latest_update %}
 			{% if latest_update %}
 				<p class="smallFont"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a></p>
 			{% else %}

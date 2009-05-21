@@ -25,7 +25,7 @@ function getWidth(widget_type)
 		case 'project-contribute': 	return 202; break; 
 		case 'project-updates': 	return 202; break; 
 		case 'project-list': 		return 745; break; 
-		case 'project-narrow': 		return 172; break; 
+		case 'project-narrow': 		return 170; break; 
 		default: 					return 202;
 	}	
 }

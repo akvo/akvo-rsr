@@ -407,7 +407,8 @@ div#donate_institutions {
 
 a.donate_button {
 	/*background: transparent url('../../img/donate-button-normal.gif') no-repeat scroll top left;*/
-	background: transparent url('../../img/button-normal.gif') no-repeat scroll top left;
+	/*background: transparent url('../../img/button-normal.gif') no-repeat scroll top left;*/
+	background:  transparent url(../../img/donate_button.gif) no-repeat 0px 0px;
 	color: #000 !important;
 	display: block;
 	/*float: left;*/
@@ -420,7 +421,8 @@ a.donate_button {
 }
 a.donate_button:hover {
 	/*background: transparent url('../../img/donate-button-normal.gif') no-repeat scroll top left;*/
-	background: transparent url('../../img/button-hover.gif') no-repeat scroll top left;
+	/*background: transparent url('../../img/button-hover.gif') no-repeat scroll top left;*/
+	background:  transparent url(../../img/donate_button.gif) no-repeat 0px -23px;
 	color: #000 !important;
 	display: block;
 	/*float: left;*/
@@ -432,7 +434,8 @@ a.donate_button:hover {
 }
 a.donate_button:active {
 	/*background: transparent url('../../img/donate-button-pushed.gif') no-repeat scroll top left;*/
-	background: transparent url('../../img/button-pushed.gif') no-repeat scroll top left;
+	/*background: transparent url('../../img/button-pushed.gif') no-repeat scroll top left;*/
+	background:  transparent url(../../img/donate_button.gif) no-repeat 0px -46px;
 	color: #fff !important;
 	display: block;
 	/*float: left;*/
