@@ -15,3 +15,12 @@ def string_to_date(value):
         return datetime.datetime(*fmt_time[:6])
     except:
         return value
+        
+@register.filter("truncatechars")
+def truncatechars(value, max_length):  
+    if len(value) > max_length:  
+        truncd_val = value[:max_length]  
+        if value[max_length+1] != " ":  
+            truncd_val = truncd_val[:truncd_val.rfind(" ")]  
+        return  truncd_val + "..."  
+    return value
