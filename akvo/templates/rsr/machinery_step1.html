@@ -60,6 +60,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<li>{% trans 'Step 2: Select colours and preview your widget.' %}</li>
 				<li>{% trans 'Step 3: Copy the HTML code to your web site.' %}</li>
 			</ul>
+			{% ifequal account_level 'free' %}
+				<p>
+					Sign in for more Widget types, available to <a href="http://www.akvo.org/web/fees_plus">Akvo RSR Plus</a> and
+					<a href="http://www.akvo.org/web/fees_premium">Premium accounts</a>.
+				</p>
+			{% endifequal %}
 		</div>
 		<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 			<p>
@@ -193,10 +199,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- project_narrow stop _____________________________________________________________________________________________________ -->
 		
 		{% ifequal account_level 'free' %}
+		{% comment %}
 			<p>
 			<a href="/rsr/signin/?next={% url akvo.rsr.views.getwidget project.id %}">{% trans 'Sign in' %}</a> {% trans 'for more content.' %}
-			</p>		
-		
+			</p>
+		{% endcomment %}
+			
 			{% comment %}
 				Start restricted widgets
 			{% endcomment %}
