@@ -33,15 +33,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block content %}
 <div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|slice:":40"}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|truncatechars:50}}</p>		
+		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>	
 		{% if project.current_image %}
 			<div class="photo_frame">
 				<a href="{% url akvo.rsr.views.projectmain project.id %}">
 					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
-					{% comment %}
-						<img src="{{MEDIA_URL}}{{project.current_image}}" width="190" height="139" alt="{{project.current_image_caption}}" />
-					{% endcomment %}
 				</a>
 			</div>
 	    {% endif %}
