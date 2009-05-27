@@ -940,8 +940,6 @@ class UserProfile(models.Model):
         )
 
 def user_activated_callback(sender, **kwargs):
-    from dbgp.client import brk
-    brk(host="localhost", port=9000)            
     user = kwargs.get("user", False)
     if user:
         org = user.get_profile().organisation
