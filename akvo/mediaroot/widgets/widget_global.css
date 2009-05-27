@@ -235,21 +235,24 @@ p#project_plan_summary {
 }
 
 .fundingbox-header {
-	background: transparent url('../../img/fundingbox-header.gif') no-repeat top left;
+	/*background: transparent url('../../img/fundingbox-header.gif') no-repeat top left;*/
+	background: transparent url(../../img/fundingbox.png) no-repeat 0 0;
 	height:5px;
 	width:172px;
 	overflow:hidden;
 	margin:5px auto 0px auto;
 }
 .fundingbox-footer {
+    /*background: transparent url('../../img/fundingbox-footer.gif') no-repeat top;*/
+    background: transparent url(../../img/fundingbox.png) no-repeat -344px 0;
 	height:6px;
-	background: transparent url('../../img/fundingbox-footer.gif') no-repeat top;
 	width:172px;
 	overflow:hidden;
 	margin:0px auto 5px auto;
 }
 .fundingbox-content {
-	background: transparent url('../../img/fundingbox-content.gif') repeat-y;
+	/*background: transparent url('../../img/fundingbox-content.gif') repeat-y;*/
+	background: transparent url(../../img/fundingbox.png) repeat-y -172px 0;
 	width:172px;
 	margin:0px auto 0px auto;
 	overflow:hidden;

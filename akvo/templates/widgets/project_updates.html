@@ -4,12 +4,22 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags generic_content thumbnail%}
+{% load i18n rsr_tags rsr_filters generic_content thumbnail%}
 
 {% block title %}updates@{{block.super}}{% endblock title %}
 
 {% block style %}
 	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_updates/css/screen.css" type="text/css" media="screen, projection" />
+	
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+	</style>
+	<![endif]-->
+	
 {% endblock style %}
 	
 {% block inline_styles %}
@@ -24,17 +34,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		max-height:121px;
 		height:121px;
 	}
-	{% comment %}
-	h2#project_title {
-		height: expression( this.scrollHeight > 27 ? "28px" : "auto" ); 
-		max-height:28px;
-	}
-	p#project_subtitle {
-		height: expression( this.scrollHeight > 26 ? "27px" : "auto" );
-		max-height:27px;
-	}
-	{% endcomment %}
-		
 {% endblock inline_styles %}
 
 	
@@ -43,8 +42,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock header %}
 
 {% block content %}<div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|truncatewords:10}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|truncatewords:10}}</p>
+		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:60}}</p>
 		
 		{% if project.current_image %}
 			<div class="photo_frame">
@@ -55,7 +54,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	    {% endif %}
 	
 		<p id="project_plan_summary">
-			{{project.project_plan_summary|safe|truncatewords:20}}
+			{{project.project_plan_summary|safe|smart_truncate:120}}
 			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
@@ -66,7 +65,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<p class="smallFont">{{project.show_status}}</p>
 			
 		
-		<hr class="divider"/>	
+		<hr class="divider"/>
 
 		<p class="smallFont grey">{% trans 'Last Update' %}</p>
 		{% with project.project_updates.latest as latest_update %}
@@ -84,12 +83,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% trans 'SMS' %}
 					{% endifequal %}
 				</p>
-				<h2 id="project_title" style="margin-top:margin-top:10px !important;"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.title|truncatewords:10}}</a></h2>
-				{% comment %}
-				<p class="smallFont" style="font-weight:bold; text-transform: capitalize; margin-bottom:3px;">
-					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.title}}</a>
-				</p>		
-				{% endcomment %}		
+				<h2 id="project_title" style="margin-top:margin-top:10px !important;"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.title|smart_truncate:35}}</a></h2>
 				{% if latest_update.photo %}
 					<div class="photo_frame">
 						<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">
@@ -98,7 +92,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					</div>
 			    {% endif %}
 				<p class="smallFont" style="margin-top:3px;">
-					{{latest_update.text|truncatewords:20}}
+					{{latest_update.text|smart_truncate:120}}					
 					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
 				</p>
 			{% else %}

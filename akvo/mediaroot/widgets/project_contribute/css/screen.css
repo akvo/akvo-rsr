@@ -160,9 +160,9 @@ p#project_plan_summary {margin-top:3px;margin-bottom:0;}
 #footer {color:#fff;text-align:right;height:40px;border-bottom:1px solid #9B9AAC;}
 #footer img {margin:5px;padding:0;}
 .fundingwrap {margin:0;padding:0;text-align:center;font-size:1.0em;}
-.fundingbox-header {background:transparent url('../../img/fundingbox-header.gif') no-repeat top left;height:5px;width:172px;overflow:hidden;margin:5px auto 0px auto;}
-.fundingbox-footer {height:6px;background:transparent url('../../img/fundingbox-footer.gif') no-repeat top;width:172px;overflow:hidden;margin:0px auto 5px auto;}
-.fundingbox-content {background:transparent url('../../img/fundingbox-content.gif') repeat-y;width:172px;margin:0px auto 0px auto;overflow:hidden;text-align:center;}
+.fundingbox-header {background:transparent url(../../img/fundingbox.png) no-repeat 0 0;height:5px;width:172px;overflow:hidden;margin:5px auto 0px auto;}
+.fundingbox-footer {background:transparent url(../../img/fundingbox.png) no-repeat -344px 0;height:6px;width:172px;overflow:hidden;margin:0px auto 5px auto;}
+.fundingbox-content {background:transparent url(../../img/fundingbox.png) repeat-y -172px 0;width:172px;margin:0px auto 0px auto;overflow:hidden;text-align:center;}
 table.fundingbox-table {width:162px;margin:5px 5px 0px 5px;padding-left:3px;padding-right:3px;}
 table.fullyfunded-table {width:120px !important;margin:30px auto 10px auto !important;}
 table.fullyfunded-table th {text-align:right !important;}

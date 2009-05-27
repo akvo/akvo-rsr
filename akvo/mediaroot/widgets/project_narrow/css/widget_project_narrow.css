@@ -35,7 +35,7 @@ div.photo_frame {
 
 
 .fundingboxnarrow-header {
-	background: transparent url('../../img/fundingboxnarrow-header.gif') no-repeat top left;
+	background: transparent url(../../img/fundingboxnarrow.png) no-repeat 0 0;
 	height:5px;
 	width:150px;
 	overflow:hidden;
@@ -43,8 +43,8 @@ div.photo_frame {
 }
 
 .fundingboxnarrow-footer {
-	height:6px;
-	background: transparent url('../../img/fundingboxnarrow-footer.gif') no-repeat top;
+    background: transparent url(../../img/fundingboxnarrow.png) no-repeat -300px 0;
+	height:6px;	
 	width:150px;
 	overflow:hidden;
 	margin:0px auto 5px auto;
@@ -52,7 +52,7 @@ div.photo_frame {
 
 
 .fundingboxnarrow-content {
-	background: transparent url('../../img/fundingboxnarrow-content.gif') repeat-y;
+	background: transparent url(../../img/fundingboxnarrow.png) repeat-y -150px 0;
 	width:150px;
 	margin:0px auto 0px auto;
 	overflow:hidden;

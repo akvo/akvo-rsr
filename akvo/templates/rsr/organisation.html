@@ -135,8 +135,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</h2>
 		</th>
 	</tr>
-	<tr style="color: green"><td class="padded">&#8364; {{o.funding.pledged}}</td><td>{% trans 'Pledged' %}</td></tr>
-	<tr class="hr padded" style="color: red"><td class="padded">&#8364; {{o.funding.still_needed}}</td><td>{% trans 'Still needed' %}</td></tr>
+	<tr style="color: green">
+		<td class="">&#8364; {{o.funding.pledged}}</td>
+		<td class="">{% trans 'Pledged' %}</td>
+	</tr>
+	<tr class="hr padded" style="color: red">
+		<td class="">&#8364; {{o.funding.still_needed}}</td>
+		<td class="">{% trans 'Still needed' %}</td>
+	</tr>
 	<tr><td class="padded" colspan="2"><h2>{% trans 'Project partners' %}</h2></td></tr>
 	<tr><td class="padded" colspan="2">{% for partner in org_partners %}<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a><br />{% endfor %}</td></tr>
 </table>

@@ -10,6 +10,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block style %}
 	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_narrow/css/screen.css" type="text/css" media="screen, projection" />
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+	</style>
+	<![endif]-->
 {% endblock style %}
 
 {% block inline_styles %}
@@ -43,8 +51,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 	    {% endif %}
 	
-		<p id="project_plan_summary" >
-			{{project.project_plan_summary|safe|slice:":100"}}...
+		<p id="project_plan_summary">
+			{{project.project_plan_summary|safe|smart_truncate:110}}
 			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
@@ -66,12 +74,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="margin:0;">
 			{% funding_box_narrow project %}
 		</div>
-		<div id="name" style="clear:both; height:1px; overflow:hidden;">
-			
-		</div>
+		<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+		
+		{% comment %}
+		<div id="name" style="clear:both; height:1px; overflow:hidden;"> </div>
 		<p class="miniFont lightgrey right" style="padding-right:9px;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
-		<div id="name" style="clear:both; height:7px; overflow:hidden;">
-			
-		</div>
+		<div id="name" style="clear:both; height:7px; overflow:hidden;"> </div>
+		{% endcomment %}
 </div>
 {% endblock content %}
