@@ -22,6 +22,22 @@ def create_publishing_status(sender, **kwargs):
         ps = get_model('rsr', 'publishingstatus')(status='unpublished')
         ps.project = new_project
         ps.save()
+        
+def create_organisation_account(sender, **kwargs):
+    """
+    called when a new organisation is saved so an associated org account is
+    created with the "free" level of access to widgets
+    """
+    if kwargs.get('created', False):
+        new_org = kwargs['instance']
+        OrganisationAccount = get_model('rsr', 'OrganisationAccount')
+        try:
+            #this should never work
+            acc = OrganisationAccount.objects.get(organisation=new_org)
+        except:
+            #and when it doesn't we do this
+            new_acc = OrganisationAccount(organisation=new_org, account_level='free')
+            new_acc.save()
 
 def change_name_of_file_on_create(sender, **kwargs):
     """

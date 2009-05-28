@@ -65,20 +65,22 @@ def resave_all_images():
 def budget_refactor():
     projects = Project.objects.all()
     for p in projects:
-        if p.budget.employment:
-            BudgetItem.objects.create(project=p, item='employment', amount=p.budget.employment, currency='EUR')
-        if p.budget.building:
-            BudgetItem.objects.create(project=p, item='building', amount=p.budget.building, currency='EUR')
-        if p.budget.training:
-            BudgetItem.objects.create(project=p, item='training', amount=p.budget.training, currency='EUR')
-        if p.budget.maintenance:
-            BudgetItem.objects.create(project=p, item='maintenance', amount=p.budget.maintenance, currency='EUR')
-        if p.budget.other:
-            BudgetItem.objects.create(project=p, item='other', amount=p.budget.other, currency='EUR')
-
+        try:
+            if p.budget.employment:
+                BudgetItem.objects.create(project=p, item='employment', amount=p.budget.employment, currency='EUR')
+            if p.budget.building:
+                BudgetItem.objects.create(project=p, item='building', amount=p.budget.building, currency='EUR')
+            if p.budget.training:
+                BudgetItem.objects.create(project=p, item='training', amount=p.budget.training, currency='EUR')
+            if p.budget.maintenance:
+                BudgetItem.objects.create(project=p, item='maintenance', amount=p.budget.maintenance, currency='EUR')
+            if p.budget.other:
+                BudgetItem.objects.create(project=p, item='other', amount=p.budget.other, currency='EUR')
+        except:
+            print "Error importing project budget, for id:", p.id 
                 
 if __name__ == '__main__':
     #update_publishing_status()
-    #update_organisation_account()
+    update_organisation_account()
     #resave_all_images()
     budget_refactor()

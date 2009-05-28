@@ -35,7 +35,8 @@ from akvo.settings import MEDIA_ROOT
 
 from utils import GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
-from signals import change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status
+from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
+					 create_publishing_status, create_organisation_account)
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1123,6 +1124,8 @@ else:
 #  - Create a new function in utils.py to handle this
 
 # signals!
+post_save.connect(create_organisation_account, sender=Organisation)
+
 post_save.connect(create_publishing_status, sender=Project)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
