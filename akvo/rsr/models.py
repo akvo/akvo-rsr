@@ -389,6 +389,9 @@ class Project(models.Model):
         def status_cancelled(self):
             return self.filter(status__exact='L')
         
+        def status_not_cancelled(self):
+            return self.exclude(status__exact='L')
+        
         def budget_employment(self):
             return self.filter(budgetitem__item__exact='employment').annotate(
                 budget_employment=Sum('budgetitem__amount'),
@@ -534,11 +537,11 @@ class Project(models.Model):
             
         def get_planned_water_calc(self):
             "how many will get improved water"
-            return qs_column_sum(self, 'improved_water')
+            return qs_column_sum(self.status_not_cancelled(), 'improved_water') - qs_column_sum(self.status_complete(), 'improved_water')
 
         def get_planned_sanitation_calc(self):
             "how many will get improved sanitation"
-            return qs_column_sum(self, 'improved_sanitation')            
+            return qs_column_sum(self.status_not_cancelled(), 'improved_sanitation') - qs_column_sum(self.status_complete(), 'improved_sanitation')
 
         def get_actual_water_calc(self):
             "how many have gotten improved water"
