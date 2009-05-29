@@ -241,7 +241,7 @@ class Organisation(models.Model):
     
     def funding(self):
         #funding_total, funding_pledged, funding_needed = funding_aggregate(self.published_projects(), organisation=self)
-        my_projs = self.published_projects()
+        my_projs = self.published_projects().status_not_cancelled()
         return {
             'total': my_projs.total_total_budget(),
             'donated': my_projs.total_donated(),
