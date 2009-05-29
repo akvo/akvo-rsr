@@ -110,8 +110,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
 				<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount}}</span></b></p>
 			</div>
+			{% ifequal forloop.counter 3 %}
+				</div>
+				<div style="padding-left: 20px; clear: both;">
+			{% endifequal %}
 		{% endfor %}    
-			
+
+		{% if p.funding_donated %}
+			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
+				<p style="margin: 10px 0 10px 0;">
+					<b>{% trans 'Donations from individuals' %}</b>
+				</p>
+				<p><img src="{{MEDIA_URL}}img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" /></p>
+				<p style="margin:10px 0">
+					<b>{% trans 'Total' %}:
+						<span style="margin-left: 10px">
+							{{p.budgetitem_set.all.0.get_currency_display|safe}}
+							{{p.funding_donated}}
+						</span>
+					</b>
+				</p>
+			</div>
+		{% endif %}			
 		</div> <!-- style -->
 
 		<div style="clear:left"></div>
