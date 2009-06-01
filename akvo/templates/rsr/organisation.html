@@ -44,9 +44,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% endif %}
 		<h2 class="lightx2">{% trans 'Activities' %}</h2>
 		<p>
-			{% if o.field_partner %}{% trans 'Field partner' %}<br />{% endif %}
+			{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
 			{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
 			{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
+			{% if o.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
 		</p>
 		<h2 class="lightx2">{% trans 'Type' %}</h2>
 		<p>{{o.get_organisation_type_display}}</p>
