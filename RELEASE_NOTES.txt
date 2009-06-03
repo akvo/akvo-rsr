@@ -1,4 +1,4 @@
-RELEASE_NOTES.txt, v0.9.7, 28 May 2009, tbp
+RELEASE_NOTES.txt, v0.9.7, 3 June 2009, tbp
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
@@ -8,7 +8,7 @@ To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_ove
 
 Akvo RSR v 0.9.7 release notes
 ------------------------------
-28 May 2009, (Code name: Omaha) tbp
+3 June 2009, (Code name: Omaha) tbp
 
 New features
 ------------
@@ -19,7 +19,7 @@ A new widget, with the same information as the previous "Project widget with don
 The total amount of contributions from individual funders' (donors via Paypal) contribution are now listed under the funders portlet on the project page and the funding details page.
 
 ### Akvo at a glance, updated
-The "Akvo at a glance" portlet, which can be seen on the Akvo home page and the projects listing page has been updated. It has an easier to understand layout, it now shows correctly how many projects have been completed and how many people have water and sanitation as a result. Akvo at a glance now also includes the individual donations in the way it calculates funding for a project now. The whole way this code was written has pretty much been rebuilt to make it easier to extend later.
+The "Akvo at a glance" portlet, which can be seen on the Akvo home page and the projects listing page has been updated. It has an easier to understand layout, it now shows correctly how many projects have been completed and how many people have water and sanitation as a result. Akvo at a glance now also includes the individual donations in the way it calculates funding for a project now. The whole way this code was written has pretty much been rebuilt to make it easier to extend later. Fixes bug #279243.
 
 ### Favicon
 A favicon.ico has been added to all Akvo RSR pages.
@@ -28,7 +28,7 @@ A favicon.ico has been added to all Akvo RSR pages.
 The project budget terminology has been updated to be clearer, before it said funding breakdown, whereas it really is a project budget.
 
 ### Sponsor partner type
-A new type of partner called Sponsor partner is now available in the system. If a project has a sponsor partner then the sponsor is listed at the bottom of the partner portlet. This is a partial implementation of where are going with this. More soon.
+A new type of partner called Sponsor partner is now available in the system. If a project has a sponsor partner then the sponsor is listed at the bottom of the partner portlet. This is a partial implementation of where we are going with this. More soon.
 
 Bugs
 ----
@@ -36,17 +36,15 @@ Bugs
 505 type errors did not get style sheets. This is now fixed.
 
 ### Funding table alignment
-The funding table at the organisation page has a alignment bug making the sums pushed down a couple of pixels.
+The funding table at the organisation page has a alignment bug making the sums pushed down a couple of pixels. This is now fixed.
 
-### Project updates widget to large for the iframe 
-New smart_truncate django filter for more control over text lengths. Since text lengths is a general problem with widgets I updated all widgets to use the new filter. Also made small changes around the Akvo ref number for better compatibility with IE.
+### Project updates widget to large for the iframe
+New smart_truncate django filter for more control over text lengths. Since text lengths is a general problem with widgets we updated all widgets to use the new filter. Also made small changes around the Akvo ref number for better compatibility with IE. This is now fixed. Filter by Adam & bobince (http://stackoverflow.com/questions/250357/smart-truncate-in-python).
 
-
-Miscellaneous 
+Miscellaneous
 -------------
 ### Donation page simplified
 The donation page had a sign in link for people with an Akvo RSR account. This has been removed, as it proved confusing. Also people who have Akvo RSR accounts only save 10 seconds on that feature, so it was removed.
-
 
 Akvo RSR v 0.9.6 release notes
 ------------------------------
