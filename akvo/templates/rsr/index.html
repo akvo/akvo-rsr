@@ -47,7 +47,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% ifequal bandwidth 'high' %}
 	<div id="home_flash_box">
 	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'View static home page' %}</a>
-	<div style="color: #fff; font-size: 1.2em; font-weight:bold; float: left; padding: 20px;">{% trans 'Our latest projects' %}</div>
+	<div style="color: #fff; font-size: 1.2em; font-weight:bold; float: left; padding: 20px;">{% trans 'Projects you can fund' %}</div>
 	<div id="home_flash" style="color: #fff;">
 		{% trans 'You are being re-directed to the static Akvo home page. If nothing happens,' %} <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'click here' %}!</a>
 		<noscript>
@@ -115,7 +115,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	<div id="home_flash_box" style="padding-bottom:14px; width: 710px; float: left;">
 		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
-		<div style="color: #fff; font-size: 1.2em; font-weight:bold; padding: 15px 20px ;">{% trans 'Our latest projects' %}</div>
+		<div style="color: #fff; font-size: 1.2em; font-weight:bold; padding: 15px 20px ;">{% trans 'Projects you can fund' %}</div>
 		<table>
 			{% for p in grid_projects %}
 				{% ifequal forloop.counter 1 %}

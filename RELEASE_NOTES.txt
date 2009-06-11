@@ -1,4 +1,4 @@
-RELEASE_NOTES.txt, v0.9.7, 3 June 2009, tbp
+RELEASE_NOTES.txt, v0.9.7, 10 June 2009, eaw
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
@@ -8,46 +8,62 @@ To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_ove
 
 Akvo RSR v 0.9.7 release notes
 ------------------------------
-3 June 2009, (Code name: Omaha) tbp
+10 June 2009, (Code name: Omaha) eaw
+
+Required software changes
+-------------------------
+**New required software: django-10766**
+We have upgraded the version of Django which we use to rev. 10766. Our project budget code makes use of some admin features fixed in this Django version.
 
 New features
 ------------
 ### New narrower "Project widget with donation"
-A new widget, with the same information as the previous "Project widget with donation", has been added. This widget is 172px wide (compared to the previous 202px). This widget is, like the wider widget, available to anyone to use.
+A new widget with the same information as the previous tall "Project widget with donation" has been added. The new widget is narrower (172 pixels) wide, compared to its sister (202 pixels). Both widgets take up a maximum of 840 pixels vertically. Each may actually take up less, depending on the content of the project being displayed.
+
+Both widgets are freely available for anyone to use.
 
 ### Individual funder contribution displayed
-The total amount of contributions from individual funders' (donors via Paypal) contribution are now listed under the funders portlet on the project page and the funding details page.
+The total amount of contributions from individual funders' (donors via Paypal) contribution is now listed under the funders portlet on the project page and on the funding details page.
 
-### Akvo at a glance, updated
-The "Akvo at a glance" portlet, which can be seen on the Akvo home page and the projects listing page has been updated. It has an easier to understand layout, it now shows correctly how many projects have been completed and how many people have water and sanitation as a result. Akvo at a glance now also includes the individual donations in the way it calculates funding for a project now. The whole way this code was written has pretty much been rebuilt to make it easier to extend later. Fixes bug #279243.
+### Updated Akvo at a glance
+The "Akvo at a glance" portlet on the Akvo home page and the projects listing page has been updated. Its simplified layout now shows correctly how many projects have been completed and how many people have water and sanitation as a result. Akvo at a glance now also includes the individual donations in the way it calculates funding for a project. The code has been restructured to make it easier to extend later. Bugs fixed: Launchpad #279243.
 
 ### Favicon
 A favicon.ico has been added to all Akvo RSR pages.
 
-### Project budget terminology
-The project budget terminology has been updated to be clearer, before it said funding breakdown, whereas it really is a project budget.
+### Project budgets
+The project budget terminology has been updated to more accurately match its use. Previously this was called "Funding breakdown," but it really is designed to be a project budget.
+
+The way the budget data is stored and manipulated has changed as well. Before we had a Django Funding model (i.e. database table); the model has been renamed BudgetItem. The date information (i.e. Date request posted, Date complete) has moved to the Project model; the money information is now stored in the BudgetItem model, and consists of one or more BudgetItem objects (records) instead of multiple columns.
 
 ### Sponsor partner type
-A new type of partner called Sponsor partner is now available in the system. If a project has a sponsor partner then the sponsor is listed at the bottom of the partner portlet. This is a partial implementation of where we are going with this. More soon.
+A new type of partner is now available. Sponsor partners, if one exists for a particular project, appear at the bottom of the partner portlet. This indicates functionality currently in the pipeline. More soon.
+
+### Featured projects
+The projects featured on the projects listing page and on the Akvo.org home page now only show projects which need money. For the Akvo.org listing, this is only done if there are a minimum of 8 projects with outstanding funding requests.
 
 Bugs
 ----
 ### Error message style sheet
-505 type errors did not get style sheets. This is now fixed.
+404 and 500 http errors did not have style sheets; now they do. 
 
 ### Funding table alignment
-The funding table at the organisation page has a alignment bug making the sums pushed down a couple of pixels. This is now fixed.
+The funding table at the organisation page had a alignment bug making the sums pushed down a couple of pixels. This is now fixed.
 
-### Project updates widget to large for the iframe
-New smart_truncate django filter for more control over text lengths. Since text lengths is a general problem with widgets we updated all widgets to use the new filter. Also made small changes around the Akvo ref number for better compatibility with IE. This is now fixed. Filter by Adam & bobince (http://stackoverflow.com/questions/250357/smart-truncate-in-python).
+### Project updates widget is too large for the iframe
+A new smart_truncate Django filter is used to increase control over text lengths in the widgets. Since text length is a general problem with widgets, we updated all widgets to use the new filter. Small changes have also been made around the Akvo reference number for better Internet Explorer compatibility. Filter by Adam & bobince (http://stackoverflow.com/questions/250357/smart-truncate-in-python).
+
+### Akvo at a glance
+The updates to Akvo at a glance (described above) fix Launchpad bug #279243.
+
 
 Miscellaneous
 -------------
 ### Donation page simplified
-The donation page had a sign in link for people with an Akvo RSR account. This has been removed, as it proved confusing. Also people who have Akvo RSR accounts only save 10 seconds on that feature, so it was removed.
-
+The donation page had a "Sign in" link for people with an Akvo RSR account. This has been removed, as it proved confusing; the 10 seconds saved by users with Akvo RSR accounts was not worth the confusion it caused.
 Akvo RSR v 0.9.6 release notes
 ------------------------------
+
 v0.9.6, 27 April 2009, (Code name: Sword) tbp
 
 **New required software: django-10553**
