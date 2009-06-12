@@ -12,7 +12,7 @@ from django.forms.util import ErrorList
 from django.utils.encoding import force_unicode
 from django.utils.functional import curry
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
