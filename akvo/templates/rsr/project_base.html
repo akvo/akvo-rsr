@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags thumbnail %}
 
-{% block title %}{% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
 
 {% block style %}
 {{block.super}}

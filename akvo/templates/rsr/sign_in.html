@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load i18n %}
 {% load rsr_tags %}
 
-{% block title %}Sign in{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Sign in' %}{% endblock title %}
 
 {% block header %}
 <div id="header" class="clearfix">

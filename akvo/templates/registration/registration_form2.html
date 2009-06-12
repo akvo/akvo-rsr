@@ -8,13 +8,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load i18n %}
 
 {% load rsr_tags %}
-    
+
+{% block title %}{% trans 'Register with Akvo RSR - Step 2' %}{% endblock %}
+
 {% block header %}
     <div id="header" class="clearfix">
         <img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="Akvo.org" id="header_logo" name="header_logo">
     </div>
 {% endblock header %}
-    
+
+{% block breadcrumbs %}
+	{{block.super}} &raquo; {% trans 'Register with Akvo RSR - Step 2' %}
+{% endblock breadcrumbs %}
+
 {% block content %}
 
     <div class="boxbody">

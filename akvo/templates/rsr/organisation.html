@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n thumbnail %}
 
-{% block title %}{% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
 {% block breadcrumbs %}
 {{block.super}} &raquo; <a href="{% url rsr_org_list %}">{% trans 'Organisation listing' %}</a> &raquo; {{o.name}}

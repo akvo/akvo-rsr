@@ -7,11 +7,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n generic_content addparam rsr_tags thumbnail %}
 
-{% block title %}{% trans 'Project listing' %}
-{% if o %}
-	for {{o.name}}
-{% endif %}
+{% block title %}
+	{{block.super}} - {% trans 'Project listing' %}
+	{% if o %}
+		for {{o.name}}
+	{% endif %}
 {% endblock title %}
+
 
 {% block style %}
 {{block.super}}
@@ -108,7 +110,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     </select>
     results per page-->
 		<span style="margin: 0 20px 0 20px">
-			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projs.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
+			{% blocktrans with page.start_index as page_start and page.end_index as page_end and page.paginator.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
 		</span>
 		<span style="margin: 0 20px 0 20px">
 			{% ifequal page.number 1 %}
@@ -155,7 +157,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if o %}
 			for {{o.name}}
 		{% endif %}
-		<span class="lightx2" style="font-weight:normal">{% blocktrans with projs.count as p_count %}({{p_count}} total){% endblocktrans %}</span>
+		<span class="lightx2" style="font-weight:normal">{% blocktrans with page.paginator.count as p_count %}({{p_count}} total){% endblocktrans %}</span>
 	</h1>
 </div> <!-- .boxhead -->
 
@@ -295,28 +297,45 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</select>
 			results per page-->
 		<span style="margin: 0 20px 0 20px">
-			{% blocktrans with page.start_index as page_start and page.end_index as page_end and projs.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
+			{% blocktrans with page.start_index as page_start and page.end_index as page_end and page.paginator.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
 		</span>
 		<span style="margin: 0 20px 0 20px">
 			{% ifequal page.number 1 %}
 			{% trans 'First' %} |
 			{% else %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+				{# if we have an organisation in the context, we are diplaying the list filtered on that org, url have to conform to that #}
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+				{% endif %}
 			{% endifequal %}
 			{% if page.has_previous %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+				{% endif %}
 			{% else %}
 			{% trans 'Previous' %} |
 			{% endif %}
 			{% if page.has_next %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+				{% endif %}
 			{% else %}
 			{% trans 'Next' %} |
 			{% endif %}
 			{% ifequal page.number page.paginator.num_pages %}
 			{% trans 'Last' %}
 			{% else %}
-			<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+				{% if o %}
+					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+				{% else %}
+					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+				{% endif %}
 			{% endifequal %}
 		</span>
 		</div>
