@@ -33,7 +33,10 @@ from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
-from utils import GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import (GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
+				   GROUP_RSR_PARTNER_EDITORS)
+from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
+				   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
 					 create_publishing_status, create_organisation_account)
@@ -423,7 +426,7 @@ class Project(models.Model):
             return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
 
         def donated(self):
-            return self.filter(paypalinvoice__complete=True).annotate(
+            return self.filter(paypalinvoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
                 donated=Sum('paypalinvoice__amount'),
             ).distinct()
 
@@ -460,9 +463,9 @@ class Project(models.Model):
                             END
                             FROM rsr_paypalinvoice
                             WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.complete
+                            AND rsr_paypalinvoice.status = %d
                         )
-                    ''',
+                    ''' % PAYPAL_INVOICE_STATUS_COMPLETE,
                 #how much money has been donated by individual donors
                 'donated':
                     ''' SELECT CASE
@@ -471,8 +474,8 @@ class Project(models.Model):
                         END
                         FROM rsr_paypalinvoice
                         WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.complete
-                    ''',
+                            AND rsr_paypalinvoice.status = %d
+                    ''' % PAYPAL_INVOICE_STATUS_COMPLETE,
                 #the total budget for the project as per the budgetitems
                 'total_budget':
                     ''' SELECT CASE
@@ -1079,10 +1082,10 @@ class PayPalInvoiceManager(models.Manager):
         
 class PayPalInvoice(models.Model):
     STATUS_CHOICES = (
-        (1, _('Pending')),
-        (2, _('Void')),
-        (3, _('Complete')),
-        (4, _('Stale')),
+        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
+        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
+        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
     )
     user = models.ForeignKey(User, blank=True, null=True, editable=False) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
