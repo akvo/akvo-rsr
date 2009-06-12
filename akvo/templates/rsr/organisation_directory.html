@@ -10,7 +10,26 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load generic_content %}
 {% load addparam %}
 
-{% block title %}Organisation listing{% endblock title %}
+
+{% block title %}
+	{{block.super}} - {% trans 'Organisation listing' %}
+	{% if org_type %}
+		{% ifnotequal org_type 'all' %}
+			{% ifequal org_type 'funding' %}
+				- {% trans 'Funding partners' %}
+			{% endifequal %}
+			{% ifequal org_type 'support' %}
+				- {% trans 'Support partners' %}
+			{% endifequal %}
+			{% ifequal org_type 'field' %}
+				- {% trans 'Field partners' %}
+			{% endifequal %}
+			{% ifequal org_type 'sponsor' %}
+				- {% trans 'Sponsor partners' %}
+			{% endifequal %}
+		{% endifnotequal %}
+	{% endif %}	
+{% endblock title %}
 
 {% block script %}
 {{block.super}}
@@ -18,7 +37,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; {% trans 'Organisation listing' %}
+	{{block.super}} &raquo; {% trans 'Organisation listing' %}
+	{% if org_type %}
+		{% ifnotequal org_type 'all' %}
+			{% ifequal org_type 'funding' %}
+				- {% trans 'Funding partners' %}
+			{% endifequal %}
+			{% ifequal org_type 'support' %}
+				- {% trans 'Support partners' %}
+			{% endifequal %}
+			{% ifequal org_type 'field' %}
+				- {% trans 'Field partners' %}
+			{% endifequal %}
+			{% ifequal org_type 'sponsor' %}
+				- {% trans 'Sponsor partners' %}
+			{% endifequal %}
+		{% endifnotequal %}
+	{% endif %}	
 {% endblock breadcrumbs %}
 
 {% block page_id %}
@@ -75,6 +110,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endifequal %}
 			{% ifequal org_type 'field' %}
 			<h1>{% trans 'Field partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
+			{% endifequal %}
+			{% ifequal org_type 'sponsor' %}
+			<h1>{% trans 'Sponsor partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
 			{% endifequal %}
 		{% else %}
 			<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>

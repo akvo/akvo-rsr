@@ -61,7 +61,7 @@ CONTINENTS = (
 )
 class Country(models.Model):
     
-    country_name                = models.CharField(_(u'country name'), max_length=50)
+    country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
     continent                   = models.IntegerField(u'continent', choices=CONTINENTS)
 
     def __unicode__(self):
@@ -70,6 +70,7 @@ class Country(models.Model):
     class Meta:
         verbose_name = u'country'
         verbose_name_plural = u'countries'
+        ordering = ['country_name']
 
 
 class ProjectsQuerySetManager(QuerySetManager):
