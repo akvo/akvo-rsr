@@ -1092,7 +1092,7 @@ class PayPalInvoice(models.Model):
     name = models.CharField(max_length=75, blank=True, null=True) # handle non-authenticated users
     email = models.EmailField(blank=True, null=True) # handle non-authenticated users
     #complete = models.BooleanField() # DEPRECATED
-    status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
 
     objects = PayPalInvoiceManager()
 
