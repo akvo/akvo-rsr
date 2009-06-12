@@ -1067,17 +1067,37 @@ class ProjectComment(models.Model):
 
 from paypal.standard.models import PayPalIPN
 from paypal.standard.signals import payment_was_flagged, payment_was_successful
+
+class PayPalInvoiceManager(models.Manager):
+    def stale(self):
+        """
+        Returns a queryset of invoices which have been pending
+        for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
+        """
+        timeout = (datetime.now() - timedelta(minutes=getattr(settings, 'PAYPAL_INVOICE_TIMEOUT', 60)))
+        return self.filter(status__exact=1, time__lte=timeout)
         
 class PayPalInvoice(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
+    STATUS_CHOICES = (
+        (1, _('Pending')),
+        (2, _('Void')),
+        (3, _('Complete')),
+        (4, _('Stale')),
+    )
+    user = models.ForeignKey(User, blank=True, null=True, editable=False) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
     amount = models.PositiveIntegerField()
-    #ipn = models.OneToOneField(PayPalIPN, blank=True, null=True, editable=False) # an ipn can only belong to one invoice and vice versa
     ipn = models.CharField(blank=True, null=True, max_length=75)
     time = models.DateTimeField()
     name = models.CharField(max_length=75, blank=True, null=True) # handle non-authenticated users
     email = models.EmailField(blank=True, null=True) # handle non-authenticated users
-    complete = models.BooleanField() # needs to change to a choices field
+    #complete = models.BooleanField() # DEPRECATED
+    status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+
+    objects = PayPalInvoiceManager()
+
+    def __unicode__(self):
+        return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)
@@ -1105,10 +1125,11 @@ def process_paypal_ipn(sender, **kwargs):
     if ipn.payment_status == 'Completed':
         # Get the related PayPalInvoice object from the IPN
         ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
-        # Associate the PayPalInvoice with the PayPalIPN
+        # Write the PayPal Transaction ID into the PayPalInvoice
         ppi.ipn = ipn.txn_id
         # Mark the PayPalInvoice as complete
-        ppi.complete = True
+        #ppi.complete = True # DEPRECATED
+        ppi.status = 3
         # Commit the changes
         ppi.save()
         # Send a confirmation email to wrap everything up
@@ -1120,9 +1141,6 @@ else:
     # Connect to 'payment_was_successful' in production
     # Connecting to flagged for the time being, since PP seesour emails as invalid for some reason...
     payment_was_flagged.connect(process_paypal_ipn)
-
-# TODO: Subtract the donated amount from the funding the project still needs.
-#  - Create a new function in utils.py to handle this
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)
