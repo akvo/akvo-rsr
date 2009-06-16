@@ -244,13 +244,12 @@ class Organisation(models.Model):
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
     
     def funding(self):
-        #funding_total, funding_pledged, funding_needed = funding_aggregate(self.published_projects(), organisation=self)
         my_projs = self.published_projects().status_not_cancelled()
         return {
             'total': my_projs.total_total_budget(),
             'donated': my_projs.total_donated(),
             'pledged': my_projs.total_pledged(self),
-            'still_needed': my_projs.total_funds_needed()
+            'still_needed': my_projs.total_funds_needed() + my_projs.total_pending()
         }
 
     class Meta:
@@ -440,7 +439,7 @@ class Project(models.Model):
             that calculate the respective values for each project in the queryset
             '''
             funding_queries = {
-                #how much money does the project need to be fully funded
+                #how much money does the project need to be fully funded, given that all pending donations complete
                 'funds_needed':
                     ''' SELECT DISTINCT (
                             SELECT CASE 
@@ -463,10 +462,11 @@ class Project(models.Model):
                             END
                             FROM rsr_paypalinvoice
                             WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            AND (rsr_paypalinvoice.status = %d
+                                OR rsr_paypalinvoice.status = %d)
                         )
-                    ''' % PAYPAL_INVOICE_STATUS_COMPLETE,
-                #how much money has been donated by individual donors
+                    ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
+                #how much money has been donated by individual donors, including pending donations
                 'donated':
                     ''' SELECT CASE
                             WHEN Sum(amount) IS NULL THEN 0
@@ -474,8 +474,19 @@ class Project(models.Model):
                         END
                         FROM rsr_paypalinvoice
                         WHERE rsr_paypalinvoice.project_id = rsr_project.id
+                            AND (rsr_paypalinvoice.status = %d
+                                OR rsr_paypalinvoice.status = %d)
+                    ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
+                #how much donated money from individuals is pending
+                'pending':
+                    ''' SELECT CASE
+                            WHEN Sum(amount) IS NULL THEN 0
+                            ELSE Sum(amount)
+                        END
+                        FROM rsr_paypalinvoice
+                        WHERE rsr_paypalinvoice.project_id = rsr_project.id
                             AND rsr_paypalinvoice.status = %d
-                    ''' % PAYPAL_INVOICE_STATUS_COMPLETE,
+                    ''' % PAYPAL_INVOICE_STATUS_PENDING,
                 #the total budget for the project as per the budgetitems
                 'total_budget':
                     ''' SELECT CASE
@@ -520,12 +531,10 @@ class Project(models.Model):
         def total_funds_needed(self):
             "how much money the projects still need"
             return qs_column_sum(self.funding(), 'funds_needed')
-            #return sum(self.funding().values_list('funds_needed', flat=True))
 
         def total_total_budget(self):
             "how much money the projects still need"
             return qs_column_sum(self.funding(), 'total_budget')
-            #return sum(self.funding().values_list('funds_needed', flat=True))
 
         def total_pledged(self, org=None):
             '''
@@ -533,12 +542,18 @@ class Project(models.Model):
             if org is supplied, only money pledeg by that org is calculated
             '''
             return qs_column_sum(self.funding(org), 'pledged')
-            #return sum(self.funding().values_list('pledged', flat=True))
 
         def total_donated(self):
             "how much money has bee donated by individuals"
             return qs_column_sum(self.funding(), 'donated')
-            #return sum(self.funding().values_list('donated', flat=True))
+
+        def total_pending(self):
+            "individual donations still pending"
+            return qs_column_sum(self.funding(), 'pending')
+
+        def total_pending_negative(self):
+            "individual donations still pending NEGATIVE (used by akvo at a glance)"
+            return -qs_column_sum(self.funding(), 'pending')
             
         def get_planned_water_calc(self):
             "how many will get improved water"
