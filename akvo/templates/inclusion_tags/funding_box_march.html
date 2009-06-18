@@ -31,7 +31,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</tr>	
 			</table>
 			<div class="fundingbox-progress-bar">
-				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+				{% if p.budget_total %}
+					<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+				{% endif %}
 			</div>
 			<table class="fundingbox-table">
 				<tr>
