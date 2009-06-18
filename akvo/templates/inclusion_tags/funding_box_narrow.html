@@ -4,6 +4,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load i18n %}
+{% ifnotequal p.status 'L' %}
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
 	<div class="fundingboxnarrow-content" >
@@ -53,3 +54,4 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div class="fundingboxnarrow-footer"> </div>
 </div>
+{% endifnotequal%}
