@@ -5,7 +5,7 @@ from syslog import syslog
 
 from django.core.management import setup_environ
 
-sys.path.append('../../akvo/')
+sys.path.append('/var/dev/static/akvo/')
 import settings
 setup_environ(settings)
 
