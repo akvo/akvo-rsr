@@ -1,6 +1,6 @@
 Organisation: {{organisation.name}}
 
-A new user has registered under your organisation in Akvo.
+A new user has registered under your organisation in the Akvo RSR system.
 
 Name: {{user.get_full_name}}
 Username: {{user.username}}
