@@ -1,39 +1,47 @@
 #!/usr/bin/env python
 
-import sys
+import os, sys
 from syslog import syslog
 
 from django.core.management import setup_environ
 
-sys.path.append('/var/dev/static/akvo/')
+full_path = os.path.abspath(os.path.dirname(sys.argv[0]))
+akvo_path = os.path.split(full_path)[0]
+
+sys.path.append(akvo_path)
+
 import settings
 setup_environ(settings)
 
 from rsr.models import PayPalInvoice
 
 def update_invoices():
-    """Identify invoices which have had a status of 1 ('Pending') \ 
-    for longer than settings.PAYPAL_INVOICE_TIMEOUT \
+    """
+    Identify invoices which have had a status of 1 ('Pending')
+    for longer than settings.PAYPAL_INVOICE_TIMEOUT
     and updates their status to 4 ('Stale')
     
-    This script is intended to be run from cron. For example:
+    This script is intended to be run from cron but can also by run manually
     
-    $ sudo ln -s /path/to/find_stale_invoices.py /etc/cron.hourly/
+    The following crontab entry would run the script every 15 minutes:
+    
+    */15 * * * * /path/to/akvo/scripts/find_stale_invoices.py
+    
     
     """
+    log_message_prefix = 'AKVO RSR PAYPAL: '
     stale_invoices = PayPalInvoice.objects.stale()
     if stale_invoices:
-        i = stale_invoices.update(status=4)
-        if i == 1:
-            m = '1 invoice was'
+        invoices = stale_invoices.update(status=4)
+        if invoices == 1:
+            message = '1 invoice was '
         else:
-            m = '%s invoices were' % i
-        o = m + ' successfully updated'
-        sys.stdout.write(o + '\n')
-        syslog('AKVO RSR PAYPAL: ' + o)
+            message = '%s invoices were ' % invoices
+        message += 'successfully updated.'
     else:
-        sys.stdout.write('No stale invoices found!\n')
-        syslog('AKVO RSR PAYPAL: No stale invoices found.')
+        message = 'No stale invoices found.'
+    sys.stdout.write(message + '\n')
+    syslog(log_message_prefix + message)
     
 if __name__ == '__main__':
     sys.stdout.write('Finding stale invoices...\n')
