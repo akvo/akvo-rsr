@@ -55,5 +55,16 @@ widget_project_narrow:
     column_count: 2
     column_width: 75
     gutter_width: 4
+widget_cobranded_narrow:
+  path: ../../widgets/cobranded_narrow/css
+  namespace: widget_cobranded_narrow-
+  custom_css:
+    screen.css:
+      - "../../widget_global.css"
+      - widget_cobranded_narrow.css
+  custom_layout:
+    column_count: 2
+    column_width: 75
+    gutter_width: 4
 
     

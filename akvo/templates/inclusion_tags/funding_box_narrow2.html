@@ -19,7 +19,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% else %}
 		<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 			<tr>
-				<th>{% trans 'Total budget' %}:</th>
+				<th>{% trans 'Budget' %}:</th>
 				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total}}</td>
 			</tr>					
 		</table>
@@ -36,7 +36,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given}}</td>
 			</tr>
 			<tr style="color:#FF5617">
-				<th>{% trans 'Still needed' %}:</th>
+				<th>{% trans 'Needed' %}:</th>
 				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed}}</td>
 			</tr>
 		</table>
