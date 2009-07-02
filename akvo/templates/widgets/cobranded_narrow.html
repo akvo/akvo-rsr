@@ -109,7 +109,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	*/
 	function switchPartner()
 	{
-		var newHTML = '<a href="' + partners[index].getUrl() + '"><img src="' + partners[index].getLogo() + '"></a><br><a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() +'</a>';
+		var newHTML = "";
+		
+		switch(partners[index].getType())
+		{
+			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>'; break;
+			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by' %}</p>'; break;
+			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by' %}</p>'; break;
+			default: newHTML += '<p class="smallFont grey left">{% trans 'Presented by' %}</p>'; break;
+		}
+		
+		newHTML += '<a href="' + partners[index].getUrl() + '"><img src="' + partners[index].getLogo() + '"></a><br><a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() +'</a>';
 		
 		$("#partnerspace").fadeOut("slow", function() {
 			$("#partnerspace").html(newHTML).fadeIn('slow');	
@@ -172,11 +182,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% comment %}
 			Since we don't now what type of partner is the first so be presented we need to do some checking.
 		{% endcomment %}
-		<div style="height:80px;">
+		<div style="height:100px;">
 		<div id="partnerspace" style="text-align:center;">
 		{% if project.sponsorpartner_set.all %}
 			{% for sponsor in project.sponsorpartner_set.all %}
 				{% if forloop.first %}
+				<p class="smallFont grey left">{% trans 'Presented by' %}</p>
 				<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}"><img src="{% thumbnail sponsor.sponsor_organisation.logo 140x70 autocrop,upscale,sharpen %}"></a><br />
 				<a class="smallFont" href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}1</a>
 				{% endif%}
@@ -185,6 +196,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% if project.fundingpartner_set.all %}
 				{% for funder in project.fundingpartner_set.all %}
 					{% if forloop.first %}
+					<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>
 					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}"><img src="{% thumbnail funder.funding_organisation.logo 140x70 autocrop,upscale,sharpen %}"></a><br />
 					<a class="smallFont" href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}2</a>
 					{% endif%}
@@ -193,6 +205,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if project.supportpartner_set.all %}
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
+						<p class="smallFont grey left">{% trans 'Supported by' %}</p>
 						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img src="{% thumbnail supporter.support_organisation.logo 140x70 autocrop,upscale,sharpen %}"></a><br />
 						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}3</a>
 						{% endif%}
@@ -201,6 +214,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% if project.fieldpartner_set.all %}
 					{% for operator in project.fieldpartner_set.all %}
 						{% if forloop.first %}
+						<p class="smallFont grey left">{% trans 'Implemented by' %}</p>
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">
 							<img src="{% thumbnail operator.field_organisation.logo 140x70 autocrop,upscale,sharpen %}">
 						</a><br />

@@ -89,6 +89,10 @@ h2 {
 	text-align:right;
 }
 
+.left {
+    text-align:left;
+}
+
 hr.divider {
 	margin: 12px 0 13px 0;
 	width:100%;
