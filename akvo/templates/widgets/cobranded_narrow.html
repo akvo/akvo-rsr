@@ -170,9 +170,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}
 		{% endwith %}
 		<hr class="divider" />
-		<p class="smallFont grey">{% trans 'Funding' %}</p>
-		<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
-		<div style="margin:0;">
+		<div style="width:47%; float:left;">
+			<p class="smallFont grey">{% trans 'Funding' %}</p>
+		</div>
+		<div style="width:50%; margin-left:50%;">
+			<p class="miniFont lightgrey right" style="margin-top:1px; margin-bottom:5px; text-transform: capitalize;">{% trans 'Ref' %}: {{project.id}}</p>
+		</div>
+	
+		<div style="margin:0; margin-top:13px;">
 			{% funding_box_narrow2 project %}
 		</div>
 		<hr class="divider" />
