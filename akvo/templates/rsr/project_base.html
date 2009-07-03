@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags thumbnail %}
 
-{% block title %}{% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
 
 {% block style %}
 {{block.super}}
@@ -145,12 +145,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 				{% if sponsor.sponsor_organisation.logo %}
 					<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">
-						<img src="{% thumbnail sponsor.sponsor_organisation.logo 120x90 autocrop,upscale,sharpen %}" style="margin:10px 20px;">
+						<img src="{% thumbnail sponsor.sponsor_organisation.logo 120x90 %}" style="margin:10px 20px;">
 					</a>
 				{% endif %}
 				<p>
 					<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{ sponsor.sponsor_organisation.name }}</a><br />
-					{{ sponsor.sponsor_organisation.city }}, {{ sponsor.sponsor_organisation.state }}. {{ sponsor.sponsor_organisation.country }}
+					{{ sponsor.sponsor_organisation.city }}, {{ sponsor.sponsor_organisation.country }}
 				</p>
 				
 				{% comment %}

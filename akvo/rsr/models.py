@@ -8,7 +8,7 @@ import urllib2
 import string
 import re
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from django import forms
 from django.conf import settings
@@ -33,7 +33,10 @@ from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
-from utils import GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from utils import (GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
+				   GROUP_RSR_PARTNER_EDITORS)
+from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
+				   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
 					 create_publishing_status, create_organisation_account)
@@ -61,7 +64,7 @@ CONTINENTS = (
 )
 class Country(models.Model):
     
-    country_name                = models.CharField(_(u'country name'), max_length=50)
+    country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
     continent                   = models.IntegerField(u'continent', choices=CONTINENTS)
 
     def __unicode__(self):
@@ -70,6 +73,7 @@ class Country(models.Model):
     class Meta:
         verbose_name = u'country'
         verbose_name_plural = u'countries'
+        ordering = ['country_name']
 
 
 class ProjectsQuerySetManager(QuerySetManager):
@@ -240,13 +244,12 @@ class Organisation(models.Model):
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
     
     def funding(self):
-        #funding_total, funding_pledged, funding_needed = funding_aggregate(self.published_projects(), organisation=self)
         my_projs = self.published_projects().status_not_cancelled()
         return {
             'total': my_projs.total_total_budget(),
             'donated': my_projs.total_donated(),
             'pledged': my_projs.total_pledged(self),
-            'still_needed': my_projs.total_funds_needed()
+            'still_needed': my_projs.total_funds_needed() + my_projs.total_pending()
         }
 
     class Meta:
@@ -422,7 +425,7 @@ class Project(models.Model):
             return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
 
         def donated(self):
-            return self.filter(paypalinvoice__complete=True).annotate(
+            return self.filter(paypalinvoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
                 donated=Sum('paypalinvoice__amount'),
             ).distinct()
 
@@ -436,7 +439,7 @@ class Project(models.Model):
             that calculate the respective values for each project in the queryset
             '''
             funding_queries = {
-                #how much money does the project need to be fully funded
+                #how much money does the project need to be fully funded, given that all pending donations complete
                 'funds_needed':
                     ''' SELECT DISTINCT (
                             SELECT CASE 
@@ -459,10 +462,11 @@ class Project(models.Model):
                             END
                             FROM rsr_paypalinvoice
                             WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.complete
+                            AND (rsr_paypalinvoice.status = %d
+                                OR rsr_paypalinvoice.status = %d)
                         )
-                    ''',
-                #how much money has been donated by individual donors
+                    ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
+                #how much money has been donated by individual donors, including pending donations
                 'donated':
                     ''' SELECT CASE
                             WHEN Sum(amount) IS NULL THEN 0
@@ -470,8 +474,19 @@ class Project(models.Model):
                         END
                         FROM rsr_paypalinvoice
                         WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.complete
-                    ''',
+                            AND (rsr_paypalinvoice.status = %d
+                                OR rsr_paypalinvoice.status = %d)
+                    ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
+                #how much donated money from individuals is pending
+                'pending':
+                    ''' SELECT CASE
+                            WHEN Sum(amount) IS NULL THEN 0
+                            ELSE Sum(amount)
+                        END
+                        FROM rsr_paypalinvoice
+                        WHERE rsr_paypalinvoice.project_id = rsr_project.id
+                            AND rsr_paypalinvoice.status = %d
+                    ''' % PAYPAL_INVOICE_STATUS_PENDING,
                 #the total budget for the project as per the budgetitems
                 'total_budget':
                     ''' SELECT CASE
@@ -516,12 +531,10 @@ class Project(models.Model):
         def total_funds_needed(self):
             "how much money the projects still need"
             return qs_column_sum(self.funding(), 'funds_needed')
-            #return sum(self.funding().values_list('funds_needed', flat=True))
 
         def total_total_budget(self):
             "how much money the projects still need"
             return qs_column_sum(self.funding(), 'total_budget')
-            #return sum(self.funding().values_list('funds_needed', flat=True))
 
         def total_pledged(self, org=None):
             '''
@@ -529,12 +542,18 @@ class Project(models.Model):
             if org is supplied, only money pledeg by that org is calculated
             '''
             return qs_column_sum(self.funding(org), 'pledged')
-            #return sum(self.funding().values_list('pledged', flat=True))
 
         def total_donated(self):
             "how much money has bee donated by individuals"
             return qs_column_sum(self.funding(), 'donated')
-            #return sum(self.funding().values_list('donated', flat=True))
+
+        def total_pending(self):
+            "individual donations still pending"
+            return qs_column_sum(self.funding(), 'pending')
+
+        def total_pending_negative(self):
+            "individual donations still pending NEGATIVE (used by akvo at a glance)"
+            return -qs_column_sum(self.funding(), 'pending')
             
         def get_planned_water_calc(self):
             "how many will get improved water"
@@ -1066,17 +1085,37 @@ class ProjectComment(models.Model):
 
 from paypal.standard.models import PayPalIPN
 from paypal.standard.signals import payment_was_flagged, payment_was_successful
+
+class PayPalInvoiceManager(models.Manager):
+    def stale(self):
+        """
+        Returns a queryset of invoices which have been pending
+        for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
+        """
+        timeout = (datetime.now() - timedelta(minutes=getattr(settings, 'PAYPAL_INVOICE_TIMEOUT', 60)))
+        return self.filter(status__exact=1, time__lte=timeout)
         
 class PayPalInvoice(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True) # user can have many invoices
+    STATUS_CHOICES = (
+        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
+        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
+        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
+    )
+    user = models.ForeignKey(User, blank=True, null=True, editable=False) # user can have many invoices
     project = models.ForeignKey(Project) # project can have many invoices
     amount = models.PositiveIntegerField()
-    #ipn = models.OneToOneField(PayPalIPN, blank=True, null=True, editable=False) # an ipn can only belong to one invoice and vice versa
     ipn = models.CharField(blank=True, null=True, max_length=75)
     time = models.DateTimeField()
     name = models.CharField(max_length=75, blank=True, null=True) # handle non-authenticated users
     email = models.EmailField(blank=True, null=True) # handle non-authenticated users
-    complete = models.BooleanField() # needs to change to a choices field
+    #complete = models.BooleanField() # DEPRECATED
+    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+
+    objects = PayPalInvoiceManager()
+
+    def __unicode__(self):
+        return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)
@@ -1104,10 +1143,11 @@ def process_paypal_ipn(sender, **kwargs):
     if ipn.payment_status == 'Completed':
         # Get the related PayPalInvoice object from the IPN
         ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
-        # Associate the PayPalInvoice with the PayPalIPN
+        # Write the PayPal Transaction ID into the PayPalInvoice
         ppi.ipn = ipn.txn_id
         # Mark the PayPalInvoice as complete
-        ppi.complete = True
+        #ppi.complete = True # DEPRECATED
+        ppi.status = 3
         # Commit the changes
         ppi.save()
         # Send a confirmation email to wrap everything up
@@ -1119,9 +1159,6 @@ else:
     # Connect to 'payment_was_successful' in production
     # Connecting to flagged for the time being, since PP seesour emails as invalid for some reason...
     payment_was_flagged.connect(process_paypal_ipn)
-
-# TODO: Subtract the donated amount from the funding the project still needs.
-#  - Create a new function in utils.py to handle this
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)

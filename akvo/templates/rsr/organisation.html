@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n thumbnail %}
 
-{% block title %}{% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
 {% block breadcrumbs %}
 {{block.super}} &raquo; <a href="{% url rsr_org_list %}">{% trans 'Organisation listing' %}</a> &raquo; {{o.name}}
@@ -54,7 +54,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 		<!--<h2 class="lightx2">Scope</h2>
 		<p>National</p>-->
-	
 		{% if o.url %}
 			<h2 class="lightx2">{% trans 'Website' %}</h2>
 			<p><a href="{{o.url}}">{{o.url}}</a></p>
@@ -114,40 +113,113 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div class="boxbody">
 
 <div></div> <!-- IE requires something above -->
-<table class="activities" width="208px" style="margin: 0 20px; padding: 0;">
-	<tr><th colspan="2"><h2>{% trans 'Projects' %}</h2></th></tr>
-	<tr><td class="padded" style="width: 40%;">{{o.published_projects.status_active.count}}</td><td>{% trans 'Active' %}</td></tr>
-	<tr><td class="padded">{{o.published_projects.status_onhold.count}}</td><td>{% trans 'Need funding' %}</td></tr>
-	<tr><td class="padded">{{o.published_projects.status_complete.count}}</td><td>{% trans 'Complete' %}</td></tr>
-	<tr class="hr bold"><td class="padded">{{o.published_projects.count}}</td><td>{% trans 'Total projects' %}</td></tr>
-	<tr>
-		<td colspan="2" style="padding: 15px 0 10px 0">{% trans '<b>People who get</b> (<a href="/web/help_akvo_at_a_glance">planned</a>) <a href="/web/help_akvo_at_a_glance">actual</a>' %}</td>
-	</tr>
-	<tr><td class="padded">({{o.published_projects.get_planned_water_calc}}) {{o.published_projects.get_actual_water_calc}}</td><td>{% trans 'Water' %}</td></tr>
-	<tr class="hr"><td class="padded">({{o.published_projects.get_planned_sanitation_calc}}) {{o.published_projects.get_actual_sanitation_calc}}</td><td>{% trans 'Sanitation' %}</td></tr>
+<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<th colspan="2">
-			<h2>Funding
-				<span class="lightx2" style="font-weight: normal">
-					{% blocktrans count o.published_projects.count as proj_count %}
-						(1 project){% plural %}({{proj_count}} projects)
-					{% endblocktrans %}
-				</span>
-			</h2>
+			{% ifequal request.path '/rsr/projects/' %}
+			<h2>{% trans 'Projects in Akvo' %}</h2>
+			{% else %}
+				<a href="{% url akvo.rsr.views.projectlist %}">
+					<h2>{% trans 'Projects in Akvo' %}</h2>
+				</a>
+			{% endifequal %}
 		</th>
 	</tr>
-	<tr style="color: green">
-		<td class="">&#8364; {{o.funding.pledged}}</td>
-		<td class="">{% trans 'Pledged' %}</td>
+	<tr>
+		<td>
+			{% trans 'Active' %}
+		</td>
+		<td style="text-align:right;">
+			{{o.published_projects.status_active.count}}
+		</td>
 	</tr>
-	<tr class="hr padded" style="color: red">
-		<td class="">&#8364; {{o.funding.still_needed}}</td>
-		<td class="">{% trans 'Still needed' %}</td>
+	<tr>
+		<td>
+			{% trans 'On hold' %}
+		</td>
+		<td style="text-align:right;">
+			{{o.published_projects.status_onhold.count}}
+		</td>
 	</tr>
-	<tr><td class="padded" colspan="2"><h2>{% trans 'Project partners' %}</h2></td></tr>
-	<tr><td class="padded" colspan="2">{% for partner in org_partners %}<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a><br />{% endfor %}</td></tr>
+	<tr>
+		<td>
+			{% trans 'Complete' %}
+		</td>
+		<td style="text-align:right;">
+			{{o.published_projects.status_complete.count}}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{% trans 'Cancelled' %}
+		</td>
+		<td style="text-align:right;">
+			{{o.published_projects.status_cancelled.count}}
+		</td>
+	</tr>
+	<tr class="hr bold">
+		<td style="padding-top:2px; padding-bottom:20px;">
+			{% trans 'Total projects' %}
+		</td>
+		<td style="text-align:right; padding-top:3px;">
+			{{o.published_projects.count}}
+		</td>
+	</tr>
+</table>
+<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 	
+	<tr>
+		<th colspan="3">
+			<h2>{% trans 'People who get...' %}</h2>
+		</th>
+	</tr>
+	<tr>
+		<td style="width:50px;">&nbsp;</td>
+		<td style="font-size:0.9em; width:80px; text-align:right;"><a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a></td>
+		<td style="font-size:0.9em; width:80px; text-align:right;"><a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a></td>
+	</tr>
+	<tr>
+		<td style="font-weight:bold;">{% trans 'Water' %}</td>
+		<td style="text-align:right;">{{o.published_projects.get_planned_water_calc}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_actual_water_calc}}</td>
+	</tr>
+	<tr class="hr">
+		<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
+		<td style="text-align:right;">{{o.published_projects.get_planned_sanitation_calc}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_actual_sanitation_calc}}</td>
+	</tr>
 </table>
 
+
+<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
+	<tr class="font-weight:bold;">
+		<th colspan="2" style="padding-bottom:10px;">
+			{% trans 'Funding' %} 
+			<span style="font-weight:normal; color:#999">
+				{% blocktrans count o.published_projects.count as proj_count %}
+					(1 project){% plural %}({{proj_count}} projects)
+				{% endblocktrans %}
+			</span>
+		</th>
+	</tr>
+	<tr style="color:green;">
+		<td>{% trans 'Pledged' %}</td>
+		<td style="text-align:right;">&#8364; {{o.funding.pledged}}</td>
+	</tr>
+	<tr style="color:red;" class="hr">
+		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
+		<td style="text-align:right;">&#8364; {{o.funding.still_needed}}</td>
+	</tr>
+</table>
+<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+	<tr><td class="padded" colspan="2"><h2>{% trans 'Project partners' %}</h2></td></tr>
+	<tr>
+		<td>
+			{% for partner in org_partners %}
+				<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a><br />
+			{% endfor %}
+		</td>
+	</tr>
+</table>
 
 </div> <!-- .boxbody -->
 

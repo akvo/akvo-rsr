@@ -1,8 +1,36 @@
-RELEASE_NOTES.txt, v0.9.7, 10 June 2009, eaw
+RELEASE_NOTES.txt, v0.9.8, 25 June 2009, pb
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview)
+
+---
+Akvo RSR v 0.9.8 release notes
+------------------------------
+25 June 2009, (Code name: Utah) pb
+
+New features
+------------
+### PayPal Enhancements
+A number of improvements have been made to the PayPal donation subsystem of RSR.
+
+### More states for PayPal invoices
+In previous releases, a PayPal invoice could be in one of two states: complete or incomplete. In this release, an invoice can be in one of four states: pending, void, complete or stale. This allows for more granular control over invoices and results in more accurate funding totals in the system.
+
+### Cron script to mark stale PayPal invoices
+Stale invoices are identified and marked as such by a new script which can be run manually or from the system cron daemon (recommended). This script is designed to find invoices in the system which have been pending for longer than a given, configurable period of time, allowing them to be easily identified and operated on in the admin interface. For more information about this script, see http://akvo.org/labs/index.php/PayPal_Overview#Invoice_Management
+
+### User interface to void PayPal invoices
+Batches of invoices can now be selected and operated on. This feature was designed to allow for easy manual voiding of batches of invoices which have been automatically marked as stale or that are pending and never likely to be completed. It will not allow invoices to be voided if they are either complete or already void. If the administrator attempts the latter, she will receive a warning message and a reason for each invoice in turn and no further action will be taken.
+
+### Display of funding of projects
+Funding calculations displayed in the Akvo Marketplace donation box now only take completed invoices into account. Pending invoices are also included in the calculation when a user is about to make a donation to avoid conflicting messages if a project is close to being fully funded.
+
+
+Bugs
+----
+Donations did not show immediately when a PayPal donation was being made. This bug was a result of the changes which were made to the donation calculations in 0.9.7.
+Internal reference: http://www.pivotaltracker.com/story/show/785964
 
 ---
 

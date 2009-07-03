@@ -62,30 +62,47 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<td style="width: 50%">
 			<p><b>{% trans 'Project budget' %}</b></p>
 			<table style="width: 80%">
-			<tr>
-			<td>{% trans 'Employment costs' %}</td>
-			<td>&#8364; {{p.budget_employment}}</td>
-			</tr>
-			<tr>
-			<td>{% trans 'Building Material costs' %}</td>
-			<td>&#8364; {{p.budget_building}}</td>
-			</tr>
-			<tr>
-			<td>{% trans 'Training costs' %}</td>
-			<td>&#8364; {{p.budget_training}}</td>
-			</tr>
-			<tr>
-			<td>{% trans 'Maintenance costs' %}</td>
-			<td>&#8364; {{p.budget_maintenance}}</td>
-			</tr>
-			<tr>
-			<td>{% trans 'Other costs' %}</td>
-			<td>&#8364; {{p.budget_other}}</td>
-			</tr>
-			<tr>
-			<td><b>{% trans 'Total' %}</b></td>
-			<td><b>&#8364; {{p.budget_total}}</b></td>
-			</tr>
+				{% if p.budget_employment %}
+				<tr>
+					<td>{% trans 'Employment costs' %}</td>
+					<td>&#8364; {{p.budget_employment}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_building %}
+				<tr>
+					<td>{% trans 'Building Material costs' %}</td>
+					<td>&#8364; {{p.budget_building}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_training %}
+				<tr>
+					<td>{% trans 'Training costs' %}</td>
+					<td>&#8364; {{p.budget_training}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_maintenance %}
+				<tr>
+					<td>{% trans 'Maintenance costs' %}</td>
+					<td>&#8364; {{p.budget_maintenance}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_other %}
+				<tr>
+					<td>{% trans 'Other costs' %}</td>
+					<td>&#8364; {{p.budget_other}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_total %}
+				<tr>
+					<td><b>{% trans 'Total' %}</b></td>
+					<td><b>&#8364; {{p.budget_total}}</b></td>
+				</tr>
+				{% else %}
+				<tr>
+					<td><b>{% trans 'Total' %}</b></td>
+					<td><b>&#8364; 0</b></td>
+				</tr>
+				{% endif %}
 			</table>
 		</td>
 	

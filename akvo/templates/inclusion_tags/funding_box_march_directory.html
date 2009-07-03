@@ -4,6 +4,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load i18n %}
+{% ifnotequal p.status 'L' %}
 <div class="fundingwrap">
 
 <div class="fundingbox-header"> </div>
@@ -32,7 +33,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
+			{% if p.budget_total %}
 			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+			{% endif %}
 		</div>
 		<table class="fundingbox-table">
 			<tr>
@@ -57,3 +60,4 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div class="fundingbox-footer"> </div>
 </div>
+{% endifnotequal%}

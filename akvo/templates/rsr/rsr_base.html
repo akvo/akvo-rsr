@@ -7,13 +7,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
 <head>
-{% ifequal request.path "/" %}
-<title>{% trans 'Akvo.org - the open source for water and sanitation' %}</title>
-{% else %}
-<title>{% trans 'Akvo RSR' %} - {% block title %}{% trans 'Really simple reporting' %}{% endblock title %}</title>
-{% endifequal %}
+
+<title>
+	{% block title %}
+		{% url akvo.rsr.views.index as index_url %}
+		{% ifequal request.path index_url %}
+			{% trans 'Akvo.org - the open source for water and sanitation' %}
+		{% else %}
+			{% trans 'Akvo RSR' %}
+		{% endifequal %}
+	{% endblock title %}
+</title>
+
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="{% trans 'Akvo.org - the open source for water and sanitation' %}" />
 <meta name="keywords" content="{% trans 'water, sanitation, open source, development aid' %}" />
