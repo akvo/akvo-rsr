@@ -32,7 +32,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 			<tr class="green">
-				<th>{% trans 'Raised' %}</th>
+				<th>{% trans 'Raised' %}:</th>
 				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given}}</td>
 			</tr>
 			<tr style="color:#FF5617">
