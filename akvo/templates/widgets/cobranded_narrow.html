@@ -49,8 +49,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 <script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
 
-
-
 {% comment %}
 	presented by = sponsor
 	underwritten by = funder
@@ -61,12 +59,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <script type="text/javascript" charset="utf-8">
 	
 	var index = 1;
+	var intervall = 4000;
 	
-	function Partner (orgName,logo,partnerType,url) {
+	function Partner (orgName,logo,partnerType,url) 
+	{
 		this.orgName = orgName;
 		this.logo = logo;
-		this.partnerType = partnerType
-		this.url = url
+		this.partnerType = partnerType;
+		this.url = url;
 		this.getName = function () { return this.orgName; }
 		this.getLogo = function () { return this.logo; }
 		this.getType = function () { return this.partnerType; }
@@ -76,13 +76,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	var partners = [];
 	
 	{% for sponsor in project.sponsorpartner_set.all %} 
+		
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
 											'{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}',
 											'support',
-											'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');
+											'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');											
 	{% endfor %}
 	
 	{% for funder in project.fundingpartner_set.all %}
+	
 	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
 											'{% thumbnail funder.funding_organisation.logo 140x50 autocrop,upscale,sharpen %}',
 											'funding',
@@ -90,6 +92,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endfor %}
 	
 	{% for supporter in project.supportpartner_set.all %}
+	
+
 	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
 											'{% thumbnail supporter.support_organisation.logo 140x50 autocrop,upscale,sharpen %}',
 											'support',
@@ -105,7 +109,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	function switchPartner()
 	{
-		var newHTML = "";
+		var newHTML = '';
 		
 		switch(partners[index].getType())
 		{
@@ -128,8 +132,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	$(document).ready(function()
 	{
-		window.setInterval(function() { this.switchPartner.apply(this); }, 2000)		
-	});		
+		window.setInterval(function() { this.switchPartner.apply(this); }, intervall)	
+	});
 </script>
 	
 {% endblock inline_scripts %}
@@ -209,7 +213,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Supported by' %}</p>
-						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 140x70 autocrop,upscale,sharpen %}"></a><br />
+						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 140x40 autocrop,upscale,sharpen %}"></a><br />
 						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}3</a>
 						{% endif%}
 					{% endfor %}
