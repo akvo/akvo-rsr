@@ -1,10 +1,33 @@
-RELEASE_NOTES.txt, v0.9.8, 25 June 2009, pb
+ RELEASE_NOTES.txt, v0.9.9, 7 July 2009, tbp
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview)
 
 ---
+
+Akvo RSR v 0.9.9 release notes
+------------------------------
+7 July 2009, (Code name: Torch) tbp
+
+New features
+------------
+### New style to organisation activity box/portlet
+When viewing an organisation page in Akvo RSR, a portlet to the right of the page displays how many projects the organisation is involved in, which partners it works with, etc. The presentation of this has been updated to correspond with presentation changes made in 0.9.7 to the "Akvo at a glance" portlet.
+
+### Akvo PayPal integration documentation
+We have some initial [documentation for the Akvo PayPal integration](http://www.akvo.org/labs/index.php/Akvo_PayPal_integration_overview)
+
+Bugs
+----
+It is now no longer possible to donate to a cancelled project. The project remains visible in Akvo, but the donation box is no longer displayed.
+Internal reference: http://www.pivotaltracker.com/story/show/745352
+
+Sponsor partners no longer have the "state" attribute displayed in the partner portlet on a project page. The sponsor partner information displayed there now matches that of other partner types.
+Internal reference: http://www.pivotaltracker.com/story/show/782930
+
+---
+
 Akvo RSR v 0.9.8 release notes
 ------------------------------
 25 June 2009, (Code name: Utah) pb

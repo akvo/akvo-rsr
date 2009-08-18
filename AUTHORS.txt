@@ -25,6 +25,7 @@ CONTRIBUTORS whom without, Akvo RSR would not have been the same:
 - Luuk Diphoorn
 - Akhila Jambagi
 - Jeroen van der Sommen
+- Mark Tiele Westra
 
 Further team members can be found at < http://www.akvo.org/web/team >
 
