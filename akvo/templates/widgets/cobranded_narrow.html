@@ -78,7 +78,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% for sponsor in project.sponsorpartner_set.all %} 
 		
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
-											'{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+											'{% thumbnail sponsor.sponsor_organisation.logo 140x60 upscale,sharpen %}',
 											'support',
 											'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');											
 	{% endfor %}
@@ -86,7 +86,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% for funder in project.fundingpartner_set.all %}
 	
 	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
-											'{% thumbnail funder.funding_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+											'{% thumbnail funder.funding_organisation.logo 140x60 upscale,sharpen %}',
 											'funding',
 											'{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}');
 	{% endfor %}
@@ -95,14 +95,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 
 	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
-											'{% thumbnail supporter.support_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+											'{% thumbnail supporter.support_organisation.logo 140x60 upscale,sharpen %}',
 											'support',
 											'{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}');
 	{% endfor %}
 
 	{% for operator in project.fieldpartner_set.all %}
 	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
-											'{% thumbnail operator.field_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+											'{% thumbnail operator.field_organisation.logo 140x60 upscale,sharpen %}',
 											'field',
 											'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
 	{% endfor %}
@@ -195,7 +195,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% for sponsor in project.sponsorpartner_set.all %}
 				{% if forloop.first %}
 				<p class="smallFont grey left">{% trans 'Presented by' %}</p>
-				<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail sponsor.sponsor_organisation.logo 140x70 autocrop,upscale,sharpen %}"></a><br />
+				<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail sponsor.sponsor_organisation.logo 140x60 upscale,sharpen %}"></a><br />
 				<a class="smallFont" href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}1</a>
 				{% endif%}
 			{% endfor %}
@@ -204,7 +204,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% for funder in project.fundingpartner_set.all %}
 					{% if forloop.first %}
 					<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>
-					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail funder.funding_organisation.logo 140x70 autocrop,upscale,sharpen %}"></a><br />
+					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail funder.funding_organisation.logo 140x60 upscale,sharpen %}"></a><br />
 					<a class="smallFont" href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}2</a>
 					{% endif%}
 				{% endfor %}
@@ -213,7 +213,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Supported by' %}</p>
-						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 140x40 autocrop,upscale,sharpen %}"></a><br />
+						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 140x60 upscale,sharpen %}"></a><br />
 						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}3</a>
 						{% endif%}
 					{% endfor %}
@@ -223,7 +223,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Implemented by' %}</p>
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">
-							<img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail operator.field_organisation.logo 140x70 autocrop,upscale,sharpen %}">
+							<img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail operator.field_organisation.logo 140x60 upscale,sharpen %}">
 						</a><br />
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}3</a>
 						{% endif%}
