@@ -209,7 +209,7 @@ p#project_plan_summary {
 #footer {
 	color:#fff;
 	text-align:right;
-	height:40px;
+	/*height:40px;*/
 	border-bottom:1px solid #9B9AAC;
 }
 #footer img {
