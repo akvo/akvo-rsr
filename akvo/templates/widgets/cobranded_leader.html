@@ -1,0 +1,98 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+
+{% load i18n rsr_tags rsr_filters generic_content %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ request.LANGUAGE_CODE }}">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+	<title>Akvo.org - {% block title %}{% trans 'the open source for water and sanitation' %}{% endblock %}</title>
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}">
+	<meta name="author" content="Akvo.org">
+	
+	<meta http-equiv="Expires" content="Fri, 26 Mar 1999 23:59:59 GMT">	
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	
+	{% block style %} 
+	<link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_leader/css/screen.css" type="text/css" media="screen, projection" />
+	{% endblock style %}
+	
+	<style type="text/css" media="screen">
+	{% block inline_styles %}
+		#header {background-color:#{{bgcolor}};}
+		#header h1 {color:#{{textcolor}};}
+		/*#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important;}*/
+		h2 a {color:#{{bgcolor}} !important;}
+		
+		#wrapper {
+		  padding-left: 200px;   /* LC width */
+		  padding-right: 150px;  /* RC width */
+		}
+		#wrapper .column {
+		  position: relative;
+		  float: left;
+		}
+		#center {
+		  width: 100%;
+		}
+		#left {
+		  width: 200px;          /* LC width */
+		  right: 200px;          /* LC width */
+		  margin-left: -100%;
+		}
+		#right {
+		  width: 150px;          /* RC width */
+		  margin-right: -150px;  /* RC width */
+		}
+		#footer {
+		  clear: both;
+		}
+		/*** IE6 Fix ***/
+		* html #left {
+		  left: 150px;           /* RC width */
+		}
+		
+		body {
+			width:728px;
+		}
+		
+	{% endblock inline_styles %}
+	</style>
+	
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+	</style>
+	<![endif]-->
+	
+	{% block inline_scripts %} {% endblock inline_scripts %}
+	
+	<base target="_parent" />
+</head>
+<body>
+<div id="container">
+	<div id="header">
+		<div style="float:right; margin-right:4px; margin-top:2px;">
+			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
+		</div>
+		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
+	</div>
+	<div id="wrapper">
+		<div id="center" class="column">center</div>
+		<div id="left" class="column">left</div>
+		<div id="right" class="column">right</div>
+	</div>
+	<div id="footer">footer</div>
+</div>
+</body>
+</html>

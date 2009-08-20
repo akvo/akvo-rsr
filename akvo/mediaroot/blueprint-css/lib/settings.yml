@@ -77,5 +77,16 @@ widget_cobranded_banner:
     column_count: 12
     column_width: 30
     gutter_width: 9
+widget_cobranded_leader:
+  path: ../../widgets/cobranded_leader/css
+  namespace: widget_cobranded_leader-
+  custom_css:
+    screen.css:
+      - "../../widget_global_2.css"
+      - widget_cobranded_leader.css
+  custom_layout:
+    column_count: 12
+    column_width: 30
+    gutter_width: 9
 
     
