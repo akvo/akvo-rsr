@@ -239,6 +239,9 @@ div.fullyfunded-text {border-bottom:1px solid #9B9AAC;margin:0;margin-bottom:10p
 a.fundingbox-donate-left-button {color:#000 !important;background:transparent url('../../img/donate-button.gif') no-repeat;display:block;width:75px;padding-top:5px;padding-bottom:6px;margin:5px auto 0px auto;overflow:hidden;}
 .fundingbox-donate-right p {margin:0;padding:0;}
 .fundingbox-donate-right-sponsor {display:block;margin-top:10px;}
+.fundingboxwide-header {background:transparent url(../../img/fundingbox_wide.png) no-repeat 0 0;height:5px;width:260px;overflow:hidden;margin:5px auto 0px auto;}
+.fundingboxwide-footer {background:transparent url(../../img/fundingbox_wide.png) no-repeat -520px 0;height:6px;width:260px;overflow:hidden;margin:0px auto 5px auto;}
+.fundingboxwide-content {background:transparent url(../../img/fundingbox_wide.png) repeat-y -260px 0;width:260px;margin:0px auto 0px auto;overflow:hidden;text-align:center;}
 div#donate_individual {width:47%;float:left;margin:0px 0px 3px 0px;padding:0px;padding-left:10px;font-size:0.9em;text-align:center;margin-top:10px;}
 div#donate_institutions {float:right;width:44%;margin:0px 0px 3px 0px;padding:0px;padding-right:5px;text-align:right;font-size:0.9em;text-align:center;margin-top:10px;}
 a.donate_button {background:transparent url(../../img/donate_button.gif) no-repeat 0px 0px;color:#000 !important;display:block;font:normal 12px arial, sans-serif;height:24px;width:75px;text-decoration:none !important;outline:none;margin-top:3px;}

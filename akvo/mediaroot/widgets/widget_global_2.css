@@ -369,6 +369,31 @@ a.fundingbox-donate-left-button {
 	margin-top:10px;
 }
 
+/* funding_box_wide */
+
+.fundingboxwide-header {
+	background: transparent url(../../img/fundingbox_wide.png) no-repeat 0 0;
+	height:5px;
+	width:260px;
+	overflow:hidden;
+	margin:5px auto 0px auto;
+}
+.fundingboxwide-footer {
+    background: transparent url(../../img/fundingbox_wide.png) no-repeat -520px 0;
+	height:6px;
+	width:260px;
+	overflow:hidden;
+	margin:0px auto 5px auto;
+}
+.fundingboxwide-content {
+	background: transparent url(../../img/fundingbox_wide.png) repeat-y -260px 0;
+	width:260px;
+	margin:0px auto 0px auto;
+	overflow:hidden;
+	text-align:center;
+}
+
+
 /* start new button */
 
 

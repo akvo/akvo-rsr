@@ -56,15 +56,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div id="contentwrapper" style="float:left; width:100%;">
 		<div id="center" style="margin: 0 280px 0 284px">
-			<div class="inner">
-				center					
+			<div class="" style="margin:10px; padding-left:15px; border-left:1px solid #BCBCC6;">
+				<div style="height:75px;">
+					<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+					<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+						  {{project.city}}, {{project.state}}, {{project.country}}
+					</p>
+				</div>
+				<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
+				<p class="smallFont">{{project.show_status}}</p>
 			</div>
 		</div>
 	</div>
 	<div id="left" style="float:left; width: 284px; margin-left: -728px; margin-bottom:5px;">
 		<div style="padding-left:10px;">
 			<h2 id="project_title" style="margin-bottom:0px; margin-top:7px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:60}}</p>
+			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:50}}</p>
 			<div style="float:left; width:125px;">
 				{% if project.current_image %}
 					<a href="{% url akvo.rsr.views.projectmain project.id %}">
@@ -78,21 +85,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 					</p>
 					<p class="miniFont lightgrey" style="margin-top:3px; margin-left:5px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
-					
-			</div>
-			
-			
-			
+			</div>			
 		</div>
 
 	</div>
-	<div id="right" style="background-color:#f0f0f0; float:left; width:280px; margin-left: -280px;">
-		<div class="inner">
-			right			
+	<div id="right" style="float:left; width:280px; margin-left: -280px;">
+		<div class="inner" style="margin-top:5px;">
+			{% funding_box_wide project %}	
 		</div>
 	</div>
 	<div id="footer2">
-		<p>
+		<p style="margin-left:10px; margin-top:1px;">
 			Presented by <span style="margin-left:20px;"><a href="#">Live Earth</a></span>
 		</p>
 	</div>	
