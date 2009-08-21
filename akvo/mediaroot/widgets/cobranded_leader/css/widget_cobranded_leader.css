@@ -55,3 +55,12 @@ div.photo_frame {
 	overflow:hidden;
 	text-align:center;
 }
+
+#footer2 {
+	clear: both;
+	border-top:1px solid #9B9AAC;
+	border-bottom:1px solid #9B9AAC;
+	padding-top:5px;
+	padding-bottom:5px;
+	height:15px;
+}

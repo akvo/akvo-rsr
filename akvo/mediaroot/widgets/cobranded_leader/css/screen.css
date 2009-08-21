@@ -201,6 +201,7 @@ h2 {color:#EC008D;margin:1px 0px 7px 0px;padding:0;font-size:1.3em !important;fo
 hr.divider {margin:12px 0 13px 0;width:100%;display:inline-block;}
 div#next_control {width:45%;float:left;margin:0px 0px 3px 0px;padding:0px;font-size:0.9em;}
 div#prev_control {float:right;width:45%;margin:0px 0px 3px 0px;padding:0px;text-align:right;font-size:0.9em;}
+.inner {padding:5px;}
 h2#project_title {margin-top:13px;}
 p#project_subtitle {margin-bottom:5px;}
 div.photo_frame {margin:0;margin-bottom:7px;margin-left:auto;margin-right:auto;text-align:center;max-width:185px;width:185px;overflow:hidden !important;}
@@ -261,3 +262,4 @@ div.photo_frame {max-width:150px !important;width:150px !important;}
 .fundingboxnarrow-header {background:transparent url(../../img/fundingboxnarrow.png) no-repeat 0 0;height:5px;width:150px;overflow:hidden;margin:5px auto 0px auto;}
 .fundingboxnarrow-footer {background:transparent url(../../img/fundingboxnarrow.png) no-repeat -300px 0;height:6px;width:150px;overflow:hidden;margin:0px auto 5px auto;}
 .fundingboxnarrow-content {background:transparent url(../../img/fundingboxnarrow.png) repeat-y -150px 0;width:150px;margin:0px auto 0px auto;overflow:hidden;text-align:center;}
+#footer2 {clear:both;border-top:1px solid #9B9AAC;border-bottom:1px solid #9B9AAC;padding-top:5px;padding-bottom:5px;height:15px;}

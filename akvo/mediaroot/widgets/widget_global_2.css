@@ -113,6 +113,9 @@ div#prev_control {
 	font-size:0.9em;
 }
 
+.inner {
+    padding:5px;
+}
 
 /*------------------------------------------------------------------ 
 [1. common styles] 
