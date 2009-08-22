@@ -55,22 +55,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
 	</div>
 	<div id="contentwrapper" style="float:left; width:100%;">
-		<div id="center" style="margin: 0 280px 0 284px">
-			<div class="" style="margin:10px; padding-left:15px; border-left:1px solid #BCBCC6;">
-				<div style="height:75px;">
-					<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+		<div id="center" style="margin: 0px 280px 0 284px">
+			<div style="margin:10px; padding-left:20px; border-left:1px solid #BCBCC6;">
+				<div style="height:80px;">
+					<p class="smallFont grey" style="margin-top:15px;">{% trans 'Location' %}</p>
 					<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
 						  {{project.city}}, {{project.state}}, {{project.country}}
 					</p>
 				</div>
 				<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
-				<p class="smallFont">{{project.show_status}}</p>
+				<p class="smallFont" style="padding-bottom:10px;">{{project.show_status}}</p>
 			</div>
 		</div>
 	</div>
-	<div id="left" style="float:left; width: 284px; margin-left: -728px; margin-bottom:5px;">
+	<div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
 		<div style="padding-left:10px;">
-			<h2 id="project_title" style="margin-bottom:0px; margin-top:7px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
 			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:50}}</p>
 			<div style="float:left; width:125px;">
 				{% if project.current_image %}
@@ -80,8 +80,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			    {% endif %}
 			</div>
 			<div style="float:left; width:140px; margin-right:-140px;">
-					<p id="project_plan_summary" style="margin-left:5px; font-size:0.9em;" >
-						{{project.project_plan_summary|safe|smart_truncate:110}}
+					<p id="project_plan_summary" style="margin-left:10px; font-size:0.9em;" >
+						{{project.project_plan_summary|safe|smart_truncate:100}}
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 					</p>
 					<p class="miniFont lightgrey" style="margin-top:3px; margin-left:5px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>

@@ -195,7 +195,7 @@ h2 {color:#EC008D;margin:1px 0px 7px 0px;padding:0;font-size:1.3em !important;fo
 .smallFont {margin:0;}
 .miniFont {font-size:0.8em;margin:0;}
 .capz {text-transform:uppercase;}
-.topmargin {margin-top:11px;}
+.topmargin {margin-top:3px;}
 .right {text-align:right;}
 .left {text-align:left;}
 hr.divider {margin:12px 0 13px 0;width:100%;display:inline-block;}
@@ -258,7 +258,7 @@ input.widget_donate_box-span-2, textarea.widget_donate_box-span-2, select.widget
 .widget_donate_box-last {margin-right:0;padding-right:0;}
 
 /* ../../widgets/cobranded_leader/css/widget_cobranded_leader.css */
-#container {width:728px;min-width:728px;max-width:728px;}
+#container {width:726px;min-width:726px;max-width:726px;}
 #heightconstrain {padding:5px;}
 #project_title {font-size:1.2em !important;}
 div.photo_frame {max-width:150px !important;width:150px !important;}
