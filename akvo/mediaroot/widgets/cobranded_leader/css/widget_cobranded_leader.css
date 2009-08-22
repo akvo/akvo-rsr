@@ -58,9 +58,9 @@ div.photo_frame {
 
 #footer2 {
 	clear: both;
-	border-top:1px solid #ccc;
+	/*border-top:1px solid #ccc;*/
 	border-bottom:1px solid #9B9AAC;
-	padding-top:5px;
+    /*padding-top:5px;*/
 	padding-bottom:5px;
 	height:15px;
 	overflow:hidden;
