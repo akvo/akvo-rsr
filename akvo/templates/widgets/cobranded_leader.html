@@ -56,15 +56,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div id="contentwrapper" style="float:left; width:100%;">
 		<div id="center" style="margin: 0px 280px 0 284px">
-			<div style="margin:10px; padding-left:20px; border-left:1px solid #BCBCC6;">
+			<div style="margin:10px; padding-left:20px; border-left:1px solid #ccc;">
 				<div style="height:80px;">
-					<p class="smallFont grey" style="margin-top:15px;">{% trans 'Location' %}</p>
-					<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+					<p class="smallFont grey" style="font-size:0.9em; margin-top:15px;">{% trans 'Location' %}</p>
+					<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.country.get_continent_display}}</span><br />
 						  {{project.city}}, {{project.state}}, {{project.country}}
 					</p>
 				</div>
-				<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
-				<p class="smallFont" style="padding-bottom:10px;">{{project.show_status}}</p>
+				<p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>
+				<p class="smallFont" style="padding-bottom:10px; font-size:0.9em;">{{project.show_status}}</p>
 			</div>
 		</div>
 	</div>
@@ -84,7 +84,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{{project.project_plan_summary|safe|smart_truncate:100}}
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 					</p>
-					<p class="miniFont lightgrey" style="margin-top:3px; margin-left:5px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+					<p class="miniFont lightgrey" style="margin-top:4px; margin-left:10px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
 			</div>			
 		</div>
 
@@ -95,7 +95,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 	</div>
 	<div id="footer2">
-		<p style="margin-left:10px; margin-top:1px;">
+		<p style="margin-left:10px; margin-top:1px; font-size:0.9em;">
 			Presented by <span style="margin-left:20px;"><a href="#">Live Earth</a></span>
 		</p>
 	</div>	
