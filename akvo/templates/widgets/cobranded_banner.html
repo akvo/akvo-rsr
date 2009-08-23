@@ -105,8 +105,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 			newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
 			
-			$("#partnerspace").fadeOut(1000, function() {
-				$("#partnerspace").html(newHTML).fadeIn(1000);	
+			$("#partnerspace").fadeOut('slow', function() {
+				$("#partnerspace").html(newHTML).fadeIn('slow');
 			});
 
 			index == (partners.length-1) ? index = 0 : index++;		
