@@ -48,7 +48,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<script type="text/javascript" charset="utf-8">
 
 		var index = 1;
-		var intervall = 4000;
+		var intervall = 7000;
 
 		function Partner (orgName,logo,partnerType,url) {
 			this.orgName = orgName;
@@ -92,7 +92,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% endfor %}
 
 		function switchPartner()
-		{
+		{						
 			var newHTML = "";
 						
 			switch(partners[index].getType())
@@ -107,8 +107,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			//newHTML += '<a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() +'</a></p>';
 
-			$("#partnerspace").fadeOut("slow", function() {
-				$("#partnerspace").html(newHTML).fadeIn('slow');	
+			$("#partnerspace").fadeOut(1000, function() {
+				$("#partnerspace").html(newHTML).fadeIn(1000);	
 			});
 
 			index == (partners.length-1) ? index = 0 : index++;		
