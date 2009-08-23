@@ -42,7 +42,85 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</style>
 	<![endif]-->
 	
-	{% block inline_scripts %} {% endblock inline_scripts %}
+	{% block inline_scripts %} 
+	<script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+
+		var index = 1;
+		var intervall = 4000;
+
+		function Partner (orgName,logo,partnerType,url) {
+			this.orgName = orgName;
+			this.logo = logo;
+			this.partnerType = partnerType
+			this.url = url
+			this.getName = function () { return this.orgName; }
+			this.getLogo = function () { return this.logo; }
+			this.getType = function () { return this.partnerType; }
+			this.getUrl = function () { return this.url; }
+		}
+
+		var partners = [];
+
+		{% for sponsor in project.sponsorpartner_set.all %} 
+		partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
+												'{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+												'support',
+												'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');
+		{% endfor %}
+
+		{% for funder in project.fundingpartner_set.all %}
+		partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
+												'{% thumbnail funder.funding_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+												'funding',
+												'{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}');
+		{% endfor %}
+
+		{% for supporter in project.supportpartner_set.all %}
+		partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
+												'{% thumbnail supporter.support_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+												'support',
+												'{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}');
+		{% endfor %}
+
+		{% for operator in project.fieldpartner_set.all %}
+		partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
+												'{% thumbnail operator.field_organisation.logo 140x50 autocrop,upscale,sharpen %}',
+												'field',
+												'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
+		{% endfor %}
+
+		function switchPartner()
+		{
+			var newHTML = "";
+						
+			switch(partners[index].getType())
+			{
+				case "funding": newHTML += '<p>{% trans 'Underwritten by ' %}'; break;
+				case "support": newHTML += '<p>{% trans 'Supported by ' %}'; break;
+				case "field": 	newHTML += '<p>{% trans 'Implemented by ' %}'; break;
+				default: newHTML += '<p">{% trans 'Presented by ' %}'; break;
+			}
+
+			newHTML += '<span style="margin-left:20px;"><a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></span></p>';
+			
+			//newHTML += '<a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() +'</a></p>';
+
+			$("#partnerspace").fadeOut("slow", function() {
+				$("#partnerspace").html(newHTML).fadeIn('slow');	
+			});
+
+			index == (partners.length-1) ? index = 0 : index++;		
+		}
+
+		$(document).ready(function()
+		{
+			window.setInterval(function() { this.switchPartner.apply(this); }, intervall)		
+		});		
+	</script>
+	
+	{% endblock inline_scripts %}
 	
 	<base target="_parent" />
 </head>
@@ -95,10 +173,47 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 	</div>
 	<div id="footer2">
-		<div style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px;">
-			<p style="margin:3px 0px; font-size:0.9em;">
-				Presented by <span style="margin-left:20px;"><a href="#">Live Earth</a></span>
-			</p>
+		<div id="partnerspace" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 3px 0px;">
+			{% if project.sponsorpartner_set.all %}
+				{% for sponsor in project.sponsorpartner_set.all %}
+					{% if forloop.first %}
+						<p>{% trans 'Presented by' %} <span style="margin-left:20px;">
+							<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a></span>
+						</p>
+					{% endif%}
+				{% endfor %}
+			{% else %}
+				{% if project.fundingpartner_set.all %}
+					{% for funder in project.fundingpartner_set.all %}
+						{% if forloop.first %}
+						<p>{% trans 'Underwritten by' %} <span style="margin-left:20px;">
+							<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></span>
+						</p>
+						{% endif%}
+					{% endfor %}
+				{% else %}
+					{% if project.supportpartner_set.all %}
+						{% for supporter in project.supportpartner_set.all %}
+							{% if forloop.first %}
+							<p>{% trans 'Supported by' %} <span style="margin-left:20px;">
+								<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a></span>
+							</p>							
+							{% endif%}
+						{% endfor %}
+					{% else %}
+						{% if project.fieldpartner_set.all %}
+						{% for operator in project.fieldpartner_set.all %}
+							{% if forloop.first %}
+							<p>{% trans 'Implemented by' %} <span style="margin-left:20px;">
+								<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a></span>
+							</p>							
+							{% endif%}
+						{% endfor %}
+						{% endif %}
+					{% endif %}
+				{% endif %}
+			
+			{% endif %}
 		</div>
 	</div>	
 </div>
