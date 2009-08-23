@@ -13,25 +13,18 @@
 */
 
 #container {
-    width:468px;
-	min-width:468px;
-	max-width:468px;
-    /*
-	width:168px;
-	min-width:168px;
-	max-width:168px;
-	*/
+    width:466px;
+	min-width:466px;
+	max-width:466px;
 }
 
 #heightconstrain {
 	padding:5px;
 }
 
-
 #project_title {
     font-size:1.2em !important;
 }
-
 
 div.photo_frame {
     max-width:150px !important;
@@ -62,4 +55,14 @@ div.photo_frame {
 	margin:0px auto 0px auto;
 	overflow:hidden;
 	text-align:center;
+}
+
+#footer2 {
+	clear: both;
+	/*border-top:1px solid #ccc;*/
+	border-bottom:1px solid #9B9AAC;
+    /*padding-top:5px;*/
+	/*padding-bottom:5px;*/
+	height:1px;
+	overflow:hidden;
 }

@@ -1,15 +1,38 @@
-{% extends "widgets/base_widget.html" %}
 {% comment %}
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
+
 {% load i18n rsr_tags rsr_filters generic_content thumbnail %}
 
-{% block title %}project@{{block.super}}{% endblock title %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ request.LANGUAGE_CODE }}">
 
-{% block style %}
-	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_banner/css/screen.css" type="text/css" media="screen, projection" />
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+	<title>Akvo.org - {% block title %}{% trans 'the open source for water and sanitation' %}{% endblock %}</title>
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}">
+	<meta name="author" content="Akvo.org">
+	
+	<meta http-equiv="Expires" content="Fri, 26 Mar 1999 23:59:59 GMT">	
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	
+	{% block style %} 
+	<link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_banner/css/screen.css" type="text/css" media="screen, projection" />
+	{% endblock style %}
+	
+	<style type="text/css" media="screen">
+	{% block inline_styles %}
+		#header {background-color:#{{bgcolor}};}
+		#header h1 {color:#{{textcolor}};}
+		h2 a {color:#{{bgcolor}} !important;}
+			
+	{% endblock inline_styles %}
+	</style>
+	
 	<!--[if IE]>
 	<style type="text/css" media="screen">
 		.divider { 
@@ -18,320 +41,183 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		}
 	</style>
 	<![endif]-->
-{% endblock style %}
+	
+	{% block inline_scripts %} 
+	<script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
+	
+	<script type="text/javascript" charset="utf-8">
 
-{% block inline_styles %}
-{{block.super}}
-	#heightconstrain {
-		height: expression( this.scrollHeight > 809 ? "810px" : "auto" ); /* sets max-height for IE */
-		max-height:810px;
-		overflow:hidden;
-	}
-	.fundingbox-content {
-		height: expression( this.scrollHeight > 4 ? "123px" : "auto" ); /* sets max-height for IE */
-		max-height:121px;
-		height:121px;
-	}
-	
-	#progress_back {
-		background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
-	}
-	#progress_green {
-		background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
-	}
-	#footer {
-		background-color:#9B9AAC;
-		height:1px !important;
-		overflow: hidden;
-		line-height:0px;
-		border-bottom:0px solid #9B9AAC;
-	}
+		var index = 1;
+		var intervall = 7000;
 
-{% endblock inline_styles %}
-
-{% block inline_scripts %}
-<script src="{{MEDIA_URL}}js/jquery-1.2.6.js" type="text/javascript"></script>
-
-<script type="text/javascript" charset="utf-8">
-	
-	var index = 1;
-	
-	function Partner (orgName,logo,partnerType,url) {
-		this.orgName = orgName;
-		this.logo = logo;
-		this.partnerType = partnerType
-		this.url = url
-		this.getName = function () { return this.orgName; }
-		this.getLogo = function () { return this.logo; }
-		this.getType = function () { return this.partnerType; }
-		this.getUrl = function () { return this.url; }
-	}
-	
-	var partners = [];
-	
-	{% for sponsor in project.sponsorpartner_set.all %} 
-	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
-											'{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}',
-											'support',
-											'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');
-	{% endfor %}
-	
-	{% for funder in project.fundingpartner_set.all %}
-	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
-											'{% thumbnail funder.funding_organisation.logo 140x50 autocrop,upscale,sharpen %}',
-											'funding',
-											'{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}');
-	{% endfor %}
-	
-	{% for supporter in project.supportpartner_set.all %}
-	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
-											'{% thumbnail supporter.support_organisation.logo 140x50 autocrop,upscale,sharpen %}',
-											'support',
-											'{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}');
-	{% endfor %}
-
-	{% for operator in project.fieldpartner_set.all %}
-	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
-											'{% thumbnail operator.field_organisation.logo 140x50 autocrop,upscale,sharpen %}',
-											'field',
-											'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
-	{% endfor %}
-	
-	function switchPartner()
-	{
-		var newHTML = "";
-		
-		switch(partners[index].getType())
-		{
-			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by ' %}'; break;
-			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by ' %}'; break;
-			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by ' %}'; break;
-			default: newHTML += '<p class="smallFont grey left">{% trans 'Presented by ' %}'; break;
+		function Partner (orgName,logo,partnerType,url) {
+			this.orgName = orgName;
+			this.logo = logo;
+			this.partnerType = partnerType
+			this.url = url
+			this.getName = function () { return this.orgName; }
+			this.getLogo = function () { return this.logo; }
+			this.getType = function () { return this.partnerType; }
+			this.getUrl = function () { return this.url; }
 		}
-		
-		newHTML += '<a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() +'</a></p>';
-		
-		$("#partnerspace").fadeOut("slow", function() {
-			$("#partnerspace").html(newHTML).fadeIn('slow');	
-		});
-	
-		index == (partners.length-1) ? index = 0 : index++;		
-	}
-	
-	$(document).ready(function()
-	{
-		window.setInterval(function() { this.switchPartner.apply(this); }, 2000)		
-	});		
-</script>
-	
-{% endblock inline_scripts %}
 
+		var partners = [];
+
+		{% for sponsor in project.sponsorpartner_set.all %} 
+		partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
+												'/*{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
+												'support',
+												'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');
+		{% endfor %}
+
+		{% for funder in project.fundingpartner_set.all %}
+		partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
+												'/*{% thumbnail funder.funding_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
+												'funding',
+												'{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}');
+		{% endfor %}
+
+		{% for supporter in project.supportpartner_set.all %}
+		partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
+												'/*{% thumbnail supporter.support_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
+												'support',
+												'{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}');
+		{% endfor %}
+
+		{% for operator in project.fieldpartner_set.all %}
+		partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
+												'/*{% thumbnail operator.field_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
+												'field',
+												'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
+		{% endfor %}
+
+		function switchPartner()
+		{						
+			var newHTML = "";
+						
+			switch(partners[index].getType())
+			{
+				case "funding": newHTML += '<p class="grey">{% trans 'Underwritten by' %}'; break;
+				case "support": newHTML += '<p class="grey">{% trans 'Supported by' %}'; break;
+				case "field": 	newHTML += '<p class="grey">{% trans 'Implemented by' %}'; break;
+				default: newHTML += '<p class="grey">{% trans 'Presented by' %}'; break;
+			}
+
+			newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
+			
+			$("#partnerspace").fadeOut(1000, function() {
+				$("#partnerspace").html(newHTML).fadeIn(1000);	
+			});
+
+			index == (partners.length-1) ? index = 0 : index++;		
+		}
+
+		$(document).ready(function()
+		{
+			window.setInterval(function() { this.switchPartner.apply(this); }, intervall)		
+		});		
+	</script>
 	
-{% block header %}
-<div class="widget_cobranded_banner-container" style="margin:0; padding:0; ">
-	<div class="widget_cobranded_banner-first widget_cobranded_banner-span-6">
+	{% endblock inline_scripts %}
+	
+	<base target="_parent" />
+</head>
+<body>
+<div id="container">
+	<div id="header">
+		<div style="float:right; margin-right:4px; margin-top:2px;">
+			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
+		</div>
 		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
 	</div>
-	<div class="widget_cobranded_banner-last widget_cobranded_banner-span-6" style="text-align:right; margin-bottom:0;">
-		<img src="{{MEDIA_URL}}widgets/img/Akvo-badge-grey.png" width="100" height="30" alt="Akvo.org" />
-	</div>
-</div>
-
-{% endblock header %}
-
-{% block content %}
-<div id="heightconstrain">
-	<div style="background-color:#ccc;">
-		<div style="width:308px; float:left;">
-			<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-			<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>
-			<div style="width:150px; float:left;">
-			{% if project.current_image %}
-				<div class="photo_frame">
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">
-						<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
-					</a>
-					<p class="miniFont lightgrey left" style="margin-top:1px; margin-bottom:5px; text-transform: capitalize;">{% trans 'Ref' %}: {{project.id}}</p>
+	<div id="contentwrapper" style="float:left; width:100%; height:202px">
+		<div id="left" style="float:left; width:284px;">
+			
+			<div style="padding-left:10px;">
+				<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+				<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:50}}</p>
+				<div style="float:left; width:125px;">
+					{% if project.current_image %}
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">
+				    		<img src="{% thumbnail project.current_image 120x90 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
+						</a>
+				    {% endif %}
+				<p class="miniFont lightgrey" style="margin-top:4px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
 				</div>
-		    {% endif %}
+				<div style="float:left; width:140px; margin-right:-140px; padding-left:10px;">
+						<div style="height:50px;">
+							<p class="smallFont grey" style="font-size:0.9em;">{% trans 'Location' %}</p>
+							<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.country.get_continent_display}}</span><br />
+								  {{project.city}}, {{project.state}}, {{project.country}}
+							</p>
+						</div>
+						<p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>
+						<p class="smallFont" style="padding-bottom:10px; font-size:0.9em;">{{project.show_status}}</p>
+					
+						{% comment %}
+						<p id="project_plan_summary" style="margin-left:10px; font-size:0.9em;" >
+							{{project.project_plan_summary|safe|smart_truncate:100}}
+							<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+						</p>
+						{% endcomment %}
+				</div>			
 			</div>
-			<div style="width:140px; margin-left:10px; float:left;">
-				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
-					{{project.country}}, {{project.city}}
-				</p>
-				<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
-				<p class="smallFont">{{project.show_status}}</p>
+			<div style="clear:both; line-height:0;">
+				
 			</div>
-
-			<div style="clear:both;"> </div>
-			{% comment %}
-				start
-			{% endcomment %}
-			<div id="partnerspace">
+			
+			<div style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px; height:0px; margin-top:18px;">
+				<div id="partnerspace">
 				{% if project.sponsorpartner_set.all %}
 					{% for sponsor in project.sponsorpartner_set.all %}
 						{% if forloop.first %}
-						<p class="smallFont grey left">{% trans 'Presented by' %} <a class="smallFont" href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}1</a></p>
+							<p class="grey">{% trans 'Presented by' %} <a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
+							</p>
 						{% endif%}
 					{% endfor %}
 				{% else %}
 					{% if project.fundingpartner_set.all %}
 						{% for funder in project.fundingpartner_set.all %}
 							{% if forloop.first %}
-							<p class="smallFont grey left">{% trans 'Underwritten by' %} <a class="smallFont" href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}2</a></p>
+							<p class="grey">{% trans 'Underwritten by' %} <a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
+							</p>
 							{% endif%}
 						{% endfor %}
 					{% else %}
 						{% if project.supportpartner_set.all %}
 							{% for supporter in project.supportpartner_set.all %}
 								{% if forloop.first %}
-								<p class="smallFont grey left">{% trans 'Supported by' %} <a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}3</a></p>
+								<p class="grey">{% trans 'Supported by' %} <a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
+								</p>							
 								{% endif%}
 							{% endfor %}
 						{% else %}
 							{% if project.fieldpartner_set.all %}
 							{% for operator in project.fieldpartner_set.all %}
 								{% if forloop.first %}
-								<p class="smallFont grey left">{% trans 'Implemented by' %} <a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}3</a></p>
+								<p class="grey">{% trans 'Implemented by' %} <a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a>
+								</p>							
 								{% endif%}
 							{% endfor %}
 							{% endif %}
 						{% endif %}
 					{% endif %}
-				{% endif %}
-			</div>
-			
-			{% comment %}
-				stop
-			{% endcomment %}
-		
-		</div>
-		<div style="width:150px; margin-left:0; float:left;">
-			<div style="margin:0; margin-top:13px;">
-				{% funding_box_narrow2 project %}
-			</div>
-		</div>
-	</div>
-	
-	
-	{% comment %}
-		
 
-	<div class="widget_cobranded_banner-first widget_cobranded_banner-span-8">
-		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>
-		<div style="background-color:#ccc; width:150px;">
-			{% if project.current_image %}
-				<div class="photo_frame">
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">
-						<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
-					</a>
-					<p class="miniFont lightgrey right" style="margin-top:1px; margin-bottom:5px; text-transform: capitalize;">{% trans 'Ref' %}: {{project.id}}</p>
+				{% endif %}
 				</div>
-		    {% endif %}
+			</div>
 		</div>
-		<div class="widget_cobranded_banner-last widget_cobranded_banner-span-3" style="background-color:#cyan;">
-			asdf
-		</div>
-	
-		
-		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-		<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
-			{{project.country}}, {{project.city}}
-		</p>
-		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
-		<p class="smallFont">{{project.show_status}}</p>
-	</div>
-	
-	<div class="widget_cobranded_banner-last widget_cobranded_banner-span-4">
-		<div style="margin:0; margin-top:13px;">
+		<div id="right" style="float:left; width:184px; margin-right:-184px;">
 			{% funding_box_narrow2 project %}
 		</div>
 	</div>
-	{% endcomment %}
-	{% comment %}
-		
-
-		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>	
-		{% if project.current_image %}
-			<div class="photo_frame">
-				<a href="{% url akvo.rsr.views.projectmain project.id %}">
-					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
-				</a>
-			</div>
-	    {% endif %}
 	
-			<p id="project_plan_summary">
-				{{project.project_plan_summary|safe|smart_truncate:110}}
-				<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
-			</p>
-				<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
-				{% with project.project_updates.latest as latest_update %}
-					{% if latest_update %}
-						<p class="smallFont"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a></p>
-					{% else %}
-						<p class="smallFont">{% trans 'Not yet' %}</p>
-					{% endif %}
-				{% endwith %}
-				<hr class="divider" />
-				<div style="width:47%; float:left;">
-					<p class="smallFont grey">{% trans 'Funding' %}</p>
-				</div>
-				<div style="width:50%; margin-left:50%;">
-					<p class="miniFont lightgrey right" style="margin-top:1px; margin-bottom:5px; text-transform: capitalize;">{% trans 'Ref' %}: {{project.id}}</p>
-				</div>
-	
-		{% endcomment %}
-
+	<div id="footer2" style="">
 		{% comment %}
-			
+		<div style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px; height:0px">
 
-		<hr class="divider" />
-		
-		<div style="height:20px;">
-		<div id="partnerspace" style="text-align:center;">
-		{% if project.sponsorpartner_set.all %}
-			{% for sponsor in project.sponsorpartner_set.all %}
-				{% if forloop.first %}
-				<p class="smallFont grey left">{% trans 'Presented by' %} <a class="smallFont" href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}1</a></p>
-				{% endif%}
-			{% endfor %}
-		{% else %}
-			{% if project.fundingpartner_set.all %}
-				{% for funder in project.fundingpartner_set.all %}
-					{% if forloop.first %}
-					<p class="smallFont grey left">{% trans 'Underwritten by' %} <a class="smallFont" href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}2</a></p>
-					{% endif%}
-				{% endfor %}
-			{% else %}
-				{% if project.supportpartner_set.all %}
-					{% for supporter in project.supportpartner_set.all %}
-						{% if forloop.first %}
-						<p class="smallFont grey left">{% trans 'Supported by' %} <a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}3</a></p>
-						{% endif%}
-					{% endfor %}
-				{% else %}
-					{% if project.fieldpartner_set.all %}
-					{% for operator in project.fieldpartner_set.all %}
-						{% if forloop.first %}
-						<p class="smallFont grey left">{% trans 'Implemented by' %} <a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}3</a></p>
-						{% endif%}
-					{% endfor %}
-					{% endif %}
-				{% endif %}
-			{% endif %}
-		{% endif %}
-		</div>
 		</div>
 		{% endcomment %}
-		
-		
-</div>
-{% endblock content %}
-
-{% block footer %}
-	
-{% endblock footer %}
-
+	</div>	
+</body>
+</html>
