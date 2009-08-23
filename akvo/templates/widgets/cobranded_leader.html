@@ -173,7 +173,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 	</div>
 	<div id="footer2">
-		<div id="partnerspace" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 3px 0px;">
+		<div id="" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 3px 0px;">
+			<div id="partnerspace">
 			{% if project.sponsorpartner_set.all %}
 				{% for sponsor in project.sponsorpartner_set.all %}
 					{% if forloop.first %}
@@ -214,6 +215,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endif %}
 			
 			{% endif %}
+			</div>
 		</div>
 	</div>	
 </div>
