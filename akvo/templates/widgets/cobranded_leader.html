@@ -97,10 +97,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						
 			switch(partners[index].getType())
 			{
-				case "funding": newHTML += '<p>{% trans 'Underwritten by ' %}'; break;
-				case "support": newHTML += '<p>{% trans 'Supported by ' %}'; break;
-				case "field": 	newHTML += '<p>{% trans 'Implemented by ' %}'; break;
-				default: newHTML += '<p">{% trans 'Presented by ' %}'; break;
+				case "funding": newHTML += '<p class="grey">{% trans 'Underwritten by ' %}'; break;
+				case "support": newHTML += '<p class="grey">{% trans 'Supported by ' %}'; break;
+				case "field": 	newHTML += '<p class="grey">{% trans 'Implemented by ' %}'; break;
+				default: newHTML += '<p class="grey">{% trans 'Presented by ' %}'; break;
 			}
 
 			newHTML += '<span style="margin-left:20px;"><a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></span></p>';
@@ -178,7 +178,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% if project.sponsorpartner_set.all %}
 				{% for sponsor in project.sponsorpartner_set.all %}
 					{% if forloop.first %}
-						<p>{% trans 'Presented by' %} <span style="margin-left:20px;">
+						<p class="grey">{% trans 'Presented by' %} <span style="margin-left:20px;">
 							<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a></span>
 						</p>
 					{% endif%}
@@ -187,7 +187,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if project.fundingpartner_set.all %}
 					{% for funder in project.fundingpartner_set.all %}
 						{% if forloop.first %}
-						<p>{% trans 'Underwritten by' %} <span style="margin-left:20px;">
+						<p class="grey">{% trans 'Underwritten by' %} <span style="margin-left:20px;">
 							<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></span>
 						</p>
 						{% endif%}
@@ -196,7 +196,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% if project.supportpartner_set.all %}
 						{% for supporter in project.supportpartner_set.all %}
 							{% if forloop.first %}
-							<p>{% trans 'Supported by' %} <span style="margin-left:20px;">
+							<p class="grey">{% trans 'Supported by' %} <span style="margin-left:20px;">
 								<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a></span>
 							</p>							
 							{% endif%}
@@ -205,7 +205,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% if project.fieldpartner_set.all %}
 						{% for operator in project.fieldpartner_set.all %}
 							{% if forloop.first %}
-							<p>{% trans 'Implemented by' %} <span style="margin-left:20px;">
+							<p class="grey">{% trans 'Implemented by' %} <span style="margin-left:20px;">
 								<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a></span>
 							</p>							
 							{% endif%}
