@@ -13,6 +13,10 @@ function getHeight(widget_type)
 		case 'project-updates': 	return 900; break; 
 		case 'project-list': 		return 730; break;
 		case 'project-narrow': 		return 840; break; 
+		case 'cobranded-narrow':    return 911; break;
+		case 'cobranded-short':     return 623; break;
+		case 'cobranded-banner':    return 234; break;
+		case 'cobranded-leader':    return 400; break;
 		default: 					return 840;
 	}	
 }
@@ -26,6 +30,10 @@ function getWidth(widget_type)
 		case 'project-updates': 	return 202; break; 
 		case 'project-list': 		return 745; break; 
 		case 'project-narrow': 		return 170; break; 
+		case 'cobranded-narrow': 	return 170; break; 
+		case 'cobranded-short': 	return 170; break; 
+		case 'cobranded-banner':    return 468; break;
+		case 'cobranded-leader':    return 728; break;
 		default: 					return 202;
 	}	
 }
@@ -50,6 +58,18 @@ $(document).ready(function()
 	
 	$("#project-narrow-random-from-org").click(function() { $('#project-narrow-organisations').removeAttr("disabled"); });
 	$("#project-narrow-specific-project").click(function() {	$('#project-narrow-organisations').attr("disabled", true); });
+	
+	$("#cobranded-narrow-random-from-org").click(function() { $('#cobranded-narrow-organisations').removeAttr("disabled"); });
+	$("#cobranded-narrow-specific-project").click(function() {	$('#cobranded-narrow-organisations').attr("disabled", true); });
+	
+	$("#cobranded-short-random-from-org").click(function() { $('#cobranded-short-organisations').removeAttr("disabled"); });
+	$("#cobranded-short-specific-project").click(function() {	$('#cobranded-short-organisations').attr("disabled", true); });
+	
+	$("#cobranded-banner-random-from-org").click(function() { $('#cobranded-banner-organisations').removeAttr("disabled"); });
+	$("#cobranded-banner-specific-project").click(function() {	$('#cobranded-banner-organisations').attr("disabled", true); });
+	
+	$("#cobranded-leader-random-from-org").click(function() { $('#cobranded-leader-organisations').removeAttr("disabled"); });
+	$("#cobranded-leader-specific-project").click(function() {	$('#cobranded-leader-organisations').attr("disabled", true); });
 	
 	$("#project-updates-random-from-org").click(function() { $('#project-updates-organisations').removeAttr("disabled"); });
 	$("#project-updates-specific-project").click(function() {	$('#project-updates-organisations').attr("disabled", true); });

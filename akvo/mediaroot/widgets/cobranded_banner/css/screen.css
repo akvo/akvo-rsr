@@ -258,7 +258,7 @@ input.widget_donate_box-span-2, textarea.widget_donate_box-span-2, select.widget
 .widget_donate_box-last {margin-right:0;padding-right:0;}
 
 /* ../../widgets/cobranded_banner/css/widget_cobranded_banner.css */
-#container {width:466px;min-width:466px;max-width:466px;}
+#container {width:464px;min-width:464px;max-width:464px;}
 #heightconstrain {padding:5px;}
 #project_title {font-size:1.2em !important;}
 div.photo_frame {max-width:150px !important;width:150px !important;}
