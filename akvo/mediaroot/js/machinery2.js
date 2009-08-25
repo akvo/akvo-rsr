@@ -14,7 +14,7 @@ function getHeight(widget_type)
 		case 'project-list': 		return 730; break; 
 		case 'project-narrow': 		return 840; break; 
 		case 'cobranded-narrow': 	return 911; break; 
-		case 'cobranded-short':     return 623; break;
+		case 'cobranded-short':     return 627; break;
 		case 'cobranded-banner':    return 234; break;
 		case 'cobranded-leader':    return 207; break;
 		default: 					return 840;
