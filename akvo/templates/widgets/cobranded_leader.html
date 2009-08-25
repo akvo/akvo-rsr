@@ -21,7 +21,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<meta http-equiv="cache-control" content="no-cache">
 	
 	{% block style %} 
-	<link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_banner/css/screen.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_leader/css/screen.css" type="text/css" media="screen, projection" />
 	{% endblock style %}
 	
 	<style type="text/css" media="screen">
@@ -97,16 +97,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						
 			switch(partners[index].getType())
 			{
-				case "funding": newHTML += '<p class="grey" style="margin-bottom:0px;">{% trans 'Underwritten by' %}'; break;
-				case "support": newHTML += '<p class="grey" style="margin-bottom:0px;">{% trans 'Supported by' %}'; break;
-				case "field": 	newHTML += '<p class="grey" style="margin-bottom:0px;">{% trans 'Implemented by' %}'; break;
-				default: newHTML += '<p class="grey" style="margin-bottom:0px;">{% trans 'Presented by' %}'; break;
+				case "funding": newHTML += '<p class="grey">{% trans 'Underwritten by' %}'; break;
+				case "support": newHTML += '<p class="grey">{% trans 'Supported by' %}'; break;
+				case "field": 	newHTML += '<p class="grey">{% trans 'Implemented by' %}'; break;
+				default: newHTML += '<p class="grey">{% trans 'Presented by' %}'; break;
 			}
 
 			newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
 			
-			$("#partnerspace").fadeOut('slow', function() {
-				$("#partnerspace").html(newHTML).fadeIn('slow');
+			$("#partnerspace").fadeOut(1000, function() {
+				$("#partnerspace").html(newHTML).fadeIn(1000);	
 			});
 
 			index == (partners.length-1) ? index = 0 : index++;		
@@ -130,97 +130,89 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
 	</div>
-	<div id="contentwrapper" style="float:left; width:100%; height:202px">
-		<div id="left" style="float:left; width:284px;">
-			
-			<div style="padding-left:10px;">
-				<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:30}}</a></h2>
-				<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:50}}</p>
-				<div style="float:left; width:125px;">
-					{% if project.current_image %}
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">
-				    		<img src="{% thumbnail project.current_image 120x90 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
-						</a>
-				    {% endif %}
-				<p class="miniFont lightgrey" style="margin-top:4px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+	<div id="contentwrapper" style="float:left; width:100%;">
+		<div id="center" style="margin: 0px 280px 0 284px">
+			<div style="margin:10px; padding-left:20px; border-left:1px solid #ccc;">
+				<div style="height:80px;">
+					<p class="smallFont grey" style="font-size:0.9em; margin-top:15px;">{% trans 'Location' %}</p>
+					<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.country.get_continent_display}}</span><br />
+						  {{project.city}}, {{project.state}}, {{project.country}}
+					</p>
 				</div>
-				<div style="float:left; width:140px; margin-right:-140px; padding-left:10px;">
-						<div style="height:50px;">
-							<p class="smallFont grey" style="font-size:0.9em;">{% trans 'Location' %}</p>
-							<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.country.get_continent_display}}</span><br />
-								  {{project.city}}, {{project.state}}, {{project.country}}
-							</p>
-						</div>
-						<p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>
-						<p class="smallFont" style="padding-bottom:10px; font-size:0.9em;">{{project.show_status}}</p>
-					
-						{% comment %}
-						<p id="project_plan_summary" style="margin-left:10px; font-size:0.9em;" >
-							{{project.project_plan_summary|safe|smart_truncate:100}}
-							<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
-						</p>
-						{% endcomment %}
-				</div>			
+				<p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>
+				<p class="smallFont" style="padding-bottom:10px; font-size:0.9em;">{{project.show_status}}</p>
 			</div>
-			<div style="clear:both; line-height:0;">
-				
-			</div>
-			
-			<div style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px; height:0px; margin-top:18px; padding-bottom:0px;">
-
-				<div id="partnerspace">
-				{% if project.sponsorpartner_set.all %}
-					{% for sponsor in project.sponsorpartner_set.all %}
-						{% if forloop.first %}
-							<p class="grey" style="margin-bottom:0px;">{% trans 'Presented by' %} <a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
-							</p>
-						{% endif%}
-					{% endfor %}
-				{% else %}
-					{% if project.fundingpartner_set.all %}
-						{% for funder in project.fundingpartner_set.all %}
-							{% if forloop.first %}
-							<p class="grey" style="margin-bottom:0px;">{% trans 'Underwritten by' %} <a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
-							</p>
-							{% endif%}
-						{% endfor %}
-					{% else %}
-						{% if project.supportpartner_set.all %}
-							{% for supporter in project.supportpartner_set.all %}
-								{% if forloop.first %}
-								<p class="grey" style="margin-bottom:0px;">{% trans 'Supported by' %} <a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
-								</p>							
-								{% endif%}
-							{% endfor %}
-						{% else %}
-							{% if project.fieldpartner_set.all %}
-							{% for operator in project.fieldpartner_set.all %}
-								{% if forloop.first %}
-								<p class="grey" style="margin-bottom:0px;">{% trans 'Implemented by' %} <a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a>
-								</p>							
-								{% endif%}
-							{% endfor %}
-							{% endif %}
-						{% endif %}
-					{% endif %}
-
-				{% endif %}
-				</div>				
-			</div>
-
 		</div>
-
-		
-		<div id="right" style="float:left; width:180px; margin-right:-180px;">
-			<div style="margin-right:10px; margin-left:auto; width:150px;">
-				{% funding_box_narrow2 project %}					
+	</div>
+	<div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
+		<div style="padding-left:10px;">
+			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:30}}</a></h2>
+			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:45}}</p>
+			<div style="float:left; width:125px;">
+				{% if project.current_image %}
+					<a href="{% url akvo.rsr.views.projectmain project.id %}">
+			    		<img src="{% thumbnail project.current_image 120x90 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
+					</a>
+			    {% endif %}
 			</div>
+			<div style="float:left; width:140px; margin-right:-140px;">
+					<p id="project_plan_summary" style="margin-left:10px; font-size:0.9em; height:70px;" >
+						{{project.project_plan_summary|safe|smart_truncate:80}}
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+					</p>
+					<p class="miniFont lightgrey" style="margin-top:4px; margin-left:10px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+			</div>			
 		</div>
 
 	</div>
-
-	<div id="footer2" style="">
-		
+	<div id="right" style="float:left; width:280px; margin-left: -280px;">	
+		<div class="inner" style="margin-top:3px;">
+			{% funding_box_wide project %}	
+		</div>
+	</div>
+	<div id="footer2">
+		<div id="" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px;">
+			<div id="partnerspace">
+			{% if project.sponsorpartner_set.all %}
+				{% for sponsor in project.sponsorpartner_set.all %}
+					{% if forloop.first %}
+						<p class="grey">{% trans 'Presented by' %} <a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
+						</p>
+					{% endif%}
+				{% endfor %}
+			{% else %}
+				{% if project.fundingpartner_set.all %}
+					{% for funder in project.fundingpartner_set.all %}
+						{% if forloop.first %}
+						<p class="grey">{% trans 'Underwritten by' %} <a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
+						</p>
+						{% endif%}
+					{% endfor %}
+				{% else %}
+					{% if project.supportpartner_set.all %}
+						{% for supporter in project.supportpartner_set.all %}
+							{% if forloop.first %}
+							<p class="grey">{% trans 'Supported by' %} <a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
+							</p>							
+							{% endif%}
+						{% endfor %}
+					{% else %}
+						{% if project.fieldpartner_set.all %}
+						{% for operator in project.fieldpartner_set.all %}
+							{% if forloop.first %}
+							<p class="grey">{% trans 'Implemented by' %} <a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a>
+							</p>							
+							{% endif%}
+						{% endfor %}
+						{% endif %}
+					{% endif %}
+				{% endif %}
+			
+			{% endif %}
+			</div>
+		</div>
 	</div>	
+</div>
+
 </body>
 </html>

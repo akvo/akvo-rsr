@@ -70,5 +70,33 @@ def funding_box_narrow2(context, project):
     '''
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
 
+@register.inclusion_tag('inclusion_tags/individual_donate_button.html', takes_context=True)
+def individual_donate_button(context, project):
+    '''
+	show the individual doante button. CSS definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
+
+@register.inclusion_tag('inclusion_tags/institutions_sponsor.html', takes_context=True)
+def institutions_sponsor(context, project):
+    '''
+	show the individual doante button. CSS definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
+
+@register.inclusion_tag('inclusion_tags/project_budget.html', takes_context=True)
+def project_budget(context, project):
+    '''
+	show the individual doante button. CSS definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+
+@register.inclusion_tag('inclusion_tags/funding_box_wide.html', takes_context=True)
+def funding_box_wide(context, project):
+    '''
+	show the funding box used in the widgets. Css definition in widget_global.css   
+    '''
+    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+
 
 
