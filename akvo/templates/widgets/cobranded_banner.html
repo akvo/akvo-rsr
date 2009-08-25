@@ -122,8 +122,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	<base target="_parent" />
 </head>
-<body>
-<div id="container">
+<body style="background-color:transparent;">
+<div id="container" style="background-color:#fff;">
 	<div id="header">
 		<div style="float:right; margin-right:4px; margin-top:2px;">
 			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
@@ -210,7 +210,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		</div>
 
-		
 		<div id="right" style="float:left; width:180px; margin-right:-180px;">
 			<div style="margin-right:10px; margin-left:auto; width:150px;">
 				{% funding_box_narrow2 project %}					
