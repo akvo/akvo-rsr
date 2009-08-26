@@ -29,6 +29,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		#header {background-color:#{{bgcolor}};}
 		#header h1 {color:#{{textcolor}};}
 		h2 a {color:#{{bgcolor}} !important;}
+		
+		#progress_back {
+			background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+		}
+		#progress_green {
+			background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+		}
 			
 	{% endblock inline_styles %}
 	</style>
@@ -122,8 +129,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	<base target="_parent" />
 </head>
-<body>
-<div id="container">
+<body style="background-color:transparent;">
+<div id="container" style="background-color:#fff;">
 	<div id="header">
 		<div style="float:right; margin-right:4px; margin-top:2px;">
 			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
@@ -135,8 +142,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<div style="padding-left:10px;">
 				<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:30}}</a></h2>
-				<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:50}}</p>
-				<div style="float:left; width:125px;">
+				<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:40}}</p>
+				<div style="float:left; width:125px; height:110px;">
 					{% if project.current_image %}
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">
 				    		<img src="{% thumbnail project.current_image 120x90 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
@@ -145,7 +152,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="miniFont lightgrey" style="margin-top:4px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
 				</div>
 				<div style="float:left; width:140px; margin-right:-140px; padding-left:10px;">
-						<div style="height:50px;">
+						<div style="height:57px; overflow:hidden; margin-bottom:7px;">
 							<p class="smallFont grey" style="font-size:0.9em;">{% trans 'Location' %}</p>
 							<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.country.get_continent_display}}</span><br />
 								  {{project.city}}, {{project.state}}, {{project.country}}
@@ -210,10 +217,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		</div>
 
-		
 		<div id="right" style="float:left; width:180px; margin-right:-180px;">
 			<div style="margin-right:10px; margin-left:auto; width:150px;">
-				{% funding_box_narrow2 project %}					
+				{% funding_box_narrow2 project %}		
 			</div>
 		</div>
 

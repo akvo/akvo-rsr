@@ -66,7 +66,7 @@ widget_cobranded_narrow:
     column_count: 2
     column_width: 75
     gutter_width: 4
-widget_cobranded_narrow:
+widget_cobranded_short:
   path: ../../widgets/cobranded_short/css
   namespace: widget_cobranded_short-
   custom_css:

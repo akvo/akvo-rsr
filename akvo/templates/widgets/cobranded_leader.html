@@ -29,6 +29,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		#header {background-color:#{{bgcolor}};}
 		#header h1 {color:#{{textcolor}};}
 		h2 a {color:#{{bgcolor}} !important;}
+		
+		#progress_back {
+			background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+		}
+		#progress_green {
+			background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+		}
 			
 	{% endblock inline_styles %}
 	</style>
@@ -122,8 +129,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	<base target="_parent" />
 </head>
-<body>
-<div id="container">
+<body style="background-color:transparent;">
+<div id="container" style="background-color:#fff;">
 	<div id="header">
 		<div style="float:right; margin-right:4px; margin-top:2px;">
 			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>

@@ -82,70 +82,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	<div class="machinery_customization" style="margin-left:110px; margin-right:50px;">
 		<h3 style="padding-bottom:0;">{% trans 'Step 1: Select the type of widget you wish to use' %}</h3>
-		<p class="marchGrey" style="margin:0;padding:0;">{% trans 'You can customise the top and bottom bar and title text colours on the next step.' %}</p>
-					
-		{% comment %}
-			Start project widget with donation (feature-side)
-		{% endcomment %}
-		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #dedede; margin-bottom:30px; margin-top:30px;">
-			{% comment %}
-			<form name="featureSideForm" action="get-a-widget" method="post">	
-			{% endcomment %}
-			<form name="featureSideForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">{% trans 'A: Project widget with Donation link (202 pixels wide by 840 pixels high)' %}</h3>
-				<p class="machinerygrey" style="margin:0;padding:0;">
-					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
-				</p>
-				<div style="padding-bottom:20px;"> </div>
-				<p class="machinerygrey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
-			
-				<div style="float:left; width:205px;">
-					<script type="text/javascript" charset="utf-8">
-						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>');
-					</script>
-				</div>
-				<div style="float:right; width:430px; padding-top:0px;">
-					<h3 style="margin-top:0; padding-top:0;">{% trans 'Settings' %}</h3>
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
-					<p style="font-weight:bold;">{% trans 'Enter the web address where you will embed this widget' %}</p>
-					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;" /> 
-					{% trans 'This will help us track statistics for you.' %}
-					<br />
-					<p class="machinerygrey">{% trans 'Example' %}: www.akvo.org</p>
-						
-					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;" />
-					
-					<input type="hidden" name="widget-type" value="feature-side" />
-					<input type="radio" id="feature-side-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;" /> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
-					<br />
-					<input type="radio" id="feature-side-random-from-org" name="widget-choice" value="random-from-org" /> 
-					{% trans 'Display a random project from this organisation' %}:
-					<br />
-					<select name="widget-organisations" id="feature-side-organisations" size="1" style="margin-left:23px;" disabled="disabled">
-						{% for organisation in organisations  %}
-						<option value="{{organisation.id}}">{{organisation.name}}</option>
-						{% endfor %}
-					</select>
-					<br /><br />
-					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
-					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
-					</div>
-					<a class="march_button" href="javascript:document.featureSideForm.submit();" onclick="this.blur();">
-						<span>{% trans 'Select and Proceed...' %}</span>
-					</a>
-				</div>
-				<div style="clear:both;"> </div>
-			</form>
-		</div>
-		{% comment %}
-			Start narrow project widget with donation (project_narrow)
-		{% endcomment %}
+		<p class="marchGrey" style="margin:0;padding:0; margin-bottom:20px;">{% trans 'You can customise the top and bottom bar and title text colours on the next step.' %}</p>
+		
 		<!-- project_narrow start ____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="projectNarrowForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">{% trans 'B: Project widget with Donation link (170 pixels wide by 840 pixels high)' %}</h3>
+				<h3 style="padding-bottom:0;">{% trans 'Project widget with Donation link (170 pixels wide by 840 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
 				</p>
@@ -200,7 +142,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_narrow start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedNarrowForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">{% trans 'C: Cobranded narrow project widget with Donation link (170 pixels wide by 911 pixels high)' %}</h3>
+				<h3 style="padding-bottom:0;">{% trans 'Cobranded narrow project widget with Donation link (170 pixels wide by 911 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
 				</p>
@@ -254,7 +196,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_short start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedShortForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">{% trans 'D: Cobranded short project widget with Donation link (170 pixels wide by 627 pixels high)' %}</h3>
+				<h3 style="padding-bottom:0;">{% trans 'Cobranded short project widget with Donation link (170 pixels wide by 627 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
 				</p>
@@ -308,6 +250,60 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_banner start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedBannerForm" action="get-a-widget" method="post">
+				<h3 style="padding-bottom:0;">{% trans 'Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
+				<p class="machinerygrey" style="margin:0;padding:0;">
+					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
+				</p>
+						
+				<p class="machinerygrey" style="margin-bottom:4px; margin-top:10px;">{% trans 'Sample' %}</p>
+				<div>
+					<script type="text/javascript" charset="utf-8">
+						// think about refactor this to a general method in machinery.js
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-banner/project/{{project.id}}/" width="468" height="234" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+					
+				</div>
+				<div style="padding-bottom:20px;"></div>
+				
+				<div style="float:right; width:430px; padding-top:0px; padding-bottom:20px;">
+					<h3 style="margin-top:0; padding-top:0;">{% trans 'Settings' %}</h3>
+					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold;">{% trans 'Enter the web address where you will embed this widget' %}</p>
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;" /> 
+					{% trans 'This will help us track statistics for you.' %}
+					<br />
+					<p class="machinerygrey">{% trans 'Example' %}: www.akvo.org</p>
+						
+					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;" />
+					
+					<input type="hidden" name="widget-type" value="cobranded-banner" />
+					<input type="radio" id="cobranded-banner-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;" /> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+					<br />
+					<input type="radio" id="cobranded-banner-random-from-org" name="widget-choice" value="random-from-org" /> 
+					{% trans 'Display a random project from this organisation' %}:
+					<br />
+					<select name="widget-organisations" id="cobranded-banner-organisations" size="1" style="margin-left:23px;" disabled="disabled">
+						{% for organisation in organisations  %}
+						<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>
+					<br /><br />
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+					</div>
+					<a class="march_button" href="javascript:document.cobrandedBannerForm.submit();" onclick="this.blur();"><span>{% trans 'Select and Proceed...' %}</span></a>
+				</div>
+				
+				<div style="clear:both;"> </div>
+			</form>
+		</div>
+		
+		
+		{% comment %}
+		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+			<form name="cobrandedBannerForm" action="get-a-widget" method="post">
 				<h3 style="padding-bottom:0;">{% trans 'E: Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -357,16 +353,26 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</form>
 		</div>
-	
+		{% endcomment %}
 		<!-- cobranded_banner stop _____________________________________________________________________________________________________ -->
 		
 		<!-- cobranded_leader start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedLeaderForm" action="get-a-widget" method="post">
-				<h3 style="padding-bottom:0;">{% trans 'F: Cobranded leader widget (745 pixels wide by 730 pixels high)' %}</h3>
+				<h3 style="padding-bottom:0;">{% trans 'Cobranded leader widget (728 pixels wide by 207 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
 				</p>
+
+				<p class="machinerygrey" style="margin-bottom:4px; margin-top:10px;">{% trans 'Sample' %}</p>
+				<div>
+					<script type="text/javascript" charset="utf-8">
+						// think about refactor this to a general method in machinery.js
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-leader/project/{{project.id}}/" width="728" height="207" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+					
+				</div>
+			
 			
 				<div style="padding-bottom:20px;"></div>
 		
@@ -402,19 +408,68 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				
 				<div style="clear:both;"> </div>
-				<p class="machinerygrey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
-				<div>
-					<script type="text/javascript" charset="utf-8">
-						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-leader/project/{{project.id}}/" width="728" height="207" frameborder="0" allowTransparency="true"> </iframe>');
-					</script>
-					
-				</div>
+				
 			</form>
 		</div>
 		
-		
 		<!-- cobranded_leader stop _____________________________________________________________________________________________________ -->
+		
+		<!-- feature_side start _____________________________________________________________________________________________________ -->
+		
+		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #dedede; margin-bottom:30px; margin-top:30px;">
+			{% comment %}
+			<form name="featureSideForm" action="get-a-widget" method="post">	
+			{% endcomment %}
+			<form name="featureSideForm" action="get-a-widget" method="post">
+				<h3 style="padding-bottom:0;">{% trans 'Project widget with Donation link (202 pixels wide by 840 pixels high)' %}</h3>
+				<p class="machinerygrey" style="margin:0;padding:0;">
+					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
+				</p>
+				<div style="padding-bottom:20px;"> </div>
+				<p class="machinerygrey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+			
+				<div style="float:left; width:205px;">
+					<script type="text/javascript" charset="utf-8">
+						// think about refactor this to a general method in machinery.js
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+				</div>
+				<div style="float:right; width:430px; padding-top:0px;">
+					<h3 style="margin-top:0; padding-top:0;">{% trans 'Settings' %}</h3>
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold;">{% trans 'Enter the web address where you will embed this widget' %}</p>
+					<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;" /> 
+					{% trans 'This will help us track statistics for you.' %}
+					<br />
+					<p class="machinerygrey">{% trans 'Example' %}: www.akvo.org</p>
+						
+					<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;" />
+					
+					<input type="hidden" name="widget-type" value="feature-side" />
+					<input type="radio" id="feature-side-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;" /> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+					<br />
+					<input type="radio" id="feature-side-random-from-org" name="widget-choice" value="random-from-org" /> 
+					{% trans 'Display a random project from this organisation' %}:
+					<br />
+					<select name="widget-organisations" id="feature-side-organisations" size="1" style="margin-left:23px;" disabled="disabled">
+						{% for organisation in organisations  %}
+						<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>
+					<br /><br />
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+					</div>
+					<a class="march_button" href="javascript:document.featureSideForm.submit();" onclick="this.blur();">
+						<span>{% trans 'Select and Proceed...' %}</span>
+					</a>
+				</div>
+				<div style="clear:both;"> </div>
+			</form>
+		</div>
+		
+		<!-- feature_side stop _____________________________________________________________________________________________________ -->
 		
 		{% ifequal account_level 'free' %}
 		{% comment %}
@@ -435,7 +490,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 				<form name="projectUpdatesForm" action="get-a-widget" method="post">
-					<h3 style="padding-bottom:0;">{% trans 'G: Project widget with updates (202 pixels wide by 900 pixels high)' %}</h3>
+					<h3 style="padding-bottom:0;">{% trans 'Project widget with updates (202 pixels wide by 900 pixels high)' %}</h3>
 					<p class="machinerygrey" style="margin:0;padding:0;">
 						{% trans 'Shows basic description and updates. Users who click on this widget will go to Akvo.org.' %}
 					</p>
@@ -489,7 +544,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 				<form name="projectContributeForm" action="get-a-widget" method="post">
-					<h3 style="padding-bottom:0;">{% trans 'H: Project with Donation Link (202 pixels wide by 570 pixels high)' %}</h3>
+					<h3 style="padding-bottom:0;">{% trans 'Project with Donation Link (202 pixels wide by 570 pixels high)' %}</h3>
 					<p class="machinerygrey" style="margin:0;padding:0;">
 						{% trans 'Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.' %}
 					</p>
@@ -549,7 +604,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				
 				<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 					<form name="projectListForm" action="get-a-widget" method="post">
-						<h3 style="padding-bottom:0;">{% trans 'I: Project list widget (745 pixels wide by 730 pixels high)' %}</h3>
+						<h3 style="padding-bottom:0;">{% trans 'Project list widget (745 pixels wide by 730 pixels high)' %}</h3>
 						<p class="machinerygrey" style="margin:0;padding:0;">
 							{% trans 'Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org.' %}
 						</p>

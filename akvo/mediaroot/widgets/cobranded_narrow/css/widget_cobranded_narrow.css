@@ -22,17 +22,14 @@
 	padding:5px;
 }
 
-
 #project_title {
     font-size:1.2em !important;
 }
-
 
 div.photo_frame {
     max-width:150px !important;
 	width:150px !important;
 }
-
 
 .fundingboxnarrow-header {
 	background: transparent url(../../img/fundingboxnarrow.png) no-repeat 0 0;
