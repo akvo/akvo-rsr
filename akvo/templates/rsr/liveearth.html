@@ -221,42 +221,42 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% if o %}
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project name' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project name' %}</a>
+		<a href="{% url akvo.rsr.views.liveearth %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project name' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
+		<a href="{% url akvo.rsr.views.liveearth %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
+		<a href="{% url akvo.rsr.views.liveearth %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
+		<a href="{% url akvo.rsr.views.liveearth %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "total_budget" %}#list" title="{% trans 'Sort projects by total funds requested' %}">{% trans 'Total funds requested' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "total_budget" %}#list" title="{% trans 'Sort projects by total funds requested' %}">{% trans 'Total funds requested' %}</a>
+		<a href="{% url akvo.rsr.views.liveearth %}{% addparam "order_by" "total_budget" %}#list" title="{% trans 'Sort projects by total funds requested' %}">{% trans 'Total funds requested' %}</a>
 	{% endif %}
 	</th>
 	<th>
 	{% if o %}
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "funds_needed" %}#list" title="{% trans 'Sort projects by funding still needed' %}">{% trans 'Funding still needed' %}</a>
 	{% else %}
-		<a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "funds_needed" %}#list" title="{% trans 'Sort projects by funding still needed' %}">{% trans 'Funding still needed' %}</a>
+		<a href="{% url akvo.rsr.views.liveearth %}{% addparam "order_by" "funds_needed" %}#list" title="{% trans 'Sort projects by funding still needed' %}">{% trans 'Funding still needed' %}</a>
 	{% endif %}
 	</th>
 	<!--<th>Total funds requested</th>
