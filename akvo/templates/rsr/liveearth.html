@@ -42,10 +42,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock style%}
 
 {% block breadcrumbs %}
+{{block.super}} &raquo; Live Earth
+{% comment %}
 {{block.super}} &raquo; {% trans 'Project listing' %}
 {% if o %}
 	for {{o.name}}
 {% endif %}
+{% endcomment %}
 {% endblock breadcrumbs %}
 
 {% block page_id %}
