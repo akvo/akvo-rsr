@@ -1145,12 +1145,12 @@ class PayPalInvoice(models.Model):
     )
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
-    amount = models.PositiveIntegerField()
+    amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
     amount_received = models.DecimalField(max_digits=10, decimal_places=2,
                                           blank=True, null=True,
                                           help_text=_('Amount actually received after PayPal charges have been applied.'))
     ipn = models.CharField(blank=True, null=True, max_length=75)
-    time = models.DateTimeField()
+    time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
