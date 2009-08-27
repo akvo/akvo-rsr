@@ -472,27 +472,43 @@ class Project(models.Model):
                             END
                             FROM rsr_fundingpartner
                             WHERE rsr_fundingpartner.project_id = rsr_project.id
-                        )  - (
+                        ) - (
                             SELECT CASE 
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
                             FROM rsr_paypalinvoice
                             WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND (rsr_paypalinvoice.status = %d
-                                OR rsr_paypalinvoice.status = %d)
+                            AND rsr_paypalinvoice.status = %d
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(amount_received) IS NULL THEN 0
+                                ELSE Sum(amount_received)
+                            END
+                            FROM rsr_paypalinvoice
+                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
+                            AND rsr_paypalinvoice.status = %d
                         )
                     ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                 #how much money has been donated by individual donors, including pending donations
                 'donated':
-                    ''' SELECT CASE
-                            WHEN Sum(amount) IS NULL THEN 0
-                            ELSE Sum(amount)
-                        END
-                        FROM rsr_paypalinvoice
-                        WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND (rsr_paypalinvoice.status = %d
-                                OR rsr_paypalinvoice.status = %d)
+                    ''' SELECT DISTINCT (
+                            SELECT CASE
+                                WHEN Sum(amount) IS NULL THEN 0
+                                ELSE Sum(amount)
+                            END
+                            FROM rsr_paypalinvoice
+                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
+                            AND rsr_paypalinvoice.status = %d
+                        ) + (
+                            SELECT CASE
+                                WHEN Sum(amount_received) IS NULL THEN 0
+                                ELSE Sum(amount_received)
+                            END
+                            FROM rsr_paypalinvoice
+                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
+                            AND rsr_paypalinvoice.status = %d
+                        )
                     ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                 #how much donated money from individuals is pending
                 'pending':
@@ -746,7 +762,7 @@ class BudgetItem(models.Model):
     )
     project             = models.ForeignKey(Project)
     item                = models.CharField(max_length=20, choices=ITEM_CHOICES)
-    amount              = models.IntegerField()
+    amount              = models.DecimalField(max_digits=10, decimal_places=2)
     currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     
     class Meta:
@@ -794,7 +810,7 @@ class Link(models.Model):
 
 class FundingPartner(models.Model):
     funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount          = models.IntegerField()
+    funding_amount          = models.DecimalField(max_digits=10, decimal_places=2)
     currency                = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     project                 = models.ForeignKey(Project,)
 
