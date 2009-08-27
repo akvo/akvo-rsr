@@ -1161,15 +1161,15 @@ class PayPalInvoice(models.Model):
 
     @property
     def currency(self):
-        return self.project.paypalgateway.currency
+        return self.project.paypal_gateway.currency
 
     @property
     def gateway(self):
-        return self.project.paypalgateway.email
+        return self.project.paypal_gateway.email
 
     @property
     def locale(self):
-        return self.project.paypalgateway.locale
+        return self.project.paypal_gateway.locale
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
