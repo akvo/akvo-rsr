@@ -16,7 +16,6 @@ from django.db import models
 from django.db.models import Sum, F # added by Paul
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
-from django.conf import settings # added by Daniel
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
@@ -1080,20 +1079,27 @@ class ProjectComment(models.Model):
     comment         = models.TextField(_('comment'))
     time            = models.DateTimeField(_('time'))
         
-# PAUL
-# PayPal Integration
+# PayPal
 
-from paypal.standard.models import PayPalIPN
 from paypal.standard.signals import payment_was_flagged, payment_was_successful
 
 class PayPalInvoiceManager(models.Manager):
     def stale(self):
-        """
-        Returns a queryset of invoices which have been pending
+        """Returns a queryset of invoices which have been pending
         for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
         """
         timeout = (datetime.now() - timedelta(minutes=getattr(settings, 'PAYPAL_INVOICE_TIMEOUT', 60)))
-        return self.filter(status__exact=1, time__lte=timeout)
+        qs = self.filter(status=1, time__lte=timeout)
+        return qs
+
+    def complete(self):
+        """Returns a queryset of invoices which have both:
+        - a status of 'Complete' and
+        - a PayPal Transaction ID
+        """
+        qs = self.filter(status=3)
+        qs = qs.exclude(ipn='')
+        return qs
         
 class PayPalInvoice(models.Model):
     STATUS_CHOICES = (
@@ -1102,20 +1108,25 @@ class PayPalInvoice(models.Model):
         (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
         (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
     )
-    user = models.ForeignKey(User, blank=True, null=True, editable=False) # user can have many invoices
-    project = models.ForeignKey(Project) # project can have many invoices
+    user = models.ForeignKey(User, blank=True, null=True)
+    project = models.ForeignKey(Project)
     amount = models.PositiveIntegerField()
+    amount_received = models.DecimalField(max_digits=10, decimal_places=2,
+                                          blank=True, null=True,
+                                          help_text=_('Amount actually received after PayPal charges have been applied.'))
     ipn = models.CharField(blank=True, null=True, max_length=75)
     time = models.DateTimeField()
-    name = models.CharField(max_length=75, blank=True, null=True) # handle non-authenticated users
-    email = models.EmailField(blank=True, null=True) # handle non-authenticated users
-    #complete = models.BooleanField() # DEPRECATED
+    name = models.CharField(max_length=75, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
 
     objects = PayPalInvoiceManager()
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
+
+    class Meta:
+        verbose_name = _('PayPal invoice')
 
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)
@@ -1137,27 +1148,18 @@ def send_paypal_confirmation_email(id):
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):
-    #from dbgp.client import brk
-    #brk(host="vnc.datatrassel.se", port=9000)            
     ipn = sender
     if ipn.payment_status == 'Completed':
-        # Get the related PayPalInvoice object from the IPN
         ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
-        # Write the PayPal Transaction ID into the PayPalInvoice
+        ppi.amount_received = ppi.amount - ipn.mc_fee
         ppi.ipn = ipn.txn_id
-        # Mark the PayPalInvoice as complete
-        #ppi.complete = True # DEPRECATED
         ppi.status = 3
-        # Commit the changes
         ppi.save()
-        # Send a confirmation email to wrap everything up
         send_paypal_confirmation_email(ppi.id)
-# We have to connect to 'payment_was_flagged' in development because the return email won't validate
 if settings.PAYPAL_DEBUG:
     payment_was_flagged.connect(process_paypal_ipn)
 else:
-    # Connect to 'payment_was_successful' in production
-    # Connecting to flagged for the time being, since PP seesour emails as invalid for some reason...
+    #payment_was_successful.connect(process_paypal_ipn)
     payment_was_flagged.connect(process_paypal_ipn)
 
 # signals!
