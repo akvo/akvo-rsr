@@ -297,7 +297,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
 
 class PayPalGateway(models.Model):
     PAYPAL_LOCALE_CHOICES = (
-        ('US', _('US English'),
+        ('US', _('US English')),
     )
     name        = models.CharField(max_length=255)
     email       = models.EmailField()
@@ -1116,7 +1116,7 @@ class ProjectComment(models.Model):
 
 # PayPal
 
-from paypal.standard.signals import payment_was_flagged, payment_was_successful
+from paypal.standard.ipn.signals import payment_was_flagged, payment_was_successful
 
 class PayPalInvoiceManager(models.Manager):
     def stale(self):

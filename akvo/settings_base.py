@@ -48,8 +48,7 @@ INSTALLED_APPS = (
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
 #    'akvo.status',
-    # Added by Paul 09/02/2009
-    'paypal.standard',
+    'paypal.standard.ipn',
     'sorl.thumbnail',
 )
 
