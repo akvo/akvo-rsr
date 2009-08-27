@@ -251,7 +251,7 @@ class PayPalInvoiceForm(forms.ModelForm):
             if self.cleaned_data['amount'] > funding_needed:
                 raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
         if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
-            if self.cleaned_data.['email'] != self.cleaned_data['email2']:
+            if self.cleaned_data['email'] != self.cleaned_data['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
         return self.cleaned_data
 
