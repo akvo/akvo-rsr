@@ -5,7 +5,10 @@
 from django import template
 register = template.Library()
 
+from django.conf import settings
+
 import time, datetime
+from decimal import Decimal, ROUND_HALF_UP
 
 @register.filter
 def string_to_date(value):
@@ -23,3 +26,21 @@ def smart_truncate(content, length=100, suffix='...'):
         return content
     else:
         return content[:length].rsplit(' ', 1)[0]+suffix
+
+@register.filter
+def round(value, decimal_places=getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2)):
+    try:
+        value = Decimal(str(value))
+    except:
+        return u''
+    if not settings.DECIMALS_DEBUG:
+        if 0 < value < 1:
+            return u'1'
+        else:
+            d = value.quantize(Decimal(1), ROUND_HALF_UP)
+            return unicode(d)
+    else:
+        d = value.quantize(Decimal(10) ** -decimal_places)
+        return unicode(d)
+round.is_safe = True
+
