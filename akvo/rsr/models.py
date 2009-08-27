@@ -382,7 +382,7 @@ class Project(models.Model):
     date_request_posted = models.DateField(default=date.today)
     date_complete       = models.DateField(null=True, blank=True)
 
-    paypal_gateway      = models.ForeignKey(PayPalGateway)
+    paypal_gateway      = models.ForeignKey(PayPalGateway, default=1)
 
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
