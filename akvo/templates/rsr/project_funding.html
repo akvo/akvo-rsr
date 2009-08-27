@@ -5,8 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
-{% load rsr_tags %}
+{% load i18n rsr_filters rsr_tags %}
 
 {% block title %}{{block.super}} - {% trans 'Funding details' %}{% endblock title %}
 
@@ -65,37 +64,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.budget_employment %}
 				<tr>
 					<td>{% trans 'Employment costs' %}</td>
-					<td>&#8364; {{p.budget_employment}}</td>
+					<td>&#8364; {{p.budget_employment|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_building %}
 				<tr>
 					<td>{% trans 'Building Material costs' %}</td>
-					<td>&#8364; {{p.budget_building}}</td>
+					<td>&#8364; {{p.budget_building|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_training %}
 				<tr>
 					<td>{% trans 'Training costs' %}</td>
-					<td>&#8364; {{p.budget_training}}</td>
+					<td>&#8364; {{p.budget_training|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_maintenance %}
 				<tr>
 					<td>{% trans 'Maintenance costs' %}</td>
-					<td>&#8364; {{p.budget_maintenance}}</td>
+					<td>&#8364; {{p.budget_maintenance|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_other %}
 				<tr>
 					<td>{% trans 'Other costs' %}</td>
-					<td>&#8364; {{p.budget_other}}</td>
+					<td>&#8364; {{p.budget_other|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_total %}
 				<tr>
 					<td><b>{% trans 'Total' %}</b></td>
-					<td><b>&#8364; {{p.budget_total}}</b></td>
+					<td><b>&#8364; {{p.budget_total|round}}</b></td>
 				</tr>
 				{% else %}
 				<tr>
@@ -143,7 +142,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<b>{% trans 'Total' %}:
 						<span style="margin-left: 10px">
 							{{p.budgetitem_set.all.0.get_currency_display|safe}}
-							{{p.funding_donated}}
+							{{p.funding_donated|round}}
 						</span>
 					</b>
 				</p>

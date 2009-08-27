@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n thumbnail %}
+{% load i18n rsr_filters thumbnail %}
 
 {% block title %}{{block.super}} - {% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
@@ -203,11 +203,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr style="color:green;">
 		<td>{% trans 'Pledged' %}</td>
-		<td style="text-align:right;">&#8364; {{o.funding.pledged}}</td>
+		<td style="text-align:right;">&#8364; {{o.funding.pledged|round}}</td>
 	</tr>
 	<tr style="color:red;" class="hr">
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-		<td style="text-align:right;">&#8364; {{o.funding.still_needed}}</td>
+		<td style="text-align:right;">&#8364; {{o.funding.still_needed|round}}</td>
 	</tr>
 </table>
 <table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
