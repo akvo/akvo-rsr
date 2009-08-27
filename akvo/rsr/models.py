@@ -293,7 +293,25 @@ STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red'
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
-    
+
+
+class PayPalGateway(models.Model):
+    PAYPAL_LOCALE_CHOICES = (
+        ('US', _('US English'),
+    )
+    name        = models.CharField(max_length=255)
+    email       = models.EmailField()
+    description = models.CharField(max_length=255)
+    currency    = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    locale      = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
+
+    def __unicode__(self):
+        return u'%s (%s)' % (self.name, self.email)
+
+    class Meta:
+        verbose_name = _('PayPal gateway')
+
+
 class Project(models.Model):
     def proj_image_path(instance, file_name):
         #from django.template.defaultfilters import slugify
@@ -1079,6 +1097,7 @@ class ProjectComment(models.Model):
     comment         = models.TextField(_('comment'))
     time            = models.DateTimeField(_('time'))
         
+
 # PayPal
 
 from paypal.standard.signals import payment_was_flagged, payment_was_successful
@@ -1122,6 +1141,18 @@ class PayPalInvoice(models.Model):
 
     objects = PayPalInvoiceManager()
 
+    @property
+    def currency(self):
+        return self.project.paypalgateway.currency
+
+    @property
+    def gateway(self):
+        return self.project.paypalgateway.email
+
+    @property
+    def locale(self):
+        return self.project.paypalgateway.locale
+
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
@@ -1161,6 +1192,7 @@ if settings.PAYPAL_DEBUG:
 else:
     #payment_was_successful.connect(process_paypal_ipn)
     payment_was_flagged.connect(process_paypal_ipn)
+
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)
