@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
+{% load i18n rsr_filters %}
 
 <table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 	<tr>
@@ -17,10 +17,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 	<tr class="green">
 		<th>{% trans 'Raised' %}:</th>
-		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given}}</td>
+		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
 	</tr>
 	<tr style="color:#FF5617">
 		<th>{% trans 'Needed' %}:</th>
-		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed}}</td>
+		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
 	</tr>
 </table>
