@@ -711,11 +711,11 @@ class Project(models.Model):
         return Project.objects.funding().get(pk=self.pk).donated
 
     def funding_total_given(self):
-        # Decimal(str(value)) conversion is necessary
+        # Decimal(str(result)) conversion is necessary
         # because SQLite doesn't handle decimals natively
         # See item 16 here: http://www.sqlite.org/faq.html
         result = self.funding_pledged() + self.funding_donated()
-        if Decimal(str(value)) > (self.budget_total() - 1):
+        if Decimal(str(result)) > (self.budget_total() - 1):
             return self.budget_total()
         else:
             return result
