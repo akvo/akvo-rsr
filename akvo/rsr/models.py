@@ -9,7 +9,7 @@ import string
 import re
 import os
 from datetime import date, datetime, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_UP
 
 from django import forms
 from django.conf import settings
@@ -715,8 +715,9 @@ class Project(models.Model):
         # because SQLite doesn't handle decimals natively
         # See item 16 here: http://www.sqlite.org/faq.html
         result = self.funding_pledged() + self.funding_donated()
-        if Decimal(str(result)) > (self.budget_total() - 1):
-            return self.budget_total()
+        decimal_result = Decimal(str(result))
+        if decimal_result > (self.budget_total() - 1):
+            return decimal_result.quantize(Decimal(1), ROUND_UP)
         else:
             return result
 
