@@ -9,6 +9,7 @@ import string
 import re
 import os
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 
 from django import forms
 from django.conf import settings
@@ -710,10 +711,21 @@ class Project(models.Model):
         return Project.objects.funding().get(pk=self.pk).donated
 
     def funding_total_given(self):
-        return self.funding_pledged() + self.funding_donated()
+        # Decimal(str(value)) conversion is necessary
+        # because SQLite doesn't handle decimals natively
+        # See item 16 here: http://www.sqlite.org/faq.html
+        result = self.funding_pledged() + self.funding_donated()
+        if Decimal(str(value)) > (self.budget_total() - 1):
+            return self.budget_total()
+        else:
+            return result
 
     def funding_still_needed(self):
-        return Project.objects.funding().get(pk=self.pk).funds_needed
+        result =  Project.objects.funding().get(pk=self.pk).funds_needed
+        if result < 1:
+            return 0
+        else:
+            return result
 
     def budget_employment(self):
         return Project.objects.budget_employment().get(pk=self.pk).budget_employment
