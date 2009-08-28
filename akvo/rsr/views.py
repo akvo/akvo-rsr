@@ -803,13 +803,14 @@ def select_project_widget(request, org_id, template=''):
     return HttpResponseRedirect('%s?%s' % (reverse('project_widget', args=[template, project.id]), get.urlencode()))
 
 def project_widget(request, template='feature-side', project_id=None):
-    if project_id:    
+    if project_id:
         p = get_object_or_404(Project, pk=project_id)
     else:
         p = random.choice(Project.objects.published())
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
+    
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
                                  {'project': p, 'request_get': request.GET, 'bgcolor': bgcolor, 'textcolor': textcolor, 'site': site },
                                  context_instance=RequestContext(request))

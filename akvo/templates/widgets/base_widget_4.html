@@ -3,34 +3,53 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags generic_content %}
 
-<?xml version="1.0" encoding="UTF-8"?>	
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+{% load i18n rsr_tags rsr_filters generic_content %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ request.LANGUAGE_CODE }}">
+
 <head>
-	<title>{% block title %}Akvo.org{% endblock title %}</title>
-	<base target="_parent" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+	<title>Akvo.org - {% block title %}{% trans 'the open source for water and sanitation' %}{% endblock %}</title>
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}">
+	<meta name="author" content="Akvo.org">
 	
+	<meta http-equiv="Expires" content="Fri, 26 Mar 1999 23:59:59 GMT">	
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	
+		
 	{% block style %} {% endblock style %}
 	
 	<style type="text/css" media="screen">
 	{% block inline_styles %}
 		#header {background-color:#{{bgcolor}};}
-		#header h1 { color:#{{textcolor}}; }
-		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
+		#header h1 {color:#{{textcolor}};}
+		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important;}
 		h2 a {color:#{{bgcolor}} !important;}
 	{% endblock inline_styles %}
 	</style>
-	{% block inline_scripts %}
-		
-	{% endblock inline_scripts %}
 	
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+	</style>
+	<![endif]-->
+	
+	{% block inline_scripts %} {% endblock inline_scripts %}
+	
+	<base target="_parent" />
 </head>
-<body style="margin-left:0px; margin-top:0px; background-color:transparent;">
-	<div id="container" style="background-color:white;">
+<body>
+	<div id="container">
 		<div id="header">
 		{% block header %}
-		<h1>Akvo.org</h1>
+			<h1>Akvo.org</h1>
 		{% endblock header %}
 		</div>
 		<div id="content">
@@ -45,7 +64,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</a>
 		{% endblock footer %}
 		</div>
-	</div>	
+	</div>
 	{% if debug %}
 		Debug:{% debug %}
 	

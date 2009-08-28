@@ -79,7 +79,7 @@ h2 {
 }
 
 .topmargin {
-	margin-top:11px;
+	margin-top:3px;
 }
 
 .right {
@@ -113,6 +113,9 @@ div#prev_control {
 	font-size:0.9em;
 }
 
+.inner {
+    padding:5px;
+}
 
 /*------------------------------------------------------------------ 
 [1. common styles] 
@@ -168,8 +171,8 @@ p#project_plan_summary {
 #header {
 	color:#fff;
 	padding:0;
-	padding-top:10px;
-	padding-bottom:10px;
+	padding-top:2px;
+	padding-bottom:0px;
 	border-top:1px solid #9B9AAC;
 }
 
@@ -179,7 +182,7 @@ p#project_plan_summary {
 	font-size:1.2em;
 	font-weight:bold;
 	padding-left:10px;
-	line-height:30px;
+	line-height:24px;
 }
 
 #header h1 span {
@@ -209,7 +212,6 @@ p#project_plan_summary {
 #footer {
 	color:#fff;
 	text-align:right;
-	height:40px;
 	border-bottom:1px solid #9B9AAC;
 }
 #footer img {
@@ -365,6 +367,31 @@ a.fundingbox-donate-left-button {
 	display:block; 
 	margin-top:10px;
 }
+
+/* funding_box_wide */
+
+.fundingboxwide-header {
+	background: transparent url(../../img/fundingbox_wide.png) no-repeat 0 0;
+	height:5px;
+	width:260px;
+	overflow:hidden;
+	margin:5px auto 0px auto;
+}
+.fundingboxwide-footer {
+    background: transparent url(../../img/fundingbox_wide.png) no-repeat -520px 0;
+	height:6px;
+	width:260px;
+	overflow:hidden;
+	margin:0px auto 5px auto;
+}
+.fundingboxwide-content {
+	background: transparent url(../../img/fundingbox_wide.png) repeat-y -260px 0;
+	width:260px;
+	margin:0px auto 0px auto;
+	overflow:hidden;
+	text-align:center;
+}
+
 
 /* start new button */
 
