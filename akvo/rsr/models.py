@@ -299,7 +299,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
 class PayPalGateway(models.Model):
     PAYPAL_LOCALE_CHOICES = (
         ('US', _('US English')),
-        ('US', _('British English')),
+        ('GB', _('British English')),
     )
     name        = models.CharField(max_length=255)
     email       = models.EmailField()
