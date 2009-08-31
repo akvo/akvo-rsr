@@ -1206,7 +1206,7 @@ def send_paypal_confirmation_email(id):
         'timestamp': ppi.time,
         'paypal_reference': ppi.ipn,
     })
-    if ppi.user is not None:
+    if ppi.user:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.user.email], fail_silently=False)
     else:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.email], fail_silently=False)
