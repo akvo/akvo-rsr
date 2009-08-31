@@ -59,7 +59,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <script type="text/javascript" charset="utf-8">
 	
 	var index = 1;
-	var intervall = 7000;
 	
 	function Partner (orgName,logo,partnerType,url) 
 	{
@@ -79,7 +78,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
 											'{% thumbnail sponsor.sponsor_organisation.logo 70x30 upscale,sharpen %}',
-											'support',
+											'support', 
 											'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');											
 	{% endfor %}
 	
@@ -107,8 +106,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 											'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
 	{% endfor %}
 	
-	function switchPartner()
+	
+	
+	
+	function switchPartner(){
+		index == (partners.length-1) ? index = 0 : index++;
+		animatePartnerSwitch();
+	}
+	
+	function animatePartnerSwitch() 
 	{
+		// If no or one partner bail since there is nothing to animate
+		if(partners.length <=1){
+			return;
+		}
+			
 		var newHTML = '';
 		
 		switch(partners[index].getType())
@@ -123,17 +135,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		newHTML += partners[index].getLogo() + '"></a><br><a class="smallFont" href="' + partners[index].getUrl() + '">';
 		newHTML += partners[index].getName() +'</a>';
 		
-		$("#partnerspace").fadeOut("slow", function() {
-			$("#partnerspace").html(newHTML).fadeIn('slow');	
-		});
-	
-		index == (partners.length-1) ? index = 0 : index++;		
+		
+		$("#partnerspace")
+			.animate({opacity: 1.0},7000) // Display time
+			.fadeOut(1000, function() {
+				$("#partnerspace").html(newHTML)
+			})
+			.animate({opacity: 1.0},1000)
+			.fadeIn(1000, switchPartner);
 	}
 	
 	$(document).ready(function()
 	{
-		window.setInterval(function() { this.switchPartner.apply(this); }, intervall)	
+		// Kick start the animation loop
+		animatePartnerSwitch();
 	});
+	
 </script>
 	
 {% endblock inline_scripts %}
@@ -146,7 +163,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 <div id="heightconstrain">
 		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>	
+		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:40}}</p>	
 		{% if project.current_image %}
 			<div class="photo_frame">
 				<a href="{% url akvo.rsr.views.projectmain project.id %}">
@@ -222,7 +239,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Supported by' %}</p>
-						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 70x30 upscale,sharpen %}"></a><br />
+						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 70x30 upscale,sharpen %}"></a><br />
 						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
 						{% endif%}
 					{% endfor %}
@@ -232,7 +249,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Implemented by' %}</p>
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">
-							<img <img style="padding-top:10px; padding-bottom:5px;" src="{% thumbnail operator.field_organisation.logo 70x30 upscale,sharpen %}">
+							<img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail operator.field_organisation.logo 70x30 upscale,sharpen %}">
 						</a><br />
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{operator.field_organisation.name}}</a>
 						{% endif%}
