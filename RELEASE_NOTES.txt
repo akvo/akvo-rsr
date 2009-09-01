@@ -1,8 +1,21 @@
- RELEASE_NOTES.txt, v0.9.9, 7 July 2009, tbp
+ RELEASE_NOTES.txt, v0.9.10, 1 September 2009, GvH
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview)
+
+---
+
+Akvo RSR v 0.9.10 release notes
+------------------------------
+1 September 2009, (Code name: Avalanche) GvH
+
+This is a small release featuring new widgets
+
+New features
+------------
+### Co-branded widgets
+The widget gallery has been considerably expanded with designs promoting the various partners for the projects and having new formats for use both horizontally and vertically on the host page.
 
 ---
 
