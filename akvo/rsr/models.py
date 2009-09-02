@@ -39,7 +39,7 @@ from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
 				   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
-					 create_publishing_status, create_organisation_account)
+					 create_publishing_status, create_organisation_account, create_paypal_gateway)
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1244,6 +1244,7 @@ else:
 post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
+post_save.connect(create_paypal_gateway, sender=Project)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)

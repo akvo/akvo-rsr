@@ -88,4 +88,14 @@ def change_name_of_file_on_change(sender, **kwargs):
                         os.path.splitext(img.name)[1],
                     )
 
+def create_paypal_gateway(sender, **kwargs):
+    """Called when a new project is saved so an associated PayPal gateway
+    for the object is created
+    """
+    if kwargs.get('created', False):
+        new_project = kwargs['instance']
+        gateways = get_model('rsr', 'paypalgateway').objects
+        default_gateway = gateways.get(pk=1)
+        ppgs = get_model('rsr', 'paypalgatewayselector').objects
+        ppgs.create(gateway=default_gateway, project=new_project)
 
