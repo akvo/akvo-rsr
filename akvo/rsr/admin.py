@@ -776,7 +776,8 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'paypalinvoice'), PayPalInvoiceAdmin)
 
 class PayPalGatewayAdmin(admin.ModelAdmin):
-    list_display = ('email', 'description', 'currency', 'locale')
+    list_display = ('account_email', 'description', 'currency', 'locale', 'notification_email')
 
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
+admin.site.register(get_model('rsr', 'paypalgatewayselector'))
 
