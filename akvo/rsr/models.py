@@ -296,24 +296,6 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 
-class PayPalGateway(models.Model):
-    PAYPAL_LOCALE_CHOICES = (
-        ('US', _('US English')),
-        ('GB', _('British English')),
-    )
-    name        = models.CharField(max_length=255)
-    email       = models.EmailField()
-    description = models.CharField(max_length=255)
-    currency    = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
-    locale      = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
-
-    def __unicode__(self):
-        return u'%s (%s)' % (self.name, self.email)
-
-    class Meta:
-        verbose_name = _('PayPal gateway')
-
-
 class Project(models.Model):
     def proj_image_path(instance, file_name):
         #from django.template.defaultfilters import slugify
@@ -383,8 +365,6 @@ class Project(models.Model):
     #budget    
     date_request_posted = models.DateField(default=date.today)
     date_complete       = models.DateField(null=True, blank=True)
-
-    paypal_gateway      = models.ForeignKey(PayPalGateway, default=1)
 
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1136,6 +1116,34 @@ class ProjectComment(models.Model):
 
 from paypal.standard.ipn.signals import payment_was_flagged, payment_was_successful
 
+class PayPalGateway(models.Model):
+    PAYPAL_LOCALE_CHOICES = (
+        ('US', _(u'US English')),
+        ('GB', _(u'British English')),
+    )
+    name                = models.CharField(max_length=255)
+    account_email       = models.EmailField()
+    description         = models.TextField(blank=True, null=True)
+    currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    locale              = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
+    notification_email  = models.EmailField()
+
+    def __unicode__(self):
+        return u'%s (%s)' % (self.name, self.email)
+
+    class Meta:
+        verbose_name = _(u'PayPal gateway')
+
+class PayPalGatewaySelector(models.Model):
+    project     = models.OneToOneField(Project)
+    gateway     = models.ForeignKey(PayPalGateway)
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.project.id, self.project.name)
+
+    class Meta:
+        verbose_name = _(u'Project PayPal gateway')
+
 class PayPalInvoiceManager(models.Manager):
     def stale(self):
         """Returns a queryset of invoices which have been pending
@@ -1177,15 +1185,19 @@ class PayPalInvoice(models.Model):
 
     @property
     def currency(self):
-        return self.project.paypal_gateway.currency
+        return self.project.paypalgatewayselector.gateway.currency
 
     @property
     def gateway(self):
-        return self.project.paypal_gateway.email
+        return self.project.paypalgatewayselector.gateway.account_email
 
     @property
     def locale(self):
-        return self.project.paypal_gateway.locale
+        return self.project.paypalgatewayselector.gateway.locale
+
+    @property
+    def notification_email(self):
+        return self.project.paypalgatewayselector.gateway.notification_email
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
