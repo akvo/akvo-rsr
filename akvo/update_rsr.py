@@ -1,45 +1,86 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from decimal import Decimal
+#to be run in the akvo rsr root folder. setting up all projects as published, if they have no status
+# and setting all orgs to free account if they have none
 
 from django.core.management import setup_environ
 import settings
 setup_environ(settings)
 
-from paypal.standard.ipn.models import PayPalIPN
+from os.path import basename, splitext
 
-from rsr.models import BudgetItem, FundingPartner, PayPalGateway, PayPalInvoice, Project
+from rsr.models import *
+from django.db.models.fields.files import ImageField
 
-def create_default_paypal_gateway():
-    create_it = PayPalGateway.objects.create(name=u'Default',
-                                             description=u'Default Akvo PayPal account.',
-                                             email=u'thomas@akvo.org')
-
-def quantize_decimals(decimal_places=getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2)):
-    budget_items = BudgetItem.objects.all()
-    funding_partners = FundingPartner.objects.all()
-    for b in budget_items:
-        b.amount = b.amount.quantize(Decimal(10) ** -decimal_places)
-        b.save()
-    for fp in funding_partners:
-        fp.funding_amount = fp.funding_amount.quantize(Decimal(10) ** -decimal_places)
-        fp.save()
+def model_and_instance_based_filename(object_name, pk, field_name, img_name):
+    return "%s_%s_%s_%s%s" % (
+        object_name,
+        pk or '',
+        field_name,
+        datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+        splitext(img_name)[1],
+    )
     
-def update_projects():
-    ppg = PayPalGateway.objects.get(pk=1)
+def update_publishing_status():
     projects = Project.objects.all()
-    projects.update(paypal_gateway=ppg)
+    for p in projects:
+        try:
+            ps = PublishingStatus.objects.get(project=p)    
+            #print "Found project %s, already %s" % (ps.project, ps.status)
+        except:
+            new_ps = PublishingStatus(project=p, status='unpublished')
+            new_ps.save()
+        
+def update_organisation_account():
+    orgs = Organisation.objects.all()
+    for o in orgs:
+        try:
+            acc = OrganisationAccount.objects.get(organisation=o)
+        except:
+            new_acc = OrganisationAccount(organisation=o, account_level='free')
+            new_acc.save()
 
-def update_invoices():
-    qs = PayPalInvoice.objects.complete()
-    for i in qs:
-        ipn = PayPalIPN.objects.get(invoice=i.id)
-        i.amount_received = i.amount - ipn.mc_fee
-        i.save()
+def resave_images(queryset):
+    for record in queryset:
+        #from dbgp.client import brk
+        #brk(host="localhost", port=9000)
+        opts = record._meta
+        for f in opts.fields:
+            if type(f).__name__ == 'ImageField' or type(f).__name__ == 'ImageWithThumbnailsField':
+                model_field = getattr(record, f.name)
+                if hasattr(model_field, 'file'):
+                    #name = basename(model_field.name)
+                    name = model_and_instance_based_filename(opts.object_name, record.pk, f.name, model_field.name)
+                    model_field.save(name, model_field.file)
+                #f.save(uploaded_file.name, uploaded_file)
 
+def resave_all_images():
+    orgs = Organisation.objects.all()
+    resave_images(orgs)
+    projs = Project.objects.all()
+    resave_images(projs)
+    updates = ProjectUpdate.objects.all()
+    resave_images(updates)
+
+def budget_refactor():
+    projects = Project.objects.all()
+    for p in projects:
+        try:
+            if p.budget.employment:
+                BudgetItem.objects.create(project=p, item='employment', amount=p.budget.employment, currency='EUR')
+            if p.budget.building:
+                BudgetItem.objects.create(project=p, item='building', amount=p.budget.building, currency='EUR')
+            if p.budget.training:
+                BudgetItem.objects.create(project=p, item='training', amount=p.budget.training, currency='EUR')
+            if p.budget.maintenance:
+                BudgetItem.objects.create(project=p, item='maintenance', amount=p.budget.maintenance, currency='EUR')
+            if p.budget.other:
+                BudgetItem.objects.create(project=p, item='other', amount=p.budget.other, currency='EUR')
+        except:
+            print "Error importing project budget, for id:", p.id 
+                
 if __name__ == '__main__':
-    create_default_paypal_gateway()
-    #quantize_decimals() # not necessary
-    update_projects()
-    update_invoices()
-
+    #update_publishing_status()
+    update_organisation_account()
+    #resave_all_images()
+    budget_refactor()
