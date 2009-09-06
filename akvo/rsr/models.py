@@ -1142,7 +1142,7 @@ class PayPalGatewaySelector(models.Model):
         return u'%s - %s' % (self.project.id, self.project.name)
 
     class Meta:
-        verbose_name = _(u'Project PayPal gateway')
+        verbose_name = _(u'Project PayPal gateway configuration')
 
 class PayPalInvoiceManager(models.Manager):
     def stale(self):
