@@ -24,7 +24,7 @@ def update_projects():
 def update_invoices():
     invoices = get_model('rsr', 'paypalinvoice').objects.complete()
     for invoice in invoices:
-        ipn = get_model('ipn', 'paypalipn').objects.get(invoice=i.id)
+        ipn = get_model('ipn', 'paypalipn').objects.get(invoice=invoice.id)
         invoice.amount_received = invoice.amount - ipn.mc_fee
         invoice.save()
 
