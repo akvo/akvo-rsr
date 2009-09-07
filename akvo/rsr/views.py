@@ -286,6 +286,10 @@ from django.views.decorators.cache import never_cache
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
+    # Check for exeptions to the return to start of sign in process
+    if redirect_to == "/rsr/accounts/register/complete/":
+        redirect_to = "/"
+    
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         # RSR mod to add css class to widgets
