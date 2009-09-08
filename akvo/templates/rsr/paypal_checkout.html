@@ -5,11 +5,9 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load rsr_tags %}
-{% load i18n %}
-{% load addparam %}
+{% load i18n addparam rsr_tags %}
 
-{% block title %}{{block.super}} - {% trans 'PayPal Checkout - Project' %} {{p.id}}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Confirm Donation - Project' %} {{p.id}}{% endblock title %}
 
 {% block style %}
 {{block.super}}
@@ -39,7 +37,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% endblock breadcrumbs %}
 
-
 {% block content %}
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<div style="width:50%; float:left;">
@@ -51,37 +48,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</p>
 	</div>
 	<div style="padding-bottom:15px; clear:both;"> </div>
-	<hr style="width:100%; margin-left:0; clear:both;" />
-	<div style="margin-left:40px">
-		<div style="margin-left:40px;">
-			<h3>{% trans 'Your information' %}</h3>
-			{% if user.is_authenticated %}
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<p class="marchGrey">{% trans 'Your name' %}:</p>
-				<p class="marchGrey">{% trans 'Your email' %}:</p>
-			</div>
-			<div style="float:left;">
-				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
-				<p style="font-weight:bold">{{ user.email }}</p>
-			</div>
-			
-			{% else %}
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<p class="marchGrey">{% trans 'Your name' %}:</p>
-				<p class="marchGrey">{% trans 'Your email' %}:</p>
-			</div>
-			<div style="float:left;">
-				<p style="font-weight:bold">{{ name }}</p>
-				<p style="font-weight:bold">{{ email }}</p>				
-			</div>
 				
-			{% endif%}
-			<div style="clear:both;"> </div>			
-		</div>
-		<div style="clear:both;"> &nbsp; </div>
-		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
-		<div style="margin-left:40px;">
-			<h3>{% trans 'Project to which you are donating' %}</h3>
+		<hr style="width:100%; margin-left:0; clear:both; margin-top:10px;" />
+		
+		<div{# style="margin-left:40px;"#}>
+			<h3>{% trans 'Project receiving your donation' %}</h3>
 			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Project name' %}:</p>
@@ -106,32 +77,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<p class="marchGrey">
+			<p>
 				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="float:right;"/>
 				{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations. ' %}
 			</p>
+            <p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
-			<p class="marchGrey">
+			<p>
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
-			<ul class="marchGrey" style="margin-top:15px; list-style-type: disc;">
+			<ul style="margin-top:15px; list-style-type: disc;">
 				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederland)' %}</li>
 			</ul>
 		</div>
 		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
-			<p class="marchGrey">
-				{% trans 'PayPal charges upto 3.4%+30 Euro cents of your donation in transaction fees. So if you donate 100 Euro, at least 96.30 Euro will go towards the selected project.' %}
+			<p>
+				{% trans 'PayPal charges up to 3.4%+30 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 96.30 Euros will go towards the selected project.' %}
 			</p>
 		</div>
 		
 		
 		<div style="clear:both;"> &nbsp; </div>
+		<hr style="width:100%; margin-left:0; clear:both;" />
 				
-		<hr style="width:100%; margin-left:0; clear:both; margin-top:10px;" />
-		
-		<div style="margin-left:40px; float:left; width:300px;">
+		<div style="{#margin-left:40px; #}float:left; width:300px;">
 			<h3>{% trans 'Amount you are donating' %}</h3>
 			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:3px;">
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
@@ -159,6 +130,33 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		{% endcomment %}
 		<div style="clear:both;"> </div>
+	<div{# style="margin-left:40px"#}>
+		<div{# style="margin-left:40px;"#}>
+			<h3>{% trans 'Your information' %}</h3>
+			{% if user.is_authenticated %}
+			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+				<p class="marchGrey">{% trans 'Your name' %}:</p>
+				<p class="marchGrey">{% trans 'Your email' %}:</p>
+			</div>
+			<div style="float:left;">
+				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
+				<p style="font-weight:bold">{{ user.email }}</p>
+			</div>
+			
+			{% else %}
+			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+				<p class="marchGrey">{% trans 'Your name' %}:</p>
+				<p class="marchGrey">{% trans 'Your email' %}:</p>
+			</div>
+			<div style="float:left;">
+				<p style="font-weight:bold">{{ name }}</p>
+				<p style="font-weight:bold">{{ email }}</p>				
+			</div>
+				
+			{% endif%}
+			<div style="clear:both;"> </div>			
+		</div>
+		<div style="clear:both;"> &nbsp; </div>
 	</div>
 	
 	<div style="clear:both;"> &nbsp; </div>
