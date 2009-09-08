@@ -221,6 +221,48 @@ class Organisation(models.Model):
         if self.funding_partner: pt += "M"
         return pt
     
+    def has_water_projects(self):
+        if self.all_projects().filter(category_water__exact=True):
+            return True
+        else:
+            return False
+
+    def has_sanitation_projects(self):
+        if self.all_projects().filter(category_sanitation__exact=True):
+            return True
+        else:
+            return False
+    
+    def has_training_projects(self):
+        if self.all_projects().filter(category_training__exact=True):
+            return True
+        else:
+            return False
+            
+    def has_maintenance_projects(self):
+        if self.all_projects().filter(category_maintenance__exact=True):
+            return True
+        else:
+            return False
+    
+    def has_education_projects(self):
+        if self.all_projects().filter(category_education__exact=True):
+            return True
+        else:
+            return False
+
+    def has_product_development_projects(self):
+        if self.all_projects().filter(category_product_development__exact=True):
+            return True
+        else:
+            return False
+
+    def has_other_projects(self):
+        if self.all_projects().filter(category_other__exact=True):
+            return True
+        else:
+            return False
+    
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True

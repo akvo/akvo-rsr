@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters thumbnail %}
+{% load i18n rsr_filters thumbnail rsr_tags %}
 
 {% load generic_content %}
 {% load addparam %}
@@ -138,28 +138,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% for o in page.object_list %}
 <tr>
 	<td>
-		
-	
 		{% if o.logo %}
             <a href="{% url akvo.rsr.views.orgdetail o.id %}">
 			<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
             </a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
-		{% endif %}	
+		{% endif %}
 
 		<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
 		<div class="lightx2 small">{{o.long_name}}</div>
 		<div style="clear: left;">
-		{% if o.field_partner %}
-			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
-		 {% endif %}
-		 {% if o.support_partner %}
-			 <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
-		 {% endif %}
-		 {% if o.funding_partner %}
-			 <img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 10px 5px 10px 0;" />
-		 {% endif %}
+		{% category_icons_org o %}
 	 	</div>
 	</td>
 	<td>{{o.get_organisation_type_display}}</td>
