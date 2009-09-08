@@ -12,10 +12,6 @@ from akvo.rsr.feeds import ProjectUpdates
 from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
-
-# PAUL
-from django.views.generic.simple import direct_to_template
-
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
 admin.autodiscover()
