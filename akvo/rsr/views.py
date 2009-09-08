@@ -699,7 +699,9 @@ def projectmain(request, project_id):
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
-    return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
+    can_add_update = p.connected_to_user(request.user)
+        
+    return {'p': p, 'updates': updates, 'comments': comments, 'form': form, 'can_add_update': can_add_update }
 
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
