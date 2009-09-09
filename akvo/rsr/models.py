@@ -126,6 +126,7 @@ class Organisation(models.Model):
     logo                        = ImageWithThumbnailsField(
                                     blank=True,
                                     upload_to=org_image_path,
+                                    thumbnail={'size': (360,270)},
                                     help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',
                                 )
     city                        = models.CharField(max_length=25)
