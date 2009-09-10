@@ -141,11 +141,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>
 			<tr style="color:green;">
 				<td>{% trans 'Pledged' %}</td>
-				<td style="text-align:right;">&#8364; {{projs.total_pledged}}</td>
+				<td style="text-align:right;">&#8364; {{projs.total_pledged|round}}</td>
 			</tr>
 			<tr style="color:red;">
 				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-				<td style="text-align:right;">&#8364; {{projs.total_funds_needed}}</td>
+				<td style="text-align:right;">&#8364; {{projs.total_funds_needed|round}}</td>
 			</tr>
 		</table>
 	</div>
