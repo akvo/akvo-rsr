@@ -37,7 +37,7 @@ def round(value, decimal_places=getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2))
         if 0 < value < 1:
             return u'1'
         else:
-            d = value.quantize(Decimal(1), ROUND_HALF_UP)
+            d = value.quantize(Decimal(10), ROUND_HALF_UP)
             return unicode(d)
     else:
         d = value.quantize(Decimal(10) ** -decimal_places)
