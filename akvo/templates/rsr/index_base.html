@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
+{% load i18n rsr_filters %}
 
 {% block content %}
 
@@ -143,11 +143,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</tr>
 		<tr style="color:green;">
 			<td>{% trans 'Pledged' %}</td>
-			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_pledged|add:projs.status_not_cancelled.total_donated|add:projs.status_not_cancelled.total_pending_negative}}</td>
+			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_pledged|add:projs.status_not_cancelled.total_donated|add:projs.status_not_cancelled.total_pending_negative|round}}</td>
 		</tr>
 		<tr style="color:red;">
 			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending}}</td>
+			{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
+			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|round}}</td>
 		</tr>
 	</table>
 	

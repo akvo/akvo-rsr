@@ -3,7 +3,8 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
+{% load i18n rsr_filters %}
+
 {% ifnotequal p.status 'L' %}
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
@@ -11,7 +12,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% ifequal p.funding_still_needed 0 %}
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
-				<p>{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given}}</p>
+				<p>{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}</p>
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
 				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
@@ -25,7 +26,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
-				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed}}</td>
+				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
 			</tr>
 		</table>
 		<div class="fundingbox-progress-bar">
@@ -36,7 +37,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 			<tr>
 				<th>{% trans 'Total budget' %}:</th>
-				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total}}</td>
+				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total|round}}</td>
 			</tr>					
 		</table>
 		<div id="donate44" style="margin: 10px; border-bottom:1px solid #A1A0AD; padding-bottom:7px;">

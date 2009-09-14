@@ -846,80 +846,70 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
-# PAUL
-# PayPal Integration
+
+# PayPal
 from akvo.rsr.forms import PayPalInvoiceForm
+from akvo.rsr.decorators import fetch_project
 
-# URL: /rsr/project/<id>/donate/
-def donate(request, project_id):
-    # Define some fixed global context for the view
-    p = get_object_or_404(Project, pk=project_id)
-    u = request.user
-    t = datetime.now()
-    fn = p.funding_still_needed()
-
-    # Validate if the form was POSTed...
+@fetch_project
+def donate(request, p):
     if request.method == 'POST':
-        donate_form = PayPalInvoiceForm(data=request.POST, user=u, project=p)
-        # Validate the form
+        donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
         if donate_form.is_valid():
             invoice = donate_form.save(commit=False)
             invoice.project = p
-            if u.is_authenticated():
-                invoice.user = u
+            if request.user.is_authenticated():
+                invoice.user = request.user
             else:
                 invoice.name = donate_form.cleaned_data['name']
                 invoice.email = donate_form.cleaned_data['email']   
-            invoice.time = t
             invoice.save()
-            # Proceed to initialise the PayPalPaymentsForm
             if settings.PAYPAL_DEBUG:
                 pp_dict = {
                     'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': getattr(settings, 'PAYPAL_CURRENCY_CODE', 'EUR'),
-                    'business': settings.PAYPAL_SANDBOX_BUSINESS,
+                    'currency_code': invoice.currency,
+                    'business': settings.PAYPAL_SANDBOX_GATEWAY,
                     'amount': invoice.amount,
-                    'item_name': settings.PAYPAL_SANDBOX_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
+                    'item_name': 'TEST %s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
+                                                               invoice.project.id,
+                                                               invoice.project.name),
                     'invoice': invoice.id,
-                    'lc': 'US',
-                    'notify_url': settings.PAYPAL_SANDBOX_NOTIFY_URL,
-                    'return_url': settings.PAYPAL_SANDBOX_RETURN_URL,
-                    'cancel_url': settings.PAYPAL_SANDBOX_CANCEL_URL}
+                    'lc': invoice.locale,
+                    'notify_url': settings.PAYPAL_NOTIFY_URL,
+                    'return_url': settings.PAYPAL_RETURN_URL,
+                    'cancel_url': settings.PAYPAL_CANCEL_URL}
             else:
                 pp_dict = {
                     'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': getattr(settings, 'PAYPAL_CURRENCY_CODE', 'EUR'),
-                    'business': settings.PAYPAL_BUSINESS,
+                    'currency_code': invoice.currency,
+                    'business': invoice.gateway,
                     'amount': invoice.amount,
-                    'item_name': settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX + 'Project ' + str(invoice.project.id) + ' - ' + invoice.project.name,
+                    'item_name': '%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
+                                                          invoice.project.id,
+                                                          invoice.project.name),
                     'invoice': invoice.id,
-                    'lc': 'US',
+                    'lc': invoice.locale,
                     'notify_url': settings.PAYPAL_NOTIFY_URL,
                     'return_url': settings.PAYPAL_RETURN_URL,
                     'cancel_url': settings.PAYPAL_CANCEL_URL}
             pp_form = PayPalPaymentsForm(initial=pp_dict)
             if settings.PAYPAL_DEBUG:
-                # Render the sandbox button
                 pp_form.sandbox()
             else:
-                # Render the button
                 pp_form.render()
             return render_to_response('rsr/paypal_checkout.html',
-                                        {'name': invoice.name, 
-                                         'email': invoice.email, 
-                                         'pp_form': pp_form, 
-                                         'invoice_id': invoice.id, 
-                                         'p': p, 
-                                         'amount': invoice.amount,
-                                         'sandbox': settings.PAYPAL_DEBUG,},
-                                        context_instance=RequestContext(request))
+                                      {'name': invoice.name, 
+                                       'email': invoice.email, 
+                                       'pp_form': pp_form, 
+                                       'invoice_id': invoice.id, 
+                                       'p': p, 
+                                       'amount': invoice.amount,
+                                       'sandbox': settings.PAYPAL_DEBUG,},
+                                      context_instance=RequestContext(request))
     else:
-        # ... otherwise initialise an empty form
-        donate_form = PayPalInvoiceForm(user=u, project=p)
-        
-    # Display the form for non-POST requests or borked validations
+        donate_form = PayPalInvoiceForm(user=request.user, project=p)
     return render_to_response('rsr/project_donate.html', 
-                              {'funding_still_needed': fn, 'donate_form': donate_form, 'p': p, }, 
+                              {'donate_form': donate_form, 'p': p, }, 
                               context_instance=RequestContext(request))
 
 

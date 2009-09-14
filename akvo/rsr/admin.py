@@ -735,8 +735,8 @@ class ProjectCommentAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
-# PAUL
-# PayPal Integration
+
+# PayPal
 
 class PayPalInvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'status',)
@@ -774,3 +774,10 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
     void_invoices.short_description = _('Mark selected invoices as void')
 
 admin.site.register(get_model('rsr', 'paypalinvoice'), PayPalInvoiceAdmin)
+
+class PayPalGatewayAdmin(admin.ModelAdmin):
+    list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
+
+admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
+admin.site.register(get_model('rsr', 'paypalgatewayselector'))
+

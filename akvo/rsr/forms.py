@@ -228,39 +228,31 @@ class ProjectAdminModelForm(forms.ModelForm):
     class Meta:
         model = get_model('rsr', 'project')
 
-# PAUL
-# PayPal Integration
+# PayPal
 
 class PayPalInvoiceForm(forms.ModelForm):
     def __init__(self, user, project, *args, **kwargs):
-        # Form should always know which project it's being called from
-        self.project = project
         super(PayPalInvoiceForm, self).__init__(*args, **kwargs)
-        # An anonymous user should see three extra required fields for their name and email address (twice)
+        self.project = project
         if not user.is_authenticated():
-            self.fields['name']  = forms.CharField(label=_(u'Full name'))
-            self.fields['email'] = forms.EmailField(label=_(u'Email address'))
-            self.fields['email2'] = forms.EmailField(label=_(u'Email address (confirm)'))
+            self.fields['name']  = forms.CharField(label=_('Full name'))
+            self.fields['email'] = forms.EmailField(label=_('Email address'))
+            self.fields['email2'] = forms.EmailField(label=_('Email address (confirm)'))
+
+    amount = forms.IntegerField(min_value=1)
 
     class Meta:
         model = get_model('rsr', 'paypalinvoice')
         fields = ('amount',)
 
-    # Validate the amount the user enters.
-    # It shouldn't be more than the project actually needs to meet its funding target,
-    # nor should it be 0.
-    # Also check that the user enters the same email address in both email fields.
     def clean(self):
-        #project = str(self.project.id)
         funding_needed = self.project.funding_still_needed()
         if 'amount' in self.cleaned_data:
             if self.cleaned_data['amount'] > funding_needed:
-                raise forms.ValidationError(_(u'You cannot donate more than the project actually needs!'))
-            elif self.cleaned_data['amount'] == 0:
-                raise forms.ValidationError(_(u'You cannot donate nothing!'))
+                raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
         if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
-            if self.cleaned_data.get('email', 0) != self.cleaned_data['email2']:
-                raise forms.ValidationError(_(u'You must type the same email address each time!'))
+            if self.cleaned_data['email'] != self.cleaned_data['email2']:
+                raise forms.ValidationError(_('You must type the same email address each time!'))
         return self.cleaned_data
 
 

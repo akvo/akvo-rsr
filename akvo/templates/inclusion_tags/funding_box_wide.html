@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags %}
+{% load i18n rsr_filters rsr_tags %}
 {% ifnotequal p.status 'L' %}
 
 <div class="fundingwrap">
@@ -12,7 +12,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% ifequal p.funding_still_needed 0 %}
 			<div class="fundingbox-funded" style="padding-top:15px; padding-bottom:0px;">	
 				<div class="fullyfunded-text">
-					<p>{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given}}</p>
+					<p>{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}</p>
 				</div>
 				<p class="grey fullyfunded-text" style="margin-bottom:15px;">{% trans 'This project is' %}<br />
 					<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
