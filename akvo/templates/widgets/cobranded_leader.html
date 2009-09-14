@@ -55,7 +55,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<script type="text/javascript" charset="utf-8">
 
 		var index = 1;
-		var intervall = 7000;
 
 		function Partner (orgName,logo,partnerType,url) {
 			this.orgName = orgName;
@@ -98,6 +97,49 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 												'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
 		{% endfor %}
 
+
+		function switchPartner(){
+			index == (partners.length-1) ? index = 0 : index++;
+			animatePartnerSwitch();
+		}
+
+		function animatePartnerSwitch() 
+		{
+			// If no or one partner bail since there is nothing to animate
+			if(partners.length <=1){
+				return;
+			}
+
+			var newHTML = "";
+						
+			switch(partners[index].getType())
+			{
+				case "funding": newHTML += '<p class="grey">{% trans 'Underwritten by' %}'; break;
+				case "support": newHTML += '<p class="grey">{% trans 'Supported by' %}'; break;
+				case "field": 	newHTML += '<p class="grey">{% trans 'Implemented by' %}'; break;
+				default: newHTML += '<p class="grey">{% trans 'Presented by' %}'; break;
+			}
+
+			newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
+
+			$("#partnerspace")
+				.animate({opacity: 1.0},7000) // Display time
+				.fadeOut(1000, function() {
+					$("#partnerspace").html(newHTML)
+				})
+				.animate({opacity: 1.0},1000)
+				.fadeIn(1000, switchPartner);
+		}
+
+		$(document).ready(function()
+		{
+			// Kick start the animation loop
+			animatePartnerSwitch();
+		});
+		
+
+
+		{% comment %}
 		function switchPartner()
 		{						
 			var newHTML = "";
@@ -123,6 +165,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{
 			window.setInterval(function() { this.switchPartner.apply(this); }, intervall)		
 		});		
+		
+		{% endcomment %}
 	</script>
 	
 	{% endblock inline_scripts %}
@@ -154,7 +198,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
 		<div style="padding-left:10px;">
 			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:30}}</a></h2>
-			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:45}}</p>
+			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:40}}</p>
 			<div style="float:left; width:125px;">
 				{% if project.current_image %}
 					<a href="{% url akvo.rsr.views.projectmain project.id %}">
