@@ -22,7 +22,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
-				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given}}</td>
+				<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
