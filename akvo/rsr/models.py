@@ -320,7 +320,7 @@ class OrganisationAccount(models.Model):
 CURRENCY_CHOICES = (
     #('USD', '$'),
     ('EUR', '€'),
-    ('GBP', '£'),
+    #('GBP', '£'),
 )
 
 STATUSES = (

@@ -1,8 +1,51 @@
- RELEASE_NOTES.txt, v0.9.9, 7 July 2009, tbp
+ RELEASE_NOTES.txt, v0.9.11, 14 September 2009, PB
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview)
+
+---
+
+Akvo RSR v 0.9.11 release notes
+-------------------------------
+14 September 2009, (Code name: Jupiter) PB
+
+New features
+------------
+### Decimalisation of financial data
+All financial data in Akvo RSR is now stored in decimal format. Previously it was stored in integer (whole number) format. This transition was necessary to allow for accurate calculation and output of financial data in the system.
+
+### Reconciliation of PayPal donations
+All individual donations made to projects in Akvo RSR are subject to processing fees applied by PayPal. Although Akvo RSR has always stored these fees, we were not able to apply them to our own financial data until the system was decimalised. We are now able to store the final amounts received from PayPal with cent accuracy.
+
+### PayPal gateway selection and multi-currency support
+Currently all individual donations are sent to the Akvo PayPal account. As from this release, it is possible for a partner to request that Akvo staff override this behaviour on a project-by-project basis and define a new "gateway" (PayPal store) to direct payments to. Note: this is only done in exceptional cases at this point. PayPal gateways also contain locale and currency information meaning that we will be able to handle donations to a particular project in an alternative currency in the future.
+
+### Various enhancements to the PayPal donation engine
+Several smaller enhancements have been made to the Akvo RSR PayPal engine:
+
+* The find_stale_invoices.py cron script now logs detailed information for each invoice operated on
+* The PayPal-specific settings in settings.py have been simplified
+* The view function code which handles the donation process has been simplified
+
+Detailed technical information about these new features and enhancements can be found on [Akvo Labs](http://www.akvo.org/labs/index.php/Akvo_PayPal_Under_the_Hood)
+
+Bugs
+----
+In one particular template, the message "Fully funded" did not appear when a project had reached its funding target. This has been fixed.
+
+When a user attempted to donate a negative integer amount (for example "-10") to a project, the error message produced was misleading, asking her to donate an amount "greater then or equal to 0". Since it is not possible to donate 0 to a project, this message now asks the user to donate an amount "greater than or equal to 1".
+
+Akvo RSR v 0.9.10 release notes
+------------------------------
+1 September 2009, (Code name: Avalanche) GvH
+
+This is a small release featuring new widgets
+
+New features
+------------
+### Co-branded widgets
+The widget gallery has been considerably expanded with designs promoting the various partners for the projects and having new formats for use both horizontally and vertically on the host page.
 
 ---
 

@@ -141,11 +141,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>
 			<tr style="color:green;">
 				<td>{% trans 'Pledged' %}</td>
-				<td style="text-align:right;">&#8364; {{projs.total_pledged}}</td>
+				<td style="text-align:right;">&#8364; {{projs.total_pledged|round}}</td>
 			</tr>
 			<tr style="color:red;">
 				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-				<td style="text-align:right;">&#8364; {{projs.total_funds_needed}}</td>
+				<td style="text-align:right;">&#8364; {{projs.total_funds_needed|round}}</td>
 			</tr>
 		</table>
 	</div>
@@ -328,7 +328,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endif %}
 		<a href="{% url akvo.rsr.views.orgdetail live_earth.id %}">
 		<img src="{% thumbnail live_earth.logo 67x50 autocrop,upscale,sharpen %}" style="margin-top:10px">
-		</a>
+		</a><br />
+		<a href="{% url akvo.rsr.views.orgdetail live_earth.id %}">Live Earth</a>
 	</td>
 	<td style="border-right: 0;">
 	{% if p.fundingpartner_set.all %}

@@ -42,7 +42,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 <div id="heightconstrain">
 		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>	
+		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:40}}</p>	
 		{% if project.current_image %}
 			<div class="photo_frame">
 				<a href="{% url akvo.rsr.views.projectmain project.id %}">
@@ -52,7 +52,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	    {% endif %}
 	
 		<p id="project_plan_summary">
-			{{project.project_plan_summary|safe|smart_truncate:110}}
+			{{project.project_plan_summary|safe|smart_truncate:100}}
 			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>

@@ -55,15 +55,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<script type="text/javascript" charset="utf-8">
 
 		var index = 1;
-		var intervall = 7000;
 
-		function Partner (orgName,logo,partnerType,url) {
+		function Partner (orgName,partnerType,url) {
 			this.orgName = orgName;
-			this.logo = logo;
 			this.partnerType = partnerType
 			this.url = url
 			this.getName = function () { return this.orgName; }
-			this.getLogo = function () { return this.logo; }
 			this.getType = function () { return this.partnerType; }
 			this.getUrl = function () { return this.url; }
 		}
@@ -72,34 +69,41 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		{% for sponsor in project.sponsorpartner_set.all %} 
 		partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
-												'/*{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
 												'support',
 												'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');
 		{% endfor %}
 
 		{% for funder in project.fundingpartner_set.all %}
 		partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
-												'/*{% thumbnail funder.funding_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
 												'funding',
 												'{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}');
 		{% endfor %}
 
 		{% for supporter in project.supportpartner_set.all %}
 		partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
-												'/*{% thumbnail supporter.support_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
 												'support',
 												'{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}');
 		{% endfor %}
 
 		{% for operator in project.fieldpartner_set.all %}
 		partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
-												'/*{% thumbnail operator.field_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
 												'field',
 												'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
 		{% endfor %}
 
-		function switchPartner()
-		{						
+		
+		function switchPartner(){
+			index == (partners.length-1) ? index = 0 : index++;
+			animatePartnerSwitch();
+		}
+
+		function animatePartnerSwitch() 
+		{
+			// If no or one partner bail since there is nothing to animate
+			if(partners.length <=1){
+				return;
+			}
+
 			var newHTML = "";
 						
 			switch(partners[index].getType())
@@ -111,18 +115,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			}
 
 			newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
-			
-			$("#partnerspace").fadeOut('slow', function() {
-				$("#partnerspace").html(newHTML).fadeIn('slow');
-			});
 
-			index == (partners.length-1) ? index = 0 : index++;		
+			$("#partnerspace")
+				.animate({opacity: 1.0},7000) // Display time
+				.fadeOut(1000, function() {
+					$("#partnerspace").html(newHTML)
+				})
+				.animate({opacity: 1.0},1000)
+				.fadeIn(1000, switchPartner);
 		}
 
 		$(document).ready(function()
 		{
-			window.setInterval(function() { this.switchPartner.apply(this); }, intervall)		
-		});		
+			// Kick start the animation loop
+			animatePartnerSwitch();
+		});
+	
 	</script>
 	
 	{% endblock inline_scripts %}
