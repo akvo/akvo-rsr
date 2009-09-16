@@ -859,6 +859,11 @@ from akvo.rsr.decorators import fetch_project
 
 @fetch_project
 def donate(request, p):
+    
+    has_sponsor_banner = False
+    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
+        has_sponsor_banner = True
+        
     if request.method == 'POST':
         donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
         if donate_form.is_valid():
@@ -910,12 +915,14 @@ def donate(request, p):
                                        'invoice_id': invoice.id, 
                                        'p': p, 
                                        'amount': invoice.amount,
-                                       'sandbox': settings.PAYPAL_DEBUG,},
+                                       'sandbox': settings.PAYPAL_DEBUG,
+                                       'has_sponsor_banner': has_sponsor_banner},
                                       context_instance=RequestContext(request))
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
+    
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form, 'p': p, }, 
+                              {'donate_form': donate_form, 'p': p, 'has_sponsor_banner': has_sponsor_banner }, 
                               context_instance=RequestContext(request))
 
 

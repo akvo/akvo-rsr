@@ -38,6 +38,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock breadcrumbs %}
 
 {% block content %}
+{% if has_sponsor_banner %}
+	<img src="{{MEDIA_URL}}img/lerfw-banner.png" />	
+{% endif %}
+
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<div style="width:50%; float:left;">
 		<h1>{% trans 'Confirm donation details' %}</h1>
