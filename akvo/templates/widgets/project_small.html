@@ -1,0 +1,60 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n rsr_tags rsr_filters generic_content thumbnail %}
+
+<?xml version="1.0" encoding="UTF-8"?>	
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>{% block title %}Akvo.org{% endblock title %}</title>
+	<base target="_parent" />
+	
+	{% block style %} 
+	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_small/css/screen.css" type="text/css" media="screen, projection" />
+	{% endblock style %}
+	
+	<style type="text/css" media="screen">
+	{% block inline_styles %}
+		#header {background-color:#{{bgcolor}};}
+		#header h1 { color:#{{textcolor}}; }
+		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
+		h2 a {color:#{{bgcolor}} !important;}
+	{% endblock inline_styles %}
+	</style>
+	
+</head>
+<body style="margin-left:0px; margin-top:0px; background-color:transparent;">
+	<div id="container" style="background-color:white; border-bottom:1px solid #9B9AAC;">
+		<div id="header" style="padding-top:1px; padding-bottom:1px;">
+			<h1>Project</h1>
+		</div>
+		<div id="content">
+			<div id="heightconstrain">
+				<h2 id="project_title" style="margin-top:5px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+				{% if project.current_image %}
+					<div class="photo_frame">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">
+							<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}" alt="{{project.project_plan_summary|safe|smart_truncate:110}}">
+						</a>
+					</div>
+			    {% endif %}
+				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+					{{project.country}}, {{project.city}}
+				</p>
+				<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">
+				
+					{% trans 'Powered by' %} <a href="http://{{ request.META.HTTP_HOST }}">Akvo</a>. {% trans 'Ref' %}: {{project.id}}
+				</p>
+			</div>
+		</div>
+	</div>	
+	{% if debug %}
+		Debug:{% debug %}
+	
+		Sql_queries: {{ sql_queries }}
+	{% endif %}
+</body>
+</html>
