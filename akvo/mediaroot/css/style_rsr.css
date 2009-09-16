@@ -293,14 +293,14 @@ padding: 10px 0;
 div#live_earth_show {
     background: transparent url('../img/LE-bar-water-bkg.png') no-repeat;
     color:#fff;
-    /*
-    padding-top:240px;
-    height:176px;
-    */
-    padding-top:181px;
-    height:206px;
     padding-left:20px;
     padding-right:20px;
+    /*
+    padding-top:181px;
+    height:206px;
+    */
+    padding-top:171px;
+    height:216px;
     
 }
 /*
