@@ -681,9 +681,15 @@ def commentform(request, project_id):
 @render_to('rsr/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
+    
+    has_sponsor_banner = False
+    if o.id == settings.LIVE_EARTH_ID:
+        has_sponsor_banner = True
+    
+    
     org_projects = o.published_projects()
     org_partners = o.partners()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners, }
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
