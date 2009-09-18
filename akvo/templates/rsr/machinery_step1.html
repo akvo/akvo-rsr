@@ -29,8 +29,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 {% block script %}
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js_"></script>
-
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 	var akvo_project_id = {{project.id}};
@@ -600,6 +599,64 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% ifequal account_level 'premium'   %}
 			{% endcomment %}
 					
+				{% comment %}
+					Start small project widget
+				{% endcomment %}
+				
+					<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
+						<form name="projectSmallForm" action="get-a-widget" method="post">
+							<h3 style="padding-bottom:0;">{% trans 'Small project (170 pixels wide by 30* pixels high)' %}</h3>
+							<p class="machinerygrey" style="margin:0;padding:0;">
+								{% trans 'Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.' %}
+							</p>
+
+							<div style="padding-bottom:20px;"> </div>
+							<p class="machinerygrey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+
+							<div style="float:left; width:205px;">
+								<script type="text/javascript" charset="utf-8">
+									// think about refactor this to a general method in machinery.js
+									document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-small/project/{{project.id}}/" width="170" height="312" frameborder="0" allowTransparency="yes"> </iframe>');
+								</script>
+							</div>
+							<div style="float:right; width:430px; padding-top:0px;">
+								<h3 style="margin-top:0; padding-top:0;">{% trans 'Settings' %}</h3>
+								<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+								<p style="font-weight:bold;">{% trans 'Enter the web address where you will embed this widget' %}</p>
+								<input type="text" name="widget-site" value="" style="margin-top:7px; margin-right:20px;" /> 
+								{% trans 'This will help us track statistics for you.' %}
+								<br />
+								<p class="machinerygrey">{% trans 'Example:' %} www.akvo.org</p>
+
+								<hr style="margin-left:0; margin-right:auto; margin-top:20px; margin-bottom:20px;" />
+
+								<input type="hidden" name="widget-type" value="project-small" />
+								<input type="radio" id="project-small-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;"/> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								<br />
+								<input type="radio" id="project-small-random-from-org" name="widget-choice" value="random-from-org" /> {% trans 'Display a random project from this organisation:' %}
+								<br />
+								<select name="widget-organisations" id="project-small-organisations" size="1" style="margin-left:23px;" disabled="disabled">
+									{% for organisation in organisations  %}
+									<option value="{{organisation.id}}">{{organisation.name}}</option>
+									{% endfor %}
+								</select><br />
+								<br />
+								<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+								<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+									<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+								</div>
+								<a class="march_button" href="javascript:document.projectSmallForm.submit();" onclick="this.blur();"><span>{% trans 'Select and Proceed...' %}</span></a>
+							</div>
+							<div style="clear:both;"> </div>
+						</form>
+					</div>
+				
+				
+				{% comment %}
+					stop small project widget
+				{% endcomment %}
+				
+				
 				{% comment %}
 					Start project list widget
 				{% endcomment %}
