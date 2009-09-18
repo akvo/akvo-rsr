@@ -95,7 +95,6 @@ $(document).ready(function()
 			$('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
 		}		
 	});
-	
-	
+
 });
 
