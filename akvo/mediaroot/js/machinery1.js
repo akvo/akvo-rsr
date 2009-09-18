@@ -44,7 +44,6 @@ function getWidth(widget_type)
 
 $(document).ready(function() 
 {	
-    alert('jQuery loaded');
     // Hide customize other and warning section
     // Step 1
 	//$('#machinery_step1_warning_main').hide();
