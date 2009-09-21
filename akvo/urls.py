@@ -109,7 +109,7 @@ urlpatterns = patterns('',
     (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
     
-    url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
+    #url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
     
     #feedjack
     #(r'', include('feedjack.urls')),
@@ -124,7 +124,13 @@ urlpatterns = patterns('',
     #    {'document_root': '/var/dev/akvo/mediaroot/', 'show_indexes': True}),
 )
 
+
 from django.conf import settings
+if settings.LIVE_EARTH_ENABLED:
+    urlpatterns += patterns('',
+        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
+    )
+
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',

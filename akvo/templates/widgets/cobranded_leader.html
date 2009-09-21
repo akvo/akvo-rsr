@@ -72,7 +72,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% for sponsor in project.sponsorpartner_set.all %} 
 		partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
 												'/*{% thumbnail sponsor.sponsor_organisation.logo 140x50 autocrop,upscale,sharpen %}*/',
-												'support',
+												'sponsor',
 												'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');
 		{% endfor %}
 
