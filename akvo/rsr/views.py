@@ -867,6 +867,9 @@ from akvo.rsr.decorators import fetch_project
 @fetch_project
 def donate(request, p):
     
+    if p not in Project.objects.published().need_funding():
+        return HttpResponseRedirect(reverse('akvo.rsr.views.projectmain', args=(p.id,)))
+        
     has_sponsor_banner = False
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
