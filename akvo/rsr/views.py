@@ -172,6 +172,7 @@ def index(request):
         'orgs': Organisation.objects,
         'projs': projs,
         'version': settings.URL_VALIDATOR_USER_AGENT,
+        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
     }
 
 def oldindex(request):
@@ -689,7 +690,7 @@ def orgdetail(request, org_id):
     
     org_projects = o.published_projects()
     org_partners = o.partners()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner }
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
@@ -922,13 +923,14 @@ def donate(request, p):
                                        'p': p, 
                                        'amount': invoice.amount,
                                        'sandbox': settings.PAYPAL_DEBUG,
-                                       'has_sponsor_banner': has_sponsor_banner},
+                                       'has_sponsor_banner': has_sponsor_banner,
+                                       'live_earth_enabled': settings.LIVE_EARTH_ENABLED,},
                                       context_instance=RequestContext(request))
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
     
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form, 'p': p, 'has_sponsor_banner': has_sponsor_banner }, 
+                              {'donate_form': donate_form, 'p': p, 'has_sponsor_banner': has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, }, 
                               context_instance=RequestContext(request))
 
 

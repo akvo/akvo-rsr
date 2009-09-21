@@ -91,7 +91,6 @@ $(document).ready(function()
 	 });
 	});
 	
-	
 	// Display the default widget preview
 	preview_widget();
 	
