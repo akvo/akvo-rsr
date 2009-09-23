@@ -111,11 +111,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<p>{{o.fax}}</p>
 	{% endif %}
 	
+	{% comment %}
 	{% if live_earth_enabled %}
 		{% if has_sponsor_banner %}
-		<a href="{% url akvo.rsr.views.liveearth%}">Live Earth projects</a>
+		<a href="{% url akvo.rsr.views.liveearth%}">View Live Earth projects on Akvo</a>
 		{% endif %}
 	{% endif %}
+	{% endcomment %}
 
 	</td>	
 
