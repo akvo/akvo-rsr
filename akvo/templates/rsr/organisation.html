@@ -72,12 +72,24 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	</td>
 
-	<td style="border-right: 1px solid #ccc; width: 33%">
+	<td style="border-right: 1px solid #ccc; width: 33%;">
 	<h2 class="lightx2">{% trans 'Location' %}</h2>
-	<p>{{o.address_1}}<br />{{o.address_2}}<br />{{o.postcode}}<br />{{o.city}}<br />{{o.state}}<br />{{o.country}}</p>
+	<p>
+	{% if o.address_1 %}{{o.address_1}}<br />{% endif %}
+	{% if o.address_2 %}{{o.address_2}}<br />{% endif %}
+	{% if o.postcode %}{{o.postcode}}<br />{% endif %}
+	{% if o.city %}{{o.city}}<br />{% endif %}
+	{% if o.state %}{{o.state}}<br />{% endif %}
+	{% if o.state %}{{o.country}}{% endif %}
+	</p>
+	{% comment %}
+	{{o.address_1}}<br />{{o.address_2}}<br />{{o.postcode}}<br />{{o.city}}<br />{{o.state}}<br />{{o.country}}</p>
+	{% endcomment %}
+
 	{% if o.map %}
-	<img src="{% thumbnail o.map 140x140 %}" alt="type" style="margin: 20px 0;" />
+		<img src="{% thumbnail o.map 140x140 %}" alt="type" style="margin: 20px 0;" />
 	{% endif %}
+	
 	</td>
 
 	<td style="width: 33%">
@@ -97,6 +109,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% if o.fax %}
 	<h2 class="lightx2">{% trans 'Fax' %}</h2>
 	<p>{{o.fax}}</p>
+	{% endif %}
+	
+	{% if live_earth_enabled %}
+		{% if has_sponsor_banner %}
+		<a href="{% url akvo.rsr.views.liveearth%}">Live Earth projects</a>
+		{% endif %}
 	{% endif %}
 
 	</td>	
