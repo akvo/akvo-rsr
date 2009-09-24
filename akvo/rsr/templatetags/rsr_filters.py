@@ -35,9 +35,9 @@ def round(value, decimal_places=getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2))
         return u''
     if settings.DECIMALS_DEBUG:
         d = value.quantize(Decimal(10) ** -decimal_places)
-        return unicode(d)
+        return d
     else:
         d = value.quantize(Decimal(10), ROUND_HALF_UP)
-        return unicode(d)
+        return d
 round.is_safe = True
 
