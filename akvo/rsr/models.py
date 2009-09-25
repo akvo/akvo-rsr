@@ -741,18 +741,12 @@ class Project(models.Model):
         # MySQL and PostgreSQL are not affected by this limitation
         result = self.funding_pledged() + self.funding_donated()
         decimal_result = Decimal(str(result))
-        if decimal_result > (self.budget_total() - 1):
-            return decimal_result.quantize(Decimal(10), ROUND_UP)
-        else:
-            return decimal_result
+        return decimal_result
 
     def funding_still_needed(self):
         result =  Project.objects.funding().get(pk=self.pk).funds_needed
         decimal_result = Decimal(str(result))
-        if decimal_result < 1:
-            return 0
-        else:
-            return decimal_result
+        return decimal_result
 
     def budget_employment(self):
         return Project.objects.budget_employment().get(pk=self.pk).budget_employment

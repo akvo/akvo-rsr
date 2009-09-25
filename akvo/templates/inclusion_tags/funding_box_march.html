@@ -11,7 +11,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div class="fundingbox-header"> </div>
 	<div class="fundingbox-content">		
-		{% ifequal p.funding_still_needed 0 %}
+		{% ifequal p.funding_still_needed|round 0 %}
 			<div class="fundingbox-funded">	
 				<div class="fullyfunded-text">
 					<p style="">
