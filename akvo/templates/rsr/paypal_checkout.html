@@ -173,7 +173,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% trans 'By clicking on the "Donate" button you agree to the' %} <a href="http://akvo.org/web/donate_terms_and_conditions" target="_blank">{% trans 'Terms and Conditions' %}</a> {% trans 'for the donation.' %}
 		</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
-			<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+			<a href="{% url void_invoice invoice_id %}">{% trans 'Cancel' %}</a>
 		</div>
 		{% if user.is_authenticated %}
 			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>

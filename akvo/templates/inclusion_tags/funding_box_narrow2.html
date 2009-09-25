@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
 	<div class="fundingboxnarrow-content">
-		{% ifequal p.funding_still_needed 0 %}
+		{% ifequal p.funding_still_needed|round 0 %}
 		<div class="fundingbox-funded">
 			<div class="fullyfunded-text">
 				<p>{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}</p>
