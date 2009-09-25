@@ -276,6 +276,12 @@ def orglist(request, org_type='all'):
     projs = Project.objects.published()
     return {'projs': projs, 'orgs': orgs, 'org_type': org_type, 'page': page}
 
+@render_to('rsr/organisation_directory_widget.html')
+def orglist_widget(request, org_type='all'):
+    orgs = Organisation.objects.all()
+    return {'orgs': orgs}
+
+
 class SigninForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'}))

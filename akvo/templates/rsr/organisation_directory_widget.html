@@ -1,0 +1,150 @@
+{% load i18n rsr_filters thumbnail rsr_tags %}
+
+{% comment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>	
+{% endcomment %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	
+	
+	<meta charset="UTF-8">
+	<title>Akvo partners</title>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style_rsr.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/tabs.css" media="screen" />
+	<!--[if IE 6]>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie6.css" media="screen" />
+	<![endif]--> 
+
+	<!--[if IE 7]>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
+	<![endif]-->
+	<style type="text/css" media="screen">
+		#wrap {
+			width:718px;
+
+		}
+		#heightcontrain {
+			height:400px;
+			max-height:400px;
+			overflow: auto;
+		}
+		.orgColumn { width:196px !important; }
+		.typeColumn {width:196px !important; }
+		.countryColumn {}
+		.continentColumn {}
+		.totalColumn {}
+		.reqColumn {}
+		.neededColumn {
+			
+		}
+		
+		
+	</style>
+	
+</head>
+<body style="font-size: 0.75em;">	
+<div id="wrap">
+<table id="project_table">
+<tr>
+<th class="orgColumn">{% trans 'Organisation name' %}</th>
+<th class="typeColumn">{% trans 'Type' %}</th>
+<th class="countryColumn">{% trans 'Country' %}</th>
+<th class="continentColumn">{% trans 'Continent' %}</th>
+<th class="totalColumn">{% trans 'Total projects' %}</th>
+<th class="reqColumn">{% trans 'Funds requested' %}</th>
+<th class="neededColumn">{% trans 'Funds still needed' %}</th>
+</tr>
+</table>
+<div id="heightcontrain">
+<table id="project_table" >
+{% for o in orgs %}
+<tr>
+	<td class="orgColumn">
+		{% if o.logo %}
+            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
+			<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
+            </a>
+		{% else %}
+			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
+		{% endif %}
+
+		<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+		<div class="lightx2 small">{{o.long_name}}</div>
+		<div style="clear: left;">
+		{% category_icons_org o %}
+	 	</div>
+	</td>
+	<td class="typeColumn">{{o.get_organisation_type_display}}</td>
+	<td class="countryColumn">{{o.country}}</td>
+	<td class="continentColumn">{{o.country.get_continent_display}}</td>
+	<td class="totalColumn">
+		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a><br />
+	</td>
+	<td class="reqColumn">
+		{% ifequal o.funding.still_needed 0 %}
+			<span style="color: green">
+		{% else %}
+			<span>
+		{% endifequal %}
+		<b>&#8364; {{o.funding.total|round}}</b>
+		</span>
+	</td>
+	<td class="neededColumn">
+		{% ifequal o.funding.still_needed 0 %}
+			<span>
+		{% else %}
+			<span style="color: red">
+		{% endifequal %}
+		<b>&#8364; {{o.funding.still_needed|round}}</b>
+		</span>
+	</td>
+</tr>
+
+{% endfor %}
+{% comment %}
+<tr>
+	<td colspan="9">
+		<div style="text-align: right">
+            <span style="margin: 0 20px 0 20px">
+
+					
+
+                {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
+            </span>
+            <span style="margin: 0 20px 0 20px">
+                {% ifequal page.number 1 %}
+                {% trans 'First' %} |
+                {% else %}
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+                {% endifequal %}
+                {% if page.has_previous %}
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+                {% else %}
+                {% trans 'Previous' %} |
+                {% endif %}
+                {% if page.has_next %}
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+                {% else %}
+                {% trans 'Next' %} |
+                {% endif %}
+                {% ifequal page.number page.paginator.num_pages %}
+                {% trans 'Last' %}
+                {% else %}
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+                {% endifequal %}
+            </span>
+		</div>
+	</td>
+</tr>
+{% endcomment %}
+</table>
+</div>
+</div>
+</body>
+</html>

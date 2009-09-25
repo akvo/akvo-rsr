@@ -61,6 +61,8 @@ urlpatterns = patterns('',
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
+    url(r'^rsr/organisations-widget/$', 'akvo.rsr.views.orglist_widget', name='rsr_org_list_widget'),
+
 
     (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
     (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
