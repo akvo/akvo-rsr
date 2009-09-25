@@ -912,6 +912,14 @@ def donate(request, p):
                               {'donate_form': donate_form, 'p': p, }, 
                               context_instance=RequestContext(request))
 
+def void_invoice(request, invoice_id):
+    invoice = get_object_or_404(PayPalInvoice, pk=invoice_id)
+    if invoice.status == 1:
+        invoice.status = 2
+        invoice.save()
+        return HttpResponseRedirect(reverse('project_main', args=(invoice.project.id,)))
+    else:
+        return HttpResponseRedirect('/')
 
 # Presents the landing page after PayPal
 def paypal_thanks(request):
