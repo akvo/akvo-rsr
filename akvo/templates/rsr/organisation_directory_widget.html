@@ -1,16 +1,13 @@
 {% load i18n rsr_filters thumbnail rsr_tags %}
 
 {% comment %}
-<!DOCTYPE html>
-<html lang="en">
-<head>	
-{% endcomment %}
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	
-	
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
 	<meta charset="UTF-8">
 	<title>Akvo partners</title>
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
@@ -27,24 +24,43 @@
 	<style type="text/css" media="screen">
 		#wrap {
 			width:718px;
-
 		}
 		#heightcontrain {
 			height:400px;
 			max-height:400px;
 			overflow: auto;
+			border-bottom:1px solid #999999;
+			border-left:1px solid #999999;
 		}
-		.orgColumn { width:196px !important; }
-		.typeColumn {width:196px !important; }
-		.countryColumn {}
-		.continentColumn {}
-		.totalColumn {}
-		.reqColumn {}
+		.orgColumn { 
+			width:200px !important; 
+			max-width:200px !important;
+			}
+		.typeColumn { 
+			width:60px !important; 
+			max-width:60px !important;
+			}
+		.countryColumn {
+			width:65px !important;
+			max-width:65px !important;
+			}
+		.continentColumn {
+			width:55px !important;
+			max-width:55px !important;
+			}
+		.totalColumn {
+			width:45px !important;
+			max-width:45px !important;
+			}
+		.reqColumn {
+			width:65px !important;
+			max-width:65px !important;
+			}
 		.neededColumn {
-			
+			}
+		#orgColumnHeader{
+			border-left:1px solid #999999;
 		}
-		
-		
 	</style>
 	
 </head>
@@ -65,7 +81,7 @@
 <table id="project_table" >
 {% for o in orgs %}
 <tr>
-	<td class="orgColumn">
+	<td id="orgColumnHeader" class="orgColumn">
 		{% if o.logo %}
             <a href="{% url akvo.rsr.views.orgdetail o.id %}">
 			<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
@@ -80,7 +96,9 @@
 		{% category_icons_org o %}
 	 	</div>
 	</td>
-	<td class="typeColumn">{{o.get_organisation_type_display}}</td>
+	<td class="typeColumn">
+	{{o.get_organisation_type_display}}
+	</td>
 	<td class="countryColumn">{{o.country}}</td>
 	<td class="continentColumn">{{o.country.get_continent_display}}</td>
 	<td class="totalColumn">
