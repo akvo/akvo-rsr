@@ -779,5 +779,10 @@ class PayPalGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
 
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
-admin.site.register(get_model('rsr', 'paypalgatewayselector'))
+
+class PayPalGatewaySelectorAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'gateway')
+    list_filter = ('gateway',)
+
+admin.site.register(get_model('rsr', 'paypalgatewayselector'), PayPalGatewaySelectorAdmin)
 

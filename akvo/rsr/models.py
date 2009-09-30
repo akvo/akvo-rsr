@@ -1130,7 +1130,7 @@ class PayPalGateway(models.Model):
     notification_email  = models.EmailField()
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.name, self.account_email)
+        return u'%s - %s - %s' % (self.name, self.account_email, self.get_currency_display())
 
     class Meta:
         verbose_name = _(u'PayPal gateway')
