@@ -366,7 +366,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
         }),
         (_(u'Project budget'), {
-            'fields': ('date_request_posted', 'date_complete', ), #'classes': 'collapse'
+            'fields': ('currency', 'date_request_posted', 'date_complete', ), #'classes': 'collapse'
         }),
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',

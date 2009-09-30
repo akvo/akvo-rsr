@@ -9,7 +9,7 @@ import string
 import re
 import os
 from datetime import date, datetime, timedelta
-from decimal import Decimal, ROUND_UP
+from decimal import Decimal
 
 from django import forms
 from django.conf import settings
@@ -276,9 +276,8 @@ class OrganisationAccount(models.Model):
 
 
 CURRENCY_CHOICES = (
-    #('USD', '$'),
+    ('USD', '$'),
     ('EUR', '€'),
-    #('GBP', '£'),
 )
 
 STATUSES = (
@@ -364,6 +363,7 @@ class Project(models.Model):
     notes                       = models.TextField(blank=True)
 
     #budget    
+    currency            = models.CharField(choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(default=date.today)
     date_complete       = models.DateField(null=True, blank=True)
 
@@ -762,10 +762,10 @@ class BudgetItem(models.Model):
     project             = models.ForeignKey(Project)
     item                = models.CharField(max_length=20, choices=ITEM_CHOICES)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
-    currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    #currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     
     class Meta:
-        unique_together     = ('project', 'item', 'currency',)
+        unique_together     = ('project', 'item')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
@@ -810,7 +810,7 @@ class Link(models.Model):
 class FundingPartner(models.Model):
     funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
     funding_amount          = models.DecimalField(max_digits=10, decimal_places=2)
-    currency                = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    #currency                = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):
