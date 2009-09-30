@@ -29,6 +29,7 @@
 			height:400px;
 			max-height:400px;
 			overflow: auto;
+			height: expression( this.scrollHeight > 4 ? "400px" : "auto" ); /* sets max-height for IE */
 			border-bottom:1px solid #999999;
 			border-left:1px solid #999999;
 		}
@@ -59,7 +60,7 @@
 		.neededColumn {
 			}
 		#orgColumnHeader{
-			border-left:1px solid #999999;
+			border-left:1px solid #999999 !important;
 		}
 	</style>
 	
