@@ -1120,7 +1120,6 @@ from paypal.standard.ipn.signals import payment_was_flagged, payment_was_success
 class PayPalGateway(models.Model):
     PAYPAL_LOCALE_CHOICES = (
         ('US', _(u'US English')),
-        ('GB', _(u'British English')),
     )
     name                = models.CharField(max_length=255)
     account_email       = models.EmailField()
