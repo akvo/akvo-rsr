@@ -9,21 +9,16 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="PRAGMA" content="NO-CACHE">
 	<title>Akvo partners</title>
+	<base target="_parent">
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style_rsr.css" media="screen" />
-	<!--[if IE 6]>
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie6.css" media="screen" />
-	<![endif]--> 
-
-	<!--[if IE 7]>
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
-	<![endif]-->
 	
 	<style type="text/css" media="screen">
 		#wrap {
-			width:718px;
+			width:710px;
 		}
 		#heightcontrain {
 			height:400px;
@@ -34,17 +29,53 @@
 			border-left:1px solid #999999;
 			
 		}
-		.orgColumn { 
+		#orgColumnHeader{
+			width:70px !important; 
+			max-width:70px !important;
+			min-width:70px !important;
+			}
+		
+		#typeColumnHeader { 
+			width:80px !important; 
+			max-width:80px !important;
+			min-width:80px !important;
+			}
+		#countryColumnHeader {
+			width:80px !important;
+			max-width:80px !important;
+			min-width:80px !important;
+			}
+		#continentColumn {
+			width:60px !important;
+			max-width:60px !important;
+			min-width:60px !important;
+			}
+		#totalColumn {
+			width:50px !important;
+			max-width:50px !important;
+			min-width:50px !important;
+			}
+		#reqColumn {
+			width:60px !important;
+			max-width:60px !important;
+			min-width:60px !important;
+			}
+		#neededColumn {
+			/*width:50px;*/
+			/*overflow:hidden;*/
+			}
+
+			
+		/* ---------------------------------------------------------------------- */
+		{% comment %}
+		
+		.orgColumn {
 			width:185px !important; 
 			max-width:185px !important;
 			min-width:185px !important;
 			/*overflow:hidden;*/
 			}
-		#orgColumnHeader{
-			width:186px !important; 
-			max-width:186px !important;
-			min-width:186px !important;
-			}
+		
 		.typeColumn { 
 			width:78px !important; 
 			max-width:78px !important;
@@ -75,33 +106,45 @@
 			/*overflow:hidden;*/
 			}
 		.neededColumn {
-			width:50px;
+			/*width:50px;*/
 			/*overflow:hidden;*/
 			}
 
 		#orgColumnHeader{
 			border-left:1px solid #999999 !important;
 		}
+		{% endcomment %}
 
 	</style>
+	
+	<!--[if IE 6]>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie6.css" media="screen" />
+	<![endif]--> 
+
+	<!--[if IE 7]>
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
+	<![endif]-->
 	
 	
 </head>
 <body style="font-size: 0.75em;">	
 <div id="wrap">
 	<table id="project_table" style="border-top-width:0px;">
-	<tr>
-	<th id="orgColumnHeader" class="orgColumn">{% trans 'Organisation name' %}</th>
-	<th class="typeColumn">{% trans 'Type' %}</th>
-	<th class="countryColumn">{% trans 'Country' %}</th>
-	<th class="continentColumn">{% trans 'Continent' %}</th>
-	<th class="totalColumn">{% trans 'Total projects' %}</th>
-	<th class="reqColumn">{% trans 'Funds requested' %}</th>
-	<th style="border-right-width:0px" class="neededColumn">{% trans 'Funds still needed' %}</th>
-	</tr>
+		<thead>
+			<tr>
+			<th id="orgColumnHeader" class="orgColumn">{% trans 'Organisation name' %}</th>
+			<th class="typeColumn">{% trans 'Type' %}</th>
+			<th class="countryColumn">{% trans 'Country' %}</th>
+			<th class="continentColumn">{% trans 'Continent' %}</th>
+			<th class="totalColumn">{% trans 'Total projects' %}</th>
+			<th class="reqColumn">{% trans 'Funds requested' %}</th>
+			<th style="border-right-width:0px" class="neededColumn">{% trans 'Funds still needed' %}</th>
+			</tr>
+		</thead>
 	</table>
 	<div id="heightcontrain">
 		<table id="project_table" >
+			<tbody>
 			{% for o in orgs %}
 			<tr>
 				<td class="orgColumn">
@@ -146,6 +189,7 @@
 				</td>
 			</tr>
 			{% endfor %}
+			</tbody>
 		</table>
 	</div>
 </div>
