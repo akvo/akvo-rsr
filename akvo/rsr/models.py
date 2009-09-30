@@ -1185,7 +1185,7 @@ class PayPalInvoice(models.Model):
 
     @property
     def currency(self):
-        return self.project.paypalgatewayselector.gateway.currency
+        return self.project.currency
 
     @property
     def gateway(self):
