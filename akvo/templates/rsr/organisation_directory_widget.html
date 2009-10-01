@@ -13,107 +13,156 @@
 	<title>Akvo partners</title>
 	<base target="_parent">
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
+	{% comment %}
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style_rsr.css" media="screen" />
+	{% endcomment %}
 	
 	<style type="text/css" media="screen">
+		body
+		{
+			font-family: Arial, Verdana, Helvetica, Sans-serif;     
+			font-size: 100%;
+			line-height:1em;
+			color: #333;       
+			background-color: #fff;
+			}
+					
+		.grey {
+			color: #999;
+			}
+
+		.small {
+			font-size:0.8333em;
+		}
+		
 		#wrap {
 			width:710px;
+			max-width:710px;
+			margin:0;
+			padding:0;
 		}
+		
 		#heightcontrain {
 			height:400px;
 			max-height:400px;
 			overflow: auto;
 			height: expression( this.scrollHeight > 4 ? "400px" : "auto" ); /* sets max-height for IE */
-			border-bottom:1px solid #999999;
-			border-left:1px solid #999999;
-			
+			border-bottom:1px solid #999;
+			background: cyan url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y left;
+			padding-left:1px;
+			width:709px;
+			}
+		
+		div.padder {
+			margin:10px;
+			background-color:#efefef;
+			/*overflow:hidden;*/
 		}
-		#orgColumnHeader{
+		
+		table {
+			margin: 0px;
+			border-collapse:collapse;
+			width:100;
+			font-size:0.75em;
+			}
+		tr {
+			border-bottom:1px solid #ccc;
+		}
+		
+		th {
+			background: #ccc url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y right;
+			font-weight:bold;
+			height:40px;
+			padding: 0px;
+			text-align: center;
+			vertical-align: top;	
+			}	
+
+		td {
+			background: #fff url({{MEDIA_URL}}img/org_widget/table_cell_bkgd.png) repeat-y right;
+			vertical-align: top;
+			padding:0;
+			}
+			
+		th#orgColumnHeader {
+			width:230px !important; 
+			max-width:230px !important;
+			min-width:230px !important;
+			}
+		td.orgColumnCell {
+			width:229px !important; 
+			max-width:229px !important;
+			min-width:229px !important;
+			}
+			
+		th#typeColumnHeader { 
+			width:100px !important; 
+			max-width:100px !important;
+			min-width:100px !important;
+			}
+		td.typeColumnCell {
+			width:100px !important; 
+			max-width:100px !important;
+			min-width:100px !important;
+			}
+			
+		th#countryColumnHeader { 
+			width:115px !important; 
+			max-width:115px !important;
+			min-width:115px !important;
+			}
+		td.countryColumnCell {
+			width:115px !important; 
+			max-width:115px !important;
+			min-width:115px !important;
+			}
+		{% comment %}
+		th#continentColumnHeader { 
+			width:60px !important; 
+			max-width:60px !important;
+			min-width:60px !important;
+			}
+		td.continentColumnCell {
+			width:60px !important; 
+			max-width:60px !important;
+			min-width:60px !important;
+			}
+		{% endcomment %}
+		th#totalColumnHeader { 
+			width:70px !important; 
+			max-width:70px !important;
+			min-width:70px !important;
+			}
+		td.totalColumnCell {
 			width:70px !important; 
 			max-width:70px !important;
 			min-width:70px !important;
 			}
 		
-		#typeColumnHeader { 
-			width:80px !important; 
-			max-width:80px !important;
-			min-width:80px !important;
+		th#reqColumnHeader { 
+			width:90px !important; 
+			max-width:90px !important;
+			min-width:90px !important;
 			}
-		#countryColumnHeader {
-			width:80px !important;
-			max-width:80px !important;
-			min-width:80px !important;
-			}
-		#continentColumn {
-			width:60px !important;
-			max-width:60px !important;
-			min-width:60px !important;
-			}
-		#totalColumn {
-			width:50px !important;
-			max-width:50px !important;
-			min-width:50px !important;
-			}
-		#reqColumn {
-			width:60px !important;
-			max-width:60px !important;
-			min-width:60px !important;
-			}
-		#neededColumn {
-			/*width:50px;*/
-			/*overflow:hidden;*/
-			}
-
-			
-		/* ---------------------------------------------------------------------- */
-		{% comment %}
-		
-		.orgColumn {
-			width:185px !important; 
-			max-width:185px !important;
-			min-width:185px !important;
-			/*overflow:hidden;*/
+		td.reqColumnCell {
+			width:90px !important; 
+			max-width:90px !important;
+			min-width:90px !important;
 			}
 		
-		.typeColumn { 
-			width:78px !important; 
-			max-width:78px !important;
-			min-width:78px !important;
-			/*overflow:hidden;*/
+		th#neededColumnHeader { 
+			width:105px !important; 
+			max-width:105px !important;
+			min-width:105px !important;
+			background-image: none !important;
 			}
-		.countryColumn {
-			width:70px !important;
-			max-width:70px !important;
-			min-width:70px !important;
-			/*overflow:hidden;*/
-			}
-		.continentColumn {
-			width:55px !important;
-			max-width:55px !important;
-			min-width:55px !important;
-			}
-		.totalColumn {
-			width:46px !important;
-			max-width:46px !important;
-			min-width:46px !important;
-			/*overflow:hidden;*/
-			}
-		.reqColumn {
-			width:50px !important;
-			max-width:50px !important;
-			min-width:50px !important;
-			/*overflow:hidden;*/
-			}
-		.neededColumn {
-			/*width:50px;*/
-			/*overflow:hidden;*/
-			}
-
-		#orgColumnHeader{
-			border-left:1px solid #999999 !important;
-		}
-		{% endcomment %}
+		td.neededColumnCell {
+			width:90px !important; 
+			max-width:90px !important;
+			min-width:90px !important;
+			background-image: none !important;
+			}		
 
 	</style>
 	
@@ -127,64 +176,107 @@
 	
 	
 </head>
-<body style="font-size: 0.75em;">	
+<body>	
 <div id="wrap">
-	<table id="project_table" style="border-top-width:0px;">
+	<table class="project_table" style="width:710px; max-width:710px;">
 		<thead>
 			<tr>
-			<th id="orgColumnHeader" class="orgColumn">{% trans 'Organisation name' %}</th>
-			<th class="typeColumn">{% trans 'Type' %}</th>
-			<th class="countryColumn">{% trans 'Country' %}</th>
-			<th class="continentColumn">{% trans 'Continent' %}</th>
-			<th class="totalColumn">{% trans 'Total projects' %}</th>
-			<th class="reqColumn">{% trans 'Funds requested' %}</th>
-			<th style="border-right-width:0px" class="neededColumn">{% trans 'Funds still needed' %}</th>
+			<th id="orgColumnHeader">
+				<div class="padder">
+					{% trans 'Partner name' %}
+				</div>
+			</th>
+			<th id="typeColumnHeader">
+				<div class="padder">
+					{% trans 'Type' %}
+				</div>
+			</th>
+			<th id="countryColumnHeader">
+				<div class="padder">
+					{% trans 'Country' %} /<br>
+					{% trans 'Continent' %}
+				</div>
+			</th>
+			{% comment %}
+			<th id="continentColumnHeader">{% trans 'Continent' %}</th>
+			{% endcomment %}
+			<th id="totalColumnHeader">
+				<div class="padder">
+					{% trans 'Total projects' %}
+				</div>
+			</th>
+			<th id="reqColumnHeader">
+				<div class="padder">
+					{% trans 'Funds requested' %}
+				</div>
+			</th>
+			<th id="neededColumnHeader">
+				<div class="padder">
+					{% trans 'Funds still needed' %}
+				</div>
+			</th>
 			</tr>
 		</thead>
 	</table>
 	<div id="heightcontrain">
-		<table id="project_table" >
+		<table class="project_table">
 			<tbody>
 			{% for o in orgs %}
 			<tr>
-				<td class="orgColumn">
-					{% if o.logo %}
-			            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
-						<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
-			            </a>
-					{% else %}
-						<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
-					{% endif %}
-					<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
-					<div class="lightx2 small">{{o.long_name}}</div>
-					<div style="clear: left;">
-					{% category_icons_org o %}
-				 	</div>
+				<td class="orgColumnCell">
+					<div class="padder">
+						{% if o.logo %}
+				            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
+							<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
+				            </a>
+						{% else %}
+							<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
+						{% endif %}
+						<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+						<div class="grey small">{{o.long_name}}</div>
+						<div style="clear: left;">
+						{% category_icons_org o %}
+					 	</div>
+					</div>
 				</td>
-				<td class="typeColumn">
-					{{o.get_organisation_type_display}}
+				<td class="typeColumnCell">
+					<div class="padder">
+						{{o.get_organisation_type_display}}
+					</div>
 				</td>
-				<td class="countryColumn">{{o.country}}</td>
-				<td class="continentColumn">{{o.country.get_continent_display}}</td>
-				<td class="totalColumn">
-					<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a><br />
+				<td class="countryColumnCell">
+					<div class="padder">
+						{{o.country}},<br>{{o.country.get_continent_display}}
+					</div>
 				</td>
-				<td class="reqColumn">
-					{% ifequal o.funding.still_needed 0 %}
-						<span style="color: green">
-					{% else %}
-						<span>
-					{% endifequal %}
-					<b>&#8364; {{o.funding.total|round}}</b>
+				{% comment %}
+				<td class="continentColumnCell">{{o.country.get_continent_display}}</td>
+				{% endcomment %}
+				<td class="totalColumnCell">
+					<div class="padder">
+						<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a>
+					</div>
+				</td>
+				<td class="reqColumnCell">
+					<div class="padder">
+						{% ifequal o.funding.still_needed 0 %}
+							<span style="color: green">
+						{% else %}
+							<span>
+						{% endifequal %}
+						<b>&#8364; {{o.funding.total|round}}</b>
+						</span>
 					</span>
 				</td>
-				<td class="neededColumn">
-					{% ifequal o.funding.still_needed 0 %}
-						<span>
-					{% else %}
-						<span style="color: red">
-					{% endifequal %}
-					<b>&#8364; {{o.funding.still_needed|round}}</b>
+				<td class="neededColumnCell">
+					<div class="padder">
+						{% ifequal o.funding.still_needed 0 %}
+							<span>
+						{% else %}
+							<span style="color: red">
+						{% endifequal %}
+						<b>&#8364; {{o.funding.still_needed|round}}</b>
+						</span>
 					</span>
 				</td>
 			</tr>
