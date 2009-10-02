@@ -280,20 +280,12 @@ def orglist(request, org_type='all'):
 def orglist_widget(request, org_type='all'):
     orgs = Organisation.objects.all()
     order_by = request.GET.get('order_by', 'name')
-    try:
-        if order_by == 'name': 
-            orgs = orgs.order_by(order_by, 'name')
-        if order_by == 'organisation_type': 
-            orgs = orgs.order_by(order_by, 'name')
-        if order_by == 'country':		
-            orgs = orgs.order_by(order_by, 'name')
-        if order_by == 'country__continent':
-            order_by = 'country__continent'
-            orgs = orgs.order_by(order_by, 'name')
-            
-    except:
-        pass
-    return {'orgs': orgs, 'request_get': request.GET, 'order_by':order_by}
+    
+    if order_by not in ['name','organisation_type','country','country__continent']:
+            order_by = 'name'
+    
+    orgs = orgs.order_by(order_by, 'name')
+    return {'orgs': orgs, 'order_by':order_by}
 
 
 class SigninForm(forms.Form):

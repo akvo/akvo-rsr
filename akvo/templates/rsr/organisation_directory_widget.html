@@ -52,10 +52,10 @@
 			}
 		
 		#heightcontrain {
-			height:400px;
-			max-height:400px;
+			height:500px;
+			max-height:500px;
 			overflow: auto;
-			height: expression( this.scrollHeight > 4 ? "400px" : "auto" ); /* sets max-height for IE */
+			height: expression( this.scrollHeight > 4 ? "500px" : "auto" ); /* sets max-height for IE */
 			border-bottom:1px solid #999;
 			background: #fff url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y left;
 			padding-left:1px;
@@ -185,14 +185,14 @@
 			<th id="orgColumnHeader">
 				<div class="padder">
 					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "name" %}" 
-					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %}>
+					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
 					{% trans 'Partner name' %}
 				</div>
 			</th>
 			<th id="typeColumnHeader">
 				<div class="padder">
 					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "organisation_type" %}"
-					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %}>
+					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
 						{% trans 'Type' %}
 					</a>
 				</div>
@@ -200,10 +200,10 @@
 			<th id="countryColumnHeader">
 				<div class="padder">
 					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country" %}"
-					{% ifequal order_by 'country' %} class="selected" {% endifequal %}>
+					{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
 					{% trans 'Country' %}</a> /<br>
 					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country__continent" %}"
-					{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %}>
+					{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
 					{% trans 'Continent' %}
 					</a>
 				</div>
