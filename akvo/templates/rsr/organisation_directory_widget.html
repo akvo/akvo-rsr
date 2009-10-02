@@ -77,7 +77,6 @@
 		
 		th {
 			background: #ccc url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y right;
-			/*font-weight:bold;*/
 			height:40px;
 			padding: 0px;
 			text-align: center;
@@ -187,6 +186,7 @@
 					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "name" %}" 
 					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
 					{% trans 'Partner name' %}
+					</a>
 				</div>
 			</th>
 			<th id="typeColumnHeader">
@@ -277,7 +277,6 @@
 						{% endifequal %}
 						<b>&#8364; {{o.funding.total|round}}</b>
 						</span>
-					</span>
 				</td>
 				<td class="neededColumnCell">
 					<div class="padder">
@@ -288,7 +287,6 @@
 						{% endifequal %}
 						<b>&#8364; {{o.funding.still_needed|round}}</b>
 						</span>
-					</span>
 				</td>
 			</tr>
 			{% endfor %}
