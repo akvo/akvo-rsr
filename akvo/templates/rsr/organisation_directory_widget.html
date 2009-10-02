@@ -34,14 +34,14 @@
 
 		.small {
 			font-size:0.8333em;
-		}
+			}
 		
 		#wrap {
 			width:710px;
 			max-width:710px;
 			margin:0;
 			padding:0;
-		}
+			}
 		
 		#heightcontrain {
 			height:400px;
@@ -49,16 +49,16 @@
 			overflow: auto;
 			height: expression( this.scrollHeight > 4 ? "400px" : "auto" ); /* sets max-height for IE */
 			border-bottom:1px solid #999;
-			background: cyan url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y left;
+			background: #fff url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y left;
 			padding-left:1px;
 			width:709px;
 			}
 		
 		div.padder {
 			margin:10px;
-			background-color:#efefef;
-			/*overflow:hidden;*/
-		}
+			/*background-color:#efefef;*/
+			overflow:hidden;
+			}
 		
 		table {
 			margin: 0px;
@@ -66,9 +66,6 @@
 			width:100;
 			font-size:0.75em;
 			}
-		tr {
-			border-bottom:1px solid #ccc;
-		}
 		
 		th {
 			background: #ccc url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y right;
@@ -81,6 +78,7 @@
 
 		td {
 			background: #fff url({{MEDIA_URL}}img/org_widget/table_cell_bkgd.png) repeat-y right;
+			border-bottom:1px solid #ccc;
 			vertical-align: top;
 			padding:0;
 			}
@@ -152,29 +150,24 @@
 			}
 		
 		th#neededColumnHeader { 
+			/*
 			width:105px !important; 
 			max-width:105px !important;
 			min-width:105px !important;
+			*/
 			background-image: none !important;
 			}
 		td.neededColumnCell {
+			/*
 			width:90px !important; 
 			max-width:90px !important;
 			min-width:90px !important;
+			*/
 			background-image: none !important;
 			}		
 
 	</style>
-	
-	<!--[if IE 6]>
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie6.css" media="screen" />
-	<![endif]--> 
-
-	<!--[if IE 7]>
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/ie.css" media="screen" />
-	<![endif]-->
-	
-	
+		
 </head>
 <body>	
 <div id="wrap">
