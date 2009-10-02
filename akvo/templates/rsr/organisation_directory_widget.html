@@ -1,24 +1,29 @@
 {% load i18n rsr_filters thumbnail rsr_tags addparam %}
-
-{% comment %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-{% endcomment %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta http-equiv="PRAGMA" content="NO-CACHE">
 	<title>Akvo partners</title>
 	<base target="_parent">
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
 	{% comment %}
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style_rsr.css" media="screen" />
 	{% endcomment %}
 	
 	<style type="text/css" media="screen">
+		
+		/*Reset extracted from main styles*/
+		html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,
+		del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,
+		table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:
+		inherit;font-size:100%;font-family:inherit;vertical-align:baseline;} :focus{outline:0;}body{line-height:1;color
+		:black;background:white;} ol,ul{list-style:none;} table{border-collapse:separate;border-spacing:0;}caption,th,td
+		{text-align:left;font-weight:normal;}blockquote:before,blockquote:after,q:before,q:after{content:"";} blockquote,
+		q{quotes:"" "";}
+
+	
+		/* Styles start */
 		body {
 			font-family: Arial, Verdana, Helvetica, Sans-serif;     
 			font-size: 100%;
@@ -112,28 +117,17 @@
 			min-width:100px !important;
 			}
 			
-		th#countryColumnHeader { 
+		th#locationColumnHeader { 
 			width:115px !important; 
 			max-width:115px !important;
 			min-width:115px !important;
 			}
-		td.countryColumnCell {
+		td.locationColumnCell {
 			width:115px !important; 
 			max-width:115px !important;
 			min-width:115px !important;
 			}
-		{% comment %}
-		th#continentColumnHeader { 
-			width:60px !important; 
-			max-width:60px !important;
-			min-width:60px !important;
-			}
-		td.continentColumnCell {
-			width:60px !important; 
-			max-width:60px !important;
-			min-width:60px !important;
-			}
-		{% endcomment %}
+
 		th#totalColumnHeader { 
 			width:70px !important; 
 			max-width:70px !important;
@@ -157,22 +151,11 @@
 			}
 		
 		th#neededColumnHeader { 
-			/*
-			width:105px !important; 
-			max-width:105px !important;
-			min-width:105px !important;
-			*/
 			background-image: none !important;
 			}
 		td.neededColumnCell {
-			/*
-			width:90px !important; 
-			max-width:90px !important;
-			min-width:90px !important;
-			*/
 			background-image: none !important;
-			}		
-
+			}
 	</style>
 		
 </head>
@@ -197,7 +180,7 @@
 					</a>
 				</div>
 			</th>
-			<th id="countryColumnHeader">
+			<th id="locationColumnHeader">
 				<div class="padder">
 					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country" %}"
 					{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
@@ -208,9 +191,6 @@
 					</a>
 				</div>
 			</th>
-			{% comment %}
-			<th id="continentColumnHeader">{% trans 'Continent' %}</th>
-			{% endcomment %}
 			<th id="totalColumnHeader">
 				<div class="padder">
 					{% trans 'Total projects' %}
@@ -255,14 +235,11 @@
 						{{o.get_organisation_type_display}}
 					</div>
 				</td>
-				<td class="countryColumnCell">
+				<td class="locationColumnCell">
 					<div class="padder">
 						{{o.country}},<br>{{o.country.get_continent_display}}
 					</div>
 				</td>
-				{% comment %}
-				<td class="continentColumnCell">{{o.country.get_continent_display}}</td>
-				{% endcomment %}
 				<td class="totalColumnCell">
 					<div class="padder">
 						<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a>
@@ -277,6 +254,7 @@
 						{% endifequal %}
 						<b>&#8364; {{o.funding.total|round}}</b>
 						</span>
+					</div>
 				</td>
 				<td class="neededColumnCell">
 					<div class="padder">
@@ -287,6 +265,7 @@
 						{% endifequal %}
 						<b>&#8364; {{o.funding.still_needed|round}}</b>
 						</span>
+					</div>
 				</td>
 			</tr>
 			{% endfor %}
