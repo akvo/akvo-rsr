@@ -284,7 +284,14 @@ def orglist_widget(request, org_type='all'):
     if order_by not in ['name','organisation_type','country','country__continent']:
             order_by = 'name'
     
-    orgs = orgs.order_by(order_by, 'name')
+    if order_by == 'name':
+        orgs = orgs.order_by(order_by, 'organisation_type','country','country__continent')
+    elif order_by == 'organisation_type':
+                orgs = orgs.order_by(order_by,'country','country__continent','name')
+    elif order_by == 'country':
+                orgs = orgs.order_by(order_by,'organisation_type','name')
+    elif order_by == 'country__continent':
+                orgs = orgs.order_by(order_by,'country','organisation_type','name')
     return {'orgs': orgs, 'order_by':order_by}
 
 
