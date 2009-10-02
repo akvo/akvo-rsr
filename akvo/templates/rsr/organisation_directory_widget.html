@@ -1,4 +1,4 @@
-{% load i18n rsr_filters thumbnail rsr_tags %}
+{% load i18n rsr_filters thumbnail rsr_tags addparam %}
 
 {% comment %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -19,21 +19,29 @@
 	{% endcomment %}
 	
 	<style type="text/css" media="screen">
-		body
-		{
+		body {
 			font-family: Arial, Verdana, Helvetica, Sans-serif;     
 			font-size: 100%;
 			line-height:1em;
 			color: #333;       
 			background-color: #fff;
 			}
-					
+			
+		a:link, a:visited, a:active {
+			text-decoration: none;
+			color:#1D7FC8;
+			}
+							
 		.grey {
 			color: #999;
 			}
 
 		.small {
 			font-size:0.8333em;
+			}
+			
+		.selected {
+			font-weight:bold;
 			}
 		
 		#wrap {
@@ -69,7 +77,7 @@
 		
 		th {
 			background: #ccc url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y right;
-			font-weight:bold;
+			/*font-weight:bold;*/
 			height:40px;
 			padding: 0px;
 			text-align: center;
@@ -176,18 +184,28 @@
 			<tr>
 			<th id="orgColumnHeader">
 				<div class="padder">
+					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "name" %}" 
+					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %}>
 					{% trans 'Partner name' %}
 				</div>
 			</th>
 			<th id="typeColumnHeader">
 				<div class="padder">
-					{% trans 'Type' %}
+					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "organisation_type" %}"
+					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %}>
+						{% trans 'Type' %}
+					</a>
 				</div>
 			</th>
 			<th id="countryColumnHeader">
 				<div class="padder">
-					{% trans 'Country' %} /<br>
+					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country" %}"
+					{% ifequal order_by 'country' %} class="selected" {% endifequal %}>
+					{% trans 'Country' %}</a> /<br>
+					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country__continent" %}"
+					{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %}>
 					{% trans 'Continent' %}
+					</a>
 				</div>
 			</th>
 			{% comment %}
