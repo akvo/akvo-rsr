@@ -73,11 +73,11 @@
 			overflow:hidden;
 			}
 		div.selectedColumnHeaderDesc {
-			background: #ccc url({{MEDIA_URL}}img/partners_widget/header_down_arrow.png) no-repeat right bottom;
+			background: url({{MEDIA_URL}}img/partners_widget/header_down_arrow.png) no-repeat right bottom;
 		}
 		
 		div.selectedColumnHeaderAsc {
-			background: #ccc url({{MEDIA_URL}}img/partners_widget/header_up_arrow.png) no-repeat right bottom;
+			background: url({{MEDIA_URL}}img/partners_widget/header_up_arrow.png) no-repeat right bottom;
 		}
 		
 		table {
@@ -163,6 +163,9 @@
 		td.neededColumnCell {
 			background-image: none !important;
 			}
+		th.active {
+			background-color:#DBDBDB;
+		}
 	</style>
 		
 </head>
@@ -171,7 +174,7 @@
 	<table class="project_table" style="width:710px; max-width:710px;">
 		<thead>
 			<tr>
-			<th id="orgColumnHeader">
+			<th id="orgColumnHeader" class="{% ifequal order_by 'name' %}active{% endifequal %}">
 				<div class="padder {% ifequal mode 'name_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'name_asc'  %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
 					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
@@ -201,7 +204,7 @@
 				{% endifequal %}
 				{% endcomment %}
 			</th>
-			<th id="typeColumnHeader">
+			<th id="typeColumnHeader" class="{% ifequal order_by 'organisation_type' %}active{% endifequal %}">
 				<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
@@ -229,7 +232,7 @@
 				{% endifequal %}
 				{% endcomment %}
 			</th>
-			<th id="locationColumnHeader">
+			<th id="locationColumnHeader" class="{% ifequal order_by 'country' %}active{% endifequal %}{% ifequal order_by 'country__continent' %}active{% endifequal %}">
 				<div class="padder {% ifequal mode 'location_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'location_asc' %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
