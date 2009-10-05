@@ -283,6 +283,7 @@ def partners_widget(request, org_type='all'):
     prev = request.GET.get('prev', 'none')
     sort_order = request.GET.get('sort', 'desc')
     is_resort = False
+    mode = 'name_desc'
     
     # Check if resort and change sort order
     if order_by == prev:
@@ -295,6 +296,11 @@ def partners_widget(request, org_type='all'):
     # Default to name
     if order_by not in ['name','organisation_type','country','country__continent']:
             order_by = 'name'
+    
+    if order_by in ['country','country__continent']:
+        mode = 'location_' + sort_order
+    else:
+        mode = order_by + '_' + sort_order
     
     if order_by == 'name':
         if is_resort:
@@ -331,7 +337,7 @@ def partners_widget(request, org_type='all'):
                 orgs = orgs.order_by(order_by,'country','organisation_type','name')
         
 
-    return {'orgs': orgs, 'order_by':order_by,'sort':sort_order}
+    return {'orgs': orgs, 'order_by':order_by,'sort':sort_order, 'mode':mode}
 
 
 class SigninForm(forms.Form):

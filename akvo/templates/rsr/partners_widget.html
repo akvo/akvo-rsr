@@ -172,6 +172,16 @@
 		<thead>
 			<tr>
 			<th id="orgColumnHeader">
+				<div class="padder {% ifequal mode 'name_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'name_asc'  %}selectedColumnHeaderAsc{% endifequal %}">
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
+					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
+					{% trans 'Project Partners' %}
+					</a>
+					<span style="color:#888;">({{orgs.count}})</span>
+				</div>
+				
+				{% comment %}
+				
 				{% ifequal order_by 'name' %}
 				<div class="padder {% ifequal sort 'desc' %}selectedColumnHeaderDesc{% else %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
@@ -189,8 +199,18 @@
 					<span style="color:#888;">({{orgs.count}})</span>
 				</div>
 				{% endifequal %}
+				{% endcomment %}
 			</th>
 			<th id="typeColumnHeader">
+				<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
+					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
+						{% trans 'Type' %}
+					</a>
+				</div>
+				
+				{% comment %}
+
 				{% ifequal order_by 'organisation_type' %}
 				<div class="padder {% ifequal sort 'desc' %}selectedColumnHeaderDesc{% else %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
@@ -207,9 +227,10 @@
 				</div>
 				
 				{% endifequal %}
+				{% endcomment %}
 			</th>
 			<th id="locationColumnHeader">
-				<div class="padder">
+				<div class="padder {% ifequal mode 'location_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'location_asc' %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
 					{% trans 'Country' %}</a> /<br>
