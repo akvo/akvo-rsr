@@ -10,6 +10,8 @@ from django.conf import settings
 import time, datetime
 from decimal import Decimal, ROUND_HALF_UP
 
+DECIMAL_PLACES = getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2)
+
 @register.filter
 def string_to_date(value):
     try:
@@ -28,19 +30,16 @@ def smart_truncate(content, length=100, suffix='...'):
         return content[:length].rsplit(' ', 1)[0]+suffix
 
 @register.filter
-def round(value, decimal_places=getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2)):
+def round(value, decimal_places=DECIMAL_PLACES):
     try:
         value = Decimal(str(value))
     except:
         return u''
     if not settings.DECIMALS_DEBUG:
-        if 0 < value < 1:
-            return u'1'
-        else:
-            d = value.quantize(Decimal(10), ROUND_HALF_UP)
-            return unicode(d)
+        d = value.quantize(Decimal(10), ROUND_HALF_UP)
+        return d
     else:
         d = value.quantize(Decimal(10) ** -decimal_places)
-        return unicode(d)
+        return d
 round.is_safe = True
 

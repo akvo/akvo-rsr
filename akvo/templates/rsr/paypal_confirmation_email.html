@@ -2,16 +2,16 @@
 
 {{ timestamp }} {# Should probably be formatted with |date:'' filter #}
 
-{% if u %}
-Name: {{ u.first_name }} {{ u.last_name }}
-Email: {{ u.email }}
+{% if invoice.user %}
+Name: {{ invoice.user.first_name }} {{ invoice.user.last_name }}
+Email: {{ invoice.user.email }}
 
-Dear {{ u.first_name }} {{ u.last_name }},
+Dear {{ invoice.user.first_name }} {{ invoice.user.last_name }},
 {% else %}
-Name: {{ anon_name }}
-Email: {{ anon_email }}
+Name: {{ invoice.name }}
+Email: {{ invoice.email }}
 
-Dear {{ anon_name }},
+Dear {{ invoice.name }},
 {% endif %}
 
 Thank you for your online contribution on Akvo.org.  By giving, you have personally helped to advance the cause of clean water and sanitation around the world.
@@ -29,10 +29,10 @@ And please tell your friends about Akvo.org!  :)
 
 A summary of your contribution:
 
-Your gift will help:            {{ project }} (http://akvo.org/rsr/project/{{ project.id }}/)
-Total Contribution Amount:      {{ amount }} Euro{{ amount|pluralize:"s" }}
-Akvo Reference ID:              {{ invoice }}
-PayPal Reference ID:         	{{ paypal_reference }}
+Your gift will help:            {{ invoice.project }} (http://akvo.org/rsr/project/{{ project.id }}/)
+Total Contribution Amount:      {{ invoice.amount }} Euro{{ invoice.amount|pluralize:"s" }}
+Akvo Reference ID:              {{ invoice.id }}
+PayPal Reference ID:         	{{ invoice.ipn }}
 
 Visit the project at the link above to see progress and updates.
 

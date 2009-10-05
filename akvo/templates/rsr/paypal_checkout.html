@@ -108,7 +108,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{amount}}</p>
+				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">{{p.get_currency_display|safe}}{{invoice.amount}}</p>
 			</div>
 			
 			{% comment %}
@@ -139,8 +139,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
-				<p style="font-weight:bold">{{ user.email }}</p>
+				<p style="font-weight:bold">{{ invoice.user.first_name }} {{ invoice.user.last_name }}</p>
+				<p style="font-weight:bold">{{ invoice.user.email }}</p>
 			</div>
 			
 			{% else %}
@@ -149,8 +149,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ name }}</p>
-				<p style="font-weight:bold">{{ email }}</p>				
+				<p style="font-weight:bold">{{ invoice.name }}</p>
+				<p style="font-weight:bold">{{ invoice.email }}</p>				
 			</div>
 				
 			{% endif%}

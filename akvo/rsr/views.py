@@ -898,18 +898,15 @@ def donate(request, p):
             else:
                 pp_form.render()
             return render_to_response('rsr/paypal_checkout.html',
-                                      {'name': invoice.name, 
-                                       'email': invoice.email, 
+                                      {'invoice': invoice,
                                        'pp_form': pp_form, 
-                                       'invoice_id': invoice.id, 
                                        'p': p, 
-                                       'amount': invoice.amount,
                                        'sandbox': settings.PAYPAL_DEBUG,},
                                       context_instance=RequestContext(request))
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form, 'p': p, }, 
+                              {'donate_form': donate_form, 'p': p}, 
                               context_instance=RequestContext(request))
 
 

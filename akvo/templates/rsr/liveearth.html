@@ -291,7 +291,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<td>{{p.country}}</td>
 	<td>{{p.country.get_continent_display}}</td>
 	<td>
-		{% ifequal p.funds_needed 0 %}
+		{% ifequal p.funds_needed|round 0 %}
 			<span style="color: green">
 		{% else %}
 			<span>
@@ -300,7 +300,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</span>
 	</td>
 	<td>
-		{% ifequal p.funds_needed 0 %}
+		{% ifequal p.funds_needed|round 0 %}
 			<span>
 		{% else %}
 			<span style="color: red">

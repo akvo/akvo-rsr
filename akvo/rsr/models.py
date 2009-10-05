@@ -14,7 +14,7 @@ from decimal import Decimal
 from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, F # added by Paul
+from django.db.models import Sum, F
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
@@ -243,7 +243,7 @@ class Organisation(models.Model):
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
-    
+   
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled()
         return {
@@ -397,7 +397,13 @@ class Project(models.Model):
         
         def status_not_cancelled(self):
             return self.exclude(status__exact='L')
-        
+       
+        def euros(self):
+            return self.filter(currency='EUR')
+
+        def dollars(self):
+            return self.filter(currency='USD')
+
         def budget_employment(self):
             return self.filter(budgetitem__item__exact='employment').annotate(
                 budget_employment=Sum('budgetitem__amount'),
@@ -699,18 +705,12 @@ class Project(models.Model):
         # MySQL and PostgreSQL are not affected by this limitation
         result = self.funding_pledged() + self.funding_donated()
         decimal_result = Decimal(str(result))
-        if decimal_result > (self.budget_total() - 1):
-            return decimal_result.quantize(Decimal(10), ROUND_UP)
-        else:
-            return decimal_result
+        return decimal_result
 
     def funding_still_needed(self):
         result =  Project.objects.funding().get(pk=self.pk).funds_needed
         decimal_result = Decimal(str(result))
-        if decimal_result < 1:
-            return 0
-        else:
-            return decimal_result
+        return decimal_result
 
     def budget_employment(self):
         return Project.objects.budget_employment().get(pk=self.pk).budget_employment
@@ -1208,16 +1208,7 @@ class PayPalInvoice(models.Model):
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)
     t = loader.get_template('rsr/paypal_confirmation_email.html')
-    c = Context({
-        'anon_name': ppi.name,
-        'anon_email': ppi.email,
-        'u': ppi.user,
-        'project': ppi.project,
-        'amount': ppi.amount,
-        'invoice': ppi.id,
-        'timestamp': ppi.time,
-        'paypal_reference': ppi.ipn,
-    })
+    c = Context({'invoice': ppi})
     if ppi.user:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.user.email], fail_silently=False)
     else:
