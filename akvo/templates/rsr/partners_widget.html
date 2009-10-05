@@ -62,7 +62,7 @@
 			overflow: auto;
 			height: expression( this.scrollHeight > 4 ? "770px" : "auto" ); /* sets max-height for IE */
 			border-bottom:1px solid #999;
-			background: #fff url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y left;
+			background: #fff url({{MEDIA_URL}}img/partners_widget/table_header_bkgd.png) repeat-y left;
 			padding-left:1px;
 			width:709px;
 			}
@@ -72,6 +72,13 @@
 			/*background-color:#efefef;*/
 			overflow:hidden;
 			}
+		div.selectedColumnHeaderDesc {
+			background: #ccc url({{MEDIA_URL}}img/partners_widget/header_down_arrow.png) no-repeat right bottom;
+		}
+		
+		div.selectedColumnHeaderAsc {
+			background: #ccc url({{MEDIA_URL}}img/partners_widget/header_up_arrow.png) no-repeat right bottom;
+		}
 		
 		table {
 			margin: 0px;
@@ -81,7 +88,7 @@
 			}
 		
 		th {
-			background: #ccc url({{MEDIA_URL}}img/org_widget/table_header_bkgd.png) repeat-y right;
+			background: #ccc url({{MEDIA_URL}}img/partners_widget/table_header_bkgd.png) repeat-y right;
 			height:40px;
 			padding: 0px;
 			text-align: center;
@@ -89,7 +96,7 @@
 			}	
 
 		td {
-			background: #fff url({{MEDIA_URL}}img/org_widget/table_cell_bkgd.png) repeat-y right;
+			background: #fff url({{MEDIA_URL}}img/partners_widget/table_cell_bkgd.png) repeat-y right;
 			border-bottom:1px solid #ccc;
 			vertical-align: top;
 			padding:0;
@@ -165,27 +172,48 @@
 		<thead>
 			<tr>
 			<th id="orgColumnHeader">
-				<div class="padder">
-					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "name" %}" 
+				{% ifequal order_by 'name' %}
+				<div class="padder {% ifequal sort 'desc' %}selectedColumnHeaderDesc{% else %}selectedColumnHeaderAsc{% endifequal %}">
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
 					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
-					{% trans 'Partner name' %}
+					{% trans 'Project Partners' %}
 					</a>
+					<span style="color:#888;">({{orgs.count}})</span>
 				</div>
+				{% else %}	
+				<div class="padder">
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
+					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
+					{% trans 'Project Partners' %}
+					</a>
+					<span style="color:#888;">({{orgs.count}})</span>
+				</div>
+				{% endifequal %}
 			</th>
 			<th id="typeColumnHeader">
-				<div class="padder">
-					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "organisation_type" %}"
+				{% ifequal order_by 'organisation_type' %}
+				<div class="padder {% ifequal sort 'desc' %}selectedColumnHeaderDesc{% else %}selectedColumnHeaderAsc{% endifequal %}">
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
 						{% trans 'Type' %}
 					</a>
 				</div>
+				{% else %}
+				<div class="padder">
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
+					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
+						{% trans 'Type' %}
+					</a>
+				</div>
+				
+				{% endifequal %}
 			</th>
 			<th id="locationColumnHeader">
 				<div class="padder">
-					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country" %}"
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
 					{% trans 'Country' %}</a> /<br>
-					<a href="{% url akvo.rsr.views.orglist_widget%}{% addparam "order_by" "country__continent" %}"
+					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
 					{% trans 'Continent' %}
 					</a>
