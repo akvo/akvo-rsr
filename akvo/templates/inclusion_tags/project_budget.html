@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 	<tr>
 		<th>{% trans 'Budget' %}:</th>
-		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total|round}}</td>
+		<td>{{p.get_currency_display|safe}} {{p.budget_total|round}}</td>
 	</tr>					
 </table>
 <div class="fundingbox-progress-bar" id="progress_back" style="width:130px;">
@@ -17,10 +17,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 	<tr class="green">
 		<th>{% trans 'Raised' %}:</th>
-		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
+		<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
 	</tr>
 	<tr style="color:#FF5617">
 		<th>{% trans 'Needed' %}:</th>
-		<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
+		<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
 	</tr>
 </table>
