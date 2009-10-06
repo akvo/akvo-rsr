@@ -762,7 +762,6 @@ class BudgetItem(models.Model):
     project             = models.ForeignKey(Project)
     item                = models.CharField(max_length=20, choices=ITEM_CHOICES)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
-    #currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     
     class Meta:
         unique_together     = ('project', 'item')
@@ -790,15 +789,15 @@ class PublishingStatus(models.Model):
         return '%d - %s' % (self.project.pk, self.project,)
 
     
-LINK_KINDS = (
-    ('A', 'Akvopedia entry'),
-    ('E', 'External link'),
-)
 class Link(models.Model):
+    LINK_KINDS = (
+        ('A', 'Akvopedia entry'),
+        ('E', 'External link'),
+    )
     kind    = models.CharField(max_length=1, choices=LINK_KINDS)
-    url     = models.URLField()
+    url     = models.URLField(_(u'URL'))
     caption = models.CharField(max_length=50)
-    project = models.ForeignKey(Project,)
+    project = models.ForeignKey(Project)
     
     def __unicode__(self):
         return self.url
@@ -810,7 +809,6 @@ class Link(models.Model):
 class FundingPartner(models.Model):
     funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
     funding_amount          = models.DecimalField(max_digits=10, decimal_places=2)
-    #currency                = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):

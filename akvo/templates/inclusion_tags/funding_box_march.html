@@ -15,7 +15,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div class="fundingbox-funded">	
 				<div class="fullyfunded-text">
 					<p style="">
-					{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}
+					{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}
 					</p>
 				</div>
 				<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -26,11 +26,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<table class="fundingbox-table" cellspacing="0">
 				<tr class="green">
 					<th>{% trans 'Raised' %}:</th>
-					<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
 				</tr>
 				<tr class="red">
 					<th>{% trans 'Still needed' %}:</th>
-					<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
 				</tr>	
 			</table>
 			<div class="fundingbox-progress-bar">
@@ -41,7 +41,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<table class="fundingbox-table">
 				<tr>
 					<th>{% trans 'Total budget' %}:</th>
-					<td>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_total|round}}</td>
 				</tr>					
 			</table>
 	

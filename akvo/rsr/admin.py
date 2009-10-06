@@ -203,7 +203,7 @@ admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccount
 class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
     extra = 3
-    list_display = ('url', 'caption', 'show_link', )    
+    list_display = ('url', 'caption', 'show_link')
 
 
 def partner_clean(obj, field_name):
@@ -329,9 +329,8 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = [BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
-               FieldPartnerInline, SupportPartnerInline, LinkInline, ]
-
+    inlines = (BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
+               FieldPartnerInline, SupportPartnerInline, LinkInline)
     fieldsets = (
         (_(u'Project description'), {
             'fields': (
@@ -371,8 +370,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
                     'city', 'project_plan_summary', 'show_current_image',
-                    'show_map', 'is_published',)
-
+                    'show_map', 'is_published')
     list_filter = ('currency',)
     
     #form = ProjectAdminModelForm

@@ -12,7 +12,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% ifequal p.funding_still_needed|round 0 %}
 			<div class="fundingbox-funded" style="padding-top:15px; padding-bottom:0px;">	
 				<div class="fullyfunded-text">
-					<p>{% trans 'Raised' %}:&nbsp;{{p.budgetitem_set.all.0.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}</p>
+					<p>{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}</p>
 				</div>
 				<p class="grey fullyfunded-text" style="margin-bottom:15px;">{% trans 'This project is' %}<br />
 					<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
