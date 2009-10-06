@@ -278,6 +278,8 @@ def orglist(request, org_type='all'):
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
+    
+    # Set up variables with default values
     orgs = Organisation.objects.all()
     order_by = request.GET.get('order_by', 'name')
     prev = request.GET.get('prev', 'none')
@@ -288,56 +290,31 @@ def partners_widget(request, org_type='all'):
     # Check if resort and change sort order
     if order_by == prev:
         is_resort = True
-        if sort_order == 'asc':
-            sort_order = 'desc'
-        else:
-            sort_order = 'asc'
+        sort_order = 'desc' if sort_order == 'asc' else 'asc'
 
     # Default to name
     if order_by not in ['name','organisation_type','country','country__continent']:
             order_by = 'name'
     
+    # Since location column have two fields
     if order_by in ['country','country__continent']:
         mode = 'location_' + sort_order
     else:
         mode = order_by + '_' + sort_order
     
+    # Fix the ordering
+    sort_order_value = '-' if is_resort and sort_order == 'asc' else ''
+    
     if order_by == 'name':
-        if is_resort:
-            if sort_order == 'asc':
-                orgs = orgs.order_by('-'+order_by, 'organisation_type','country','country__continent')
-            else:
-                orgs = orgs.order_by(order_by, 'organisation_type','country','country__continent')            
-        else:
-            orgs = orgs.order_by(order_by, 'organisation_type','country','country__continent')      
-
+        orgs = orgs.order_by(sort_order_value+order_by, 'organisation_type','country','country__continent')
     elif order_by == 'organisation_type':
-        if is_resort:
-            if sort_order == 'asc':
-                orgs = orgs.order_by('-'+order_by,'country','country__continent','name')
-            else:
-                orgs = orgs.order_by(order_by,'country','country__continent','name')
-        else:
-            orgs = orgs.order_by(order_by,'country','country__continent','name')
+        orgs = orgs.order_by(sort_order_value+order_by,'country','country__continent','name')
     elif order_by == 'country':
-        if is_resort:
-            if sort_order == 'asc':
-                orgs = orgs.order_by('-'+order_by,'organisation_type','name')
-            else:
-                orgs = orgs.order_by(order_by,'organisation_type','name')
-        else:
-            orgs = orgs.order_by(order_by,'organisation_type','name')
+        orgs = orgs.order_by(sort_order_value+order_by,'organisation_type','name')
     elif order_by == 'country__continent':
-        if is_resort:
-            if sort_order == 'asc':
-                orgs = orgs.order_by('-'+order_by,'country','organisation_type','name')
-            else:
-                orgs = orgs.order_by(order_by,'country','organisation_type','name')
-        else:
-                orgs = orgs.order_by(order_by,'country','organisation_type','name')
-        
-
-    return {'orgs': orgs, 'order_by':order_by,'sort':sort_order, 'mode':mode}
+        orgs = orgs.order_by(sort_order_value+order_by,'country','organisation_type','name')
+    
+    return {'orgs':orgs,'order_by':order_by,'sort':sort_order,'mode':mode}
 
 
 class SigninForm(forms.Form):

@@ -182,27 +182,6 @@
 					</a>
 					<span style="color:#888;">({{orgs.count}})</span>
 				</div>
-				
-				{% comment %}
-				
-				{% ifequal order_by 'name' %}
-				<div class="padder {% ifequal sort 'desc' %}selectedColumnHeaderDesc{% else %}selectedColumnHeaderAsc{% endifequal %}">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
-					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
-					{% trans 'Project Partners' %}
-					</a>
-					<span style="color:#888;">({{orgs.count}})</span>
-				</div>
-				{% else %}	
-				<div class="padder">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
-					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
-					{% trans 'Project Partners' %}
-					</a>
-					<span style="color:#888;">({{orgs.count}})</span>
-				</div>
-				{% endifequal %}
-				{% endcomment %}
 			</th>
 			<th id="typeColumnHeader" class="{% ifequal order_by 'organisation_type' %}active{% endifequal %}">
 				<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
@@ -211,26 +190,6 @@
 						{% trans 'Type' %}
 					</a>
 				</div>
-				
-				{% comment %}
-
-				{% ifequal order_by 'organisation_type' %}
-				<div class="padder {% ifequal sort 'desc' %}selectedColumnHeaderDesc{% else %}selectedColumnHeaderAsc{% endifequal %}">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
-					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
-						{% trans 'Type' %}
-					</a>
-				</div>
-				{% else %}
-				<div class="padder">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
-					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
-						{% trans 'Type' %}
-					</a>
-				</div>
-				
-				{% endifequal %}
-				{% endcomment %}
 			</th>
 			<th id="locationColumnHeader" class="{% ifequal order_by 'country' %}active{% endifequal %}{% ifequal order_by 'country__continent' %}active{% endifequal %}">
 				<div class="padder {% ifequal mode 'location_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'location_asc' %}selectedColumnHeaderAsc{% endifequal %}">
