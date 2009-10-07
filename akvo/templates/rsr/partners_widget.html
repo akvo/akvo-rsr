@@ -3,13 +3,8 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Akvo partners</title>
+	<title>Akvo partners widget</title>
 	<base target="_parent">
-	{% comment %}
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/reset.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/global.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style_rsr.css" media="screen" />
-	{% endcomment %}
 	
 	<style type="text/css" media="screen">
 		
@@ -21,20 +16,19 @@
 		:black;background:white;} ol,ul{list-style:none;} table{border-collapse:separate;border-spacing:0;}caption,th,td
 		{text-align:left;font-weight:normal;}blockquote:before,blockquote:after,q:before,q:after{content:"";} blockquote,
 		q{quotes:"" "";}
-
 	
 		/* Styles start */
 		body {
+			background-color: #fff;
+			color: #333;
 			font-family: Arial, Verdana, Helvetica, Sans-serif;     
 			font-size: 100%;
 			line-height:1em;
-			color: #333;       
-			background-color: #fff;
 			}
 			
 		a:link, a:visited, a:active {
-			text-decoration: none;
 			color:#1D7FC8;
+			text-decoration: none;
 			}
 							
 		.grey {
@@ -50,41 +44,41 @@
 			}
 		
 		#wrap {
-			width:710px;
-			max-width:710px;
 			margin:0;
+			max-width:710px;
 			padding:0;
+			width:710px;
 			}
 		
 		#heightcontrain {
+			background: #fff url({{MEDIA_URL}}img/partners_widget/table_header_bkgd.png) repeat-y left;
+			border-bottom:1px solid #999;
 			height:570px;
+			height: expression( this.scrollHeight > 4 ? "570px" : "auto" ); /* sets max-height for IE */
 			max-height:570px;
 			overflow: auto;
-			height: expression( this.scrollHeight > 4 ? "570px" : "auto" ); /* sets max-height for IE */
-			border-bottom:1px solid #999;
-			background: #fff url({{MEDIA_URL}}img/partners_widget/table_header_bkgd.png) repeat-y left;
 			padding-left:1px;
 			width:709px;
 			}
 		
 		div.padder {
 			margin:10px;
-			/*background-color:#efefef;*/
 			overflow:hidden;
 			}
+			
 		div.selectedColumnHeaderDesc {
-			background: url({{MEDIA_URL}}img/partners_widget/header_down_arrow.png) no-repeat right bottom;
+			background: url({{MEDIA_URL}}img/partners_widget/header_down_arrow-trans.png) no-repeat right bottom;
 		}
 		
 		div.selectedColumnHeaderAsc {
-			background: url({{MEDIA_URL}}img/partners_widget/header_up_arrow.png) no-repeat right bottom;
+			background: url({{MEDIA_URL}}img/partners_widget/header_up_arrow-trans.png) no-repeat right bottom;
 		}
 		
 		table {
-			margin: 0px;
 			border-collapse:collapse;
-			width:100;
 			font-size:0.75em;
+			margin: 0px;
+			width:100;
 			}
 		
 		th {
@@ -98,96 +92,70 @@
 		td {
 			background: #fff url({{MEDIA_URL}}img/partners_widget/table_cell_bkgd.png) repeat-y right;
 			border-bottom:1px solid #ccc;
-			vertical-align: top;
 			padding:0;
+			vertical-align: top;
 			}
 			
 		th#partnerColumnHeader {
-			width:250px !important; 
-			max-width:250px !important;
-			min-width:250px !important;
+			max-width:260px !important;
+			min-width:260px !important;
+			width:260px !important; 
 			}
 		td.partnerColumnCell {
-			width:249px !important; 
-			max-width:249px !important;
-			min-width:249px !important;
+			max-width:259px !important;
+			min-width:259px !important;
+			width:259px !important; 
 			}
 			
 		th#typeColumnHeader { 
-			width:115px !important; 
-			max-width:115px !important;
-			min-width:115px !important;
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
 			}
 		td.typeColumnCell {
-			width:115px !important; 
-			max-width:115px !important;
-			min-width:115px !important;
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
 			}
 			
 		th#continentColumnHeader { 
-			width:115px !important; 
-			max-width:115px !important;
-			min-width:115px !important;
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
 			}
 		td.continentColumnCell {
-			width:115px !important; 
-			max-width:115px !important;
-			min-width:115px !important;
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important;
 			}
 		
 		th#countryColumnHeader { 
-			width:115px !important; 
-			max-width:115px !important;
-			min-width:115px !important;
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
 			}
 		td.countryColumnCell {
-			width:115px !important; 
-			max-width:115px !important;
-			min-width:115px !important;
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important;
 			}
+		
 		th#totalColumnHeader { 	
 			background-image: none !important;
 			}
 		td.totalColumnCell {
 			background-image: none !important;
-			width:80px;
+			width:70px;
 			}
 			
-		{% comment %}
-		th#totalColumnHeader { 	
-			width:70px !important; 
-			max-width:70px !important;
-			min-width:70px !important;
-
-			}
-		td.totalColumnCell {
-			width:70px !important; 
-			max-width:70px !important;
-			min-width:70px !important;
-			}
-		{% endcomment %}
-		
-		th#reqColumnHeader { 
-			width:90px !important; 
-			max-width:90px !important;
-			min-width:90px !important;
-			}
-		td.reqColumnCell {
-			width:90px !important; 
-			max-width:90px !important;
-			min-width:90px !important;
-			}
-		
-		th#neededColumnHeader { 
-			background-image: none !important;
-			}
-		td.neededColumnCell {
-			background-image: none !important;
-			}
 		th.active {
 			background-color:#DBDBDB;
 		}
 	</style>
+	
+	<!--[if lt IE 8]>
+	<script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js" type="text/javascript"></script>
+	<![endif]-->
 		
 </head>
 <body>	
@@ -195,59 +163,45 @@
 	<table class="project_table" style="width:710px; max-width:710px;">
 		<thead>
 			<tr>
-			<th id="partnerColumnHeader" class="{% ifequal order_by 'name' %}active{% endifequal %}">
-				<div class="padder {% ifequal mode 'name_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'name_asc'  %}selectedColumnHeaderAsc{% endifequal %}">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
-					{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
-					{% trans 'Project Partners' %}
-					</a>
-					<span style="color:#888;">({{orgs.count}})</span>
-				</div>
-			</th>
-			<th id="typeColumnHeader" class="{% ifequal order_by 'organisation_type' %}active{% endifequal %}">
-				<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
-					{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
-						{% trans 'Type' %}
-					</a>
-				</div>
-			</th>
+				<th id="partnerColumnHeader" class="{% ifequal order_by 'name' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'name_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'name_asc'  %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
+						{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
+						{% trans 'Project Partners' %}
+						</a>
+						<span style="color:#888;">({{orgs.count}})</span>
+					</div>
+				</th>
+				<th id="typeColumnHeader" class="{% ifequal order_by 'organisation_type' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
+						{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
+							{% trans 'Type' %}
+						</a>
+					</div>
+				</th>
 			
-			<th id="continentColumnHeader" class="{% ifequal order_by 'country__continent' %}active{% endifequal %}">
-				<div class="padder {% ifequal mode 'country__continent_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'country__continent_asc' %}selectedColumnHeaderAsc{% endifequal %}">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
-					{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
-					{% trans 'Continent' %}
-					</a>
-				</div>
-			</th>
-			<th id="countryColumnHeader" class="{% ifequal order_by 'country' %}active{% endifequal %}">
-				<div class="padder {% ifequal mode 'country_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'country_asc' %}selectedColumnHeaderAsc{% endifequal %}">
-					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
-					{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
-					{% trans 'Country' %}</a>
-				</div>
-			</th>
+				<th id="continentColumnHeader" class="{% ifequal order_by 'country__continent' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'country__continent_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'country__continent_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
+						{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
+						{% trans 'Continent' %}
+						</a>
+					</div>
+				</th>
+				<th id="countryColumnHeader" class="{% ifequal order_by 'country' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'country_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'country_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
+						{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
+						{% trans 'Country' %}</a>
+					</div>
+				</th>
 
-			<th id="totalColumnHeader">
-				<div class="padder">
-					{% trans 'Projects' %}
-				</div>
-			</th>		
-
-			
-			{% comment %}
-			<th id="reqColumnHeader">
-				<div class="padder">
-					{% trans 'Funds requested' %}
-				</div>
-			</th>
-			<th id="neededColumnHeader">
-				<div class="padder">
-					{% trans 'Funds still needed' %}
-				</div>
-			</th>
-			{% endcomment %}
+				<th id="totalColumnHeader">
+					<div class="padder">
+						{% trans 'Projects' %}
+					</div>
+				</th>				
 			</tr>
 		</thead>
 	</table>
@@ -292,31 +246,6 @@
 						<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a>
 					</div>
 				</td>
-
-				{% comment %}
-				<td class="reqColumnCell">
-					<div class="padder">
-						{% ifequal o.funding.still_needed 0 %}
-							<span style="color: green">
-						{% else %}
-							<span>
-						{% endifequal %}
-						<b>&#8364; {{o.funding.total|round}}</b>
-						</span>
-					</div>
-				</td>
-				<td class="neededColumnCell">
-					<div class="padder">
-						{% ifequal o.funding.still_needed 0 %}
-							<span>
-						{% else %}
-							<span style="color: red">
-						{% endifequal %}
-						<b>&#8364; {{o.funding.still_needed|round}}</b>
-						</span>
-					</div>
-				</td>
-				{% endcomment %}
 			</tr>
 			{% endfor %}
 			</tbody>
