@@ -294,13 +294,16 @@ def partners_widget(request, org_type='all'):
 
     # Default to name
     if order_by not in ['name','organisation_type','country','country__continent']:
-            order_by = 'name'
-    
+        order_by = 'name'
+    '''
     # Since location column have two fields
     if order_by in ['country','country__continent']:
         mode = 'location_' + sort_order
     else:
         mode = order_by + '_' + sort_order
+    '''
+    # Mode is used to style the table according the sorting
+    mode = order_by + '_' + sort_order
     
     # Fix the ordering
     sort_order_value = '-' if is_resort and sort_order == 'asc' else ''
@@ -308,7 +311,7 @@ def partners_widget(request, org_type='all'):
     if order_by == 'name':
         orgs = orgs.order_by(sort_order_value+order_by, 'organisation_type','country','country__continent')
     elif order_by == 'organisation_type':
-        orgs = orgs.order_by(sort_order_value+order_by,'country','country__continent','name')
+        orgs = orgs.order_by(sort_order_value+order_by,'country__continent','country','name')
     elif order_by == 'country':
         orgs = orgs.order_by(sort_order_value+order_by,'organisation_type','name')
     elif order_by == 'country__continent':
