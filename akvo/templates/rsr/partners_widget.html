@@ -214,7 +214,7 @@
 			</th>
 			
 			<th id="continentColumnHeader" class="{% ifequal order_by 'country__continent' %}active{% endifequal %}">
-				<div class="padder {% ifequal mode 'country__continent_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'country__continent_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+				<div class="padder {% ifequal mode 'country__continent_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'country__continent_asc' %}selectedColumnHeaderAsc{% endifequal %}">
 					<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
 					{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
 					{% trans 'Continent' %}
