@@ -131,8 +131,12 @@ if settings.DEBUG:
         (r'^500/$', 'akvo.rsr.views.server_error'),
     )
 
-from django.conf import settings
 if settings.DEBUG:
     urlpatterns += patterns('',
 		(r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    )
+
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^rsr/rosetta/', include('rosetta.urls')),
     )

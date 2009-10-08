@@ -23,6 +23,8 @@ ADMINS = (
 #Additional information about a User
 AUTH_PROFILE_MODULE = 'rsr.userprofile'
 
+CACHE_MIDDLEWARE_SECONDS = 300
+
 #DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 #DATABASE_NAME = '/var/dev/akvo/data/akvo.sqlite' # Or path to database file if using sqlite3.
 #DATABASE_USER = ''             # Not used with sqlite3.
@@ -50,6 +52,7 @@ INSTALLED_APPS = (
 #    'akvo.status',
     'paypal.standard.ipn',
     'sorl.thumbnail',
+    'rosetta',
 )
 
 #INTERNAL_IPS = (
@@ -83,11 +86,13 @@ MANAGERS = ADMINS
 #MEDIA_URL = 'http://dev.akvo.org:8080/rsr/media/'
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 # PAUL
