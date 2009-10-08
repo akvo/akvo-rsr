@@ -144,7 +144,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left;">
 				{{ donate_form.amount }}<br />
 				<span class="marchGrey">
-				{% trans 'Only whole amounts please' %}
+				{% trans 'Only whole'%} {{p.get_currency_display|safe}} {% trans 'amounts please' %}
 				</span>
 			</div>
 			
