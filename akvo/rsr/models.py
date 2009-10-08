@@ -541,7 +541,7 @@ class Project(models.Model):
             funding_queries.update(pledged)
             #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
             return self.extra(select=funding_queries)
-        
+
         def need_funding(self):
             "projects that projects need funding"
             #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed

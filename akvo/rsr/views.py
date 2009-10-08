@@ -679,7 +679,11 @@ def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
     org_projects = o.published_projects()
     org_partners = o.partners()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners, }
+    org_projects_euros = org_projects.filter(currency='EUR')
+    org_projects_dollars = org_projects.filter(currency='USD')
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,
+            'org_projects_euros': org_projects_euros,
+            'org_projects_dollars': org_projects_dollars, }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
