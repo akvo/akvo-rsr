@@ -759,17 +759,17 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
         """
         valid_invoices = queryset.filter(status__in=[1,4])
         invalid_invoices = queryset.filter(status__in=[2,3])
-        if invalid_invoices: # if queryset contains invalid selections
-            if valid_invoices: # if queryset also contains some valid selections
+        if invalid_invoices:
+            if valid_invoices:
                 for invoice in valid_invoices:
-                    self.message_user(request, ugettext('Invoice %s successfully voided.' % str(invoice.pk)))
-                valid_invoices.update(status=2) # void the valid selections
+                    self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
+                valid_invoices.update(status=2)
             for invoice in invalid_invoices:
-                msg = ugettext('Invoice %s could not be voided. It is already %s.' % (str(invoice.pk), invoice.get_status_display().lower()))
+                msg = ugettext('Invoice %d could not be voided. It is already %s.' % (invoice.pk, invoice.get_status_display().lower()))
                 self.message_user(request, msg)
-        else: # if we get this far, queryset only contains valid selections
+        else:
             for invoice in queryset:
-                self.message_user(request, ugettext('Invoice %s successfully voided.' % str(invoice.pk)))
+                self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
             queryset.update(status=2)
     void_invoices.short_description = _('Mark selected invoices as void')
 

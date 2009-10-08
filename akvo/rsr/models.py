@@ -397,7 +397,7 @@ class Project(models.Model):
         
         def status_not_cancelled(self):
             return self.exclude(status__exact='L')
-       
+      
         def euros(self):
             return self.filter(currency='EUR')
 
@@ -434,7 +434,7 @@ class Project(models.Model):
 
         def donated(self):
             return self.filter(paypalinvoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
-                donated=Sum('paypalinvoice__amount'),
+                donated=Sum('paypalinvoice__amount_received'),
             ).distinct()
 
         def pledged(self, org=None):

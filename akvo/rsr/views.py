@@ -906,9 +906,9 @@ def donate(request, p):
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form, 'p': p}, 
+                              {'donate_form': donate_form,
+                               'p': p}, 
                               context_instance=RequestContext(request))
-
 
 # Presents the landing page after PayPal
 def paypal_thanks(request):
