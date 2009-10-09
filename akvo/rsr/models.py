@@ -852,7 +852,7 @@ class FundingPartner(models.Model):
     project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):
-        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
+        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
 
 class SponsorPartner(models.Model):
     sponsor_organisation    = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
