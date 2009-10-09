@@ -123,12 +123,20 @@ def index(request):
     #            bandwidth = 'low'
     ###############################################################################
     bandwidth = 'low'
+    host = 'unknown'
     try:
         # Create exception to avoid loading the blogs whe we run in debug mode.
         # Speeds up the home page considerably when pulling over the inteweb
         if settings.DEBUG:
             raise
-        feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+
+        host = request.META.get('HTTP_HOST', 'none')
+        if host == 'http://akvo.org':
+            feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        else:
+            #feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2")
+            feed = feedparser.parse("http://www.akvo.org/blog/?feed=rss2")
+
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
         img_src1 = soup('img')[0]['src']
@@ -136,7 +144,11 @@ def index(request):
         soup = BeautifulSoup(latest2.content[0].value)
         img_src2 = soup('img')[0]['src']
         
-        le_feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        if host == 'http://akvo.org':
+            le_feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+        else:
+            #le_feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2&cat=9")
+            le_feed = feedparser.parse("http://www.wilshipley.com/blog/feed.xml")
         le_latest1 = le_feed.entries[0]
         le_latest2 = le_feed.entries[1]
     except:
@@ -173,6 +185,7 @@ def index(request):
         'projs': projs,
         'version': settings.URL_VALIDATOR_USER_AGENT,
         'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
+        'host':host,
     }
 
 def oldindex(request):
