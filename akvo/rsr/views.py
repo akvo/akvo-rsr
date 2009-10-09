@@ -134,8 +134,8 @@ def index(request):
         if host == 'http://akvo.org':
             feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
         else:
-            #feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2")
-            feed = feedparser.parse("http://www.akvo.org/blog/?feed=rss2")
+            feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2")
+            #feed = feedparser.parse("http://www.akvo.org/blog/?feed=rss2")
 
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
@@ -145,10 +145,11 @@ def index(request):
         img_src2 = soup('img')[0]['src']
         
         if host == 'http://akvo.org':
-            le_feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
+            le_feed = feedparser.parse('http://www.akvo.org/blog?feed=rss2')
         else:
+            le_feed = feedparser.parse('http://test.akvo.org/blog?feed=rss2')
             #le_feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2&cat=9")
-            le_feed = feedparser.parse("http://www.wilshipley.com/blog/feed.xml")
+            #le_feed = feedparser.parse("http://www.wilshipley.com/blog/feed.xml")
         le_latest1 = le_feed.entries[0]
         le_latest2 = le_feed.entries[1]
     except:
