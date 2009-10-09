@@ -124,6 +124,8 @@ def index(request):
     ###############################################################################
     bandwidth = 'low'
     host = 'unknown'
+    #from dbgp.client import brk
+    #brk(host="83.188.196.100", port=9000)
     try:
         # Create exception to avoid loading the blogs whe we run in debug mode.
         # Speeds up the home page considerably when pulling over the inteweb
@@ -138,11 +140,16 @@ def index(request):
             #feed = feedparser.parse("http://www.akvo.org/blog/?feed=rss2")
 
         latest1 = feed.entries[0]
-        soup = BeautifulSoup(latest1.content[0].value)
-        img_src1 = soup('img')[0]['src']
+        try:
+            img_src1 = soup('img')[0]['src']
+        except:
+            img_src1 = ''
         latest2 = feed.entries[1]
         soup = BeautifulSoup(latest2.content[0].value)
-        img_src2 = soup('img')[0]['src']
+        try:
+            img_src2 = soup('img')[0]['src']
+        except:
+            img_src2 = ''
         
         if host == 'http://akvo.org':
             le_feed = feedparser.parse('http://www.akvo.org/blog?feed=rss2')
