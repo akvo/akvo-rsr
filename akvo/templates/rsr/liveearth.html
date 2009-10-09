@@ -59,13 +59,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div id="outer_leftwing" style="margin-bottom:20px;">
 	<div id="live_earth_show" class="boxbody">
-		<h1>Live Earth projects at Akvo.org</h1>
 		<p>
-			Live Earth has partnered with Akvo to display projects for you to see Alit at.The Ramblin' Wreck is the official mascot of the student body at the Georgia Institute of Technology. The Ramblin' Wreck is a 1930 Ford Model A Sports coupe and it embodies the spirit, tradition, and passion of the Tech student body.
+			The Dow Live Earth Run for Water is the largest solutions-based initiative in history aimed at solving the
+			world’s water crisis. Taking place on April 18, 2010, the Dow Live Earth Run for Water will consist of a 
+			series of 6km runs/ walks (the average distance many women and children walk every day to secure water) 
+			occurring over the course of 24 hours. The events will feature live musical performances and water education 
+			activities in an effort to ignite a massive global movement to put an end to this epidemic.
 		</p>
-		<p style="line-height:1.9em;">	
-		Visit Live Earth&#x27;s web site to see <a href="http://liveearth.org/">lists of events</a> in your area and around the world<br />
-		To learn more, read about <a href="http://liveearth.org/">our partnership</a>.
+		<p>
+			Live Earth’s global network of water charity partners is working with Akvo to help donors and doers reach out 
+			to fund thousands of new water and sanitation projects.
+		</p>
+		<p>
+			Visit <a href="http://liveearth.org/run">Live Earth's web site</a> to see lists of events in your area and
+			around the world.
 		</p>
 	</div>
 	
@@ -78,6 +85,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<h1>{% trans 'Live Earth projects' %}</h1>
 	</div> <!-- .boxhead -->
 	<div class="boxbody">
+		{% comment %}
+	
 		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0"> 
 			<tr class="bold hr">
 				<td style="padding-bottom:20px;">
@@ -88,6 +97,56 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</td>
 			</tr>
 		</table>
+		{% endcomment %}
+		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<th colspan="2">
+					<h2>{% trans 'Projects in Akvo' %}</h2>
+				</th>
+			</tr>
+			<tr>
+				<td>
+					{% trans 'Active' %}
+				</td>
+				<td style="text-align:right;">
+					{{projs.status_active.count}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					{% trans 'On hold' %}
+				</td>
+				<td style="text-align:right;">
+					{{projs.status_onhold.count}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					{% trans 'Complete' %}
+				</td>
+				<td style="text-align:right;">
+					{{projs.status_complete.count}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					{% trans 'Cancelled' %}
+				</td>
+				<td style="text-align:right;">
+					{{projs.status_cancelled.count}}
+				</td>
+			</tr>
+			<tr class="hr bold">
+				<td style="padding-top:2px; padding-bottom:20px;">
+					{% trans 'Total projects' %}
+				</td>
+				<td style="text-align:right; padding-top:3px;">
+					{{projs.published.count}}
+				</td>
+			</tr>
+
+		</table>
+		
 		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 	
 			<tr>
 				<th colspan="3">
@@ -96,21 +155,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>
 			<tr>
 				<td style="width:50px;">&nbsp;</td>
-				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Upcoming' %}</a></td>
-				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="#">{% trans 'Delivered' %}</a></td>
+				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a></td>
+				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a></td>
 			</tr>
-			<tr>
-				<td style="font-weight:bold;">{% trans 'Water' %}</td>
+			<tr class="hr">
+				<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Water' %}</td>
 				<td style="text-align:right;">{{projs.get_planned_water_calc}}</td>
 				<td style="text-align:right;">{{projs.get_actual_water_calc}}</td>
 			</tr>
+			{% comment %}
 			<tr class="hr">
 				<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
 				<td style="text-align:right;">{{projs.get_planned_sanitation_calc}}</td>
 				<td style="text-align:right;">{{projs.get_actual_sanitation_calc}}</td>
 			</tr>
+			{% endcomment %}
 		</table>
-		
+		{% comment %}
 		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 
 			<tr>
 				<th colspan="3">
@@ -133,6 +194,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>&nbsp;</td>
 			</tr>
 		</table>
+		{% endcomment %}
 		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
 			<tr class="font-weight:bold;">
 				<th colspan="2" style="padding-bottom:10px;">
@@ -291,7 +353,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<td>{{p.country}}</td>
 	<td>{{p.country.get_continent_display}}</td>
 	<td>
-		{% ifequal p.funds_needed 0 %}
+		{% ifequal p.funds_needed|round 0 %}
 			<span style="color: green">
 		{% else %}
 			<span>
@@ -300,7 +362,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</span>
 	</td>
 	<td>
-		{% ifequal p.funds_needed 0 %}
+		{% ifequal p.funds_needed|round 0 %}
 			<span>
 		{% else %}
 			<span style="color: red">

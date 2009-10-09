@@ -172,8 +172,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 <div id="outer_leftwing">
 
-{% comment %} Start sponsor partner
-
+{% if live_earth_enabled %}
 <div id="index_sponsor_box" class="boxbody">
 	<div class="clearfix" style="margin:0;">
 	<div id="sponsor_box_left" style="">
@@ -193,7 +192,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	</div>
 </div>
-stop sponsor partner {% endcomment %}
+{% endif %}
 
 <div class="boxhead">
 <a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>

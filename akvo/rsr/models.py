@@ -222,6 +222,48 @@ class Organisation(models.Model):
         if self.funding_partner: pt += "M"
         return pt
     
+    def has_water_projects(self):
+        if self.all_projects().filter(category_water__exact=True):
+            return True
+        else:
+            return False
+
+    def has_sanitation_projects(self):
+        if self.all_projects().filter(category_sanitation__exact=True):
+            return True
+        else:
+            return False
+    
+    def has_training_projects(self):
+        if self.all_projects().filter(category_training__exact=True):
+            return True
+        else:
+            return False
+            
+    def has_maintenance_projects(self):
+        if self.all_projects().filter(category_maintenance__exact=True):
+            return True
+        else:
+            return False
+    
+    def has_education_projects(self):
+        if self.all_projects().filter(category_education__exact=True):
+            return True
+        else:
+            return False
+
+    def has_product_development_projects(self):
+        if self.all_projects().filter(category_product_development__exact=True):
+            return True
+        else:
+            return False
+
+    def has_other_projects(self):
+        if self.all_projects().filter(category_other__exact=True):
+            return True
+        else:
+            return False
+    
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
@@ -697,18 +739,12 @@ class Project(models.Model):
         # MySQL and PostgreSQL are not affected by this limitation
         result = self.funding_pledged() + self.funding_donated()
         decimal_result = Decimal(str(result))
-        if decimal_result > (self.budget_total() - 1):
-            return decimal_result.quantize(Decimal(10), ROUND_UP)
-        else:
-            return decimal_result
+        return decimal_result
 
     def funding_still_needed(self):
         result =  Project.objects.funding().get(pk=self.pk).funds_needed
         decimal_result = Decimal(str(result))
-        if decimal_result < 1:
-            return 0
-        else:
-            return decimal_result
+        return decimal_result
 
     def budget_employment(self):
         return Project.objects.budget_employment().get(pk=self.pk).budget_employment

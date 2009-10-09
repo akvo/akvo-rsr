@@ -24,7 +24,8 @@ urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
     # PayPal
-    (r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.donate'),
+    url(r'^rsr/paypalinvoice/(?P<invoice_id>\d+)/void/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.donate', name='project_donate'),
     (r'^rsr/ipn/thanks/$', 'akvo.rsr.views.paypal_thanks', ),
     (r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn'),
 
@@ -38,7 +39,7 @@ urlpatterns = patterns('',
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
     #(r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
 
-    (r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', ),
+    url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
     (r'^rsr/project/(?P<project_id>\d+)/comment$', 'akvo.rsr.views.commentform', ),
     (r'^rsr/project/(?P<project_id>\d+)/updates$', 'akvo.rsr.views.projectupdates', ),
@@ -124,7 +125,13 @@ urlpatterns = patterns('',
     #    {'document_root': '/var/dev/akvo/mediaroot/', 'show_indexes': True}),
 )
 
+
 from django.conf import settings
+if settings.LIVE_EARTH_ENABLED:
+    urlpatterns += patterns('',
+        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
+    )
+
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',

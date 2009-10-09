@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters thumbnail %}
+{% load i18n rsr_filters thumbnail rsr_tags %}
 
 {% load generic_content %}
 {% load addparam %}
@@ -37,6 +37,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
+	{{block.super}} &raquo; 
+	{% ifnotequal org_type 'all' %}
+		<a href="{% url akvo.rsr.views.orglist %}">{% trans 'Organisation listing' %}</a> &raquo;
+		{% ifequal org_type 'funding' %}
+			{% trans 'Funding partners' %}
+		{% endifequal %}
+		{% ifequal org_type 'support' %}
+			{% trans 'Support partners' %}
+		{% endifequal %}
+		{% ifequal org_type 'field' %}
+			{% trans 'Field partners' %}
+		{% endifequal %}
+		{% ifequal org_type 'sponsor' %}
+			{% trans 'Sponsor partners' %}
+		{% endifequal %}
+	{% else %}
+		{% trans 'Organisation listing' %}
+	{% endifnotequal %}
+{% endblock breadcrumbs %}
+
+{% comment %}
+{% block breadcrumbs %}
 	{{block.super}} &raquo; {% trans 'Organisation listing' %}
 	{% if org_type %}
 		{% ifnotequal org_type 'all' %}
@@ -55,6 +77,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% endifnotequal %}
 	{% endif %}	
 {% endblock breadcrumbs %}
+{% endcomment %}
 
 {% block page_id %}
 <div id="page_project_directory">
@@ -138,28 +161,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% for o in page.object_list %}
 <tr>
 	<td>
-		
-	
 		{% if o.logo %}
             <a href="{% url akvo.rsr.views.orgdetail o.id %}">
 			<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
             </a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
-		{% endif %}	
+		{% endif %}
 
 		<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
 		<div class="lightx2 small">{{o.long_name}}</div>
 		<div style="clear: left;">
-		{% if o.field_partner %}
-			 <img src="{{MEDIA_URL}}img/purple.png" alt="type" style="margin: 10px 5px 10px 0;" />
-		 {% endif %}
-		 {% if o.support_partner %}
-			 <img src="{{MEDIA_URL}}img/blue.png" alt="type" style="margin: 10px 5px 10px 0;" />
-		 {% endif %}
-		 {% if o.funding_partner %}
-			 <img src="{{MEDIA_URL}}img/orange.png" alt="type" style="margin: 10px 5px 10px 0;" />
-		 {% endif %}
+		{% category_icons_org o %}
 	 	</div>
 	</td>
 	<td>{{o.get_organisation_type_display}}</td>

@@ -33,14 +33,11 @@ def round(value, decimal_places=getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2))
         value = Decimal(str(value))
     except:
         return u''
-    if not settings.DECIMALS_DEBUG:
-        if 0 < value < 1:
-            return u'1'
-        else:
-            d = value.quantize(Decimal(10), ROUND_HALF_UP)
-            return unicode(d)
-    else:
+    if settings.DECIMALS_DEBUG:
         d = value.quantize(Decimal(10) ** -decimal_places)
-        return unicode(d)
+        return d
+    else:
+        d = value.quantize(Decimal(10), ROUND_HALF_UP)
+        return d
 round.is_safe = True
 
