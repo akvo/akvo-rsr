@@ -141,6 +141,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>
 			</th>
 		</tr>
+		<tr>
+			<td style="color:#999;">Projects in Euros</td>
+		</tr>
 		<tr style="color:green;">
 			<td>{% trans 'Pledged' %}</td>
 			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|add:projs.status_not_cancelled.euros.total_pending_negative|round}}</td>
@@ -149,6 +152,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
 			{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
 			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.euros.total_funds_needed|round}}</td>
+		</tr>
+		{% if projs.dollars %}
+		<tr>
+			<td style="color:#999;">Projects in US Dollars</td>
 		</tr>
 		<tr style="color:green;">
 			<td>{% trans 'Pledged' %}</td>
@@ -159,6 +166,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
 			<td style="text-align:right;">&#36; {{projs.status_not_cancelled.dollars.total_funds_needed|round}}</td>
 		</tr>
+		{% endif %}
 	</table>
 	
 	</div> <!-- .boxbody -->
