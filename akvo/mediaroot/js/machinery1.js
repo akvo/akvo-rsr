@@ -10,6 +10,7 @@ function getHeight(widget_type)
 	{
 		case 'feature-side': 		return 840; break; 
 		case 'project-contribute':  return 570; break; 
+		case 'project-small':       return 312; break; 
 		case 'project-updates': 	return 900; break; 
 		case 'project-list': 		return 730; break;
 		case 'project-narrow': 		return 840; break; 
@@ -17,6 +18,7 @@ function getHeight(widget_type)
 		case 'cobranded-short':     return 627; break;
 		case 'cobranded-banner':    return 234; break;
 		case 'cobranded-leader':    return 207; break;
+
 		default: 					return 840;
 	}	
 }
@@ -27,6 +29,7 @@ function getWidth(widget_type)
 	{
 		case 'feature-side': 		return 202; break; 
 		case 'project-contribute': 	return 202; break; 
+		case 'project-small':       return 170; break;
 		case 'project-updates': 	return 202; break; 
 		case 'project-list': 		return 745; break; 
 		case 'project-narrow': 		return 170; break; 
@@ -77,6 +80,9 @@ $(document).ready(function()
 	$("#project-contribute-random-from-org").click(function() { $('#project-contribute-organisations').removeAttr("disabled"); });
 	$("#project-contribute-specific-project").click(function() {	$('#project-contribute-organisations').attr("disabled", true); });
 	
+	$("#project-small-random-from-org").click(function() { $('#project-small-organisations').removeAttr("disabled"); });
+	$("#project-small-specific-project").click(function() {	$('#project-small-organisations').attr("disabled", true); });
+	
 	
 	
 	// Toggle other selections for the colours		
@@ -95,7 +101,6 @@ $(document).ready(function()
 			$('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
 		}		
 	});
-	
-	
+
 });
 

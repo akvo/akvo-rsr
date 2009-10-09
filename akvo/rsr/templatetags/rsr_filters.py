@@ -35,11 +35,11 @@ def round(value, decimal_places=DECIMAL_PLACES):
         value = Decimal(str(value))
     except:
         return u''
-    if not settings.DECIMALS_DEBUG:
-        d = value.quantize(Decimal(10), ROUND_HALF_UP)
+    if settings.DECIMALS_DEBUG:
+        d = value.quantize(Decimal(10) ** -decimal_places)
         return d
     else:
-        d = value.quantize(Decimal(10) ** -decimal_places)
+        d = value.quantize(Decimal(10), ROUND_HALF_UP)
         return d
 round.is_safe = True
 

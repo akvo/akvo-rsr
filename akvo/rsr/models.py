@@ -82,8 +82,8 @@ class ProjectsQuerySetManager(QuerySetManager):
 
 class Organisation(models.Model):
     """
-    There are three types of organisations in RSR, called Field partner,
-    Support partner and Funding partner respectively.
+    There are four types of organisations in RSR, called Field,
+    Support, Funding and Sponsor partner respectively.
     """
     ORG_TYPE_NGO = 'N'
     ORG_TYPE_GOV = 'G'
@@ -132,7 +132,7 @@ class Organisation(models.Model):
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
     country                     = models.ForeignKey(Country, verbose_name=_(u'country'))
-    url                         = models.URLField(blank=True, verify_exists = False)
+    url                         = models.URLField(blank=True, verify_exists = False, help_text = 'Enter the full address of your web site, beginning with http://.')
     map                         = models.ImageField(
                                     blank=True,
                                     upload_to=org_image_path,
@@ -144,8 +144,8 @@ class Organisation(models.Model):
     phone                       = models.CharField(blank=True, max_length=20)
     mobile                      = models.CharField(blank=True, max_length=20)
     fax                         = models.CharField(blank=True, max_length=20)
-    contact_person              = models.CharField(blank=True, max_length=30)
-    contact_email               = models.CharField(blank=True, max_length=50)
+    contact_person              = models.CharField(blank=True, max_length=30, help_text = 'Name of the external contact person for the organisation.')
+    contact_email               = models.CharField(blank=True, max_length=50, help_text = 'Email to which inquiries about your organisation should be sent.')
     description                 = models.TextField(blank=True, help_text = 'Describe what your organisation does in the water and sanitation sector.' )
 
     #Managers, one default, one custom
@@ -222,6 +222,48 @@ class Organisation(models.Model):
         if self.funding_partner: pt += "M"
         return pt
     
+    def has_water_projects(self):
+        if self.all_projects().filter(category_water__exact=True):
+            return True
+        else:
+            return False
+
+    def has_sanitation_projects(self):
+        if self.all_projects().filter(category_sanitation__exact=True):
+            return True
+        else:
+            return False
+    
+    def has_training_projects(self):
+        if self.all_projects().filter(category_training__exact=True):
+            return True
+        else:
+            return False
+            
+    def has_maintenance_projects(self):
+        if self.all_projects().filter(category_maintenance__exact=True):
+            return True
+        else:
+            return False
+    
+    def has_education_projects(self):
+        if self.all_projects().filter(category_education__exact=True):
+            return True
+        else:
+            return False
+
+    def has_product_development_projects(self):
+        if self.all_projects().filter(category_product_development__exact=True):
+            return True
+        else:
+            return False
+
+    def has_other_projects(self):
+        if self.all_projects().filter(category_other__exact=True):
+            return True
+        else:
+            return False
+    
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
@@ -282,8 +324,8 @@ CURRENCY_CHOICES = (
 
 STATUSES = (
     ('N', _('None')),
-    ('A', _('Active')),
-    ('H', _('Need funding')),
+    ('H', _('Needs funding')),
+    ('A', _('Active')),    
     ('C', _('Complete')),
     ('L', _('Cancelled')),
 )
@@ -295,18 +337,17 @@ class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
 
-
 class Project(models.Model):
     def proj_image_path(instance, file_name):
         #from django.template.defaultfilters import slugify
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
-    name                        = models.CharField(max_length=45, help_text = 'Enter a descriptive name for your project (45 characters).')
-    subtitle                    = models.CharField(max_length=75, help_text = 'Enter a subtitle for your project (75 characters).')
-    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N')
-    city                        = models.CharField(max_length=25)
-    state                       = models.CharField(max_length=15)
-    country                     = models.ForeignKey(Country)
+    name                        = models.CharField(max_length=45, help_text = 'A short descriptive name for your project (45 characters).')
+    subtitle                    = models.CharField(max_length=75, help_text = 'A subtitle with more information on the project (75 characters).')
+    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text = 'Current project state.')
+    city                        = models.CharField(max_length=25, help_text = 'Name of city, village, town, slum, etc. (25 characters).')
+    state                       = models.CharField(max_length=15, help_text = 'Name of state, province, county, region, etc. (15 characters).')
+    country                     = models.ForeignKey(Country, help_text = 'Country where project is taking place.')
     map                         = models.ImageField(
                                     blank=True,
                                     upload_to=proj_image_path,
@@ -330,8 +371,8 @@ class Project(models.Model):
                                     help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
                                 )
     current_image_caption       = models.CharField(blank=True, max_length=50, help_text='Enter a caption for your project picture (50 characters).')
-    goals_overview              = models.TextField(max_length=500, help_text='Describe what the project hopes to accomplish. (500 characters).')
-    goal_1                      = models.CharField(blank=True, max_length=60)
+    goals_overview              = models.TextField(max_length=500, help_text='Describe what the project hopes to accomplish (500 characters).')
+    goal_1                      = models.CharField(blank=True, max_length=60, help_text='(60 characters)')
     goal_2                      = models.CharField(blank=True, max_length=60)
     goal_3                      = models.CharField(blank=True, max_length=60)
     goal_4                      = models.CharField(blank=True, max_length=60)
@@ -348,19 +389,18 @@ class Project(models.Model):
     #mdg_count_water             = models.IntegerField(default=0)
     #mdg_count_sanitation        = models.IntegerField(default=0)
 
-    location_1                  = models.CharField(blank=True, max_length=50)
-    location_2                  = models.CharField(blank=True, max_length=50)
-    postcode                    = models.CharField(blank=True, max_length=10)
-    longitude                   = models.CharField(blank=True, max_length=20)
-    latitude                    = models.CharField(blank=True, max_length=20)
-    current_status_detail       = models.TextField(blank=True, max_length=600, help_text='Describe the current situation of the affected local community (600 characters).')
-
-    project_plan_detail         = models.TextField(blank=True, help_text='Describe in detail the what, how, who and when of the project.')
-    sustainability              = models.TextField(help_text='Describe plans for sustaining/maintaining project goals.')
-    context                     = models.TextField(blank=True, max_length=500, help_text='Describe the broader situation in the project area. (500 characters).')
+    location_1                  = models.CharField(blank=True, max_length=50, help_text = 'Street address (50 characters).')
+    location_2                  = models.CharField(blank=True, max_length=50, help_text = 'Street address 2 (50 characters).')
+    postcode                    = models.CharField(blank=True, max_length=10, help_text = 'Postcode, zip code, etc. (10 characters).')
+    longitude                   = models.CharField(blank=True, max_length=20, help_text = 'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.')
+    latitude                    = models.CharField(blank=True, max_length=20, help_text = 'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.')
+    current_status_detail       = models.TextField(blank=True, max_length=600, help_text='Description of current phase of project. (600 characters).')
+    project_plan_detail         = models.TextField(blank=True, help_text='Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).')
+    sustainability              = models.TextField(help_text='Describe plans for sustaining/maintaining results after implementation is complete (unlimited).')
+    context                     = models.TextField(blank=True, max_length=500, help_text='Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).')
 
     project_rating              = models.IntegerField(default=0)
-    notes                       = models.TextField(blank=True)
+    notes                       = models.TextField(blank=True, help_text='(Unlimited number of characters).')
 
     #budget    
     currency            = models.CharField(choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -888,7 +928,7 @@ class UserProfile(models.Model):
         #TODO: fix to django 1.0
         #validator_list = [isValidGSMnumber]
     )    
-    project         = models.ForeignKey(Project, null=True, blank=True, )
+    #project         = models.ForeignKey(Project, null=True, blank=True, )
     
     def __unicode__(self):
         return self.user.username

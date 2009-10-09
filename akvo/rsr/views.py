@@ -172,6 +172,7 @@ def index(request):
         'orgs': Organisation.objects,
         'projs': projs,
         'version': settings.URL_VALIDATOR_USER_AGENT,
+        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
     }
 
 def oldindex(request):
@@ -286,6 +287,10 @@ from django.views.decorators.cache import never_cache
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
+    # Check for exeptions to the return to start of sign in process
+    if redirect_to == "/rsr/accounts/register/complete/":
+        redirect_to = "/"
+    
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         # RSR mod to add css class to widgets
@@ -677,13 +682,16 @@ def commentform(request, project_id):
 @render_to('rsr/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
+    
+    has_sponsor_banner = False
+    if o.id == settings.LIVE_EARTH_ID:
+        has_sponsor_banner = True
+    
     org_projects = o.published_projects()
     org_partners = o.partners()
     org_projects_euros = org_projects.filter(currency='EUR')
     org_projects_dollars = org_projects.filter(currency='USD')
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,
-            'org_projects_euros': org_projects_euros,
-            'org_projects_dollars': org_projects_dollars, }
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, 'org_projects_euros': org_projects_euros, 'org_projects_dollars': org_projects_dollars,}
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
@@ -699,7 +707,9 @@ def projectmain(request, project_id):
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
-    return {'p': p, 'updates': updates, 'comments': comments, 'form': form }
+    can_add_update = p.connected_to_user(request.user)
+        
+    return {'p': p, 'updates': updates, 'comments': comments, 'form': form, 'can_add_update': can_add_update }
 
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
@@ -857,6 +867,14 @@ from akvo.rsr.decorators import fetch_project
 
 @fetch_project
 def donate(request, p):
+    
+    if p not in Project.objects.published().need_funding():
+        return HttpResponseRedirect(reverse('akvo.rsr.views.projectmain', args=(p.id,)))
+        
+    has_sponsor_banner = False
+    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
+        has_sponsor_banner = True
+        
     if request.method == 'POST':
         donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
         if donate_form.is_valid():
@@ -905,14 +923,25 @@ def donate(request, p):
                                       {'invoice': invoice,
                                        'pp_form': pp_form, 
                                        'p': p, 
-                                       'sandbox': settings.PAYPAL_DEBUG,},
+                                       'sandbox': settings.PAYPAL_DEBUG,
+                                       'has_sponsor_banner': has_sponsor_banner,
+                                       'live_earth_enabled': settings.LIVE_EARTH_ENABLED,},
                                       context_instance=RequestContext(request))
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
+    
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form,
-                               'p': p}, 
+                              {'donate_form': donate_form, 'p': p, 'has_sponsor_banner': has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, }, 
                               context_instance=RequestContext(request))
+
+def void_invoice(request, invoice_id):
+    invoice = get_object_or_404(PayPalInvoice, pk=invoice_id)
+    if invoice.status == 1:
+        invoice.status = 2
+        invoice.save()
+        return HttpResponseRedirect(reverse('project_main', args=(invoice.project.id,)))
+    else:
+        return HttpResponseRedirect('/')
 
 # Presents the landing page after PayPal
 def paypal_thanks(request):
