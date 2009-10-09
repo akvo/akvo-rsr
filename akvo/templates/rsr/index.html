@@ -179,17 +179,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="sponsor_box_left" style="">
 		<h1>{% trans 'Live Earth and Akvo announce partnership' %}</h1>
 		<ul>
-			<li><a href="#">Press release</a></li>
 			<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
 		</ul>
 	</div>
-	<div id="sponsor_box_right" style="">
+	<div id="sponsor_box_right">
 		<h2>{% trans 'Latest articles' %}</h2>
 		<ul>
-			<li><a style="display: inline; width:260px; height:15px; overflow:hidden; background-color:#ff00EE;" href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
+			<li><a href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
 			<li><a href="{{le_latest2.link}}">{{le_latest2.title|safe}}</a></li>
 		</ul>
-		<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
+		<p><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/?cat=9">{% trans 'Read more' %}</a></p>
 	</div>
 	</div>
 </div>

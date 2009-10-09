@@ -563,6 +563,8 @@ th { font-weight: bold; }
     background: transparent url('../img/index_sponsor_background.png') repeat-x;
     padding:0;
     margin-bottom:20px;
+    height:93px;
+    overflow:hidden;
 }
 
 #index_sponsor_box a {
@@ -575,7 +577,6 @@ th { font-weight: bold; }
     float:left;
     padding-left:170px;
     width:220px; 
-    background-color:cyan; 
 }
 
 #sponsor_box_left h1 {
@@ -600,7 +601,8 @@ th { font-weight: bold; }
 #sponsor_box_right {
     width:300px;
     float:right;
-    background-color:yellow; 
+    /*height:90px;
+    overflow:hidden;*/
 }
 
 #sponsor_box_right h2 {

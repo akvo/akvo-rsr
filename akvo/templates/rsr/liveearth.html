@@ -201,6 +201,34 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>
 				</th>
 			</tr>
+			<tr>
+				<td style="color:#999;">Projects in Euros</td>
+			</tr>
+			<tr style="color:green;">
+				<td>{% trans 'Pledged' %}</td>
+				<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|add:projs.status_not_cancelled.euros.total_pending_negative|round}}</td>
+			</tr>
+			<tr style="color:red;">
+				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
+				{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
+				<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.euros.total_funds_needed|round}}</td>
+			</tr>
+			{% if projs.dollars %}
+			<tr>
+				<td style="color:#999;">Projects in US Dollars</td>
+			</tr>
+			<tr style="color:green;">
+				<td>{% trans 'Pledged' %}</td>
+				<td style="text-align:right;">&#36; {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|add:projs.status_not_cancelled.dollars.total_pending_negative|round}}</td>
+			</tr>
+			<tr style="color:red;">
+				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
+				{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
+				<td style="text-align:right;">&#36; {{projs.status_not_cancelled.dollars.total_funds_needed|round}}</td>
+			</tr>
+			{% endif %}
+			
+			{% comment %}
 			<tr style="color:green;">
 				<td>{% trans 'Pledged' %}</td>
 				<td style="text-align:right;">&#8364; {{projs.total_pledged|round}}</td>
@@ -209,13 +237,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
 				<td style="text-align:right;">&#8364; {{projs.total_funds_needed|round}}</td>
 			</tr>
+			{% endcomment %}
 		</table>
 	</div>
 </div>
 {% endblock outer_rightwing %}
 
 {% block projects %}
-<div class="boxhead" style="clear: left;" class="clearfix">
+<div class="boxhead clearfix" style="clear: left;">
 	<a name="list"></a>
     <div style="float:right; margin: 1em; width: 40%;">
     <!--<label for="display_number_of_entries">Show</label>
@@ -389,7 +418,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		&nbsp;
 	{% endif %}
 		<a href="{% url akvo.rsr.views.orgdetail live_earth.id %}">
-		<img src="{% thumbnail live_earth.logo 67x50 autocrop,upscale,sharpen %}" style="margin-top:10px">
+		<img src="{% thumbnail live_earth.logo 67x50 autocrop,upscale,sharpen %}" style="margin-top:10px" />
 		</a><br />
 		<a href="{% url akvo.rsr.views.orgdetail live_earth.id %}">Live Earth</a>
 	</td>
