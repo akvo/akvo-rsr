@@ -235,7 +235,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<td>{% trans 'Pledged' %}</td>
 		<td style="text-align:right;">&#8364; {{org_projects_euros.total_pledged|round}}</td>
 	</tr>
-	<tr style="color:red;">
+	<tr style="color:red;" {% if not org_projects_dollars %}class="hr"{% endif %} >
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
 		<td style="text-align:right;">&#8364; {{org_projects_euros.total_funds_needed|round}}</td>
 	</tr>
