@@ -221,7 +221,7 @@ def liveearth(request):
     page: paginator
     '''
     live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
-    projs = live_earth.all_projects().funding()
+    projs = live_earth.published_projects().funding()
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
     

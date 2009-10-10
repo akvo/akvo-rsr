@@ -114,7 +114,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</tr>
 			<tr>
 				<td>
-					{% trans 'On hold' %}
+					{% trans 'Need funding' %}
 				</td>
 				<td style="text-align:right;">
 					{{projs.status_onhold.count}}
@@ -202,29 +202,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</th>
 			</tr>
 			<tr>
-				<td style="color:#999;">Projects in Euros</td>
+				<td>Projects in Euros</td>
 			</tr>
 			<tr style="color:green;">
-				<td>{% trans 'Pledged' %}</td>
-				<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|add:projs.status_not_cancelled.euros.total_pending_negative|round}}</td>
+				<td>{% trans 'Raised' %}</td>
+				<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round}}</td>
 			</tr>
 			<tr style="color:red;">
 				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-				{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
-				<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.euros.total_funds_needed|round}}</td>
+				<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round}}</td>
 			</tr>
 			{% if projs.dollars %}
 			<tr>
-				<td style="color:#999;">Projects in US Dollars</td>
+				<td>Projects in US Dollars</td>
 			</tr>
 			<tr style="color:green;">
-				<td>{% trans 'Pledged' %}</td>
-				<td style="text-align:right;">&#36; {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|add:projs.status_not_cancelled.dollars.total_pending_negative|round}}</td>
+				<td>{% trans 'Raised' %}</td>
+				<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round}}</td>
 			</tr>
 			<tr style="color:red;">
 				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-				{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
-				<td style="text-align:right;">&#36; {{projs.status_not_cancelled.dollars.total_funds_needed|round}}</td>
+				<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round}}</td>
 			</tr>
 			{% endif %}
 			

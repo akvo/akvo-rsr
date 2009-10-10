@@ -64,42 +64,42 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.budget_employment %}
 				<tr>
 					<td>{% trans 'Employment costs' %}</td>
-					<td>&#8364; {{p.budget_employment|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_employment|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_building %}
 				<tr>
 					<td>{% trans 'Building Material costs' %}</td>
-					<td>&#8364; {{p.budget_building|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_building|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_training %}
 				<tr>
 					<td>{% trans 'Training costs' %}</td>
-					<td>&#8364; {{p.budget_training|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_training|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_maintenance %}
 				<tr>
 					<td>{% trans 'Maintenance costs' %}</td>
-					<td>&#8364; {{p.budget_maintenance|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_maintenance|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_other %}
 				<tr>
 					<td>{% trans 'Other costs' %}</td>
-					<td>&#8364; {{p.budget_other|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_other|round}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_total %}
 				<tr>
 					<td><b>{% trans 'Total' %}</b></td>
-					<td><b>&#8364; {{p.budget_total|round}}</b></td>
+					<td><b>{{p.get_currency_display|safe}} {{p.budget_total|round}}</b></td>
 				</tr>
 				{% else %}
 				<tr>
 					<td><b>{% trans 'Total' %}</b></td>
-					<td><b>&#8364; 0</b></td>
+					<td><b>{{p.get_currency_display|safe}} 0</b></td>
 				</tr>
 				{% endif %}
 			</table>

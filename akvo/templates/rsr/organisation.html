@@ -162,7 +162,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr>
 		<td>
-			{% trans 'On hold' %}
+			{% trans 'Need funding' %}
 		</td>
 		<td style="text-align:right;">
 			{{o.published_projects.status_onhold.count}}
@@ -229,27 +229,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</th>
 	</tr>
 	<tr>
-		<td style="color:#999;">Projects in Euros</td>
+		<td>Projects in Euros</td>
 	</tr>
 	<tr style="color:green;">
 		<td>{% trans 'Pledged' %}</td>
-		<td style="text-align:right;">&#8364; {{org_projects_euros.total_pledged|round}}</td>
+		<td style="text-align:right;">{{org_projects_euros.0.get_currency_display|safe}} {{org_projects_euros.total_pledged|round}}</td>
 	</tr>
 	<tr style="color:red;" {% if not org_projects_dollars %}class="hr"{% endif %} >
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-		<td style="text-align:right;">&#8364; {{org_projects_euros.total_funds_needed|round}}</td>
+		<td style="text-align:right;">{{org_projects_euros.0.get_currency_display|safe}} {{org_projects_euros.total_funds_needed|round}}</td>
 	</tr>
 	{% if org_projects_dollars %}
 	<tr>
-		<td style="color:#999;">Projects in US Dollars</td>
+		<td>Projects in US Dollars</td>
 	</tr>
 	<tr style="color:green;">
 		<td>{% trans 'Pledged' %}</td>
-		<td style="text-align:right;">&#36; {{org_projects_dollars.total_pledged|round}}</td>
+		<td style="text-align:right;">{{org_projects_dollars.0.get_currency_display|safe}} {{org_projects_dollars.total_pledged|round}}</td>
 	</tr>
 	<tr style="color:red;" class="hr">
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-		<td style="text-align:right;">&#36; {{org_projects_dollars.total_funds_needed|round}}</td>
+		<td style="text-align:right;">{{org_projects_dollars.0.get_currency_display|safe}} {{org_projects_dollars.total_funds_needed|round}}</td>
 	</tr>
 	{% endif %}
 </table>
