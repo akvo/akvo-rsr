@@ -291,7 +291,7 @@ padding: 10px 0;
 -------------------------------------------------------------------------------------- */
 
 div#live_earth_show {
-    background: #000 url('../img/LE-bar-water-bkg.png') no-repeat;
+    background: #000 url('../img/LE-bar-water-bkg3.png') no-repeat;
     color:#fff;
     padding-left:20px;
     padding-right:20px;
@@ -299,9 +299,9 @@ div#live_earth_show {
     padding-top:181px;
     height:206px;
     */
-    padding-top:171px;
+    padding-top:201px;
     /*height:216px;*/
-    height:285px;
+    height:255px;
     
 }
 /*
