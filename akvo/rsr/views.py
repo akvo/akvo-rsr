@@ -98,7 +98,7 @@ def index(request):
     img_src: the url to the first image of the blog entry
     '''
     #from dbgp.client import brk
-    #brk(host="192.168.1.123", port=9000)
+    #brk(host="90.130.213.8", port=9000)
     
     bandwidth = 'low'
     host = 'unknown'
@@ -111,8 +111,7 @@ def index(request):
         #host = request.META.get('HTTP_HOST', 'none')
         
         current_site = Site.objects.get_current()
-        feed = feedparser.parse("%s/blog?feed=rss2" % current_site)
-
+        feed = feedparser.parse("http://%s/blog?feed=rss2" % current_site)
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
         try:
@@ -126,9 +125,19 @@ def index(request):
         except:
             img_src2 = ''
         
-        le_feed = feedparser.parse("%s/blog?feed=rss2&cat=9" % current_site)
-        le_latest1 = le_feed.entries[0]
-        le_latest2 = le_feed.entries[1]
+        le_feed = feedparser.parse("http://%s/blog?feed=rss2&cat=9" % current_site)
+        try:
+            le_latest1 = le_feed.entries[0]
+        except:
+            le_latest1 = {
+            'title': _('The blog is not available at the moment.'),
+        }
+        try:
+            le_latest2 = le_feed.entries[1]
+        except:
+            le_latest2 = {
+            'title': _('The blog is not available at the moment.'),
+        }            
     except:
         soup = img_src1 = img_src2 = ''
         le_latest1 = le_latest2 = {
@@ -679,9 +688,9 @@ def orgdetail(request, org_id):
     
     org_projects = o.published_projects()
     org_partners = o.partners()
-    org_projects_euros = org_projects.filter(currency='EUR')
-    org_projects_dollars = org_projects.filter(currency='USD')
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, 'org_projects_euros': org_projects_euros, 'org_projects_dollars': org_projects_dollars,}
+    euro_projects = org_projects.euros().count()
+    dollar_projects = org_projects.dollars().count()
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, 'euro_projects': euro_projects, 'dollar_projects': dollar_projects}
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
