@@ -210,7 +210,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
 				<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
 			</tr>
-			{% if projs.dollars %}
+			{% if projs.dollars.count %}
 			<tr>
 				<td>{{projs.dollars.count}} project{{projs.dollars.count|pluralize:"s"}} in US Dollars</td>
 			</tr>
