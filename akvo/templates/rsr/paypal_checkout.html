@@ -82,8 +82,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<p>
-				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="float:right;"/>
+			<div style="float:right; width:213px;" class="clearfix" >
+				 <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
+				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
+			</div>
+			<p class="marchGrey">
 				{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations. ' %}
 			</p>
             <p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
@@ -187,11 +190,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
 			<a href="{% url void_invoice invoice.id %}">{% trans 'Cancel' %}</a>
 		</div>
-		{% if user.is_authenticated %}
-			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		{% else %}
-			<a class="march_button" href="{% url void_invoice invoice.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		{% endif%}
+            <a class="march_button" href="{% url void_invoice invoice.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
 			{% if sandbox %}
