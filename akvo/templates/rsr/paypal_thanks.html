@@ -160,7 +160,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 			<div style="float:left;">
 				{#<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{ invoice.amount}}</p>#}
-				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">{{p.get_currency_display|safe}}{{ invoice.amount}}</p>
+				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">{{ invoice.project.get_currency_display|safe }}{{ invoice.amount}}</p>
 			</div>
 			
 			{% comment %}
