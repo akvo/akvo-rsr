@@ -139,7 +139,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
 			<ul class="marchGrey" style="margin-top:15px; list-style-type: disc;">
-				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederland)' %}</li>
+				<li style="margin-left:30px;">
+				    {% ifequal invoice.project.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal invoice.project.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
 			</ul>
 		</div>
 		
