@@ -93,13 +93,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
 			<ul style="margin-top:15px; list-style-type: disc;">
-				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederland)' %}</li>
+				<li style="margin-left:30px;">
+				    {% ifequal p.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal p.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
 			</ul>
 		</div>
 		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
 			<p>
+				{% ifequal p.currency 'EUR' %}
 				{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
 			</p>
 		</div>
 		
