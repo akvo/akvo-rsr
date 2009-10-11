@@ -142,7 +142,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</th>
 		</tr>
 		<tr>
-			<td>{{projs.euros.count}} project{{projs.euros.count|pluralize:"s"}} in Euros</td>
+			<td>{{projs.status_not_cancelled.euros.count}} project{{projs.status_not_cancelled.euros.count|pluralize:"s"}} in Euros</td>
 		</tr>
 		<tr style="color:green;">
 			<td>{% trans 'Raised' %}</td>
@@ -152,13 +152,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
 			<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
 		</tr>
-		{% if projs.dollars.count %}
+		{% if projs.status_not_cancelled.dollars.count %}
 		<tr>
-			<td>{{projs.dollars.count}} project{{projs.dollars.count|pluralize:"s"}} in US Dollars</td>
+			<td>{{projs.status_not_cancelled.dollars.count}} project{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} in US Dollars</td>
 		</tr>
 		<tr style="color:green;">
 			<td>{% trans 'Raised' %}</td>
-			<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|add:projs.status_not_cancelled.dollars.total_pending_negative|round|intcomma}}</td>
+			<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
 		</tr>
 		<tr style="color:red;">
 			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
