@@ -62,7 +62,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<p>
 			The Dow Live Earth Run for Water is the largest solutions-based initiative in history aimed at solving the
 			world’s water crisis. Taking place on April 18, 2010, the Dow Live Earth Run for Water will consist of a 
-			series of 6km runs/ walks (the average distance many women and children walk every day to secure water) 
+			series of 6km runs / walks (the average distance many women and children walk every day to secure water) 
 			occurring over the course of 24 hours. The events will feature live musical performances and water education 
 			activities in an effort to ignite a massive global movement to put an end to this epidemic.
 		</p>
@@ -158,18 +158,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a></td>
 				<td style="font-size:0.9em; width:80px; text-align:right;"><a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a></td>
 			</tr>
-			<tr class="hr">
-				<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Water' %}</td>
+			<tr>
+				<td style="font-weight:bold;">{% trans 'Water' %}</td>
 				<td style="text-align:right;">{{projs.get_planned_water_calc}}</td>
 				<td style="text-align:right;">{{projs.get_actual_water_calc}}</td>
 			</tr>
-			{% comment %}
-			<tr class="hr">
+            <tr class="hr">
 				<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
 				<td style="text-align:right;">{{projs.get_planned_sanitation_calc}}</td>
 				<td style="text-align:right;">{{projs.get_actual_sanitation_calc}}</td>
 			</tr>
-			{% endcomment %}
 		</table>
 		{% comment %}
 		<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;"> 
