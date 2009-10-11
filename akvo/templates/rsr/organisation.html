@@ -206,13 +206,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr>
 		<td style="font-weight:bold;">{% trans 'Water' %}</td>
-		<td style="text-align:right;">{{o.published_projects.get_planned_water_calc}}</td>
-		<td style="text-align:right;">{{o.published_projects.get_actual_water_calc}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_planned_water_calc|intcomma}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_actual_water_calc|intcomma}}</td>
 	</tr>
 	<tr class="hr">
 		<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
-		<td style="text-align:right;">{{o.published_projects.get_planned_sanitation_calc}}</td>
-		<td style="text-align:right;">{{o.published_projects.get_actual_sanitation_calc}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_planned_sanitation_calc|intcomma}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_actual_sanitation_calc|intcomma}}</td>
 	</tr>
 </table>
 
@@ -237,7 +237,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<td>{% trans 'Pledged' %}</td>
 		<td style="text-align:right;">{{org_projects.euros.0.get_currency_display|safe}} {{o.funding.pledged_euros|round|intcomma}}</td>
 	</tr>
-	<tr style="color:red;" {% if not dollar_projects %}class="hr"{% endif %} >
+	<tr style="color:red;" {% if not org_projects.dollars.count %}class="hr"{% endif %} >
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
 		<td style="text-align:right;">{{org_projects.euros.0.get_currency_display|safe}} {{o.funding.still_needed_euros|round|intcomma}}</td>
 	</tr>
