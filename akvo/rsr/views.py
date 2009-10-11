@@ -7,22 +7,21 @@ from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
 from django import forms
-#from django import oldforms
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.template import RequestContext
-from django.forms import ModelForm
-from django.shortcuts import render_to_response, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
+from django.forms import ModelForm
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.contrib.auth.decorators import login_required
 
 
 from BeautifulSoup import BeautifulSoup
@@ -101,44 +100,18 @@ def index(request):
     #from dbgp.client import brk
     #brk(host="192.168.1.123", port=9000)
     
-    ##### old code supporting two versions of the home page. removed for now #####
-    #bandwidth = request.session.get('bandwidth', False)
-    # is this a returned user?
-    #if not bandwidth:
-    #    # nope, no session. so are we returning from cookie test?
-    #    if request.session.test_cookie_worked():
-    #        # new user, with cookies enabled
-    #        request.session['bandwidth'] = bandwidth = 'low'
-    #        request.session.delete_test_cookie()
-    #        return HttpResponseRedirect('/rsr/')
-    #    else:
-    #        # virgin user or no cookies?
-    #        no_cookie = request.GET.get('nocookie')
-    #        if not no_cookie:
-    #            # brand new user, test for cookieness
-    #            return HttpResponseRedirect('/rsr/settestcookie/')
-    #        elif no_cookie != 'True':
-    #            return HttpResponseRedirect('/rsr/?nocookie=True')
-    #        else:
-    #            bandwidth = 'low'
-    ###############################################################################
     bandwidth = 'low'
     host = 'unknown'
-    #from dbgp.client import brk
-    #brk(host="83.188.196.100", port=9000)
     try:
         # Create exception to avoid loading the blogs whe we run in debug mode.
         # Speeds up the home page considerably when pulling over the inteweb
         if settings.DEBUG:
             raise
 
-        host = request.META.get('HTTP_HOST', 'none')
+        #host = request.META.get('HTTP_HOST', 'none')
         
-        if host == 'http://akvo.org':
-            feed = feedparser.parse("http://www.akvo.org/blog?feed=rss2")
-        else:
-            feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2")
-            #feed = feedparser.parse("http://www.akvo.org/blog/?feed=rss2")
+        current_site = Site.objects.get_current()
+        feed = feedparser.parse("%s/blog?feed=rss2" % current_site)
 
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
@@ -153,10 +126,7 @@ def index(request):
         except:
             img_src2 = ''
         
-        if host == 'http://akvo.org':
-            le_feed = feedparser.parse('http://www.akvo.org/blog?feed=rss2&cat=9"')
-        else:
-            le_feed = feedparser.parse("http://test.akvo.org/blog/?feed=rss2&cat=9")
+        le_feed = feedparser.parse("%s/blog?feed=rss2&cat=9" % current_site)
         le_latest1 = le_feed.entries[0]
         le_latest2 = le_feed.entries[1]
     except:
@@ -170,7 +140,7 @@ def index(request):
         }
     projs = Project.objects.published()
     if bandwidth == 'low':
-        #TODO: better filtering criteria, we want to find all projects that have an image
+        #find all projects that need funding and have an image
         unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
         if len(unfunded_visible_projs) > 7:
             grid_projects = unfunded_visible_projs.order_by('?')[:8]
@@ -193,7 +163,6 @@ def index(request):
         'projs': projs,
         'version': settings.URL_VALIDATOR_USER_AGENT,
         'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
-        'host':host,
     }
 
 def oldindex(request):
