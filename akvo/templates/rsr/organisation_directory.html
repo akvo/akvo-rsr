@@ -182,14 +182,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a><br />
 	</td>
 	<td>
-		{% ifequal o.funding.still_needed_euros|round 0 %}
-			<span style="color: green">
-		{% else %}
-			<span>
-		{% endifequal %}
-		<b>&#8364; {{o.funding.total_euros|round}}</b>
-		</span>
-		<br /><br>
+		{% if o.funding.total_euros %}
+			{% ifequal o.funding.still_needed_euros|round 0 %}
+				<span style="color: green">
+			{% else %}
+				<span>
+			{% endifequal %}
+			<b>&#8364; {{o.funding.total_euros|round}}</b>
+			</span>
+			<br /><br>
+		{% endif %}
 		
 		{% if o.funding.total_dollars %}
 			{% ifequal o.funding.still_needed_dollars|round 0 %}
@@ -203,14 +205,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 	</td>
 	<td>
-		{% ifequal o.funding.still_needed_euros|round 0 %}
-			<span>
-		{% else %}
-			<span style="color: red">
-		{% endifequal %}
-		<b>&#8364; {{o.funding.still_needed_euros|round}}</b>
-		</span>
-		<br /><br />
+		{% if o.funding.total_euros %}
+			{% ifequal o.funding.still_needed_euros|round 0 %}
+				<span>
+			{% else %}
+				<span style="color: red">
+			{% endifequal %}
+			<b>&#8364; {{o.funding.still_needed_euros|round}}</b>
+			</span>
+			<br /><br />
+		{% endif %}
 		{% if o.funding.total_dollars %}
 			{% ifequal o.funding.still_needed_dollars|round 0 %}
 				<span>
