@@ -1257,9 +1257,9 @@ def send_paypal_confirmation_email(id):
     t = loader.get_template('rsr/paypal_confirmation_email.html')
     c = Context({'invoice': ppi})
     if ppi.user:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.user.email], fail_silently=False)
+        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.user.email], fail_silently=False)
     else:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.email], fail_silently=False)
+        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):
