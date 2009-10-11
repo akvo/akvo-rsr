@@ -288,6 +288,7 @@ class Organisation(models.Model):
    
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled()
+        # First four keys should be deprecated
         return {
             'total': my_projs.total_total_budget(),
             'donated': my_projs.total_donated(),

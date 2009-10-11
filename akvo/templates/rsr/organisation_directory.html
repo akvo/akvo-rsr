@@ -182,21 +182,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a><br />
 	</td>
 	<td>
-		{% ifequal o.funding.still_needed|round 0 %}
+		{% ifequal o.funding.still_needed_euros|round 0 %}
 			<span style="color: green">
 		{% else %}
 			<span>
 		{% endifequal %}
-		<b>&#8364; {{o.funding.total|round}}</b>
+		<b>&#8364; {{o.funding.total_euros|round}}</b>
 		</span>
 	</td>
 	<td>
-		{% ifequal o.funding.still_needed|round 0 %}
+		{% ifequal o.funding.still_needed_euros|round 0 %}
 			<span>
 		{% else %}
 			<span style="color: red">
 		{% endifequal %}
-		<b>&#8364; {{o.funding.still_needed|round}}</b>
+		<b>&#8364; {{o.funding.still_needed_euros|round}}</b>
 		</span>
 	</td>
 </tr>
