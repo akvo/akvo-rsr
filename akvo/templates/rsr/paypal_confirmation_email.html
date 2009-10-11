@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{{ timestamp }} {# Should probably be formatted with |date:'' filter #}
+{{ invoice.time }} {# Should probably be formatted with |date:'' filter #}
 
 {% if invoice.user %}
 Name: {{ invoice.user.first_name }} {{ invoice.user.last_name }}
@@ -29,8 +29,8 @@ And please tell your friends about Akvo.org!  :)
 
 A summary of your contribution:
 
-Your gift will help:            {{ invoice.project }} (http://akvo.org/rsr/project/{{ project.id }}/)
-Total Contribution Amount:      {{ invoice.amount }} Euro{{ invoice.amount|pluralize:"s" }}
+Your gift will help:            {{ invoice.project.name|safe }} (http://akvo.org/rsr/project/{{ invoice.project.id }}/)
+Total Contribution Amount:      {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}
 Akvo Reference ID:              {{ invoice.id }}
 PayPal Reference ID:         	{{ invoice.ipn }}
 
