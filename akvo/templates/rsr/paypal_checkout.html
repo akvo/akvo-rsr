@@ -187,11 +187,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
 			<a href="{% url void_invoice invoice.id %}">{% trans 'Cancel' %}</a>
 		</div>
-		{% if user.is_authenticated %}
-			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		{% else %}
-			<a class="march_button" href="{% url void_invoice invoice.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		{% endif%}
+            <a class="march_button" href="{% url void_invoice invoice.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
 			{% if sandbox %}
