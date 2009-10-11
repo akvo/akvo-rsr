@@ -688,9 +688,7 @@ def orgdetail(request, org_id):
     
     org_projects = o.published_projects()
     org_partners = o.partners()
-    euro_projects = org_projects.euros().count()
-    dollar_projects = org_projects.dollars().count()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, 'euro_projects': euro_projects, 'dollar_projects': dollar_projects}
+    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
