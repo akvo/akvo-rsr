@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters thumbnail %}
+{% load i18n rsr_filters thumbnail humanize %}
 
 {% block title %}{{block.super}} - {% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
@@ -233,11 +233,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr style="color:green;">
 		<td>{% trans 'Pledged' %}</td>
-		<td style="text-align:right;">&#8364; {{o.funding.pledged_euros|round}}</td>
+		<td style="text-align:right;">&#8364; {{o.funding.pledged_euros|round|intcomma}}</td>
 	</tr>
 	<tr style="color:red;" {% if not dollar_projects %}class="hr"{% endif %} >
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-		<td style="text-align:right;">&#8364; {{o.funding.still_needed_euros|round}}</td>
+		<td style="text-align:right;">&#8364; {{o.funding.still_needed_euros|round|intcomma}}</td>
 	</tr>
 	{% if dollar_projects %}
 	<tr>
@@ -245,11 +245,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr style="color:green;">
 		<td>{% trans 'Pledged' %}</td>
-		<td style="text-align:right;">&#36; {{o.funding.pledged_dollars|round}}</td>
+		<td style="text-align:right;">&#36; {{o.funding.pledged_dollars|round|intcomma}}</td>
 	</tr>
 	<tr style="color:red;" class="hr">
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-		<td style="text-align:right;">&#36; {{o.funding.still_needed_dollars|round}}</td>
+		<td style="text-align:right;">&#36; {{o.funding.still_needed_dollars|round|intcomma}}</td>
 	</tr>
 	{% endif %}
 </table>
