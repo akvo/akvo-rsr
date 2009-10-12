@@ -1153,6 +1153,9 @@ class ProjectUpdate(models.Model):
             return ''
     img.allow_tags = True
 
+    def user_profile(self):
+        return self.user.userprofile_set.all()[0]
+
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
     user            = models.ForeignKey(User, verbose_name=_('user'))
