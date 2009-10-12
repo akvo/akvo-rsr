@@ -1,40 +1,129 @@
- RELEASE_NOTES.txt, v0.9.11, 14 September 2009, PB
+﻿RELEASE_NOTES.txt, v0.9.12, 12 October 2009, tbp
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
-To read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview)
+Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
 ---
 
-Akvo RSR v 0.9.11 release notes
--------------------------------
-14 September 2009, (Code name: Jupiter) PB
 
-New features
+Akvo RSR v 0.9.12 release notes 
+------------------------------ 
+12 October 2009, (Code name: Basalt) tbp
+
+
+New features 
+------------ 
+### Addition of comprehensive help text in Akvo RSR admin
+The add/modify project and organisation form in the Akvo RSR admin packs in a lot of information. Many of the fields are required and must be entered correctly. To make this form more usable, we added detailed and clear plain-English help text to guide partners through what is required of them.
+
+### Updated JQuery to 1.3.2
+We now use the JQuery framework 1.3.2.
+
+### New small widget for Plus customers
+A new "minimal" small widget has been created. With only project title, picture and location information. If you are using the Akvo.org services you have to have a Plus account (have an contract with Akvo Foundation) to get access to this new widget.
+
+### Listing of projects in other currencies
+One can now list projects in other currencies than Euros. To be able to do this one needs to do the following:
+
+1. For other currencies than Euro and US Dollar, you need to modify CURRENCY_CHOICES in models.py.
+2. Create a new PayPal gateway. This can only be done by Superusers in the system. The new admin form for this is called "Paypal gateways".
+3. In the admin form "Project PayPal gateway configurations" you can select which donation gateway a selected project should use. This functionallity is only available to the Superuser of the system.
+
+We have special code on the donation pages which displays different information based on which currency you have selected. This needs to be abstracted and entered into some admin forms for easier configuration. To change this you currently have to modify the donation templates.
+
+The currency display ripples through the whole system including displaying multiple currencies in organisation listings, as well as the "Akvo at a glance" portlets, the "Organisation activities" portlet on the organisation page and the Sponsor portlet on the new Sponsor portal page. We updated how currencies are being displayed as well, for better readability. This work still needs another pass as we didn't have time to do it everywhere yet.
+
+Read more about the [Akvo RSR support for multiple currencies](http://www.akvo.org/labs/index.php?title=Akvo_RSR_support_for_multiple_currencies).
+
+### Added column in the admin view "Project PayPal gateway configurations" to display settings
+This PayPal account a particular projects donations are linked to is important to know, without having to go into every project to see it. This is the one way money  gets transferred through your system from donors to PayPal accounts, so you need to be able to see what they are set as.
+
+### Adding prototype sponsor features
+In 0.9.7 we added a new type of partner, a sponsor partner. We are testing some new features for the sponsor partner type with this release. We are expecting these features to be fleshed out in one form or another with subsequent releases. These features are only applicable to one specific sponsor for now:
+
+* Sponsor portal page, a page which is different from the organisation page, but has branding and a project list related to the sponsor
+* Sponsor branding on the organisation page which has a link to the sponsor portal page
+* Sponsor branding on donation pages which has a link ot the sponsor portal page
+* Home page Sponsor box, which has a link to the Sponsor portal page and links to articles in the blog
+
+The new sponsor functionality is possible to enable or disable in the settings.py file, as well as identifying with organisation number is the sponsor partner which the features will be linked to. This will be updated in the next few releases and should be considered experimental.
+
+### Added a link to updater's organisation in updates
+In an update on the projects page you can now see which organisation the account which performed the update belongs to. The name of the organisation is displayed as the short name and has a link to the organisation page.
+
+Bug fixes
 ------------
-### Decimalisation of financial data
-All financial data in Akvo RSR is now stored in decimal format. Previously it was stored in integer (whole number) format. This transition was necessary to allow for accurate calculation and output of financial data in the system.
+### "Hover" text (img title) not appearing over Focus area graphics on Organisation listing page
+[Launchpad bug reference 319407](https://bugs.launchpad.net/akvo.rsr/+bug/319407)
+[Pivotal story](http://www.pivotaltracker.com/story/show/1229439) 
 
-### Reconciliation of PayPal donations
-All individual donations made to projects in Akvo RSR are subject to processing fees applied by PayPal. Although Akvo RSR has always stored these fees, we were not able to apply them to our own financial data until the system was decimalised. We are now able to store the final amounts received from PayPal with cent accuracy.
+### Partners' listings breadcrumb trail doesn't lead back to Organisation Listing
+[Launchpad bug reference 304679](https://bugs.launchpad.net/akvo.rsr/+bug/304679)
+[Pivotal story](http://www.pivotaltracker.com/story/show/1289389)
 
-### PayPal gateway selection and multi-currency support
-Currently all individual donations are sent to the Akvo PayPal account. As from this release, it is possible for a partner to request that Akvo staff override this behaviour on a project-by-project basis and define a new "gateway" (PayPal store) to direct payments to. Note: this is only done in exceptional cases at this point. PayPal gateways also contain locale and currency information meaning that we will be able to handle donations to a particular project in an alternative currency in the future.
+### Sponsor attribution use wrong words in Widget, 2+ display
+[Pivotal story](http://www.pivotaltracker.com/story/show/1321398)
 
-### Various enhancements to the PayPal donation engine
-Several smaller enhancements have been made to the Akvo RSR PayPal engine:
+### Donation template should not allow donations if a project is fully funded
+One could manually go to the donation URL. The user will now be redirected to the project page.
+[Pivotal story](http://www.pivotaltracker.com/story/show/1322025)
 
-* The find_stale_invoices.py cron script now logs detailed information for each invoice operated on
-* The PayPal-specific settings in settings.py have been simplified
-* The view function code which handles the donation process has been simplified
+### Image on donation page is not "sorled"
+The project current image is not run through thumbnailing with sorl on the donation page, it is just a scaled original.
+[Pivotal story](http://www.pivotaltracker.com/story/show/1453502)
 
-Detailed technical information about these new features and enhancements can be found on [Akvo Labs](http://www.akvo.org/labs/index.php/Akvo_PayPal_Under_the_Hood)
+### Change text 'On hold' to 'Need funding' in Akvo at a Glance and Organisation detail page
+'On hold' is misleading and should be changed to 'Need funding'. We had no projects on hold and there isn't even a status called on hold (anymore). Se Need funding was a better description.
+[Pivotal story](http://www.pivotaltracker.com/story/show/1453017)
 
-Bugs
-----
-In one particular template, the message "Fully funded" did not appear when a project had reached its funding target. This has been fixed.
+### Clicking Cancel in donation templates should immediately void an invoice
+When the user clicks on "Cancel", a new URL is called which triggers a view function which voids the invoice and redirects the user to the project's detail page, thus freeing up that sum of money so it can be donated again.
+[Pivotal story](http://www.pivotaltracker.com/story/show/1226213)
+
+### Purpose of 'Back' button in PayPal checkout template is not clear and produces strange results
+Workaround for now is to make 'Back' do the same as 'Cancel'.
+[Pivotal story](http://www.pivotaltracker.com/story/show/1458080)
+
+### Funding partner logo too large on funding detail page
+In the funding detail page the logo for the funding organisation does not seem to get scaled down. Logos now passed through sorl-thumbnail and scaled to no more than 140x140.
+[Pivotal story](http://www.pivotaltracker.com/story/show/823749)
+
+---
+
+
+Akvo RSR v 0.9.11 release notes 
+------------------------------ 
+14 September 2009, (Code name: Jupiter) PB 
+
+New features 
+------------ 
+### Decimalisation of financial data 
+All financial data in Akvo RSR is now stored in decimal format. Previously it was stored in integer (whole number) format. This transition was necessary to allow for accurate calculation and output of financial data in the system. 
+
+### Reconciliation of PayPal donations 
+All individual donations made to projects in Akvo RSR are subject to processing fees applied by PayPal. Although Akvo RSR has always stored these fees, we were not able to apply them to our own financial data until the system was decimalised. We are now able to store the final amounts received from PayPal with cent accuracy. 
+
+### PayPal gateway selection and multi-currency support 
+Currently all individual donations are sent to the Akvo PayPal account. As from this release, it is possible for a partner to request that Akvo staff override this behaviour on a project-by-project basis and define a new "gateway" (PayPal store) to direct payments to. Note: this is only done in exceptional cases at this point. PayPal gateways also contain locale and currency information meaning that we will be able to handle donations to a particular project in an alternative currency in the future. 
+
+### Various enhancements to the PayPal donation engine 
+Several smaller enhancements have been made to the Akvo RSR PayPal engine: 
+
+* The find_stale_invoices.py cron script now logs detailed information for each invoice operated on 
+* The PayPal-specific settings in settings.py have been simplified 
+* The view code which handles the donation process has been simplified 
+
+Detailed technical information about these new features and enhancements can be found on [Akvo Labs](http://www.akvo.org/labs/index.php/Akvo_PayPal_Under_the_Hood) 
+
+Bugs 
+---- 
+In one particular template, the message "Fully funded" did not appear when a project had reached its funding target. This has been fixed. 
 
 When a user attempted to donate a negative integer amount (for example "-10") to a project, the error message produced was misleading, asking her to donate an amount "greater then or equal to 0". Since it is not possible to donate 0 to a project, this message now asks the user to donate an amount "greater than or equal to 1".
+
+---
+
 
 Akvo RSR v 0.9.10 release notes
 ------------------------------
@@ -139,7 +228,7 @@ The projects featured on the projects listing page and on the Akvo.org home page
 Bugs
 ----
 ### Error message style sheet
-404 and 500 http errors did not have style sheets; now they do. 
+404 and 500 http errors did not have style sheets; now they do.
 
 ### Funding table alignment
 The funding table at the organisation page had a alignment bug making the sums pushed down a couple of pixels. This is now fixed.
