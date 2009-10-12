@@ -152,6 +152,9 @@ class Organisation(models.Model):
     #objects = models.Manager()    
     objects     = QuerySetManager()
     projects    = ProjectsQuerySetManager()
+
+    def get_absolute_url(self):
+        return '/rsr/organisation/%d/' % self.id
     
     class QuerySet(QuerySet):
         def fieldpartners(self):
@@ -927,7 +930,7 @@ class UserProfile(models.Model):
     '''
     Extra info about a user.
     '''
-    user            = models.ForeignKey(User, unique=True)
+    user            = models.ForeignKey(User, unique=True) # TODO: should be a OneToOneField
     organisation    = models.ForeignKey(Organisation)
     phone_number    = models.CharField(
         max_length=50,
