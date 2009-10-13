@@ -54,7 +54,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <h2 class="lightx2">{% trans 'Location' %}</h2>
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
             {% if p.map %}
-                <img src="{% thumbnail p.map 140x140 %}" style="margin: 20px 20px 0px 20px;" />
+                <img src="{% thumbnail p.map 140x140 %}" style="margin: 20px 20px 0px 20px;" width="140px" height="140px" />
             {% else %}
                 <img src="{{MEDIA_URL}}img/nomap.jpg" style="margin: 20px 20px 0px 20px;" />
             {% endif %}
@@ -77,7 +77,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <div style="float:left;width: 250px">
                     {% if p.current_image %}
                         <div class="small lightx1">{{p.current_image_caption}}</div>
-                        <img src="{% thumbnail p.current_image 220x165 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="margin: 10px 10px 0 0" />
+                        <img src="{% thumbnail p.current_image 220x165 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="margin: 10px 10px 0 0" width="220px" height="165px" />
                     {% endif %}	
                     </div>	
                     <div style="margin-left: 240px; width: 200px">
@@ -239,7 +239,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <br />
                     {% if u.photo %}
                         {% ifequal u.photo_location 'B' %}
-                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" width="300px" height="225px" />
                             <p class="small lightx1">
                                 {% if u.photo_caption %}
                                     {{u.photo_caption}}
@@ -255,7 +255,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     {% endif %}
                     {% if u.photo %}
                         {% ifequal u.photo_location 'E' %}
-                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" />
+                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" width="300px" height="225px"/>
                             <p class="small lightx1">
                                 {% if u.photo_caption %}
                                     {{u.photo_caption}}

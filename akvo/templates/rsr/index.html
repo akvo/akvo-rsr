@@ -71,7 +71,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endifequal %}
 				<td align="center">
 					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-						<img style="padding: 2px 6px;" src="{% thumbnail p.current_image 144x108 crop,upscale,sharpen %}" title="{{p.name}}" alt="{{p.name}}" style="width:144px; height:108px" />
+						<img style="padding: 2px 6px;" src="{% thumbnail p.current_image 144x108 crop,upscale,sharpen %}" title="{{p.name}}" alt="{{p.name}}" width="144px" height="108px" />
 					</a>
 				</td>
 				{% ifequal forloop.counter 4 %}
