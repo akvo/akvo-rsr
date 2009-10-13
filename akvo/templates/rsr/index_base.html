@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters %}
+{% load i18n rsr_filters humanize %}
 
 {% block content %}
 
@@ -49,7 +49,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</tr>
 		<tr>
 			<td>
-				{% trans 'On hold' %}
+				{% trans 'Need funding' %}
 			</td>
 			<td style="text-align:right;">
 				{{projs.status_onhold.count}}
@@ -94,13 +94,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</tr>
 		<tr>
 			<td style="font-weight:bold;">{% trans 'Water' %}</td>
-			<td style="text-align:right;">{{projs.get_planned_water_calc}}</td>
-			<td style="text-align:right;">{{projs.get_actual_water_calc}}</td>
+			<td style="text-align:right;">{{projs.get_planned_water_calc|intcomma}}</td>
+			<td style="text-align:right;">{{projs.get_actual_water_calc|intcomma}}</td>
 		</tr>
 		<tr class="hr">
 			<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
-			<td style="text-align:right;">{{projs.get_planned_sanitation_calc}}</td>
-			<td style="text-align:right;">{{projs.get_actual_sanitation_calc}}</td>
+			<td style="text-align:right;">{{projs.get_planned_sanitation_calc|intcomma}}</td>
+			<td style="text-align:right;">{{projs.get_actual_sanitation_calc|intcomma}}</td>
 		</tr>
 	</table>
 	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">	
@@ -138,18 +138,33 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
 		<tr class="font-weight:bold;">
 			<th colspan="2" style="padding-bottom:10px;">
-				{% trans 'Funding' %} <span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>
+				{% trans 'Funding' %} {#<span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>#}
 			</th>
 		</tr>
+		<tr>
+			<td>{{projs.status_not_cancelled.euros.count}} project{{projs.status_not_cancelled.euros.count|pluralize:"s"}} in Euros</td>
+		</tr>
 		<tr style="color:green;">
-			<td>{% trans 'Pledged' %}</td>
-			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_pledged|add:projs.status_not_cancelled.total_donated|add:projs.status_not_cancelled.total_pending_negative|round}}</td>
+			<td>{% trans 'Raised' %}</td>
+			<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round|intcomma}}</td>
 		</tr>
 		<tr style="color:red;">
 			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-			{#<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|add:projs.status_not_cancelled.total_pending|round}}</td>#}
-			<td style="text-align:right;">&#8364; {{projs.status_not_cancelled.total_funds_needed|round}}</td>
+			<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
 		</tr>
+		{% if projs.status_not_cancelled.dollars.count %}
+		<tr>
+			<td>{{projs.status_not_cancelled.dollars.count}} project{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} in US Dollars</td>
+		</tr>
+		<tr style="color:green;">
+			<td>{% trans 'Raised' %}</td>
+			<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
+		</tr>
+		<tr style="color:red;">
+			<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
+			<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round|intcomma}}</td>
+		</tr>
+		{% endif %}
 	</table>
 	
 	</div> <!-- .boxbody -->

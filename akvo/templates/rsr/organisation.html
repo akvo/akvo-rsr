@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters thumbnail %}
+{% load i18n rsr_filters thumbnail humanize %}
 
 {% block title %}{{block.super}} - {% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
@@ -162,7 +162,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr>
 		<td>
-			{% trans 'On hold' %}
+			{% trans 'Need funding' %}
 		</td>
 		<td style="text-align:right;">
 			{{o.published_projects.status_onhold.count}}
@@ -206,13 +206,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</tr>
 	<tr>
 		<td style="font-weight:bold;">{% trans 'Water' %}</td>
-		<td style="text-align:right;">{{o.published_projects.get_planned_water_calc}}</td>
-		<td style="text-align:right;">{{o.published_projects.get_actual_water_calc}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_planned_water_calc|intcomma}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_actual_water_calc|intcomma}}</td>
 	</tr>
 	<tr class="hr">
 		<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}</td>
-		<td style="text-align:right;">{{o.published_projects.get_planned_sanitation_calc}}</td>
-		<td style="text-align:right;">{{o.published_projects.get_actual_sanitation_calc}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_planned_sanitation_calc|intcomma}}</td>
+		<td style="text-align:right;">{{o.published_projects.get_actual_sanitation_calc|intcomma}}</td>
 	</tr>
 </table>
 
@@ -220,22 +220,40 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
 	<tr class="font-weight:bold;">
 		<th colspan="2" style="padding-bottom:10px;">
-			{% trans 'Funding' %} 
+			{% trans 'Funding' %}
+			{% comment %}
 			<span style="font-weight:normal; color:#999">
 				{% blocktrans count o.published_projects.count as proj_count %}
 					(1 project){% plural %}({{proj_count}} projects)
 				{% endblocktrans %}
 			</span>
+			{% endcomment %}
 		</th>
+	</tr>
+	<tr>
+		<td>{{org_projects.euros.count}} project{{org_projects.euros.count|pluralize:"s"}} in Euros</td>
 	</tr>
 	<tr style="color:green;">
 		<td>{% trans 'Pledged' %}</td>
-		<td style="text-align:right;">&#8364; {{o.funding.pledged|round}}</td>
+		<td style="text-align:right;">{{org_projects.euros.0.get_currency_display|safe}} {{o.funding.pledged_euros|round|intcomma}}</td>
+	</tr>
+	<tr style="color:red;" {% if not org_projects.dollars.count %}class="hr"{% endif %} >
+		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
+		<td style="text-align:right;">{{org_projects.euros.0.get_currency_display|safe}} {{o.funding.still_needed_euros|round|intcomma}}</td>
+	</tr>
+	{% if org_projects.dollars.count %}
+	<tr>
+		<td>{{org_projects.dollars.count}} project{{org_projects.dollars.count|pluralize:"s"}} in US Dollars</td>
+	</tr>
+	<tr style="color:green;">
+		<td>{% trans 'Pledged' %}</td>
+		<td style="text-align:right;">{{org_projects.dollars.0.get_currency_display|safe}} {{o.funding.pledged_dollars|round|intcomma}}</td>
 	</tr>
 	<tr style="color:red;" class="hr">
 		<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-		<td style="text-align:right;">&#8364; {{o.funding.still_needed|round}}</td>
+		<td style="text-align:right;">{{org_projects.dollars.0.get_currency_display|safe}} {{o.funding.still_needed_dollars|round|intcomma}}</td>
 	</tr>
+	{% endif %}
 </table>
 <table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr><td class="padded" colspan="2"><h2>{% trans 'Project partners' %}</h2></td></tr>

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django import forms
 from django.core.exceptions import PermissionDenied
 from django.contrib import admin
@@ -203,8 +205,7 @@ admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccount
 class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
     extra = 3
-    list_display = ('url', 'caption', 'show_link', )    
-
+    list_display = ('url', 'caption', 'show_link')
 
 def partner_clean(obj, field_name):
     """
@@ -329,49 +330,63 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = [BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
-               FieldPartnerInline, SupportPartnerInline, LinkInline, ]
-
+    inlines = (BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
+               FieldPartnerInline, SupportPartnerInline, LinkInline)
     fieldsets = (
         (_(u'Project description'), {
+            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing.</p>'),
             'fields': (
                 'name',
                 'subtitle',
-                'status',
-                ('category_water', 'category_sanitation', 'category_maintenance', 
-                    'category_training', 'category_education', 'category_product_development', 'category_other',
-                ),
-            )
+                'status',),
         }),
+        
+        (_(u'Categories'), {
+			'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Please select all categories applicable to your project.</p>'),
+        	'fields': (('category_water', 'category_sanitation', 'category_maintenance'), 
+                    ('category_training', 'category_education', 'category_product_development'), 'category_other',), 
+        }),
+        
         (_(u'Location'), {
+			'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
             'fields': ('city', 'state', 'country',)
         }),
+        
         (_(u'Location extra'), {
-            'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',), #'classes': 'collapse'
+			'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
+            'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',),
         }),
+        
         (_(u'Project info'), {
+        	'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The summary should <em>briefly</em> explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished.</p>'),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
         }),
         (_(u'Goals'), {
+            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
             'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
         }),
         (_(u'Project target benchmarks'), {
-            'fields': ('water_systems', 'sanitation_systems', 'hygiene_facilities', ('improved_water', 
+			'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
+            'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water', 
             'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
         }),
-        (_(u'Project info details'), {
-            'fields': ('current_status_detail', 'project_plan_detail', 'sustainability', 'context',), #'classes': 'collapse'
+        (_(u'Project details'), {
+            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Context, Plan Detail, Status Detail and Sustainability fields to tell people more about the project.</p>'),
+            'fields': ('context', 'project_plan_detail', 'current_status_detail', 'sustainability', ),
         }),
         (_(u'Project meta info'), {
-            'fields': ('project_rating', 'notes', ), #'classes': 'collapse'
+			'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The project meta information fields are not public. They allow you to make notes to other members of your organisation or partners with access to your projects on the RSR Admin pages.</p>'),
+            'fields': ('project_rating', 'notes', ),
         }),
         (_(u'Project budget'), {
-            'fields': ('date_request_posted', 'date_complete', ), #'classes': 'collapse'
-        }),
+        	'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The request posted date is filled in for you automatically when you create a project. When the project implementation phase is complete, enter the <em>Date complete</em> here.</p>'),
+            'fields': ('currency', 'date_request_posted', 'date_complete', ),
+        }),        
     )
     list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
                     'city', 'project_plan_summary', 'show_current_image',
-                    'show_map', 'is_published',)
+                    'show_map', 'is_published')
+    list_filter = ('currency',)
     
     #form = ProjectAdminModelForm
     form = ProjectAdminForm
@@ -759,17 +774,17 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
         """
         valid_invoices = queryset.filter(status__in=[1,4])
         invalid_invoices = queryset.filter(status__in=[2,3])
-        if invalid_invoices: # if queryset contains invalid selections
-            if valid_invoices: # if queryset also contains some valid selections
+        if invalid_invoices:
+            if valid_invoices:
                 for invoice in valid_invoices:
-                    self.message_user(request, ugettext('Invoice %s successfully voided.' % str(invoice.pk)))
-                valid_invoices.update(status=2) # void the valid selections
+                    self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
+                valid_invoices.update(status=2)
             for invoice in invalid_invoices:
-                msg = ugettext('Invoice %s could not be voided. It is already %s.' % (str(invoice.pk), invoice.get_status_display().lower()))
+                msg = ugettext('Invoice %d could not be voided. It is already %s.' % (invoice.pk, invoice.get_status_display().lower()))
                 self.message_user(request, msg)
-        else: # if we get this far, queryset only contains valid selections
+        else:
             for invoice in queryset:
-                self.message_user(request, ugettext('Invoice %s successfully voided.' % str(invoice.pk)))
+                self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
             queryset.update(status=2)
     void_invoices.short_description = _('Mark selected invoices as void')
 
@@ -779,5 +794,10 @@ class PayPalGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
 
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
-admin.site.register(get_model('rsr', 'paypalgatewayselector'))
+
+class PayPalGatewaySelectorAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'gateway')
+    list_filter = ('gateway',)
+
+admin.site.register(get_model('rsr', 'paypalgatewayselector'), PayPalGatewaySelectorAdmin)
 

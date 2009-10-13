@@ -58,7 +58,7 @@ urlpatterns = patterns('',
 
     (r'^rsr/flashgallery.xml$', 'akvo.rsr.views.flashgallery', ),
     
-    (r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', ),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
@@ -140,8 +140,12 @@ if settings.DEBUG:
         (r'^500/$', 'akvo.rsr.views.server_error'),
     )
 
-from django.conf import settings
 if settings.DEBUG:
     urlpatterns += patterns('',
 		(r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    )
+
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^rsr/rosetta/', include('rosetta.urls')),
     )

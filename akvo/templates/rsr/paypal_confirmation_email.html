@@ -1,24 +1,29 @@
 {% load i18n %}
 
-{{ timestamp }} {# Should probably be formatted with |date:'' filter #}
+{{ invoice.time }} {# Should probably be formatted with |date:'' filter #}
 
-{% if u %}
-Name: {{ u.first_name }} {{ u.last_name }}
-Email: {{ u.email }}
+{% if invoice.user %}
+Name: {{ invoice.user.first_name }} {{ invoice.user.last_name }}
+Email: {{ invoice.user.email }}
 
-Dear {{ u.first_name }} {{ u.last_name }},
+Dear {{ invoice.user.first_name }} {{ invoice.user.last_name }},
 {% else %}
-Name: {{ anon_name }}
-Email: {{ anon_email }}
+Name: {{ invoice.name }}
+Email: {{ invoice.email }}
 
-Dear {{ anon_name }},
+Dear {{ invoice.name }},
 {% endif %}
 
 Thank you for your online contribution on Akvo.org.  By giving, you have personally helped to advance the cause of clean water and sanitation around the world.
 
 No goods or services were provided in exchange for your gift of funds.  At this time, only residents of the following countries may treat this donation as a tax-deductible charitable contribution to the extent allowed by law.
 
+        {% ifequal invoice.project.currency 'EUR' %}
         - The Netherlands (Nederland)
+        {% endifequal %}
+        {% ifequal invoice.project.currency 'USD' %}
+        - United States of America
+        {% endifequal %}
 
 We are working hard to expand this list to new countries.  In the future, you may check http://www.akvo.org/web/charitable/ to see if we have added your country to this list.
 
@@ -29,10 +34,10 @@ And please tell your friends about Akvo.org!  :)
 
 A summary of your contribution:
 
-Your gift will help:            {{ project }} (http://akvo.org/rsr/project/{{ project.id }}/)
-Total Contribution Amount:      {{ amount }} Euro{{ amount|pluralize:"s" }}
-Akvo Reference ID:              {{ invoice }}
-PayPal Reference ID:         	{{ paypal_reference }}
+Your gift will help:            {{ invoice.project.name|safe }} (http://akvo.org/rsr/project/{{ invoice.project.id }}/)
+Total Contribution Amount:      {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}
+Akvo Reference ID:              {{ invoice.id }}
+PayPal Reference ID:         	{{ invoice.ipn }}
 
 Visit the project at the link above to see progress and updates.
 

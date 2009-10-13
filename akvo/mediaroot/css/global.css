@@ -563,6 +563,8 @@ th { font-weight: bold; }
     background: transparent url('../img/index_sponsor_background.png') repeat-x;
     padding:0;
     margin-bottom:20px;
+    height:93px;
+    overflow:hidden;
 }
 
 #index_sponsor_box a {
@@ -570,10 +572,11 @@ th { font-weight: bold; }
 }
 
 #sponsor_box_left {
-    background: transparent url('../img/le-water-logo.gif') no-repeat 20px 10px;
+    /*background: transparent url('../img/liveearth_water_logo_small.gif') no-repeat 20px 10px; */
+    /*padding-left:170px;*/
     float:left;
-    padding-left:120px;
-    width:260px; 
+    width:220px;
+    padding-left:30px;
 }
 
 #sponsor_box_left h1 {
@@ -596,8 +599,10 @@ th { font-weight: bold; }
 }
 
 #sponsor_box_right {
-    width:320px;
-    float:right; 
+    width:300px;
+    float:right;
+    /*height:90px;
+    overflow:hidden;*/
 }
 
 #sponsor_box_right h2 {

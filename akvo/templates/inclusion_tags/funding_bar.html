@@ -13,7 +13,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div class="bold clearfix">
     <div style="float: left;">{% trans 'Total' %}</div>
-    <div style="float: right; padding-right: 3px;">{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.budget_total|round}}</div>
+    <div style="float: right; padding-right: 3px;">{{p.get_currency_display|safe}} {{p.budget_total|round}}</div>
 </div>
 
 <!-- background: #99ff99 url('/rsr/media/img/bg_funding_bar.png') no-repeat 20px top -->

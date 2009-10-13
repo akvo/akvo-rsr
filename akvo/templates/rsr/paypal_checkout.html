@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n addparam rsr_tags %}
+{% load i18n addparam rsr_tags thumbnail %}
 
 {% block title %}{{block.super}} - {% trans 'Confirm Donation - Project' %} {{p.id}}{% endblock title %}
 
@@ -71,7 +71,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.current_image %}
 					<div style="margin-top:5px;">
 						<a href="{% url akvo.rsr.views.projectmain p.id %}">
-							<img src="{{MEDIA_URL}}{{p.current_image}}" width="172" height="125" alt="{{p.current_image_caption}}" />			    			
+                            <img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />
 						</a>
 					</div>
 			    {% endif %}
@@ -82,8 +82,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
+			<div style="float:right; width:213px;" class="clearfix" >
+				 <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
+				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
+			</div>
 			<p>
-				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="float:right;"/>
 				{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations. ' %}
 			</p>
             <p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
@@ -93,13 +96,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
 			<ul style="margin-top:15px; list-style-type: disc;">
-				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederland)' %}</li>
+				<li style="margin-left:30px;">
+				    {% ifequal p.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal p.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
 			</ul>
 		</div>
 		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
 			<p>
-				{% trans 'PayPal charges up to 3.4%+30 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 96.30 Euros will go towards the selected project.' %}
+				{% ifequal p.currency 'EUR' %}
+				{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
 			</p>
 		</div>
 		
@@ -113,7 +128,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{amount}}</p>
+				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">{{p.get_currency_display|safe}}{{invoice.amount}}</p>
 			</div>
 			
 			{% comment %}
@@ -144,8 +159,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
-				<p style="font-weight:bold">{{ user.email }}</p>
+				<p style="font-weight:bold">{{ invoice.user.first_name }} {{ invoice.user.last_name }}</p>
+				<p style="font-weight:bold">{{ invoice.user.email }}</p>
 			</div>
 			
 			{% else %}
@@ -154,8 +169,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ name }}</p>
-				<p style="font-weight:bold">{{ email }}</p>				
+				<p style="font-weight:bold">{{ invoice.name }}</p>
+				<p style="font-weight:bold">{{ invoice.email }}</p>				
 			</div>
 				
 			{% endif%}
@@ -173,13 +188,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% trans 'By clicking on the "Donate" button you agree to the' %} <a href="http://akvo.org/web/donate_terms_and_conditions" target="_blank">{% trans 'Terms and Conditions' %}</a> {% trans 'for the donation.' %}
 		</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
-			<a href="{% url void_invoice invoice_id %}">{% trans 'Cancel' %}</a>
+			<a href="{% url void_invoice invoice.id %}">{% trans 'Cancel' %}</a>
 		</div>
-		{% if user.is_authenticated %}
-			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		{% else %}
-			<a class="march_button" href="{% url akvo.rsr.views.donate p.id %}{% addparam "amount" amount "name" name|urlencode "email" email|urlencode %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		{% endif%}
+            <a class="march_button" href="{% url void_invoice invoice.id %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
 			{% if sandbox %}

@@ -242,7 +242,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% else %}
 			<span>
 		{% endifequal %}
-		<b>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.total_budget|round}}</b>
+		{# <b>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.total_budget|round}}</b> #}
+		<b>{{p.get_currency_display|safe}} {{p.total_budget|round}}</b>
 		</span>
 	</td>
 	<td>
@@ -252,7 +253,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<span style="color: red">
 		{% endifequal %}
 		{# TODO: fix sorting as funding_still_needed is not used for the sorting of projects, but rather funds_needed that is created in the .extra() in views.py #}
-		<b>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funds_needed|round}}</b>
+		{# <b>{{p.budgetitem_set.all.0.get_currency_display|safe}} {{p.funds_needed|round}}</b> #}
+		<b>{{p.get_currency_display|safe}} {{p.funds_needed|round}}</b>
 		</span>
 	</td>
 	<td>

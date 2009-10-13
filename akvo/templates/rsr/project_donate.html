@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags thumbnail %}
 
 {% block title %}{{block.super}} - {% trans 'Donate to Project' %} {{p.id}}{% endblock title %}
 
@@ -92,7 +92,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.current_image %}
 					<div style="margin-top:5px;">
 						<a href="{% url akvo.rsr.views.projectmain p.id %}">
-							<img src="{{MEDIA_URL}}{{p.current_image}}" width="172" height="125" alt="{{p.current_image_caption}}" />			    			
+                            <img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />
 						</a>
 					</div>
 			    {% endif %}
@@ -104,22 +104,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-		    {% comment %}
-			<p class="marchGrey">
-				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="float:right;"/>
-				{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations. ' %}
+			<div style="float:right; width:213px;" class="clearfix" >
+				 <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
+				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
+			</div>
+			<p>
+			     {% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}
 			</p>
-            {% endcomment %}
-			<p class="marchGrey">
-			     <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" style="padding-left:20px; float:right;"/>
-			     <p>{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
-			     <p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
-			     
-			</p>	
+			<p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
 			<p>
-				{% trans 'PayPal charges up to 3.4%+30 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 96.30 Euros will go towards the selected project.' %}
+			    {% ifequal p.currency 'EUR' %}
+				{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
 			</p>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
@@ -127,7 +128,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
 			<ul style="margin-top:15px; list-style-type: disc;">
-				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederland)' %}</li>
+				<li style="margin-left:30px;">
+				    {% ifequal p.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal p.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
 			</ul>
 		</div>
 		
@@ -141,14 +149,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		{# START Enter amount #}
 		<div style="{#margin-left:40px; #}float:left; width:300px;">
-			<h3>{% trans 'Amount you wish to donate (in Euros' %} / &euro;)</h3>
+			<h3>{% trans 'Amount you wish to donate (in' %} {{p.get_currency_display|safe}})</h3>
 			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:4px;">
 				<p class="marchGrey">{% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
 				{{ donate_form.amount }}<br />
 				<span class="marchGrey">
-				{% trans 'Only whole Euro amounts please' %}
+				{% trans 'Only whole'%} {{p.get_currency_display|safe}} {% trans 'amounts please' %}
 				</span>
 			</div>
 			

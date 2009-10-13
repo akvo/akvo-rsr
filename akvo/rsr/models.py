@@ -9,12 +9,12 @@ import string
 import re
 import os
 from datetime import date, datetime, timedelta
-from decimal import Decimal, ROUND_UP
+from decimal import Decimal
 
 from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, F # added by Paul
+from django.db.models import Sum, F
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
@@ -82,8 +82,8 @@ class ProjectsQuerySetManager(QuerySetManager):
 
 class Organisation(models.Model):
     """
-    There are three types of organisations in RSR, called Field partner,
-    Support partner and Funding partner respectively.
+    There are four types of organisations in RSR, called Field,
+    Support, Funding and Sponsor partner respectively.
     """
     ORG_TYPE_NGO = 'N'
     ORG_TYPE_GOV = 'G'
@@ -132,7 +132,7 @@ class Organisation(models.Model):
     city                        = models.CharField(max_length=25)
     state                       = models.CharField(max_length=15)
     country                     = models.ForeignKey(Country, verbose_name=_(u'country'))
-    url                         = models.URLField(blank=True, verify_exists = False)
+    url                         = models.URLField(blank=True, verify_exists = False, help_text = 'Enter the full address of your web site, beginning with http://.')
     map                         = models.ImageField(
                                     blank=True,
                                     upload_to=org_image_path,
@@ -144,14 +144,17 @@ class Organisation(models.Model):
     phone                       = models.CharField(blank=True, max_length=20)
     mobile                      = models.CharField(blank=True, max_length=20)
     fax                         = models.CharField(blank=True, max_length=20)
-    contact_person              = models.CharField(blank=True, max_length=30)
-    contact_email               = models.CharField(blank=True, max_length=50)
+    contact_person              = models.CharField(blank=True, max_length=30, help_text = 'Name of the external contact person for the organisation.')
+    contact_email               = models.CharField(blank=True, max_length=50, help_text = 'Email to which inquiries about your organisation should be sent.')
     description                 = models.TextField(blank=True, help_text = 'Describe what your organisation does in the water and sanitation sector.' )
 
     #Managers, one default, one custom
     #objects = models.Manager()    
     objects     = QuerySetManager()
     projects    = ProjectsQuerySetManager()
+
+    def get_absolute_url(self):
+        return '/rsr/organisation/%d/' % self.id
     
     class QuerySet(QuerySet):
         def fieldpartners(self):
@@ -285,14 +288,23 @@ class Organisation(models.Model):
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
-    
+   
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled()
+        # First four keys should be deprecated
         return {
             'total': my_projs.total_total_budget(),
             'donated': my_projs.total_donated(),
             'pledged': my_projs.total_pledged(self),
-            'still_needed': my_projs.total_funds_needed() + my_projs.total_pending()
+            'still_needed': my_projs.total_funds_needed() + my_projs.total_pending(),
+            'total_euros': my_projs.euros().total_total_budget(),
+            'donated_euros': my_projs.euros().total_donated(),
+            'pledged_euros': my_projs.euros().total_pledged(self),
+            'still_needed_euros': my_projs.euros().total_funds_needed(),
+            'total_dollars': my_projs.dollars().total_total_budget(),
+            'donated_dollars': my_projs.dollars().total_donated(),
+            'pledged_dollars': my_projs.dollars().total_pledged(self),
+            'still_needed_dollars': my_projs.dollars().total_funds_needed()
         }
 
     class Meta:
@@ -318,15 +330,14 @@ class OrganisationAccount(models.Model):
 
 
 CURRENCY_CHOICES = (
-    #('USD', '$'),
+    ('USD', '$'),
     ('EUR', '€'),
-    #('GBP', '£'),
 )
 
 STATUSES = (
     ('N', _('None')),
-    ('A', _('Active')),
-    ('H', _('Need funding')),
+    ('H', _('Needs funding')),
+    ('A', _('Active')),    
     ('C', _('Complete')),
     ('L', _('Cancelled')),
 )
@@ -338,18 +349,17 @@ class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
 
-
 class Project(models.Model):
     def proj_image_path(instance, file_name):
         #from django.template.defaultfilters import slugify
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
-    name                        = models.CharField(max_length=45, help_text = 'Enter a descriptive name for your project (45 characters).')
-    subtitle                    = models.CharField(max_length=75, help_text = 'Enter a subtitle for your project (75 characters).')
-    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N')
-    city                        = models.CharField(max_length=25)
-    state                       = models.CharField(max_length=15)
-    country                     = models.ForeignKey(Country)
+    name                        = models.CharField(max_length=45, help_text = 'A short descriptive name for your project (45 characters).')
+    subtitle                    = models.CharField(max_length=75, help_text = 'A subtitle with more information on the project (75 characters).')
+    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text = 'Current project state.')
+    city                        = models.CharField(max_length=25, help_text = 'Name of city, village, town, slum, etc. (25 characters).')
+    state                       = models.CharField(max_length=15, help_text = 'Name of state, province, county, region, etc. (15 characters).')
+    country                     = models.ForeignKey(Country, help_text = 'Country where project is taking place.')
     map                         = models.ImageField(
                                     blank=True,
                                     upload_to=proj_image_path,
@@ -373,8 +383,8 @@ class Project(models.Model):
                                     help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
                                 )
     current_image_caption       = models.CharField(blank=True, max_length=50, help_text='Enter a caption for your project picture (50 characters).')
-    goals_overview              = models.TextField(max_length=500, help_text='Describe what the project hopes to accomplish. (500 characters).')
-    goal_1                      = models.CharField(blank=True, max_length=60)
+    goals_overview              = models.TextField(max_length=500, help_text='Describe what the project hopes to accomplish (500 characters).')
+    goal_1                      = models.CharField(blank=True, max_length=60, help_text='(60 characters)')
     goal_2                      = models.CharField(blank=True, max_length=60)
     goal_3                      = models.CharField(blank=True, max_length=60)
     goal_4                      = models.CharField(blank=True, max_length=60)
@@ -391,21 +401,21 @@ class Project(models.Model):
     #mdg_count_water             = models.IntegerField(default=0)
     #mdg_count_sanitation        = models.IntegerField(default=0)
 
-    location_1                  = models.CharField(blank=True, max_length=50)
-    location_2                  = models.CharField(blank=True, max_length=50)
-    postcode                    = models.CharField(blank=True, max_length=10)
-    longitude                   = models.CharField(blank=True, max_length=20)
-    latitude                    = models.CharField(blank=True, max_length=20)
-    current_status_detail       = models.TextField(blank=True, max_length=600, help_text='Describe the current situation of the affected local community (600 characters).')
-
-    project_plan_detail         = models.TextField(blank=True, help_text='Describe in detail the what, how, who and when of the project.')
-    sustainability              = models.TextField(help_text='Describe plans for sustaining/maintaining project goals.')
-    context                     = models.TextField(blank=True, max_length=500, help_text='Describe the broader situation in the project area. (500 characters).')
+    location_1                  = models.CharField(blank=True, max_length=50, help_text = 'Street address (50 characters).')
+    location_2                  = models.CharField(blank=True, max_length=50, help_text = 'Street address 2 (50 characters).')
+    postcode                    = models.CharField(blank=True, max_length=10, help_text = 'Postcode, zip code, etc. (10 characters).')
+    longitude                   = models.CharField(blank=True, max_length=20, help_text = 'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.')
+    latitude                    = models.CharField(blank=True, max_length=20, help_text = 'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.')
+    current_status_detail       = models.TextField(blank=True, max_length=600, help_text='Description of current phase of project. (600 characters).')
+    project_plan_detail         = models.TextField(blank=True, help_text='Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).')
+    sustainability              = models.TextField(help_text='Describe plans for sustaining/maintaining results after implementation is complete (unlimited).')
+    context                     = models.TextField(blank=True, max_length=500, help_text='Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).')
 
     project_rating              = models.IntegerField(default=0)
-    notes                       = models.TextField(blank=True)
+    notes                       = models.TextField(blank=True, help_text='(Unlimited number of characters).')
 
     #budget    
+    currency            = models.CharField(choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(default=date.today)
     date_complete       = models.DateField(null=True, blank=True)
 
@@ -439,7 +449,13 @@ class Project(models.Model):
         
         def status_not_cancelled(self):
             return self.exclude(status__exact='L')
-        
+      
+        def euros(self):
+            return self.filter(currency='EUR')
+
+        def dollars(self):
+            return self.filter(currency='USD')
+
         def budget_employment(self):
             return self.filter(budgetitem__item__exact='employment').annotate(
                 budget_employment=Sum('budgetitem__amount'),
@@ -470,7 +486,7 @@ class Project(models.Model):
 
         def donated(self):
             return self.filter(paypalinvoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
-                donated=Sum('paypalinvoice__amount'),
+                donated=Sum('paypalinvoice__amount_received'),
             ).distinct()
 
         def pledged(self, org=None):
@@ -577,7 +593,7 @@ class Project(models.Model):
             funding_queries.update(pledged)
             #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
             return self.extra(select=funding_queries)
-        
+
         def need_funding(self):
             "projects that projects need funding"
             #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
@@ -798,10 +814,9 @@ class BudgetItem(models.Model):
     project             = models.ForeignKey(Project)
     item                = models.CharField(max_length=20, choices=ITEM_CHOICES)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
-    currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     
     class Meta:
-        unique_together     = ('project', 'item', 'currency',)
+        unique_together     = ('project', 'item')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
@@ -826,15 +841,15 @@ class PublishingStatus(models.Model):
         return '%d - %s' % (self.project.pk, self.project,)
 
     
-LINK_KINDS = (
-    ('A', 'Akvopedia entry'),
-    ('E', 'External link'),
-)
 class Link(models.Model):
+    LINK_KINDS = (
+        ('A', 'Akvopedia entry'),
+        ('E', 'External link'),
+    )
     kind    = models.CharField(max_length=1, choices=LINK_KINDS)
-    url     = models.URLField()
+    url     = models.URLField(_(u'URL'))
     caption = models.CharField(max_length=50)
-    project = models.ForeignKey(Project,)
+    project = models.ForeignKey(Project)
     
     def __unicode__(self):
         return self.url
@@ -846,11 +861,10 @@ class Link(models.Model):
 class FundingPartner(models.Model):
     funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
     funding_amount          = models.DecimalField(max_digits=10, decimal_places=2)
-    currency                = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     project                 = models.ForeignKey(Project,)
 
     def __unicode__(self):
-        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.get_currency_display())
+        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
 
 class SponsorPartner(models.Model):
     sponsor_organisation    = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
@@ -916,7 +930,7 @@ class UserProfile(models.Model):
     '''
     Extra info about a user.
     '''
-    user            = models.ForeignKey(User, unique=True)
+    user            = models.ForeignKey(User, unique=True) # TODO: should be a OneToOneField
     organisation    = models.ForeignKey(Organisation)
     phone_number    = models.CharField(
         max_length=50,
@@ -926,7 +940,7 @@ class UserProfile(models.Model):
         #TODO: fix to django 1.0
         #validator_list = [isValidGSMnumber]
     )    
-    project         = models.ForeignKey(Project, null=True, blank=True, )
+    #project         = models.ForeignKey(Project, null=True, blank=True, )
     
     def __unicode__(self):
         return self.user.username
@@ -1142,6 +1156,9 @@ class ProjectUpdate(models.Model):
             return ''
     img.allow_tags = True
 
+    def user_profile(self):
+        return self.user.userprofile_set.all()[0]
+
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
     user            = models.ForeignKey(User, verbose_name=_('user'))
@@ -1156,7 +1173,6 @@ from paypal.standard.ipn.signals import payment_was_flagged, payment_was_success
 class PayPalGateway(models.Model):
     PAYPAL_LOCALE_CHOICES = (
         ('US', _(u'US English')),
-        ('GB', _(u'British English')),
     )
     name                = models.CharField(max_length=255)
     account_email       = models.EmailField()
@@ -1166,7 +1182,7 @@ class PayPalGateway(models.Model):
     notification_email  = models.EmailField()
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.name, self.account_email)
+        return u'%s - %s - %s' % (self.name, self.account_email, self.get_currency_display())
 
     class Meta:
         verbose_name = _(u'PayPal gateway')
@@ -1222,7 +1238,7 @@ class PayPalInvoice(models.Model):
 
     @property
     def currency(self):
-        return self.project.paypalgatewayselector.gateway.currency
+        return self.project.currency
 
     @property
     def gateway(self):
@@ -1245,20 +1261,11 @@ class PayPalInvoice(models.Model):
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)
     t = loader.get_template('rsr/paypal_confirmation_email.html')
-    c = Context({
-        'anon_name': ppi.name,
-        'anon_email': ppi.email,
-        'u': ppi.user,
-        'project': ppi.project,
-        'amount': ppi.amount,
-        'invoice': ppi.id,
-        'timestamp': ppi.time,
-        'paypal_reference': ppi.ipn,
-    })
+    c = Context({'invoice': ppi})
     if ppi.user:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.user.email], fail_silently=False)
+        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.user.email], fail_silently=False)
     else:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.PAYPAL_RECEIVER_EMAIL, [ppi.email], fail_silently=False)
+        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):

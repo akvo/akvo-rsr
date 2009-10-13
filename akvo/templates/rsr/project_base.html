@@ -40,7 +40,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if p.date_complete %}
     		<p>{{p.date_complete}} {% trans 'Funding completed' %}</p>
 		{% endif %}
-		<!--<p><b>Total: <span style="margin-left: 10px">{{p.funding.get_currency_display|safe}} {{p.funding.total|round}}</span></b></p>-->
+		<!--<p><b>Total: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{p.funding.total|round}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>
 		<hr />
 		<p style="margin: 10px 0 10px 0;">
@@ -66,7 +66,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}	
 			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
 			<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
-			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount|round}}</span></b></p>
+			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{funder.funding_amount|round}}</span></b></p>
 		{% endfor %}
 
 		{% if p.funding_donated %}
@@ -78,7 +78,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p style="margin:10px 0">
 				<b>{% trans 'Total' %}:
 					<span style="margin-left: 10px">
-						{{p.budgetitem_set.all.0.get_currency_display|safe}}
+						{{p.get_currency_display|safe}}
 						{{p.funding_donated|round}}
 					</span>
 				</b>

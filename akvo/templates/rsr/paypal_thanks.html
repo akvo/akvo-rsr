@@ -5,11 +5,11 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load rsr_tags %}
+{% load rsr_tags thumbnail %}
 
 {% load i18n %}
 
-{% block title %}{{block.super}} - {% trans 'Thank You for Your Donation to Project' %} {{p.id}}{% endblock title %}
+{% block title %}{{block.super}} - {% trans 'Thank You for Your Donation to Project' %} {{project.id}}{% endblock title %}
 
 {% block style %}
 {{block.super}}
@@ -123,7 +123,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if project.current_image %}
 					<div style="margin-top:5px;">
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">
-							<img src="{{MEDIA_URL}}{{project.current_image}}" width="172" height="125" alt="{{project.current_image_caption}}" />			    			
+							<img src="{% thumbnail project.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />			    			
 						</a>
 					</div>
 			    {% endif %}
@@ -139,7 +139,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
 			<ul class="marchGrey" style="margin-top:15px; list-style-type: disc;">
-				<li style="margin-left:30px;">{% trans 'The Netherlands (Nederland)' %}</li>
+				<li style="margin-left:30px;">
+				    {% ifequal invoice.project.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal invoice.project.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
 			</ul>
 		</div>
 		
@@ -159,7 +166,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{ invoice.amount}}</p>
+				{#<p style="color:#008C00; font-size:1.6em; font-weight:bold;">&euro; {{ invoice.amount}}</p>#}
+				<p style="color:#008C00; font-size:1.6em; font-weight:bold;">{{ invoice.project.get_currency_display|safe }}{{ invoice.amount}}</p>
 			</div>
 			
 			{% comment %}
