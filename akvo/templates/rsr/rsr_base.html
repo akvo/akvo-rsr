@@ -82,6 +82,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/" %} class="active"{% endifequal %}>{% trans 'Home' %}</a></li>
 		<li><a href="/wiki">{% trans 'Akvopedia' %}</a></li>
 		<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifnotequal request.path "/" %} class="active"{% endifnotequal %}>{% trans 'Projects' %}</a></li>
+		<li><a href="/web/ngo_partners">{% trans 'Partners' %}</a></li>
 		<li><a href="/web/get_involved">{% trans 'Get involved' %}</a></li>
 		<li><a href="/blog">{% trans 'Blog' %}</a></li>
 		<li><a href="/web/what_we_do">{% trans 'About' %}</a></li>
