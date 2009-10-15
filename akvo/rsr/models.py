@@ -291,6 +291,11 @@ class Organisation(models.Model):
    
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled()
+        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
+        # work because valuees_list used in qs_column_sum will not return more
+        # than one of the same value. This leads to the wrong sum when same amount
+        # has been pledged to multiple projects
+        all_active = Project.objects.published().status_not_cancelled()
         # First four keys should be deprecated
         return {
             'total': my_projs.total_total_budget(),
@@ -299,11 +304,11 @@ class Organisation(models.Model):
             'still_needed': my_projs.total_funds_needed() + my_projs.total_pending(),
             'total_euros': my_projs.euros().total_total_budget(),
             'donated_euros': my_projs.euros().total_donated(),
-            'pledged_euros': my_projs.euros().total_pledged(self),
+            'pledged_euros': all_active.euros().total_pledged(self),
             'still_needed_euros': my_projs.euros().total_funds_needed(),
             'total_dollars': my_projs.dollars().total_total_budget(),
             'donated_dollars': my_projs.dollars().total_donated(),
-            'pledged_dollars': my_projs.dollars().total_pledged(self),
+            'pledged_dollars': all_active.dollars().total_pledged(self),
             'still_needed_dollars': my_projs.dollars().total_funds_needed()
         }
 
@@ -476,6 +481,11 @@ class Project(models.Model):
                 budget_maintenance=Sum('budgetitem__amount'),
             )
 
+        def budget_management(self):
+            return self.filter(budgetitem__item__exact='management').annotate(
+                budget_management=Sum('budgetitem__amount'),
+            )
+
         def budget_other(self):
             return self.filter(budgetitem__item__exact='other').annotate(
                 budget_other=Sum('budgetitem__amount'),
@@ -491,7 +501,7 @@ class Project(models.Model):
 
         def pledged(self, org=None):
             if org:
-                self.filter(funding_organisation__exact=organisation)
+                self.filter(funding_organisation__exact=org)
             return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
 
         def funding(self, organisation=None):
@@ -776,6 +786,9 @@ class Project(models.Model):
     def budget_maintenance(self):
         return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
 
+    def budget_management(self):
+        return Project.objects.budget_management().get(pk=self.pk).budget_management
+
     def budget_other(self):
         return Project.objects.budget_other().get(pk=self.pk).budget_other
 
@@ -809,6 +822,7 @@ class BudgetItem(models.Model):
         ('building', _('building')),
         ('training', _('training')),
         ('maintenance', _('maintenance')),
+        ('management', _('management')),
         ('other', _('other')),
     )
     project             = models.ForeignKey(Project)
@@ -969,6 +983,9 @@ class UserProfile(models.Model):
         self.user.is_staff = set_it
         self.user.save()
         
+    def get_is_rsr_admin(self):
+        return GROUP_RSR_EDITORS in groups_from_user(self.user)
+
     def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
     get_is_org_admin.boolean = True #make pretty icons in the admin list view

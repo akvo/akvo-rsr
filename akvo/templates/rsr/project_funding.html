@@ -85,6 +85,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<td>{{p.get_currency_display|safe}} {{p.budget_maintenance|round}}</td>
 				</tr>
 				{% endif %}
+				{% if p.budget_management %}
+				<tr>
+					<td>{% trans 'Management costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_management|round}}</td>
+				</tr>
+				{% endif %}
 				{% if p.budget_other %}
 				<tr>
 					<td>{% trans 'Other costs' %}</td>
