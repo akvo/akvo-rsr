@@ -55,7 +55,6 @@
 			background: #fff url({{MEDIA_URL}}img/partners_widget/table_header_bkgd.png) repeat-y left;
 			border-bottom:1px solid #999;
 			height:570px;
-			height: expression( this.scrollHeight > 4 ? "570px" : "auto" ); /* sets max-height for IE */
 			max-height:570px;
 			overflow: auto;
 			padding-left:1px;
@@ -79,7 +78,7 @@
 			border-collapse:collapse;
 			font-size:0.75em;
 			margin: 0px;
-			width:100;
+			/*width:100;*/
 			}
 		
 		th {
@@ -154,9 +153,12 @@
 		}
 	</style>
 	
-	<!--[if lt IE 8]>
-	<script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js" type="text/javascript"></script>
+	{% comment %}
+	<!--[if lt IE 7]>
+		#heightcontrain {height: expression( this.scrollHeight > 4 ? "570px" : "auto" ); /* Sets max-height for IE */}
 	<![endif]-->
+	{% endcomment %}
+	
 		
 </head>
 <body>	
@@ -253,5 +255,11 @@
 		</table>
 	</div>
 </div>
+{% comment %}
+<!--[if lt IE 8]>
+<script src="{{MEDIA_URL}}js/ie/IE8.js" type="text/javascript"></script>
+<script src="{{MEDIA_URL}}js/ie/ie7-squish.js" type="text/javascript"></script>
+<![endif]-->
+{% endcomment %}
 </body>
 </html>
