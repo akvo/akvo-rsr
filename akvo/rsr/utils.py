@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 # utility functions for RSR
+
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.template import loader, Context
+
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
 GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
@@ -16,11 +21,13 @@ PAYPAL_INVOICE_STATUS_VOID      = 2
 PAYPAL_INVOICE_STATUS_COMPLETE  = 3
 PAYPAL_INVOICE_STATUS_STALE     = 4
 
+
 def groups_from_user(user):
     """
     Return a list with the groups the current user belongs to.
     """
     return [group.name for group in user.groups.all()]
+
         
 #Modeled on Options method get_change_permission in django/db/models/options.py
 def get_rsr_limited_change_permission(obj):
@@ -41,6 +48,7 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     else:
         return path_template % ('temp', file_name)
 
+
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt', subject_context={}, msg_context={}):
     """
@@ -59,6 +67,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     message = loader.render_to_string(message, msg_context)    
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, to_list)
 
+
 def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt', subject_context={}, msg_context={}):
     """
@@ -67,6 +76,19 @@ def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
     to_list = [user.email for user in users if user.email]
     rsr_send_mail(to_list, subject, message, subject_context, msg_context)
 
+
 def qs_column_sum(qs, col):
     "return sum of a queryset column"
     return sum(qs.values_list(col, flat=True))
+
+
+def model_and_instance_based_filename(object_name, pk, field_name, img_name):
+    """ Create a file name for an image based on the model name, the current object's pk,
+    the field name of the model and the current date and time"""
+    return "%s_%s_%s_%s%s" % (
+        object_name,
+        pk or '',
+        field_name,
+        datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+        splitext(img_name)[1],
+    )

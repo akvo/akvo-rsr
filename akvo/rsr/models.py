@@ -96,7 +96,7 @@ class Organisation(models.Model):
         (ORG_TYPE_KNO, u'Knowledge institution'),
     )
     
-    def org_image_path(instance, file_name):
+    def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%s/%s')
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
@@ -110,22 +110,10 @@ class Organisation(models.Model):
     long_name                   = models.CharField(blank=True, max_length=75, help_text='Full name of organisation (75 characters).'
     							)
     organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
-    '''
-    current_image               = ImageWithThumbnailsField(
-                                    blank=True,
-                                    upload_to=proj_image_path,
-                                    thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                    help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
-                                )
-    logo                        = models.ImageField(
-                                    blank=True,
-                                    upload_to=org_image_path,
-                                    help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',	
-                                )
-    '''
+
     logo                        = ImageWithThumbnailsField(
                                     blank=True,
-                                    upload_to=org_image_path,
+                                    upload_to=image_path,
                                     thumbnail={'size': (360,270)},
                                     help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',
                                 )
@@ -135,7 +123,7 @@ class Organisation(models.Model):
     url                         = models.URLField(blank=True, verify_exists = False, help_text = 'Enter the full address of your web site, beginning with http://.')
     map                         = models.ImageField(
                                     blank=True,
-                                    upload_to=org_image_path,
+                                    upload_to=image_path,
                                     help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).',
                                 )
     address_1                   = models.CharField(blank=True, max_length=35)
@@ -355,8 +343,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 class Project(models.Model):
-    def proj_image_path(instance, file_name):
-        #from django.template.defaultfilters import slugify
+    def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
     name                        = models.CharField(max_length=45, help_text = 'A short descriptive name for your project (45 characters).')
@@ -367,7 +354,7 @@ class Project(models.Model):
     country                     = models.ForeignKey(Country, help_text = 'Country where project is taking place.')
     map                         = models.ImageField(
                                     blank=True,
-                                    upload_to=proj_image_path,
+                                    upload_to=image_path,
                                     help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'
                                 )
     #Project categories
@@ -383,7 +370,7 @@ class Project(models.Model):
     project_plan_summary        = models.TextField(max_length=220, help_text='Briefly summarize the project (220 characters).')
     current_image               = ImageWithThumbnailsField(
                                     blank=True,
-                                    upload_to=proj_image_path,
+                                    upload_to=image_path,
                                     thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
                                     help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
                                 )
@@ -1141,7 +1128,7 @@ class MoSmsRaw(models.Model):
     incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
 
 class ProjectUpdate(models.Model):
-    def update_image_path(instance, file_name):
+    def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%s/%%s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
@@ -1153,7 +1140,7 @@ class ProjectUpdate(models.Model):
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = ImageWithThumbnailsField(
                         blank=True,
-                        upload_to=update_image_path,
+                        upload_to=image_path,
                         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
                         help_text = 'The image should have 4:3 height:width ratio for best displaying result',
                     )
