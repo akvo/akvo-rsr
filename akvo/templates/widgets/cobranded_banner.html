@@ -156,7 +156,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="float:left; width:125px; height:110px;">
 					{% if project.current_image %}
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">
-				    		<img src="{% thumbnail project.current_image 120x90 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
+				    		<img src="{% thumbnail project.current_image 120x90 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" width="120px" height="90px" />
 						</a>
 				    {% endif %}
 				<p class="miniFont lightgrey" style="margin-top:4px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>

@@ -145,7 +145,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 				{% if sponsor.sponsor_organisation.logo %}
 					<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">
-						<img src="{% thumbnail sponsor.sponsor_organisation.logo 120x90 %}" style="margin:10px 20px;" width="120px" height="90px">
+						<img src="{% thumbnail sponsor.sponsor_organisation.logo 120x90 %}" style="margin:10px 20px;" />
 					</a>
 				{% endif %}
 				<p>
