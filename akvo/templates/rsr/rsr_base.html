@@ -51,9 +51,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block header %}
 <div id="header" class="clearfix">
 
+	<a href="{% url index %}"><img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" /></a>
 	{% if not user.username %}
-	
-	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" />
 
 	<div id="header_button">
 	<a class="actionbutton ab_white" href="{% url signin %}?next={{request.path}}" onclick="this.blur();" style="margin: 0;">
@@ -62,9 +61,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 
 	{% else %}
-
-	<img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" />
-
 
 	<div id="header_button">
 	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="display: inline; vertical-align: middle; margin-left: 20px"><span>{% trans 'Sign out' %}</span></a>

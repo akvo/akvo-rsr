@@ -21,7 +21,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="outer_leftwing">
 
 	<div class="boxhead">
+		{% if can_add_update %}
 		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>{% trans 'Add update' %}</span></a>
+		{% endif %}
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
 

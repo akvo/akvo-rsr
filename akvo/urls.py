@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     (r'^rsr/ipn/thanks/$', 'akvo.rsr.views.paypal_thanks', ),
     (r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn'),
 
-    (r'^$', 'akvo.rsr.views.index', ),
+    url(r'^$', 'akvo.rsr.views.index', name='index'),    
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
 
     (r'^rsr/admin/(.*)', admin.site.root),

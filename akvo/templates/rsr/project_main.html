@@ -218,9 +218,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				Only if user are logged in and have the right privileges should the add update button be
 				visible.
 			{% endcomment %}
+			
 			{% if can_add_update %}
 			<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>{% trans 'Add update' %}</span></a>
 			{% endif %}
+			
             <h1>{% trans 'Project updates' %}</h1>
         </div> <!-- .boxhead -->
     
