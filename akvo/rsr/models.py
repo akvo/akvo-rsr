@@ -930,7 +930,7 @@ class UserProfile(models.Model):
     '''
     Extra info about a user.
     '''
-    user            = models.ForeignKey(User, unique=True) # TODO: should be a OneToOneField
+    user            = models.OneToOneField(User)
     organisation    = models.ForeignKey(Organisation)
     phone_number    = models.CharField(
         max_length=50,
@@ -1155,9 +1155,6 @@ class ProjectUpdate(models.Model):
         except:
             return ''
     img.allow_tags = True
-
-    def user_profile(self):
-        return self.user.userprofile_set.all()[0]
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
