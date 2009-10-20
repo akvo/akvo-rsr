@@ -14,7 +14,7 @@ from decimal import Decimal
 from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, F
+from django.db.models import Sum, F, permalink
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
@@ -424,6 +424,10 @@ class Project(models.Model):
     #http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
+
+    @permalink
+    def get_absolute_url(self):
+        return ('project_main', self.pk)
     
     class QuerySet(QuerySet):
         def published(self):

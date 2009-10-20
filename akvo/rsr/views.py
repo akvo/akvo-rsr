@@ -18,7 +18,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -866,7 +866,7 @@ from akvo.rsr.decorators import fetch_project
 def donate(request, p):
     
     if p not in Project.objects.published().need_funding():
-        return HttpResponseRedirect(reverse('akvo.rsr.views.projectmain', args=(p.id,)))
+        return redirect('project_main', p.id)
         
     has_sponsor_banner = False
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
@@ -936,7 +936,7 @@ def void_invoice(request, invoice_id):
     if invoice.status == 1:
         invoice.status = 2
         invoice.save()
-        return HttpResponseRedirect(reverse('project_main', args=(invoice.project.id,)))
+        return redirect('project_main', invoice.project.id)
     else:
         return HttpResponseRedirect('/')
 
@@ -948,7 +948,7 @@ def paypal_thanks(request):
             invoice = PayPalInvoice.objects.get(id=invoice_id)
             p = Project.objects.get(id=invoice.project.id)
         except:
-            return HttpResponseRedirect('/')
+            return redirect('/')
             
         try:
             u = User.objects.get(id=invoice.user_id)
