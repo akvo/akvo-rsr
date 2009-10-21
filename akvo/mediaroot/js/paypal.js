@@ -61,10 +61,10 @@ function setEmail()
 $(document).ready(function() 
 {	
     // Hide customize other and warning section
-    $('#paypal_donate_warning_main').hide();
+    //$('#paypal_donate_warning_main').hide();
     
 	//$('#warning_main').hide();
-	$('#warning_color').hide();
+	//$('#warning_color').hide();
 
 	setName();
 	setEmail();

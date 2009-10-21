@@ -14,8 +14,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
 
-<meta http-equiv="pragma" content="no-cache"/>
-<meta http-equiv="cache-control" content="no-cache"/>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
 
 <style type="text/css" media="screen">
 	ul.errorlist li {
@@ -64,12 +64,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div style="width:50%; float:left;">
 		<h1>{% trans 'Donate to a project in Akvo RSR' %}</h1>
 	</div>
-	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
-		<p>
-			<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-			{% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
-		</p>
-	</div>
+	<noscript>
+		<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+			<p>
+				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+				{% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
+			</p>
+		</div>
+	</noscript>
 	<div style="padding-bottom:15px; clear:both;"></div>
 	
 	<hr style="width:100%; margin-left:0; clear:both;" />

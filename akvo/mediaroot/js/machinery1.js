@@ -46,7 +46,7 @@ $(document).ready(function()
 {	
     // Hide customize other and warning section
     // Step 1
-	//$('#machinery_step1_warning_main').hide();
+	// $('#machinery_step1_warning_main').hide();
 	
 	// Step 2
 	//$('#backgroundcolor_other_section').hide();
