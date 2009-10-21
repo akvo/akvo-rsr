@@ -5,6 +5,7 @@
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
 from akvo.rsr.forms import OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.decorators import fetch_project
 
 from django import forms
 from django.conf import settings
@@ -860,18 +861,14 @@ def project_list_widget(request, template='project-list', org_id=0):
 
 # PayPal
 from akvo.rsr.forms import PayPalInvoiceForm
-from akvo.rsr.decorators import fetch_project
 
 @fetch_project
 def donate(request, p):
-    
     if p not in Project.objects.published().need_funding():
-        return redirect('project_main', p.id)
-        
+        return redirect('project_main', project_id=p.id)
     has_sponsor_banner = False
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
-        
     if request.method == 'POST':
         donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
         if donate_form.is_valid():
@@ -922,23 +919,28 @@ def donate(request, p):
                                        'p': p, 
                                        'sandbox': settings.PAYPAL_DEBUG,
                                        'has_sponsor_banner': has_sponsor_banner,
-                                       'live_earth_enabled': settings.LIVE_EARTH_ENABLED,},
+                                       'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
-    
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form, 'p': p, 'has_sponsor_banner': has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, }, 
+                              {'donate_form': donate_form,
+                               'p': p,
+                               'has_sponsor_banner': has_sponsor_banner,
+                               'live_earth_enabled': settings.LIVE_EARTH_ENABLED}, 
                               context_instance=RequestContext(request))
 
-def void_invoice(request, invoice_id):
+def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(PayPalInvoice, pk=invoice_id)
     if invoice.status == 1:
         invoice.status = 2
         invoice.save()
-        return redirect('project_main', invoice.project.id)
+        if action == 'back':
+            return redirect('project_donate', project_id=invoice.project.id)
+        elif action == 'cancel':
+            return redirect('project_main', project_id=invoice.project.id)
     else:
-        return HttpResponseRedirect('/')
+        return redirect('project_list')
 
 # Presents the landing page after PayPal
 def paypal_thanks(request):
@@ -957,4 +959,5 @@ def paypal_thanks(request):
             
         return render_to_response('rsr/paypal_thanks.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
     else:
-        return HttpResponseRedirect('/')
+        return redirect('/')
+

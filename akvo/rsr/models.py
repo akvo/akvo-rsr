@@ -427,7 +427,7 @@ class Project(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ('project_main', self.pk)
+        return ('project_main', (), {'project_id': self.pk})
     
     class QuerySet(QuerySet):
         def published(self):
