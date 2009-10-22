@@ -40,9 +40,6 @@ def round(value, decimal_places=DECIMAL_PLACES):
         return decimal_result
     else:
         decimal_result = value.quantize(Decimal(10), ROUND_HALF_UP)
-        if decimal_result <= 0:
-            return 0
-        else:
-            return decimal_result
+        return 0 if decimal_result <=0 else decimal_result
 round.is_safe = True
 
