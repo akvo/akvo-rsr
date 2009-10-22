@@ -88,6 +88,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     {% endblock funding %}
 
 	<div class="boxhead">
+		<h1>{% trans 'Page tools' %}</h1>
+	</div> <!-- .boxhead -->
+
+	<div id="project_pagetools" class="boxbody">
+		<!--<p><a href="#">Printable version</a></p>-->
+
+		<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Permalink to this project' %}</a></p>
+		<p><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></p>
+		<!--<p><a href="#">Email this project's owner</a></p>-->
+	</div> <!-- #project_pagetools & .box -->
+	
+
+	<div class="boxhead">
 
 		<a class="actionbutton ab_grey" href="/web/become_a_project_partner" onclick="this.blur();"><span>{% trans 'Become a partner' %}</span></a>						
 		<h1>{% trans 'Partners' %}</h1>
@@ -177,17 +190,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	</div> <!-- #project_partners & .boxbody -->
 
-	<div class="boxhead">
-		<h1>{% trans 'Page tools' %}</h1>
-	</div> <!-- .boxhead -->
-
-	<div id="project_pagetools" class="boxbody">
-		<!--<p><a href="#">Printable version</a></p>-->
-
-		<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Permalink to this project' %}</a></p>
-		<p><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></p>
-		<!--<p><a href="#">Email this project's owner</a></p>-->
-	</div> <!-- #project_pagetools & .box -->
+	
 
 </div> <!-- #outer_rightwing -->
 {% endblock outer_rightwing %}
