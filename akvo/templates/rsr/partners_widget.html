@@ -53,8 +53,12 @@
 		#heightcontrain {
 			background: #fff url({{MEDIA_URL}}img/partners_widget/table_header_bkgd.png) repeat-y left;
 			border-bottom:1px solid #999;
+			height:1710px;
+			max-height:1710px;
+			/*
 			height:570px;
 			max-height:570px;
+			*/
 			overflow: auto;
 			padding-left:1px;
 			width:709px;
@@ -153,7 +157,7 @@
 	
 	{% comment %}
 	<!--[if lt IE 7]>
-		#heightcontrain {height: expression( this.scrollHeight > 4 ? "570px" : "auto" ); /* Sets max-height for IE */}
+		#heightcontrain {height: expression( this.scrollHeight > 4 ? "1710px" : "auto" ); /* Sets max-height for IE */}
 	<![endif]-->
 	{% endcomment %}
 	
