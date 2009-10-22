@@ -14,7 +14,7 @@ from decimal import Decimal
 from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, F, permalink
+from django.db.models import Sum, F
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
@@ -425,7 +425,7 @@ class Project(models.Model):
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
 
-    @permalink
+    @models.permalink
     def get_absolute_url(self):
         return ('project_main', (), {'project_id': self.pk})
     

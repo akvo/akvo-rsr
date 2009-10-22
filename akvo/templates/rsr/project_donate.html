@@ -149,14 +149,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		{# START Enter amount #}
 		<div style="{#margin-left:40px; #}float:left; width:300px;">
-			<h3>{% trans 'Amount you wish to donate (in' %} {{p.get_currency_display|safe}})</h3>
+            {% blocktrans with p.get_currency_display|safe as currency %}
+			<h3>Amount you wish to donate (in {{currency}})</h3>
+            {% endblocktrans %}
 			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:4px;">
 				<p class="marchGrey">{% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
 				{{ donate_form.amount }}<br />
 				<span class="marchGrey">
-				{% trans 'Only whole'%} {{p.get_currency_display|safe}} {% trans 'amounts please' %}
+                {% blocktrans with p.get_currency_display|safe as currency %}
+				Only whole {{currency}} amounts please
+                {% endblocktrans %}
 				</span>
 			</div>
 			

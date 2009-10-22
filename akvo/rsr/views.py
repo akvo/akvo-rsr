@@ -4,7 +4,7 @@
 
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
-from akvo.rsr.forms import OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.forms import PayPalInvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
 from django import forms
@@ -213,7 +213,7 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projs = Project.objects.published().funding()
+    projs = Project.objects.published().funding().select_related()
     showcases = projs.need_funding().order_by('?')[:3]
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
@@ -858,9 +858,6 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
-
-# PayPal
-from akvo.rsr.forms import PayPalInvoiceForm
 
 @fetch_project
 def donate(request, p):
