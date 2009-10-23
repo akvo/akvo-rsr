@@ -115,8 +115,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </fieldset>
 
 <hr />
+<div class="submit_section_A clearfix">
+	<a href="{% url project_main p.id %}" class="submit_section_cancel">{% trans 'Cancel' %}</a>
+	<button type="submit" class="submit_section_button">
+		<a class="actionbutton ab_white" style="margin:0" href="#" onclick="this.blur();">
+			<span>{% trans 'Update' %}</span>
+		</a>
+	</button>
+</div> <!-- .submit_section_A -->
 
-{% submit_button _('Update') 'ab_white' %}
 
 <form method="post" action="">
 </div> <!-- boxbody -->
