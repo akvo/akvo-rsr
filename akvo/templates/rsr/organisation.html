@@ -146,7 +146,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% ifequal request.path '/rsr/projects/' %}
 			<h2>{% trans 'Projects in Akvo' %}</h2>
 			{% else %}
-				<a href="{% url akvo.rsr.views.projectlist %}">
+				<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}">
 					<h2>{% trans 'Projects in Akvo' %}</h2>
 				</a>
 			{% endifequal %}

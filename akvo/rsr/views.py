@@ -731,7 +731,7 @@ def orgdetail(request, org_id):
     if o.id == settings.LIVE_EARTH_ID:
         has_sponsor_banner = True
     
-    org_projects = o.published_projects()
+    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
     org_partners = o.partners()
     return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
 
