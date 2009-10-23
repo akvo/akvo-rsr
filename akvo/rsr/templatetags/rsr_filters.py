@@ -36,10 +36,10 @@ def round(value, decimal_places=DECIMAL_PLACES):
     except:
         return u''
     if settings.DECIMALS_DEBUG:
-        d = value.quantize(Decimal(10) ** -decimal_places)
-        return d
+        decimal_result = value.quantize(Decimal(10) ** -decimal_places)
+        return decimal_result
     else:
-        d = value.quantize(Decimal(10), ROUND_HALF_UP)
-        return d
+        decimal_result = value.quantize(Decimal(10), ROUND_HALF_UP)
+        return 0 if decimal_result <=0 else decimal_result
 round.is_safe = True
 

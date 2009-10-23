@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters rsr_tags thumbnail %}
+{% load i18n rsr_filters rsr_tags thumbnail humanize %}
 
 {% block title %}{{block.super}} - {% trans 'Project no.' %} {{p.id}}, {{p.name}}{% endblock title %}
 
@@ -40,7 +40,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if p.date_complete %}
     		<p>{{p.date_complete}} {% trans 'Funding completed' %}</p>
 		{% endif %}
-		<!--<p><b>Total: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{p.funding.total|round}}</span></b></p>-->
+		<!--<p><b>Total: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{p.funding.total|round|intcomma}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>
 		
 		
@@ -72,7 +72,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}	
 			<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
 			<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
-			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{funder.funding_amount|round}}</span></b></p>
+			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}</span></b></p>
 		{% endfor %}
 
 		{% if p.funding_donated %}
@@ -85,7 +85,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<b>{% trans 'Total' %}:
 					<span style="margin-left: 10px">
 						{{p.get_currency_display|safe}}
-						{{p.funding_donated|round}}
+						{{p.funding_donated|round|intcomma}}
 					</span>
 				</b>
 			</p>

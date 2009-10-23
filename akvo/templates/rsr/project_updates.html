@@ -42,7 +42,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 <span class="lightx1">
                     {{u.time|date:"Y-m-d H:i" }}
                 </span>
-                {% blocktrans with u.user.get_full_name as user_name and u.user_profile.organisation.name as user_org and u.user_profile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
             </p>
             <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
             <br />
