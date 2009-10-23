@@ -42,18 +42,24 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% endif %}
 		<!--<p><b>Total: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{p.funding.total|round}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>
-		<hr />
-		<p style="margin: 10px 0 10px 0;">
-			{% ifequal p.fundingpartner_set.count 1 %}
-				<b>{% trans 'Current funder' %}</b>
-			{% else %}
-				{% ifequal p.fundingpartner_set.count 0 %}
-					<b style="color: green;">{% trans 'You could fund this project!' %}</b>
+		
+		
+		{% ifnotequal p.status 'L' %}
+			<hr />
+			<p style="margin: 10px 0 10px 0;">
+							
+				{% ifequal p.fundingpartner_set.count 1 %}
+					<b>{% trans 'Current funder' %}</b>
 				{% else %}
-					<b>{% trans 'Current funders' %}</b>
+					{% ifequal p.fundingpartner_set.count 0 %}
+							<b style="color: green;">{% trans 'You could fund this project!' %}</b>
+					{% else %}
+						<b>{% trans 'Current funders' %}</b>
+					{% endifequal %}
 				{% endifequal %}
-			{% endifequal %}
-        </p>
+
+	        </p>
+		{% endifnotequal %}
     
  		{% for funder in p.fundingpartner_set.all %}
 			{% if not forloop.first %}
