@@ -291,12 +291,7 @@ class Organisation(models.Model):
    
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled()
-        # First four keys should be deprecated
         return {
-            'total': my_projs.total_total_budget(),
-            'donated': my_projs.total_donated(),
-            'pledged': my_projs.total_pledged(self),
-            'still_needed': my_projs.total_funds_needed() + my_projs.total_pending(),
             'total_euros': my_projs.euros().total_total_budget(),
             'donated_euros': my_projs.euros().total_donated(),
             'pledged_euros': my_projs.euros().total_pledged(self),
@@ -424,6 +419,10 @@ class Project(models.Model):
     #http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('project_main', (), {'project_id': self.pk})
     
     class QuerySet(QuerySet):
         def published(self):
@@ -930,7 +929,7 @@ class UserProfile(models.Model):
     '''
     Extra info about a user.
     '''
-    user            = models.ForeignKey(User, unique=True) # TODO: should be a OneToOneField
+    user            = models.OneToOneField(User)
     organisation    = models.ForeignKey(Organisation)
     phone_number    = models.CharField(
         max_length=50,
@@ -1155,9 +1154,6 @@ class ProjectUpdate(models.Model):
         except:
             return ''
     img.allow_tags = True
-
-    def user_profile(self):
-        return self.user.userprofile_set.all()[0]
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))

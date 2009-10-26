@@ -3,7 +3,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # django snippet 840, see http://www.djangosnippets.org/snippets/840/
+#from django.utils.http import urlencode as django_urlencode
 from django.template import Library, Node, resolve_variable, TemplateSyntaxError
+
+import urllib    
 
 register = Library()
 
@@ -24,9 +27,18 @@ class AddParameters(Node):
 
         #return '%s?%s' % (req.path, params.urlencode())
         if params:
+            #return ('?%s' % params.urlencode()).replace('&', '&amp;')
+            
+            params = '?%s' % params.urlencode()
+            return params.replace('&', '&amp;')
+        else:
+            return ''
+        '''
+        if params:
             return '?%s' % params.urlencode()
         else:
             return ''
+        '''
 
 def addparam(parser, token):
     """

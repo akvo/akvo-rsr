@@ -151,7 +151,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if project.current_image %}
 			<div class="photo_frame">
 				<a href="{% url akvo.rsr.views.projectmain project.id %}">
-					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
+					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}" width="150px" height="113px">
 				</a>
 			</div>
 	    {% endif %}

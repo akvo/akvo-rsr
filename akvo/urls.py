@@ -24,22 +24,30 @@ urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
     # PayPal
-    url(r'^rsr/paypalinvoice/(?P<invoice_id>\d+)/void/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
-    url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.donate', name='project_donate'),
+    url(r'^rsr/paypalinvoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$',
+        'akvo.rsr.views.void_invoice',
+        name='void_invoice'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/$',
+        'akvo.rsr.views.donate',
+        name='project_donate'),
     (r'^rsr/ipn/thanks/$', 'akvo.rsr.views.paypal_thanks', ),
     (r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn'),
 
-    (r'^$', 'akvo.rsr.views.index', ),
+    url(r'^$', 'akvo.rsr.views.index', name='index'),    
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
 
     (r'^rsr/admin/(.*)', admin.site.root),
     #(r'^rsr/admin/', include('django.contrib.admin.urls')),
     
-    (r'^rsr/projects/$', 'akvo.rsr.views.projectlist', ),
+    url(r'^rsr/projects/$',
+        'akvo.rsr.views.projectlist',
+        name='project_list'),
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
     #(r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
 
-    url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
+    url(r'^rsr/project/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.projectmain', 
+        name='project_main'),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
     (r'^rsr/project/(?P<project_id>\d+)/comment$', 'akvo.rsr.views.commentform', ),
     (r'^rsr/project/(?P<project_id>\d+)/updates$', 'akvo.rsr.views.projectupdates', ),
@@ -62,6 +70,8 @@ urlpatterns = patterns('',
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
+    url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
+
 
     (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
     (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),

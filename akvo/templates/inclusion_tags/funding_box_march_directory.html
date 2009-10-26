@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters %}
+{% load i18n rsr_filters humanize %}
 
 {% ifnotequal p.status 'L' %}
 <div class="fundingwrap">
@@ -14,7 +14,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
 				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}
+				{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round|intcomma}}
 				</p>
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -26,11 +26,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" cellspacing="0" >
 			<tr class="green">
 				<th style="padding-left:3px;">{% trans 'Raised' %}:</th>
-				<td style="padding-right:3px;">{{p.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
+				<td style="padding-right:3px;">{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
 			</tr>
 			<tr class="red">
 				<th style="padding-left:3px;">{% trans 'Still needed' %}:</th>
-				<td style="padding-right:3px;">{{p.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
+				<td style="padding-right:3px;">{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
@@ -41,7 +41,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table">
 			<tr>
 				<th style="padding-left:3px;">{% trans 'Total budget' %}:</th>
-				<td style="padding-right:3px;">{{p.get_currency_display|safe}} {{p.budget_total|round}}</td>
+				<td style="padding-right:3px;">{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
 			</tr>					
 		</table>
 		<div id="donate_individual">

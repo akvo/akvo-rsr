@@ -64,15 +64,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</p>
 			{% endifequal %}
 		</div>
-		<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
-			<p>
-				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-				{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed. ' %}
-			</p>
-		</div>
-		<script type="text/javascript" charset="utf-8">
-			document.getElementById('machinery_step1_warning_main').style.display = 'none';
-		</script>
+		<noscript>
+			<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+				<p>
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+					{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed. ' %}
+				</p>
+			</div>
+		</noscript>
+		
 	</div>
 	<div style="padding-bottom:15px; clear:both;"> </div>
 	<hr style="margin-left:30px; margin-right:30px; clear:both;" />

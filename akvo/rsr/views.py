@@ -4,7 +4,8 @@
 
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
-from akvo.rsr.forms import OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.forms import PayPalInvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.decorators import fetch_project
 
 from django import forms
 from django.conf import settings
@@ -18,7 +19,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -212,7 +213,7 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projs = Project.objects.published().funding()
+    projs = Project.objects.published().funding().select_related()
     showcases = projs.need_funding().order_by('?')[:3]
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
@@ -274,6 +275,50 @@ def orglist(request, org_type='all'):
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
     return {'projs': projs, 'orgs': orgs, 'org_type': org_type, 'page': page}
+
+@render_to('rsr/partners_widget.html')
+def partners_widget(request, org_type='all'):
+    
+    # Set up variables with default values
+    orgs = Organisation.objects.all()
+    order_by = request.GET.get('order_by', 'name')
+    prev = request.GET.get('prev', 'none')
+    sort_order = request.GET.get('sort', 'desc')
+    is_resort = False
+    mode = 'name_desc'
+    
+    # Check if resort and change sort order
+    if order_by == prev:
+        is_resort = True
+        sort_order = 'desc' if sort_order == 'asc' else 'asc'
+
+    # Default to name
+    if order_by not in ['name','organisation_type','country','country__continent']:
+        order_by = 'name'
+    '''
+    # Since location column have two fields
+    if order_by in ['country','country__continent']:
+        mode = 'location_' + sort_order
+    else:
+        mode = order_by + '_' + sort_order
+    '''
+    # Mode is used to style the table according the sorting
+    mode = order_by + '_' + sort_order
+    
+    # Fix the ordering
+    sort_order_value = '-' if is_resort and sort_order == 'asc' else ''
+    
+    if order_by == 'name':
+        orgs = orgs.order_by(sort_order_value+order_by, 'organisation_type','country','country__continent')
+    elif order_by == 'organisation_type':
+        orgs = orgs.order_by(sort_order_value+order_by,'country__continent','country','name')
+    elif order_by == 'country':
+        orgs = orgs.order_by(sort_order_value+order_by,'organisation_type','name')
+    elif order_by == 'country__continent':
+        orgs = orgs.order_by(sort_order_value+order_by,'country','organisation_type','name')
+    
+    return {'orgs':orgs,'order_by':order_by,'sort':sort_order,'mode':mode}
+
 
 class SigninForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
@@ -506,7 +551,8 @@ def projectupdates(request, project_id):
     '''
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
-    return {'p': p, 'updates': updates, }
+    can_add_update = p.connected_to_user(request.user)
+    return {'p': p, 'updates': updates, 'can_add_update':can_add_update }
     
 @render_to('rsr/project_comments.html')
 def projectcomments(request, project_id):
@@ -686,7 +732,7 @@ def orgdetail(request, org_id):
     if o.id == settings.LIVE_EARTH_ID:
         has_sponsor_banner = True
     
-    org_projects = o.published_projects()
+    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
     org_partners = o.partners()
     return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
 
@@ -858,20 +904,13 @@ def project_list_widget(request, template='project-list', org_id=0):
         context_instance=RequestContext(request))
 
 
-# PayPal
-from akvo.rsr.forms import PayPalInvoiceForm
-from akvo.rsr.decorators import fetch_project
-
 @fetch_project
 def donate(request, p):
-    
     if p not in Project.objects.published().need_funding():
-        return HttpResponseRedirect(reverse('akvo.rsr.views.projectmain', args=(p.id,)))
-        
+        return redirect('project_main', project_id=p.id)
     has_sponsor_banner = False
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
-        
     if request.method == 'POST':
         donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
         if donate_form.is_valid():
@@ -922,23 +961,28 @@ def donate(request, p):
                                        'p': p, 
                                        'sandbox': settings.PAYPAL_DEBUG,
                                        'has_sponsor_banner': has_sponsor_banner,
-                                       'live_earth_enabled': settings.LIVE_EARTH_ENABLED,},
+                                       'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
         donate_form = PayPalInvoiceForm(user=request.user, project=p)
-    
     return render_to_response('rsr/project_donate.html', 
-                              {'donate_form': donate_form, 'p': p, 'has_sponsor_banner': has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED, }, 
+                              {'donate_form': donate_form,
+                               'p': p,
+                               'has_sponsor_banner': has_sponsor_banner,
+                               'live_earth_enabled': settings.LIVE_EARTH_ENABLED}, 
                               context_instance=RequestContext(request))
 
-def void_invoice(request, invoice_id):
+def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(PayPalInvoice, pk=invoice_id)
     if invoice.status == 1:
         invoice.status = 2
         invoice.save()
-        return HttpResponseRedirect(reverse('project_main', args=(invoice.project.id,)))
+        if action == 'back':
+            return redirect('project_donate', project_id=invoice.project.id)
+        elif action == 'cancel':
+            return redirect('project_main', project_id=invoice.project.id)
     else:
-        return HttpResponseRedirect('/')
+        return redirect('project_list')
 
 # Presents the landing page after PayPal
 def paypal_thanks(request):
@@ -948,7 +992,7 @@ def paypal_thanks(request):
             invoice = PayPalInvoice.objects.get(id=invoice_id)
             p = Project.objects.get(id=invoice.project.id)
         except:
-            return HttpResponseRedirect('/')
+            return redirect('/')
             
         try:
             u = User.objects.get(id=invoice.user_id)
@@ -957,4 +1001,5 @@ def paypal_thanks(request):
             
         return render_to_response('rsr/paypal_thanks.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
     else:
-        return HttpResponseRedirect('/')
+        return redirect('/')
+

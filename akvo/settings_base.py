@@ -76,8 +76,6 @@ LOGIN_REDIRECT_URL = '/rsr/'
 
 MANAGERS = ADMINS
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
 #MEDIA_ROOT = '/var/dev/akvo/mediaroot/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a

@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters %}
+{% load i18n rsr_filters humanize %}
 
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
@@ -11,7 +11,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% ifequal p.funding_still_needed|round 0 %}
 		<div class="fundingbox-funded">
 			<div class="fullyfunded-text">
-				<p>{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round}}</p>
+				<p>{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round|intcomma}}</p>
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
 				<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
@@ -21,7 +21,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 			<tr>
 				<th>{% trans 'Budget' %}:</th>
-				<td>{{p.get_currency_display|safe}} {{p.budget_total|round}}</td>
+				<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
 			</tr>					
 		</table>
 		<div class="fundingbox-progress-bar" id="progress_back">
@@ -34,11 +34,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
-				<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round}}</td>
+				<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
 			</tr>
 			<tr style="color:#FF5617">
 				<th>{% trans 'Needed' %}:</th>
-				<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round}}</td>
+				<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
 			</tr>
 		</table>
 		<div id="donate44" style="margin:10px; border-bottom:1px solid #A1A0AD; padding-bottom:5px;">

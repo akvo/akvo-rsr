@@ -165,7 +165,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if project.current_image %}
 			<div class="photo_frame">
 				<a href="{% url akvo.rsr.views.projectmain project.id %}">
-					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}">
+					<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}" widht="150px" height="113px" />
 				</a>
 			</div>
 	    {% endif %}
@@ -219,7 +219,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% for sponsor in project.sponsorpartner_set.all %}
 				{% if forloop.first %}
 				<p class="smallFont grey left">{% trans 'Presented by' %}</p>
-				<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail sponsor.sponsor_organisation.logo 70x30 upscale,sharpen %}"></a><br />
+				<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail sponsor.sponsor_organisation.logo 70x30 upscale,sharpen %}" /></a><br />
 				<a class="smallFont" href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
 				{% endif%}
 			{% endfor %}
@@ -228,7 +228,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% for funder in project.fundingpartner_set.all %}
 					{% if forloop.first %}
 					<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>
-					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail funder.funding_organisation.logo 70x30 upscale,sharpen %}"></a><br />
+					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail funder.funding_organisation.logo 70x30 upscale,sharpen %}" /></a><br />
 					<a class="smallFont" href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
 					{% endif%}
 				{% endfor %}
@@ -237,7 +237,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Supported by' %}</p>
-						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 70x30 upscale,sharpen %}"></a><br />
+						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}"><img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail supporter.support_organisation.logo 70x30 upscale,sharpen %}" /></a><br />
 						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
 						{% endif%}
 					{% endfor %}
@@ -247,7 +247,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Implemented by' %}</p>
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">
-							<img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail operator.field_organisation.logo 70x30 upscale,sharpen %}">
+							<img style="margin-top:10px; margin-bottom:5px;" src="{% thumbnail operator.field_organisation.logo 70x30 upscale,sharpen %}" />
 						</a><br />
 						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{operator.field_organisation.name}}</a>
 						{% endif%}
