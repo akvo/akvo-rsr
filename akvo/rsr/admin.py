@@ -43,6 +43,15 @@ class CountryAdmin(admin.ModelAdmin):
     list_display = (u'country_name', u'continent', )
     list_filter  = (u'continent', )
 
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(CountryAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions    
+
+
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
 class OrganisationAdminForm(forms.ModelForm):
@@ -66,6 +75,14 @@ class OrganisationAdmin(admin.ModelAdmin):
     )    
     list_display = ('name', 'long_name', 'website', 'partner_types', )
     form = OrganisationAdminForm
+
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(OrganisationAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions    
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
@@ -217,6 +234,8 @@ def partner_clean(obj, field_name):
         obj: a formset for one of the partner types
         field_name: the filed name of the foreign key field that points to the org
     """
+    #from dbgp.client import brk
+    #brk(host="localhost", port=9000)
     user_profile = obj.request.user.get_profile()
     # if the user is a partner org we try to avoid foot shooting
     if user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
@@ -226,7 +245,7 @@ def partner_clean(obj, field_name):
             form = obj.forms[i]
             try:
                 form_org = form.cleaned_data[field_name]
-                if my_org == form_org:
+                if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
                     # found our own org, all is well move on!
                     found = True
                     break
@@ -297,8 +316,8 @@ class SponsorPartnerInline(admin.TabularInline):
 
 class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
-    extra = 5
-    max_num = 5
+    extra = len(model.ITEM_CHOICES)
+    max_num = len(model.ITEM_CHOICES)
 
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
 
@@ -390,6 +409,14 @@ class ProjectAdmin(admin.ModelAdmin):
     
     #form = ProjectAdminModelForm
     form = ProjectAdminForm
+
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(ProjectAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions
     
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
@@ -467,9 +494,9 @@ class ProjectAdmin(admin.ModelAdmin):
             #brk(host="localhost", port=9000)            
             if all_valid(formsets) and form_validated:
                 if not new_object.found:
-                    form._errors[NON_FIELD_ERRORS] = ErrorList([u'Your org should be apart the partner orgs!'])
+                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
                     for fs in new_object.partner_formsets:
-                        fs._non_form_errors = ErrorList([u'Your org should be somewhere here!'])
+                        fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
                 else:
                     self.save_model(request, new_object, form, change=False)
                     form.save_m2m()
@@ -560,9 +587,9 @@ class ProjectAdmin(admin.ModelAdmin):
             
             if all_valid(formsets) and form_validated:
                 if not new_object.found:
-                    form._errors[NON_FIELD_ERRORS] = ErrorList([u'Your org should be apart the partner orgs!'])
+                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
                     for fs in new_object.partner_formsets:
-                        fs._non_form_errors = ErrorList([u'Your org should be somewhere here!'])
+                        fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])                        
                 else:
                     self.save_model(request, new_object, form, change=True)
                     form.save_m2m()
@@ -620,7 +647,7 @@ class UserProfileAdminForm(forms.ModelForm):
     is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-
+    
     def __init__(self, *args, **kwargs):
         #request is needed to populate is_org_admin and is_org_editor
         initial_data = {}
@@ -637,11 +664,20 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
     list_filter  = ('organisation', )
     form = UserProfileAdminForm
 
+
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(UserProfileAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions
+    
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def get_form(self, request, obj=None, **kwargs):
         # non-superusers don't get to see it all
         if not request.user.is_superuser:
-            # hide sms-realted stuff
+            # hide sms-related stuff
             self.exclude =  ('phone_number', 'project', )
             # user and org are only shown as text, not select widget
             self.readonly_fk = ('user', 'organisation',)
@@ -704,7 +740,8 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
         userprofile.set_is_active(is_active) #master switch
         userprofile.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
         userprofile.set_is_org_editor(is_editor) #can edit projects
-        userprofile.set_is_staff(is_admin or is_editor) #implicitly needed to log in to admin
+        if not (userprofile.user.is_superuser or userprofile.get_is_rsr_admin()):
+            userprofile.set_is_staff(is_admin or is_editor) #implicitly needed to log in to admin
         return form.save(commit=False)
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)

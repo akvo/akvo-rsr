@@ -79,14 +79,18 @@ def change_name_of_file_on_change(sender, **kwargs):
             if isinstance(f, (ImageField, ImageWithThumbnailsField)):
                 img = getattr(instance, f.name)
                 #if a new image is uploaded it resides in a InMemoryUploadedFile
-                if img and isinstance(img, InMemoryUploadedFile):
-                    img.name = "%s_%s_%s_%s%s" % (
-                        opts.object_name,
-                        instance.pk or '',
-                        f.name,
-                        datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
-                        os.path.splitext(img.name)[1],
-                    )
+                if img:
+                    try:
+                        if isinstance(img.file, InMemoryUploadedFile):
+                            img.name = "%s_%s_%s_%s%s" % (
+                                opts.object_name,
+                                instance.pk or '',
+                                f.name,
+                                datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+                                os.path.splitext(img.name)[1],
+                            )
+                    except:
+                        pass
 
 def create_paypal_gateway(sender, **kwargs):
     """Called when a new project is saved so an associated PayPal gateway
