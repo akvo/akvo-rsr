@@ -96,7 +96,7 @@ class Organisation(models.Model):
         (ORG_TYPE_KNO, u'Knowledge institution'),
     )
     
-    def org_image_path(instance, file_name):
+    def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%s/%s')
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
@@ -110,22 +110,10 @@ class Organisation(models.Model):
     long_name                   = models.CharField(blank=True, max_length=75, help_text='Full name of organisation (75 characters).'
     							)
     organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
-    '''
-    current_image               = ImageWithThumbnailsField(
-                                    blank=True,
-                                    upload_to=proj_image_path,
-                                    thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                    help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
-                                )
-    logo                        = models.ImageField(
-                                    blank=True,
-                                    upload_to=org_image_path,
-                                    help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',	
-                                )
-    '''
+
     logo                        = ImageWithThumbnailsField(
                                     blank=True,
-                                    upload_to=org_image_path,
+                                    upload_to=image_path,
                                     thumbnail={'size': (360,270)},
                                     help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',
                                 )
@@ -135,7 +123,7 @@ class Organisation(models.Model):
     url                         = models.URLField(blank=True, verify_exists = False, help_text = 'Enter the full address of your web site, beginning with http://.')
     map                         = models.ImageField(
                                     blank=True,
-                                    upload_to=org_image_path,
+                                    upload_to=image_path,
                                     help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).',
                                 )
     address_1                   = models.CharField(blank=True, max_length=35)
@@ -291,14 +279,20 @@ class Organisation(models.Model):
    
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled()
+        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
+        # work because values_list used in qs_column_sum will not return more
+        # than one of the same value. This leads to the wrong sum when same amount
+        # has been pledged to multiple projects
+        all_active = Project.objects.published().status_not_cancelled()
+        # First four keys should be deprecated
         return {
             'total_euros': my_projs.euros().total_total_budget(),
             'donated_euros': my_projs.euros().total_donated(),
-            'pledged_euros': my_projs.euros().total_pledged(self),
+            'pledged_euros': all_active.euros().total_pledged(self),
             'still_needed_euros': my_projs.euros().total_funds_needed(),
             'total_dollars': my_projs.dollars().total_total_budget(),
             'donated_dollars': my_projs.dollars().total_donated(),
-            'pledged_dollars': my_projs.dollars().total_pledged(self),
+            'pledged_dollars': all_active.dollars().total_pledged(self),
             'still_needed_dollars': my_projs.dollars().total_funds_needed()
         }
 
@@ -345,8 +339,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 class Project(models.Model):
-    def proj_image_path(instance, file_name):
-        #from django.template.defaultfilters import slugify
+    def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
     name                        = models.CharField(max_length=45, help_text = 'A short descriptive name for your project (45 characters).')
@@ -357,7 +350,7 @@ class Project(models.Model):
     country                     = models.ForeignKey(Country, help_text = 'Country where project is taking place.')
     map                         = models.ImageField(
                                     blank=True,
-                                    upload_to=proj_image_path,
+                                    upload_to=image_path,
                                     help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'
                                 )
     #Project categories
@@ -373,7 +366,7 @@ class Project(models.Model):
     project_plan_summary        = models.TextField(max_length=220, help_text='Briefly summarize the project (220 characters).')
     current_image               = ImageWithThumbnailsField(
                                     blank=True,
-                                    upload_to=proj_image_path,
+                                    upload_to=image_path,
                                     thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
                                     help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
                                 )
@@ -475,6 +468,11 @@ class Project(models.Model):
                 budget_maintenance=Sum('budgetitem__amount'),
             )
 
+        def budget_management(self):
+            return self.filter(budgetitem__item__exact='management').annotate(
+                budget_management=Sum('budgetitem__amount'),
+            )
+
         def budget_other(self):
             return self.filter(budgetitem__item__exact='other').annotate(
                 budget_other=Sum('budgetitem__amount'),
@@ -490,7 +488,7 @@ class Project(models.Model):
 
         def pledged(self, org=None):
             if org:
-                self.filter(funding_organisation__exact=organisation)
+                self.filter(funding_organisation__exact=org)
             return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
 
         def funding(self, organisation=None):
@@ -775,6 +773,9 @@ class Project(models.Model):
     def budget_maintenance(self):
         return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
 
+    def budget_management(self):
+        return Project.objects.budget_management().get(pk=self.pk).budget_management
+
     def budget_other(self):
         return Project.objects.budget_other().get(pk=self.pk).budget_other
 
@@ -808,6 +809,7 @@ class BudgetItem(models.Model):
         ('building', _('building')),
         ('training', _('training')),
         ('maintenance', _('maintenance')),
+        ('management', _('management')),
         ('other', _('other')),
     )
     project             = models.ForeignKey(Project)
@@ -968,6 +970,9 @@ class UserProfile(models.Model):
         self.user.is_staff = set_it
         self.user.save()
         
+    def get_is_rsr_admin(self):
+        return GROUP_RSR_EDITORS in groups_from_user(self.user)
+
     def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
     get_is_org_admin.boolean = True #make pretty icons in the admin list view
@@ -1123,7 +1128,7 @@ class MoSmsRaw(models.Model):
     incsmsid    = models.CharField(_('incoming sms id'), max_length=100)
 
 class ProjectUpdate(models.Model):
-    def update_image_path(instance, file_name):
+    def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%s/%%s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
@@ -1135,7 +1140,7 @@ class ProjectUpdate(models.Model):
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = ImageWithThumbnailsField(
                         blank=True,
-                        upload_to=update_image_path,
+                        upload_to=image_path,
                         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
                         help_text = 'The image should have 4:3 height:width ratio for best displaying result',
                     )

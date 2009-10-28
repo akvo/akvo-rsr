@@ -188,3 +188,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- #outer_leftwing -->
 
 {% endblock outer_leftwing %}
+
+{% block footer %}
+    {{block.super}}
+	
+	<!-- Akvo RSR runs on Django, version: {{version}} -->
+
+{% endblock footer %}
