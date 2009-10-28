@@ -117,14 +117,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock footer %}
 
 </div> <!-- #wrapper -->
-
+{% if debug %}
 <!--
 	Debug:{% debug %}
 
-	Sql_queries: {{ sql_queries }}
-	
-	Akvo RSR runs on Django. Current Django version is: {{version}}
+	Sql_queries: {{ sql_queries|safe }}
 -->
-
+{% endif %}
 </body>
 </html>
