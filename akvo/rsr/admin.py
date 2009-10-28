@@ -101,7 +101,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            organisation = request.user.userprofile_set.all()[0].organisation
+            organisation = request.user.get_profile().organisation
             return qs.filter(pk=organisation.id)
         else:
             raise PermissionDenied
