@@ -729,7 +729,7 @@ class Project(models.Model):
         '''
         is_connected = False
         try:
-            is_connected = self in user.userprofile_set.filter(user__exact = user)[0].organisation.published_projects()
+            is_connected = self in UserProfile.objects.get(user=user).organisation.published_projects()
         except:
             pass
         return is_connected
