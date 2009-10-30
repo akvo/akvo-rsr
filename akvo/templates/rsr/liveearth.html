@@ -347,7 +347,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		{% if p.current_image %}
 			<a href="{% url akvo.rsr.views.projectmain p.id %}">
-			<img src="{% thumbnail p.current_image 100x75 crop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="float:left; margin-right: 10px;" />
+			<img src="{% thumbnail p.current_image 100x75 crop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="float:left; margin-right: 10px;" width="100px" height="75px"/>
 			</a>
 		{% else %}
 			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
