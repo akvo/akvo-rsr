@@ -1,8 +1,161 @@
-﻿RELEASE_NOTES.txt, v0.9.12, 12 October 2009, tbp
+RELEASE_NOTES.txt, v0.9.13, 2 November 2009, kad
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+
+---
+
+
+Akvo RSR v 0.9.13 release notes
+------------------------------
+2 November 2009, (Code name: Anakim) kad
+
+This is primarily a bug fix release, and some minor new features.
+
+New features 
+------------
+
+### Partners entry on sitewide toolbar
+Added a "Partners" entry to the toolbar (site wide). Linked the "Partners" entry to 
+/web/partners
+http://www.pivotaltracker.com/story/show/1321046
+
+### The top akvo logo is a link to the front page
+it now links to the front page from all subsystems.
+http://www.pivotaltracker.com/story/show/1289374
+
+### Replaced the main Akvo logo
+The logo now have the new tagline "See it happen"
+http://www.pivotaltracker.com/story/show/1543983
+
+### Changed the page title on the front page to "Akvo.org - See it happen"
+Updated with our new tagline.
+http://www.pivotaltracker.com/story/show/1579950
+
+### Add Management costs to Funding budget item
+Added 'Management cost' to the Budget item ITEM_CHOICES tuple.
+http://www.pivotaltracker.com/story/show/1407959
+
+### The version of Django that is running is visible in the source
+One can now in the front page source see which version of Django that is runnig. e.g. "<!-- 
+Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) -->".
+http://www.pivotaltracker.com/story/show/1464719
+
+### Humanised funding boxes.
+Currently only the funding aggregates are humanised. This needs to be extended across the 
+system to all areas where currency amounts are displayed.
+http://www.pivotaltracker.com/story/show/1469524
+
+### Organisation project count needed cancelled projects
+In the organisation activities the projects count does now have a line for cancelled 
+projects making for an non incorrect sum if the org is associated with a cancelled project.
+http://www.pivotaltracker.com/story/show/817414
+
+### Organisation listing widget for internal use
+Created an "Organisation listing" widget for internal use only. This widget is used on the 
+Partners page in Drupal.
+http://www.pivotaltracker.com/story/show/1321040
+
+### Moved the page tools up on the partner pages
+To make the get a widget link more apparent, we moved the page tools section up.
+http://www.pivotaltracker.com/story/show/1543990
+
+### Script cleaning out old images
+The script removes old images from Organisation, Project and ProjectUpdate and renames any 
+that haven't been renamed properly. (See also bug 
+http://www.pivotaltracker.com/story/show/1510571)
+http://www.pivotaltracker.com/story/show/1510576
+
+### void_invoice() view function needs conditional redirect.
+The void_invoice() view function now have the keyword redirect=False set in its signature 
+which is then used to determine where it will redirect to.
+http://www.pivotaltracker.com/story/show/1458419
+
+### Hide "Action" menu in user list for Organisation admins
+As they couldn't delete users anyway.
+http://www.pivotaltracker.com/story/show/616357
+
+### User attribute on UserProfile is now a OneToOneField.
+Changed the relationship between the UserProfile and User models. (No visible change)
+http://www.pivotaltracker.com/story/show/1480363
+
+
+Bug fixes
+------------
+### Donation page displayed error message while loading
+Switched from using JavaScript's hide function to use the "noscript" tag for warning about 
+no javascript.
+http://www.pivotaltracker.com/story/show/1448535
+
+### Removed debug info when in production mode.
+The debug info about context and sql queries was showned at the bottom of the source in all 
+RSR pages. This should only be visible when settings.DEBUG == True.
+http://www.pivotaltracker.com/story/show/1468582
+
+### Own org could be deleted from project
+A non-super-user could sneak past the checks that their own org is among the partners when 
+saving a project. This is accomplished by checking the delete check-box for the own org in 
+the partner inline form.
+http://www.pivotaltracker.com/story/show/1424820
+
+### Uploaded images didn't get renamed
+When uploading an image to an existing project or organisation the renaming of the image 
+didn't work. This was because of a change in how sorl.thumbnail handles images.
+http://www.pivotaltracker.com/story/show/1510571
+
+### Prevented display of funding amounts less than 0 in templates.
+Over-funded projects could result in the round filter displaying very confusing amounts such 
+as "€-0".
+http://www.pivotaltracker.com/story/show/1493650
+
+### Pledged sum in Org activities wrong with certain data
+The calculation for how much a certain organisation has pledged totally was wrong when there 
+are mutliple projects to which the same amount has been pledged.
+http://www.pivotaltracker.com/story/show/1460695
+
+### Saving userprofile may lock out user from admin
+When a UserProfile is saved the staff status is set to false if neither org admin or org 
+project editor is true. This could lead to the possible lock out even if you are superuser.
+http://www.pivotaltracker.com/story/show/1469655
+
+### In Akvo at a glance change Partners link to Project Partners 
+Direct link to the right page.
+http://www.pivotaltracker.com/story/show/1573608
+
+### The breadcrum entry "home" at the blog pointed to "#" 
+The home link is pointing at "http://www.akvo.org/blog/", and not "#"
+http://www.pivotaltracker.com/story/show/822234
+
+### Learn about Akvo link broken on sign-in page
+The 'Learn about' how Akvo works link was broken on the sign-in page: 
+http://www.akvo.org/rsr/signin/?next=/rsr/projects/ 
+http://www.pivotaltracker.com/story/show/1514408
+
+### Proj.update/access denied page didn't give you a way back to the project page
+Now get's linked to the current project page. 
+http://www.pivotaltracker.com/story/show/1229436
+
+### Cancelled projects had the wrong donation text
+Cancelled projects still would say that you could fund them.
+http://www.pivotaltracker.com/story/show/1528542
+
+### Cancel update on a project sends you back to top level RSR page
+Cancel update on a project would send you back to top level RSR page instead of back to the 
+project detail page. https://bugs.launchpad.net/akvo.rsr/+bug/315228
+http://www.pivotaltracker.com/story/show/1229429
+
+### Sign in routine should not send you back to the completed registration page
+Signing in from the completed registration page will send you to the front page. (lp: 
+315146) 
+http://www.pivotaltracker.com/story/show/1229422
+
+### Set height and width to every image when using sorl
+If a photo can't be loaded it should still occupy the same space. This is not true for logos 
+and other non photo sized images.
+http://www.pivotaltracker.com/story/show/1467668
+
 
 ---
 
