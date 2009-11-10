@@ -921,35 +921,21 @@ def donate(request, p):
             else:
                 invoice.name = donate_form.cleaned_data['name']
                 invoice.email = donate_form.cleaned_data['email']   
+            invoice.http_referer = request.META['HTTP_REFERER']
             invoice.save()
-            if settings.PAYPAL_DEBUG:
-                pp_dict = {
-                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': invoice.currency,
-                    'business': settings.PAYPAL_SANDBOX_GATEWAY,
-                    'amount': invoice.amount,
-                    'item_name': 'TEST %s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                                                               invoice.project.id,
-                                                               invoice.project.name),
-                    'invoice': invoice.id,
-                    'lc': invoice.locale,
-                    'notify_url': settings.PAYPAL_NOTIFY_URL,
-                    'return_url': settings.PAYPAL_RETURN_URL,
-                    'cancel_url': settings.PAYPAL_CANCEL_URL}
-            else:
-                pp_dict = {
-                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': invoice.currency,
-                    'business': invoice.gateway,
-                    'amount': invoice.amount,
-                    'item_name': '%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                                                          invoice.project.id,
-                                                          invoice.project.name),
-                    'invoice': invoice.id,
-                    'lc': invoice.locale,
-                    'notify_url': settings.PAYPAL_NOTIFY_URL,
-                    'return_url': settings.PAYPAL_RETURN_URL,
-                    'cancel_url': settings.PAYPAL_CANCEL_URL}
+            pp_dict = {
+                'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
+                'currency_code': invoice.currency,
+                'business': settings.PAYPAL_SANDBOX_GATEWAY,
+                'amount': invoice.amount,
+                'item_name': 'TEST %s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
+                                                           invoice.project.id,
+                                                           invoice.project.name),
+                'invoice': invoice.id,
+                'lc': invoice.locale,
+                'notify_url': settings.PAYPAL_NOTIFY_URL,
+                'return_url': settings.PAYPAL_RETURN_URL,
+                'cancel_url': settings.PAYPAL_CANCEL_URL}
             pp_form = PayPalPaymentsForm(initial=pp_dict)
             if settings.PAYPAL_DEBUG:
                 pp_form.sandbox()

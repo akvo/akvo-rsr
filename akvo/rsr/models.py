@@ -1234,6 +1234,7 @@ class PayPalInvoice(models.Model):
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+    http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
 
     objects = PayPalInvoiceManager()
 
