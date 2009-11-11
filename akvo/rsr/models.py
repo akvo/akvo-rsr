@@ -1218,22 +1218,22 @@ class PayPalInvoiceManager(models.Manager):
         
 class PayPalInvoice(models.Model):
     STATUS_CHOICES = (
-        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
-        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
-        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
-        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
+        (PAYPAL_INVOICE_STATUS_PENDING, _(u'Pending')),
+        (PAYPAL_INVOICE_STATUS_VOID, _(u'Void')),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, _(u'Complete')),
+        (PAYPAL_INVOICE_STATUS_STALE, _(u'Stale')),
     )
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
-    amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
+    amount = models.PositiveIntegerField(help_text=_(u'Amount requested by user.'))
     amount_received = models.DecimalField(max_digits=10, decimal_places=2,
                                           blank=True, null=True,
-                                          help_text=_('Amount actually received after PayPal charges have been applied.'))
-    ipn = models.CharField(blank=True, null=True, max_length=75)
+                                          help_text=_(u'Amount actually received after PayPal charges have been applied.'))
+    ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
     time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+    status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
 
     objects = PayPalInvoiceManager()
@@ -1258,7 +1258,7 @@ class PayPalInvoice(models.Model):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
     class Meta:
-        verbose_name = _('PayPal invoice')
+        verbose_name = _(u'PayPal invoice')
 
 def send_paypal_confirmation_email(id):
     ppi = PayPalInvoice.objects.get(pk=id)

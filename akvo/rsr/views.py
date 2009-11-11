@@ -921,14 +921,15 @@ def donate(request, p):
             else:
                 invoice.name = donate_form.cleaned_data['name']
                 invoice.email = donate_form.cleaned_data['email']   
-            invoice.http_referer = request.META['HTTP_REFERER']
+            if 'HTTP_REFERER' in request.META:
+                invoice.http_referer = request.META['HTTP_REFERER']
             invoice.save()
             pp_dict = {
                 'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
                 'currency_code': invoice.currency,
                 'business': settings.PAYPAL_SANDBOX_GATEWAY,
                 'amount': invoice.amount,
-                'item_name': 'TEST %s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
+                'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
                                                            invoice.project.id,
                                                            invoice.project.name),
                 'invoice': invoice.id,
