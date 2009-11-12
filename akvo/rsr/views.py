@@ -927,7 +927,7 @@ def donate(request, p):
             pp_dict = {
                 'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
                 'currency_code': invoice.currency,
-                'business': settings.PAYPAL_SANDBOX_GATEWAY,
+                'business': invoice.gateway,
                 'amount': invoice.amount,
                 'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
                                                            invoice.project.id,

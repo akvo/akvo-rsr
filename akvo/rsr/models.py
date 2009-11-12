@@ -1244,7 +1244,10 @@ class PayPalInvoice(models.Model):
 
     @property
     def gateway(self):
-        return self.project.paypalgatewayselector.gateway.account_email
+        if settings.PAYPAL_DEBUG:
+            return settings.PAYPAL_SANDBOX_GATEWAY
+        else:
+            return self.project.paypalgatewayselector.gateway.account_email
 
     @property
     def locale(self):
