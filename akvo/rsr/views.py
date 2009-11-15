@@ -1011,12 +1011,12 @@ def mollie_report(request):
         request_dict = {'partnerid': settings.MOLLIE_PARTNER_ID,
             'transaction_id': transaction_id}
         url = build_mollie_url(request_dict, mode='check')
-        mollie_response = query_mollie(url)
+        try:
+            mollie_response = query_mollie(url)
+        except:
+            return HttpResponseServerError
         invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
         if mollie_response['paid'] == 'true':
-            invoice.consumer_account = response['consumer_account']
-            invoice.consumer_city = response['consumer_city']
-            invoice.consumer_name = response['consumer_name']
             invoice.status = 3
         else:
             invoice.status = 2
