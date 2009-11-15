@@ -1,6 +1,12 @@
 {% load i18n %}
 <h1>Click one of the following links to select a payment system...</h1>
 <ul>
-<li><a href="{% url complete_donation project_id=p.id,engine='mollie' %}">iDEAL (Netherlands only)</a></li>
-<li><a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal (All territories)</a></li>
+<li>
+    <p>A bit of blurb about iDEAL here</p>
+    <a href="{% url complete_donation project_id=p.id,engine='mollie' %}">iDEAL (Netherlands only)</a>
+</li>
+<li>
+    <p>A bit of blurb about PayPal here</p>
+    <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal (All territories)</a>
+</li>
 </ul>

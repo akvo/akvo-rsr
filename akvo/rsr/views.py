@@ -1017,6 +1017,7 @@ def mollie_report(request):
             return HttpResponseServerError
         invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
         if mollie_response['paid'] == 'true':
+            invoice.amount_received = invoice.amount # TEMPORARY HACK FOR TESTING ONLY
             invoice.status = 3
         else:
             invoice.status = 2
