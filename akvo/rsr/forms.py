@@ -22,6 +22,8 @@ from django.utils.translation import ugettext_lazy as _
 from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
 
+from mollie.ideal.utils import get_mollie_banklist
+
 from akvo.rsr.models import (UserProfile, Organisation, Project,)
 
 # I put this on all required fields, because it's easier to pick up
@@ -228,19 +230,24 @@ class ProjectAdminModelForm(forms.ModelForm):
     class Meta:
         model = get_model('rsr', 'project')
 
-# PayPal
+
+MOLLIE_BANKLIST = get_mollie_banklist()
 
 class PayPalInvoiceForm(forms.ModelForm):
-    def __init__(self, user, project, *args, **kwargs):
+    def __init__(self, user, project, engine, *args, **kwargs): 
         super(PayPalInvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
+        self.engine = engine
         if not user.is_authenticated():
-            self.fields['name']  = forms.CharField(label=_('Full name'))
-            self.fields['email'] = forms.EmailField(label=_('Email address'))
-            self.fields['email2'] = forms.EmailField(label=_('Email address (confirm)'))
+            self.fields['name']  = forms.CharField(label=_(u'Full name'))
+            self.fields['email'] = forms.EmailField(label=_(u'Email address'))
+            self.fields['email2'] = forms.EmailField(label=_(u'Email address (confirm)'))
+        if engine == 'mollie':
+            self.fields['bank'] = forms.CharField(max_length=4, 
+                widget=forms.Select(choices=MOLLIE_BANKLIST))
 
-    amount = forms.IntegerField(min_value=1)
-
+    amount = forms.IntegerField(min_value=2)
+        
     class Meta:
         model = get_model('rsr', 'paypalinvoice')
         fields = ('amount',)

@@ -1215,7 +1215,7 @@ class PayPalInvoiceManager(models.Manager):
         qs = self.filter(status=3)
         qs = qs.exclude(ipn='')
         return qs
-        
+
 class PayPalInvoice(models.Model):
     STATUS_CHOICES = (
         (PAYPAL_INVOICE_STATUS_PENDING, _(u'Pending')),
@@ -1223,18 +1223,32 @@ class PayPalInvoice(models.Model):
         (PAYPAL_INVOICE_STATUS_COMPLETE, _(u'Complete')),
         (PAYPAL_INVOICE_STATUS_STALE, _(u'Stale')),
     )
+    PAYMENT_ENGINES = (
+        ('paypal', _(u'PayPal')),
+        ('mollie', _(u'iDEAL')),
+    )
+    # Setup
+    engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
+        max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
+    # Common
     amount = models.PositiveIntegerField(help_text=_(u'Amount requested by user.'))
     amount_received = models.DecimalField(max_digits=10, decimal_places=2,
-                                          blank=True, null=True,
-                                          help_text=_(u'Amount actually received after PayPal charges have been applied.'))
-    ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
+        blank=True, null=True,
+        help_text=_(u'Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
+    # PayPal
+    ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
+    # Mollie
+    transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
+    consumer_name = models.CharField(_(u'mollie.nl consumer name'), max_length=255, blank=True) 
+    consumer_city = models.CharField(_(u'mollie.nl consumer city'), max_length=255, blank=True) 
+    consumer_account = models.CharField(_(u'mollie.nl consumer account'), max_length=255, blank=True) 
 
     objects = PayPalInvoiceManager()
 
@@ -1261,16 +1275,18 @@ class PayPalInvoice(models.Model):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
     class Meta:
-        verbose_name = _(u'PayPal invoice')
+        verbose_name = _(u'invoice')
 
-def send_paypal_confirmation_email(id):
-    ppi = PayPalInvoice.objects.get(pk=id)
+def send_paypal_confirmation_email(invoice_id):
+    ppi = PayPalInvoice.objects.get(pk=invoice_id)
     t = loader.get_template('rsr/paypal_confirmation_email.html')
     c = Context({'invoice': ppi})
     if ppi.user:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.user.email], fail_silently=False)
     else:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
+
+#def send_successful_donation_email(invoice_id):
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):

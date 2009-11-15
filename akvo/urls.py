@@ -23,12 +23,21 @@ feeds = {
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
-    # PayPal
+    # Payment engines
+    url(r'^rsr/mollie/report/$',
+        'akvo.rsr.views.mollie_report',
+        name='mollie_report'),
+    url(r'^rsr/mollie/return/$',
+        'akvo.rsr.views.mollie_return',
+        name='mollie_report'),
     url(r'^rsr/paypalinvoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$',
         'akvo.rsr.views.void_invoice',
         name='void_invoice'),
-    url(r'^rsr/project/(?P<project_id>\d+)/donate/$',
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
         'akvo.rsr.views.donate',
+        name='complete_donation'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/$',
+        'akvo.rsr.views.setup_donation',
         name='project_donate'),
     (r'^rsr/ipn/thanks/$', 'akvo.rsr.views.paypal_thanks', ),
     (r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn'),

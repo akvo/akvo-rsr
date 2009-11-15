@@ -18,7 +18,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
@@ -34,7 +34,6 @@ import random
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
-# PAUL
 from akvo.rsr.models import PayPalInvoice
 from paypal.standard.forms import PayPalPaymentsForm
 
@@ -903,57 +902,92 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
+@fetch_project
+@render_to('rsr/setup_donation.html')
+def setup_donation(request, p):
+    if p not in Project.objects.published().need_funding():
+        return redirect('project_main', project_id=p.id)
+    return {'p': p}
+
+from mollie.ideal.utils import build_mollie_url, query_mollie
 
 @fetch_project
-def donate(request, p):
+def donate(request, p, engine):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
     has_sponsor_banner = False
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
     if request.method == 'POST':
-        donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
+        donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
         if donate_form.is_valid():
+            cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
+            invoice.engine = engine
             if request.user.is_authenticated():
                 invoice.user = request.user
             else:
-                invoice.name = donate_form.cleaned_data['name']
-                invoice.email = donate_form.cleaned_data['email']   
-            if 'HTTP_REFERER' in request.META:
-                invoice.http_referer = request.META['HTTP_REFERER']
-            invoice.save()
-            pp_dict = {
-                'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                'currency_code': invoice.currency,
-                'business': invoice.gateway,
-                'amount': invoice.amount,
-                'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                                                           invoice.project.id,
-                                                           invoice.project.name),
-                'invoice': invoice.id,
-                'lc': invoice.locale,
-                'notify_url': settings.PAYPAL_NOTIFY_URL,
-                'return_url': settings.PAYPAL_RETURN_URL,
-                'cancel_url': settings.PAYPAL_CANCEL_URL}
-            pp_form = PayPalPaymentsForm(initial=pp_dict)
-            if settings.PAYPAL_DEBUG:
-                pp_form.sandbox()
-            else:
-                pp_form.render()
-            return render_to_response('rsr/paypal_checkout.html',
+                invoice.name = cd['name']
+                invoice.email = cd['email']   
+            invoice.http_referer = request.META['HTTP_REFERER']
+            if engine == 'mollie':
+                mollie_dict = {
+                    'amount': invoice.amount * 100,
+                    'bank_id': cd['bank'],
+                    'partnerid': settings.MOLLIE_PARTNER_ID,
+                    'description': u'Akvo Project %d' % int(p.id),
+                    'reporturl': settings.MOLLIE_REPORT_URL,
+                    'returnurl': settings.MOLLIE_RETURN_URL}
+                mollie_url = build_mollie_url(mollie_dict, mode='fetch')
+                try:
+                    mollie_response = query_mollie(mollie_url)
+                except:
+                    return HttpResponseServerError
+                invoice.transaction_id = mollie_response['transaction_id']
+                invoice.save()
+                return render_to_response('rsr/paypal_checkout.html',
+                    {'invoice': invoice,
+                     'p': p,
+                     'payment_engine': engine,
+                     'mollie_order_url': mollie_response['order_url'],
+                     'has_sponsor_banner': has_sponsor_banner,
+                     'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
+                    context_instance=RequestContext(request))
+            elif engine == 'paypal':
+                pp_dict = {
+                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
+                    'currency_code': invoice.currency,
+                    'business': invoice.gateway,
+                    'amount': invoice.amount,
+                    'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
+                        int(invoice.project.id),
+                        invoice.project.name),
+                    'invoice': invoice.id,
+                    'lc': invoice.locale,
+                    'notify_url': settings.PAYPAL_NOTIFY_URL,
+                    'return_url': settings.PAYPAL_RETURN_URL,
+                    'cancel_url': settings.PAYPAL_CANCEL_URL}
+                pp_form = PayPalPaymentsForm(initial=pp_dict)
+                if settings.PAYPAL_DEBUG:
+                    pp_button = pp_form.sandbox()
+                else:
+                    pp_button = pp_form.render()
+                invoice.save()
+                return render_to_response('rsr/paypal_checkout.html',
                                       {'invoice': invoice,
+                                       'payment_engine': engine,
                                        'pp_form': pp_form, 
-                                       'p': p, 
-                                       'sandbox': settings.PAYPAL_DEBUG,
+                                       'pp_button': pp_button,
+                                       'p': p,
                                        'has_sponsor_banner': has_sponsor_banner,
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = PayPalInvoiceForm(user=request.user, project=p)
+        donate_form = PayPalInvoiceForm(user=request.user, project=p, engine=engine)
     return render_to_response('rsr/project_donate.html', 
                               {'donate_form': donate_form,
+                               'payment_engine': engine,
                                'p': p,
                                'has_sponsor_banner': has_sponsor_banner,
                                'live_earth_enabled': settings.LIVE_EARTH_ENABLED}, 
@@ -971,22 +1005,41 @@ def void_invoice(request, invoice_id, action=None):
     else:
         return redirect('project_list')
 
-# Presents the landing page after PayPal
-def paypal_thanks(request):
-    if request.GET:
-        try:
-            invoice_id = request.GET['invoice']
-            invoice = PayPalInvoice.objects.get(id=invoice_id)
-            p = Project.objects.get(id=invoice.project.id)
-        except:
-            return redirect('/')
-            
-        try:
-            u = User.objects.get(id=invoice.user_id)
-        except:
-            u = None
-            
-        return render_to_response('rsr/paypal_thanks.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
+def mollie_report(request):
+    transaction_id = request.GET.get('transaction_id', None)
+    if transaction_id:
+        request_dict = {'partnerid': settings.MOLLIE_PARTNER_ID,
+            'transaction_id': transaction_id}
+        url = build_mollie_url(request_dict, mode='check')
+        mollie_response = query_mollie(url)
+        invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
+        if mollie_response['paid'] == 'true':
+            invoice.consumer_account = response['consumer_account']
+            invoice.consumer_city = response['consumer_city']
+            invoice.consumer_name = response['consumer_name']
+            invoice.status = 3
+        else:
+            invoice.status = 2
+        invoice.save()
+    else:
+        return HttpResponseServerError
+
+def mollie_return(request):
+    transaction_id = request.GET.get('transaction_id', None)
+    if transaction_id:
+        invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
+        return render_to_response('rsr/mollie_thanks.html',
+            {'invoice': invoice, 'p': p},
+            context_instance=RequestContext(request))
     else:
         return redirect('/')
 
+@render_to('rsr/paypal_thanks.html')
+def paypal_thanks(request):
+    invoice_id = request.GET.get('invoice', None)
+    if invoice_id:
+        invoice = PayPalInvoice.objects.get(id=invoice_id)
+        p = Project.objects.get(id=invoice.project.id)
+        return {'invoice': invoice, 'project': p, 'user': invoice.user}
+    else:
+        return redirect('/')

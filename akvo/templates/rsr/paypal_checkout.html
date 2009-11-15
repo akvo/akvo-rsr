@@ -184,7 +184,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<hr style="width:100%; margin-left:0; clear:both;" />
 	
 	<div style="margin-left:auto;margin-right:auto; padding-top:20px; text-align:center; width:400px;">
-		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout.' %}
+		<p style="margin-bottom:20px;" class="marchGrey">{% blocktrans with invoice.get_engine_display as engine %}Click the Donate button to proceed to {{engine}} checkout. {% endblocktrans %}
 		{% trans 'By clicking on the "Donate" button you agree to the' %} <a href="http://akvo.org/web/donate_terms_and_conditions" target="_blank">{% trans 'Terms and Conditions' %}</a> {% trans 'for the donation.' %}
 		</p>
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
@@ -193,11 +193,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <a class="march_button" href="{% url void_invoice invoice_id=invoice.id,action='back' %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
-			{% if sandbox %}
-			   {{ pp_form.sandbox }}
-			{% else %}
-			   {{ pp_form.render }}
-			{% endif %}
+        {% ifequal payment_engine 'mollie' %}
+            <a class="march_button" href="{{mollie_order_url}}" onclick="this.blur();"><span>Donate</span></a>
+        {% else %}
+            {{ pp_button }}
+        {% endifequal %}
 		</div>
 		<div style="clear:both;"> </div>
 	</div>

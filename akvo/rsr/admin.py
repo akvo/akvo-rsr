@@ -791,8 +791,8 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 # PayPal
 
 class PayPalInvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'status',)
-    list_filter = ('status',)  
+    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status',)
+    list_filter = ('engine', 'status',)  
     actions = ('void_invoices',)
     
     def void_invoices(self, request, queryset):
@@ -806,8 +806,7 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
         1 - Pending (valid for voiding)
         2 - Void (invalid)
         3 - Complete (invalid)
-        4 - Stale (valid)
-        
+        4 - Stale (valid)     
         """
         valid_invoices = queryset.filter(status__in=[1,4])
         invalid_invoices = queryset.filter(status__in=[2,3])
