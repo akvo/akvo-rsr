@@ -1286,7 +1286,13 @@ def send_paypal_confirmation_email(invoice_id):
     else:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
 
-#def send_successful_donation_email(invoice_id):
+def send_donation_notification_email(invoice_id):
+    ppi = PayPalInvoice.objects.get(pk=invoice_id)
+    t = loader.get_template('rsr/donation_notification_email.html')
+    c = Context({'invoice': ppi})
+    send_mail('Notification of successful donation',
+        t.render(c), settings.DEFAULT_FROM_EMAIL,
+        ['thomas@akvo.org'], fail_silently=False)
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):
@@ -1310,6 +1316,7 @@ post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
 post_save.connect(create_paypal_gateway, sender=Project)
+#post_save.connect(send_donation_notification_emails, sender=PayPalInvoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
