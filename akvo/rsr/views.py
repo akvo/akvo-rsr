@@ -1029,7 +1029,7 @@ def mollie_return(request):
     if transaction_id:
         invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
         return render_to_response('rsr/mollie_thanks.html',
-            {'invoice': invoice, 'p': p},
+            {'invoice': invoice, 'p': invoice.project},
             context_instance=RequestContext(request))
     else:
         return redirect('/')
