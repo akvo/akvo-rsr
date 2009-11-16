@@ -1,4 +1,8 @@
+{% extends "rsr/rsr_base.html" %}
+
 {% load i18n %}
+
+{% block content %}
 <h1>Click one of the following links to select a payment system...</h1>
 <ul>
 <li>
@@ -10,3 +14,4 @@
     <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal (All territories)</a>
 </li>
 </ul>
+{% endblock %}
