@@ -93,3 +93,4 @@ akvo/mediaroot/img/paypal_donate_old.gif
 akvo/datadir_bu
 *.kpf
 akvo/testing.py
+scripts/static_project_structure.py
