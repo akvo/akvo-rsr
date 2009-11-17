@@ -936,14 +936,11 @@ def donate(request, p, engine):
                     'amount': invoice.amount * 100,
                     'bank_id': cd['bank'],
                     'partnerid': settings.MOLLIE_PARTNER_ID,
-                    'description': u'Akvo Project %d' % int(p.id),
+                    'description': 'Akvo Project %d' % int(p.id),
                     'reporturl': settings.MOLLIE_REPORT_URL,
                     'returnurl': settings.MOLLIE_RETURN_URL}
                 mollie_url = build_mollie_url(mollie_dict, mode='fetch')
-                try:
-                    mollie_response = query_mollie(mollie_url)
-                except:
-                    return HttpResponseServerError
+                mollie_response = query_mollie(mollie_url)
                 invoice.transaction_id = mollie_response['transaction_id']
                 invoice.save()
                 return render_to_response('rsr/paypal_checkout.html',
@@ -1011,10 +1008,7 @@ def mollie_report(request):
         request_dict = {'partnerid': settings.MOLLIE_PARTNER_ID,
             'transaction_id': transaction_id}
         url = build_mollie_url(request_dict, mode='check')
-        try:
-            mollie_response = query_mollie(url)
-        except:
-            return HttpResponseServerError
+        mollie_response = query_mollie(url)
         invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
         if mollie_response['paid'] == 'true':
             invoice.amount_received = invoice.amount # TEMPORARY HACK FOR TESTING ONLY
