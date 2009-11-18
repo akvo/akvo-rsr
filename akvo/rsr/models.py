@@ -28,7 +28,6 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-
 from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
@@ -1245,10 +1244,8 @@ class PayPalInvoice(models.Model):
     # PayPal
     ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
+    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4, blank=True)
     transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
-    consumer_name = models.CharField(_(u'mollie.nl consumer name'), max_length=255, blank=True) 
-    consumer_city = models.CharField(_(u'mollie.nl consumer city'), max_length=255, blank=True) 
-    consumer_account = models.CharField(_(u'mollie.nl consumer account'), max_length=255, blank=True) 
 
     objects = PayPalInvoiceManager()
 
@@ -1303,7 +1300,7 @@ def process_paypal_ipn(sender, **kwargs):
         ppi.ipn = ipn.txn_id
         ppi.status = 3
         ppi.save()
-        send_paypal_confirmation_email(ppi.id)
+        #send_paypal_confirmation_email(ppi.id) # moved to new signal
 if settings.PAYPAL_DEBUG:
     payment_was_flagged.connect(process_paypal_ipn)
 else:

@@ -932,9 +932,10 @@ def donate(request, p, engine):
                 invoice.email = cd['email']   
             invoice.http_referer = request.META['HTTP_REFERER']
             if engine == 'mollie':
+                invoice.bank = cd['bank']
                 mollie_dict = {
                     'amount': invoice.amount * 100,
-                    'bank_id': cd['bank'],
+                    'bank_id': invoice.bank,
                     'partnerid': settings.MOLLIE_PARTNER_ID,
                     'description': 'Akvo Project %d' % int(p.id),
                     'reporturl': settings.MOLLIE_REPORT_URL,
@@ -1034,7 +1035,6 @@ def paypal_thanks(request):
     invoice_id = request.GET.get('invoice', None)
     if invoice_id:
         invoice = PayPalInvoice.objects.get(id=invoice_id)
-        p = Project.objects.get(id=invoice.project.id)
-        return {'invoice': invoice, 'project': p, 'user': invoice.user}
+        return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
     else:
         return redirect('/')
