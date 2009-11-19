@@ -233,23 +233,23 @@ class ProjectAdminModelForm(forms.ModelForm):
 
 MOLLIE_BANKLIST = get_mollie_banklist()
 
-class PayPalInvoiceForm(forms.ModelForm):
+class InvoiceForm(forms.ModelForm):
     def __init__(self, user, project, engine, *args, **kwargs): 
-        super(PayPalInvoiceForm, self).__init__(*args, **kwargs)
+        super(InvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
         self.engine = engine
         if not user.is_authenticated():
             self.fields['name']  = forms.CharField(label=_(u'Full name'))
             self.fields['email'] = forms.EmailField(label=_(u'Email address'))
             self.fields['email2'] = forms.EmailField(label=_(u'Email address (confirm)'))
-        if engine == 'mollie':
+        if engine == 'ideal':
             self.fields['bank'] = forms.CharField(max_length=4, 
                 widget=forms.Select(choices=MOLLIE_BANKLIST))
 
     amount = forms.IntegerField(min_value=2)
         
     class Meta:
-        model = get_model('rsr', 'paypalinvoice')
+        model = get_model('rsr', 'invoice')
         fields = ('amount',)
 
     def clean(self):

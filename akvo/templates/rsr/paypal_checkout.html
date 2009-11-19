@@ -193,7 +193,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <a class="march_button" href="{% url void_invoice invoice_id=invoice.id,action='back' %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
-        {% ifequal payment_engine 'mollie' %}
+        {% ifequal payment_engine 'ideal' %}
             <a class="march_button" href="{{mollie_order_url}}" onclick="this.blur();"><span>Donate</span></a>
         {% else %}
             {{ pp_button }}

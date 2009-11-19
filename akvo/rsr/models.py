@@ -481,8 +481,8 @@ class Project(models.Model):
             return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
 
         def donated(self):
-            return self.filter(paypalinvoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
-                donated=Sum('paypalinvoice__amount_received'),
+            return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
+                donated=Sum('invoice__amount_received'),
             ).distinct()
 
         def pledged(self, org=None):
@@ -516,17 +516,17 @@ class Project(models.Model):
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         ) - (
                             SELECT CASE
                                 WHEN Sum(amount_received) IS NULL THEN 0
                                 ELSE Sum(amount_received)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         )
                     ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                 #how much money has been donated by individual donors, including pending donations
@@ -536,17 +536,17 @@ class Project(models.Model):
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         ) + (
                             SELECT CASE
                                 WHEN Sum(amount_received) IS NULL THEN 0
                                 ELSE Sum(amount_received)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         )
                     ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                 #how much donated money from individuals is pending
@@ -555,9 +555,9 @@ class Project(models.Model):
                             WHEN Sum(amount) IS NULL THEN 0
                             ELSE Sum(amount)
                         END
-                        FROM rsr_paypalinvoice
-                        WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                        FROM rsr_invoice
+                        WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                     ''' % PAYPAL_INVOICE_STATUS_PENDING,
                 #the total budget for the project as per the budgetitems
                 'total_budget':
@@ -1197,7 +1197,7 @@ class PayPalGatewaySelector(models.Model):
     class Meta:
         verbose_name = _(u'Project PayPal gateway configuration')
 
-class PayPalInvoiceManager(models.Manager):
+class InvoiceManager(models.Manager):
     def stale(self):
         """Returns a queryset of invoices which have been pending
         for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
@@ -1207,15 +1207,13 @@ class PayPalInvoiceManager(models.Manager):
         return qs
 
     def complete(self):
-        """Returns a queryset of invoices which have both:
-        - a status of 'Complete' and
-        - a PayPal Transaction ID
+        """Returns a queryset of invoices which have
+        a status of 'Complete'
         """
         qs = self.filter(status=3)
-        qs = qs.exclude(ipn='')
         return qs
 
-class PayPalInvoice(models.Model):
+class Invoice(models.Model):
     STATUS_CHOICES = (
         (PAYPAL_INVOICE_STATUS_PENDING, _(u'Pending')),
         (PAYPAL_INVOICE_STATUS_VOID, _(u'Void')),
@@ -1224,7 +1222,7 @@ class PayPalInvoice(models.Model):
     )
     PAYMENT_ENGINES = (
         ('paypal', _(u'PayPal')),
-        ('mollie', _(u'iDEAL')),
+        ('ideal', _(u'iDEAL')),
     )
     # Setup
     engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
@@ -1247,7 +1245,7 @@ class PayPalInvoice(models.Model):
     bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4, blank=True)
     transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
 
-    objects = PayPalInvoiceManager()
+    objects = InvoiceManager()
 
     @property
     def currency(self):
@@ -1275,7 +1273,7 @@ class PayPalInvoice(models.Model):
         verbose_name = _(u'invoice')
 
 def send_paypal_confirmation_email(invoice_id):
-    ppi = PayPalInvoice.objects.get(pk=invoice_id)
+    ppi = Invoice.objects.get(pk=invoice_id)
     t = loader.get_template('rsr/paypal_confirmation_email.html')
     c = Context({'invoice': ppi})
     if ppi.user:
@@ -1284,7 +1282,7 @@ def send_paypal_confirmation_email(invoice_id):
         send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
 
 def send_donation_notification_email(invoice_id):
-    ppi = PayPalInvoice.objects.get(pk=invoice_id)
+    ppi = Invoice.objects.get(pk=invoice_id)
     t = loader.get_template('rsr/donation_notification_email.html')
     c = Context({'invoice': ppi})
     send_mail('Notification of successful donation',
@@ -1295,7 +1293,7 @@ def send_donation_notification_email(invoice_id):
 def process_paypal_ipn(sender, **kwargs):
     ipn = sender
     if ipn.payment_status == 'Completed':
-        ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
+        ppi = Invoice.objects.get(pk=ipn.invoice)
         ppi.amount_received = ppi.amount - ipn.mc_fee
         ppi.ipn = ipn.txn_id
         ppi.status = 3
@@ -1313,7 +1311,7 @@ post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
 post_save.connect(create_paypal_gateway, sender=Project)
-#post_save.connect(send_donation_notification_emails, sender=PayPalInvoice)
+#post_save.connect(send_donation_notification_emails, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)

@@ -4,7 +4,7 @@
 
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
-from akvo.rsr.forms import PayPalInvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
 from django import forms
@@ -34,7 +34,7 @@ import random
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
-from akvo.rsr.models import PayPalInvoice
+from akvo.rsr.models import Invoice
 from paypal.standard.forms import PayPalPaymentsForm
 
 from django import http
@@ -919,7 +919,7 @@ def donate(request, p, engine):
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
     if request.method == 'POST':
-        donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
         if donate_form.is_valid():
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
@@ -931,7 +931,7 @@ def donate(request, p, engine):
                 invoice.name = cd['name']
                 invoice.email = cd['email']   
             invoice.http_referer = request.META['HTTP_REFERER']
-            if engine == 'mollie':
+            if engine == 'ideal':
                 invoice.bank = cd['bank']
                 mollie_dict = {
                     'amount': invoice.amount * 100,
@@ -982,7 +982,7 @@ def donate(request, p, engine):
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = PayPalInvoiceForm(user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(user=request.user, project=p, engine=engine)
     return render_to_response('rsr/project_donate.html', 
                               {'donate_form': donate_form,
                                'payment_engine': engine,
@@ -992,7 +992,7 @@ def donate(request, p, engine):
                               context_instance=RequestContext(request))
 
 def void_invoice(request, invoice_id, action=None):
-    invoice = get_object_or_404(PayPalInvoice, pk=invoice_id)
+    invoice = get_object_or_404(Invoice, pk=invoice_id)
     if invoice.status == 1:
         invoice.status = 2
         invoice.save()
@@ -1010,7 +1010,7 @@ def mollie_report(request):
             'transaction_id': transaction_id}
         url = build_mollie_url(request_dict, mode='check')
         mollie_response = query_mollie(url)
-        invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
         if mollie_response['paid'] == 'true':
             invoice.amount_received = invoice.amount # TEMPORARY HACK FOR TESTING ONLY
             invoice.status = 3
@@ -1023,8 +1023,8 @@ def mollie_report(request):
 def mollie_return(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
-        invoice = PayPalInvoice.objects.get(transaction_id=transaction_id)
-        return render_to_response('rsr/mollie_thanks.html',
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
+        return render_to_response('rsr/ideal_thanks.html',
             {'invoice': invoice, 'project': invoice.project},
             context_instance=RequestContext(request))
     else:
@@ -1034,7 +1034,7 @@ def mollie_return(request):
 def paypal_thanks(request):
     invoice_id = request.GET.get('invoice', None)
     if invoice_id:
-        invoice = PayPalInvoice.objects.get(id=invoice_id)
+        invoice = Invoice.objects.get(id=invoice_id)
         return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
     else:
         return redirect('/')

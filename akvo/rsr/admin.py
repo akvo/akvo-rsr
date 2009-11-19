@@ -790,7 +790,7 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 # PayPal
 
-class PayPalInvoiceAdmin(admin.ModelAdmin):
+class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status',)
     list_filter = ('engine', 'status',)  
     actions = ('void_invoices',)
@@ -824,7 +824,7 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
             queryset.update(status=2)
     void_invoices.short_description = _('Mark selected invoices as void')
 
-admin.site.register(get_model('rsr', 'paypalinvoice'), PayPalInvoiceAdmin)
+admin.site.register(get_model('rsr', 'invoice'), InvoiceAdmin)
 
 class PayPalGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
