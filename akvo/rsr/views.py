@@ -936,7 +936,7 @@ def donate(request, p, engine):
                 mollie_dict = {
                     'amount': invoice.amount * 100,
                     'bank_id': invoice.bank,
-                    'partnerid': settings.MOLLIE_PARTNER_ID,
+                    'partnerid': invoice.gateway,
                     'description': 'Akvo Project %d' % int(p.id),
                     'reporturl': settings.MOLLIE_REPORT_URL,
                     'returnurl': settings.MOLLIE_RETURN_URL}

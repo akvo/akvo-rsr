@@ -1166,36 +1166,47 @@ class ProjectComment(models.Model):
     time            = models.DateTimeField(_('time'))
         
 
-# PayPal
-
+# Payment engines
 from paypal.standard.ipn.signals import payment_was_flagged, payment_was_successful
 
-class PayPalGateway(models.Model):
+class PaymentGateway(models.Model):
+    name = models.CharField(max_length=255, help_text=_(u'Use a short, descriptive name.'))
+    account_email = models.EmailField()
+    description = models.TextField(blank=True)
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    notification_email = models.EmailField()
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.name, self.get_currency_display())
+
+    class Meta:
+        abstract = True
+
+class PayPalGateway(PaymentGateway):
     PAYPAL_LOCALE_CHOICES = (
         ('US', _(u'US English')),
     )
-    name                = models.CharField(max_length=255)
-    account_email       = models.EmailField()
-    description         = models.TextField(blank=True, null=True)
-    currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
-    locale              = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
-    notification_email  = models.EmailField()
-
-    def __unicode__(self):
-        return u'%s - %s - %s' % (self.name, self.account_email, self.get_currency_display())
+    locale = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
 
     class Meta:
         verbose_name = _(u'PayPal gateway')
 
-class PayPalGatewaySelector(models.Model):
-    project     = models.OneToOneField(Project)
-    gateway     = models.ForeignKey(PayPalGateway)
+class MollieGateway(PaymentGateway):
+    partner_id = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = _(u'Mollie/iDEAL gateway')
+
+class PaymentGatewaySelector(models.Model):
+    project = models.OneToOneField(Project)
+    paypal_gateway = models.ForeignKey(PayPalGateway, default=1)
+    mollie_gateway = models.ForeignKey(MollieGateway, default=1)
 
     def __unicode__(self):
         return u'%s - %s' % (self.project.id, self.project.name)
 
     class Meta:
-        verbose_name = _(u'Project PayPal gateway configuration')
+        verbose_name = _(u'Project payment gateway configuration')
 
 class InvoiceManager(models.Manager):
     def stale(self):
@@ -1253,18 +1264,24 @@ class Invoice(models.Model):
 
     @property
     def gateway(self):
-        if settings.PAYPAL_DEBUG:
-            return settings.PAYPAL_SANDBOX_GATEWAY
-        else:
-            return self.project.paypalgatewayselector.gateway.account_email
+        if self.engine == 'paypal':
+            if settings.PAYPAL_DEBUG:
+                return settings.PAYPAL_SANDBOX_GATEWAY
+            else:
+                return self.project.paymentgatewayselector.paypal_gateway.account_email
+        elif self.engine == 'ideal':
+            return self.project.paymentgatewayselector.mollie_gateway.partner_id
 
     @property
     def locale(self):
-        return self.project.paypalgatewayselector.gateway.locale
+        return self.project.paymentgatewayselector.paypal_gateway.locale
 
     @property
     def notification_email(self):
-        return self.project.paypalgatewayselector.gateway.notification_email
+        if self.engine == 'paypal':
+            return self.project.paymentgatewayselector.paypal_gateway.notification_email
+        elif self.engine == 'mollie':
+            return self.project.paymentgatewayselector.mollie_gateway.notification_email
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)

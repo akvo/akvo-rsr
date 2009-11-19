@@ -831,9 +831,14 @@ class PayPalGatewayAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
 
-class PayPalGatewaySelectorAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'gateway')
-    list_filter = ('gateway',)
+class MollieGatewayAdmin(admin.ModelAdmin):
+    list_display = ('name', 'partner_id', 'account_email', 'description', 'currency', 'notification_email')
 
-admin.site.register(get_model('rsr', 'paypalgatewayselector'), PayPalGatewaySelectorAdmin)
+admin.site.register(get_model('rsr', 'molliegateway'), MollieGatewayAdmin)
+
+class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'paypal_gateway', 'mollie_gateway')
+    list_filter = ('paypal_gateway', 'mollie_gateway')
+
+admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
