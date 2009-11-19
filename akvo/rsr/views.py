@@ -1024,8 +1024,8 @@ def mollie_return(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return render_to_response('rsr/ideal_thanks.html',
-            {'invoice': invoice, 'project': invoice.project},
+        return render_to_response('rsr/paypal_thanks.html',
+            {'invoice': invoice, 'project': invoice.project, 'user': invoice.user},
             context_instance=RequestContext(request))
     else:
         return redirect('/')
