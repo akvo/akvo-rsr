@@ -1006,11 +1006,11 @@ def void_invoice(request, invoice_id, action=None):
 def mollie_report(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
-        request_dict = {'partnerid': settings.MOLLIE_PARTNER_ID,
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
+        request_dict = {'partnerid': invoice.gateway,
             'transaction_id': transaction_id}
         url = build_mollie_url(request_dict, mode='check')
         mollie_response = query_mollie(url)
-        invoice = Invoice.objects.get(transaction_id=transaction_id)
         if mollie_response['paid'] == 'true':
             invoice.amount_received = invoice.amount # TEMPORARY HACK FOR TESTING ONLY
             invoice.status = 3
