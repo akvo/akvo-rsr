@@ -937,7 +937,7 @@ def donate(request, p, engine):
                     'amount': invoice.amount * 100,
                     'bank_id': invoice.bank,
                     'partnerid': invoice.gateway,
-                    'description': 'Akvo Project %d' % int(p.id),
+                    'description': u'Donation: Akvo Project %d' % int(p.id),
                     'reporturl': settings.MOLLIE_REPORT_URL,
                     'returnurl': settings.MOLLIE_RETURN_URL}
                 mollie_url = build_mollie_url(mollie_dict, mode='fetch')
@@ -1024,9 +1024,9 @@ def mollie_report(request):
 def donate_thanks(request):
     invoice_id = request.GET.get('invoice', None)
     transaction_id = request.GET.get('transaction_id', None)
-    if invoice_id:
+    if invoice_id: # PayPal
         invoice = Invoice.objects.get(id=invoice_id)
-    elif transaction_id:
+    elif transaction_id: # Mollie/iDEAL
         invoice = Invoice.objects.get(transaction_id=transaction_id)
     else:
         return redirect('/')
