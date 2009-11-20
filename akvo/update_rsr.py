@@ -11,14 +11,15 @@ from os.path import basename, splitext
 
 from rsr.models import *
 from django.db.models.fields.files import ImageField
+from django.db.models import get_model
 
 def create_default_mollie_gateway():
     gateway = get_model('rsr', 'molliegateway').objects
     create_it = gateway.create(name=u'Default',
-        partner_id='',
+        partner_id=281135,
         description=u'Default Akvo Mollie/iDEAL payment gateway',
-        account_email='',
-        notification_email='thomas@akvo.org')
+        account_email=u'paul.burt@me.com',
+        notification_email=u'paul.burt@me.com')
 
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     return "%s_%s_%s_%s%s" % (
@@ -89,6 +90,7 @@ def budget_refactor():
                 
 if __name__ == '__main__':
     #update_publishing_status()
-    update_organisation_account()
+    #update_organisation_account()
     #resave_all_images()
-    budget_refactor()
+    #budget_refactor()
+    create_default_mollie_gateway()

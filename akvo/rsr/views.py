@@ -903,7 +903,7 @@ def project_list_widget(request, template='project-list', org_id=0):
         context_instance=RequestContext(request))
 
 @fetch_project
-@render_to('rsr/setup_donation.html')
+@render_to('rsr/donate_step1.html')
 def setup_donation(request, p):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
@@ -944,7 +944,7 @@ def donate(request, p, engine):
                 mollie_response = query_mollie(mollie_url)
                 invoice.transaction_id = mollie_response['transaction_id']
                 invoice.save()
-                return render_to_response('rsr/paypal_checkout.html',
+                return render_to_response('rsr/donate_step3.html',
                     {'invoice': invoice,
                      'p': p,
                      'payment_engine': engine,
@@ -972,7 +972,7 @@ def donate(request, p, engine):
                 else:
                     pp_button = pp_form.render()
                 invoice.save()
-                return render_to_response('rsr/paypal_checkout.html',
+                return render_to_response('rsr/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
                                        'pp_form': pp_form, 
@@ -983,7 +983,7 @@ def donate(request, p, engine):
                                       context_instance=RequestContext(request))
     else:
         donate_form = InvoiceForm(user=request.user, project=p, engine=engine)
-    return render_to_response('rsr/project_donate.html', 
+    return render_to_response('rsr/donate_step2.html', 
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'p': p,
@@ -1024,13 +1024,13 @@ def mollie_return(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return render_to_response('rsr/paypal_thanks.html',
+        return render_to_response('rsr/donate_thanks.html',
             {'invoice': invoice, 'project': invoice.project, 'user': invoice.user},
             context_instance=RequestContext(request))
     else:
         return redirect('/')
 
-@render_to('rsr/paypal_thanks.html')
+@render_to('rsr/donate_thanks.html')
 def paypal_thanks(request):
     invoice_id = request.GET.get('invoice', None)
     if invoice_id:
