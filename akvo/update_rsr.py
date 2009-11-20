@@ -12,6 +12,14 @@ from os.path import basename, splitext
 from rsr.models import *
 from django.db.models.fields.files import ImageField
 
+def create_default_mollie_gateway():
+    gateway = get_model('rsr', 'molliegateway').objects
+    create_it = gateway.create(name=u'Default',
+        partner_id='',
+        description=u'Default Akvo Mollie/iDEAL payment gateway',
+        account_email='',
+        notification_email='thomas@akvo.org')
+
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     return "%s_%s_%s_%s%s" % (
         object_name,

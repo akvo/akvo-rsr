@@ -24,11 +24,9 @@ urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
     # Payment engines
-    url(r'^rsr/mollie/report/$',
-        'akvo.rsr.views.mollie_report',
+    url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report',
         name='mollie_report'),
-    url(r'^rsr/mollie/return/$',
-        'akvo.rsr.views.mollie_return',
+    url(r'^rsr/mollie/return/$', 'akvo.rsr.views.mollie_return',
         name='mollie_report'),
     url(r'^rsr/paypalinvoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$',
         'akvo.rsr.views.void_invoice',
