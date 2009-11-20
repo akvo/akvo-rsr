@@ -1021,19 +1021,13 @@ def mollie_report(request):
         return HttpResponseServerError
 
 @render_to('rsr/donate_thanks.html')
-def mollie_return(request):
-    transaction_id = request.GET.get('transaction_id', None)
-    if transaction_id:
-        invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
-    else:
-        return redirect('/')
-
-@render_to('rsr/donate_thanks.html')
-def paypal_thanks(request):
+def donate_thanks(request):
     invoice_id = request.GET.get('invoice', None)
+    transaction_id = request.GET.get('transaction_id', None)
     if invoice_id:
         invoice = Invoice.objects.get(id=invoice_id)
-        return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
+    elif transaction_id:
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
     else:
         return redirect('/')
+    return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
