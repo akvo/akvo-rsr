@@ -2,16 +2,43 @@
 
 {% load i18n %}
 
+{% block title %}{{block.super}} - {% trans 'Donate to project nr ' %} {{ p.id }}{% endblock title %}
+
 {% block content %}
-<h1>Click one of the following links to select a payment system...</h1>
-<ul>
-<li>
-    <p>A bit of blurb about iDEAL here</p>
-    <a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL (Netherlands only)</a>
-</li>
-<li>
-    <p>A bit of blurb about PayPal here</p>
-    <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal (All territories)</a>
-</li>
-</ul>
+<div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
+	<div style="width:50%; float:left;">
+		<h1>{% trans 'Donate to a project in Akvo RSR' %}</h1>
+	</div>
+	{% comment %}
+	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+		<p>
+			<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+			{% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
+		</p>
+	</div>
+	{% endcomment %}
+	<div style="padding-bottom:15px; clear:both;"></div>
+	
+	<hr style="width:100%; margin-left:0; clear:both;" />
+	
+	<div style="margin:0; padding:0;">
+		<div>
+			<h3>{% trans 'Project to receive your donation' %}</h3>
+		
+			<h1>Click one of the following links to select a payment system...</h1>
+			<ul>
+            {% ifequal p.currency 'EUR' %}
+			<li>
+			    <p>A bit of blurb about iDEAL here</p>
+			    <a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL (Netherlands only)</a>
+			</li>
+			{% endifequal %}
+			<li>
+			    <p>A bit of blurb about PayPal here</p>
+			    <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal (All territories)</a>
+			</li>
+			</ul>
+		</div>
+	</div>
+</div>
 {% endblock %}

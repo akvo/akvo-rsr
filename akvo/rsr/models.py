@@ -1258,6 +1258,9 @@ class Invoice(models.Model):
 
     objects = InvoiceManager()
 
+    def get_favicon(self):
+        
+        
     @property
     def currency(self):
         return self.project.currency
@@ -1289,9 +1292,9 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = _(u'invoice')
 
-def send_paypal_confirmation_email(invoice_id):
+def send_donation_confirmation_email(invoice_id):
     ppi = Invoice.objects.get(pk=invoice_id)
-    t = loader.get_template('rsr/paypal_confirmation_email.html')
+    t = loader.get_template('rsr/donation_confirmation_email.html')
     c = Context({'invoice': ppi})
     if ppi.user:
         send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.user.email], fail_silently=False)
@@ -1310,17 +1313,13 @@ def send_donation_notification_email(invoice_id):
 def process_paypal_ipn(sender, **kwargs):
     ipn = sender
     if ipn.payment_status == 'Completed':
-        ppi = Invoice.objects.get(pk=ipn.invoice)
-        ppi.amount_received = ppi.amount - ipn.mc_fee
-        ppi.ipn = ipn.txn_id
-        ppi.status = 3
-        ppi.save()
-        #send_paypal_confirmation_email(ppi.id) # moved to new signal
-if settings.PAYPAL_DEBUG:
-    payment_was_flagged.connect(process_paypal_ipn)
-else:
-    #payment_was_successful.connect(process_paypal_ipn)
-    payment_was_flagged.connect(process_paypal_ipn)
+        invoice = Invoice.objects.get(pk=ipn.invoice)
+        invoice.amount_received = invoice.amount - ipn.mc_fee
+        invoice.ipn = ipn.txn_id
+        invoice.status = 3
+        invoice.save()
+        #send_donation_confirmation_email(ppi.id) # moved to new signal
+payment_was_flagged.connect(process_paypal_ipn)
 
 
 # signals!
