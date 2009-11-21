@@ -1292,22 +1292,17 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = _(u'invoice')
 
+# @ Move this to utils and attach to a post_save signal on Invoice
 def send_donation_confirmation_email(invoice_id):
-    ppi = Invoice.objects.get(pk=invoice_id)
+    invoice = Invoice.objects.get(pk=invoice_id)
     t = loader.get_template('rsr/donation_confirmation_email.html')
-    c = Context({'invoice': ppi})
-    if ppi.user:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.user.email], fail_silently=False)
+    c = Context({'invoice': invoice})
+    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
+    if invoice.user:
+        to_field = [invoice.user.email]
     else:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
-
-def send_donation_notification_email(invoice_id):
-    ppi = Invoice.objects.get(pk=invoice_id)
-    t = loader.get_template('rsr/donation_notification_email.html')
-    c = Context({'invoice': ppi})
-    send_mail('Notification of successful donation',
-        t.render(c), settings.DEFAULT_FROM_EMAIL,
-        ['thomas@akvo.org'], fail_silently=False)
+        to_field = [invoice.email]
+    send_mail(subject_field, t.render(c), from_field, to_field, fail_silently=False)
 
 # PayPal IPN Listener
 def process_paypal_ipn(sender, **kwargs):
