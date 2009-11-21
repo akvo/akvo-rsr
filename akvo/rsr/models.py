@@ -1259,7 +1259,7 @@ class Invoice(models.Model):
     objects = InvoiceManager()
 
     def get_favicon(self):
-        
+        pass # @ grab favicon from HTTP_REFERER site    
         
     @property
     def currency(self):
