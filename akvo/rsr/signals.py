@@ -92,14 +92,11 @@ def change_name_of_file_on_change(sender, **kwargs):
                     except:
                         pass
 
-def create_paypal_gateway(sender, **kwargs):
-    """Called when a new project is saved so an associated PayPal gateway
-    for the object is created
+def create_payment_gateway_selector(sender, **kwargs):
+    """Associates a newly created project with the default PayPal
+    and Mollie payment gateways
     """
     if kwargs.get('created', False):
         new_project = kwargs['instance']
-        gateways = get_model('rsr', 'paypalgateway').objects
-        default_gateway = gateways.get(pk=1)
-        ppgs = get_model('rsr', 'paypalgatewayselector').objects
-        ppgs.create(gateway=default_gateway, project=new_project)
-
+        gateway_selector = get_model('rsr', 'paypalgatewayselector').objects
+        gateway_selector.create(project=new_project)
