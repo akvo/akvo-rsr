@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 #to be run in the akvo rsr root folder. setting up all projects as published, if they have no status
