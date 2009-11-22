@@ -95,7 +95,7 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     )
 
 
-def send_donation_notification_emails(invoice_id):
+def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
     t1 = loader.get_template('rsr/donation_confirmation_email.html')
     t2 = loader.get_template('rsr/donation_notification_email.html')
@@ -107,4 +107,4 @@ def send_donation_notification_emails(invoice_id):
     else:
         to_field = [invoice.email]
     send_mail(subject_field, t1.render(c), from_field, to_field, fail_silently=False)
-    send_mail(notification_subject_field, t2.render(c), from_field, notification_to_field, fail_silently=False)
+    #send_mail(notification_subject_field, t2.render(c), from_field, notification_to_field, fail_silently=False)

@@ -10,8 +10,9 @@ from datetime import datetime
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
 
-from paypal.standard.ipn.signals import payment_was_flagged, payment_was_successful
 from sorl.thumbnail.fields import ImageWithThumbnailsField
+
+from utils import send_donation_confirmation_emails
 
 def create_publishing_status(sender, **kwargs):
     """
@@ -102,13 +103,9 @@ def create_payment_gateway_selector(sender, **kwargs):
         gateway_selector = get_model('rsr', 'paypalgatewayselector').objects
         gateway_selector.create(project=new_project)
 
-def process_paypal_ipn(sender, **kwargs):
-    ipn = sender
-    if ipn.payment_status == 'Completed':
-        invoice = Invoice.objects.get(pk=ipn.invoice)
-        invoice.amount_received = invoice.amount - ipn.mc_fee
-        invoice.ipn = ipn.txn_id
-        invoice.status = 3
-        invoice.save()
-        #send_donation_confirmation_email(ppi.id) # moved to new signal
-payment_was_flagged.connect(process_paypal_ipn)
+
+def donation_completed(sender, **kwargs):
+    invoice = sender
+    if invoice.status = 3:
+        send_donation_confirmation_emails()
+
