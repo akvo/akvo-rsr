@@ -1291,6 +1291,20 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = _(u'invoice')
 
+<<<<<<< TREE
+# @ Move this to utils and attach to a post_save signal on Invoice
+def send_donation_confirmation_email(invoice_id):
+    invoice = Invoice.objects.get(pk=invoice_id)
+    t = loader.get_template('rsr/donation_confirmation_email.html')
+    c = Context({'invoice': invoice})
+    message_body = t.render(c)
+    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
+    if invoice.user:
+        to_field = [invoice.user.email]
+    else:
+        to_field = [invoice.email]
+    send_mail(subject_field, message_body, from_field, to_field, fail_silently=False)
+
 # PayPal IPN listener
 from paypal.standard.ipn.signals import payment_was_flagged
 def process_paypal_ipn(sender, **kwargs):

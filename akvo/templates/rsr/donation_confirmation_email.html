@@ -1,0 +1,48 @@
+{% load i18n %}
+
+{{ invoice.time }}
+
+{% if invoice.user %}
+Name: {{ invoice.user.first_name }} {{ invoice.user.last_name }}
+Email: {{ invoice.user.email }}
+
+Dear {{ invoice.user.first_name }} {{ invoice.user.last_name }},
+{% else %}
+Name: {{ invoice.name }}
+Email: {{ invoice.email }}
+
+Dear {{ invoice.name }},
+{% endif %}
+
+Thank you for your online contribution on Akvo.org.  By giving, you have personally helped to advance the cause of clean water and sanitation around the world.
+
+No goods or services were provided in exchange for your gift of funds.  At this time, only residents of the following countries may treat this donation as a tax-deductible charitable contribution to the extent allowed by law.
+
+        {% ifequal invoice.project.currency 'EUR' %}
+        - The Netherlands (Nederland)
+        {% endifequal %}
+        {% ifequal invoice.project.currency 'USD' %}
+        - United States of America
+        {% endifequal %}
+
+We are working hard to expand this list to new countries.  In the future, you may check http://www.akvo.org/web/charitable/ to see if we have added your country to this list.
+
+Please retain this message as a record of your contribution.
+
+And please tell your friends about Akvo.org!  :)
+
+
+A summary of your contribution:
+
+Your gift will help: {{ invoice.project.name|safe }} (http://akvo.org/rsr/project/{{ invoice.project.id }}/)
+Total contribution amount: {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}
+Akvo Reference ID: {{ invoice.id }}
+{% ifequal payment_engine "paypal" %}
+PayPal reference: {{ invoice.ipn }}
+{% else %}
+Mollie/iDEAL reference: {{ invoice.transaction_id }}
+{% endifequal %}
+
+Visit the project at the link above to see progress and updates.
+
+You may email us with technical questions at <a href="mailto:contribute@akvo.org">contribute@akvo.org</a>
