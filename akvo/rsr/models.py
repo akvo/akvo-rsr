@@ -38,7 +38,7 @@ from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
 				   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
-					 create_publishing_status, create_organisation_account, create_paypal_gateway)
+					 create_publishing_status, create_organisation_account, create_payment_gateway_selector)
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1167,8 +1167,6 @@ class ProjectComment(models.Model):
         
 
 # Payment engines
-from paypal.standard.ipn.signals import payment_was_flagged, payment_was_successful
-
 class PaymentGateway(models.Model):
     name = models.CharField(max_length=255, help_text=_(u'Use a short, descriptive name.'))
     account_email = models.EmailField()
@@ -1292,37 +1290,14 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = _(u'invoice')
 
-# @ Move this to utils and attach to a post_save signal on Invoice
-def send_donation_confirmation_email(invoice_id):
-    invoice = Invoice.objects.get(pk=invoice_id)
-    t = loader.get_template('rsr/donation_confirmation_email.html')
-    c = Context({'invoice': invoice})
-    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
-    if invoice.user:
-        to_field = [invoice.user.email]
-    else:
-        to_field = [invoice.email]
-    send_mail(subject_field, t.render(c), from_field, to_field, fail_silently=False)
-
-# PayPal IPN Listener
-def process_paypal_ipn(sender, **kwargs):
-    ipn = sender
-    if ipn.payment_status == 'Completed':
-        invoice = Invoice.objects.get(pk=ipn.invoice)
-        invoice.amount_received = invoice.amount - ipn.mc_fee
-        invoice.ipn = ipn.txn_id
-        invoice.status = 3
-        invoice.save()
-        #send_donation_confirmation_email(ppi.id) # moved to new signal
-payment_was_flagged.connect(process_paypal_ipn)
-
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
 post_save.connect(create_paypal_gateway, sender=Project)
-#post_save.connect(send_donation_notification_emails, sender=Invoice)
+
+post_save.connect(send_donation_notification_emails, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
