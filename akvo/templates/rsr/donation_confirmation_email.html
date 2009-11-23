@@ -23,35 +23,34 @@
 <p>No goods or services were provided in exchange for your gift of funds.  At this time, only residents of the following countries may treat this donation as a tax-deductible charitable contribution to the extent allowed by law.</p>
 
 <ul>
-        {% ifequal invoice.project.currency 'EUR' %}
-        <li>- The Netherlands (Nederland)</li>
-        {% endifequal %}
-        {% ifequal invoice.project.currency 'USD' %}
-        <li>- United States of America</li>
-        {% endifequal %}
+{% ifequal invoice.project.currency 'EUR' %}
+    <li>The Netherlands (Nederland)</li>
+{% endifequal %}
+{% ifequal invoice.project.currency 'USD' %}
+    <li>United States of America</li>
+{% endifequal %}
 </ul>
 
-<p>We are working hard to expand this list to new countries.  In the future, you may check http://www.akvo.org/web/charitable/ to see if we have added your country to this list.</p>
+<p>We are working hard to expand this list to new countries.  In the future, you may check <a href="http://www.akvo.org/web/charitable/">http://www.akvo.org/web/charitable</a> to see if we have added your country to this list.</p>
 
 <p>Please retain this message as a record of your contribution.</p>
 
-<p>And please tell your friends about Akvo.org!  :)</p>
+<p>And please tell your friends about <a href="http://www.akvo.org/">Akvo.org</a>!  :)</p>
 
 <br />
 
 <p>A summary of your contribution:</p>
 
-<ul>
-    <li>Your gift will help: <a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.name|safe }}</a></li>
-    <li>Total contribution amount: {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</li>
-    <li>Akvo Reference ID: {{ invoice.id }}</li>
-    {% ifequal payment_engine "paypal" %}
-        <li>PayPal reference: {{ invoice.ipn }}</li>
-    {% endifequal %}
-    {% ifequal payment_engine "ideal" %}
-        <li>Mollie/iDEAL reference: {{ invoice.transaction_id }}</li>
-    {% endifequal %}
-</ul>
+<p>Your gift will help: <a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.name|safe }}</a></p>
+<p>Total contribution amount: {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</p>
+<p>Akvo Reference ID: {{ invoice.id }}</p>
+{% ifequal invoice.engine "paypal" %}
+    <p>PayPal reference: {{ invoice.ipn }}</p>
+{% endifequal %}
+{% ifequal invoice.engine "ideal" %}
+    <p>Mollie/iDEAL reference: {{ invoice.transaction_id }}</p>
+{% endifequal %}
+
 
 <br />
 
