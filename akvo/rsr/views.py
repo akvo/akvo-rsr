@@ -1004,6 +1004,7 @@ def void_invoice(request, invoice_id, action=None):
         return redirect('project_list')
 
 def mollie_report(request):
+    from decimal import Decimal
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
@@ -1012,7 +1013,7 @@ def mollie_report(request):
         url = build_mollie_url(request_dict, mode='check')
         mollie_response = query_mollie(url)
         if mollie_response['paid'] == 'true':
-            invoice.amount_received = invoice.amount # TEMPORARY HACK FOR TESTING ONLY
+            invoice.amount_received = invoice.amount - Decimal('1.18')
             invoice.status = 3
         else:
             invoice.status = 2
