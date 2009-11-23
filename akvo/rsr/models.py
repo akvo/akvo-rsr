@@ -1281,7 +1281,7 @@ class Invoice(models.Model):
     def notification_email(self):
         if self.engine == 'paypal':
             return self.project.paymentgatewayselector.paypal_gateway.notification_email
-        elif self.engine == 'mollie':
+        elif self.engine == 'ideal':
             return self.project.paymentgatewayselector.mollie_gateway.notification_email
 
     def __unicode__(self):
