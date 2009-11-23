@@ -94,18 +94,18 @@ def change_name_of_file_on_change(sender, **kwargs):
                     except:
                         pass
 
-def create_payment_gateway_selector(sender, **kwargs):
+
+def create_payment_gateway_selector(instance, created, **kwargs):
     """Associates a newly created project with the default PayPal
     and Mollie payment gateways
     """
-    if kwargs.get('created', False):
-        new_project = kwargs['instance']
-        gateway_selector = get_model('rsr', 'paypalgatewayselector').objects
-        gateway_selector.create(project=new_project)
+    if created:
+        project = instance
+        gateway_selector = get_model('rsr', 'paymentgatewayselector').objects
+        gateway_selector.create(project=project)
 
 
-def donation_completed(sender, **kwargs):
-    invoice = sender
-    if invoice.status = 3:
-        send_donation_confirmation_emails()
-
+def donation_completed(instance, created, **kwargs):
+    invoice = instance
+    if not created and invoice.status == 3:
+        send_donation_confirmation_emails(invoice.id)

@@ -46,6 +46,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 {% block breadcrumbs %}
+
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id%}">{{p.name}}</a> &raquo; {% trans 'Enter donation details' %} (step 2 of 5)
 {% comment %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
 {% endcomment %}

@@ -284,7 +284,6 @@ class Organisation(models.Model):
         # than one of the same value. This leads to the wrong sum when same amount
         # has been pledged to multiple projects
         all_active = Project.objects.published().status_not_cancelled()
-        # First four keys should be deprecated
         return {
             'total_euros': my_projs.euros().total_total_budget(),
             'donated_euros': my_projs.euros().total_donated(),
@@ -1309,7 +1308,7 @@ payment_was_flagged.connect(process_paypal_ipn)
 post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
-post_save.connect(create_paypal_gateway, sender=Project)
+post_save.connect(create_payment_gateway_selector, sender=Project)
 
 post_save.connect(donation_completed, sender=Invoice)
 
