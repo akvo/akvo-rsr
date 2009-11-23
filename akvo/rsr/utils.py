@@ -9,6 +9,7 @@ from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db.models import get_model
 from django.template import loader, Context
+from django.utils.translation import ugettext_lazy as _
 
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
