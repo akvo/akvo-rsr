@@ -907,6 +907,7 @@ def project_list_widget(request, template='project-list', org_id=0):
 def setup_donation(request, p):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
+    request.session['http_referer'] = request.META.get('HTTP_REFERER', None)
     return {'p': p}
 
 from mollie.ideal.utils import build_mollie_url, query_mollie
@@ -929,8 +930,13 @@ def donate(request, p, engine):
                 invoice.user = request.user
             else:
                 invoice.name = cd['name']
-                invoice.email = cd['email']   
-            invoice.http_referer = request.META['HTTP_REFERER']
+                invoice.email = cd['email']
+            original_http_referer = request.session.get('http_referer', None)
+            if original_http_referer:
+                invoice.http_referer = original_http_referer
+                del request.session['http_referer']
+            else:
+                invoice.http_referer = request.META.get('HTTP_REFERER', None)
             if engine == 'ideal':
                 invoice.bank = cd['bank']
                 mollie_dict = {
