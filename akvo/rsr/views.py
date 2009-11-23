@@ -1037,4 +1037,4 @@ def donate_thanks(request):
         invoice = Invoice.objects.get(transaction_id=transaction_id)
     else:
         return redirect('/')
-    return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
+    return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
