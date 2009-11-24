@@ -27,7 +27,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id%}">{{p.name}}</a> &raquo; {% trans 'Choose payment processor' %} (step 1 of 5)
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Choose payment processor' %} (step 1 of 5)
 {% comment %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
 {% endcomment %}
@@ -42,20 +42,49 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endif %}
 	
 	<div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px; padding-bottom:20px;">
-		<h1>{% trans 'Donate to a project in Akvo RSR' %}</h1>
-		<hr style="width:100%; margin-left:0; clear:both;" />
-		<div id="processor_left" style="float:left; width:48%; background-color:cyan;">
-			<h1>Paypal</h1>
-		    <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal</a> (All territories)
+		<h1>{% trans 'Donate to the project' %}</h1>
+		<div style="background-color:#F9FAFF; border:1px solid #DFE0E6; width:700px; margin-left:auto; margin-right:auto; margin-top:20px; margin-bottom:20px; padding:10px;">
+			Select payment system, Enter amount, Confirm amount, Use payment system, Thank you
+		</div>
+
+		<h2 style="padding-left:0;">Select a payment system to use</h2>
+		<div id="processor_left" style="float:left; width:48%; border:1px solid #DEDFE3;">
+			<div style="margin:20px;">
+				<h1>For all users</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:30px; margin-bottom:20px; width:230px">
+					<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
+				</div>
+				<p>
+					For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.
+				</p>
+				<br><br>
+				<div style="width:250px; margin-left:auto; margin-right:auto;">
+					<div style="width:250px; display:block; background-color:cyan;">
+						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>Use PayPal</a>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		{% ifequal p.currency 'EUR' %}
-		<div id="processor_right" style="float:right; width:48%; background-color:yellow;">
-			<h1>IDEAL</h1>
-		    <a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL</a> (Netherlands only)
+		<div id="processor_right" style="float:right; width:48%; border:1px solid #DEDFE3;">
+			<div style="margin:20px;">
+				<h1>For Dutch users only</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; margin-bottom:10px; width:230px">
+					<img src="{{MEDIA_URL}}img/ideal-small.png" width="152" height="167" alt="Ideal" />
+				</div>
+				<p>
+					In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.
+				</p>
+				<br><br>
+				<div style="text-align:center;">
+					<a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL</a>
+				</div>
+			</div>			
 		</div>
 		{% endifequal %}
 		<div style="clear:both;"></div>
+		<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
 		
 		{% comment %}
 		<div style="margin:0; padding:0;">
