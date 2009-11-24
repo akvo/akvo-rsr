@@ -1296,7 +1296,7 @@ from paypal.standard.ipn.signals import payment_was_flagged
 def process_paypal_ipn(sender, **kwargs):
     ipn = sender
     if ipn.payment_status == 'Completed':
-        invoice = Invoice.objects.get(pk=ipn.invoice)
+        invoice = Invoice.objects.get(pk=int(ipn.invoice))
         invoice.amount_received = invoice.amount - ipn.mc_fee
         invoice.ipn = ipn.txn_id
         invoice.status = 3
