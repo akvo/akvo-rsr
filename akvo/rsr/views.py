@@ -910,7 +910,7 @@ def setup_donation(request, p):
     request.session['http_referer'] = request.META.get('HTTP_REFERER', None)
     return {'p': p}
 
-from mollie.ideal.utils import build_mollie_url, query_mollie
+from mollie.ideal.utils import build_mollie_url, query_mollie, get_mollie_fee
 
 @fetch_project
 def donate(request, p, engine):
@@ -947,14 +947,18 @@ def donate(request, p, engine):
                     'reporturl': settings.MOLLIE_REPORT_URL,
                     'returnurl': settings.MOLLIE_RETURN_URL}
                 mollie_url = build_mollie_url(mollie_dict, mode='fetch')
-                mollie_response = query_mollie(mollie_url)
-                invoice.transaction_id = mollie_response['transaction_id']
+                try:
+                    mollie_response = query_mollie(mollie_url)
+                    invoice.transaction_id = mollie_response['transaction_id']
+                    order_url = mollie_response['order_url']
+                except:
+                    return redirect('donate_500')
                 invoice.save()
                 return render_to_response('rsr/donate_step3.html',
                     {'invoice': invoice,
                      'p': p,
                      'payment_engine': engine,
-                     'mollie_order_url': mollie_response['order_url'],
+                     'mollie_order_url': order_url,
                      'has_sponsor_banner': has_sponsor_banner,
                      'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                     context_instance=RequestContext(request))
@@ -1019,7 +1023,8 @@ def mollie_report(request):
         url = build_mollie_url(request_dict, mode='check')
         mollie_response = query_mollie(url)
         if mollie_response['paid'] == 'true':
-            invoice.amount_received = invoice.amount - Decimal('1.18')
+            mollie_fee = get_mollie_fee()
+            invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
         else:
             invoice.status = 2
