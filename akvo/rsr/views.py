@@ -1035,7 +1035,7 @@ def mollie_report(request):
 def paypal_thanks(request):
     invoice_id = request.GET.get('invoice', None)
     if invoice_id:
-        invoice = Invoice.objects.get(pk=int(invoice_id))
+        invoice = Invoice.objects.get(pk=invoice_id)
     else:
         return redirect('/')
     return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
