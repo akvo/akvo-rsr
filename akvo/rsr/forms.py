@@ -253,14 +253,15 @@ class InvoiceForm(forms.ModelForm):
         fields = ('amount',)
 
     def clean(self):
+        cleaned_data = self.cleaned_data
         funding_needed = self.project.funding_still_needed()
-        if 'amount' in self.cleaned_data:
-            if self.cleaned_data['amount'] > funding_needed:
+        if 'amount' in cleaned_data:
+            if cleaned_data['amount'] > funding_needed:
                 raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
-        if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
-            if self.cleaned_data['email'] != self.cleaned_data['email2']:
+        if 'email' in cleaned_data and 'email2' in cleaned_data:
+            if cleaned_data['email'] != cleaned_data['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
-        return self.cleaned_data
+        return cleaned_data
 
 
 # based on http://www.djangosnippets.org/snippets/1008/
