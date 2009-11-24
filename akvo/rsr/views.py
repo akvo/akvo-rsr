@@ -1041,7 +1041,7 @@ def paypal_thanks(request):
     return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
 
 @render_to('rsr/donate_thanks.html')
-def mollie_return(request):
+def mollie_thanks(request):
     transaction_id = request.GET.get('transaction', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
