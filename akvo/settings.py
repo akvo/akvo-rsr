@@ -1,1 +1,1 @@
-../../static/settings.py
+../../static/all_rss_settings.py
