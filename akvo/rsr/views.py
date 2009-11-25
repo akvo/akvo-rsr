@@ -963,15 +963,15 @@ def donate(request, p, engine):
                      'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                     context_instance=RequestContext(request))
             elif engine == 'paypal':
+                invoice.save()
                 pp_dict = {
                     'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
                     'currency_code': invoice.currency,
                     'business': invoice.gateway,
                     'amount': invoice.amount,
                     'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                        int(invoice.project.id),
-                        invoice.project.name),
-                    'invoice': invoice.id,
+                        int(invoice.project.id), invoice.project.name),
+                    'invoice': int(invoice.id),
                     'lc': invoice.locale,
                     'notify_url': settings.PAYPAL_NOTIFY_URL,
                     'return_url': settings.PAYPAL_RETURN_URL,
@@ -981,7 +981,6 @@ def donate(request, p, engine):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
-                invoice.save()
                 return render_to_response('rsr/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
@@ -1033,12 +1032,18 @@ def mollie_report(request):
         return HttpResponseServerError
 
 @render_to('rsr/donate_thanks.html')
-def donate_thanks(request):
+def paypal_thanks(request):
     invoice_id = request.GET.get('invoice', None)
+    if invoice_id:
+        invoice = Invoice.objects.get(pk=invoice_id)
+    else:
+        return redirect('/')
+    return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+
+@render_to('rsr/donate_thanks.html')
+def mollie_thanks(request):
     transaction_id = request.GET.get('transaction_id', None)
-    if invoice_id: # PayPal
-        invoice = Invoice.objects.get(id=invoice_id)
-    elif transaction_id: # Mollie/iDEAL
+    if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
     else:
         return redirect('/')

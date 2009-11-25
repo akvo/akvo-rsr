@@ -56,11 +56,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<p>
 					For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.
-				</p>
-				<br><br>
-				<div style="width:250px; margin-left:auto; margin-right:auto;">
-					<div style="width:250px; display:block; background-color:cyan;">
-						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>Use PayPal</a>
+				</p>				
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
+						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>Use PayPal</span></a>
+						<div class="clear"> </div>
 					</div>
 				</div>
 			</div>
@@ -76,10 +76,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p>
 					In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.
 				</p>
-				<br><br>
-				<div style="text-align:center;">
-					<a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL</a>
-				</div>
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
+						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='ideal' %}"><span>iDEAL</span></a>
+						<div class="clear"> </div>
+					</div>
+				</div>				
 			</div>			
 		</div>
 		{% endifequal %}
