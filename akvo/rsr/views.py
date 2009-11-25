@@ -1033,7 +1033,7 @@ def mollie_report(request):
 
 @render_to('rsr/donate_thanks.html')
 def paypal_thanks(request):
-    invoice_id = request.GET.get('invoice', None)
+    invoice_id = request.POST.get('invoice', None)
     if invoice_id:
         invoice = Invoice.objects.get(pk=invoice_id)
     else:
