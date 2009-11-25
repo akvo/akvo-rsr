@@ -17,6 +17,48 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <meta http-equiv="pragma" content="no-cache"/>
 <meta http-equiv="cache-control" content="no-cache"/>
 
+<style type="text/css" media="screen">
+	#donate_step_box {
+		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
+		border:1px solid #DFE0E6;
+		height:55px;
+		margin-bottom:20px;
+		margin-left:auto;
+		margin-right:auto;
+		margin-top:20px;
+		/*width:755px;*/
+		width:785px;
+	}
+	
+	#donate_step_box_inner {
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
+		margin-left:auto;
+		margin-right:auto;
+		/*width:680px;*/
+		width:750px;
+		height:40px;
+	}
+	.donate_steps {
+		color:#8F94A3;
+		float:left;
+		height:30px;
+		margin-right:10px;
+		padding-top:30px;
+		/*width:128px;*/
+		width:140px;
+		text-align:center;
+		}
+		
+	.active_donate_step {
+		color:#000;
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_ball.gif') no-repeat center 15px;
+	}
+	
+	#donate_step_5 {
+		margin-right:0;
+	}
+</style>
+
 {% endblock style%}
 
 
@@ -47,16 +89,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div style="width:50%; float:left;">
 		<h1>{% trans 'Confirm donation details' %}</h1>
 	</div>
-	<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display:none;">
-		<p>
-			<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />{% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
-		</p>
-	</div>
+	<noscript>
+		<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display:none;">
+			<p>
+				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />{% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
+			</p>
+		</div>
+	</noscript>
 	<div style="padding-bottom:15px; clear:both;"> </div>
-				
-		<hr style="width:100%; margin-left:0; clear:both; margin-top:10px;" />
+	
+	<div id="donate_step_box">
+		<div id="donate_step_box_inner">
+			<div class="donate_steps">
+				<p>{% trans 'Select payment system' %}</p>
+			</div>
+			<div class="donate_steps">
+				<p>{% trans 'Enter amount' %}</p>
+			</div>
+			<div class="donate_steps active_donate_step">
+				<p>{% trans 'Confirm amount' %}</p>
+			</div>
+			<div class="donate_steps">
+				<p>{% trans 'Use payment system' %}</p>
+			</div>
+			<div id="#donate_step_5" class="donate_steps">
+				<p>{% trans 'Thank you!' %}</p>
+			</div>
+			<div class="clear">	</div>
+		</div>
+	</div>
 		
-		<div{# style="margin-left:40px;"#}>
+	<div{# style="margin-left:40px;"#}>
 			<h3>{% trans 'Project receiving your donation' %}</h3>
 			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
@@ -81,17 +144,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 		</div>
+
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<div style="float:right; width:213px;" class="clearfix" >
-				 <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
-				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
+			<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
+				<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
 			</div>
-			<p>
-				{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations. ' %}
+			<p>{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
+			<p style="margin-top:15px;">
+				{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one." %}
 			</p>
-            <p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
 		</div>
+		
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
+			<p>
+				{% ifequal p.currency 'EUR' %}
+				{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+		</div>
+		
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
 			<p>
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 			</p>
@@ -106,18 +181,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</li>
 			</ul>
 		</div>
-		
-		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px">
-			<p>
-				{% ifequal p.currency 'EUR' %}
-				{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
-				{% endifequal %}
-				{% ifequal p.currency 'USD' %}
-				{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
-				{% endifequal %}
-			</p>
-		</div>
-		
 		
 		<div style="clear:both;"> &nbsp; </div>
 		<hr style="width:100%; margin-left:0; clear:both;" />
