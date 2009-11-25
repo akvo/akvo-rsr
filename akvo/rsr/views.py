@@ -1006,7 +1006,7 @@ def void_invoice(request, invoice_id, action=None):
         invoice.status = 2
         invoice.save()
         if action == 'back':
-            return redirect('project_donate', project_id=invoice.project.id)
+            return redirect('complete_donation', project_id=invoice.project.id)
         elif action == 'cancel':
             return redirect('project_main', project_id=invoice.project.id)
     else:
