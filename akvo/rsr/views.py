@@ -23,7 +23,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from BeautifulSoup import BeautifulSoup
 from datetime import datetime
@@ -1041,6 +1041,7 @@ def paypal_thanks(request):
         return redirect('/')
     return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
 
+@require_GET
 @render_to('rsr/donate_thanks.html')
 def mollie_thanks(request):
     transaction_id = request.GET.get('transaction_id', None)
