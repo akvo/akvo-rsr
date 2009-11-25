@@ -27,7 +27,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock script %}
 
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Choose payment processor' %} (step 1 of 5)
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% comment %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
 {% endcomment %}
@@ -47,31 +47,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			Select payment system, Enter amount, Confirm amount, Use payment system, Thank you
 		</div>
 
-		<h2 style="padding-left:0;">Select a payment system to use</h2>
-		<div id="processor_left" style="float:left; width:48%; border:1px solid #DEDFE3;">
-			<div style="margin:20px;">
-				<h1>For all users</h1>
-				<div style="margin-left:auto; margin-right:auto; margin-top:30px; margin-bottom:20px; width:230px">
-					<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
-				</div>
-				<p>
-					For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.
-				</p>				
-				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
-					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
-						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>Use PayPal</span></a>
-						<div class="clear"> </div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<h2 style="padding-left:0; margin-bottom:20px;">Select a payment system to use</h2>
 		
 		{% ifequal p.currency 'EUR' %}
-		<div id="processor_right" style="float:right; width:48%; border:1px solid #DEDFE3;">
+		<div id="processor_right" style="float:left; width:48%; border:1px solid #DEDFE3; border-bottom:2px solid #DEDFE3; margin-right:30px; padding-bottom:20px;">
 			<div style="margin:20px;">
 				<h1>For Dutch users only</h1>
-				<div style="margin-left:auto; margin-right:auto; margin-top:20px; margin-bottom:10px; width:230px">
-					<img src="{{MEDIA_URL}}img/ideal-small.png" width="152" height="167" alt="Ideal" />
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px; text-align:center;">
+					<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" />
 				</div>
 				<p>
 					In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.
@@ -85,7 +68,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>			
 		</div>
 		{% endifequal %}
+		
+		<div id="processor_left" style="float:left; width:48%; border:1px solid #DEDFE3; border-bottom:2px solid #DEDFE3; padding-bottom:20px;">
+			<div style="margin:20px;">
+				<h1>For all users</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px;">
+					<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" />
+				</div>
+				<p>
+					For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.
+				</p>				
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
+						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>Use PayPal</span></a>
+						<div class="clear"> </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<div style="clear:both;"></div>
+		<br>
 		<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
 		
 		{% comment %}
