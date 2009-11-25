@@ -23,7 +23,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-
+from django.views.decorators.http import require_POST
 
 from BeautifulSoup import BeautifulSoup
 from datetime import datetime
@@ -1031,9 +1031,10 @@ def mollie_report(request):
     else:
         return HttpResponseServerError
 
+@require_POST
 @render_to('rsr/donate_thanks.html')
 def paypal_thanks(request):
-    invoice_id = request.GET.get('invoice', None)
+    invoice_id = request.POST.get('invoice', None)
     if invoice_id:
         invoice = Invoice.objects.get(pk=invoice_id)
     else:
