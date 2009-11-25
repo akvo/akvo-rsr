@@ -14,23 +14,57 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
 
+<style type="text/css" media="screen">
+	#donate_step_box {
+		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
+		border:1px solid #DFE0E6;
+		height:55px;
+		margin-bottom:20px;
+		margin-left:auto;
+		margin-right:auto;
+		margin-top:20px;
+		/*width:755px;*/
+		width:785px;
+	}
+	
+	#donate_step_box_inner {
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
+		margin-left:auto;
+		margin-right:auto;
+		/*width:680px;*/
+		width:750px;
+		height:40px;
+	}
+	.donate_steps {
+		color:#8F94A3;
+		float:left;
+		height:30px;
+		margin-right:10px;
+		padding-top:30px;
+		/*width:128px;*/
+		width:140px;
+		text-align:center;
+		}
+		
+	.active_donate_step {
+		color:#000;
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_ball.gif') no-repeat center 15px;
+	}
+	
+	#donate_step_5 {
+		margin-right:0;
+	}
+</style>
+
+
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="no-cache" />
 
 {% endblock style%}
 
 
-{% block script %}
-<script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{p.id}};	
-</script>
-{% endblock script %}
-
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id%}">{{p.name}}</a> &raquo; {% trans 'Choose payment processor' %} (step 1 of 5)
-{% comment %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
-{% endcomment %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% endblock breadcrumbs %}
 
 
@@ -42,42 +76,73 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endif %}
 	
 	<div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px; padding-bottom:20px;">
-		<h1>{% trans 'Donate to a project in Akvo RSR' %}</h1>
-		<hr style="width:100%; margin-left:0; clear:both;" />
-		<div id="processor_left" style="float:left; width:48%; background-color:cyan;">
-			<h1>Paypal</h1>
-		    <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal</a> (All territories)
-		</div>
-		
-		{% ifequal p.currency 'EUR' %}
-		<div id="processor_right" style="float:right; width:48%; background-color:yellow;">
-			<h1>IDEAL</h1>
-		    <a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL</a> (Netherlands only)
-		</div>
-		{% endifequal %}
-		<div style="clear:both;"></div>
-		
-		{% comment %}
-		<div style="margin:0; padding:0;">
-			<div>
-				<h3>{% trans 'Project to receive your donation' %}</h3>
-
-				<h1>Click one ofw the following links to select a payment system...</h1>
-				<ul>
-	            {% ifequal p.currency 'EUR' %}
-				<li>
-				    <p>A bit of blurb about iDEAL here</p>
-				    <a href="{% url complete_donation project_id=p.id,engine='ideal' %}">iDEAL (Netherlands only)</a>
-				</li>
-				{% endifequal %}
-				<li>
-				    <p>A bit of blurb about PayPal here</p>
-				    <a href="{% url complete_donation project_id=p.id,engine='paypal' %}">PayPal (All territories)</a>
-				</li>
-				</ul>
+		<h1>{% trans 'Donate to the project' %}</h1>
+		<div id="donate_step_box">
+			<div id="donate_step_box_inner">
+				<div class="donate_steps active_donate_step">
+					<p>{% trans 'Select payment system' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Enter amount' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Confirm amount' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Use payment system' %}</p>
+				</div>
+				<div id="#donate_step_5" class="donate_steps">
+					<p>{% trans 'Thank you!' %}</p>
+				</div>
+				<div class="clear">	</div>
 			</div>
 		</div>
-		{% endcomment %}
+
+		<h2 style="padding-left:0; margin-bottom:20px;">{% trans 'Select a payment system to use' %}</h2>
+		
+		{% ifequal p.currency 'EUR' %}
+		
+		<div id="processor_right" style="float:left; width:445px; border:1px solid #DEDFE3; border-bottom:2px solid #DEDFE3; margin-right:20px; padding-bottom:20px;">
+			<div style="margin:20px;">
+				<h1>{% trans 'For Dutch users only' %}</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px; text-align:center;">
+					<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" />
+				</div>
+				<p>
+					{% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}
+				</p>
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
+						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='ideal' %}"><span>{% trans 'Use iDEAL' %}</span></a>
+						<div class="clear"> </div>
+					</div>
+				</div>				
+			</div>			
+		</div>
+		{% endifequal %}
+		
+		<div id="processor_left" style="float:left; width:445px; border:1px solid #DEDFE3; border-bottom:2px solid #DEDFE3; padding-bottom:20px;">
+			<div style="margin:20px;">
+				<h1>{% trans 'For all users' %}</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px;">
+					<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" />
+				</div>
+				<p>
+					{% trans 'For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.' %}
+				</p>				
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
+						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
+						<div class="clear"> </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		<br>
+		<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+	
 	</div>
 {% endblock %}
 {# ----------------------------------------------------------------------------- #}

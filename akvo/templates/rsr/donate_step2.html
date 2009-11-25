@@ -33,6 +33,50 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 </style>
 
+
+<style type="text/css" media="screen">
+	#donate_step_box {
+		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
+		border:1px solid #DFE0E6;
+		height:55px;
+		margin-bottom:20px;
+		margin-left:auto;
+		margin-right:auto;
+		margin-top:20px;
+		/*width:755px;*/
+		width:785px;
+	}
+	
+	#donate_step_box_inner {
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
+		margin-left:auto;
+		margin-right:auto;
+		/*width:680px;*/
+		width:750px;
+		height:40px;
+	}
+	.donate_steps {
+		color:#8F94A3;
+		float:left;
+		height:30px;
+		margin-right:10px;
+		padding-top:30px;
+		/*width:128px;*/
+		width:140px;
+		text-align:center;
+		}
+		
+	.active_donate_step {
+		color:#000;
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_ball.gif') no-repeat center 15px;
+	}
+	
+	#donate_step_5 {
+		margin-right:0;
+	}
+</style>
+
+
 {% endblock style%}
 
 
@@ -46,11 +90,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 {% block breadcrumbs %}
-
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id%}">{{p.name}}</a> &raquo; {% trans 'Enter donation details' %} (step 2 of 5)
-{% comment %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
-{% endcomment %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% endblock breadcrumbs %}
 
 
@@ -76,7 +116,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</noscript>
 	<div style="padding-bottom:15px; clear:both;"></div>
 	
-	<hr style="width:100%; margin-left:0; clear:both;" />
+	
+	<div id="donate_step_box">
+		<div id="donate_step_box_inner">
+			<div class="donate_steps">
+				<p>{% trans 'Select payment system' %}</p>
+			</div>
+			<div class="donate_steps active_donate_step">
+				<p>{% trans 'Enter amount' %}</p>
+			</div>
+			<div class="donate_steps">
+				<p>{% trans 'Confirm amount' %}</p>
+			</div>
+			<div class="donate_steps">
+				<p>{% trans 'Use payment system' %}</p>
+			</div>
+			<div id="#donate_step_5" class="donate_steps">
+				<p>{% trans 'Thank you!' %}</p>
+			</div>
+			<div class="clear">	</div>
+		</div>
+	</div>
+	
 		
 		{# START Project area #}
 		{# start project area - extra div for IE #}
@@ -107,15 +168,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 		
+		{% ifequal payment_engine 'paypal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<div style="float:right; width:213px;" class="clearfix" >
-				 <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
+			<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
+				<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
+				{% comment %}				
+				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
 				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
+				{% endcomment %}
 			</div>
-			<p>
-			     {% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}
+			<p>{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
+			<p style="margin-top:15px;">
+				{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one." %}
 			</p>
-			<p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
 			<p>
@@ -142,6 +207,43 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</li>
 			</ul>
 		</div>
+		{% endifequal %}
+		{% ifequal payment_engine 'ideal' %}
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
+			<div style="float:right; width:213px;" class="clearfix" >
+				Ideal logo
+			</div>
+			<p>{% trans 'Akvo.org uses the Ideal; system for donations.' %}</p>
+			<p style="margin-top:15px;">
+				{% trans "With iDeal you may make donations via your personal iDeal supported bank." %}
+			</p>
+		</div>
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
+			<p>
+			    {% ifequal p.currency 'EUR' %}
+				{% trans 'iDeal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+		</div>
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
+			<p>
+				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
+			</p>
+			<ul style="margin-top:15px; list-style-type: disc;">
+				<li style="margin-left:30px;">
+				    {% ifequal p.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal p.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
+			</ul>
+		</div>
+		{% endifequal %}
 		
 		<div style="clear:both;"> &nbsp; </div>
 
