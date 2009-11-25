@@ -1013,7 +1013,6 @@ def void_invoice(request, invoice_id, action=None):
         return redirect('project_list')
 
 def mollie_report(request):
-    from decimal import Decimal
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
