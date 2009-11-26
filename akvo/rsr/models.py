@@ -28,6 +28,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from mollie.ideal.utils import get_mollie_banklist
 from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
@@ -1207,6 +1208,15 @@ class PaymentGatewaySelector(models.Model):
         verbose_name = _(u'Project payment gateway configuration')
 
 class InvoiceManager(models.Manager):
+    def get_query_set(self):
+        """Returns a queryset of all invoices
+        Test invoices are excluded in production mode
+        """
+        if not settings.DEBUG:
+            return super(InvoiceManager, self).get_query_set().exclude(test=True)
+        else:
+            return super(InvoiceManager, self).get_query_set()
+
     def stale(self):
         """Returns a queryset of invoices which have been pending
         for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
@@ -1234,6 +1244,8 @@ class Invoice(models.Model):
         ('ideal', _(u'iDEAL')),
     )
     # Setup
+    test = models.BooleanField(_(u'test donation'),
+        help_text=_(u'This flag is set if the donation was made in test mode.'))
     engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
@@ -1248,10 +1260,12 @@ class Invoice(models.Model):
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
+    is_anonymous = models.BooleanField(_(u'anonymous donation'))
     # PayPal
     ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4, blank=True)
+    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
+        choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
 
     objects = InvoiceManager()
