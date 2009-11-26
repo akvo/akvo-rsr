@@ -1207,6 +1207,15 @@ class PaymentGatewaySelector(models.Model):
         verbose_name = _(u'Project payment gateway configuration')
 
 class InvoiceManager(models.Manager):
+    def get_query_set(self):
+        """Returns a queryset of all invoices
+        Test invoices are excluded in production mode
+        """
+        if not settings.DEBUG:
+            return super(InvoiceManager, self).get_query_set().exclude(test=True)
+        else:
+            return super(InvoiceManager, self).get_query_set()
+
     def stale(self):
         """Returns a queryset of invoices which have been pending
         for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
