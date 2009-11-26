@@ -63,9 +63,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 
 {% block script %}
-<script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{p.id}};
-</script>
 
 
 {% endblock script %}
@@ -87,7 +84,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Confirm donation details' %}</h1>
+		<h1>{% trans 'Donate to a project' %}</h1>
 	</div>
 	<noscript>
 		<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display:none;">
@@ -144,7 +141,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 		</div>
-
+		
+		
+		{% ifequal payment_engine 'paypal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
 			<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
 				<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
@@ -165,7 +164,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endifequal %}
 			</p>
 		</div>
-		
+		{% endifequal %}
+		{% ifequal payment_engine 'ideal' %}
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px;">
+			<div style="float:right; width:130px; text-align:center;">
+				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br>
+				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
+			</div>
+			<p>{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}</p>
+			<p style="margin-top:15px;">
+				{% trans "With iDeal you may make donations, etc. More text to come." %}
+			</p>
+			<p style="margin-top:15px;">
+				{% trans "Akvo useds Mollie.nl to connect to iDeal.." %}
+			</p>
+		</div>
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
+			<p>
+			    {% ifequal p.currency 'EUR' %}
+				{% trans 'iDeal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+		</div>
+		{% endifequal %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
 			<p>
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}

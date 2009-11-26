@@ -104,7 +104,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<form method="post" action="." name="donate_form">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Donate to a project in Akvo RSR' %}</h1>
+		<h1>{% trans 'Donate to a project' %}</h1>
 	</div>
 	<noscript>
 		<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
@@ -172,10 +172,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
 			<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
 				<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
-				{% comment %}				
-				<img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
-				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
-				{% endcomment %}
 			</div>
 			<p>{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
 			<p style="margin-top:15px;">
@@ -209,13 +205,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		{% endifequal %}
 		{% ifequal payment_engine 'ideal' %}
-		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<div style="float:right; width:213px;" class="clearfix" >
-				Ideal logo
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px;">
+			<div style="float:right; width:130px; text-align:center;">
+				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br>
+				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
 			</div>
-			<p>{% trans 'Akvo.org uses the Ideal; system for donations.' %}</p>
+			<p>{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}</p>
 			<p style="margin-top:15px;">
-				{% trans "With iDeal you may make donations via your personal iDeal supported bank." %}
+				{% trans "With iDeal you may make donations, etc. More text to come." %}
+			</p>
+			<p style="margin-top:15px;">
+				{% trans "Akvo useds Mollie.nl to connect to iDeal.." %}
 			</p>
 		</div>
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
@@ -269,21 +269,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 {% endblocktrans %}
 				</span>
 			</div>
-			
-			{% comment %}
-			<div style="text-align:right;">
-				
-				<div class="fieldWrapper">						
-					<label for="id_amount">amount:</label>
-					{{ donate_form.amount }}
-				</div>
-
-				{{ donate_form.as_p }}					
-			
-
-			</div>
-			{% endcomment %}
-
 		</div>
 				
 		{% if donate_form.amount.errors %}
@@ -305,10 +290,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
+				{% ifequal payment_engine 'ideal' %}<br>
+				<p class="marchGrey">{% trans 'Select your bank' %}:</p>
+				 {% endifequal %}
 			</div>
 			<div style="float:left;">
 				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
 				<p style="font-weight:bold">{{ user.email }}</p>
+				{% ifequal payment_engine 'ideal' %}
+				<p style="font-weight:bold; margin-top:12px;">{{ donate_form.bank }}</p>
+				{% endifequal %}
 			</div>
 			
 			{% else %}
@@ -322,23 +313,31 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="fieldWrapper" style="margin-bottom:7px">	
 					<p class="marchGrey">{% trans 'Your email' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:9px">
+				<div class="fieldWrapper" style="margin-bottom:23px">
 					<p class="marchGrey">{% trans 'Confirm email' %}:</p>
 				</div>
+				{% ifequal payment_engine 'ideal' %}
+				<div class="fieldWrapper" style="">	
+					<p class="marchGrey">{% trans 'Select your bank' %}:</p>
+				</div>
+				 {% endifequal %}
 			</div>
 			<div style="float:left;">
 				{{ donate_form.name }}<br /><br />
 				{{ donate_form.email }}<br />
-				{{ donate_form.email2 }}
+				{{ donate_form.email2 }}<br><br>
+				{{ donate_form.bank }}
 			</div>
 			{% endif%}
 
             {% ifequal payment_engine 'ideal' %}
+				{% comment %}
                 <br /><br />
                 <div style="float:left; width:100px; text-align:right; padding-right:10px;">
                     <p>{% trans 'Please select your bank from the drop-down list.' %}</p>
                     {{ donate_form.bank }}
                 </div>
+				{% endcomment %}
             {% endifequal %}
 
 			{% comment %}
@@ -361,6 +360,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					
 					{% if donate_form.email2.errors %}
 						{% trans 'Email confirmation' %}: {{ donate_form.email2.errors }}<br />
+					{% endif %}
+					
+					{% if donate_form.bank.errors %}
+						{% trans 'Bank' %}: {{ donate_form.bank.errors }}<br />
 					{% endif %}
 					
 					{% comment %}
