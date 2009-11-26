@@ -28,6 +28,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from mollie.idea.utils import get_mollie_banklist
 from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
@@ -1263,7 +1264,8 @@ class Invoice(models.Model):
     # PayPal
     ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4, blank=True)
+    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
+        choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
 
     objects = InvoiceManager()
