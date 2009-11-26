@@ -1235,7 +1235,7 @@ class Invoice(models.Model):
     )
     # Setup
     test = models.BooleanField(_(u'test donation'),
-        help_text=_(u'This flag is set if the donation was made in test mode.')
+        help_text=_(u'This flag is set if the donation was made in test mode.'))
     engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
