@@ -80,15 +80,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock style%}
 
 
-{% block script %}
-<script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{p.id}};	
-</script>
-
-
-{% endblock script %}
-
-
 {% block breadcrumbs %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% endblock breadcrumbs %}
@@ -141,7 +132,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		{# START Project area #}
 		{# start project area - extra div for IE #}
-		<div style="margin:0; padding:0;">
+	<div style="margin:0; padding:0;">
 		<div{# style="margin-left:40px;"#}>
 			<h3>{% trans 'Project to receive your donation' %}</h3>
 			

@@ -897,8 +897,12 @@ def project_list_widget(request, template='project-list', org_id=0):
         p = p.order_by(order_by, 'name')
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
-            'bgcolor': bgcolor, 'textcolor': textcolor,  'projects': p,
-            'org_id': org_id, 'request_get': request.GET, 'site': site
+            'bgcolor': bgcolor, 
+            'textcolor': textcolor,  
+            'projects': p,
+            'org_id': org_id, 
+            'request_get': request.GET, 
+            'site': site
         },
         context_instance=RequestContext(request))
 
