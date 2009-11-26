@@ -1234,6 +1234,8 @@ class Invoice(models.Model):
         ('ideal', _(u'iDEAL')),
     )
     # Setup
+    test = models.BooleanField(_(u'test donation'),
+        help_text=_(u'This flag is set if the donation was made in test mode.')
     engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
@@ -1248,6 +1250,7 @@ class Invoice(models.Model):
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
+    is_anonymous = models.BooleanField(_(u'anonymous donation'))
     # PayPal
     ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie

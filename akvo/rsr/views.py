@@ -938,6 +938,8 @@ def donate(request, p, engine):
             else:
                 invoice.http_referer = request.META.get('HTTP_REFERER', None)
             if engine == 'ideal':
+                if settings.MOLLIE_TEST:
+                    invoice.test = True
                 invoice.bank = cd['bank']
                 mollie_dict = {
                     'amount': invoice.amount * 100,
@@ -963,6 +965,8 @@ def donate(request, p, engine):
                      'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                     context_instance=RequestContext(request))
             elif engine == 'paypal':
+                if settings.PAYPAL_DEBUG:
+                    invoice.test = True
                 invoice.save()
                 pp_dict = {
                     'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
@@ -1003,11 +1007,12 @@ def donate(request, p, engine):
 def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(Invoice, pk=invoice_id)
     if invoice.status == 1:
-        invoice.status = 2
-        invoice.save()
         if action == 'back':
-            return redirect('complete_donation', project_id=invoice.project.id)
+            return redirect('complete_donation', project_id=invoice.project.id,
+                engine=invoice.engine)
         elif action == 'cancel':
+            invoice.status = 2
+            invoice.save()
             return redirect('project_main', project_id=invoice.project.id)
     else:
         return redirect('project_list')
