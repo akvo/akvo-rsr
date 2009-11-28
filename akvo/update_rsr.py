@@ -14,7 +14,6 @@ from rsr.models import *
 from django.db.models.fields.files import ImageField
 from django.db.models import get_model
 
-# settings.DONATION_NOTIFICATIONS should be False before running the next two
 def mark_existing_invoices_as_anonymous():
     invoices = get_model('rsr', 'invoice').admin_objects.all()
     for invoice in invoices:

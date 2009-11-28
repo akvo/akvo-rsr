@@ -22,7 +22,6 @@ from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 #from django.core import validators
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.mail import send_mail
 from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -1173,7 +1172,7 @@ class PaymentGateway(models.Model):
     description = models.TextField(blank=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     notification_email = models.EmailField(_(u'notification email'),
-        help_text=_(u'When a donation is completed successfully, notification emails will be sent to this address.'))
+        help_text=_(u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.'))
 
     def __unicode__(self):
         return u'%s - %s' % (self.name, self.get_currency_display())

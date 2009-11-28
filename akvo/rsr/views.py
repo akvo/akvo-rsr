@@ -1039,9 +1039,8 @@ def paypal_thanks(request):
     invoice_id = request.POST.get('invoice', None)
     if invoice_id:
         invoice = Invoice.objects.get(pk=invoice_id)
-    else:
-        return redirect('/')
-    return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+    return redirect('/')
 
 @require_GET
 @render_to('rsr/donate_thanks.html')
@@ -1049,6 +1048,5 @@ def mollie_thanks(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
-    else:
-        return redirect('/')
-    return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+    return redirect('/')
