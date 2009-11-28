@@ -41,7 +41,7 @@
 
 <p>A summary of your contribution:</p>
 
-<p>Your gift will help: <a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.name|safe }}</a></p>
+<p>Your gift will help: <a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/">{{ invoice.project.name|safe }}</a></p>
 <p>Total contribution amount: {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</p>
 <p>Akvo Reference ID: {{ invoice.id }}</p>
 {% ifequal invoice.engine "paypal" %}

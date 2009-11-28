@@ -791,8 +791,8 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 # PayPal
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status',)
-    list_filter = ('engine', 'status',)  
+    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test', 'is_anonymous')
+    list_filter = ('engine', 'status', 'test', 'is_anonymous')  
     actions = ('void_invoices',)
     
     def void_invoices(self, request, queryset):
@@ -832,7 +832,7 @@ class PayPalGatewayAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
 
 class MollieGatewayAdmin(admin.ModelAdmin):
-    list_display = ('name', 'partner_id', 'account_email', 'description', 'currency', 'notification_email')
+    list_display = ('name', 'partner_id', 'description', 'currency', 'notification_email')
 
 admin.site.register(get_model('rsr', 'molliegateway'), MollieGatewayAdmin)
 

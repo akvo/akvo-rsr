@@ -1170,10 +1170,10 @@ class ProjectComment(models.Model):
 # Payment engines
 class PaymentGateway(models.Model):
     name = models.CharField(max_length=255, help_text=_(u'Use a short, descriptive name.'))
-    account_email = models.EmailField()
     description = models.TextField(blank=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
-    notification_email = models.EmailField()
+    notification_email = models.EmailField(_(u'notification email'),
+        help_text=_(u'When a donation is completed successfully, notification emails will be sent to this address.'))
 
     def __unicode__(self):
         return u'%s - %s' % (self.name, self.get_currency_display())
@@ -1185,6 +1185,7 @@ class PayPalGateway(PaymentGateway):
     PAYPAL_LOCALE_CHOICES = (
         ('US', _(u'US English')),
     )
+    account_email = models.EmailField()
     locale = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
 
     class Meta:
@@ -1212,7 +1213,7 @@ class InvoiceManager(models.Manager):
         """Returns a queryset of all invoices
         Test invoices are excluded in production mode
         """
-        if not settings.DEBUG:
+        if not settings.DONATION_TEST:
             return super(InvoiceManager, self).get_query_set().exclude(test=True)
         else:
             return super(InvoiceManager, self).get_query_set()
@@ -1268,6 +1269,7 @@ class Invoice(models.Model):
         choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
 
+    admin_objects = models.Manager()
     objects = InvoiceManager()
 
     def get_favicon(self):
@@ -1280,7 +1282,7 @@ class Invoice(models.Model):
     @property
     def gateway(self):
         if self.engine == 'paypal':
-            if settings.PAYPAL_DEBUG:
+            if settings.PAYPAL_TEST:
                 return settings.PAYPAL_SANDBOX_GATEWAY
             else:
                 return self.project.paymentgatewayselector.paypal_gateway.account_email

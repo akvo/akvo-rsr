@@ -937,9 +937,9 @@ def donate(request, p, engine):
                 del request.session['http_referer']
             else:
                 invoice.http_referer = request.META.get('HTTP_REFERER', None)
+            if settings.DONATION_TEST:
+                invoice.test = True
             if engine == 'ideal':
-                if settings.MOLLIE_TEST:
-                    invoice.test = True
                 invoice.bank = cd['bank']
                 mollie_dict = {
                     'amount': invoice.amount * 100,
@@ -965,8 +965,6 @@ def donate(request, p, engine):
                      'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                     context_instance=RequestContext(request))
             elif engine == 'paypal':
-                if settings.PAYPAL_DEBUG:
-                    invoice.test = True
                 invoice.save()
                 pp_dict = {
                     'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
@@ -981,7 +979,7 @@ def donate(request, p, engine):
                     'return_url': settings.PAYPAL_RETURN_URL,
                     'cancel_url': settings.PAYPAL_CANCEL_URL}
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
-                if settings.PAYPAL_DEBUG:
+                if settings.PAYPAL_TEST:
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
