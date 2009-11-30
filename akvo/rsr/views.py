@@ -33,7 +33,7 @@ import feedparser
 from registration.models import RegistrationProfile
 import random
 
-from mollie.ideal.utils import build_mollie_url, query_mollie, get_mollie_fee
+from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -943,14 +943,13 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'description': u'Donation: Akvo Project %d' % int(p.id),
                     'reporturl': settings.MOLLIE_REPORT_URL,
                     'returnurl': settings.MOLLIE_RETURN_URL}
-                mollie_url = build_mollie_url(mollie_dict, mode='fetch')
                 try:
-                    mollie_response = query_mollie(mollie_url)
+                    mollie_response = query_mollie(mollie_dict, mode='fetch')
                     invoice.transaction_id = mollie_response['transaction_id']
                     order_url = mollie_response['order_url']
+                    invoice.save()
                 except:
                     return redirect('donate_500')
-                invoice.save()
                 return render_to_response('rsr/donate_step3.html',
                     {'invoice': invoice,
                      'p': p,
@@ -1016,8 +1015,10 @@ def mollie_report(request):
         invoice = Invoice.objects.get(transaction_id=transaction_id)
         request_dict = {'partnerid': invoice.gateway,
             'transaction_id': transaction_id}
-        url = build_mollie_url(request_dict, mode='check')
-        mollie_response = query_mollie(url)
+        try:
+            mollie_response = query_mollie(request_dict, mode='check')
+        except:
+            return HttpResonseServerError
         if mollie_response['paid'] == 'true':
             mollie_fee = get_mollie_fee()
             invoice.amount_received = invoice.amount - mollie_fee
