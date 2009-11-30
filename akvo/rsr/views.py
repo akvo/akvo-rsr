@@ -1025,8 +1025,8 @@ def mollie_report(request):
         else:
             invoice.status = 2
         invoice.save()
-    else:
-        return HttpResponseServerError
+        return HttpResponse('OK')
+    return HttpResponseServerError
 
 @require_POST
 @render_to('rsr/donate_thanks.html')
