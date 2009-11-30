@@ -3,11 +3,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
-from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
+from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
 from django import forms
+from django import http
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -20,7 +21,7 @@ from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
-from django.template import RequestContext
+from django.template import Context, RequestContext, loader
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
@@ -32,13 +33,10 @@ import feedparser
 from registration.models import RegistrationProfile
 import random
 
-REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
-
-from akvo.rsr.models import Invoice
+from mollie.ideal.utils import build_mollie_url, query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 
-from django import http
-from django.template import Context, loader
+REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
 def server_error(request, template_name='500.html'):
     '''
@@ -907,16 +905,13 @@ def project_list_widget(request, template='project-list', org_id=0):
 def setup_donation(request, p):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
-    request.session['http_referer'] = request.META.get('HTTP_REFERER', None)
+    request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
     return {'p': p}
 
-from mollie.ideal.utils import build_mollie_url, query_mollie, get_mollie_fee
-
 @fetch_project
-def donate(request, p, engine):
+def donate(request, p, engine, has_sponsor_banner=False):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
-    has_sponsor_banner = False
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
     if request.method == 'POST':
@@ -931,10 +926,10 @@ def donate(request, p, engine):
             else:
                 invoice.name = cd['name']
                 invoice.email = cd['email']
-            original_http_referer = request.session.get('http_referer', None)
+            original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
-                del request.session['http_referer']
+                del request.session['original_http_referer']
             else:
                 invoice.http_referer = request.META.get('HTTP_REFERER', None)
             if settings.DONATION_TEST:
@@ -983,6 +978,7 @@ def donate(request, p, engine):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
+                action = request.POST.get('action', None)
                 return render_to_response('rsr/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
@@ -1005,15 +1001,14 @@ def donate(request, p, engine):
 def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(Invoice, pk=invoice_id)
     if invoice.status == 1:
+        invoice.status = 2
+        invoice.save()
         if action == 'back':
             return redirect('complete_donation', project_id=invoice.project.id,
                 engine=invoice.engine)
         elif action == 'cancel':
-            invoice.status = 2
-            invoice.save()
             return redirect('project_main', project_id=invoice.project.id)
-    else:
-        return redirect('project_list')
+    return redirect('project_list')
 
 def mollie_report(request):
     transaction_id = request.GET.get('transaction_id', None)
