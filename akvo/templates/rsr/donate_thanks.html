@@ -44,7 +44,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div style="width:50%; float:left;">
 		<h1 style="color:#00960F;">{% trans 'Thank you for your donation!' %}</h1>
 		<p class="marchGrey">
-			{% trans 'You will receive email confirmation from both Akvo.org and PayPal shortly.' %}<br />
+			{% blocktrans with invoice.get_engine_display as payment_engine %}You will receive email confirmation from both Akvo.org and {{ payment_engine }} shortly.{% endblocktrans %}<br />
 			{% trans 'You may wish to print this page for your records.' %}
 		</p>
 	</div>
