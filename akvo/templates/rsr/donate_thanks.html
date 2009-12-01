@@ -5,9 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load rsr_tags thumbnail %}
-
-{% load i18n %}
+{% load i18n rsr_tags thumbnail %}
 
 {% block title %}{{block.super}} - {% trans 'Thank You for Your Donation to Project' %} {{p.id}}{% endblock title %}
 
@@ -83,7 +81,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div style="width:50%; float:left;">
 		<h1 style="color:#00960F;">{% trans 'Thank you for your donation!' %}</h1>
 	</div>
-	<br>
+	<br />
 	<div id="donate_step_box">
 		<div id="donate_step_box_inner">
 			<div class="donate_steps">
@@ -98,7 +96,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div class="donate_steps">
 				<p>{% trans 'Use payment system' %}</p>
 			</div>
-			<div id="#donate_step_5" class="donate_steps active_donate_step">
+			<div id="donate_step_5" class="donate_steps active_donate_step">
 				<p>{% trans 'Thank you!' %}</p>
 			</div>
 			<div class="clear">	</div>
@@ -116,16 +114,32 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div>
 			<h3 style="padding-left:0; margin-bottom:20px;">{% trans 'Akvo transaction number' %}</h3>
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<p class="marchGrey">{% trans 'Akvo transaction number' %}:</p><br>
+				<p class="marchGrey">{% trans 'Akvo transaction number' %}:</p><br />
 				<p class="marchGrey">{% trans 'Date and time' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold; color:#00960F; font-size:1.6em; margin-top:14px;">{{ invoice.id }}</p><br>
+				<p style="font-weight:bold; color:#00960F; font-size:1.6em; margin-top:14px;">{{ invoice.id }}</p><br />
 				<p style="margin-top:2px;">{{ invoice.time|date:"l, j F Y" }}</p>
 			</div>
 			<div style="clear:both;"> &nbsp; </div>
 			
+			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-top:30px;">
+				<p class="marchGrey">
+					{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
+				</p>
+				<ul class="marchGrey" style="margin-top:15px; list-style-type: disc;">
+					<li style="margin-left:30px;">
+					    {% ifequal invoice.project.currency 'EUR' %}
+					        {% trans 'The Netherlands (Nederland)' %}
+					    {% endifequal %}
+					    {% ifequal invoice.project.currency 'USD' %}
+					        {% trans 'United States of America' %}
+					    {% endifequal %}
+					</li>
+				</ul>
+			</div>
 			<h3 style="padding-left:0; margin-bottom:20px;">{% trans 'Your information' %}</h3>
+			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">				
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
@@ -148,7 +162,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 			<div style="clear:both;"> &nbsp; </div>
 	
-			<h3 style="padding-left:0; margin-bottom:20px;">{% trans 'Project to which you donate' %}</h3>
+			<h3 style="padding-left:0; margin-bottom:20px;">{% trans 'Project to which you donated' %}</h3>
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">				
 				<p class="marchGrey">{% trans 'Project name' %}:</p>
 				<p class="marchGrey">{% trans 'Location' %}:</p>
@@ -173,7 +187,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 			<div style="clear:both;"> &nbsp; </div>
 			
-			<h3 style="padding-left:0; margin-bottom:20px;">{% trans 'Amount you are donating' %}</h3>
+			<h3 style="padding-left:0; margin-bottom:20px;">{% trans 'Amount you donated' %}</h3>
 			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:3px;">
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
@@ -309,46 +323,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	
 	<div style="clear:both;"> &nbsp; </div>
-
 	
 	<div style="margin-left:auto;margin-right:auto; padding-top:20px; text-align:center; width:400px;">
-		
 		<a href="{% url akvo.rsr.views.projectmain invoice.project.id %}">{% trans 'Return to Project' %}</a>
-		{% comment %}		
-		<p style="margin-bottom:20px;" class="marchGrey">{% trans 'Click the Donate button to proceed to PayPal checkout' %}</p>
-		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
-			<a href="#">{% trans 'Cancel' %}</a>
-		</div>
-		<a class="march_button" href="#" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
-		
-		<div style="float:right; padding-left:100px;">
-			{{ pp_form.sandbox }} {# Change to pp_form.render in production #}
-		</div>
-		<div style="clear:both;"> </div>
-		{% endcomment %}
 	</div>
-
+	
 	<div style="clear:both;"> &nbsp;</div>
-	
-	
-	
-	{% comment %}
-		
-
-	<div style="float:left; text-align:center; margin-top:20px; background-color:#eee; width:100%">
-
-		<p>You will be able to review and confirm your donation on the next page</p>
-		
-
-		<div style="height:24px; padding-top:5px; padding-right:30px; display:inline;">
-			<a href="{% url akvo.rsr.views.projectmain p.id %}">Cancel</a>
-		</div>
-		<a class="march_button" href="" onclick="this.blur(); document.donate_form.submit();"><span>Next</span></a>
-	</div>
-	<div style="clear:both;"> </div>
-	{% endcomment %}
-	
 </div>
+
 {#<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> #}
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.3.2.min.js"></script>
 

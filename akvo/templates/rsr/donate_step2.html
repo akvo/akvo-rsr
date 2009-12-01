@@ -201,24 +201,44 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br>
 				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
 			</div>
-			<p>{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}</p>
+			<p>
+				{% trans 'Akvo.org offers the iDeal payment system for Netherlands users to make donations.  With iDEAL, you may make payments entirely within the secure and trusted environment of your own bank&#x27;s website.' %}
+			</p>
+			<p style="margin-top:15px;">
+				{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
+			</p>
+			<p style="margin-top:15px;">
+				{% ifequal p.currency 'EUR' %}
+				{% trans 'Mollie.nl charges €0.99 (excluding BTW) on every transaction. So if you donate €100, €98.82 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+			{% comment %}
+			<p>
+				{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}
+			</p>
 			<p style="margin-top:15px;">
 				{% trans "With iDeal you may make donations, etc. More text to come." %}
 			</p>
 			<p style="margin-top:15px;">
 				{% trans "Akvo useds Mollie.nl to connect to iDeal.." %}
 			</p>
+			{% endcomment %}
 		</div>
+		{% comment %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
 			<p>
 			    {% ifequal p.currency 'EUR' %}
-				{% trans 'iDeal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% trans 'Mollie.nl charges €0.99 (excluding BTW) on every transaction. So if you donate €100, €98.82 Euros will go towards the selected project.' %}
 				{% endifequal %}
 				{% ifequal p.currency 'USD' %}
 				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
 				{% endifequal %}
 			</p>
 		</div>
+		{% endcomment %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
 			<p>
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
@@ -281,6 +301,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
+				<p class="marchGrey">{% trans 'Anonymous' %}:</p>
 				{% ifequal payment_engine 'ideal' %}<br>
 				<p class="marchGrey">{% trans 'Select your bank' %}:</p>
 				 {% endifequal %}
@@ -288,6 +309,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left;">
 				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
 				<p style="font-weight:bold">{{ user.email }}</p>
+				<p style="font-weight:bold">{{ donate_form.is_anonymous }}</p>
 				{% ifequal payment_engine 'ideal' %}
 				<p style="font-weight:bold; margin-top:12px;">{{ donate_form.bank }}</p>
 				{% endifequal %}
@@ -317,7 +339,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{{ donate_form.name }}<br /><br />
 				{{ donate_form.email }}<br />
 				{{ donate_form.email2 }}<br><br>
-				{{ donate_form.bank }}
+				{{ donate_form.bank }}<br>
 			</div>
 			{% endif%}
 
