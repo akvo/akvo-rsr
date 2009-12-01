@@ -130,10 +130,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	
 		
-		{# START Project area #}
-		{# start project area - extra div for IE #}
+	{# START Project area #}
+	{# start project area - extra div for IE #}
 	<div style="margin:0; padding:0;">
-		<div{# style="margin-left:40px;"#}>
+		<div>
 			<h3>{% trans 'Project to receive your donation' %}</h3>
 			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
@@ -158,6 +158,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 		</div>
+		
 		
 		{% ifequal payment_engine 'paypal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
@@ -207,6 +208,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p style="margin-top:15px;">
 				{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
 			</p>
+
 			<p style="margin-top:15px;">
 				{% ifequal p.currency 'EUR' %}
 				{% trans 'Mollie.nl charges €0.99 (excluding BTW) on every transaction. So if you donate €100, €98.82 Euros will go towards the selected project.' %}
@@ -320,14 +322,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p>{% trans 'Provide your full name and email address below.' %}</p>
 			<br /><br />
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<div class="fieldWrapper" style="margin-bottom:23px; margin-top:4px;">	
+				<div class="fieldWrapper" style="margin-bottom:20px; margin-top:4px;">	
 					<p class="marchGrey">{% trans 'Your name' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:7px">	
+				<div class="fieldWrapper" style="margin-bottom:10px">	
 					<p class="marchGrey">{% trans 'Your email' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:23px">
+				<div class="fieldWrapper" style="margin-bottom:10px">
 					<p class="marchGrey">{% trans 'Confirm email' %}:</p>
+				</div>
+				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="marchGrey">{% trans 'Anonymous' %}:</p>
 				</div>
 				{% ifequal payment_engine 'ideal' %}
 				<div class="fieldWrapper" style="">	
@@ -336,10 +341,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				 {% endifequal %}
 			</div>
 			<div style="float:left;">
-				{{ donate_form.name }}<br /><br />
-				{{ donate_form.email }}<br />
-				{{ donate_form.email2 }}<br><br>
-				{{ donate_form.bank }}<br>
+				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
+				<p style="font-weight:bold; margin-bottom:4px;">{{ donate_form.email }}</p>
+				<p style="font-weight:bold; margin-bottom:4px;">{{ donate_form.email2 }}</p>
+				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.is_anonymous }}</p>
+				<p style="font-weight:bold">{{ donate_form.bank }}</p>
 			</div>
 			{% endif%}
 
