@@ -14,12 +14,26 @@ from rsr.models import *
 from django.db.models.fields.files import ImageField
 from django.db.models import get_model
 
+def mark_existing_invoices_as_anonymous():
+    invoices = get_model('rsr', 'invoice').admin_objects.all()
+    for invoice in invoices:
+        invoice.is_anonymous = True
+        invoice.save()
+
+def mark_test_invoices():
+    invoices = get_model('rsr', 'invoice').admin_objects.filter(engine='paypal')
+    for invoice in invoices:
+        if invoice.ipn:
+            related_ipn = get_model('ipn', 'paypalipn').objects.get(invoice=invoice.id)
+            if related_ipn.test_ipn:
+                invoice.test = True
+                invoice.save()
+
 def create_default_mollie_gateway():
     gateway = get_model('rsr', 'molliegateway').objects
     create_it = gateway.create(name=u'Default',
         partner_id=281135,
-        description=u'Default Akvo Mollie/iDEAL payment gateway',
-        account_email=u'paul.burt@me.com',
+        description=u"Paul's Mollie/iDEAL payment gateway",
         notification_email=u'paul.burt@me.com')
 
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
@@ -95,3 +109,5 @@ if __name__ == '__main__':
     #resave_all_images()
     #budget_refactor()
     create_default_mollie_gateway()
+    mark_test_invoices()
+    mark_existing_invoices_as_anonymous()
