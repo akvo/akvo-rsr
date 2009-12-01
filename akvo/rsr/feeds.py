@@ -18,7 +18,7 @@ class ProjectUpdates(Feed):
         return Project.objects.get(pk__exact=bits[0])
 
     def title(self, obj):
-        return _(u'Akvo RSR-no %(id)d: %(project_title)s') % {'id':obj.id, 'project_ttle':obj.name}
+        return _(u'Akvo RSR-no %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.name}
 
     def link(self, obj):
         if not obj:
