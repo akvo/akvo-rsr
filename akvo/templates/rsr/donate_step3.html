@@ -61,19 +61,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% endblock style%}
 
-
-{% block script %}
-
-
-{% endblock script %}
-
 {% block breadcrumbs %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id%}">{{p.name}}</a> &raquo; {% trans 'Confirm donation details' %} (step 3 of 5)
-{% comment %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
-{% endcomment %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id%}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% endblock breadcrumbs %}
-
 
 {% block content %}
 {% if live_earth_enabled %}
@@ -171,6 +161,24 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br>
 				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
 			</div>
+			<p>
+				{% trans 'Akvo.org offers the iDeal payment system for Netherlands users to make donations.  With iDEAL, you may make payments entirely within the secure and trusted environment of your own bank&#x27;s website.' %}
+			</p>
+			<p style="margin-top:15px;">
+				{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
+			</p>
+
+			<p style="margin-top:15px;">
+				{% ifequal p.currency 'EUR' %}
+				{% trans 'Mollie.nl charges €0.99 (excluding BTW) on every transaction. So if you donate €100, €98.82 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+			
+			
+			{% comment %}
 			<p>{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}</p>
 			<p style="margin-top:15px;">
 				{% trans "With iDeal you may make donations, etc. More text to come." %}
@@ -188,6 +196,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
 				{% endifequal %}
 			</p>
+			{% endcomment %}
 		</div>
 		{% endifequal %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">

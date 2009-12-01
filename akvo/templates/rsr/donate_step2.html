@@ -80,15 +80,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock style%}
 
 
-{% block script %}
-<script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{p.id}};	
-</script>
-
-
-{% endblock script %}
-
-
 {% block breadcrumbs %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% endblock breadcrumbs %}
@@ -139,10 +130,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	
 		
-		{# START Project area #}
-		{# start project area - extra div for IE #}
-		<div style="margin:0; padding:0;">
-		<div{# style="margin-left:40px;"#}>
+	{# START Project area #}
+	{# start project area - extra div for IE #}
+	<div style="margin:0; padding:0;">
+		<div>
 			<h3>{% trans 'Project to receive your donation' %}</h3>
 			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
@@ -167,6 +158,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 		</div>
+		
 		
 		{% ifequal payment_engine 'paypal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
@@ -210,24 +202,45 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br>
 				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
 			</div>
-			<p>{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}</p>
+			<p>
+				{% trans 'Akvo.org offers the iDeal payment system for Netherlands users to make donations.  With iDEAL, you may make payments entirely within the secure and trusted environment of your own bank&#x27;s website.' %}
+			</p>
+			<p style="margin-top:15px;">
+				{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
+			</p>
+
+			<p style="margin-top:15px;">
+				{% ifequal p.currency 'EUR' %}
+				{% trans 'Mollie.nl charges €0.99 (excluding BTW) on every transaction. So if you donate €100, €98.82 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+			{% comment %}
+			<p>
+				{% trans 'Akvo.org offers the iDeal system for Netherlands users to make donations.' %}
+			</p>
 			<p style="margin-top:15px;">
 				{% trans "With iDeal you may make donations, etc. More text to come." %}
 			</p>
 			<p style="margin-top:15px;">
 				{% trans "Akvo useds Mollie.nl to connect to iDeal.." %}
 			</p>
+			{% endcomment %}
 		</div>
+		{% comment %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
 			<p>
 			    {% ifequal p.currency 'EUR' %}
-				{% trans 'iDeal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+				{% trans 'Mollie.nl charges €0.99 (excluding BTW) on every transaction. So if you donate €100, €98.82 Euros will go towards the selected project.' %}
 				{% endifequal %}
 				{% ifequal p.currency 'USD' %}
 				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
 				{% endifequal %}
 			</p>
 		</div>
+		{% endcomment %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
 			<p>
 				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
@@ -290,6 +303,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
+				<p class="marchGrey">{% trans 'Anonymous' %}:</p>
 				{% ifequal payment_engine 'ideal' %}<br>
 				<p class="marchGrey">{% trans 'Select your bank' %}:</p>
 				 {% endifequal %}
@@ -297,6 +311,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left;">
 				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
 				<p style="font-weight:bold">{{ user.email }}</p>
+				<p style="font-weight:bold">{{ donate_form.is_anonymous }}</p>
 				{% ifequal payment_engine 'ideal' %}
 				<p style="font-weight:bold; margin-top:12px;">{{ donate_form.bank }}</p>
 				{% endifequal %}
@@ -307,14 +322,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p>{% trans 'Provide your full name and email address below.' %}</p>
 			<br /><br />
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<div class="fieldWrapper" style="margin-bottom:23px; margin-top:4px;">	
+				<div class="fieldWrapper" style="margin-bottom:20px; margin-top:4px;">	
 					<p class="marchGrey">{% trans 'Your name' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:7px">	
+				<div class="fieldWrapper" style="margin-bottom:10px">	
 					<p class="marchGrey">{% trans 'Your email' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:23px">
+				<div class="fieldWrapper" style="margin-bottom:10px">
 					<p class="marchGrey">{% trans 'Confirm email' %}:</p>
+				</div>
+				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="marchGrey">{% trans 'Anonymous' %}:</p>
 				</div>
 				{% ifequal payment_engine 'ideal' %}
 				<div class="fieldWrapper" style="">	
@@ -323,10 +341,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				 {% endifequal %}
 			</div>
 			<div style="float:left;">
-				{{ donate_form.name }}<br /><br />
-				{{ donate_form.email }}<br />
-				{{ donate_form.email2 }}<br><br>
-				{{ donate_form.bank }}
+				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
+				<p style="font-weight:bold; margin-bottom:4px;">{{ donate_form.email }}</p>
+				<p style="font-weight:bold; margin-bottom:4px;">{{ donate_form.email2 }}</p>
+				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.is_anonymous }}</p>
+				<p style="font-weight:bold">{{ donate_form.bank }}</p>
 			</div>
 			{% endif%}
 
