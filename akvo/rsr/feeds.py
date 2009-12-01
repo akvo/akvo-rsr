@@ -23,7 +23,8 @@ class ProjectUpdates(Feed):
     def link(self, obj):
         if not obj:
             raise FeedDoesNotExist
-        return '/rsr/project/%d/' % obj.id
+        #return '/rsr/project/%d/' % obj.id
+        return reverse('project_main', args=[obj.id])
 
     def description(self, obj):
         return "Project updates for project %s" % obj.name
@@ -50,7 +51,7 @@ class AllProjectUpdates(Feed):
     title = _(u'Akvo RSR all project updates') 
     
     def link(self):
-        return reverse('akvo_feeds', args=['all-projects'])
+        return reverse('project_list')
 
     #def description(self, obj):
     #    return "Project updates for project %s" % obj.name
