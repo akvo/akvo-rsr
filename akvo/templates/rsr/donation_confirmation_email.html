@@ -1,59 +1,56 @@
 {% load i18n %}
 
-<p>{{ invoice.time }}</p>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Akvo.org - {% trans 'Thank you for your online contribution' %}</title>
+	
+</head>
+<body>
+	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
+	<p>
+		{% trans 'Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can 
+		follow the projects progress via' %} <a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/updates">{% trans 'updates' %}</a> {% trans 'on' %} Akvo.org.
+	</p>
 
-<br />
+	<h3>{% trans 'A summary of your contribution' %}</h3>
+	<p>
+		{% trans 'Name' %}: {{ invoice.get_name }}<br>
+		{% trans 'Email' %}: {{ invoice.get_email }}<br>
+		<br>
+		{% trans 'Your gift will help' %}: <a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/">{{ invoice.project.name|safe }}</a><br>
+		{% trans 'Total contribution amount' %}: {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
+		{% trans 'Akvo Reference ID' %}: {{ invoice.id }}<br>
+		{% ifequal invoice.engine "paypal" %}
+	    {% trans 'PayPal reference' %}: {{ invoice.ipn }}<br>
+		{% endifequal %}
+		{% ifequal invoice.engine "ideal" %}
+		{% trans 'Mollie/iDEAL reference' %}: {{ invoice.transaction_id }}<br>
+		{% endifequal %}
+	</p>
+	
+	<h3>{% trans 'About your contribution' %}</h3>
+	<p>
+		{% trans 'No goods or services were provided in exchange for your gift of funds. At this time, only residents of the following countries may treat this donation as a tax-deductible charitable contribution to the extent allowed by law. We are working hard to expand this list to new countries.' %}
+	</p>
 
-{% if invoice.user %}
-<p>Name: {{ invoice.user.first_name }} {{ invoice.user.last_name }}</p>
-<p>Email: {{ invoice.user.email }}</p>
-<br />
-<p>Dear {{ invoice.user.first_name }} {{ invoice.user.last_name }},</p>
-{% else %}
-<p>Name: {{ invoice.name }}</p>
-<p>Email: {{ invoice.email }}</p>
-<br />
-<p>Dear {{ invoice.name }},</p>
-{% endif %}
+	<ul>
+		{% ifequal invoice.project.currency 'EUR' %}
+	    <li>{% trans 'The Netherlands (Nederland)' %}</li>
+		{% endifequal %}
+		{% ifequal invoice.project.currency 'USD' %}
+	    <li>{% trans 'United States of America' %}</li>
+		{% endifequal %}
+	</ul>
+	
+	<p>
+		{% trans 'Please retain this message as a record of your contribution. You may email us with technical questions at' %} <a href="mailto:contribute@akvo.org">contribute@akvo.org</a> {% trans 'and please tell your friends about' %} <a href="http://www.akvo.org/">Akvo.org</a>!  :)
+		<br>
+		<br>
+		{% trans 'Thanks' %}<br>
+		{% trans 'The Akvo team' %}
+	</p>
 
-<br />
-
-<p>Thank you for your online contribution on Akvo.org.  By giving, you have personally helped to advance the cause of clean water and sanitation around the world.</p>
-
-<p>No goods or services were provided in exchange for your gift of funds.  At this time, only residents of the following countries may treat this donation as a tax-deductible charitable contribution to the extent allowed by law.</p>
-
-<ul>
-{% ifequal invoice.project.currency 'EUR' %}
-    <li>The Netherlands (Nederland)</li>
-{% endifequal %}
-{% ifequal invoice.project.currency 'USD' %}
-    <li>United States of America</li>
-{% endifequal %}
-</ul>
-
-<p>We are working hard to expand this list to new countries.  In the future, you may check <a href="http://www.akvo.org/web/charitable/">http://www.akvo.org/web/charitable</a> to see if we have added your country to this list.</p>
-
-<p>Please retain this message as a record of your contribution.</p>
-
-<p>And please tell your friends about <a href="http://www.akvo.org/">Akvo.org</a>!  :)</p>
-
-<br />
-
-<p>A summary of your contribution:</p>
-
-<p>Your gift will help: <a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/">{{ invoice.project.name|safe }}</a></p>
-<p>Total contribution amount: {{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</p>
-<p>Akvo Reference ID: {{ invoice.id }}</p>
-{% ifequal invoice.engine "paypal" %}
-    <p>PayPal reference: {{ invoice.ipn }}</p>
-{% endifequal %}
-{% ifequal invoice.engine "ideal" %}
-    <p>Mollie/iDEAL reference: {{ invoice.transaction_id }}</p>
-{% endifequal %}
-
-
-<br />
-
-<p>Visit the project at the link above to see progress and updates.</p>
-
-<p>You may email us with technical questions at <a href="mailto:contribute@akvo.org">contribute@akvo.org</a></p>
+</body>
+</html>
