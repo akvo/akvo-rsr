@@ -1273,7 +1273,19 @@ class Invoice(models.Model):
 
     def get_favicon(self):
         pass # @ grab favicon from HTTP_REFERER site    
-        
+    
+    @property
+    def get_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        return self.name
+
+    @property
+    def get_email(self):
+        if self.user:
+            return self.user.email
+        return self.email
+
     @property
     def currency(self):
         return self.project.currency
