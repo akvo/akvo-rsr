@@ -261,13 +261,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="clear:both;"> &nbsp; </div>
 
 		</div>
-		{# stop project area - extra div for IE #}
-		{# END Project area #}
 		
 		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
 
-		{# START Enter amount #}
-		<div style="{#margin-left:40px; #}float:left; width:300px;">
+		<div style="float:left; width:300px;">
             {% blocktrans with p.get_currency_display|safe as currency %}
 			<h3>Amount you wish to donate (in {{currency}})</h3>
             {% endblocktrans %}
@@ -291,12 +288,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<br />
 		</div>
 		{% endif %}
-		{# END Enter amount #}
-	
+		
 	    <div style="clear:both;"></div>
 	    
-        {# START Your information #}
-	    {# <div style="margin-left:40px"> #}
 		<div{# style="margin-left:40px;"#}>
 			<h3>{% trans 'Your information' %}</h3>
 			{% if user.is_authenticated %}

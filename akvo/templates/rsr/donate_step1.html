@@ -112,9 +112,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}						
 				</p>
 				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
-					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
-						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='ideal' %}"><span>{% trans 'Use iDEAL' %}</span></a>
-						<div class="clear"> </div>
+					<div style="display:inline-block; width:140px;">
+						<a style="float:none;" class="march_button" href="{% url complete_donation project_id=p.id,engine='ideal' %}"><span>{% trans 'Use iDeal' %}</span></a>
 					</div>
 				</div>				
 			</div>			
@@ -131,9 +130,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% trans 'For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.' %}
 				</p>				
 				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
-					<div style="text-align:center; margin-left:auto; margin-right:auto; display:inline-block;">
-						<a class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
-						<div class="clear"> </div>
+					<div style="display:inline-block; width:140px;">
+						<a style="float:none;" class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
 					</div>
 				</div>
 			</div>
