@@ -145,14 +145,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endifequal %}
 			</div>
 			<div style="float:left;">
-				{% if user %}
-				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
-				<p style="font-weight:bold">{{ user.email }}</p>
-				{% else %}
-				<p style="font-weight:bold">{{ invoice.name }}</p>
-				<p style="font-weight:bold">{{ invoice.email }}</p>
-				{% endif %}
-				
+				<p style="font-weight:bold">{{ invoice.get_name }}</p>
+				<p style="font-weight:bold">{{ invoice.get_email }}</p>
+
 				{% ifequal invoice.engine 'ideal'  %}
 				<p style="font-weight:bold">{{ invoice.get_bank_display }}</p>
 				{% endifequal %}
