@@ -28,6 +28,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from mollie.ideal.utils import get_mollie_banklist
+from paypal.standard.ipn.signals import payment_was_flagged
 from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
@@ -1319,7 +1320,6 @@ class Invoice(models.Model):
 
 
 # PayPal IPN listener
-from paypal.standard.ipn.signals import payment_was_flagged
 def process_paypal_ipn(sender, **kwargs):
     ipn = sender
     if ipn.payment_status == 'Completed':
@@ -1337,8 +1337,7 @@ post_save.connect(create_organisation_account, sender=Organisation)
 post_save.connect(create_publishing_status, sender=Project)
 post_save.connect(create_payment_gateway_selector, sender=Project)
 
-if settings.DONATION_NOTIFICATION_EMAILS:
-    post_save.connect(donation_completed, sender=Invoice)
+post_save.connect(donation_completed, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
