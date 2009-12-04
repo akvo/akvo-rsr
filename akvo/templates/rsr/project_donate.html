@@ -91,14 +91,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
 				<p>{{ p.country.get_continent_display }} / {{p.country}}, {{p.city}}</p>
 				<p>{{ p.id }}</p>
-				{% if p.current_image %}
-					<div style="margin-top:5px;">
-						<a href="{% url akvo.rsr.views.projectmain p.id %}">
-                            <img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />
-						</a>
-					</div>
-			    {% endif %}
-
+                <div style="margin-top:5px;">
+                    <a href="{% url akvo.rsr.views.projectmain p.id %}">
+                        {% project_thumb p 172 125 %}
+                    </a>
+                </div>
 				<div style="width:172px;">
 					{% funding_table p %}
 				</div>

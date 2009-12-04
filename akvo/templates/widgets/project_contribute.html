@@ -35,13 +35,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
 	<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:60}}</p>
 		
-	{% if project.current_image %}
 	<div class="photo_frame">
 		<a href="{% url akvo.rsr.views.projectmain project.id %}">
-			<img src="{% thumbnail project.current_image 190x142 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" width="190px" height="142px"/>
+            {% project_thumb project 190 142 %}
 		</a>
 	</div>
-	{% endif %}
 		
 	<p class="smallFont grey topmargin">{% trans 'Funding' %}</p>
 	<div>
