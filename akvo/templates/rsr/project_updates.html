@@ -46,35 +46,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             </p>
             <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
             <br />
-            {% if u.photo %}
-                {% ifequal u.photo_location 'B' %}
-                    <img src="{% thumbnail u.photo 668x501 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 0px 5px 20px" />
-                    <p class="small lightx1">
-                        {% if u.photo_caption %}
-                            {{u.photo_caption}}
-                        {% endif %}
-                        {% if u.photo_credit %}
-                            {% trans 'Photo credit' %}: {{u.photo_credit}}
-                        {% endif %}
-                    </p>
-                {% endifequal %}
-            {% endif %}
+            {% ifequal u.photo_location 'B' %}
+                {% update_thumb u 668 501 %}
+            {% endifequal %}
             {% if u.text %}
                 <p>{{u.text}}</p>
             {% endif %}
-            {% if u.photo %}
-                {% ifequal u.photo_location 'E' %}
-                    <img src="{% thumbnail u.photo 668x501 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 0px 5px 20px" />
-                    <p class="small lightx1">
-                        {% if u.photo_caption %}
-                            {{u.photo_caption}}
-                        {% endif %}
-                        {% if u.photo_credit %}
-                            Photo credit: {{u.photo_credit}}
-                        {% endif %}
-                    </p>
-                {% endifequal %}
-            {% endif %}
+            {% ifequal u.photo_location 'E' %}
+                {% update_thumb u 668 501 %}
+            {% endifequal %}
             <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">{% trans 'Permalink' %}</a></p>
         {% endfor %}
 

@@ -144,5 +144,15 @@ def map_thumb(context, object, width, height, style=''):
         'div_style'     : style,
     }
 
-
-
+@register.inclusion_tag('inclusion_tags/update_thumb.html', takes_context=True)
+def update_thumb(context, update, width, height):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'],
+        'update'    : update,
+        'width'     : width,
+        'height'    : height,
+        'wxh'       : '%sx%s' % (width, height,),
+    }
+ 

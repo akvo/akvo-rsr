@@ -245,35 +245,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     </p>
                     <!--<p><span class="lightx1">Status:</span> {{u.show_status}}</p>-->
                     <br />
-                    {% if u.photo %}
-                        {% ifequal u.photo_location 'B' %}
-                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" width="300px" height="225px" />
-                            <p class="small lightx1">
-                                {% if u.photo_caption %}
-                                    {{u.photo_caption}}
-                                {% endif %}
-                                {% if u.photo_credit %}
-                                    {% trans 'Photo credit' %}: {{u.photo_credit}}
-                                {% endif %}
-                            </p>
-                        {% endifequal %}
-                    {% endif %}
+                    {% ifequal u.photo_location 'B' %}
+                        {% update_thumb u 300 225 %}
+                    {% endifequal %}
                     {% if u.text %}
                         <p>{{u.text|linebreaks}}</p>
                     {% endif %}
-                    {% if u.photo %}
-                        {% ifequal u.photo_location 'E' %}
-                            <img src="{% thumbnail u.photo 300x225 autocrop,sharpen %}" alt="{{u.photo_caption}}" style="margin: 10px 10px 5px 20px" width="300px" height="225px"/>
-                            <p class="small lightx1">
-                                {% if u.photo_caption %}
-                                    {{u.photo_caption}}
-                                {% endif %}
-                                {% if u.photo_credit %}
-                                    {% trans 'Photo credit' %}: {{u.photo_credit}}
-                                {% endif %}
-                            </p>
-                        {% endifequal %}
-                    {% endif %}
+                    {% ifequal u.photo_location 'E' %}
+                        {% update_thumb u 300 225 %}
+                    {% endifequal %}
                     <hr />            
                 {% endfor %}
                 <p style="text-align:right;"><a href="{% url akvo.rsr.views.projectupdates p.id %}">{% trans 'Earlier updates' %}</a></p>
