@@ -161,14 +161,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% for o in page.object_list %}
 <tr>
 	<td>
-		{% if o.logo %}
-            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
-			<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
-            </a>
-		{% else %}
-			<div style="background-color: #ccc; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
-		{% endif %}
-
+        {% org_logo o 100 75 'margin: 10px 0;' %}
 		<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
 		<div class="lightx2 small">{{o.long_name}}</div>
 		<div style="clear: left;">

@@ -104,6 +104,45 @@ def funding_box_wide(context, project):
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    
+@register.inclusion_tag('inclusion_tags/project_thumb.html', takes_context=True)
+def project_thumb(context, project, width, height, style=''):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'],
+        'project'   : project,
+        'width'     : width,
+        'height'    : height,
+        'wxh'       : '%sx%s' % (width, height,),
+        'div_style'     : style,
+    }
+    
+@register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
+def org_logo(context, org, width, height, style=''):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'],
+        'org'       : org,
+        'width'     : width,
+        'height'    : height,
+        'wxh'       : '%sx%s' % (width, height,),
+        'div_style' : style,
+    }
+    
+@register.inclusion_tag('inclusion_tags/map_thumb.html', takes_context=True)
+def map_thumb(context, object, width, height, style=''):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'],
+        'object'    : object,
+        'width'     : width,
+        'height'    : height,
+        'wxh'       : '%sx%s' % (width, height,),
+        'div_style'     : style,
+    }
 
 
 

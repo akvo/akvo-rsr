@@ -123,11 +123,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
  		{% for funder in p.fundingpartner_set.all %}
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
-				{% if funder.funding_organisation.logo %}
-					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
-					<img src="{% thumbnail funder.funding_organisation.logo 140x140 autocrop,upscale,sharpen %}" alt="{% blocktrans with funder.funding_organisation.name as funding_org_name %}Logo of {{funding_org_name}}{% endblocktrans %}" style="margin: 10px 20px 10px 20px;" />
-					</a>
-				{% endif %}	
+                <a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
+                    {% org_logo funder.funding_organisation 140 105 'margin: 10px 20px 10px 20px;' %}
+                </a>
 				<p><a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
 				<p>{{funder.funding_organisation.city}}, {{funder.funding_organisation.country}}</p>
 				{#<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{funder.get_currency_display|safe}} {{funder.funding_amount|round}}</span></b></p>#}

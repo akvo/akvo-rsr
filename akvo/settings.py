@@ -1,1 +1,1 @@
-../../static/settings.py
+../../static/settings_thumbs_fix.py
