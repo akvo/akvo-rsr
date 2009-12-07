@@ -211,10 +211,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
+				<p class="marchGrey">{% trans 'Anonymous' %}:</p>
+				{% ifequal payment_engine 'ideal' %}
+				<p class="marchGrey">{% trans 'Your bank' %}:</p>	
+				{% endifequal %}
+				
 			</div>
 			<div style="float:left;">
 				<p style="font-weight:bold">{{ invoice.get_name }}</p>
 				<p style="font-weight:bold">{{ invoice.get_email }}</p>
+				{% if is_anonymous %}
+				<p style="font-weight:bold">Anonymous</p>
+				{% else %}
+				<p style="font-weight:bold">Not anonymous</p>
+				{% endif %}
+				{% ifequal payment_engine 'ideal' %}
+				<p style="font-weight:bold">{{ invoice.get_bank_display }}</p>
+				{% endifequal %}
 			</div>
 			<div style="clear:both;"> </div>			
 		</div>
