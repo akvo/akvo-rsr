@@ -231,20 +231,18 @@ class ProjectAdminModelForm(forms.ModelForm):
         model = get_model('rsr', 'project')
 
 
-MOLLIE_BANKLIST = get_mollie_banklist()
-
 class InvoiceForm(forms.ModelForm):
     def __init__(self, user, project, engine, *args, **kwargs): 
         super(InvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
         self.engine = engine
         if not user.is_authenticated():
-            self.fields['name']  = forms.CharField(label=_(u'Full name'))
-            self.fields['email'] = forms.EmailField(label=_(u'Email address'))
-            self.fields['email2'] = forms.EmailField(label=_(u'Email address (confirm)'))
+            self.fields['name']  = forms.CharField(label=_('Full name'))
+            self.fields['email'] = forms.EmailField(label=_('Email address'))
+            self.fields['email2'] = forms.EmailField(label=_('Email address (confirm)'))
         if engine == 'ideal':
             self.fields['bank'] = forms.CharField(max_length=4, 
-                widget=forms.Select(choices=MOLLIE_BANKLIST))
+                widget=forms.Select(choices=get_mollie_banklist(empty_label=_('Please select your bank'))))
 
     amount = forms.IntegerField(min_value=2)
         
