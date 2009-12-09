@@ -26,6 +26,7 @@
 		{% endifequal %}
 		{% ifequal invoice.engine "ideal" %}
 		{% trans 'Mollie/iDEAL reference' %}: {{ invoice.transaction_id }}<br>
+		{% trans 'Bank' %}: {{ invoice.get_bank_display }}
 		{% endifequal %}
 	</p>
 	
