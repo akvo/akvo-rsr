@@ -32,8 +32,9 @@ import time
 import feedparser
 from registration.models import RegistrationProfile
 import random
+from decimal import Decimal
 
-from mollie.ideal.utils import query_mollie, get_mollie_fee
+from mollie.ideal.utils import query_mollie
 from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -948,7 +949,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'reporturl': settings.MOLLIE_REPORT_URL,
                     'returnurl': settings.MOLLIE_RETURN_URL}
                 try:
-                    mollie_response = query_mollie(mollie_dict, mode='fetch')
+                    mollie_response = query_mollie(mollie_dict, 'fetch')
                     invoice.transaction_id = mollie_response['transaction_id']
                     order_url = mollie_response['order_url']
                     invoice.save()
@@ -1020,12 +1021,11 @@ def mollie_report(request):
         request_dict = {'partnerid': invoice.gateway,
             'transaction_id': transaction_id}
         try:
-            mollie_response = query_mollie(request_dict, mode='check')
+            mollie_response = query_mollie(request_dict, 'check')
         except:
             return HttpResonseServerError
         if mollie_response['paid'] == 'true':
-            mollie_fee = get_mollie_fee()
-            invoice.amount_received = invoice.amount - mollie_fee
+            invoice.amount_received = invoice.amount - Decimal('1.18')
             invoice.status = 3
         else:
             invoice.status = 2
