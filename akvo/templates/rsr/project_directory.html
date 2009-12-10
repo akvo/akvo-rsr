@@ -73,7 +73,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div class="small lightx2">{{showcase.subtitle}}</div>
 		{% if showcase.current_image %}
 			<a href="{% url akvo.rsr.views.projectmain showcase.id %}">
-			<img src="{% thumbnail showcase.current_image 140x105 autocrop,upscale,sharpen %}" alt="{{showcase.current_image_caption}}" style="margin:10px 0" width="140px" height="105px" />
+                {% project_thumb showcase 140 105 'margin:10px 0;' %}
+			<!--<img src="{% thumbnail showcase.current_image 140x105 autocrop,upscale,sharpen %}" alt="{{showcase.current_image_caption}}" style="margin:10px 0" width="140px" height="105px" />-->
 			</a>
 			<p class="small lightx2">{{showcase.current_image_caption}}</p>
 		{% else %}
@@ -218,15 +219,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% for p in page.object_list %}
 <tr>
 	<td>
-
-		{% if p.current_image %}
-			<a href="{% url akvo.rsr.views.projectmain p.id %}">
-			<img src="{% thumbnail p.current_image 100x75 crop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="float:left; margin-right: 10px;" width="100px" height="75px" />
-			</a>
-		{% else %}
-			<div style="background-color: #fff; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
-		{% endif %}	
-
+        <a href="{% url akvo.rsr.views.projectmain p.id %}">
+            {% project_thumb p 100 75 'float:left; margin-right: 10px;' %}
+        </a>
 		<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a>
 		<div class="lightx2 small">{{p.subtitle}}</div>
 		<div style="clear: left;">

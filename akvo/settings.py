@@ -1,1 +1,0 @@
-../../static/settings_firebrand.py

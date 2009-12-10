@@ -33,13 +33,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div id="content">
 			<div id="heightconstrain">
 				<h2 id="project_title" style="margin-top:5px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-				{% if project.current_image %}
-					<div class="photo_frame">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">
-							<img src="{% thumbnail project.current_image 150x113 autocrop,upscale,sharpen%}" alt="{{project.project_plan_summary|safe|smart_truncate:110}}" width="150px" height="113px">
-						</a>
-					</div>
-			    {% endif %}
+                <div class="photo_frame">
+                    <a href="{% url akvo.rsr.views.projectmain project.id %}">
+                        {% project_thumb project 150 113 %}
+                    </a>
+                </div>
 				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
 					{{project.country}}, {{project.city}}

@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters thumbnail humanize %}
+{% load i18n rsr_filters rsr_tags thumbnail humanize %}
 
 {% block title %}{{block.super}} - {% trans 'Organisation no.' %} {{o.id}}, {{o.name}}{% endblock title %}
 
@@ -46,9 +46,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<tr>
 
 	<td style="border-right: 1px solid #ccc; width: 33%">
-		{% if o.logo %}
-			<img src="{% thumbnail o.logo 174x130 %}" alt="Logo of {{o.name}}" style="margin: 10px 0;" />
-		{% endif %}
+        {% org_logo o 174 130 'margin: 10px 0;' %}
 		<h2 class="lightx2">{% trans 'Activities' %}</h2>
 		<p>
 			{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
@@ -86,9 +84,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{{o.address_1}}<br />{{o.address_2}}<br />{{o.postcode}}<br />{{o.city}}<br />{{o.state}}<br />{{o.country}}</p>
 	{% endcomment %}
 
-	{% if o.map %}
-		<img src="{% thumbnail o.map 140x140 %}" alt="type" style="margin: 20px 0;" />
-	{% endif %}
+    {% map_thumb o 140 140 'margin: 20px 0;' %}
 	
 	</td>
 
