@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd "`dirname $0`"
+
+java -version
+java -jar ../tools/selenium/1.0.1/rc-server/selenium-server-1.0.2.jar
+
