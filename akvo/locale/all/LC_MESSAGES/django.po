@@ -3,26 +3,26 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-10 21:55+0100\n"
-"PO-Revision-Date: 2009-11-22 10:41\n"
-"Last-Translator: Beth Waaa <bethwaaa@mac.com>\n"
-"Language-Team: sv <LL@li.org>\n"
+"POT-Creation-Date: 2009-11-19 14:17+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Translated-Using: django-rosetta 0.4.5.svn\n"
 
 #: settings_base.py:69
 msgid "German"
-msgstr "Tyska"
+msgstr ""
 
 #: settings_base.py:70
 msgid "English"
-msgstr "Engelska"
+msgstr ""
 
 #: settings_base.py:71
 msgid "Dutch"
@@ -50,10 +50,6 @@ msgstr ""
 
 #: rsr/admin.py:64
 msgid "Contact information"
-msgstr ""
-
-#: rsr/admin.py:65
-msgid "About the organisation"
 msgstr ""
 
 #: rsr/admin.py:179 rsr/admin.py:508
@@ -227,27 +223,27 @@ msgstr ""
 
 #: rsr/forms.py:91
 msgid "The two 'new password' fields didn't match."
-msgstr "De två fälten för nytt lösenord matchade inte."
+msgstr ""
 
 #: rsr/forms.py:106
 msgid "username"
-msgstr "användarnamn"
+msgstr ""
 
 #: rsr/forms.py:110
 msgid "password"
-msgstr "lösenord"
+msgstr ""
 
 #: rsr/forms.py:114
 msgid "password (again)"
-msgstr "lösenord (igen)"
+msgstr ""
 
 #: rsr/forms.py:126
 msgid "email address"
-msgstr "epostadress"
+msgstr ""
 
 #: rsr/forms.py:130
 msgid "email address (again)"
-msgstr "epostadress (igen)"
+msgstr ""
 
 #: rsr/forms.py:144
 msgid "Passwords do not match. Please enter the same password in both fields."
@@ -259,9 +255,8 @@ msgid ""
 msgstr ""
 
 #: rsr/forms.py:191
-#, fuzzy
 msgid "New password"
-msgstr "lösenord"
+msgstr ""
 
 #: rsr/forms.py:192
 msgid "New password confirmation"
@@ -276,78 +271,23 @@ msgid "Full name"
 msgstr ""
 
 #: rsr/forms.py:239
-#, fuzzy
 msgid "Email address"
-msgstr "epostadress"
+msgstr ""
 
 #: rsr/forms.py:240
-#, fuzzy
 msgid "Email address (confirm)"
-msgstr "epostadress (igen)"
+msgstr ""
 
 #: rsr/forms.py:252
 msgid "You cannot donate more than the project actually needs!"
 msgstr ""
 
 #: rsr/forms.py:255
-#, fuzzy
 msgid "You must type the same email address each time!"
-msgstr "Du måste skriva samma epostadress i bägge fälten"
-
-#: rsr/models.py:58
-msgid "Africa"
-msgstr ""
-
-#: rsr/models.py:59
-msgid "Asia"
-msgstr ""
-
-#: rsr/models.py:60
-msgid "Australia"
-msgstr ""
-
-#: rsr/models.py:61
-msgid "Europe"
-msgstr ""
-
-#: rsr/models.py:62
-msgid "North America"
-msgstr ""
-
-#: rsr/models.py:63
-msgid "South America"
 msgstr ""
 
 #: rsr/models.py:67
 msgid "country name"
-msgstr ""
-
-#: rsr/models.py:68
-msgid "continent"
-msgstr ""
-
-#: rsr/models.py:74
-msgid "country"
-msgstr ""
-
-#: rsr/models.py:75
-msgid "countries"
-msgstr ""
-
-#: rsr/models.py:93
-msgid "NGO"
-msgstr ""
-
-#: rsr/models.py:94
-msgid "Governmental"
-msgstr ""
-
-#: rsr/models.py:95
-msgid "Commercial"
-msgstr ""
-
-#: rsr/models.py:96
-msgid "Knowledge institution"
 msgstr ""
 
 #: rsr/models.py:103
@@ -366,691 +306,239 @@ msgstr ""
 msgid "sponsor partner"
 msgstr ""
 
-#: rsr/models.py:108 rsr/models.py:349
-#, fuzzy
-msgid "name"
-msgstr "användarnamn"
-
-#: rsr/models.py:108
-msgid ""
-"Short name which will appear in organisation and partner listings (25 "
-"characters)."
-msgstr ""
-
-#: rsr/models.py:110
-#, fuzzy
-msgid "long name"
-msgstr "användarnamn"
-
-#: rsr/models.py:110
-msgid "Full name of organisation (75 characters)."
-msgstr ""
-
 #: rsr/models.py:112
 msgid "organisation type"
 msgstr ""
 
-#: rsr/models.py:115
-msgid "logo"
+#: rsr/models.py:122
+msgid "country"
 msgstr ""
 
-#: rsr/models.py:119
-msgid ""
-"Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on "
-"a white background."
-msgstr ""
-
-#: rsr/models.py:121 rsr/models.py:352
-msgid "city"
-msgstr ""
-
-#: rsr/models.py:122 rsr/models.py:353
-msgid "state"
-msgstr ""
-
-#: rsr/models.py:124
-msgid "Enter the full address of your web site, beginning with http://."
-msgstr ""
-
-#: rsr/models.py:126 rsr/models.py:356
-msgid "map"
-msgstr ""
-
-#: rsr/models.py:129 rsr/models.py:359
-msgid ""
-"The map image should be roughly square and no larger than 240x240 pixels "
-"(approx. 100-200kb in size)."
-msgstr ""
-
-#: rsr/models.py:131
-#, fuzzy
-msgid "address 1"
-msgstr "epostadress"
-
-#: rsr/models.py:131
-msgid "Street address (35 characters)."
-msgstr ""
-
-#: rsr/models.py:132
-#, fuzzy
-msgid "address 2"
-msgstr "epostadress"
-
-#: rsr/models.py:132
-msgid "Street address 2 (35 characters)."
-msgstr ""
-
-#: rsr/models.py:133 rsr/models.py:400
-msgid "post code"
-msgstr ""
-
-#: rsr/models.py:133 rsr/models.py:400
-msgid "Postcode, zip code, etc. (10 characters)."
-msgstr ""
-
-#: rsr/models.py:134
-msgid "phone"
-msgstr ""
-
-#: rsr/models.py:134 rsr/models.py:135 rsr/models.py:136
-msgid "(20 characters)."
-msgstr ""
-
-#: rsr/models.py:135
-msgid "mobile"
-msgstr ""
-
-#: rsr/models.py:136
-msgid "fax"
-msgstr ""
-
-#: rsr/models.py:137
-msgid "contact person"
-msgstr ""
-
-#: rsr/models.py:137
-msgid "Name of external contact person for your organisation."
-msgstr ""
-
-#: rsr/models.py:138
-msgid "contact email"
-msgstr ""
-
-#: rsr/models.py:138
-msgid "Email to which inquiries about your organisation should be sent."
-msgstr ""
-
-#: rsr/models.py:139
-msgid "description"
-msgstr ""
-
-#: rsr/models.py:139
-msgid ""
-"Describe what your organisation does in the water and sanitation sector."
-msgstr ""
-
-#: rsr/models.py:302
-msgid "Organisation"
-msgstr ""
-
-#: rsr/models.py:303
-msgid "Organisations"
-msgstr ""
-
-#: rsr/models.py:317
+#: rsr/models.py:313
 msgid "Free"
 msgstr ""
 
-#: rsr/models.py:318
+#: rsr/models.py:314
 msgid "Plus"
 msgstr ""
 
-#: rsr/models.py:319
+#: rsr/models.py:315
 msgid "Premium"
 msgstr ""
 
-#: rsr/models.py:322
-msgid "account level"
-msgstr ""
-
-#: rsr/models.py:331
+#: rsr/models.py:327
 msgid "None"
 msgstr ""
 
-#: rsr/models.py:332
+#: rsr/models.py:328
 msgid "Needs funding"
 msgstr ""
 
-#: rsr/models.py:333 templates/rsr/index_base.html:44
+#: rsr/models.py:329 templates/rsr/index_base.html:44
 #: templates/rsr/liveearth.html:110 templates/rsr/organisation.html:157
 msgid "Active"
 msgstr ""
 
-#: rsr/models.py:334 rsr/models.py:1247 templates/rsr/index_base.html:60
+#: rsr/models.py:330 rsr/models.py:1223 templates/rsr/index_base.html:60
 #: templates/rsr/liveearth.html:126 templates/rsr/organisation.html:173
 msgid "Complete"
 msgstr ""
 
-#: rsr/models.py:335 templates/rsr/index_base.html:68
+#: rsr/models.py:331 templates/rsr/index_base.html:68
 #: templates/rsr/liveearth.html:134 templates/rsr/organisation.html:181
 msgid "Cancelled"
 msgstr ""
 
-#: rsr/models.py:349
-msgid "A short descriptive name for your project (45 characters)."
-msgstr ""
-
-#: rsr/models.py:350
-msgid "subtitle"
-msgstr ""
-
-#: rsr/models.py:350
-msgid "A subtitle with more information on the project (75 characters)."
-msgstr ""
-
-#: rsr/models.py:351 rsr/models.py:1260 templates/rsr/update_list.html:25
+#: rsr/models.py:347 rsr/models.py:1236 templates/rsr/update_list.html:25
 msgid "status"
 msgstr ""
 
-#: rsr/models.py:351
-msgid "Current project state."
-msgstr ""
-
-#: rsr/models.py:352
-msgid "Name of city, village, town, slum, etc. (25 characters)."
-msgstr ""
-
-#: rsr/models.py:353
-msgid "Name of state, province, county, region, etc. (15 characters)."
-msgstr ""
-
-#: rsr/models.py:354
-msgid "Country where project is taking place."
-msgstr ""
-
-#: rsr/models.py:362
-msgid "water"
-msgstr ""
-
-#: rsr/models.py:363
-msgid "sanitation"
-msgstr ""
-
-#: rsr/models.py:364 rsr/models.py:817
-msgid "maintenance"
-msgstr ""
-
-#: rsr/models.py:365 rsr/models.py:816
-msgid "training"
-msgstr ""
-
-#: rsr/models.py:366
-msgid "education"
-msgstr ""
-
-#: rsr/models.py:367
-msgid "product development"
-msgstr ""
-
-#: rsr/models.py:368 rsr/models.py:819
-msgid "other"
-msgstr ""
-
-#: rsr/models.py:371
-msgid "summary of project plan"
-msgstr ""
-
-#: rsr/models.py:371
-msgid "Briefly summarize the project (220 characters)."
-msgstr ""
-
-#: rsr/models.py:373
-msgid "project photo"
-msgstr ""
-
-#: rsr/models.py:377
-msgid ""
-"The project image looks best in landscape format (4:3 width:height ratio), "
-"and should be less than 3.5 mb in size."
-msgstr ""
-
-#: rsr/models.py:379 rsr/models.py:1172 templates/rsr/update_list.html:29
-msgid "photo caption"
-msgstr ""
-
-#: rsr/models.py:379
-msgid "Enter a caption for your project picture (50 characters)."
-msgstr ""
-
-#: rsr/models.py:380
-msgid "overview"
-msgstr ""
-
-#: rsr/models.py:380
-msgid "Describe what the project hopes to accomplish (500 characters)."
-msgstr ""
-
-#: rsr/models.py:381
-msgid "goal 1"
-msgstr ""
-
-#: rsr/models.py:381
-msgid "(60 characters)"
-msgstr ""
-
-#: rsr/models.py:382
-msgid "goal 2"
-msgstr ""
-
-#: rsr/models.py:383
-msgid "goal 3"
-msgstr ""
-
-#: rsr/models.py:384
-msgid "goal 4"
-msgstr ""
-
-#: rsr/models.py:385
-msgid "goal 5"
-msgstr ""
-
-#: rsr/models.py:387
-msgid "water systems"
-msgstr ""
-
-#: rsr/models.py:388
-msgid "sanitation systems"
-msgstr ""
-
-#: rsr/models.py:389
-msgid "hygiene facilities"
-msgstr ""
-
-#: rsr/models.py:390
-msgid "water: # people affected"
-msgstr ""
-
-#: rsr/models.py:391 rsr/models.py:393
-msgid "for # years"
-msgstr ""
-
-#: rsr/models.py:392
-msgid "sanitation: # people affected"
-msgstr ""
-
-#: rsr/models.py:394
-msgid "# people trained"
-msgstr ""
-
-#: rsr/models.py:398
-msgid "location 1"
-msgstr ""
-
-#: rsr/models.py:398
-msgid "Street address (50 characters)."
-msgstr ""
-
-#: rsr/models.py:399
-msgid "location 2"
-msgstr ""
-
-#: rsr/models.py:399
-msgid "Street address 2 (50 characters)."
-msgstr ""
-
-#: rsr/models.py:401
-msgid "longitude"
-msgstr ""
-
-#: rsr/models.py:401
-msgid ""
-"East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30"
-"\" E."
-msgstr ""
-
-#: rsr/models.py:402
-msgid "latitude"
-msgstr ""
-
-#: rsr/models.py:402
-msgid ""
-"North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ "
-"21″ N."
-msgstr ""
-
-#: rsr/models.py:403
-msgid "Current status detail"
-msgstr ""
-
-#: rsr/models.py:403
-msgid "Description of current phase of project. (600 characters)."
-msgstr ""
-
-#: rsr/models.py:404
-msgid "Project plan detail"
-msgstr ""
-
-#: rsr/models.py:404
-msgid ""
-"Detailed information about the project and plans for implementing: the what, "
-"how, who and when. (unlimited)."
-msgstr ""
-
-#: rsr/models.py:405
-msgid "sustainability"
-msgstr ""
-
-#: rsr/models.py:405
-msgid ""
-"Describe plans for sustaining/maintaining results after implementation is "
-"complete (unlimited)."
-msgstr ""
-
-#: rsr/models.py:406
-msgid "context"
-msgstr ""
-
-#: rsr/models.py:406
-msgid ""
-"Relevant background information, including geographic, political, "
-"environmental, social and/or cultural issues (500 characters)."
-msgstr ""
-
-#: rsr/models.py:408
-msgid "Project rating"
-msgstr ""
-
-#: rsr/models.py:409
-msgid "notes"
-msgstr ""
-
-#: rsr/models.py:409
-msgid "(Unlimited number of characters)."
-msgstr ""
-
-#: rsr/models.py:412
-msgid "currency"
-msgstr ""
-
-#: rsr/models.py:413
-msgid "Date request posted"
-msgstr ""
-
-#: rsr/models.py:414
-msgid "Date complete"
-msgstr ""
-
-#: rsr/models.py:814
+#: rsr/models.py:808
 msgid "employment"
 msgstr ""
 
-#: rsr/models.py:815
+#: rsr/models.py:809
 msgid "building"
 msgstr ""
 
-#: rsr/models.py:818
+#: rsr/models.py:810
+msgid "training"
+msgstr ""
+
+#: rsr/models.py:811
+msgid "maintenance"
+msgstr ""
+
+#: rsr/models.py:812
 msgid "management"
 msgstr ""
 
-#: rsr/models.py:822
-msgid "Item"
+#: rsr/models.py:813
+msgid "other"
 msgstr ""
 
-#: rsr/models.py:823 templates/rsr/paypal_checkout.html:128
-#: templates/rsr/paypal_thanks.html:166 templates/rsr/project_donate.html:154
-#: templates/rsr/project_donate.html:182
-msgid "Amount"
-msgstr ""
-
-#: rsr/models.py:826
-msgid "Budget Item"
-msgstr ""
-
-#: rsr/models.py:827
-msgid "Budget Items"
-msgstr ""
-
-#: rsr/models.py:855 templates/rsr/organisation.html:69
-msgid "Akvopedia entry"
-msgstr ""
-
-#: rsr/models.py:856
-msgid "External link"
-msgstr ""
-
-#: rsr/models.py:858
-msgid "kind"
-msgstr ""
-
-#: rsr/models.py:859
+#: rsr/models.py:851
 msgid "URL"
 msgstr ""
 
-#: rsr/models.py:860
-msgid "caption"
-msgstr ""
-
-#: rsr/models.py:872
-msgid "funding amount"
-msgstr ""
-
-#: rsr/models.py:876 templates/rsr/organisation.html:56
-msgid "Funding partner"
-msgstr ""
-
-#: rsr/models.py:877 templates/rsr/index_base.html:133
-#: templates/rsr/liveearth.html:191
-#: templates/rsr/organisation_directory.html:19
-#: templates/rsr/organisation_directory.html:44
-#: templates/rsr/organisation_directory.html:66
-#: templates/rsr/organisation_directory.html:129
-msgid "Funding partners"
-msgstr ""
-
-#: rsr/models.py:887 templates/rsr/organisation.html:57
-#: templates/rsr/project_base.html:140
-msgid "Sponsor partner"
-msgstr ""
-
-#: rsr/models.py:888 templates/rsr/organisation_directory.html:28
-#: templates/rsr/organisation_directory.html:53
-#: templates/rsr/organisation_directory.html:75
-#: templates/rsr/organisation_directory.html:138
-#: templates/rsr/project_base.html:142
-msgid "Sponsor partners"
-msgstr ""
-
-#: rsr/models.py:898 templates/rsr/organisation.html:55
-#: templates/rsr/project_base.html:119
-msgid "Support partner"
-msgstr ""
-
-#: rsr/models.py:899 templates/rsr/index_base.html:128
-#: templates/rsr/liveearth.html:186
-#: templates/rsr/organisation_directory.html:22
-#: templates/rsr/organisation_directory.html:47
-#: templates/rsr/organisation_directory.html:69
-#: templates/rsr/organisation_directory.html:132
-#: templates/rsr/project_base.html:121
-msgid "Support partners"
-msgstr ""
-
-#: rsr/models.py:909 templates/rsr/organisation.html:54
-#: templates/rsr/project_base.html:98
-msgid "Field partner"
-msgstr ""
-
-#: rsr/models.py:910 templates/rsr/index_base.html:123
-#: templates/rsr/liveearth.html:181
-#: templates/rsr/organisation_directory.html:25
-#: templates/rsr/organisation_directory.html:50
-#: templates/rsr/organisation_directory.html:72
-#: templates/rsr/organisation_directory.html:135
-#: templates/rsr/project_base.html:100
-msgid "Field partners"
-msgstr ""
-
-#: rsr/models.py:935 templates/rsr/update_form.html:85
+#: rsr/models.py:911 templates/rsr/update_form.html:85
 msgid "At the beginning of the update"
 msgstr ""
 
-#: rsr/models.py:936 templates/rsr/update_form.html:86
+#: rsr/models.py:912 templates/rsr/update_form.html:86
 msgid "At the end of the update"
 msgstr ""
 
-#: rsr/models.py:939
+#: rsr/models.py:915
 msgid "web"
 msgstr ""
 
-#: rsr/models.py:940
+#: rsr/models.py:916
 msgid "e-mail"
 msgstr ""
 
-#: rsr/models.py:941 templates/widgets/project_updates.html:83
+#: rsr/models.py:917 templates/widgets/project_updates.html:83
 msgid "SMS"
 msgstr ""
 
-#: rsr/models.py:963
-msgid ""
-"Please use the following format: <strong>467XXXXXXXX</strong>.\n"
-"        <br>Example: the number 070 765 43 21 would be entered as 46707654321"
-msgstr ""
-
-#: rsr/models.py:1102
+#: rsr/models.py:1078
 msgid "mms id"
 msgstr ""
 
-#: rsr/models.py:1103
+#: rsr/models.py:1079
 msgid "subject"
 msgstr ""
 
-#: rsr/models.py:1104 rsr/models.py:1148
+#: rsr/models.py:1080 rsr/models.py:1124
 msgid "sender"
 msgstr ""
 
-#: rsr/models.py:1105 rsr/models.py:1149
+#: rsr/models.py:1081 rsr/models.py:1125
 msgid "to"
 msgstr ""
 
-#: rsr/models.py:1106 rsr/models.py:1175 rsr/models.py:1191
+#: rsr/models.py:1082 rsr/models.py:1151 rsr/models.py:1167
 #: templates/rsr/update_list.html:35
 msgid "time"
 msgstr ""
 
-#: rsr/models.py:1107 rsr/models.py:1151
+#: rsr/models.py:1083 rsr/models.py:1127
 msgid "saved at"
 msgstr ""
 
-#: rsr/models.py:1108
+#: rsr/models.py:1084
 msgid "mms version"
 msgstr ""
 
-#: rsr/models.py:1109
+#: rsr/models.py:1085
 msgid "message class"
 msgstr ""
 
-#: rsr/models.py:1110
+#: rsr/models.py:1086
 msgid "priority"
 msgstr ""
 
-#: rsr/models.py:1111
+#: rsr/models.py:1087
 msgid "file count"
 msgstr ""
 
-#: rsr/models.py:1137
+#: rsr/models.py:1113
 msgid "MMS"
 msgstr ""
 
-#: rsr/models.py:1138
+#: rsr/models.py:1114
 msgid "file name"
 msgstr ""
 
-#: rsr/models.py:1139
+#: rsr/models.py:1115
 msgid "content type"
 msgstr ""
 
-#: rsr/models.py:1140
+#: rsr/models.py:1116
 msgid "content ID"
 msgstr ""
 
-#: rsr/models.py:1141
+#: rsr/models.py:1117
 msgid "file size"
 msgstr ""
 
-#: rsr/models.py:1147 rsr/models.py:1163 templates/rsr/update_list.html:23
+#: rsr/models.py:1123 rsr/models.py:1139 templates/rsr/update_list.html:23
 msgid "text"
 msgstr ""
 
-#: rsr/models.py:1150
+#: rsr/models.py:1126
 msgid "delivered"
 msgstr ""
 
-#: rsr/models.py:1152
+#: rsr/models.py:1128
 msgid "incoming sms id"
 msgstr ""
 
-#: rsr/models.py:1160 rsr/models.py:1188
+#: rsr/models.py:1136 rsr/models.py:1164
 msgid "project"
 msgstr ""
 
-#: rsr/models.py:1161 rsr/models.py:1189
+#: rsr/models.py:1137 rsr/models.py:1165
 msgid "user"
 msgstr ""
 
-#: rsr/models.py:1162 templates/rsr/update_list.html:21
+#: rsr/models.py:1138 templates/rsr/update_list.html:21
 msgid "title"
 msgstr ""
 
-#: rsr/models.py:1171 templates/rsr/update_list.html:33
+#: rsr/models.py:1147 templates/rsr/update_list.html:33
 msgid "photo location"
 msgstr ""
 
-#: rsr/models.py:1173 templates/rsr/update_list.html:31
+#: rsr/models.py:1148 templates/rsr/update_list.html:29
+msgid "photo caption"
+msgstr ""
+
+#: rsr/models.py:1149 templates/rsr/update_list.html:31
 msgid "photo credit"
 msgstr ""
 
-#: rsr/models.py:1174
+#: rsr/models.py:1150
 msgid "update method"
 msgstr ""
 
-#: rsr/models.py:1190
+#: rsr/models.py:1166
 msgid "comment"
 msgstr ""
 
-#: rsr/models.py:1200
-#, fuzzy
+#: rsr/models.py:1176
 msgid "US English"
-msgstr "Engelska"
+msgstr ""
 
-#: rsr/models.py:1213
+#: rsr/models.py:1189
 msgid "PayPal gateway"
 msgstr ""
 
-#: rsr/models.py:1223
+#: rsr/models.py:1199
 msgid "Project PayPal gateway configuration"
 msgstr ""
 
-#: rsr/models.py:1245
+#: rsr/models.py:1221
 msgid "Pending"
 msgstr ""
 
-#: rsr/models.py:1246
+#: rsr/models.py:1222
 msgid "Void"
 msgstr ""
 
-#: rsr/models.py:1248
+#: rsr/models.py:1224
 msgid "Stale"
 msgstr ""
 
-#: rsr/models.py:1252
+#: rsr/models.py:1228
 msgid "Amount requested by user."
 msgstr ""
 
-#: rsr/models.py:1255
+#: rsr/models.py:1231
 msgid "Amount actually received after PayPal charges have been applied."
 msgstr ""
 
-#: rsr/models.py:1284
+#: rsr/models.py:1260
 msgid "PayPal invoice"
 msgstr ""
 
@@ -1078,68 +566,6 @@ msgstr ""
 
 #: templates/admin/base_site.html:13
 msgid "Akvo RSR administration"
-msgstr ""
-
-#: templates/admin/rsr/organisation/change_form.html:6
-msgid "Adding and Editing Organisations."
-msgstr ""
-
-#: templates/admin/rsr/organisation/change_form.html:7
-msgid ""
-"Describe your organisation to the international Akvo community of users: "
-"tell us who you are, what you do, and what you as an organisation hope to "
-"accomplish. Your audience may include people unfamiliar with the sector or "
-"with your sphere of operation, so a bit of explanation in plain language (no "
-"acronyms) might be helpful. Details will help viewers get a sense of who you "
-"are: do you work on all continents? In both water and sanitation, perhaps "
-"even with other goals in mind? Are you part of a network or programme? "
-msgstr ""
-
-#: templates/admin/rsr/project/change_form.html:7
-msgid "Adding and Editing Projects."
-msgstr ""
-
-#: templates/admin/rsr/project/change_form.html:8
-msgid ""
-"The project information in RSR presents your water or sanitation project to "
-"the Akvo community of users: donors, support and field partners, sector "
-"professionals, and of course the wider online community. Tell the <i>story</"
-"i> of the project by entering complete information, in common language and "
-"an active (doing) voice."
-msgstr ""
-
-#: templates/admin/rsr/project/change_form.html:9
-msgid ""
-"Please look over the whole page before beginning, so you can see where your "
-"information belongs on RSR project forms."
-msgstr ""
-
-#: templates/admin/rsr/project/change_list.html:7
-#: templates/rsr/liveearth.html:10 templates/rsr/liveearth.html.py:47
-#: templates/rsr/liveearth.html:282 templates/rsr/machinery_step1.html:40
-#: templates/rsr/machinery_step2.html:39 templates/rsr/paypal_checkout.html:34
-#: templates/rsr/paypal_thanks.html:36 templates/rsr/project_comments.html:39
-#: templates/rsr/project_details.html:37
-#: templates/rsr/project_directory.html:11
-#: templates/rsr/project_directory.html:47
-#: templates/rsr/project_directory.html:156
-#: templates/rsr/project_donate.html:50 templates/rsr/project_funding.html:13
-#: templates/rsr/project_main.html:33 templates/rsr/project_updates.html:13
-#: templates/rsr/update_form_old.html:14
-msgid "Project listing"
-msgstr ""
-
-#: templates/admin/rsr/project/change_list.html:8
-msgid ""
-"Click the project ID number to view detailed information about a project. "
-"Click a column header (for example, Country) to sort the project list by "
-"that criteria."
-msgstr ""
-
-#: templates/admin/rsr/project/change_list.html:9
-msgid ""
-"Organisation administrators will see an <em>Add project</em> button at the "
-"top right of the listing; push it to create a new project in RSR."
 msgstr ""
 
 #: templates/inclusion_tags/category_icons.html:9
@@ -1514,18 +940,16 @@ msgstr ""
 #: templates/registration/password_reset_confirm.html:11
 #: templates/registration/password_reset_confirm.html:20
 #: templates/registration/password_reset_confirm.html:29
-#, fuzzy
 msgid "Password reset"
-msgstr "lösenord"
+msgstr ""
 
 #: templates/registration/password_reset_confirm.html:31
 msgid "Please choose a new password."
 msgstr ""
 
 #: templates/registration/password_reset_confirm.html:39
-#, fuzzy
 msgid "Enter new password"
-msgstr "lösenord"
+msgstr ""
 
 #: templates/registration/password_reset_done.html:20
 msgid "Please check for new e-mails"
@@ -1930,6 +1354,32 @@ msgstr ""
 msgid "Total organisations"
 msgstr ""
 
+#: templates/rsr/index_base.html:123 templates/rsr/liveearth.html:181
+#: templates/rsr/organisation_directory.html:25
+#: templates/rsr/organisation_directory.html:50
+#: templates/rsr/organisation_directory.html:72
+#: templates/rsr/organisation_directory.html:135
+#: templates/rsr/project_base.html:100
+msgid "Field partners"
+msgstr ""
+
+#: templates/rsr/index_base.html:128 templates/rsr/liveearth.html:186
+#: templates/rsr/organisation_directory.html:22
+#: templates/rsr/organisation_directory.html:47
+#: templates/rsr/organisation_directory.html:69
+#: templates/rsr/organisation_directory.html:132
+#: templates/rsr/project_base.html:121
+msgid "Support partners"
+msgstr ""
+
+#: templates/rsr/index_base.html:133 templates/rsr/liveearth.html:191
+#: templates/rsr/organisation_directory.html:19
+#: templates/rsr/organisation_directory.html:44
+#: templates/rsr/organisation_directory.html:66
+#: templates/rsr/organisation_directory.html:129
+msgid "Funding partners"
+msgstr ""
+
 #: templates/rsr/index_base.html:141 templates/rsr/liveearth.html:200
 #: templates/rsr/organisation.html:223 templates/rsr/project_base.html:34
 #: templates/rsr/project_funding.html:25
@@ -1940,6 +1390,20 @@ msgstr ""
 #: templates/widgets/project_contribute.html:46
 #: templates/widgets/project_narrow.html:73
 msgid "Funding"
+msgstr ""
+
+#: templates/rsr/liveearth.html:10 templates/rsr/liveearth.html.py:47
+#: templates/rsr/liveearth.html:282 templates/rsr/machinery_step1.html:40
+#: templates/rsr/machinery_step2.html:39 templates/rsr/paypal_checkout.html:34
+#: templates/rsr/paypal_thanks.html:36 templates/rsr/project_comments.html:39
+#: templates/rsr/project_details.html:37
+#: templates/rsr/project_directory.html:11
+#: templates/rsr/project_directory.html:47
+#: templates/rsr/project_directory.html:156
+#: templates/rsr/project_donate.html:50 templates/rsr/project_funding.html:13
+#: templates/rsr/project_main.html:33 templates/rsr/project_updates.html:13
+#: templates/rsr/update_form_old.html:14
+msgid "Project listing"
 msgstr ""
 
 #: templates/rsr/liveearth.html:85
@@ -2623,6 +2087,22 @@ msgstr ""
 msgid "Activities"
 msgstr ""
 
+#: templates/rsr/organisation.html:54 templates/rsr/project_base.html:98
+msgid "Field partner"
+msgstr ""
+
+#: templates/rsr/organisation.html:55 templates/rsr/project_base.html:119
+msgid "Support partner"
+msgstr ""
+
+#: templates/rsr/organisation.html:56
+msgid "Funding partner"
+msgstr ""
+
+#: templates/rsr/organisation.html:57 templates/rsr/project_base.html:140
+msgid "Sponsor partner"
+msgstr ""
+
 #: templates/rsr/organisation.html:59
 #: templates/rsr/organisation_directory.html:154
 msgid "Type"
@@ -2630,6 +2110,10 @@ msgstr ""
 
 #: templates/rsr/organisation.html:65
 msgid "Website"
+msgstr ""
+
+#: templates/rsr/organisation.html:69
+msgid "Akvopedia entry"
 msgstr ""
 
 #: templates/rsr/organisation.html:96
@@ -2673,6 +2157,14 @@ msgstr ""
 
 #: templates/rsr/organisation.html:272
 msgid "Current projects"
+msgstr ""
+
+#: templates/rsr/organisation_directory.html:28
+#: templates/rsr/organisation_directory.html:53
+#: templates/rsr/organisation_directory.html:75
+#: templates/rsr/organisation_directory.html:138
+#: templates/rsr/project_base.html:142
+msgid "Sponsor partners"
 msgstr ""
 
 #: templates/rsr/organisation_directory.html:101
@@ -2786,6 +2278,11 @@ msgstr ""
 msgid "Amount you are donating"
 msgstr ""
 
+#: templates/rsr/paypal_checkout.html:128 templates/rsr/paypal_thanks.html:166
+#: templates/rsr/project_donate.html:154 templates/rsr/project_donate.html:182
+msgid "Amount"
+msgstr ""
+
 #: templates/rsr/paypal_checkout.html:155 templates/rsr/paypal_thanks.html:86
 #: templates/rsr/project_donate.html:193
 msgid "Your information"
@@ -2795,9 +2292,8 @@ msgstr ""
 #: templates/rsr/paypal_checkout.html:168 templates/rsr/paypal_thanks.html:90
 #: templates/rsr/paypal_thanks.html:99 templates/rsr/project_donate.html:196
 #: templates/rsr/project_donate.html:210
-#, fuzzy
 msgid "Your name"
-msgstr "användarnamn"
+msgstr ""
 
 #: templates/rsr/paypal_checkout.html:159
 #: templates/rsr/paypal_checkout.html:169 templates/rsr/paypal_thanks.html:91
@@ -2902,9 +2398,8 @@ msgid "Logo of"
 msgstr ""
 
 #: templates/rsr/project_base.html:69 templates/rsr/project_funding.html:128
-#, fuzzy
 msgid "Grant"
-msgstr "Tyska"
+msgstr ""
 
 #: templates/rsr/project_base.html:75 templates/rsr/project_funding.html:139
 msgid "Donations from individuals"
@@ -3559,25 +3054,3 @@ msgstr ""
 #: templates/widgets/project_updates.html:77
 msgid "Web"
 msgstr ""
-
-#~ msgid "You must type the same password each time"
-#~ msgstr "Du måste skriva samma lösenord i bägge fälten"
-
-#~ msgid "Usernames can only contain letters, numbers and underscores"
-#~ msgstr ""
-#~ "Användarnamn får bara innehålla bokstäver, siffror och understreck (_)"
-
-#~ msgid "This username is already taken. Please choose another."
-#~ msgstr "Det användarnamnet är upptaget. Vänligen välj ett annat."
-
-#~ msgid "I have read and agree to the Terms of Service"
-#~ msgstr "Jag har läst och godkänner användarvillkoren"
-
-#~ msgid "You must agree to the terms to register"
-#~ msgstr "För att registrera dig måste du godkänna villkoren"
-
-#~ msgid ""
-#~ "This email address is already in use. Please supply a different email "
-#~ "address."
-#~ msgstr ""
-#~ "Denna epostadress är redan upptagen. Vänligen använd en annan adress."

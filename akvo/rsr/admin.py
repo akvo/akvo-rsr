@@ -62,7 +62,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
         (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
-        (None, {'fields': ('description', )}),
+        (_(u'About the organisation'), {'fields': ('description', )}),
     )    
     list_display = ('name', 'long_name', 'website', 'partner_types', )
     form = OrganisationAdminForm
@@ -330,11 +330,11 @@ class RSR_FormSet(forms.formsets.BaseFormSet):
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = (BudgetItemAdminInLine, FundingPartnerInline, SponsorPartnerInline, 
-               FieldPartnerInline, SupportPartnerInline, LinkInline)
+    inlines = (BudgetItemAdminInLine, LinkInline, FundingPartnerInline, SponsorPartnerInline, 
+               FieldPartnerInline, SupportPartnerInline)
     fieldsets = (
         (_(u'Project description'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing.</p>'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(u"Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing."),
             'fields': (
                 'name',
                 'subtitle',
@@ -780,7 +780,8 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
                     self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
                 valid_invoices.update(status=2)
             for invoice in invalid_invoices:
-                msg = ugettext('Invoice %d could not be voided. It is already %s.' % (invoice.pk, invoice.get_status_display().lower()))
+            #beth: put proper translation tag back in later--ugettext removed
+                msg = ('Invoice %d could not be voided. It is already %s.' % (invoice.pk, invoice.get_status_display().lower()))
                 self.message_user(request, msg)
         else:
             for invoice in queryset:
