@@ -100,3 +100,6 @@ akvo/rebuild_db.py
 akvo/rsr_data.json
 akvo/templates/inclusion_tags/foo.html
 akvo/templates/inclusion_tags/project_map.html
+akvo/settings.py
+settings.pyc
+settings.py
