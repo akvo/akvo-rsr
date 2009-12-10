@@ -33,22 +33,55 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 </style>
 
+
+<style type="text/css" media="screen">
+	#donate_step_box {
+		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
+		border:1px solid #DFE0E6;
+		height:55px;
+		margin-bottom:20px;
+		margin-left:auto;
+		margin-right:auto;
+		margin-top:20px;
+		/*width:755px;*/
+		width:785px;
+	}
+	
+	#donate_step_box_inner {
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
+		margin-left:auto;
+		margin-right:auto;
+		/*width:680px;*/
+		width:750px;
+		height:40px;
+	}
+	.donate_steps {
+		color:#8F94A3;
+		float:left;
+		height:30px;
+		margin-right:10px;
+		padding-top:30px;
+		/*width:128px;*/
+		width:140px;
+		text-align:center;
+		}
+		
+	.active_donate_step {
+		color:#000;
+		background: transparent url('{{MEDIA_URL}}img/donate/step_box_ball.gif') no-repeat center 15px;
+	}
+	
+	#donate_step_5 {
+		margin-right:0;
+	}
+</style>
+
+
 {% endblock style%}
 
 
-{% block script %}
-<script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{p.id}};	
-</script>
-
-
-{% endblock script %}
-
-
 {% block breadcrumbs %}
-{% comment %}
-{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get widget' %}
-{% endcomment %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
 {% endblock breadcrumbs %}
 
 
@@ -62,7 +95,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px">
 	<form method="post" action="." name="donate_form">
 	<div style="width:50%; float:left;">
-		<h1>{% trans 'Donate to a project in Akvo RSR' %}</h1>
+		<h1>{% trans 'Donate to a project' %}</h1>
 	</div>
 	<noscript>
 		<div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
@@ -74,12 +107,33 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</noscript>
 	<div style="padding-bottom:15px; clear:both;"></div>
 	
-	<hr style="width:100%; margin-left:0; clear:both;" />
+	
+	<div id="donate_step_box">
+		<div id="donate_step_box_inner">
+			<div class="donate_steps">
+				<p>{% trans 'Select payment system' %}</p>
+			</div>
+			<div class="donate_steps active_donate_step">
+				<p>{% trans 'Enter amount' %}</p>
+			</div>
+			<div class="donate_steps">
+				<p>{% trans 'Confirm amount' %}</p>
+			</div>
+			<div class="donate_steps">
+				<p>{% trans 'Use payment system' %}</p>
+			</div>
+			<div id="#donate_step_5" class="donate_steps">
+				<p>{% trans 'Thank you!' %}</p>
+			</div>
+			<div class="clear">	</div>
+		</div>
+	</div>
+	
 		
-		{# START Project area #}
-		{# start project area - extra div for IE #}
-		<div style="margin:0; padding:0;">
-		<div{# style="margin-left:40px;"#}>
+	{# START Project area #}
+	{# start project area - extra div for IE #}
+	<div style="margin:0; padding:0;">
+		<div>
 			<h3>{% trans 'Project to receive your donation' %}</h3>
 			
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
@@ -105,23 +159,62 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 		
+		
+		{% ifequal payment_engine 'paypal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
-			<div style="float:right; width:213px;" class="clearfix" >
-				 <img src="{{MEDIA_URL}}img/pp_secure_213wx37h.gif" width="213" height="37" alt="" style="float:right;"/>
-				<img src="{{MEDIA_URL}}img/miscellany-icons.png" width="151" height="45" alt="Ppal Cc Misc Icons" style="padding-left:20px; float:right; padding-right:30px; margin-top:15px;" />
+			<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
+				<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
 			</div>
-			<p>
-			     {% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}
+			<p>{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
+			<p style="margin-top:15px;">
+				{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one." %}
 			</p>
-			<p style="margin-top:15px;">{% trans "With PayPal you may make donations via your country's accepted credit or debit cards, or through a PayPal account if you have one." %}</p>
-		</div>
-		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px; margin-bottom:20px;">
+			<br />
 			<p>
 			    {% ifequal p.currency 'EUR' %}
 				{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
 				{% endifequal %}
 				{% ifequal p.currency 'USD' %}
 				{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+				{% endifequal %}
+			</p>
+			
+		</div>
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; padding:10px;">
+			<p>
+				{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
+			</p>
+			<ul style="margin-top:15px; list-style-type: disc;">
+				<li style="margin-left:30px;">
+				    {% ifequal p.currency 'EUR' %}
+				        {% trans 'The Netherlands (Nederland)' %}
+				    {% endifequal %}
+				    {% ifequal p.currency 'USD' %}
+				        {% trans 'United States of America' %}
+				    {% endifequal %}
+				</li>
+			</ul>
+		</div>
+		{% endifequal %}
+		{% ifequal payment_engine 'ideal' %}
+		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px;">
+			<div style="float:right; width:130px; text-align:center;">
+				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br />
+				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
+			</div>
+			<p>
+				{% trans 'Akvo.org offers the iDeal payment system for Netherlands users to make donations.  With iDEAL, you may make payments entirely within the secure and trusted environment of your own bank&#x27;s website.' %}
+			</p>
+			<p style="margin-top:15px;">
+				{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
+			</p>
+
+			<p style="margin-top:15px;">
+				{% ifequal p.currency 'EUR' %}
+				{% trans 'Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you donate &euro;100, &euro;98.82 Euros will go towards the selected project.' %}
+				{% endifequal %}
+				{% ifequal p.currency 'USD' %}
+				{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
 				{% endifequal %}
 			</p>
 		</div>
@@ -140,17 +233,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</li>
 			</ul>
 		</div>
+		{% endifequal %}
 		
 		<div style="clear:both;"> &nbsp; </div>
 
 		</div>
-		{# stop project area - extra div for IE #}
-		{# END Project area #}
 		
 		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
 
-		{# START Enter amount #}
-		<div style="{#margin-left:40px; #}float:left; width:300px;">
+		<div style="float:left; width:300px;">
             {% blocktrans with p.get_currency_display|safe as currency %}
 			<h3>Amount you wish to donate (in {{currency}})</h3>
             {% endblocktrans %}
@@ -165,21 +256,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 {% endblocktrans %}
 				</span>
 			</div>
-			
-			{% comment %}
-			<div style="text-align:right;">
-				
-				<div class="fieldWrapper">						
-					<label for="id_amount">amount:</label>
-					{{ donate_form.amount }}
-				</div>
-
-				{{ donate_form.as_p }}					
-			
-
-			</div>
-			{% endcomment %}
-
 		</div>
 				
 		{% if donate_form.amount.errors %}
@@ -189,49 +265,61 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<br />
 		</div>
 		{% endif %}
-		{# END Enter amount #}
-	
+		
 	    <div style="clear:both;"></div>
 	    
-        {# START Your information #}
-	    {# <div style="margin-left:40px"> #}
-		<div{# style="margin-left:40px;"#}>
+		<div>
 			<h3>{% trans 'Your information' %}</h3>
 			{% if user.is_authenticated %}
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<p class="marchGrey">{% trans 'Your name' %}:</p>
-				<p class="marchGrey">{% trans 'Your email' %}:</p>
+				<p class="marchGrey">
+					{% trans 'Your name' %}:<br />
+					{% trans 'Your email' %}:<br /><br />
+					{% trans 'Anonymous' %}:<br /><br />
+					{% ifequal payment_engine 'ideal' %}
+						{% trans 'Select your bank' %}:
+				 {% endifequal %}
+				</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold">{{ user.first_name }} {{ user.last_name }}</p>
-				<p style="font-weight:bold">{{ user.email }}</p>
+				<p style="font-weight:bold; margin-bottom:0px;">{{ user.first_name }} {{ user.last_name }}</p>
+				<p style="font-weight:bold; margin-bottom:14px;">{{ user.email }}</p>
+				<p style="font-weight:bold; margin-bottom:13px;">{{ donate_form.is_anonymous }}</p>
+				<p style="font-weight:bold">{{ donate_form.bank }}</p>
 			</div>
-			
 			{% else %}
 
 			<p>{% trans 'Provide your full name and email address below.' %}</p>
 			<br /><br />
 			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
-				<div class="fieldWrapper" style="margin-bottom:23px; margin-top:4px;">	
+				<div class="fieldWrapper" style="margin-bottom:20px; margin-top:4px;">	
 					<p class="marchGrey">{% trans 'Your name' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:7px">	
+				<div class="fieldWrapper" style="margin-bottom:10px">	
 					<p class="marchGrey">{% trans 'Your email' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:9px">
+				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="marchGrey">{% trans 'Confirm email' %}:</p>
 				</div>
-				
+				{% ifequal payment_engine 'ideal' %}
+				<div class="fieldWrapper" style="">	
+					<p class="marchGrey">{% trans 'Select your bank' %}:</p>
+				</div>
+				 {% endifequal %}
+				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="marchGrey"> &nbsp;</p>
+				</div>
 			</div>
 			<div style="float:left;">
-				{{ donate_form.name }}<br /><br />
-				{{ donate_form.email }}<br />
-				{{ donate_form.email2 }}
+				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
+				<p style="font-weight:bold; margin-bottom:4px;">{{ donate_form.email }}</p>
+				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
+				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
+				<p style="font-weight:normal; margin-bottom:18px;">{{ donate_form.is_anonymous }} {% trans 'I would like my donation to be' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a> {% trans '(tick the box)' %}.
+				</p>
 			</div>
 			{% endif%}
-			{% comment %}
-			{% for error in donate_form.errors %}
-			{% endcomment %}
+			
 			{% if donate_form.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
 					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
@@ -251,30 +339,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% trans 'Email confirmation' %}: {{ donate_form.email2.errors }}<br />
 					{% endif %}
 					
-					{% comment %}
-					{% if donate_form.name.errors %}
-						{{ donate_form.name.errors }}<br />						
+					{% if donate_form.bank.errors %}
+						{% trans 'Bank' %}: {{ donate_form.bank.errors }}<br />
 					{% endif %}
-					{{ donate_form.non_field_errors }}
-					<br />
-					{% endcomment %}
+				
 			</div>
 			{% endif %}
-			{% comment %}
-			{% endfor %}				
-			{% endcomment %}
-
-			
+		
         <div style="clear:both;"></div>			
 		</div>
 		<div style="clear:both;"> &nbsp; </div>
 		{# END Your information #}
-		
-		{# <hr style="width:100%; margin-left:0; clear:both; margin-top:10px;" /> #}
-			
-		<div style="clear:both;"> </div>
 	
-	{# <div style="clear:both;"> &nbsp; </div> #}
+		<div style="clear:both;"> </div>
 	
 	<hr style="width:100%; margin-left:0; clear:both;" />
 		
@@ -283,7 +360,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
 			<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
 		</div>
-		<a class="march_button" href="javascript:document.donate_form.submit();" onclick="this.blur();"><span>{% trans 'Next...' %}</span></a>
+		<a class="march_button" href="javascript:document.donate_form.submit();" onclick="this.blur(); this.disabled=true;"><span>{% trans 'Next...' %}</span></a>
 	</div>
 	<div style="clear:both;"> &nbsp;</div>
 	</form>

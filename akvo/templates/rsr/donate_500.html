@@ -1,0 +1,29 @@
+{% extends "rsr/error_base.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Cannot Complete Donation' %}{% endblock title %}
+
+
+{% block message %}
+<div style="margin:0 20px;">
+	<h1 style="font-family: Arial, Verdana, Helvetica, sans-serif; font-size:16px; height: 24px; line-height: 24px; font-weight: bold;">{% trans 'Cannot Complete Donation' %}</h1>
+	<div style="margin:20px 0; border-top:1px solid #D8D5DA; border-bottom:1px solid #D8D5DA; padding:20px 0;">
+		<div style="margin-left:250px; width:400px;">
+			<p>
+			<span style="color:#FF0531; font-weight:bold;">
+				{% trans "We&#x27;re sorry for the inconvenience, but we were not able to connect to your selected payment system at this time." %}
+			</span>
+			<br />
+			{% trans 'No funds were transferred.' %}<br />
+			{% trans 'Please try your donation again later.' %}
+			</p>
+		</div>
+	</div>
+</div>
+{% endblock message %}

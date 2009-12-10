@@ -213,13 +213,9 @@
 			<tr>
 				<td class="partnerColumnCell">
 					<div class="padder">
-						{% if o.logo %}
 				            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
-							<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" style="float:left; margin-right: 10px;" />
+                                {% org_logo o 100 75 'float:left; margin-right: 10px;' %}
 				            </a>
-						{% else %}
-							<div style="background-color: #fff; width: 100px; height: 75px; float:left; margin-right: 10px"></div>
-						{% endif %}
 						<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
 						<div class="grey small">{{o.long_name}}</div>
 						<div style="clear: left;">

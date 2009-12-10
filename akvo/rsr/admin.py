@@ -790,9 +790,9 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 # PayPal
 
-class PayPalInvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'status',)
-    list_filter = ('status',)  
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test', 'is_anonymous')
+    list_filter = ('engine', 'status', 'test', 'is_anonymous')  
     actions = ('void_invoices',)
     
     def void_invoices(self, request, queryset):
@@ -806,35 +806,39 @@ class PayPalInvoiceAdmin(admin.ModelAdmin):
         1 - Pending (valid for voiding)
         2 - Void (invalid)
         3 - Complete (invalid)
-        4 - Stale (valid)
-        
+        4 - Stale (valid)     
         """
         valid_invoices = queryset.filter(status__in=[1,4])
         invalid_invoices = queryset.filter(status__in=[2,3])
         if invalid_invoices:
             if valid_invoices:
                 for invoice in valid_invoices:
-                    self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
+                    self.message_user(request, ugettext('Invoice %d successfully voided.' % int(invoice.pk)))
                 valid_invoices.update(status=2)
             for invoice in invalid_invoices:
-                msg = ugettext('Invoice %d could not be voided. It is already %s.' % (invoice.pk, invoice.get_status_display().lower()))
+                msg = ugettext('Invoice %d could not be voided. It is already %s.' % (int(invoice.pk), invoice.get_status_display().lower()))
                 self.message_user(request, msg)
         else:
             for invoice in queryset:
-                self.message_user(request, ugettext('Invoice %d successfully voided.' % invoice.pk))
+                self.message_user(request, ugettext('Invoice %d successfully voided.' % int(invoice.pk)))
             queryset.update(status=2)
-    void_invoices.short_description = _('Mark selected invoices as void')
+    void_invoices.short_description = _(u'Mark selected invoices as void')
 
-admin.site.register(get_model('rsr', 'paypalinvoice'), PayPalInvoiceAdmin)
+admin.site.register(get_model('rsr', 'invoice'), InvoiceAdmin)
 
 class PayPalGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
 
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
 
-class PayPalGatewaySelectorAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'gateway')
-    list_filter = ('gateway',)
+class MollieGatewayAdmin(admin.ModelAdmin):
+    list_display = ('name', 'partner_id', 'description', 'currency', 'notification_email')
 
-admin.site.register(get_model('rsr', 'paypalgatewayselector'), PayPalGatewaySelectorAdmin)
+admin.site.register(get_model('rsr', 'molliegateway'), MollieGatewayAdmin)
+
+class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'paypal_gateway', 'mollie_gateway')
+    list_filter = ('paypal_gateway', 'mollie_gateway')
+
+admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 

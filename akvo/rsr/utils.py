@@ -6,8 +6,10 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.db.models import get_model
 from django.template import loader, Context
+from django.utils.translation import ugettext_lazy as _
 
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
@@ -92,3 +94,19 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
         datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
         splitext(img_name)[1],
     )
+
+
+def send_donation_confirmation_emails(invoice_id):
+    invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
+    t = loader.get_template('rsr/donation_confirmation_email.html')
+    c = Context({'invoice': invoice, 'domain_name': settings.DOMAIN_NAME})
+    message_body = t.render(c)
+    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
+    bcc_field = invoice.notification_email
+    if invoice.user:
+        to_field = invoice.user.email
+    else:
+        to_field = invoice.email
+    msg = EmailMessage(subject_field, message_body, from_field, [to_field], [bcc_field])
+    msg.content_subtype = "html"
+    msg.send()

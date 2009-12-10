@@ -49,7 +49,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="grey" style="line-height:1.0em;">
 					{% trans 'Individuals' %}<br />
 				</p>
-				<a href="{% url akvo.rsr.views.donate p.id %}" class="donate_button" onclick="this.blur();" style="margin-left:7px;"><span>Donate</span></a>
+				<a href="{% url project_donate project_id=p.id %}" class="donate_button" onclick="this.blur();" style="margin-left:7px;"><span>Donate</span></a>
 			</div>
 			<div id="donate_institutions" style="padding-left:0; padding-right:0px; text-align:center; margin-right:4px;">
 				<p class="grey" style="line-height:1.0em; padding-right:7px; text-align:left !important; padding-left:12px;">

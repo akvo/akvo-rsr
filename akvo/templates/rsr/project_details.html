@@ -83,59 +83,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 			<div style="width:180px; margin-left:470px;">
-				{% if p.map %}
-						<img src="{% thumbnail p.map 140x140 %}" alt="{% trans 'location' %}" width="140px" height="140px" />
-				{% else %}
-						<img src="{{MEDIA_URL}}img/nomap.jpg" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
-				{% endif %}
+                {% map_thumb p 140 140 'margin: 10px 10px 20px 10px;' %}
 			</div>
 		</div>
-		
-	{% comment %}
-		
-	<div style="float: left; width: 200px; padding-left: 30px;">
-			
-		<div class="lightx2"><b>{% trans 'Status' %}</b></div>
-		<div>{{p.show_status}}</div>
-		<br />
-		<div class="lightx2"><b>{% trans 'Focus area' %}</b></div>
 
-		{% category_icons p %}
-
-	</div>
-
-	<div style="float: left; width: 200px; padding-left: 20px">
-		{% if p.location_1 or p.location_2 or p.postcode %}
-		<div class="lightx2">{% trans 'Location' %}</div>
-		{% if p.location_1 %}
-			{{p.location_1}}<br />
-		{% endif %}
-		{% if p.location_2 %}
-			{{p.location_2}}<br />
-		{% endif %}
-		{% if p.postcode %}
-			{{p.postcode}}<br />
-		{% endif %}
-	{% endif %}
-		<div class="lightx2">{% trans 'City' %}</div>
-		<div style="margin-bottom: 0.7em">{{p.city}}</div>
-		<div class="lightx2">State</div>
-		<div style="margin-bottom: 0.7em">{{p.state}}</div>
-		<div class="lightx2">Country</div>
-		<div style="margin-bottom: 0.7em">{{p.country}}</div>
-
-	</div>
-	{% if p.map %}
-		<div style="float: left; width: 200px; padding-left: 20px">
-			<img src="{% thumbnail p.map 140x140 %}" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
-		</div>
-	{% else %}
-		<div style="float: left; width: 200px; padding-left: 20px">
-			<img src="{{MEDIA_URL}}img/nomap.jpg" alt="{% trans 'location' %}" style="margin: 10px 10px 20px 10px" />
-		</div>
-	{% endif %}
-	
-	{% endcomment %}	
 	<hr style="clear:left; padding-top: 20px" />
 	<p><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
 
@@ -151,10 +102,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <p>{{p.project_plan_summary|linebreaks}}</p>
                     <br />		
                     <div style="float:left;width: 280px">
-                    {% if p.current_image %}
-                        <img src="{% thumbnail p.current_image 240x180 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" style="margin: 10px 10px 0 0" width="240px" height="180px" />
+                        {% project_thumb p 240 180 'margin: 10px 10px 0 0;' %}
 						<p class="small lightx1">{{p.current_image_caption}}</p>
-                    {% endif %}	
                     </div>	
                     <div style="float:left; width:350px;">
                         <p class="lightx1"><b>{% trans 'Target benchmarks' %}</b></p>

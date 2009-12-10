@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.views.generic.simple import direct_to_template
 
-from akvo.rsr.feeds import ProjectUpdates
+from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
 from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
@@ -18,20 +18,22 @@ admin.autodiscover()
 
 feeds = {
     'updates': ProjectUpdates,
+    'all-updates': AllProjectUpdates,
 }
 
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
-    # PayPal
-    url(r'^rsr/paypalinvoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$',
-        'akvo.rsr.views.void_invoice',
-        name='void_invoice'),
-    url(r'^rsr/project/(?P<project_id>\d+)/donate/$',
-        'akvo.rsr.views.donate',
-        name='project_donate'),
-    (r'^rsr/ipn/thanks/$', 'akvo.rsr.views.paypal_thanks', ),
-    (r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn'),
+    # Payment engines
+    url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),
+    url(r'^rsr/invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
+        'akvo.rsr.views.donate', name='complete_donation'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.setup_donation', name='project_donate'),
+    url(r'^rsr/donate/ideal/thanks/$', 'akvo.rsr.views.mollie_thanks', name='mollie_thanks'),
+    url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
+    url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
+    url(r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn', name='paypal_ipn'),
 
     url(r'^$', 'akvo.rsr.views.index', name='index'),    
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
@@ -50,7 +52,7 @@ urlpatterns = patterns('',
         name='project_main'),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
     (r'^rsr/project/(?P<project_id>\d+)/comment$', 'akvo.rsr.views.commentform', ),
-    (r'^rsr/project/(?P<project_id>\d+)/updates$', 'akvo.rsr.views.projectupdates', ),
+    url(r'^rsr/project/(?P<project_id>\d+)/updates$', 'akvo.rsr.views.projectupdates', name='project_updates'),
     (r'^rsr/project/(?P<project_id>\d+)/comments$', 'akvo.rsr.views.projectcomments', ),
     (r'^rsr/project/(?P<project_id>\d+)/details$', 'akvo.rsr.views.projectdetails', ),
     (r'^rsr/project/(?P<project_id>\d+)/funding$', 'akvo.rsr.views.projectfunding', ),
@@ -115,7 +117,7 @@ urlpatterns = patterns('',
 	
     (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     
-    (r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
+    url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
 
     (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),

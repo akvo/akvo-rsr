@@ -12,6 +12,8 @@ from django.db.models import get_model, ImageField
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
+from utils import send_donation_confirmation_emails
+
 def create_publishing_status(sender, **kwargs):
     """
     called when a new project is saved so an associated published record for the
@@ -92,14 +94,18 @@ def change_name_of_file_on_change(sender, **kwargs):
                     except:
                         pass
 
-def create_paypal_gateway(sender, **kwargs):
-    """Called when a new project is saved so an associated PayPal gateway
-    for the object is created
-    """
-    if kwargs.get('created', False):
-        new_project = kwargs['instance']
-        gateways = get_model('rsr', 'paypalgateway').objects
-        default_gateway = gateways.get(pk=1)
-        ppgs = get_model('rsr', 'paypalgatewayselector').objects
-        ppgs.create(gateway=default_gateway, project=new_project)
 
+def create_payment_gateway_selector(instance, created, **kwargs):
+    """Associates a newly created project with the default PayPal
+    and Mollie payment gateways
+    """
+    if created:
+        project = instance
+        gateway_selector = get_model('rsr', 'paymentgatewayselector').objects
+        gateway_selector.create(project=project)
+
+
+def donation_completed(instance, created, **kwargs):
+    invoice = instance
+    if not created and invoice.status == 3:
+        send_donation_confirmation_emails(invoice.id)

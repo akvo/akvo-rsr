@@ -1,13 +1,16 @@
+# -*- coding: utf-8 -*-
+
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
-from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile
-from akvo.rsr.forms import PayPalInvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
+from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
 from django import forms
+from django import http
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -18,12 +21,12 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
-from django.template import RequestContext
+from django.template import Context, RequestContext, loader
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-
+from django.views.decorators.http import require_GET, require_POST
 
 from BeautifulSoup import BeautifulSoup
 from datetime import datetime
@@ -31,15 +34,12 @@ import time
 import feedparser
 from registration.models import RegistrationProfile
 import random
+from decimal import Decimal
 
-REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
-
-# PAUL
-from akvo.rsr.models import PayPalInvoice
+from mollie.ideal.utils import query_mollie
 from paypal.standard.forms import PayPalPaymentsForm
 
-from django import http
-from django.template import Context, loader
+REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
 def server_error(request, template_name='500.html'):
     '''
@@ -898,108 +898,157 @@ def project_list_widget(request, template='project-list', org_id=0):
         p = p.order_by(order_by, 'name')
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
-            'bgcolor': bgcolor, 'textcolor': textcolor,  'projects': p,
-            'org_id': org_id, 'request_get': request.GET, 'site': site
+            'bgcolor': bgcolor, 
+            'textcolor': textcolor,  
+            'projects': p,
+            'org_id': org_id, 
+            'request_get': request.GET, 
+            'site': site
         },
         context_instance=RequestContext(request))
 
-
 @fetch_project
-def donate(request, p):
+@render_to('rsr/donate_step1.html')
+def setup_donation(request, p):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
-    has_sponsor_banner = False
+    request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
+    return {'p': p}
+
+@fetch_project
+def donate(request, p, engine, has_sponsor_banner=False):
+    if p not in Project.objects.published().need_funding():
+        return redirect('project_main', project_id=p.id)
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
     if request.method == 'POST':
-        donate_form = PayPalInvoiceForm(data=request.POST, user=request.user, project=p)
+        donate_form = InvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
         if donate_form.is_valid():
+            cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
+            invoice.engine = engine
             if request.user.is_authenticated():
                 invoice.user = request.user
             else:
-                invoice.name = donate_form.cleaned_data['name']
-                invoice.email = donate_form.cleaned_data['email']   
-            invoice.save()
-            if settings.PAYPAL_DEBUG:
-                pp_dict = {
-                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': invoice.currency,
-                    'business': settings.PAYPAL_SANDBOX_GATEWAY,
-                    'amount': invoice.amount,
-                    'item_name': 'TEST %s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                                                               invoice.project.id,
-                                                               invoice.project.name),
-                    'invoice': invoice.id,
-                    'lc': invoice.locale,
-                    'notify_url': settings.PAYPAL_NOTIFY_URL,
-                    'return_url': settings.PAYPAL_RETURN_URL,
-                    'cancel_url': settings.PAYPAL_CANCEL_URL}
+                invoice.name = cd['name']
+                invoice.email = cd['email']
+            original_http_referer = request.session.get('original_http_referer', None)
+            if original_http_referer:
+                invoice.http_referer = original_http_referer
+                del request.session['original_http_referer']
             else:
+                invoice.http_referer = request.META.get('HTTP_REFERER', None)
+            if settings.DONATION_TEST:
+                invoice.test = True
+            if engine == 'ideal':
+                invoice.bank = cd['bank']
+                mollie_dict = {
+                    'amount': invoice.amount * 100,
+                    'bank_id': invoice.bank,
+                    'partnerid': invoice.gateway,
+                    'description': u'Donation: Akvo Project %d' % int(p.id),
+                    'reporturl': settings.MOLLIE_REPORT_URL,
+                    'returnurl': settings.MOLLIE_RETURN_URL}
+                try:
+                    mollie_response = query_mollie(mollie_dict, 'fetch')
+                    invoice.transaction_id = mollie_response['transaction_id']
+                    order_url = mollie_response['order_url']
+                    invoice.save()
+                except:
+                    return redirect('donate_500')
+                return render_to_response('rsr/donate_step3.html',
+                    {'invoice': invoice,
+                     'p': p,
+                     'payment_engine': engine,
+                     'mollie_order_url': order_url,
+                     'has_sponsor_banner': has_sponsor_banner,
+                     'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
+                    context_instance=RequestContext(request))
+            elif engine == 'paypal':
+                invoice.save()
                 pp_dict = {
                     'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
                     'currency_code': invoice.currency,
                     'business': invoice.gateway,
                     'amount': invoice.amount,
-                    'item_name': '%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                                                          invoice.project.id,
-                                                          invoice.project.name),
-                    'invoice': invoice.id,
+                    'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
+                        int(invoice.project.id), invoice.project.name),
+                    'invoice': int(invoice.id),
                     'lc': invoice.locale,
                     'notify_url': settings.PAYPAL_NOTIFY_URL,
                     'return_url': settings.PAYPAL_RETURN_URL,
                     'cancel_url': settings.PAYPAL_CANCEL_URL}
-            pp_form = PayPalPaymentsForm(initial=pp_dict)
-            if settings.PAYPAL_DEBUG:
-                pp_form.sandbox()
-            else:
-                pp_form.render()
-            return render_to_response('rsr/paypal_checkout.html',
+                pp_form = PayPalPaymentsForm(initial=pp_dict)
+                if settings.PAYPAL_TEST:
+                    pp_button = pp_form.sandbox()
+                else:
+                    pp_button = pp_form.render()
+                action = request.POST.get('action', None)
+                return render_to_response('rsr/donate_step3.html',
                                       {'invoice': invoice,
+                                       'payment_engine': engine,
                                        'pp_form': pp_form, 
-                                       'p': p, 
-                                       'sandbox': settings.PAYPAL_DEBUG,
+                                       'pp_button': pp_button,
+                                       'p': p,
                                        'has_sponsor_banner': has_sponsor_banner,
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = PayPalInvoiceForm(user=request.user, project=p)
-    return render_to_response('rsr/project_donate.html', 
+        donate_form = InvoiceForm(user=request.user, project=p, engine=engine)
+    return render_to_response('rsr/donate_step2.html', 
                               {'donate_form': donate_form,
+                               'payment_engine': engine,
                                'p': p,
                                'has_sponsor_banner': has_sponsor_banner,
                                'live_earth_enabled': settings.LIVE_EARTH_ENABLED}, 
                               context_instance=RequestContext(request))
 
 def void_invoice(request, invoice_id, action=None):
-    invoice = get_object_or_404(PayPalInvoice, pk=invoice_id)
+    invoice = get_object_or_404(Invoice, pk=invoice_id)
     if invoice.status == 1:
         invoice.status = 2
         invoice.save()
         if action == 'back':
-            return redirect('project_donate', project_id=invoice.project.id)
+            return redirect('complete_donation', project_id=invoice.project.id,
+                engine=invoice.engine)
         elif action == 'cancel':
             return redirect('project_main', project_id=invoice.project.id)
-    else:
-        return redirect('project_list')
+    return redirect('project_list')
 
-# Presents the landing page after PayPal
+def mollie_report(request):
+    transaction_id = request.GET.get('transaction_id', None)
+    if transaction_id:
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
+        request_dict = {'partnerid': invoice.gateway,
+            'transaction_id': transaction_id}
+        try:
+            mollie_response = query_mollie(request_dict, 'check')
+        except:
+            return HttpResonseServerError
+        if mollie_response['paid'] == 'true':
+            invoice.amount_received = invoice.amount - Decimal('1.18')
+            invoice.status = 3
+        else:
+            invoice.status = 2
+        invoice.save()
+        return HttpResponse('OK')
+    return HttpResponseServerError
+
+@require_POST
+@render_to('rsr/donate_thanks.html')
 def paypal_thanks(request):
-    if request.GET:
-        try:
-            invoice_id = request.GET['invoice']
-            invoice = PayPalInvoice.objects.get(id=invoice_id)
-            p = Project.objects.get(id=invoice.project.id)
-        except:
-            return redirect('/')
-            
-        try:
-            u = User.objects.get(id=invoice.user_id)
-        except:
-            u = None
-            
-        return render_to_response('rsr/paypal_thanks.html',{'invoice': invoice, 'project': p, 'user': u}, context_instance=RequestContext(request))
-    else:
-        return redirect('/')
+    invoice_id = request.POST.get('invoice', None)
+    if invoice_id:
+        invoice = Invoice.objects.get(pk=invoice_id)
+        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+    return redirect('/')
 
+@require_GET
+@render_to('rsr/donate_thanks.html')
+def mollie_thanks(request):
+    transaction_id = request.GET.get('transaction_id', None)
+    if transaction_id:
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
+        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+    return redirect('/')

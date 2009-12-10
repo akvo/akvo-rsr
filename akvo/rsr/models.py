@@ -22,13 +22,13 @@ from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 #from django.core import validators
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.mail import send_mail
 from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-
+from mollie.ideal.utils import get_mollie_banklist
+from paypal.standard.ipn.signals import payment_was_flagged
 from registration.models import RegistrationProfile, RegistrationManager
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
@@ -39,7 +39,8 @@ from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
 				   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
-					 create_publishing_status, create_organisation_account, create_paypal_gateway)
+    create_publishing_status, create_organisation_account,
+    create_payment_gateway_selector, donation_completed)
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -284,7 +285,6 @@ class Organisation(models.Model):
         # than one of the same value. This leads to the wrong sum when same amount
         # has been pledged to multiple projects
         all_active = Project.objects.published().status_not_cancelled()
-        # First four keys should be deprecated
         return {
             'total_euros': my_projs.euros().total_total_budget(),
             'donated_euros': my_projs.euros().total_donated(),
@@ -482,8 +482,8 @@ class Project(models.Model):
             return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
 
         def donated(self):
-            return self.filter(paypalinvoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
-                donated=Sum('paypalinvoice__amount_received'),
+            return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
+                donated=Sum('invoice__amount_received'),
             ).distinct()
 
         def pledged(self, org=None):
@@ -517,17 +517,17 @@ class Project(models.Model):
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         ) - (
                             SELECT CASE
                                 WHEN Sum(amount_received) IS NULL THEN 0
                                 ELSE Sum(amount_received)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         )
                     ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                 #how much money has been donated by individual donors, including pending donations
@@ -537,17 +537,17 @@ class Project(models.Model):
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         ) + (
                             SELECT CASE
                                 WHEN Sum(amount_received) IS NULL THEN 0
                                 ELSE Sum(amount_received)
                             END
-                            FROM rsr_paypalinvoice
-                            WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                         )
                     ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                 #how much donated money from individuals is pending
@@ -556,9 +556,9 @@ class Project(models.Model):
                             WHEN Sum(amount) IS NULL THEN 0
                             ELSE Sum(amount)
                         END
-                        FROM rsr_paypalinvoice
-                        WHERE rsr_paypalinvoice.project_id = rsr_project.id
-                            AND rsr_paypalinvoice.status = %d
+                        FROM rsr_invoice
+                        WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
                     ''' % PAYPAL_INVOICE_STATUS_PENDING,
                 #the total budget for the project as per the budgetitems
                 'total_budget':
@@ -1167,38 +1167,57 @@ class ProjectComment(models.Model):
     time            = models.DateTimeField(_('time'))
         
 
-# PayPal
+# Payment engines
+class PaymentGateway(models.Model):
+    name = models.CharField(max_length=255, help_text=_(u'Use a short, descriptive name.'))
+    description = models.TextField(blank=True)
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    notification_email = models.EmailField(_(u'notification email'),
+        help_text=_(u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.'))
 
-from paypal.standard.ipn.signals import payment_was_flagged, payment_was_successful
+    def __unicode__(self):
+        return u'%s - %s' % (self.name, self.get_currency_display())
 
-class PayPalGateway(models.Model):
+    class Meta:
+        abstract = True
+
+class PayPalGateway(PaymentGateway):
     PAYPAL_LOCALE_CHOICES = (
         ('US', _(u'US English')),
     )
-    name                = models.CharField(max_length=255)
-    account_email       = models.EmailField()
-    description         = models.TextField(blank=True, null=True)
-    currency            = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
-    locale              = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
-    notification_email  = models.EmailField()
-
-    def __unicode__(self):
-        return u'%s - %s - %s' % (self.name, self.account_email, self.get_currency_display())
+    account_email = models.EmailField()
+    locale = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
 
     class Meta:
         verbose_name = _(u'PayPal gateway')
 
-class PayPalGatewaySelector(models.Model):
-    project     = models.OneToOneField(Project)
-    gateway     = models.ForeignKey(PayPalGateway)
+class MollieGateway(PaymentGateway):
+    partner_id = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = _(u'Mollie/iDEAL gateway')
+
+class PaymentGatewaySelector(models.Model):
+    project = models.OneToOneField(Project)
+    paypal_gateway = models.ForeignKey(PayPalGateway, default=1)
+    mollie_gateway = models.ForeignKey(MollieGateway, default=1)
 
     def __unicode__(self):
         return u'%s - %s' % (self.project.id, self.project.name)
 
     class Meta:
-        verbose_name = _(u'Project PayPal gateway configuration')
+        verbose_name = _(u'Project payment gateway configuration')
 
-class PayPalInvoiceManager(models.Manager):
+class InvoiceManager(models.Manager):
+    def get_query_set(self):
+        """Returns a queryset of all invoices
+        Test invoices are excluded in production mode
+        """
+        if not settings.DONATION_TEST:
+            return super(InvoiceManager, self).get_query_set().exclude(test=True)
+        else:
+            return super(InvoiceManager, self).get_query_set()
+
     def stale(self):
         """Returns a queryset of invoices which have been pending
         for longer than settings.PAYPAL_INVOICE_TIMEOUT (60 minutes by default)
@@ -1208,34 +1227,65 @@ class PayPalInvoiceManager(models.Manager):
         return qs
 
     def complete(self):
-        """Returns a queryset of invoices which have both:
-        - a status of 'Complete' and
-        - a PayPal Transaction ID
+        """Returns a queryset of invoices which have
+        a status of 'Complete'
         """
         qs = self.filter(status=3)
-        qs = qs.exclude(ipn='')
         return qs
-        
-class PayPalInvoice(models.Model):
+
+class Invoice(models.Model):
     STATUS_CHOICES = (
-        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
-        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
-        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
-        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
+        (PAYPAL_INVOICE_STATUS_PENDING, _(u'Pending')),
+        (PAYPAL_INVOICE_STATUS_VOID, _(u'Void')),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, _(u'Complete')),
+        (PAYPAL_INVOICE_STATUS_STALE, _(u'Stale')),
     )
+    PAYMENT_ENGINES = (
+        ('paypal', _(u'PayPal')),
+        ('ideal', _(u'iDEAL')),
+    )
+    # Setup
+    test = models.BooleanField(_(u'test donation'),
+        help_text=_(u'This flag is set if the donation was made in test mode.'))
+    engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
+        max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
-    amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
+    # Common
+    amount = models.PositiveIntegerField(help_text=_(u'Amount requested by user.'))
     amount_received = models.DecimalField(max_digits=10, decimal_places=2,
-                                          blank=True, null=True,
-                                          help_text=_('Amount actually received after PayPal charges have been applied.'))
-    ipn = models.CharField(blank=True, null=True, max_length=75)
+        blank=True, null=True,
+        help_text=_(u'Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+    status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
+    http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
+    is_anonymous = models.BooleanField(_(u'anonymous donation'))
+    # PayPal
+    ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
+    # Mollie
+    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
+        choices=get_mollie_banklist(), blank=True)
+    transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
 
-    objects = PayPalInvoiceManager()
+    admin_objects = models.Manager()
+    objects = InvoiceManager()
+
+    def get_favicon(self):
+        pass # @ grab favicon from HTTP_REFERER site    
+    
+    @property
+    def get_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        return self.name
+
+    @property
+    def get_email(self):
+        if self.user:
+            return self.user.email
+        return self.email
 
     @property
     def currency(self):
@@ -1243,53 +1293,51 @@ class PayPalInvoice(models.Model):
 
     @property
     def gateway(self):
-        return self.project.paypalgatewayselector.gateway.account_email
+        if self.engine == 'paypal':
+            if settings.PAYPAL_TEST:
+                return settings.PAYPAL_SANDBOX_GATEWAY
+            else:
+                return self.project.paymentgatewayselector.paypal_gateway.account_email
+        elif self.engine == 'ideal':
+            return self.project.paymentgatewayselector.mollie_gateway.partner_id
 
     @property
     def locale(self):
-        return self.project.paypalgatewayselector.gateway.locale
+        return self.project.paymentgatewayselector.paypal_gateway.locale
 
     @property
     def notification_email(self):
-        return self.project.paypalgatewayselector.gateway.notification_email
+        if self.engine == 'paypal':
+            return self.project.paymentgatewayselector.paypal_gateway.notification_email
+        elif self.engine == 'ideal':
+            return self.project.paymentgatewayselector.mollie_gateway.notification_email
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
     class Meta:
-        verbose_name = _('PayPal invoice')
+        verbose_name = _(u'invoice')
 
-def send_paypal_confirmation_email(id):
-    ppi = PayPalInvoice.objects.get(pk=id)
-    t = loader.get_template('rsr/paypal_confirmation_email.html')
-    c = Context({'invoice': ppi})
-    if ppi.user:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.user.email], fail_silently=False)
-    else:
-        send_mail('Thank you from Akvo.org!', t.render(c), settings.DEFAULT_FROM_EMAIL, [ppi.email], fail_silently=False)
 
-# PayPal IPN Listener
+# PayPal IPN listener
 def process_paypal_ipn(sender, **kwargs):
     ipn = sender
     if ipn.payment_status == 'Completed':
-        ppi = PayPalInvoice.objects.get(pk=ipn.invoice)
-        ppi.amount_received = ppi.amount - ipn.mc_fee
-        ppi.ipn = ipn.txn_id
-        ppi.status = 3
-        ppi.save()
-        send_paypal_confirmation_email(ppi.id)
-if settings.PAYPAL_DEBUG:
-    payment_was_flagged.connect(process_paypal_ipn)
-else:
-    #payment_was_successful.connect(process_paypal_ipn)
-    payment_was_flagged.connect(process_paypal_ipn)
+        invoice = Invoice.objects.get(pk=int(ipn.invoice))
+        invoice.amount_received = invoice.amount - ipn.mc_fee
+        invoice.ipn = ipn.txn_id
+        invoice.status = 3
+        invoice.save()
+payment_was_flagged.connect(process_paypal_ipn)
 
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
-post_save.connect(create_paypal_gateway, sender=Project)
+post_save.connect(create_payment_gateway_selector, sender=Project)
+
+post_save.connect(donation_completed, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)

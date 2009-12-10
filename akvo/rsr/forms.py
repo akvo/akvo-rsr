@@ -22,6 +22,8 @@ from django.utils.translation import ugettext_lazy as _
 from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
 
+from mollie.ideal.utils import get_mollie_banklist
+
 from akvo.rsr.models import (UserProfile, Organisation, Project,)
 
 # I put this on all required fields, because it's easier to pick up
@@ -228,32 +230,36 @@ class ProjectAdminModelForm(forms.ModelForm):
     class Meta:
         model = get_model('rsr', 'project')
 
-# PayPal
 
-class PayPalInvoiceForm(forms.ModelForm):
-    def __init__(self, user, project, *args, **kwargs):
-        super(PayPalInvoiceForm, self).__init__(*args, **kwargs)
+class InvoiceForm(forms.ModelForm):
+    def __init__(self, user, project, engine, *args, **kwargs): 
+        super(InvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
+        self.engine = engine
         if not user.is_authenticated():
             self.fields['name']  = forms.CharField(label=_('Full name'))
             self.fields['email'] = forms.EmailField(label=_('Email address'))
             self.fields['email2'] = forms.EmailField(label=_('Email address (confirm)'))
+        if engine == 'ideal':
+            self.fields['bank'] = forms.CharField(max_length=4, 
+                widget=forms.Select(choices=get_mollie_banklist(empty_label=_('Please select your bank'))))
 
-    amount = forms.IntegerField(min_value=1)
-
+    amount = forms.IntegerField(min_value=2)
+        
     class Meta:
-        model = get_model('rsr', 'paypalinvoice')
-        fields = ('amount',)
+        model = get_model('rsr', 'invoice')
+        fields = ('amount', 'is_anonymous')
 
     def clean(self):
+        cleaned_data = self.cleaned_data
         funding_needed = self.project.funding_still_needed()
-        if 'amount' in self.cleaned_data:
-            if self.cleaned_data['amount'] > funding_needed:
+        if 'amount' in cleaned_data:
+            if cleaned_data['amount'] > funding_needed:
                 raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
-        if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
-            if self.cleaned_data['email'] != self.cleaned_data['email2']:
+        if 'email' in cleaned_data and 'email2' in cleaned_data:
+            if cleaned_data['email'] != cleaned_data['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
-        return self.cleaned_data
+        return cleaned_data
 
 
 # based on http://www.djangosnippets.org/snippets/1008/

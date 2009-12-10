@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404
-from django.utils.functional import wraps
+try:
+    from functools import wraps
+except ImportError:
+    from django.utils.functional import wraps
 
 from akvo.rsr.models import Project
 
