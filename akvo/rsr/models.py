@@ -1337,7 +1337,8 @@ post_save.connect(create_organisation_account, sender=Organisation)
 post_save.connect(create_publishing_status, sender=Project)
 post_save.connect(create_payment_gateway_selector, sender=Project)
 
-post_save.connect(donation_completed, sender=Invoice)
+if settings.DONATION_NOTIFICATION_EMAILS:
+    post_save.connect(donation_completed, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
