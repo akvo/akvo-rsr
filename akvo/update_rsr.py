@@ -104,10 +104,5 @@ def budget_refactor():
             print "Error importing project budget, for id:", p.id 
                 
 if __name__ == '__main__':
-    #update_publishing_status()
-    #update_organisation_account()
-    #resave_all_images()
-    #budget_refactor()
     create_default_mollie_gateway()
-    mark_test_invoices()
     mark_existing_invoices_as_anonymous()
