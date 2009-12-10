@@ -56,24 +56,24 @@ class QuerySetManager(models.Manager):
             return getattr(self.get_query_set(), attr, *args)
             
 CONTINENTS = (
-    (1, u'Africa'),
-    (2, u'Asia'),
-    (3, u'Australia'),
-    (4, u'Europe'),
-    (5, u'North America'),
-    (6, u'South America'),
+    (1, _('Africa')),
+    (2, _('Asia')),
+    (3, _('Australia')),
+    (4, _('Europe')),
+    (5, _('North America')),
+    (6, _('South America')),
 )
 class Country(models.Model):
     
     country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
-    continent                   = models.IntegerField(u'continent', choices=CONTINENTS)
+    continent                   = models.IntegerField(_(u'continent'), choices=CONTINENTS)
 
     def __unicode__(self):
         return self.country_name
 
     class Meta:
-        verbose_name = u'country'
-        verbose_name_plural = u'countries'
+        verbose_name = _('country')
+        verbose_name_plural = _('countries')
         ordering = ['country_name']
 
 
@@ -91,10 +91,10 @@ class Organisation(models.Model):
     ORG_TYPE_COM = 'C'
     ORG_TYPE_KNO = 'K'
     ORG_TYPES = (
-        (ORG_TYPE_NGO, u'NGO'),
-        (ORG_TYPE_GOV, u'Governmental'),
-        (ORG_TYPE_COM, u'Commercial'),
-        (ORG_TYPE_KNO, u'Knowledge institution'),
+        (ORG_TYPE_NGO, _('NGO')),
+        (ORG_TYPE_GOV, _('Governmental')),
+        (ORG_TYPE_COM, _('Commercial')),
+        (ORG_TYPE_KNO, _('Knowledge institution')),
     )
     
     def image_path(instance, file_name):
@@ -106,36 +106,38 @@ class Organisation(models.Model):
     funding_partner             = models.BooleanField(_(u'funding partner'))
     sponsor_partner             = models.BooleanField(_(u'sponsor partner'))
 
-    name                        = models.CharField(max_length=25, help_text='Short name which will appear in organisation and partner listings (25 characters).'
+    name                        = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).')
     							)
-    long_name                   = models.CharField(blank=True, max_length=75, help_text='Full name of organisation (75 characters).'
+    long_name                   = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).')
     							)
-    organisation_type           = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
+    organisation_type           = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
 
     logo                        = ImageWithThumbnailsField(
+    								_('logo'),
                                     blank=True,
                                     upload_to=image_path,
                                     thumbnail={'size': (360,270)},
-                                    help_text = 'Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.',
+                                    help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
                                 )
-    city                        = models.CharField(max_length=25)
-    state                       = models.CharField(max_length=15)
-    country                     = models.ForeignKey(Country, verbose_name=_(u'country'))
-    url                         = models.URLField(blank=True, verify_exists = False, help_text = 'Enter the full address of your web site, beginning with http://.')
+    city                        = models.CharField(_('city'), max_length=25)
+    state                       = models.CharField(_('state'), max_length=15)
+    country                     = models.ForeignKey(Country)
+    url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
     map                         = models.ImageField(
+                                    _('map'),
                                     blank=True,
                                     upload_to=image_path,
-                                    help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).',
+                                    help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'),
                                 )
-    address_1                   = models.CharField(blank=True, max_length=35)
-    address_2                   = models.CharField(blank=True, max_length=35)
-    postcode                    = models.CharField(blank=True, max_length=10)
-    phone                       = models.CharField(blank=True, max_length=20)
-    mobile                      = models.CharField(blank=True, max_length=20)
-    fax                         = models.CharField(blank=True, max_length=20)
-    contact_person              = models.CharField(blank=True, max_length=30, help_text = 'Name of the external contact person for the organisation.')
-    contact_email               = models.CharField(blank=True, max_length=50, help_text = 'Email to which inquiries about your organisation should be sent.')
-    description                 = models.TextField(blank=True, help_text = 'Describe what your organisation does in the water and sanitation sector.' )
+    address_1                   = models.CharField(_('address 1'), blank=True, max_length=35, help_text=_('Street address (35 characters).'))
+    address_2                   = models.CharField(_('address 2'), blank=True, max_length=35, help_text=_('Street address 2 (35 characters).'))
+    postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
+    phone                       = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    mobile                      = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    fax                         = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    contact_person              = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
+    contact_email               = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
+    description                 = models.TextField(_('description'), blank=True, help_text=_('Describe what your organisation does in the water and sanitation sector.') )
 
     #Managers, one default, one custom
     #objects = models.Manager()    
@@ -297,6 +299,8 @@ class Organisation(models.Model):
         }
 
     class Meta:
+        verbose_name=_('Organisation')
+        verbose_name_plural=_('Organisations')
         ordering = ['name']
         permissions = (
             ("%s_organisation" % RSR_LIMITED_CHANGE, u'RSR limited change organisation'),
@@ -315,7 +319,7 @@ class OrganisationAccount(models.Model):
         ('premium', _('Premium')),
     )
     organisation    = models.OneToOneField(Organisation, primary_key=True)
-    account_level   = models.CharField(max_length=12, choices=ACCOUNT_LEVEL, default='free')
+    account_level   = models.CharField(_('account level'), max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
 
 CURRENCY_CHOICES = (
@@ -342,70 +346,72 @@ class Project(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%s/%s')
 
-    name                        = models.CharField(max_length=45, help_text = 'A short descriptive name for your project (45 characters).')
-    subtitle                    = models.CharField(max_length=75, help_text = 'A subtitle with more information on the project (75 characters).')
-    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text = 'Current project state.')
-    city                        = models.CharField(max_length=25, help_text = 'Name of city, village, town, slum, etc. (25 characters).')
-    state                       = models.CharField(max_length=15, help_text = 'Name of state, province, county, region, etc. (15 characters).')
-    country                     = models.ForeignKey(Country, help_text = 'Country where project is taking place.')
+    name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
+    subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
+    status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+    city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
+    state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
+    country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
     map                         = models.ImageField(
+                                    _('map'),
                                     blank=True,
                                     upload_to=image_path,
-                                    help_text = 'The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'
+                                    help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
                                 )
     #Project categories
-    category_water              = models.BooleanField()
-    category_sanitation         = models.BooleanField()
-    category_maintenance        = models.BooleanField()
-    category_training           = models.BooleanField()
-    category_education          = models.BooleanField()
-    category_product_development= models.BooleanField()
-    category_other              = models.BooleanField()
+    category_water              = models.BooleanField(_('water'))
+    category_sanitation         = models.BooleanField(_('sanitation'))
+    category_maintenance        = models.BooleanField(_('maintenance'))
+    category_training           = models.BooleanField(_('training'))
+    category_education          = models.BooleanField(_('education'))
+    category_product_development= models.BooleanField(_('product development'))
+    category_other              = models.BooleanField(_('other'))
     
     #current_status_summary = models.TextField()
-    project_plan_summary        = models.TextField(max_length=220, help_text='Briefly summarize the project (220 characters).')
+    project_plan_summary        = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
     current_image               = ImageWithThumbnailsField(
+                                    _('project photo'),
                                     blank=True,
                                     upload_to=image_path,
                                     thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                    help_text = 'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.',
+                                    help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                                 )
-    current_image_caption       = models.CharField(blank=True, max_length=50, help_text='Enter a caption for your project picture (50 characters).')
-    goals_overview              = models.TextField(max_length=500, help_text='Describe what the project hopes to accomplish (500 characters).')
-    goal_1                      = models.CharField(blank=True, max_length=60, help_text='(60 characters)')
-    goal_2                      = models.CharField(blank=True, max_length=60)
-    goal_3                      = models.CharField(blank=True, max_length=60)
-    goal_4                      = models.CharField(blank=True, max_length=60)
-    goal_5                      = models.CharField(blank=True, max_length=60)
+    current_image_caption       = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
+    goals_overview              = models.TextField(_('overview'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
+    goal_1                      = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+    goal_2                      = models.CharField(_('goal 2'), blank=True, max_length=60)
+    goal_3                      = models.CharField(_('goal 3'), blank=True, max_length=60)
+    goal_4                      = models.CharField(_('goal 4'), blank=True, max_length=60)
+    goal_5                      = models.CharField(_('goal 5'), blank=True, max_length=60)
     #Project target benchmarks
-    water_systems               = models.IntegerField(default=0)
-    sanitation_systems          = models.IntegerField(default=0)
-    hygiene_facilities          = models.IntegerField(default=0)
-    improved_water              = models.IntegerField(default=0)
-    improved_water_years        = models.IntegerField(default=0)
-    improved_sanitation         = models.IntegerField(default=0)
-    improved_sanitation_years   = models.IntegerField(default=0)
-    trainees                    = models.IntegerField(default=0)
+    water_systems               = models.IntegerField(_('water systems'), default=0)
+    sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
+    hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
+    improved_water              = models.IntegerField(_('water: # people affected'), default=0)
+    improved_water_years        = models.IntegerField(_('for # years'), default=0)
+    improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
+    improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
+    trainees                    = models.IntegerField(_('# people trained'), default=0)
     #mdg_count_water             = models.IntegerField(default=0)
     #mdg_count_sanitation        = models.IntegerField(default=0)
 
-    location_1                  = models.CharField(blank=True, max_length=50, help_text = 'Street address (50 characters).')
-    location_2                  = models.CharField(blank=True, max_length=50, help_text = 'Street address 2 (50 characters).')
-    postcode                    = models.CharField(blank=True, max_length=10, help_text = 'Postcode, zip code, etc. (10 characters).')
-    longitude                   = models.CharField(blank=True, max_length=20, help_text = 'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.')
-    latitude                    = models.CharField(blank=True, max_length=20, help_text = 'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.')
-    current_status_detail       = models.TextField(blank=True, max_length=600, help_text='Description of current phase of project. (600 characters).')
-    project_plan_detail         = models.TextField(blank=True, help_text='Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).')
-    sustainability              = models.TextField(help_text='Describe plans for sustaining/maintaining results after implementation is complete (unlimited).')
-    context                     = models.TextField(blank=True, max_length=500, help_text='Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).')
+    location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
+    location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
+    postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
+    longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
+    latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
+    current_status_detail       = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
+    project_plan_detail         = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
+    sustainability              = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
+    context                     = models.TextField(_('context'), blank=True, max_length=500, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).'))
 
-    project_rating              = models.IntegerField(default=0)
-    notes                       = models.TextField(blank=True, help_text='(Unlimited number of characters).')
+    project_rating              = models.IntegerField(_('Project rating'), default=0)
+    notes                       = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
 
     #budget    
-    currency            = models.CharField(choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-    date_request_posted = models.DateField(default=date.today)
-    date_complete       = models.DateField(null=True, blank=True)
+    currency            = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    date_request_posted = models.DateField(_('Date request posted'), default=date.today)
+    date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
 
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
@@ -813,10 +819,12 @@ class BudgetItem(models.Model):
         ('other', _('other')),
     )
     project             = models.ForeignKey(Project)
-    item                = models.CharField(max_length=20, choices=ITEM_CHOICES)
-    amount              = models.DecimalField(max_digits=10, decimal_places=2)
+    item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
     
     class Meta:
+    	verbose_name=_('Budget Item')
+    	verbose_name_plural=_('Budget Items')
         unique_together     = ('project', 'item')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
@@ -844,12 +852,12 @@ class PublishingStatus(models.Model):
     
 class Link(models.Model):
     LINK_KINDS = (
-        ('A', 'Akvopedia entry'),
-        ('E', 'External link'),
+        ('A', _('Akvopedia entry')),
+        ('E', _('External link')),
     )
-    kind    = models.CharField(max_length=1, choices=LINK_KINDS)
+    kind    = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
     url     = models.URLField(_(u'URL'))
-    caption = models.CharField(max_length=50)
+    caption = models.CharField(_('caption'), max_length=50)
     project = models.ForeignKey(Project)
     
     def __unicode__(self):
@@ -861,8 +869,12 @@ class Link(models.Model):
 
 class FundingPartner(models.Model):
     funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount          = models.DecimalField(max_digits=10, decimal_places=2)
+    funding_amount          = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
     project                 = models.ForeignKey(Project,)
+    
+    class Meta:
+    	verbose_name=_('Funding partner')
+    	verbose_name_plural=_('Funding partners')
 
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
@@ -870,6 +882,10 @@ class FundingPartner(models.Model):
 class SponsorPartner(models.Model):
     sponsor_organisation    = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
     project                 = models.ForeignKey(Project,)
+    
+    class Meta:
+    	verbose_name=_('Sponsor partner')
+    	verbose_name_plural=_('Sponsor partners')
 
     def __unicode__(self):
         return "%s" % (self.sponsor_organisation.name, )
@@ -878,12 +894,20 @@ class SupportPartner(models.Model):
     support_organisation    = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
     project                 = models.ForeignKey(Project,)
 
+    class Meta:
+    	verbose_name=_('Support partner')
+    	verbose_name_plural=_('Support partners')
+
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
 
 class FieldPartner(models.Model):
     field_organisation      = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
     project                 = models.ForeignKey(Project,)
+
+    class Meta:
+    	verbose_name=_('Field partner')
+    	verbose_name_plural=_('Field partners')
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
@@ -936,8 +960,8 @@ class UserProfile(models.Model):
     phone_number    = models.CharField(
         max_length=50,
         blank=True,
-        help_text	  = """Please use the following format: <strong>467XXXXXXXX</strong>.
-        <br>Example: the number 070 765 43 21 would be entered as 46707654321""",
+        help_text=_("""Please use the following format: <strong>467XXXXXXXX</strong>.
+        <br>Example: the number 070 765 43 21 would be entered as 46707654321"""),
         #TODO: fix to django 1.0
         #validator_list = [isValidGSMnumber]
     )    
