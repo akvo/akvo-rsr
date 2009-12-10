@@ -93,3 +93,13 @@ akvo/mediaroot/img/paypal_donate_old.gif
 akvo/datadir_bu
 *.kpf
 akvo/testing.py
+akvo/datadir.zip
+akvo/datadir_ori
+akvo/datadir_virgin
+akvo/rebuild_db.py
+akvo/rsr_data.json
+akvo/templates/inclusion_tags/foo.html
+akvo/templates/inclusion_tags/project_map.html
+akvo/settings.py
+settings.pyc
+settings.py
