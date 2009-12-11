@@ -1,4 +1,4 @@
-AUTHORS.txt v1.2, 12 March 2009, tbp
+AUTHORS.txt v1.3, 11 December 2009, pb 
 
 AUTHORS of Akvo RSR
 
@@ -8,6 +8,7 @@ The PRIMARY AUTHORS are (and/or have been):
 - Paul Burt
 - Thomas Bjelkeman-Pettersson
 - Mark Charmer
+- Oliver Galloway-Lunn
 - Gabriel von Heijne
 - Daniel Karlsson
 - Gino Lee
