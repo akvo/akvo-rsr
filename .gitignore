@@ -6,4 +6,5 @@
 akvo/settings.py
 akvo/mediaroot/admin
 akvo/mediaroot/db
+akvo/datadir
 
