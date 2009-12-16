@@ -117,17 +117,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 #TEMPLATE_DEBUG = DEBUG
-SITE = 'nwp'
-TEMPLATEDIR = 'templates/%s' % SITE
-
-import os.path
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    #os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
-    os.path.join(os.path.dirname(__file__), TEMPLATEDIR).replace('\\','/'),
-)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
