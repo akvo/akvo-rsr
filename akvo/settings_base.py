@@ -117,7 +117,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 #TEMPLATE_DEBUG = DEBUG
-SITE = 'akvo'
+SITE = 'nwp'
 TEMPLATEDIR = 'templates/%s' % SITE
 
 import os.path
