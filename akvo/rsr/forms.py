@@ -237,7 +237,7 @@ class InvoiceForm(forms.ModelForm):
         self.project = project
         self.engine = engine
         if user.is_authenticated() and user.email:
-            add_extra_fields == False
+            add_extra_fields = False
         if add_extra_fields:
             self.fields['name']  = forms.CharField(label=_('Full name'))
             self.fields['email'] = forms.EmailField(label=_('Email address'))
