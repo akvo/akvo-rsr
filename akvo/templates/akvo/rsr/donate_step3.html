@@ -19,7 +19,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <style type="text/css" media="screen">
 	#donate_step_box {
-		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
+		background: #fff url('{{MEDIA_URL}}akvo/img/donate/step_box_bkgd.png') repeat-x;
 		border:1px solid #DFE0E6;
 		height:55px;
 		margin-bottom:20px;
@@ -31,7 +31,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	}
 	
 	#donate_step_box_inner {
-		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
+		background: transparent url('{{MEDIA_URL}}akvo/img/donate/step_box_line.png') repeat-x 0px 20px;
 		margin-left:auto;
 		margin-right:auto;
 		/*width:680px;*/
@@ -51,7 +51,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 	.active_donate_step {
 		color:#000;
-		background: transparent url('{{MEDIA_URL}}img/donate/step_box_ball.gif') no-repeat center 15px;
+		background: transparent url('{{MEDIA_URL}}akvo/img/donate/step_box_ball.gif') no-repeat center 15px;
 	}
 	
 	#donate_step_5 {
@@ -68,7 +68,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 {% if live_earth_enabled %}
 	{% if has_sponsor_banner %}
-		<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}img/lerfw-banner.png" alt="Live Earth" /></a>
+		<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}akvo/img/lerfw-banner.png" alt="Live Earth" /></a>
 	{% endif %}
 {% endif %}
 
@@ -136,7 +136,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% ifequal payment_engine 'paypal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px">
 			<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
-				<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
+				<img src="{{MEDIA_URL}}akvo/img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
 			</div>
 			<p>{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
 			<p style="margin-top:15px;">
@@ -156,8 +156,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% ifequal payment_engine 'ideal' %}
 		<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:450px; margin-bottom:20px; padding:10px;">
 			<div style="float:right; width:130px; text-align:center;">
-				<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" /><br />
-				<img src="{{MEDIA_URL}}img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
+				<img src="{{MEDIA_URL}}akvo/img/ideal-small.png" width="130" height="121" alt="Ideal" /><br />
+				<img src="{{MEDIA_URL}}akvo/img/donate/Mollie-Logo-Style-Small.png" width="121" height="46" alt="Mollie" />
 			</div>
 			<p>
 				{% trans 'Akvo.org offers the iDeal payment system for Netherlands users to make donations.  With iDEAL, you may make payments entirely within the secure and trusted environment of your own bank&#x27;s website.' %}
