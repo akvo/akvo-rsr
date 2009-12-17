@@ -928,7 +928,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
-            if request.user.is_authenticated():
+            if request.user.is_authenticated() and request.user.email:
                 invoice.user = request.user
             else:
                 invoice.name = cd['name']
