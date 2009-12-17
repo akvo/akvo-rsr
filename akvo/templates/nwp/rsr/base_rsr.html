@@ -15,8 +15,9 @@
 	<link rel="shortcut icon" href="{{MEDIA_URL}}nwp/img/base/favicon.ico" type="image/x-icon">
 </head>
 <body>
-	<h1>NWP</h1>
-
+{% block content %}
+		
+{% endblock content %}
 {% block js %}
 {% ifnotequal request.META.HTTP_HOST '127.0.0.1:8000' %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
