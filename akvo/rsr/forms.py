@@ -203,7 +203,7 @@ class RSR_PasswordResetForm(PasswordResetForm):
 class WYMEditor(forms.Textarea):
     class Media:
         js = (
-            'js/jquery/jquery.js',
+            'js/jquery-1.3.2.min.js',
             'js/wymeditor/jquery.wymeditor.pack.js',
         )
 
