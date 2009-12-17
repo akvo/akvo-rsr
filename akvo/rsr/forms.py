@@ -223,13 +223,6 @@ class WYMEditor(forms.Textarea):
                 lang: '%s',
             });
             </script>''' % (name, self.language))
-        
-class ProjectAdminModelForm(forms.ModelForm):
-    project_plan_summary = forms.CharField(widget=WYMEditor(), help_text='<p><b>This text is bold</b> This is not... <a href="#">And this is a link!</a></p><p>Morbi non erat non ipsum pharetra tempus. Donec orci. Proin in ante. Pellentesque sit amet purus. Cras egestas diam sed ante. Etiam imperdiet urna sit amet risus. Donec ornare arcu id erat. Aliquam ultrices scelerisque sem. In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris. Etiam dignissim imperdiet metus.</p>')
-
-    class Meta:
-        model = get_model('rsr', 'project')
-
 
 class InvoiceForm(forms.ModelForm):
     def __init__(self, user, project, engine, add_extra_fields=True, *args, **kwargs): 

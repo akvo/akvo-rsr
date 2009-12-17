@@ -27,10 +27,6 @@ from utils import groups_from_user
 
 NON_FIELD_ERRORS = '__all__'
 
-#used by WYMeditor not in use right now
-#from forms import ProjectAdminModelForm
-
-
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (u'__unicode__', u'content_type', )
     list_filter  = (u'content_type', )
