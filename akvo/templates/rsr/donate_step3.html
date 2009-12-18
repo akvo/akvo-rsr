@@ -21,12 +21,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#donate_step_box {
 		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
 		border:1px solid #DFE0E6;
-		height:55px;
 		margin-bottom:20px;
 		margin-left:auto;
 		margin-right:auto;
 		margin-top:20px;
-		/*width:755px;*/
 		width:785px;
 	}
 	
@@ -34,19 +32,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
 		margin-left:auto;
 		margin-right:auto;
-		/*width:680px;*/
 		width:750px;
 		height:40px;
 	}
 	.donate_steps {
 		color:#8F94A3;
 		float:left;
-		height:30px;
 		margin-right:10px;
 		padding-top:30px;
-		/*width:128px;*/
 		width:140px;
 		text-align:center;
+		padding-bottom:10px;
 		}
 		
 	.active_donate_step {
@@ -102,8 +98,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div id="#donate_step_5" class="donate_steps">
 				<p>{% trans 'Thank you!' %}</p>
 			</div>
-			<div class="clear">	</div>
 		</div>
+		<div class="clear">	</div>
 	</div>
 		
 	<div{# style="margin-left:40px;"#}>
@@ -198,7 +194,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				
 		<div style="{#margin-left:40px; #}float:left; width:300px;">
 			<h3>{% trans 'Amount you are donating' %}</h3>
-			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:3px;">
+			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:3px;">
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
@@ -209,7 +205,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div>
 		<div{# style="margin-left:40px;"#}>
 			<h3>{% trans 'Your information' %}</h3>
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 				{% ifequal payment_engine 'ideal' %}

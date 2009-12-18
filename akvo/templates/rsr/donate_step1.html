@@ -18,12 +18,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#donate_step_box {
 		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
 		border:1px solid #DFE0E6;
-		height:55px;
 		margin-bottom:20px;
 		margin-left:auto;
 		margin-right:auto;
 		margin-top:20px;
-		/*width:755px;*/
 		width:785px;
 	}
 	
@@ -31,19 +29,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
 		margin-left:auto;
 		margin-right:auto;
-		/*width:680px;*/
 		width:750px;
 		height:40px;
 	}
 	.donate_steps {
 		color:#8F94A3;
 		float:left;
-		height:30px;
 		margin-right:10px;
 		padding-top:30px;
-		/*width:128px;*/
 		width:140px;
 		text-align:center;
+		padding-bottom:10px;
 		}
 		
 	.active_donate_step {
@@ -94,8 +90,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div id="#donate_step_5" class="donate_steps">
 					<p>{% trans 'Thank you!' %}</p>
 				</div>
-				<div class="clear">	</div>
 			</div>
+			<div class="clear">	</div>
 		</div>
 
 		<h2 style="padding-left:0; margin-bottom:20px;">{% trans 'Select a payment system to use' %}</h2>
@@ -106,7 +102,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="margin:20px;">
 				<h1>{% trans 'For Dutch users only' %}</h1>
 				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px; text-align:center;">
-					<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" />
+					<a href="{% url complete_donation project_id=p.id,engine='ideal' %}">
+					<img src="{{MEDIA_URL}}img/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" /></a>
 				</div>
 				<p>
 					{% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}						
@@ -124,7 +121,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="margin:20px;">
 				<h1>{% trans 'For all users' %}</h1>
 				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px;">
-					<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" />
+					<a href="{% url complete_donation project_id=p.id,engine='paypal' %}">
+					<img src="{{MEDIA_URL}}img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" /></a>
 				</div>
 				<p>
 					{% trans 'For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.' %}
