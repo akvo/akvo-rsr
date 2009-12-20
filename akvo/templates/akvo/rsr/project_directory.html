@@ -5,7 +5,7 @@
 <h1>{% trans 'Projects' %}</h1>
 <ul>
 	{% for p in projs  %}
-	<li>{{ p.name }}</li>
+	<li><a href="{% url project_main p.id %}">{{ p.name }}</li>
 	{% endfor %}
 </ul>
 

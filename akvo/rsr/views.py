@@ -753,7 +753,14 @@ def projectmain(request, project_id):
     form        = CommentForm()
     can_add_update = p.connected_to_user(request.user)
         
-    return {'p': p, 'updates': updates, 'comments': comments, 'form': form, 'can_add_update': can_add_update }
+    return {
+        'p': p, 
+        'updates': updates, 
+        'comments': comments, 
+        'form': form, 
+        'can_add_update': can_add_update, 
+        'site_section': 'projects' 
+        }
 
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
