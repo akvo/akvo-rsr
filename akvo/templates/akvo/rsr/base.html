@@ -3,13 +3,11 @@
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
 	<meta charset="UTF-8" />
-	<meta name="description" content="{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}" />
-	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
-	<title>{% block title %}{% trans 'The Dutch water sector' %}{% endblock %}</title>
-	
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
+	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org" />
+	<title>{% block title %}{% trans 'Akvo.org - See it happen' %}{% endblock %}</title>
 	{% page_styles %}
 	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
-	
 </head>
 <body>
 {% block menu %}
@@ -17,30 +15,21 @@
 <div id="header">
 	<div id="header_menu">
 		<ul id="mainmenu">
-			<li><a id="mainmenu_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
-				<span>DUTCHWATERSECTOR</span>
-			</a></li>
-			{% comment %}			
-			<li><a id="mainmenu_akvo" href="/?time=12" class="{% ifequal site_section 'index' %}active{% endifequal %}">
-				<span><img src="{{MEDIA_URL}}img/base/header_menu_akvo_logo.png" width="83" height="20" alt="Akvo.org"></span></a>
+			<li><a id="mainmenu_left" href="/?time=12" class="{% ifequal site_section 'index' %}active{% endifequal %}">
+				<span><img src="{{MEDIA_URL}}/akvo/img/base/header_menu_akvo_logo.png" width="83" height="20" alt="Akvo.org"></span></a>
 			</li>
-			{% endcomment %}
-			<li><a><span>Expertise</span></a></li>
+			<li><a href="/wiki/"><span>Akvopedia</span></a></li>
 			<li><a href="/rsr/projects?time=1234" class="{% ifequal site_section 'projects' %}active{% endifequal %}"><span>Projects</span></a></li>
-			<li><a href="/rsr/partners?time=123" class="{% ifequal site_section 'partners' %}active{% endifequal %}"><span>Organisations</span></a></li>
-			<li><a><span>Contact</span></a></li>
-			<li><a><span>Community</span></a></li>
-			<li><a><span>My DWS.com</span></a></li>
+			<li><a href="/rsr/partners?time=123" class="{% ifequal site_section 'partners' %}active{% endifequal %}"><span>Partners</span></a></li>
+			<li><a href="/web/get_involved"><span>Get Involved</span></a></li>
+			<li><a href="/blog/"><span>Blog</span></a></li>
+			<li><a href="/web/what_we_do/"><span>About</span></a></li>
 			<li><div id="mainmenu_search"><span>
-			</span>
-			</div>
-			</li>
-			{% comment %}
-			<li><div id="mainmenu_search"><span>
-					<input type="text" name="q" value="{% if query_string %}{{ query_string }}{% else %}Search projects{% endif %}" id="main_search" style="padding-top:0; padding-bottom:0;">
+				{% comment %}				
+				<input type="text" name="q" value="{% if query_string %}{{ query_string }}{% else %}Search projects{% endif %}" id="main_search" style="padding-top:0; padding-bottom:0;" />
+				{% endcomment %}
 			</span></div></li>
-			{% endcomment %}
-			<li><a id="toggleGrid"><span>Sign In</span></a></li>
+			<li><a id="signInMenuItem"><span>Sign In</span></a></li>
 		</ul>
 	</div>
 </div>
@@ -66,6 +55,9 @@
 <script type="text/javascript">
 $(document).ready(function(){
 {% block jquery_ready %}{% endblock jquery_ready %}	
+$('#signInMenuItem').click(function () {
+	$('#maincontainer').toggleClass('showgrid');
+});
 });
 </script>
 

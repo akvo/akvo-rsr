@@ -1,0 +1,27 @@
+@import url("reset.css");
+@import url("grid.css");
+@import url("typography.css");
+@import url("base.css");
+@import url("menu.css");
+@import url("utility.css");
+
+/*
+.sliding_box_header {
+    background: #e1e1e5 url(../../img/base/sliding_box_header_background.png) repeat-x;
+    border-bottom: 1px solid #ccc;
+    padding:5px; 
+}
+
+#footer {
+    margin-top:20px;
+    padding-top:0px;
+    }
+
+#middle {
+    background-color:#fff;
+    }
+
+#side{
+    background-color:#fff;
+    }
+*/

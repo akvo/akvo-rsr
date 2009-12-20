@@ -173,6 +173,7 @@ def index(request):
         'projs': projs,
         'version': settings.URL_VALIDATOR_USER_AGENT,
         'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
+        'site_section':'index',
     }
 
 def oldindex(request):
@@ -216,7 +217,7 @@ def projectlist(request):
     projs = Project.objects.published().funding().select_related()
     showcases = projs.need_funding().order_by('?')[:3]
     page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
+    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'projects'}
 
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
