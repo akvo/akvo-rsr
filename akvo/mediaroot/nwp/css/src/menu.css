@@ -63,18 +63,21 @@
     color:#1DAAFB;
     }
 
-#mainmenu_akvo {
+#mainmenu_left {
     border-left: 1px solid #ACACBA;
+    width: 170px !important;
+    
     }
     
-#mainmenu_akvo img {
+#mainmenu_left img {
     margin-top:2px;
     }
     
 
 #mainmenu_search {
     float: left;
-    width: 213px !important;
+    /*width: 213px !important;*/
+    width: 130px !important;
     border-right: 1px solid #ACACBA;
     margin-left: 0;
     height:38px;
