@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n rsr_tags %}
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -7,15 +7,18 @@
 	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
 	<title>{% block title %}{% trans 'The Dutch water sector' %}{% endblock %}</title>
 	
-	{# The different styles should be packed together in one file and minified on deployment, or on commit #}
-	<link rel="stylesheet" href="{{MEDIA_URL}}css/src/style.css" type="text/css" media="screen" title="main">
-	<!--[if IE 6]><link rel="stylesheet" href="{{MEDIA_URL}}css/ie6.css" type="text/css" media="screen, projection"><![endif]-->
+	{% page_styles %}
 	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
 	
 </head>
 <body>
+{% block menu %}
+
+{% endblock menu %}
+
 
 {% block content %}
+
 {% endblock content %}
 
 {% block js %}
@@ -25,11 +28,12 @@
 		document.write('<script type="text/javascript" src="{{MEDIA_URL}}base/js/jquery.js"><'); document.write('/script>');
 	}
 </script>
+
 {% endblock js %}
 
 <script type="text/javascript">
 $(document).ready(function(){
-{% block inline_js %}{% endblock inline_js %}	
+{% block jquery_ready %}{% endblock jquery_ready %}	
 });
 </script>
 

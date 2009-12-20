@@ -155,4 +155,13 @@ def update_thumb(context, update, width, height):
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
     }
+
+from django.conf import settings
+@register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
+def page_styles(context,):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'], 'debug': settings.DEBUG,
+    }
  
