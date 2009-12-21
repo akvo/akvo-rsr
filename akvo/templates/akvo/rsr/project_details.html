@@ -1,0 +1,12 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{{ p.name }}</h1>
+<p>
+	Project Details.<br><br>
+	<a href="{% url project_main p.id %}">back</a>	
+</p>
+
+
+{% endblock content %}

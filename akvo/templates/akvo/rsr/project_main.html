@@ -3,5 +3,12 @@
 
 {% block content %}
 <h1>{{ p.name }}</h1>
+<p>Project main</p>
+<ul>
+	<li><a href="{% url project_details p.id %}">Details</a></li>
+	<li><a href="{% url project_funding p.id %}">Funding</a></li>
+	<li><a href="{% url project_comments p.id %}">Comments</a></li>
+	<li><a href="{% url project_updates p.id %}">Updates</a></li>
+</ul>
 
 {% endblock content %}
