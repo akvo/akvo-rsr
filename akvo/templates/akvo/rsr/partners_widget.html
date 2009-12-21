@@ -1,0 +1,253 @@
+{% load i18n rsr_filters thumbnail rsr_tags addparam %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Akvo partners widget</title>
+	<base target="_parent">
+	
+	<style type="text/css" media="screen">
+		
+		/*Reset extracted from main styles*/
+		html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,
+		del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,
+		table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:
+		inherit;font-size:100%;font-family:inherit;vertical-align:baseline;} :focus{outline:0;}body{line-height:1;color
+		:black;background:white;} ol,ul{list-style:none;} table{border-collapse:separate;border-spacing:0;}caption,th,td
+		{text-align:left;font-weight:normal;}blockquote:before,blockquote:after,q:before,q:after{content:"";} blockquote,
+		q{quotes:"" "";}
+	
+		/* Styles start */
+		body {
+			background-color: #fff;
+			color: #333;
+			font-family: Arial, Verdana, Helvetica, Sans-serif;     
+			font-size: 100%;
+			line-height:1em;
+			}
+			
+		a:link,a:visited,a:active {
+				color: #1D7FC8;
+				text-decoration: none;
+			}
+							
+		.grey {
+			color: #999;
+			}
+
+		.small {
+			font-size:0.8333em;
+			}
+			
+		.selected {
+			font-weight:bold;
+			}
+		
+		#wrap {
+			margin:0;
+			max-width:710px;
+			padding:0;
+			width:710px;
+			}
+		
+		#heightcontrain {
+			background: #fff url({{MEDIA_URL}}akvo/img/partners_widget/table_header_bkgd.png) repeat-y left;
+			border-bottom:1px solid #999;
+			height:1710px;
+			max-height:1710px;
+			overflow: auto;
+			padding-left:1px;
+			width:709px;
+			}
+		
+		div.padder {
+			margin:10px;
+			overflow:hidden;
+			}
+			
+		div.selectedColumnHeaderDesc {
+			background: url({{MEDIA_URL}}akvo/img/partners_widget/header_down_arrow-trans.png) no-repeat right bottom;
+		}
+		
+		div.selectedColumnHeaderAsc {
+			background: url({{MEDIA_URL}}akvo/img/partners_widget/header_up_arrow-trans.png) no-repeat right bottom;
+		}
+		
+		table {
+			border-collapse:collapse;
+			font-size:0.75em;
+			margin: 0px;
+			}
+		
+		th {
+			background: #ccc url({{MEDIA_URL}}akvo/img/partners_widget/table_header_bkgd.png) repeat-y right;
+			height:40px;
+			padding: 0px;
+			text-align: center;
+			vertical-align: top;	
+			}	
+
+		td {
+			background: #fff url({{MEDIA_URL}}akvo/img/partners_widget/table_cell_bkgd.png) repeat-y right;
+			border-bottom:1px solid #ccc;
+			padding:0;
+			vertical-align: top;
+			}
+			
+		th#partnerColumnHeader {
+			max-width:260px !important;
+			min-width:260px !important;
+			width:260px !important; 
+			}
+		td.partnerColumnCell {
+			max-width:259px !important;
+			min-width:259px !important;
+			width:259px !important; 
+			}
+			
+		th#typeColumnHeader { 
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
+			}
+		td.typeColumnCell {
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
+			}
+			
+		th#continentColumnHeader { 
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
+			}
+		td.continentColumnCell {
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important;
+			}
+		
+		th#countryColumnHeader { 
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important; 
+			}
+		td.countryColumnCell {
+			max-width:120px !important;
+			min-width:120px !important;
+			width:120px !important;
+			}
+		
+		th#totalColumnHeader { 	
+			background-image: none !important;
+			}
+		td.totalColumnCell {
+			background-image: none !important;
+			width:70px;
+			}
+			
+		th.active {
+			background-color:#DBDBDB;
+		}
+	</style>
+	
+	{% comment %}
+	<!--[if lt IE 7]>
+		#heightcontrain {height: expression( this.scrollHeight > 4 ? "1710px" : "auto" ); /* Sets max-height for IE */}
+	<![endif]-->
+	{% endcomment %}
+	
+		
+</head>
+<body>	
+<div id="wrap">
+	<table class="project_table" style="width:710px; max-width:710px;">
+		<thead>
+			<tr>
+				<th id="partnerColumnHeader" class="{% ifequal order_by 'name' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'name_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'name_asc'  %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
+						{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
+						{% trans 'Project Partners' %}
+						</a>
+						<span style="color:#888;">({{orgs.count}})</span>
+					</div>
+				</th>
+				<th id="typeColumnHeader" class="{% ifequal order_by 'organisation_type' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
+						{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
+							{% trans 'Type' %}
+						</a>
+					</div>
+				</th>
+			
+				<th id="continentColumnHeader" class="{% ifequal order_by 'country__continent' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'country__continent_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'country__continent_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
+						{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
+						{% trans 'Continent' %}
+						</a>
+					</div>
+				</th>
+				<th id="countryColumnHeader" class="{% ifequal order_by 'country' %}active{% endifequal %}">
+					<div class="padder {% ifequal mode 'country_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'country_asc' %}selectedColumnHeaderAsc{% endifequal %}">
+						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
+						{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
+						{% trans 'Country' %}</a>
+					</div>
+				</th>
+
+				<th id="totalColumnHeader">
+					<div class="padder">
+						{% trans 'Projects' %}
+					</div>
+				</th>				
+			</tr>
+		</thead>
+	</table>
+	<div id="heightcontrain">
+		<table class="project_table">
+			<tbody>
+			{% for o in orgs %}
+			<tr>
+				<td class="partnerColumnCell">
+					<div class="padder">
+				            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
+                                {% org_logo o 100 75 'float:left; margin-right: 10px;' %}
+				            </a>
+						<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+						<div class="grey small">{{o.long_name}}</div>
+						<div style="clear: left;">
+						{% category_icons_org o %}
+					 	</div>
+					</div>
+				</td>
+				<td class="typeColumnCell">
+					<div class="padder">
+						{{o.get_organisation_type_display}}
+					</div>
+				</td>
+				<td class="continentColumnCell">
+					<div class="padder">
+						{{o.country.get_continent_display}}
+					</div>
+				</td>
+				<td class="countryColumnCell">
+					<div class="padder">
+						{{o.country}}
+					</div>
+				</td>				
+				<td class="totalColumnCell">
+					<div class="padder">
+						<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>
+</html>
