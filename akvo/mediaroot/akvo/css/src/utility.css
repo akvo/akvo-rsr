@@ -2,6 +2,8 @@
 .grey { color: #888; }
 .red {color: #E60113;}
 .bold {font-weight: bold;}
+.right {float:right;}
+.left {float:left;}
 .round {
 	-khtml-border-radius: 5px;
 	-moz-border-radius: 5px; 
