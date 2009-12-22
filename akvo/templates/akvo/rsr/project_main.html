@@ -1,14 +1,16 @@
 {% extends "rsr/base_project.html" %}
-{% load i18n %}
+{% load i18n rsr_tags %}
 
 {% block project_content %}
 <div class="white_section" style="margin-bottom:15px;">
 	<div style="margin:15px;">
+		<img src="{{MEDIA_URL}}{{p.current_image}}" />
+		<img src="{{MEDIA_URL}}{{ p.map }}" />
+		<p>
+			{{ p.project_plan_summary }}
+		</p>
 		<ul>
 			<li>Beneficiaries</li>
-			<li>Map</li>
-			<li>Image</li>
-			<li>Description</li>
 		</ul>
 	</div>
 </div>
