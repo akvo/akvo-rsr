@@ -1,83 +1,33 @@
-{% extends "rsr/base.html" %}
+{% extends "rsr/base_project.html" %}
 {% load i18n %}
 
-
-{% block inline_styles %}
-	.white_section {
-		background-color:#fff;
-		border-radius: 5px;
-		-moz-border-radius: 5px; 
-		-webkit-border-radius: 5px;
-		-khtml-border-radius: 5px;
-		border: 1px solid #ccc;
-		border-bottom: 2px solid #ccc;
-	}
-{% endblock inline_styles%}
-
-{% block title %}Akvo.org - {{ p.name }}{% endblock title %}
-{% block content %}
-<h1 style="margin-bottom:0px;"><a href="{% url project_main p.id %}" style="color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;">{{ p.name }}</a></h1>
-<p class="grey small" style="margin-bottom:0; text-shadow: #fff 1px 1px 0px;">
-	{{ p.subtitle }}
-</p>
-<div class="span-18">
-	<div class="right">
-		<span class="grey">
-			<a href="{% url project_details p.id %}">Details</a> |
-			<a href="{% url project_updates p.id %}">Updates</a> |
-			<a href="{% url project_funding p.id %}">Funding</a> |
-			<a href="{% url project_comments p.id %}">Comments</a>
-		</span>
+{% block project_content %}
+<div class="white_section" style="margin-bottom:15px;">
+	<div style="margin:15px;">
+		<ul>
+			<li>Beneficiaries</li>
+			<li>Map</li>
+			<li>Image</li>
+			<li>Description</li>
+		</ul>
 	</div>
 </div>
-<br><br>
-<div class="span-12 first" style="background-color:#fff">
+<div class="span-6 first">
 	<div class="white_section">
 		<div style="margin:15px;">
-			<ul>
-				<li>Beneficiaries</li>
-				<li>Map</li>
-				<li>Image</li>
-				<li>Description</li>
-			</ul>
+			<p>
+				Related to this project
+			</p>
 		</div>
 	</div>
 </div>
 <div class="span-6 last">
-	<div class="round" style="background-color:#1793BC">
+	<div class="white_section">
 		<div style="margin:15px;">
-			<ul>
-				<li>Project status</li>
-				<li>Funding stats</li>
-				<li>Donate button</li>
-			</ul>		
+			<p>
+				Updates
+			</p>
 		</div>
 	</div>
 </div>
-<div class="clear"></div>
-
-
-<br><br>
-<hr>
-<p>Project main</p>
-
-<h2>Subpages</h2>
-<ul>
-	<li><a href="{% url project_details p.id %}">Details</a></li>
-	<li><a href="{% url project_funding p.id %}">Funding</a></li>
-	<li><a href="{% url project_comments p.id %}">Comments</a></li>
-	<li><a href="{% url project_updates p.id %}">Updates</a></li>
-</ul>
-
-<h2>Content</h2>
-<ul>
-	<li>Brief (Name, subtitle, status, focus areas, location, description, goals, sustainability)</li>
-	<li>Funding (stats, donate button, sponsor link)</li>
-	<li>Related to this project</li>
-	<li>Comments</li>
-	<li>Project updates</li>
-	<li>Page tools</li>
-	<li>Partners</li>
-	
-
-{% endblock content %}
+{% endblock %}

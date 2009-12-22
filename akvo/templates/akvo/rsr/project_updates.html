@@ -1,12 +1,12 @@
-{% extends "rsr/base.html" %}
+{% extends "rsr/base_project.html" %}
 {% load i18n %}
 
-{% block content %}
-<h1>{{ p.name }}</h1>
-<p>
-	Project Updates.<br><br>
-	<a href="{% url project_main p.id %}">back</a>	
-</p>
-
-
-{% endblock content %}
+{% block project_content %}
+<div class="white_section" style="margin-bottom:15px;">
+	<div style="margin:15px;">
+		<p>
+			Project updates
+		</p>
+	</div>
+</div>
+{% endblock %}

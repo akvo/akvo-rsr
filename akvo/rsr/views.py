@@ -553,7 +553,7 @@ def projectupdates(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
     can_add_update = p.connected_to_user(request.user)
-    return {'p': p, 'updates': updates, 'can_add_update':can_add_update }
+    return {'p': p, 'updates': updates, 'can_add_update':can_add_update, 'project_section':'updates' }
     
 @render_to('rsr/project_comments.html')
 def projectcomments(request, project_id):
@@ -566,7 +566,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'comments': comments, 'form': form, }
+    return {'p': p, 'comments': comments, 'form': form,'project_section':'comments' }
 
 class UpdateForm(ModelForm):
 
@@ -765,12 +765,12 @@ def projectmain(request, project_id):
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, 'site_section': 'projects'}
+        return {'p': p, 'site_section': 'projects', 'project_section':'details' }
     
 @render_to('rsr/project_funding.html')    
 def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, }
+        return {'p': p, 'project_section':'funding' }
 
 def getwidget(request, project_id):
     '''
