@@ -8,6 +8,11 @@
 	<title>{% block title %}{% trans 'Akvo.org - See it happen' %}{% endblock %}</title>
 	{% page_styles %}
 	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
+	
+	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo_beta/img/favicon.ico" type="image/x-icon" />
+	<link rel="alternate" type="application/rss+xml" title="RSR updates" href="/rsr/rss/all-updates" />
+	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
+	
 </head>
 <body>
 {% block menu %}

@@ -1,18 +1,40 @@
 {% extends "rsr/base_project.html" %}
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags thumbnail %}
 
 {% block project_content %}
 <div class="white_section" style="margin-bottom:15px;">
-	<div style="margin:15px;">
-		<img src="{{MEDIA_URL}}{{p.current_image}}" />
-		<img src="{{MEDIA_URL}}{{ p.map }}" />
-		<p>
-			{{ p.project_plan_summary }}
-		</p>
-		<ul>
-			<li>Beneficiaries</li>
-		</ul>
+	<div class="left" id="name" style="background-color:cyan; width:443px">
+		<div style="margin:15px;">
+			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+			
+			{% comment %}
+			{% thumbnail p.current_image 220x165 as project_image%}
+			<img src="{{ project_image }}" />
+			
+			{% project_thumb p 144 108 'padding: 2px 6px;' %}
+			<img src="{% thumbnail p.current_image 144x108 %}" />
+			
+			<img src="{{MEDIA_URL}}{{p.current_image}}" />
+			{% endcomment %}
+			<p>
+				{{ p.project_plan_summary }}
+			</p>	
+		</div>
 	</div>
+	<div id="name" class="right" style="width:200px; background-color:yellow">
+		<div style="margin:15px;">
+			<h3>Beneficiaries</h3>
+			<ul>
+				<li>...</li>
+				<li>....</li>
+			</ul>
+			<h3>Location</h3>
+			{% map_thumb p 140 140 '' %}
+			Asia..
+				
+		</div>
+	</div>
+	<div class="clear"></div>	
 </div>
 <div class="span-6 first">
 	<div class="white_section">
