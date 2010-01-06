@@ -10,8 +10,9 @@ PROJECT_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'
 MEDIAROOT_DIR = os.path.join(PROJECT_ROOT_DIR, 'akvo/mediaroot')
 
 def remove_link(link_path):
-    print ">> removing link: [%s]" % (link_path)
-    os.unlink(link_path)
+    if os.path.lexists(link_path):
+        print ">> removing link: [%s]" % (link_path)
+        os.unlink(link_path)
 
 def remove_project_links_to_prevent_subsequent_build_failure():
     print '\nremoving project links for post CI clean-up:'
