@@ -8,7 +8,7 @@ import os, sys
 
 if len(sys.argv) <= 1:
     print 'Usage: ci_wrapper <virtualenv_path>'
-    sys.exit(-1)
+    sys.exit(1)
 
 os.chdir(os.path.realpath(os.path.dirname(__file__)))
 os.system("bash ../testing/run_django_tests %s ci_mode" % (sys.argv[1]))
