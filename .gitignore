@@ -7,5 +7,4 @@ akvo/settings.py
 akvo/datadir
 akvo/mediaroot/admin
 akvo/mediaroot/db
-scripts/integration/static_project_structure.py
-
+scripts/deployment/static_project_structure.py
