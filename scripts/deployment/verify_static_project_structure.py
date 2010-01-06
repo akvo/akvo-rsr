@@ -15,12 +15,13 @@ if len(sys.argv) > 0 and sys.argv[-1] == 'ci_mode':
 else:
     from static_project_structure import *
 
+def teamcity_warning(message):
+    message = message.replace("'", "|'").replace("]", "|]")
+    return "##teamcity[message text='%s' status='WARNING']" % (message)
+
 def display_warning(message):
     warning_message = ">> [warning] %s" % (message)
-    if MODE == 'INTEGRATION':
-        print "##teamcity[message text='%s' status='WARNING']" % (warning_message)
-    else:
-        print warning_message
+    print teamcity_warning(warning_message) if MODE == 'INTEGRATION' else print warning_message
 
 def ensure_directory_exists(dir_path):
     full_path = os.path.realpath(dir_path)

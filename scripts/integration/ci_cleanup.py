@@ -10,6 +10,7 @@ PROJECT_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'
 MEDIAROOT_DIR = os.path.join(PROJECT_ROOT_DIR, 'akvo/mediaroot')
 
 def teamcity_warning(message):
+    message = message.replace("'", "|'").replace("]", "|]")
     print "##teamcity[message text='%s' status='WARNING']" % (message)
 
 def remove_link(link_path):
@@ -17,7 +18,7 @@ def remove_link(link_path):
         print ">> removing link: [%s]" % (link_path)
         os.unlink(link_path)
     else:
-        teamcity_warning("Expected link to be removed does not exist: [%s]" % (link_path))
+        teamcity_warning(">> [warning] expected link to be removed does not exist: [%s]" % (link_path))
 
 def remove_project_links_to_prevent_subsequent_build_failure():
     print '\nremoving project links for post CI clean-up:'
