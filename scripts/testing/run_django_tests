@@ -2,13 +2,15 @@
 
 cd "`dirname $0`"
 
+# check whether virtualenv_path parameter exists
 if [ -z "$1" ]; then
-    printf "Usage: run_django_tests <virtualenv_path> [ci_mode]\n"
+    echo "Usage: run_django_tests <virtualenv_path> [ci_mode]"
     exit -1
 fi
 
 VIRTUALENV_PATH=$1
 
+# check whether virtualenv path exists
 if [ -r $VIRTUALENV_PATH ]; then
     source $VIRTUALENV_PATH/bin/activate
 else
@@ -18,10 +20,15 @@ fi
 
 python ../deployment/verify_static_project_structure.py $2
 
-cd ../../akvo
-echo "Validating Django models:"
-python manage.py validate
-echo "Running Django tests:"
-python manage.py test --noinput rsr
+# proceed if no error codes returned from last script
+if [ $? -eq 0 ]; then
+    cd ../../akvo
+    printf "\nValidating Django models:"
+    python manage.py validate
+    printf "\nRunning Django tests:"
+    python manage.py test --noinput rsr
+else
+    printf "\nUnable to run Django tests due to errors above"
+fi
 
 deactivate

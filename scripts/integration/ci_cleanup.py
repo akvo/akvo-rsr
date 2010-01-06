@@ -21,9 +21,8 @@ def remove_link(link_path):
         teamcity_warning(">> [warning] expected link to be removed does not exist: [%s]" % (link_path))
 
 def remove_project_links_to_prevent_subsequent_build_failure():
-    print '\nremoving project links for post CI clean-up:'
+    print '\nRemoving project links for post CI clean-up:'
     remove_link(os.path.join(PROJECT_ROOT_DIR, 'akvo/settings.py'))
     remove_link(os.path.join(MEDIAROOT_DIR, 'admin'))
     remove_link(os.path.join(MEDIAROOT_DIR, 'db'))
     print
-
