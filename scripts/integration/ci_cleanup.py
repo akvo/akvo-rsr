@@ -8,6 +8,7 @@ import os
 
 PROJECT_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 MEDIAROOT_DIR = os.path.join(PROJECT_ROOT_DIR, 'akvo/mediaroot')
+STATIC_DIR = os.path.realpath(os.path.join(PROJECT_ROOT_DIR, '../static'))
 
 def teamcity_warning(message):
     message = message.replace("'", "|'").replace("]", "|]")
@@ -25,4 +26,8 @@ def remove_project_links_to_prevent_subsequent_build_failure():
     remove_link(os.path.join(PROJECT_ROOT_DIR, 'akvo/settings.py'))
     remove_link(os.path.join(MEDIAROOT_DIR, 'admin'))
     remove_link(os.path.join(MEDIAROOT_DIR, 'db'))
+    remove_link(os.path.join(STATIC_DIR, 'akvo'))
+    remove_link(os.path.join(STATIC_DIR, 'akvo-env'))
+    remove_link(os.path.join(STATIC_DIR, 'db'))
+    remove_link(os.path.join(STATIC_DIR, 'django'))
     print
