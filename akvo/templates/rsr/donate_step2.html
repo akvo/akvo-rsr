@@ -38,39 +38,35 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#donate_step_box {
 		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
 		border:1px solid #DFE0E6;
-		height:55px;
 		margin-bottom:20px;
 		margin-left:auto;
 		margin-right:auto;
 		margin-top:20px;
-		/*width:755px;*/
 		width:785px;
 	}
-	
+
 	#donate_step_box_inner {
 		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
 		margin-left:auto;
 		margin-right:auto;
-		/*width:680px;*/
 		width:750px;
 		height:40px;
 	}
 	.donate_steps {
 		color:#8F94A3;
 		float:left;
-		height:30px;
 		margin-right:10px;
 		padding-top:30px;
-		/*width:128px;*/
 		width:140px;
 		text-align:center;
+		padding-bottom:10px;
 		}
-		
+	
 	.active_donate_step {
 		color:#000;
 		background: transparent url('{{MEDIA_URL}}img/donate/step_box_ball.gif') no-repeat center 15px;
 	}
-	
+
 	#donate_step_5 {
 		margin-right:0;
 	}
@@ -125,8 +121,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div id="#donate_step_5" class="donate_steps">
 				<p>{% trans 'Thank you!' %}</p>
 			</div>
-			<div class="clear">	</div>
 		</div>
+		<div class="clear">	</div>
 	</div>
 	
 		
@@ -241,11 +237,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		<hr style="width:100%; margin-left:0; margin-right:0; margin-top:10px"/>
 
-		<div style="float:left; width:300px;">
+		<div style="float:left; width:400px;">
             {% blocktrans with p.get_currency_display|safe as currency %}
 			<h3>Amount you wish to donate (in {{currency}})</h3>
             {% endblocktrans %}
-			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:4px;">
+			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:4px;">
 				<p class="marchGrey">{% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
@@ -270,8 +266,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	    
 		<div>
 			<h3>{% trans 'Your information' %}</h3>
-			{% if user.is_authenticated %}
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+			{% if user.is_authenticated and user.email %}
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<div class="fieldWrapper" style="margin-bottom:10px;">	
 					<p class="marchGrey">{% trans 'Your name' %}:</p>
 				</div>
@@ -301,7 +297,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 			<p>{% trans 'Provide your full name and email address below.' %}</p>
 			<br /><br />
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<div class="fieldWrapper" style="margin-bottom:20px; margin-top:4px;">	
 					<p class="marchGrey">{% trans 'Your name' %}:</p>
 				</div>
