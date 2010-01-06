@@ -1,10 +1,15 @@
-import unittest
+import sys, unittest
 
 from seleniumextensions import *
 
+SITE_UNDER_TEST = "http://test.akvo.org"
+
+if len(sys.argv) > 1:
+    SITE_UNDER_TEST = sys.argv[1]
+
 class AkvoPlatformComponentsTest(SeleniumTestCase):
     def setUp(self):
-        SeleniumTestCase.setUp(self, "http://test.akvo.org")
+        SeleniumTestCase.setUp(self, SITE_UNDER_TEST)
 
     def can_load_section_with_expected_title(self, section, expected_page_title):
         self.open_home_page()
@@ -56,6 +61,7 @@ class AkvoPlatformComponentsTest(SeleniumTestCase):
         self.assert_page_contains_text_items(["Partners", "Strategic partners"])
 
 if __name__ == "__main__":
-    print "Akvo platform components test:"
+    print "Running tests on: %s" % (SITE_UNDER_TEST)
+    print "\nAkvo platform components test:"
     suite = unittest.TestLoader().loadTestsFromTestCase(AkvoPlatformComponentsTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
