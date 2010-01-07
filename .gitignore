@@ -4,7 +4,7 @@
 *.mo
 *.pyc
 akvo/settings.py
+akvo/datadir
 akvo/mediaroot/admin
 akvo/mediaroot/db
-akvo/datadir
-
+scripts/deployment/static_project_structure.py
