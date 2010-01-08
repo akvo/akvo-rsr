@@ -1,8 +1,10 @@
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 import sys, unittest
 
 from seleniumextensions import *
-
-SITE_UNDER_TEST = "http://test.akvo.org"
 
 if len(sys.argv) > 1:
     SITE_UNDER_TEST = sys.argv[1]
