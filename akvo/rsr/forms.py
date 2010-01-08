@@ -232,16 +232,10 @@ class ProjectAdminModelForm(forms.ModelForm):
 
 
 class InvoiceForm(forms.ModelForm):
-    def __init__(self, user, project, engine, add_extra_fields=True, *args, **kwargs): 
+    def __init__(self, user, project, engine, *args, **kwargs): 
         super(InvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
         self.engine = engine
-        if user.is_authenticated() and user.email:
-            add_extra_fields = False
-        if add_extra_fields:
-            self.fields['name'] = forms.CharField(label=_('Full name'))
-            self.fields['email'] = forms.EmailField(label=_('Email address'))
-            self.fields['email2'] = forms.EmailField(label=_('Email address (confirm)'))
         if engine == 'ideal':
             self.fields['bank'] = forms.CharField(max_length=4, 
                 widget=forms.Select(choices=get_mollie_banklist(empty_label=_('Please select your bank'))))
@@ -250,18 +244,18 @@ class InvoiceForm(forms.ModelForm):
         
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'is_anonymous')
+        fields = ('amount', 'name', 'email', 'email2', 'is_anonymous')
 
     def clean(self):
-        cleaned_data = self.cleaned_data
+        cd = self.cleaned_data
         funding_needed = self.project.funding_still_needed()
-        if 'amount' in cleaned_data:
-            if cleaned_data['amount'] > funding_needed:
+        if 'amount' in cd:
+            if cd['amount'] > funding_needed:
                 raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
-        if 'email' in cleaned_data and 'email2' in cleaned_data:
-            if cleaned_data['email'] != cleaned_data['email2']:
+        if 'email' in cd and 'email2' in cd:
+            if cd['email'] != cd['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
-        return cleaned_data
+        return cd
 
 
 # based on http://www.djangosnippets.org/snippets/1008/
