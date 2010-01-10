@@ -34,7 +34,13 @@
 				<input type="text" name="q" value="{% if query_string %}{{ query_string }}{% else %}Search projects{% endif %}" id="main_search" style="padding-top:0; padding-bottom:0;" />
 				{% endcomment %}
 			</span></div></li>
-			<li><a id="signInMenuItem"><span>Sign In</span></a></li>
+			<li>
+				{% if not user.username %}
+				<a id="signInMenuItem" href="{% url signin %}?next={{request.path}}"><span>Sign In</span></a>
+				{% else %}
+				<a id="signInMenuItem" href="{% url akvo.rsr.views.signout %}"><span>Sign Out</span></a>
+				{% endif %}
+			</li>
 		</ul>
 	</div>
 </div>
@@ -118,7 +124,7 @@
 		</div>
 	</div>
 </div>
-
+{{ user.username }}
 {% endblock footer %}
 
 
@@ -135,9 +141,11 @@
 <script type="text/javascript">
 $(document).ready(function(){
 {% block jquery_ready %}{% endblock jquery_ready %}	
+/*
 $('#signInMenuItem').click(function () {
 	$('#maincontainer').toggleClass('showgrid');
 });
+*/
 });
 </script>
 

@@ -1,0 +1,59 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block content %}
+	{% if form.non_field_errors %}
+		<div id="name">
+			<h1 class="section">{% trans 'Error when signing in' %}</h1>
+			{% for e in form.non_field_errors %}
+			<p>{{e}}</p>
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="span-18 last">
+		<div class="push-1 span-8 first">
+			<form id="sign_in" class="boxbody" method="post" action="#">
+			    <fieldset>
+			        <legend>{% trans 'I have an online account' %}</legend>
+			        <ul>
+			            <li class="clearfix">
+			                <label for="id_username">{% trans 'Enter username' %}</label>
+							{{ form.username }}<br />
+			            </li>
+			            <li class="clearfix">
+			                <label for="id_password">{% trans 'Enter password' %}</label>
+							{{ form.password }}<br />
+			            </li>
+						<li class="clearfix">
+							<a href="/rsr/accounts/password/reset/">{% trans 'I forgot my username and/or password' %}</a>
+						</li>
+						<li class="clearfix">
+							<br>
+							<input type="submit" name="some_name" value="Sign In" id="some_name">
+						</li>
+			        </ul>
+					
+			    </fieldset>
+			    <input type="hidden" name="next" value="{{ next }}" />
+			</form>
+		</div>
+		<div class="push-1 span-8 last" style="margin-top:25px;">
+			<h2>I don't have an online account</h2>
+			<p>
+				By <a href="http://akvo.org/rsr/accounts/register1/">registering</a> with Akvo, you'll be able to:
+			</p>
+			<ul>
+				<li>Create updates on your organisation's projects</li>
+				<li>Leave comments on projects</li>
+			</ul>
+			<p>
+				And much more! <a href="http://akvo.org/web/">Learn about</a> how Akvo works.
+			</p>
+		</div>
+	</div>
+	<div class="clear"></div>
+	
+	
+	
+	
+{% endblock content %}
