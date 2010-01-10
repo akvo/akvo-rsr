@@ -26,7 +26,7 @@
 			<li><a href="/wiki/"><span>Akvopedia</span></a></li>
 			<li><a href="/rsr/projects?time=1234" class="{% ifequal site_section 'projects' %}active{% endifequal %}"><span>Projects</span></a></li>
 			<li><a href="/rsr/partners?time=123" class="{% ifequal site_section 'partners' %}active{% endifequal %}"><span>Partners</span></a></li>
-			<li><a href="/web/get_involved"><span>Get Involved</span></a></li>
+			<li><a id="grid_toggle" {# href="/web/get_involved" #}><span>Get Involved</span></a></li>
 			<li><a href="/blog/"><span>Blog</span></a></li>
 			<li><a href="/web/what_we_do/"><span>About</span></a></li>
 			<li><div id="mainmenu_search"><span>
@@ -38,7 +38,7 @@
 				{% if not user.username %}
 				<a id="signInMenuItem" href="{% url signin %}?next={{request.path}}"><span>Sign In</span></a>
 				{% else %}
-				<a id="signInMenuItem" href="{% url akvo.rsr.views.signout %}"><span>Sign Out</span></a>
+				<a id="signInMenuItem" href="{% url akvo.rsr.views.signout %}?next={{request.path}}"><span>Sign Out</span></a>
 				{% endif %}
 			</li>
 		</ul>
@@ -124,7 +124,6 @@
 		</div>
 	</div>
 </div>
-{{ user.username }}
 {% endblock footer %}
 
 
@@ -141,11 +140,11 @@
 <script type="text/javascript">
 $(document).ready(function(){
 {% block jquery_ready %}{% endblock jquery_ready %}	
-/*
-$('#signInMenuItem').click(function () {
+
+$('#grid_toggle').click(function () {
 	$('#maincontainer').toggleClass('showgrid');
 });
-*/
+
 });
 </script>
 

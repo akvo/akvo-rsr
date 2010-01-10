@@ -29,7 +29,9 @@ urlpatterns = patterns('',
     url(r'^rsr/invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
     url(r'^rsr/project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
         'akvo.rsr.views.donate', name='complete_donation'),
+    # The donate url's should be conditional depending on site support for donation
     url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.setup_donation', name='project_donate'),
+    
     url(r'^rsr/donate/ideal/thanks/$', 'akvo.rsr.views.mollie_thanks', name='mollie_thanks'),
     url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
     url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
