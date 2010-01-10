@@ -1,0 +1,29 @@
+{% load i18n comparison %}
+<ul class="small grey">
+	{% if p.water_systems %}
+        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
+    {% endif %}
+    {% if p.sanitation_systems %}
+        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
+    {% endif %}
+    {% if p.hygiene_facilities %}
+        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
+    {% endif %}
+    {% if p.improved_water %}
+        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
+        {% if p.improved_water_years %}
+            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
+        {% endif %}
+        </li>
+    {% endif %}
+    {% if p.improved_sanitation %}
+        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
+        {% if p.improved_sanitation_years %}
+            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
+        {% endif %}
+        </li>
+    {% endif %}
+    {% if p.trainees %}
+        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
+    {% endif %}
+</ul>

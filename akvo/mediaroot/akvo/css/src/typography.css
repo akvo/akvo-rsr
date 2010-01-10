@@ -100,6 +100,7 @@ ul, ol {
     margin-bottom:1.5em;
     
 }
+
 ul ul {font-size:1em; margin-top:0em;}
 ol ol {font-size:1em; margin-top:0em;}
 ul li { margin-left:1em;}
@@ -232,7 +233,7 @@ p.lede {
     margin-bottom:1.3em;
 }
 
-p.small, .small p, .small label {
+p.small, .small p, .small label, ul.small {
     font-size:0.8125em;
     line-height:1.4em;
 }
