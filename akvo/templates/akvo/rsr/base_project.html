@@ -8,6 +8,7 @@
 {% endblock inline_head %}
 
 {% block inline_styles %}
+	
 	.white_section {
 		background-color:#fff;
 		border-radius: 5px;
@@ -70,7 +71,70 @@
 			</p>	
 		</div>
 	</div>
+	{% comment %}
+		
+	{% endcomment %}
+	<div class="white_section" id="slidingBox" style="margin-top:20px;">
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="comment_link">Comments</a>
+		</div>
+		<div style="margin:15px;" id="comment_content">
+			<p class="small">
+				Comment 1<br>
+				<br>
+				Comment 2<br>
+			</p>
+		</div>
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="pagetools_link">Page Tools</a>
+		</div>
+		<div style="margin:15px; display: none;" id="pagetools_content">
+			<p class="small">
+				- <a>Get a widget</a><br>
+				- <a>Permalink</a><br>
+				- <a>Contact the owner</a><br>
+				- <a>Printable version</a><br>
+				- <a>Bookmark del.icio.us</a><br>
+				
+			</p>
+		</div>
+		
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="partners_link">Partners</a>
+		</div>
+		<div style="margin:15px; display: none;" id="partners_content">
+			<p class="small">
+				Practica<br>
+				<br>
+				Akvo<br>
+				<br>
+				Global Water Challenge<br>
+				<br>
+				<a>Become a partner &#x25BA;</a>
+			</p>
+		</div>
+		
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="related_link">Related to this project</a>
+		</div>
+		<div style="margin:15px; display: none;" id="related_content">
+			<p class="small">
+				<b>Akvopedia entries:</b><br>
+				<a href="#">Rain Water Harvesting</a><br>
+				<br>
+				<b>External links:</b><br>	
+			</p>
+		</div>
+	</div>
+	
+	{% comment %}
+		
+	{% endcomment %}
 	<div class="white_section" style="margin-top:15px; background-color:#fff">
+
+		{% comment %}
+			
+		{% endcomment %}
 		<div style="margin:15px;">
 			<h3>Page tools</h3>
 			<ul>
@@ -91,3 +155,38 @@
 <div class="clear"></div>	
 
 {% endblock content %}
+
+{% block inline_js %}
+	{{ block.super }}
+	
+	$('#comment_link').click(function () {
+			$('#pagetools_content').slideUp(300);
+			$('#partners_content').slideUp(300);
+			$('#related_content').slideUp(300);
+			$('#comment_content').slideDown(300);
+	});
+	
+	$('#pagetools_link').click(function () {
+			$('#comment_content').slideUp(300);
+			$('#partners_content').slideUp(300);
+			$('#related_content').slideUp(300);
+			$('#pagetools_content').slideDown(300); 
+	});
+	
+	$('#partners_link').click(function () {
+			$('#comment_content').slideUp(300);
+			$('#pagetools_content').slideUp(300);
+			$('#related_content').slideUp(300); 
+			$('#partners_content').slideDown(300); 
+	});
+	$('#related_link').click(function () {
+			$('#comment_content').slideUp(300);
+			$('#pagetools_content').slideUp(300);
+			$('#partners_content').slideUp(300); 
+			$('#related_content').slideDown(300); 
+	});
+	
+	$('#comment_content').animate({opacity: 1.0}, 1000).slideUp(300);
+	$('#partners_content').animate({opacity: 1.0}, 1000).slideDown(300);
+
+{% endblock inline_js %}
