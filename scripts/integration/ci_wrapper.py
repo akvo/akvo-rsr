@@ -4,10 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import os
+import os, sys
+
+if len(sys.argv) <= 1:
+    print 'Usage: ci_wrapper <virtualenv_path>'
+    sys.exit(1)
 
 os.chdir(os.path.realpath(os.path.dirname(__file__)))
-os.system("bash ./run_django_tests ci_mode")
+os.system("bash ../testing/run_django_tests %s ci_mode" % (sys.argv[1]))
 
 from ci_cleanup import *
 

@@ -7,7 +7,7 @@
 import django, os
 
 
-PROJECT_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PROJECT_ROOT_DIR_NAME = PROJECT_ROOT_DIR.split(os.sep)[-1]
 
 STATIC_DIR = os.path.realpath(os.path.join(PROJECT_ROOT_DIR, '../static'))
