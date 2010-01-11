@@ -36,7 +36,7 @@ from registration.models import RegistrationProfile
 import random
 from decimal import Decimal
 
-from mollie.ideal.utils import query_mollie
+from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -1027,7 +1027,8 @@ def mollie_report(request):
         except:
             return HttpResonseServerError
         if mollie_response['paid'] == 'true':
-            invoice.amount_received = invoice.amount - Decimal('1.18')
+            mollie_fee = get_mollie_fee()
+            invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
         else:
             invoice.status = 2
