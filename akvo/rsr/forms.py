@@ -236,6 +236,7 @@ class InvoiceForm(forms.ModelForm):
         super(InvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
         self.engine = engine
+        self.fields['email2'] = forms.EmailField()
         if engine == 'ideal':
             self.fields['bank'] = forms.CharField(max_length=4, 
                 widget=forms.Select(choices=get_mollie_banklist(empty_label=_('Please select your bank'))))
@@ -244,7 +245,7 @@ class InvoiceForm(forms.ModelForm):
         
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'name', 'email', 'email2', 'is_anonymous')
+        fields = ('amount', 'name', 'email', 'is_anonymous')
 
     def clean(self):
         cd = self.cleaned_data
