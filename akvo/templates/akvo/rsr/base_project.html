@@ -1,6 +1,12 @@
 {% extends "rsr/base.html" %}
 {% load i18n %}
 
+{% block inline_head %}
+<a href="/rsr/rss/updates/{{p.id}}/" class="rss">{% trans 'Subscribe via RSS' %}</a>
+
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Updates to' %} {{p.name}}" href="/rsr/rss/updates/{{p.id}}/" />
+{% endblock inline_head %}
+
 {% block inline_styles %}
 	.white_section {
 		background-color:#fff;
@@ -24,15 +30,16 @@
 		<span class="grey">
 			<a style="{% ifequal project_section 'details' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
 			href="{% url project_details p.id %}">Details</a> |
-			
+						
 			<a style="{% ifequal project_section 'updates' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
 			href="{% url project_updates p.id %}">Updates</a> |
-			
+						
 			<a style="{% ifequal project_section 'funding' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
 			href="{% url project_funding p.id %}">Funding</a> |
 			
-			<a style="{% ifequal project_section 'comments' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
-			href="{% url project_comments p.id %}">Comments</a>
+			<a style="{% ifequal project_section 'donate' %}color:#1DAAFB;{% else %}color:#F7982C;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
+			href="{% url project_donate p.id %}">Donate</a>
+			
 		</span>
 	</div>
 </div>
@@ -55,14 +62,21 @@
 				<li>Project status</li>
 				<li>Funding stats</li>
 				<li>Donate button</li>
-			</ul>		
+			</ul>
+			
+			<p>
+				Status<br>
+				{{p.show_status}}
+			</p>	
 		</div>
 	</div>
 	<div class="white_section" style="margin-top:15px; background-color:#fff">
 		<div style="margin:15px;">
-			<p>
-				Page tools
-			</p>
+			<h3>Page tools</h3>
+			<ul>
+				<li><a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Permalink to this project' %}</a></li>
+				<li><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></li>
+			</ul>
 		</div>
 	</div>
 	<div class="white_section" style="margin-top:15px; background-color:#fff">

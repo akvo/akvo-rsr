@@ -6,6 +6,9 @@
 	<div style="margin:15px;">
 		<p>
 			Project updates
+			<a style="{% ifequal project_section 'comments' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
+			href="{% url project_comments p.id %}">Comments</a> | 
+			
 		</p>
 	</div>
 </div>

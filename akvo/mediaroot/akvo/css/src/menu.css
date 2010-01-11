@@ -65,6 +65,8 @@
 
 #mainmenu_left {
     border-left: 1px solid #ACACBA;
+    /*width: 170px !important;*/
+    
     }
     
 #mainmenu_left img {

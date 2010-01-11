@@ -60,7 +60,7 @@
     
 #mainmenu li a.active {
     background-color: #fff;
-    color:#1DAAFB;
+    /*color:#1DAAFB;*/
     }
 
 #mainmenu_left {
@@ -104,3 +104,7 @@
     margin:0;
     margin-top:4px;
     }
+#signInMenuItem span {
+    color:#38933A !important;
+}
+    

@@ -3,9 +3,11 @@
 
 {% block project_content %}
 <div class="white_section" style="margin-bottom:15px;">
-	<div class="left" id="name" style="background-color:cyan; width:443px">
+	<div class="left" style="background-color:cyan; width:443px">
 		<div style="margin:15px;">
-			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+			<div style="float:left;">
+				{% project_thumb p 220 165 'margin: 0 10px 10px 0;' %}
+			</div>
 			
 			{% comment %}
 			{% thumbnail p.current_image 220x165 as project_image%}
@@ -17,18 +19,20 @@
 			<img src="{{MEDIA_URL}}{{p.current_image}}" />
 			{% endcomment %}
 			<p>
+				
 				{{ p.project_plan_summary }}
-			</p>	
+				<a href="{% url project_details p.id%}">{% trans 'More details' %}</a>
+			</p>
+			
 		</div>
 	</div>
 	<div id="name" class="right" style="width:200px; background-color:yellow">
 		<div style="margin:15px;">
-			<h3>Beneficiaries</h3>
+			<h3>{% trans 'Expected outcomes' %}</h3>
 			{% include "inclusion_tags/outcomes.html" %}
+			
 			<h3>Location</h3>
-			{% map_thumb p 140 140 '' %}
-			Asia..
-				
+			<p class="small grey">{{p.city}}, {{p.state}}, {{p.country}}</p>	
 		</div>
 	</div>
 	<div class="clear"></div>	
@@ -36,18 +40,51 @@
 <div class="span-6 first">
 	<div class="white_section">
 		<div style="margin:15px;">
-			<p>
-				Related to this project
-			</p>
+			<h3>{% trans 'Akvopedia entries' %}</h3>			
+			<ul>
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'A' %}
+					<li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
+
+            <h3>{% trans 'External links' %}</h3>
+			<ul>
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'E' %}
+		            <li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
 		</div>
 	</div>
 </div>
 <div class="span-6 last">
 	<div class="white_section">
 		<div style="margin:15px;">
-			<p>
-				Updates
-			</p>
+		{% if updates %}
+			{% for u in updates %}
+				<h2>{{u.title}}</h2>
+	            <p>
+	                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
+	                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+	            </p>
+				<br>
+				{% ifequal u.photo_location 'B' %}
+	                {% update_thumb u 240 180 %}
+	            {% endifequal %}
+	            {% if u.text %}
+	                <p>{{u.text|linebreaks}}</p>
+	            {% endif %}
+	            {% ifequal u.photo_location 'E' %}
+					{# {% update_thumb u 300 225 %} #}
+	                {% update_thumb u 240 180 %}
+	            {% endifequal %}
+			{% endfor %}
+		{% else %}
+			{% trans 'No updates yet.' %}
+		{% endif %}
 		</div>
 	</div>
 </div>
