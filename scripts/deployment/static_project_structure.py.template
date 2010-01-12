@@ -23,7 +23,7 @@ STATIC_DJANGO_DESTINATION = os.path.join(django.__path__[0])
 # Configurable paths for the mediaroot directory and settings.py file
 SETTINGS_FILE_DESTINATION = '../../static/settings.py'
 STATIC_DIR_RELATIVE_TO_MEDIAROOT = '../../../static'
-MEDIAROOT_ADMIN_DESTINATION = os.path.join(STATIC_DIR_RELATIVE_TO_MEDIAROOT, 'django/contrib/admin/media')
+MEDIAROOT_ADMIN_DESTINATION = os.path.join(STATIC_DJANGO_DESTINATION, 'contrib/admin/media')
 MEDIAROOT_DB_DESTINATION = os.path.join(STATIC_DIR_RELATIVE_TO_MEDIAROOT, 'db')
 
 # Configurable paths for the akvo web directory
