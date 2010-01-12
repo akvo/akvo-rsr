@@ -8,3 +8,4 @@ RSR_ADMIN_USERNAME = 'your_username'
 RSR_ADMIN_PASSWORD = 'your_password'
 
 SITE_UNDER_TEST = "http://test.akvo.org"
+PAGE_LOAD_TIMEOUT_IN_SECONDS = 60

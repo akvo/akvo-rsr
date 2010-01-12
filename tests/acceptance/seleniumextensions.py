@@ -11,19 +11,31 @@ from unittest import TestCase
 from test_settings import *
 
 class SeleniumTestCase(TestCase):
-    def setUp(self, site_url, browser_config = "*firefoxchrome"):
-        TestCase.setUp(self)
+
+    @classmethod
+    def setup_class(cls, browser_config = "*firefoxchrome"):
+        try:
+            cls.selenium = selenium("localhost", 4444, browser_config, SITE_UNDER_TEST)
+            cls.selenium.start()
+        except Exception as exception:
+            print ">> Unable to start Selenium RC client: %s" % (exception)
+            raise exception
+
+    @classmethod
+    def teardown_class(cls):
+        try:
+            cls.selenium.stop()
+        except Exception as exception:
+            print ">> Unable to stop Selenium RC client: %s" % (exception)
+
+    def setUp(self):
         self.verification_errors = []
-        self.selenium = selenium("localhost", 4444, browser_config, site_url)
-        self.selenium.start()
 
     def tearDown(self):
-        TestCase.tearDown(self)
-        self.selenium.stop()
         self.failUnlessEqual([], self.verification_errors)
 
     def wait_for_page_to_load(self):
-        self.selenium.wait_for_page_to_load("30000")
+        self.selenium.wait_for_page_to_load(PAGE_LOAD_TIMEOUT_IN_SECONDS * 1000)
 
     def open_page(self, path):
         self.selenium.open(path)
@@ -48,11 +60,13 @@ class SeleniumTestCase(TestCase):
         self.wait_for_page_to_load()
 
     def assert_title_is(self, expected_title):
-        self.failUnlessEqual(expected_title, self.selenium.get_title(), "Expected page title: %s" % (expected_title))
+        self.failUnlessEqual(expected_title, self.selenium.get_title(),
+            "\nExpected page title: %s\n  Actual page title: %s" % (expected_title, self.selenium.get_title()))
 
     def assert_title_starts_with(self, expected_title_start):
         self.failUnless(self.selenium.get_title().startswith(expected_title_start),
-                        "Expected page title to start with: %s" % (expected_title_start))
+                        "\nExpected page title to start with: %s\n                Actual page title: %s" %
+                        (expected_title_start, self.selenium.get_title()))
 
     def assert_page_contains_text(self, expected_text):
         self.failUnless(self.selenium.is_text_present(expected_text), "Page should contain: %s" % (expected_text))

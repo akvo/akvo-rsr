@@ -1,17 +1,15 @@
+#!/usr/bin/env python
+
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import sys, unittest
+import nose, sys
 
-from seleniumextensions import *
-
-if len(sys.argv) > 1:
-    SITE_UNDER_TEST = sys.argv[1]
+from seleniumextensions import SeleniumTestCase
+from test_settings import *
 
 class AkvoPlatformComponentsTest(SeleniumTestCase):
-    def setUp(self):
-        SeleniumTestCase.setUp(self, SITE_UNDER_TEST)
 
     def can_load_section_with_expected_title(self, section, expected_page_title):
         self.open_home_page()
@@ -56,7 +54,8 @@ class AkvoPlatformComponentsTest(SeleniumTestCase):
         self.assert_location_contains("/rsr/projects")
         self.assert_page_contains_text_items(["Featured projects", "Akvo at a glance", "Project listing"])
 
-    def in_progress_test_7_can_load_partners_page_with_expected_content(self):
+    # ignored test -- doesn't match Partners page in production
+    def in_progress_7_can_load_partners_page_with_expected_content(self):
         """>> 7. Can load Partners page with expected content (checks Drupal content is loaded)"""
         self.can_load_section_with_expected_title("Partners", "Strategic partners | Akvo")
         self.assert_location_contains("/web/")
@@ -65,5 +64,5 @@ class AkvoPlatformComponentsTest(SeleniumTestCase):
 if __name__ == "__main__":
     print "Running tests on: %s" % (SITE_UNDER_TEST)
     print "\nAkvo platform components test:"
-    suite = unittest.TestLoader().loadTestsFromTestCase(AkvoPlatformComponentsTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    suite = nose.loader.TestLoader().loadTestsFromTestCase(AkvoPlatformComponentsTest)
+    nose.core.TextTestRunner(verbosity=2).run(suite)
