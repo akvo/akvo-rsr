@@ -2,7 +2,7 @@
 {% load i18n rsr_tags thumbnail %}
 
 {% block project_content %}
-<div class="white_section" style="margin-bottom:15px;">
+<div id="proj_sum_left" class="white_section" style="margin-bottom:15px;">
 	<div class="left" style="background-color:cyan; width:443px">
 		<div style="margin:15px;">
 			<div style="float:left;">
@@ -19,7 +19,6 @@
 			<img src="{{MEDIA_URL}}{{p.current_image}}" />
 			{% endcomment %}
 			<p>
-				
 				{{ p.project_plan_summary }}
 				<a href="{% url project_details p.id%}">{% trans 'More details' %}</a>
 			</p>
@@ -89,3 +88,9 @@
 	</div>
 </div>
 {% endblock %}
+
+
+{% block inline_js %}
+	{{ block.super }}
+	$('#summary_right').height($('#proj_sum_left').height());	
+{% endblock inline_js %}
