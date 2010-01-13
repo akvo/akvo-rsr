@@ -10,9 +10,11 @@
 	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
 	
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo_beta/img/favicon.ico" type="image/x-icon" />
-	<link rel="alternate" type="application/rss+xml" title="All RSR updates" href="/rsr/rss/all-updates" />
-	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
+
 	{% block inline_head %}{% endblock inline_head %}
+	<link rel="alternate" type="application/rss+xml" title="Akvo blog entries" href="/blog/?feed=rss2" />
+	<link rel="alternate" type="application/rss+xml" title="All projects updates" href="/rsr/rss/all-updates" />
+	
 </head>
 <body>
 {% block menu %}

@@ -10,26 +10,10 @@
 			</div>
 			<div style="float:left; margin-left:5px; width:140px">
 				{% map_thumb p 140 140 '' %}
-				<p class="nano grey" style="margin-bottom:0; margin-top:59px">{% trans 'Photo' %}: {{p.current_image_caption}}</p>
-			</div>
-			
-			{% comment %}
-			{% thumbnail p.current_image 220x165 as project_image%}
-			<img src="{{ project_image }}" />
-			
-			{% project_thumb p 144 108 'padding: 2px 6px;' %}
-			<img src="{% thumbnail p.current_image 144x108 %}" />
-			
-			<img src="{{MEDIA_URL}}{{p.current_image}}" />
-			{% endcomment %}
-
-			{% comment %}
-			<p>
-				{{ p.project_plan_summary }}
-				<a href="{% url project_details p.id%}">{% trans 'More details' %}</a>
-			</p>
-			{% endcomment %}
-			
+				{% if p.current_image_caption %}
+					<p class="nano grey" style="margin-bottom:0; margin-top:59px">{% trans 'Photo' %}: {{p.current_image_caption}}</p>
+				{% endif %}
+			</div>			
 		</div>
 	</div>
 	<div id="name" class="right" style="width:230px;">
@@ -38,6 +22,8 @@
 			<p class="small grey">{{p.city}}, {{p.state}}, {{p.country}}</p>	
 			<h3>Beneficiaries</h3>
 			<p class="small grey">{{ p.improved_water|add:p.improved_sanitation|intcomma }} {% trans 'people' %} (approx.)</p>
+			
+
 		</div>
 	</div>
 	<div class="clear"></div>	
@@ -51,10 +37,6 @@
 			{% include "inclusion_tags/outcomes.html" %}
 			<h2>Funders</h2>
 			<p>current funders/you could fund this project</p>
-			<h2>Focus areas</h2>
-			<p>...</p>
-			<h2>RSS feed</h2>
-			<p>Updates feed</p>
 		</div>
 	</div>
 </div>
@@ -65,16 +47,16 @@
 			{% for u in updates %}
 				{% if forloop.first %}
 					<h3>{{u.title}}</h3>
-		            <p>
+		            <p class="small">
 		                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
 		                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 		            </p>
-					<br>
 					{% ifequal u.photo_location 'B' %}
+						<br>
 		                {% update_thumb u 240 180 %}
 		            {% endifequal %}
 		            {% if u.text %}
-		           	<p>
+		           	<p class="small">
 						{{u.text|linebreaks|smart_truncate:400}}
 					</p>
 		            {% endif %}
