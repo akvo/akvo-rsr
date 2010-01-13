@@ -3,14 +3,14 @@
 
 {% block project_content %}
 <div id="proj_sum_left" class="white_section" style="margin-bottom:15px;">
-	<div class="" style="background-color:cyan; width:443px">
+	<div class="" style="background-color:cyan; width:543px">
 		<div style="margin:15px;">
 			<div style="float:left;">
-				{% project_thumb p 220 165 'margin: 0 10px 10px 0;' %}
+				{% project_thumb p 295 221 'margin: 0 10px 10px 0;' %}
 			</div>
 			<div style="float:left; margin-left:5px;">
 				{% map_thumb p 140 140 '' %}
-				<p class="nano grey" style="margin-bottom:0; margin-top:14px">Photo: M. Charmer</p>
+				<p class="nano grey" style="margin-bottom:0; margin-top:69px">Photo: M. Charmer</p>
 			</div>
 			
 			{% comment %}
@@ -32,7 +32,7 @@
 			
 		</div>
 	</div>
-	<div id="name" class="right" style="width:200px; background-color:yellow">
+	<div id="name" class="right" style="width:175px;">
 		<div style="margin:15px;">
 			<h3>Location</h3>
 			<p class="small grey">{{p.city}}, {{p.state}}, {{p.country}}</p>	
@@ -62,22 +62,24 @@
 		<div style="margin:15px;">
 		{% if updates %}
 			{% for u in updates %}
-				<h2>{{u.title}}</h2>
-	            <p>
-	                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
-	                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-	            </p>
-				<br>
-				{% ifequal u.photo_location 'B' %}
-	                {% update_thumb u 240 180 %}
-	            {% endifequal %}
-	            {% if u.text %}
-	                <p>{{u.text|linebreaks}}</p>
-	            {% endif %}
-	            {% ifequal u.photo_location 'E' %}
-					{# {% update_thumb u 300 225 %} #}
-	                {% update_thumb u 240 180 %}
-	            {% endifequal %}
+				{% if forloop.first %}
+					<h2>{{u.title}}</h2>
+		            <p>
+		                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
+		                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+		            </p>
+					<br>
+					{% ifequal u.photo_location 'B' %}
+		                {% update_thumb u 240 180 %}
+		            {% endifequal %}
+		            {% if u.text %}
+		                <p>{{u.text|linebreaks}}</p>
+		            {% endif %}
+		            {% ifequal u.photo_location 'E' %}
+						{# {% update_thumb u 300 225 %} #}
+		                {% update_thumb u 240 180 %}
+		            {% endifequal %}					
+				{% endif %}
 			{% endfor %}
 		{% else %}
 			{% trans 'No updates yet.' %}
