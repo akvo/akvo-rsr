@@ -71,15 +71,13 @@
 						</div>
 						<div style="float:left; width:310px; margin-left:15px;">
 							<div style="margin:15px;">
+								<img src="{% thumbnail update.photo 280x210 autocrop sharpen%}" alt="{{update.photo_caption}}" />
+								{% comment %}
 								{% update_thumb update 280 210 %}
+								{% endcomment %}
 								{% if update.photo_caption %}
 								<p class="small grey">{{ update.photo_caption|capfirst }}<br</p>
 					            {% endif %}
-								{% comment %}				
-								{% if update.photo_credit %}
-								<p class="small grey">{% trans 'Photo credit' %}: {{ update.photo_credit }}</p>
-								{% endif %}
-								{% endcomment %}
 							</div>
 						</div>
 						<div class="clear"></div>
@@ -97,93 +95,13 @@
 				{% endif %}
 			{% endfor %}
 		{% endif %}
-		
-		
 		<hr />
-		{% comment %}
-		
-		<p class="grey small" style="margin:0 0 4px 0;">{% trans 'Latest Update' %}:</p>
-		{% if updates %}
-			{% for u in updates %}
-				{% if forloop.first %}
-					<h3 style="text-transform:capitalize">{{u.title}}</h3>
-		            <p class="small">
-		                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
-		                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-		            </p>
-					{% ifequal u.photo_location 'B' %}
-						<br>
-		                {% update_thumb u 240 180 %}
-		            {% endifequal %}
-		            {% if u.text %}
-		           	<p class="small">
-						{{u.text|linebreaks|smart_truncate:400}}
-					</p>
-		            {% endif %}
-		            {% ifequal u.photo_location 'E' %}
-						{# {% update_thumb u 300 225 %} #}
-		                {% update_thumb u 240 180 %}
-		            {% endifequal %}					
-				{% endif %}
-			{% endfor %}
-			<p class="small" style="margin:0">
-				<a href="{% url project_updates p.id %}">{% trans 'Add or read more updates' %}</a>
-			</p>
-		{% else %}
-			{% trans 'No updates yet.' %}
-		{% endif %}
-		{% endcomment %}
-	</div>
-</div>
-{% comment %}
-	
-<div class="span-7 first">
-	<div class="white_section">
 		<div style="margin:15px;">
-			<h2>Summary</h2>
-			<p>{{ p.project_plan_summary|capfirst }}</p>
-			<h2>{% trans 'Expected outcomes' %}</h2>
-			{% include "inclusion_tags/outcomes.html" %}
-			<h2>Funders</h2>
-			<p>current funders/you could fund this project</p>
+			<h3>Funders</h3>
 		</div>
 	</div>
 </div>
-<div class="span-6 last">
-	<div class="white_section">
-		<div style="margin:15px;">
-		{% if updates %}
-			{% for u in updates %}
-				{% if forloop.first %}
-					<h3>{{u.title}}</h3>
-		            <p class="small">
-		                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
-		                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-		            </p>
-					{% ifequal u.photo_location 'B' %}
-						<br>
-		                {% update_thumb u 240 180 %}
-		            {% endifequal %}
-		            {% if u.text %}
-		           	<p class="small">
-						{{u.text|linebreaks|smart_truncate:400}}
-					</p>
-		            {% endif %}
-		            {% ifequal u.photo_location 'E' %}
-						{# {% update_thumb u 300 225 %} #}
-		                {% update_thumb u 240 180 %}
-		            {% endifequal %}					
-				{% endif %}
-			{% endfor %}
-		{% else %}
-			{% trans 'No updates yet.' %}
-		{% endif %}
-		</div>
-	</div>
-</div>
-{% endcomment %}
 {% endblock %}
-
 
 {% block inline_js %}
 	{{ block.super }}
