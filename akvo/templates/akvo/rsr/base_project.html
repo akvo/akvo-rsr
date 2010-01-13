@@ -89,11 +89,28 @@
 			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="comment_link">Comments</a>
 		</div>
 		<div style="margin:15px;" id="comment_content">
-			<p class="small">
-				Comment 1<br>
-				<br>
-				Comment 2<br>
+			
+			{% for c in comments %}
+			<p class="nano grey" style="margin:0; padding:0;">
+				{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
 			</p>
+			<p class="small" style="margin:0; padding:0;">
+				{{c.comment}}
+			</p>
+			<hr style="margin:5px 0px">
+			{% endfor %}
+			{% if not user.username %}
+                <p class="small">
+					<a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> {% trans 'to add a comment' %}				
+				</p>
+			{% else %}
+				<form enctype="multipart/form-data" method="post" action="comment">
+                    {{form.comment}}
+                    <input type="submit" value="{% trans 'Submit' %}" class="submit" />
+                </form>
+			{% endif %}
+			
+			
 		</div>
 		<div class="sliding_box_header">
 			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="pagetools_link">Page Tools</a>
