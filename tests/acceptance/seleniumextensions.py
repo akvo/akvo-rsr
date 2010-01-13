@@ -35,7 +35,7 @@ class SeleniumTestCase(TestCase):
         self.failUnlessEqual([], self.verification_errors)
 
     def wait_for_page_to_load(self):
-        self.selenium.wait_for_page_to_load(PAGE_LOAD_TIMEOUT_IN_SECONDS * 1000)
+        self.selenium.wait_for_page_to_load(PAGE_LOAD_TIMEOUT)
 
     def open_page(self, path):
         self.selenium.open(path)
@@ -46,10 +46,10 @@ class SeleniumTestCase(TestCase):
 
     def open_admin_page(self):
         self.open_page("/rsr/admin/")
-        self.selenium.type("id_username", RSR_ADMIN_USERNAME)
-        self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
-        self.click_submit_button("Log in")
-        self.assert_title_starts_with("Site administration")
+        if self.selenium.is_text_present("Password:"):
+            self.selenium.type("id_username", RSR_ADMIN_USERNAME)
+            self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
+            self.click_submit_button("Log in")
 
     def click_link(self, link):
         self.selenium.click("link=%s" % (link))
