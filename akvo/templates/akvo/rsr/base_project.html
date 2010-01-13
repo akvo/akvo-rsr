@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n rsr_tags rsr_filters %}
+{% load i18n rsr_tags rsr_filters humanize %}
 
 {% block inline_head %}
 {% comment %}
@@ -75,20 +75,53 @@
 		<div style="margin:15px;">
 			<p style="color:white;">
 				<b>Project status</b><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#AFF06A; font-weight:bold;">{{p.show_status}}</span><br>	
-				<br>					
-				<b>Latest activity</b><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;24 Feb 2009<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">{{p.show_status}}</span><br>	
+				<br>
+				{% ifequal p.funding_still_needed|round 0 %}
+				<b>Fully funded</b>
+				{% else %}
+				<table class="" cellspacing="0">
+					<tr class="green">
+						<th>{% trans 'Raised' %}:</th>
+						<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+					</tr>
+					<tr class="red">
+						<th>{% trans 'Still needed' %}:</th>
+						<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+					</tr>	
+				</table>
+				{% endifequal %}
+				
 			</p>
 			{% comment %}
 			{% funding_box_march p %}
-			{% endcomment %}
-
+			
+			<p>
+				{% ifequal p.funding_still_needed|round 0 %}
+				<b>Fully funded</b><br>
+				{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round|intcomma}}
+				{% else %}
+				<table class="fundingbox-table" cellspacing="0">
+					<tr class="green">
+						<th>{% trans 'Raised' %}:</th>
+						<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+					</tr>
+					<tr class="red">
+						<th>{% trans 'Still needed' %}:</th>
+						<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+					</tr>	
+				</table>
+				{% endifequal %}
+			</p>
+			
 			<ul>
 				<li>budget items</li>
 				<li><a style="color:#F7982C;" href="{% url project_donate p.id %}">Donate button</a></li>
 			</ul>
+			{% endcomment %}
+			
 		</div>
+		<div class="clear"></div>
 	</div>
 	
 	<div class="white_section" id="slidingBox" style="margin-top:15px;">

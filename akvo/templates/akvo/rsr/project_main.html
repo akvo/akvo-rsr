@@ -103,7 +103,8 @@
 			<div style="float:left; margin-right:80px; text-align:center; margin-bottom:40px;">
 				<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
 					<div style="margin-left:auto; margin-right:auto;">
-						{% org_logo funder.funding_organisation 140 105 '' %}						
+						{% org_logo funder.funding_organisation 140 105 '' %}
+						<p class="small grey" style="margin:10px 10px">{% trans 'Grant' %}: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}</span></p>
 					</div>
 				</a><br>
 				{% comment %}
@@ -123,5 +124,11 @@
 
 {% block inline_js %}
 	{{ block.super }}
-	$('#summary_right').height($('#proj_sum_left').height());	
+ 	
+	if ($('#summary_right').height() < $('#proj_sum_left').height()) {
+		$('#summary_right').height($('#proj_sum_left').height());	
+	} else {
+		$('#proj_sum_left').height($('#summary_right').height());	
+	}
+	//$('#summary_right').height($('#proj_sum_left').height());	
 {% endblock inline_js %}
