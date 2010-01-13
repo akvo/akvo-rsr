@@ -4,10 +4,59 @@
 {% block project_content %}
 <div class="white_section" style="margin-bottom:15px;">
 	<div style="margin:15px;">
+		<h1>Details</h1>
+		<h2>Location</h2>
 		<p>
-			Project details
 			{% map_thumb p 140 140 '' %}
 		</p>
+		<h2>Summary</h2>
+		<p>{{ p.project_plan_summary|capfirst }}</p>
+		<h2>Expected outcome</h2>
+		{% include "inclusion_tags/outcomes.html" %}
+		
+		<h2>Current status</h2>
+		<p>
+			{{ p.current_status_detail|capfirst }}
+		</p>
+
+		<h2>Project plan</h2>
+		<p>
+			{{ p.project_plan_detail }}
+		</p>
+
+		<h2>Goals Overview</h2>
+		<p>
+			{{ p.goals_overview|capfirst }}
+		</p>
+
+		<h2>Sustainability</h2>
+		<p>
+			{{ p.sustainability }}
+		</p>
+
+		project_rating<br>
+		{{ p.project_rating }}
+		<br><br>
+		notes (Only three projects use this in my dataset)<br>
+		{{ p.notes }}
+		<br><br>
+
+		goal_1<br>
+		{{p.goal_1}}
+		<br><br>
+		goal_2<br>
+		{{p.goal_2}}
+		<br><br>
+		goal_3<br>
+		{{p.goal_3}}
+		<br><br>
+		goal_4<br>
+		{{p.goal_4}}
+		<br><br>
+		goal_5<br>
+		{{p.goal_5}}
+		<br><br>
+		
 	</div>
 </div>
 {% endblock %}

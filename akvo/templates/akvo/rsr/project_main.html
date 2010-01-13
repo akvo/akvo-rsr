@@ -1,5 +1,5 @@
 {% extends "rsr/base_project.html" %}
-{% load i18n rsr_tags thumbnail %}
+{% load i18n rsr_tags rsr_filters thumbnail %}
 
 {% block project_content %}
 <div id="proj_sum_left" class="white_section" style="margin-bottom:15px;">
@@ -32,7 +32,7 @@
 			
 		</div>
 	</div>
-	<div id="name" class="right" style="width:175px;">
+	<div id="name" class="right" style="width:230px;">
 		<div style="margin:15px;">
 			<h3>Location</h3>
 			<p class="small grey">{{p.city}}, {{p.state}}, {{p.country}}</p>	
@@ -41,19 +41,20 @@
 	</div>
 	<div class="clear"></div>	
 </div>
-<div class="span-6 first">
+<div class="span-7 first">
 	<div class="white_section">
 		<div style="margin:15px;">
 			<h3>Summary</h3>
 			<p>{{ p.project_plan_summary|capfirst }}</p>
-			<h3>Goal</h3>
-			<p>{{ p.goals_overview|capfirst }}</p>
 			<h3>{% trans 'Expected outcomes' %}</h3>
 			{% include "inclusion_tags/outcomes.html" %}
-			<h3>Last update</h3>
-			<p>...</p>
 			<h3>Funders</h3>
 			<p>..</p>
+			<hr>
+			<h3>Goal</h3>
+			<p>{{ p.goals_overview|capfirst }}</p>
+			<h3>Last update</h3>
+			<p>...</p>
 		</div>
 	</div>
 </div>
@@ -73,7 +74,9 @@
 		                {% update_thumb u 240 180 %}
 		            {% endifequal %}
 		            {% if u.text %}
-		                <p>{{u.text|linebreaks}}</p>
+		           	<p>
+						{{u.text|linebreaks|smart_truncate:400}}
+					</p>
 		            {% endif %}
 		            {% ifequal u.photo_location 'E' %}
 						{# {% update_thumb u 300 225 %} #}
