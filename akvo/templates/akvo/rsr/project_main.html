@@ -1,5 +1,5 @@
 {% extends "rsr/base_project.html" %}
-{% load i18n rsr_tags rsr_filters thumbnail %}
+{% load i18n rsr_tags rsr_filters thumbnail humanize %}
 
 {% block project_content %}
 <div id="proj_sum_left" class="white_section" style="margin-bottom:15px;">
@@ -37,6 +37,7 @@
 			<h3>Location</h3>
 			<p class="small grey">{{p.city}}, {{p.state}}, {{p.country}}</p>	
 			<h3>Beneficiaries</h3>
+			<p class="small grey">{{ p.improved_water|add:p.improved_sanitation|intcomma }} {% trans 'people' %} (approx.)</p>
 		</div>
 	</div>
 	<div class="clear"></div>	
@@ -44,17 +45,16 @@
 <div class="span-7 first">
 	<div class="white_section">
 		<div style="margin:15px;">
-			<h3>Summary</h3>
+			<h2>Summary</h2>
 			<p>{{ p.project_plan_summary|capfirst }}</p>
-			<h3>{% trans 'Expected outcomes' %}</h3>
+			<h2>{% trans 'Expected outcomes' %}</h2>
 			{% include "inclusion_tags/outcomes.html" %}
-			<h3>Funders</h3>
-			<p>..</p>
-			<hr>
-			<h3>Goal</h3>
-			<p>{{ p.goals_overview|capfirst }}</p>
-			<h3>Last update</h3>
+			<h2>Funders</h2>
+			<p>current funders/you could fund this project</p>
+			<h2>Focus areas</h2>
 			<p>...</p>
+			<h2>RSS feed</h2>
+			<p>Updates feed</p>
 		</div>
 	</div>
 </div>
@@ -64,7 +64,7 @@
 		{% if updates %}
 			{% for u in updates %}
 				{% if forloop.first %}
-					<h2>{{u.title}}</h2>
+					<h3>{{u.title}}</h3>
 		            <p>
 		                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
 		                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
