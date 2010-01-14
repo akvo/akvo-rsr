@@ -20,20 +20,17 @@
 			<li><a id="mainmenu_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
 				<span style="color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;">DUTCHWATERSECTOR</span>
 			</a></li>
-			{% comment %}			
-			<li><a id="mainmenu_akvo" href="/?time=12" class="{% ifequal site_section 'index' %}active{% endifequal %}">
-				<span><img src="{{MEDIA_URL}}img/base/header_menu_akvo_logo.png" width="83" height="20" alt="Akvo.org"></span></a>
-			</li>
-			{% endcomment %}
 			<li><a><span>Expertise</span></a></li>
 			<li><a href="/rsr/projects?time=1234" class="{% ifequal site_section 'projects' %}active{% endifequal %}"><span>Projects</span></a></li>
 			<li><a href="/rsr/partners?time=123" class="{% ifequal site_section 'partners' %}active{% endifequal %}"><span>Organisations</span></a></li>
 			<li><a><span>Contact</span></a></li>
 			<li><a><span>Community</span></a></li>
 			<li><a id="grid_toggle"><span>My DWS.com</span></a></li>
-			<li><div id="mainmenu_search"><span>
-			</span>
-			</div>
+			<li>
+				<div id="mainmenu_search">
+					<span>
+					</span>
+				</div>
 			</li>
 			{% comment %}
 			<li><div id="mainmenu_search"><span>

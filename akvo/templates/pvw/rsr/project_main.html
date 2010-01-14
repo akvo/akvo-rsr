@@ -1,3 +1,69 @@
 {% extends "rsr/base_project.html" %}
-{% load i18n %}
+{% load i18n rsr_tags rsr_filters %}
+
+{% block project_content %}
+<div class="span-14 first">
+	<div class="frame">
+		<div class="space20">
+			<h1 style="margin:0; padding:0; color:#00ABFA;">{{p.name}}</h1>
+			<p class="grey">{{p.subtitle}}</p>
+		</div>
+		
+		<div style="width: 170px; float:right;">
+			<div class="space15" style="margin-top:0">
+				<h3>{% trans 'Beneficiaries' %}</h3>
+				<ul>
+					<li>...</li>
+					<li>...</li>
+				</ul>
+				<h3>{% trans 'Location' %}</h3>
+				{% map_thumb p 140 140 '' %}
+				<p class="tiny" style="margin-top:5px;">
+					Asia<br>
+					Jakarta, Indonesia<br>
+					23°1'59"N 68°54'51"E
+				</p>
+			</div>
+		</div>
+		<div style="width:550px; margin-left:20px; border-right:1px solid #ccc;">
+			{% comment %}
+			{% project_thumb p 295 221 'margin: 0 10px 10px 0;' %}				
+			{% endcomment %}
+			<div style="float:right; width:120px;">
+				{% project_thumb p 80 60 'margin: 0 10px 10px 0;' %}
+				{% project_thumb p 80 60 'margin: 0 10px 10px 0;' %}
+				<p class="tiny"><a href="#">{% trans 'View more' %}&nbsp;&#x25BA;</a></p>
+			</div>
+			{% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
+			<p style="margin-right:20px;">
+				{{ p.project_plan_summary|capfirst }}
+			</p>
+			
+		</div>
+		
+		<div class="clear small" style="">&nbsp;</div>
+		
+	</div>
+</div>
+{# lower area starts #}
+<div class="span-10 first">
+	<div class="frame">
+		<div class="space15">
+			<h2>About</h2>
+			<h2>Updates</h2>
+			<h2>Resources</h2>
+			<h2>Learnings</h2>
+		</div>
+	</div>
+</div>
+<div class="span-4 last">
+	<div class="frame">
+		<div class="space15">
+			<h4 style="color:#00ABFA;">Related to this project</h4>
+		</div>
+	</div>
+</div>
+
+
+{% endblock project_content %}
 

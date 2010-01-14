@@ -3,10 +3,34 @@
 
 {% block content %}
 <div class="span-14 first" style="background-color:white;">
-{{p.name}}
+	{% block project_content %}
+	
+	{% endblock project_content %}
 </div>
-<div class="span-4 last" style="background-color:blue;">
-	right
+<div class="span-4 last">
+	<div id="proj_summary" class="frame">
+		<div class="space10">
+			<h2>Project status</h2>
+			<p>Texts</p>
+		</div>		
+	</div>
+	
+	<div class="frame">
+		<div class="space10">
+			<h3>Page Tools</h3>
+			<input type="button" name="some_name" value="Get a widget" id="some_name">
+			<ul class="small">
+				<li><a href="{% url akvo.rsr.views.projectmain p.id %}">Permalink</a></li>
+				<li>Printable version</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="frame">
+		<div class="space10">
+			<h3>Partners</h3>
+		</div>
+	</div>	
 </div>
 
 {% endblock content %}
