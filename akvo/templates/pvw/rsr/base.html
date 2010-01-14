@@ -67,13 +67,18 @@
 {% endblock js %}
 
 <script type="text/javascript">
-$(document).ready(function(){
-{% block jquery_ready %}{% endblock jquery_ready %}	
 
-$('#grid_toggle').click(function () {
-	$('#maincontainer').toggleClass('showgrid');
+$(function(){
+	$('#container-1 > ul').tabs();
 });
 
+$(document).ready(function(){
+
+	$('#grid_toggle').click(function () {
+		$('#maincontainer').toggleClass('showgrid');
+	});
+
+	{% block jquery_ready %}{% endblock jquery_ready %}	
 
 });
 </script>

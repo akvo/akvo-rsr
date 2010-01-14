@@ -47,23 +47,130 @@
 </div>
 {# lower area starts #}
 <div class="span-10 first">
-	<div class="frame">
-		<div class="space15">
+	<div id="container-1">
+		<ul>
+            <li><a href="#tab_about"><span>{% trans 'About' %}</span></a></li>
+            <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
+            <li><a href="#tab_resources"><span>{% trans 'Resources' %}</span></a></li>
+			<li><a href="#tab_learnings"><span>{% trans 'Learnings' %}</span></a></li>
+        </ul>
+		<div style="border-left:1px solid #BBBBC5; border-right:1px solid #BBBBC5; border-bottom:1px solid #BBBBC5;">
+			<div id="tab_about" class="tab">
+				<h2>{% trans 'Expected outcomes' %}</h2>
+				<ul style="margin-top:10px;">
+					{% if p.water_systems %}
+				        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
+				    {% endif %}
+				    {% if p.sanitation_systems %}
+				        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
+				    {% endif %}
+				    {% if p.hygiene_facilities %}
+				        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
+				    {% endif %}
+				    {% if p.improved_water %}
+				        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
+				        {% if p.improved_water_years %}
+				            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
+				        {% endif %}
+				        </li>
+				    {% endif %}
+				    {% if p.improved_sanitation %}
+				        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
+				        {% if p.improved_sanitation_years %}
+				            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
+				        {% endif %}
+				        </li>
+				    {% endif %}
+				    {% if p.trainees %}
+				        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
+				    {% endif %}
+				</ul>
+				<h2>{% trans 'Background' %}</h2>
+				<p>{{p.project_plan_summary|linebreaks}}</p>
+				
+			</div>
+			<div id="tab_updates" class="tab">
+				goals
+			</div>
+			<div id="tab_resources" class="tab">
+	            sustainability
+	        </div>
+			<div id="tab_learnings" class="tab">
+	            Learnings
+	        </div>
+			<div style="clear:left">&#32;</div>
+		</div>
+	</div>
+</div>
+{% comment %}
+<div class="span-10 first">
+	<div class="frame" style="margin-top:0; border-top:none;">
+		<div class="space15" style="margin-top:0;">			
+			{# start tabs#}
+			<div id="container-1">
+				<ul>
+                    <li><a href="#tab_about"><span>{% trans 'About' %}</span></a></li>
+                    <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
+                    <li><a href="#tab_resources"><span>{% trans 'Resources' %}</span></a></li>
+					<li><a href="#tab_learnings"><span>{% trans 'Learnings' %}</span></a></li>
+                </ul>
+				<div id="tab_about" class="tab">
+					description
+				</div>
+				<div id="tab_updates" class="tab">
+					goals
+				</div>
+				<div id="tab_resources" class="tab">
+	                sustainability
+	            </div>
+				<div id="tab_learnings" class="tab">
+	                Learnings
+	            </div>
+				<div style="clear:left">&#32;</div>
+			</div>
+			
+			{# end tabs#}
 			<h2>About</h2>
 			<h2>Updates</h2>
 			<h2>Resources</h2>
 			<h2>Learnings</h2>
+			
 		</div>
 	</div>
 </div>
+{% endcomment %}
 <div class="span-4 last">
 	<div class="frame">
 		<div class="space15">
-			<h4 style="color:#00ABFA;">Related to this project</h4>
+			<h2 style="color:#00ABFA;">{% trans 'Related to this project' %}...</h2>
+			<h4>{% trans 'Knowledgebase entries' %}</h4>			
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'A' %}
+					<li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
+
+            <h4>{% trans 'External links' %}</h4>
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'E' %}
+		            <li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>			
 		</div>
 	</div>
 </div>
 
-
 {% endblock project_content %}
+{% block js %}
+{{ block.super }} 
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% endblock js%}
+
+{% block jquery_ready %}
+	{{ block.super }}
+{% endblock jquery_ready %}	
 
