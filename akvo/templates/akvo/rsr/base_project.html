@@ -80,16 +80,55 @@
 				{% ifequal p.funding_still_needed|round 0 %}
 				<b>Fully funded</b>
 				{% else %}
-				<table class="" cellspacing="0">
-					<tr class="green">
-						<th>{% trans 'Raised' %}:</th>
-						<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
-					</tr>
-					<tr class="red">
-						<th>{% trans 'Still needed' %}:</th>
-						<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
-					</tr>	
-				</table>
+				<div class="white_section" style="background-color:#fff;">
+					<div style="margin:5px">
+						<table class="funding_box-table">
+							<tr>
+								<th>{% trans 'Total budget' %}:</th>
+								<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
+							</tr>					
+						</table>
+						<div class="funding_box-progress-bar">
+						{% if p.budget_total %}
+							<div class="funding_box-progress-bar-progress" 
+								style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> 
+							</div>
+						{% endif %}
+						</div>
+						<table class="funding_box-table" cellspacing="0">
+							<tr class="green">
+								<th>{% trans 'Raised' %}:</th>
+								<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+							</tr>
+							<tr class="red">
+								<th>{% trans 'Still needed' %}:</th>
+								<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+							</tr>	
+						</table>
+						<hr style="background-color:cyan; margin:5px 0;" />
+						<div>
+							<div style="float:left; width:50%; text-align:center;">
+								<p class="small grey" style="margin:0">
+									{% trans 'Individuals' %}
+								</p>
+								<a href="{% url project_donate project_id=p.id %}" 
+									class="donate_button" onclick="this.blur();">
+									<span>{% trans 'Donate' %}</span>
+								</a>
+							</div>
+							<div style="float:left; width:50%; text-align:center;">
+								<p class="small grey" style="margin:0;">
+									{% trans 'Institutions' %}
+								</p>
+								<p class="small" style="margin:0; padding-top:6px;">
+									<a href="...">{% trans 'Sponsor' %}</a>
+								</p>
+							</div>
+							<div class="clear"></div>
+	
+						</div>
+					</div>					
+				</div>
 				{% endifequal %}
 				
 			</p>
