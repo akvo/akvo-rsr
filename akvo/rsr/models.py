@@ -852,7 +852,7 @@ if settings.PVW_RSR: #pvw-rsr
 
     class Image(models.Model):
         def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%s/%s')
+            return rsr_image_path(instance.project, file_name, 'db/project/%s/%s')
             
         project                 = models.ForeignKey(Project,)
         image                   = ImageWithThumbnailsField(
