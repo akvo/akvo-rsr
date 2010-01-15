@@ -321,6 +321,10 @@ class OrganisationAccount(models.Model):
     organisation    = models.OneToOneField(Organisation, primary_key=True)
     account_level   = models.CharField(_('account level'), max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
+    class Meta:
+        verbose_name = _('organisation account')
+        verbose_name_plural = _('organisation accounts')
+
 
 CURRENCY_CHOICES = (
     ('USD', '$'),
@@ -811,9 +815,8 @@ if settings.PVW_RSR: #pvw-rsr
             return Project.objects.filter(pk=self.pk).all_partners()
     
         class Meta:
-            permissions = (
-                ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
-            )
+            verbose_name=_('project')
+            verbose_name_plural=_('projects')
 
     class ProjectPartner(models.Model):
         CHOICES_PARTNER_TYPE = (
@@ -843,6 +846,10 @@ if settings.PVW_RSR: #pvw-rsr
         longitude               = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
         latitude                = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
 
+        class Meta:
+            verbose_name=_('location')
+            verbose_name_plural=_('locations')
+
     class Image(models.Model):
         def image_path(instance, file_name):
             return rsr_image_path(instance, file_name, 'db/project/%s/%s')
@@ -856,6 +863,10 @@ if settings.PVW_RSR: #pvw-rsr
                                     help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                                 )
         current_image_caption   = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
+
+        class Meta:
+            verbose_name=_('image')
+            verbose_name_plural=_('images')
 
     class Category(models.Model):
         CHOICES_CATEGORY = (
@@ -876,6 +887,11 @@ if settings.PVW_RSR: #pvw-rsr
         
         def __unicode__(self):
             return self.get_category_display()
+
+        class Meta:
+            verbose_name=_('category')
+            verbose_name_plural=_('categories')
+            
         
 else: #akvo-rsr
 
@@ -1345,6 +1361,9 @@ else: #akvo-rsr
             permissions = (
                 ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
             )
+            verbose_name=_('project')
+            verbose_name_plural=_('projects')
+
 
 class BudgetItem(models.Model):
     ITEM_CHOICES = (
@@ -1360,8 +1379,8 @@ class BudgetItem(models.Model):
     amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
     
     class Meta:
-    	verbose_name=_('Budget Item')
-    	verbose_name_plural=_('Budget Items')
+    	verbose_name=_('Budget item')
+    	verbose_name_plural=_('Budget items')
         unique_together     = ('project', 'item')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
@@ -1381,8 +1400,9 @@ class PublishingStatus(models.Model):
     project = models.OneToOneField(Project,)
     status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
     class Meta:
-        verbose_name_plural = 'publishing statuses'
-
+        verbose_name        = _('publishing status')
+        verbose_name_plural = _('publishing statuses')
+    
     def project_info(self):
         return '%d - %s' % (self.project.pk, self.project,)
 
@@ -1408,6 +1428,11 @@ class Link(models.Model):
     
     def show_link(self):
         return '<a href="%s">%s</a>' % (self.url, self.caption,)
+
+    class Meta:
+        verbose_name        = _('link')
+        verbose_name_plural = _('links')
+    
 
 
 class FundingPartner(models.Model):
@@ -1614,6 +1639,9 @@ class UserProfile(models.Model):
         permissions = (
             ("%s_userprofile" % RSR_LIMITED_CHANGE, u'RSR limited change user profile'),
         )
+    class Meta:
+        verbose_name        = _('user profile')
+        verbose_name_plural = _('user profiles')
 
 def user_activated_callback(sender, **kwargs):
     user = kwargs.get("user", False)
@@ -1719,6 +1747,8 @@ class ProjectUpdate(models.Model):
     
     class Meta:
         get_latest_by = "time"
+        verbose_name        = _(u'project update')
+        verbose_name_plural = _(u'project updates')
 
     def img(self):
         try:
