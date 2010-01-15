@@ -928,11 +928,8 @@ def donate(request, p, engine, has_sponsor_banner=False):
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
-            if request.user.is_authenticated() and request.user.email:
-                invoice.user = request.user
-            else:
-                invoice.name = cd['name']
-                invoice.email = cd['email']
+            invoice.name = cd['name']
+            invoice.email = cd['email']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
