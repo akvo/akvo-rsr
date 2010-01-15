@@ -531,7 +531,7 @@ if settings.PVW_RSR:
                 #from dbgp.client import brk
                 #brk(host="localhost", port=9000)            
                 if all_valid(formsets) and form_validated:
-                    if not new_object.found:
+                    if hasattr(new_object, 'found') and not new_object.found:
                         form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
                         for fs in new_object.partner_formsets:
                             fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
