@@ -50,6 +50,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     margin: 1px 0 0; /* position: relative makes opacity fail for disabled tab in IE */
     padding-left: 0;
     color: #333;
+    color:#415294;
     font-weight: bold;
     line-height: 1.2;
     text-align: center;
@@ -63,6 +64,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     z-index: 2;
     margin-top: 0;
     color: #000;
+    color:#415294;
 }
 .ui-tabs-nav a span {
     width: 64px; /* IE 6 treats width as min-width */

@@ -56,6 +56,9 @@
         </ul>
 		<div style="border-left:1px solid #BBBBC5; border-right:1px solid #BBBBC5; border-bottom:1px solid #BBBBC5;">
 			<div id="tab_about" class="tab">
+				<div style="float:right; width:150px; text-align:right;">
+					{% category_icons p %}
+				</div>
 				<h2>{% trans 'Expected outcomes' %}</h2>
 				<ul style="margin-top:10px;">
 					{% if p.water_systems %}
@@ -85,18 +88,53 @@
 				        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
 				    {% endif %}
 				</ul>
+				
 				<h2>{% trans 'Background' %}</h2>
 				<p>{{p.project_plan_summary|linebreaks}}</p>
 				
 			</div>
 			<div id="tab_updates" class="tab">
-				goals
+				<div style="float:right; width:100px;">
+					<input type="button" name="some_name" value="Add update" id="some_name" style="margin-left:auto; margin-right:0;">
+				</div>
+				<h2>{% trans 'Latest updates' %}</h2>
+				{# Updates start #}
+				{% if updates %}
+					{% for u in updates %}
+						<h3>{{u.title}}</h3>
+			            <p class="small" style="margin:0; padding:0">
+			                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
+			                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+			            </p>
+						<br>
+						{% ifequal u.photo_location 'B' %}
+		                	{% update_thumb u 240 180 %}								
+			            {% endifequal %}
+			            {% if u.text %}
+			           	<p class="small" style="margin:0; padding:0;">
+							{{u.text|linebreaks|smart_truncate:400}}
+						</p>
+			            {% endif %}
+			            {% ifequal u.photo_location 'E' %}
+							{# {% update_thumb u 300 225 %} #}
+			                {% update_thumb u 240 180 %}
+			            {% endifequal %}
+						{% if not forloop.last %}
+						<hr />	
+						{% endif %}
+
+					{% endfor %}
+				{% else %}
+					{% trans 'No updates yet.' %}
+				{% endif %}
+				
+				{# Updates start #}
 			</div>
 			<div id="tab_resources" class="tab">
-	            sustainability
+				<h2>Resources</h2>
 	        </div>
 			<div id="tab_learnings" class="tab">
-	            Learnings
+	            <h2>Learnings</h2>
 	        </div>
 			<div style="clear:left">&#32;</div>
 		</div>
@@ -140,7 +178,10 @@
 </div>
 {% endcomment %}
 <div class="span-4 last">
-	<div class="frame">
+	<p class="tiny grey" style="margin:0;padding:0;margin-bottom:10px;text-align:right;">
+		Akvo Ref: {{ p.id }}
+	</p>
+	<div class="frame" style="">
 		<div class="space15">
 			<h2 style="color:#00ABFA;">{% trans 'Related to this project' %}...</h2>
 			<h4>{% trans 'Knowledgebase entries' %}</h4>			
@@ -168,7 +209,7 @@
 {% block js %}
 {{ block.super }} 
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
-{% endblock js%}
+{% endblock js %}
 
 {% block jquery_ready %}
 	{{ block.super }}
