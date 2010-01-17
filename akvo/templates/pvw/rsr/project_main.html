@@ -54,129 +54,97 @@
             <li><a href="#tab_resources"><span>{% trans 'Resources' %}</span></a></li>
 			<li><a href="#tab_learnings"><span>{% trans 'Learnings' %}</span></a></li>
         </ul>
-		<div style="border-left:1px solid #BBBBC5; border-right:1px solid #BBBBC5; border-bottom:1px solid #BBBBC5;">
+		<div style="border-left:1px solid #BBBBC5; border-right:1px solid #BBBBC5; border-bottom:1px solid #BBBBC5;">			
 			<div id="tab_about" class="tab">
-				<div style="float:right; width:150px; text-align:right;">
-					{% category_icons p %}
+				<div class="space20">
+					<div style="float:right; width:150px; text-align:right;">
+						{% category_icons p %}
+					</div>
+					<h2>{% trans 'Expected outcomes' %}</h2>
+					<ul style="margin-top:10px;">
+						{% if p.water_systems %}
+					        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
+					    {% endif %}
+					    {% if p.sanitation_systems %}
+					        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
+					    {% endif %}
+					    {% if p.hygiene_facilities %}
+					        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
+					    {% endif %}
+					    {% if p.improved_water %}
+					        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
+					        {% if p.improved_water_years %}
+					            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
+					        {% endif %}
+					        </li>
+					    {% endif %}
+					    {% if p.improved_sanitation %}
+					        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
+					        {% if p.improved_sanitation_years %}
+					            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
+					        {% endif %}
+					        </li>
+					    {% endif %}
+					    {% if p.trainees %}
+					        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
+					    {% endif %}
+					</ul>
+
+					<h2>{% trans 'Background' %}</h2>
+					<p>{{p.project_plan_summary|linebreaks}}</p>
 				</div>
-				<h2>{% trans 'Expected outcomes' %}</h2>
-				<ul style="margin-top:10px;">
-					{% if p.water_systems %}
-				        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
-				    {% endif %}
-				    {% if p.sanitation_systems %}
-				        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
-				    {% endif %}
-				    {% if p.hygiene_facilities %}
-				        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
-				    {% endif %}
-				    {% if p.improved_water %}
-				        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
-				        {% if p.improved_water_years %}
-				            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
-				        {% endif %}
-				        </li>
-				    {% endif %}
-				    {% if p.improved_sanitation %}
-				        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
-				        {% if p.improved_sanitation_years %}
-				            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
-				        {% endif %}
-				        </li>
-				    {% endif %}
-				    {% if p.trainees %}
-				        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
-				    {% endif %}
-				</ul>
-				
-				<h2>{% trans 'Background' %}</h2>
-				<p>{{p.project_plan_summary|linebreaks}}</p>
-				
 			</div>
 			<div id="tab_updates" class="tab">
-				<div style="float:right; width:100px;">
-					<input type="button" name="some_name" value="Add update" id="some_name" style="margin-left:auto; margin-right:0;">
-				</div>
-				<h2>{% trans 'Latest updates' %}</h2>
-				{# Updates start #}
-				{% if updates %}
-					{% for u in updates %}
-						<h3>{{u.title}}</h3>
-			            <p class="small" style="margin:0; padding:0">
-			                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
-			                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-			            </p>
-						<br>
-						{% ifequal u.photo_location 'B' %}
-		                	{% update_thumb u 240 180 %}								
-			            {% endifequal %}
-			            {% if u.text %}
-			           	<p class="small" style="margin:0; padding:0;">
-							{{u.text|linebreaks|smart_truncate:400}}
-						</p>
-			            {% endif %}
-			            {% ifequal u.photo_location 'E' %}
-							{# {% update_thumb u 300 225 %} #}
-			                {% update_thumb u 240 180 %}
-			            {% endifequal %}
-						{% if not forloop.last %}
-						<hr />	
-						{% endif %}
+				<div class="space20">
+					<div style="float:right; width:100px;">
+						<input type="button" name="some_name" value="Add update" id="some_name" style="margin-left:auto; margin-right:0;">
+					</div>
+					<h2>{% trans 'Latest updates' %}</h2>
+					{# Updates start #}
+					{% if updates %}
+						{% for u in updates %}
+							<h3>{{u.title}}</h3>
+				            <p class="small" style="margin:0; padding:0">
+				                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
+				                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+				            </p>
+							<br>
+							{% ifequal u.photo_location 'B' %}
+			                	{% update_thumb u 240 180 %}								
+				            {% endifequal %}
+				            {% if u.text %}
+				           	<p class="small" style="margin:0; padding:0;">
+								{{u.text|linebreaks|smart_truncate:400}}
+							</p>
+				            {% endif %}
+				            {% ifequal u.photo_location 'E' %}
+								{# {% update_thumb u 300 225 %} #}
+				                {% update_thumb u 240 180 %}
+				            {% endifequal %}
+							{% if not forloop.last %}
+							<hr />	
+							{% endif %}
 
-					{% endfor %}
-				{% else %}
-					{% trans 'No updates yet.' %}
-				{% endif %}
-				
-				{# Updates start #}
+						{% endfor %}
+					{% else %}
+						{% trans 'No updates yet.' %}
+					{% endif %}
+				</div>
 			</div>
 			<div id="tab_resources" class="tab">
-				<h2>Resources</h2>
+				<div class="space20">
+					<h2>Resources</h2>
+				</div>
 	        </div>
 			<div id="tab_learnings" class="tab">
-	            <h2>Learnings</h2>
+				<div class="space20">
+	            	<h2>Learnings</h2>
+				</div>
 	        </div>
 			<div style="clear:left">&#32;</div>
 		</div>
 	</div>
 </div>
-{% comment %}
-<div class="span-10 first">
-	<div class="frame" style="margin-top:0; border-top:none;">
-		<div class="space15" style="margin-top:0;">			
-			{# start tabs#}
-			<div id="container-1">
-				<ul>
-                    <li><a href="#tab_about"><span>{% trans 'About' %}</span></a></li>
-                    <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
-                    <li><a href="#tab_resources"><span>{% trans 'Resources' %}</span></a></li>
-					<li><a href="#tab_learnings"><span>{% trans 'Learnings' %}</span></a></li>
-                </ul>
-				<div id="tab_about" class="tab">
-					description
-				</div>
-				<div id="tab_updates" class="tab">
-					goals
-				</div>
-				<div id="tab_resources" class="tab">
-	                sustainability
-	            </div>
-				<div id="tab_learnings" class="tab">
-	                Learnings
-	            </div>
-				<div style="clear:left">&#32;</div>
-			</div>
-			
-			{# end tabs#}
-			<h2>About</h2>
-			<h2>Updates</h2>
-			<h2>Resources</h2>
-			<h2>Learnings</h2>
-			
-		</div>
-	</div>
-</div>
-{% endcomment %}
 <div class="span-4 last">
 	<p class="tiny grey" style="margin:0;padding:0;margin-bottom:10px;text-align:right;">
 		Akvo Ref: {{ p.id }}
