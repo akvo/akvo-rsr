@@ -11,17 +11,17 @@
 	<div id="proj_summary" class="frame">
 		<div class="space10">
 			<h2>Project status</h2>
-			<p>Texts</p>
+			<p>Was status removed?</p>
 		</div>		
 	</div>
 	
 	<div class="frame">
 		<div class="space10">
 			<h3>Page Tools</h3>
-			<input type="button" name="some_name" value="Get a widget" id="some_name">
 			<ul class="small">
-				<li><a href="{% url akvo.rsr.views.projectmain p.id %}">Permalink</a></li>
-				<li>Printable version</li>
+				<li><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></li>
+				<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
+				{#<li>{% trans 'Printable version' %}</li>#}
 			</ul>
 		</div>
 	</div>

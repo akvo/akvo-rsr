@@ -2,13 +2,78 @@
 {% load i18n %}
 
 {% block inline_styles %}
-body {
-	background-color:#00C7F9;	
-	color:#fff;
-	font-family: Arial;
+h1 {
+	color:#1DAAFB;
 }
 {% endblock inline_styles %}
 
 {% block content %}
-<h1>{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}</h1>
+<p class="grey small">Welcome to DutchWaterSector! <a href="">{% trans 'Sign in' %}</a> {% trans 'or' %} <a href="">{% trans 'Register' %}</a>
+<div class="span-18" style="text-align:center;">
+	<h1>{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}</h1>
+</div>
+<div class="span-12 first">
+	<div class="frame" style="background-color:#746651;">
+		<div class="space20">
+			<h2 style="color:#fff;">Main image area</h2>
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="space20">
+			<h2>Who are we</h2>
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="space20">
+			<h2>Featured inside the site</h2>
+			<p>...</p>
+		</div>
+	</div>
+	<div class="span-6 first">
+		<div class="frame">
+			Map
+			<br><br><br><br><br><br><br>...
+		</div>
+	</div>
+	<div class="span-6 last">
+		<div class="frame">
+			<div class="space20">
+				<h2>Solutions that work</h2>
+				<p>...</p>
+			</div>
+		</div>
+		<div class="frame">
+			<div class="space20">
+				<h2>Inside the Dutch water sector</h2>
+				<p>...</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="span-6 last">
+	<div class="frame">
+		<div class="space20">
+			<h2>Our impact</h2>
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="space20">
+			Find projects and programmes
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="space20">
+			<h2>DWS project showcase</h2>
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		Sign up for email updates
+	</div>
+</div>
+
 {% endblock content %}
