@@ -1,11 +1,10 @@
 {% extends "rsr/base.html" %}
 {% load i18n rsr_tags %}
 
-{% block content %}
-<div class="span-14 first" style="background-color:white;">
-	{% block project_content %}
-	
-	{% endblock project_content %}
+{% block content %}	
+<div class="span-14 first">
+{% block project_content %}
+{% endblock project_content %}
 </div>
 <div class="span-4 last">
 	<div id="proj_summary" class="frame">
@@ -25,7 +24,7 @@
 			</ul>
 		</div>
 	</div>
-	
+
 	<div class="frame">
 		<div class="space10">
 			<h3>Partners</h3>
@@ -41,7 +40,7 @@
 				{% endfor %}
 			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 
 {% endblock content %}

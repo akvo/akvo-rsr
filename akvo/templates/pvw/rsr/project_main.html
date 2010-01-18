@@ -2,7 +2,7 @@
 {% load i18n rsr_tags rsr_filters %}
 
 {% block project_content %}
-<div class="span-14 first">
+<div class="span-14 first last">
 	<div class="frame">
 		<div class="space20">
 			<h1 style="margin:0; padding:0; color:#00ABFA;">{{p.name}}</h1>
@@ -91,7 +91,7 @@
 					</ul>
 
 					<h2>{% trans 'Background' %}</h2>
-					<p>{{p.project_plan_summary|linebreaks}}</p>
+					{{p.project_plan_summary|linebreaks}}
 				</div>
 			</div>
 			<div id="tab_updates" class="tab">
@@ -177,6 +177,13 @@
 {% block js %}
 {{ block.super }} 
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+$(function(){
+	$('#container-1 > ul').tabs();
+});
+
+</script>
 {% endblock js %}
 
 {% block jquery_ready %}

@@ -5,13 +5,19 @@
 @import url("menu.css");
 @import url("utility.css");
 
-/*
+
 .sliding_box_header {
-    background: #e1e1e5 url(../../img/base/sliding_box_header_background.png) repeat-x;
+    background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;
     border-bottom: 1px solid #ccc;
     padding:5px; 
 }
 
+.sliding_box_header a {
+    margin-left:15px; 
+    text-shadow: #fff 1px 1px 0px;
+}
+
+/*
 #footer {
     margin-top:20px; 
     padding-top:0px;

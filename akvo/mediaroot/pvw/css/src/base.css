@@ -17,7 +17,9 @@ body {
 }
 
 #proj_summary {
+    /* IE6 bug??
     padding:30px 5px 15px 5px;
+    */
     background-color:#00AAF7;
 }
 

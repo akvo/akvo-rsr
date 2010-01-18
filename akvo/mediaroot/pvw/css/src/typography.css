@@ -232,7 +232,7 @@ p.lede {
     margin-bottom:1.3em;
 }
 
-p.small, .small p, .small label {
+p.small, .small p, .small label, ul.small {
     font-size:0.8125em;
     line-height:1.4em;
 }

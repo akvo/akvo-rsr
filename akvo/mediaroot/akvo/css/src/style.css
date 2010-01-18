@@ -12,6 +12,10 @@
     border-bottom: 1px solid #ccc;
     padding:5px; 
 }
+.sliding_box_header a {
+    margin-left:15px; 
+    text-shadow: #fff 1px 1px 0px;
+}
 /*
 #footer {
     margin-top:20px;

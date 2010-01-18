@@ -51,9 +51,9 @@
 {% endblock menu %}
 
 <div id="maincontainer" class="container">
-	{% block content %}
+{% block content %}
 		<p>RSR</p>
-	{% endblock content %}
+{% endblock content %}
 </div>
 
 {% block footer %}
@@ -140,10 +140,6 @@
 {% endblock js %}
 
 <script type="text/javascript">
-
-$(function(){
-	$('#container-1 > ul').tabs();
-});
 
 $(document).ready(function(){
 
