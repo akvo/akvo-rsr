@@ -55,8 +55,12 @@ class SeleniumTestCase(TestCase):
         self.selenium.click("link=%s" % (link))
         self.wait_for_page_to_load()
 
+    def click_button(self, button_name):
+        self.selenium.click(button_name)
+        self.wait_for_page_to_load()
+
     def click_submit_button(self, button_text):
-        self.selenium.click("//input[@value='%s']" % (button_text))
+        self.selenium.click("//input[@value=\"%s\"]" % (button_text))
         self.wait_for_page_to_load()
 
     def assert_title_is(self, expected_title):
@@ -71,9 +75,16 @@ class SeleniumTestCase(TestCase):
     def assert_page_contains_text(self, expected_text):
         self.failUnless(self.selenium.is_text_present(expected_text), "Page should contain: %s" % (expected_text))
 
+    def assert_page_does_not_contain_text(self, unexpected_text):
+        self.failIf(self.selenium.is_text_present(unexpected_text), "Page should not contain: %s" % (unexpected_text))
+
     def assert_page_contains_text_items(self, list_of_expected_text_items):
         for expected_text in list_of_expected_text_items:
             self.assert_page_contains_text(expected_text)
+
+    def assert_page_does_not_contain_text_items(self, list_of_unexpected_text_items):
+        for unexpected_text in list_of_unexpected_text_items:
+            self.assert_page_does_not_contain_text(unexpected_text)
 
     def assert_location_contains(self, expected_text):
         self.failIf(self.selenium.get_location().find(expected_text) == -1,
