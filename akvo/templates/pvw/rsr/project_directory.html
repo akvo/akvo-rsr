@@ -26,10 +26,13 @@
 			<p class="small" style="margin:2px 5px">Refine results</p>
 		</div>
 		<div class="space20">
+			<h5>Sector</h5>
 			<p class="small">
 				<label><input type="checkbox" name="sectors" value="2" id="sector_sanitation" > Sanitation</label>
 				<label><input type="checkbox" name="sectors" value="1" id="sector_water" > Water</label>
 			</p>
+			<hr />
+			<h5>Location</h5>
 			<p class="small">
 				<label><input type="checkbox" name="continents" value="1" id="continent_africa" > Africa</label>
 				<label><input type="checkbox" name="continents" value="2" id="continent_asia" > Asia</label>
@@ -53,7 +56,7 @@
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 				</p>
 			</div>
-			<p class="small" style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}. </p>
+			<p class="small" style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
 		</div>
 	</div>
 	{% comment %}
@@ -142,9 +145,7 @@
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 				</p>
 			</div>
-			<p class="small" style="margin:2px 5px">
-				Page {{page.number}} of {{page.paginator.num_pages}}. 
-			</p>
+			<p class="small" style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
 		</div>
 	</div>
 	
