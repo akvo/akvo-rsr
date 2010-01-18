@@ -63,6 +63,6 @@ class AkvoPlatformComponentsTest(SeleniumTestCase):
 
 if __name__ == "__main__":
     print "Running tests on: %s" % (SITE_UNDER_TEST)
-    print "\nAkvo platform components test:"
+    print "Akvo platform components test:"
     suite = nose.loader.TestLoader().loadTestsFromTestCase(AkvoPlatformComponentsTest)
     nose.core.TextTestRunner(verbosity=2).run(suite)
