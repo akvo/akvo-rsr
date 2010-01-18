@@ -1,6 +1,7 @@
 .hide { display: none; }
 .grey { color: #888; }
 .red {color: #E60113;}
+.hl {color:#1DAAFB;}
 .bold {font-weight: bold;}
 .round {
 	-khtml-border-radius: 5px;

@@ -17,6 +17,13 @@
     text-shadow: #fff 1px 1px 0px;
 }
 
+#proj_list_table {
+    background: #fff url(../../../base/img/grey_dot.png) repeat-y right;
+}
+
+#proj_list_table_header {
+    background: #fff url(../../../base/img/grey_dot.png) repeat;
+}
 /*
 #footer {
     margin-top:20px; 

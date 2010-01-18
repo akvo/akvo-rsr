@@ -239,13 +239,12 @@ p.small, .small p, .small label, ul.small {
     line-height:1.4em;
 }
 
-
-p.tiny, .tiny p, .tiny label {
+p.tiny, .tiny p, .tiny label, ul.tiny, a.tiny {
     font-size:0.6875em;
     line-height:1.4em;
 }
 
-p.nano, .nano p, .nano label { 
+p.nano, .nano p, .nano label ul.nano, a.nano { 
     font-size:0.56725em;
     line-height:1.4em;
 }
