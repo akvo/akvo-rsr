@@ -49,7 +49,7 @@ class SeleniumTestCase(TestCase):
         if self.selenium.is_text_present("Password:"):
             self.selenium.type("id_username", RSR_ADMIN_USERNAME)
             self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
-            self.click_submit_button("Log in")
+            self.click_submit_button_with_text("Log in")
 
     def click_link(self, link_text):
         self.selenium.click("link=%s" % (link_text))
