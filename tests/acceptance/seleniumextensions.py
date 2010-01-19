@@ -51,13 +51,16 @@ class SeleniumTestCase(TestCase):
             self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
             self.click_submit_button("Log in")
 
-    def click_link(self, link):
-        self.selenium.click("link=%s" % (link))
+    def click_link(self, link_text):
+        self.selenium.click("link=%s" % (link_text))
         self.wait_for_page_to_load()
 
-    def click_button(self, button_name):
-        self.selenium.click(button_name)
+    def click_button(self, button_name_or_path):
+        self.selenium.click(button_name_or_path)
         self.wait_for_page_to_load()
+
+    def click_submit_button(self):
+        self.click_button("//button[@type='submit']")
 
     def click_submit_button(self, button_text):
         self.selenium.click("//input[@value=\"%s\"]" % (button_text))
