@@ -62,7 +62,7 @@ class SeleniumTestCase(TestCase):
     def click_submit_button(self):
         self.click_button("//button[@type='submit']")
 
-    def click_submit_button(self, button_text):
+    def click_submit_button_with_text(self, button_text):
         self.selenium.click("//input[@value=\"%s\"]" % (button_text))
         self.wait_for_page_to_load()
 
