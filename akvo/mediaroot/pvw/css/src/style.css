@@ -1,0 +1,41 @@
+@import url("reset.css");
+@import url("grid.css");
+@import url("typography.css");
+@import url("base.css");
+@import url("menu.css");
+@import url("utility.css");
+
+
+.sliding_box_header {
+    background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;
+    border-bottom: 1px solid #ccc;
+    padding:5px; 
+}
+
+.sliding_box_header a {
+    margin-left:15px; 
+    text-shadow: #fff 1px 1px 0px;
+}
+
+#proj_list_table {
+    background: #fff url(../../../base/img/grey_dot.png) repeat-y right;
+}
+
+#proj_list_table_header {
+    background: #fff url(../../../base/img/grey_dot.png) repeat;
+}
+/*
+#footer {
+    margin-top:20px; 
+    padding-top:0px;
+    }
+
+#middle{
+    background-color:#fff;
+    }
+
+#side{
+    background-color:#fff;
+    }
+    
+*/

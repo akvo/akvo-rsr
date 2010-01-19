@@ -28,7 +28,6 @@ from utils import groups_from_user
 
 NON_FIELD_ERRORS = '__all__'
 
-
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (u'__unicode__', u'content_type', )
     list_filter  = (u'content_type', )

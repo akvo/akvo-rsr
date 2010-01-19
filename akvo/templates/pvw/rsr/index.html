@@ -1,0 +1,105 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block inline_styles %}
+h1 {
+	color:#1DAAFB;
+}
+{% endblock inline_styles %}
+
+{% block content %}
+<p class="grey small">Welcome to DutchWaterSector! <a href="">{% trans 'Sign in' %}</a> {% trans 'or' %} <a href="">{% trans 'Register' %}</a>
+<div class="span-18" style="text-align:center;">
+	<h1>{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}</h1>
+</div>
+<div class="span-12 first">
+	<div class="frame" style="background-color:#746651;">
+		<div class="space20">
+			<h2 style="color:#fff;">Main image area</h2>
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="sliding_box_header">
+			<a href="#">Who are we</a>
+		</div>
+		<div class="space20">
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="sliding_box_header">
+			<a href="#">Featured inside the site</a>
+		</div>
+		<div class="space20">
+			<p>...</p>
+		</div>
+	</div>
+	<div class="span-6 first">
+		<div class="frame">
+			<div class="space20">
+				<p>Map</p>
+				<br><br><br><br><br><br><br>...
+			</div>
+		</div>
+	</div>
+	<div class="span-6 last">
+		<div class="frame">
+			<div class="sliding_box_header">
+				<a href="#">Solutions that work</a>
+			</div>
+			<div class="space20">
+				<p>...</p>
+			</div>
+		</div>
+		<div class="frame">
+			<div class="sliding_box_header">
+				<a href="#">Inside the Dutch water sector</a>
+			</div>
+			<div class="space20">
+				<p>...</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="span-6 last">
+	<div class="frame">
+		<div class="sliding_box_header">
+			<a href="#">Our impact</a>
+		</div>
+		<div class="space20">
+			<ul class="small">
+				<li>Projects</li>
+				<li>People Served</li>
+				<li>Countries</li>
+				<li>Organisations</li>
+			</ul>
+		</div>
+	</div>
+	<div class="frame" style="background-color:#D8F4FE;">
+		<div class="space20">
+			<form action="" method="get" accept-charset="utf-8">
+				<p>
+					Find projects and programmes<br>
+					<input type="text" name="some_name" value="" id="some_name">
+					<input type="submit" value="Find">
+				</p>
+			</form>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="sliding_box_header">
+			<a href="#">DWS project showcase</a>
+		</div>
+		<div class="space20">
+			<p>...</p>
+		</div>
+	</div>
+	<div class="frame">
+		<div class="space20">
+			<p>Sign up for email updates</p>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

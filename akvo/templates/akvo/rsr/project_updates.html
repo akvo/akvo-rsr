@@ -1,0 +1,52 @@
+{% extends "rsr/base_project.html" %}
+{% load i18n rsr_tags  rsr_filters %}
+
+{% block project_content %}
+<div class="white_section" style="margin-bottom:15px;">
+	<div style="margin:15px;">
+		<div style="float:right;">
+			<p class="small">
+				{#<a href="/rsr/rss/updates/{{p.id}}/" class="rss">{% trans 'Subscribe' %}</a>#}
+				<a href="/rsr/rss/updates/{{p.id}}/" class="rss">
+					<img src="{{MEDIA_URL}}base/img/icon_rss.gif" width="12" height="12" alt="RSS" />
+				</a>
+			</p>	
+		</div>
+
+		<h1>Project updates</h1>
+		<p class="grey small">{% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
+		<hr />
+		
+		{% if updates %}
+			{% for u in updates %}
+				<h3>{{u.title}}</h3>
+	            <p class="small" style="margin:0; padding:0">
+	                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
+	                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+	            </p>
+				<br>
+				{% ifequal u.photo_location 'B' %}
+	                {% update_thumb u 240 180 %}
+	            {% endifequal %}
+	            {% if u.text %}
+	           	<p class="small" style="margin:0; padding:0;">
+					{{u.text|linebreaks|smart_truncate:400}}
+				</p>
+	            {% endif %}
+	            {% ifequal u.photo_location 'E' %}
+					{# {% update_thumb u 300 225 %} #}
+	                {% update_thumb u 240 180 %}
+	            {% endifequal %}
+				{% if not forloop.last %}
+				<hr />	
+				{% endif %}
+				
+			{% endfor %}
+		{% else %}
+			{% trans 'No updates yet.' %}
+		{% endif %}
+		
+		
+	</div>
+</div>
+{% endblock %}

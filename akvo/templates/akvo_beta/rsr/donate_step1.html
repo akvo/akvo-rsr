@@ -1,0 +1,150 @@
+{% extends "rsr/rsr_base.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n rsr_tags thumbnail %}
+
+{% block title %}{{block.super}} - {% trans 'Donate to Project' %} {{p.id}}{% endblock title %}
+
+{% block style %}
+{{block.super}}
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/machinery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
+
+<style type="text/css" media="screen">
+	#donate_step_box {
+		background: #fff url('{{MEDIA_URL}}akvo/img/donate/step_box_bkgd.png') repeat-x;
+		border:1px solid #DFE0E6;
+		margin-bottom:20px;
+		margin-left:auto;
+		margin-right:auto;
+		margin-top:20px;
+		width:785px;
+	}
+	
+	#donate_step_box_inner {
+		background: transparent url('{{MEDIA_URL}}akvo/img/donate/step_box_line.png') repeat-x 0px 20px;
+		margin-left:auto;
+		margin-right:auto;
+		width:750px;
+		height:40px;
+	}
+	.donate_steps {
+		color:#8F94A3;
+		float:left;
+		margin-right:10px;
+		padding-top:30px;
+		width:140px;
+		text-align:center;
+		padding-bottom:10px;
+		}
+		
+	.active_donate_step {
+		color:#000;
+		background: transparent url('{{MEDIA_URL}}akvo/img/donate/step_box_ball.gif') no-repeat center 15px;
+	}
+	
+	#donate_step_5 {
+		margin-right:0;
+	}
+</style>
+
+
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+
+{% endblock style%}
+
+
+{% block breadcrumbs %}
+{{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a> &raquo; {% trans 'Donate' %}
+{% endblock breadcrumbs %}
+
+
+{% block content %}
+	{% if live_earth_enabled %}
+		{% if has_sponsor_banner %}
+		<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}akvo/img/lerfw-banner.png" alt="Live Earth" /></a>
+		{% endif %}
+	{% endif %}
+	
+	<div id="machinery-content" style="padding-left:30px; padding-right:30px; margin-bottom:10px; padding-bottom:20px;">
+		<h1>{% trans 'Donate to a project' %}</h1>
+		<div id="donate_step_box">
+			<div id="donate_step_box_inner">
+				<div class="donate_steps active_donate_step">
+					<p>{% trans 'Select payment system' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Enter amount' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Confirm amount' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Use payment system' %}</p>
+				</div>
+				<div id="#donate_step_5" class="donate_steps">
+					<p>{% trans 'Thank you!' %}</p>
+				</div>
+			</div>
+			<div class="clear">	</div>
+		</div>
+
+		<h2 style="padding-left:0; margin-bottom:20px;">{% trans 'Select a payment system to use' %}</h2>
+		
+		{% ifequal p.currency 'EUR' %}
+		
+		<div id="processor_right" style="float:left; width:445px; border:1px solid #DEDFE3; border-bottom:2px solid #DEDFE3; margin-right:20px; padding-bottom:20px;">
+			<div style="margin:20px;">
+				<h1>{% trans 'For Dutch users only' %}</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px; text-align:center;">
+					<a href="{% url complete_donation project_id=p.id,engine='ideal' %}">
+					<img src="{{MEDIA_URL}}akvo/img/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" /></a>
+				</div>
+				<p>
+					{% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}						
+				</p>
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="display:inline-block; width:140px;">
+						<a style="float:none;" class="march_button" href="{% url complete_donation project_id=p.id,engine='ideal' %}"><span>{% trans 'Use iDeal' %}</span></a>
+					</div>
+				</div>				
+			</div>			
+		</div>
+		{% endifequal %}
+		
+		<div id="processor_left" style="float:left; width:445px; border:1px solid #DEDFE3; border-bottom:2px solid #DEDFE3; padding-bottom:20px;">
+			<div style="margin:20px;">
+				<h1>{% trans 'For all users' %}</h1>
+				<div style="margin-left:auto; margin-right:auto; margin-top:20px; width:230px; height:150px;">
+					<a href="{% url complete_donation project_id=p.id,engine='paypal' %}">
+					<img src="{{MEDIA_URL}}akvo/img/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" /></a>
+				</div>
+				<p>
+					{% trans 'For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.' %}
+				</p>				
+				<div style="margin-left:auto; margin-right:auto; text-align:center; margin-top:20px;">
+					<div style="display:inline-block; width:140px;">
+						<a style="float:none;" class="march_button" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		<br>
+		<a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+	
+	</div>
+{% endblock %}
+{# ----------------------------------------------------------------------------- #}
+
+
+{% comment %}
+Nadat de consument iDEAL heeft gekozen als betaalwijze wordt de eigen bank geselecteerd. De daadwerkelijke betaling vindt daarna plaats in de vertrouwde omgeving van de website van de bank. In deze omgeving staat de bank garant voor de veiligheid. Koper en verkoper zijn verzekerd van een transparante transactie, zonder verborgen kosten.
+{% endcomment %}
+

@@ -1,0 +1,37 @@
+body {
+    /*
+    background-color:#F6F8F9;
+    background: #F6F8F9 url('../../img/base/body_top.png') repeat-x fixed 0px 35px;
+    */
+    background-color:#fff;
+    }
+
+.container {
+    padding-bottom:80px;
+    padding-top:55px;
+    }
+    
+.frame {
+    border:1px solid #BCBCC6;
+    margin-bottom:15px;
+}
+
+#proj_summary {
+    /* IE6 bug??
+    padding:30px 5px 15px 5px;
+    */
+    background-color:#00AAF7;
+}
+
+#proj_summary h2 {
+    color:#9BFEFE;
+}
+
+#proj_summary p {
+    color:#fff;
+}
+
+.space5 { margin:5px;}
+.space10 { margin:10px;}
+.space15 {margin:15px;}
+.space20 {margin:20px;}

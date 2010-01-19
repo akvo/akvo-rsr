@@ -115,7 +115,7 @@ def project_thumb(context, project, width, height, style=''):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'div_style'     : style,
+        'div_style' : style,
     }
     
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
@@ -154,5 +154,14 @@ def update_thumb(context, update, width, height):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
+    }
+
+from django.conf import settings
+@register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
+def page_styles(context,):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'], 'debug': settings.DEBUG,
     }
  
