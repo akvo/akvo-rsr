@@ -266,6 +266,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	    
 		<div>
 			<h3>{% trans 'Your information' %}</h3>
+            {% comment %}
 			{% if user.is_authenticated and user.email %}
 			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<div class="fieldWrapper" style="margin-bottom:10px;">	
@@ -294,6 +295,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 
 			{% else %}
+            {% endcomment %}
 
 			<p>{% trans 'Provide your full name and email address below.' %}</p>
 			<br /><br />
@@ -326,7 +328,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p style="font-weight:normal; margin-bottom:18px;">{{ donate_form.is_anonymous }} {% trans 'I would like my donation to be' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a> {% trans '(tick the box)' %}.
 				</p>
 			</div>
-			{% endif%}
+			{# {% endif%} #}
 			
 			{% if donate_form.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
