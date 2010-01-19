@@ -99,6 +99,9 @@ MIDDLEWARE_CLASSES = (
 # PAUL
 # PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
+# Is this the pvw-rsr?
+PVW_RSR = True
+
 ROOT_URLCONF = 'akvo.urls'
 
 # Make this unique, and don't share it with anybody.
@@ -123,6 +126,18 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
 #     'django.template.loaders.eggs.load_template_source',
+)
+
+import os.path
+if PVW_RSR:
+    TEMPLATE_LEAF_DIR = 'pvw'
+else:
+    TEMPLATE_LEAF_DIR = 'akvo'
+    
+TEMPLATE_DIRS = (
+    os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/akvo_beta').replace('\\','/'),
 )
 
 # Local time zone for this installation. Choices can be found here:

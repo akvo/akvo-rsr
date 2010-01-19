@@ -149,15 +149,15 @@ def index(request):
             'summary': _('The blog is not available at the moment.'),
         }
     projs = Project.objects.published()
-    if bandwidth == 'low':
-        #find all projects that need funding and have an image
-        unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
-        if len(unfunded_visible_projs) > 7:
-            grid_projects = unfunded_visible_projs.order_by('?')[:8]
-        else:
-            grid_projects = projs.filter(current_image__startswith='db').order_by('?')[:8]
-    else:
-        grid_projects = None
+    #if bandwidth == 'low':
+    #    #find all projects that need funding and have an image
+    #    #unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
+    #    if len(unfunded_visible_projs) > 7:
+    #        grid_projects = unfunded_visible_projs.order_by('?')[:8]
+    #    else:
+    #        grid_projects = projs.filter(current_image__startswith='db').order_by('?')[:8]
+    #else:
+    grid_projects = None
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
     return {
