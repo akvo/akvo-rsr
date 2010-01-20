@@ -13,7 +13,7 @@ sys.path.append(akvo_path)
 import settings
 setup_environ(settings)
 
-from rsr.models import PayPalInvoice
+from rsr.models import Invoice
 
 def update_invoices():
     """Identify invoices which have had a status of 1 (Pending)
@@ -28,7 +28,7 @@ def update_invoices():
     
     """
     log_message_prefix = 'AKVO RSR PAYPAL SUBSYSTEM: '
-    stale_invoices = PayPalInvoice.objects.stale()
+    stale_invoices = Invoice.objects.stale()
     if stale_invoices:
         for invoice in stale_invoices:
             original_status = invoice.get_status_display().lower()
