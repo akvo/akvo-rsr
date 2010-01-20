@@ -13,9 +13,9 @@ from test_settings import *
 class SeleniumTestCase(TestCase):
 
     @classmethod
-    def setup_class(cls, browser_config = "*firefoxchrome"):
+    def setup_class(cls):
         try:
-            cls.selenium = selenium("localhost", 4444, browser_config, SITE_UNDER_TEST)
+            cls.selenium = selenium(SELENIUM_RC_HOST, SELENIUM_RC_PORT, BROWSER_ENVIRONMENT, SITE_UNDER_TEST)
             cls.selenium.start()
         except Exception as exception:
             print ">> Unable to start Selenium RC client: %s" % (exception)
@@ -50,6 +50,9 @@ class SeleniumTestCase(TestCase):
             self.selenium.type("id_username", RSR_ADMIN_USERNAME)
             self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
             self.click_submit_button_with_text("Log in")
+
+    def open_project_page(self, project_number):
+        self.open_page("/rsr/project/%i/" % (project_number))
 
     def click_link(self, link_text):
         self.selenium.click("link=%s" % (link_text))
