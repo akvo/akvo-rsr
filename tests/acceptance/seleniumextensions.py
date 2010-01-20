@@ -92,6 +92,17 @@ class SeleniumTestCase(TestCase):
         for unexpected_text in list_of_unexpected_text_items:
             self.assert_page_does_not_contain_text(unexpected_text)
 
+    def verify_text_at_path(self, expected_text, text_xpath):
+        actual_text = self.selenium.get_text(text_xpath)
+        self.failUnlessEqual(expected_text, actual_text,
+            "\nExpected text at %s: %s\nActual text: %s" % (text_xpath, expected_text, actual_text))
+
+    def verify_attribute_value_at_path(self, expected_attribute_value, attribute_xpath):
+        actual_attribute_value = self.selenium.get_attribute(attribute_xpath)
+        self.failUnlessEqual(expected_attribute_value, actual_attribute_value,
+            "\nExpected attribute value at %s: %s\nActual attribute value: %s" %
+            (attribute_xpath, expected_attribute_value, actual_attribute_value))
+
     def assert_location_contains(self, expected_text):
         self.failIf(self.selenium.get_location().find(expected_text) == -1,
                     "Page URL should contain: %s" % (expected_text))
