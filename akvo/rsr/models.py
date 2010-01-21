@@ -189,10 +189,13 @@ class Organisation(models.Model):
             note that self is a queryset of orgs
             '''
             projs = Project.objects.published()
-            return (projs.filter(supportpartner__support_organisation__in=self) | \
-                     projs.filter(fieldpartner__field_organisation__in=self) | \
-                     projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-                     projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
+            if settings.PVW_RSR:
+                return (projs.filter(projectpartner__partner_organisation__in=self)).distinct()
+            else:
+                return (projs.filter(supportpartner__support_organisation__in=self) | \
+                         projs.filter(fieldpartner__field_organisation__in=self) | \
+                         projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
+                         projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
         def all(self):
             '''
@@ -200,10 +203,13 @@ class Organisation(models.Model):
             note that self is a queryset of orgs
             '''
             projs = Project.objects.all()
-            return (projs.filter(supportpartner__support_organisation__in=self) | \
-                     projs.filter(fieldpartner__field_organisation__in=self) | \
-                     projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-                     projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
+            if settings.PVW_RSR:
+                return (projs.filter(projectpartner__partner_organisation__in=self)).distinct()
+            else:
+                return (projs.filter(supportpartner__support_organisation__in=self) | \
+                         projs.filter(fieldpartner__field_organisation__in=self) | \
+                         projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
+                         projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
     def __unicode__(self):
         return self.name
@@ -274,7 +280,7 @@ class Organisation(models.Model):
         '''
         return Organisation.projects.filter(pk=self.pk).all()
 
-    def partners(self):
+    def my_partners(self):
         '''
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
@@ -298,7 +304,7 @@ class Organisation(models.Model):
             'still_needed_dollars': my_projs.dollars().total_funds_needed()
         }
 
-    class Meta:
+    class Meta: 
         verbose_name=_('Organisation')
         verbose_name_plural=_('Organisations')
         ordering = ['name']
@@ -661,24 +667,10 @@ if settings.PVW_RSR: #pvw-rsr
                 return qs_column_sum(self.status_complete(), 'improved_sanitation')
     
             #the following 4 return an organisation queryset!
-            def support_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(support_partners__project__in=self)
-    
-            def sponsor_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(sponsor_partners__project__in=self)
-    
-            def funding_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(funding_partners__project__in=self)
-    
-            def field_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(field_partners__project__in=self)
     
             def all_partners(self):
-                return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
+                o = Organisation.objects.all()
+                return o.filter(partners__project__in=self)
     
         #TODO: is this relly needed? the default QS has identical methods
         class OrganisationsQuerySet(QuerySet):
@@ -699,12 +691,8 @@ if settings.PVW_RSR: #pvw-rsr
                 return orgs.filter(field_partners__project__in=self)
     
             def all_partners(self):
-                orgs = Organisation.objects.all()
-                return (orgs.filter(support_partners__project__in=self) | \
-                        orgs.filter(sponsor_partners__project__in=self) | \
-                        orgs.filter(funding_partners__project__in=self) | \
-                        orgs.filter(field_partners__project__in=self)).distinct()
-                #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
+                o = Organisation.objects.all()
+                return o.filter(partners__project__in=self)
     
         def __unicode__(self):
             return self.name
@@ -839,7 +827,7 @@ if settings.PVW_RSR: #pvw-rsr
             return "%s" % (self.partner_organisation.name, ) #self.funding_amount, self.project.get_currency_display())
 
     class Location(models.Model):
-        project                 = models.ForeignKey(Project,)
+        project                 = models.ForeignKey(Project, related_name='locations',)
         city                    = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
         state                   = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
         country                 = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
@@ -854,7 +842,7 @@ if settings.PVW_RSR: #pvw-rsr
         def image_path(instance, file_name):
             return rsr_image_path(instance.project, file_name, 'db/project/%s/%s')
             
-        project                 = models.ForeignKey(Project,)
+        project                 = models.ForeignKey(Project, related_name='images',)
         image                   = ImageWithThumbnailsField(
                                     _('project photo'),
                                     blank=True,

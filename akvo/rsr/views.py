@@ -730,11 +730,16 @@ def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
     
     has_sponsor_banner = False
-    if o.id == settings.LIVE_EARTH_ID:
-        has_sponsor_banner = True
-    
-    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    org_partners = o.partners()
+    try:
+        if o.id == settings.LIVE_EARTH_ID:
+            has_sponsor_banner = True
+    except:
+        pass
+    if settings.PVW_RSR:
+        org_projects = o.published_projects()
+    else:
+        org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+    org_partners = o.my_partners()
     return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
 
 @render_to('rsr/project_main.html')

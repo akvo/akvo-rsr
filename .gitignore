@@ -8,4 +8,5 @@ akvo/datadir
 akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/rebuild_db.py
+akvo/testing.py
 scripts/deployment/static_project_structure.py
