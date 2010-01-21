@@ -10,8 +10,16 @@ from seleniumextensions import SeleniumTestCase
 from test_settings import *
 
 class RSRProjectAdminTest(SeleniumTestCase):
-    
+
     KAGISO_PROJECT_NAME = "Kagiso Water Aid [UAT]"
+
+    @classmethod
+    def setup_class(cls):
+        SeleniumTestCase.setup_class()
+
+        # unfortunately we need to use class variables (rather than instance variables) since
+        # the nose framework requires class-level setup methods to be class methods... :-/
+        cls.expected_project_number = 0
 
     def test_1_admin_page_has_expected_project_sections(self):
         """>> 1. Admin page has expected project sections"""
@@ -25,10 +33,10 @@ class RSRProjectAdminTest(SeleniumTestCase):
         self.open_project_admin_page()
         self.click_link("Add project")
         self.assert_title_starts_with("Add project")
-        
+
         project_map_path = os.path.join(TEST_IMAGES_DIR, 'kagiso_map.jpg')
         project_photo_path = os.path.join(TEST_IMAGES_DIR, 'project_photo_spring.jpg')
-        
+
         sel = self.selenium
         sel.type("id_name", self.KAGISO_PROJECT_NAME)
         sel.type("id_subtitle", "Kagiso Water Aid - project used for user acceptance testing purposes only")
@@ -52,14 +60,14 @@ class RSRProjectAdminTest(SeleniumTestCase):
         sel.type("id_goal_3", "Help Kagiso residents build a larger water reservoir")
         sel.type("id_goal_4", "Provide eco-friendly water sanitation options")
         sel.type("id_goal_5", "Provide water preservation education")
-        sel.type("id_water_systems", "40")
-        sel.type("id_sanitation_systems", "18")
-        sel.type("id_hygiene_facilities", "32")
-        sel.type("id_improved_water", "3200")
+        sel.type("id_water_systems", "4")
+        sel.type("id_sanitation_systems", "2")
+        sel.type("id_hygiene_facilities", "3")
+        sel.type("id_improved_water", "1600")
         sel.type("id_improved_water_years", "10")
-        sel.type("id_improved_sanitation", "4000")
-        sel.type("id_improved_sanitation_years", "20")
-        sel.type("id_trainees", "120")
+        sel.type("id_improved_sanitation", "2000")
+        sel.type("id_improved_sanitation_years", "15")
+        sel.type("id_trainees", "4")
         sel.type("id_context", "Help complement ongoing improvements of Kagiso water and sanitation infrastructure.")
         sel.type("id_project_plan_detail", "Use funding from foreign and local donors to implement goals.")
         sel.type("id_current_status_detail", "Project has received initial funding.")
@@ -80,34 +88,78 @@ class RSRProjectAdminTest(SeleniumTestCase):
         sel.click("_save")
         sel.wait_for_page_to_load(PAGE_LOAD_TIMEOUT)
         self.verify_project_admin_page_has_loaded()
-        
+
         try:
             self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
         except AssertionError as error:
-            self.fail("Expected '%s' project to appear in project listing after being added:\n%s" % 
+            self.fail("Expected '%s' project to appear in project listing after being added:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
 
-    def test_3_project_details_page_has_expected_content_for_added_project(self):
-        """>> 3. Project details page has expected content for added project"""
-        self.fail('to do')
-
-    def test_4_can_delete_project(self):
-        """>> 4. Can delete project"""
+    def test_3_can_navigate_to_project_page_from_project_admin(self):
+        """>> 3. Can navigate to project page from project admin"""
         self.open_project_admin_page()
-        
+
         try:
             self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
         except AssertionError as error:
-            self.fail("Expected '%s' project to exist (added earlier) for testing deletion:\n%s" % 
+            self.fail("Expected '%s' project to exist (added earlier) for verifying project content:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
+
+        RSRProjectAdminTest.expected_project_number = self.kagiso_project_number()
         
+        self.click_link(RSRProjectAdminTest.expected_project_number)
+        self.assert_title_starts_with("Change project")
+        self.click_link("View on site")
+        self.assert_title_is("Akvo RSR - Project no. %i, %s" %
+                             (RSRProjectAdminTest.expected_project_number, self.KAGISO_PROJECT_NAME))
+
+    def test_4_project_page_has_expected_project_name_and_subtitle(self):
+        """>> 4. Project page has expected project name and subtitle"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_title_is("Akvo RSR - Project no. %i, %s" %
+                             (RSRProjectAdminTest.expected_project_number, self.KAGISO_PROJECT_NAME))
+        self.verify_text_at_path(self.KAGISO_PROJECT_NAME, "//div[@id='outer_leftwing']/div[1]/h1")
+        self.verify_text_at_path("Kagiso Water Aid - project used for user acceptance testing purposes only",
+                                 "//div[@id='outer_leftwing']/div[1]/p")
+
+    def test_5_project_page_has_expected_status_focus_area_icons_and_location(self):
+        """>> 5. Project page has expected staus, focus area icons and location"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        self.verify_text_at_path("Active", "//div[@id='project_details_leftwing']/p[1]/span")
+        self.verify_attribute_value_at_path("Water", "//div[@id='project_details_leftwing']/p[2]/img[1]/@title")
+        self.verify_attribute_value_at_path("Sanitation", "//div[@id='project_details_leftwing']/p[2]/img[2]/@title")
+        self.verify_attribute_value_at_path("Education", "//div[@id='project_details_leftwing']/p[2]/img[3]/@title")
+        self.verify_text_at_path("Johannesburg\nGauteng, South Africa", "//div[@id='project_details_leftwing']/p[3]")
+
+    def test_6_project_page_has_expected_target_benchmarks(self):
+        """>> 6. Project page has expected target benchmarks"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        self.assert_page_contains_text_items(["4 functioning water systems",
+                                              "2 functioning sanitation systems",
+                                              "3 functioning hygiene facilities",
+                                              "1600 persons with access to improved water for 10 years",
+                                              "2000 persons with access to improved sanitation for 15 years",
+                                              "4 persons who receive training / education per year"])
+
+    def test_7_can_delete_project(self):
+        """>> 7. Can delete project"""
+        self.open_project_admin_page()
+
+        try:
+            self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        except AssertionError as error:
+            self.fail("Expected '%s' project to exist (added earlier) for testing deletion:\n%s" %
+                      (self.KAGISO_PROJECT_NAME, error))
+
         self.selenium.click("//input[@name='_selected_action' and @value='%i']" % (self.kagiso_project_number()))
         self.selenium.select("action", "label=Delete selected projects")
         self.click_button("index") # element name for the 'Go' button
         self.assert_title_starts_with("Are you sure")
-        self.click_submit_button("Yes, I'm sure")
+        self.click_submit_button_with_text("Yes, I'm sure")
         self.verify_project_admin_page_has_loaded()
-        
+
         try:
             self.assert_page_does_not_contain_text(self.KAGISO_PROJECT_NAME)
         except AssertionError as error:
@@ -118,13 +170,13 @@ class RSRProjectAdminTest(SeleniumTestCase):
         project_number = 0
         project_name = ""
         row_number = 1
-        
+
         while project_name != self.KAGISO_PROJECT_NAME and row_number <= 5:
             # table query is of form table.row.column
             project_number = int(self.selenium.get_table("//div[@id='changelist']/form/table.%i.1" % (row_number)))
             project_name = self.selenium.get_table("//div[@id='changelist']/form/table.%i.2" % (row_number))
             row_number += 1
-        
+
         if project_name == self.KAGISO_PROJECT_NAME:
             return project_number
         else:
