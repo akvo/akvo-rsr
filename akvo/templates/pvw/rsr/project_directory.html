@@ -89,8 +89,8 @@
 		</div>
 	</div>
 	{% endcomment %}
-	
-	{% for p in page.object_list %}
+    
+    {% for p in page.object_list %}
 	<div class="span-15 first last" id="proj_list_table">
 		<div class="span-6 first">
 			<div style="border-left:1px solid #BCBCC6; padding-top:5px;">
@@ -99,6 +99,11 @@
 						{% project_thumb p 100 75 'float:left; margin-right: 10px;' %}
 			        </a>
 					<a class="small" href="{% url project_main p.id %}">{{p.name}}</a>
+                    <p class="small">
+                        {% for c in p.categories.all %}
+                            {{c.get_category_display}}<br />
+                        {% endfor %}
+                    </p>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -116,13 +121,17 @@
 		<div class="span-2">
 			<div class="space15">
 				<p class="small">
-					{{p.show_status}}
+					WHAT ABOUT STATUS?
 				</p>				
 			</div>
 		</div>
 		<div class="span-2">
 			<div class="space10">
-				<p class="small">Partners... ?</p>
+                {% for partner in p.project_partners.all %}
+                    <p class="small">
+                        <a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.partner}}</a><br />
+                    </p>
+                {% endfor %}
 			</div>
 		</div>
 		<div class="span-2 last">

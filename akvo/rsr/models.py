@@ -190,7 +190,7 @@ class Organisation(models.Model):
             '''
             projs = Project.objects.published()
             if settings.PVW_RSR:
-                return (projs.filter(projectpartner__partner_organisation__in=self)).distinct()
+                return (projs.filter(project_partners__partner__in=self)).distinct()
             else:
                 return (projs.filter(supportpartner__support_organisation__in=self) | \
                          projs.filter(fieldpartner__field_organisation__in=self) | \
@@ -204,7 +204,7 @@ class Organisation(models.Model):
             '''
             projs = Project.objects.all()
             if settings.PVW_RSR:
-                return (projs.filter(projectpartner__partner_organisation__in=self)).distinct()
+                return (projs.filter(project_partners__partner__in=self)).distinct()
             else:
                 return (projs.filter(supportpartner__support_organisation__in=self) | \
                          projs.filter(fieldpartner__field_organisation__in=self) | \
@@ -670,7 +670,7 @@ if settings.PVW_RSR: #pvw-rsr
     
             def all_partners(self):
                 o = Organisation.objects.all()
-                return o.filter(partners__project__in=self)
+                return o.filter(partner_projects__project__in=self)
     
         #TODO: is this relly needed? the default QS has identical methods
         class OrganisationsQuerySet(QuerySet):
@@ -692,7 +692,7 @@ if settings.PVW_RSR: #pvw-rsr
     
             def all_partners(self):
                 o = Organisation.objects.all()
-                return o.filter(partners__project__in=self)
+                return o.filter(partner_projects__project__in=self)
     
         def __unicode__(self):
             return self.name
@@ -814,8 +814,8 @@ if settings.PVW_RSR: #pvw-rsr
             ('I', _('Initiator')),
             ('C', _('Contractor')),
         )        
-        partner_organisation    = models.ForeignKey(Organisation, related_name='partners')
-        project                 = models.ForeignKey(Project,)
+        partner                 = models.ForeignKey(Organisation, related_name='partner_projects',)
+        project                 = models.ForeignKey(Project, related_name='project_partners',)
         partner_type            = models.CharField(_('partner type'), max_length=1, choices=CHOICES_PARTNER_TYPE, )
         funding_amount          = models.DecimalField(_('funding amount'), blank=True, null=True, max_digits=10, decimal_places=2)
 
@@ -824,7 +824,7 @@ if settings.PVW_RSR: #pvw-rsr
             verbose_name_plural=_('partners')
     
         def __unicode__(self):
-            return "%s" % (self.partner_organisation.name, ) #self.funding_amount, self.project.get_currency_display())
+            return self.partner.name
 
     class Location(models.Model):
         project                 = models.ForeignKey(Project, related_name='locations',)
@@ -858,19 +858,19 @@ if settings.PVW_RSR: #pvw-rsr
 
     class Category(models.Model):
         CHOICES_CATEGORY = (
-            (1, _('water for food and nature')),
-            (2, _('water and climate')),
-            (3, _('millennium goals water and sanitation')),
-            (4, _('integrated resource management')),
-            (5, _('ground water management')),
-            (6, _('delta technology')),
-            (7, _('clean water')),
-            (8, _('safety')),
-            (9, _('waste')),
-            (10, _('resource management')),
-            (11, _('water & climate')),
+            (1, _('Water for food and nature')),
+            (2, _('Water and climate')),
+            (3, _('Millennium goals water and sanitation')),
+            (4, _('Integrated resource management')),
+            (5, _('Ground water management')),
+            (6, _('Delta technology')),
+            (7, _('Clean water')),
+            (8, _('Safety')),
+            (9, _('Waste')),
+            (10, _('Resource management')),
+            (11, _('Water & climate')),
         )
-        project     = models.ForeignKey(Project)
+        project     = models.ForeignKey(Project, related_name='categories',)
         category    = models.PositiveIntegerField(_('category'), choices=CHOICES_CATEGORY)
         
         def __unicode__(self):
