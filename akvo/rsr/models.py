@@ -501,7 +501,7 @@ if settings.PVW_RSR: #pvw-rsr
                 )
     
             def budget_total(self):
-                return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
+                return self.annotate(budget_total=Sum('project_partners__funding_amount'),).distinct()
     
             def donated(self):
                 return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(

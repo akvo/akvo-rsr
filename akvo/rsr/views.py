@@ -275,7 +275,7 @@ def orglist(request, org_type='all'):
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
-    return {'projs': projs, 'orgs': orgs, 'org_type': org_type, 'page': page}
+    return {'projs': projs, 'orgs': orgs, 'org_type': org_type, 'page': page,}
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):

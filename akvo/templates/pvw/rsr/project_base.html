@@ -35,8 +35,13 @@
 					{% endif %}
 					<a href="{% url akvo.rsr.views.orgdetail o.id %}">
 						{% org_logo o 100 75 'margin-left:auto; margin-right:auto;' %}
-					</a><br>
-					<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+					</a>
+                    <br /><a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+                    <br />{{o.city}}, {{o.country}}
+                    <br />
+                    {% for type in o.partner_projects.all %}
+                        {{type.get_partner_type_display}}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
 				{% endfor %}
 			</div>
 		</div>
