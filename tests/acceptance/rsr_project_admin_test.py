@@ -21,15 +21,15 @@ class RSRProjectAdminTest(SeleniumTestCase):
         # the nose framework requires class-level setup methods to be class methods... :-/
         cls.expected_project_number = 0
 
-    def test_1_admin_page_has_expected_project_sections(self):
-        """>> 1. Admin page has expected project sections"""
+    def test_01_admin_page_has_expected_project_sections(self):
+        """>>  1. Admin page has expected project sections"""
         self.open_admin_page()
         self.assert_title_starts_with("Site administration")
         self.assert_page_contains_text_items(["Project comments", "Project payment gateway configurations",
                                               "Project updates", "Projects"])
 
-    def test_2_can_add_project(self):
-        """>> 2. Can add project"""
+    def test_02_can_add_project(self):
+        """>>  2. Can add project"""
         self.open_project_admin_page()
         self.click_link("Add project")
         self.assert_title_starts_with("Add project")
@@ -56,7 +56,7 @@ class RSRProjectAdminTest(SeleniumTestCase):
         sel.type("id_current_image_caption", "Spring being constructed near Kagiso")
         sel.type("id_goals_overview", "To improve sanitation and water availability in Kagiso.")
         sel.type("id_goal_1", "Provide local Kagiso community with improved water sources")
-        sel.type("id_goal_2", "Provide sanitation education for Kagiso and nearby communities")
+        sel.type("id_goal_2", "Provide sanitation education for Kagiso residents")
         sel.type("id_goal_3", "Help Kagiso residents build a larger water reservoir")
         sel.type("id_goal_4", "Provide eco-friendly water sanitation options")
         sel.type("id_goal_5", "Provide water preservation education")
@@ -95,8 +95,8 @@ class RSRProjectAdminTest(SeleniumTestCase):
             self.fail("Expected '%s' project to appear in project listing after being added:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
 
-    def test_3_can_navigate_to_project_page_from_project_admin(self):
-        """>> 3. Can navigate to project page from project admin"""
+    def test_03_can_navigate_to_project_page_from_project_admin(self):
+        """>>  3. Can navigate to project page from project admin"""
         self.open_project_admin_page()
 
         try:
@@ -113,8 +113,8 @@ class RSRProjectAdminTest(SeleniumTestCase):
         self.assert_title_is("Akvo RSR - Project no. %i, %s" %
                              (RSRProjectAdminTest.expected_project_number, self.KAGISO_PROJECT_NAME))
 
-    def test_4_project_page_has_expected_project_name_and_subtitle(self):
-        """>> 4. Project page has expected project name and subtitle"""
+    def test_04_project_page_has_expected_project_name_and_subtitle(self):
+        """>>  4. Project page has expected project name and subtitle"""
         self.open_project_page(RSRProjectAdminTest.expected_project_number)
         self.assert_title_is("Akvo RSR - Project no. %i, %s" %
                              (RSRProjectAdminTest.expected_project_number, self.KAGISO_PROJECT_NAME))
@@ -122,8 +122,8 @@ class RSRProjectAdminTest(SeleniumTestCase):
         self.verify_text_at_path("Kagiso Water Aid - project used for user acceptance testing purposes only",
                                  "//div[@id='outer_leftwing']/div[1]/p")
 
-    def test_5_project_page_has_expected_status_focus_area_icons_and_location(self):
-        """>> 5. Project page has expected staus, focus area icons and location"""
+    def test_05_project_page_has_expected_status_focus_area_icons_and_location(self):
+        """>>  5. Project page has expected status, focus area icons and location"""
         self.open_project_page(RSRProjectAdminTest.expected_project_number)
         self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
         self.verify_text_at_path("Active", "//div[@id='project_details_leftwing']/p[1]/span")
@@ -132,19 +132,58 @@ class RSRProjectAdminTest(SeleniumTestCase):
         self.verify_attribute_value_at_path("Education", "//div[@id='project_details_leftwing']/p[2]/img[3]/@title")
         self.verify_text_at_path("Johannesburg\nGauteng, South Africa", "//div[@id='project_details_leftwing']/p[3]")
 
-    def test_6_project_page_has_expected_target_benchmarks(self):
-        """>> 6. Project page has expected target benchmarks"""
+    def test_06_project_page_has_appropriately_resized_location_map(self):
+        """>>  6. Project page has appropriately resized location map"""
         self.open_project_page(RSRProjectAdminTest.expected_project_number)
         self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
-        self.assert_page_contains_text_items(["4 functioning water systems",
+        self.verify_element_size_at_path(140, 140, "//div[@id='project_details']/div[1]/div[1]")
+
+    def test_07_project_description_tab_has_expected_project_plan_summary_and_target_benchmarks(self):
+        """>>  7. Project description tab has expected project plan summary and target benchmarks"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        self.assert_page_contains_text_items(["Provide water and sanitation aid and education for Kagiso residents.",
+                                              "4 functioning water systems",
                                               "2 functioning sanitation systems",
                                               "3 functioning hygiene facilities",
                                               "1600 persons with access to improved water for 10 years",
                                               "2000 persons with access to improved sanitation for 15 years",
                                               "4 persons who receive training / education per year"])
 
-    def test_7_can_delete_project(self):
-        """>> 7. Can delete project"""
+    def test_08_project_description_tab_has_appropriately_resized_project_image_with_caption(self):
+        """>>  8. Project description tab has appropriately resized project image with caption"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        self.verify_text_at_path("Spring being constructed near Kagiso", "//div[@id='tab_description']/div[1]/div[1]")
+        self.verify_element_size_at_path(220, 165, "//div[@id='tab_description']/div[1]/div[2]")
+
+    def test_09_project_goals_tab_has_expected_goals_overview_target_benchmarks_and_goals(self):
+        """>>  9. Project goals tab has expected goals overview, target benchmarks and goals"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        self.click_javascript_tab("//div[@id='container-1']/ul/li[2]/a/span")
+        self.assert_page_contains_text_items(["To improve sanitation and water availability in Kagiso.",
+                                              "4 functioning water systems",
+                                              "2 functioning sanitation systems",
+                                              "3 functioning hygiene facilities",
+                                              "1600 persons with access to improved water for 10 years",
+                                              "2000 persons with access to improved sanitation for 15 years",
+                                              "4 persons who receive training / education per year",
+                                              "Provide local Kagiso community with improved water sources",
+                                              "Provide sanitation education for Kagiso residents",
+                                              "Help Kagiso residents build a larger water reservoir",
+                                              "Provide eco-friendly water sanitation options",
+                                              "Provide water preservation education"])
+
+    def test_10_project_sustainability_tab_has_expected_sustainability_text(self):
+        """>> 10. Project sustainability tab has expected sustainability text"""
+        self.open_project_page(RSRProjectAdminTest.expected_project_number)
+        self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
+        self.click_javascript_tab("//div[@id='container-1']/ul/li[3]/a/span")
+        self.assert_page_contains_text("Trained workers will maintain implemented projects.")
+
+    def test_11_can_delete_project(self):
+        """>> 11. Can delete project"""
         self.open_project_admin_page()
 
         try:
