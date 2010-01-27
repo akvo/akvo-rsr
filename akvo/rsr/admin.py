@@ -221,7 +221,7 @@ class LinkInline(admin.TabularInline):
     extra = 3
     list_display = ('url', 'caption', 'show_link')
 
-def partner_clean(obj, field_name):
+def partner_clean(obj, field_name='partner'):
     """
     this function firgures out if a given user's organisation is a partner in some function
     associated with the current project. This is to avoid the situation where a user
@@ -351,9 +351,14 @@ if settings.PVW_RSR:
         model = get_model('rsr', 'location')
         extra = 2
 
+    class RSR_PartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+        def clean(self):
+            partner_clean(self)  
+
     class PartnerInline(admin.TabularInline):
         model = get_model('rsr', 'projectpartner')
         extra = 3
+        formset = RSR_PartnerInlineFormFormSet
 
     class ImageInline(admin.TabularInline):
         model = get_model('rsr', 'image')
@@ -361,7 +366,8 @@ if settings.PVW_RSR:
 
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')
-        inlines = (CategoryInLine, LocationInLine, LinkInline, PartnerInline, ImageInline, )
+        #inlines = (CategoryInLine, LocationInLine, LinkInline, PartnerInline, ImageInline, )
+        inlines = (CategoryInLine, LinkInline, PartnerInline, )
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
@@ -369,7 +375,7 @@ if settings.PVW_RSR:
                 'fields': (
                     'name',
                     'subtitle',
-                ),
+                    'status',),
             }),
             
             #(_(u'Categories'), {
@@ -378,28 +384,28 @@ if settings.PVW_RSR:
             #            ('category_training', 'category_education', 'category_product_development'), 'category_other',), 
             #}),
             
-            #(_(u'Location'), {
-            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
-            #    'fields': ('city', 'state', 'country',)
-            #}),
-            #
-            #(_(u'Location extra'), {
-            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
-            #    'fields': (('longitude', 'latitude'), 'map',),
-            #}),
-            (_(u'Map'), {
-                'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris."),
-                'fields': ('map',),
+            (_(u'Location'), {
+                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
+                'fields': ('city', 'state', 'country',)
             }),
+            #
+            (_(u'Location extra'), {
+                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
+                'fields': (('longitude', 'latitude'), 'map',),
+            }),
+            #(_(u'Map'), {
+            #    'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
+            #        _(u"In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris."),
+            #    'fields': ('map',),
+            #}),
             
             (_(u'Project summary'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
                     _(u"Curabitur nulla purus, feugiat id, elementum in, lobortis quis, pede."),
                 'fields': (
                     'project_plan_summary',
-                    #'current_image',
-                    #'current_image_caption',
+                    'current_image',
+                    'current_image_caption',
                 )
             }),
             (_(u'Goals'), {

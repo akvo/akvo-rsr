@@ -360,10 +360,10 @@ if settings.PVW_RSR: #pvw-rsr
 
         name                        = models.CharField(_('title'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
-        #status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
-        #city                        = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        #state                       = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        #country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
+        status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+        city                        = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
+        state                       = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
+        country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
         map                         = models.ImageField(
                                         _('map'),
                                         blank=True,
@@ -383,14 +383,14 @@ if settings.PVW_RSR: #pvw-rsr
         
         #current_status_summary = models.TextField()
         project_plan_summary        = models.TextField(_('summary'), max_length=500, help_text=_('Briefly summarize the project (500 characters).'))
-        #current_image               = ImageWithThumbnailsField(
-        #                                _('project photo'),
-        #                                blank=True,
-        #                                upload_to=image_path,
-        #                                thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-        #                                help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
-        #                            )
-        #current_image_caption       = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
+        current_image               = ImageWithThumbnailsField(
+                                        _('project photo'),
+                                        blank=True,
+                                        upload_to=image_path,
+                                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
+                                        help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
+                                    )
+        current_image_caption       = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
         goals_overview              = models.TextField(_('goals'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
         goal_1                      = models.CharField(_('deliverable 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
         goal_2                      = models.CharField(_('deliverable 2'), blank=True, max_length=60)
@@ -412,8 +412,8 @@ if settings.PVW_RSR: #pvw-rsr
         #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
         #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
         #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
+        longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
+        latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
         current_status_detail       = models.TextField(_('current status detail'), blank=True, max_length=600, help_text=_('(600 characters).'))
         project_plan_detail         = models.TextField(_('project plan details'), blank=True, help_text=_('(unlimited)'))
         impact                      = models.TextField(_('impact'), blank=True, help_text=_('(unlimited)'))
