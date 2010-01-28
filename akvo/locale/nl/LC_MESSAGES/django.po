@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: 0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-10 23:01+0100\n"
-"PO-Revision-Date: 2009-12-14 13:23\n"
+"PO-Revision-Date: 2009-12-17 12:12\n"
 "Last-Translator: anke van Lenteren <>\n"
 "Language-Team: translation <translation@akvo.org>\n"
 "MIME-Version: 1.0\n"
@@ -269,7 +269,7 @@ msgstr "Emailadres (herhalen a.u.b.)"
 
 #: rsr/forms.py:245
 msgid "Please select your bank"
-msgstr "Gelieve uw bank te kiezen."
+msgstr "Gelieve uw bank te kiezen"
 
 #: rsr/forms.py:258
 msgid "You cannot donate more than the project actually needs!"
@@ -484,9 +484,8 @@ msgid "Premium"
 msgstr "Premium"
 
 #: rsr/models.py:322
-#, fuzzy
 msgid "account level"
-msgstr "account-niveau"
+msgstr "soort account"
 
 #: rsr/models.py:331
 msgid "None"
@@ -521,7 +520,7 @@ msgstr "ondertitel"
 
 #: rsr/models.py:350
 msgid "A subtitle with more information on the project (75 characters)."
-msgstr "Een wat uitgebreidere ondertitel voor uw project (max. 75 tekens)"
+msgstr "Een wat uitgebreidere ondertitel voor uw project (max. 75 tekens)."
 
 #: rsr/models.py:351 rsr/models.py:1286 templates/rsr/update_list.html:25
 msgid "status"
@@ -585,11 +584,11 @@ msgstr "projectfoto"
 
 #: rsr/models.py:377
 msgid "The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size."
-msgstr "De foto ziet er het mooiste als hij van dit formaat is: liggend (4:3 breed:hoog ratio) en max 3,5 mB groot."
+msgstr "De foto ziet er het mooiste als hij van dit formaat is: liggend (4:3 breed:hoog ratio) en max. 3,5 mB groot."
 
 #: rsr/models.py:379 rsr/models.py:1172 templates/rsr/update_list.html:29
 msgid "photo caption"
-msgstr "foto-onderschrift"
+msgstr "onderschrift"
 
 #: rsr/models.py:379
 msgid "Enter a caption for your project picture (50 characters)."
@@ -677,7 +676,7 @@ msgstr "lengtegraad"
 
 #: rsr/models.py:401
 msgid "East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30\" E."
-msgstr "Oost-/westmeting (λ in graden/minuten/seconden, bijv. 23° 27′ 30\" O."
+msgstr "Oost-/westmeting (λ) in graden/minuten/seconden, bijv. 23° 27′ 30\" O."
 
 #: rsr/models.py:402
 msgid "latitude"
@@ -813,7 +812,7 @@ msgstr "Funding partners"
 #: rsr/models.py:887 templates/rsr/organisation.html:55
 #: templates/rsr/project_base.html:153
 msgid "Sponsor partner"
-msgstr "Sponsorpartner"
+msgstr "Sponsor partner"
 
 #: rsr/models.py:888 templates/rsr/organisation_directory.html:28
 #: templates/rsr/organisation_directory.html:53
@@ -821,7 +820,7 @@ msgstr "Sponsorpartner"
 #: templates/rsr/organisation_directory.html:138
 #: templates/rsr/project_base.html:155
 msgid "Sponsor partners"
-msgstr "Sponsorpartners"
+msgstr "Sponsor partners"
 
 #: rsr/models.py:898 templates/rsr/organisation.html:53
 #: templates/rsr/project_base.html:134
@@ -1115,7 +1114,7 @@ msgstr "Projecten toevoegen en bewerken."
 
 #: templates/admin/rsr/project/change_form.html:8
 msgid "The project information in RSR presents your water or sanitation project to the Akvo community of users: donors, support and field partners, sector professionals, and of course the wider online community. Tell the <i>story</i> of the project by entering complete information, in common language and an active (doing) voice."
-msgstr "De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, support en field partners, in de sector werkzame deskundigen en uiteraard de bredere online gemeenschap) een overzicht van uw water- of sanitaire project. Vertel het <i>verhaal</i> van het project door zo veel mogelijk informatie te geven, in sprekende, duidelijke taal."
+msgstr "De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, support en field partners, in de sector werkzame deskundigen en uiteraard de bredere online gemeenschap) een overzicht van uw water- of sanitaire project. Vertel het <i>verhaal</i> van het project door zo veel mogelijk informatie te geven - in sprekende, duidelijke taal."
 
 #: templates/admin/rsr/project/change_form.html:9
 msgid "Please look over the whole page before beginning, so you can see where your information belongs on RSR project forms."
@@ -1759,7 +1758,7 @@ msgstr "Doneer aan een project"
 #: templates/rsr/donate_step1.html:83 templates/rsr/donate_step2.html:114
 #: templates/rsr/donate_step3.html:91 templates/rsr/donate_thanks.html:85
 msgid "Select payment system"
-msgstr "Een betalingssysteem uitkiezen"
+msgstr "Betalingssysteem uitkiezen"
 
 #: templates/rsr/donate_step1.html:86 templates/rsr/donate_step2.html:117
 #: templates/rsr/donate_step3.html:94 templates/rsr/donate_thanks.html:88
@@ -1769,7 +1768,7 @@ msgstr "Bedrag ingeven"
 #: templates/rsr/donate_step1.html:89 templates/rsr/donate_step2.html:120
 #: templates/rsr/donate_step3.html:97 templates/rsr/donate_thanks.html:91
 msgid "Confirm amount"
-msgstr "Bedrag nogmaals ingeven"
+msgstr "Bedrag bevestigen"
 
 #: templates/rsr/donate_step1.html:92 templates/rsr/donate_step2.html:123
 #: templates/rsr/donate_step3.html:100 templates/rsr/donate_thanks.html:94
@@ -1841,7 +1840,7 @@ msgstr "Via PayPal kunt u donaties maken met een in uw land geaccepteerde credit
 
 #: templates/rsr/donate_step2.html:175 templates/rsr/donate_step3.html:148
 msgid "PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project."
-msgstr "PayPal houdt per transactie maximaal 3,9% + 35 eurocent van uw donatie in. Als u bijv. 100 euro doneert, gaat daarvan tenminste 95,75 euro naar het door u gekozen project."
+msgstr "PayPal houdt per transactie maximaal 3,9% + &euro;0,35 van uw donatie in. Als u bijv. &euro;100 doneert, gaat daarvan tenminste &euro;95,75 naar het door u gekozen project."
 
 #: templates/rsr/donate_step2.html:178 templates/rsr/donate_step3.html:151
 msgid "PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project."
@@ -1921,7 +1920,7 @@ msgstr "Anoniem"
 
 #: templates/rsr/donate_step2.html:280 templates/rsr/donate_step2.html:306
 msgid "Select your bank"
-msgstr "Kies uw bank."
+msgstr "Kies uw bank"
 
 #: templates/rsr/donate_step2.html:292
 msgid "Provide your full name and email address below."
@@ -1995,19 +1994,17 @@ msgid "Your bank"
 msgstr "Uw bank"
 
 #: templates/rsr/donate_step3.html:229
-#, fuzzy
 msgid "You have chosen to donate"
-msgstr "De door uw gekozen donatie is"
+msgstr "Uw donatie is"
 
 #: templates/rsr/donate_step3.html:229
-#, fuzzy
 msgid "anonymously"
 msgstr "anoniem"
 
 #: templates/rsr/donate_step3.html:242
 #, python-format
 msgid "Click the Donate button to proceed to %(engine)s checkout. "
-msgstr "Klik op \\\"Donate\\\" (donatie) om naar %(engine)s-checkout te gaan."
+msgstr "Klik op \"Donate\" (donatie) om naar de %(engine)s-checkout te gaan."
 
 #: templates/rsr/donate_step3.html:243
 msgid "By clicking on the \"Donate\" button you agree to the"
@@ -2076,7 +2073,6 @@ msgid "Thank you for your online contribution"
 msgstr "Bedankt voor uw online-bijdrage"
 
 #: templates/rsr/donation_confirmation_email.html:11
-#, fuzzy
 msgid "Dear"
 msgstr "Geachte"
 
@@ -2089,9 +2085,8 @@ msgid "updates"
 msgstr "updates"
 
 #: templates/rsr/donation_confirmation_email.html:13
-#, fuzzy
 msgid "on"
-msgstr "aan"
+msgstr "op"
 
 #: templates/rsr/donation_confirmation_email.html:16
 msgid "A summary of your contribution"
@@ -2099,9 +2094,8 @@ msgstr "Een samenvatting van uw bijdrage"
 
 #: templates/rsr/donation_confirmation_email.html:22
 #: templates/rsr/donation_confirmation_email.html:59
-#, fuzzy
 msgid "Your gift will help"
-msgstr "Uw bijdrage helpt"
+msgstr "Uw schenking gaat bijdragen aan "
 
 #: templates/rsr/donation_confirmation_email.html:23
 msgid "Contribution"
@@ -2251,7 +2245,7 @@ msgstr "Lees verder"
 #: templates/widgets/cobranded_banner.html:16
 #: templates/widgets/cobranded_leader.html:16
 msgid "We help donors and doers reach out to fund many thousands of new water and sanitation projects."
-msgstr "We helpen doeners en donors om duizenden nieuwe water en sanitatieprojecten te doen "
+msgstr "We helpen doeners en donors om duizenden nieuwe water- en sanitatieprojecten te financieren. "
 
 #: templates/rsr/index.html:99
 msgid "How Akvo works"
@@ -3136,7 +3130,7 @@ msgstr "Subsidie"
 
 #: templates/rsr/project_base.html:79 templates/rsr/project_funding.html:143
 msgid "Donations from individuals"
-msgstr "Donaties van individ&uuml;en "
+msgstr "Donaties van particulieren"
 
 #: templates/rsr/project_base.html:95
 msgid "Page tools"
@@ -3503,7 +3497,7 @@ msgstr "Kies waar de foto geplaatst moet worden"
 
 #: templates/rsr/update_form.html:90 templates/rsr/update_form_old.html:85
 msgid "Photo caption"
-msgstr "Foto-onderschrift"
+msgstr "Onderschrift"
 
 #: templates/rsr/update_form.html:112 templates/rsr/update_form_old.html:39
 #: templates/rsr/update_form_old.html:87 templates/rsr/update_form_old.html:95

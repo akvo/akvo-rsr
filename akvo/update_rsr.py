@@ -31,10 +31,10 @@ def mark_test_invoices():
 
 def create_default_mollie_gateway():
     gateway = get_model('rsr', 'molliegateway').objects
-    create_it = gateway.create(name=u'Default',
-        partner_id=281135,
-        description=u"Paul's Mollie/iDEAL payment gateway",
-        notification_email=u'paul.burt@me.com')
+    gateway.create(name=u'Default',
+        partner_id=325955,
+        description=u"Default Akvo Mollie/iDEAL payment gateway",
+        notification_email=u'thomas@akvo.org')
 
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     return "%s_%s_%s_%s%s" % (

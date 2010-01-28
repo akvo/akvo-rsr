@@ -1,4 +1,4 @@
-RELEASE_NOTES.txt, v0.9.13, 2 November 2009, kad
+RELEASE_NOTES.txt, v0.9.14, 26 January 2010, pb
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
@@ -7,6 +7,24 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 ---
 
+Akvo RSR v 0.9.14 release notes
+------------------------------
+26 January 2010, (Code name: Firebrand) pb
+
+This release introduces support for donations via the iDEAL payment system for users in the Netherlands.
+
+New features
+------------
+
+### iDEAL payment system
+The donation subsystem has been extended to support donations via the Dutch iDEAL online payment system. Akvo RSR provides this functionality by interfacing with the APIs provided by [Mollie.nl](http://www.mollie.nl/). When a user pushes the Donate button on a project she will now be asked to select a payment system to proceed with: either iDEAL or PayPal.
+
+Providing an additional payment system resulted in a fair number of architectural changes behind the scenes. More detailed technical information about the new Mollie/iDEAL and the payment system as a whole can be found on the [Akvo wiki](http://www.akvo.org/wiki).
+
+### "All updates" RSS Feed
+
+
+---
 
 Akvo RSR v 0.9.13 release notes
 ------------------------------
