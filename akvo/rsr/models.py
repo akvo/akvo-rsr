@@ -1259,39 +1259,39 @@ class InvoiceManager(models.Manager):
 
 class Invoice(models.Model):
     STATUS_CHOICES = (
-        (PAYPAL_INVOICE_STATUS_PENDING, _(u'Pending')),
-        (PAYPAL_INVOICE_STATUS_VOID, _(u'Void')),
-        (PAYPAL_INVOICE_STATUS_COMPLETE, _(u'Complete')),
-        (PAYPAL_INVOICE_STATUS_STALE, _(u'Stale')),
+        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
+        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
+        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
     )
     PAYMENT_ENGINES = (
-        ('paypal', _(u'PayPal')),
-        ('ideal', _(u'iDEAL')),
+        ('paypal', _('PayPal')),
+        ('ideal', _('iDEAL')),
     )
     # Setup
-    test = models.BooleanField(_(u'test donation'),
-        help_text=_(u'This flag is set if the donation was made in test mode.'))
-    engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
+    test = models.BooleanField(_('test donation'),
+        help_text=_('This flag is set if the donation was made in test mode.'))
+    engine = models.CharField(_('payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
     # Common
-    amount = models.PositiveIntegerField(help_text=_(u'Amount requested by user.'))
+    amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
     amount_received = models.DecimalField(max_digits=10, decimal_places=2,
         blank=True, null=True,
-        help_text=_(u'Amount actually received after charges have been applied.'))
+        help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
-    http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
-    is_anonymous = models.BooleanField(_(u'anonymous donation'))
+    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+    http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
+    is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
+    bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
-    transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
+    transaction_id = models.CharField(_('mollie.nl transaction ID'), max_length=100, blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -1340,7 +1340,7 @@ class Invoice(models.Model):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
     class Meta:
-        verbose_name = _(u'invoice')
+        verbose_name = _('invoice')
 
 
 # PayPal IPN listener
