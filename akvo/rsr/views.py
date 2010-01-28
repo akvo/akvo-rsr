@@ -922,7 +922,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
     if request.method == 'POST':
-        donate_form = InvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
@@ -992,7 +992,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = InvoiceForm(user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(project=p, engine=engine)
     return render_to_response('rsr/donate_step2.html', 
                               {'donate_form': donate_form,
                                'payment_engine': engine,
