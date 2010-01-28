@@ -20,6 +20,7 @@
 		</div>
 	</div>
 </div>
+<!--
 <div class="span-3 first">
 	<div class="frame">
 		<div class="sliding_box_header">
@@ -44,7 +45,8 @@
 		</div>
 	</div>
 </div>
-<div class="span-15 last">
+-->
+<div class="span-18 last">
 	<div class="frame" style="margin-bottom:0; border-bottom:none;">
 		<div class="sliding_box_header" >
 			<div style="float:right;">
@@ -60,43 +62,46 @@
 		</div>
 	</div>
 
-	<div class="span-15 first last small" id="proj_list_table_header">
-		<div class="span-6 first">
+	<div class="span-18 first last small" id="proj_list_table_header">
+		<div class="span-7 first">
 			<div class="space10">
-				<p>Name</p>
+				<p>{% trans 'Name' %}</p>
 			</div>
 		</div>
 		<div class="span-3">
 			<div class="space10">
-				<p>Location</p>
+				<p>{% trans 'Continent' %},<br />{% trans 'Location' %}</p>
 			</div>
 		</div>
 		<div class="span-2">
 			<div class="space10">
-				<p>Status</p>
+				<p>{% trans 'Status' %}</p>
 			</div>
 		</div>
-		<div class="span-2">
+		<div class="span-3">
 			<div class="space10">
-				<p>Partners</p>
+				<p>{% trans 'Lead partners' %}</p>
 			</div>
 		</div>
-		<div class="span-2 last">
+		<div class="span-3 last">
 			<div class="space10">
-				<p>Served</p>
+				<p>{% trans 'Other partners' %}</p>
 			</div>
 		</div>
 	</div>
     
     {% for p in page.object_list %}
-	<div class="span-15 first last" id="proj_list_table">
-		<div class="span-6 first">
+	<div class="span-18 first last" id="proj_list_table">
+		<div class="span-7 first">
 			<div style="border-left:1px solid #BCBCC6; padding-top:5px;">
 				<div class="space10">
 					<a href="{% url project_main p.id %}">
 						{% project_thumb p 100 75 'float:left; margin-right: 10px;' %}
 			        </a>
-					<a class="small" href="{% url project_main p.id %}">{{p.name}}</a>
+                    <p class="small">
+    					<a href="{% url project_main p.id %}">{{p.name}}</a><br/>
+                        {{p.subtitle}}
+                    </p>
                     <p class="small">
                         {% category_icons p %}
                     </p>
@@ -106,12 +111,10 @@
 		</div>
 		<div class="span-3">
 			<div class="space10">
-                {% for loc in p.locations.all %}
-                    <p class="small">
-                        {{loc.country.get_continent_display}}<br>
-                        {{loc.country}}, {{loc.city}}
-                    </p>
-                {% endfor %}
+                <p class="small">
+            	{{p.country.get_continent_display}}<br />
+                {{p.city}}, {{p.country}}
+                </p>
 			</div>
 		</div>
 		<div class="span-2">
@@ -121,21 +124,25 @@
 				</p>				
 			</div>
 		</div>
-		<div class="span-2">
+		<div class="span-3">
 			<div class="space10">
-                {% for partner in p.project_partners.all %}
+                {% for partner in p.lead_partners %}
                     <p class="small">
-                        <a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.partner}}</a><br />
+                        <a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner}}</a><br />
                     </p>
                 {% endfor %}
 			</div>
 		</div>
-		<div class="span-2 last">
+		<div class="span-3 last">
 			<div class="space10">
-				<p class="small">...</p>
+                {% for partner in p.other_partners %}
+                    <p class="small">
+                        <a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner}}</a><br />
+                    </p>
+                {% endfor %}
 			</div>
 		</div>
-		<div class="span-15 first last" 
+		<div class="span-18 first last" 
 			style="border-bottom:1px solid #F0F0F3; border-left:1px solid #ccc; padding-bottom:15px;">
 		</div>
 	</div>

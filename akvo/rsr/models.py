@@ -671,28 +671,30 @@ if settings.PVW_RSR: #pvw-rsr
             def all_partners(self):
                 o = Organisation.objects.all()
                 return o.filter(partner_projects__project__in=self)
+
+            def lead_partners(self):
+                o = Organisation.objects.all()
+                return o.filter(partner_projects__project__in=self).filter(partner_projects__partner_type__exact='L')
+    
+            def other_partners(self):
+                "All partners except lead partners"
+                o = Organisation.objects.all()
+                return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
     
         #TODO: is this relly needed? the default QS has identical methods
-        class OrganisationsQuerySet(QuerySet):
-            def support_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(support_partners__project__in=self)
-    
-            def sponsor_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(sponsor_partners__project__in=self)
-    
-            def funding_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(funding_partners__project__in=self)
-    
-            def field_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(field_partners__project__in=self)
-    
+        class OrganisationsQuerySet(QuerySet):    
             def all_partners(self):
                 o = Organisation.objects.all()
                 return o.filter(partner_projects__project__in=self)
+    
+            def lead_partners(self):
+                o = Organisation.objects.all()
+                return o.filter(partner_projects__project__in=self).filter(partner_projects__partner_type__exact='L')
+    
+            def other_partners(self):
+                "All partners except lead partners"
+                o = Organisation.objects.all()
+                return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
     
         def __unicode__(self):
             return self.name
@@ -787,20 +789,14 @@ if settings.PVW_RSR: #pvw-rsr
             return Project.objects.budget_total().get(pk=self.pk).budget_total
     
         #shortcuts to linked orgs for a single project
-        def support_partners(self):
-            return Project.objects.filter(pk=self.pk).support_partners()
-    
-        def sponsor_partners(self):
-            return Project.objects.filter(pk=self.pk).sponsor_partners()
-    
-        def funding_partners(self):
-            return Project.objects.filter(pk=self.pk).funding_partners()
-    
-        def field_partners(self):
-            return Project.objects.filter(pk=self.pk).field_partners()
-    
         def all_partners(self):
             return Project.objects.filter(pk=self.pk).all_partners()
+    
+        def lead_partners(self):
+            return Project.objects.filter(pk=self.pk).lead_partners()
+    
+        def other_partners(self):
+            return Project.objects.filter(pk=self.pk).other_partners()
     
         class Meta:
             verbose_name=_('project')
