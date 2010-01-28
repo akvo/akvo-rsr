@@ -98,9 +98,7 @@
 			        </a>
 					<a class="small" href="{% url project_main p.id %}">{{p.name}}</a>
                     <p class="small">
-                        {% for c in p.categories.all %}
-                            {{c.get_category_display}}<br />
-                        {% endfor %}
+                        {% category_icons p %}
                     </p>
 				</div>
 				<div class="clear"></div>
