@@ -1,5 +1,4 @@
-RELEASE_NOTES.txt, v0.9.14, 29 January 2010, pb
-=======
+﻿RELEASE_NOTES.txt, v0.9.14, 29 January 2010, pb 
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
@@ -7,70 +6,48 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 
 Akvo RSR v 0.9.14 release notes
--------------------------------
+-------------------------------------------
 29 January 2010, (Code name: Firebrand) pb
 
 This release introduces support for donations via the iDEAL payment system for users in the Netherlands as well as a number of architectural changes.
 
----
-
-New features
-------------
+New features 
+============
 
 ### iDEAL payment system
 The donation subsystem has been extended to support donations via the Dutch iDEAL online payment system. Akvo RSR provides this functionality by interfacing with the APIs provided by [Mollie.nl](http://www.mollie.nl/).
 
+
 ### Code namespace changes
-Providing an additional payment system resulted in a fair number of architectural changes behind the scenes.
 
-### Move to virtual Python environment
-Akvo RSR is now installed into and run from a Python virtual environment (or "virtualenv") separate from the system Python installation. This is achieved using the tools [pip](http://pypi.python.org/pypi/pip/) and [virtualenv](http://pypi.python.org/pypi/virtualenv/). The advantages of this pip/virtualenv setup are increased deployment flexibility and standardisation of software requirements for each release.
+Providing an additional payment system resulted in a fair number of architectural changes behind the scenes.### Move to virtual Python environment 
+Akvo RSR is now installed into and run from a Python virtual environment (or "virtualenv") separate from the system Python installation. This is achieved using the tools [pip](http://pypi.python.org/pypi/pip/) and [virtualenv](http://pypi.python.org/pypi/virtualenv/). The advantages of this pip/virtualenv setup are increased deployment flexibility and standardisation of software requirements for each release. 
 
-### "All updates" RSS Feed
+### "All updates" RSS Feed 
 An RSS feed for updates from all Akvo projects has been set up at http://www.akvo.org/rsr/rss/all-updates. Further RSS features are in the works.
 
 ### Image thumbnails refactor.
 Further refinements have been made to the way RSR handles the various image types (project, update, organisation logos, maps), creating appropriately-sized thumbnails, and cases where images do not exist.
 
-### HTTP Referrer
-Support for capturing HTTP referrer information has been added to parts of RSR for use in future planned RSR reporting tools.
+### HTTP Referrer 
+Support for capturing HTTP referrer information has been added to parts of RSR for use in future planned RSR reporting tools. 
 
 ### Admin help text
 Further improvements to help text in the RSR Administration tools for organisations.
-=======
-The donation subsystem has been extended to support donations via the Dutch iDEAL online payment system. Akvo RSR provides this functionality by interfacing with the APIs provided by [Mollie.nl](http://www.mollie.nl/). When a user pushes the Donate button on a project she will now be asked to select a payment system to proceed with: either iDEAL or PayPal.
-
-Providing an additional payment system resulted in a fair number of architectural changes behind the scenes. More detailed technical information about the new Mollie/iDEAL and the payment system as a whole can be found on the [Akvo wiki](http://www.akvo.org/wiki).
-
-### "All updates" RSS Feed
-
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 
 ---
 
 Akvo RSR v 0.9.13 release notes
-<<<<<<< HEAD
--------------------------------
-=======
 ------------------------------
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 2 November 2009, (Code name: Anakim) kad
 
 This is primarily a bug fix release, and some minor new features.
 
-<<<<<<< HEAD
 New features
 ------------
 
 ### Partners entry on sitewide toolbar
 Added a "Partners" entry to the toolbar (site wide). Linked the "Partners" entry to
-=======
-New features 
-------------
-
-### Partners entry on sitewide toolbar
-Added a "Partners" entry to the toolbar (site wide). Linked the "Partners" entry to 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 /web/partners
 http://www.pivotaltracker.com/story/show/1321046
 
@@ -91,38 +68,22 @@ Added 'Management cost' to the Budget item ITEM_CHOICES tuple.
 http://www.pivotaltracker.com/story/show/1407959
 
 ### The version of Django that is running is visible in the source
-<<<<<<< HEAD
-One can now in the front page source see which version of Django that is runnig. e.g. "<!--
-=======
-One can now in the front page source see which version of Django that is runnig. e.g. "<!-- 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
-Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) -->".
+One can now in the front page source see which version of Django that is runnig. e.g. "«!--
+Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) --»".
 http://www.pivotaltracker.com/story/show/1464719
 
 ### Humanised funding boxes.
-<<<<<<< HEAD
 Currently only the funding aggregates are humanised. This needs to be extended across the
-=======
-Currently only the funding aggregates are humanised. This needs to be extended across the 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 system to all areas where currency amounts are displayed.
 http://www.pivotaltracker.com/story/show/1469524
 
 ### Organisation project count needed cancelled projects
-<<<<<<< HEAD
 In the organisation activities the projects count does now have a line for cancelled
-=======
-In the organisation activities the projects count does now have a line for cancelled 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 projects making for an non incorrect sum if the org is associated with a cancelled project.
 http://www.pivotaltracker.com/story/show/817414
 
 ### Organisation listing widget for internal use
-<<<<<<< HEAD
 Created an "Organisation listing" widget for internal use only. This widget is used on the
-=======
-Created an "Organisation listing" widget for internal use only. This widget is used on the 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 Partners page in Drupal.
 http://www.pivotaltracker.com/story/show/1321040
 
@@ -131,22 +92,13 @@ To make the get a widget link more apparent, we moved the page tools section up.
 http://www.pivotaltracker.com/story/show/1543990
 
 ### Script cleaning out old images
-<<<<<<< HEAD
 The script removes old images from Organisation, Project and ProjectUpdate and renames any
 that haven't been renamed properly. (See also bug
-=======
-The script removes old images from Organisation, Project and ProjectUpdate and renames any 
-that haven't been renamed properly. (See also bug 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 http://www.pivotaltracker.com/story/show/1510571)
 http://www.pivotaltracker.com/story/show/1510576
 
 ### void_invoice() view function needs conditional redirect.
-<<<<<<< HEAD
 The void_invoice() view function now have the keyword redirect=False set in its signature
-=======
-The void_invoice() view function now have the keyword redirect=False set in its signature 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 which is then used to determine where it will redirect to.
 http://www.pivotaltracker.com/story/show/1458419
 
@@ -162,63 +114,37 @@ http://www.pivotaltracker.com/story/show/1480363
 Bug fixes
 ------------
 ### Donation page displayed error message while loading
-<<<<<<< HEAD
 Switched from using JavaScript's hide function to use the "noscript" tag for warning about
-=======
-Switched from using JavaScript's hide function to use the "noscript" tag for warning about 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 no javascript.
 http://www.pivotaltracker.com/story/show/1448535
 
 ### Removed debug info when in production mode.
-<<<<<<< HEAD
 The debug info about context and sql queries was showned at the bottom of the source in all
-=======
-The debug info about context and sql queries was showned at the bottom of the source in all 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 RSR pages. This should only be visible when settings.DEBUG == True.
 http://www.pivotaltracker.com/story/show/1468582
 
 ### Own org could be deleted from project
-<<<<<<< HEAD
 A non-super-user could sneak past the checks that their own org is among the partners when
 saving a project. This is accomplished by checking the delete check-box for the own org in
-=======
-A non-super-user could sneak past the checks that their own org is among the partners when 
-saving a project. This is accomplished by checking the delete check-box for the own org in 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 the partner inline form.
 http://www.pivotaltracker.com/story/show/1424820
 
 ### Uploaded images didn't get renamed
-<<<<<<< HEAD
 When uploading an image to an existing project or organisation the renaming of the image
-=======
-When uploading an image to an existing project or organisation the renaming of the image 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 didn't work. This was because of a change in how sorl.thumbnail handles images.
 http://www.pivotaltracker.com/story/show/1510571
 
 ### Prevented display of funding amounts less than 0 in templates.
-<<<<<<< HEAD
 Over-funded projects could result in the round filter displaying very confusing amounts such
-=======
-Over-funded projects could result in the round filter displaying very confusing amounts such 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 as "€-0".
 http://www.pivotaltracker.com/story/show/1493650
 
 ### Pledged sum in Org activities wrong with certain data
-<<<<<<< HEAD
 The calculation for how much a certain organisation has pledged totally was wrong when there
-=======
-The calculation for how much a certain organisation has pledged totally was wrong when there 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 are mutliple projects to which the same amount has been pledged.
 http://www.pivotaltracker.com/story/show/1460695
 
 ### Saving userprofile may lock out user from admin
-<<<<<<< HEAD
 When a UserProfile is saved the staff status is set to false if neither org admin or org
 project editor is true. This could lead to the possible lock out even if you are superuser.
 http://www.pivotaltracker.com/story/show/1469655
@@ -228,36 +154,16 @@ Direct link to the right page.
 http://www.pivotaltracker.com/story/show/1573608
 
 ### The breadcrum entry "home" at the blog pointed to "#"
-=======
-When a UserProfile is saved the staff status is set to false if neither org admin or org 
-project editor is true. This could lead to the possible lock out even if you are superuser.
-http://www.pivotaltracker.com/story/show/1469655
-
-### In Akvo at a glance change Partners link to Project Partners 
-Direct link to the right page.
-http://www.pivotaltracker.com/story/show/1573608
-
-### The breadcrum entry "home" at the blog pointed to "#" 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 The home link is pointing at "http://www.akvo.org/blog/", and not "#"
 http://www.pivotaltracker.com/story/show/822234
 
 ### Learn about Akvo link broken on sign-in page
-<<<<<<< HEAD
 The 'Learn about' how Akvo works link was broken on the sign-in page:
 http://www.akvo.org/rsr/signin/?next=/rsr/projects/
 http://www.pivotaltracker.com/story/show/1514408
 
 ### Proj.update/access denied page didn't give you a way back to the project page
 Now get's linked to the current project page.
-=======
-The 'Learn about' how Akvo works link was broken on the sign-in page: 
-http://www.akvo.org/rsr/signin/?next=/rsr/projects/ 
-http://www.pivotaltracker.com/story/show/1514408
-
-### Proj.update/access denied page didn't give you a way back to the project page
-Now get's linked to the current project page. 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 http://www.pivotaltracker.com/story/show/1229436
 
 ### Cancelled projects had the wrong donation text
@@ -265,30 +171,17 @@ Cancelled projects still would say that you could fund them.
 http://www.pivotaltracker.com/story/show/1528542
 
 ### Cancel update on a project sends you back to top level RSR page
-<<<<<<< HEAD
 Cancel update on a project would send you back to top level RSR page instead of back to the
-=======
-Cancel update on a project would send you back to top level RSR page instead of back to the 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 project detail page. https://bugs.launchpad.net/akvo.rsr/+bug/315228
 http://www.pivotaltracker.com/story/show/1229429
 
 ### Sign in routine should not send you back to the completed registration page
-<<<<<<< HEAD
 Signing in from the completed registration page will send you to the front page. (lp:
 315146)
 http://www.pivotaltracker.com/story/show/1229422
 
 ### Set height and width to every image when using sorl
 If a photo can't be loaded it should still occupy the same space. This is not true for logos
-=======
-Signing in from the completed registration page will send you to the front page. (lp: 
-315146) 
-http://www.pivotaltracker.com/story/show/1229422
-
-### Set height and width to every image when using sorl
-If a photo can't be loaded it should still occupy the same space. This is not true for logos 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 and other non photo sized images.
 http://www.pivotaltracker.com/story/show/1467668
 
@@ -296,7 +189,6 @@ http://www.pivotaltracker.com/story/show/1467668
 ---
 
 
-<<<<<<< HEAD
 Akvo RSR v 0.9.12 release notes
 ------------------------------
 12 October 2009, (Code name: Basalt) tbp
@@ -304,15 +196,6 @@ Akvo RSR v 0.9.12 release notes
 
 New features
 ------------
-=======
-Akvo RSR v 0.9.12 release notes 
------------------------------- 
-12 October 2009, (Code name: Basalt) tbp
-
-
-New features 
------------- 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 ### Addition of comprehensive help text in Akvo RSR admin
 The add/modify project and organisation form in the Akvo RSR admin packs in a lot of information. Many of the fields are required and must be entered correctly. To make this form more usable, we added detailed and clear plain-English help text to guide partners through what is required of them.
 
@@ -355,11 +238,7 @@ Bug fixes
 ------------
 ### "Hover" text (img title) not appearing over Focus area graphics on Organisation listing page
 [Launchpad bug reference 319407](https://bugs.launchpad.net/akvo.rsr/+bug/319407)
-<<<<<<< HEAD
 [Pivotal story](http://www.pivotaltracker.com/story/show/1229439)
-=======
-[Pivotal story](http://www.pivotaltracker.com/story/show/1229439) 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 
 ### Partners' listings breadcrumb trail doesn't lead back to Organisation Listing
 [Launchpad bug reference 304679](https://bugs.launchpad.net/akvo.rsr/+bug/304679)
@@ -395,7 +274,6 @@ In the funding detail page the logo for the funding organisation does not seem t
 ---
 
 
-<<<<<<< HEAD
 Akvo RSR v 0.9.11 release notes
 ------------------------------
 14 September 2009, (Code name: Jupiter) PB
@@ -423,35 +301,6 @@ Detailed technical information about these new features and enhancements can be 
 Bugs
 ----
 In one particular template, the message "Fully funded" did not appear when a project had reached its funding target. This has been fixed.
-=======
-Akvo RSR v 0.9.11 release notes 
------------------------------- 
-14 September 2009, (Code name: Jupiter) PB 
-
-New features 
------------- 
-### Decimalisation of financial data 
-All financial data in Akvo RSR is now stored in decimal format. Previously it was stored in integer (whole number) format. This transition was necessary to allow for accurate calculation and output of financial data in the system. 
-
-### Reconciliation of PayPal donations 
-All individual donations made to projects in Akvo RSR are subject to processing fees applied by PayPal. Although Akvo RSR has always stored these fees, we were not able to apply them to our own financial data until the system was decimalised. We are now able to store the final amounts received from PayPal with cent accuracy. 
-
-### PayPal gateway selection and multi-currency support 
-Currently all individual donations are sent to the Akvo PayPal account. As from this release, it is possible for a partner to request that Akvo staff override this behaviour on a project-by-project basis and define a new "gateway" (PayPal store) to direct payments to. Note: this is only done in exceptional cases at this point. PayPal gateways also contain locale and currency information meaning that we will be able to handle donations to a particular project in an alternative currency in the future. 
-
-### Various enhancements to the PayPal donation engine 
-Several smaller enhancements have been made to the Akvo RSR PayPal engine: 
-
-* The find_stale_invoices.py cron script now logs detailed information for each invoice operated on 
-* The PayPal-specific settings in settings.py have been simplified 
-* The view code which handles the donation process has been simplified 
-
-Detailed technical information about these new features and enhancements can be found on [Akvo Labs](http://www.akvo.org/labs/index.php/Akvo_PayPal_Under_the_Hood) 
-
-Bugs 
----- 
-In one particular template, the message "Fully funded" did not appear when a project had reached its funding target. This has been fixed. 
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
 
 When a user attempted to donate a negative integer amount (for example "-10") to a project, the error message produced was misleading, asking her to donate an amount "greater then or equal to 0". Since it is not possible to donate 0 to a project, this message now asks the user to donate an amount "greater than or equal to 1".
 
@@ -776,7 +625,3 @@ A detailed list (including in process development bugs) can be found at: http://
 
 
 ====END OF RELEASE NOTES====
-<<<<<<< HEAD
-
-=======
->>>>>>> 51745312a561f3109a063d4793051da3ad570380
