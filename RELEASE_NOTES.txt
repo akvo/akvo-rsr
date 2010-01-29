@@ -12,15 +12,15 @@ Akvo RSR v 0.9.14 release notes
 This release introduces support for donations via the iDEAL payment system for users in the Netherlands as well as a number of architectural changes.
 
 New features 
-============
+------------
 
 ### iDEAL payment system
 The donation subsystem has been extended to support donations via the Dutch iDEAL online payment system. Akvo RSR provides this functionality by interfacing with the APIs provided by [Mollie.nl](http://www.mollie.nl/).
 
-
 ### Code namespace changes
+Providing an additional payment system resulted in a fair number of architectural changes behind the scenes.
 
-Providing an additional payment system resulted in a fair number of architectural changes behind the scenes.### Move to virtual Python environment 
+### Move to virtual Python environment 
 Akvo RSR is now installed into and run from a Python virtual environment (or "virtualenv") separate from the system Python installation. This is achieved using the tools [pip](http://pypi.python.org/pypi/pip/) and [virtualenv](http://pypi.python.org/pypi/virtualenv/). The advantages of this pip/virtualenv setup are increased deployment flexibility and standardisation of software requirements for each release. 
 
 ### "All updates" RSS Feed 
