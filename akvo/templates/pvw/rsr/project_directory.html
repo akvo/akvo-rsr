@@ -24,17 +24,17 @@
 <div class="span-3 first">
 	<div class="frame">
 		<div class="sliding_box_header">
-			<p class="small" style="margin:2px 5px">Refine results</p>
+			<p style="margin:2px 5px">Refine results</p>
 		</div>
 		<div class="space20">
 			<h5>Sector</h5>
-			<p class="small">
+			<p>
 				<label><input type="checkbox" name="sectors" value="2" id="sector_sanitation" > Sanitation</label>
 				<label><input type="checkbox" name="sectors" value="1" id="sector_water" > Water</label>
 			</p>
 			<hr />
 			<h5>Location</h5>
-			<p class="small">
+			<p>
 				<label><input type="checkbox" name="continents" value="1" id="continent_africa" > Africa</label>
 				<label><input type="checkbox" name="continents" value="2" id="continent_asia" > Asia</label>
 				<label><input type="checkbox" name="continents" value="3" id="continent_australia" > Australia</label>
@@ -50,7 +50,7 @@
 	<div class="frame" style="margin-bottom:0; border-bottom:none;">
 		<div class="sliding_box_header" >
 			<div style="float:right;">
-				<p class="small" style="margin:2px 5px">
+				<p style="margin:2px 5px">
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
@@ -58,11 +58,11 @@
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 				</p>
 			</div>
-			<p class="small" style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
+			<p style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
 		</div>
 	</div>
 
-	<div class="span-18 first last small" id="proj_list_table_header">
+	<div class="span-18 first last" id="proj_list_table_header">
 		<div class="span-7 first">
 			<div class="space10">
 				<p>{% trans 'Name' %}</p>
@@ -78,32 +78,37 @@
 				<p>{% trans 'Status' %}</p>
 			</div>
 		</div>
-		<div class="span-3">
+		<div class="span-2">
+			<div class="space10">
+				<p>{% trans 'Latest update' %}</p>
+			</div>
+		</div>
+		<div class="span-2">
 			<div class="space10">
 				<p>{% trans 'Lead partners' %}</p>
 			</div>
 		</div>
-		<div class="span-3 last">
+		<div class="span-2 last">
 			<div class="space10">
 				<p>{% trans 'Other partners' %}</p>
 			</div>
 		</div>
 	</div>
     
-    {% for p in page.object_list %}
+    {% for project in page.object_list %}
 	<div class="span-18 first last" id="proj_list_table">
 		<div class="span-7 first">
 			<div style="border-left:1px solid #BCBCC6; padding-top:5px;">
 				<div class="space10">
-					<a href="{% url project_main p.id %}">
-						{% project_thumb p 100 75 'float:left; margin-right: 10px;' %}
+					<a href="{% url project_main project.id %}">
+						{% project_thumb project 100 75 'float:left; margin-right: 10px;' %}
 			        </a>
-                    <p class="small">
-    					<a href="{% url project_main p.id %}">{{p.name}}</a><br/>
-                        {{p.subtitle}}
+                    <p>
+    					<a href="{% url project_main project.id %}">{{project.name}}</a><br/>
+                        {{project.subtitle}}
                     </p>
-                    <p class="small">
-                        {% category_icons p %}
+                    <p>
+                        {% category_icons project %}
                     </p>
 				</div>
 				<div class="clear"></div>
@@ -111,23 +116,38 @@
 		</div>
 		<div class="span-3">
 			<div class="space10">
-                <p class="small">
-            	{{p.country.get_continent_display}}<br />
-                {{p.city}}, {{p.country}}
+                <p>
+            	{{project.country.get_continent_display}}<br />
+                {{project.city}}, {{project.country}}
                 </p>
 			</div>
 		</div>
 		<div class="span-2">
 			<div class="space10">
-				<p class="small">
-					{{p.show_status}}
+				<p>
+					{{project.show_status}}
 				</p>				
 			</div>
 		</div>
+		<div class="span-2">
+			<div class="space10">
+				<p>
+					{% with project.project_updates.latest as latest_update %}						
+						{% ifequal latest_update None %}
+							<span style="color:#000;">{% trans 'Not yet' %}</span>
+						{% else %}
+							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|string_to_date|date:"Y-m-d  H:i"}}</a>
+						{% endifequal %}
+					{% endwith %}
+				</p>				
+			</div>
+		</div>
+        
+        
 		<div class="span-3">
 			<div class="space10">
-                {% for partner in p.lead_partners %}
-                    <p class="small">
+                {% for partner in project.lead_partners %}
+                    <p>
                         <a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner}}</a><br />
                     </p>
                 {% endfor %}
@@ -135,8 +155,8 @@
 		</div>
 		<div class="span-3 last">
 			<div class="space10">
-                {% for partner in p.other_partners %}
-                    <p class="small">
+                {% for partner in project.other_partners %}
+                    <p>
                         <a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner}}</a><br />
                     </p>
                 {% endfor %}
@@ -151,7 +171,7 @@
 	<div class="frame">
 		<div class="sliding_box_header">
 			<div style="float:right;">
-				<p class="small" style="margin:2px 5px">
+				<p style="margin:2px 5px">
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
@@ -159,7 +179,7 @@
 					<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 				</p>
 			</div>
-			<p class="small" style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
+			<p style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
 		</div>
 	</div>
 	
@@ -168,13 +188,13 @@
 
 	<div class="frame">
 		<div class="sliding_box_header">
-			<p class="small" style="margin:2px 5px">2,573 results found for "virda"</p>
+			<p style="margin:2px 5px">2,573 results found for "virda"</p>
 		</div>
 		
 		<div class="space20">
 			<ul>
 			{% for p in page.object_list %}
-				<li><a href="{% url project_main p.id %}">{{p.name}}</a></li>
+				<li><a href="{% url project_main project.id %}">{{project.name}}</a></li>
 			{% endfor %}
 			</ul>
 		</div>

@@ -674,27 +674,34 @@ if settings.PVW_RSR: #pvw-rsr
 
             def lead_partners(self):
                 o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self).filter(partner_projects__partner_type__exact='L')
+                return o.filter(
+                    partner_projects__project__in=self,
+                    partner_projects__partner_type__exact='L'
+                )
     
             def other_partners(self):
                 "All partners except lead partners"
                 o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
+                return o.filter(
+                    partner_projects__project__in=self,
+                    partner_projects__partner_type__in=['P', 'F', 'I', 'C',]
+                )
     
         #TODO: is this relly needed? the default QS has identical methods
-        class OrganisationsQuerySet(QuerySet):    
-            def all_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self)
-    
-            def lead_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self).filter(partner_projects__partner_type__exact='L')
-    
-            def other_partners(self):
-                "All partners except lead partners"
-                o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
+        class OrganisationsQuerySet(QuerySet):
+            pass
+            #def all_partners(self):
+            #    o = Organisation.objects.all()
+            #    return o.filter(partner_projects__project__in=self)
+            #
+            #def lead_partners(self):
+            #    o = Organisation.objects.all()
+            #    return o.filter(partner_projects__project__in=self).filter(partner_projects__partner_type__exact='L')
+            #
+            #def other_partners(self):
+            #    "All partners except lead partners"
+            #    o = Organisation.objects.all()
+            #    return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
     
         def __unicode__(self):
             return self.name
