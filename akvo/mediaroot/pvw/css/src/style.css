@@ -12,8 +12,11 @@
     padding:5px; 
 }
 
-.sliding_box_header a {
+.sliding_box_header a, .sliding_box_header span {
     margin-left:15px; 
+}
+
+.sliding_box_header a {
     text-shadow: #fff 1px 1px 0px;
 }
 

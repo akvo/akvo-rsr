@@ -237,7 +237,7 @@ def filteredprojectlist(request, org_id):
     showcases = projects.order_by('?')[:3]
     page = project_list_data(request, projects)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
-
+    
 @render_to('rsr/organisation_directory.html')
 def orglist(request, org_type='all'):
     '''

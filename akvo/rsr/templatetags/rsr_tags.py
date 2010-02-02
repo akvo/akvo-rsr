@@ -156,6 +156,16 @@ def update_thumb(context, update, width, height):
         'wxh'       : '%sx%s' % (width, height,),
     }
 
+@register.inclusion_tag('inclusion_tags/project_list_pagination.html', takes_context=True)
+def project_list_pagination(context, page, org=None):
+    '''
+    '''
+    return {
+        'request'   : context['request'],
+        'page'      : page,
+        'org'       : org,
+    }
+
 from django.conf import settings
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def page_styles(context,):

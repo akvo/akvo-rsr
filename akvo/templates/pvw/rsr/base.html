@@ -17,11 +17,21 @@
 <div id="header">
 	<div id="header_menu">
 		<ul id="mainmenu">
-			<li><a id="mainmenu_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
-				<span style="color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;">DutchWaterSector</span>
-			</a></li>
-			<li><a href="/rsr/projects?time=1234" class="{% ifequal site_section 'projects' %}active{% endifequal %}"><span>{% trans 'Focus Areas' %}</span></a></li>
-			<li><a href="http://pvw-dev.akvo.org/web/talk_with_us"><span>{% trans 'Get Solutions' %}</span></a></li>
+			<li>
+                <a id="mainmenu_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
+                    <span style="color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;">DutchWaterSector</span>
+                </a>
+            </li>
+			<li>
+                <a href="{% url akvo.rsr.views.projectlist %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+                    <span>{% trans 'Focus Areas' %}</span>
+                </a>
+            </li>
+			<li>
+                <a href="http://pvw-dev.akvo.org/web/talk_with_us">
+                    <span>{% trans 'Get Solutions' %}</span>
+                </a>
+            </li>
 			<li><a href="http://pvw-dev.akvo.org/web/education"><span>{% trans 'Education' %}</span></a></li>
 			<li><a href="http://pvw-dev.akvo.org/web/education"><span>{% trans 'Directory' %}</span></a></li>
 			<li><a href="http://pvw-dev.akvo.org/blog"><span>{% trans 'News' %}</span></a></li>

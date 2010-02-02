@@ -1,0 +1,51 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n addparam %}
+
+<div class="sliding_box_header" >
+    <div style="float:right;">
+        <p style="margin:2px 5px">
+            {% ifequal page.number 1 %}
+                <span class="grey">{% trans 'First' %}</span>
+            {% else %}
+                {# if we have an organisation in the context, we are diplaying the list filtered on that org, url have to conform to that #}
+                {% if org %}
+                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
+                {% else %}
+                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
+                {% endif %}
+            {% endifequal %}
+            {% if page.has_previous %}
+                {% if org %}
+                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
+                {% else %}
+                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
+                {% endif %}
+            {% else %}
+                <span class="grey">{% trans 'Previous' %}</span>
+            {% endif %}
+            {% if page.has_next %}
+                {% if org %}
+                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+                {% else %}
+                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+                {% endif %}
+            {% else %}
+                <span class="grey">{% trans 'Next' %}</span>
+            {% endif %}
+            {% ifequal page.number page.paginator.num_pages %}
+                <span class="grey">{% trans 'Last' %}</span>
+            {% else %}
+                {% if org %}
+                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+                {% else %}
+                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+                {% endif %}
+            {% endifequal %}                    
+        </p>
+    </div>
+    <p style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
+</div>
