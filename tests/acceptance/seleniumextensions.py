@@ -2,8 +2,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-# The SeleniumTestCase extends the standard unittest.TestCase to add some convenience methods
-# for common testing actions and RSR-specific actions
+# SeleniumTestCase extends unittest.TestCase to add convenience methods for common assertion patterns
 
 from selenium import selenium
 from unittest import TestCase
@@ -33,48 +32,6 @@ class SeleniumTestCase(TestCase):
 
     def tearDown(self):
         self.failUnlessEqual([], self.verification_errors)
-
-    def wait_for_page_to_load(self):
-        self.selenium.wait_for_page_to_load(PAGE_LOAD_TIMEOUT)
-
-    def open_page(self, path):
-        self.selenium.open(path)
-        self.wait_for_page_to_load()
-
-    def open_home_page(self):
-        self.open_page("/")
-
-    def open_admin_page(self):
-        self.open_page("/rsr/admin/")
-        if self.selenium.is_text_present("Password:"):
-            self.selenium.type("id_username", RSR_ADMIN_USERNAME)
-            self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
-            self.click_submit_button_with_text("Log in")
-
-    def open_project_page(self, project_number):
-        self.open_page("/rsr/project/%i/" % (project_number))
-
-    def click_element_at_path(self, element_path):
-        self.selenium.click(element_path)
-        self.wait_for_page_to_load()
-
-    def click_link(self, link_text):
-        self.click_element_at_path("link=%s" % (link_text))
-
-    def click_tab(self, tab_element_path):
-        self.click_element_at_path(tab_element_path)
-
-    def click_javascript_tab(self, tab_element_path):
-        self.selenium.click(tab_element_path) # client side, so no page load wait needed
-
-    def click_button(self, button_name_or_path):
-        self.click_element_at_path(button_name_or_path)
-
-    def click_submit_button(self):
-        self.click_button("//button[@type='submit']")
-
-    def click_submit_button_with_text(self, button_text):
-        self.click_element_at_path("//input[@value=\"%s\"]" % (button_text))
 
     def assert_location_contains(self, expected_text):
         self.failIf(self.selenium.get_location().find(expected_text) == -1,

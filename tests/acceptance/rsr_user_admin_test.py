@@ -9,30 +9,37 @@ import nose
 from seleniumextensions import SeleniumTestCase
 from test_settings import *
 
+from helpers.navigation import *
+
 class RSRUserAdminTest(SeleniumTestCase):
+
+    def setUp(self):
+        SeleniumTestCase.setUp(self)
+        self.navigator = SeleniumNavigator(self.selenium)
+        self.rsr = RSRNavigator(self.selenium)
 
     def test_1_can_register_new_user(self):
         """>> 1. Can register a new user"""
-        self.open_home_page()
+        self.rsr.open_home_page()
         self.assert_title_is("Akvo.org - See it happen")
         if self.selenium.is_text_present("Signed in as"):
-            self.click_button("//div[@id='header_button']/a/span") # Sign out button
+            self.navigator.click_button("//div[@id='header_button']/a/span") # Sign out button
             self.assert_title_is("Akvo.org - See it happen")
 
         sel = self.selenium
-        self.click_link("Register")
+        self.navigator.click_link("Register")
         self.assert_title_is("Register with Akvo RSR - Step 1")
         sel.select("id_organisation", "label=Akvo")
-        self.click_submit_button()
+        self.navigator.click_submit_button()
         self.assert_title_is("Register with Akvo RSR - Step 2")
         sel.type("id_username", "UATregistrationtest")
         sel.type("id_first_name", "Registration")
         sel.type("id_last_name", "UAT")
         sel.type("id_password1", "deleteAfterTest")
         sel.type("id_password2", "deleteAfterTest")
-        sel.type("id_email", "uat@akvo.org")
-        sel.type("id_email2", "uat@akvo.org")
-        self.click_submit_button()
+        sel.type("id_email", "akvo.uat@gmail.com")
+        sel.type("id_email2", "akvo.uat@gmail.com")
+        self.navigator.click_submit_button()
 
         if sel.is_text_present("Traceback"):
             self.fail("Unable to register a new user:\nTraceback details:\n%s" % sel.get_value("traceback_area"))

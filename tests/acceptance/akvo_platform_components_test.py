@@ -9,16 +9,23 @@ import nose, sys
 from seleniumextensions import SeleniumTestCase
 from test_settings import *
 
+from helpers.navigation import *
+
 class AkvoPlatformComponentsTest(SeleniumTestCase):
 
+    def setUp(self):
+        SeleniumTestCase.setUp(self)
+        self.navigator = SeleniumNavigator(self.selenium)
+        self.rsr = RSRNavigator(self.selenium)
+
     def can_load_section_with_expected_title(self, section, expected_page_title):
-        self.open_home_page()
-        self.click_link(section)
+        self.rsr.open_home_page()
+        self.navigator.click_link(section)
         self.assert_title_starts_with(expected_page_title)
     
     def test_1_can_load_home_page_with_expected_content(self):
         """>> 1. Can load Home page with expected content"""
-        self.open_home_page()
+        self.rsr.open_home_page()
         self.assert_title_is("Akvo.org - See it happen")
         self.assert_page_contains_text_items(["Projects you can fund", "Most recent Akvo Blog article",
                                               "Learn about Akvo", "Akvo at a glance"])
