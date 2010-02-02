@@ -50,7 +50,7 @@ INSTALLED_APPS = (
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
 #    'akvo.status',
-    'paypal.standard.ipn',
+    #'paypal.standard.ipn',
     'sorl.thumbnail',
     'rosetta',
 )
