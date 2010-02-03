@@ -9,97 +9,108 @@
 			<p class="grey">{{p.subtitle}}</p>
 		</div>
 		
-		<div style="width: 170px; float:right;">
-			<div class="space15" style="margin-top:0">
-				<h3>{% trans 'Beneficiaries' %}</h3>
-				<ul>
-					<li>...</li>
-					<li>...</li>
-				</ul>
-				<h3>{% trans 'Location' %}</h3>
-				{% map_thumb p 140 140 '' %}
-				<p class="tiny" style="margin-top:5px;">
-					Asia<br>
-					Jakarta, Indonesia<br>
-					23°1'59"N 68°54'51"E
-				</p>
-			</div>
-		</div>
-		<div style="width:550px; margin-left:20px; border-right:1px solid #ccc;">
-			{% comment %}
-			{% project_thumb p 295 221 'margin: 0 10px 10px 0;' %}				
-			{% endcomment %}
-			<div style="float:right; width:120px;">
-				{% project_thumb p 80 60 'margin: 0 10px 10px 0;' %}
-				{% project_thumb p 80 60 'margin: 0 10px 10px 0;' %}
-				<p class="tiny"><a href="#">{% trans 'View more' %}&nbsp;&#x25BA;</a></p>
-			</div>
-			{% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
-			<p style="margin-right:20px;">
-				{{ p.project_plan_summary|capfirst }}
-			</p>
-			
-		</div>
-		
+        <div id="container-1">
+            <ul>
+                <li><a href="#tab_summary"><span>{% trans 'Summary' %}</span></a></li>
+                <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
+                <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
+                <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
+            </ul>
+            <div style="width: 170px; float:right;">
+                <div class="space20">
+                    <h2>{% trans 'Location' %}</h3>
+                    {% map_thumb p 140 140 '' %}
+                    <p class="tiny" style="margin-top:5px;">
+                        {{p.country.continent}}<br>
+                        {{p.city}}, {{p.country}}<br>
+                        {{p.longitude}} {{p.latitude}}
+                    </p>
+                </div>
+            </div>
+            <div id="tab_summary" class="tab">
+                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                    <div style="float:right; width:120px;">
+                        {% category_icons p %}
+                    </div>
+                    {% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
+                    <p style="margin-right:20px;">
+                        {{ p.project_plan_summary|capfirst|linebreaks }}
+                    </p>
+                </div>
+            </div>
+            <div id="tab_goals" class="tab">
+                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                    <div class="space10" style="width: 170px; float:right;">
+                        <ul>
+                            {% if p.goal_1 %}
+                                <li>{{p.goal_1}}</li>
+                            {% endif %}
+                            {% if p.goal_2 %}
+                                <li>{{p.goal_2}}</li>
+                            {% endif %}
+                            {% if p.goal_3 %}
+                                <li>{{p.goal_3}}</li>
+                            {% endif %}
+                            {% if p.goal_4 %}
+                                <li>{{p.goal_4}}</li>
+                            {% endif %}
+                            {% if p.goal_5 %}
+                                <li>{{p.goal_5}}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <p>
+                        {{p.goals_overview|capfirst|linebreaks}}
+                    </p>
+                </div>
+            </div>
+            <div id="tab_details" class="tab">
+                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                    <h2>{% trans 'Details of current status' %}</h2>
+                    <p">
+                        {{p.current_status_detail|capfirst|linebreaks}}
+                    </p>
+                    <h2>{% trans 'Details of project plan' %}</h2>
+                    <p>
+                        {{p.project_plan_detail|capfirst|linebreaks}}
+                    </p>
+                </div>
+            </div>
+            <div id="tab_impact" class="tab">
+                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                    <h2>{% trans 'Impact' %}</h2>
+                    <p>
+                        {{p.impact|capfirst|linebreaks}}
+                    </p>
+                    <h2>{% trans 'Lessons learned' %}</h2>
+                    <p>
+                        {{p.lessons_learned|capfirst|linebreaks}}
+                    </p>
+                    <h2>{% trans 'Technologies used' %}</h2>
+                    <p>
+                        {{p.technologies_used|capfirst|linebreaks}}
+                    </p>
+                </div>
+            </div>
+        </div>
 		<div class="clear small" style="">&nbsp;</div>
 		
 	</div>
 </div>
 {# lower area starts #}
 <div class="span-10 first">
-	<div id="container-1">
+	<div id="container-2">
 		<ul>
-            <li><a href="#tab_about"><span>{% trans 'About' %}</span></a></li>
             <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
-            <li><a href="#tab_resources"><span>{% trans 'Resources' %}</span></a></li>
-			<li><a href="#tab_learnings"><span>{% trans 'Learnings' %}</span></a></li>
+            <li><a href="#tab_comments"><span>{% trans 'Comments' %}</span></a></li>
         </ul>
 		<div style="border-left:1px solid #BBBBC5; border-right:1px solid #BBBBC5; border-bottom:1px solid #BBBBC5;">			
-			<div id="tab_about" class="tab">
-				<div class="space20">
-					<div style="float:right; width:150px; text-align:right;">
-						{% category_icons p %}
-					</div>
-					<h2>{% trans 'Expected outcomes' %}</h2>
-					<ul style="margin-top:10px;">
-						{% if p.water_systems %}
-					        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
-					    {% endif %}
-					    {% if p.sanitation_systems %}
-					        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
-					    {% endif %}
-					    {% if p.hygiene_facilities %}
-					        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
-					    {% endif %}
-					    {% if p.improved_water %}
-					        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
-					        {% if p.improved_water_years %}
-					            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
-					        {% endif %}
-					        </li>
-					    {% endif %}
-					    {% if p.improved_sanitation %}
-					        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
-					        {% if p.improved_sanitation_years %}
-					            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
-					        {% endif %}
-					        </li>
-					    {% endif %}
-					    {% if p.trainees %}
-					        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
-					    {% endif %}
-					</ul>
-
-					<h2>{% trans 'Background' %}</h2>
-					{{p.project_plan_summary|linebreaks}}
-				</div>
-			</div>
 			<div id="tab_updates" class="tab">
 				<div class="space20">
 					<div style="float:right; width:100px;">
 						<input type="button" name="some_name" value="Add update" id="some_name" style="margin-left:auto; margin-right:0;">
 					</div>
-					<h2>{% trans 'Latest updates' %}</h2>
+					<h2>{% trans 'Updates' %}</h2>
 					{# Updates start #}
 					{% if updates %}
 						{% for u in updates %}
@@ -131,14 +142,9 @@
 					{% endif %}
 				</div>
 			</div>
-			<div id="tab_resources" class="tab">
+			<div id="tab_comments" class="tab">
 				<div class="space20">
-					<h2>Resources</h2>
-				</div>
-	        </div>
-			<div id="tab_learnings" class="tab">
-				<div class="space20">
-	            	<h2>Learnings</h2>
+					<h2>Comments</h2>
 				</div>
 	        </div>
 			<div style="clear:left">&#32;</div>
@@ -181,6 +187,9 @@
 
 $(function(){
 	$('#container-1 > ul').tabs();
+});
+$(function(){
+	$('#container-2 > ul').tabs();
 });
 
 </script>
