@@ -49,12 +49,18 @@ class RSRNavigator:
     def open_home_page(self):
         self.navigator.open_page("/")
 
-    def open_admin_page(self):
-        self.navigator.open_page("/rsr/admin/")
+    def open_admin_page(self, extended_admin_path = ""):
+        self.navigator.open_page("/rsr/admin/%s" % (extended_admin_path))
         if self.selenium.is_text_present("Password:"):
             self.selenium.type("id_username", RSR_ADMIN_USERNAME)
             self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
             self.navigator.click_submit_button_with_text("Log in")
+
+    def open_auth_admin_page(self):
+        self.open_admin_page("auth/")
+
+    def open_rsr_admin_page(self):
+        self.open_admin_page("rsr/")
 
     def open_project_page(self, project_number):
         self.navigator.open_page("/rsr/project/%i/" % (project_number))
