@@ -80,3 +80,7 @@ class SeleniumTestCase(TestCase):
         self.failUnlessEqual(expected_element_height, actual_element_height,
             "\nExpected element height at %s: %i\nActual element height: %i" %
                 (element_path, expected_element_height, actual_element_height))
+
+    def assert_link_exists(self, expected_link_text):
+        self.failUnlessEqual(expected_link_text, self.selenium.get_text("link=%s" % (expected_link_text)),
+            "Expected [%s] link to exist" % (expected_link_text))
