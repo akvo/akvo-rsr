@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.humanize',
+    'django.contrib.webdesign',
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
@@ -53,6 +54,7 @@ INSTALLED_APPS = (
     #'paypal.standard.ipn',
     'sorl.thumbnail',
     'rosetta',
+    
 )
 
 #INTERNAL_IPS = (

@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags webdesign %}
 
 {% block inline_styles %}
 h1 {
@@ -8,26 +8,55 @@ h1 {
 {% endblock inline_styles %}
 
 {% block content %}
+{% comment %}
 <p class="grey small">{% trans 'Welcome to DutchWaterSector!' %} <a href="">{% trans 'Sign in' %}</a> {% trans 'or' %} <a href="">{% trans 'Register' %}</a>
+{% endcomment %}
+
+{% comment %}
 <div class="span-18" style="text-align:center;">
 	<h1>{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}</h1>
 </div>
+{% endcomment %}
 <div class="span-14 first">
 	<div class="frame" style="background-color:#746651;">
-		<div class="space20">
-			{% comment %}			
+		<div class="space20" style="height:400px">
+			<p style="color:#fff;">
+				Main presentation area (video?).
+			</p>
+			{% comment %}
 			{% project_thumb projs.0 440 330 'margin: 10px 10px 0 0;' %}
 			{% endcomment %}
 		</div>
 	</div>
 	<div class="frame">
-		<div class="sliding_box_header">
-			<a href="#">Who are we</a>
-		</div>
-		<div class="space20">
-			<p>...</p>
+		<div class="space15">
+			<p>
+				{% lorem 13 w random %}
+			</p>
 		</div>
 	</div>
+	
+	<div class="frame">
+		<div class="sliding_box_header">
+			<a href="#">{% trans 'Recent contributions' %}</a>
+			<div style="float:right; width:200px; height:17px; overflow:hidden; text-align:right; margin-right:15px;">
+				<a class="small" href="#">{% trans 'Subscribe via RSS' %}</a>
+			</div>
+		</div>
+		<div class="space20">
+			<h4>First blog post</h4>
+			<p>
+				Latest blog entries (requires a rewrite of the index view function).
+			</p>
+			<hr />
+			<h4>Second blog post</h4>
+			<p>
+				{% lorem 1 p random %}
+			</p>
+		</div>
+	</div>
+	
+	{% comment %}
 	<div class="frame">
 		<div class="sliding_box_header">
 			<a href="#">Featured inside the site</a>
@@ -62,9 +91,40 @@ h1 {
 			</div>
 		</div>
 	</div>
+	{% endcomment %}
 </div>
 <div class="span-4 last">
-	<div class="frame">
+	<div class="frame" style="background-color:#F4F7F8">
+		<div class="space20">
+			<h5 class="highlight">
+			The Dutch water sector: Resourcefulness and cooperation around the world
+			</h5>
+			<hr>
+			<p class="tiny">
+				<span class="bold">{% trans 'The history of Dutch Water' %}</span><br />
+				{% lorem 10 w random %}
+			</p>
+			<hr style="margin-bottom:5px; ">
+			<h4 class="highlight">{% trans 'Focus Areas' %}</h4>
+			
+			<div style="background-color:grey; height:122px;"></div>
+			<h6 class="highlight">{% trans 'Clean water' %}</h6>
+			<p class="nano">{% lorem 4 w random %}</p>
+			
+			<div style="background-color:grey; height:122px;"></div>
+			<h6 class="highlight">{% trans 'Safety' %}</h6>
+			<p class="nano">{% lorem 4 w random %}</p>
+			
+			<div style="background-color:grey; height:122px;"></div>
+			<h6 class="highlight">{% trans 'Sharing water' %}</h6>
+			<p class="nano">{% lorem 4 w random %}</p>
+			
+			<div style="background-color:grey; height:122px;"></div>
+			<h6 class="highlight">{% trans 'Governance' %}</h6>
+			<p class="nano">{% lorem 4 w random %}</p>			
+		</div>
+		
+		{% comment %}
 		<div class="sliding_box_header">
 			<a href="#">Our impact</a>
 		</div>
@@ -76,7 +136,10 @@ h1 {
 				<li>{{ orgs.all.count }} Organisation{{ orgs.all.count|pluralize }}</li>
 			</ul>
 		</div>
+		{% endcomment %}
 	</div>
+
+	{% comment %}
 	<div class="frame" style="background-color:#D8F4FE;">
 		<div class="space20">
 			<form action="" method="get" accept-charset="utf-8">
@@ -101,6 +164,7 @@ h1 {
 			<p>Sign up for email updates</p>
 		</div>
 	</div>
+	{% endcomment %}
 </div>
 
 {% endblock content %}
