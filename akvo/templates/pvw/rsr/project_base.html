@@ -10,8 +10,18 @@
 	<div id="proj_summary" class="frame">
 		<div class="space10">
 			<h2>Project status</h2>
-			<p>Was status removed?</p>
-		</div>		
+            <p>{{p.show_status}}</p>
+            {% ifnotequal p.start_date None %}
+                <hr />
+                <h2>Timeline</h2>
+                {% ifnotequal p.start_date None %}
+                    <p>{% trans 'Start date:' %} {{p.start_date}}</p>
+                {% endifnotequal %}
+                {% ifnotequal p.end_date None %}
+                    <p>{% trans 'End date:' %} {{p.end_date}}</p>
+                {% endifnotequal %}
+            {% endifnotequal %}
+        </div>
 	</div>
 	
 	<div class="frame">
