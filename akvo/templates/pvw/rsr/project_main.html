@@ -139,7 +139,7 @@
 				            {% endifequal %}
 				            {% if u.text %}
 				           	<p class="small" style="margin:0; padding:0;">
-								{{u.text|linebreaks|smart_truncate:400}}
+								{{u.text|smart_truncate:400|linebreaks}}
 							</p>
 				            {% endif %}
 				            {% ifequal u.photo_location 'E' %}
