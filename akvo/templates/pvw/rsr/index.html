@@ -8,24 +8,13 @@ h1 {
 {% endblock inline_styles %}
 
 {% block content %}
-{% comment %}
-<p class="grey small">{% trans 'Welcome to DutchWaterSector!' %} <a href="">{% trans 'Sign in' %}</a> {% trans 'or' %} <a href="">{% trans 'Register' %}</a>
-{% endcomment %}
 
-{% comment %}
-<div class="span-18" style="text-align:center;">
-	<h1>{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}</h1>
-</div>
-{% endcomment %}
 <div class="span-14 first">
 	<div class="frame" style="background-color:#746651;">
 		<div class="space20" style="height:400px">
 			<p style="color:#fff;">
 				Main presentation area (video?).
 			</p>
-			{% comment %}
-			{% project_thumb projs.0 440 330 'margin: 10px 10px 0 0;' %}
-			{% endcomment %}
 		</div>
 	</div>
 	<div class="frame">
@@ -44,54 +33,19 @@ h1 {
 			</div>
 		</div>
 		<div class="space20">
-			<h4>First blog post</h4>
+			<h4>{{latest1.title|safe}}</h4>
 			<p>
-				Latest blog entries (requires a rewrite of the index view function).
+				{{latest1.summary|safe|truncatewords:45}}
 			</p>
+			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
 			<hr />
-			<h4>Second blog post</h4>
+			<h4>{{latest2.title|safe}}</h4>
 			<p>
-				{% lorem 1 p random %}
+				{{latest2.summary|safe|truncatewords:45}}
 			</p>
+			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
 		</div>
 	</div>
-	
-	{% comment %}
-	<div class="frame">
-		<div class="sliding_box_header">
-			<a href="#">Featured inside the site</a>
-		</div>
-		<div class="space20">
-			<p>...</p>
-		</div>
-	</div>
-	<div class="span-6 first">
-		<div class="frame">
-			<div class="space20">
-				<p>Map</p>
-				<br><br><br><br><br><br><br>...
-			</div>
-		</div>
-	</div>
-	<div class="span-8 last">
-		<div class="frame">
-			<div class="sliding_box_header">
-				<a href="#">Solutions that work</a>
-			</div>
-			<div class="space20">
-				<p>...</p>
-			</div>
-		</div>
-		<div class="frame">
-			<div class="sliding_box_header">
-				<a href="#">Inside the Dutch water sector</a>
-			</div>
-			<div class="space20">
-				<p>...</p>
-			</div>
-		</div>
-	</div>
-	{% endcomment %}
 </div>
 <div class="span-4 last">
 	<div class="frame" style="background-color:#F4F7F8">
@@ -123,48 +77,7 @@ h1 {
 			<h6 class="highlight">{% trans 'Governance' %}</h6>
 			<p class="nano">{% lorem 4 w random %}</p>			
 		</div>
-		
-		{% comment %}
-		<div class="sliding_box_header">
-			<a href="#">Our impact</a>
-		</div>
-		<div class="space20">
-			<ul class="small">
-				<li>{{ projs.count }} Project{{ projs.count|pluralize }}</li>
-				<li>People Served</li>
-				<li>Countries</li>
-				<li>{{ orgs.all.count }} Organisation{{ orgs.all.count|pluralize }}</li>
-			</ul>
-		</div>
-		{% endcomment %}
 	</div>
-
-	{% comment %}
-	<div class="frame" style="background-color:#D8F4FE;">
-		<div class="space20">
-			<form action="" method="get" accept-charset="utf-8">
-				<p>
-					Find projects and programmes<br>
-					<input type="text" name="some_name" value="" id="some_name">
-					<input type="submit" value="Find">
-				</p>
-			</form>
-		</div>
-	</div>
-	<div class="frame">
-		<div class="sliding_box_header">
-			<a href="#">DWS project showcase</a>
-		</div>
-		<div class="space20">
-			<p>...</p>
-		</div>
-	</div>
-	<div class="frame">
-		<div class="space20">
-			<p>Sign up for email updates</p>
-		</div>
-	</div>
-	{% endcomment %}
 </div>
 
 {% endblock content %}
