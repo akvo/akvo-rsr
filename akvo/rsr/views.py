@@ -98,21 +98,17 @@ def index(request):
     soup: the blog entry HTML
     img_src: the url to the first image of the blog entry
     '''
-    #from dbgp.client import brk
-    #brk(host="90.130.213.8", port=9000)
     
-    bandwidth = 'low'
-    host = 'unknown'
     try:
         # Create exception to avoid loading the blogs whe we run in debug mode.
         # Speeds up the home page considerably when pulling over the inteweb
+
         if settings.DEBUG:
             raise
-
-        #host = request.META.get('HTTP_HOST', 'none')
         
         current_site = Site.objects.get_current()
-        feed = feedparser.parse("http://%s/blog?feed=rss2" % current_site)
+        feed = feedparser.parse("http://%s/news?feed=rss2" % current_site)
+         
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
         try:
@@ -124,21 +120,7 @@ def index(request):
         try:
             img_src2 = soup('img')[0]['src']
         except:
-            img_src2 = ''
-        
-        le_feed = feedparser.parse("http://%s/blog?feed=rss2&cat=9" % current_site)
-        try:
-            le_latest1 = le_feed.entries[0]
-        except:
-            le_latest1 = {
-            'title': _('The blog is not available at the moment.'),
-        }
-        try:
-            le_latest2 = le_feed.entries[1]
-        except:
-            le_latest2 = {
-            'title': _('The blog is not available at the moment.'),
-        }            
+            img_src2 = ''       
     except:
         soup = img_src1 = img_src2 = ''
         le_latest1 = le_latest2 = {
@@ -148,31 +130,11 @@ def index(request):
             'author': '',
             'summary': _('The blog is not available at the moment.'),
         }
-    projs = Project.objects.published()
-    #if bandwidth == 'low':
-    #    #find all projects that need funding and have an image
-    #    #unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
-    #    if len(unfunded_visible_projs) > 7:
-    #        grid_projects = unfunded_visible_projs.order_by('?')[:8]
-    #    else:
-    #        grid_projects = projs.filter(current_image__startswith='db').order_by('?')[:8]
-    #else:
-    grid_projects = None
-    #stats = akvo_at_a_glance(p)
-    #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
     return {
         'latest1': latest1,
         'img_src1': img_src1,
         'latest2': latest2,
         'img_src2': img_src2,
-        'le_latest1': le_latest1,
-        'le_latest2': le_latest2,
-        'bandwidth': bandwidth,
-        'grid_projects': grid_projects,
-        'orgs': Organisation.objects,
-        'projs': projs,
-        'version': settings.URL_VALIDATOR_USER_AGENT,
-        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
         'site_section':'index',
     }
 
