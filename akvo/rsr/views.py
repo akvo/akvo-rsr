@@ -36,7 +36,7 @@ from registration.models import RegistrationProfile
 import random
 from decimal import Decimal
 
-from mollie.ideal.utils import query_mollie
+from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -922,17 +922,14 @@ def donate(request, p, engine, has_sponsor_banner=False):
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
         has_sponsor_banner = True
     if request.method == 'POST':
-        donate_form = InvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
-            if request.user.is_authenticated():
-                invoice.user = request.user
-            else:
-                invoice.name = cd['name']
-                invoice.email = cd['email']
+            invoice.name = cd['name']
+            invoice.email = cd['email']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
@@ -995,7 +992,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = InvoiceForm(user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(project=p, engine=engine)
     return render_to_response('rsr/donate_step2.html', 
                               {'donate_form': donate_form,
                                'payment_engine': engine,
@@ -1027,7 +1024,8 @@ def mollie_report(request):
         except:
             return HttpResonseServerError
         if mollie_response['paid'] == 'true':
-            invoice.amount_received = invoice.amount - Decimal('1.18')
+            mollie_fee = get_mollie_fee()
+            invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
         else:
             invoice.status = 2

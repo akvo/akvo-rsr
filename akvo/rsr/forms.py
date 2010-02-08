@@ -14,6 +14,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.sites.models import Site
 from django.db.models import get_model
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -164,10 +165,12 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         recording the org_id associated with the user
         
         """
+        site = Site.objects.get(id=settings.SITE_ID)
         new_user =  RegistrationProfile.objects.create_inactive_user(
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
-            email=self.cleaned_data['email']
+            email=self.cleaned_data['email'],
+            site=site
         )
         new_user.first_name = first_name=self.cleaned_data['first_name']
         new_user.last_name  = last_name=self.cleaned_data['last_name']
@@ -232,14 +235,11 @@ class ProjectAdminModelForm(forms.ModelForm):
 
 
 class InvoiceForm(forms.ModelForm):
-    def __init__(self, user, project, engine, *args, **kwargs): 
+    def __init__(self, project, engine, *args, **kwargs): 
         super(InvoiceForm, self).__init__(*args, **kwargs)
         self.project = project
         self.engine = engine
-        if not user.is_authenticated():
-            self.fields['name']  = forms.CharField(label=_('Full name'))
-            self.fields['email'] = forms.EmailField(label=_('Email address'))
-            self.fields['email2'] = forms.EmailField(label=_('Email address (confirm)'))
+        self.fields['email2'] = forms.EmailField()
         if engine == 'ideal':
             self.fields['bank'] = forms.CharField(max_length=4, 
                 widget=forms.Select(choices=get_mollie_banklist(empty_label=_('Please select your bank'))))
@@ -248,18 +248,18 @@ class InvoiceForm(forms.ModelForm):
         
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'is_anonymous')
+        fields = ('amount', 'name', 'email', 'is_anonymous')
 
     def clean(self):
-        cleaned_data = self.cleaned_data
+        cd = self.cleaned_data
         funding_needed = self.project.funding_still_needed()
-        if 'amount' in cleaned_data:
-            if cleaned_data['amount'] > funding_needed:
+        if 'amount' in cd:
+            if cd['amount'] > funding_needed:
                 raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
-        if 'email' in cleaned_data and 'email2' in cleaned_data:
-            if cleaned_data['email'] != cleaned_data['email2']:
+        if 'email' in cd and 'email2' in cd:
+            if cd['email'] != cd['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
-        return cleaned_data
+        return cd
 
 
 # based on http://www.djangosnippets.org/snippets/1008/

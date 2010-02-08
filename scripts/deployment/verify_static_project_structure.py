@@ -6,12 +6,22 @@
 
 import os, sys
 
+MODE = 'NORMAL'
+
 if len(sys.argv) > 0 and sys.argv[-1] == 'ci_mode':
     print '>> running script in continuous integration mode'
+    MODE = 'INTEGRATION'
     from static_project_structure_ci import *
 else:
     from static_project_structure import *
 
+def teamcity_warning(message):
+    message = message.replace("'", "|'").replace("]", "|]")
+    return "##teamcity[message text='%s' status='WARNING']" % (message)
+
+def display_warning(message):
+    warning_message = ">> [warning] %s" % (message)
+    print teamcity_warning(warning_message) if MODE == 'INTEGRATION' else warning_message
 
 def ensure_directory_exists(dir_path):
     full_path = os.path.realpath(dir_path)
@@ -28,10 +38,10 @@ def ensure_symlink_exists(link_path, destination_path):
         os.symlink(destination_path, full_link_path)
     elif os.path.lexists(link_path):
         if not os.path.islink(link_path):
-            print ">> [warning] path exists but isn't a symlink: [%s]" %(full_link_path)
+            display_warning("path exists but isn't a symlink: [%s]" % (full_link_path))
         elif os.readlink(link_path) != destination_path:
-            print ">> [warning] symlink exists but differs: [%s -> %s]" % (link_path, os.readlink(link_path))
-            print ">>                            should be: [%s -> %s]" % (link_path, destination_path)
+            display_warning("symlink exists but differs: [%s -> %s]" % (link_path, os.readlink(link_path)))
+            display_warning("                 should be: [%s -> %s]" % (link_path, destination_path))
         elif os.path.islink(link_path):
             print ">> symlink exists:         [%s -> %s]" % (link_path, os.readlink(link_path))
 

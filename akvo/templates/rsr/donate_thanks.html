@@ -21,12 +21,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#donate_step_box {
 		background: #fff url('{{MEDIA_URL}}img/donate/step_box_bkgd.png') repeat-x;
 		border:1px solid #DFE0E6;
-		height:55px;
 		margin-bottom:20px;
 		margin-left:auto;
 		margin-right:auto;
 		margin-top:20px;
-		/*width:755px;*/
 		width:785px;
 	}
 	
@@ -34,19 +32,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		background: transparent url('{{MEDIA_URL}}img/donate/step_box_line.png') repeat-x 0px 20px;
 		margin-left:auto;
 		margin-right:auto;
-		/*width:680px;*/
 		width:750px;
 		height:40px;
 	}
 	.donate_steps {
 		color:#8F94A3;
 		float:left;
-		height:30px;
 		margin-right:10px;
 		padding-top:30px;
-		/*width:128px;*/
 		width:140px;
 		text-align:center;
+		padding-bottom:10px;
 		}
 		
 	.active_donate_step {
@@ -95,9 +91,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 			<div id="donate_step_5" class="donate_steps active_donate_step">
 				<p>{% trans 'Thank you!' %}</p>
-			</div>
-			<div class="clear">	</div>
+			</div>	
 		</div>
+		<div class="clear">	</div>
 	</div>
 	
 	<div style="width:50%; float:left; margin-top:10px;">
@@ -111,13 +107,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div style="margin:0; padding:0; margin-top:20px;">
 		<div>
 			<h3 style="padding-left:0; ">{% trans 'Transaction information' %}</h3>
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<p class="marchGrey">{% trans 'Akvo transaction number' %}:</p><br />
 				<p class="marchGrey">{% trans 'Date and time' %}:</p>
 			</div>
 			<div style="float:left;">
-				<p style="font-weight:bold; color:#00960F; font-size:1.6em; margin-top:14px;">{{ invoice.id }}</p><br />
-				<p style="margin-top:2px;">{{ invoice.time|date:"l, j F Y" }}</p>
+				<p style="font-weight:bold; color:#00960F; font-size:1.6em; margin-top:0px;">{{ invoice.id }}</p><br />
+				<p style="margin-top:0px;">{{ invoice.time|date:"l, j F Y" }}</p>
 			</div>
 			<div style="clear:both;"> &nbsp; </div>
 			
@@ -137,7 +133,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</ul>
 			</div>
 			<h3 style="padding-left:0;">{% trans 'Your information' %}</h3>
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">				
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">				
 				<p class="marchGrey">{% trans 'Your name' %}:</p>
 				<p class="marchGrey">{% trans 'Your email' %}:</p>
 				{% ifequal invoice.engine 'ideal'  %}
@@ -155,7 +151,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="clear:both;"> &nbsp; </div>
 	
 			<h3 style="padding-left:0;">{% trans 'Project to which you donated' %}</h3>
-			<div style="float:left; width:100px; text-align:right; padding-right:10px;">				
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">				
 				<p class="marchGrey">{% trans 'Project name' %}:</p>
 				<p class="marchGrey">{% trans 'Location' %}:</p>
 				<p class="marchGrey">{% trans 'Akvo ref' %}:</p>
@@ -180,7 +176,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="clear:both;"> &nbsp; </div>
 			
 			<h3 style="padding-left:0;">{% trans 'Amount you donated' %}</h3>
-			<div style="float:left; width:100px; text-align:right; padding-right:10px; padding-top:3px;">
+			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:3px;">
 				<p class="marchGrey"> {% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
