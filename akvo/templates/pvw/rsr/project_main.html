@@ -1,6 +1,12 @@
 {% extends "rsr/project_base.html" %}
 {% load i18n rsr_tags rsr_filters %}
 
+{% block inline_styles %}
+#panel {
+    display: none;
+}
+{% endblock inline_styles %}
+
 {% block project_content %}
 <div class="span-14 first last">
 	<div class="frame">
@@ -16,12 +22,12 @@
                 <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
                 <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
             </ul>
-            <div style="width: 170px; float:right;">
-                <div class="space20">
-                    <h2>{% trans 'Location' %}</h3>
+            <div style="width: 170px; margin-top: 20px; float:right;">
+                <div class="space20" style="">
+                    <h2>{% trans 'Location' %}</h2>
                     {% map_thumb p 140 140 '' %}
                     <p class="tiny" style="margin-top:5px;">
-                        {{p.country.continent}}<br>
+                        {{p.country.get_continent_display}}<br>
                         {{p.city}}, {{p.country}}<br>
                         {{p.longitude}} {{p.latitude}}
                     </p>
@@ -67,7 +73,7 @@
             <div id="tab_details" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
                     <h2>{% trans 'Details of current status' %}</h2>
-                    <p">
+                    <p>
                         {{p.current_status_detail|capfirst|linebreaks}}
                     </p>
                     <h2>{% trans 'Details of project plan' %}</h2>
@@ -99,18 +105,26 @@
 </div>
 {# lower area starts #}
 <div class="span-10 first">
-	<div id="container-2">
+    <div id="container-2">
 		<ul>
             <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
             <li><a href="#tab_comments"><span>{% trans 'Comments' %}</span></a></li>
         </ul>
-		<div style="border-left:1px solid #BBBBC5; border-right:1px solid #BBBBC5; border-bottom:1px solid #BBBBC5;">			
-			<div id="tab_updates" class="tab">
-				<div class="space20">
-					<div style="float:right; width:100px;">
-						<input type="button" name="some_name" value="Add update" id="some_name" style="margin-left:auto; margin-right:0;">
-					</div>
-					<h2>{% trans 'Updates' %}</h2>
+        <div style="border:1px solid #BBBBC5; border-top: 0;">
+            <div id="tab_updates" class="tab">
+                <div class="space20">
+                    <p class="clear">
+                        {% if can_add_update %}
+                            <a href="{% url akvo.rsr.views.updateform p.id %}"
+                               style="float:right;">
+                                    {% trans 'Add update' %}
+                            </a>
+                        {% endif %}
+                        <a href="/rsr/rss/updates/{{p.id}}/"
+                           style="background: url('{{MEDIA_URL}}base/img/icon_rss.gif') no-repeat right; padding-right: 1em;">
+                                {% trans 'Subscribe via RSS' %}
+                        </a>
+                    </p>
 					{# Updates start #}
 					{% if updates %}
 						{% for u in updates %}
@@ -121,7 +135,7 @@
 				            </p>
 							<br>
 							{% ifequal u.photo_location 'B' %}
-			                	{% update_thumb u 240 180 %}								
+			                	{% update_thumb u 480 360 %}							
 				            {% endifequal %}
 				            {% if u.text %}
 				           	<p class="small" style="margin:0; padding:0;">
@@ -129,8 +143,8 @@
 							</p>
 				            {% endif %}
 				            {% ifequal u.photo_location 'E' %}
-								{# {% update_thumb u 300 225 %} #}
-				                {% update_thumb u 240 180 %}
+								{% update_thumb u 400 300 %}
+				                {#% update_thumb u 240 180 %#}
 				            {% endifequal %}
 							{% if not forloop.last %}
 							<hr />	
@@ -139,20 +153,55 @@
 						{% endfor %}
 					{% else %}
 						{% trans 'No updates yet.' %}
-					{% endif %}
-				</div>
-			</div>
-			<div id="tab_comments" class="tab">
-				<div class="space20">
-					<h2>Comments</h2>
-				</div>
-	        </div>
-			<div style="clear:left">&#32;</div>
-		</div>
-	</div>
+					{% endif %}                    
+                </div>
+            </div>
+            <div id="tab_comments" class="tab">
+                <div class="space20">
+                    <p class="">
+                    <a class="btn-slide" style="float:right" href="#" onclick="this.blur();"><span>{% trans 'Add comment' %}</span></a>
+                    </p>
+                    <div class="clear" style="">&nbsp;</div>
+                    <div id="panel">
+                        {% if not user.username %}
+                            <p>{% trans 'You must be signed in to add a comment' %}</p>
+                            <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
+                        {% else %}
+                            <form enctype="multipart/form-data" method="post" action="comment">
+                                {{form.comment}}
+                                <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a></p>
+                                <input type="submit" value="{% trans 'Submit' %}" class="submit" />
+                            </form>
+                        {% endif %}
+                    </div> <!-- #panel -->        
+                    {% if comments %}            
+                        {% for c in comments %}    
+                            <div style="float:left; width: 90px; margin: 3px 10px 0px 0px;">
+                                <img src="{{MEDIA_URL}}base/img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" />
+                                <p style="margin-top: 10px">{{c.user.get_full_name}}</p>
+                            </div>						
+                            <div style="margin-left: 110px">
+                                <p class="lightx1">{{c.time|date:"Y-m-d H:i"}}</p>
+                                <p>{{c.comment|linebreaks}}</p>
+                            </div>
+                            <br />
+                            <p style="text-align:right">
+                                <a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
+                            <hr style="clear: both"/>
+                        {% endfor %}
+                        <!--<p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">{% trans 'Older comments' %}</a></p>-->
+                        <p class="lightx1">{% trans 'The comments are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
+                    {% else %}
+                        <span style="padding-left: 20px;" class="lightx1">{% trans 'No comments yet.' %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 <div class="span-4 last">
-	<p class="tiny grey" style="margin:0;padding:0;margin-bottom:10px;text-align:right;">
+	<p class="tiny grey" style="margin:0;padding:0;margin-bottom:14px;text-align:right;">
 		Akvo Ref: {{ p.id }}
 	</p>
 	<div class="frame" style="">
@@ -190,6 +239,13 @@ $(function(){
 });
 $(function(){
 	$('#container-2 > ul').tabs();
+});
+
+$(document).ready(function(){
+    $(".btn-slide").click(function(){
+        $("#panel").slideToggle("slow");
+        $(this).toggleClass("active"); return false;
+    });
 });
 
 </script>

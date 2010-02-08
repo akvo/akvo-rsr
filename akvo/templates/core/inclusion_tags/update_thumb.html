@@ -3,14 +3,23 @@
 {% thumbnail update.photo wxh autocrop sharpen as update_image %}
 
 {% if update_image %}
-    <img src="{{update_image}}" alt="{{update.photo_caption}}" style="margin: 10px 10px 5px 20px" />
-    <p class="small lightx1">
-        {% if update.photo_caption %}
-            {{update.photo_caption}}
-        {% endif %}
+    <div style="width: {{width}}px; height:{{update_image.height}}px; text-align: center;">
+        <img
+            src="{{update_image}}"
+            alt="{{update.photo_caption}}"
+            style="{{img_style}}"
+        />
+    </div>
+    <div style="width: {{width}}px;">
         {% if update.photo_credit %}
-            {% trans 'Photo credit' %}: {{update.photo_credit}}
+            <p class="small grey" style="float: right;">
+                {% trans 'Photo credit' %}: {{update.photo_credit}}
+            </p>
         {% endif %}
-    </p>
+        {% if update.photo_caption %}
+            <p class="small grey">
+                {{update.photo_caption}}
+            </p>
+        {% endif %}
+    </div>
 {% endif %}
-
