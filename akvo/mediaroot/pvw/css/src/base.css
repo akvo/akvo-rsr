@@ -1,14 +1,21 @@
 body {
     /*
     background-color:#F6F8F9;
-    background: #F6F8F9 url('../../img/base/body_top.png') repeat-x fixed 0px 35px;
+    background: #F6F8F9 url('../../img/base/body_top.png') repeat-x fixed 0px 35px;        
     */
     background-color:#fff;
     }
 
 .container {
     padding-bottom:80px;
+    }
+    
+#maincontainer {
     padding-top:55px;
+    }
+
+#footer {
+    padding-top:20px;
     }
     
 .frame {
