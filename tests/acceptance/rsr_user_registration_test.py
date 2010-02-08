@@ -31,8 +31,8 @@ class RSRUserRegistrationTest(SeleniumTestCase):
                                               "Step 1 of 2",
                                               "Select the organisation that you belong to"])
 
-    def test_03_register_page_warns_if_organisation_is_not_selected(self):
-        """>> 3. Register page warns if organisation is not selected"""
+    def test_03_organisation_selection_page_warns_if_organisation_is_not_selected(self):
+        """>> 3. Organisation selection page warns if organisation is not selected"""
         self.open_home_page_and_start_user_registration()
         self.navigator.click_submit_button() # Continue button
 
