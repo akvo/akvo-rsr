@@ -214,14 +214,21 @@ class Organisation(models.Model):
     def __unicode__(self):
         return self.name
 
+    #def partner_types(self):
+    #    pt = ""
+    #    if self.field_partner: pt += "F"
+    #    if self.support_partner: pt += "S"
+    #    if self.sponsor_partner: pt += "P"
+    #    if self.funding_partner: pt += "M"
+    #    return pt
+
     def partner_types(self):
-        pt = ""
-        if self.field_partner: pt += "F"
-        if self.support_partner: pt += "S"
-        if self.sponsor_partner: pt += "P"
-        if self.funding_partner: pt += "M"
-        return pt
-    
+        """
+        return a list all ProjectPartner partner_types the org has
+        """
+        partners = ProjectPartner.objects.filter(partner=self)
+        return list(set([partner.get_partner_type_display() for partner in partners]))
+        
     def has_water_projects(self):
         if self.all_projects().filter(category_water__exact=True):
             return True
@@ -811,11 +818,11 @@ if settings.PVW_RSR: #pvw-rsr
 
     class ProjectPartner(models.Model):
         CHOICES_PARTNER_TYPE = (
-            ('P', _('Partner')),
-            ('L', _('Lead partner')),
-            ('F', _('Funder')),    
-            ('I', _('Initiator')),
-            ('C', _('Contractor')),
+            (u'P', _('Partner')),
+            (u'L', _('Lead partner')),
+            (u'F', _('Funder')),    
+            (u'I', _('Initiator')),
+            (u'C', _('Contractor')),
         )        
         partner                 = models.ForeignKey(Organisation, related_name='partner_projects',)
         project                 = models.ForeignKey(Project, related_name='project_partners',)
@@ -828,6 +835,7 @@ if settings.PVW_RSR: #pvw-rsr
     
         def __unicode__(self):
             return self.partner.name
+
 
     class Location(models.Model):
         project                 = models.ForeignKey(Project, related_name='locations',)
