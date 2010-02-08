@@ -16,7 +16,7 @@ class SeleniumTestCase(TestCase):
         try:
             cls.selenium = selenium(SELENIUM_RC_HOST, SELENIUM_RC_PORT, BROWSER_ENVIRONMENT, SITE_UNDER_TEST)
             cls.selenium.start()
-        except Exception as exception:
+        except Exception, exception:
             print ">> Unable to start Selenium RC client: %s" % (exception)
             raise exception
 
@@ -24,7 +24,7 @@ class SeleniumTestCase(TestCase):
     def teardown_class(cls):
         try:
             cls.selenium.stop()
-        except Exception as exception:
+        except Exception, exception:
             print ">> Unable to stop Selenium RC client: %s" % (exception)
 
     def setUp(self):
