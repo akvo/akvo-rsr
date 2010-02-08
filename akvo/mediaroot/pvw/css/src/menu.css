@@ -41,6 +41,8 @@
     overflow: hidden;
     width: 100px;
     padding-top:3px;
+    font-size:0.875em;
+    font-weight:bold;
     }
     
 #mainmenu li a:hover {    

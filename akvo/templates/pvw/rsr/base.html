@@ -70,6 +70,15 @@
 <div style="border-top:1px solid #ccc; width:100%"></div>
 <div id="footer" class="container">
 	<div class="span-18">
+		<p class="grey small"> 
+			<a href="#">{% trans 'Site content under Open Licence' %}</a> | 
+			<a href="#">{% trans 'Terms of use' %}</a> | 
+			<a href="#">{% trans 'Privacy policy' %}</a> | 
+			<a href="#">{% trans 'string' %}</a>
+		</p>
+	</div>
+	{% comment %}
+	<div class="span-18">
 		<h4>About DutchWaterSector.com</h4>
 		<p class="grey small">
 			We're a not-for-profit foundation headquartered in the Netherlands. We built this site..<br> 
@@ -136,6 +145,7 @@
 			</p>
 		</div>
 	</div>
+	{% endcomment %}
 </div>
 {% endblock footer %}
 
