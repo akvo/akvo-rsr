@@ -35,7 +35,6 @@
     color: #445095;
     display: block;
     float: left;
-    height: 34px;
     height: 26px;
     margin:0;
     overflow: hidden;
@@ -65,9 +64,13 @@
     /*color:#1DAAFB;*/
     }
 
+#mainmenu li:first-child > a > span { 
+    color:#1DAAFB; 
+    text-shadow: rgb(255, 255, 255) 1px 1px 0px;
+    }
+
 #mainmenu_left {
     border-left: 1px solid #ACACBA;
-    /*width: 170px !important;*/
     width: 135px !important;
     }
     
@@ -75,6 +78,10 @@
     margin-top:2px;
     }
     
+.menu-127 a {
+    border-left: 1px solid #ACACBA !important;
+    width: 135px !important;
+}
 
 #mainmenu_search {
     float: left;
@@ -90,7 +97,6 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    height: 35px;
     height: 30px;
     padding-top: 4px;
     margin-top:0;
@@ -109,5 +115,11 @@
     }
 #signInMenuItem span {
     color:#38933A !important;
+}
+
+#header_menu_right {
+    border-right:1px solid #ACACBA; 
+    float:right; 
+    height:38px;
 }
     
