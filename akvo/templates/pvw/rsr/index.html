@@ -13,23 +13,31 @@ h1 {
 	<div class="frame" style="background-color:#746651;">
 		<div class="space20" style="height:400px">
 			<p style="color:#fff;">
-				Main presentation area (video?).
+				Main presentation area (video).
 			</p>
 		</div>
 	</div>
-	<div class="frame">
-		<div class="space15">
-			<p>
-				{% lorem 13 w random %}
+	<div class="frame" id="left_news" style="padding-top:15px">
+		<div class="span-3 first" style="text-align:right;">
+			<p style="color:#DF5B18; margin-bottom:15px;">
+				{% lorem 1 w random %}:
 			</p>
 		</div>
+		<div class="span-10 first">
+			<p style="margin-bottom:15px;">
+				<a href="#">
+				{% lorem 10 w random %}
+				</a>
+			</p>
+		</div>
+		<div class="clear"></div>
 	</div>
 	
 	<div class="frame">
 		<div class="sliding_box_header">
 			<a href="#">{% trans 'Recent contributions' %}</a>
 			<div style="float:right; width:200px; height:17px; overflow:hidden; text-align:right; margin-right:15px;">
-				<a class="small" href="#">{% trans 'Subscribe via RSS' %}</a>
+				<a class="small" href="/news/?feed=rss2">{% trans 'Subscribe via RSS' %}</a>
 			</div>
 		</div>
 		<div class="space20">
@@ -50,31 +58,31 @@ h1 {
 <div class="span-4 last">
 	<div class="frame" style="background-color:#F4F7F8">
 		<div class="space20">
-			<h5 class="highlight">
-			The Dutch water sector: Resourcefulness and cooperation around the world
-			</h5>
-			<hr>
+			<p class="highlight" style="font-size:1.125em; margin-bottom:10px;">
+			The Dutch water sector:<br>Resourcefulness and cooperation around the world
+			</p>
+			<hr style="margin-bottom:10px">
 			<p class="tiny">
 				<span class="bold">{% trans 'The history of Dutch Water' %}</span><br />
 				{% lorem 10 w random %}
 			</p>
-			<hr style="margin-bottom:5px; ">
-			<h4 class="highlight">{% trans 'Focus Areas' %}</h4>
+			<hr style="margin-bottom:10px">
+			<p class="highlight" style="font-size:1.05em; margin-bottom:1em;">{% trans 'Focus Areas' %}</p>
 			
 			<div style="background-color:grey; height:122px;"></div>
-			<h6 class="highlight">{% trans 'Clean water' %}</h6>
-			<p class="nano">{% lorem 4 w random %}</p>
+			<p class="highlight small no_b_marg">{% trans 'Clean water' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>
 			
 			<div style="background-color:grey; height:122px;"></div>
-			<h6 class="highlight">{% trans 'Safety' %}</h6>
-			<p class="nano">{% lorem 4 w random %}</p>
+			<p class="highlight small no_b_marg">{% trans 'Safety' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>
 			
 			<div style="background-color:grey; height:122px;"></div>
-			<h6 class="highlight">{% trans 'Sharing water' %}</h6>
-			<p class="nano">{% lorem 4 w random %}</p>
+			<p class="highlight small no_b_marg">{% trans 'Sharing water' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>
 			
 			<div style="background-color:grey; height:122px;"></div>
-			<h6 class="highlight">{% trans 'Governance' %}</h6>
+			<p class="highlight small no_b_marg">{% trans 'Governance' %}</p>
 			<p class="nano">{% lorem 4 w random %}</p>			
 		</div>
 	</div>
