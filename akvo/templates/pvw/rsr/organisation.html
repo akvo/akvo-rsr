@@ -11,7 +11,7 @@
                 <p class="grey">{{o.long_name}}</p>
             </div>
             <div style="width: 33%; float: right;">
-                <div class="space15">
+                <div class="space20">
                     <div style="padding-right: 20px">
                     {% if o.contact_person %}
                     <p class="nano-lede" style="margin-bottom:0;">{% trans 'Contact' %}</p>
@@ -46,8 +46,8 @@
                     </div>
                 </div>
             </div>
-            <div style="width: 33%; float: right;">
-                <div class="space15 border">
+            <div style="width: 34%; float: right;">
+                <div class="space20 border">
                     <div style="padding-right: 20px">
                     {% map_thumb o 200 200 'margin-bottom: 20px;' %}
                     <p class="nano-lede" style="margin-bottom:0;">{% trans 'Location' %}</p>
@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div style="width: 33%; float: right;">
-                <div class="space15 border">
+                <div class="space20 border">
                     <div style="padding-right: 20px">
                         {% org_logo o 200 150 'margin: 10px 0;' %}
                         {% if o.partner_types %}
@@ -100,8 +100,35 @@
     </div>
 	<div class="span-4 last">
         <div class="frame">
-            <div class="space15">
-                Pellentesque nibh felis, eleifend id, commodo in, interdum vitae, leo. Praesent eu elit. Ut eu ligula. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Maecenas elementum augue nec nisl. Proin auctor lorem at nibh. Curabitur nulla purus, feugiat id, elementum in, lobortis quis, pede. Vivamus sodales adipiscing sapien. Vestibulum posuere nulla eget wisi. Integer volutpat ligula eget enim. Suspendisse vitae arcu. Quisque pellentesque. Nullam consequat, sem vitae rhoncus tristique, mauris nulla fermentum est, bibendum ullamcorper sapien magna et quam. Sed dapibus vehicula odio. Proin bibendum gravida nisl. Fusce lorem. Phasellus sagittis, nulla in hendrerit laoreet, libero lacus feugiat urna, eget hendrerit pede magna vitae lorem. Praesent mauris.
+            <div class="sliding_box_header">
+                <span>{% trans 'Participant activities' %}</span>
+            </div>
+            <div class="space20">
+                <p class="small"><strong>{{o.all_projects.count}} Total projects</strong></p>
+            </div>
+            <div class="space10">
+                <hr />
+            </div>
+            <div class="space20">
+                <p class="small"><strong>Project partners</strong></p>
+                <p class="small">
+                    {% for partner in o.my_partners.distinct %}
+                        <a href="{% url org_detail partner.pk %}">{{partner}}</a><br/>
+                    {% endfor %}
+                </p>
+            </div>
+            
+        </div>
+        <div class="frame">
+            <div class="sliding_box_header">
+                <a href="{% url filtered_projectlist o.pk %}">{% trans 'Current projects' %}</a>
+            </div>
+            <div class="space20">
+                <p class="small">
+                    {% for project in o.all_projects %}
+                        <a href="{% url project_main project.pk %}">{{project}}</a><br/>
+                    {% endfor %}
+                </p>
             </div>
         </div>
     </div>
