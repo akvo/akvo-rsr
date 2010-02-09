@@ -125,35 +125,7 @@
                                 {% trans 'Subscribe via RSS' %}
                         </a>
                     </p>
-					{# Updates start #}
-					{% if updates %}
-						{% for u in updates %}
-							<h3>{{u.title}}</h3>
-				            <p class="small" style="margin:0; padding:0">
-				                <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
-				                {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-				            </p>
-							<br>
-							{% ifequal u.photo_location 'B' %}
-			                	{% update_thumb u 480 360 %}							
-				            {% endifequal %}
-				            {% if u.text %}
-				           	<p class="small" style="margin:0; padding:0;">
-								{{u.text|smart_truncate:400|linebreaks}}
-							</p>
-				            {% endif %}
-				            {% ifequal u.photo_location 'E' %}
-								{% update_thumb u 400 300 %}
-				                {#% update_thumb u 240 180 %#}
-				            {% endifequal %}
-							{% if not forloop.last %}
-							<hr />	
-							{% endif %}
-
-						{% endfor %}
-					{% else %}
-						{% trans 'No updates yet.' %}
-					{% endif %}                    
+                    {% updates updates %}
                 </div>
             </div>
             <div id="tab_comments" class="tab">

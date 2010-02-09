@@ -515,7 +515,7 @@ def projectupdates(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
     can_add_update = p.connected_to_user(request.user)
-    return {'p': p, 'updates': updates, 'can_add_update':can_add_update, 'project_section':'updates' }
+    return {'p': p, 'updates': updates, 'can_add_update':can_add_update, 'all_updates': True, 'project_section':'updates' }
     
 @render_to('rsr/project_comments.html')
 def projectcomments(request, project_id):
@@ -725,7 +725,8 @@ def projectmain(request, project_id):
         'updates': updates, 
         'comments': comments, 
         'form': form, 
-        'can_add_update': can_add_update, 
+        'can_add_update': can_add_update,
+        'all_updates': False,
         'site_section': 'projects' 
         }
 
