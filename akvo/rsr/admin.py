@@ -64,12 +64,19 @@ class OrganisationAdminForm(forms.ModelForm):
     #    super(OrganisationAdminForm, self).__init__(*args, **kwargs)
 
 class OrganisationAdmin(admin.ModelAdmin):
-    fieldsets = (
-        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-        (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
-        (_(u'About the organisation'), {'fields': ('description', )}),
-    )    
+    if settings.PVW_RSR:
+        fieldsets = (
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            (_(u'About the organisation'), {'fields': ('description', )}),
+        )    
+    else:
+        fieldsets = (
+            (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            (_(u'About the organisation'), {'fields': ('description', )}),
+        )    
     list_display = ('name', 'long_name', 'website', 'partner_types', )
     form = OrganisationAdminForm
 
