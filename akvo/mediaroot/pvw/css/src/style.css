@@ -7,17 +7,19 @@
 
 
 .sliding_box_header {
-    background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;
-    border-bottom: 1px solid #ccc;
-    padding:5px; 
+    /*background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;*/
+    background-color:#dfdfe3;
+    /*border-bottom: 1px solid #ccc;*/
+    padding:8px 5px; 
 }
 
 .sliding_box_header a, .sliding_box_header span {
     margin-left:15px; 
+    color:#00008b;
 }
 
 .sliding_box_header a {
-    text-shadow: #fff 1px 1px 0px;
+    text-shadow: #eee 1px 1px 0px;
 }
 
 #proj_list_table {

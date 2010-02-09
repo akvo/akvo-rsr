@@ -1,8 +1,6 @@
 #header {
-	/*background: #F3F6FA url('../../img/base/header_shadow.png') repeat-x bottom;*/	
 	background: #f1f1f1 url('../../img/base/mainnav/mainnav_bottom.png') repeat-x bottom;
-	height: 42px;
-	height: 42px;
+	height: 37px;
 	left: 0; /* IE 7 */
 	position: fixed;
 	top: 0;
@@ -14,7 +12,7 @@
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-    height: 43px;
+    height: 38px;
     width: 975px;
     }
 
@@ -38,7 +36,7 @@
     display: block;
     float: left;
     height: 34px;
-    height: 31px;
+    height: 26px;
     margin:0;
     overflow: hidden;
     width: 100px;
@@ -54,11 +52,11 @@
     
 #mainmenu li a span { 
     display: block;
-    height:34px;
+    height:29px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    padding-top:6px;
+    padding-top:2px;
     text-shadow: #fff 1px 1px 0px;
     }
     
@@ -84,7 +82,7 @@
     width: 130px !important;
     border-right: 1px solid #ACACBA;
     margin-left: 0;
-    height:38px;
+    height:32px;
     }
 
 #mainmenu_search span {
@@ -93,6 +91,7 @@
     margin-right: auto;
     text-align: center;
     height: 35px;
+    height: 30px;
     padding-top: 4px;
     margin-top:0;
     margin-bottom:0;
