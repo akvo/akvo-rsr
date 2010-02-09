@@ -166,6 +166,18 @@ def project_list_pagination(context, page, org=None):
         'org'       : org,
     }
 
+@register.inclusion_tag('inclusion_tags/updates.html', takes_context=True)
+def updates(context, updates, width=480, height=360):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'],
+        'request'   : context['request'],
+        'updates'   : updates,
+        'width'     : width,
+        'height'    : height,
+    }
+
 from django.conf import settings
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def page_styles(context,):
