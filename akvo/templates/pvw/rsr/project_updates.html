@@ -1,0 +1,36 @@
+{% extends "rsr/project_base.html" %}
+
+{% load i18n rsr_tags thumbnail humanize %}
+
+{% block project_content %}
+
+    <div class="span-14 first last">
+        <div class="frame">
+            <div class="space20">
+                <h1 style="margin:0; padding:0; color:#00ABFA;">{{p.name}}</h1>
+                <p class="grey">{{p.subtitle}}</p>
+            </div>
+        </div>
+        <div class="frame">
+            <div class="sliding_box_header">
+                <span>{% trans 'All updates' %}</span>
+            </div>
+            <div class="space20">
+                <p class="clear">
+                    {% if can_add_update %}
+                        <a href="{% url akvo.rsr.views.updateform p.id %}"
+                           style="float:right;">
+                                {% trans 'Add update' %}
+                        </a>
+                    {% endif %}
+                    <a href="/rsr/rss/updates/{{p.id}}/"
+                       style="background: url('{{MEDIA_URL}}base/img/icon_rss.gif') no-repeat right; padding-right: 1em;">
+                            {% trans 'Subscribe via RSS' %}
+                    </a>
+                </p>
+                {% updates updates 706 529 %}
+            </div>
+        </div>
+    </div>
+
+{% endblock project_content %}
