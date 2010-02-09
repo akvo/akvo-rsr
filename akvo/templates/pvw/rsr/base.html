@@ -3,7 +3,7 @@
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
 	<meta charset="UTF-8" />
-	<meta name="description" content="{% trans 'The Dutch water sector: Resourcefulness and cooperation around the world' %}" />
+	<meta name="description" content="{% trans 'Dutch Water Sector' %}" />
 	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
 	<title>{% block title %}{% trans 'The Dutch water sector' %}{% endblock %}</title>
 	
@@ -67,21 +67,25 @@
 </div>
 
 {% block footer %}
+{% comment %}
 <div style="border-top:1px solid #ccc; width:100%"></div>
-<div id="footer" class="container">
-	<div class="span-14 first">
-		<p class="grey small"> 
-			{% trans 'Site content under' %} 
-			<a href="/web/open_license">{% trans 'Open Licence' %}</a> | 
-			<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a> | 
-			<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a> | 
-			<a href="/rsr/admin">{% trans 'Admin' %}</a>
-		</p>
-	</div>
-	<div class="span-4 last" style="text-align:right;">
-		<p class="grey small"> 
-			<a href="/web/contact">{% trans 'Contact us' %}</a> 
-		</p>
+{% endcomment %}
+<div id="footer_area">
+	<div id="footer" class="container">
+		<div class="span-14 first">
+			<p class="grey small"> 
+				{% trans 'Site content under' %} 
+				<a href="/web/open_license">{% trans 'Open Licence' %}</a> | 
+				<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a> | 
+				<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a> | 
+				<a href="/rsr/admin">{% trans 'Admin' %}</a>
+			</p>
+		</div>
+		<div class="span-4 last" style="text-align:right;">
+			<p class="grey small"> 
+				<a href="/web/contact">{% trans 'Contact us' %}</a> 
+			</p>
+		</div>
 	</div>
 </div>
 {% endblock footer %}

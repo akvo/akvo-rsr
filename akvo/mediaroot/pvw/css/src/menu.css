@@ -1,5 +1,6 @@
 #header {
-	background: #F3F6FA url('../../img/base/header_shadow.png') repeat-x bottom;
+	/*background: #F3F6FA url('../../img/base/header_shadow.png') repeat-x bottom;*/	
+	background: #f1f1f1 url('../../img/base/mainnav/mainnav_bottom.png') repeat-x bottom;
 	height: 42px;
 	height: 42px;
 	left: 0; /* IE 7 */
@@ -37,6 +38,7 @@
     display: block;
     float: left;
     height: 34px;
+    height: 31px;
     margin:0;
     overflow: hidden;
     width: 100px;

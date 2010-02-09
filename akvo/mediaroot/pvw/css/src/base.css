@@ -18,6 +18,10 @@ body {
     padding-top:20px;
     }
     
+#footer_area {
+    background: #F6F8F9 url('../../img/base/pvw-bkgd-body-to-footer.png') repeat-x;
+    }
+    
 .frame {
     border:1px solid #BCBCC6;
     margin-bottom:15px;
