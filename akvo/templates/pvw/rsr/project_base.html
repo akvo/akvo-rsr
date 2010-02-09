@@ -8,11 +8,15 @@
 </div>
 <div class="span-4 last">
 	<div id="proj_summary" class="frame">
-		<div class="space10">
+		<div class="space20">
 			<h2>Project status</h2>
             <p>{{p.show_status}}</p>
             {% ifnotequal p.start_date None %}
-                <hr />
+                </div>
+                <div class="space10">
+                        <hr />
+                </div>
+                <div class="space20">
                 <h2>Timeline</h2>
                 {% ifnotequal p.start_date None %}
                     <p>{% trans 'Start date:' %} {{p.start_date}}</p>
@@ -25,8 +29,10 @@
 	</div>
 	
 	<div class="frame">
-		<div class="space10">
-			<h3>Page Tools</h3>
+        <div class="sliding_box_header">
+            <span>{% trans 'Page tools' %}</span>
+        </div>
+		<div class="space20" style="margin-top: 20px;">
 			<ul class="small">
 				<li><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></li>
 				<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
@@ -36,24 +42,29 @@
 	</div>
 
 	<div class="frame">
-		<div class="space10">
-			<h3>Partners</h3>
-			<div style="text-align:center;">
-				{% for o in p.all_partners  %}
-					{% if not forloop.first %}
-						<hr style="margin-top:10px;" />
-					{% endif %}
-					<a href="{% url akvo.rsr.views.orgdetail o.id %}">
-						{% org_logo o 100 75 'margin-left:auto; margin-right:auto;' %}
-					</a>
-                    <br /><a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
-                    <br />{{o.city}}, {{o.country}}
-                    <br />
-                    {% for type in o.partner_projects.all %}
-                        {{type.get_partner_type_display}}{% if not forloop.last %},{% endif %}
+        <div class="sliding_box_header">
+            <span>{% trans 'Partners' %}</span>
+        </div>
+		<div class="space20">
+            {% for o in p.all_partners  %}
+                {% if not forloop.first %}
+        </div>
+        <div class="space10">
+            <hr style="margin-top:10px;" />
+        </div>
+        <div class="space20">
+                {% endif %}
+                <a href="{% url akvo.rsr.views.orgdetail o.id %}" style="text-align:center;">
+                    {% org_logo o 100 75 'margin-left:auto; margin-right:auto; margin-bottom: 10px;' %}
+                </a>
+                <p class="small">
+                    <a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a><br />
+                    {{o.city}}, {{o.country}}<br />
+                    {% for type in o.partner_types %}
+                        {{type}}{% if not forloop.last %},{% endif %}
                     {% endfor %}
-				{% endfor %}
-			</div>
+                </p>
+            {% endfor %}
 		</div>
 	</div>
 </div>

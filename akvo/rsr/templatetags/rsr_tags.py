@@ -167,15 +167,16 @@ def project_list_pagination(context, page, org=None):
     }
 
 @register.inclusion_tag('inclusion_tags/updates.html', takes_context=True)
-def updates(context, updates, width=480, height=360):
+def updates(context, updates, width=480, height=360, show_permalinks=False):
     '''
     '''
     return {
-        'MEDIA_URL' : context['MEDIA_URL'],
-        'request'   : context['request'],
-        'updates'   : updates,
-        'width'     : width,
-        'height'    : height,
+        'MEDIA_URL'         : context['MEDIA_URL'],
+        'request'           : context['request'],
+        'updates'           : updates,
+        'width'             : width,
+        'height'            : height,
+        'show_permalinks'   : show_permalinks,
     }
 
 from django.conf import settings

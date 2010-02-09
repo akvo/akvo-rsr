@@ -107,7 +107,7 @@
 <div class="span-10 first">
     <div id="container-2">
 		<ul>
-            <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
+            <li><a href="#tab_updates"><span>{% trans 'Latest updates' %}</span></a></li>
             <li><a href="#tab_comments"><span>{% trans 'Comments' %}</span></a></li>
         </ul>
         <div style="border:1px solid #BBBBC5; border-top: 0;">
@@ -126,6 +126,17 @@
                         </a>
                     </p>
                     {% updates updates %}
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    <a href="{% url project_updates p.id %}" class="small" style="float:right; padding:0;">
+                        {% trans 'Earlier updates' %}
+                    </a>
+                    <p class="small">
+                        {% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}
+                    </p>
                 </div>
             </div>
             <div id="tab_comments" class="tab">
