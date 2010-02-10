@@ -18,12 +18,14 @@
                 </div>
                 <div class="space20">
                 <h2>Timeline</h2>
-                {% ifnotequal p.start_date None %}
-                    <p>{% trans 'Start date:' %} {{p.start_date}}</p>
-                {% endifnotequal %}
-                {% ifnotequal p.end_date None %}
-                    <p>{% trans 'End date:' %} {{p.end_date}}</p>
-                {% endifnotequal %}
+                <p>
+                    {% ifnotequal p.start_date None %}
+                        {% trans 'Start date:' %} {{p.start_date}}<br/>
+                    {% endifnotequal %}
+                    {% ifnotequal p.end_date None %}
+                        {% trans 'End date:' %} {{p.end_date}}
+                    {% endifnotequal %}
+                </p>
             {% endifnotequal %}
         </div>
 	</div>

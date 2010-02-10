@@ -125,6 +125,11 @@
                                 {% trans 'Subscribe via RSS' %}
                         </a>
                     </p>
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
                     {% updates updates %}
                 </div>
                 <div class="space10">
@@ -141,10 +146,10 @@
             </div>
             <div id="tab_comments" class="tab">
                 <div class="space20">
-                    <p class="">
-                    <a class="btn-slide" style="float:right" href="#" onclick="this.blur();"><span>{% trans 'Add comment' %}</span></a>
+                    <p class="clear">
+                        <a class="btn-slide" style="float:right" href="#" onclick="this.blur();">{% trans 'Add comment' %}</a>
+                        &nbsp;
                     </p>
-                    <div class="clear" style="">&nbsp;</div>
                     <div id="panel">
                         {% if not user.username %}
                             <p>{% trans 'You must be signed in to add a comment' %}</p>
@@ -156,27 +161,24 @@
                                 <input type="submit" value="{% trans 'Submit' %}" class="submit" />
                             </form>
                         {% endif %}
-                    </div> <!-- #panel -->        
-                    {% if comments %}            
-                        {% for c in comments %}    
-                            <div style="float:left; width: 90px; margin: 3px 10px 0px 0px;">
-                                <img src="{{MEDIA_URL}}base/img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" />
-                                <p style="margin-top: 10px">{{c.user.get_full_name}}</p>
-                            </div>						
-                            <div style="margin-left: 110px">
-                                <p class="lightx1">{{c.time|date:"Y-m-d H:i"}}</p>
-                                <p>{{c.comment|linebreaks}}</p>
-                            </div>
-                            <br />
-                            <p style="text-align:right">
-                                <a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
-                            <hr style="clear: both"/>
-                        {% endfor %}
-                        <!--<p style="text-align:right;"><a href="{% url akvo.rsr.views.projectcomments p.id %}">{% trans 'Older comments' %}</a></p>-->
-                        <p class="lightx1">{% trans 'The comments are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
-                    {% else %}
-                        <span style="padding-left: 20px;" class="lightx1">{% trans 'No comments yet.' %}</span>
-                    {% endif %}
+                    </div> <!-- #panel -->
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    {% comments comments %}
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    <a href="{% url project_comments p.id %}" class="small" style="float:right; padding:0;">
+                        {% trans 'Earlier comments' %}
+                    </a>
+                    <p class="small">
+                        {% trans 'The comments are owned by whoever posted them. We are not responsible for them in any way.' %}
+                    </p>
                 </div>
             </div>
         </div>
@@ -190,14 +192,6 @@
 	<div class="frame" style="">
 		<div class="space15">
 			<h2 style="color:#00ABFA;">{% trans 'Related to this project' %}...</h2>
-			<h4>{% trans 'Knowledgebase entries' %}</h4>			
-			<ul class="small">
-			{% for link in p.link_set.all %}
-				{% ifequal link.kind 'A' %}
-					<li><a href="{{link.url}}">{{link.caption}}</a></li>
-				{% endifequal %}
-			{% endfor %}
-			</ul>
 
             <h4>{% trans 'External links' %}</h4>
 			<ul class="small">
@@ -207,6 +201,15 @@
 				{% endifequal %}
 			{% endfor %}
 			</ul>			
+
+			<h4>{% trans 'Video links' %}</h4>			
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'V' %}
+					<li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
 		</div>
 	</div>
 </div>

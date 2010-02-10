@@ -179,6 +179,15 @@ def updates(context, updates, width=480, height=360, show_permalinks=False):
         'show_permalinks'   : show_permalinks,
     }
 
+@register.inclusion_tag('inclusion_tags/comments.html', takes_context=True)
+def comments(context, comments):
+    '''
+    '''
+    return {
+        'MEDIA_URL'         : context['MEDIA_URL'],
+        'comments'          : comments,
+    }
+
 from django.conf import settings
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def page_styles(context,):
