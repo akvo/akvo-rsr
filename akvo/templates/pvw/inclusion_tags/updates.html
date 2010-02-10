@@ -2,6 +2,7 @@
 
 {% if updates %}
     {% for u in updates %}
+        <a name={{u.pk}} />
         <h3>{{u.title}}</h3>
         <p class="small" style="margin:0; padding:0">
             <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
@@ -19,8 +20,11 @@
         {% ifequal u.photo_location 'E' %}
             {% update_thumb u width height %}
         {% endifequal %}
+        {% if show_permalinks %}
+            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates u.project.pk %}#{{u.pk}}">{% trans 'Permalink' %}</a></p>
+        {% endif %}
         {% if not forloop.last %}
-        <hr />	
+            <hr />	
         {% endif %}
 
     {% endfor %}
