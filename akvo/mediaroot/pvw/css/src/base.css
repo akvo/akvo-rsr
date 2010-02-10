@@ -1,5 +1,5 @@
 body {
-    background: #F7F9F9 url('../../img/base/top_bkgd.png') repeat-x 0 35px;
+    background: #F7F9F9 url('../../img/base/top_bkgd.png') repeat-x 0 35px fixed;
     }
 
 .container {
