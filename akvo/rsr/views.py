@@ -167,6 +167,11 @@ def liveearth(request):
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
     
+@render_to('rsr/focus_areas.html')
+def focusareas(request):
+    
+    return {'site_section': 'areas'}
+    
 @render_to('rsr/project_directory.html')
 def projectlist(request):
     '''
@@ -179,7 +184,7 @@ def projectlist(request):
     projs = Project.objects.published()#.funding().select_related()
     showcases = projs.need_funding().order_by('?')[:3]
     page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'projects'}
+    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}
 
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
@@ -764,41 +769,6 @@ def getwidget(request, project_id):
             o = None
         p = get_object_or_404(Project, pk=project_id)
         return render_to_response('rsr/machinery_step2.html', {'project': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
-
-
-def flashgallery(request):
-    '''
-    Generate the xml file for TiltViewer
-    '''
-    # Get 12 random projects with a current image
-    projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
-    return render_to_response('rsr/gallery.xml', {'projects': projects, }, context_instance=RequestContext(request), mimetype='text/xml')
-
-def fundingbarimg(request):
-    '''
-    create an image for use in the funding bar graphic
-    '''
-    import Image, ImageDraw 
-
-    size = (100,20)             # size of the image to create
-    im = Image.new('RGB', size, '#fff') # create the image
-    draw = ImageDraw.Draw(im)   # create a drawing object that is
-                                # used to draw on the new image
-    # Now, we'll do the drawing:
-    pct = request.GET.get('pct', 0)
-    if pct:
-        box = [(0,0),(min(int(pct), 100),20)]
-        draw.rectangle(box, fill='#99ff99')
-    
-    del draw # I'm done drawing so I don't need this anymore
-    
-    # We need an HttpResponse object with the correct mimetype
-    response = HttpResponse(mimetype="image/png")
-    # now, we tell the image to save as a PNG to the 
-    # provided file-like object
-    im.save(response, 'PNG')
-
-    return response # and we're done!
     
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"

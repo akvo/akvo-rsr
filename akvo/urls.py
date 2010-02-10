@@ -22,32 +22,15 @@ feeds = {
 }
 
 urlpatterns = patterns('',
-    #(r'^rsr/', include('akvo.rsr.urls')),
-
-    # Payment engines
-    url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),
-    url(r'^rsr/invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
-    url(r'^rsr/project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
-        'akvo.rsr.views.donate', name='complete_donation'),
-    # The donate url's should be conditional depending on site support for donation
-    url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.setup_donation', name='project_donate'),
-    
-    url(r'^rsr/donate/ideal/thanks/$', 'akvo.rsr.views.mollie_thanks', name='mollie_thanks'),
-    url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
-    url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
-    url(r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn', name='paypal_ipn'),
-
-    url(r'^$', 'akvo.rsr.views.index', name='index'),    
+  
+    url(r'^$', 'akvo.rsr.views.index', name='index'),
     (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
-
     (r'^rsr/admin/(.*)', admin.site.root),
-    #(r'^rsr/admin/', include('django.contrib.admin.urls')),
     
-    url(r'^rsr/projects/$',
-        'akvo.rsr.views.projectlist',
-        name='project_list'),
+    url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
+    
+    url(r'^rsr/projects/$', 'akvo.rsr.views.projectlist', name='project_list'),
     url(r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', name='filtered_projectlist' ),
-    #(r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
 
     url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
@@ -57,34 +40,17 @@ urlpatterns = patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/details$', 'akvo.rsr.views.projectdetails', name='project_details'),
     url(r'^rsr/project/(?P<project_id>\d+)/funding$', 'akvo.rsr.views.projectfunding', name='project_funding'),
 	(r'^rsr/project/(?P<project_id>\d+)/get-a-widget$', 'akvo.rsr.views.getwidget', ),
-	#(r'^rsr/project/(?P<project_id>\d+)/customise-widget$', 'akvo.rsr.views.customisewidget', ),
-    
-    url(r'^rsr/fundingbar/$', 'akvo.rsr.views.fundingbarimg', name='fundingbar'),    
-
-    #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_goals$', 'akvo.rsr.views.ajax_tab_goals', ),
-    #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_sustainability$', 'akvo.rsr.views.ajax_tab_sustainability', ),
-    #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_context$', 'akvo.rsr.views.ajax_tab_context', ),
-    #(r'^rsr/projects/(?P<order_by>[_a-zA-Z]*)/$', 'akvo.rsr.views.projectlist', ),
-
-    (r'^rsr/flashgallery.xml$', 'akvo.rsr.views.flashgallery', ),
-    
-    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
     url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
-
 
     (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
     (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
     (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
 
-    #(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}),
-    url(r'^rsr/signin/$',
-                           'akvo.rsr.views.login',
-                           {'template_name': 'rsr/sign_in.html'},
-                           name='signin'),
-    #(r'^rsr/signin/$', 'auth_views.login', {'template_name': 'rsr/sign_in.html'}),
+    url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
     (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
     
     (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),
@@ -110,8 +76,7 @@ urlpatterns = patterns('',
 	url(r'^rsr/widget/(?P<template>[\w-]+)/project/(?P<project_id>\d+)/$','akvo.rsr.views.project_widget', name='project_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/$','akvo.rsr.views.project_widget', name='project_widget_default', ),
 	
-	#url(r'^rsr/widget/list-from-organisation/(?P<org_id>)\d+)$', 'akvo.rsr.views.select_list_widget', name='select_list_widget', ),
-	#url(r'^rsr/widget/organisation/(?P<org_id>\d+)/(?P<template>[\w-]+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
+	
 	url(r'^rsr/widget/(?P<template>[\w-]+)/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	
@@ -121,11 +86,6 @@ urlpatterns = patterns('',
 
     (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
-    
-    #url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
-    
-    #feedjack
-    #(r'', include('feedjack.urls')),
     
     #template dev urls
     (r'^rsr/dev/(?P<template_name>[_a-zA-Z0-9]+)/$', 'akvo.rsr.views.templatedev', ),
@@ -141,7 +101,7 @@ urlpatterns = patterns('',
 from django.conf import settings
 if settings.LIVE_EARTH_ENABLED:
     urlpatterns += patterns('',
-        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
+        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
     )
 
 handler500 = 'akvo.rsr.views.server_error'

@@ -1,0 +1,57 @@
+{% extends "rsr/base.html" %}
+{% load i18n rsr_tags webdesign %}
+
+{% block content %}
+<div class="span-14 first">
+	<div class="frame" style="background-color:#B1C5E1;">
+		<div class="space20">
+			<a href="{% url project_list %}">clean waster</a>
+		</div>
+	</div>
+	<div class="frame" style="background-color:#795851;">
+		<div class="space20">
+			<a href="{% url project_list %}">Safety</a>
+		</div>
+	</div>
+	<div class="frame" style="background-color:#998569;">
+		<div class="space20">
+			<a href="{% url project_list %}">Sharing Water</a>
+		</div>
+	</div>
+	<div class="frame" style="background-color:#CFD3D8;">
+		<div class="space20">
+			<a href="{% url project_list %}">Governance</a>
+		</div>
+	</div>
+</div>
+<div class="span-4 last">
+	<div class="frame" style="background-color:#F4F7F8">
+		<div class="space20">
+			<p class="highlight" style="font-size:1em; margin-bottom:10px;">
+				{% trans 'Centuries of experience knowing what to do when there is too much water – or not enough' %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny">
+				<a href="#" class="bold">{% trans 'The history of Dutch Water' %}</a><br />
+				{% lorem 10 w random %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny">
+				<a href="#" class="bold">{% trans 'What we do' %}</a><br />
+				{% lorem 10 w random %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny">
+				<a href="#" class="bold">{% trans 'Why we do it' %}</a><br />
+				{% lorem 10 w random %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny">
+				<a href="#" class="bold">{% trans 'How we work' %}</a><br />
+				{% lorem 10 w random %}
+			</p>
+			
+		</div>
+	</div>
+</div>
+{% endblock content %}
