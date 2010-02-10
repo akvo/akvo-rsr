@@ -38,6 +38,9 @@ h1 {
 			<a href="#">{% trans 'Recent contributions' %}</a>
 			<div style="float:right; width:200px; height:17px; overflow:hidden; text-align:right; margin-right:15px;">
 				<a class="small" href="/news/?feed=rss2">{% trans 'Subscribe via RSS' %}</a>
+				<a href="/news/?feed=rss2" style="margin-left:5px; margin-right:0">
+					<img src="{{MEDIA_URL}}base/img/icon_rss.gif" width="12" height="12" alt="Icon Rss" />
+				</a>
 			</div>
 		</div>
 		<div class="space20">
@@ -83,7 +86,7 @@ h1 {
 			
 			<div style="background-color:grey; height:122px;"></div>
 			<p class="highlight small no_b_marg">{% trans 'Governance' %}</p>
-			<p class="nano">{% lorem 4 w random %}</p>			
+			<p class="tiny">{% lorem 4 w random %}</p>			
 		</div>
 	</div>
 </div>
