@@ -119,9 +119,10 @@
                             <hr />
 			            </li>
 						<li class="clearfix">
-                            <br />
-							<a style="float: left;" href="{% url index %}">{% trans 'Cancel' %}</a>
-							<input style="float: right; margin-right: 20px; margin-top: 5px;" type="submit" name="some_name" value="{% trans 'Continue' %}" id="some_name">
+                            <div style="float:right; margin-top: 20px;">
+    							<a style="vertical-align: baseline;" href="{% url index %}">{% trans 'Cancel' %}</a>
+    							<input style="display: inline; margin:0 20px 0 20px; vertical-align: baseline;" type="submit" name="some_name" value="{% trans 'Continue' %}" id="some_name">
+                            </div>
 						</li>
 			        </ul>
 					

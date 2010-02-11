@@ -145,7 +145,8 @@ blockquote *:first-child:after { content: "\201D"; }
 /*------------------------------------------------------------------ 
 [4. Forms] 
 */
-fieldset { 
+fieldset {
+    background: #fff;
     padding:1.4em; 
     margin: 0 0 1.5em 0; 
     border: 1px solid #ccc; 
