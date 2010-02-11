@@ -520,7 +520,7 @@ def projectupdates(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
     can_add_update = p.connected_to_user(request.user)
-    return {'p': p, 'updates': updates, 'can_add_update':can_add_update, 'all_updates': True, 'project_section':'updates' }
+    return {'p': p, 'updates': updates, 'can_add_update':can_add_update, 'all_updates': True, 'site_section': 'areas', }
     
 @render_to('rsr/project_comments.html')
 def projectcomments(request, project_id):
@@ -732,7 +732,7 @@ def projectmain(request, project_id):
         'form': form, 
         'can_add_update': can_add_update,
         'all_updates': False,
-        'site_section': 'projects' 
+        'site_section': 'areas',
         }
 
 @render_to('rsr/project_details.html')    
@@ -756,7 +756,13 @@ def getwidget(request, project_id):
             account_level = 'free'
         p = get_object_or_404(Project.objects, pk=project_id)
         orgs = p.all_partners()
-        return render_to_response('rsr/machinery_step1.html', {'project': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
+        
+        return render_to_response('rsr/machinery_step1.html', {
+            'project': p, 
+            'account_level': account_level, 
+            'organisations': orgs,
+            'site_section': 'areas',
+            }, context_instance=RequestContext(request))
     else:
         widget_type = request.POST['widget-type']
         widget_choice = request.POST['widget-choice']
@@ -768,7 +774,14 @@ def getwidget(request, project_id):
         else:
             o = None
         p = get_object_or_404(Project, pk=project_id)
-        return render_to_response('rsr/machinery_step2.html', {'project': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
+        return render_to_response('rsr/machinery_step2.html', {
+            'project': p, 
+            'organisation':o, 
+            'widget_choice': widget_choice, 
+            'widget_type': widget_type, 
+            'widget_site': widget_site,
+            'site_section': 'areas',
+            }, context_instance=RequestContext(request))
     
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"

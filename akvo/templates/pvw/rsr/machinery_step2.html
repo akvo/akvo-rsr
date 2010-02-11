@@ -7,11 +7,11 @@
 
 <div class="span-18">
 	<div class="span-18">
-		<h1>Get a widget</h1>
+		<h1>Select colours for your widget and preview (2/2)</h1>
 	</div>
 	<div class="span-10 first">
-		<p class="grey">
-			{% trans 'The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site&#x27;s code' %}
+		<p class="grey small">
+			{% trans 'The following steps will produce a snippet of widget code you can copy and paste into your own web site&#x27;s code' %}
 		</p>
 		<ol>
 			<li>{% trans 'Select the type of widget you wish to use' %}.</li>
@@ -30,11 +30,19 @@
 		</noscript>
 	</div>
 	<hr />
-	<h2>Step 1: Select the type of widget you wish to use</h2>
-	<p class="grey">
-		You can customise the top and bottom bar and title text colours on the next step
-	</p>
-	
+	<div class="push-1 span-17 first last">
+		<h2>{% trans 'Step 2: Customise your widget' %}</h2>
+		<p class="grey small">
+			{% trans 'This widget will show the project' %} {{ project.name }}
+		</p>
+		<div class="frame">
+			<div class="space20">
+				
+				asf
+			
+			</div>
+		</div>
+	</div>
 </div>
 	
 {% endblock content %}
