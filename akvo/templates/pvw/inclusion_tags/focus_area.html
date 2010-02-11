@@ -1,0 +1,23 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n webdesign %}
+
+<div class="frame" style="background-color:{{bg_color}};">
+    <div style="{{outer_div}}">
+        <div class="space20" style="{{inner_div}}">
+            <h1>{{title}}</h1>
+            <p>
+                {% lorem 25 w random %}
+            </p>
+        </div>
+    </div>
+    <div style="height:20px; background-color:#4C4E49; padding: 5px 15px;">
+        <a class="small" style="margin-right: 30px;" href="#">{% trans 'Learn more' %} &gt;</a>
+        {% if projects_link %}
+            <a class="small" href="{% url focusarea focusarea %}">{% trans 'View projects' %} &gt;</a>
+        {% endif %}
+    </div>
+</div>

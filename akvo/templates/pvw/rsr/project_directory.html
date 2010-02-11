@@ -1,51 +1,30 @@
 {% extends "rsr/base.html" %}
 
-{% load i18n rsr_tags generic_content rsr_filters addparam %}
+{% load i18n rsr_tags generic_content rsr_filters addparam webdesign %}
 {% block inline_styles %}
 {{block.super}}
 
 {% endblock inline_styles %}
 
 {% block content %}
-<div class="span-18">
-	<div class="frame" style="background-color:#D8F4FE;">
-		<div class="space15">
-			<form action="" method="get" accept-charset="utf-8" style="margin-bottom:0;">
-				<p>
-					<span class="hl">Find projects:</span>
-					<input type="text" name="find" value="" id="find" size="50" disabled="disabled">
-					<input type="submit" value="Find" style="display:inline; vertical-align:baseline; margin-bottom:0;" disabled="disabled">					
-				</p>
-			</form>
-		</div>
-	</div>
+<div class="span-14 first" id="focusareas">
+
+    {% focus_area focusarea 0 %}
+	
 </div>
-<!--
-<div class="span-3 first">
-	<div class="frame">
-		<div class="sliding_box_header">
-			<p style="margin:2px 5px">Refine results</p>
-		</div>
-		<div class="space20">
-			<h5>Sector</h5>
-			<p>
-				<label><input type="checkbox" name="sectors" value="2" id="sector_sanitation" > Sanitation</label>
-				<label><input type="checkbox" name="sectors" value="1" id="sector_water" > Water</label>
+<div class="span-4 last">
+	<div class="frame" style="background-color:#F4F7F8">
+		<div class="space20" style="height: 160px;">
+			<p class="highlight" style="font-size:1em; margin-bottom:10px;">
+				{% trans 'Did you know...' %}
 			</p>
-			<hr />
-			<h5>Location</h5>
-			<p>
-				<label><input type="checkbox" name="continents" value="1" id="continent_africa" > Africa</label>
-				<label><input type="checkbox" name="continents" value="2" id="continent_asia" > Asia</label>
-				<label><input type="checkbox" name="continents" value="3" id="continent_australia" > Australia</label>
-				<label><input type="checkbox" name="continents" value="4" id="continent_europe" > Europe</label>
-				<label><input type="checkbox" name="continents" value="5" id="continent_north_america" > North America</label>
-				<label><input type="checkbox" name="continents" value="6" id="continent_south_america" > South America</label>
-				<label><input type="checkbox" name="continents" value="6" id="continent_south_america" disabled > Antarctica</label>
+			<p class="tiny">
+				{% lorem 10 w random %}
+			</p>
 		</div>
 	</div>
 </div>
--->
+
 <div class="span-18 last">
 	<div class="frame" style="margin-bottom:0; border-bottom:none;">
         {% if o %}

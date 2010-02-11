@@ -3,60 +3,15 @@
 
 {% block content %}
 <div class="span-14 first" id="focusareas">
-	<div class="frame" style="background-color:#B1C5E1;">
-		<div style="height:150px;">
-			<div class="space20">
-				<h1>{% trans 'Clean waster' %}</h1>
-				<p>
-					{% lorem 30 w random %}
-				</p>
-			</div>
-		</div>
-		<div style="height:20px; background-color:#4C4E49; padding: 5px 15px;">
-			<a class="small" href="{% url project_list %}">View projects &gt;</a>
-		</div>
-	</div>
+
+    {% focus_area 'clean' %}
 	
-	<div class="frame" style="background-color:#795851;">
-		<div style="height:150px; width:350px">
-			<div class="space20">
-				<h1>{% trans 'Safety' %}</h1>
-				<p>
-					{% lorem 20 w random %}
-				</p>
-			</div>
-		</div>
-		<div style="height:20px; background-color:#4C4E49; padding: 5px 15px;">
-			<a class="small" href="{% url project_list %}">View projects &gt;</a>
-		</div>
-	</div>
-	
-	<div class="frame" style="background-color:#998569;">
-		<div style="height:150px;">
-			<div class="space20" style="text-align:right; padding-left:200px;">
-				<h1>{% trans 'Sharing Water' %}</h1>
-				<p>
-					{% lorem 30 w random %}
-				</p>
-			</div>
-		</div>
-		<div style="height:20px; background-color:#4C4E49; padding: 5px 15px;">
-			<a class="small" href="{% url project_list %}">View projects &gt;</a>
-		</div>
-	</div>
-	<div class="frame" style="background-color:#CFD3D8;">
-		<div style="height:150px;">
-			<div class="space20">
-				<p>
-					{% lorem 25 w random %}
-				</p>
-				<h1>{% trans 'Governance' %}</h1>
-			</div>
-		</div>
-		<div style="height:20px; background-color:#4C4E49; padding: 5px 15px;">
-			<a class="small" href="{% url project_list %}">View projects &gt;</a>
-		</div>
-	</div>
+    {% focus_area 'safety' %}
+
+    {% focus_area 'sharing' %}
+
+    {% focus_area 'governance' %}
+
 </div>
 <div class="span-4 last">
 	<div class="frame" style="background-color:#F4F7F8">

@@ -4,6 +4,7 @@
 
 from django import template
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as __
 register = template.Library()
 
 @register.inclusion_tag('inclusion_tags/funding_bar.html')
@@ -187,6 +188,28 @@ def comments(context, comments):
         'MEDIA_URL'         : context['MEDIA_URL'],
         'comments'          : comments,
     }
+
+@register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
+def focus_area(context, focusarea, projects_link=True):
+    '''
+    '''
+    TITLE, BG_COLOR, OUTER_DIV, INNER_DIV = 0, 1, 2, 3
+    FOCUS_AREA_DATA = {
+        'clean'         : (u'Clean water', '#B1C5E1', 'height:150px;', ''),
+        'safety'        : (u'Safety', '#795851', 'height:150px; width:350px', ''),
+        'sharing'       : (u'Sharing water', '#998569', 'height:150px;', 'text-align:right; padding-left:200px;'),
+        'governance'    : (u'Governance', '#CFD3D8', 'height:150px;', ''),
+    }
+    return {
+        'MEDIA_URL'     : context['MEDIA_URL'],
+        'focusarea'     : focusarea,
+        'title'         : FOCUS_AREA_DATA[focusarea][TITLE],
+        'bg_color'      : FOCUS_AREA_DATA[focusarea][BG_COLOR],
+        'outer_div'     : FOCUS_AREA_DATA[focusarea][OUTER_DIV],
+        'inner_div'     : FOCUS_AREA_DATA[focusarea][INNER_DIV],
+        'projects_link' : projects_link,
+    }
+
 
 from django.conf import settings
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)

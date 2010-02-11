@@ -166,11 +166,10 @@ def liveearth(request):
     projs = live_earth.published_projects().funding()
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
-    
+
 @render_to('rsr/focus_areas.html')
 def focusareas(request):
-    
-    return {'site_section': 'areas'}
+    return {'site_section': 'areas',}
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):
@@ -204,6 +203,22 @@ def filteredprojectlist(request, org_id):
     showcases = projects.order_by('?')[:3]
     page = project_list_data(request, projects)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
+    
+@render_to('rsr/project_directory.html')
+def focusarea(request, area='clean'):
+    '''
+    List of  projects in RSR
+    filtered on an organisation
+    Context:
+    projs: list of all projects
+    page: paginator
+    o: organisation
+    '''
+    #for use in akvo at a glance
+    projects = Project.objects.published()
+    # get all projects the org is asociated with
+    page = project_list_data(request, projects)
+    return {'page': page, 'site_section': 'areas', 'focusarea': area,}
     
 @render_to('rsr/organisation_directory.html')
 def orglist(request, org_type='all'):

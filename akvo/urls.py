@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     
     url(r'^rsr/projects/$', 'akvo.rsr.views.projectlist', name='project_list'),
     url(r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', name='filtered_projectlist' ),
+    url(r'^rsr/projects/(?P<area>[_a-zA-Z]+)/$', 'akvo.rsr.views.focusarea', name='focusarea' ),
 
     url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
     (r'^rsr/project/(?P<project_id>\d+)/update$', 'akvo.rsr.views.updateform', ),
