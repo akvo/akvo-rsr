@@ -1,6 +1,8 @@
 {% extends "rsr/base.html" %}
 {% load i18n rsr_tags %}
 
+{% block title %}{{ block.super }} - {{project.name}}{% endblock %}
+
 {% block content %}	
 <div class="span-14 first">
 {% block project_content %}
