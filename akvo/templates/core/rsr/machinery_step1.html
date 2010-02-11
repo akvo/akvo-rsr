@@ -1,0 +1,45 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="span-18">
+	<div class="span-18">
+		<h1>Get a widget</h1>
+	</div>
+	<div class="span-10 first">
+		<p class="grey">
+			{% trans 'The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site&#x27;s code' %}
+		</p>
+		<ol>
+			<li>{% trans 'Select the type of widget you wish to use' %}.</li>
+			<li>{% trans 'Select colours and preview your widget' %}.</li>
+			<li>{% trans 'Copy the HTML code to your web site' %}.</li>
+		</ol>
+	</div>
+	<div class="span-8 last">
+		<noscript>
+			<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+				<p>
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+					{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed. ' %}
+				</p>
+			</div>
+		</noscript>
+	</div>
+	<hr />
+	<h2>Step 1: Select the type of widget you wish to use</h2>
+	<p class="grey">
+		You can customise the top and bottom bar and title text colours on the next step
+	</p>
+	
+</div>
+	
+{% endblock content %}
+
+{% block js %}
+{{block.super}}
+<script type="text/javascript" charset="utf-8">
+	var akvo_project_id = {{project.id}};
+</script>
+{% endblock js %}

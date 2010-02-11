@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/comments$', 'akvo.rsr.views.projectcomments', name='project_comments'),
     url(r'^rsr/project/(?P<project_id>\d+)/details$', 'akvo.rsr.views.projectdetails', name='project_details'),
     url(r'^rsr/project/(?P<project_id>\d+)/funding$', 'akvo.rsr.views.projectfunding', name='project_funding'),
-	(r'^rsr/project/(?P<project_id>\d+)/get-a-widget$', 'akvo.rsr.views.getwidget', ),
+	(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', ),
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
