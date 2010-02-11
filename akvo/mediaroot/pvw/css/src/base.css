@@ -26,6 +26,7 @@ body {
 .frame {
     border:1px solid #BCBCC6;
     margin-bottom:15px;
+    background: #fff;
 }
 
 #proj_summary {
