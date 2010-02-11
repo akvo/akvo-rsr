@@ -19,22 +19,20 @@
 			<form id="" class="" method="post" action="#">
 			    <fieldset>
 			        <legend>{% trans 'Set up your account - Step 2' %}</legend>
-        {% if form.errors %}
-        <ul>
-            <li class="clearfix">
-                <div class="form_error" style="width: 546px;">
-                    <h2 style="color: red;">{% trans 'Error when registering' %}</h2>
-                {% if form.non_field_errors %}
-                    {{ form.non_field_errors|join:"," }}
-                {% else %}
-                    {% trans 'Please review messages below.' %}
-                {% endif %}
-                    
-                </div>
-            </li>
-        </ul>
-        {% endif %}
-			        <ul>
+                        <ul>
+                        {% if form.errors %}
+                            <li class="clearfix">
+                                <div class="form_error" style="width: 546px;">
+                                    <h2 style="color: red;">{% trans 'Error when registering' %}</h2>
+                                {% if form.non_field_errors %}
+                                    {{ form.non_field_errors|join:"," }}
+                                {% else %}
+                                    {% trans 'Please review messages below.' %}
+                                {% endif %}
+                                    
+                                </div>
+                            </li>
+                        {% endif %}
 			            <li class="clearfix">
                             <label for="id_username">
                                 {% trans 'Enter a username' %}
@@ -88,14 +86,14 @@
                                 </div>
                             {% endif %}
 							{{ form.password1 }}
-                            <p class="small">{% trans 'Enter password' %}.</p>
+                            <p class="small">{% trans 'Enter the new password.' %}.</p>
                             {% if form.password2.errors %}
                                 <div class="form_error">
                                     {{ form.password2.errors|join:", " }}
                                 </div>
                             {% endif %}
 							{{ form.password2 }}
-                            <p class="small">{% trans 'Retype password to verify' %}.</p>
+                            <p class="small">{% trans 'Retype the password to avoid mistakes.' %}.</p>
                             <hr />
 			            </li>
 			            <li class="clearfix">
