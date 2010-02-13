@@ -48,8 +48,8 @@ $(document).ready(function()
     // Hide customize other and warning section
     // $('#machinery_step2_warning_main').hide();
     
-	$('#backgroundcolor_other_section').hide();
-	$('#textcolor_other_section').hide();
+	//$('#backgroundcolor_other_section').hide();
+	//$('#textcolor_other_section').hide();
 	//$('#warning_main').hide();
 	$('#warning_color').hide();
 	

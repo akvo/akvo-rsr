@@ -2,6 +2,8 @@
 
 {% load i18n rsr_tags thumbnail humanize %}
 
+{% block title %}{{ block.super }} - {{o.name}}{% endblock %}
+
 {% block content %}
 
 	<div class="span-14 first">
