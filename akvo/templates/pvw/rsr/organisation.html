@@ -27,7 +27,11 @@
                     {% if o.contact_email %}
                     <p class="nano-lede" style="margin-bottom:0;">{% trans 'Email' %}</p>
                         <p>
-                            {{o.contact_email}}
+							{% comment %}
+							{{o.contact_email}}	
+							{% endcomment %}
+                            
+							{% encrypt_email o.contact_email %}
                         </p>
                     {% endif %}
                     {% if o.phone %}
