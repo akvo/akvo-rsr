@@ -96,16 +96,16 @@
 	if (typeof jQuery == 'undefined') {
 		document.write('<script type="text/javascript" src="{{MEDIA_URL}}base/js/jquery.js"><'); document.write('/script>');
 	}
+	var jQ = jQuery.noConflict();
 </script>
 
 {% endblock js %}
 
 <script type="text/javascript">
+jQ(document).ready(function(){
 
-$(document).ready(function(){
-
-	$('#grid_toggle').click(function () {
-		$('#maincontainer').toggleClass('showgrid');
+	jQ('#grid_toggle').click(function () {
+		jQ('#maincontainer').toggleClass('showgrid');
 	});
 
 	{% block jquery_ready %}{% endblock jquery_ready %}	

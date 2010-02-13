@@ -88,16 +88,12 @@
 			</form>
 			</div>
 		</div>
-		
 	</div>
-	
 </div>
 	
 {% endblock content %}
 
-{% block js %}
-{{block.super}}
-<script type="text/javascript" charset="utf-8">
-	var akvo_project_id = {{project.id}};
-</script>
-{% endblock js %}
+{% block jquery_ready %}
+jQ("#project-updates-random-from-org").click(function() { jQ('#project-updates-organisations').removeAttr("disabled"); });
+jQ("#project-updates-specific-project").click(function() { jQ('#project-updates-organisations').attr("disabled", true); });
+{% endblock jquery_ready %}	
