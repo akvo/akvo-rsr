@@ -1,0 +1,136 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block inline_styles %}
+.form_error {
+    float: right;
+    width: 250px;
+    background-color: #FFEBE7;
+    border: 1px solid #FFCDD1;
+    padding: 10px;
+    color: red;
+    margin-right: 20px;
+}
+{% endblock inline_styles %}
+
+{% block content %}
+    <div class="push-3 span-12 first last">
+        <div class="frame">
+            <div class="space20">
+                <h1 style="margin:0; padding:0; color:#00ABFA;">{{p.name}}</h1>
+                <p class="grey">{{p.subtitle}}</p>
+            </div>
+        </div>
+        <form id="" class="" enctype="multipart/form-data" method="post" action="#">
+            <fieldset>
+                <legend>{% trans 'Add update' %}</legend>
+                    <ul>
+                    {% if form.errors %}
+                        <li class="clearfix">
+                            <div class="form_error" style="width: 546px;">
+                                <h2 style="color: red;">{% trans 'Error when registering' %}</h2>
+                            {% if form.non_field_errors %}
+                                {{ form.non_field_errors|join:"," }}
+                            {% else %}
+                                {% trans 'Please review messages below.' %}
+                            {% endif %}
+                                
+                            </div>
+                        </li>
+                    {% endif %}
+                    <li class="clearfix">
+                        <label for="id_title">
+                            {% trans 'Enter an update title' %}
+                        </label>
+                        {% if form.title.errors %}
+                            <div class="form_error">
+                                {{ form.title.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {{form.title|safe}}
+                        <p class="small">
+                            {% trans '50 characters max' %}
+                        </p>
+                        <hr />
+                    </li>
+                    <li class="clearfix">
+                        <label for="id_text">
+                            {% trans 'Enter update text' %}
+                        </label>
+                        {% if form.text.errors %}
+                            <div class="form_error">
+                                {{ form.text.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {{form.text}}
+                        <hr />
+                    </li>
+                    <li class="clearfix">
+                        <label for="id_photo">
+                            {% trans 'Add photo' %} 
+                        </label>
+                        {% if form.photo.errors %}
+                            <div class="form_error">
+                                {{ form.photo.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {{form.photo}}
+                        <p class="small">{% trans 'Optional.' %}.</p>
+                        <hr />
+                    </li>
+                    <li class="clearfix">
+                        <label for="id_photo_location">
+                            {% trans 'Select where the photo will be placed' %}
+                        </label>
+                        {% if form.photo_location.errors %}
+                            <div class="form_error">
+                                {{ form.photo_location.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        <!--{{form.photo_location}}-->
+                        <ul>
+                            <li><label for="id_photo_location_0"><input value="B" type="radio" class="radio" checked="checked" name="photo_location" id="id_photo_location_0" style="margin-right: 5px;" />{% trans 'At the beginning of the update' %}</label></li>
+                            <li><label for="id_photo_location_1"><input value="E" type="radio" class="radio" name="photo_location" id="id_photo_location_1"  style="margin-right: 5px;" />{% trans 'At the end of the update' %}</label></li>
+                        </ul>
+                        <hr />
+                    </li>
+                    <li class="clearfix">
+                        <label for="id_photo_caption">
+                            {% trans 'Photo caption' %}
+                        </label>
+                        {% if form.photo_caption.errors %}
+                            <div class="form_error">
+                                {{ form.photo_caption.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {{form.photo_caption}}
+                        <p class="small">{% trans 'Optional. 75 characters max.' %}</p>
+                        <hr />
+                    </li>
+                    <li class="clearfix">
+                        <label for="id_photo_credit">
+                            {% trans 'Photo credit' %}
+                        </label>
+                        {% if form.photo_credit.errors %}
+                            <div class="form_error">
+                                {{ form.photo_credit.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {{form.photo_credit}}
+                        <p class="small">{% trans 'Optional. 25 characters max.' %}</p>
+                        <hr />
+                    </li>
+                    <li class="clearfix">
+                        <div style="float:right; margin-top: 20px;">
+                            <a style="vertical-align: baseline;" href="{% url index %}">{% trans 'Cancel' %}</a>
+                            <input style="display: inline; margin:0 20px 0 20px; vertical-align: baseline;" type="submit" name="some_name" value="{% trans 'Update' %}" id="some_name">
+                        </div>
+                    </li>
+                </ul>
+                
+            </fieldset>
+            <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+    </div>
+	<div class="clear"></div>	
+{% endblock content %}

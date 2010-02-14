@@ -595,7 +595,7 @@ def updateform(request, project_id):
             return HttpResponseRedirect('./')
     else:
         form = UpdateForm()
-    return render_to_response('rsr/update_form.html', {'form': form, 'p': p, }, RequestContext(request))
+    return render_to_response('rsr/project_update.html', {'form': form, 'p': p, }, RequestContext(request))
 
 def mms_update(request):
     '''

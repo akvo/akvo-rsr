@@ -170,6 +170,7 @@ def project_list_pagination(context, page, org=None):
 @register.inclusion_tag('inclusion_tags/updates.html', takes_context=True)
 def updates(context, updates, width=480, height=360, show_permalinks=False):
     '''
+    show_permalinks also controls if the update text is truncated
     '''
     return {
         'MEDIA_URL'         : context['MEDIA_URL'],

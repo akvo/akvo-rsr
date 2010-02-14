@@ -14,7 +14,11 @@
         {% endifequal %}
         {% if u.text %}
         <p class="small" style="margin:0; padding:0;">
+        {% if show_permalinks %}
+            {{u.text|linebreaks}}
+        {% else %}
             {{u.text|smart_truncate:400|linebreaks}}
+        {% endif %}
         </p>
         {% endif %}
         {% ifequal u.photo_location 'E' %}
