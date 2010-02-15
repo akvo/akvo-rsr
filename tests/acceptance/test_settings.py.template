@@ -10,8 +10,8 @@ BROWSER_ENVIRONMENT = "*firefoxchrome"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 
-RSR_ADMIN_USERNAME = 'your_username'
-RSR_ADMIN_PASSWORD = 'your_password'
+SUPERUSER_USERNAME = 'your_username'
+SUPERUSER_PASSWORD = 'your_password'
 
 SITE_UNDER_TEST = "http://test.akvo.org"
 

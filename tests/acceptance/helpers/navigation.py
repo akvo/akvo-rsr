@@ -52,8 +52,8 @@ class RSRNavigator:
     def open_admin_page(self, extended_admin_path = ""):
         self.navigator.open_page("/rsr/admin/%s" % (extended_admin_path))
         if self.selenium.is_text_present("Password:"):
-            self.selenium.type("id_username", RSR_ADMIN_USERNAME)
-            self.selenium.type("id_password", RSR_ADMIN_PASSWORD)
+            self.selenium.type("id_username", SUPERUSER_USERNAME)
+            self.selenium.type("id_password", SUPERUSER_PASSWORD)
             self.navigator.click_submit_button_with_text("Log in")
 
     def open_auth_admin_page(self):
