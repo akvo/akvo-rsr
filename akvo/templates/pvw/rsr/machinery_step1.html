@@ -41,7 +41,7 @@
 				<h4>{% trans 'Project widget with updates (202 pixels wide by 900 pixels high)' %}</h4>
 				<p class="grey small">{% trans 'Shows basic description and updates.' %}</p>
 				<div style="float:left; width:205px;">
-					<script type="text/javascript" charset="utf-8">
+					<script type="text/javascript">
 						// think about refactor this to a general method in machinery.js
 
 						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-updates/project/{{project.id}}/" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
@@ -78,10 +78,25 @@
 						</select>
 					</p>
 					<hr />
+										
+					<a class="grey awesome" style="margin-right:10px;"
+						href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+					<a class="aqua awesome" href="javascript:document.projectUpdatesForm.submit();" 
+						onclick="this.blur();" style="margin-left:10px;">{% trans 'Select and Proceed...' %}</a>
+						
+					{% comment %}
+					<a class="blue small awesome" 
+						href="javascript:document.projectUpdatesForm.submit();" 
+							onclick="this.blur();">{% trans 'Select and Proceed...' %}</a>		
+					{% endcomment %}
+					
+					{% comment %}
+					
 					<div style="float:left; height:24px; margin-right:20px;">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						<a class="blue small awesome" href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
 					</div>
-					<a class="march_button" href="javascript:document.projectUpdatesForm.submit();" onclick="this.blur();"><span>{% trans 'Select and Proceed...' %}</span></a>
+					<a class="blue small awesome" href="javascript:document.projectUpdatesForm.submit();" onclick="this.blur();">{% trans 'Select and Proceed...' %}</a>
+					{% endcomment %}
 				</div>
 				<div style="clear:both;"> </div>
 				

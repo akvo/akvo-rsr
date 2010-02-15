@@ -180,10 +180,13 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projs = Project.objects.published()#.funding().select_related()
-    showcases = projs.need_funding().order_by('?')[:3]
-    page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}
+    if settings.PVW_RSR:
+        return HttpResponsePermanentRedirect('/')
+    else:
+        projs = Project.objects.published()#.funding().select_related()
+        showcases = projs.need_funding().order_by('?')[:3]
+        page = project_list_data(request, projs)
+        return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}  
 
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
