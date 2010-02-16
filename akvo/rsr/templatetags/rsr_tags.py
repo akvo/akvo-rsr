@@ -190,16 +190,17 @@ def comments(context, comments):
         'comments'          : comments,
     }
 
+from django.contrib.sites.models import Site
 @register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
 def focus_area(context, focusarea, projects_link=True):
     '''
     '''
-    TITLE, BG_COLOR, OUTER_DIV, INNER_DIV = 0, 1, 2, 3
+    TITLE, BG_COLOR, OUTER_DIV, INNER_DIV, MORE_URL = 0, 1, 2, 3,4 
     FOCUS_AREA_DATA = {
-        'clean'         : (u'Clean water', '#B1C5E1', 'height:150px;', ''),
-        'safety'        : (u'Safety', '#795851', 'height:150px; width:350px', ''),
-        'sharing'       : (u'Sharing water', '#998569', 'height:150px;', 'text-align:right; padding-left:200px;'),
-        'governance'    : (u'Governance', '#CFD3D8', 'height:150px;', ''),
+        'clean'         : (u'Clean water', '#B1C5E1', 'height:150px;', '','http://%s/web/areas/cleanwater' % Site.objects.get_current()),
+        'safety'        : (u'Safety', '#795851', 'height:150px; width:350px', '','http://%s/web/areas/safety' % Site.objects.get_current()),
+        'sharing'       : (u'Sharing water', '#998569', 'height:150px;', 'text-align:right; padding-left:200px;','http://%s/web/areas/sharingwater' % Site.objects.get_current()),
+        'governance'    : (u'Governance', '#CFD3D8', 'height:150px;', '','http://%s/web/areas/governance' % Site.objects.get_current()),
     }
     return {
         'MEDIA_URL'     : context['MEDIA_URL'],
@@ -208,6 +209,7 @@ def focus_area(context, focusarea, projects_link=True):
         'bg_color'      : FOCUS_AREA_DATA[focusarea][BG_COLOR],
         'outer_div'     : FOCUS_AREA_DATA[focusarea][OUTER_DIV],
         'inner_div'     : FOCUS_AREA_DATA[focusarea][INNER_DIV],
+        'more_link'     : FOCUS_AREA_DATA[focusarea][MORE_URL],
         'projects_link' : projects_link,
     }
 

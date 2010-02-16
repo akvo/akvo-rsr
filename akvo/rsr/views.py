@@ -358,7 +358,7 @@ def signout(request):
     Redirects to /rsr/
     '''
     logout(request)
-    return HttpResponseRedirect('/rsr/')
+    return HttpResponseRedirect('/')
 
 def register1(request):
     '''

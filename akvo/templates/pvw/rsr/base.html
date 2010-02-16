@@ -52,9 +52,9 @@
 			{% endcomment %}
 			<li>
 				{% if not user.username %}
-				<a id="signInMenuItem" href="{% url signin %}?next={{request.path}}"><span>Sign In</span></a>
+				<a id="signInMenuItem" href="{% url signin %}?next={{request.path}}"><span>{% trans 'Sign In' %}</span></a>
 				{% else %}
-				<a id="signInMenuItem" href="{% url akvo.rsr.views.signout %}?next={{request.path}}"><span>Sign Out</span></a>
+				<a id="signInMenuItem" href="{% url akvo.rsr.views.signout %}?next={{request.path}}" title="{{ user.username }}"><span>{% trans 'Sign Out' %}</span></a>
 				{% endif %}
 			</li>
 		</ul>
