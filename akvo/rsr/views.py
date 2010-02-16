@@ -107,6 +107,8 @@ def index(request):
             raise
         
         current_site = Site.objects.get_current()
+        
+        # Generate the main blog content
         feed = feedparser.parse("http://%s/news?feed=rss2" % current_site)
          
         latest1 = feed.entries[0]
@@ -120,21 +122,29 @@ def index(request):
         try:
             img_src2 = soup('img')[0]['src']
         except:
-            img_src2 = ''       
+            img_src2 = ''  
+        
+        # Generate the special blog category
+        category_id = 3
+        news_feed = feedparser.parse('http://%s/news?feed=rss2&amp;cat=%s' % [current_site, category_id])
+        news = news_feed.entries[0]
+        
     except:
         soup = img_src1 = img_src2 = ''
-        le_latest1 = le_latest2 = {
+        news = {
             'title': _('The blog is not available at the moment.'),
         }
         latest1 = latest2 = {
             'author': '',
             'summary': _('The blog is not available at the moment.'),
         }
+        
     return {
         'latest1': latest1,
         'img_src1': img_src1,
         'latest2': latest2,
         'img_src2': img_src2,
+        'news': news,
         'site_section':'index',
     }
 
