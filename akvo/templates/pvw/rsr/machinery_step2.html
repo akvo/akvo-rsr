@@ -7,17 +7,12 @@
 
 <div class="span-18">
 	<div class="span-18">
-		<h1>Select colours for your widget and preview (2/2)</h1>
+		<h1>{% trans 'Get a widget' %} (2/2)</h1>
 	</div>
 	<div class="span-10 first">
 		<p class="grey small">
 			{% trans 'The following steps will produce a snippet of widget code you can copy and paste into your own web site&#x27;s code' %}
 		</p>
-		<ol>
-			<li>{% trans 'Select the type of widget you wish to use' %}.</li>
-			<li>{% trans 'Select colours and preview your widget' %}.</li>
-			<li>{% trans 'Copy the HTML code to your web site' %}.</li>
-		</ol>
 	</div>
 	<div class="span-8 last">
 		<noscript>
@@ -129,7 +124,11 @@
 					<div style="clear:both; padding-bottom:20px;"> </div>
 					<div style="width:200px; text-align:center; margin-left:auto; margin-right:auto">
 						<a style="margin-right:10px;" class="grey awesome" href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
+						{% comment %}
 						<a style="margin-left:10px;" id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();">{% trans 'Preview' %}</a>
+						{% endcomment %}
+						<a style="margin-left:10px;" id="preview" class="aqua awesome" onclick="preview_widget();">{% trans 'Preview' %}</a>
+						
 						
 						{% comment %}
 						<a id="preview" class="march_button" href="javascript:this.blur();" onclick="preview_widget();"><span>{% trans 'Preview' %}</span></a>
