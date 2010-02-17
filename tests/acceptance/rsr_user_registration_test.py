@@ -19,13 +19,13 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         self.rsr = RSRNavigator(self.selenium)
 
     def test_01_home_page_has_sign_in_link(self):
-        """>> 1. Home page has Sign In link"""
+        """>>  1. Home page has Sign In link"""
         self.rsr.open_home_page()
         self.assert_title_is(ORGANISATION_NAME)
         self.assert_link_exists("Sign In")
 
     def test_02_sign_in_link_loads_sign_in_or_register_page(self):
-        """>> 2. Sign In link loads sign-in-or-register page"""
+        """>>  2. Sign In link loads sign-in-or-register page"""
         self.open_sign_in_or_register_page()
         self.assert_page_contains_text_items(["I have an online account",
                                               "Enter username",
@@ -40,15 +40,21 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         self.assert_link_exists("I forgot my username and/or password")
 
     def test_03_register_link_loads_organisation_selection_page(self):
-        """>> 3. Register link loads organisation selection page"""
+        """>>  3. Register link loads organisation selection page"""
         self.open_organisation_selection_page_for_user_registration()
         self.assert_page_contains_text_items(["Set up your account - Step 1",
                                             "Select the organisation that you belong to"])
         self.assert_link_exists("Cancel")
         self.assert_submit_button_with_text_exists("Continue")
 
-    def test_04_organisation_selection_page_warns_if_organisation_is_not_selected(self):
-        """>> 4. Organisation selection page warns if organisation is not selected"""
+    def test_04_cancel_link_on_organisation_selection_page_takes_user_back_to_home_page(self):
+        """>>  4. Cancel link on organisation selection page takes user back to home page"""
+        self.open_organisation_selection_page_for_user_registration()
+        self.navigator.click_link("Cancel")
+        self.verify_home_page_has_loaded()
+
+    def test_05_organisation_selection_page_warns_if_organisation_is_not_selected(self):
+        """>>  5. Organisation selection page warns if organisation is not selected"""
         self.open_organisation_selection_page_for_user_registration()
         self.navigator.click_submit_button_with_text("Continue")
 
@@ -60,14 +66,22 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         except AssertionError, error:
             self.fail("Expected warning if organisation was not selected: %s" % (error))
 
-    def test_05_can_select_organisation_and_load_user_details_entry_page(self):
-        """>> 5. Can select organisation and load user details entry page"""
+    def test_06_can_select_organisation_and_load_user_details_entry_page(self):
+        """>>  6. Can select organisation and load user details entry page"""
         self.select_organisation_and_open_user_details_entry_page()
         self.assert_page_contains_text_items(["Set up your account - Step 2",
                                               "Enter a username",
                                               "Enter your first and last name",
                                               "Enter a password",
                                               "Enter your email address"])
+        self.assert_link_exists("Cancel")
+        self.assert_submit_button_with_text_exists("Continue")
+
+    def test_07_cancel_link_on_user_details_entry_page_takes_user_back_to_home_page(self):
+        """>>  7. Cancel link on user details entry page takes user back to home page"""
+        self.select_organisation_and_open_user_details_entry_page()
+        self.navigator.click_link("Cancel")
+        self.verify_home_page_has_loaded()
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
@@ -91,6 +105,11 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         self.navigator.click_submit_button_with_text("Continue")
         self.assert_title_is(ORGANISATION_NAME)
         self.assert_location_contains("rsr/accounts/register2/?org_id=")
+
+    def verify_home_page_has_loaded(self):
+        self.assert_title_is(ORGANISATION_NAME)
+        self.assert_page_contains_text_items(["Focus Areas", "Get Solutions", "Education",
+                                              "Directory", "News", "About", "Recent contributions"])
 
 if __name__ == "__main__":
     print "Running tests on: %s" % (SITE_UNDER_TEST)
