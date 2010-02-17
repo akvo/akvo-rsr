@@ -232,7 +232,13 @@ def focusarea(request, area='clean'):
     # get all projects the org is asociated with
     page = project_list_data(request, projects)
     return {'page': page, 'site_section': 'areas', 'focusarea': area,}
+
+@render_to('rsr/directory.html')
+def directory(request, org_type='all'):
     
+    return {'site_section': 'directory',}
+
+
 @render_to('rsr/organisation_directory.html')
 def orglist(request, org_type='all'):
     '''

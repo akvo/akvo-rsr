@@ -36,7 +36,9 @@
                 </a>
             </li>
 			<li><a href="/web/education"><span>{% trans 'Education' %}</span></a></li>
-			<li><a href="/web/education"><span>{% trans 'Directory' %}</span></a></li>
+			
+			<li><a href="{% url directory %}" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
+				<span>{% trans 'Directory' %}</span></a></li>
 			<li><a href="/news"><span>{% trans 'News' %}</span></a></li>
 			<li><a href="/web/who_we_are"><span>{% trans 'About' %}</span></a></li>
 			<li>

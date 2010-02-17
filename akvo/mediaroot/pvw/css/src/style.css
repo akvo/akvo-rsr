@@ -18,6 +18,10 @@
     color:#00008b;
 }
 
+.sliding_box_header span {
+    color:#000;
+    }
+
 .sliding_box_header a {
     text-shadow: #eee 1px 1px 0px;
 }
