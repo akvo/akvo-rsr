@@ -65,6 +65,9 @@ class SeleniumTestCase(TestCase):
         self.failUnlessEqual(expected_text, actual_text,
             "\nExpected text at %s: %s\nActual text: %s" % (text_xpath, expected_text, actual_text))
 
+    def verify_field_is_required_warning_at_path(self, expected_warning_xpath):
+        self.verify_text_at_path("This field is required.", expected_warning_xpath)
+
     def verify_attribute_value_at_path(self, expected_attribute_value, attribute_xpath):
         actual_attribute_value = self.selenium.get_attribute(attribute_xpath)
         self.failUnlessEqual(expected_attribute_value, actual_attribute_value,

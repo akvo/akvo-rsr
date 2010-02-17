@@ -68,7 +68,7 @@ class RSRUserRegistrationTest(SeleniumTestCase):
 
     def test_06_can_select_organisation_and_load_user_details_entry_page(self):
         """>>  6. Can select organisation and load user details entry page"""
-        self.select_organisation_and_open_user_details_entry_page()
+        self.select_organisation_and_open_set_up_your_account_page()
         self.assert_page_contains_text_items(["Set up your account - Step 2",
                                               "Enter a username",
                                               "Enter your first and last name",
@@ -77,11 +77,32 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         self.assert_link_exists("Cancel")
         self.assert_submit_button_with_text_exists("Continue")
 
-    def test_07_cancel_link_on_user_details_entry_page_takes_user_back_to_home_page(self):
-        """>>  7. Cancel link on user details entry page takes user back to home page"""
-        self.select_organisation_and_open_user_details_entry_page()
+    def test_07_cancel_link_on_set_up_your_account_page_takes_user_back_to_home_page(self):
+        """>>  7. Cancel link on Set up your account page takes user back to home page"""
+        self.select_organisation_and_open_set_up_your_account_page()
         self.navigator.click_link("Cancel")
         self.verify_home_page_has_loaded()
+
+    def test_08_set_up_your_account_page_warns_if_no_user_details_entered(self):
+        """>>  8. Set up your account page warns if no user details are entered"""
+        self.select_organisation_and_open_set_up_your_account_page()
+        self.navigator.click_submit_button_with_text("Continue")
+
+        try:
+            self.assert_title_is(ORGANISATION_NAME)
+            self.assert_page_contains_text_items(["Error when registering",
+                                                  "Please review messages below",
+                                                  "Set up your account - Step 2"])
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[2]/div")
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[3]/div[1]")
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[3]/div[2]")
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[4]/div[1]")
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[4]/div[2]")
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[5]/div[1]")
+            self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[5]/div[2]")
+
+        except AssertionError, error:
+            self.fail("Expected warnings for missing user details: %s" % (error))
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
@@ -98,7 +119,7 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         self.assert_title_is(ORGANISATION_NAME)
         self.assert_location_contains("rsr/accounts/register1")
 
-    def select_organisation_and_open_user_details_entry_page(self):
+    def select_organisation_and_open_set_up_your_account_page(self):
         self.open_organisation_selection_page_for_user_registration()
         self.selenium.select("id_organisation", "label=Administrators")
         self.assert_submit_button_with_text_exists("Continue")
