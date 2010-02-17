@@ -1,0 +1,30 @@
+{% extends "rsr/base.html" %}
+{% load i18n rsr_tags webdesign %}
+
+{% block content %}
+
+<div class="span-4 first">
+	<div class="frame">
+		<div class="sliding_box_header">
+			<span>{% trans 'Directory' %}</span>
+		</div>
+		<div style="margin-top:20px;">
+			<ul>
+				<li><a href=".">{% trans 'All participants' %}</a></li>
+				<li><a href="{% url rsr_org_list %}">{% trans 'Project participants' %}</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="span-14 last">
+	<div class="frame">
+		<div class="sliding_box_header">
+			<span>{% trans 'All Participants in DutchWaterSector.com' %}</span>
+		</div>
+		<div class="space20" style="height:400px">
+			Insert iframe here...
+		</div
+	></div>
+</div>
+
+{% endblock content %}

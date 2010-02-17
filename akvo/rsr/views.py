@@ -107,6 +107,8 @@ def index(request):
             raise
         
         current_site = Site.objects.get_current()
+        
+        # Generate the main blog content
         feed = feedparser.parse("http://%s/news?feed=rss2" % current_site)
          
         latest1 = feed.entries[0]
@@ -120,21 +122,29 @@ def index(request):
         try:
             img_src2 = soup('img')[0]['src']
         except:
-            img_src2 = ''       
+            img_src2 = ''  
+        
+        # Generate the special blog category
+        category_id = 3
+        news_feed = feedparser.parse('http://%s/news?feed=rss2&amp;cat=%s' % [current_site, category_id])
+        news = news_feed.entries[0]
+        
     except:
         soup = img_src1 = img_src2 = ''
-        le_latest1 = le_latest2 = {
+        news = {
             'title': _('The blog is not available at the moment.'),
         }
         latest1 = latest2 = {
             'author': '',
             'summary': _('The blog is not available at the moment.'),
         }
+        
     return {
         'latest1': latest1,
         'img_src1': img_src1,
         'latest2': latest2,
         'img_src2': img_src2,
+        'news': news,
         'site_section':'index',
     }
 
@@ -180,10 +190,13 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projs = Project.objects.published()#.funding().select_related()
-    showcases = projs.need_funding().order_by('?')[:3]
-    page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}
+    if settings.PVW_RSR:
+        return HttpResponsePermanentRedirect('/')
+    else:
+        projs = Project.objects.published()#.funding().select_related()
+        showcases = projs.need_funding().order_by('?')[:3]
+        page = project_list_data(request, projs)
+        return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}  
 
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
@@ -219,7 +232,13 @@ def focusarea(request, area='clean'):
     # get all projects the org is asociated with
     page = project_list_data(request, projects)
     return {'page': page, 'site_section': 'areas', 'focusarea': area,}
+
+@render_to('rsr/directory.html')
+def directory(request, org_type='all'):
     
+    return {'site_section': 'directory',}
+
+
 @render_to('rsr/organisation_directory.html')
 def orglist(request, org_type='all'):
     '''
@@ -355,7 +374,7 @@ def signout(request):
     Redirects to /rsr/
     '''
     logout(request)
-    return HttpResponseRedirect('/rsr/')
+    return HttpResponseRedirect('/')
 
 def register1(request):
     '''

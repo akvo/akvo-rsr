@@ -38,16 +38,16 @@
 			</form>
 		</div>
 		<div class="push-1 span-8 last" style="margin-top:25px;">
-			<h2>I don't have an online account</h2>
+			<h2>{% trans 'I don&#x27;t have an online account' %}</h2>
 			<p>
-				By <a href="{% url register1 %}">registering</a> with Akvo, you'll be able to:
+				<a href="{% url register1 %}">{% trans 'Register' %}</a> {% trans 'and you&#x27;ll be able to' %}:
 			</p>
 			<ul>
-				<li>Create updates on your organisation's projects</li>
-				<li>Leave comments on projects</li>
+				<li>{% trans 'Create updates on your organisation&#x27;s projects' %}</li>
+				<li>{% trans 'Leave comments on projects' %}</li>
 			</ul>
 			<p>
-				And much more! <a href="http://akvo.org/web/">Learn about</a> how Akvo works.
+				{% trans 'And much more' %}, <a href="/">{% trans 'Get Started now!' %}</a>
 			</p>
 		</div>
 	</div>

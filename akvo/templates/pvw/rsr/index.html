@@ -20,13 +20,13 @@ h1 {
 	<div class="frame" id="left_news" style="padding-top:15px">
 		<div class="span-3 first" style="text-align:right;">
 			<p style="color:#DF5B18; margin-bottom:15px;">
-				{% lorem 1 w random %}:
+				{% trans 'News' %}:
 			</p>
 		</div>
 		<div class="span-10 first">
 			<p style="margin-bottom:15px;">
-				<a href="#">
-				{% lorem 10 w random %}
+				<a href="{{ news.link }}">
+					{{ news.title|safe|truncatewords:20 }}
 				</a>
 			</p>
 		</div>
@@ -44,13 +44,13 @@ h1 {
 			</div>
 		</div>
 		<div class="space20">
-			<h4>{{latest1.title|safe}}</h4>
+			<h4><a href="{{latest1.link}}">{{latest1.title|safe}}</a></h4>
 			<p>
 				{{latest1.summary|safe|truncatewords:45}}
 			</p>
 			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
 			<hr />
-			<h4>{{latest2.title|safe}}</h4>
+			<h4><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h4>
 			<p>
 				{{latest2.summary|safe|truncatewords:45}}
 			</p>
@@ -72,19 +72,19 @@ h1 {
 			<hr style="margin-bottom:10px">
 			<p class="highlight" style="font-size:1.05em; margin-bottom:1em;">{% trans 'Focus Areas' %}</p>
 			
-			<div style="background-color:grey; height:122px;"></div>
+			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
 			<p class="highlight small no_b_marg">{% trans 'Clean water' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>
 			
-			<div style="background-color:grey; height:122px;"></div>
+			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
 			<p class="highlight small no_b_marg">{% trans 'Safety' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>
 			
-			<div style="background-color:grey; height:122px;"></div>
+			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
 			<p class="highlight small no_b_marg">{% trans 'Sharing water' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>
 			
-			<div style="background-color:grey; height:122px;"></div>
+			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
 			<p class="highlight small no_b_marg">{% trans 'Governance' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>			
 		</div>
