@@ -13,19 +13,21 @@ from helpers.navigation import *
 
 class RSRUserRegistrationTest(SeleniumTestCase):
 
+    TEST_USER_NAME = "UserRegistrationTest"
+
     def setUp(self):
         SeleniumTestCase.setUp(self)
         self.navigator = SeleniumNavigator(self.selenium)
         self.rsr = RSRNavigator(self.selenium)
 
     def test_01_home_page_has_sign_in_link(self):
-        """>>  1. Home page has Sign In link"""
+        """>>  1. Home page has Sign in link"""
         self.rsr.open_home_page()
         self.assert_title_is(ORGANISATION_NAME)
         self.assert_link_exists("Sign In")
 
     def test_02_sign_in_link_loads_sign_in_or_register_page(self):
-        """>>  2. Sign In link loads sign-in-or-register page"""
+        """>>  2. Sign in link loads sign-in-or-register page"""
         self.open_sign_in_or_register_page()
         self.assert_page_contains_text_items(["I have an online account",
                                               "Enter username",
@@ -90,9 +92,9 @@ class RSRUserRegistrationTest(SeleniumTestCase):
 
         try:
             self.assert_title_is(ORGANISATION_NAME)
-            self.assert_page_contains_text_items(["Error when registering",
-                                                  "Please review messages below",
-                                                  "Set up your account - Step 2"])
+            self.assert_page_contains_text_items(["Set up your account - Step 2",
+                                                  "Error when registering",
+                                                  "Please review messages below"])
             self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[2]/div")
             self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[3]/div[1]")
             self.verify_field_is_required_warning_at_path("//div[@id='maincontainer']/div[1]/div/form/fieldset/ul/li[3]/div[2]")
@@ -103,6 +105,50 @@ class RSRUserRegistrationTest(SeleniumTestCase):
 
         except AssertionError, error:
             self.fail("Expected warnings for missing user details: %s" % (error))
+
+    def test_09_set_up_your_account_page_warns_if_passwords_do_not_match(self):
+        """>>  9. Set up your account page warns if passwords do not match"""
+        self.select_organisation_and_open_set_up_your_account_page()
+
+        sel = self.selenium
+        sel.type("id_username", self.TEST_USER_NAME)
+        sel.type("id_first_name", "UserRegistration")
+        sel.type("id_last_name", "Test")
+        sel.type("id_password1", "abc")
+        sel.type("id_password2", "xyz")
+        sel.type("id_email", UAT_EMAIL_ADDRESS)
+        sel.type("id_email2", UAT_EMAIL_ADDRESS)
+        self.navigator.click_submit_button_with_text("Continue")
+
+        try:
+            self.assert_title_is(ORGANISATION_NAME)
+            self.assert_page_contains_text_items(["Set up your account - Step 2",
+                                                  "Error when registering",
+                                                  "Passwords do not match"])
+        except AssertionError, error:
+            self.fail("Expected warnings for mismatched passwords: %s" % (error))
+
+    def test_10_set_up_your_account_page_warns_if_email_addresses_do_not_match(self):
+        """>> 10. Set up your account page warns if email addresses do not match"""
+        self.select_organisation_and_open_set_up_your_account_page()
+
+        sel = self.selenium
+        sel.type("id_username", self.TEST_USER_NAME)
+        sel.type("id_first_name", "UserRegistration")
+        sel.type("id_last_name", "Test")
+        sel.type("id_password1", "deleteAfterTest")
+        sel.type("id_password2", "deleteAfterTest")
+        sel.type("id_email", UAT_EMAIL_ADDRESS)
+        sel.type("id_email2", "nonmatching@address.kom")
+        self.navigator.click_submit_button_with_text("Continue")
+
+        try:
+            self.assert_title_is(ORGANISATION_NAME)
+            self.assert_page_contains_text_items(["Set up your account - Step 2",
+                                                  "Error when registering",
+                                                  "Email addresses do not match"])
+        except AssertionError, error:
+            self.fail("Expected warnings for mismatched email addresses: %s" % (error))
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()

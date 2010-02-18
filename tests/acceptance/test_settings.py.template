@@ -13,6 +13,9 @@ SELENIUM_RC_PORT = 4444
 SUPERUSER_USERNAME = 'your_username'
 SUPERUSER_PASSWORD = 'your_password'
 
+UAT_EMAIL_ADDRESS = "some_email_address"
+UAT_EMAIL_PASSWORD = "some_password"
+
 SITE_UNDER_TEST = "http://pvw-dev.akvo.org"
 ORGANISATION_NAME = "DutchWaterSector"
 
