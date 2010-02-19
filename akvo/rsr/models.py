@@ -1861,8 +1861,15 @@ class Invoice(models.Model):
     # PayPal
     ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
-        choices=get_mollie_banklist(), blank=True)
+    try:
+        bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
+            choices=get_mollie_banklist(), blank=True)
+    except Exception, e:
+        if settings.DEBUG:
+            bank = 'None, (debug mode)'
+        else:
+            raise e
+        
     transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
 
     admin_objects = models.Manager()
