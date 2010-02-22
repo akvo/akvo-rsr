@@ -25,9 +25,13 @@ h1 {
 		</div>
 		<div class="span-10 first">
 			<p style="margin-bottom:15px;">
+				{% if news.link  %}
 				<a href="{{ news.link }}">
 					{{ news.title|safe|truncatewords:20 }}
 				</a>
+				{% else %}
+					{{ news.title|safe|truncatewords:20 }}
+				{% endif %}
 			</p>
 		</div>
 		<div class="clear"></div>
