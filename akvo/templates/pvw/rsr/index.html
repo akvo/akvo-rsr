@@ -49,12 +49,22 @@ h1 {
 		</div>
 		<div class="space20">
 			<h4><a href="{{latest1.link}}">{{latest1.title|safe}}</a></h4>
+			{% if img_src1 %}
+			<div style="float:left; width: 210px;">
+				<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+			</div> 
+			{% endif %}
 			<p>
 				{{latest1.summary|safe|truncatewords:45}}
 			</p>
 			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
 			<hr />
 			<h4><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h4>
+			{% if img_src2 %}
+			<div style="float:left; width: 210px;">
+				<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+			</div> 
+			{% endif %}
 			<p>
 				{{latest2.summary|safe|truncatewords:45}}
 			</p>
