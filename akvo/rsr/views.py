@@ -126,7 +126,7 @@ def index(request):
         
         # Generate the special blog category
         category_id = 3
-        news_feed = feedparser.parse('http://%s/news?feed=rss2&amp;cat=%s' % [current_site, category_id])
+        news_feed = feedparser.parse('http://%s/news?feed=rss2&cat=%s' % [current_site, category_id])
         news = news_feed.entries[0]
         
     except:
