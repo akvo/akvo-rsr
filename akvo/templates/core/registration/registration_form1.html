@@ -1,7 +1,7 @@
 {% extends "rsr/base.html" %}
 {% load i18n rsr_tags %}
 
-{% block title %}{% trans 'Register with Akvo RSR - Step 1' %}{% endblock %}
+{% block title %}{% trans 'Register - Step 1' %}{% endblock %}
 
 {% block content %}
 <div class="push-1 span-16 first last">
@@ -30,7 +30,7 @@
 
 		<h3>{% trans 'Important' %}</h3>
 		<p class="">
-			{% trans 'To set up your account, your organisation must be already registered with Akvo. If you do not see your organisation on the list above, <a href="/web/?q=node/14">click this link</a> to contact us to begin registering your organisation. After registration is complete, please return to set up your account.' %}
+			{% trans 'To set up your account, your organisation must be already registered. If you do not see your organisation on the list above, contact us to begin registering your organisation. After registration is complete, please return to set up your account.' %}
 		</p>
 		<input type="submit" name="some_name" value="{% trans 'Continue' %}" id="some_name">
 	</form>
