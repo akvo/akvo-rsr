@@ -138,6 +138,16 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         except AssertionError, error:
             self.fail("Expected warnings for mismatched email addresses: %s" % (error))
 
+    def test_11_can_register_new_user(self):
+        """>> 11. Can register a new user"""
+        self.select_organisation_and_open_set_up_your_account_page()
+        self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
+                                    UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
+        self.navigator.click_submit_button_with_text("Continue")
+        self.assert_page_does_not_contain_text("Error when registering")
+
+        self.fail("in progress -- to be completed when user registration is fixed")
+
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
         self.assert_title_is(ORGANISATION_NAME)
