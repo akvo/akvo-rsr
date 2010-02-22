@@ -4,8 +4,6 @@
 
 from test_settings import *
 
-from helpers.navigation import *
-
 class RSRUser:
 
     def __init__(self, selenium_client):
