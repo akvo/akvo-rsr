@@ -10,6 +10,7 @@ from seleniumextensions import SeleniumTestCase
 from test_settings import *
 
 from helpers.navigation import *
+from helpers.rsruseradmin import *
 
 class RSRUserRegistrationTest(SeleniumTestCase):
 
@@ -19,6 +20,7 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         SeleniumTestCase.setUp(self)
         self.navigator = SeleniumNavigator(self.selenium)
         self.rsr = RSRNavigator(self.selenium)
+        self.rsr_user = RSRUser(self.selenium)
 
     def test_01_home_page_has_sign_in_link(self):
         """>>  1. Home page has Sign in link"""
@@ -109,15 +111,8 @@ class RSRUserRegistrationTest(SeleniumTestCase):
     def test_09_set_up_your_account_page_warns_if_passwords_do_not_match(self):
         """>>  9. Set up your account page warns if passwords do not match"""
         self.select_organisation_and_open_set_up_your_account_page()
-
-        sel = self.selenium
-        sel.type("id_username", self.TEST_USER_NAME)
-        sel.type("id_first_name", "UserRegistration")
-        sel.type("id_last_name", "Test")
-        sel.type("id_password1", "abc")
-        sel.type("id_password2", "xyz")
-        sel.type("id_email", UAT_EMAIL_ADDRESS)
-        sel.type("id_email2", UAT_EMAIL_ADDRESS)
+        self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "abc", "xyz",
+                                    UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
         self.navigator.click_submit_button_with_text("Continue")
 
         try:
@@ -131,15 +126,8 @@ class RSRUserRegistrationTest(SeleniumTestCase):
     def test_10_set_up_your_account_page_warns_if_email_addresses_do_not_match(self):
         """>> 10. Set up your account page warns if email addresses do not match"""
         self.select_organisation_and_open_set_up_your_account_page()
-
-        sel = self.selenium
-        sel.type("id_username", self.TEST_USER_NAME)
-        sel.type("id_first_name", "UserRegistration")
-        sel.type("id_last_name", "Test")
-        sel.type("id_password1", "deleteAfterTest")
-        sel.type("id_password2", "deleteAfterTest")
-        sel.type("id_email", UAT_EMAIL_ADDRESS)
-        sel.type("id_email2", "nonmatching@address.kom")
+        self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
+                                    UAT_EMAIL_ADDRESS, "nonmatching@address.kom")
         self.navigator.click_submit_button_with_text("Continue")
 
         try:
@@ -149,6 +137,16 @@ class RSRUserRegistrationTest(SeleniumTestCase):
                                                   "Email addresses do not match"])
         except AssertionError, error:
             self.fail("Expected warnings for mismatched email addresses: %s" % (error))
+
+    def test_11_can_register_new_user(self):
+        """>> 11. Can register a new user"""
+        self.select_organisation_and_open_set_up_your_account_page()
+        self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
+                                    UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
+        self.navigator.click_submit_button_with_text("Continue")
+        self.assert_page_does_not_contain_text("Error when registering")
+
+        self.fail("in progress -- to be completed when user registration is fixed")
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
