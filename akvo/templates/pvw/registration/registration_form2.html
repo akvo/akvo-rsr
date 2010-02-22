@@ -29,7 +29,6 @@
                                 {% else %}
                                     {% trans 'Please review messages below.' %}
                                 {% endif %}
-                                    
                                 </div>
                             </li>
                         {% endif %}
@@ -125,6 +124,7 @@
 			        </ul>
 					
 			    </fieldset>
+                {{ form.org_id }}
 			    <input type="hidden" name="next" value="{{ next }}" />
 			</form>
 		</div>
