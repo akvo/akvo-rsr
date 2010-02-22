@@ -59,7 +59,10 @@ h1 {
 			<p>
 				{{latest1.summary|safe|truncatewords:45}}
 			</p>
-			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
+			{% if latest1.updated %}
+			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>				
+			{% endif %}
+			
 			<hr />
 			<h4><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h4>
 			{% if img_src2 %}
@@ -70,7 +73,9 @@ h1 {
 			<p>
 				{{latest2.summary|safe|truncatewords:45}}
 			</p>
+			{% if latest1.updated %}
 			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
+			{% endif %}
 		</div>
 	</div>
 </div>
@@ -88,19 +93,27 @@ h1 {
 			<hr style="margin-bottom:10px">
 			<p class="highlight" style="font-size:1.05em; margin-bottom:1em;">{% trans 'Focus Areas' %}</p>
 			
-			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			<a href="/rsr/projects/clean/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			</a>
 			<p class="highlight small no_b_marg">{% trans 'Clean water' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>
 			
-			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			<a href="/rsr/projects/safety/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			</a>
 			<p class="highlight small no_b_marg">{% trans 'Safety' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>
 			
-			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			<a href="/rsr/projects/sharing/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			</a>
 			<p class="highlight small no_b_marg">{% trans 'Sharing water' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>
 			
-			<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			<a href="/rsr/projects/governance/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/index/tmp_img_index_right.png" width="163" height="122" alt="" />
+			</a>
 			<p class="highlight small no_b_marg">{% trans 'Governance' %}</p>
 			<p class="tiny">{% lorem 4 w random %}</p>			
 		</div>
