@@ -6,8 +6,9 @@
 
 import nose
 
-from seleniumextensions import SeleniumTestCase
 from test_settings import *
+
+from seleniumextensions import *
 
 from helpers.navigation import *
 from helpers.rsruseradmin import *
@@ -144,9 +145,13 @@ class RSRUserRegistrationTest(SeleniumTestCase):
         self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
                                     UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
         self.navigator.click_submit_button_with_text("Continue")
-        self.assert_page_does_not_contain_text("Error when registering")
 
-        self.fail("in progress -- to be completed when user registration is fixed")
+        if self.selenium.is_text_present("Traceback"):
+            self.fail("Unable to register a new user:\nTraceback details:\n%s" % self.selenium.get_value("traceback_area"))
+
+        self.assert_page_does_not_contain_text("Error when registering")
+        self.assert_title_is("Registration complete")
+        self.assert_page_contains_text_items(["Thank you", "Please check your email account"])
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
