@@ -4,6 +4,7 @@
 
 from test_settings import *
 
+from seleniumextensions import *
 from helpers.navigation import *
 
 class RSRUserAdminTestCase(SeleniumTestCase):
