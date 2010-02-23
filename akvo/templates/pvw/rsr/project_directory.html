@@ -9,28 +9,29 @@
 {% endblock inline_styles %}
 
 {% block content %}
-<div class="span-14 first" id="focusareas">
 
-    {% focus_area focusarea 0 %}
-	
-</div>
-<div class="span-4 last">
-	<div class="frame" style="background-color:#F4F7F8">
-		<div class="space20" style="height: 160px;">
-			<p class="highlight" style="font-size:1em; margin-bottom:10px;">
-				{% trans 'Did you know...' %}
-			</p>
-			<p class="tiny">
-				{% lorem 10 w random %}
-			</p>
-		</div>
-	</div>
-</div>
+{% if focusarea %}
+    <div class="span-14 first" id="focusareas">
+        {% focus_area focusarea 0 %}
+    </div>
+    <div class="span-4 last">
+        <div class="frame" style="background-color:#F4F7F8">
+            <div class="space20" style="height: 160px;">
+                <p class="highlight" style="font-size:1em; margin-bottom:10px;">
+                    {% trans 'Did you know...' %}
+                </p>
+                <p class="tiny">
+                    {% lorem 10 w random %}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 <div class="span-18 last">
 	<div class="frame" style="margin-bottom:0; border-bottom:none;">
-        {% if o %}
-            {% project_list_pagination page o %}
+        {% if org %}
+            {% project_list_pagination page org %}
         {% else %}
             {% project_list_pagination page %}
         {% endif %}
@@ -40,10 +41,10 @@
 		<div class="span-6 first">
 			<div class="space10">
 				<p>
-                    {% if o %}
-                        <a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Name' %}</a>
+                    {% if org %}
+                        <a href="{% url project_list_for_org org.id %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Name' %}</a>
                     {% else %}
-                        <a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Name' %}</a>
+                        <a href="{% url focus_area focusarea %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Name' %}</a>
                     {% endif %}
                 </p>
 			</div>
@@ -51,10 +52,10 @@
 		<div class="span-2">
 			<div class="space10">
                 <p>
-                    {% if o %}
-                        <a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
+                    {% if org %}
+                        <a href="{% url project_list_for_org org.id %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
                     {% else %}
-                        <a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
+                        <a href="{% url focus_area focusarea %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
                     {% endif %}
                 </p>
 			</div>
@@ -62,10 +63,10 @@
 		<div class="span-2">
 			<div class="space10">
 				<p>
-                    {% if o %}
-                        <a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
+                    {% if org %}
+                        <a href="{% url project_list_for_org org.id %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
                     {% else %}
-                        <a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
+                        <a href="{% url focus_area focusarea %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
                     {% endif %}
                 </p>
 			</div>
@@ -73,10 +74,10 @@
 		<div class="span-2">
 			<div class="space10">
 				<p>
-                    {% if o %}
-                        <a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
+                    {% if org %}
+                        <a href="{% url project_list_for_org org.id %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
                     {% else %}
-                        <a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
+                        <a href="{% url focus_area focusarea %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
                     {% endif %}
                 </p>
 			</div>
@@ -84,10 +85,10 @@
 		<div class="span-2">
 			<div class="space10">
 				<p>
-                    {% if o %}
-                        <a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "order_by" "last_update" %}#list" title="{% trans 'Sort projects by latest update' %}">{% trans 'Update' %}</a>
+                    {% if org %}
+                        <a href="{% url project_list_for_org org.id %}{% addparam "order_by" "last_update" %}#list" title="{% trans 'Sort projects by latest update' %}">{% trans 'Update' %}</a>
                     {% else %}
-                        <a href="{% url akvo.rsr.views.projectlist %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by latest update' %}">{% trans 'Update' %}</a>
+                        <a href="{% url focus_area focusarea %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by latest update' %}">{% trans 'Update' %}</a>
                     {% endif %}
                 </p>
 			</div>
@@ -185,7 +186,7 @@
 
 	<div class="frame">
         {% if o %}
-            {% project_list_pagination page o %}
+            {% project_list_pagination page org %}
         {% else %}
             {% project_list_pagination page %}
         {% endif %}

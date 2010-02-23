@@ -180,59 +180,66 @@ def liveearth(request):
 @render_to('rsr/focus_areas.html')
 def focusareas(request):
     return {'site_section': 'areas',}
-    
-@render_to('rsr/project_directory.html')
-def projectlist(request):
-    '''
-    List of all projects in RSR
-    Context:
-    projects: list of all projects
-    stats: the aggregate projects data
-    page: paginator
-    '''
-    if settings.PVW_RSR:
-        return HttpResponsePermanentRedirect('/')
-    else:
-        projs = Project.objects.published()#.funding().select_related()
-        showcases = projs.need_funding().order_by('?')[:3]
-        page = project_list_data(request, projs)
-        return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}  
 
-@render_to('rsr/project_directory.html')
-def filteredprojectlist(request, org_id):
-    '''
-    List of  projects in RSR
-    filtered on an organisation
-    Context:
-    projs: list of all projects
-    page: paginator
-    o: organisation
-    '''
-    #for use in akvo at a glance
-    projs = Project.objects.published().funding()
-    # get all projects the org is asociated with
-    o = Organisation.objects.get(pk=org_id)
-    projects = o.published_projects().funding()
-    showcases = projects.order_by('?')[:3]
-    page = project_list_data(request, projects)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
+if settings.PVW_RSR:
+    @render_to('rsr/project_directory.html')
+    def project_list(request, area=None, org_id=None):
+        '''
+        List of  projects in RSR
+        filtered on either a focus area or an organisation
+        Context:
+        projs: list of all projects
+        page: paginator
+        o: organisation
+        '''
+        org = None
+        if org_id:
+            org = Organisation.objects.get(pk=org_id)
+            projects = org.published_projects().funding()
+        if area:
+            # TODO: filtering on area 
+            projects = Project.objects.published()
+        page = project_list_data(request, projects)
+        return {'page': page, 'site_section': 'areas', 'focusarea': area, 'org': org}
     
-@render_to('rsr/project_directory.html')
-def focusarea(request, area='clean'):
-    '''
-    List of  projects in RSR
-    filtered on an organisation
-    Context:
-    projs: list of all projects
-    page: paginator
-    o: organisation
-    '''
-    #for use in akvo at a glance
-    projects = Project.objects.published()
-    # get all projects the org is asociated with
-    page = project_list_data(request, projects)
-    return {'page': page, 'site_section': 'areas', 'focusarea': area,}
-
+else:
+    
+    @render_to('rsr/project_directory.html')
+    def projectlist(request):
+        '''
+        List of all projects in RSR
+        Context:
+        projects: list of all projects
+        stats: the aggregate projects data
+        page: paginator
+        '''
+        if settings.PVW_RSR:
+            return HttpResponsePermanentRedirect('/')
+        else:
+            projs = Project.objects.published()#.funding().select_related()
+            showcases = projs.need_funding().order_by('?')[:3]
+            page = project_list_data(request, projs)
+            return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}  
+    
+    @render_to('rsr/project_directory.html')
+    def filteredprojectlist(request, org_id):
+        '''
+        List of  projects in RSR
+        filtered on an organisation
+        Context:
+        projs: list of all projects
+        page: paginator
+        o: organisation
+        '''
+        #for use in akvo at a glance
+        projs = Project.objects.published().funding()
+        # get all projects the org is asociated with
+        o = Organisation.objects.get(pk=org_id)
+        projects = o.published_projects().funding()
+        showcases = projects.order_by('?')[:3]
+        page = project_list_data(request, projects)
+        return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
+    
 @render_to('rsr/directory.html')
 def directory(request, org_type='all'):
     

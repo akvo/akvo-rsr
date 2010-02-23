@@ -9,43 +9,53 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     <div style="float:right;">
         <p style="margin:2px 5px">
             {% ifequal page.number 1 %}
-                <span class="grey">{% trans 'First' %}</span>
+                <span style="margin-right: 15px;" class="grey">{% trans 'First' %}</span>
             {% else %}
                 {# if we have an organisation in the context, we are diplaying the list filtered on that org, url have to conform to that #}
                 {% if org %}
-                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
+                    <a style="margin-right: 15px;" href="{% url project_list_for_org org.id %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
                 {% else %}
-                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
+                    <a style="margin-right: 15px;" href="{% url focus_area focusarea %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
                 {% endif %}
             {% endifequal %}
+            |
             {% if page.has_previous %}
                 {% if org %}
-                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
+                    <a style="margin-right: 15px;" href="{% url project_list_for_org org.id %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
                 {% else %}
-                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
+                    <a style="margin-right: 15px;" href="{% url focus_area focusarea %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
                 {% endif %}
             {% else %}
-                <span class="grey">{% trans 'Previous' %}</span>
+                <span style="margin-right: 15px;" class="grey">{% trans 'Previous' %}</span>
             {% endif %}
+            |
             {% if page.has_next %}
                 {% if org %}
-                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+                    <a style="margin-right: 15px;" href="{% url project_list_for_org org.id %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
                 {% else %}
-                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+                    <a style="margin-right: 15px;" href="{% url focus_area focusarea %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
                 {% endif %}
             {% else %}
-                <span class="grey">{% trans 'Next' %}</span>
+                <span style="margin-right: 15px;" class="grey">{% trans 'Next' %}</span>
             {% endif %}
+            |
             {% ifequal page.number page.paginator.num_pages %}
-                <span class="grey">{% trans 'Last' %}</span>
+                <span style="margin-right: 15px;" class="grey">{% trans 'Last' %}</span>
             {% else %}
                 {% if org %}
-                    <a href="{% url akvo.rsr.views.filteredprojectlist org.id %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+                    <a style="margin-right: 15px;" href="{% url project_list_for_org org.id %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
                 {% else %}
-                    <a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+                    <a style="margin-right: 15px;" href="{% url focus_area focusarea %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
                 {% endif %}
             {% endifequal %}                    
         </p>
     </div>
-    <p style="margin:2px 5px">Page {{page.number}} of {{page.paginator.num_pages}}</p>
+    <div>
+        <p style="margin:2px 5px">
+        {% if org %}
+			<span style="margin-right: 15px;" class="grey">Projects for {{org.name}}</span> |
+		{% endif %}        
+        <span style="margin-right: 15px;" class="grey">Page {{page.number}} of {{page.paginator.num_pages}}</span>
+        </p>
+    </div>
 </div>

@@ -165,6 +165,7 @@ def project_list_pagination(context, page, org=None):
         'request'   : context['request'],
         'page'      : page,
         'org'       : org,
+        'focusarea' : context['focusarea'],
     }
 
 @register.inclusion_tag('inclusion_tags/updates.html', takes_context=True)
