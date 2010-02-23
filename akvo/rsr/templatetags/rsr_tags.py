@@ -190,6 +190,7 @@ def comments(context, comments):
         'comments'          : comments,
     }
 
+from django.conf import settings
 from django.contrib.sites.models import Site
 @register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
 def focus_area(context, focusarea, projects_link=True):
@@ -197,16 +198,16 @@ def focus_area(context, focusarea, projects_link=True):
     '''
     TITLE, BG_COLOR, OUTER_DIV, INNER_DIV, MORE_URL = 0, 1, 2, 3,4 
     FOCUS_AREA_DATA = {
-        'clean'         : (u'Clean water', '#B1C5E1', 'height:180px;', '','http://%s/web/areas/cleanwater' % Site.objects.get_current()),
-        'safety'        : (u'Safety', '#795851', 'height:180px; width:350px', '','http://%s/web/areas/safety' % Site.objects.get_current()),
-        'sharing'       : (u'Sharing water', '#998569', 'height:180px;', 'text-align:right; padding-left:200px;','http://%s/web/areas/sharingwater' % Site.objects.get_current()),
-        'governance'    : (u'Governance', '#CFD3D8', 'height:180px;', '','http://%s/web/areas/governance' % Site.objects.get_current()),
+        'clean'         : (u'Clean water', '%spvw/img/base/focus_area/clean_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '','http://%s/web/areas/cleanwater' % Site.objects.get_current()),
+        'safety'        : (u'Safety', '%spvw/img/base/focus_area/sharing_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px; width:350px', '','http://%s/web/areas/safety' % Site.objects.get_current()),
+        'sharing'       : (u'Sharing water', '%spvw/img/base/focus_area/governance_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', 'text-align:right; padding-left:200px;','http://%s/web/areas/sharingwater' % Site.objects.get_current()),
+        'governance'    : (u'Governance', '%spvw/img/base/focus_area/safety_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '','http://%s/web/areas/governance' % Site.objects.get_current()),
     }
     return {
         'MEDIA_URL'     : context['MEDIA_URL'],
         'focusarea'     : focusarea,
         'title'         : FOCUS_AREA_DATA[focusarea][TITLE],
-        'bg_color'      : FOCUS_AREA_DATA[focusarea][BG_COLOR],
+        'bgrd'          : FOCUS_AREA_DATA[focusarea][BG_COLOR],
         'outer_div'     : FOCUS_AREA_DATA[focusarea][OUTER_DIV],
         'inner_div'     : FOCUS_AREA_DATA[focusarea][INNER_DIV],
         'more_link'     : FOCUS_AREA_DATA[focusarea][MORE_URL],
@@ -214,7 +215,7 @@ def focus_area(context, focusarea, projects_link=True):
     }
 
 
-from django.conf import settings
+
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def page_styles(context,):
     '''
