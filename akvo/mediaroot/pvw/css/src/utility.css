@@ -2,7 +2,7 @@
 .grey { color: #888; }
 .red {color: #E60113;}
 .hl {color:#1DAAFB;}
-.bold {font-weight: bold;}
+.bold {font-weight: bold !important;}
 .highlight {color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;}
 .no_b_marg {margin-bottom:0;}
 .space5 { margin:5px;}

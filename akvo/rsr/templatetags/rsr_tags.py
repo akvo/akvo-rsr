@@ -215,7 +215,6 @@ def focus_area(context, focusarea, projects_link=True):
     }
 
 
-
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def page_styles(context,):
     '''
