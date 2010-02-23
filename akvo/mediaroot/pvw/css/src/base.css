@@ -21,6 +21,8 @@ body {
     
 #footer_area {
     background: #F6F8F9 url('../../img/base/footer/footer_top.png') repeat-x;
+    min-height:270px;
+    height:270px;
     }
     
 .frame {
