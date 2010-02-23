@@ -6,7 +6,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 from django.db.models import get_model
 from django.template import loader, Context
 from django.utils.translation import ugettext_lazy as _

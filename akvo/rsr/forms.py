@@ -14,6 +14,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.sites.models import Site
 from django.db.models import get_model
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -165,9 +166,10 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         
         """
         new_user =  RegistrationProfile.objects.create_inactive_user(
-            username=self.cleaned_data['username'],
-            password=self.cleaned_data['password1'],
-            email=self.cleaned_data['email']
+            self.cleaned_data['username'],
+            self.cleaned_data['email'],
+            self.cleaned_data['password1'],
+            Site.objects.get_current()
         )
         new_user.first_name = first_name=self.cleaned_data['first_name']
         new_user.last_name  = last_name=self.cleaned_data['last_name']
