@@ -2,7 +2,7 @@
 
 {% if updates %}
     {% for u in updates %}
-        <a name={{u.pk}} />
+        <a id="{{u.pk}}"></a>
         <h3>{{u.title}}</h3>
         <p class="small" style="margin:0; padding:0">
             <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
@@ -15,9 +15,9 @@
         {% if u.text %}
         <p class="small" style="margin:0; padding:0;">
         {% if show_permalinks %}
-            {{u.text|linebreaks}}
+            {{u.text}}
         {% else %}
-            {{u.text|smart_truncate:400|linebreaks}}
+            {{u.text|smart_truncate:400}}
         {% endif %}
         </p>
         {% endif %}

@@ -192,12 +192,13 @@ def updates(context, updates, width=480, height=360, show_permalinks=False):
     }
 
 @register.inclusion_tag('inclusion_tags/comments.html', takes_context=True)
-def comments(context, comments):
+def comments(context, comments, project):
     '''
     '''
     return {
         'MEDIA_URL'         : context['MEDIA_URL'],
         'comments'          : comments,
+        'p'                 : project,
     }
 
 from django.conf import settings

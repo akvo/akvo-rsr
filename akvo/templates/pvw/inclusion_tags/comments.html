@@ -8,11 +8,11 @@
         </div>						
         <div style="margin-left: 110px;">
             <p class="grey">{{c.time|date:"Y-m-d H:i"}}</p>
-            <p>{{c.comment|linebreaks}}</p>
+            {{c.comment|linebreaks}}
         </div>
         <br />
         <p style="text-align:right">
-            <a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
+            <a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment%20abuse%20in%20project%20%23{{p_id}}%2C%20comment%20%23{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
         </p>
         {% if not forloop.last %}
             <hr style="clear: both"/>
