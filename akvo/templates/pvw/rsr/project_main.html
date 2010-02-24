@@ -39,9 +39,7 @@
                         {% category_icons p %}
                     </div>
                     {% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
-                    <p style="margin-right:20px;">
-                        {{ p.project_plan_summary|capfirst|linebreaks }}
-                    </p>
+					{{ p.project_plan_summary|capfirst|linebreaks }}
                 </div>
             </div>
             <div id="tab_goals" class="tab">
@@ -65,37 +63,25 @@
                             {% endif %}
                         </ul>
                     </div>
-                    <p>
-                        {{p.goals_overview|capfirst|linebreaks}}
-                    </p>
+					{{p.goals_overview|capfirst|linebreaks}}
                 </div>
             </div>
             <div id="tab_details" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
                     <h2>{% trans 'Details of current status' %}</h2>
-                    <p>
-                        {{p.current_status_detail|capfirst|linebreaks}}
-                    </p>
+					{{p.current_status_detail|capfirst|linebreaks}}
                     <h2>{% trans 'Details of project plan' %}</h2>
-                    <p>
-                        {{p.project_plan_detail|capfirst|linebreaks}}
-                    </p>
+					{{p.project_plan_detail|capfirst|linebreaks}}
                 </div>
             </div>
             <div id="tab_impact" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
                     <h2>{% trans 'Impact' %}</h2>
-                    <p>
-                        {{p.impact|capfirst|linebreaks}}
-                    </p>
+                     {{p.impact|capfirst|linebreaks}}
                     <h2>{% trans 'Lessons learned' %}</h2>
-                    <p>
-                        {{p.lessons_learned|capfirst|linebreaks}}
-                    </p>
+					{{p.lessons_learned|capfirst|linebreaks}}
                     <h2>{% trans 'Technologies used' %}</h2>
-                    <p>
-                        {{p.technologies_used|capfirst|linebreaks}}
-                    </p>
+					{{p.technologies_used|capfirst|linebreaks}}
                 </div>
             </div>
         </div>
@@ -167,7 +153,7 @@
                     <hr />
                 </div>
                 <div class="space20">
-                    {% comments comments %}
+                    {% comments comments p %}
                 </div>
                 <div class="space10">
                     <hr />

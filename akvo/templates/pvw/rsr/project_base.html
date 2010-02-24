@@ -16,7 +16,7 @@
             {% ifnotequal p.start_date None %}
                 </div>
                 <div class="space10">
-                        <hr />
+					<hr />
                 </div>
                 <div class="space20">
                 <h2>Timeline</h2>
@@ -36,7 +36,7 @@
         <div class="sliding_box_header">
             <span>{% trans 'Page tools' %}</span>
         </div>
-		<div class="space20" style="margin-top: 20px;">
+		<div class="space20" style="margin-top:20px;margin-left:0;">
 			<ul class="small">
 				<li><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></li>
 				<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
