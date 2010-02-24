@@ -168,6 +168,15 @@ def project_list_pagination(context, page, org=None):
         'focusarea' : context['focusarea'],
     }
 
+@register.inclusion_tag('inclusion_tags/organisation_list_pagination.html', takes_context=True)
+def organisation_list_pagination(context, page):
+    '''
+    '''
+    return {
+        'request'   : context['request'],
+        'page'      : page,
+    }
+
 @register.inclusion_tag('inclusion_tags/updates.html', takes_context=True)
 def updates(context, updates, width=480, height=360, show_permalinks=False):
     '''

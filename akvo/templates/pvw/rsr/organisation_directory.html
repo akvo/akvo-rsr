@@ -1,224 +1,107 @@
-{% extends "rsr/index_base.html" %}
+{% extends "rsr/base.html" %}
 
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
+{% load i18n rsr_tags generic_content rsr_filters addparam webdesign %}
 
-{% load i18n rsr_filters thumbnail rsr_tags humanize %}
+{% block title %}{{ block.super }} - {% trans 'Projects' %}{% endblock %}
 
-{% load generic_content %}
-{% load addparam %}
-
-
-{% block title %}
-	{{block.super}} - {% trans 'Organisation listing' %}
-	{% if org_type %}
-		{% ifnotequal org_type 'all' %}
-			{% ifequal org_type 'funding' %}
-				- {% trans 'Funding partners' %}
-			{% endifequal %}
-			{% ifequal org_type 'support' %}
-				- {% trans 'Support partners' %}
-			{% endifequal %}
-			{% ifequal org_type 'field' %}
-				- {% trans 'Field partners' %}
-			{% endifequal %}
-			{% ifequal org_type 'sponsor' %}
-				- {% trans 'Sponsor partners' %}
-			{% endifequal %}
-		{% endifnotequal %}
-	{% endif %}	
-{% endblock title %}
-
-{% block script %}
+{% block inline_styles %}
 {{block.super}}
-<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
-{% endblock script %}
+{% endblock inline_styles %}
 
-{% block breadcrumbs %}
-	{{block.super}} &raquo; 
-	{% ifnotequal org_type 'all' %}
-		<a href="{% url akvo.rsr.views.orglist %}">{% trans 'Organisation listing' %}</a> &raquo;
-		{% ifequal org_type 'funding' %}
-			{% trans 'Funding partners' %}
-		{% endifequal %}
-		{% ifequal org_type 'support' %}
-			{% trans 'Support partners' %}
-		{% endifequal %}
-		{% ifequal org_type 'field' %}
-			{% trans 'Field partners' %}
-		{% endifequal %}
-		{% ifequal org_type 'sponsor' %}
-			{% trans 'Sponsor partners' %}
-		{% endifequal %}
-	{% else %}
-		{% trans 'Organisation listing' %}
-	{% endifnotequal %}
-{% endblock breadcrumbs %}
+{% block content %}
 
-{% comment %}
-{% block breadcrumbs %}
-	{{block.super}} &raquo; {% trans 'Organisation listing' %}
-	{% if org_type %}
-		{% ifnotequal org_type 'all' %}
-			{% ifequal org_type 'funding' %}
-				- {% trans 'Funding partners' %}
-			{% endifequal %}
-			{% ifequal org_type 'support' %}
-				- {% trans 'Support partners' %}
-			{% endifequal %}
-			{% ifequal org_type 'field' %}
-				- {% trans 'Field partners' %}
-			{% endifequal %}
-			{% ifequal org_type 'sponsor' %}
-				- {% trans 'Sponsor partners' %}
-			{% endifequal %}
-		{% endifnotequal %}
-	{% endif %}	
-{% endblock breadcrumbs %}
-{% endcomment %}
+<div class="span-18 first last">
+	<div class="frame" style="margin-bottom:0; border-bottom:none;">
+        {% organisation_list_pagination page %}
+	</div>
 
-{% block page_id %}
-<div id="page_project_directory">
-{% endblock page_id %}
-
-{% block outer_leftwing %}
-
-<div id="outer_leftwing">
-
-<div class="boxhead">
-    <a name="list"></a>
-    <div style="float:right; margin-top: 0.6em">
-    <!--<label for="display_number_of_entries">Show</label>
-    <select name='display_number_of_entries' class="select">
-    <option value='25'>25</option>
-    <option value='50'>50</option>
-    <option value='75'>75</option>
-    </select>
-    results per page-->
-    <span style="margin: 0 20px 0 20px">
-        {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
-    </span>
-    <span style="margin: 0 20px 0 20px">
-        {% ifequal page.number 1 %}
-        {% trans 'First' %} |
-        {% else %}
-        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
-        {% endifequal %}
-        {% if page.has_previous %}
-        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
-        {% else %}
-        {% trans 'Previous' %} |
-        {% endif %}
-        {% if page.has_next %}
-        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
-        {% else %}
-        {% trans 'Next' %} |
-        {% endif %}
-        {% ifequal page.number page.paginator.num_pages %}
-        {% trans 'Last' %}
-        {% else %}
-        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
-        {% endifequal %}
-    </span>
-    </div>
-	{% if org_type %}
-		{% ifnotequal org_type 'all' %}
-			{% ifequal org_type 'funding' %}
-			<h1>{% trans 'Funding partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
-			{% endifequal %}
-			{% ifequal org_type 'support' %}
-			<h1>{% trans 'Support partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
-			{% endifequal %}
-			{% ifequal org_type 'field' %}
-			<h1>{% trans 'Field partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
-			{% endifequal %}
-			{% ifequal org_type 'sponsor' %}
-			<h1>{% trans 'Sponsor partners' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
-			{% endifequal %}
-		{% else %}
-			<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
-		{% endifnotequal %}
-	{% else %}
-		<h1>{% trans 'Organisation listing' %} <span class="lightx2" style="font-weight:normal">({{orgs.count}} {% trans 'total' %})</span></h1>
-	{% endif %}
-			
-</div> <!-- .boxhead -->
-
-<div class="boxbody" style="padding:0">
-
-<table id="project_table">
-<tr>
-<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "name" %}#list">{% trans 'Organisation name' %}</a></th>
-<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "organisation_type" %}#list">{% trans 'Type' %}</a></th>
-<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__country_name" %}#list">{% trans 'Country' %}</a></th>
-<th><a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__continent" %}#list">{% trans 'Continent' %}</a></th>
-<th>{% trans 'Total projects' %}</th>
-</tr>
-{% for o in page.object_list %}
-<tr>
-	<td>
-        <a href="{% url akvo.rsr.views.orgdetail o.id %}">
-        {% org_logo o 100 75 'margin-right: 10px; float: left;' %}
-		{{o.name}}
-        </a>
-		<div class="lightx2 small">{{o.long_name}}</div>
-		<div style="clear: left;">
-		{#% category_icons_org o %#}
-	 	</div>
-	</td>
-	<td>{{o.get_organisation_type_display}}</td>
-	<td>{{o.country}}</td>
-	<td>{{o.country.get_continent_display}}</td>
-	<td>
-		<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a><br />
-	</td>
-
-</tr>
-
-{% endfor %}
-
-<tr>
-	<td colspan="9">
-		<div style="text-align: right">
-            <span style="margin: 0 20px 0 20px">
-                {% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
-            </span>
-            <span style="margin: 0 20px 0 20px">
-                {% ifequal page.number 1 %}
-                {% trans 'First' %} |
-                {% else %}
-                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
-                {% endifequal %}
-                {% if page.has_previous %}
-                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
-                {% else %}
-                {% trans 'Previous' %} |
-                {% endif %}
-                {% if page.has_next %}
-                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
-                {% else %}
-                {% trans 'Next' %} |
-                {% endif %}
-                {% ifequal page.number page.paginator.num_pages %}
-                {% trans 'Last' %}
-                {% else %}
-                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
-                {% endifequal %}
-            </span>
+	<div class="span-18 first last" id="proj_list_table_header">
+		<div class="span-6 first">
+			<div class="space10">
+				<p>
+                    <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "name" %}#list">{% trans 'Organisation name' %}</a>
+                </p>
+			</div>
 		</div>
-	</td>
-</tr>
-</table>
+		<div class="span-4">
+			<div class="space10">
+                <p>
+                    <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "organisation_type" %}#list">{% trans 'Type' %}</a>
+                </p>
+			</div>
+		</div>
+		<div class="span-3">
+			<div class="space10">
+				<p>
+                    <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__country_name" %}#list">{% trans 'Country' %}</a>
+                </p>
+			</div>
+		</div>
+		<div class="span-3">
+			<div class="space10">
+				<p>
+                    <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__continent" %}#list">{% trans 'Continent' %}</a>
+                </p>
+			</div>
+		</div>
+		<div class="span-2 last">
+			<div class="space10">
+				<p>{% trans 'Total projects' %}</p>
+			</div>
+		</div>
+	</div>
+    
+    {% for org in page.object_list %}
+	<div class="span-18 first last" id="proj_list_table">
+		<div class="span-6 first">
+			<div style="border-left:1px solid #BCBCC6; padding-top:5px;">
+				<div class="space10">
+                    <a href="{% url akvo.rsr.views.orgdetail org.id %}">
+                        {% org_logo org 100 75 'margin-right: 10px; float: left;' %}
+                    </a>
+                    <p>
+                        <a href="{% url akvo.rsr.views.orgdetail org.id %}">
+                            {{org.name}}
+                        </a><br/>
+                        {{org.long_name}}
+                    </p>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="span-4">
+			<div class="space10">
+                <p>{{org.get_organisation_type_display}}</p>
+			</div>
+		</div>
+		<div class="span-3">
+			<div class="space10">
+                <p>{{org.country}}</p>
+			</div>
+		</div>
+		<div class="span-3">
+			<div class="space10">
+				<p>{{org.country.get_continent_display}}</p>				
+			</div>
+		</div>
+		<div class="span-2 last">
+			<div class="space10">
+				<p>
+					<a href="{% url project_list_for_org org.id %}#list" title="{% blocktrans with org.name as org_name %}List projects for {{org_name}}{% endblocktrans %}">{{org.published_projects.count}}</a><br />
+				</p>				
+			</div>
+		</div>
+		<div class="span-18 first last" 
+			style="border-bottom:1px solid #F0F0F3; border-left:1px solid #ccc; padding-bottom:15px;">
+		</div>
+	</div>
+	{% endfor %}
+    
+	<div class="clear"></div>
 
-</div> <!-- .boxbody -->
+	<div class="frame" style="margin-bottom:0; border-bottom:none;">
+        {% organisation_list_pagination page %}
+	</div>
+</div>
 
-</div> <!-- #outer_leftwing -->
-{% endblock outer_leftwing %}
-
-{% block projects %}
-
-
-{% endblock projects %}
-
+{% endblock content %}
