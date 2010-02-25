@@ -11,9 +11,9 @@ from test_settings import *
 from helpers.navigation import *
 from helpers.rsruseradmin import *
 
-from users.rsruseradmintestcase import *
+from users.useradmintestcase import *
 
-class SignInOrRegisterTest(RSRUserAdminTestCase):
+class SignInOrRegisterTest(UserAdminTestCase):
 
     def setUp(self):
         SeleniumTestCase.setUp(self)

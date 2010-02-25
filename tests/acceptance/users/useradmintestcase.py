@@ -7,7 +7,7 @@ from test_settings import *
 from seleniumextensions import *
 from helpers.navigation import *
 
-class RSRUserAdminTestCase(SeleniumTestCase):
+class UserAdminTestCase(SeleniumTestCase):
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
