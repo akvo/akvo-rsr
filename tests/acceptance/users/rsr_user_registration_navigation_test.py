@@ -8,14 +8,12 @@ import nose
 
 from test_settings import *
 
-from rsruseradmintestcase import *
-
 from helpers.navigation import *
 from helpers.rsruseradmin import *
 
-class RSRUserRegistrationNavigationTest(RSRUserAdminTestCase):
+from users.rsruseradmintestcase import *
 
-    TEST_USER_NAME = "UserRegistrationTest"
+class RSRUserRegistrationNavigationTest(RSRUserAdminTestCase):
 
     def setUp(self):
         SeleniumTestCase.setUp(self)
