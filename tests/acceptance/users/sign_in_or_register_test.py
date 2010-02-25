@@ -13,7 +13,7 @@ from helpers.rsruseradmin import *
 
 from users.rsruseradmintestcase import *
 
-class RSRUserRegistrationNavigationTest(RSRUserAdminTestCase):
+class SignInOrRegisterTest(RSRUserAdminTestCase):
 
     def setUp(self):
         SeleniumTestCase.setUp(self)
@@ -59,5 +59,5 @@ class RSRUserRegistrationNavigationTest(RSRUserAdminTestCase):
 if __name__ == "__main__":
     print "Running tests on: %s" % (SITE_UNDER_TEST)
     print "RSR user registration navigation test:"
-    suite = nose.loader.TestLoader().loadTestsFromTestCase(RSRUserRegistrationNavigationTest)
+    suite = nose.loader.TestLoader().loadTestsFromTestCase(SignInOrRegisterTest)
     nose.core.TextTestRunner(verbosity=2).run(suite)
