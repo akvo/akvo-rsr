@@ -20,8 +20,6 @@ ADMINS = (
      ('Gabriel von Heijne', 'gabriel@akvo.org'),
 )
 
-SUPPORT_EMAIL = ADMINS[0][1]
-
 #Additional information about a User
 AUTH_PROFILE_MODULE = 'rsr.userprofile'
 

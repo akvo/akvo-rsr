@@ -478,7 +478,9 @@ def activate(request, activation_key,
         context[key] = callable(value) and value() or value
     return render_to_response(template_name,
                               { 'account': account,
-                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
+                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                'support_email': settings.SUPPORT_EMAIL,
+                                },
                               context_instance=context)    
     
     #activation_key = activation_key.lower() # Normalize before trying anything with it.
