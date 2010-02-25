@@ -5,9 +5,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n addparam %}
 
-<div class="sliding_box_header" >
+<div class="sliding_box_header img_border_bottom" style="background-color:#EFF3F5">
     <div style="float:right;">
-        <p style="margin:2px 5px">
+        <p class="small" style="margin:2px 5px">
             {% ifequal page.start_index page.end_index %}
                 <span style="margin-right: 20px;" class="grey">{% blocktrans with page.start_index as start_index and page.paginator.count as count %}Project {{start_index}} of {{count}}{% endblocktrans %}</span>
             {% else %}
@@ -23,7 +23,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <a style="margin-right: 5px; margin-left: 5px;" href="{% url focus_area focusarea %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
                 {% endif %}
             {% endifequal %}
-            |
+			<span style="margin:0; padding:0; color:grey">|</span>
             {% if page.has_previous %}
                 {% if org %}
                     <a style="margin-right: 5px; margin-left: 5px;" href="{% url project_list_for_org org.id %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
@@ -33,7 +33,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             {% else %}
                 <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'Previous' %}</span>
             {% endif %}
-            |
+            <span style="margin:0; padding:0; color:grey">|</span>
             {% if page.has_next %}
                 {% if org %}
                     <a style="margin-right: 5px; margin-left: 5px;" href="{% url project_list_for_org org.id %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
@@ -43,7 +43,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             {% else %}
                 <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'Next' %}</span>
             {% endif %}
-            |
+            <span style="margin:0; padding:0; color:grey">|</span>
             {% ifequal page.number page.paginator.num_pages %}
                 <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'Last' %}</span>
             {% else %}

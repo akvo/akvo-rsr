@@ -4,7 +4,12 @@
 @import url("base.css");
 @import url("menu.css");
 @import url("utility.css");
+@import url("projlist.css");
 
+.globe {
+    background-color:#F4F7F8;
+    background: #F4F7F8 url(../../img/globe.gif) no-repeat center bottom;
+}
 
 .sliding_box_header {
     /*background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;*/
@@ -26,12 +31,27 @@
     text-shadow: #eee 1px 1px 0px;
 }
 
+.img_border_top {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-x top;
+    }
+.img_border_right {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-y right;
+    }
+.img_border_left {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-y left;
+    }
+.img_border_bottom {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-x bottom;
+    }
+
+
 #proj_list_table {
     background: #fff url(../../../base/img/grey_dot.png) repeat-y right;
 }
 
 #proj_list_table_header {
-    background: #fff url(../../../base/img/grey_dot.png) repeat;
+    background-color:#E5E5E9;
+    /*background: #fff url(../../../base/img/grey_dot.png) repeat;*/
 }
 
 

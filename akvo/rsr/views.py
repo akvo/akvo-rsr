@@ -125,8 +125,7 @@ def index(request):
             img_src2 = ''  
         
         # Generate the special blog category
-        category_id = 3
-        news_feed = feedparser.parse('http://%s/news?feed=rss2&cat=%s' % [current_site, category_id])
+        news_feed = feedparser.parse('http://%s/news?feed=rss2&cat=%s' % [current_site, settings.WORDPRESS_NEWS_CATEGORY])
         news = news_feed.entries[0]
         
     except:
