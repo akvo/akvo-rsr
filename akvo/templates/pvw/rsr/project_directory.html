@@ -111,23 +111,6 @@ h2 {
 	            <p style="margin:0; padding:0;">
 	                {% category_icons project %}
 	            </p>
-				{% comment %}
-				<div style="padding-top:5px;">
-					<div class="space10">
-						<a href="{% url project_main project.id %}">
-							{% project_thumb project 100 75 'float:left; margin-right: 10px;' %}
-				        </a>
-	                    <p class="small">
-	    					<a href="{% url project_main project.id %}">{{project.name}}</a><br/>
-	                        {{project.subtitle}}
-	                    </p>
-	                    <p>
-	                        {% category_icons project %}
-	                    </p>
-					</div>
-					<div class="clear"></div>
-				</div>
-				{% endcomment %}
 			</div>
 			<div class="span-2 img_border_right projlistcell">
 				<p class="small" style="margin-top:5px;">
@@ -154,20 +137,6 @@ h2 {
 						{% endifequal %}
 					{% endwith %}
 				</p>
-			
-				{% comment %}
-				<div class="space10">
-					<p class="small">
-						{% with project.project_updates.latest as latest_update %}						
-							{% ifequal latest_update None %}
-								<span style="color:#000;">{% trans 'Not yet' %}</span>
-							{% else %}
-								<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|string_to_date|date:"Y-m-d  H:i"}}</a>
-							{% endifequal %}
-						{% endwith %}
-					</p>				
-				</div>	
-				{% endcomment %}
 			</div>
 			<div class="span-2 img_border_right projlistcell">
 				<p class="small" style="margin-top:5px;">
@@ -187,9 +156,7 @@ h2 {
 		</div>
 	</div>
 	{% endfor %}
-    
 	<div class="clear"></div>
-
 	<div class="frame">
         {% if o %}
             {% project_list_pagination page org %}
@@ -197,23 +164,6 @@ h2 {
             {% project_list_pagination page %}
         {% endif %}
 	</div>
-	
-	{% comment %}
-
-	<div class="frame">
-		<div class="sliding_box_header">
-			<p style="margin:2px 5px">2,573 results found for "virda"</p>
-		</div>
-		
-		<div class="space20">
-			<ul>
-			{% for p in page.object_list %}
-				<li><a href="{% url project_main project.id %}">{{project.name}}</a></li>
-			{% endfor %}
-			</ul>
-		</div>
-	</div>
-	{% endcomment %}
 </div>
 
 {% endblock content %}
