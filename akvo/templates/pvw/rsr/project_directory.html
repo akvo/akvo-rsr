@@ -5,30 +5,35 @@
 {% block title %}{{ block.super }} - {% trans 'Projects' %}{% endblock %}
 
 {% block inline_styles %}
-{{block.super}}
+h2 {
+	color:#1DAAFB;
+}
 {% endblock inline_styles %}
 
 {% block content %}
 
 {% if focusarea %}
-    <div class="span-14 first" id="focusareas">
-        {% focus_area focusarea 0 %}
-    </div>
-    <div class="span-4 last">
-        <div class="frame globe" style="">
-            <div class="space20" style="height: 190px;">
-                <p class="highlight" style="font-size:1em; margin-bottom:10px;">
-                    {% trans 'Did you know...' %}
-                </p>
-                <p class="tiny">
-                    {% lorem 10 w random %}
-                </p>
-            </div>
+<div class="span-14 first" id="focusareas">
+    {% focus_area focusarea 0 %}
+</div>
+<div class="span-4 last">
+    <div class="frame globe" style="">
+        <div class="space20" style="height: 190px;">
+            <p class="highlight" style="font-size:1em; margin-bottom:10px;">
+                {% trans 'Did you know...' %}
+            </p>
+            <p class="tiny">
+                {% lorem 10 w random %}
+            </p>
         </div>
     </div>
+</div>
 {% endif %}
+<div class="span-18">
+	<h2>{% trans 'Projects' %}</h2>
+</div>
 
-<div class="span-18 last">
+<div class="span-18">
 	<div class="frame" style="margin-bottom:0; border-bottom:none;">
         {% if org %}
             {% project_list_pagination page org %}
