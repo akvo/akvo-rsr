@@ -23,41 +23,6 @@ class RSRUserRegistrationTest(RSRUserAdminTestCase):
         self.rsr = RSRNavigator(self.selenium)
         self.rsr_user = RSRUser(self.selenium)
 
-    def test_01_home_page_has_sign_in_link(self):
-        """>>  1. Home page has Sign in link"""
-        self.rsr.open_home_page()
-        self.assert_title_is(ORGANISATION_NAME)
-        self.assert_link_exists("Sign In")
-
-    def test_02_sign_in_link_loads_sign_in_or_register_page(self):
-        """>>  2. Sign in link loads sign-in-or-register page"""
-        self.open_sign_in_or_register_page()
-        self.assert_page_contains_text_items(["I have an online account",
-                                              "Enter username",
-                                              "Enter password",
-                                              "I forgot my username and/or password",
-                                              "I don't have an online account",
-                                              "Register and you'll be able to",
-                                              "Create updates on your organisation's projects",
-                                              "Leave comments on projects",
-                                              "Get Started now"])
-        self.assert_link_exists("Register")
-        self.assert_link_exists("I forgot my username and/or password")
-
-    def test_03_register_link_loads_organisation_selection_page(self):
-        """>>  3. Register link loads organisation selection page"""
-        self.open_organisation_selection_page_for_user_registration()
-        self.assert_page_contains_text_items(["Set up your account - Step 1",
-                                            "Select the organisation that you belong to"])
-        self.assert_link_exists("Cancel")
-        self.assert_submit_button_with_text_exists("Continue")
-
-    def test_04_cancel_link_on_organisation_selection_page_takes_user_back_to_home_page(self):
-        """>>  4. Cancel link on organisation selection page takes user back to home page"""
-        self.open_organisation_selection_page_for_user_registration()
-        self.navigator.click_link("Cancel")
-        self.verify_home_page_has_loaded()
-
     def test_05_organisation_selection_page_warns_if_organisation_is_not_selected(self):
         """>>  5. Organisation selection page warns if organisation is not selected"""
         self.open_organisation_selection_page_for_user_registration()
