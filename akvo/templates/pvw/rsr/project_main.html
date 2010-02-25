@@ -39,7 +39,9 @@
                         {% category_icons p %}
                     </div>
                     {% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
-					{{ p.project_plan_summary|capfirst|linebreaks }}
+					<div style="width:500px;">
+						{{ p.project_plan_summary|capfirst|linebreaks }}
+					</div>
                 </div>
             </div>
             <div id="tab_goals" class="tab">
