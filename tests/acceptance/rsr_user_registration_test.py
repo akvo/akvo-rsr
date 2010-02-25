@@ -17,36 +17,6 @@ class RSRUserRegistrationTest(RSRUserAdminTestCase):
 
     TEST_USER_NAME = "UserRegistrationTest"
 
-    def setUp(self):
-        SeleniumTestCase.setUp(self)
-        self.navigator = SeleniumNavigator(self.selenium)
-        self.rsr = RSRNavigator(self.selenium)
-        self.rsr_user = RSRUser(self.selenium)
-
-    def test_05_organisation_selection_page_warns_if_organisation_is_not_selected(self):
-        """>>  5. Organisation selection page warns if organisation is not selected"""
-        self.open_organisation_selection_page_for_user_registration()
-        self.navigator.click_submit_button_with_text("Continue")
-
-        try:
-            self.assert_title_is(ORGANISATION_NAME)
-            self.assert_page_contains_text_items(["Set up your account - Step 1",
-                                                  "Select the organisation that you belong to",
-                                                  "This field is required"])
-        except AssertionError, error:
-            self.fail("Expected warning if organisation was not selected: %s" % (error))
-
-    def test_06_can_select_organisation_and_load_user_details_entry_page(self):
-        """>>  6. Can select organisation and load user details entry page"""
-        self.select_organisation_and_open_set_up_your_account_page()
-        self.assert_page_contains_text_items(["Set up your account - Step 2",
-                                              "Enter a username",
-                                              "Enter your first and last name",
-                                              "Enter a password",
-                                              "Enter your email address"])
-        self.assert_link_exists("Cancel")
-        self.assert_submit_button_with_text_exists("Continue")
-
     def test_07_cancel_link_on_set_up_your_account_page_takes_user_back_to_home_page(self):
         """>>  7. Cancel link on Set up your account page takes user back to home page"""
         self.select_organisation_and_open_set_up_your_account_page()

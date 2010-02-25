@@ -4,10 +4,18 @@
 
 from test_settings import *
 
-from seleniumextensions import *
-from helpers.navigation import *
+from seleniumextensions import SeleniumTestCase
+
+from helpers.navigation import RSRNavigator, SeleniumNavigator
+from helpers.rsruseradmin import RSRUser
 
 class UserAdminTestCase(SeleniumTestCase):
+
+    def setUp(self):
+        SeleniumTestCase.setUp(self)
+        self.navigator = SeleniumNavigator(self.selenium)
+        self.rsr = RSRNavigator(self.selenium)
+        self.rsr_user = RSRUser(self.selenium)
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
