@@ -46,44 +46,50 @@
             </div>
             <div id="tab_goals" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-                    <div class="space10" style="width: 170px; float:right;">
-                        <ul>
-                            {% if p.goal_1 %}
-                                <li>{{p.goal_1}}</li>
-                            {% endif %}
-                            {% if p.goal_2 %}
-                                <li>{{p.goal_2}}</li>
-                            {% endif %}
-                            {% if p.goal_3 %}
-                                <li>{{p.goal_3}}</li>
-                            {% endif %}
-                            {% if p.goal_4 %}
-                                <li>{{p.goal_4}}</li>
-                            {% endif %}
-                            {% if p.goal_5 %}
-                                <li>{{p.goal_5}}</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-					{{p.goals_overview|capfirst|linebreaks}}
+					<div style="width:500px;">
+						<div class="space10" style="width: 170px; float:right;">
+	                        <ul>
+	                            {% if p.goal_1 %}
+	                                <li>{{p.goal_1}}</li>
+	                            {% endif %}
+	                            {% if p.goal_2 %}
+	                                <li>{{p.goal_2}}</li>
+	                            {% endif %}
+	                            {% if p.goal_3 %}
+	                                <li>{{p.goal_3}}</li>
+	                            {% endif %}
+	                            {% if p.goal_4 %}
+	                                <li>{{p.goal_4}}</li>
+	                            {% endif %}
+	                            {% if p.goal_5 %}
+	                                <li>{{p.goal_5}}</li>
+	                            {% endif %}
+	                        </ul>
+	                    </div>
+						{{p.goals_overview|capfirst|linebreaks}}
+					</div>
                 </div>
             </div>
             <div id="tab_details" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-                    <h2>{% trans 'Details of current status' %}</h2>
-					{{p.current_status_detail|capfirst|linebreaks}}
-                    <h2>{% trans 'Details of project plan' %}</h2>
-					{{p.project_plan_detail|capfirst|linebreaks}}
+					<div style="width:500px;">
+						<h2>{% trans 'Details of current status' %}</h2>
+						{{p.current_status_detail|capfirst|linebreaks}}
+	                    <h2>{% trans 'Details of project plan' %}</h2>
+						{{p.project_plan_detail|capfirst|linebreaks}}
+					</div>
                 </div>
             </div>
             <div id="tab_impact" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-                    <h2>{% trans 'Impact' %}</h2>
-                     {{p.impact|capfirst|linebreaks}}
-                    <h2>{% trans 'Lessons learned' %}</h2>
-					{{p.lessons_learned|capfirst|linebreaks}}
-                    <h2>{% trans 'Technologies used' %}</h2>
-					{{p.technologies_used|capfirst|linebreaks}}
+					<div style="width:500px;">
+	                    <h2>{% trans 'Impact' %}</h2>
+	                     {{p.impact|capfirst|linebreaks}}
+	                    <h2>{% trans 'Lessons learned' %}</h2>
+						{{p.lessons_learned|capfirst|linebreaks}}
+	                    <h2>{% trans 'Technologies used' %}</h2>
+						{{p.technologies_used|capfirst|linebreaks}}
+					</div>
                 </div>
             </div>
         </div>
