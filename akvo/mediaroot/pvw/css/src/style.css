@@ -5,6 +5,10 @@
 @import url("menu.css");
 @import url("utility.css");
 
+.globe {
+    background-color:#F4F7F8;
+    background: #F4F7F8 url(../../img/globe.gif) no-repeat center bottom;
+}
 
 .sliding_box_header {
     /*background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;*/
