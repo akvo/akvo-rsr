@@ -1,0 +1,43 @@
+{% extends "rsr/message_base.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n %}
+
+{% block title %}
+    {{block.super}} -
+    {% if account %}
+        {% trans 'Account email confirmed' %}
+    {% else %}
+        {% trans 'Account confirmation failed' %}
+    {% endif %}
+{% endblock %}
+
+{% load humanize %}
+
+{% block message_header %}
+    {% if account %}
+        {% trans 'Thank you!' %}
+    {% else %}
+        {% trans "We're sorry, the account activation failed." %}
+    {% endif %}
+{% endblock message_header %}
+    
+{% block message_content %}
+    {% if account %}
+        {% trans 'Your account will be activated as soon as we have reviewed your request.' %}
+    {% else %}
+        {% blocktrans with expiration_days|apnumber as exp_days %}
+            Either your activation link was incorrect, or the activation key for your account
+            has expired. Activation keys are only valid for {{ exp_days }} days after registration.
+            </p><p>
+            Please <a href="mailto:{{ support_email }}">contact us</a> if you have any questions.
+        {% endblocktrans %}
+        
+    {% endif %}
+{% endblock message_content %}
+
+
