@@ -19,7 +19,7 @@ class RSRUserRegistrationTest(RSRUserAdminTestCase):
 
     def test_11_can_register_new_user(self):
         """>> 11. Can register a new user"""
-        self.select_organisation_and_open_set_up_your_account_page()
+        self.select_organisation_and_open_user_details_entry_page()
         self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
                                     UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
         self.navigator.click_submit_button_with_text("Continue")

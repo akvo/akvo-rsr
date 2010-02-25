@@ -33,7 +33,7 @@ class OrganisationSelectionTest(UserAdminTestCase):
 
     def test_03_can_select_organisation_and_load_user_details_entry_page(self):
         """>>  3. Can select organisation and load user details entry page"""
-        self.select_organisation_and_open_set_up_your_account_page()
+        self.select_organisation_and_open_user_details_entry_page()
         self.assert_page_contains_text_items(["Set up your account - Step 2",
                                               "Enter a username",
                                               "Enter your first and last name",

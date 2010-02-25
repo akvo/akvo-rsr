@@ -14,15 +14,15 @@ class UserDetailsEntryTest(UserAdminTestCase):
 
     TEST_USER_NAME = "UserRegistrationTest"
 
-    def test_01_cancel_link_on_set_up_your_account_page_takes_user_back_to_home_page(self):
-        """>>  1. Cancel link on Set up your account page takes user back to home page"""
-        self.select_organisation_and_open_set_up_your_account_page()
+    def test_01_cancel_link_on_user_details_entry_page_takes_user_back_to_home_page(self):
+        """>>  1. Cancel link on user details entry page takes user back to home page"""
+        self.select_organisation_and_open_user_details_entry_page()
         self.navigator.click_link("Cancel")
         self.verify_home_page_has_loaded()
 
-    def test_02_set_up_your_account_page_warns_if_no_user_details_entered(self):
-        """>>  2. Set up your account page warns if no user details are entered"""
-        self.select_organisation_and_open_set_up_your_account_page()
+    def test_02_user_details_entry_page_warns_if_no_user_details_entered(self):
+        """>>  2. User details entry page warns if no user details are entered"""
+        self.select_organisation_and_open_user_details_entry_page()
         self.navigator.click_submit_button_with_text("Continue")
 
         try:
@@ -41,9 +41,9 @@ class UserDetailsEntryTest(UserAdminTestCase):
         except AssertionError, error:
             self.fail("Expected warnings for missing user details: %s" % (error))
 
-    def test_03_set_up_your_account_page_warns_if_passwords_do_not_match(self):
-        """>>  3. Set up your account page warns if passwords do not match"""
-        self.select_organisation_and_open_set_up_your_account_page()
+    def test_03_user_details_entry_page_warns_if_passwords_do_not_match(self):
+        """>>  3. User details entry page warns if passwords do not match"""
+        self.select_organisation_and_open_user_details_entry_page()
         self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "abc", "xyz",
                                     UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
         self.navigator.click_submit_button_with_text("Continue")
@@ -56,9 +56,9 @@ class UserDetailsEntryTest(UserAdminTestCase):
         except AssertionError, error:
             self.fail("Expected warnings for mismatched passwords: %s" % (error))
 
-    def test_04_set_up_your_account_page_warns_if_email_addresses_do_not_match(self):
-        """>>  4. Set up your account page warns if email addresses do not match"""
-        self.select_organisation_and_open_set_up_your_account_page()
+    def test_04_user_details_entry_page_warns_if_email_addresses_do_not_match(self):
+        """>>  4. User details entry page warns if email addresses do not match"""
+        self.select_organisation_and_open_user_details_entry_page()
         self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
                                     UAT_EMAIL_ADDRESS, "nonmatching@address.kom")
         self.navigator.click_submit_button_with_text("Continue")

@@ -32,7 +32,7 @@ class UserAdminTestCase(SeleniumTestCase):
         self.assert_title_is(ORGANISATION_NAME)
         self.assert_location_contains("rsr/accounts/register1")
 
-    def select_organisation_and_open_set_up_your_account_page(self):
+    def select_organisation_and_open_user_details_entry_page(self):
         self.open_organisation_selection_page_for_user_registration()
         self.selenium.select("id_organisation", "label=Administrators")
         self.assert_submit_button_with_text_exists("Continue")
