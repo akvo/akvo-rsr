@@ -7,7 +7,7 @@ from test_settings import *
 from seleniumextensions import SeleniumTestCase
 
 from helpers.navigation import RSRNavigator, SeleniumNavigator
-from helpers.rsruseradmin import RSRUser
+from users.rsruser import RSRUser
 
 class UserAdminTestCase(SeleniumTestCase):
 
