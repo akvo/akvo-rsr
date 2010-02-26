@@ -9,6 +9,8 @@
 .space10 { margin:10px;}
 .space15 {margin:15px;}
 .space20 {margin:20px;}
+.txtcenter { text-align:center;}
+.pad5 {padding:5;}
 
 .round {
 	-khtml-border-radius: 5px;

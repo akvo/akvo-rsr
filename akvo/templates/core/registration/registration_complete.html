@@ -1,12 +1,15 @@
-{% extends "rsr/base.html" %}
+{% extends "rsr/message_base.html" %}
 
 {% load i18n %}
 
-{% block title %}{% trans 'Registration complete' %}{% endblock %}
+{% block title %}{{block.super}} - {% trans 'Registration complete' %}{% endblock %}
 
-{% block content %}
-	<h1>{% trans 'Thank you!' %}</h1>
-	<h2>{% trans 'Please check your email account.' %}</h2>
-	<p>{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}
-	</p>
-{% endblock content%}
+
+{% block message_header %}
+{% trans 'Thank you for registering!' %}
+{% endblock message_header %}
+
+{% block message_content %}
+{% trans 'Please check your email account.' %}</p><p>
+{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}
+{% endblock message_content %}
