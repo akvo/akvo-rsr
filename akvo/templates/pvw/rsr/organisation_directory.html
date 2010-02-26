@@ -2,104 +2,84 @@
 
 {% load i18n rsr_tags generic_content rsr_filters addparam webdesign %}
 
-{% block title %}{{ block.super }} - {% trans 'Projects' %}{% endblock %}
+{% block title %}{{ block.super }} - {% trans 'Organisations' %}{% endblock %}
 
 {% block inline_styles %}
-{{block.super}}
+h2 {
+	color:#1DAAFB;
+}
 {% endblock inline_styles %}
 
 {% block content %}
 
+<div class="span-18">
+	<h2>{% trans 'Organisations' %}</h2>
+</div>
 <div class="span-18 first last">
 	<div class="frame" style="margin-bottom:0; border-bottom:none;">
         {% organisation_list_pagination page %}
 	</div>
 
-	<div class="span-18 first last" id="proj_list_table_header">
-		<div class="span-6 first">
-			<div class="space10">
-				<p>
-                    <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "name" %}#list">{% trans 'Organisation name' %}</a>
-                </p>
-			</div>
+	<div class="span-18 img_border_left" id="list_table_header">
+		<div class="span-6 first img_border_right">
+			<p class="small" style="margin-top:5px; padding-left:10px">
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "name" %}#list">{% trans 'Organisation name' %}</a>
+            </p>
 		</div>
-		<div class="span-4">
-			<div class="space10">
-                <p>
-                    <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "organisation_type" %}#list">{% trans 'Type' %}</a>
-                </p>
-			</div>
+		<div class="span-4 img_border_right">
+			<p class="small" style="margin-top:5px;">
+                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "organisation_type" %}#list">{% trans 'Type' %}</a>
+            </p>
 		</div>
-		<div class="span-3">
-			<div class="space10">
-				<p>
+		<div class="span-3 img_border_right">
+			<p class="small" style="margin-top:5px;">
                     <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__country_name" %}#list">{% trans 'Country' %}</a>
-                </p>
-			</div>
+            </p>
 		</div>
-		<div class="span-3">
-			<div class="space10">
-				<p>
+		<div class="span-3 img_border_right">
+			<p class="small" style="margin-top:5px;">
                     <a href="{% url rsr_org_list_filtered org_type %}{% addparam "order_by" "country__continent" %}#list">{% trans 'Continent' %}</a>
-                </p>
-			</div>
+            </p>
 		</div>
-		<div class="span-2 last">
-			<div class="space10">
-				<p>{% trans 'Total projects' %}</p>
-			</div>
+		<div class="span-2 last img_border_right">
+			<p class="small" style="margin-top:5px;">{% trans 'Total projects' %}</p>
 		</div>
 	</div>
     
     {% for org in page.object_list %}
-	<div class="span-18 first last" id="proj_list_table">
-		<div class="span-6 first">
-			<div style="border-left:1px solid #BCBCC6; padding-top:5px;">
-				<div class="space10">
+	<div class="span-18 first last img_border_right" id="list_table" style="background-color:{% cycle '#fff' '#F5F7F9' %}">
+		<div class="img_border_left">		
+            <div class="span-6 first img_border_right projlistcell">
+                <a href="{% url akvo.rsr.views.orgdetail org.id %}">
+                    {% org_logo org 100 75 'float: left; margin: 10px;' %}
+                </a>
+                <p class="small" style="margin-top:5px;">
                     <a href="{% url akvo.rsr.views.orgdetail org.id %}">
-                        {% org_logo org 100 75 'margin-right: 10px; float: left;' %}
-                    </a>
-                    <p>
-                        <a href="{% url akvo.rsr.views.orgdetail org.id %}">
-                            {{org.name}}
-                        </a><br/>
-                        {{org.long_name}}
-                    </p>
-				</div>
-				<div class="clear"></div>
-			</div>
-		</div>
-		<div class="span-4">
-			<div class="space10">
-                <p>{{org.get_organisation_type_display}}</p>
-			</div>
-		</div>
-		<div class="span-3">
-			<div class="space10">
-                <p>{{org.country}}</p>
-			</div>
-		</div>
-		<div class="span-3">
-			<div class="space10">
-				<p>{{org.country.get_continent_display}}</p>				
-			</div>
-		</div>
-		<div class="span-2 last">
-			<div class="space10">
-				<p>
-					<a href="{% url project_list_for_org org.id %}#list" title="{% blocktrans with org.name as org_name %}List projects for {{org_name}}{% endblocktrans %}">{{org.published_projects.count}}</a><br />
-				</p>				
-			</div>
-		</div>
-		<div class="span-18 first last" 
-			style="border-bottom:1px solid #F0F0F3; border-left:1px solid #ccc; padding-bottom:15px;">
-		</div>
+                        {{org.name}}
+                    </a><br/>
+                    {{org.long_name}}
+                </p>
+            </div>
+            <div class="span-4 img_border_right projlistcell">
+                <p class="small" style="margin-top:5px;">{{org.get_organisation_type_display}}</p>
+            </div>
+            <div class="span-3 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">{{org.country}}</p>
+            </div>
+            <div class="span-3 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">{{org.country.get_continent_display}}</p>				
+            </div>
+            <div class="span-2 last">
+                <p class="small" style="margin-top:5px;">
+                    <a href="{% url project_list_for_org org.id %}#list" title="{% blocktrans with org.name as org_name %}List projects for {{org_name}}{% endblocktrans %}">{{org.published_projects.count}}</a><br />
+                </p>				
+            </div>
+            <div class="clear"></div>
+        </div>
 	</div>
 	{% endfor %}
-    
 	<div class="clear"></div>
-
-	<div class="frame" style="margin-bottom:0; border-bottom:none;">
+	<div class="frame">
         {% organisation_list_pagination page %}
 	</div>
 </div>

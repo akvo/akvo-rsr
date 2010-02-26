@@ -45,11 +45,11 @@
     }
 
 
-#proj_list_table {
+#list_table {
     background: #fff url(../../../base/img/grey_dot.png) repeat-y right;
 }
 
-#proj_list_table_header {
+#list_table_header {
     background-color:#E5E5E9;
     /*background: #fff url(../../../base/img/grey_dot.png) repeat;*/
 }

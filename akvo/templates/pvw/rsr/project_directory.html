@@ -42,7 +42,7 @@ h2 {
         {% endif %}
 	</div>
 
-	<div class="span-18 img_border_left" id="proj_list_table_header">
+	<div class="span-18 img_border_left" id="list_table_header">
 		<div class="span-6 first img_border_right">
 			<p class="small" style="margin-top:5px; padding-left:10px">
                 {% if org %}
@@ -52,7 +52,7 @@ h2 {
                 {% endif %}
             </p>			
 		</div>
-		<div class="span-2 img_border_right ">
+		<div class="span-2 img_border_right">
 			<p class="small" style="margin-top:5px;">
 				{% if org %}
 				<a href="{% url project_list_for_org org.id %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
@@ -92,12 +92,12 @@ h2 {
 			<p class="small" style="margin-top:5px;">{% trans 'Lead partners' %}</p>
 		</div>
 		<div class="span-2 last img_border_right">
-				<p class="small" style="margin-top:5px;">{% trans 'Other partners' %}</p>
+			<p class="small" style="margin-top:5px;">{% trans 'Other partners' %}</p>
 		</div>
 	</div>
     
     {% for project in page.object_list %}
-	<div class="span-18 first last img_border_right" id="proj_list_table" style="background-color:{% cycle '#fff' '#F5F7F9' %}">
+	<div class="span-18 first last img_border_right" id="list_table" style="background-color:{% cycle '#fff' '#F5F7F9' %}">
 		<div class="img_border_left">		
 			<div class="span-6 first img_border_right projlistcell">
 

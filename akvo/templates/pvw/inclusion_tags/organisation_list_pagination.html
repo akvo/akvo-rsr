@@ -5,9 +5,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n addparam %}
 
-<div class="sliding_box_header" >
+<div class="sliding_box_header img_border_bottom" style="background-color:#EFF3F5">
     <div style="float:right;">
-        <p style="margin:2px 5px">
+        <p class="small" style="margin:2px 5px">
             {% ifequal page.start_index page.end_index %}
                 <span style="margin-right: 20px;" class="grey">{% blocktrans with page.start_index as start_index and page.paginator.count as count %}Organisation {{start_index}} of {{count}}{% endblocktrans %}</span>
             {% else %}
