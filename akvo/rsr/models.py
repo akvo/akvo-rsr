@@ -25,6 +25,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from mollie.ideal.utils import get_mollie_banklist
@@ -361,6 +362,45 @@ class OrganisationsQuerySetManager(QuerySetManager):
 
 if settings.PVW_RSR: #pvw-rsr
 
+    class Category(models.Model):
+        def image_path(instance, file_name):
+            return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
+        #CHOICES_CATEGORY = (
+        #    (1, _('Water for food and nature')),
+        #    (2, _('Water and climate')),
+        #    (3, _('Millennium goals water and sanitation')),
+        #    (4, _('Integrated resource management')),
+        #    (5, _('Ground water management')),
+        #    (6, _('Delta technology')),
+        #    (7, _('Clean water')),
+        #    (8, _('Safety')),
+        #    (9, _('Waste')),
+        #    (10, _('Resource management')),
+        #    (11, _('Water & climate')),
+        #)
+        name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
+        icon                    = ImageWithThumbnailsField(
+                                    _('category icon'),
+                                    blank=True,
+                                    upload_to=image_path,
+                                    thumbnail={'size': (20, 20), 'options': ('crop', )},
+                                    help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
+                                )    
+        focus_area_clean        = models.BooleanField(_('focus area clean water'))
+        focus_area_safety       = models.BooleanField(_('focus area safety'))
+        focus_area_sharing      = models.BooleanField(_('focus area sharing water'))
+        focus_area_governance   = models.BooleanField(_('focus area governance'))
+        
+        def __unicode__(self):
+            return '%s (%s)' % (self.name, self.areas(),)
+
+        class Meta:
+            verbose_name=_('category')
+            verbose_name_plural=_('categories')
+            
+        def areas(self):
+            return ', '.join([capfirst(area) for area in ['clean', 'safety', 'sharing', 'governance'] if getattr(self, 'focus_area_%s' % area)])
+
     class Project(models.Model):    
         def image_path(instance, file_name):
             return rsr_image_path(instance, file_name, 'db/project/%s/%s')
@@ -368,6 +408,7 @@ if settings.PVW_RSR: #pvw-rsr
         name                        = models.CharField(_('title'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
         status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+        categories                  = models.ManyToManyField(Category, related_name='projects',)
         city                        = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
         state                       = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
         country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
@@ -461,7 +502,7 @@ if settings.PVW_RSR: #pvw-rsr
     
             def status_onhold(self):
                 return self.filter(status__exact='H')
-        
+
             def status_complete(self):
                 return self.filter(status__exact='C')
         
@@ -867,30 +908,6 @@ if settings.PVW_RSR: #pvw-rsr
             verbose_name=_('image')
             verbose_name_plural=_('images')
 
-    class Category(models.Model):
-        CHOICES_CATEGORY = (
-            (1, _('Water for food and nature')),
-            (2, _('Water and climate')),
-            (3, _('Millennium goals water and sanitation')),
-            (4, _('Integrated resource management')),
-            (5, _('Ground water management')),
-            (6, _('Delta technology')),
-            (7, _('Clean water')),
-            (8, _('Safety')),
-            (9, _('Waste')),
-            (10, _('Resource management')),
-            (11, _('Water & climate')),
-        )
-        project     = models.ForeignKey(Project, related_name='categories',)
-        category    = models.PositiveIntegerField(_('category'), choices=CHOICES_CATEGORY)
-        
-        def __unicode__(self):
-            return self.get_category_display()
-
-        class Meta:
-            verbose_name=_('category')
-            verbose_name_plural=_('categories')
-            
         
 else: #akvo-rsr
 
@@ -1952,4 +1969,6 @@ pre_save.connect(change_name_of_file_on_change, sender=Organisation)
 pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=Image)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
-
+if settings.PVW_RSR:
+    post_save.connect(change_name_of_file_on_create, sender=Category)
+    pre_save.connect(change_name_of_file_on_change, sender=Category)

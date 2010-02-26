@@ -350,9 +350,16 @@ class ProjectAdminForm(forms.ModelForm):
 
 if settings.PVW_RSR:
 
-    class CategoryInLine(admin.StackedInline):
-        model = get_model('rsr', 'category')
-        extra = 3
+    class CategoryAdmin(admin.ModelAdmin):
+        model = get_model('rsr', 'Category')
+        list_display = ('name', 'areas',)
+    
+    admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
+
+
+    #class CategoryInLine(admin.StackedInline):
+    #    model = get_model('rsr', 'category')
+    #    extra = 3
 
     class LocationInLine(admin.TabularInline):
         model = get_model('rsr', 'location')
@@ -374,7 +381,7 @@ if settings.PVW_RSR:
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')
         #inlines = (CategoryInLine, LocationInLine, LinkInline, PartnerInline, ImageInline, )
-        inlines = (CategoryInLine, LinkInline, PartnerInline, )
+        inlines = (LinkInline, PartnerInline, )
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
@@ -382,7 +389,9 @@ if settings.PVW_RSR:
                 'fields': (
                     'name',
                     'subtitle',
-                    'status',),
+                    'status',
+                    'categories',
+                ),
             }),
             
             #(_(u'Categories'), {

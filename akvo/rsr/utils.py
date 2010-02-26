@@ -46,7 +46,8 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     Modify path by supplying a path_tempate string
     """
     if instance.pk:
-        return path_template % (str(instance.pk), file_name)
+        instance_pk = str(instance.pk)
+        return path_template % locals()
     else:
         return path_template % ('temp', file_name)
 
