@@ -196,8 +196,9 @@ if settings.PVW_RSR:
             org = Organisation.objects.get(pk=org_id)
             projects = org.published_projects().funding()
         if area:
-            # TODO: filtering on area 
-            projects = Project.objects.published()
+            # TODO: filtering on area
+            criteria = {str('categories__focus_area_%s' % (area,)): True}
+            projects = Project.objects.published().filter(**criteria).distinct()
         page = project_list_data(request, projects)
         return {'page': page, 'site_section': 'areas', 'focusarea': area, 'org': org}
     
