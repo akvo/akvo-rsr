@@ -23,7 +23,7 @@
                 <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
             </ul>
             <div style="width: 170px; margin-top: 20px; float:right;">
-                <div class="space20" style="">
+                <div class="space15">
                     <h2>{% trans 'Location' %}</h2>
                     {% map_thumb p 140 140 '' %}
                     <p class="tiny" style="margin-top:5px;">
@@ -39,14 +39,14 @@
                         {% category_icons p %}
                     </div>
                     {% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
-					<div style="width:500px;">
+					<div style="width:525px;">
 						{{ p.project_plan_summary|capfirst|linebreaks }}
 					</div>
                 </div>
             </div>
             <div id="tab_goals" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-					<div style="width:500px;">
+					<div style="width:525px;">
 						<div class="space10" style="width: 170px; float:right;">
 	                        <ul>
 	                            {% if p.goal_1 %}
@@ -72,7 +72,7 @@
             </div>
             <div id="tab_details" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-					<div style="width:500px;">
+					<div style="width:525px;">
 						<h2>{% trans 'Details of current status' %}</h2>
 						{{p.current_status_detail|capfirst|linebreaks}}
 	                    <h2>{% trans 'Details of project plan' %}</h2>
@@ -82,7 +82,7 @@
             </div>
             <div id="tab_impact" class="tab">
                 <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-					<div style="width:500px;">
+					<div style="width:525px;">
 	                    <h2>{% trans 'Impact' %}</h2>
 	                     {{p.impact|capfirst|linebreaks}}
 	                    <h2>{% trans 'Lessons learned' %}</h2>
