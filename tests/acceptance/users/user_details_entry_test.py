@@ -12,7 +12,7 @@ from users.useradmintestcase import UserAdminTestCase
 
 class UserDetailsEntryTest(UserAdminTestCase):
 
-    TEST_USER_NAME = "UserRegistrationTest"
+    TEST_ACCOUNT_NAME = "UserRegistrationTest"
 
     def test_01_cancel_link_on_user_details_entry_page_takes_user_back_to_home_page(self):
         """>>  1. Cancel link on user details entry page takes user back to home page"""
@@ -44,7 +44,7 @@ class UserDetailsEntryTest(UserAdminTestCase):
     def test_03_user_details_entry_page_warns_if_passwords_do_not_match(self):
         """>>  3. User details entry page warns if passwords do not match"""
         self.select_organisation_and_open_user_details_entry_page()
-        self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "abc", "xyz",
+        self.rsr_user.register_with(self.TEST_ACCOUNT_NAME, "UserRegistration", "Test", "abc", "xyz",
                                     UAT_EMAIL_ADDRESS, UAT_EMAIL_ADDRESS)
         self.navigator.click_submit_button_with_text("Continue")
 
@@ -59,7 +59,7 @@ class UserDetailsEntryTest(UserAdminTestCase):
     def test_04_user_details_entry_page_warns_if_email_addresses_do_not_match(self):
         """>>  4. User details entry page warns if email addresses do not match"""
         self.select_organisation_and_open_user_details_entry_page()
-        self.rsr_user.register_with(self.TEST_USER_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
+        self.rsr_user.register_with(self.TEST_ACCOUNT_NAME, "UserRegistration", "Test", "deleteAfterTest", "deleteAfterTest",
                                     UAT_EMAIL_ADDRESS, "nonmatching@address.kom")
         self.navigator.click_submit_button_with_text("Continue")
 

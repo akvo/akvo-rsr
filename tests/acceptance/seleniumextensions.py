@@ -88,6 +88,10 @@ class SeleniumTestCase(TestCase):
         self.failUnless(self.selenium.is_element_present("link=%s" % (expected_link_text)),
             "Expected [%s] link to exist" % (expected_link_text))
 
+    def assert_link_exists_starting_with_text(self, expected_link_text):
+        self.failUnless(self.selenium.is_element_present("link=%s*" % (expected_link_text)),
+            "Expected link starting with [%s] to exist" % (expected_link_text))
+
     def assert_submit_button_with_text_exists(self, expected_button_text):
         self.failUnless(self.selenium.is_element_present("//input[@value=\"%s\"]" % (expected_button_text)),
             "Expected [%s] button to exist" % (expected_button_text))

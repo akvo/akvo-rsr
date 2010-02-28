@@ -6,6 +6,7 @@ from test_settings import *
 
 from seleniumextensions import SeleniumTestCase
 
+from helpers.gmailreader import GMailReader
 from helpers.navigation import RSRNavigator, SeleniumNavigator
 from users.rsruser import RSRUser
 
@@ -16,6 +17,7 @@ class UserAdminTestCase(SeleniumTestCase):
         self.navigator = SeleniumNavigator(self.selenium)
         self.rsr = RSRNavigator(self.selenium)
         self.rsr_user = RSRUser(self.selenium)
+        self.gmail_reader = GMailReader(self.selenium)
 
     def open_sign_in_or_register_page(self):
         self.rsr.open_home_page()
@@ -61,3 +63,11 @@ class UserAdminTestCase(SeleniumTestCase):
     def search_for_user_account(self, username):
         self.selenium.type("searchbar", username)
         self.navigator.click_submit_button_with_text("Search")
+
+    def open_gmail_inbox(self):
+        self.gmail_reader.open_inbox()
+        self.assert_title_is("Google Mail - Inbox")
+
+    def search_gmail_inbox_for_text(self, search_text):
+        self.gmail_reader.search_inbox_for_text(search_text)
+        self.assert_title_starts_with("Google Mail - Search results")
