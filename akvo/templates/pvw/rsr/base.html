@@ -96,12 +96,12 @@
 <script type="text/javascript">
 (function() {
 	var google_script=document.createElement('script'), backup_script=document.createElement('script');
-    var tryCounter=2, delay=250;
+    var tryCounter=10, delay=250;
     google_script.setAttribute('src','http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js');
     backup_script.setAttribute('src','{{MEDIA_URL}}js/jquery-1.4.2.min.js');
     
     document.getElementsByTagName('head')[0].appendChild(google_script);
-    
+	
     function load_ready() {
         window.setTimeout(function() {
             if (typeof jQuery=='undefined') {
@@ -109,10 +109,10 @@
             } else {
                 var jQ = jQuery.noConflict();
 				jQ(document).ready(function(){
+					{% block jquery_ready %}{% endblock jquery_ready %}	
 					jQ('#grid_toggle').click(function () {
 						jQ('#maincontainer').toggleClass('showgrid');
 					});
-					{% block jquery_ready %}{% endblock jquery_ready %}	
 				});
             }
         } ,delay);
@@ -137,32 +137,6 @@
 })();
 </script>
 {% endblock js %}
-
-{% comment %}
-{% block js %}
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-<script type="text/javascript">
-	if (typeof jQuery == 'undefined') {
-		document.write('<script type="text/javascript" src="{{MEDIA_URL}}base/js/jquery.js"><'); document.write('/script>');
-	}
-	var jQ = jQuery.noConflict();
-</script>
-
-{% endblock js %}
-
-<script type="text/javascript">
-jQ(document).ready(function(){
-
-	jQ('#grid_toggle').click(function () {
-		jQ('#maincontainer').toggleClass('showgrid');
-	});
-
-	{% block jquery_ready %}{% endblock jquery_ready %}	
-
-});
-</script>
-{% endcomment %}
-
 </body>
 </html>
 
