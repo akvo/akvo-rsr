@@ -212,6 +212,7 @@
 {% block js %}
 {{ block.super }} 
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% comment %}
 <script type="text/javascript">
 	jQ(function(){
 		jQ('#container-1 > ul').tabs();
@@ -221,6 +222,7 @@
 		jQ('#container-2 > ul').tabs();
 	});
 </script>
+{% endcomment %}
 {% endblock js %}
 
 {% block jquery_ready %}
@@ -229,5 +231,12 @@
         jQ("#panel").slideToggle("slow");
         jQ(this).toggleClass("active"); return false;
     });
+	jQ(function(){
+		jQ('#container-1 > ul').tabs();
+	});
+
+	jQ(function(){
+		jQ('#container-2 > ul').tabs();
+	});
 {% endblock jquery_ready %}	
 
