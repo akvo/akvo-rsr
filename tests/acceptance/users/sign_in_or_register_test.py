@@ -8,9 +8,14 @@ import nose
 
 from test_settings import *
 
+from seleniumclient import SeleniumClient
 from users.useradmintestcase import UserAdminTestCase
 
 class SignInOrRegisterTest(UserAdminTestCase):
+
+    @classmethod
+    def description(cls):
+        return "Sign in or register tests"
 
     def test_01_home_page_has_sign_in_link(self):
         """>>  1. Home page has Sign in link"""
@@ -41,8 +46,10 @@ class SignInOrRegisterTest(UserAdminTestCase):
         self.assert_link_exists("Cancel")
         self.assert_submit_button_with_text_exists("Continue")
 
+
+def suite():
+    return nose.loader.TestLoader().loadTestsFromTestCase(SignInOrRegisterTest)
+
 if __name__ == "__main__":
-    print "Running tests on: %s" % (SITE_UNDER_TEST)
-    print "Sign in or register tests:"
-    suite = nose.loader.TestLoader().loadTestsFromTestCase(SignInOrRegisterTest)
-    nose.core.TextTestRunner(verbosity=2).run(suite)
+    nose.core.TextTestRunner(verbosity=2).run(suite())
+    SeleniumClient().stop()

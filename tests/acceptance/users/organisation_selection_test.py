@@ -8,9 +8,14 @@ import nose
 
 from test_settings import *
 
+from seleniumclient import SeleniumClient
 from users.useradmintestcase import UserAdminTestCase
 
 class OrganisationSelectionTest(UserAdminTestCase):
+
+    @classmethod
+    def description(cls):
+        return "User registration - organisation selection tests"
 
     def test_01_cancel_link_on_organisation_selection_page_takes_user_back_to_home_page(self):
         """>>  1. Cancel link on organisation selection page takes user back to home page"""
@@ -42,8 +47,10 @@ class OrganisationSelectionTest(UserAdminTestCase):
         self.assert_link_exists("Cancel")
         self.assert_submit_button_with_text_exists("Continue")
 
+
+def suite():
+    return nose.loader.TestLoader().loadTestsFromTestCase(OrganisationSelectionTest)
+
 if __name__ == "__main__":
-    print "Running tests on: %s" % (SITE_UNDER_TEST)
-    print "User registration - organisation selection tests:"
-    suite = nose.loader.TestLoader().loadTestsFromTestCase(OrganisationSelectionTest)
-    nose.core.TextTestRunner(verbosity=2).run(suite)
+    nose.core.TextTestRunner(verbosity=2).run(suite())
+    SeleniumClient().stop()

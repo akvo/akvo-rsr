@@ -8,11 +8,16 @@ import nose
 
 from test_settings import *
 
+from seleniumclient import SeleniumClient
 from users.useradmintestcase import UserAdminTestCase
 
 class UserDetailsEntryTest(UserAdminTestCase):
 
     TEST_ACCOUNT_NAME = "UserRegistrationTest"
+
+    @classmethod
+    def description(cls):
+        return "User registration - user details entry tests"
 
     def test_01_cancel_link_on_user_details_entry_page_takes_user_back_to_home_page(self):
         """>>  1. Cancel link on user details entry page takes user back to home page"""
@@ -71,8 +76,10 @@ class UserDetailsEntryTest(UserAdminTestCase):
         except AssertionError, error:
             self.fail("Expected warnings for mismatched email addresses: %s" % (error))
 
+
+def suite():
+    return nose.loader.TestLoader().loadTestsFromTestCase(UserDetailsEntryTest)
+
 if __name__ == "__main__":
-    print "Running tests on: %s" % (SITE_UNDER_TEST)
-    print "User registration - user details entry tests:"
-    suite = nose.loader.TestLoader().loadTestsFromTestCase(UserDetailsEntryTest)
-    nose.core.TextTestRunner(verbosity=2).run(suite)
+    nose.core.TextTestRunner(verbosity=2).run(suite())
+    SeleniumClient().stop()

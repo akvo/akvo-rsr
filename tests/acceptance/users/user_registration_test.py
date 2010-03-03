@@ -8,6 +8,7 @@ import nose
 
 from test_settings import *
 
+from seleniumclient import SeleniumClient
 from users.useradmintestcase import UserAdminTestCase
 
 class UserRegistrationTest(UserAdminTestCase):
@@ -15,6 +16,10 @@ class UserRegistrationTest(UserAdminTestCase):
     TEST_ACCOUNT_NAME = "UserRegistrationTest"
     ACTIVATION_LINK_PREFIX = "%s/rsr/accounts/activate/" % (SITE_UNDER_TEST)
     ACTIVATION_MESSAGE_SUBJECT = "Activate your RSR account"
+
+    @classmethod
+    def description(cls):
+        return "User registration tests"
 
     def test_01_can_register_new_user(self):
         """>>  1. Can register a new user"""
@@ -126,8 +131,10 @@ class UserRegistrationTest(UserAdminTestCase):
         self.search_gmail_inbox_for_text(self.ACTIVATION_MESSAGE_SUBJECT)
         self.assert_page_does_not_contain_text("Inbox %s" % (self.ACTIVATION_MESSAGE_SUBJECT))
 
+
+def suite():
+    return nose.loader.TestLoader().loadTestsFromTestCase(UserRegistrationTest)
+
 if __name__ == "__main__":
-    print "Running tests on: %s" % (SITE_UNDER_TEST)
-    print "User registration test:"
-    suite = nose.loader.TestLoader().loadTestsFromTestCase(UserRegistrationTest)
-    nose.core.TextTestRunner(verbosity=2).run(suite)
+    nose.core.TextTestRunner(verbosity=2).run(suite())
+    SeleniumClient().stop()
