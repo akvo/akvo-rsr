@@ -9,23 +9,18 @@ from unittest import TestCase
 
 from test_settings import *
 
+from seleniumclient import SeleniumClient
+
 class SeleniumTestCase(TestCase):
 
     @classmethod
     def setup_class(cls):
-        try:
-            cls.selenium = selenium(SELENIUM_RC_HOST, SELENIUM_RC_PORT, BROWSER_ENVIRONMENT, SITE_UNDER_TEST)
-            cls.selenium.start()
-        except Exception, exception:
-            print ">> Unable to start Selenium RC client: %s" % (exception)
-            raise exception
+        cls.selenium = SeleniumClient().instance()
+        print "\n%s:" % (cls.description())
 
     @classmethod
-    def teardown_class(cls):
-        try:
-            cls.selenium.stop()
-        except Exception, exception:
-            print ">> Unable to stop Selenium RC client: %s" % (exception)
+    def description(cls):
+        raise Exception('Override the SeleniumTestCase.description() method to provide a description of the test case')
 
     def setUp(self):
         self.verification_errors = []
