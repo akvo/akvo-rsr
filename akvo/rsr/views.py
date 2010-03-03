@@ -193,7 +193,7 @@ def project_list_data(request, projects):
 @render_to('rsr/liveearth.html')
 def liveearth(request):
     '''
-    List of all projects in RSR
+    List of all projects associated with Live Earth
     Context:
     projects: list of all projects
     stats: the aggregate projects data
@@ -203,6 +203,20 @@ def liveearth(request):
     projs = live_earth.published_projects().funding()
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
+
+@render_to('rsr/walking-for-water.html')
+def walking_for_water(request):
+    '''                                                                            
+    List of all projects associated with Walking for Water
+    Context:                                                                       
+    projects: list of all projects                                                 
+    stats: the aggregate projects data                                             
+    page: paginator                                                                
+    '''
+    wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
+    projs = wfw.published_projects().funding()
+    page = project_list_data(request, projs)
+    return {'projs': projs, 'orgs': wfw.partners(), 'page': page, 'walking_for_water': wfw }
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):
