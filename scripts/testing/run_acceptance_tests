@@ -13,5 +13,4 @@ else
 fi
 
 printf "Running acceptance tests from: %s\n" $ACCEPTANCE_TEST_ROOT_DIR
-cd $ACCEPTANCE_TEST_ROOT_DIR
 ./all_test_suites.py
