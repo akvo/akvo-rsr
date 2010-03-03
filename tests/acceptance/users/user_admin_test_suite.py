@@ -13,18 +13,17 @@ from users.organisation_selection_test import OrganisationSelectionTest
 from users.user_details_entry_test import UserDetailsEntryTest
 from users.user_registration_test import UserRegistrationTest
 
-def suite():
+def user_admin_suite():
     print "RSR user admin test suite:"
-    sign_in_or_register_suite = nose.loader.TestLoader().loadTestsFromTestCase(SignInOrRegisterTest)
-    organisation_selection_suite = nose.loader.TestLoader().loadTestsFromTestCase(OrganisationSelectionTest)
-    user_details_entry_suite = nose.loader.TestLoader().loadTestsFromTestCase(UserDetailsEntryTest)
-    user_registration_suite = nose.loader.TestLoader().loadTestsFromTestCase(UserRegistrationTest)
 
-    return nose.suite.LazySuite([sign_in_or_register_suite,
-                                 organisation_selection_suite,
-                                 user_details_entry_suite,
-                                 user_registration_suite])
+    return nose.suite.LazySuite([load_tests_from(SignInOrRegisterTest),
+                                 load_tests_from(OrganisationSelectionTest),
+                                 load_tests_from(UserDetailsEntryTest),
+                                 load_tests_from(UserRegistrationTest)])
+
+def load_tests_from(test_case):
+    return nose.loader.TestLoader().loadTestsFromTestCase(test_case)
 
 if __name__ == "__main__":
-    nose.core.TextTestRunner(verbosity=2).run(suite())
+    nose.core.TextTestRunner(verbosity=2).run(user_admin_suite())
     SeleniumClient().stop()
