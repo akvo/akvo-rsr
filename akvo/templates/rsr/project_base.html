@@ -86,6 +86,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{{p.funding_donated|round|intcomma}}
 					</span>
 				</b>
+				<div id="donors" style="margin-left: 10px">
+					<ul>
+					{% for donors in donations %}
+						<li>
+							<span style="font-weight:bold;">{{ donors.name }}</span>, 
+							{{ donors.currency }} <span style="font-weight:bold;">{{ donors.amount }}</span>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+				
 			</p>
 		{% endif %}
 	</div> <!-- #project_funding & .boxbody -->
