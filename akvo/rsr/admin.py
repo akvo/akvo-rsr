@@ -494,9 +494,9 @@ class ProjectAdmin(admin.ModelAdmin):
             #brk(host="localhost", port=9000)            
             if all_valid(formsets) and form_validated:
                 if not new_object.found:
-                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
+                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'You cannot completely remove your organisation as a partner.')])
                     for fs in new_object.partner_formsets:
-                        fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
+                        fs._non_form_errors = ErrorList([_(u'Your organisation should be listed as a partner in one of these sections.')])
                 else:
                     self.save_model(request, new_object, form, change=False)
                     form.save_m2m()
@@ -775,7 +775,7 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
 
-    list_display    = ('project', 'user', 'text', 'time', 'img',)    
+    list_display    = ('id', 'project', 'user', 'text', 'time', 'img',)    
     list_filter     = ('project', 'time', )
 
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
