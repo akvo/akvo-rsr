@@ -751,7 +751,7 @@ def projectmain(request, project_id):
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
     can_add_update = p.connected_to_user(request.user)
-    donations = Invoice.objects.filter(project__exact=p.id)
+    donations = Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=True)
         
     return {'p': p, 'updates': updates, 'comments': comments, 'form': form, 'can_add_update': can_add_update, 'donations': donations }
 
