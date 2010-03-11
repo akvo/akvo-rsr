@@ -244,12 +244,13 @@
 	// Tries to render the widget as well as generate the copy code
 	function preview_widget()
 	{
+		$jq = jQuery.noConflict();
 		// Remove old error messages	
 		var warning_color = document.getElementById('warning_color');
 		if (warning_color.hasChildNodes()) { warning_color.innerHTML = '';}
 
-		jQ('#machinery_step2_warning_main').animate({ opacity: "hide" }, "fast"); 
-		jQ('#warning_color').animate({ opacity: "hide" }, "fast"); 
+		$jq('#machinery_step2_warning_main').animate({ opacity: "hide" }, "fast"); 
+		$jq('#warning_color').animate({ opacity: "hide" }, "fast"); 
 
 
 		// Error checking begins	
@@ -264,14 +265,14 @@
 
 		if (!(bgcolor.length == 3 || bgcolor.length == 6))
 		{ 
-			jQ('#warning_color').animate({ opacity: "show" },"slow");
-			jQ('#warning_color').append(error1 + ".<br />");
+			$jq('#warning_color').animate({ opacity: "show" },"slow");
+			$jq('#warning_color').append(error1 + ".<br />");
 
 			colorsValidate=false;
 		}
 		else if (!hex_validator(bgcolor))
 		{
-			jQ('#warning_color').animate({ opacity: "show" }, "slow").append(error2 + ".<br />");
+			$jq('#warning_color').animate({ opacity: "show" }, "slow").append(error2 + ".<br />");
 			colorsValidate=false;
 		}
 
@@ -284,14 +285,14 @@
 
 		if (!(txtcolor.length == 3 || txtcolor.length == 6))
 		{ 
-			jQ('#warning_color').animate({ opacity: "show" },"slow");
-			jQ('#warning_color').append(error3 + ".<br />");
+			$jq('#warning_color').animate({ opacity: "show" },"slow");
+			$jq('#warning_color').append(error3 + ".<br />");
 
 			colorsValidate=false;
 		}
 		else if (!hex_validator(txtcolor))
 		{
-			jQ('#warning_color').animate({ opacity: "show" }, "slow").append(error4 +".<br />");
+			$jq('#warning_color').animate({ opacity: "show" }, "slow").append(error4 +".<br />");
 			colorsValidate=false;
 		}
 
@@ -306,8 +307,8 @@
 				machinery_step2_warning_main_message_p.innerHTML = '';
 			}
 
-			jQ('machinery_step2_warning_main_message').append(error0);
-			jQ('#machinery_step2_warning_main').animate({ opacity: "show" }, "slow");
+			$jq('machinery_step2_warning_main_message').append(error0);
+			$jq('#machinery_step2_warning_main').animate({ opacity: "show" }, "slow");
 
 			//alert('remove widget and copy code');
 			if (akvo_widget_container.hasChildNodes()) { 
@@ -387,7 +388,7 @@ jQ(function(){
  });
 });
 
-preview_widget();
+preview_widget(jQ);
 
 {% endblock jquery_ready %}	
 

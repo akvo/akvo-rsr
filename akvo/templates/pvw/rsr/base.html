@@ -99,7 +99,7 @@
     var tryCounter=10, delay=250;
     google_script.setAttribute('src','http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js');
     backup_script.setAttribute('src','{{MEDIA_URL}}js/jquery-1.4.2.min.js');
-    
+	
     document.getElementsByTagName('head')[0].appendChild(google_script);
 	
     function load_ready() {
@@ -137,6 +137,7 @@
 })();
 </script>
 {% endblock js %}
+
 </body>
 </html>
 
