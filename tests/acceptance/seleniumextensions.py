@@ -90,3 +90,7 @@ class SeleniumTestCase(TestCase):
     def assert_submit_button_with_text_exists(self, expected_button_text):
         self.failUnless(self.selenium.is_element_present("//input[@value=\"%s\"]" % (expected_button_text)),
             "Expected [%s] button to exist" % (expected_button_text))
+
+    def assert_field_with_id_exists(self, expected_field_id):
+        self.failUnless(self.selenium.is_element_present("//input[@id=\"%s\"]" % (expected_field_id)),
+            "Expected field with ID: [%s]" % (expected_field_id))

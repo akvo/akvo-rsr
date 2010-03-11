@@ -8,7 +8,7 @@ from helpers.navigation import SeleniumNavigator
 
 class GMailReader:
 
-    GMAIL_INBOX_URL = "http://mail.google.com/mail/?ui=html" # basic HTML view
+    GMAIL_INBOX_URL = "http://mail.google.com/mail/?ui=html&hl=en-GB" # basic HTML view with UK English
 
     def __init__(self, selenium_client):
         self.selenium = selenium_client
@@ -17,7 +17,7 @@ class GMailReader:
     def open_inbox(self):
         self.navigator.open_page(self.GMAIL_INBOX_URL)
 
-        if self.selenium.is_text_present("Sign in to Google Mail"):
+        if self.field_with_id_exists("Email") and self.field_with_id_exists("Passwd"):
             self.selenium.type("Email", GMAIL_USERNAME)
             self.selenium.type("Passwd", GMAIL_PASSWORD)
             self.navigator.click_button("signIn")
@@ -25,4 +25,7 @@ class GMailReader:
 
     def search_inbox_for_text(self, search_text):
         self.selenium.type("q", search_text)
-        self.navigator.click_submit_button_with_text("Search Mail")
+        self.navigator.click_button("nvp_site_mail")
+
+    def field_with_id_exists(self, expected_field_id):
+        return self.selenium.is_element_present("//input[@id=\"%s\"]" % (expected_field_id))
