@@ -16,7 +16,7 @@
 	</div>
 	<div class="span-8 last">
 		<noscript>
-			<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+			<div id="machinery_step2_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 				<p>
 					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
 					{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed. ' %}
@@ -303,7 +303,7 @@
 		if(!colorsValidate) {
 			// Change the texts.
 			var machinery_step2_warning_main_message_p = document.getElementById('machinery_step2_warning_main_message'); 
-			if (machinery_step2_warning_main_message_p.hasChildNodes()) { 
+			if (machinery_step2_warning_main_message_p && machinery_step2_warning_main_message_p.hasChildNodes() ) { 
 				machinery_step2_warning_main_message_p.innerHTML = '';
 			}
 
