@@ -766,12 +766,19 @@ def projectmain(request, project_id):
 def projectdetails(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
-    
+
+from django.db.models import Sum
 @render_to('rsr/project_funding.html')    
 def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         donations = Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=True)
-        return {'p': p, 'donations': donations, }
+        anonymous_donations =  Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=False)
+        if anonymous_donations:
+            anonymous_donations_sum = anonymous_donations.aggregate(anonymous_donations_sum=Sum('amount'))
+        else:
+            anonymous_donations_sum = 0
+        
+        return {'p': p, 'donations': donations, 'anonymous_donations_sum': anonymous_donations_sum }
 
 def getwidget(request, project_id):
     '''
