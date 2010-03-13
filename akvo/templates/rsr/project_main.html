@@ -24,6 +24,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     		$("#panel").slideToggle("slow");
     		$(this).toggleClass("active"); return false;
     	});
+
+		$("#show-donors").click(function(){
+			
+			$(this).text( $('#donors').is(':visible') ? 'Show donations' : 'Hide donations' );
+			$("#donors").toggle("slow");
+			
+    	});
 	});
 
 </script>

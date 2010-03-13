@@ -1335,6 +1335,10 @@ class Invoice(models.Model):
             return self.project.paymentgatewayselector.paypal_gateway.notification_email
         elif self.engine == 'ideal':
             return self.project.paymentgatewayselector.mollie_gateway.notification_email
+    
+    @property
+    def donation_fee(self):
+        return self.amount-self.amount_received
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)

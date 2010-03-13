@@ -753,7 +753,14 @@ def projectmain(request, project_id):
     can_add_update = p.connected_to_user(request.user)
     donations = Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=True)
         
-    return {'p': p, 'updates': updates, 'comments': comments, 'form': form, 'can_add_update': can_add_update, 'donations': donations }
+    return {
+        'p': p, 
+        'updates': updates, 
+        'comments': comments, 
+        'form': form, 
+        'can_add_update': can_add_update, 
+        'donations': donations 
+        }
 
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
@@ -763,7 +770,8 @@ def projectdetails(request, project_id):
 @render_to('rsr/project_funding.html')    
 def projectfunding(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, }
+        donations = Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=True)
+        return {'p': p, 'donations': donations, }
 
 def getwidget(request, project_id):
     '''

@@ -136,6 +136,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="padding-left: 20px; clear: both;">
 			{% endifequal %}
 		{% endfor %}    
+		
+		{% comment %}
+			
 
 		{% if p.funding_donated %}
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
@@ -152,12 +155,61 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					</b>
 				</p>
 			</div>
+		{% endif %}
+		{% endcomment %}
+		
+		{% comment %}
+			{% if donations %}
+				<a id="show-donors">Donations list*</a>
+				<div id="donors" style="margin-left: 20px; display:none;">					
+					<ul>
+					{% for donors in donations %}
+						<li>
+							<span style="font-weight:bold;">{{donors.name}}</span>
+							{{p.get_currency_display|safe}} <span style="font-weight:bold;">{{ donors.amount }}</span>							
+						</li>
+					{% endfor %}
+					</ul>
+					<hr />
+					Donated minus transaction fees
+				</div>
+			{% endif %}
+		{% endcomment %}
+		
+		{#  list donators #}
+		{% if donations %}
+			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
+				<p style="margin: 10px 0 10px 0;">
+					<b>{% trans 'Donations from individuals' %}</b>
+				</p>
+				<p>
+					<img src="{{MEDIA_URL}}img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" />
+				</p>
+				<p style="margin:10px 0">
+					<b>{% trans 'Raised' %}:
+						<span style="margin-left: 10px">
+							{{p.get_currency_display|safe}}
+							{{p.funding_donated|round|intcomma}}
+						</span>
+					</b>
+				</p>
+				<p style="margin:10px 0">
+					{% for donors in donations %}
+					- <span style="font-weight:bold;">{{donors.name}}</span>
+					{{p.get_currency_display|safe}} <span style="font-weight:bold;">{{ donors.amount }}</span><br />						
+					{% endfor %}
+				</p>
+				<hr />
+				<p style="margin:10px 0">
+					Raised equals donations minus transaction fees.
+				</p>
+			</div>
 		{% endif %}			
-		</div> <!-- style -->
-
+		</div> <!-- style -->	
+		
 		<div style="clear:left"></div>
 
-		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
+		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Back to project summary' %}</a></p>
 
 	</div> <!-- .boxbody -->
 
