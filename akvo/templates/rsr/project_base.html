@@ -73,7 +73,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}</span></b></p>
 		{% endfor %}
 
-		{% if p.funding_donated %}
+		{% if p.all_donations %}
 			<hr />
 			<p style="margin: 10px 0 10px 0;">
 				<b>{% trans 'Donations from individuals' %}</b>

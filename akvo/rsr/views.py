@@ -765,7 +765,6 @@ def projectmain(request, project_id):
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
     can_add_update = p.connected_to_user(request.user)
-    donations = Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=True)
         
     return {
         'p': p, 
@@ -773,7 +772,6 @@ def projectmain(request, project_id):
         'comments': comments, 
         'form': form, 
         'can_add_update': can_add_update, 
-        'donations': donations 
         }
 
 @render_to('rsr/project_details.html')    
@@ -781,30 +779,11 @@ def projectdetails(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
 
-from django.db.models import Sum
 @render_to('rsr/project_funding.html')  
 def projectfunding(request, project_id):
-        p       = get_object_or_404(Project, pk=project_id)
-        #donations = Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=True)
-        #anonymous_donations =  Invoice.objects.filter(project__exact=p.id).exclude(is_anonymous=False)
+        p       = get_object_or_404(Project, pk=project_id)    
         public_donations = p.public_donations()
-        
-        
-        '''
-        anonymous_donations = p.anonymous_donations()
-
-        #anonymous_donations =  Invoice.objects.all()
-        if anonymous_donations:
-            anonymous_donations_sum = anonymous_donations.aggregate(anonymous_donations_sum=Sum('amount'))
-        else:
-            anonymous_donations_sum = 0
-        '''
-        return {
-            'p': p, 
-            'public_donations': public_donations, 
-            #'anonymous_donations_sum': anonymous_donations_sum,
-            #'anonymous_donations':anonymous_donations 
-            }
+        return { 'p': p, 'public_donations': public_donations, }
 
 def getwidget(request, project_id):
     '''
