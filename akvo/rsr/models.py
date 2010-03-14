@@ -423,6 +423,32 @@ class Project(models.Model):
     def get_absolute_url(self):
         return ('project_main', (), {'project_id': self.pk})
     
+    def all_donations(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
+        
+    def public_donations(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
+    
+    def all_donations_amount(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+    
+    def all_donations_amount_received(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+    
+    def anonymous_donations_amount_received(self):
+        amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
+        amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        
+        if amount:
+            return amount
+        else:
+            return 0
+        
+        '''
+        if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        '''
+            
     class QuerySet(QuerySet):
         def published(self):
             return self.filter(publishingstatus__status='published')
@@ -669,6 +695,7 @@ class Project(models.Model):
 
         def all_partners(self):
             return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
+            
 
     #TODO: is this relly needed? the default QS has identical methods
     class OrganisationsQuerySet(QuerySet):

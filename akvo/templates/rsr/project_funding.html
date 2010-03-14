@@ -137,113 +137,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endifequal %}
 		{% endfor %}    
 		
-		{% comment %}
-			
-
-		{% if p.funding_donated %}
-			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
-				<p style="margin: 10px 0 10px 0;">
-					<b>{% trans 'Donations from individuals' %}</b>
-				</p>
-				<p><img src="{{MEDIA_URL}}img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" /></p>
-				<p style="margin:10px 0">
-					<b>{% trans 'Total' %}:
-						<span style="margin-left: 10px">
-							{{p.get_currency_display|safe}}
-							{{p.funding_donated|round|intcomma}}
-						</span>
-					</b>
-				</p>
-			</div>
-		{% endif %}
-		{% endcomment %}
-		
-		{% comment %}
-			{% if donations %}
-				<a id="show-donors">Donations list*</a>
-				<div id="donors" style="margin-left: 20px; display:none;">					
-					<ul>
-					{% for donors in donations %}
-						<li>
-							<span style="font-weight:bold;">{{donors.name}}</span>
-							{{p.get_currency_display|safe}} <span style="font-weight:bold;">{{ donors.amount }}</span>							
-						</li>
-					{% endfor %}
-					</ul>
-					<hr />
-					Donated minus transaction fees
-				</div>
-			{% endif %}
-		{% endcomment %}
-		
-		{#  list donators #}
-		{{ anonymous_donations }}
-		{{ donations }}
-		{% if donations %}
+				
+		{% if p.all_donations %}
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 				<p style="margin: 10px 0 10px 0;">
 					<b>{% trans 'Individuals raised' %}:
 					<span style="margin-left: 10px; float:right;">
 						{{p.get_currency_display|safe}}
-						{{p.funding_donated|round|intcomma}}
+						{{p.all_donations_amount_received|round|intcomma}}
 					</span></b>
 					<br /><br />
 					<b>{% trans 'Donations' %}:</b><br />
-					{% for donors in donations %}
+					{% for donors in public_donations %}
 					{{donors.name}}
 					<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
 					<span style="float:right;">{{p.get_currency_display|safe}}</span>
-					<br />						
+					<br />			
 					{% endfor %}
  
-					{% ifnotequal anonymous_donations_sum 0 %}
+					{% ifnotequal p.anonymous_donations_amount_received 0 %}
 						{% trans 'Anonymous' %}:
 						<span style="margin-left: 5px; float:right;">
-							{{ anonymous_donations_sum.anonymous_donations_sum }}
+							{{ p.anonymous_donations_amount_received|round|intcomma }}
 						</span>
 						<span style="float:right;">{{p.get_currency_display|safe}}</span>
-					{% endifnotequal %}
-					<br /><br />		
-					{% comment %}
-					{% ifequal anonymous_donations_sum.anonymous_donations_sum 'None' %}
-					0
-					{% else %}
-					{{ anonymous_donations_sum.anonymous_donations_sum }}
-					{% endifequal %}
-					{% endcomment %}
-					
+					{% endifnotequal %}					
 				</p>
 				<hr />
 				<p style="margin: 10px 0 10px 0; font-size:0.85em">
-					Raised equals donations minus transaction fees.
+					{% trans 'Raised equals donations minus transaction fees.' %}
 				</p>
 				
-				{% comment %}
-				<p style="margin: 10px 0 10px 0;">
-					<b>{% trans 'Donations from individuals' %}</b>
-				</p>
-				<p>
-					<img src="{{MEDIA_URL}}img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" />
-				</p>
-				<p style="margin:10px 0">
-					<b>{% trans 'Raised' %}:
-						<span style="margin-left: 10px">
-							{{p.get_currency_display|safe}}
-							{{p.funding_donated|round|intcomma}}
-						</span>
-					</b>
-				</p>
-				<p style="margin:10px 0">
-					{% for donors in donations %}
-					- <span style="font-weight:bold;">{{donors.name}}</span>
-					{{p.get_currency_display|safe}} <span style="font-weight:bold;">{{ donors.amount }}</span><br />						
-					{% endfor %}
-				</p>
-				<hr />
-				<p style="margin:10px 0">
-					Raised equals donations minus transaction fees.
-				</p>
-				{% endcomment %}
 			</div>
 		{% endif %}			
 		</div> <!-- style -->	

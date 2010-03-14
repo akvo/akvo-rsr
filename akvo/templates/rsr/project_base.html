@@ -83,26 +83,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<b>{% trans 'Raised' %}:
 					<span style="margin-left: 10px">
 						{{p.get_currency_display|safe}}
-						{{p.funding_donated|round|intcomma}}
+						{{p.all_donations_amount_received|round|intcomma}}
+						{#{{p.funding_donated|round|intcomma}}#}
 					</span>
 				</b>
-				<br />
-				{% if donations %}
-					<a id="show-donors">Donations list*</a>
-					<div id="donors" style="margin-left: 20px; display:none;">					
-						<ul>
-						{% for donors in donations %}
-							<li>
-								<span style="font-weight:bold;">{{donors.name}}</span>
-								{{p.get_currency_display|safe}} <span style="font-weight:bold;">{{ donors.amount }}</span>							
-							</li>
-						{% endfor %}
-						</ul>
-						<hr />
-						Donated minus transaction fees
-					</div>
-				{% endif %}
 			</p>
+			<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>	
 		{% endif %}
 	</div> <!-- #project_funding & .boxbody -->
     {% endblock funding %}
