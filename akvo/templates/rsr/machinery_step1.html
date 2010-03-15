@@ -27,14 +27,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% endblock style%}
 
-
 {% block breadcrumbs %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; <a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a> &raquo; {% trans 'Get a widget - step 1' %}
 {% endblock breadcrumbs %}
 
-
 {% block content %}
-
 <div id="machinery-content" style="padding-left:30px">
 	{% comment %} Top part starts {% endcomment %}
 	<div style="margin-left:30px; margin-right:30px;">
