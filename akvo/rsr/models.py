@@ -229,7 +229,7 @@ class Organisation(models.Model):
         """
         partners = ProjectPartner.objects.filter(partner=self)
         return list(set([partner.get_partner_type_display() for partner in partners]))
-        
+
     def has_water_projects(self):
         if self.all_projects().filter(category_water__exact=True):
             return True
@@ -719,7 +719,7 @@ if settings.PVW_RSR: #pvw-rsr
     
             def all_partners(self):
                 o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self)
+                return o.filter(partner_projects__project__in=self).distinct()
 
             def lead_partners(self):
                 o = Organisation.objects.all()
@@ -858,6 +858,7 @@ if settings.PVW_RSR: #pvw-rsr
             verbose_name=_('project')
             verbose_name_plural=_('projects')
 
+
     class ProjectPartner(models.Model):
         CHOICES_PARTNER_TYPE = (
             (u'P', _('Partner')),
@@ -871,7 +872,7 @@ if settings.PVW_RSR: #pvw-rsr
         partner_type            = models.CharField(_('partner type'), max_length=1, choices=CHOICES_PARTNER_TYPE, )
         funding_amount          = models.DecimalField(_('funding amount'), blank=True, null=True, max_digits=10, decimal_places=2)
         funding_instrument      = models.CharField(_('funding instrument'), max_length=100, blank=True, )
-        funding_instrument_url  = models.URLField(_('URL to funding instrument website'))
+        funding_instrument_url  = models.URLField(_('URL to funding instrument website'), blank=True,)
 
         class Meta:
             verbose_name=_('partner')
@@ -892,6 +893,7 @@ if settings.PVW_RSR: #pvw-rsr
         class Meta:
             verbose_name=_('location')
             verbose_name_plural=_('locations')
+
 
     class Image(models.Model):
         def image_path(instance, file_name):
