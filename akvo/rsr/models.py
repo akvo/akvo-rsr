@@ -869,6 +869,8 @@ if settings.PVW_RSR: #pvw-rsr
         project                 = models.ForeignKey(Project, related_name='project_partners',)
         partner_type            = models.CharField(_('partner type'), max_length=1, choices=CHOICES_PARTNER_TYPE, )
         funding_amount          = models.DecimalField(_('funding amount'), blank=True, null=True, max_digits=10, decimal_places=2)
+        funding_instrument      = models.CharField(_('funding instrument'), max_length=100, blank=True, )
+        funding_instrument_url  = models.URLField(_('URL to funding instrument website'))
 
         class Meta:
             verbose_name=_('partner')
