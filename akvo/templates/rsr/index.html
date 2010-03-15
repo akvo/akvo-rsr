@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load i18n rsr_tags thumbnail %}
 
 {% block script %}
-
+	{{ block.super }}
 	{% ifequal bandwidth 'ask' %}
 	<!--<script type="text/javascript">
 		msg = "Welcome to Akvo. Please indicate if you want to use the high bandwidth home page by clicking OK, or the low bandwidth home page by clicking Cancel.";
@@ -17,9 +17,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		else
 			window.location.assign("{% url akvo.rsr.views.set_low_bandwidth %}");
 	</script>-->
-	{% endifequal %}	
-
+	{% endifequal %}
+	{% comment %}
 	<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
+	{% endcomment %}
 {% endblock script %}
 
 {% block style %}
