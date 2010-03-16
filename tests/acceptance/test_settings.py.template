@@ -6,7 +6,7 @@
 
 import os
 
-BROWSER_ENVIRONMENT = "*firefoxchrome"
+BROWSER_ENVIRONMENT = "*firefox"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 
