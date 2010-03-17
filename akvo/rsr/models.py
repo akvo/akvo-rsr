@@ -229,7 +229,7 @@ class Organisation(models.Model):
         """
         partners = ProjectPartner.objects.filter(partner=self)
         return list(set([partner.get_partner_type_display() for partner in partners]))
-        
+
     def has_water_projects(self):
         if self.all_projects().filter(category_water__exact=True):
             return True
@@ -440,11 +440,11 @@ if settings.PVW_RSR: #pvw-rsr
                                     )
         current_image_caption       = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
         goals_overview              = models.TextField(_('goals'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
-        goal_1                      = models.CharField(_('deliverable 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-        goal_2                      = models.CharField(_('deliverable 2'), blank=True, max_length=60)
-        goal_3                      = models.CharField(_('deliverable 3'), blank=True, max_length=60)
-        goal_4                      = models.CharField(_('deliverable 4'), blank=True, max_length=60)
-        goal_5                      = models.CharField(_('deliverable 5'), blank=True, max_length=60)
+        goal_1                      = models.CharField(_('deliverable or activity 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+        goal_2                      = models.CharField(_('deliverable or activity 2'), blank=True, max_length=60)
+        goal_3                      = models.CharField(_('deliverable or activity 3'), blank=True, max_length=60)
+        goal_4                      = models.CharField(_('deliverable or activity 4'), blank=True, max_length=60)
+        goal_5                      = models.CharField(_('deliverable or activity 5'), blank=True, max_length=60)
         #Project target benchmarks
         #water_systems               = models.IntegerField(_('water systems'), default=0)
         #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
@@ -465,6 +465,7 @@ if settings.PVW_RSR: #pvw-rsr
         current_status_detail       = models.TextField(_('current status detail'), blank=True, max_length=600, help_text=_('(600 characters).'))
         project_plan_detail         = models.TextField(_('project plan details'), blank=True, help_text=_('(unlimited)'))
         impact                      = models.TextField(_('impact'), blank=True, help_text=_('(unlimited)'))
+        spin_off                    = models.TextField(_('spin off and market impact'), blank=True, help_text=_('(unlimited)'))
         lessons_learned             = models.TextField(_('lessons learned'), blank=True, help_text=_('(unlimited)'))
         technologies_used           = models.TextField(_('technologies used'), blank=True, help_text=_('(unlimited)'))
 
@@ -718,7 +719,7 @@ if settings.PVW_RSR: #pvw-rsr
     
             def all_partners(self):
                 o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self)
+                return o.filter(partner_projects__project__in=self).distinct()
 
             def lead_partners(self):
                 o = Organisation.objects.all()
@@ -857,6 +858,7 @@ if settings.PVW_RSR: #pvw-rsr
             verbose_name=_('project')
             verbose_name_plural=_('projects')
 
+
     class ProjectPartner(models.Model):
         CHOICES_PARTNER_TYPE = (
             (u'P', _('Partner')),
@@ -869,6 +871,8 @@ if settings.PVW_RSR: #pvw-rsr
         project                 = models.ForeignKey(Project, related_name='project_partners',)
         partner_type            = models.CharField(_('partner type'), max_length=1, choices=CHOICES_PARTNER_TYPE, )
         funding_amount          = models.DecimalField(_('funding amount'), blank=True, null=True, max_digits=10, decimal_places=2)
+        funding_instrument      = models.CharField(_('funding instrument'), max_length=100, blank=True, )
+        funding_instrument_url  = models.URLField(_('URL to funding instrument website'), blank=True,)
 
         class Meta:
             verbose_name=_('partner')
@@ -889,6 +893,7 @@ if settings.PVW_RSR: #pvw-rsr
         class Meta:
             verbose_name=_('location')
             verbose_name_plural=_('locations')
+
 
     class Image(models.Model):
         def image_path(instance, file_name):

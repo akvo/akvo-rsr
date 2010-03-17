@@ -441,6 +441,7 @@ if settings.PVW_RSR:
                     'project_plan_detail',
                     'current_status_detail',
                     'impact',
+                    'spin_off',
                     'lessons_learned',
                     'technologies_used',
                 ),

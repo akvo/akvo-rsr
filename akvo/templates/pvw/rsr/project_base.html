@@ -64,8 +64,11 @@
                 <p class="small">
                     <a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a><br />
                     {{o.city}}, {{o.country}}<br />
-                    {% for type in o.partner_types %}
-                        {{type}}{% if not forloop.last %},{% endif %}
+                    {% for partner in p.project_partners.all %}
+                        {% ifequal o partner.partner %}
+                            {# the br tag is a poor solution, but there will hopefully not be many instances of the same org having more than one role in a project #}
+                            {{partner.get_partner_type_display}}<br />
+                        {% endifequal %}
                     {% endfor %}
                 </p>
             {% endfor %}

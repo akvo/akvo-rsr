@@ -19,8 +19,12 @@
             <ul>
                 <li><a href="#tab_summary"><span>{% trans 'Summary' %}</span></a></li>
                 <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
-                <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
-                <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
+                {% if p.current_status_detail or p.project_plan_detail %}
+                    <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
+                {% endif %}
+                {% if p.impact or p.spin_off or p.lessons_learned or p.technologies_used %}
+                    <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
+                {% endif %}
             </ul>
             <div style="width: 170px; margin-top: 20px; float:right;">
                 <div class="space15">
@@ -70,28 +74,46 @@
 					</div>
                 </div>
             </div>
-            <div id="tab_details" class="tab">
-                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-					<div style="width:525px;">
-						<h2>{% trans 'Details of current status' %}</h2>
-						{{p.current_status_detail|capfirst|linebreaks}}
-	                    <h2>{% trans 'Details of project plan' %}</h2>
-						{{p.project_plan_detail|capfirst|linebreaks}}
-					</div>
+            {% if p.current_status_detail or p.project_plan_detail %}
+                <div id="tab_details" class="tab">
+                    <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                        <div style="width:525px;">
+                            {% if p.current_status_detail %}
+                                <h2>{% trans 'Details of current status' %}</h2>
+                                {{p.current_status_detail|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.project_plan_detail %}
+                                <h2>{% trans 'Details of project plan' %}</h2>
+                                {{p.project_plan_detail|capfirst|linebreaks}}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div id="tab_impact" class="tab">
-                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
-					<div style="width:525px;">
-	                    <h2>{% trans 'Impact' %}</h2>
-	                     {{p.impact|capfirst|linebreaks}}
-	                    <h2>{% trans 'Lessons learned' %}</h2>
-						{{p.lessons_learned|capfirst|linebreaks}}
-	                    <h2>{% trans 'Technologies used' %}</h2>
-						{{p.technologies_used|capfirst|linebreaks}}
-					</div>
+            {% endif %}
+            {% if p.impact or p.spin_off or p.lessons_learned or p.technologies_used %}
+                <div id="tab_impact" class="tab">
+                    <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                        <div style="width:525px;">
+                            {% if p.impact %}
+                                <h2>{% trans 'Impact' %}</h2>
+                                {{p.impact|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.spin_off %}
+                                <h2>{% trans 'Spin off and market impact' %}</h2>
+                                {{p.spin_off|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.lessons_learned %}
+                                <h2>{% trans 'Lessons learned' %}</h2>
+                                {{p.lessons_learned|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.technologies_used %}
+                                <h2>{% trans 'Technologies used' %}</h2>
+                                {{p.technologies_used|capfirst|linebreaks}}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
 		<div class="clear small" style="">&nbsp;</div>
 		
