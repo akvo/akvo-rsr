@@ -278,7 +278,7 @@ def orglist(request, org_type='all'):
         orgs = orgs.order_by(order_by, 'name')
     except:
         pass
-    ORGS_PER_PAGE = 20
+    ORGS_PER_PAGE = 10
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
@@ -619,7 +619,7 @@ def updateform(request, project_id):
             update.user = request.user
             update.update_method = 'W'
             update.save()
-            return HttpResponseRedirect('./')
+            return HttpResponseRedirect(reverse('project_main', args=[project_id]))
     else:
         form = UpdateForm()
     return render_to_response('rsr/project_update.html', {'form': form, 'p': p, }, RequestContext(request))
