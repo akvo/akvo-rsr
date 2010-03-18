@@ -174,6 +174,7 @@ def organisation_list_pagination(context, page):
     '''
     return {
         'request'   : context['request'],
+        'org_type'  : context['org_type'],
         'page'      : page,
     }
 

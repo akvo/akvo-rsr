@@ -278,7 +278,7 @@ def orglist(request, org_type='all'):
         orgs = orgs.order_by(order_by, 'name')
     except:
         pass
-    ORGS_PER_PAGE = 20
+    ORGS_PER_PAGE = 10
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
