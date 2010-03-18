@@ -10,13 +10,13 @@ h1 {
 {% block content %}
 
 <div class="span-14 first">
-	<div id="movie_container" style="width:753px; max-width:753px; max-height:446px height:446px; overflow:hidden;">		
+	<div id="movie_container" style="width:753px; max-width:753px; max-height:446px height:446px; overflow:hidden;">
 		<object width="753" height="446">
-		<param name="movie" value="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1"></param>
-		<param name="allowFullScreen" value="true"></param>
-		<param name="allowscriptaccess" value="always"></param>
-		<embed src="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1" type="application/x-shockwave-flash"
-		allowscriptaccess="always" allowfullscreen="true" width="753" height="446"></embed>
+			<param name="movie" value="http://www.youtube.com/v/LqwtH6qYjmo&hl=en_US&fs=1&rel=0&hd=1"></param>
+			<param name="allowFullScreen" value="true"></param>
+			<param name="allowscriptaccess" value="always"></param>
+			<embed src="http://www.youtube.com/v/LqwtH6qYjmo&hl=en_US&fs=1&rel=0&hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="753" height="446">
+			</embed>
 		</object>
 	</div>
 	<div class="frame" id="left_news" style="padding-top:15px; margin-top:15px;">
@@ -85,9 +85,11 @@ h1 {
 			<p class="highlight" style="font-size:1.125em; margin-bottom:10px;">
 			{% trans 'The Dutch water sector' %}:<br>{% trans 'Resourcefulness and cooperation around the world' %}
 			</p>
-			<hr style="margin-bottom:10px">
+			<hr style="margin-bottom:15px">
+			<p class="tiny" style="font-weight:bold; margin-bottom:0.5em;">
+				{% trans 'The history of Dutch Water' %}
+			</p>
 			<p class="tiny">
-				<span class="bold">{% trans 'The history of Dutch Water' %}</span><br />
 				{% lorem 10 w random %}
 			</p>
 			<hr style="margin-bottom:10px">
