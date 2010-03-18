@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
     (r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', ),
-    (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
+    url(r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', name='comment_form'),
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
     url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
     url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),

@@ -171,7 +171,7 @@
                             <p>{% trans 'You must be signed in to add a comment' %}</p>
                             <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
                         {% else %}
-                            <form enctype="multipart/form-data" method="post" action="comment">
+                            <form enctype="multipart/form-data" method="post" action="{% url comment_form p.id %}">
                                 {{form.comment}}
                                 <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a></p>
                                 <input type="submit" value="{% trans 'Submit' %}" class="submit" />
