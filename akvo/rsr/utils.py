@@ -47,9 +47,10 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     """
     if instance.pk:
         instance_pk = str(instance.pk)
-        return path_template % locals()
     else:
-        return path_template % ('temp', file_name)
+        # for new objects that have no id yet
+        instance_pk = 'temp'
+    return path_template % locals()
 
 
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',

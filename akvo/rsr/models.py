@@ -99,7 +99,7 @@ class Organisation(models.Model):
     )
     
     def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/org/%s/%s')
+        return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
     #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
     field_partner               = models.BooleanField(_(u'field partner'))
@@ -403,7 +403,7 @@ if settings.PVW_RSR: #pvw-rsr
 
     class Project(models.Model):    
         def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%s/%s')
+            return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
         name                        = models.CharField(_('title'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
@@ -897,7 +897,7 @@ if settings.PVW_RSR: #pvw-rsr
 
     class Image(models.Model):
         def image_path(instance, file_name):
-            return rsr_image_path(instance.project, file_name, 'db/project/%s/%s')
+            return rsr_image_path(instance.project, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
             
         project                 = models.ForeignKey(Project, related_name='images',)
         image                   = ImageWithThumbnailsField(
@@ -918,7 +918,7 @@ else: #akvo-rsr
 
     class Project(models.Model):
         def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%s/%s')
+            return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
     
         name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
@@ -1746,7 +1746,7 @@ class MoSmsRaw(models.Model):
 class ProjectUpdate(models.Model):
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
-        path = 'db/project/%d/update/%%s/%%s' % instance.project.pk
+        path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
 
     project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))

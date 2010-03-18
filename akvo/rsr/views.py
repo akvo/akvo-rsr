@@ -619,7 +619,7 @@ def updateform(request, project_id):
             update.user = request.user
             update.update_method = 'W'
             update.save()
-            return HttpResponseRedirect('./')
+            return HttpResponseRedirect(reverse('project_main', args=[project_id]))
     else:
         form = UpdateForm()
     return render_to_response('rsr/project_update.html', {'form': form, 'p': p, }, RequestContext(request))
