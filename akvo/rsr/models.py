@@ -138,7 +138,7 @@ class Organisation(models.Model):
     fax                         = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
     contact_person              = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
     contact_email               = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
-    description                 = models.TextField(_('description'), blank=True, help_text=_('Describe what your organisation does in the water and sanitation sector.') )
+    description                 = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
 
     #Managers, one default, one custom
     #objects = models.Manager()    
@@ -378,7 +378,7 @@ if settings.PVW_RSR: #pvw-rsr
         #    (10, _('Resource management')),
         #    (11, _('Water & climate')),
         #)
-        name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
+        name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
         icon                    = ImageWithThumbnailsField(
                                     _('category icon'),
                                     blank=True,

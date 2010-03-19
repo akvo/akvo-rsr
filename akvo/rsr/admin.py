@@ -385,7 +385,7 @@ if settings.PVW_RSR:
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Pellentesque sit amet purus."),
+                    _(u"Enter a short name and subtitle for your project. Indicate the current phase of the project using the Status pulldown. Select all Categories which fit your project from the list. The project will appear in the Focus area project listings for all categories selected."),
                 'fields': (
                     'name',
                     'subtitle',
@@ -406,7 +406,7 @@ if settings.PVW_RSR:
             }),
             #
             (_(u'Location extra'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
+                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example latitude and longitude coordinates, or a map image.</p>'),
                 'fields': (('longitude', 'latitude'), 'map',),
             }),
             #(_(u'Map'), {
@@ -417,7 +417,7 @@ if settings.PVW_RSR:
             
             (_(u'Project summary'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Curabitur nulla purus, feugiat id, elementum in, lobortis quis, pede."),
+                    _(u"The summary should briefly explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished."),
                 'fields': (
                     'project_plan_summary',
                     'current_image',
@@ -426,7 +426,7 @@ if settings.PVW_RSR:
             }),
             (_(u'Goals'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Nulla facilisi."),
+                    _(u"Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. Use the numbered fields to list specific deliverables and/or activities."),
                 'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
             }),
             #(_(u'Project target benchmarks'), {
@@ -436,7 +436,7 @@ if settings.PVW_RSR:
             #}),
             (_(u'Project details'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Maecenas tincidunt velit quis orci."),
+                    _(u"In-depth information about your project should be put in this section. Use the fields below to tell people more about the implementation plan, status, impact, technologies used, and lessons learned as the project moves from the planned to complete state."),
                 'fields': (
                     'project_plan_detail',
                     'current_status_detail',
@@ -448,7 +448,7 @@ if settings.PVW_RSR:
             }),
             (_(u'Project meta info'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Ut euismod."),
+                    _(u"Set the Currency to be used in budget and on funding calculations. Use the Notes and comments field to communicate with other members of your organisation or partners with access to your projects in the Admin. Check the Showcase box to include this project as a featured project on the site."),
                 'fields': (
                     'currency',
                     'showcase',
@@ -457,7 +457,7 @@ if settings.PVW_RSR:
             }),
             (_(u'Project duration'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Cras lobortis tempor velit."),
+                    _(u"The project start date is set to the date the project was entered by default.If this is not correct, enter the actual start date, past or future. When the project is complete, enter the End date here."),
                 'fields': (
                     'start_date',
                     'end_date',
