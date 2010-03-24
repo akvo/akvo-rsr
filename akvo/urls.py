@@ -131,6 +131,9 @@ urlpatterns = patterns('',
     (r'^rsr/dev/(?P<template_name>[_a-zA-Z0-9]+)/$', 'akvo.rsr.views.templatedev', ),
     #(r'^rsr/dev/project_main/$', 'django.views.generic.simple.direct_to_template', {'template': 'dev/project_main.html'}),
 
+    #django-piston
+    (r'^rsr/api/', include('akvo.api.urls')),
+    
     # serving media in the dev server environment TODO: set up real media serving
     #(r'^rsr/media/(?P<path>.*)$', 
     #    'django.views.static.serve', 
