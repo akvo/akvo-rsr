@@ -144,10 +144,11 @@ color: #ededed;
 /* Links
 -------------------------------------------------------------------------------------- */
 
-a:link, a:visited, a:active
+a, a:link, a:visited, a:active
 {
 color: #1D7FC6;
 text-decoration: none;
+cursor: pointer;
 }
 
 /* Form elements

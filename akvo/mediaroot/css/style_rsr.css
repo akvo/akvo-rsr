@@ -295,33 +295,17 @@ div#live_earth_show {
     color:#fff;
     padding-left:20px;
     padding-right:20px;
-    /*
-    padding-top:181px;
-    height:206px;
-    */
     padding-top:221px;
-    /*height:216px;*/
     height:251px;
-    
 }
-/*
-#live_earth_show h1 {
-    background: transparent;
-    color:#DE481C;
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-left:20px;
-    margin-bottom:15px;
-}
-*/
 
 #live_earth_show p {
     background:transparent;
-    /*color:#fff;*/
     color:#ebebeb;
     margin:15px 0;
     line-height:1.6em;
 }
+
 #live_earth_show p a {
     color:#04A9BF;
 }
@@ -331,6 +315,30 @@ div#live_earth_show {
 }
 
 
+/* Walking 4 Water
+-------------------------------------------------------------------------------------- */
 
+div#walking_for_water_show {
+    background: #5EC5ED url('../img/w4w-bar-bkg.png') no-repeat;
+    color:#fff;
+    padding-left:20px;
+    padding-right:20px;
+    padding-top:221px;
+    height:236px;
+}
 
+#walking_for_water_show p {
+    background:transparent;
+    color:#fff;
+    margin:15px 0;
+    line-height: 1.2em;
+    font-size: 1.2em;
+}
 
+#walking_for_water_show p a {
+    color:#FFFF00;
+}
+
+#walking_for_water_show p a:hover {
+    text-decoration:underline;
+}
