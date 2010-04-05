@@ -94,7 +94,6 @@ MANAGERS = ADMINS
 #MEDIA_URL = 'http://dev.akvo.org:8080/rsr/media/'
 
 MIDDLEWARE_CLASSES = (
-    #'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'johnny.middleware.LocalStoreClearMiddleware',
     'johnny.middleware.QueryCacheMiddleware',
@@ -104,7 +103,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    #'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 # PAUL
