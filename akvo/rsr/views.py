@@ -1002,6 +1002,7 @@ def project_list_widget(request, template='project-list', org_id=0):
             'request_get': request.GET, 
             'site': site,
             'lang': get_language(),
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         },
         context_instance=RequestContext(request))
 
