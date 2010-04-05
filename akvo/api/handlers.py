@@ -18,12 +18,6 @@ class ProjectHandler(AnonymousBaseHandler):
     model = Project
     exclude = ()
 
-    #def read(self, request, project_id=0):
-    #    base = Project.objects
-    #    if project_id:
-    #        return get_object_or_404(Project, pk=project_id)
-    #    else:
-    #        return base.all()
 
 class OrgProjectsHandler(ProjectHandler):
     """
@@ -31,7 +25,8 @@ class OrgProjectsHandler(ProjectHandler):
     """
     def read(self, request, org_id):
         return Organisation.projects.filter(pk=org_id).all()
-    
+
+
 class LEProjectHandler(OrgProjectsHandler):
     """
     All projects connected to Live Earth
