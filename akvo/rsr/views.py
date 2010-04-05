@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.http import require_GET, require_POST
 
 from BeautifulSoup import BeautifulSoup
@@ -70,8 +70,12 @@ def render_to(template):
         def wrapper(request, *args, **kw):
             output = func(request, *args, **kw)
             if isinstance(output, (list, tuple)):
+                # add current language for template caching purposes
+                output[0].update({'lang':get_language()})
                 return render_to_response(output[1], output[0], RequestContext(request))
             elif isinstance(output, dict):
+                # add current language for template caching purposes
+                output.update({'lang':get_language()})
                 return render_to_response(template, output, RequestContext(request))
             return output
         return wrapper
@@ -89,6 +93,18 @@ def set_test_cookie(request):
     request.session.set_test_cookie()
     return HttpResponseRedirect('/rsr/?nocookie=test')
 
+def get_random_from_qs(qs, count):
+    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
+    qs_list = list(qs.values_list('pk', flat=True))
+    random.shuffle(qs_list)
+    return qs.filter(pk__in=qs_list[:count])
+
+def get_setting(setting, default=None):
+    try:
+        return getattr(settings, setting)
+    except:
+        return default
+    
 @render_to('rsr/index.html')
 def index(request):
     '''
@@ -153,9 +169,16 @@ def index(request):
         #find all projects that need funding and have an image
         unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
         if len(unfunded_visible_projs) > 7:
-            grid_projects = unfunded_visible_projs.order_by('?')[:8]
+            grid_projects = get_random_from_qs(unfunded_visible_projs, 8)
+            #qs_list = list(unfunded_visible_projs.values_list('pk', flat=True))
+            #random.shuffle(qs_list)
+            #grid_projects = unfunded_visible_projs.filter(pk__in=qs_list[:8])
         else:
-            grid_projects = projs.filter(current_image__startswith='db').order_by('?')[:8]
+            visible_projs = projs.filter(current_image__startswith='db')
+            grid_projects = get_random_from_qs(visible_projs, 8)
+            #qs_list = list(projs.filter(current_image__startswith='db').values_list('pk', flat=True))
+            #random.shuffle(qs_list)
+            #grid_projects = projs.filter(pk__in=qs_list[:8])
     else:
         grid_projects = None
     #stats = akvo_at_a_glance(p)
@@ -170,9 +193,10 @@ def index(request):
         'bandwidth': bandwidth,
         'grid_projects': grid_projects,
         'orgs': Organisation.objects,
-        'projs': projs,
-        'version': settings.URL_VALIDATOR_USER_AGENT,
-        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
+        'projs': projs,        
+        'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
+        'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
     }
 
 def oldindex(request):
@@ -202,7 +226,13 @@ def liveearth(request):
     live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
     projs = live_earth.published_projects().funding()
     page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
+    return {
+        'projs': projs,
+        'orgs':live_earth.partners(),
+        'page': page,
+        'live_earth': live_earth,
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
 
 @render_to('rsr/walking-for-water.html')
 def walking_for_water(request):
@@ -216,7 +246,13 @@ def walking_for_water(request):
     wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
     projs = wfw.published_projects().funding()
     page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': wfw.partners(), 'page': page, 'walking_for_water': wfw }
+    return {
+        'projs': projs,
+        'orgs': wfw.partners(),
+        'page': page,
+        'walking_for_water': wfw,
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):
@@ -228,9 +264,21 @@ def projectlist(request):
     page: paginator
     '''
     projs = Project.objects.published().funding().select_related()
-    showcases = projs.need_funding().order_by('?')[:3]
+    fundable = projs.need_funding()
+    showcases = get_random_from_qs(fundable, 3)
+
+    #qs_list = list(projs.need_funding().values_list('pk', flat=True))
+    #random.shuffle(qs_list)
+    #showcases = projs.filter(pk__in=qs_list[:3])
+    
     page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases,}
+    return {
+        'projs': projs,
+        'orgs': Organisation.objects,
+        'page': page,
+        'showcases': showcases,
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
 
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
@@ -246,10 +294,24 @@ def filteredprojectlist(request, org_id):
     projs = Project.objects.published().funding()
     # get all projects the org is asociated with
     o = Organisation.objects.get(pk=org_id)
-    projects = o.published_projects().funding()
-    showcases = projects.order_by('?')[:3]
-    page = project_list_data(request, projects)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
+    #projects = o.published_projects().funding()
+
+    fundable = o.published_projects().funding()
+    showcases = get_random_from_qs(fundable, 3)
+
+    #qs_list = list(projects.values_list('pk', flat=True))
+    #random.shuffle(qs_list)
+    #showcases = projects.filter(pk__in=qs_list[:3])
+
+    page = project_list_data(request, fundable)
+    return {
+        'projs': projs,
+        'orgs': Organisation.objects,
+        'page': page,
+        'showcases': showcases,
+        'o': o,
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
 
 @render_to('rsr/organisation_directory.html')
 def orglist(request, org_type='all'):
@@ -288,7 +350,15 @@ def orglist(request, org_type='all'):
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
-    return {'projs': projs, 'orgs': orgs, 'org_type': org_type, 'page': page}
+    return {
+        'projs': projs,
+        'orgs': orgs,
+        'org_type': org_type,
+        'page': page,
+        'order_by': order_by,
+        'lang': get_language(),
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
@@ -331,7 +401,13 @@ def partners_widget(request, org_type='all'):
     elif order_by == 'country__continent':
         orgs = orgs.order_by(sort_order_value+order_by,'country','organisation_type','name')
     
-    return {'orgs':orgs,'order_by':order_by,'sort':sort_order,'mode':mode}
+    return {
+        'orgs': orgs,
+        'order_by': order_by,
+        'sort': sort_order,
+        'mode': mode,
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
 
 
 class SigninForm(forms.Form):
@@ -924,7 +1000,8 @@ def project_list_widget(request, template='project-list', org_id=0):
             'projects': p,
             'org_id': org_id, 
             'request_get': request.GET, 
-            'site': site
+            'site': site,
+            'lang': get_language(),
         },
         context_instance=RequestContext(request))
 

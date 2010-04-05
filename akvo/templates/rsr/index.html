@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags thumbnail %}
+{% load i18n rsr_tags thumbnail cache %}
 
 {% block script %}
 	{{ block.super }}
@@ -44,6 +44,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock page_id %}
 
 {% block outer_leftwing %}
+
+{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        LANG: {{lang}}
+    {% endif %}
 
 	{% ifequal bandwidth 'high' %}
 	<div id="home_flash_box">
@@ -115,8 +121,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 
 	{% endifequal %}
-	
+{% endcache %}
+
+{% cache RSR_CACHE_SECONDS index_blog lang %}
+
 <div id="outer_leftwing">
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        LANG: {{lang}}
+    {% endif %}
 
 {% if live_earth_enabled %}
 <div id="index_sponsor_box" class="boxbody">
@@ -187,6 +200,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- .boxbody -->
 
 </div> <!-- #outer_leftwing -->
+{% endcache %}
 
 {% endblock outer_leftwing %}
 
