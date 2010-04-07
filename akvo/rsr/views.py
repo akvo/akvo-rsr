@@ -181,6 +181,9 @@ def index(request):
             #grid_projects = projs.filter(pk__in=qs_list[:8])
     else:
         grid_projects = None
+    
+    featured = ProjectUpdate.objects.filter(featured__exact=True)
+    updates = get_random_from_qs(featured, 3)
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
     return {
@@ -193,7 +196,8 @@ def index(request):
         'bandwidth': bandwidth,
         'grid_projects': grid_projects,
         'orgs': Organisation.objects,
-        'projs': projs,        
+        'projs': projs,
+        'updates': updates,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
         'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
