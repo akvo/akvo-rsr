@@ -34,7 +34,33 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#breadcrumbs {
 		display:none;
 	}
+	.featured_update {
+		border-right:1px solid #DFDFE4;
+		float:left; 
+		margin-left:20px; 
+		margin-top:20px;
+		overflow:hidden;
+		width:215px; 
+	
+	}
+	
+	#featured_update_right{
+		border-right:0;
+	}
+
 	</style>
+	
+	{% comment %}
+	<!--[if IE 6]>
+	<style type="text/css" media="screen">
+		.featured_update {
+			width:200px; 
+		}
+	</style>
+	<![endif]-->
+	{% endcomment %}	
+	
+	
 {% endblock style %}
 
 {% block breadcrumbs %}{% endblock breadcrumbs %}
@@ -71,15 +97,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<h1>{% trans 'Recent project updates' %}</h1>
 		</div>
 		<div class="boxbody" style="padding-top:0;padding-bottom:0">
-			<div style="float:left; width:215px; margin-left:20px; margin-top:20px;  border-right:1px solid #DFDFE4; ">
+			<div class="featured_update">
 				<div style="margin-right:20px; background-color:#fff;">
-					<p style=" margin:0; padding:0; margin-bottom:15px;">
+					<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
 						<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br>
 						<span style="font-size:0.9em;">
-						{{updates.0.project.city}}, {{updates.0.project.state}}, {{updates.0.project.country}}
+						{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
 						</span>
 					</p>
-					<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px;">
+					<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:30px; overflow:hidden;">
 						{{updates.0.title}}
 					</a>
 					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
@@ -99,15 +125,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<div style="clear:both;"> </div>
 				</div>
 			</div>
-			<div style="float:left; width:215px; margin-left:20px; margin-top:20px; border-right:1px solid #DFDFE4;">
+			<div class="featured_update">
 				<div style="margin-right:20px; background-color:#fff;">
-					<p style=" margin:0; padding:0; margin-bottom:15px;">
+					<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
 						<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br>
 						<span style="font-size:0.9em;">
-						{{updates.1.project.city}}, {{updates.1.project.state}}, {{updates.1.project.country}}
+						{#{{updates.1.project.city}}, {{updates.1.project.state}},#}{{updates.1.project.country}}
 						</span>
 					</p>
-					<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px;">
+					<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:30px; overflow:hidden;">
 						{{updates.1.title}}
 					</a>
 					<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
@@ -127,15 +153,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<div style="clear:both;"> </div>
 				</div>
 			</div>
-			<div style="float:left; width:215px; margin-left:20px; margin-top:20px;">
+			<div class="featured_update" id="featured_update_right">
 				<div style="margin-right:20px; background-color:#fff;">
-					<p style=" margin:0; padding:0; margin-bottom:15px;">
-						<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br>
+					<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
+						<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}} af asdf sd asdf asdfa</a><br>
 						<span style="font-size:0.9em;">
-						{{updates.2.project.city}}, {{updates.2.project.state}}, {{updates.2.project.country}}
+						{#{{updates.2.project.city}}, {{updates.2.project.state}},#}{{updates.2.project.country}}
 						</span>
 					</p>
-					<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px;">
+					<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:30px; overflow:hidden;">
 						{{updates.2.title}}
 					</a>
 					<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
