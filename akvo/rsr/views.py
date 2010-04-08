@@ -184,7 +184,7 @@ def index(request):
     
     featured = ProjectUpdate.objects.filter(featured__exact=True)
     if len(featured) < 3:
-        updates = ProjectUpdate.objects.all().order_by('-time')[:3]
+        updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
     else:
         updates = get_random_from_qs(featured, 3)
     #stats = akvo_at_a_glance(p)
