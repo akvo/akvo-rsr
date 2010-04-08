@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags thumbnail cache %}
+{% load i18n rsr_tags thumbnail cache rsr_filters %}
 
 {% block script %}
 	{{ block.super }}
@@ -72,28 +72,87 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div class="boxbody" style="padding-top:0;padding-bottom:0">
 			<div style="float:left; width:215px; margin-left:20px; margin-top:20px;  border-right:1px solid #DFDFE4; ">
-				<div style="margin-right:20px; background-color:#ededed;">
-					<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2">{{updates.0.project}}</a>
-					<br><br>
-					<h2 style="padding:0;">{{updates.0.title}}</h2>
-					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" >
-					
+				<div style="margin-right:20px; background-color:#fff;">
+					<p style=" margin:0; padding:0; margin-bottom:15px;">
+						<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br>
+						<span style="font-size:0.9em;">
+						{{updates.0.project.city}}, {{updates.0.project.state}}, {{updates.0.project.country}}
+						</span>
+					</p>
+					<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px;">
+						{{updates.0.title}}
+					</a>
+					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
+					<p style="font-size:0.9em; padding:0;">
+						{{updates.0.photo_caption}}
+					</p>
+					<p class="lightx1" style="padding:0; margin-top:10px;">
+						{{updates.0.time|date:"Y-m-d H:i" }}
+					</p>
+					<p style="padding:0;">
+		                {% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+					</p>
+					<p style="padding:0; margin-top:10px;">
+						{{updates.0.text|smart_truncate:150}}
+					</p>
+					<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="float:right;">{% trans 'Read more' %}</a>
+					<div style="clear:both;"> </div>
 				</div>
 			</div>
 			<div style="float:left; width:215px; margin-left:20px; margin-top:20px; border-right:1px solid #DFDFE4;">
-				<div style="margin-right:20px; background-color:#ededed;">
-					<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2">{{updates.1.project}}</a>
-					<br><br>
-					<h2 style="padding:0;">{{updates.1.title}}</h2>
-					<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" >
+				<div style="margin-right:20px; background-color:#fff;">
+					<p style=" margin:0; padding:0; margin-bottom:15px;">
+						<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br>
+						<span style="font-size:0.9em;">
+						{{updates.1.project.city}}, {{updates.1.project.state}}, {{updates.1.project.country}}
+						</span>
+					</p>
+					<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px;">
+						{{updates.1.title}}
+					</a>
+					<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
+					<p style="font-size:0.9em; padding:0;">
+						{{updates.1.photo_caption}}
+					</p>
+					<p class="lightx1" style="padding:0; margin-top:10px;">
+						{{updates.1.time|date:"Y-m-d H:i" }}
+					</p>
+					<p style="padding:0;">
+		                {% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+					</p>
+					<p style="padding:0; margin-top:10px;">
+						{{updates.1.text|smart_truncate:150}}
+					</p>
+					<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="float:right;">{% trans 'Read more' %}</a>
+					<div style="clear:both;"> </div>
 				</div>
 			</div>
 			<div style="float:left; width:215px; margin-left:20px; margin-top:20px;">
-				<div style="margin-right:20px; background-color:#ededed;">
-					<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2">{{updates.2.project}}</a>
-					<br><br>
-					<h2 style="padding:0;">{{updates.2.title}}</h2>
-					<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" >
+				<div style="margin-right:20px; background-color:#fff;">
+					<p style=" margin:0; padding:0; margin-bottom:15px;">
+						<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br>
+						<span style="font-size:0.9em;">
+						{{updates.2.project.city}}, {{updates.2.project.state}}, {{updates.2.project.country}}
+						</span>
+					</p>
+					<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px;">
+						{{updates.2.title}}
+					</a>
+					<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
+					<p style="font-size:0.9em; padding:0;">
+						{{updates.2.photo_caption}}
+					</p>
+					<p class="lightx1" style="padding:0; margin-top:10px;">
+						{{updates.2.time|date:"Y-m-d H:i" }}
+					</p>
+					<p style="padding:0;">
+		                {% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+					</p>
+					<p style="padding:0; margin-top:10px;">
+						{{updates.2.text|smart_truncate:150}}
+					</p>
+					<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="float:right;">{% trans 'Read more' %}</a>
+					<div style="clear:both;"> </div>
 				</div>
 			</div>
 			<div style="clear:both;"></div>
