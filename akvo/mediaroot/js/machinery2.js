@@ -1,8 +1,3 @@
-/*
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html
-*/
-
 
 function getHeight(widget_type) 
 {	
@@ -41,143 +36,69 @@ function getWidth(widget_type)
 	}	
 }
 
+function hex_validator(hexcolor) 
+{ 
+	var strPattern = /^([0-9a-f]{1,2}){3}$/i;
+	return strPattern.test(hexcolor);
+}
 
-
-$(document).ready(function() 
-{	
-    // Hide customize other and warning section
-    // $('#machinery_step2_warning_main').hide();
-    
-	$('#backgroundcolor_other_section').hide();
-	$('#textcolor_other_section').hide();
-	//$('#warning_main').hide();
-	$('#warning_color').hide();
-	
-	// Enaable the project / organisation list on the first page	
-	/*
-	$("#feature-side-random-from-org").click(function() { $('#feature-side-organisations').removeAttr("disabled"); });
-	$("#feature-side-specific-project").click(function() {	$('#feature-side-organisations').attr("disabled", true); });
-	
-	$("#project-updates-random-from-org").click(function() { $('#project-updates-organisations').removeAttr("disabled"); });
-	$("#project-updates-specific-project").click(function() {	$('#project-updates-organisations').attr("disabled", true); });
-	
-	$("#project-contribute-random-from-org").click(function() { $('#project-contribute-organisations').removeAttr("disabled"); });
-	$("#project-contribute-specific-project").click(function() {	$('#project-contribute-organisations').attr("disabled", true); });
-	*/
-	
-	
-	// Toggle other selections for the colours		
-	$("#backgroundcolor_pulldown").change(function() { 
-		if (document.getElementById('backgroundcolor_pulldown').value == 'x') {
-			$('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");			
-		} else {
-			$('#backgroundcolor_other_section').animate({ opacity: "hide" }, "slow");
-		}
-	});
-	
-	$("#textcolor_pulldown").change(function() { 		
-		if (document.getElementById('textcolor_pulldown').value == 'x') {
-			$('#textcolor_other_section').animate({ opacity: "show" }, "slow");			
-		} else {
-			$('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
-		}		
-	});
-	
-	// Preview button
-	$(function(){
-	 $('#preview').click(function(){
-	  $('html, body').animate({ scrollTop: $('#preview_position').offset().top }, 1000);
-	   return false;
-	 });
-	});
-	
-	// Display the default widget preview
-	preview_widget();
-	
-});
-
-// Tries to render the widget as well as generate the copy code
 function preview_widget()
 {
-	
-	// Remove old error messages	
-	var warning_color = document.getElementById('warning_color');
-	if (warning_color.hasChildNodes()) { warning_color.innerHTML = '';}
-	
-	$('#machinery_step2_warning_main').animate({ opacity: "hide" }, "fast"); 
-	$('#warning_color').animate({ opacity: "hide" }, "fast"); 
-	
-	
+	// Remove old warnings
+	var error_message = '';
+		
 	// Error checking begins	
-	var colorsValidate=true;
+	var colorsValidate = true;
 	
+	// Get Backgroundcolor string, validate that it's 3 or 6 characters and only has 0-f characters
+	if ( jQ('#backgroundcolor_pulldown').val() == 'x' )
+	    var bgcolor = jQ('#backgroundcolor_text').val();
+	else
+	    var bgcolor = jQ('#backgroundcolor_pulldown').val();
 	
-	// Backgroundcolor
-	if (document.getElementById('backgroundcolor_pulldown').value == 'x') {
-		var bgcolor = document.getElementById('backgroundcolor_text').value;
-	} else {
-		var bgcolor = document.getElementById('backgroundcolor_pulldown').value;
-	}
-	
-	if (!(bgcolor.length == 3 || bgcolor.length == 6))
+	if (!(bgcolor.length == 3 || bgcolor.length == 6)) 
 	{ 
-		$('#warning_color').animate({ opacity: "show" },"slow");
-		//$('#warning_color').append("A: Hex color values should be 3 or 6 characters.<br />");
-		//$('#warning_color').append(akvo_widget_error_colorlenght + ".<br />");
-		//alert('error:' + error1);
-		$('#warning_color').append(error1 + ".<br />");
-		
-		
-		colorsValidate=false;
+		error_message += error1 + ".<br />";
+		colorsValidate = false;
 	}
 	else if (!hex_validator(bgcolor))
 	{
-		$('#warning_color').animate({ opacity: "show" }, "slow").append(error2 + ".<br />");
-		colorsValidate=false;
+		error_message += error2 + ".<br />";
+		colorsValidate = false;
 	}
 	
-	// Titlecolor
-	
-	if (document.getElementById('textcolor_pulldown').value == 'x') {
-		var txtcolor = document.getElementById('textcolor_text').value;
-	} else {
-		var txtcolor = document.getElementById('textcolor_pulldown').value;
-	}	
+	// Get Titlecolor string, validate that it's 3 or 6 characters and only has 0-f characters
+	if ( jQ('#textcolor_pulldown').val() == 'x' )
+	    var txtcolor = jQ('#textcolor_text').val();
+	else
+	    var txtcolor = jQ('#textcolor_pulldown').val();
 	
 	if (!(txtcolor.length == 3 || txtcolor.length == 6))
 	{ 
-		$('#warning_color').animate({ opacity: "show" },"slow");
-		$('#warning_color').append(error3 + ".<br />");
-		
-		colorsValidate=false;
+		jQ('#warning_color').animate({ opacity: "show" },"slow");
+		error_message += error3 + ".<br />";
+		colorsValidate = false;
 	}
 	else if (!hex_validator(txtcolor))
 	{
-		//$('#warning_color').append("Not a valid hex number");
-		$('#warning_color').animate({ opacity: "show" }, "slow").append(error4 +".<br />");
+		error_message += error4 +".<br />";
 		colorsValidate=false;
 	}
 	
 	// Main warning
-	var akvo_widget_container = document.getElementById('akvo_widget_container');
-	var codefield = document.getElementById('code');
+	var akvo_widget_container = jQ('#akvo_widget_container');
+	var codefield = jQ('#code');
+	jQ('#warning_color').animate({ opacity: "hide" }, "fast");
 	
-	if(!colorsValidate) {
-		// Change the texts.
-		var machinery_step2_warning_main_message_p = document.getElementById('machinery_step2_warning_main_message'); 
-		if (machinery_step2_warning_main_message_p.hasChildNodes()) { 
-			machinery_step2_warning_main_message_p.innerHTML = '';
-		}
-		
-		$('machinery_step2_warning_main_message').append(error0);
-		$('#machinery_step2_warning_main').animate({ opacity: "show" }, "slow");
-		
-					
-		//alert('remove widget and copy code');
-		if (akvo_widget_container.hasChildNodes()) { 
-			akvo_widget_container.innerHTML = '';
-		}
-		codefield.value="";
+    // If errors present them and remove widget and cod
+	if(!colorsValidate) {    
+	        
+        jQ('#warning_color').html(error_message);
+        jQ('#warning_color').animate({ opacity: "show" }, "slow");
+        
+		akvo_widget_container.innerHTML = '';
+
+		codefield.val('');
 		return;
 	}
 	
@@ -212,20 +133,51 @@ function preview_widget()
 		ifrm.frameBorder = 0;
 		ifrm.setAttribute("allowTransparency","true");
 		ifrm.setAttribute("id","jswidget");
-		document.getElementById('akvo_widget_container').appendChild(ifrm);
+		//document.getElementById('akvo_widget_container').appendChild(ifrm);
+		jQ('#akvo_widget_container').append(ifrm);
 	}
 	
 	// Update the widget code snippet
 	// Show code only if valid!!!!
 	var codesnippet = '<iframe src="' + widget_url + '" '; 
 	codesnippet += 'height="' + akvo_widget_height + '" width="' + akvo_widget_width + '" frameborder="0" allowTransparency="true"> </iframe>';
-	codefield.value = codesnippet;
+	codefield.val(codesnippet);
 }
 
-function hex_validator(hexcolor) 
-{ 
-	var strPattern = /^([0-9a-f]{1,2}){3}$/i;
-	return strPattern.test(hexcolor);
+function setup(){
+    // Hide customize other and warning section
+    // jQ('#machinery_step2_warning_main').hide();
+    
+	//jQ('#backgroundcolor_other_section').hide();
+	//jQ('#textcolor_other_section').hide();
+	jQ('#warning_color').hide();
+	
+	
+	// Toggle other selections for the colours		
+	jQ("#backgroundcolor_pulldown").change(function() { 
+		if (jQ('#backgroundcolor_pulldown').val() == 'x') {
+			jQ('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");			
+		} else {
+			jQ('#backgroundcolor_other_section').animate({ opacity: "hide" }, "slow");
+		}
+	});
+	
+	jQ("#textcolor_pulldown").change(function() { 		
+		if (jQ('#textcolor_pulldown').val() == 'x') {
+			jQ('#textcolor_other_section').animate({ opacity: "show" }, "slow");			
+		} else {
+			jQ('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
+		}		
+	});
+	
+	// Preview button
+	jQ(function(){
+	 jQ('#preview').click(function(){
+	  jQ('html, body').animate({ scrollTop: jQ('#preview_position').offset().top }, 1000);
+	   return false;
+	 });
+	});
+	
+	// Display the default widget preview
+	preview_widget();
 }
-
-

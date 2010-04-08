@@ -1,9 +1,28 @@
-﻿RELEASE_NOTES.txt, v0.9.14, 29 January 2010, pb 
+RELEASE_NOTES.txt, v0.9.15, 5 March 2010, tbp
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR v 0.9.15 release notes
+-------------------------------------------
+5 March 2010, (Code name: Avonmouth) tbp
+
+Adding one more custom sponsor portal page. The first one was introduced in 0.9.12, this one is for Walking for Water. 
+
+New features
+------------
+
+### New custom sponsor portal page
+Sponsor portal page, a page which is different from the organisation page, but has branding and a project list related to the sponsor
+
+The new sponsor functionality is possible to enable or disable in the settings.py file, as well as identifying with organisation number is the sponsor partner which the features will be linked to. This is still considered experimental and we want to generalise this feature so you can set up these type of portals from the admin user interface.
+http://www.pivotaltracker.com/story/show/2396373
+
+### README.md
+Added a README.md file which displays nicely on the project page on Github.
+
+---
 
 Akvo RSR v 0.9.14 release notes
 -------------------------------------------

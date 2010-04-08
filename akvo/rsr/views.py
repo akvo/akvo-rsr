@@ -193,7 +193,7 @@ def project_list_data(request, projects):
 @render_to('rsr/liveearth.html')
 def liveearth(request):
     '''
-    List of all projects in RSR
+    List of all projects associated with Live Earth
     Context:
     projects: list of all projects
     stats: the aggregate projects data
@@ -203,6 +203,20 @@ def liveearth(request):
     projs = live_earth.published_projects().funding()
     page = project_list_data(request, projs)
     return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
+
+@render_to('rsr/walking-for-water.html')
+def walking_for_water(request):
+    '''                                                                            
+    List of all projects associated with Walking for Water
+    Context:                                                                       
+    projects: list of all projects                                                 
+    stats: the aggregate projects data                                             
+    page: paginator                                                                
+    '''
+    wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
+    projs = wfw.published_projects().funding()
+    page = project_list_data(request, projs)
+    return {'projs': projs, 'orgs': wfw.partners(), 'page': page, 'walking_for_water': wfw }
     
 @render_to('rsr/project_directory.html')
 def projectlist(request):
@@ -752,17 +766,24 @@ def projectmain(request, project_id):
     form        = CommentForm()
     can_add_update = p.connected_to_user(request.user)
         
-    return {'p': p, 'updates': updates, 'comments': comments, 'form': form, 'can_add_update': can_add_update }
+    return {
+        'p': p, 
+        'updates': updates, 
+        'comments': comments, 
+        'form': form, 
+        'can_add_update': can_add_update, 
+        }
 
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p, }
-    
-@render_to('rsr/project_funding.html')    
+
+@render_to('rsr/project_funding.html')  
 def projectfunding(request, project_id):
-        p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, }
+        p       = get_object_or_404(Project, pk=project_id)    
+        public_donations = p.public_donations()
+        return { 'p': p, 'public_donations': public_donations, }
 
 def getwidget(request, project_id):
     '''
