@@ -7,22 +7,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags thumbnail cache rsr_filters %}
 
-{% block script %}
-	{{ block.super }}
-	{% ifequal bandwidth 'ask' %}
-	<!--<script type="text/javascript">
-		msg = "Welcome to Akvo. Please indicate if you want to use the high bandwidth home page by clicking OK, or the low bandwidth home page by clicking Cancel.";
-		if (confirm(msg))
-			window.location.assign("{% url akvo.rsr.views.set_high_bandwidth %}");
-		else
-			window.location.assign("{% url akvo.rsr.views.set_low_bandwidth %}");
-	</script>-->
-	{% endifequal %}
-	{% comment %}
-	<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
-	{% endcomment %}
-{% endblock script %}
-
 {% block style %}
 	{{ block.super }}
 	<style type="text/css">
@@ -39,8 +23,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		float:left; 
 		margin-top:20px;
 		overflow:hidden;
-		width:235px; 
-	
+		width:235px;
 	}
 	
 	#featured_update_right{
@@ -48,18 +31,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	}
 
 	</style>
-	
-	{% comment %}
-	<!--[if IE 6]>
-	<style type="text/css" media="screen">
-		.featured_update {
-			width:200px; 
-		}
-	</style>
-	<![endif]-->
-	{% endcomment %}	
-	
-	
+		
 {% endblock style %}
 
 {% block breadcrumbs %}{% endblock breadcrumbs %}
@@ -70,7 +42,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block outer_leftwing %}
 	{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
-    {% if debug %}
+    {% if debug %} 
         TIME: {% now "jS F Y H:i:s" %}
         LANG: {{lang}}
     {% endif %}
@@ -181,8 +153,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 	</div>	
+	
 
-	<div style="float: right; width: 250px;">
+	<div style="float:right; width:250px;">
 		<div class="boxhead">
 			<h1>{% trans 'Learn about Akvo' %}</h1>
 		</div>
@@ -212,6 +185,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</p>
 		</div>
 	</div>
+
 	{% endcache %}
 
 	{% cache RSR_CACHE_SECONDS index_blog lang %}
