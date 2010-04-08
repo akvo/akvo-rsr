@@ -183,7 +183,10 @@ def index(request):
         grid_projects = None
     
     featured = ProjectUpdate.objects.filter(featured__exact=True)
-    updates = get_random_from_qs(featured, 3)
+    if len(featured) < 3:
+        updates = ProjectUpdate.objects.all().order_by('-time')[:3]
+    else:
+        updates = get_random_from_qs(featured, 3)
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
     return {
