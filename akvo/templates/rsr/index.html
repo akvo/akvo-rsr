@@ -65,6 +65,46 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endifequal %}
 	{% ifequal bandwidth 'low' %}
 
+	<div style="width:710px; float:left;">
+		<div class="boxhead" style="background-color:#2097F7; color:#fff; ">
+			<a href="#" style="color:#fff; float:right; margin-top:1em; padding-right: 20px;">{% trans 'View more projects >' %}</a>
+			<h1>{% trans 'Recent project updates' %}</h1>
+		</div>
+		<div class="boxbody" style="padding-top:0;padding-bottom:0">
+			<div style="float:left; width:215px; margin-left:20px; margin-top:20px;  border-right:1px solid #DFDFE4; ">
+				<div style="margin-right:20px; background-color:#ededed;">
+					<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2">{{updates.0.project}}</a>
+					<br><br>
+					<h2 style="padding:0;">{{updates.0.title}}</h2>
+					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" >
+					
+				</div>
+			</div>
+			<div style="float:left; width:215px; margin-left:20px; margin-top:20px; border-right:1px solid #DFDFE4;">
+				<div style="margin-right:20px; background-color:#ededed;">
+					<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2">{{updates.1.project}}</a>
+					<br><br>
+					<h2 style="padding:0;">{{updates.1.title}}</h2>
+					<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" >
+				</div>
+			</div>
+			<div style="float:left; width:215px; margin-left:20px; margin-top:20px;">
+				<div style="margin-right:20px; background-color:#ededed;">
+					<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2">{{updates.2.project}}</a>
+					<br><br>
+					<h2 style="padding:0;">{{updates.2.title}}</h2>
+					<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" >
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+			
+			<div style="background-color:#2097F7; color:#fff; margin-top:15px; margin-bottom:0; text-align:right; padding:10px 20px ">
+					<a href="#" style="color:#fff;">{% trans 'View more projects >' %}</a>
+			</div>
+		</div>
+	</div>
+
+	{% comment %}
 	<div id="home_flash_box" style="padding-bottom:14px; width: 710px; float: left;">
 		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
 		<div style="color: #fff; font-size: 1.2em; font-weight:bold; padding: 15px 20px ;">{% trans 'Projects you can fund' %}</div>
@@ -89,6 +129,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</table>
 	
 	</div> <!-- #home_flash_box -->
+	{% endcomment %}
+	
 	<div style="float: right; width: 250px;">
 		<div class="boxhead">
 			<h1>{% trans 'Learn about Akvo' %}</h1>
