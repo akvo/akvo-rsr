@@ -65,30 +65,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block breadcrumbs %}{% endblock breadcrumbs %}
 
 {% block page_id %}
-<div id="page_home_flash">
+	<div id="page_home_flash">
 {% endblock page_id %}
 
 {% block outer_leftwing %}
-
-{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
+	{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
     {% if debug %}
         TIME: {% now "jS F Y H:i:s" %}
         LANG: {{lang}}
     {% endif %}
-
-	{% ifequal bandwidth 'high' %}
-	<div id="home_flash_box">
-	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'View static home page' %}</a>
-	<div style="color: #fff; font-size: 1.2em; font-weight:bold; float: left; padding: 20px;">{% trans 'Projects you can fund' %}</div>
-	<div id="home_flash" style="color: #fff;">
-		{% trans 'You are being re-directed to the static Akvo home page. If nothing happens,' %} <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'click here' %}!</a>
-		<noscript>
-			<meta http-equiv="refresh" content="0;url={% url akvo.rsr.views.set_low_bandwidth %}"/>
-		</noscript>
-	</div> <!-- #home_flash -->
-	</div> <!-- #home_flash_box -->
-	{% endifequal %}
-	{% ifequal bandwidth 'low' %}
 
 	<div style="width:710px; float:left;">
 		<div class="boxhead" style="background-color:#2097F7; color:#fff; ">
@@ -100,7 +85,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="margin-left:20px">
 					<div style="margin-right:20px; background-color:#fff;">
 						<p style=" padding:0; margin-bottom:15px; height:45px;">
-							<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br>
+							<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br />
 							<span style="font-size:0.9em;">
 							{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
 							</span>
@@ -108,7 +93,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:30px; overflow:hidden;">
 							{{updates.0.title}}
 						</a>
-						<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
+						<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px;" alt="" /><br />
 						<p style="font-size:0.9em; padding:0;">
 							{{updates.0.photo_caption}}
 						</p>
@@ -132,7 +117,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="margin-left:20px">
 					<div style="margin-right:20px; background-color:#fff;">
 						<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
-							<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br>
+							<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br />
 							<span style="font-size:0.9em;">
 							{#{{updates.1.project.city}}, {{updates.1.project.state}},#}{{updates.1.project.country}}
 							</span>
@@ -140,7 +125,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:30px; overflow:hidden;">
 							{{updates.1.title}}
 						</a>
-						<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
+						<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px;" alt="" /><br />
 						<p style="font-size:0.9em; padding:0;">
 							{{updates.1.photo_caption}}
 						</p>
@@ -158,13 +143,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					</div>
 				</div>
 			</div>
-				
-
+			
 			<div class="featured_update" id="featured_update_right">
 				<div style="margin-left:20px">	
 					<div style="margin-right:20px; background-color:#fff;">
 						<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
-							<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br>
+							<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br />
 							<span style="font-size:0.9em;">
 							{#{{updates.2.project.city}}, {{updates.2.project.state}},#}{{updates.2.project.country}}
 							</span>
@@ -172,7 +156,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:30px; overflow:hidden;">
 							{{updates.2.title}}
 						</a>
-						<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px;"><br>
+						<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px;" alt="" /><br />
 						<p style="font-size:0.9em; padding:0;">
 							{{updates.2.photo_caption}}
 						</p>
@@ -196,35 +180,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<a href="#" style="color:#fff;">{% trans 'View more projects >' %}</a>
 			</div>
 		</div>
-	</div>
+	</div>	
 
-	{% comment %}
-	<div id="home_flash_box" style="padding-bottom:14px; width: 710px; float: left;">
-		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
-		<div style="color: #fff; font-size: 1.2em; font-weight:bold; padding: 15px 20px ;">{% trans 'Projects you can fund' %}</div>
-		<table>
-			{% for p in grid_projects %}
-				{% ifequal forloop.counter 1 %}
-				<tr>
-				{% endifequal %}
-				{% ifequal forloop.counter 5 %}
-				<tr>
-				{% endifequal %}
-				<td align="center">
-					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-                        {% project_thumb p 144 108 'padding: 2px 6px;' %}
-					</a>
-				</td>
-				{% ifequal forloop.counter 4 %}
-				</tr>
-				{% endifequal %}
-			{% endfor %}
-				</tr>
-		</table>
-	
-	</div> <!-- #home_flash_box -->
-	{% endcomment %}
-	
 	<div style="float: right; width: 250px;">
 		<div class="boxhead">
 			<h1>{% trans 'Learn about Akvo' %}</h1>
@@ -255,94 +212,87 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</p>
 		</div>
 	</div>
+	{% endcache %}
 
-	{% endifequal %}
-{% endcache %}
+	{% cache RSR_CACHE_SECONDS index_blog lang %}
 
-{% cache RSR_CACHE_SECONDS index_blog lang %}
+	<div id="outer_leftwing">
+    	{% if debug %}
+        	TIME: {% now "jS F Y H:i:s" %}
+        	LANG: {{lang}}
+    	{% endif %}
 
-<div id="outer_leftwing">
-    {% if debug %}
-        TIME: {% now "jS F Y H:i:s" %}
-        LANG: {{lang}}
-    {% endif %}
+		{% if live_earth_enabled %}
+			<div id="index_sponsor_box" class="boxbody">
+				<div class="clearfix" style="margin:0;">
+					<a href="{% url live_earth_landing_page %}">
+						<img src="{{MEDIA_URL}}img/liveearth_water_logo_small.gif" alt="" style="float:left; margin-left:20px; margin-top:15px" />
+					</a>
+					<div id="sponsor_box_left">
+						<h1>{% trans 'Live Earth and Akvo announce partnership' %}</h1>
+						<ul>
+							<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
+						</ul>
+					</div>
+					<div id="sponsor_box_right">
+						<h2>{% trans 'Latest articles' %}</h2>
+						<ul>
+							<li><a href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
+							<li><a href="{{le_latest2.link}}">{{le_latest2.title|safe}}</a></li>
+						</ul>
+						<p>
+							<a style="float:right; padding-bottom: 8px;" href="http://{{ request.META.HTTP_HOST }}/blog/?cat=9">{% trans 'Read more' %}</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		{% endif %}
 
-{% if live_earth_enabled %}
-<div id="index_sponsor_box" class="boxbody">
-	<div class="clearfix" style="margin:0;">
-		<a href="{% url live_earth_landing_page %}">
-			<img src="{{MEDIA_URL}}img/liveearth_water_logo_small.gif" alt="" style="float:left; margin-left:20px; margin-top:15px" />
-			</a>
-		
-	<div id="sponsor_box_left">
-		<h1>{% trans 'Live Earth and Akvo announce partnership' %}</h1>
-		<ul>
-			<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
-		</ul>
-	</div>
-	<div id="sponsor_box_right">
-		<h2>{% trans 'Latest articles' %}</h2>
-		<ul>
-			<li><a href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
-			<li><a href="{{le_latest2.link}}">{{le_latest2.title|safe}}</a></li>
-		</ul>
-		<p><a style="float:right; padding-bottom: 8px;" href="http://{{ request.META.HTTP_HOST }}/blog/?cat=9">{% trans 'Read more' %}</a></p>
-	</div>
-	</div>
-</div>
-{% endif %}
+		<div class="boxhead">
+			<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
+			<h1>{% trans 'Most recent Akvo Blog article' %}</h1>
+		</div> <!-- .boxhead -->
 
-<div class="boxhead">
-<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
-<h1>{% trans 'Most recent Akvo Blog article' %}</h1>
-</div> <!-- .boxhead -->
+		<div class="boxbody">
+			{% if img_src1 %}
+				<div style="float:left; width: 210px;">
+					<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+					<!--<p class="small lightx1">Image caption</p>-->
+				</div> <!-- style -->
+			{% endif %}
 
-<div class="boxbody">
+			<h2 style="padding-top:12px;"><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
+			{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
+			<p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
+			<p>{{latest1.summary|safe|truncatewords:45}}</p>
 
-{% if img_src1 %}
-<div style="float:left; width: 210px;">
-	<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
-	<!--<p class="small lightx1">Image caption</p>-->
-</div> <!-- style -->
-{% endif %}
+			<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
+			<!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
+			<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
 
-<h2 style="padding-top:12px;"><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
-{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
-<p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
-<p>{{latest1.summary|safe|truncatewords:45}}</p>
+			{% if img_src2 %}
+			<div style="float:left; width: 210px;">
+				<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+				<!--<p class="small lightx1">Image caption</p>-->
+			</div> <!-- style -->
+			{% endif %}
 
-<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
-<!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
-<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
+			<h2 style="padding-top:12px;"><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
+			{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
+			<p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
+			<p>{{latest2.summary|safe|truncatewords:45}}</p>
 
-{% if img_src2 %}
-<div style="float:left; width: 210px;">
-	<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
-	<!--<p class="small lightx1">Image caption</p>-->
-</div> <!-- style -->
-{% endif %}
+			<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
+			<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
+			<p id="view_earlier_blog_entries"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
 
-<h2 style="padding-top:12px;"><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
-{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
-<p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
-<p>{{latest2.summary|safe|truncatewords:45}}</p>
-
-<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
-<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
-<p id="view_earlier_blog_entries"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
-
-<div style="clear:left"></div>
-
-</div> <!-- .boxbody -->
-
-</div> <!-- #outer_leftwing -->
-{% endcache %}
-
+			<div style="clear:left"></div>
+		</div> <!-- .boxbody -->
+	</div> <!-- #outer_leftwing -->
+	{% endcache %}
 {% endblock outer_leftwing %}
 
 {% block footer %}
     {{block.super}}
-	
 	<!-- Akvo RSR runs on Django, version: {{version}} -->
-
 {% endblock footer %}
