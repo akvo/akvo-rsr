@@ -62,7 +62,7 @@ class RSRUserAdminTest(SeleniumTestCase):
 
         try:
             self.assert_page_contains_text(self.UAT_USER_NAME)
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("Expected '%s' user name to exist (added earlier) for testing deletion:\n%s" %
                       (self.UAT_USER_NAME, error))
 
@@ -77,7 +77,7 @@ class RSRUserAdminTest(SeleniumTestCase):
 
         try:
             self.assert_page_does_not_contain_text(self.UAT_USER_NAME)
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("The '%s' user name should not appear in user listing after deletion:\n%s" %
                       (self.UAT_USER_NAME, error))
 
@@ -90,7 +90,7 @@ class RSRUserAdminTest(SeleniumTestCase):
             self.rsr.open_auth_admin_page()
             self.navigator.click_link("Users")
             self.verify_user_admin_page_has_loaded()
-        except Exception as exception:
+        except Exception, exception:
             self.fail("Unable to open user admin page: %s" % (exception))
 
     def verify_user_admin_page_has_loaded(self):

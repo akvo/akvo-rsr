@@ -43,7 +43,7 @@ class RSRUserRegistrationTest(SeleniumTestCase):
                                                   "Select the organisation that you belong to",
                                                   "A problem occurred",
                                                   "This field is required"])
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("Expected warning if organisation was not selected: %s" % (error))
 
     def test_04_can_select_organisation_and_load_user_details_entry_page(self):
