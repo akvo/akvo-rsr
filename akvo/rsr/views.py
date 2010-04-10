@@ -189,6 +189,16 @@ def index(request):
         updates = get_random_from_qs(featured, 3)
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
+
+    if settings.LIVE_EARTH_ENABLED:
+        live_earth = Organisation.objects.get(pk= settings.LIVE_EARTH_ID)
+        le_blog_category = settings.LIVE_EARTH_NEWS_CATEGORY
+        
+    if settings.WALKING_FOR_WATER_ENABLED:
+        walking_for_water = Organisation.objects.get(pk= settings.WALKING_FOR_WATER_ID)
+    
+        
+    
     return {
         'latest1': latest1,
         'img_src1': img_src1,
@@ -204,6 +214,8 @@ def index(request):
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
         'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'live_earth':live_earth,
+        'le_blog_category':le_blog_category
     }
 
 def oldindex(request):

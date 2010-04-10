@@ -561,30 +561,43 @@ th { font-weight: bold; }
 
 /* Sponsor partner */
 #index_sponsor_box {
+    float:left; 
+    width:345px;
+    /*
     background: transparent url('../img/index_sponsor_background.png') repeat-x;
     padding:0;
     margin-bottom:20px;
     height:93px;
     overflow:hidden;
+    */
 }
 
 #index_sponsor_box a {
     font-size:0.9em;
 }
 
-#sponsor_box_left {
+#sponsor_le_box_left {
+    float:left; 
+    width:90px;
     /*background: transparent url('../img/liveearth_water_logo_small.gif') no-repeat 20px 10px; */
     /*padding-left:170px;*/
+    /*
     float:left;
     width:220px;
     padding-left:30px;
+    */
 }
 
-#sponsor_box_left h1 {
+#sponsor_le_box_right {
+    float:left;
+}
+
+#sponsor_le_box_right h1 {
     font-size:1.2em;
     font-weight:bold;
-    margin:10px 0px;
+    margin:0px;
     color:#DE481C;
+    margin-bottom:15px;
 }
 
 #index_sponsor_box ul {
@@ -595,7 +608,7 @@ th { font-weight: bold; }
 }
 
 #index_sponsor_box ul li{
-    margin-left:15px;
+    margin-left:0px;
     margin-bottom:1px;
 }
 

@@ -164,7 +164,41 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>	
 
+		<div style="width:710px;">
+			<div id="index_sponsor_box">
+				<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2;">
+					<div style="margin:13px 20px">
+						<div id="sponsor_le_box_left">
+							<a href="{% url live_earth_landing_page %}">
+								<img src="{% thumbnail live_earth.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
+							</a>
+						</div>
+						<div id="sponsor_le_box_right">
+							<h1>{% trans 'Live Earth and Akvo' %}</h1>
+							<ul>
+								<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
+								<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
+							</ul>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div style="float:left; width:20px;">&nbsp;</div>
+			<div style="float:left; width:345px;">
+				<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2;">
+					<div style="margin:20px">
+						right
+					</div>				
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		<div style="height:20px;">&nbsp;</div>
 		
+		{% comment %}
+			
+
 		{% if live_earth_enabled %}
 			<div id="index_sponsor_box" class="boxbody">
 				<div class="clearfix" style="margin:0;">
@@ -190,6 +224,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 			</div>
 		{% endif %}
+		{% endcomment %}
+		
 
 		<div class="boxhead">
 			<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
