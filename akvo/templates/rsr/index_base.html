@@ -18,6 +18,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% block outer_rightwing %}
 			{% cache RSR_CACHE_SECONDS akvo_at_a_glance request.META.PATH_INFO lang %}
 			<div id="outer_rightwing">
+				{% block outer_rightwing_top %}
+					
+				{% endblock outer_rightwing_top %}
 				<div class="boxhead">
 					{% if debug %}
 	            		TIME: {% now "jS F Y H:i:s" %}
