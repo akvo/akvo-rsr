@@ -41,27 +41,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock page_id %}
 
 {% block outer_leftwing %}
-	{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
-    {% if debug %} 
-        TIME: {% now "jS F Y H:i:s" %}
-        LANG: {{lang}}
-    {% endif %}
-
-	{% endcache %}
-
-	{% cache RSR_CACHE_SECONDS index_blog lang %}
+	
 
 	<div id="outer_leftwing">
-    	{% if debug %}
-        	TIME: {% now "jS F Y H:i:s" %}
-        	LANG: {{lang}}
-    	{% endif %}
-		
+    
 		<div style="width:710px;">
 			<div class="boxhead" style="background-color:#2097F7; color:#fff; ">
 				<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff; float:right; margin-top:1em; padding-right: 20px;">{% trans 'View more projects >' %}</a>
 				<h1>{% trans 'Staff picks' %}</h1>
 			</div>
+
+			{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
+		    {% if debug %} 
+		        TIME: {% now "jS F Y H:i:s" %}
+		        LANG: {{lang}}
+		    {% endif %}
 			<div class="boxbody" style="padding:0;">
 				<div class="featured_update">
 					<div style="margin-left:20px">
@@ -162,6 +156,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff;">{% trans 'View more projects >' %}</a>
 				</div>
 			</div>
+			{% endcache %}
 		</div>	
 
 		<div style="width:710px;">
@@ -211,7 +206,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div style="height:20px;">&nbsp;</div>
 	
-
+		{% cache RSR_CACHE_SECONDS index_blog lang %}
+		{% if debug %}
+        	TIME: {% now "jS F Y H:i:s" %}
+        	LANG: {{lang}}
+    	{% endif %}
 		<div class="boxhead">
 			<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
 			<h1>{% trans 'Most recent Akvo Blog article' %}</h1>
@@ -252,8 +251,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 			<div style="clear:left"></div>
 		</div> <!-- .boxbody -->
+		{% endcache %}
 	</div> <!-- #outer_leftwing -->
-	{% endcache %}
+	
 {% endblock outer_leftwing %}
 
 
