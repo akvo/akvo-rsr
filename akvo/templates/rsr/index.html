@@ -185,8 +185,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						</div>
 					</div>
 				</div>
-			{% endif %}
 			<div style="float:left; width:20px;">&nbsp;</div>
+			{% endif %}
 			<div style="float:left; width:345px;">
 				{% if walking_for_water_enabled %}
 					<div id="le_sponser_box" class="index_sponsor_box">
@@ -210,37 +210,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<div style="clear:both;"></div>
 		</div>
 		<div style="height:20px;">&nbsp;</div>
-		
-		{% comment %}
-			
-
-		{% if live_earth_enabled %}
-			<div id="index_sponsor_box" class="boxbody">
-				<div class="clearfix" style="margin:0;">
-					<a href="{% url live_earth_landing_page %}">
-						<img src="{{MEDIA_URL}}img/liveearth_water_logo_small.gif" alt="" style="float:left; margin-left:20px; margin-top:15px" />
-					</a>
-					<div id="sponsor_box_left">
-						<h1>{% trans 'Live Earth and Akvo' %}</h1>
-						<ul>
-							<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
-						</ul>
-					</div>
-					<div id="sponsor_box_right">
-						<h2>{% trans 'Latest articles' %}</h2>
-						<ul>
-							<li><a href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
-							<li><a href="{{le_latest2.link}}">{{le_latest2.title|safe}}</a></li>
-						</ul>
-						<p>
-							<a style="float:right; padding-bottom: 8px;" href="http://{{ request.META.HTTP_HOST }}/blog/?cat=9">{% trans 'Read more' %}</a>
-						</p>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		{% endcomment %}
-		
+	
 
 		<div class="boxhead">
 			<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>

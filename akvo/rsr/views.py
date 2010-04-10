@@ -124,8 +124,6 @@ def index(request):
         # Speeds up the home page considerably when pulling over the inteweb
         if settings.DEBUG:
             raise
-
-        #host = request.META.get('HTTP_HOST', 'none')
         
         current_site = Site.objects.get_current()
         feed = feedparser.parse("http://%s/blog?feed=rss2" % current_site)
@@ -140,45 +138,24 @@ def index(request):
         try:
             img_src2 = soup('img')[0]['src']
         except:
-            img_src2 = ''
-        
-        le_feed = feedparser.parse("http://%s/blog?feed=rss2&cat=9" % current_site)
-        try:
-            le_latest1 = le_feed.entries[0]
-        except:
-            le_latest1 = {
-            'title': _('The blog is not available at the moment.'),
-        }
-        try:
-            le_latest2 = le_feed.entries[1]
-        except:
-            le_latest2 = {
-            'title': _('The blog is not available at the moment.'),
-        }            
+            img_src2 = ''        
+
     except:
         soup = img_src1 = img_src2 = ''
-        le_latest1 = le_latest2 = {
-            'title': _('The blog is not available at the moment.'),
-        }
         latest1 = latest2 = {
             'author': '',
             'summary': _('The blog is not available at the moment.'),
         }
+        
     projs = Project.objects.published()
     if bandwidth == 'low':
         #find all projects that need funding and have an image
         unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
         if len(unfunded_visible_projs) > 7:
             grid_projects = get_random_from_qs(unfunded_visible_projs, 8)
-            #qs_list = list(unfunded_visible_projs.values_list('pk', flat=True))
-            #random.shuffle(qs_list)
-            #grid_projects = unfunded_visible_projs.filter(pk__in=qs_list[:8])
         else:
             visible_projs = projs.filter(current_image__startswith='db')
             grid_projects = get_random_from_qs(visible_projs, 8)
-            #qs_list = list(projs.filter(current_image__startswith='db').values_list('pk', flat=True))
-            #random.shuffle(qs_list)
-            #grid_projects = projs.filter(pk__in=qs_list[:8])
     else:
         grid_projects = None
     
@@ -193,22 +170,21 @@ def index(request):
     if settings.LIVE_EARTH_ENABLED:
         live_earth = Organisation.objects.get(pk= settings.LIVE_EARTH_ID)
         le_blog_category = settings.LIVE_EARTH_NEWS_CATEGORY
+    else:
+        live_earth = None
+        le_blog_category = None
         
     if settings.WALKING_FOR_WATER_ENABLED:
         walking_for_water = Organisation.objects.get(pk= settings.WALKING_FOR_WATER_ID)
+    else:
+        walking_for_water = None
     
-        
     
     return {
         'latest1': latest1,
         'img_src1': img_src1,
         'latest2': latest2,
         'img_src2': img_src2,
-        'le_latest1': le_latest1,
-        'le_latest2': le_latest2,
-        'bandwidth': bandwidth,
-        'grid_projects': grid_projects,
-        'orgs': Organisation.objects,
         'projs': projs,
         'updates': updates,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
