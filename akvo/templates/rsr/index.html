@@ -165,32 +165,47 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>	
 
 		<div style="width:710px;">
-			<div id="index_sponsor_box">
-				<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2;">
-					<div style="margin:13px 20px">
-						<div id="sponsor_le_box_left">
-							<a href="{% url live_earth_landing_page %}">
-								<img src="{% thumbnail live_earth.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
-							</a>
+			{% if live_earth_enabled %}
+				<div id="le_sponser_box" class="index_sponsor_box">
+					<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
+						<div style="margin:13px 20px">
+							<div class="index_sponsor_box_left">
+								<a href="{% url live_earth_landing_page %}">
+									<img src="{% thumbnail live_earth.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
+								</a>
+							</div>
+							<div class="index_sponsor_box_right">
+								<h1>{% trans 'Live Earth and Akvo' %}</h1>
+								<ul>
+									<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
+									<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
+								</ul>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div id="sponsor_le_box_right">
-							<h1>{% trans 'Live Earth and Akvo' %}</h1>
-							<ul>
-								<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
-								<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
-							</ul>
-						</div>
-						<div style="clear:both;"></div>
 					</div>
 				</div>
-			</div>
+			{% endif %}
 			<div style="float:left; width:20px;">&nbsp;</div>
 			<div style="float:left; width:345px;">
-				<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2;">
-					<div style="margin:20px">
-						right
-					</div>				
-				</div>
+				{% if walking_for_water_enabled %}
+					<div id="le_sponser_box" class="index_sponsor_box">
+						<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
+							<div style="margin:13px 20px">
+								<div class="index_sponsor_box_left">
+									<a href="{% url wfw_landing_page %}">
+										<img src="{% thumbnail walking_for_water.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
+									</a>
+								</div>
+								<div class="index_sponsor_box_right">
+									<h1>{% trans 'Walking for Water 2010' %}</h1>
+									<a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
 			</div>
 			<div style="clear:both;"></div>
 		</div>

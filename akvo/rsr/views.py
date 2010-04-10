@@ -212,10 +212,12 @@ def index(request):
         'projs': projs,
         'updates': updates,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
-        'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'live_earth':live_earth,
-        'le_blog_category':le_blog_category
+        'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
+        'live_earth': live_earth,
+        'le_blog_category': le_blog_category,
+        'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
+        'walking_for_water': walking_for_water,
     }
 
 def oldindex(request):
