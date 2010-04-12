@@ -99,7 +99,7 @@ class RSRProjectAdminTest(SeleniumTestCase):
 
         try:
             self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("Expected '%s' project to appear in project listing after being added:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
 
@@ -109,7 +109,7 @@ class RSRProjectAdminTest(SeleniumTestCase):
 
         try:
             self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("Expected '%s' project to exist (added earlier) for verifying project content:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
 
@@ -196,7 +196,7 @@ class RSRProjectAdminTest(SeleniumTestCase):
 
         try:
             self.assert_page_contains_text(self.KAGISO_PROJECT_NAME)
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("Expected '%s' project to exist (added earlier) for testing deletion:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
 
@@ -210,7 +210,7 @@ class RSRProjectAdminTest(SeleniumTestCase):
 
         try:
             self.assert_page_does_not_contain_text(self.KAGISO_PROJECT_NAME)
-        except AssertionError as error:
+        except AssertionError, error:
             self.fail("The '%s' project should not appear in project listing after deletion:\n%s" %
                       (self.KAGISO_PROJECT_NAME, error))
 
@@ -235,7 +235,7 @@ class RSRProjectAdminTest(SeleniumTestCase):
             self.rsr.open_admin_page()
             self.navigator.click_link("Projects")
             self.verify_project_admin_page_has_loaded()
-        except Exception as exception:
+        except Exception, exception:
             self.fail("Unable to open project admin page: %s" % (exception))
 
     def verify_project_admin_page_has_loaded(self):
