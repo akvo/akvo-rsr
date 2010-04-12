@@ -241,7 +241,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:10px;">
 			<a href="{% url void_invoice invoice_id=invoice.id,action='cancel' %}">{% trans 'Cancel' %}</a>
 		</div>
-            <a class="march_button" href="{% url void_invoice invoice_id=invoice.id,action='back' %}" onclick="this.blur();"><span>{% trans 'Back' %}</span></a>
+            <a class="march_button" href="{% url void_invoice invoice_id=invoice.id,action='back' %}"><span>{% trans 'Back' %}</span></a>
 		
 		<div style="float:right; padding-left:100px;">
         {% ifequal payment_engine 'ideal' %}
