@@ -124,7 +124,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		widgetToggles: $('#help')
 	}
 </script>
-{#<script src="http://akvo.tenderapp.com/tender_widget.js" type="text/javascript"></script>#}
+
+{% if debug %}
+<script src="http://akvo.tenderapp.com/tender_widget.js" type="text/javascript"></script>
+{% endif %}
+
 {% block script %}
 
 {% endblock script %}
