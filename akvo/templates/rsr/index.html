@@ -48,7 +48,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="width:710px;">
 			<div class="boxhead" style="background-color:#2097F7; color:#fff; ">
 				<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff; float:right; margin-top:1em; padding-right: 20px;">{% trans 'View more projects >' %}</a>
-				<h1>{% trans 'Staff picks' %}</h1>
+				<h1>{% trans 'Project updates &mdash; staff picks' %}</h1>
 			</div>
 
 			{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
@@ -193,6 +193,26 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 									</a>
 								</div>
 								<div class="index_sponsor_box_right">
+									<h1>{% trans 'Live Earth and Akvo' %}</h1>
+									<ul>
+										<li><a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a></li>
+										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
+									</ul>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					{% comment %}
+					<div id="le_sponser_box" class="index_sponsor_box">
+						<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
+							<div style="margin:13px 20px">
+								<div class="index_sponsor_box_left">
+									<a href="{% url wfw_landing_page %}">
+										<img src="{% thumbnail walking_for_water.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
+									</a>
+								</div>
+								<div class="index_sponsor_box_right">
 									<h1>{% trans 'Walking for Water 2010' %}</h1>
 									<a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a>
 								</div>
@@ -200,6 +220,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							</div>
 						</div>
 					</div>
+					{% endcomment %}
 				{% endif %}
 			</div>
 			<div style="clear:both;"></div>
