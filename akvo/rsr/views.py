@@ -176,6 +176,7 @@ def index(request):
         
     if settings.WALKING_FOR_WATER_ENABLED:
         walking_for_water = Organisation.objects.get(pk= settings.WALKING_FOR_WATER_ID)
+        wfw_blog_category = settings.WALKING_FOR_WATER_NEWS_CATEGORY
     else:
         walking_for_water = None
     
@@ -194,6 +195,7 @@ def index(request):
         'le_blog_category': le_blog_category,
         'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
         'walking_for_water': walking_for_water,
+        'wfw_blog_category': wfw_blog_category,
     }
 
 def oldindex(request):
