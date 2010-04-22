@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n generic_content addparam rsr_filters rsr_tags thumbnail humanize %}
+{% load i18n generic_content addparam rsr_filters rsr_tags thumbnail humanize cache %}
 
 {% block title %}Walking for Water: {% trans 'Projecten listing' %}
 {% if o %}
@@ -77,8 +77,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock outer_leftwing %}
 
 {% block outer_rightwing %}
+{% cache RSR_CACHE_SECONDS w4w_at_a_glance lang %}
 <div id="outer_rightwing">
 	<div class="boxhead">
+        {% if debug %}
+            TIME: {% now "jS F Y H:i:s" %}
+            LANG: {{lang}}
+        {% endif %}
 		<h1>{% trans 'Wandelen voor Water projects' %}</h1>
 	</div> <!-- .boxhead -->
 	<div class="boxbody">
@@ -233,10 +238,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</table>
 	</div>
 </div>
+{% endcache %}
 {% endblock outer_rightwing %}
 
 {% block projects %}
+{% cache RSR_CACHE_SECONDS w4w_project_directory_projects request.META.QUERY_STRING lang %}
 <div class="boxhead clearfix" style="clear: left;">
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        QUERY_STRING: {{request.META.QUERY_STRING}}
+        LANG: {{lang}}
+    {% endif %}
 	<a name="list"></a>
     <div style="float:right; margin: 1em; width: 40%;">
     <!--<label for="display_number_of_entries">Show</label>
@@ -453,6 +465,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </table>
 
 </div> <!-- .boxbody -->
-
+{% endcache %}
 {% endblock projects %}
 

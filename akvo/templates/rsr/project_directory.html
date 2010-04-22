@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n generic_content addparam rsr_filters rsr_tags thumbnail humanize %}
+{% load i18n generic_content addparam rsr_filters rsr_tags thumbnail humanize cache %}
 
 {% block title %}
 	{{block.super}} - {% trans 'Project listing' %}
@@ -56,14 +56,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block outer_leftwing %}
 
-<div id="outer_leftwing">
+{% cache RSR_CACHE_SECONDS project_directory_featured request.META.PATH_INFO lang %}
 
+<div id="outer_leftwing">
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        PATH_INFO: {{request.META.PATH_INFO}}
+        LANG: {{lang}}        
+    {% endif %}
 	<div class="boxhead">
 		<h1 class="section">{% trans 'Featured projects' %}</h1>
 	</div> <!-- .boxhead -->
 
 <div class="boxbody">
-
 
 	<table id="project_showcase" style="width: 95%;">
 	<tr>
@@ -92,24 +97,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% endfor %}
 	</tr>
 	</table>
-	
+
+
 </div> <!-- .boxbody -->
 
 </div> <!-- #outer_leftwing -->
+
+{% endcache %}
 {% endblock outer_leftwing %}
 
 {% block projects %}
+{% cache RSR_CACHE_SECONDS project_directory_projects request.META.PATH_INFO request.META.QUERY_STRING lang %}
 
 <div class="boxhead" style="clear: left" class="clearfix">
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        PATH {{request.META.PATH_INFO}}
+        QUERY_STRING {{request.META.QUERY_STRING}}
+        LANG: {{lang}}
+    {% endif %}
 	<a name="list"></a>
     <div style="float:right; margin: 1em; width: 40%;">
-    <!--<label for="display_number_of_entries">Show</label>
-    <select name='display_number_of_entries' class="select">
-    <option value='25'>25</option>
-    <option value='50'>50</option>
-    <option value='75'>75</option>
-    </select>
-    results per page-->
 		<span style="margin: 0 20px 0 20px">
 			{% blocktrans with page.start_index as page_start and page.end_index as page_end and page.paginator.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
 		</span>
@@ -286,13 +294,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <tr>
 	<td colspan="9" style="border-right:0">
 		<div style="text-align: right">
-			<!--<label for="display_number_of_entries">Show</label>
-			<select name='display_number_of_entries' class="select">
-				<option value='25'>25</option>
-				<option value='50'>50</option>
-				<option value='75'>75</option>
-			</select>
-			results per page-->
 		<span style="margin: 0 20px 0 20px">
 			{% blocktrans with page.start_index as page_start and page.end_index as page_end and page.paginator.count as p_count %}Projects {{page_start}}-{{page_end}} of {{p_count}}{% endblocktrans %}
 		</span>
@@ -341,6 +342,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </table>
 
 </div> <!-- .boxbody -->
+{% endcache %}
 
 {% endblock projects %}
+
 

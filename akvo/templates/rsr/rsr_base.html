@@ -8,7 +8,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-
 <title>
 	{% block title %}
 		{% url akvo.rsr.views.index as index_url %}
@@ -45,78 +44,70 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 </head>
 <body>
+	<div id="wrapper">
+		{% block header %}
+			<div id="header" class="clearfix">
+				<a href="{% url index %}"><img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" /></a>
+				{% if not user.username %}
+					<div id="header_button">
+						<a class="actionbutton ab_white" href="{% url signin %}?next={{request.path}}" onclick="this.blur();" style="margin: 0;">
+							<span>{% trans 'Sign in' %}</span>
+						</a>
+					</div>
+				{% else %}
+					<div id="header_button">
+						<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" 
+								style="display: inline; vertical-align: middle; margin-left: 20px">
+							<span>{% trans 'Sign out' %}</span>
+						</a>
+						<span id="header_logged_text">{% trans 'Signed in as' %}: {{user.username}}</span>
+					</div>
+				{% endif %}
+			</div> <!-- #header -->
+		{% endblock header %}
 
-<div id="wrapper">
+		{% block navigation %}
+			<div id="navigation" class="clearfix">			
+				<ul id="navlist">
+					<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/" %} class="active"{% endifequal %}>{% trans 'Home' %}</a></li>
+					<li><a href="/wiki">{% trans 'Akvopedia' %}</a></li>
+					<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifnotequal request.path "/" %} class="active"{% endifnotequal %}>{% trans 'Projects' %}</a></li>
+					<li><a href="/web/partners">{% trans 'Partners' %}</a></li>
+					<li><a href="/web/get_involved">{% trans 'Get involved' %}</a></li>
+					<li><a href="/blog">{% trans 'Blog' %}</a></li>
+					<li><a href="/web/what_we_do">{% trans 'About' %}</a></li>
+					{% if not user.username %}
+						<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
+					{% else %}
+						<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
+					{% endif %}
+				</ul>
+			</div> <!-- #navigation -->
+		{% endblock navigation %}
 
-{% block header %}
-<div id="header" class="clearfix">
+		<div class="clearfix" id="breadcrumbs">
+			{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">{% trans 'Home' %}</a>{% endblock breadcrumbs %}
+		</div>
 
-	<a href="{% url index %}"><img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" /></a>
-	{% if not user.username %}
+		<div class="clearfix" id="content">
+			{% block page_id %}
+			{% endblock page_id %}
 
-	<div id="header_button">
-	<a class="actionbutton ab_white" href="{% url signin %}?next={{request.path}}" onclick="this.blur();" style="margin: 0;">
-		<span>{% trans 'Sign in' %}</span>
-	</a>
-	</div>
-
-	{% else %}
-
-	<div id="header_button">
-	<a class="actionbutton ab_white" href="{% url akvo.rsr.views.signout %}" onclick="this.blur();" style="display: inline; vertical-align: middle; margin-left: 20px"><span>{% trans 'Sign out' %}</span></a>
-	<span id="header_logged_text">{% trans 'Signed in as' %}: {{user.username}}</span>
-	</div>
-
-	{% endif %}
-
-</div> <!-- #header -->
-{% endblock header %}
-
-{% block navigation %}
-<div id="navigation" class="clearfix">			
-	<ul id="navlist">
-		<li><a href="{% url akvo.rsr.views.index %}"{% ifequal request.path "/" %} class="active"{% endifequal %}>{% trans 'Home' %}</a></li>
-		<li><a href="/wiki">{% trans 'Akvopedia' %}</a></li>
-		<li><a href="{% url akvo.rsr.views.projectlist %}"{% ifnotequal request.path "/" %} class="active"{% endifnotequal %}>{% trans 'Projects' %}</a></li>
-		<li><a href="/web/partners">{% trans 'Partners' %}</a></li>
-		<li><a href="/web/get_involved">{% trans 'Get involved' %}</a></li>
-		<li><a href="/blog">{% trans 'Blog' %}</a></li>
-		<li><a href="/web/what_we_do">{% trans 'About' %}</a></li>
-	{% if not user.username %}
-		<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
-	{% else %}
-		<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
-	{% endif %}
-	</ul>
-</div> <!-- #navigation -->
-{% endblock navigation %}
-
-<div class="clearfix" id="breadcrumbs">
-	{% block breadcrumbs %}<a href="{% url akvo.rsr.views.index %}">{% trans 'Home' %}</a>{% endblock breadcrumbs %}
-</div>
-
-<div class="clearfix" id="content">
-{% block page_id %}
-{% endblock page_id %}
-
-{% block content %}
-<h1>{% trans 'Akvo RSR - Really simple reporting' %}!</h1>
-{% endblock content %}
-
-</div> <!-- #content -->
-
-{% block footer %}
-<div id="footer" class="clearfix">
-	<div style="float:left">{% trans 'Site content under <a href="/web/open_license">Open License</a>' %} |
-		<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a> |
-		<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a> |
-		<a href="/rsr/admin">{% trans 'Admin' %}</a> |
-		<a id="help">{% trans 'Help & Support' %}</a>
-	</div>
-	<div style="float:right"><a href="/web/contact_us">{% trans 'Contact us' %}</a></div>
-</div> <!-- #footer -->
-{% endblock footer %}
-
+			{% block content %}
+				<h1>{% trans 'Akvo RSR - Really simple reporting' %}!</h1>
+			{% endblock content %}
+		</div> <!-- #content -->
+	{% block footer %}
+		<div id="footer" class="clearfix">
+			<div style="float:left">{% trans 'Site content under <a href="/web/open_license">Open License</a>' %} |
+				<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a> |
+				<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a> |
+				<a href="/rsr/admin">{% trans 'Admin' %}</a> |
+				<a id="help">{% trans 'Help &amp; Support' %}</a>
+			</div>
+			<div style="float:right"><a href="/web/contact_us">{% trans 'Contact us' %}</a></div>
+		</div> <!-- #footer -->
+	{% endblock footer %}
 </div> <!-- #wrapper -->
 {% if debug %}
 <!--
@@ -125,6 +116,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	Sql_queries: {{ sql_queries|safe }}
 -->
 {% endif %}
+
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 	Tender = {
@@ -132,19 +124,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		widgetToggles: $('#help')
 	}
 </script>
-<script src="https://akvo.tenderapp.com/tender_widget.js" type="text/javascript"></script>
-<script type="text/javascript" charset="utf-8">
-	jQ = jQuery.noConflict();
-</script>
+
+
+<script src="http://akvo.tenderapp.com/tender_widget.js" type="text/javascript"></script>
+
 {% block script %}
 
 {% endblock script %}
 <script type="text/javascript">
-//<!--
+
+	jQ = jQuery.noConflict();
+
 	jQ(document).ready(function(){
 		{% block jquery_ready %}{% endblock jquery_ready %}		
 	});
-//-->
+
 </script>
 
 </body>

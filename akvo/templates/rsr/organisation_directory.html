@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_filters thumbnail rsr_tags humanize %}
+{% load i18n rsr_filters thumbnail rsr_tags humanize cache %}
 
 {% load generic_content %}
 {% load addparam %}
@@ -84,10 +84,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock page_id %}
 
 {% block outer_leftwing %}
-
+{% cache RSR_CACHE_SECONDS organisation_directory_table request.META.PATH_INFO request.META.QUERY_STRING lang %}
 <div id="outer_leftwing">
 
 <div class="boxhead">
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        PATH: {{request.META.PATH_INFO}}
+        QUERY_STRING: {{request.META.QUERY_STRING}}
+        LANG: {{lang}}
+    {% endif %}
     <a name="list"></a>
     <div style="float:right; margin-top: 0.6em">
     <!--<label for="display_number_of_entries">Show</label>
@@ -183,7 +189,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% else %}
 				<span>
 			{% endifequal %}
-			<b>&#8364; {{o.funding.total_euros|round|intcomma}}</b>
+			<b style="white-space:nowrap;">&#8364; {{o.funding.total_euros|round|intcomma}}</b>
 			</span>
 			<br /><br>
 		{% endif %}
@@ -194,7 +200,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% else %}
 				<span>
 			{% endifequal %}
-			<b>&#36; {{o.funding.total_dollars|round|intcomma}}</b>
+			<b style="white-space:nowrap;">&#36; {{o.funding.total_dollars|round|intcomma}}</b>
 			</span>
 		{% endif %}
 		
@@ -206,7 +212,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% else %}
 				<span style="color: red">
 			{% endifequal %}
-			<b>&#8364; {{o.funding.still_needed_euros|round|intcomma}}</b>
+			<b style="white-space:nowrap;">&#8364;{{o.funding.still_needed_euros|round|intcomma}}</b>
 			</span>
 			<br /><br />
 		{% endif %}
@@ -216,14 +222,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% else %}
 				<span style="color: red">
 			{% endifequal %}
-			<b>&#36; {{o.funding.still_needed_dollars|round|intcomma}}</b>
+			<b style="white-space:nowrap;">&#36;{{o.funding.still_needed_dollars|round|intcomma}}</b>
 			</span>
 		{% endif %}
 	</td>
 </tr>
-
 {% endfor %}
-
 <tr>
 	<td colspan="9">
 		<div style="text-align: right">
@@ -260,6 +264,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- .boxbody -->
 
 </div> <!-- #outer_leftwing -->
+{% endcache %}
 {% endblock outer_leftwing %}
 
 {% block projects %}
