@@ -190,7 +190,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         </div>
 	
 		<p id="project_plan_summary">
-			{{project.project_plan_summary|safe|smart_truncate:95}}
+			{{project.project_plan_summary|safe|smart_truncate:90}}
 			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
@@ -208,7 +208,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% else %}
 				<p class="smallFont">{% trans 'Not yet' %}</p>
 			{% endif %}
-		{% endwith %}
+		{% endwith %}		
 		<hr class="divider" />
 		<div style="width:70px; float:left;">
 			<p class="smallFont grey">{% trans 'Funding' %}</p>
@@ -229,12 +229,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="margin:0; margin-top:13px;">
 			{% funding_box_narrow2 project %}
 		</div>
-		<hr class="divider" />
-		
+		<hr class="divider">	
 		{% comment %}
 			Since we don't now what type of partner is the first so be presented we need to do some checking.
 		{% endcomment %}
-		<div style="height:85px;">
+		<div style="height:95px;">
 		<div id="partnerspace" style="text-align:center;">
 		{% if project.sponsorpartner_set.all %}
 			{% for sponsor in project.sponsorpartner_set.all %}
