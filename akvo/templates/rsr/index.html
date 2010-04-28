@@ -175,7 +175,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<div class="index_sponsor_box_right">
 								<h1>{% trans 'Live Earth and Akvo' %}</h1>
 								<ul>
-									<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
+									<li><a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
 									<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
 								</ul>
 							</div>
@@ -187,7 +187,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}
 			<div style="float:left; width:345px;">
 				{% if walking_for_water_enabled %}
-					<div id="le_sponser_box" class="index_sponsor_box">
+					<div id="ww_sponser_box" class="index_sponsor_box">
 						<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
 							<div style="margin:13px 20px">
 								<div class="index_sponsor_box_left">
@@ -197,10 +197,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 								</div>
 								<div class="index_sponsor_box_right">
 									<h1>{% trans 'Walking for Water 2010' %}</h1>
+									<ul style="max-width:200px">
+										<li><a href="{% url wfw_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
+										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
+									</ul>
+									{% comment %}
+									<h1>{% trans 'Walking for Water 2010' %}</h1>
 									<ul>
 										<li><a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a></li>
 										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
 									</ul>
+									{% endcomment %}
 								</div>
 								<div style="clear:both;"></div>
 							</div>
