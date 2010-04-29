@@ -48,7 +48,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="width:710px;">
 			<div class="boxhead" style="background-color:#2097F7; color:#fff; ">
 				<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff; float:right; margin-top:1em; padding-right: 20px;">{% trans 'View more projects >' %}</a>
-				<h1>{% trans 'Project updates &mdash; staff picks' %}</h1>
+				<h1>{% trans 'Project updates &mdash; Staff picks' %}</h1>
 			</div>
 
 			{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
@@ -60,12 +60,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="featured_update">
 					<div style="margin-left:20px">
 						<div style="margin-right:20px; background-color:#fff;">
+							{% comment %}
 							<p style=" padding:0; margin-bottom:15px; height:45px;">
 								<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br />
 								<span style="font-size:0.9em;">
 								{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
 								</span>
 							</p>
+							{% endcomment %}
 							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
 								{{updates.0.title}}
 							</a>
@@ -74,15 +76,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 								{{updates.0.photo_caption}}
 							</p>
 							<p class="lightx1" style="padding:0; margin-top:10px;">
-								{{updates.0.time|date:"Y-m-d H:i" }}
+								{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'at' %} {{updates.0.time|date:"Y-m-d" }}.
 							</p>
+							{% comment %}
 							<p style="padding:0;">
 				                {% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 							</p>
+							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.0.text|smart_truncate:100}}
 							</p>
-							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="float:right;">{% trans 'Read more' %}</a>
+							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="float:right; margin-top:3px;">{% trans 'Read more' %}</a>
 							<div style="clear:both;"> </div>
 						</div>
 
@@ -92,12 +96,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="featured_update">
 					<div style="margin-left:20px">
 						<div style="margin-right:20px; background-color:#fff;">
+							{% comment %}		
 							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
 								<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br />
 								<span style="font-size:0.9em;">
 								{#{{updates.1.project.city}}, {{updates.1.project.state}},#}{{updates.1.project.country}}
 								</span>
 							</p>
+							{% endcomment %}
 							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
 								{{updates.1.title}}
 							</a>
@@ -106,15 +112,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 								{{updates.1.photo_caption}}
 							</p>
 							<p class="lightx1" style="padding:0; margin-top:10px;">
-								{{updates.1.time|date:"Y-m-d H:i" }}
+								{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'at' %} {{updates.1.time|date:"Y-m-d" }}.
 							</p>
+							{% comment %}
 							<p style="padding:0;">
 				                {% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 							</p>
+							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.1.text|smart_truncate:100}}
 							</p>
-							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="float:right;">{% trans 'Read more' %}</a>
+							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="float:right; margin-top:3px;">{% trans 'Read more' %}</a>
 							<div style="clear:both;"> </div>
 						</div>
 					</div>
@@ -123,12 +131,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="featured_update" id="featured_update_right">
 					<div style="margin-left:20px">	
 						<div style="margin-right:20px; background-color:#fff;">
+							{% comment %}
 							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
 								<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br />
 								<span style="font-size:0.9em;">
 								{#{{updates.2.project.city}}, {{updates.2.project.state}},#}{{updates.2.project.country}}
 								</span>
 							</p>
+							{% endcomment %}
 							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
 								{{updates.2.title}}
 							</a>
@@ -137,15 +147,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 								{{updates.2.photo_caption}}
 							</p>
 							<p class="lightx1" style="padding:0; margin-top:10px;">
-								{{updates.2.time|date:"Y-m-d H:i" }}
+								{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'at' %} {{updates.2.time|date:"Y-m-d" }}.
 							</p>
+							{% comment %}
 							<p style="padding:0;">
 				                {% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 							</p>
+							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.2.text|smart_truncate:100}}
 							</p>
-							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="float:right;">{% trans 'Read more' %}</a>
+							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="float:right; margin-top:3px;">{% trans 'Read more' %}</a>
 							<div style="clear:both;"> </div>
 						</div>
 					</div>
@@ -175,7 +187,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<div class="index_sponsor_box_right">
 								<h1>{% trans 'Live Earth and Akvo' %}</h1>
 								<ul>
-									<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
+									<li><a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
 									<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
 								</ul>
 							</div>
@@ -187,7 +199,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}
 			<div style="float:left; width:345px;">
 				{% if walking_for_water_enabled %}
-					<div id="le_sponser_box" class="index_sponsor_box">
+					<div id="ww_sponser_box" class="index_sponsor_box">
 						<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
 							<div style="margin:13px 20px">
 								<div class="index_sponsor_box_left">
@@ -197,10 +209,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 								</div>
 								<div class="index_sponsor_box_right">
 									<h1>{% trans 'Walking for Water 2010' %}</h1>
+									<ul style="max-width:200px">
+										<li><a href="{% url wfw_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
+										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
+									</ul>
+									{% comment %}
+									<h1>{% trans 'Walking for Water 2010' %}</h1>
 									<ul>
 										<li><a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a></li>
 										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
 									</ul>
+									{% endcomment %}
 								</div>
 								<div style="clear:both;"></div>
 							</div>

@@ -21,6 +21,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		#header h1 { color:#{{textcolor}}; }
 		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
 		h2 a {color:#{{bgcolor}} !important;}
+		
+		#project_title {
+			display:block;
+			height:36px;
+			overflow:hidden;
+		}
+		
+		#project_location{
+			display:block;
+			max-height:32px;
+			height:32px;
+			overflow:hidden;
+		}
+		
 	{% endblock inline_styles %}
 	</style>
 	
@@ -39,9 +53,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     </a>
                 </div>
 				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+				<div id="project_location">
+					<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+						{{project.country}}, {{project.city}}
+					</p>
+				</div>
+				{% comment %}
+				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
 					{{project.country}}, {{project.city}}
 				</p>
+				{% endcomment %}
 				<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">
 				
 					{% trans 'Powered by' %} <a href="http://{{ request.META.HTTP_HOST }}">Akvo</a>. {% trans 'Ref' %}: {{project.id}}
