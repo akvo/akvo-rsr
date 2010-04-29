@@ -71,6 +71,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
 								{{updates.0.title}}
 							</a>
+							{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
 							<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px;" alt="" /><br />
 							<p style="font-size:0.9em; padding:0;">
 								{{updates.0.photo_caption}}
@@ -107,6 +108,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
 								{{updates.1.title}}
 							</a>
+							{{updates.1.project.country}}
 							<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px;" alt="" /><br />
 							<p style="font-size:0.9em; padding:0;">
 								{{updates.1.photo_caption}}
@@ -142,6 +144,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
 								{{updates.2.title}}
 							</a>
+							{{updates.2.project.country}}
 							<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px;" alt="" /><br />
 							<p style="font-size:0.9em; padding:0;">
 								{{updates.2.photo_caption}}
