@@ -59,6 +59,9 @@ class RSRNavigator:
     def open_auth_admin_page(self):
         self.open_admin_page("auth/")
 
+    def open_user_admin_page(self):
+        self.open_admin_page("auth/user/")
+
     def open_rsr_admin_page(self):
         self.open_admin_page("rsr/")
 
