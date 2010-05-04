@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'paypal.standard.ipn',
     'sorl.thumbnail',
     'rosetta',
+    'django_counter',
 )
 
 #INTERNAL_IPS = (
