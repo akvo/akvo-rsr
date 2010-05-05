@@ -42,7 +42,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<p>{{p.subtitle}}</p>
         {% counter p %}
         {% view_count for rsr.project p.id as page_views %}
-        <p>Project viewed {{ page_views }} time{{ page_views|pluralize }}</p>
+        <p style="color: red;">(EXPERIMENTAL) Project viewed {{ page_views }} time{{ page_views|pluralize }}</p>
 	</div> <!-- .boxhead -->
 
 	<div id="project_details" class="boxbody">
