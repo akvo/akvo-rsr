@@ -128,12 +128,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #TEMPLATE_DEBUG = DEBUG
 
 import os.path
+TEMPLATE_LEAF_DIR = 'akvo'
+
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/akvo_beta').replace('\\','/'),
 )
+
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
