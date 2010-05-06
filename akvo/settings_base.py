@@ -59,7 +59,6 @@ INSTALLED_APPS = (
     'paypal.standard.ipn',
     'sorl.thumbnail',
     'rosetta',
-    'johnny',
 )
 
 #INTERNAL_IPS = (
@@ -95,8 +94,6 @@ MANAGERS = ADMINS
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
-    'johnny.middleware.LocalStoreClearMiddleware',
-    'johnny.middleware.QueryCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
