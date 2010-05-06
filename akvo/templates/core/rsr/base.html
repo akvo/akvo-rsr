@@ -7,28 +7,25 @@
 	<meta name="keywords" content="" />
 	<title>Akvo RSR</title>
 	
+	<link rel="stylesheet" href="{{MEDIA_URL}}styles/core/style.css" type="text/css" media="screen" title="style" charset="utf-8" />
 	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
-	
+
 	<link rel="alternate" type="application/rss+xml" title="{% trans 'RSR updates' %}" href="/rsr/rss/all-updates" />
 </head>
 <body>
-{% block menu %}
-<h2>Menu area</h2>
-{% endblock menu %}
-
-<div id="maincontainer" class="container">
-{% block content %}
-		<p>Akvo.org</p>
-{% endblock content %}
-</div>
-
-{% block footer %}
-<div id="footer_area">
-	<div id="footer" class="container">
+<div id="maincontainer" class="container showgrid">
+	{% block header %}
+		<p>Header</p>
+	{% endblock header %}
+	
+	{% block content %}
+		<p>Content</p>
+	{% endblock content %}
+	
+	{% block footer %}
 		<p>Footer</p>
-	</div>
+	{% endblock footer %}
 </div>
-{% endblock footer %}
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 {% block js %}{% endblock js %}
