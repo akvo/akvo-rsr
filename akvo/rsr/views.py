@@ -197,6 +197,7 @@ def index(request):
         'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
         'walking_for_water': walking_for_water,
         'wfw_blog_category': wfw_blog_category,
+        'site_section': 'index',
     }
 
 def oldindex(request):
@@ -278,6 +279,7 @@ def projectlist(request):
         'page': page,
         'showcases': showcases,
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'site_section': 'projects',
     }
 
 @render_to('rsr/project_directory.html')
