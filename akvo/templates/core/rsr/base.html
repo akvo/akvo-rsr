@@ -1,0 +1,53 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="description" content="Akvo RSR" />
+	<meta name="keywords" content="" />
+	<title>Akvo RSR</title>
+	
+	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
+	
+	<link rel="alternate" type="application/rss+xml" title="{% trans 'RSR updates' %}" href="/rsr/rss/all-updates" />
+</head>
+<body>
+{% block menu %}
+<h2>Menu area</h2>
+{% endblock menu %}
+
+<div id="maincontainer" class="container">
+{% block content %}
+		<p>Akvo.org</p>
+{% endblock content %}
+</div>
+
+{% block footer %}
+<div id="footer_area">
+	<div id="footer" class="container">
+		<p>Footer</p>
+	</div>
+</div>
+{% endblock footer %}
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+{% block js %}{% endblock js %}
+
+<script type="text/javascript">
+	jQ = jQuery.noConflict();
+
+	jQ(document).ready(function(){
+		{% block jquery_ready %}{% endblock jquery_ready %}
+
+		jQ('#grid_toggle').click(function () {
+			jQ('#maincontainer').toggleClass('showgrid');
+		});
+		
+	});
+</script>
+
+</body>
+</html>
+
+	
+
