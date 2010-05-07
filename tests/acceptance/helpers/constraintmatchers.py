@@ -23,13 +23,13 @@ class ExactMatcher(MatcherBase):
 
     def evaluate(self, actual_value):
         self._test_case.failUnlessEqual(self._expected_value, actual_value,
-                                        "Expected exactly %i %s.  Actual value: %i" %
-                                            (self._expected_value, self._description, actual_value))
+                                        "Expected exactly %i %s.  Actual %s: %i" %
+                                            (self._expected_value, self._description, self._description, actual_value))
 
 
 class AtLeastMatcher(MatcherBase):
 
     def evaluate(self, actual_value):
         self._test_case.failUnless(self._expected_value <= actual_value,
-                                   "Expected at least %i %s.  Actual value: %i" %
-                                        (self._expected_value, self._description, actual_value))
+                                   "Expected at least %i %s.  Actual %s: %i" %
+                                        (self._expected_value, self._description, self._description, actual_value))
