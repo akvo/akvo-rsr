@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
 
     # django_counter
-    (r'^count/', include('django_counter.urls')),
+    (r'^rsr/counter/', include('django_counter.urls')),
 
     # Payment engines
     url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),
