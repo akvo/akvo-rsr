@@ -23,7 +23,13 @@ ADMINS = (
 #Additional information about a User
 AUTH_PROFILE_MODULE = 'rsr.userprofile'
 
-CACHE_MIDDLEWARE_SECONDS = 300
+#Memcached settings
+#CACHE_MIDDLEWARE_SECONDS = 300 # 5 minutes
+#CACHE_MIDDLEWARE_KEY_PREFIX = 'rsr' #not needed but mandatory setting
+#CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True # Only non-logged in
+ 
+#Use memcached for sessions with write-through to DB
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 #DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 #DATABASE_NAME = '/var/dev/akvo/data/akvo.sqlite' # Or path to database file if using sqlite3.
@@ -69,9 +75,9 @@ LANGUAGES = (
     ('de', gettext('German')),
     ('en', gettext('English')),
     ('nl', gettext('Dutch')),
-    ('es', gettext('Spanish')),
-    ('fr', gettext('French')),
-    ('sv', gettext('Swedish')),
+    #('es', gettext('Spanish')),
+    #('fr', gettext('French')),
+    #('sv', gettext('Swedish')),
 )
 
 LOGIN_URL = '/rsr/signin/'
@@ -87,13 +93,13 @@ MANAGERS = ADMINS
 #MEDIA_URL = 'http://dev.akvo.org:8080/rsr/media/'
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 # PAUL

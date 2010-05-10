@@ -3,7 +3,7 @@
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
-{% load i18n rsr_tags rsr_filters generic_content addparam thumbnail %}
+{% load i18n rsr_tags rsr_filters generic_content addparam thumbnail cache %}
 
 {% block title %}projects@{{block.super}}{% endblock title %}
 
@@ -37,21 +37,31 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock header %}
 
 {% block content %}
+{% cache RSR_CACHE_SECONDS widget_project_list request.META.PATH_INFO request.META.QUERY_STRING lang %}
 	<div id="tableHeader">
 		<table cellspacing="0">
 				<tr>
 				{% if not request_get.order_by %}
 					<th scope="col" id="projectColumnHeader" class="activeTableHeader">
 						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+                    {% if debug %}
+                        TIME DEBUG: {% now "jS F Y H:i:s" %}
+                    {% endif %}
 					</th>	
 				{% else %}
 					{% ifequal request_get.order_by "name" %}
 					<th scope="col" id="projectColumnHeader" class="activeTableHeader">
 						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+                    {% if debug %}
+                        TIME DEBUG: {% now "jS F Y H:i:s" %}
+                    {% endif %}
 					</th>
 					{% else %}
 					<th scope="col" id="projectColumnHeader">
 						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+                    {% if debug %}
+                        TIME DEBUG: {% now "jS F Y H:i:s" %}
+                    {% endif %}
 					</th>
 					{% endifequal %}
 				{% endif %}
@@ -163,4 +173,5 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endfor %}
 		</table>
 	</div>
+{% endcache %}
 {% endblock content %}

@@ -5,23 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags thumbnail %}
-
-{% block script %}
-	{{ block.super }}
-	{% ifequal bandwidth 'ask' %}
-	<!--<script type="text/javascript">
-		msg = "Welcome to Akvo. Please indicate if you want to use the high bandwidth home page by clicking OK, or the low bandwidth home page by clicking Cancel.";
-		if (confirm(msg))
-			window.location.assign("{% url akvo.rsr.views.set_high_bandwidth %}");
-		else
-			window.location.assign("{% url akvo.rsr.views.set_low_bandwidth %}");
-	</script>-->
-	{% endifequal %}
-	{% comment %}
-	<script type="text/javascript" src="{{MEDIA_URL}}flash/swfobject.js"></script>
-	{% endcomment %}
-{% endblock script %}
+{% load i18n rsr_tags thumbnail cache rsr_filters %}
 
 {% block style %}
 	{{ block.super }}
@@ -34,165 +18,343 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#breadcrumbs {
 		display:none;
 	}
+	.featured_update {
+		border-right:1px solid #DFDFE4;
+		float:left; 
+		margin-top:20px;
+		overflow:hidden;
+		width:235px;
+	}
+	
+	#featured_update_right{
+		border-right:0;
+	}
+
 	</style>
+		
 {% endblock style %}
 
 {% block breadcrumbs %}{% endblock breadcrumbs %}
 
 {% block page_id %}
-<div id="page_home_flash">
+	<div id="page_home_flash">
 {% endblock page_id %}
 
 {% block outer_leftwing %}
-
-	{% ifequal bandwidth 'high' %}
-	<div id="home_flash_box">
-	<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'View static home page' %}</a>
-	<div style="color: #fff; font-size: 1.2em; font-weight:bold; float: left; padding: 20px;">{% trans 'Projects you can fund' %}</div>
-	<div id="home_flash" style="color: #fff;">
-		{% trans 'You are being re-directed to the static Akvo home page. If nothing happens,' %} <a style="color: #fff;" href="{% url akvo.rsr.views.set_low_bandwidth %}">{% trans 'click here' %}!</a>
-		<noscript>
-			<meta http-equiv="refresh" content="0;url={% url akvo.rsr.views.set_low_bandwidth %}"/>
-		</noscript>
-	</div> <!-- #home_flash -->
-	</div> <!-- #home_flash_box -->
-	{% endifequal %}
-	{% ifequal bandwidth 'low' %}
-
-	<div id="home_flash_box" style="padding-bottom:14px; width: 710px; float: left;">
-		<!--<a style="float:right; color: #FFF; padding: 20px;" href="{% url akvo.rsr.views.set_high_bandwidth %}">{% trans 'View flash-enabled home page' %}</a>-->
-		<div style="color: #fff; font-size: 1.2em; font-weight:bold; padding: 15px 20px ;">{% trans 'Projects you can fund' %}</div>
-		<table>
-			{% for p in grid_projects %}
-				{% ifequal forloop.counter 1 %}
-				<tr>
-				{% endifequal %}
-				{% ifequal forloop.counter 5 %}
-				<tr>
-				{% endifequal %}
-				<td align="center">
-					<a href="{% url akvo.rsr.views.projectmain p.id %}">
-                        {% project_thumb p 144 108 'padding: 2px 6px;' %}
-					</a>
-				</td>
-				{% ifequal forloop.counter 4 %}
-				</tr>
-				{% endifequal %}
-			{% endfor %}
-				</tr>
-		</table>
 	
-	</div> <!-- #home_flash_box -->
-	<div style="float: right; width: 250px;">
+
+	<div id="outer_leftwing">
+    
+		<div style="width:710px;">
+			<div class="boxhead" style="background-color:#2097F7; color:#fff; ">
+				<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff; float:right; margin-top:1em; padding-right: 20px;">{% trans 'View more projects >' %}</a>
+				<h1>{% trans 'Project updates &mdash; Staff picks' %}</h1>
+			</div>
+
+			{% cache RSR_CACHE_SECONDS index_pic_grid lang %}
+		    {% if debug %} 
+		        TIME: {% now "jS F Y H:i:s" %}
+		        LANG: {{lang}}
+		    {% endif %}
+			<div class="boxbody" style="padding:0;">
+				<div class="featured_update">
+					<div style="margin-left:20px">
+						<div style="margin-right:20px; background-color:#fff;">
+							{% comment %}
+							<p style=" padding:0; margin-bottom:15px; height:45px;">
+								<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br />
+								<span style="font-size:0.9em;">
+								{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
+								</span>
+							</p>
+							{% endcomment %}
+							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
+								{{updates.0.title|smart_truncate:35}}
+							</a>
+							{#{{updates.0.project.city}}, {{updates.0.project.state}},#} 
+							<p style="margin-top:6px; padding:0; color:#999;">
+								{{updates.0.project.country}}
+							</p>
+							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
+								<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px; margin-left:auto; margin-right:auto;" alt="" />
+							</a>
+							<br />
+							<p style="font-size:0.9em; padding:0;">
+								{{updates.0.photo_caption}}
+							</p>
+							<p class="lightx1" style="padding:0; margin-top:10px;">
+								{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
+							</p>
+							{% comment %}
+							<p style="padding:0;">
+				                {% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+							</p>
+							{% endcomment %}
+							<p style="padding:0; margin-top:10px;">
+								{{updates.0.text|smart_truncate:100}}
+							</p>
+							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="float:right; margin-top:3px;">{% trans 'Read more' %}</a>
+							<div style="clear:both;"> </div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="featured_update">
+					<div style="margin-left:20px">
+						<div style="margin-right:20px; background-color:#fff;">
+							{% comment %}		
+							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
+								<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br />
+								<span style="font-size:0.9em;">
+								{#{{updates.1.project.city}}, {{updates.1.project.state}},#}{{updates.1.project.country}}
+								</span>
+							</p>
+							{% endcomment %}
+							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
+								{{updates.1.title|smart_truncate:35}}
+							</a>
+							<p style="margin-top:6px; padding:0; color:#999;">
+								{{updates.1.project.country}}
+							</p>
+							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
+								<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px; margin-left:auto; margin-right:auto;" alt="" />
+							</a>
+							<br />
+							<p style="font-size:0.9em; padding:0;">
+								{{updates.1.photo_caption}}
+							</p>
+							<p class="lightx1" style="padding:0; margin-top:10px;">
+								{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
+							</p>
+							{% comment %}
+							<p style="padding:0;">
+				                {% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+							</p>
+							{% endcomment %}
+							<p style="padding:0; margin-top:10px;">
+								{{updates.1.text|smart_truncate:100}}
+							</p>
+							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="float:right; margin-top:3px;">{% trans 'Read more' %}</a>
+							<div style="clear:both;"> </div>
+						</div>
+					</div>
+				</div>
+
+				<div class="featured_update" id="featured_update_right">
+					<div style="margin-left:20px">	
+						<div style="margin-right:20px; background-color:#fff;">
+							{% comment %}
+							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
+								<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br />
+								<span style="font-size:0.9em;">
+								{#{{updates.2.project.city}}, {{updates.2.project.state}},#}{{updates.2.project.country}}
+								</span>
+							</p>
+							{% endcomment %}
+							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
+								{{updates.2.title|smart_truncate:35}}
+							</a>
+							<p style="margin-top:6px; padding:0; color:#999;">
+								{{updates.2.project.country}}
+							</p>
+							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
+								<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block;  margin-left:auto; margin-right:auto;" alt="" />
+							</a>
+							<br />
+							<p style="font-size:0.9em; padding:0;">
+								{{updates.2.photo_caption}}
+							</p>
+							<p class="lightx1" style="padding:0; margin-top:10px;">
+								{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
+							</p>
+							{% comment %}
+							<p style="padding:0;">
+				                {% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+							</p>
+							{% endcomment %}
+							<p style="padding:0; margin-top:10px;">
+								{{updates.2.text|smart_truncate:100}}
+							</p>
+							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="float:right; margin-top:3px;">{% trans 'Read more' %}</a>
+							<div style="clear:both;"> </div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				<div>&nbsp;</div>
+				{% comment %}
+				
+				<div style="background-color:#2097F7; color:#fff; margin-top:15px; margin-bottom:0; text-align:right; padding:10px 20px ">
+						<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff;">{% trans 'View more projects >' %}</a>
+				</div>
+				{% endcomment %}
+			</div>
+			{% endcache %}
+		</div>	
+
+		<div style="width:710px;">
+			{% if live_earth_enabled %}
+				<div id="le_sponser_box" class="index_sponsor_box">
+					<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
+						<div style="margin:13px 20px">
+							<div class="index_sponsor_box_left">
+								<a href="{% url live_earth_landing_page %}">
+									<img src="{{MEDIA_URL}}img/liveearth_water_logo_65x65.gif" width="65" height="62" alt="" style="margin: 10px 0px;" />
+								</a>
+							</div>
+							<div class="index_sponsor_box_right">
+								<h1>{% trans 'Live Earth and Akvo' %}</h1>
+								<ul>
+									<li><a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
+									<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
+								</ul>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+			<div style="float:left; width:20px;">&nbsp;</div>
+			{% endif %}
+			<div style="float:left; width:345px;">
+				{% if walking_for_water_enabled %}
+					<div id="ww_sponser_box" class="index_sponsor_box">
+						<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
+							<div style="margin:13px 20px">
+								<div class="index_sponsor_box_left">
+									<a href="{% url wfw_landing_page %}">
+										<img src="{% thumbnail walking_for_water.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
+									</a>
+								</div>
+								<div class="index_sponsor_box_right">
+									<h1>{% trans 'Walking for Water 2010' %}</h1>
+									<ul style="max-width:200px">
+										<li><a href="{% url wfw_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
+										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
+									</ul>
+									{% comment %}
+									<h1>{% trans 'Walking for Water 2010' %}</h1>
+									<ul>
+										<li><a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a></li>
+										<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
+									</ul>
+									{% endcomment %}
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					{% comment %}
+					<div id="le_sponser_box" class="index_sponsor_box">
+						<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
+							<div style="margin:13px 20px">
+								<div class="index_sponsor_box_left">
+									<a href="{% url wfw_landing_page %}">
+										<img src="{% thumbnail walking_for_water.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
+									</a>
+								</div>
+								<div class="index_sponsor_box_right">
+									<h1>{% trans 'Walking for Water 2010' %}</h1>
+									<a href="{% url wfw_landing_page %}">{% trans 'View Walking for Water projects on Akvo' %}</a>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					{% endcomment %}
+				{% endif %}
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		<div style="height:20px;">&nbsp;</div>
+	
+		{% cache RSR_CACHE_SECONDS index_blog lang %}
+		{% if debug %}
+        	TIME: {% now "jS F Y H:i:s" %}
+        	LANG: {{lang}}
+    	{% endif %}
 		<div class="boxhead">
-			<h1>{% trans 'Learn about Akvo' %}</h1>
-		</div>
-		<div class="boxbody" style="padding-top:0; padding-bottom:15px;">
-			<h2 style="padding-bottom:0; padding-top:20px;">
-				<a style="float:left;" href="/web/what_we_do">{% trans 'What we do' %}</a>
-				<a style="float:right; font-size:0.9em; font-weight:normal;" href="/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
-			</h2>
-			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
-				{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}
-			</p>
-			
-			<h2 style="padding-bottom:0; padding-top:20px;">
-				<a style="float:left;" href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a>
-				<a style="float:right; font-size:0.9em; font-weight:normal;" href="/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
-			</h2>
-			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
-				{% trans 'Find projects to fund, or donors to fund projects. Report on projects. Share knowledge.' %}
-			</p>
-			
-			<h2 style="padding-bottom:0; padding-top:20px;">
-				<a style="float:left;" href="/web/why_we_do_it">{% trans 'Why we do it' %}</a>
-				<a style="float:right; font-size:0.9em; font-weight:normal;" href="/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
-			</h2>
-			<p style="font-size:0.9em; padding-bottom:0; clear:both;">
-				{% trans 'Akvo&#x27;s approach: a large number of small projects work best.' %}
-			</p>
-		</div>
-	</div>
+			<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
+			<h1>{% trans 'Most recent Akvo Blog article' %}</h1>
+		</div> <!-- .boxhead -->
 
-	{% endifequal %}
+		<div class="boxbody">
+			{% if img_src1 %}
+				<div style="float:left; width: 210px;">
+					<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+					<!--<p class="small lightx1">Image caption</p>-->
+				</div> <!-- style -->
+			{% endif %}
+
+			<h2 style="padding-top:12px;"><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
+			{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
+			<p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
+			<p>{{latest1.summary|safe|truncatewords:45}}</p>
+
+			<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
+			<!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
+			<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
+
+			{% if img_src2 %}
+			<div style="float:left; width: 210px;">
+				<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+				<!--<p class="small lightx1">Image caption</p>-->
+			</div> <!-- style -->
+			{% endif %}
+
+			<h2 style="padding-top:12px;"><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
+			{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
+			<p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
+			<p>{{latest2.summary|safe|truncatewords:45}}</p>
+
+			<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
+			<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
+			<p id="view_earlier_blog_entries"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
+
+			<div style="clear:left"></div>
+		</div> <!-- .boxbody -->
+		{% endcache %}
+	</div> <!-- #outer_leftwing -->
 	
-<div id="outer_leftwing">
+{% endblock outer_leftwing %}
 
-{% if live_earth_enabled %}
-<div id="index_sponsor_box" class="boxbody">
-	<div class="clearfix" style="margin:0;">
-		<a href="{% url live_earth_landing_page %}">
-			<img src="{{MEDIA_URL}}img/liveearth_water_logo_small.gif" alt="" style="float:left; margin-left:20px; margin-top:15px" />
-			</a>
-		
-	<div id="sponsor_box_left">
-		<h1>{% trans 'Live Earth and Akvo announce partnership' %}</h1>
-		<ul>
-			<li><a href="{% url live_earth_landing_page %}">{% trans 'View Live Earth projects on Akvo' %}</a></li>
-		</ul>
+
+{% block outer_rightwing_top %}
+<div>
+	<div class="boxhead">
+		<h1>{% trans 'Learn about Akvo' %}</h1>
 	</div>
-	<div id="sponsor_box_right">
-		<h2>{% trans 'Latest articles' %}</h2>
-		<ul>
-			<li><a href="{{le_latest1.link}}">{{le_latest1.title|safe}}</a></li>
-			<li><a href="{{le_latest2.link}}">{{le_latest2.title|safe}}</a></li>
-		</ul>
-		<p><a style="float:right; padding-bottom: 8px;" href="http://{{ request.META.HTTP_HOST }}/blog/?cat=9">{% trans 'Read more' %}</a></p>
-	</div>
+	<div class="boxbody" style="padding-top:0; padding-bottom:15px;">
+		<h2 style="padding-bottom:0; padding-top:20px;">
+			<a style="float:left;" href="/web/what_we_do">{% trans 'What we do' %}</a>
+			<a style="float:right; font-size:0.9em; font-weight:normal;" href="/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
+		</h2>
+		<p style="font-size:0.9em; padding-bottom:0; clear:both;">
+			{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}
+		</p>
+
+		<h2 style="padding-bottom:0; padding-top:20px;">
+			<a style="float:left;" href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a>
+			<a style="float:right; font-size:0.9em; font-weight:normal;" href="/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
+		</h2>
+		<p style="font-size:0.9em; padding-bottom:0; clear:both;">
+			{% trans 'Find projects to fund, or donors to fund projects. Report on projects. Share knowledge.' %}
+		</p>
+
+		<h2 style="padding-bottom:0; padding-top:20px;">
+			<a style="float:left;" href="/web/why_we_do_it">{% trans 'Why we do it' %}</a>
+			<a style="float:right; font-size:0.9em; font-weight:normal;" href="/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
+		</h2>
+		<p style="font-size:0.9em; padding-bottom:0; clear:both;">
+			{% trans 'Akvo&#x27;s approach: a large number of small projects work best.' %}
+		</p>
 	</div>
 </div>
-{% endif %}
+{% endblock outer_rightwing_top %}
 
-<div class="boxhead">
-<a href="http://www.akvo.org/blog/?feed=rss2" class="rss" style="float:right;margin-top:1em;">{% trans 'Subscribe via RSS' %}</a>
-<h1>{% trans 'Most recent Akvo Blog article' %}</h1>
-</div> <!-- .boxhead -->
 
-<div class="boxbody">
-
-{% if img_src1 %}
-<div style="float:left; width: 210px;">
-	<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
-	<!--<p class="small lightx1">Image caption</p>-->
-</div> <!-- style -->
-{% endif %}
-
-<h2 style="padding-top:12px;"><a href="http://www.akvo.org/blog/">{{latest1.title|safe}}</a></h2>
-{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
-<p class="lightx2">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
-<p>{{latest1.summary|safe|truncatewords:45}}</p>
-
-<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="http://www.akvo.org/blog/">{% trans 'Read more' %}</a></p>
-<!--<p style="text-align: right"><a href="{{latest.link}}">Permalink</a></p>-->
-<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
-
-{% if img_src2 %}
-<div style="float:left; width: 210px;">
-	<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
-	<!--<p class="small lightx1">Image caption</p>-->
-</div> <!-- style -->
-{% endif %}
-
-<h2 style="padding-top:12px;"><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h2>
-{% comment %}TODO: investigate translation and filter interaction in more detail{% endcomment %}
-<p class="lightx2">{{latest2.updated|safe}} {% trans 'by' %} {{latest2.author|safe}}</p>
-<p>{{latest2.summary|safe|truncatewords:45}}</p>
-
-<p style="margin-bottom:0 !important;"><a style="float:right; padding-bottom: 8px;" href="{{latest2.link}}">{% trans 'Read more' %}</a></p>
-<hr style="clear:both; margin-top:-7px !important; padding-top:0 !important; visibility: visible; line-height:1px; overflow:hidden; " />
-<p id="view_earlier_blog_entries"><a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a></p>
-
-<div style="clear:left"></div>
-
-</div> <!-- .boxbody -->
-
-</div> <!-- #outer_leftwing -->
-
-{% endblock outer_leftwing %}
 
 {% block footer %}
     {{block.super}}
-	
 	<!-- Akvo RSR runs on Django, version: {{version}} -->
-
 {% endblock footer %}

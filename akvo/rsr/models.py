@@ -1200,6 +1200,7 @@ class ProjectUpdate(models.Model):
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
+    featured        = models.BooleanField(_(u'featured'), )
     
     class Meta:
         get_latest_by = "time"
@@ -1210,6 +1211,12 @@ class ProjectUpdate(models.Model):
         except:
             return ''
     img.allow_tags = True
+
+    def get_is_featured(self):
+        return self.featured
+    get_is_featured.boolean = True #make pretty icons in the admin list view
+    get_is_featured.short_description = 'update is featured'
+
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))

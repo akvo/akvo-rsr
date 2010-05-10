@@ -72,7 +72,6 @@ urlpatterns = patterns('',
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
-    url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
 
 
     (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
@@ -106,6 +105,8 @@ urlpatterns = patterns('',
     (r'^rsr/accounts/', include('registration.urls')),
 	
 	# Widgets
+    url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
+    url(r'^rsr/widget/all-organisations/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
 	url(r'^rsr/widget/one-from-organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.select_project_widget', name='select_project_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/project/(?P<project_id>\d+)/$','akvo.rsr.views.project_widget', name='project_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/$','akvo.rsr.views.project_widget', name='project_widget_default', ),
@@ -131,6 +132,9 @@ urlpatterns = patterns('',
     (r'^rsr/dev/(?P<template_name>[_a-zA-Z0-9]+)/$', 'akvo.rsr.views.templatedev', ),
     #(r'^rsr/dev/project_main/$', 'django.views.generic.simple.direct_to_template', {'template': 'dev/project_main.html'}),
 
+    #django-piston
+    (r'^rsr/api/', include('akvo.api.urls')),
+    
     # serving media in the dev server environment TODO: set up real media serving
     #(r'^rsr/media/(?P<path>.*)$', 
     #    'django.views.static.serve', 
