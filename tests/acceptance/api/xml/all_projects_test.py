@@ -21,8 +21,7 @@ class AllProjectsTest(XMLTestCase):
     def test_01_can_get_xml_data_for_all_projects(self):
         """>>  1. Can get XML data for all projects"""
 
-        self.assert_element(self.all_projects_root).is_not_none()
-        self.assert_element(self.all_projects_root).has_tag("response")
+        self.assert_element(self.all_projects_root).is_not_none_and_has_tag("response")
 
         expected_total_projects = 159 # to be retrieved from RSR Admin
 
@@ -36,6 +35,7 @@ class AllProjectsTest(XMLTestCase):
 
         self.assert_element(first_project_element).has_exactly(46).children()
         self.assert_element(first_project_element).has_single_children_in_list(EXPECTED_PROJECT_CHILD_ELEMENTS)
+
 
 def suite():
     return nose.loader.TestLoader().loadTestsFromTestCase(AllProjectsTest)

@@ -14,12 +14,16 @@ class XMLTestCase(TestCase):
         self._actual_element = element
         return self
 
+    def is_not_none_and_has_tag(self, expected_tag):
+        self.is_not_none()
+        self.has_tag(expected_tag)
+
     def is_not_none(self):
         self.failUnless(self._actual_element, "Expected an element -- received None instead")
 
     def has_tag(self, expected_tag):
         self.failUnlessEqual(expected_tag, self._actual_element.tag,
-                             "Expected tag: %s.  Actual tag: %s" % (expected_tag, self._actual_element.tag))
+                             "Expected element tag: %s.  Actual tag: %s" % (expected_tag, self._actual_element.tag))
 
     def has_single_children_in_list(self, expected_child_tags):
         for expected_tag in expected_child_tags:
