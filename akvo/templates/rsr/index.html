@@ -29,6 +29,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#featured_update_right{
 		border-right:0;
 	}
+	
+	.staffpicks_update_title {
+		font-weight:bold; 
+		font-size:16px; 
+		line-height:1.2em; 
+		display:block; 
+		height:40px; 
+		overflow:hidden;
+	}
 
 	</style>
 		
@@ -60,15 +69,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="featured_update">
 					<div style="margin-left:20px">
 						<div style="margin-right:20px; background-color:#fff;">
-							{% comment %}
-							<p style=" padding:0; margin-bottom:15px; height:45px;">
-								<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br />
-								<span style="font-size:0.9em;">
-								{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
-								</span>
-							</p>
-							{% endcomment %}
-							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
+							<a class="staffpicks_update_title" href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
 								{{updates.0.title|smart_truncate:35}}
 							</a>
 							{#{{updates.0.project.city}}, {{updates.0.project.state}},#} 
@@ -103,15 +104,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="featured_update">
 					<div style="margin-left:20px">
 						<div style="margin-right:20px; background-color:#fff;">
-							{% comment %}		
-							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
-								<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br />
-								<span style="font-size:0.9em;">
-								{#{{updates.1.project.city}}, {{updates.1.project.state}},#}{{updates.1.project.country}}
-								</span>
-							</p>
-							{% endcomment %}
-							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
+							<a class="staffpicks_update_title" href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
 								{{updates.1.title|smart_truncate:35}}
 							</a>
 							<p style="margin-top:6px; padding:0; color:#999;">
@@ -144,15 +137,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div class="featured_update" id="featured_update_right">
 					<div style="margin-left:20px">	
 						<div style="margin-right:20px; background-color:#fff;">
-							{% comment %}
-							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
-								<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br />
-								<span style="font-size:0.9em;">
-								{#{{updates.2.project.city}}, {{updates.2.project.state}},#}{{updates.2.project.country}}
-								</span>
-							</p>
-							{% endcomment %}
-							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
+							<a class="staffpicks_update_title" href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
 								{{updates.2.title|smart_truncate:35}}
 							</a>
 							<p style="margin-top:6px; padding:0; color:#999;">
