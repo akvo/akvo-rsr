@@ -22,6 +22,7 @@ class AllSponsoredProjectsTest(XMLTestCase):
         """>>  1. Can get XML data for all Live Earth sponsored projects"""
 
         self.assert_element(self.all_LE_projects_root).is_not_none()
+        self.assert_element(self.all_LE_projects_root).has_tag("response")
 
         expected_total_LE_projects = 36 # to be retrieved from RSR Admin
 

@@ -22,6 +22,7 @@ class AllProjectsTest(XMLTestCase):
         """>>  1. Can get XML data for all projects"""
 
         self.assert_element(self.all_projects_root).is_not_none()
+        self.assert_element(self.all_projects_root).has_tag("response")
 
         expected_total_projects = 159 # to be retrieved from RSR Admin
 
