@@ -351,14 +351,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock footer %}
 
 {% block jquery_ready %}
-	
-	var staff_picks_height = 0;
-	
-	jQ('.featured_update').each(function(i) {
-		if ( jQ(this).height() > staff_picks_height ) staff_picks_height = jQ(this).height();
+	{{block.super}}
+	jQ(window).load(function() {
+		var staff_picks_height = 0;
+		jQ('.featured_update').each(function(i) {
+			if ( jQ(this).height() > staff_picks_height ) staff_picks_height = jQ(this).height();
+		});
+		jQ('.featured_update').css({'height': staff_picks_height});
 	});
 	
-	jQ('.featured_update').css({'height': staff_picks_height});
-	
-
-{% endblock jquery_ready %}		
+{% endblock jquery_ready %}	
