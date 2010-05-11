@@ -12,32 +12,32 @@ from helpers.rsrapi import *
 
 from expectedelements import *
 
-class AllProjectsTest(XMLTestCase):
+class AllSponsoredProjectsTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
-        cls.all_projects_root = element_root_from(api_path("projects.xml"))
+        cls.all_LE_projects_root = element_root_from(api_path("projects.xml/live-earth"))
 
-    def test_01_can_get_xml_data_for_all_projects(self):
-        """>>  1. Can get XML data for all projects"""
+    def test_01_can_get_xml_data_for_all_LE_sponsored_projects(self):
+        """>>  1. Can get XML data for all Live Earth sponsored projects"""
 
-        self.assert_element(self.all_projects_root).is_not_none()
+        self.assert_element(self.all_LE_projects_root).is_not_none()
 
-        expected_total_projects = 159 # to be retrieved from RSR Admin
+        expected_total_LE_projects = 36 # to be retrieved from RSR Admin
 
-        self.assert_element(self.all_projects_root).has_at_least(2).children()
-        self.assert_element(self.all_projects_root).has_exactly(expected_total_projects).children_with_tag("resource")
+        self.assert_element(self.all_LE_projects_root).has_at_least(2).children()
+        self.assert_element(self.all_LE_projects_root).has_exactly(expected_total_LE_projects).children_with_tag("resource")
 
     def test_02_first_project_element_has_expected_child_elements(self):
         """>>  2. First project element has expected child elements"""
 
-        first_project_element = self.all_projects_root.find("resource") # each <resource> element represents a project
+        first_project_element = self.all_LE_projects_root.find("resource") # each <resource> element represents a project
 
         self.assert_element(first_project_element).has_exactly(46).children()
         self.assert_element(first_project_element).has_single_children_in_list(EXPECTED_PROJECT_CHILD_ELEMENTS)
 
 def suite():
-    return nose.loader.TestLoader().loadTestsFromTestCase(AllProjectsTest)
+    return nose.loader.TestLoader().loadTestsFromTestCase(AllSponsoredProjectsTest)
 
 if __name__ == "__main__":
     nose.core.TextTestRunner(verbosity=2).run(suite())
