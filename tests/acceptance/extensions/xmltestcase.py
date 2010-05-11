@@ -38,7 +38,13 @@ class XMLTestCase(TestCase):
         return self
 
     def children(self):
-        self._matcher.set_description("child elements")
+        self._describe_and_evaluate_children("child elements")
+
+    def child(self):
+        self._describe_and_evaluate_children("child element")
+
+    def _describe_and_evaluate_children(self, child_or_children):
+        self._matcher.set_description(child_or_children)
         self._matcher.evaluate(len(self._actual_element.getchildren()))
 
     def children_with_tag(self, expected_tag):
