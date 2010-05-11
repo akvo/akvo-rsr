@@ -6,9 +6,6 @@
 
 import nose
 
-from test_settings import *
-
-from unittest import TestCase
 from extensions.xmlextensions import *
 from extensions.xmltestcase import XMLTestCase
 from helpers.rsrapi import *
