@@ -186,6 +186,7 @@ def index(request):
         'img_src1': img_src1,
         'latest2': latest2,
         'img_src2': img_src2,
+        'orgs': Organisation.objects,
         'projs': projs,
         'updates': updates,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
