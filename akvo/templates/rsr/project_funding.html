@@ -149,18 +149,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<br /><br />
 					<b>{% trans 'Donations' %}:</b><br />
 					{% for donors in public_donations %}
-					{{donors.name}}
-					<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
-					<span style="float:right;">{{p.get_currency_display|safe}}</span>
-					<br />			
+					<div style="margin:0px 20px">
+						{{donors.name}}
+						<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
+						<span style="float:right;">{{p.get_currency_display|safe}}</span>
+					</div>
 					{% endfor %}
  
 					{% ifnotequal p.anonymous_donations_amount_received 0 %}
-						{% trans 'Anonymous' %}:
-						<span style="margin-left: 5px; float:right;">
-							{{ p.anonymous_donations_amount_received|round|intcomma }}
-						</span>
-						<span style="float:right;">{{p.get_currency_display|safe}}</span>
+						<div style="margin:0px 20px">
+							{% trans 'Anonymous' %}:
+							<span style="margin-left: 5px; float:right;">
+								{{ p.anonymous_donations_amount_received|round|intcomma }}
+							</span>
+							<span style="float:right;">{{p.get_currency_display|safe}}</span>
+						</div>
 					{% endifnotequal %}					
 				</p>
 				<hr />
