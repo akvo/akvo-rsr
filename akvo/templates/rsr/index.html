@@ -72,27 +72,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<a class="staffpicks_update_title" href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
 								{{updates.0.title|smart_truncate:35}}
 							</a>
-							{#{{updates.0.project.city}}, {{updates.0.project.state}},#} 
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.0.project.country}}
 							</p>
 							{% if updates.0.photo %}
 								<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
-									<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px; margin-left:auto; margin-right:auto;" alt="" />
+									<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
 								</a>
 								<br />
-								<p style="font-size:0.9em; padding:0;">
-									{{updates.0.photo_caption}}
-								</p>
+								{% if updates.0.photo_caption %}
+									<p style="font-size:0.9em; padding:0;">
+										{{updates.0.photo_caption}}
+									</p>
+								{% endif %}
 							{% endif %}
 							<p class="lightx1" style="padding:0; margin-top:10px;">
 								{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
 							</p>
-							{% comment %}
-							<p style="padding:0;">
-				                {% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-							</p>
-							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.0.text|smart_truncate:100}}
 							</p>
@@ -114,21 +110,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							</p>
 							{% if updates.1.photo %}
 								<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
-									<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px; margin-left:auto; margin-right:auto;" alt="" />
+									<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
 								</a>
 								<br />
-								<p style="font-size:0.9em; padding:0;">
-									{{updates.1.photo_caption}}
-								</p>
+								{% if updates.1.photo_caption %}
+									<p style="font-size:0.9em; padding:0;">
+										{{updates.1.photo_caption}}
+									</p>
+								{% endif %}
 							{% endif %}
 							<p class="lightx1" style="padding:0; margin-top:10px;">
 								{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
 							</p>
-							{% comment %}
-							<p style="padding:0;">
-				                {% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-							</p>
-							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.1.text|smart_truncate:100}}
 							</p>
@@ -149,21 +142,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							</p>
 							{% if updates.2.photo %}
 								<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
-									<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block;  margin-left:auto; margin-right:auto;" alt="" />
+									<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
 								</a>
 								<br />
-								<p style="font-size:0.9em; padding:0;">
-									{{updates.2.photo_caption}}
-								</p>
+								{% if updates.2.photo_caption %}
+									<p style="font-size:0.9em; padding:0;">
+										{{updates.2.photo_caption}}
+									</p>
+								{% endif %}
 							{% endif %}
 							<p class="lightx1" style="padding:0; margin-top:10px;">
 								{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
 							</p>
-							{% comment %}
-							<p style="padding:0;">
-				                {% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-							</p>
-							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.2.text|smart_truncate:100}}
 							</p>
@@ -174,12 +164,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="clear:both;"></div>
 				<div>&nbsp;</div>
-				{% comment %}
-				
-				<div style="background-color:#2097F7; color:#fff; margin-top:15px; margin-bottom:0; text-align:right; padding:10px 20px ">
-						<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff;">{% trans 'View more projects >' %}</a>
-				</div>
-				{% endcomment %}
 			</div>
 			{% endcache %}
 		</div>	
