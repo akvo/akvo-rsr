@@ -33,6 +33,10 @@ class SingleProjectTest(XMLTestCase):
         self.assert_element(project_element).has_exactly(46).children()
         self.assert_element(project_element).has_single_children_in_list(EXPECTED_PROJECT_CHILD_ELEMENTS)
 
+        project_country_element = project_element.find("country")
+
+        self.assert_element(project_country_element).has_single_children_in_list(EXPECTED_COUNTRY_CHILD_ELEMENTS)
+
 
 def suite():
     return nose.loader.TestLoader().loadTestsFromTestCase(SingleProjectTest)

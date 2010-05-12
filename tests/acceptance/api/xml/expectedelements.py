@@ -12,3 +12,5 @@ EXPECTED_PROJECT_CHILD_ELEMENTS = ["goal_2", "subtitle", "map", "date_complete",
                                    "current_image_caption", "improved_sanitation", "category_other", "current_image",
                                    "category_maintenance", "name", "currency", "country", "notes", "category_training",
                                    "longitude", "context", "goals_overview", "improved_sanitation_years"]
+
+EXPECTED_COUNTRY_CHILD_ELEMENTS = ["country_name", "id", "continent"]
