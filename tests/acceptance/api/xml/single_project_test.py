@@ -26,16 +26,17 @@ class SingleProjectTest(XMLTestCase):
         self.assert_element(self.project_23_root).has_exactly(1).child_with_tag("resource")
 
     def test_02_project_element_has_expected_children(self):
-        """>>  2. Project element has expected child elements"""
+        """>>  2. Project element has expected children"""
 
         project_element = self.project_23_root.find("resource") # the <resource> element represents a project
 
-        self.assert_element(project_element).has_exactly(46).children()
-        self.assert_element(project_element).has_single_children_in_list(EXPECTED_PROJECT_CHILD_ELEMENTS)
+        self.assert_element(project_element).has_exactly(len(PROJECT_CHILDREN)).children()
+        self.assert_element(project_element).has_single_children_in_list(PROJECT_CHILDREN)
 
         project_country_element = project_element.find("country")
 
-        self.assert_element(project_country_element).has_single_children_in_list(EXPECTED_COUNTRY_CHILD_ELEMENTS)
+        self.assert_element(project_country_element).has_exactly(len(COUNTRY_CHILDREN)).children()
+        self.assert_element(project_country_element).has_single_children_in_list(COUNTRY_CHILDREN)
 
 
 def suite():

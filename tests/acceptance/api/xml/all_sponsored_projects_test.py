@@ -28,17 +28,18 @@ class AllSponsoredProjectsTest(XMLTestCase):
         self.assert_element(self.all_LE_projects_root).has_at_least(2).children()
         self.assert_element(self.all_LE_projects_root).has_exactly(expected_total_LE_projects).children_with_tag("resource")
 
-    def test_02_first_project_element_has_expected_child_elements(self):
-        """>>  2. First project element has expected child elements"""
+    def test_02_first_project_element_has_expected_children(self):
+        """>>  2. First project element has expected children"""
 
         first_project_element = self.all_LE_projects_root.find("resource") # each <resource> element represents a project
 
-        self.assert_element(first_project_element).has_exactly(46).children()
-        self.assert_element(first_project_element).has_single_children_in_list(EXPECTED_PROJECT_CHILD_ELEMENTS)
+        self.assert_element(first_project_element).has_exactly(len(PROJECT_CHILDREN)).children()
+        self.assert_element(first_project_element).has_single_children_in_list(PROJECT_CHILDREN)
 
         project_country_element = first_project_element.find("country")
 
-        self.assert_element(project_country_element).has_single_children_in_list(EXPECTED_COUNTRY_CHILD_ELEMENTS)
+        self.assert_element(project_country_element).has_exactly(len(COUNTRY_CHILDREN)).children()
+        self.assert_element(project_country_element).has_single_children_in_list(COUNTRY_CHILDREN)
 
 
 def suite():
