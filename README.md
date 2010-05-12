@@ -1,4 +1,4 @@
-README.md v1.0, 5 March 2010, tbp
+README.md v1.1, 11 May 2010, bw
 
 # Akvo Really Simple Reporting (Akvo RSR)
 
