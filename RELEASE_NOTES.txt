@@ -1,8 +1,86 @@
-RELEASE_NOTES.txt, v0.9.15, 5 March 2010, tbp
+RELEASE_NOTES.txt, v0.9.17
+last changed: 11 May 2010, bw
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+
+Akvo RSR v 0.9.17 release notes
+-------------------------------------------
+11 May 2010, (Code name: Bolero) bw
+
+This release implements a new feature on the Akvo home page whereby selected updates appear as Staff picks. Ongoing work with Walking for Water is also now highlighted on the home page. 
+
+New features
+------------
+
+### New Staff picks-featured updates on the Akvo home page
+The home page now displays 3 of the most recent updates with images. These updates are selected from a pool of updates Akvo has chosen to feature. 
+
+### Walking for Water box now on home page.
+Links in this box now provide entry to latest blog entries and projects connected to Walking for Water.
+
+Bug fixes
+------------
+
+### Text overflow in widgets under certain types of browsers.
+Bugs relating to certain layout issues for widgets in Opera and similar browser have been fixed.
+
+### Internet Explorer problems on RSR pages
+These problems were traced back to the use of Javascript to open the Help & Support link.
+
+### Reformatting layout on pages with donor names to accommodate longer names.
+Long names were breaking oddly. This fix attemptes to address that issue.
+
+---
+
+Akvo RSR v 0.9.16 release notes
+------------------------------
+13 April 2010, (Code name: Performance) tbp
+This is primarily an initial release of page fragment caching and an Akvo RSR API beta test.
+
+We also implemented caching for the Akvo blog. While not directly affecting Akvo RSR, this does significantly improve performance of the Akvo home page, which fetches RSS feeds from the Akvo blog.
+
+New features 
+------------
+
+### Caching
+
+Caching for page fragments has been implemented in this release. Whole pages cannot be cached, as that type of implementation conflicts with the i18n language machinery in Django: essentially every user would run a separate customised session, and no user would encounter the same cache information as another. We have only implemented caching for certain heavy or higher traffic pages, such as project listings. The cache timeout is 5 minutes: if the last request for a page is more than 5 minutes ago then your request will regenerate it.
+
+A more detailed discussion about the cache implementation can be found here: XXX 
+
+### Akvo RSR API - beta test
+
+A beta test of the Akvo RSR API has been released. The API can publish information about projects and updates using either XML or JSON.
+Basic information about how the API works can be found in the Akvo Labs wiki. http://www.akvo.org/labs/index.php/Akvo_RSR_API
+
+Before writing applications using the Akvo RSR API, please read the Code of Conduct. http://www.akvo.org/web/akvo-rsr-api-code-of-conduct
+
+### Individual donor list
+
+Individual donors using PayPal or IDEAL to donate money to a project in Akvo RSR are now listed with the amount they donated. If the donor elected to remain anonymous, the donation will be listed as such. An example can be seen here: http://www.akvo.org/rsr/project/64/funding/
+
+### Help and Support widget link
+
+A link to the new Akvo help and support system has been placed on the home page and on all Akvo RSR pages. The link brings up a widget, at the top of the page, with a search tool and discussion starter. The help and support system can be found here: http://help.akvo.org/
+
+Bug fixes
+------------
+
+### Comments broken
+
+The way we handle URLs for Post forms changed. This meant the old URL for a comment ending "comment" didn't handle the new URL ending "comments/" properly. Fixed through the use of URL tags.
+
+### Internet Explorer and IDEAL
+
+Some Internet Explorer users had the Donate button greyed out (inaccessible) due to incorrect loading order of the Javascript guaring against duplicate donations. We disabled the Javascript, as we have protection against double donations through the "stale invoice" feature.
+
+###  Project comments broken
+Project comments couldn't be made. The form's action URL has become invalid after a change in urls.py.
+
+---
 
 Akvo RSR v 0.9.15 release notes
 -------------------------------------------
