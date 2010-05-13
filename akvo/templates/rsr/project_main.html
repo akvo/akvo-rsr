@@ -41,8 +41,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
         {% counter p %}
-        {% cache 60 view_counter %}
         {% view_count for rsr.project p.id as page_views %}
+        {% cache 60 page_views %}
         <p style="color: red;">(EXPERIMENTAL) Project viewed {{ page_views }} time{{ page_views|pluralize }}</p>
         {% endcache %}
 	</div> <!-- .boxhead -->
