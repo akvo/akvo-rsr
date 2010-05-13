@@ -21,6 +21,13 @@ class XMLTestCase(TestCase):
     def is_not_none(self):
         self.failUnless(self._actual_element, "Expected an element -- received None instead")
 
+    def is_not_empty(self):
+        self.failUnless(self._actual_element.text,
+                        "Element <%s> should not be empty -- expected element text" % (self._actual_element.tag))
+
+    def has_text(self):
+        self.is_not_empty()
+
     def has_tag(self, expected_tag):
         self.failUnlessEqual(expected_tag, self._actual_element.tag,
                              "Expected element tag: %s.  Actual tag: %s" % (expected_tag, self._actual_element.tag))
