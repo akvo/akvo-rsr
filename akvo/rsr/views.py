@@ -26,7 +26,6 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET, require_POST
 
 from BeautifulSoup import BeautifulSoup
@@ -737,7 +736,6 @@ def orgdetail(request, org_id):
     org_partners = o.partners()
     return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
 
-@cache_control(max_age=60)
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
     '''
