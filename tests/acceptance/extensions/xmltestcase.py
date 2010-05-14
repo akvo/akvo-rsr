@@ -10,6 +10,14 @@ from helpers.constraintmatchers import *
 
 class XMLTestCase(TestCase):
 
+    @classmethod
+    def setup_class(cls):
+        print "\n%s:" % (cls.description())
+
+    @classmethod
+    def description(cls):
+        raise Exception('Override the XMLTestCase.description() method to provide a description of the test case')
+
     def assert_element(self, element):
         self._actual_element = element
         return self

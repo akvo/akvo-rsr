@@ -16,7 +16,12 @@ class AllProjectUpdatesForGivenProjectTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
+        super(AllProjectUpdatesForGivenProjectTest, cls).setup_class()
         cls.all_updates_for_project_23 = element_root_from(api_path("project/23/updates.xml"))
+
+    @classmethod
+    def description(cls):
+        return "Tests for all project updates for a given project"
 
     def test_01_can_get_xml_data_for_all_project_updates_for_given_project(self):
         """>>  1. Can get XML data for all project updates for a given project"""
@@ -28,8 +33,8 @@ class AllProjectUpdatesForGivenProjectTest(XMLTestCase):
         self.assert_element(self.all_updates_for_project_23).has_at_least(2).children()
         self.assert_element(self.all_updates_for_project_23).has_exactly(expected_total_project_updates).children_with_tag("resource")
 
-    def test_02_first_project_update_element_has_expected_children(self):
-        """>>  2. First project update element has expected children"""
+    def test_02_first_project_update_element_has_expected_xml_structure(self):
+        """>>  2. First project update element has expected XML structure"""
 
         first_project_update_element = self.all_updates_for_project_23.find("resource") # each <resource> element represents a project update
 

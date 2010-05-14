@@ -16,7 +16,12 @@ class AllSponsoredProjectsTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
+        super(AllSponsoredProjectsTest, cls).setup_class()
         cls.all_LE_projects_root = element_root_from(api_path("projects.xml/live-earth"))
+
+    @classmethod
+    def description(cls):
+        return "Tests for all sponsored projects"
 
     def test_01_can_get_xml_data_for_all_LE_sponsored_projects(self):
         """>>  1. Can get XML data for all Live Earth sponsored projects"""
@@ -28,8 +33,8 @@ class AllSponsoredProjectsTest(XMLTestCase):
         self.assert_element(self.all_LE_projects_root).has_at_least(2).children()
         self.assert_element(self.all_LE_projects_root).has_exactly(expected_total_LE_projects).children_with_tag("resource")
 
-    def test_02_first_project_element_has_expected_children(self):
-        """>>  2. First project element has expected children"""
+    def test_02_first_project_element_has_expected_xml_structure(self):
+        """>>  2. First project element has expected XML structure"""
 
         first_project_element = self.all_LE_projects_root.find("resource") # each <resource> element represents a project
 

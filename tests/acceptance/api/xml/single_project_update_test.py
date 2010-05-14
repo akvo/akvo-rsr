@@ -17,7 +17,12 @@ class SingleProjectUpdateTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
+        super(SingleProjectUpdateTest, cls).setup_class()
         cls.project_update_200_root = element_root_from(api_path("update.xml/200"))
+
+    @classmethod
+    def description(cls):
+        return "Tests for a single project update"
 
     def test_01_can_get_xml_data_for_single_project_update(self):
         """>>  1. Can get XML data for a single project update"""
@@ -25,8 +30,8 @@ class SingleProjectUpdateTest(XMLTestCase):
         self.assert_element(self.project_update_200_root).is_not_none_and_has_tag("response")
         self.assert_element(self.project_update_200_root).has_at_least(2).children()
 
-    def test_02_project_update_element_has_expected_children(self):
-        """>>  2. Project update element has expected children"""
+    def test_02_project_update_element_has_expected_xml_structure(self):
+        """>>  2. Project update element has expected XML structure"""
 
         self.assert_element(self.project_update_200_root).has_exactly(len(PROJECT_UPDATE_CHILDREN)).children()
         self.assert_element(self.project_update_200_root).has_single_children_in_list(PROJECT_UPDATE_CHILDREN)
