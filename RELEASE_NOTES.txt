@@ -49,7 +49,7 @@ New features
 
 Caching for page fragments has been implemented in this release. Whole pages cannot be cached, as that type of implementation conflicts with the i18n language machinery in Django: essentially every user would run a separate customised session, and no user would encounter the same cache information as another. We have only implemented caching for certain heavy or higher traffic pages, such as project listings. The cache timeout is 5 minutes: if the last request for a page is more than 5 minutes ago then your request will regenerate it.
 
-A more detailed discussion about the cache implementation can be found here: XXX 
+A more detailed discussion about the cache implementation can be found here: http://akvo.org/labs/index.php/Caching_in_RSR
 
 ### Akvo RSR API - beta test
 
