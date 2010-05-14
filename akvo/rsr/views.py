@@ -186,6 +186,7 @@ def index(request):
         'img_src1': img_src1,
         'latest2': latest2,
         'img_src2': img_src2,
+        'orgs': Organisation.objects,
         'projs': projs,
         'updates': updates,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
@@ -799,8 +800,7 @@ def commentform(request, project_id):
             comment.time = datetime.now()
             comment.user = request.user
             comment.save()
-            return HttpResponseRedirect('./')
-    return HttpResponseRedirect('./')
+    return HttpResponseRedirect(reverse('project_main', args=[project_id]))
 
 #def org_activities(organisation):
 #    # assoc resolves to all projects associated with organisation, where organisation can function in any of the three partner functions
