@@ -4,10 +4,11 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import nose, urllib
+import urllib
 
 from extensions.xmlextensions import *
 from extensions.xmltestcase import XMLTestCase
+from helpers.nosetestloaders import *
 from helpers.rsrapi import *
 
 from expectedelements import *
@@ -70,7 +71,7 @@ class SingleProjectUpdateTest(XMLTestCase):
 
 
 def suite():
-    return nose.loader.TestLoader().loadTestsFromTestCase(SingleProjectUpdateTest)
+    return load_tests_from(SingleProjectUpdateTest)
 
 if __name__ == "__main__":
-    nose.core.TextTestRunner(verbosity=2).run(suite())
+    run_test_suite(suite())
