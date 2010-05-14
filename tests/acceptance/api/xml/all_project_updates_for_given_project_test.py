@@ -12,14 +12,14 @@ from helpers.rsrapi import *
 
 from expectedelements import *
 
-class AllProjectUpdatesTest(XMLTestCase):
+class AllProjectUpdatesForGivenProjectTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
         cls.all_updates_for_project_23 = element_root_from(api_path("project/23/updates.xml"))
 
-    def test_01_can_get_xml_data_for_all_project_updates(self):
-        """>>  1. Can get XML data for all project updates"""
+    def test_01_can_get_xml_data_for_all_project_updates_for_given_project(self):
+        """>>  1. Can get XML data for all project updates for a given project"""
 
         self.assert_element(self.all_updates_for_project_23).is_not_none_and_has_tag("response")
 
@@ -43,7 +43,7 @@ class AllProjectUpdatesTest(XMLTestCase):
 
 
 def suite():
-    return nose.loader.TestLoader().loadTestsFromTestCase(AllProjectUpdatesTest)
+    return nose.loader.TestLoader().loadTestsFromTestCase(AllProjectUpdatesForGivenProjectTest)
 
 if __name__ == "__main__":
     nose.core.TextTestRunner(verbosity=2).run(suite())
