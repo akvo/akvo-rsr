@@ -11,9 +11,10 @@ if len(sys.argv) <= 1:
     sys.exit(1)
 
 os.chdir(os.path.realpath(os.path.dirname(__file__)))
+
 os.system("bash ../testing/run_django_tests %s ci_mode" % (sys.argv[1]))
+os.system("bash ../testing/run_acceptance_tests")
 
 from ci_cleanup import *
 
 remove_project_links_to_prevent_subsequent_build_failure()
-
