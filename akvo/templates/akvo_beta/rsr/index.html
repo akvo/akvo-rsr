@@ -26,8 +26,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		width:235px;
 	}
 	
-	#featured_update_right{
+	#featured_update_2{
 		border-right:0;
+	}
+	
+	.staffpicks_update_title {
+		font-weight:bold; 
+		font-size:16px; 
+		line-height:1.2em; 
+		display:block; 
+		height:40px; 
+		overflow:hidden;
 	}
 
 	</style>
@@ -57,39 +66,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		        LANG: {{lang}}
 		    {% endif %}
 			<div class="boxbody" style="padding:0;">
-				<div class="featured_update">
+				<div id="featured_update_0" class="featured_update">
 					<div style="margin-left:20px">
 						<div style="margin-right:20px; background-color:#fff;">
-							{% comment %}
-							<p style=" padding:0; margin-bottom:15px; height:45px;">
-								<a href="{% url project_main updates.0.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.0.project}}</a><br />
-								<span style="font-size:0.9em;">
-								{#{{updates.0.project.city}}, {{updates.0.project.state}},#} {{updates.0.project.country}}
-								</span>
-							</p>
-							{% endcomment %}
-							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
-								{{updates.0.title}}
+							<a class="staffpicks_update_title" href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
+								{{updates.0.title|smart_truncate:35}}
 							</a>
-							{#{{updates.0.project.city}}, {{updates.0.project.state}},#} 
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.0.project.country}}
 							</p>
-							<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
-								<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px; margin-left:auto; margin-right:auto;" alt="" />
-							</a>
-							<br />
-							<p style="font-size:0.9em; padding:0;">
-								{{updates.0.photo_caption}}
-							</p>
+							{% if updates.0.photo %}
+								<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
+									<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
+								</a>
+								<br />
+								{% if updates.0.photo_caption %}
+									<p style="font-size:0.9em; padding:0;">
+										{{updates.0.photo_caption}}
+									</p>
+								{% endif %}
+							{% endif %}
 							<p class="lightx1" style="padding:0; margin-top:10px;">
 								{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
 							</p>
-							{% comment %}
-							<p style="padding:0;">
-				                {% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-							</p>
-							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.0.text|smart_truncate:100}}
 							</p>
@@ -100,38 +99,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					</div>
 				</div>
 
-				<div class="featured_update">
+				<div id="featured_update_1" class="featured_update">
 					<div style="margin-left:20px">
 						<div style="margin-right:20px; background-color:#fff;">
-							{% comment %}		
-							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
-								<a href="{% url project_main updates.1.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.1.project}}</a><br />
-								<span style="font-size:0.9em;">
-								{#{{updates.1.project.city}}, {{updates.1.project.state}},#}{{updates.1.project.country}}
-								</span>
-							</p>
-							{% endcomment %}
-							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
-								{{updates.1.title}}
+							<a class="staffpicks_update_title" href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
+								{{updates.1.title|smart_truncate:35}}
 							</a>
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.1.project.country}}
 							</p>
-							<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
-								<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px; margin-left:auto; margin-right:auto;" alt="" />
-							</a>
-							<br />
-							<p style="font-size:0.9em; padding:0;">
-								{{updates.1.photo_caption}}
-							</p>
+							{% if updates.1.photo %}
+								<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
+									<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
+								</a>
+								<br />
+								{% if updates.1.photo_caption %}
+									<p style="font-size:0.9em; padding:0;">
+										{{updates.1.photo_caption}}
+									</p>
+								{% endif %}
+							{% endif %}
 							<p class="lightx1" style="padding:0; margin-top:10px;">
 								{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
 							</p>
-							{% comment %}
-							<p style="padding:0;">
-				                {% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-							</p>
-							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.1.text|smart_truncate:100}}
 							</p>
@@ -141,38 +131,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					</div>
 				</div>
 
-				<div class="featured_update" id="featured_update_right">
+				<div id="featured_update_2" class="featured_update">
 					<div style="margin-left:20px">	
 						<div style="margin-right:20px; background-color:#fff;">
-							{% comment %}
-							<p style=" margin:0; padding:0; margin-bottom:15px; height:45px;">
-								<a href="{% url project_main updates.2.project.id %}" style="color:#177DC2; font-weight:bold;">{{updates.2.project}}</a><br />
-								<span style="font-size:0.9em;">
-								{#{{updates.2.project.city}}, {{updates.2.project.state}},#}{{updates.2.project.country}}
-								</span>
-							</p>
-							{% endcomment %}
-							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}" style="font-weight:bold; font-size:16px; display:block; height:35px; overflow:hidden;">
-								{{updates.2.title}}
+							<a class="staffpicks_update_title" href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
+								{{updates.2.title|smart_truncate:35}}
 							</a>
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.2.project.country}}
 							</p>
-							<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
-								<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block;  margin-left:auto; margin-right:auto;" alt="" />
-							</a>
-							<br />
-							<p style="font-size:0.9em; padding:0;">
-								{{updates.2.photo_caption}}
-							</p>
+							{% if updates.2.photo %}
+								<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
+									<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
+								</a>
+								<br />
+								{% if updates.2.photo_caption %}
+									<p style="font-size:0.9em; padding:0;">
+										{{updates.2.photo_caption}}
+									</p>
+								{% endif %}
+							{% endif %}
 							<p class="lightx1" style="padding:0; margin-top:10px;">
 								{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
 							</p>
-							{% comment %}
-							<p style="padding:0;">
-				                {% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
-							</p>
-							{% endcomment %}
 							<p style="padding:0; margin-top:10px;">
 								{{updates.2.text|smart_truncate:100}}
 							</p>
@@ -183,12 +164,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</div>
 				<div style="clear:both;"></div>
 				<div>&nbsp;</div>
-				{% comment %}
-				
-				<div style="background-color:#2097F7; color:#fff; margin-top:15px; margin-bottom:0; text-align:right; padding:10px 20px ">
-						<a href="{% url akvo.rsr.views.projectlist %}" style="color:#fff;">{% trans 'View more projects >' %}</a>
-				</div>
-				{% endcomment %}
 			</div>
 			{% endcache %}
 		</div>	
@@ -358,3 +333,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     {{block.super}}
 	<!-- Akvo RSR runs on Django, version: {{version}} -->
 {% endblock footer %}
+
+{% block jquery_ready %}
+	{{block.super}}
+	
+	var crappy_browser=false;
+	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){
+		crappy_browser=true;
+		var ieversion=new Number(RegExp.$1)
+	 	if (ieversion>=8) crappy_browser = false; // untrue statement but.. what can one do?
+	}
+	
+	if (crappy_browser==false) {
+		jQ(window).load(function() {
+			var staff_picks_height = 0;
+			jQ('.featured_update').each(function(i) {
+				if ( jQ(this).height() > staff_picks_height ) staff_picks_height = jQ(this).height();
+			});
+			jQ('.featured_update').css({'height': staff_picks_height});
+		});
+	}
+	
+{% endblock jquery_ready %}	

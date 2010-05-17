@@ -21,7 +21,7 @@ def string_to_date(value):
     except:
         return value
 
-# http://stackoverflow.com/questions/250357/smart-truncate-in-python 
+# http://stackoverflow.com/questions/250357/smart-truncate-in-python
 @register.filter("smart_truncate")
 def smart_truncate(content, length=100, suffix='...'):
     if len(content) <= length:

@@ -141,26 +141,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if p.all_donations %}
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 				<p style="margin: 10px 0 10px 0;">
-					<b>{% trans 'Individuals raised' %}:
 					<span style="margin-left: 10px; float:right;">
 						{{p.get_currency_display|safe}}
 						{{p.all_donations_amount_received|round|intcomma}}
 					</span></b>
+					<b>{% trans 'Individuals raised' %}:
 					<br /><br />
 					<b>{% trans 'Donations' %}:</b><br />
 					{% for donors in public_donations %}
-					{{donors.name}}
-					<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
-					<span style="float:right;">{{p.get_currency_display|safe}}</span>
-					<br />			
+					<div style="margin:0px 20px">
+						<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
+						<span style="float:right;">{{p.get_currency_display|safe}}</span>
+						{{donors.name}}
+					</div>
 					{% endfor %}
  
 					{% ifnotequal p.anonymous_donations_amount_received 0 %}
-						{% trans 'Anonymous' %}:
-						<span style="margin-left: 5px; float:right;">
-							{{ p.anonymous_donations_amount_received|round|intcomma }}
-						</span>
-						<span style="float:right;">{{p.get_currency_display|safe}}</span>
+						<div style="margin:0px 20px">
+							<span style="margin-left: 5px; float:right;">
+								{{ p.anonymous_donations_amount_received|round|intcomma }}
+							</span>
+							<span style="float:right;">{{p.get_currency_display|safe}}</span>
+							{% trans 'Anonymous' %}:
+						</div>
 					{% endifnotequal %}					
 				</p>
 				<hr />
