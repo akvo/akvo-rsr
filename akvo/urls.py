@@ -69,6 +69,7 @@ urlpatterns = patterns('',
     (r'^rsr/flashgallery.xml$', 'akvo.rsr.views.flashgallery', ),
     
     url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
+
     
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),

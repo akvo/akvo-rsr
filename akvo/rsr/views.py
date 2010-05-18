@@ -360,6 +360,7 @@ def orglist(request, org_type='all'):
         'order_by': order_by,
         'lang': get_language(),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'site_section': 'partners',
     }
 
 @render_to('rsr/partners_widget.html')
@@ -825,7 +826,14 @@ def orgdetail(request, org_id):
     
     org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
     org_partners = o.partners()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
+    return {
+        'o': o, 
+        'org_projects': org_projects, 
+        'org_partners': org_partners,
+        'has_sponsor_banner':has_sponsor_banner,
+        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
+        'site_section': 'partners',
+        }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
