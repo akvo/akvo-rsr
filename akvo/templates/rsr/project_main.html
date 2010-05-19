@@ -46,7 +46,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         {% counter p %}
         {% view_count for rsr.project p.id as page_views %}
         {% cache 60 page_views %}
-        <!-- EXPERIMENTAL) Project viewed {{ page_views }} time{{ page_views|pluralize }} -->
+        <!-- (EXPERIMENTAL) Project viewed {{ page_views }} time{{ page_views|pluralize }} -->
         {% endcache %}
 	</div> <!-- .boxhead -->
 
