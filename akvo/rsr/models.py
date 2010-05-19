@@ -423,6 +423,32 @@ class Project(models.Model):
     def get_absolute_url(self):
         return ('project_main', (), {'project_id': self.pk})
     
+    def all_donations(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
+        
+    def public_donations(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
+    
+    def all_donations_amount(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+    
+    def all_donations_amount_received(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+    
+    def anonymous_donations_amount_received(self):
+        amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
+        amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        
+        if amount:
+            return amount
+        else:
+            return 0
+        
+        '''
+        if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        '''
+            
     class QuerySet(QuerySet):
         def published(self):
             return self.filter(publishingstatus__status='published')
@@ -669,6 +695,7 @@ class Project(models.Model):
 
         def all_partners(self):
             return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
+            
 
     #TODO: is this relly needed? the default QS has identical methods
     class OrganisationsQuerySet(QuerySet):
@@ -1173,6 +1200,7 @@ class ProjectUpdate(models.Model):
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
+    featured        = models.BooleanField(_(u'featured'), )
     
     class Meta:
         get_latest_by = "time"
@@ -1183,6 +1211,12 @@ class ProjectUpdate(models.Model):
         except:
             return ''
     img.allow_tags = True
+
+    def get_is_featured(self):
+        return self.featured
+    get_is_featured.boolean = True #make pretty icons in the admin list view
+    get_is_featured.short_description = 'update is featured'
+
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
@@ -1335,6 +1369,10 @@ class Invoice(models.Model):
             return self.project.paymentgatewayselector.paypal_gateway.notification_email
         elif self.engine == 'ideal':
             return self.project.paymentgatewayselector.mollie_gateway.notification_email
+    
+    @property
+    def donation_fee(self):
+        return self.amount-self.amount_received
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)

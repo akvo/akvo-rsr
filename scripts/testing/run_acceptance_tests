@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd "`dirname $0`"
+cd ../../tests/acceptance
+
+ACCEPTANCE_TEST_ROOT_DIR=`pwd`
+
+# check if PYTHONPATH exists
+if [ -z "$PYTHONPATH" ]; then
+    export PYTHONPATH=$ACCEPTANCE_TEST_ROOT_DIR
+else
+    export PYTHONPATH=$ACCEPTANCE_TEST_ROOT_DIR:$PYTHONPATH
+fi
+
+printf "Running acceptance test suites from: %s\n\n" $ACCEPTANCE_TEST_ROOT_DIR
+./all_test_suites.py

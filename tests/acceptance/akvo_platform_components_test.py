@@ -1,19 +1,31 @@
-import unittest
+#!/usr/bin/env python
 
-from seleniumextensions import *
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+import nose, sys
+
+from seleniumextensions import SeleniumTestCase
+from test_settings import *
+
+from helpers.navigation import *
 
 class AkvoPlatformComponentsTest(SeleniumTestCase):
+
     def setUp(self):
-        SeleniumTestCase.setUp(self, "http://test.akvo.org")
+        SeleniumTestCase.setUp(self)
+        self.navigator = SeleniumNavigator(self.selenium)
+        self.rsr = RSRNavigator(self.selenium)
 
     def can_load_section_with_expected_title(self, section, expected_page_title):
-        self.open_home_page()
-        self.click_link(section)
+        self.rsr.open_home_page()
+        self.navigator.click_link(section)
         self.assert_title_starts_with(expected_page_title)
     
     def test_1_can_load_home_page_with_expected_content(self):
         """>> 1. Can load Home page with expected content"""
-        self.open_home_page()
+        self.rsr.open_home_page()
         self.assert_title_is("Akvo.org - See it happen")
         self.assert_page_contains_text_items(["Projects you can fund", "Most recent Akvo Blog article",
                                               "Learn about Akvo", "Akvo at a glance"])
@@ -49,13 +61,15 @@ class AkvoPlatformComponentsTest(SeleniumTestCase):
         self.assert_location_contains("/rsr/projects")
         self.assert_page_contains_text_items(["Featured projects", "Akvo at a glance", "Project listing"])
 
-    def in_progress_test_7_can_load_partners_page_with_expected_content(self):
+    # ignored test -- doesn't match Partners page in production
+    def in_progress_7_can_load_partners_page_with_expected_content(self):
         """>> 7. Can load Partners page with expected content (checks Drupal content is loaded)"""
         self.can_load_section_with_expected_title("Partners", "Strategic partners | Akvo")
         self.assert_location_contains("/web/")
         self.assert_page_contains_text_items(["Partners", "Strategic partners"])
 
 if __name__ == "__main__":
+    print "Running tests on: %s" % (SITE_UNDER_TEST)
     print "Akvo platform components test:"
-    suite = unittest.TestLoader().loadTestsFromTestCase(AkvoPlatformComponentsTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    suite = nose.loader.TestLoader().loadTestsFromTestCase(AkvoPlatformComponentsTest)
+    nose.core.TextTestRunner(verbosity=2).run(suite)
