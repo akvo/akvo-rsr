@@ -6,10 +6,13 @@
 
 from helpers.nosetestloaders import *
 
+from test_settings import SITE_UNDER_TEST
+
 from api.xml.xml_api_test_suite import xml_api_suite
 
 def all_suites():
     return create_test_suite_from_suites([xml_api_suite()])
 
 if __name__ == "__main__":
+    print "Running tests for: %s\n" % (SITE_UNDER_TEST)
     run_test_suite(all_suites())

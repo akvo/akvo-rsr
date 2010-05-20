@@ -12,8 +12,15 @@ from api.xml.single_project_test import SingleProjectTest
 from api.xml.all_project_updates_for_given_project_test import AllProjectUpdatesForGivenProjectTest
 from api.xml.single_project_update_test import SingleProjectUpdateTest
 
-def xml_api_suite():
+from test_settings import RSR_API_PATH, RSR_MEDIA_PATH
+
+def describe_suite():
     print "RSR XML API test suite:"
+    print "Using API path:   %s" % (RSR_API_PATH)
+    print "Using media path: %s" % (RSR_MEDIA_PATH)
+
+def xml_api_suite():
+    describe_suite()
 
     return create_test_suite_from_classes([AllProjectsTest,
                                            AllLESponsoredProjectsTest,
@@ -22,4 +29,5 @@ def xml_api_suite():
                                            SingleProjectUpdateTest])
 
 if __name__ == "__main__":
+    describe_suite()
     run_test_suite(xml_api_suite())
