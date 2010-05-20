@@ -11,11 +11,11 @@ from helpers.rsrapi import *
 
 from expectedelements import *
 
-class AllSponsoredProjectsTest(XMLTestCase):
+class AllLESponsoredProjectsTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
-        super(AllSponsoredProjectsTest, cls).setup_class()
+        super(AllLESponsoredProjectsTest, cls).setup_class()
         cls.all_LE_projects_root = element_root_from(api_path("projects.xml/live-earth"))
 
     @classmethod
@@ -47,7 +47,7 @@ class AllSponsoredProjectsTest(XMLTestCase):
 
 
 def suite():
-    return load_tests_from(AllSponsoredProjectsTest)
+    return load_tests_from(AllLESponsoredProjectsTest)
 
 if __name__ == "__main__":
     run_test_suite(suite())
