@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n rsr_tags %}
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -7,7 +7,8 @@
 	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org, water, sanitation" />
 	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
 
-	<link rel="stylesheet" href="{{MEDIA_URL}}css/style_raw.css" type="text/css" media="screen" title="main">
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}css/style_raw.css" type="text/css" media="screen" title="main"> #}
+	{% page_styles %}
 	
 	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://{{ request.META.HTTP_HOST }}/blog/?feed=rss2">
 	<link rel="shortcut icon" href="{{MEDIA_URL}}img/base/favicon.ico" type="image/x-icon">

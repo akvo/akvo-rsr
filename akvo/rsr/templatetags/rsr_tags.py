@@ -3,8 +3,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django import template
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 register = template.Library()
+
 
 @register.inclusion_tag('inclusion_tags/funding_bar.html')
 def funding_bar(project):
@@ -155,4 +157,13 @@ def update_thumb(context, update, width, height):
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
     }
+    
+@register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
+def page_styles(context,):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW,
+    }
+
  
