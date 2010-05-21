@@ -44,7 +44,8 @@ ul#main_nav li a span {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    /* height and padding-top decides overal height no the main_nav, use padding-top to position your text. */
+    /* height and padding-top decides sets height on 
+    the main_nav, use padding-top to position your text. */
     height:24px;
     padding-top:2px;
     }
@@ -59,7 +60,7 @@ ul#main_nav li a span {
     float:left;
     width:247px;
     border-right: 1px solid #ACACBA;
-    height:26px;
+    height:30px;
     }
 
 #main_nav_account {
