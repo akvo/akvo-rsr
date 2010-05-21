@@ -18,6 +18,7 @@ Akvo CSS classes is based on the Bluetrip (http://bluetrip.org/) CSS framework.
 5. Tables
 6. Margins & paddings
 7. Nice to have classes
+8. Text sizes
 -------------------------------------------------------------------*/
 
 
@@ -25,13 +26,10 @@ Akvo CSS classes is based on the Bluetrip (http://bluetrip.org/) CSS framework.
 [1. Basic] 
 */
 body {
-    background-color:#fff;
-    color:#000;
     font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
     font-size:100%; /* IE6 & 7 */
-}
-
-
+    }
+    
 a { color:#2B80AF; text-decoration: none; cursor: pointer;  }
 a:visited { color:#2B80AF; }
 a:hover { color:#0FA0CB; text-decoration: underline; }
@@ -41,42 +39,42 @@ p {
     line-height:1.4em; 
     margin-bottom:1.5em;
     color:#333;
-}
+    }
 
 h1 {
     color:#000;
     font-size:1.625em;
     line-height:1.2em;
     margin-bottom:0.5em;
-}
+    }
 
 h2 {
     color:#000;
     font-size:1.125em;
     line-height:1.2em;
     margin-bottom:0.5em;
-}
+    }
 
 h3 {
     color:#000;
     font-size: 1.0em;
     line-height:1.2em;
     margin-bottom:0.5em;
-}
+    }
 
 h4 {
     color:#000;
     font-size: 0.875em;
     line-height:1.2em;
     margin-bottom:0.5em;
-}
+    }
 
 h5 {
     color:#000;
     font-size: 0.8125em;
     line-height:1.2em;
     margin-bottom:0.5em;
-}
+    }
 
 
 h6 {
@@ -84,7 +82,7 @@ h6 {
     font-size: 0.6875em;
     line-height:1.2em;
     margin-bottom:0.5em;
-}
+    }
 
 
 /*------------------------------------------------------------------ 
@@ -97,9 +95,8 @@ ul, ol {
     font-size:0.875em;
     color:#333;
     margin-top:-0.5em;
-    margin-bottom:1.5em;
-    
-}
+    margin-bottom:1.5em;   
+    }
 ul ul {font-size:1em; margin-top:0em;}
 ol ol {font-size:1em; margin-top:0em;}
 ul li { margin-left:1em;}
@@ -112,6 +109,8 @@ dt { font-weight: bold; margin-top: .8em; margin-bottom: .4em; }
 /*
 ol ol, ul ol { margin-left: 1.0em; }
 */
+
+
 /*------------------------------------------------------------------ 
 [3. Tags] 
 */
@@ -126,10 +125,9 @@ code {
     display:block;
     margin-bottom:14px;
     margin-top:14px;
-}
+    }
 del { text-decoration: line-through; color: #666; }
 ins, dfn { border-bottom: 1px solid #ccc; }
-
 
 blockquote { 
     border-top: 1px solid #ccc; 
@@ -137,10 +135,11 @@ blockquote {
     color: #666; 
     padding: 0 1em; 
     margin: 1.6em 0;
-}
+    }
 blockquote *:first-child { margin: .8em 0; }
 blockquote *:first-child:before { content: "\201C"; }
 blockquote *:first-child:after { content: "\201D"; }
+
 
 /*------------------------------------------------------------------ 
 [4. Forms] 
@@ -151,7 +150,7 @@ fieldset {
     border: 1px solid #ccc; 
     padding: 0 1em 1em 1em;  /* padding-top is margin-top for fieldsets in Opera */
     margin: 1.6em 0; 
-}
+    }
 legend { font-weight: bold; font-size:1.2em; }
 label { font-weight: bold; display: block; margin-top:5px; font-size:0.875em; }
 
@@ -175,7 +174,7 @@ input[type='text'], input[type='password'], textarea {
     border-right:2px solid #F2F0EC;
     border-bottom:2px solid #F2F0EC;
     */
-}
+    }
 
 input[type="submit"], input[type="button"] {
     margin-top:0;
@@ -183,14 +182,15 @@ input[type="submit"], input[type="button"] {
     display: block;
     margin-bottom:20px;
     /*float:right;*/
-}
+    }
 
 textarea { border: 1px solid #ccc;}
 
 .focusField {
     background-color:#e5fff3 !important;
     color:#000;
-}
+    }
+
 
 /*------------------------------------------------------------------ 
 [5. Tables] 
@@ -227,29 +227,28 @@ p.lede {
     line-height:1.2em;
     font-size:1.125em;
     margin-bottom:1.3em;
-}
+    }
 
-p.small, .small p {
+p.small, .small p, .small label, ul.small, a.small {
     font-size:0.8125em;
     line-height:1.4em;
-}
+    }
 
-
-p.tiny, .tiny p {
+p.tiny, .tiny p, .tiny label, ul.tiny, a.tiny {
     font-size:0.6875em;
     line-height:1.4em;
-}
+    }
 
-p.nano, .nano p { 
+p.nano, .nano p, .nano label ul.nano, a.nano {
     font-size:0.56725em;
     line-height:1.4em;
-}
+    }
 
 p.nano-lede {
     color:#888;
     line-height:1.2em;
     font-size:0.875em;
     margin-bottom:1.3em;
-}
+    }
 
 

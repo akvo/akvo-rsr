@@ -1,4 +1,4 @@
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags webdesign %}
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -14,10 +14,26 @@
 	<link rel="shortcut icon" href="{{MEDIA_URL}}img/base/favicon.ico" type="image/x-icon">
 </head>
 <body>
-	<div id="maincontainer" class="container">
-	{% block maincontent %}
+	<div id="header">
+		<div id="header_container" class="container">
+			<ul>
+				<li>Akvo</li>
+				<li>Akvopedia</li>
+				<li>Partners</li>
+				<li>Projects</li>
+				<li>Get involved</li>
+				<li>Akvo now</li>
+			</ul>
+		</div>
+	</div>
+	<div id="main_container" class="container">
+		{% block maincontent %}
 			
-	{% endblock maincontent %}
+			{% lorem 2 p %}
+			<h2>Header 2</h2>
+			{% lorem 2 p %}
+					
+		{% endblock maincontent %}
 	</div>
 		
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
