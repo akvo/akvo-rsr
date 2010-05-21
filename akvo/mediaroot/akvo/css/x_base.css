@@ -6,3 +6,9 @@ body {
 div#main_container {
     margin-top:40px;
     }
+    
+#footer {
+    background: #F9F9FA url(../img/footer_gradient.png) repeat-x top;
+    color:#000;
+    padding-top:20px;
+}
