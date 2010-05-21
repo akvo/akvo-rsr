@@ -1,0 +1,8 @@
+body {
+    background: #F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
+    color:#000;
+    }
+
+div#main_container {
+    margin-top:40px;
+    }

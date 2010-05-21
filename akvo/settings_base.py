@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.humanize',
+    'django.contrib.webdesign',
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
@@ -151,3 +152,5 @@ TIME_ZONE = 'Europe/Stockholm'
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
+
+STYLES_RAW = False

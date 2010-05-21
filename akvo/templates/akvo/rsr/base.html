@@ -1,0 +1,95 @@
+{% load i18n rsr_tags webdesign %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
+	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org, water, sanitation" />
+	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
+
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}css/style_raw.css" type="text/css" media="screen" title="main"> #}
+	{% page_styles %}
+	
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://{{ request.META.HTTP_HOST }}/blog/?feed=rss2">
+	<link rel="shortcut icon" href="{{MEDIA_URL}}img/base/favicon.ico" type="image/x-icon">
+</head>
+<body>
+	<div id="header">
+		<div id="header_container" class="container">
+			<ul id="main_nav">
+				<li>
+					<a id="main_nav_left" href="#">
+						<span>Akvo</span>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span>Akvopedia</span>
+					</a>
+				</li>
+				<li>
+					<a href="#" class="active">
+						<span>Partners</span>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span>Projects</span>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span>Get involved</span>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span>Akvo now</span>
+					</a>
+				</li>
+				<li>
+					<span id="main_nav_language">
+						<p class="small" style="margin-left:20px; margin-top:6px;">
+							Language or search???
+						</p>
+					</span>
+				</li>
+				<li>
+					<a href="#">
+						<span>My Akvo</span>
+					</a>
+				</li>
+				<li>
+					<a id="main_nav_account" href="#">
+						<span>Sign In</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div id="main_container" class="container">
+		{% block maincontent %}
+			
+			{% lorem 2 p %}
+			<h2>Header 2</h2>
+			{% lorem 14 p %}
+					
+		{% endblock maincontent %}
+	</div>
+		
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	{% block js %}
+	{% endblock js%}
+	
+	<script type="text/javascript">
+		var $ = jQ = jQuery.noConflict();
+		
+		jQ(document).ready(function(){
+			{% block jq_ready %}{% endblock jq_ready %}
+			jQ('#grid_toggle').click(function () {
+				jQ('#maincontainer').toggleClass('showgrid');
+			});
+		});		
+	</script>	
+</body>
+</html>
