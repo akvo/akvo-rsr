@@ -1,24 +1,8 @@
 body {
-    background: #F9F9FA url(../img/top_gradient.png) repeat-x top;
+    background: #F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
     color:#000;
     }
-    
 
-#header ul {
-    margin-left: 0;
-    padding-left: 0;
-    padding-top:15px;
-    height:30px;
+div#main_container {
+    margin-top:40px;
     }
-
-#header ul li {
-    margin: 0;
-    margin-right:20px;
-    list-style: none;
-    display: inline;
-	}
-
-#header {
-    background-color:#EFF3F5;
-    }
-    

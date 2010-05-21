@@ -43,7 +43,8 @@ def main():
         
         print >> sys.stdout, "Completed %s" % bundle
 
-    print >> sys.stdout, "Completed all"
+        
+    print >> sys.stdout, 20 * "-" + "\nCompleted all, yay :-)"
 
 if __name__ == '__main__':
 	main()
