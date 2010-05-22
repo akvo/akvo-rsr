@@ -16,7 +16,7 @@ from test_settings import RSR_API_PATH, RSR_MEDIA_PATH
 
 def describe_suite():
     print "Using API path:   %s" % (RSR_API_PATH)
-    print "Using media path: %s" % (RSR_MEDIA_PATH)
+    print "Using media path: %s\n" % (RSR_MEDIA_PATH)
 
 def xml_api_suite():
     describe_suite()
@@ -28,5 +28,4 @@ def xml_api_suite():
                                            SingleProjectUpdateTest])
 
 if __name__ == "__main__":
-    describe_suite()
     run_test_suite(xml_api_suite())
