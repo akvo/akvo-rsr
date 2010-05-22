@@ -7,6 +7,7 @@ from media_bundles import *
 
 def main():
     cwd = os.getcwd()
+    cwd = os.path.abspath(os.path.dirname(__file__))
 
     for bundle in MEDIA_BUNDLES:
         path = cwd + "/../../akvo/mediaroot/" + MEDIA_BUNDLES[bundle]['path']
@@ -19,8 +20,7 @@ def main():
                 tmp = source_file.read()
                 source_file.close()
                 
-                file_contents += '\n\n/*' + 75 * '-' + '\n' + "  Contents from: "
-                file_contents += file_element + '\n' + 75 * '-' + '*/\n\n' + tmp                
+                file_contents = '%s\n\n/*%s\n Contents from: %s\n%s*/\n\n%s' % (file_contents, 75*'-', file_element, 75*'-', tmp)
                 
             except Exception, e:
                 raise e

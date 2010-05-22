@@ -3,7 +3,7 @@ MEDIA_BUNDLES = {
     'style': {
         'type': 'css',
         'path': 'akvo/css/',
-        'compress': True,
+        'compress': False,
         'files': ['x_reset.css','x_grid.css', 'x_typography.css','x_base.css','x_main_nav.css',],
     },
 }
