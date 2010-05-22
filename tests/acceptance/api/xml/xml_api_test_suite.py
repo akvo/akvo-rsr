@@ -15,7 +15,6 @@ from api.xml.single_project_update_test import SingleProjectUpdateTest
 from test_settings import RSR_API_PATH, RSR_MEDIA_PATH
 
 def describe_suite():
-    print "RSR XML API test suite:"
     print "Using API path:   %s" % (RSR_API_PATH)
     print "Using media path: %s" % (RSR_MEDIA_PATH)
 
