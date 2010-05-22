@@ -18,21 +18,16 @@ class SingleProjectUpdateTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
-        super(SingleProjectUpdateTest, cls).setup_class()
         cls.project_update_200_root = element_root_from(api_path("update.xml/200"))
 
-    @classmethod
-    def description(cls):
-        return "Tests for a single project update"
-
     def test_01_can_get_xml_data_for_single_project_update(self):
-        """>>  1. Can get XML data for a single project update"""
+        """api.xml.SingleProjectUpdateTest  1. Can get XML data for a single project update"""
 
         self.assert_element(self.project_update_200_root).is_not_none_and_has_tag("response")
         self.assert_element(self.project_update_200_root).has_at_least(2).children()
 
     def test_02_project_update_element_has_expected_xml_structure(self):
-        """>>  2. Project update element has expected XML structure"""
+        """api.xml.SingleProjectUpdateTest  2. Project update element has expected XML structure"""
 
         self.assert_element(self.project_update_200_root).has_exactly(len(PROJECT_UPDATE_CHILDREN)).children()
         self.assert_element(self.project_update_200_root).has_single_children_in_list(PROJECT_UPDATE_CHILDREN)
@@ -43,14 +38,14 @@ class SingleProjectUpdateTest(XMLTestCase):
         self.assert_element(project_element).has_single_children_in_list(PROJECT_UPDATE_PROJECT_CHILDREN)
 
     def test_03_can_get_photo_path_for_given_project_update(self):
-        """>>  3. Can get photo path for given project update"""
+        """api.xml.SingleProjectUpdateTest  3. Can get photo path for given project update"""
 
         photo_element = self.project_update_200_root.find("photo")
 
         self.assert_element(photo_element).has_text()
 
     def test_04_can_view_photo_at_media_path_for_given_project_update(self):
-        """>>  4. Can view photo at media path for given project update"""
+        """api.xml.SingleProjectUpdateTest  4. Can view photo at media path for given project update"""
 
         photo_url = media_path(self.project_update_200_root.find("photo").text)
 

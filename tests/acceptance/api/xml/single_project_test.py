@@ -15,22 +15,17 @@ class SingleProjectTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
-        super(SingleProjectTest, cls).setup_class()
         cls.project_23_root = element_root_from(api_path("project.xml/23"))
 
-    @classmethod
-    def description(cls):
-        return "Tests for a single project"
-
     def test_01_can_get_xml_data_for_single_project(self):
-        """>>  1. Can get XML data for a single project"""
+        """api.xml.SingleProjectTest  1. Can get XML data for a single project"""
 
         self.assert_element(self.project_23_root).is_not_none_and_has_tag("response")
         self.assert_element(self.project_23_root).has_exactly(1).child()
         self.assert_element(self.project_23_root).has_exactly(1).child_with_tag("resource")
 
     def test_02_project_element_has_expected_xml_structure(self):
-        """>>  2. Project element has expected XML structure"""
+        """api.xml.SingleProjectTest  2. Project element has expected XML structure"""
 
         project_element = self.project_23_root.find("resource") # the <resource> element represents a project
 
