@@ -1,5 +1,7 @@
 #header {
-    background-color:#EFF3F5;
+    /*background-color:#EFF3F5;*/
+    background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;
+
     z-index:5;
     left: 0; /* IE 7 */
 	position: fixed;
@@ -21,13 +23,13 @@ ul#main_nav li {
 
 ul#main_nav li a {
     border-right: 1px solid #ACACBA;
-    background-color:#EFF3F5; /* Needed for IE7 hover effect*/
+    /*background-color:#EFF3F5;*/ /* Needed for IE7 hover effect*/
     color: #383C82;
     display: block;
     float: left;
     font-size:0.875em;
     font-weight:bold;
-    width: 90px;    
+    width: 90px;
     }
 
 ul#main_nav li a:hover {    
@@ -48,6 +50,7 @@ ul#main_nav li a span {
     the main_nav, use padding-top to position your text. */
     height:24px;
     padding-top:2px;
+    
     }
 
 #main_nav_left {
