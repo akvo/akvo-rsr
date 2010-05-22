@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from helpers.nosetestloaders import *
+from helpers.testexecution import *
 
 from api.xml.all_projects_test import AllProjectsTest
 from api.xml.all_le_sponsored_projects_test import AllLESponsoredProjectsTest
