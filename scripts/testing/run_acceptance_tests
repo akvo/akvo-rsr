@@ -12,5 +12,4 @@ else
     export PYTHONPATH=$ACCEPTANCE_TEST_ROOT_DIR:$PYTHONPATH
 fi
 
-printf "\nAcceptance test suite root path: %s\n\n" $ACCEPTANCE_TEST_ROOT_DIR
 ./all_test_suites.py
