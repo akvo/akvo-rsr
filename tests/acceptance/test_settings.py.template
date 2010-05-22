@@ -6,6 +6,9 @@
 
 import os
 
+# options are 'normal' or 'ci' for continuous integration
+TEST_MODE = 'normal'
+
 BROWSER_ENVIRONMENT = "*firefox"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
