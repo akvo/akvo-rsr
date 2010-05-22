@@ -1,7 +1,6 @@
 #header {
     /*background-color:#EFF3F5;*/
     background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;
-
     z-index:5;
     left: 0; /* IE 7 */
 	position: fixed;
@@ -22,7 +21,7 @@ ul#main_nav li {
     }
 
 ul#main_nav li a {
-    border-right: 1px solid #ACACBA;
+    /*border-right: 1px solid #ACACBA;*/
     /*background-color:#EFF3F5;*/ /* Needed for IE7 hover effect*/
     color: #383C82;
     display: block;
@@ -30,6 +29,9 @@ ul#main_nav li a {
     font-size:0.875em;
     font-weight:bold;
     width: 90px;
+    margin:0;
+    padding:0;
+    height:30px;
     }
 
 ul#main_nav li a:hover {    
@@ -42,15 +44,15 @@ ul#main_nav li a.active {
     }
 
 ul#main_nav li a span {
+    border-right: 1px solid #ACACBA;
     display: block;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     /* height and padding-top decides sets height on 
     the main_nav, use padding-top to position your text. */
-    height:24px;
+    height:23px;
     padding-top:2px;
-    
     }
 
 #main_nav_left {
@@ -70,3 +72,55 @@ ul#main_nav li a span {
     border-right: None !important;
     color:#32842F !important;
 }
+
+ul#account_nav {
+    background-color:cyan;
+    display:none;
+    height:198px; 
+    min-width:200px;
+    position:absolute;
+    width:100%;
+    right:0;
+    z-index:2;
+    top:100%;
+    }
+
+ul#account_nav li {
+    /*
+    display:block;
+    float:none;
+    height:22px;
+    list-style: none;
+    position:static;
+    right:auto;
+    top:auto;
+    width:200px;
+    */
+    }
+
+/*ul#account_nav {
+    background-color:cyan;
+    display:block;
+    height:198px; 
+    min-width:200px; 
+    position:absolute;
+    right:0px;
+    top:100%;
+    z-index:1;
+    }
+
+ul#account_nav li {
+    display:block;
+    float:none;
+    height:22px;
+    list-style: none;
+    position:static;
+    right:auto;
+    top:auto;
+    width:200px;
+    }*/
+
+
+
+
+
