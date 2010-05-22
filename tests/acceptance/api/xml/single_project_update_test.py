@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import urllib
+import urllib2
 
 from extensions.xmlextensions import *
 from extensions.xmltestcase import XMLTestCase
@@ -57,12 +57,12 @@ class SingleProjectUpdateTest(XMLTestCase):
         self.failUnless(photo_url.startswith(RSR_MEDIA_PATH),
                         "Expected photo URL to start with media path: %s.\nActual URL: %s" % (RSR_MEDIA_PATH, photo_url))
 
-        photo_file = urllib.urlopen(photo_url)
+        photo_file = urllib2.urlopen(photo_url)
         OK_STATUS_CODE = 200
 
-        self.failUnlessEqual(OK_STATUS_CODE, photo_file.getcode(),
+        self.failUnlessEqual(OK_STATUS_CODE, photo_file.code,
                              "Expected HTTP OK status code (200) when retrieving photo at: %s\nActual code: %i" %
-                                (photo_url, photo_file.getcode()))
+                                (photo_url, photo_file.code))
 
         photo_file_content_type = photo_file.info().getheader('Content-Type')
 
