@@ -52,7 +52,7 @@ def main():
         bundle_hash = hashlib.sha1(completed_file_contents).hexdigest()
         completed_file.close()
         try:
-            copy_string = 'cp %s%s.%s %s%s_%s.%s' % (path,bundle,MEDIA_BUNDLES[bundle]['type'],path,bundle,bundle_hash,MEDIA_BUNDLES[bundle]['type'])
+            copy_string = 'cp %s%s.%s %s%s_min_%s.%s' % (path,bundle,MEDIA_BUNDLES[bundle]['type'],path,bundle,bundle_hash,MEDIA_BUNDLES[bundle]['type'])
             os.system(copy_string)
             
         except Exception, e:

@@ -178,7 +178,7 @@ def media_bundle(context, bundle):
     if settings.STYLES_RAW:
         bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
     else:
-        bundle_path = 'akvo/css/%s_%s.%s' % (bundle, bundle_hash, 'css')
+        bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_hash, 'css')
     
     return {
         'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'bundle_path': bundle_path,
