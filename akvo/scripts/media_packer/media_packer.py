@@ -59,7 +59,6 @@ def main():
             raise e
             
         # Add bundle hash to 
-        
         BUNDLE_MAP[bundle] = bundle_hash
         
         print >> sys.stdout, "Copied to new name %s" % bundle
