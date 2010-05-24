@@ -165,16 +165,18 @@ def media_bundle(context, bundle):
     '''
     Todo: What happens on first request without any map? Return something from the media_packer script to wait for it. 
     '''
-    
-    bundle_hash = '111'
+    bundle_hash = '000'
     try:
         from akvo.scripts.media_packer import bundle_map
-        bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]
+        bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]['hash']
         
     except Exception, e:
-        media_packer.main()
+        if media_packer.main():
+            from akvo.scripts.media_packer import bundle_map
+            bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]['hash']
+        else:
+            raise e
     
-
     if settings.STYLES_RAW:
         bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
     else:

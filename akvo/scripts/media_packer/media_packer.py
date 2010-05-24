@@ -54,13 +54,28 @@ def main():
         try:
             copy_string = 'cp %s%s.%s %s%s_min_%s.%s' % (path,bundle,MEDIA_BUNDLES[bundle]['type'],path,bundle,bundle_hash,MEDIA_BUNDLES[bundle]['type'])
             os.system(copy_string)
-            
+        except Exception, e:
+            raise e
+        
+        # Remove file without the hash name, (this should be refactored as a mv operation instead!!!)
+        try:
+            rm_string = 'rm %s%s.%s %s%s.%s' % (path,bundle,MEDIA_BUNDLES[bundle]['type'],path,bundle,MEDIA_BUNDLES[bundle]['type'])
+            os.system(rm_string)
         except Exception, e:
             raise e
             
         # Add bundle hash to 
-        BUNDLE_MAP[bundle] = bundle_hash
+        print 'about to do new stuff'
+        #BUNDLE_MAP[bundle] = bundle_hash
         
+        BUNDLE_ITEMS = {}
+        print '1'
+        BUNDLE_ITEMS['hash'] = bundle_hash
+        BUNDLE_ITEMS['path'] = path
+        BUNDLE_ITEMS['type'] = MEDIA_BUNDLES[bundle]['type']
+        BUNDLE_MAP[bundle] = BUNDLE_ITEMS
+        print 'did do new stuff'
+        print BUNDLE_MAP
         print >> sys.stdout, "Copied to new name %s" % bundle
         
         print >> sys.stdout, "Completed %s" % bundle
@@ -77,6 +92,8 @@ def main():
     print 'Persisted BUNDLE_MAP'
     
     print >> sys.stdout, 20 * "-" + "\nCompleted all, yay :-)"
+    
+    return True
 
 if __name__ == '__main__':
 	main()
