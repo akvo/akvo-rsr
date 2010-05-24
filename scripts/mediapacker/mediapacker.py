@@ -6,7 +6,6 @@ import sys, os
 from media_bundles import *
 
 def main():
-    cwd = os.getcwd()
     cwd = os.path.abspath(os.path.dirname(__file__))
 
     for bundle in MEDIA_BUNDLES:
