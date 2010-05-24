@@ -1,6 +1,6 @@
 
 MEDIA_BUNDLES = {
-    'style': {
+    'akvo_style': {
         'type': 'css',
         'path': 'akvo/css/',
         'compress': True,

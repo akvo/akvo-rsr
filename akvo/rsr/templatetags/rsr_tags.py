@@ -1,12 +1,14 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+import os
 
 from django import template
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-register = template.Library()
+from akvo.scripts.media_packer import media_packer
 
+register = template.Library()
 
 @register.inclusion_tag('inclusion_tags/funding_bar.html')
 def funding_bar(project):
@@ -159,11 +161,48 @@ def update_thumb(context, update, width, height):
     }
     
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
-def page_styles(context,):
+def media_bundle(context, bundle):
     '''
+    Todo: What happens on first request without any map? Return something from the media_packer script to wait for it. 
     '''
+    
+    bundle_hash = '111'
+    try:
+        from akvo.scripts.media_packer import bundle_map
+        bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]
+        
+    except Exception, e:
+        media_packer.main()
+    
+
+    if settings.STYLES_RAW:
+        bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
+    else:
+        bundle_path = 'akvo/css/%s_%s.%s' % (bundle, bundle_hash, 'css')
+    
     return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW,
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'bundle_path': bundle_path,
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  
