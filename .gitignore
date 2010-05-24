@@ -10,5 +10,5 @@ akvo/mediaroot/db
 scripts/deployment/static_project_structure.py
 tests/acceptance/test_settings.py
 akvo/data
-akvo/mediaroot/akvo/akvo_style_min_*.css
+akvo/mediaroot/akvo/css/akvo_style_min_*.css
 akvo/scripts/media_packer/bundle_map.py
