@@ -62,7 +62,7 @@ def main():
         
         # Add the new file to the git index
         try:
-            git_add_string = 'git add %s %s/../../mediaroot/%s%s_min_%s.%s' % (bundle_file_path, cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
+            git_add_string = 'git add %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
             print git_add_string
         except Exception, e:
             print 'Could not add the bundle file to the Git index'
