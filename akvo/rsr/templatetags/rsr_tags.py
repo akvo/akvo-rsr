@@ -6,7 +6,7 @@ import os
 from django import template
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from akvo.scripts.media_packer import media_packer
+from akvo.scripts.media_packer import media_packer, clean_map
 
 register = template.Library()
 
@@ -165,7 +165,15 @@ def media_bundle(context, bundle):
     '''
     Todo: What happens on first request without any map? Return something from the media_packer script to wait for it. 
     '''
+    
+    '''
     bundle_hash = '000'
+    try:
+        if(clean_map.main()):
+            print 'Nice and tidy'
+    except Exception, e:
+        raise e
+    
     try:
         from akvo.scripts.media_packer import bundle_map
         bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]['hash']
@@ -177,11 +185,13 @@ def media_bundle(context, bundle):
         else:
             raise e
     
+    
     if settings.STYLES_RAW:
         bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
     else:
         bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_hash, 'css')
-    
+    '''
+    bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
     return {
         'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'bundle_path': bundle_path,
     }

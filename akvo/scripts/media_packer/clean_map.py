@@ -3,12 +3,18 @@
 
 import sys, os
 
-#from akvo.scripts.media_packer.media_bundles import *
-from bundle_map import *
+
+#from bundle_map import *
 
 def main():
-    
+    print 'In clean map'
     cwd = os.path.abspath(os.path.dirname(__file__))
+    
+    try:
+        from akvo.scripts.media_packer.bundle_map import *
+    except Exception, e:
+        return False
+    
     
     for bundle in BUNDLE_MAP:
         bundle_path = BUNDLE_MAP[bundle]['path']
@@ -20,7 +26,15 @@ def main():
             os.system(rm_string)
         except Exception, e:
             raise e
-        
+        print 'Rmoved %s' % bundle
+    
+    try:
+        rm_map_string = 'rm %s/bundle_map.py*' % cwd
+        os.system(rm_map_string)
+        #print rm_map_string
+    except Exception, e:
+        raise e
+    
     print >> sys.stdout, 20 * "-" + "\nRemved all, yay :-)"
     
     return True
