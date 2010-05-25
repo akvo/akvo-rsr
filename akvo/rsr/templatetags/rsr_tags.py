@@ -6,7 +6,8 @@ import os
 from django import template
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from akvo.scripts.media_packer import media_packer, clean_map
+
+from akvo.scripts.media_packer import map
 
 register = template.Library()
 
@@ -163,35 +164,22 @@ def update_thumb(context, update, width, height):
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def media_bundle(context, bundle):
     '''
-    Todo: What happens on first request without any map? Return something from the media_packer script to wait for it. 
+    Uses the akvo/scripts/media_packer/map.py to retrive a resource file
+    Needs: "from akvo.scripts.media_packer import map"
     '''
     
-    '''
-    bundle_hash = '000'
+    cant_get_map = False
     try:
-        if(clean_map.main()):
-            print 'Nice and tidy'
+        bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
     except Exception, e:
-        raise e
-    
-    try:
-        from akvo.scripts.media_packer import bundle_map
-        bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]['hash']
+        bundle_hash = '000'
+        cant_get_map = True
         
-    except Exception, e:
-        if media_packer.main():
-            from akvo.scripts.media_packer import bundle_map
-            bundle_hash = bundle_map.BUNDLE_MAP['%s' % str(bundle)]['hash']
-        else:
-            raise e
-    
-    
-    if settings.STYLES_RAW:
+    if settings.STYLES_RAW or cant_get_map:
         bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
     else:
         bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_hash, 'css')
-    '''
-    bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
+    
     return {
         'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'bundle_path': bundle_path,
     }

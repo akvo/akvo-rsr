@@ -69,8 +69,6 @@ def main():
             raise e
             
         
-        
-        
         # Prepare for the map file 
         BUNDLE_ITEMS = {}
         BUNDLE_ITEMS['hash'] = bundle_hash
@@ -87,6 +85,14 @@ def main():
         map_file.close()
     except Exception, e:
         print 'Could not persist the map file.'
+        raise e
+
+    # Add map to the Git index
+    try:
+        git_add_map_string = 'git add %s/map.py' % cwd
+        print git_add_map_string
+        
+    except Exception, e:
         raise e
 
     return True
