@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Called by git-commit with no arguments. The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+
+
+
+# --- Command line
+
+#echo 'In update pre-commit'
+
+exec python `pwd`'/akvo/scripts/media_packer/packer.py'
+
+# --- Finished
+exit 0
