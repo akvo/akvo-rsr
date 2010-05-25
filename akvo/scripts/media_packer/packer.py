@@ -29,8 +29,7 @@ def main():
     
     # 3. Add the new files to the git index before proceeding with the commit
         
-        
-    return False
+    return True
 
 if __name__ == '__main__':
 	main()
