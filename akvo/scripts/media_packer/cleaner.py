@@ -4,36 +4,37 @@
 import sys, os
 
 def main():
-    print 'In clean map'
+    #print 'Cleaning...'
     cwd = os.path.abspath(os.path.dirname(__file__))
     
     try:
-        from akvo.scripts.media_packer.bundle_map import *
+        from bundle_map import *
     except Exception, e:
         return False
-    
     
     for bundle in BUNDLE_MAP:
         bundle_path = BUNDLE_MAP[bundle]['path']
         bundle_hash = BUNDLE_MAP[bundle]['hash']
         bundle_type = BUNDLE_MAP[bundle]['type']
-        rm_string = 'rm %s%s_min_%s.%s' % (bundle_path, bundle,bundle_hash,bundle_type)
-        
+        rm_string = 'git rm %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
+
         try:
+            print rm_string
             os.system(rm_string)
+            
+            #print 'Removed %s' % bundle
         except Exception, e:
-            raise e
-        print 'Rmoved %s' % bundle
+            print 'Could not remove the %s bundle' % bundle
+            pass
     
     try:
-        rm_map_string = 'rm %s/bundle_map.py*' % cwd
-        os.system(rm_map_string)
-        #print rm_map_string
+        rm_map_string = 'git rm %s/map.py*' % cwd
+        print rm_map_string
+        # os.system(rm_map_string)
     except Exception, e:
-        raise e
-    
-    print >> sys.stdout, 20 * "-" + "\nRemved all, yay :-)"
-    
+        print 'Could not remove the map'
+        pass
+
     return True
 
 if __name__ == '__main__':
