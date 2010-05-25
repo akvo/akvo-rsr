@@ -5,9 +5,9 @@
 .space20 { margin:20px; }
 
 .round {
-	-khtml-border-radius: 5px;
-	-moz-border-radius: 5px; 
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-	border: 1px solid #ccc;
+    -khtml-border-radius: 5px;
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
     }

@@ -10,10 +10,6 @@ div#main_container {
     
 #footer {
     background: #F9F9FA url(../img/footer_gradient.png) repeat-x top;
-    color:#000;
+    color:#585E68;
     padding-top:40px;
-}
-
-#test2 {
-    color:#f0f;
 }
