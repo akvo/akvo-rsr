@@ -30,12 +30,14 @@ def clean():
     except Exception, e:
         print 'Could not remove the map'
         pass
-        
+    
+    '''    
     try:
         rm_map_pyc_string = 'rm %s/map.pyc' % cwd
         os.system(rm_map_pyc_string)
     except Exception, e:
         pass
+    '''
 
     return True
     
