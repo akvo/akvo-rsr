@@ -13,7 +13,7 @@ import sys, os, hashlib
 import cleaner, generator
 
 def main():
-    print 'Running packer :-)'
+    print 'Running packer, with a change :-)'
     
     # 1. Clean up old files (bundle and map in the cleaner script)
     # if (cleaner.main()):
