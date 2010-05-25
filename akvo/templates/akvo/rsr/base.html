@@ -17,7 +17,7 @@
 		<div id="header_container" class="container">
 			<ul id="main_nav">
 				<li>
-					<a id="main_nav_left" href="#">
+					<a id="main_nav_left" class="active" href="#">
 						<span>Akvo</span>
 					</a>
 				</li>
@@ -27,7 +27,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#" class="active">
+					<a href="#">
 						<span>Partners</span>
 					</a>
 				</li>
@@ -82,11 +82,18 @@
 	</div>
 	<div id="main_container" class="container">
 		{% block maincontent %}
-			
-			{% lorem 2 p %}
-			<h2>Header 2</h2>
-			{% lorem 14 p %}
-					
+		<div class="span-12 first" style="background-color:#fff">
+			<div style="margin:20px;">
+				{% lorem 2 p %}
+				<h2>Header 2</h2>
+				{% lorem 14 p %}
+			</div>
+		</div>
+		<div class="span-6 last" style="background-color:#fff">
+			<div style="margin:20px;">
+				{% lorem 7 p %}
+			</div>
+		</div>
 		{% endblock maincontent %}
 	</div>
 	<div id="footer">

@@ -8,12 +8,6 @@ from map import BUNDLE_MAP
 def main():
     #print 'Cleaning...'
     cwd = os.path.abspath(os.path.dirname(__file__))
-    '''
-    try:
-        from map import *
-    except Exception, e:
-        return False
-    '''
     
     for bundle in BUNDLE_MAP:
         bundle_path = BUNDLE_MAP[bundle]['path']
