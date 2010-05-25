@@ -1,0 +1,13 @@
+.hide { display: none; }
+.space5 { margin:5px;}
+.space10 { margin:10px;}
+.space15 {margin:15px;}
+.space20 {margin:20px;}
+
+.round {
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+    }
