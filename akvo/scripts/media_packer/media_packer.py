@@ -10,8 +10,6 @@ def main():
     cwd = os.path.abspath(os.path.dirname(__file__))
     BUNDLE_MAP = {} # Used to persist media budle hashes
     
-    #media_bundle_file = open('%s/../../media_bundles.py' % cwd)
-    
     for bundle in MEDIA_BUNDLES:
         path = cwd + "/../../mediaroot/" + MEDIA_BUNDLES[bundle]['path']
         file_contents = ''
