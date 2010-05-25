@@ -13,3 +13,7 @@ div#main_container {
     color:#585E68;
     padding-top:40px;
 }
+
+#footer h2, h3 {
+    color:#585E68;
+}

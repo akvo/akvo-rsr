@@ -1,1 +1,1 @@
-BUNDLE_MAP = {'akvo_style': {'path': 'akvo/css/', 'hash': 'cac1458035c37dc506b52a27c3001c25d6167800', 'type': 'css'}}
+BUNDLE_MAP = {'akvo_style': {'path': 'akvo/css/', 'hash': 'c19efd27a226e406f03f1b10ffe69a07e863b4de', 'type': 'css'}}
