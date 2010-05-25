@@ -8,7 +8,7 @@ def main():
     cwd = os.path.abspath(os.path.dirname(__file__))
     
     try:
-        from bundle_map import *
+        from map import *
     except Exception, e:
         return False
     
