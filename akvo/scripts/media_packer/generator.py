@@ -77,6 +77,7 @@ def main():
         BUNDLE_ITEMS['type'] = MEDIA_BUNDLES[bundle]['type']
         BUNDLE_MAP[bundle] = BUNDLE_ITEMS
         
+        print '%s compressed & packed!' % bundle
         
     # Persist BUNDLE_MAP to file
     try:

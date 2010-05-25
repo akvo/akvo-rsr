@@ -19,9 +19,8 @@ def main():
         rm_string = 'git rm %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
 
         try:
-            print rm_string
-            os.system(rm_string)
-            
+            #print rm_string
+            os.system(rm_string)   
             #print 'Removed %s' % bundle
         except Exception, e:
             print 'Could not remove the %s bundle' % bundle
@@ -29,8 +28,8 @@ def main():
     
     try:
         rm_map_string = 'git rm %s/map.py*' % cwd
-        print rm_map_string
-        # os.system(rm_map_string)
+        #print rm_map_string
+        os.system(rm_map_string)
     except Exception, e:
         print 'Could not remove the map'
         pass
