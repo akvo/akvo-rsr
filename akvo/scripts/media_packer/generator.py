@@ -93,7 +93,7 @@ def main():
     try:
         git_add_map_string = 'git add %s/map.py' % cwd
         os.system(git_add_map_string)
-        print git_add_map_string
+        #print git_add_map_string
         
     except Exception, e:
         raise e

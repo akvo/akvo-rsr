@@ -63,13 +63,17 @@ ul#main_nav li a span {
 #main_nav_language {
     float:left;
     width:247px;
+    width:254px;
     border-right: 1px solid #ACACBA;
     height:25px;
     }
 
-#main_nav_account {
-    border-right: None !important;
+#main_nav_account {    
     color:#32842F !important;
+}
+
+#main_nav_account span {
+    border-right: None !important;
 }
 
 ul#account_nav {
