@@ -3,7 +3,7 @@ function getHeight(widget_type)
 {	
 	switch(widget_type) 
 	{
-		case 'feature-side': 		return 840; break; 
+		case 'feature-side': return 840; break; 
 		case 'project-contribute':  return 570; break; 
 		case 'project-small':       return 312; break; 
 		case 'project-updates': 	return 900; break; 

@@ -7,8 +7,6 @@ from django import template
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.scripts.media_packer import map
-
 register = template.Library()
 
 @register.inclusion_tag('inclusion_tags/funding_bar.html')
@@ -160,12 +158,12 @@ def update_thumb(context, update, width, height):
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
     }
-    
+
+from akvo.scripts.media_packer import map
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def media_bundle(context, bundle):
     '''
     Uses the akvo/scripts/media_packer/map.py to retrive a resource file
-    Needs: "from akvo.scripts.media_packer import map"
     '''
     
     cant_get_map = False
@@ -176,9 +174,9 @@ def media_bundle(context, bundle):
         cant_get_map = True
         
     if settings.STYLES_RAW or cant_get_map:
-        bundle_path = 'akvo/css/%s_raw.%s' % (bundle,'css')
+        bundle_path = 'akvo/css/%s_raw.%s' % (bundle,map.BUNDLE_MAP['%s' % str(bundle)]['type'])
     else:
-        bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_hash, 'css')
+        bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_hash, map.BUNDLE_MAP['%s' % str(bundle)]['type'])
     
     return {
         'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'bundle_path': bundle_path,
