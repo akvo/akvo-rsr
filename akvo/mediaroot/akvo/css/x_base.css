@@ -13,3 +13,7 @@ div#main_container {
     color:#000;
     padding-top:40px;
 }
+
+#test {
+    display:none;
+    }

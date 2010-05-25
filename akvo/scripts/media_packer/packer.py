@@ -134,8 +134,6 @@ def generate():
         raise e
 
     return True
-    
-    
 
 
 def main():
