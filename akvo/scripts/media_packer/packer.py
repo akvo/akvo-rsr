@@ -5,7 +5,6 @@
 
 # 1. Clean up old files (bundle and map in the cleaner script)
 # 2. Generate new files in the generate script (both media bundle files and a map file)
-# 3. Add the new files to the git index before proceeding with the commit
 
 
 import sys, os, hashlib
@@ -26,9 +25,6 @@ def main():
         print 'Generator did create new files'
     else:
         print 'Generator could not find a media_bundle file'
-    
-    # 3. Add the new files to the git index before proceeding with the commit
-    
         
     return True
 
