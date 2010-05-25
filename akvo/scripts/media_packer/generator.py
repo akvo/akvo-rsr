@@ -63,7 +63,8 @@ def main():
         # Add the new file to the git index
         try:
             git_add_string = 'git add %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
-            print git_add_string
+            #print git_add_string
+            os.system(git_add_string)
         except Exception, e:
             print 'Could not add the bundle file to the Git index'
             raise e
@@ -90,6 +91,7 @@ def main():
     # Add map to the Git index
     try:
         git_add_map_string = 'git add %s/map.py' % cwd
+        os.system(git_add_map_string)
         print git_add_map_string
         
     except Exception, e:
