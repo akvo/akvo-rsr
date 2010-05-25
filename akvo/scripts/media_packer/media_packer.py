@@ -88,7 +88,6 @@ def main():
         raise e
     
     print 'Persisted BUNDLE_MAP'
-    
     print >> sys.stdout, 20 * "-" + "\nCompleted all, yay :-)"
     
     return True
