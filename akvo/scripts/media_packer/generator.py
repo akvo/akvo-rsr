@@ -60,6 +60,18 @@ def main():
             print 'Could not add hash to file name'
             raise e
         
+        # Add the new file to the git index
+        try:
+            git_add_string = 'git add %s %s/../../mediaroot/%s%s_min_%s.%s' % (bundle_file_path, cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
+            print git_add_string
+        except Exception, e:
+            print 'Could not add the bundle file to the Git index'
+            raise e
+            
+        
+        
+        
+        # Prepare for the map file 
         BUNDLE_ITEMS = {}
         BUNDLE_ITEMS['hash'] = bundle_hash
         BUNDLE_ITEMS['path'] = MEDIA_BUNDLES[bundle]['path']

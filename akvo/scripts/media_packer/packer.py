@@ -28,6 +28,7 @@ def main():
         print 'Generator could not find a media_bundle file'
     
     # 3. Add the new files to the git index before proceeding with the commit
+    
         
     return True
 
