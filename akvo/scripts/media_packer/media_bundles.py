@@ -10,6 +10,6 @@ MEDIA_BUNDLES = {
         'type': 'js',
         'path': 'akvo/js/',
         'compress': True,
-        'files': ['x_modernizr-1.1.js','x_z.js'],
+        'files': ['x_modernizr-1.1.js'],
     },
 }

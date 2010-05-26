@@ -1,1 +1,0 @@
-alert('Does it work');
