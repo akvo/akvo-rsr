@@ -56,7 +56,7 @@ def generate():
                 source_file.close()                
                 file_contents = '%s\n\n/*%s\n Contents from: %s\n%s*/\n\n%s' % (file_contents, 75*'-', file_element, 75*'-', tmp)
                 if MEDIA_BUNDLES[bundle]['type'] == 'css':
-                    raw_file_contents = '@import url("%s.css");\n' % file_element
+                    raw_file_contents = '%s@import url("%s.css");\n' % (raw_file_contents, file_element)
             except Exception, e:
                 print 'Could not find bundle source file: %s' % file_element
                 raise e
@@ -94,20 +94,17 @@ def generate():
         # Add the new file to the git index
         try:
             git_add_string = 'git add %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
-            #print git_add_string
             os.system(git_add_string)
         except Exception, e:
             print 'Could not add the bundle file to the Git index'
             raise e
             
-        
         # Prepare for the map file 
         BUNDLE_ITEMS = {}
         BUNDLE_ITEMS['hash'] = bundle_hash
         BUNDLE_ITEMS['path'] = MEDIA_BUNDLES[bundle]['path']
         BUNDLE_ITEMS['type'] = MEDIA_BUNDLES[bundle]['type']
         BUNDLE_MAP[bundle] = BUNDLE_ITEMS
-        
         
         # If a css bundle create a raw file to devlopment
         if MEDIA_BUNDLES[bundle]['type'] == 'css':
@@ -119,6 +116,13 @@ def generate():
                 raw_file.close()
             except Exception, e:
                 print 'Could not write raw file'
+            
+            try:
+                git_add_raw_file_string = 'git add %s' % raw_file_path
+                os.system(git_add_raw_file_string)
+            except Exception, e:
+                print 'Could not add the new raw file to git'
+        
         
         print '%s compressed & packed!' % bundle
         
