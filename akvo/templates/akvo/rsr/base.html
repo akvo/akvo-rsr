@@ -10,7 +10,7 @@
 	{% media_bundle 'akvo_style' %}
 	
 	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://{{ request.META.HTTP_HOST }}/blog/?feed=rss2">
-	<link rel="shortcut icon" href="{{MEDIA_URL}}img/base/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
 </head>
 <body>
 	<div id="header">
@@ -177,10 +177,11 @@
 		
 		jQ(document).ready(function(){
 			{% block jq_ready %}{% endblock jq_ready %}
-			
+			/*
 			jQ('#main_nav_account').click(function () {
 				jQ('#account_nav').slideToggle();
 			});
+			*/
 			
 			jQ('#grid_toggle').click(function () {
 				jQ('#maincontainer').toggleClass('showgrid');
