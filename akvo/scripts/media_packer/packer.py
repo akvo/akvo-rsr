@@ -45,6 +45,7 @@ def generate():
     
     for bundle in MEDIA_BUNDLES:
         file_contents = ''
+        raw_file_contents = ''
         path = MEDIA_BUNDLES[bundle]['path']
 
         for file_element in MEDIA_BUNDLES[bundle]['files']:
@@ -54,6 +55,8 @@ def generate():
                 tmp = source_file.read()
                 source_file.close()                
                 file_contents = '%s\n\n/*%s\n Contents from: %s\n%s*/\n\n%s' % (file_contents, 75*'-', file_element, 75*'-', tmp)
+                if MEDIA_BUNDLES[bundle]['type'] == 'css':
+                    raw_file_contents = '@import url("%s.css");\n' % file_element
             except Exception, e:
                 print 'Could not find bundle source file: %s' % file_element
                 raise e
@@ -104,6 +107,18 @@ def generate():
         BUNDLE_ITEMS['path'] = MEDIA_BUNDLES[bundle]['path']
         BUNDLE_ITEMS['type'] = MEDIA_BUNDLES[bundle]['type']
         BUNDLE_MAP[bundle] = BUNDLE_ITEMS
+        
+        
+        # If a css bundle create a raw file to devlopment
+        if MEDIA_BUNDLES[bundle]['type'] == 'css':
+            try:
+                print 'Raw file:\n%s' % raw_file_contents
+                raw_file_path = '%s/../../mediaroot/%s%s_raw.css' % (cwd, path, bundle,)
+                raw_file = open(raw_file_path,"w")
+                raw_file.write(raw_file_contents)
+                raw_file.close()
+            except Exception, e:
+                print 'Could not write raw file'
         
         print '%s compressed & packed!' % bundle
         

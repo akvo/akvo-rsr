@@ -1,7 +1,7 @@
 {% ifequal bundle_type 'css'  %}
-<link rel="stylesheet" href="{{MEDIA_URL}}{{path|safe}}" type="text/css" media="screen" title="main">
+	<link rel="stylesheet" href="{{MEDIA_URL}}{{path|safe}}" type="text/css" media="screen" title="main">
 {% else %}	
-<script src="{{MEDIA_URL}}{{path|safe}}" type="text/javascript" charset="utf-8"></script>
+	<script src="{{MEDIA_URL}}{{path|safe}}" type="text/javascript" charset="utf-8"></script>
 {% endifequal %}
 
 

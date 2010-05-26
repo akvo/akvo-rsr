@@ -13,12 +13,3 @@ MEDIA_BUNDLES = {
         'files': ['x_modernizr-1.1.js',],
     },
 }
-
-"""
-'jquery': {
-    'type': 'js',
-    'path': 'js/',
-    'compress': False,
-    'files': ['src/jquery.js'],
-},
-"""

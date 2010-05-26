@@ -85,6 +85,7 @@
 		<div class="span-12 first" style="background-color:#fff">
 			<div class="round">
 				<div style="margin:20px;">
+					<h1 id="modern_header">&nbsp;</h1>
 					{% lorem 2 p %}
 					<h2>Header 2</h2>
 					{% lorem 14 p %}
@@ -93,8 +94,8 @@
 		</div>
 		<div class="span-6 last" style="background-color:#fff">
 			<div class="round">
-				<div style="margin:20px;">
-					{% lorem 7 p %}
+				<div style="margin:20px; font-size:0.85em">
+					{% lorem 9 p %}
 				</div>
 			</div>			
 		</div>
@@ -169,8 +170,9 @@
 	</div>
 		
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-	{% block js %}
 	{% media_bundle 'akvo_js' %}
+	{% block js %}
+	
 	{% endblock js%}
 	
 	<script type="text/javascript">
@@ -189,9 +191,9 @@
 			});
 			
 			if (Modernizr.cssanimations) {
-				alert('Support for CSS Animations!');
+				jQ('#modern_header').html('Support for CSS Animations!');
 			} else {
-				alert('No support for CSS Animations!');
+				jQ('#modern_header').html('No support for CSS Animations!');
 			};
 			
 		});		
