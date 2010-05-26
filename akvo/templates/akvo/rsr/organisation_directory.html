@@ -1,0 +1,28 @@
+{% extends "rsr/base.html" %}
+
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+
+{% block title %} 
+	{{block.super}} - 
+		{% ifequal org_type 'all' %}
+			{% trans 'Partners' %}
+		{% else %}
+			{% ifequal org_type 'funding' %}{% trans 'Funding partners' %}{% endifequal %}
+			{% ifequal org_type 'support' %}{% trans 'Support partners' %}{% endifequal %}
+			{% ifequal org_type 'field' %}{% trans 'Field partners' %}{% endifequal %}
+			{% ifequal org_type 'sponsor' %}{% trans 'Sponsor partners' %}{% endifequal %}
+		{% endifequal %}
+{% endblock %}
+
+{% block maincontent %}
+	<div class="span-18" style="background-color:#fff">
+		<div class="round">
+			<div style="margin:20px;">
+				<h1>Partners || organisations?</h1>
+				{% lorem 6 p %}
+			</div>
+		</div>
+	</div>
+	
+
+{% endblock maincontent %}

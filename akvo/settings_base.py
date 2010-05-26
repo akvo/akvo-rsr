@@ -153,4 +153,4 @@ TIME_ZONE = 'Europe/Stockholm'
 # to load the internationalization machinery.
 USE_I18N = True
 
-STYLES_RAW = False
+DEV_STYLES = False
