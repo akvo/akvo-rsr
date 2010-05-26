@@ -160,29 +160,47 @@ def update_thumb(context, update, width, height):
     }
 
 from akvo.scripts.media_packer import map
+from akvo.scripts.media_packer import media_bundles
 @register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
 def media_bundle(context, bundle):
     '''
     Uses the akvo/scripts/media_packer/map.py to retrive a resource file
     '''
-    
     cant_get_map = False
+    script_import_string = ''
+    path = ''
     try:
         bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
         bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
         bundle_path = map.BUNDLE_MAP['%s' % str(bundle)]['path']
-        
     except Exception, e:
         bundle_hash = '000'
         cant_get_map = True
     
     if settings.STYLES_RAW or cant_get_map:
+        if media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['type'] == 'css':
+            path = '%s%s_raw.%s' % (bundle_path, bundle, bundle_type)
+        else:
+            script_import_string = ''
+            '''
+            for media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['files']:
+                url = '%s%s%s' % (settings.MEDIA_URL, media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['path'], bundle)
+                script_import_string = '%s<script src="%s_raw.js" type="text/javascript" charset="utf-8"></script>\n' % (script_import_string, url)
+            '''
+        
+    else:
+        path = '%s%s_min_%s.%s' % (bundle_path, bundle, bundle_hash, bundle_type)
+    
+    
+    '''
+    if settings.STYLES_RAW or cant_get_map:
         path = '%s%s_raw.%s' % (bundle_path, bundle, bundle_type)
     else:
         path = '%s%s_min_%s.%s' % (bundle_path, bundle, bundle_hash, bundle_type)
+    '''
 
     return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'path': path, 'bundle_type': bundle_type, 
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'path': path, 'bundle_type': bundle_type, 'scripts': script_import_string,
     }
 
 
