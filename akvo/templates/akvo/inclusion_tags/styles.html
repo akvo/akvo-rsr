@@ -1,11 +1,10 @@
+{{path|safe}}
+{% comment %}
 {% ifequal bundle_type 'css'  %}
 	<link rel="stylesheet" href="{{MEDIA_URL}}{{path|safe}}" type="text/css" media="screen" title="main">
 {% else %}	
-	{{scripts}}
-{% comment %}
-<script src="{{MEDIA_URL}}{{path|safe}}" type="text/javascript" charset="utf-8"></script>	
-{% endcomment %}
 
 {% endifequal %}
+{% endcomment %}
 
 

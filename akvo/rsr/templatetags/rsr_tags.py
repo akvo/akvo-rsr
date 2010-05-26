@@ -174,33 +174,31 @@ def media_bundle(context, bundle):
         bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
         bundle_path = map.BUNDLE_MAP['%s' % str(bundle)]['path']
     except Exception, e:
+        print 'Got problems'
         bundle_hash = '000'
         cant_get_map = True
     
     if settings.STYLES_RAW or cant_get_map:
         if media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['type'] == 'css':
-            path = '%s%s_raw.%s' % (bundle_path, bundle, bundle_type)
+            url = '%s%s%s_raw.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_type)
+            script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
+            path = script_string
         else:
             script_import_string = ''
-            '''
-            for media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['files']:
-                url = '%s%s%s' % (settings.MEDIA_URL, media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['path'], bundle)
-                script_import_string = '%s<script src="%s_raw.js" type="text/javascript" charset="utf-8"></script>\n' % (script_import_string, url)
-            '''
-        
+            for file_element in media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['files']:
+                url = '%s%s%s' % (settings.MEDIA_URL, media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['path'], file_element)
+                script_import_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n\t' % (script_import_string, url)
+            path = script_import_string
     else:
-        path = '%s%s_min_%s.%s' % (bundle_path, bundle, bundle_hash, bundle_type)
+        url = '%s%s%s_min_%s.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_hash, bundle_type)
+        if bundle_type == 'css':
+            script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
+        else:
+            script_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n' % (script_import_string, url)
+        path = script_string
     
-    
-    '''
-    if settings.STYLES_RAW or cant_get_map:
-        path = '%s%s_raw.%s' % (bundle_path, bundle, bundle_type)
-    else:
-        path = '%s%s_min_%s.%s' % (bundle_path, bundle, bundle_hash, bundle_type)
-    '''
-
     return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'path': path, 'bundle_type': bundle_type, 'scripts': script_import_string,
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'path': path, 'bundle_type': bundle_type,
     }
 
 
