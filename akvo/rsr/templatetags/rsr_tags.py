@@ -169,15 +169,19 @@ def media_bundle(context, bundle):
     cant_get_map = False
     try:
         bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
+        bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
+        bundle_path = map.BUNDLE_MAP['%s' % str(bundle)]['path']
+        
     except Exception, e:
         bundle_hash = '000'
         cant_get_map = True
     
-    bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
+    
     if settings.STYLES_RAW or cant_get_map:
-        bundle_path = 'akvo/css/%s_raw.%s' % (bundle,bundle_type)
+        path = '%s%s_raw.%s' % (bundle_path, bundle, bundle_type)
     else:
-        bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_type)
+        path = '%s%s_min_%s.%s' % (bundle_path, bundle, bundle_hash, bundle_type)
+
     '''
     if settings.STYLES_RAW or cant_get_map:
         bundle_path = 'akvo/css/%s_raw.%s' % (bundle,map.BUNDLE_MAP['%s' % str(bundle)]['type'])
@@ -185,7 +189,7 @@ def media_bundle(context, bundle):
         bundle_path = 'akvo/css/%s_min_%s.%s' % (bundle, bundle_hash, map.BUNDLE_MAP['%s' % str(bundle)]['type'])
     '''
     return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'bundle_path': bundle_path, 'bundle_type': 
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.STYLES_RAW, 'path': path, 'bundle_type': bundle_type, 
     }
 
 

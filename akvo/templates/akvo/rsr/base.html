@@ -170,6 +170,7 @@
 		
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	{% block js %}
+	{% media_bundle 'akvo_js' %}
 	{% endblock js%}
 	
 	<script type="text/javascript">
@@ -186,6 +187,13 @@
 			jQ('#grid_toggle').click(function () {
 				jQ('#maincontainer').toggleClass('showgrid');
 			});
+			
+			if (Modernizr.cssanimations) {
+				alert('Support for CSS Animations!');
+			} else {
+				alert('No support for CSS Animations!');
+			};
+			
 		});		
 	</script>	
 </body>
