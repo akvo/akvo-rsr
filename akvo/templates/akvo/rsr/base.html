@@ -17,7 +17,7 @@
 		<div id="header_container" class="container">
 			<ul id="main_nav">
 				<li>
-					<a id="main_nav_left" href="#">
+					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
 						<span>Akvo</span>
 					</a>
 				</li>
@@ -27,12 +27,12 @@
 					</a>
 				</li>
 				<li>
-					<a href="#">
+					<a href="/rsr/organisations/" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
 						<span>Partners</span>
 					</a>
 				</li>
 				<li>
-					<a href="#" class="active" >
+					<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 						<span>Projects</span>
 					</a>
 				</li>
@@ -62,6 +62,7 @@
 					<a id="main_nav_account" href="#">
 						<span>Sign In</span>
 					</a>
+					{% comment %}
 					<ul id="account_nav">
 						<li>
 							<a href="http://www.facebook.com/friends/?ref=tn">Edit Friends</a>
@@ -76,29 +77,15 @@
 						<li><a class="dropdown_item" href="http://www.facebook.com/help/?ref=drop">Help Center</a></li>
 						<li><a href="http://www.facebook.com/logout.php?h=bf128b45f44fe5c84dbd9c1705c51b1c&amp;t=1274497697&amp;ref=mb">Logout</a></li>
 					</ul>
+					{% endcomment %}
 				</li>
 			</ul>
 		</div>
 	</div>
 	<div id="main_container" class="container">
 		{% block maincontent %}
-		<div class="span-12 first" style="background-color:#fff">
-			<div class="round">
-				<div style="margin:20px;">
-					<h1 id="modern_header">&nbsp;</h1>
-					{% lorem 2 p %}
-					<h2>Header 2</h2>
-					{% lorem 14 p %}
-				</div>
-			</div>
-		</div>
-		<div class="span-6 last" style="background-color:#fff">
-			<div class="round">
-				<div style="margin:20px; font-size:0.85em">
-					{% lorem 9 p %}
-				</div>
-			</div>			
-		</div>
+			<h1>Akvo RSR</h1>
+		
 		{% endblock maincontent %}
 	</div>
 	<div id="footer">
@@ -171,9 +158,7 @@
 		
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	{% media_bundle 'akvo_js' %}
-	{% block js %}
-	
-	{% endblock js%}
+	{% block js %}{% endblock js%}
 	
 	<script type="text/javascript">
 		var $ = jQ = jQuery.noConflict();
@@ -191,9 +176,9 @@
 			});
 			
 			if (Modernizr.cssanimations) {
-				jQ('#modern_header').html('Support for CSS Animations!');
+				jQ('#modern_header').html('Browser support CSS Animations!');
 			} else {
-				jQ('#modern_header').html('No support for CSS Animations!');
+				jQ('#modern_header').html('Browser does not support CSS Animations!');
 			};
 			
 		});		

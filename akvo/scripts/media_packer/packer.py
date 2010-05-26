@@ -152,13 +152,15 @@ def main():
     
     # 1. Clean up old files (bundle and map in the cleaner script)
     if (clean()):
-        print 'Cleaner did remove files'
+        pass
+        #print 'Cleaner did remove files'
     else:
         print 'Cleaner did not find a map file'
     
     # 2. Generate new files in the generate script (both media bundle files and a map file)
     if (generate()):
-        print 'Generator did create new files'
+        pass
+        #print 'Generator did create new files'
     else:
         print 'Generator could not find a media_bundle file'
         
