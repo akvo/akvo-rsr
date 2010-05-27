@@ -10,34 +10,94 @@
 <li id="last_breadcrum_item">Search results: "search string here"</li>
 {% endblock breadcrum_items %}
 
-{% block maincontent %}
-	
-	
-	{% comment %}
-	{% block breadcrum  %}	
-	<div class="span-18">
-		<div id="breadcrum_back">
-			<ul id="breadcrum">
-				<li><a href="/"><span>Home</span></a></li>
-				<li><a href="/rsr/projects/"><span>Projects</span></a></li>
-				<li id="last_breadcrum_item">Search results: "search string here"</li>
-			</ul>
-			<div class="clear"></div>
+{% block maincontent %}	
+	<h1 style="color: #2097F7">Find projects and programmes</h1>
+	<form action="." method="get" accept-charset="utf-8">
+		<div class="span-18" style="background-color: #D3F1FE;">
+			<div class="span-7 first">
+				<div class="space20">
+					<input type="search" name="project_search" value="" id="search" style="width:350px;"> 
+				</div>
+			</div>
+			<div class="span-11 last">
+				<div class="space20">
+					<input type="submit" value="Search">
+				</div>
+			</div>
 		</div>
-	</div>
-	{% endblock breadcrum %}
-	{% endcomment %}
+		
+		<div class="span-18">
+			<div class="linear_bg" style="height:100px;">
+				<div class="span-4 first">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Sectors</h3>						
+					</div>
+				</div>
+				<div class="span-3">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Regions</h3>
+					</div>
+				</div>
+				<div class="span-3">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Updates</h3>
+					</div>
+				</div>
+				<div class="span-3">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Status</h3>
+					</div>
+				</div>
+				<div class="span-4 last">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Budget Range</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 	
-	
-	
-	<div>
-		&nbsp;
-	</div>
-	<div class="span-18" style="background-color:#fff">
+
+	<div class="span-18" style="background-color:#fff; margin-top:20px;">
 		<div class="round">
-			<div style="margin:20px;">
-				<h1>Projects</h1>
-				{% lorem 17 p %}
+			<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
+				<p style="margin-bottom:0;">2,573 results found for "search terms"</p>
+			</div>
+			<div class="linear_bg" style="padding:15px; border-bottom:1px solid #979AA5;">
+				<p style="margin-bottom:0;">Name, Country, Status, Partners, Last Update, Funding</p>
+			</div>
+			<div>
+				{% for p in page.object_list %}
+					<div style="background-color:#{% cycle 'fff' 'F1F5F9' %};height:100px;">
+						<div style="float: left; width:130px;">
+							<div class="space10">
+								<a href="{% url akvo.rsr.views.projectmain p.id %}">
+						            {% project_thumb p 100 75 'float:left; margin-right: 10px;' %}
+						        </a>			
+							</div>
+						</div>
+						<div style="float: left; width:530px;">
+							<div class="space10">
+								<p style="margin-bottom:0;">
+									<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a><br />
+									{{p.subtitle}}<br />
+									{{p.country}}
+								</p>
+							</div>
+						</div>
+						<div style="float: left; width:230px;">
+							<div class="space10">
+								<p style="margin-bottom:0;">
+									{{p.show_status}}
+								</p>
+							</div>
+						</div>			
+						<div class="clear"></div>
+					</div>
+				{% endfor %}
+			</div>
+			<div style="background-color:#E5E5E9; padding:15px; border-top:1px solid #979AA5;">
+				<p style="margin-bottom:0;">Page 7 of 124</p>
 			</div>
 		</div>
 	</div>
