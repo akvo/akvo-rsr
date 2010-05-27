@@ -20,39 +20,20 @@ def clean():
             rm_string = 'git rm --quiet %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
             retcode = subprocess.call(rm_string, shell=True)
             if retcode < 0:
-                print >>sys.stderr, "Child was terminated by signal", -retcode
+                print >>sys.stderr, "git rm was terminated by signal", -retcode
             else:
-                print >>sys.stderr, "Child returned", retcode
-                
-            
+                pass
+                #print >>sys.stderr, "Child returned", retcode
         except OSError, e:
-            print 'Could not remove old bundle file. Got error %s' % e
-        '''
-        #retcode = subprocess.call(["ls", "-l"])
-        try:
-            retcode = call("mycmd" + " myarg", shell=True)
-            if retcode < 0:
-                print >>sys.stderr, "Child was terminated by signal", -retcode
-            else:
-                print >>sys.stderr, "Child returned", retcode
-        except OSError, e:
-            print >>sys.stderr, "Execution failed:", e
-        
-        ---
-        try:
-            rm_string = 'git rm %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
-            os.system(rm_string)   
-        except Exception, e:
-            print 'Could not remove the %s bundle' % bundle
-            pass
-        '''
+            print 'Could not remove old bundle files. Got error %s' % e
     
     try:
-        rm_map_string = 'git rm %s/map.py' % cwd
-        os.system(rm_map_string)
-    except Exception, e:
-        print 'Could not remove the map'
-        pass
+        rm_map_string = 'git rm --quiet %s/map.py' % cwd
+        retcode = subprocess.call(rm_map_string, shell=True)
+        if retcode < 0:
+            print >>sys.stderr, "git rm was terminated by signal", -retcode
+    except OSError, e:
+        print 'Could not remove the map. Got error %s' % e
     
     return True
     
@@ -94,11 +75,14 @@ def generate():
         # Compressing using YUI Compres
         if MEDIA_BUNDLES[bundle]['compress'] == True:
             try:
-                compressor_string = 'java -jar %s/yuicompressor-2.4.2.jar %s --charset utf-8 -v -o %s' % (cwd,bundle_file_path,bundle_file_path)
+                compressor_string = 'java -jar %s/yuicompressor-2.4.2.jar %s --charset utf-8 --preserve-semi -o %s' % (cwd,bundle_file_path,bundle_file_path)
                 #print compressor_string
                 os.system(compressor_string)
-            except Exception, e:
-                print 'Problem with running the YUICompressor'
+                retcode = subprocess.call(compressor_string, shell=True)
+                if retcode < 0:
+                    print >>sys.stderr, "Yuicompressor was terminated by signal", -retcode
+            except OSError, e:
+                print 'Problem with running the YUICompressor. Got error: %s' % e
                 raise e
         
         # Name file with content hash
