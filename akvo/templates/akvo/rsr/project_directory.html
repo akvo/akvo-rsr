@@ -13,7 +13,7 @@
 {% block maincontent %}	
 	<h1 style="color: #2097F7">Find projects and programmes</h1>
 	<form action="." method="get" accept-charset="utf-8">
-		<div class="span-18" style="background-color: #D3F1FE;">
+		<div id="project_search" class="span-18">
 			<div class="span-7 first">
 				<div class="space20">
 					<input type="search" name="project_search" value="" id="search" style="width:350px;"> 
@@ -25,7 +25,7 @@
 				</div>
 			</div>
 		</div>
-		
+		{% comment %}
 		<div class="span-18">
 			<div class="linear_bg" style="height:100px;">
 				<div class="span-4 first">
@@ -55,6 +55,7 @@
 				</div>
 			</div>
 		</div>
+		{% endcomment %}
 	</form>
 	
 
