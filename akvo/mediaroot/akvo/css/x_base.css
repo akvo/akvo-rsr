@@ -12,11 +12,11 @@ div#main_container {
     background: #F9F9FA url(../img/footer_gradient.png) repeat-x top;
     color: #585E68;
     padding-top: 40px;
-}
+    }
 
 #footer h2, h3 {
     color: #585E68;
-}
+    }
 
 #breadcrum_back {
     background-color: #EFF3F5;

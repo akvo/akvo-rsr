@@ -159,16 +159,15 @@ def update_thumb(context, update, width, height):
         'wxh'       : '%sx%s' % (width, height,),
     }
 
-from akvo.scripts.media_packer import map
-from akvo.scripts.media_packer import media_bundles
-@register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
+from akvo.scripts.media_packer import map, media_bundles
+@register.inclusion_tag('inclusion_tags/media_bundle.html', takes_context=True)
 def media_bundle(context, bundle):
     '''
     Uses the akvo/scripts/media_packer/map.py to retrive a resource file
     '''
     cant_get_map = False
     script_import_string = ''
-    path = ''
+    include = ''
     try:
         bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
         bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
@@ -182,23 +181,23 @@ def media_bundle(context, bundle):
         if media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['type'] == 'css':
             url = '%s%s%s_raw.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_type)
             script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
-            path = script_string
+            include = script_string
         else:
             script_import_string = ''
             for file_element in media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['files']:
                 url = '%s%s%s' % (settings.MEDIA_URL, media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['path'], file_element)
                 script_import_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n\t' % (script_import_string, url)
-            path = script_import_string
+            include = script_import_string
     else:
         url = '%s%s%s_min_%s.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_hash, bundle_type)
         if bundle_type == 'css':
             script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
         else:
             script_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n' % (script_import_string, url)
-        path = script_string
+        include = script_string
     
     return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.DEV_STYLES, 'path': path, 'bundle_type': bundle_type,
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.DEV_STYLES, 'include': include, 'bundle_type': bundle_type,
     }
 
 

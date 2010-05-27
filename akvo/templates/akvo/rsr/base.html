@@ -46,6 +46,17 @@
 						<span>Akvo now</span>
 					</a>
 				</li>
+				{% comment %}
+					
+				{% endcomment %}
+				<li>
+					<span id="main_nav_language">
+						<form action="." method="get" accept-charset="utf-8">
+						  <input name="q" placeholder="Search akvo.org" type="search" style="margin-left:20px;margin-top:7px;width:215px;">
+						</form>
+					</span>
+				</li>
+				{% comment %}
 				<li>
 					<span id="main_nav_language">
 						<p class="small" style="margin-left:20px; margin-top:9px;">
@@ -53,6 +64,7 @@
 						</p>
 					</span>
 				</li>
+				{% endcomment %}
 				<li>
 					<a href="#">
 						<span>My Akvo</span>
@@ -67,9 +79,21 @@
 		</div>
 	</div>
 	<div id="main_container" class="container">
+		{% block breadcrum  %}
+			<div class="span-18">
+				<div id="breadcrum_back">
+					<ul id="breadcrum">
+						{% block breadcrum_items %}
+						<li><a href="/"><span>Home</span></a></li>
+						{% endblock breadcrum_items %}
+					</ul>
+					<div class="clear"></div>
+				</div>
+			</div>
+		{% endblock breadcrum %}
+		
 		{% block maincontent %}
 			<h1>Akvo RSR</h1>
-		
 		{% endblock maincontent %}
 	</div>
 	<div id="footer">
