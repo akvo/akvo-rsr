@@ -69,6 +69,10 @@ ul#main_nav li a span {
     text-shadow: #fff 1px 1px 0px;
     width:100px;
     }
+#main_nav_left img {
+    margin-left:4px;
+    margin-top:6px;
+}
 
 #main_nav_language {
     float:left;

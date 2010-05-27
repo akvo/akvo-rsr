@@ -14,6 +14,12 @@
 		{% endifequal %}
 {% endblock %}
 
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">Partners</li>
+{% endblock breadcrum_items %}
+
+
 {% block maincontent %}
 	<div class="span-18" style="background-color:#fff">
 		<div class="round">
