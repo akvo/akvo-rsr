@@ -9,5 +9,5 @@ try:
     retcode = subprocess.call(ln_string, shell=True)
     if retcode < 0:
         print >>sys.stderr, "Symlinking the githook was terminated by signal", -retcode
-    except OSError, e:
-        print 'Could not setup git hooks. Got error: %s' %s
+except OSError, e:
+    print 'Could not setup git hooks. Got error: %s' %s

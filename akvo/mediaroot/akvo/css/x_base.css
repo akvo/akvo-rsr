@@ -4,7 +4,7 @@ body {
     }
 
 div#main_container {
-    margin-top: 80px;
+    margin-top: 55px;
     margin-bottom: 40px;
     }
     
@@ -69,36 +69,3 @@ ul#breadcrum li a span {
     padding-left: 12px !important;
     font-size: 12px;
     }
-/*
-ul#breadcrum {
-    background-color:#EFF3F5;
-    border:1px solid #D6D7DD;
-    margin:0; 
-    padding:0
-    -khtml-border-radius: 2px;
-    -moz-border-radius: 2px; 
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    }
-
-ul#breadcrum li {
-    background: transparent url('../img/breadcrum.png') no-repeat right;
-    list-style: none;
-    display: inline;
-    margin:0;
-    padding:0;
-    padding-right:20px;
-    padding-left:12px;
-    font-size:12px;
-    }
-    
-ul#breadcrum li a {    
-    display: block;
-    float: left;
-    }
-
-ul#breadcrum li a span {
-    display:block;
-    height:24px;
-    }
-*/
