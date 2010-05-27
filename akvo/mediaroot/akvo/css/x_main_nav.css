@@ -36,11 +36,16 @@ ul#main_nav li a {
 
 ul#main_nav li a:hover {    
     background-color: #fff;
+    color:#2097F7;
     text-decoration: none;
     }
 
 ul#main_nav li a.active {
     background-color: #fff;
+    }
+    
+ul#main_nav li a { 
+    -webkit-transition:background-color .2s ease-out;
     }
 
 ul#main_nav li a span {
