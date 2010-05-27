@@ -77,7 +77,7 @@ def generate():
             try:
                 compressor_string = 'java -jar %s/yuicompressor-2.4.2.jar %s --charset utf-8 --preserve-semi -o %s' % (cwd,bundle_file_path,bundle_file_path)
                 #print compressor_string
-                os.system(compressor_string)
+                #os.system(compressor_string)
                 retcode = subprocess.call(compressor_string, shell=True)
                 if retcode < 0:
                     print >>sys.stderr, "Yuicompressor was terminated by signal", -retcode
@@ -94,17 +94,23 @@ def generate():
         try:
             mv_string = 'mv %s %s/../../mediaroot/%s%s_min_%s.%s' % (bundle_file_path, cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
             #print mv_string
-            os.system(mv_string)
-        except Exception, e:
-            print 'Could not add hash to file name'
+            #os.system(mv_string)
+            retcode = subprocess.call(mv_string, shell=True)
+            if retcode < 0:
+                print >>sys.stderr, "Could not move (rename) the bundle file, Move was terminated by signal", -retcode
+        except OSError, e:
+            print 'Could not add hash to file name, Got error: %s' %e
             raise e
         
         # Add the new file to the git index
         try:
             git_add_string = 'git add %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, MEDIA_BUNDLES[bundle]['path'], bundle, bundle_hash, MEDIA_BUNDLES[bundle]['type'])
-            os.system(git_add_string)
-        except Exception, e:
-            print 'Could not add the bundle file to the Git index'
+            #os.system(git_add_string)
+            retcode = subprocess.call(git_add_string, shell=True)
+            if retcode < 0:
+                print >>sys.stderr, "Could add the file to the git index, Git add was terminated by signal", -retcode
+        except OSError, e:
+            print 'Could not add the bundle file to the Git index. Got error: %s' % e
             raise e
             
         # Prepare for the map file 
@@ -126,9 +132,12 @@ def generate():
             
             try:
                 git_add_raw_file_string = 'git add %s' % raw_file_path
-                os.system(git_add_raw_file_string)
-            except Exception, e:
-                print 'Could not add the new raw file to git'
+                #os.system(git_add_raw_file_string)
+                retcode = subprocess.call(git_add_raw_file_string, shell=True)
+                if retcode < 0:
+                    print >>sys.stderr, "Could add raw file to the git index, Git add was terminated by signal", -retcode
+            except OSError, e:
+                print 'Could not add the new raw file to git. Got error: %s' % e
         
         
         print '%s compressed & packed!' % bundle
@@ -146,10 +155,12 @@ def generate():
     # Add map to the Git index
     try:
         git_add_map_string = 'git add %s/map.py' % cwd
-        os.system(git_add_map_string)
+        #os.system(git_add_map_string)
         #print git_add_map_string
-        
-    except Exception, e:
+        retcode = subprocess.call(git_add_map_string, shell=True)
+        if retcode < 0:
+            print >>sys.stderr, "Could add the map file to the git index, Git add was terminated by signal", -retcode
+    except OSError, e:
         raise e
 
     return True
