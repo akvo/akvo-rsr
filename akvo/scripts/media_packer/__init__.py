@@ -1,6 +1,6 @@
 
 # This will setup the githooks on first request.
-import os
+import os, subprocess
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 

@@ -1,19 +1,104 @@
 body {
     background: #F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
-    color:#000;
+    color: #000;
     }
 
 div#main_container {
-    margin-top:80px;
-    margin-bottom:40px;
+    margin-top: 80px;
+    margin-bottom: 40px;
     }
     
 #footer {
     background: #F9F9FA url(../img/footer_gradient.png) repeat-x top;
-    color:#585E68;
-    padding-top:40px;
+    color: #585E68;
+    padding-top: 40px;
 }
 
 #footer h2, h3 {
-    color:#585E68;
+    color: #585E68;
 }
+
+#breadcrum_back {
+    background-color: #EFF3F5;
+    border: 1px solid #D6D7DD;
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+ul#breadcrum {
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li {
+    list-style: none;
+    display: inline;
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li a {
+    display: block;
+    float: left;
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li a span {
+    background: transparent url('../img/breadcrum.png') no-repeat right;
+    display: block;
+    height: 23px;
+    margin: 0; 
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-left: 12px;
+    font-size: 12px;
+    }
+
+#last_breadcrum_item {
+    display: block;
+    color: #3D414B;
+    height: 23px;
+    margin: 0; 
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-left: 12px !important;
+    font-size: 12px;
+    }
+/*
+ul#breadcrum {
+    background-color:#EFF3F5;
+    border:1px solid #D6D7DD;
+    margin:0; 
+    padding:0
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+ul#breadcrum li {
+    background: transparent url('../img/breadcrum.png') no-repeat right;
+    list-style: none;
+    display: inline;
+    margin:0;
+    padding:0;
+    padding-right:20px;
+    padding-left:12px;
+    font-size:12px;
+    }
+    
+ul#breadcrum li a {    
+    display: block;
+    float: left;
+    }
+
+ul#breadcrum li a span {
+    display:block;
+    height:24px;
+    }
+*/
