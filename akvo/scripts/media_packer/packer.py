@@ -17,8 +17,8 @@ def clean():
         bundle_type = BUNDLE_MAP[bundle]['type']
         
         try:
-            rm_string = 'git rm %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
-            retcode = subprocess.call(rm_string, shell=True, stdout=None)
+            rm_string = 'git rm --quiet %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
+            retcode = subprocess.call(rm_string, shell=True)
             if retcode < 0:
                 print >>sys.stderr, "Child was terminated by signal", -retcode
             else:
