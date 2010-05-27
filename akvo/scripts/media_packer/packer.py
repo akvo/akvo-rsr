@@ -61,7 +61,7 @@ def generate():
     cwd = os.path.abspath(os.path.dirname(__file__))
     
     try:
-        from media_bundles import *
+        from media_bundles import MEDIA_BUNDLES
     except Exception, e:
         return False
         
