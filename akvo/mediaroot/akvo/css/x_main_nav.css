@@ -75,11 +75,11 @@ ul#main_nav li a span {
 
 #main_nav_account {    
     color:#32842F !important;
-}
+    }
 
 #main_nav_account span {
     border-right: None !important;
-}
+    }
 
 /*ul#account_nav {
     background-color:cyan;
