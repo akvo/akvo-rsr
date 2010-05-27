@@ -31,6 +31,7 @@ ul#main_nav li a {
     margin:0;
     padding:0;
     height:30px;
+    cursor: pointer;
     }
 
 ul#main_nav li a:hover {    
@@ -52,6 +53,7 @@ ul#main_nav li a span {
     the main_nav, use padding-top to position your text. */
     height:23px;
     padding-top:2px;
+    cursor: pointer;
     }
 
 #main_nav_left {
