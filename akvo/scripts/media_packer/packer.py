@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys, os, hashlib
+import sys, os, hashlib, subprocess
 
 def clean():
     cwd = os.path.abspath(os.path.dirname(__file__))
@@ -18,10 +18,34 @@ def clean():
         
         try:
             rm_string = 'git rm %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
+            retcode = subprocess.call(rm_string, shell=True)
+            if retcode < 0:
+                print >>sys.stderr, "Child was terminated by signal", -retcode
+            else:
+                print >>sys.stderr, "Child returned", retcode
+                
+            
+        except OSError, e:
+            print 'Could not remove old bundle file. Got error %s' % e
+        '''
+        #retcode = subprocess.call(["ls", "-l"])
+        try:
+            retcode = call("mycmd" + " myarg", shell=True)
+            if retcode < 0:
+                print >>sys.stderr, "Child was terminated by signal", -retcode
+            else:
+                print >>sys.stderr, "Child returned", retcode
+        except OSError, e:
+            print >>sys.stderr, "Execution failed:", e
+        
+        ---
+        try:
+            rm_string = 'git rm %s/../../mediaroot/%s%s_min_%s.%s' % (cwd, bundle_path, bundle,bundle_hash,bundle_type)
             os.system(rm_string)   
         except Exception, e:
             print 'Could not remove the %s bundle' % bundle
             pass
+        '''
     
     try:
         rm_map_string = 'git rm %s/map.py' % cwd
