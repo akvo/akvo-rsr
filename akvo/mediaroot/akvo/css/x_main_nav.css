@@ -27,6 +27,7 @@ ul#main_nav li a {
     font-size:0.875em;
     font-weight:bold;
     width: 90px;
+    overflow:hidden;
     margin:0;
     padding:0;
     /*height:30px;*/
@@ -58,26 +59,18 @@ ul#main_nav li a span {
     the main_nav, use padding-top to position your text. */
     height:28px;
     padding-top:5px;
-    /*height:23px;
-    padding-top:2px;*/
     cursor: pointer;
     }
 
-#main_nav_left {
-    color: #302972 !important;    
-    /*color: #74CDFD !important;*/
-    text-shadow: #fff 1px 1px 0px;
-    width:100px;
+a#main_nav_left {
+    width:100px !important;
+    overflow:hidden;
     }
-#main_nav_left img {
-    margin-left:4px;
-    margin-top:6px;
-}
 
 #main_nav_language {
     float:left;
-    width:247px;
-    width:254px;
+    width:243px;
+    overflow:hidden;
     border-right: 1px solid #ACACBA;
     height:32px;
     }
