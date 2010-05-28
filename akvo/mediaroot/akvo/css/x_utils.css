@@ -3,7 +3,10 @@
 .space10 { margin:10px; }
 .space15 { margin:15px; }
 .space20 { margin:20px; }
-
+.green {color:#4D8722;}
+.red {color:#A5000F;}
+.blue {color:#3A8CB9;}
+.yellow {color:#FEC344;}
 .round {
     -khtml-border-radius: 2px;
     -moz-border-radius: 2px; 
@@ -14,7 +17,7 @@
 
 .linear_bg {
     border:1px solid #D9DBDC;
-    background-color: #FEFEFF; /* fallback color */
+    background-color: #EFF3F3; /* fallback color */
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));  
     background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
     }
