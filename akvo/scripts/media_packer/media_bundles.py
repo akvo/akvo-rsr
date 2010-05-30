@@ -12,4 +12,10 @@ MEDIA_BUNDLES = {
         'compress': True,
         'files': ['x_modernizr-1.1.js'],
     },
+    'widget_cobranded_banner': {
+        'type': 'css',
+        'path': 'widgets/cobranded_banner/css/',
+        'compress': False,
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_2.css','x_widget_cobranded_banner.css',],
+    },
 }
