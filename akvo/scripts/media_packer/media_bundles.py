@@ -18,4 +18,10 @@ MEDIA_BUNDLES = {
         'compress': True,
         'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_2.css','x_widget_cobranded_banner.css',],
     },
+    'widget_cobranded_leader': {
+        'type': 'css',
+        'path': 'widgets/cobranded_leader/css/',
+        'compress': True,
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_2.css','x_widget_cobranded_leader.css',],
+    },
 }
