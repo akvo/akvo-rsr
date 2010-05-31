@@ -1,19 +1,15 @@
-div.2column_left {
+div.two_column_left {
     float:left;
     margin-right:11px;
+    width:664px;
     }
 
-div.2column_right {
+div.two_column_right {
     float:left;
     margin-right:0;
+    width:300px;
     }
     
-.2column_left {
-    width:960px;
-    background-color:cyan;
-    }
-
-.2column_right {
-    width:300px;
-    background-color:yellow;
+div.two_column_right_inner {
+    margin-left:7px;
     }

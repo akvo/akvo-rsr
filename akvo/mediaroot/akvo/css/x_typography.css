@@ -50,14 +50,16 @@ h1 {
     }
 
 h2 {
-    color:#000;
+    /*color:#000;*/
+    color:#2097F7;
     font-size:1.125em;
     line-height:1.2em;
     margin-bottom:0.5em;
     }
 
 h3 {
-    color:#000;
+    /*color:#000;*/
+    color:#2097F7;
     font-size: 1.0em;
     line-height:1.2em;
     margin-bottom:0.5em;

@@ -3,12 +3,65 @@
 
 {% block maincontent %}
 
-<div class="2column_left">
-	left
+<div class="two_column_left">
+	<div class="round" style="background-color:#fff;">
+		<div class="space20">
+			<h1>{{p.name}}</h1>
+			<p>{{p.subtitle}}</p>
+			<h4>{% trans 'Description' %}</h4>
+			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+		</div>
+	</div>
 </div>
 
-<div class="2column_right">
-	right
+<div class="two_column_right">
+	<div class="two_column_right_inner" style="background-color:#2096F5;">
+		<ul>
+			<li>Status</li>
+			<li>Funding</li>
+			<li>Schedule</li>
+			<li>Funding and milestone details</li>
+		</ul>
+		<h3>Latest updates</h3>
+	</div>
+	<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+		14-Jun-2010
+	</div>
+	<div class="two_column_right_inner">
+		<p>
+			<a href="#">Street level meetings held in Palada village</a><br />
+			Street level meetings where held on 14th April 2010 in Palada village ...
+		</p>
+	</div>
+	<div style="background-color:#AFF167;padding:2px;padding-left:15px">
+		14-Jun-2010
+	</div>
+	<div class="two_column_right_inner">
+		<p>
+			<a href="#">Street level meetings held in Palada village</a><br />
+			Street level meetings where held on 14th April 2010 in Palada village ...
+		</p>
+	</div>
+	<div class="two_column_right_inner">
+		<h2>Tools for this page</h2>
+		<div class="round" style="background-color:#fff">
+			<div class="space20">
+				<p>
+					...
+				</p>
+			</div>
+		</div>
+		<br />
+		<h2>Project partners</h2>
+		<div class="round" style="background-color:#fff">
+			<div class="space20">
+				<p>
+					...
+				</p>
+			</div>
+		</div>
+	</div>
+	
 </div>
 
 {% comment %}
