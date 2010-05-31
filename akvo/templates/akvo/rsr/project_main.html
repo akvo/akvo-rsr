@@ -1,0 +1,13 @@
+{% extends "rsr/project_base.html" %}
+
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+
+
+{% block maincontent %}
+
+<h1>{{p.name}}</h1>
+<p>{{p.subtitle}}</p>
+<h4>{% trans 'Description' %}</h4>
+{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+
+{% endblock maincontent %}

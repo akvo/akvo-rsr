@@ -42,7 +42,8 @@ p {
     }
 
 h1 {
-    color:#000;
+    /*color:#000;*/
+    color:#2097F7;
     font-size:1.625em;
     line-height:1.2em;
     margin-bottom:0.5em;
