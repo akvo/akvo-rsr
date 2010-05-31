@@ -1,13 +1,42 @@
 {% extends "rsr/project_base.html" %}
-
 {% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
-
 
 {% block maincontent %}
 
-<h1>{{p.name}}</h1>
-<p>{{p.subtitle}}</p>
-<h4>{% trans 'Description' %}</h4>
-{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+<div class="2column_left">
+	left
+</div>
+
+<div class="2column_right">
+	right
+</div>
+
+{% comment %}
+
+<div class="span-12 first">
+	<div class="round" style="background-color:#fff;">
+		<div class="space20">
+			<h1>{{p.name}}</h1>
+			<p>{{p.subtitle}}</p>
+			<h4>{% trans 'Description' %}</h4>
+			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+		</div>
+	</div>
+</div>
+<div class="span-6 last">
+	<div class="round" style="background-color:#fff;">
+		<div class="space20">
+			<ul>
+				<li>Status</li>
+				<li>Latest updates</li>
+				<li>Tools for this page</li>
+				<li>Project partners</li>
+			</ul>
+					
+			{% lorem 2 p %}
+		</div>
+	</div>
+</div>
+{% endcomment %}
 
 {% endblock maincontent %}

@@ -1,0 +1,19 @@
+div.2column_left {
+    float:left;
+    margin-right:11px;
+    }
+
+div.2column_right {
+    float:left;
+    margin-right:0;
+    }
+    
+.2column_left {
+    width:960px;
+    background-color:cyan;
+    }
+
+.2column_right {
+    width:300px;
+    background-color:yellow;
+    }
