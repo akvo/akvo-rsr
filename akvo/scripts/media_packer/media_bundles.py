@@ -36,4 +36,10 @@ MEDIA_BUNDLES = {
         'compress': True,
         'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global.css','x_widget_cobranded_short.css',],
     },
+    'widget_project': {
+        'type': 'css',
+        'path': 'widgets/project/css/',
+        'compress': True,
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project.css','../../widget_global.css',],
+    },
 }
