@@ -16,13 +16,13 @@ MEDIA_BUNDLES = {
         'type': 'css',
         'path': 'widgets/cobranded_banner/css/',
         'compress': True,
-        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_2.css','x_widget_cobranded_banner.css',],
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_horizontal.css','x_widget_cobranded_banner.css',],
     },
     'widget_cobranded_leader': {
         'type': 'css',
         'path': 'widgets/cobranded_leader/css/',
         'compress': True,
-        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_2.css','x_widget_cobranded_leader.css',],
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','../../widget_global_horizontal.css','x_widget_cobranded_leader.css',],
     },
     'widget_cobranded_narrow': {
         'type': 'css',
@@ -53,5 +53,11 @@ MEDIA_BUNDLES = {
         'path': 'widgets/project_list/css/',
         'compress': True,
         'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_list.css','../../widget_global.css',],
+    },
+    'widget_project_narrow': {
+        'type': 'css',
+        'path': 'widgets/project_narrow/css/',
+        'compress': True,
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_narrow.css','../../widget_global.css',],
     },
 }
