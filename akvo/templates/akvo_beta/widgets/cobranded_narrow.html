@@ -9,7 +9,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" />
+	{% media_bundle 'widget_cobranded_narrow' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
 	<!--[if IE]>
 	<style type="text/css" media="screen">
 		.divider { 

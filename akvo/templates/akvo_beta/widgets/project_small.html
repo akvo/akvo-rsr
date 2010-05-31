@@ -11,8 +11,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<title>{% block title %}Akvo.org{% endblock title %}</title>
 	<base target="_parent" />
 	
-	{% block style %} 
-	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_small/css/screen.css" type="text/css" media="screen, projection" />
+	{% block style %}
+	{% media_bundle 'widget_project_small' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_small/css/screen.css" type="text/css" media="screen, projection" /> #}
 	{% endblock style %}
 	
 	<style type="text/css" media="screen">

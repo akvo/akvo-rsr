@@ -20,9 +20,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	
+	{% media_bundle 'widget_cobranded_banner' %}
+	{% comment %}
 	{% block style %} 
 	<link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_banner/css/screen.css" type="text/css" media="screen, projection" />
-	{% endblock style %}
+	{% endblock style %}	
+	{% endcomment %}
+	
 	
 	<style type="text/css" media="screen">
 	{% block inline_styles %}

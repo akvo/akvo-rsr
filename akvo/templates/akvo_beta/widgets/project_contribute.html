@@ -9,7 +9,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	 <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_contribute/css/screen.css" type="text/css" media="screen, projection" />
+	{% media_bundle 'widget_project_contribute' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_contribute/css/screen.css" type="text/css" media="screen, projection" /> #}
 {% endblock style %}
 
 {% block inline_styles %}
