@@ -9,7 +9,10 @@
 			<h1>{{p.name}}</h1>
 			<p>{{p.subtitle}}</p>
 			<h4>{% trans 'Description' %}</h4>
+			{{p.project_plan_summary|linebreaks}}
 			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+			<br /><br />
+			City: {{p.city}}
 		</div>
 	</div>
 </div>

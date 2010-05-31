@@ -56,7 +56,17 @@
 		</div>
 	</form>
 	{% endcomment %}
-	<h1 style="color: #2097F7">Project listing</h1>
+	<h1>Project listing</h1>
+	<form action="." method="get" accept-charset="utf-8">
+		<div id="project_search" class="span-18">
+			<div class="round">
+				<div class="space15">
+					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}">
+					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">
+				</div>
+			</div>
+		</div>
+	</form>
 	<div class="span-18" style="background-color:#fff; margin-top:15px;">
 		<div class="round">
 			<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
