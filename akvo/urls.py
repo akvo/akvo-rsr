@@ -55,7 +55,9 @@ urlpatterns = patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
     (r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', ),
     (r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
-    (r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', ),
+    #(r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', ),
+    url(r'^rsr/project/(?P<project_id>\d+)/funding/$','akvo.rsr.views.projectfunding', name='project_funding'),
+    
 	(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', ),
 	#(r'^rsr/project/(?P<project_id>\d+)/customise-widget$', 'akvo.rsr.views.customisewidget', ),
     

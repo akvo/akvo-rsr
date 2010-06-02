@@ -1,0 +1,17 @@
+{% extends "rsr/project_subpage_base.html" %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">Funding</li>
+{% endblock breadcrum_items %}
+
+{% block project_left_column %}
+	<div class="round" style="background-color:#fff;">
+		<div class="space20">
+			<h1>Funding</h1>
+			<p>...
+			</p>
+		</div>
+	</div>
+{% endblock project_left_column%}

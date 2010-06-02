@@ -1,0 +1,6 @@
+{% extends "rsr/project_base.html" %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li><a href="{% url project_main p.id %}"><span>{{p.name}}</span></a></li>
+{% endblock breadcrum_items %}

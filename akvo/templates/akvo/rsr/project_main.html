@@ -1,8 +1,29 @@
 {% extends "rsr/project_base.html" %}
 {% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
 
-{% block maincontent %}
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{{p.name}}</li>
+{% endblock breadcrum_items %}
 
+
+{% block project_left_column %}
+	<div class="round" style="background-color:#fff;">
+		<div class="space20">
+			<h1>{{p.name}}</h1>
+			<p style="color:#7E8197;">{{p.subtitle}}</p>
+			<h4>{% trans 'Description' %}</h4>
+			{{p.project_plan_summary|linebreaks}}
+			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
+			<br /><br />
+			City: {{p.city}}
+		</div>
+	</div>
+{% endblock project_left_column%}
+
+
+{% comment %}
+{% block maincontent %}
 <div class="two_column_left">
 	<div class="round" style="background-color:#fff;">
 		<div class="space20">
@@ -18,13 +39,14 @@
 </div>
 
 <div class="two_column_right">
-	<div class="two_column_right_inner" style="background-color:#2096F5;">
-		<ul>
-			<li>Status</li>
-			<li>Funding</li>
-			<li>Schedule</li>
-			<li>Funding and milestone details</li>
-		</ul>
+	<div id="project_status" class="two_column_right_inner">
+		<div>
+			{{p.show_status_large}}<br /><br />
+			Status,<br />
+			Funding,<br />
+			Schedule,<br />
+			Funding and milestone details
+		</div>
 	</div>
 	<div class="two_column_right_inner">
 		<h2>Latest updates</h2>
@@ -66,35 +88,7 @@
 			</div>
 		</div>
 	</div>
-	
 </div>
-
-{% comment %}
-
-<div class="span-12 first">
-	<div class="round" style="background-color:#fff;">
-		<div class="space20">
-			<h1>{{p.name}}</h1>
-			<p>{{p.subtitle}}</p>
-			<h4>{% trans 'Description' %}</h4>
-			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
-		</div>
-	</div>
-</div>
-<div class="span-6 last">
-	<div class="round" style="background-color:#fff;">
-		<div class="space20">
-			<ul>
-				<li>Status</li>
-				<li>Latest updates</li>
-				<li>Tools for this page</li>
-				<li>Project partners</li>
-			</ul>
-					
-			{% lorem 2 p %}
-		</div>
-	</div>
-</div>
-{% endcomment %}
 
 {% endblock maincontent %}
+{% endcomment %}

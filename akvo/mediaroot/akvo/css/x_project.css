@@ -1,0 +1,21 @@
+#project_status {
+    background-color: #2096F5; /* fallback color */
+    background-image: -moz-linear-gradient(100% 100% 90deg, #2096F5, #2D80AE);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#2096F5), to(#2D80AE));
+    color:#fff;
+    margin-bottom:20px;
+    }
+    
+#project_status div {
+    margin:0px 15px; padding:20px 0px;
+    }
+    
+/* Get's the color in the models file!*/
+.status_large {
+    padding:5px 10px;
+    -khtml-border-radius: 13px;
+    -moz-border-radius: 13px; 
+    -webkit-border-radius: 13px;
+    border-radius: 13px;
+    font-size:1.2em;
+    }

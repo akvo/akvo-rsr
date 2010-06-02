@@ -337,7 +337,6 @@ STATUSES = (
 #STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
 STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
 
-
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
@@ -741,6 +740,10 @@ class Project(models.Model):
     def show_status(self):
         "Show the current project status"
         return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        
+    def show_status_large(self):
+        "Show the current project status with background"
+        return mark_safe("<span class='status_large' style='background-color:%s; color: inherit;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
     
     def show_current_image(self):
         try:
