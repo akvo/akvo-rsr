@@ -11,6 +11,8 @@
 
 {% block maincontent %}
 <div class="two_column_left">
+	<h1>{{p.name}}</h1>
+	<p style="color:#7E8197;">{{p.subtitle}}</p>
 	{% block project_left_column %}{% endblock project_left_column%}
 </div>
 
@@ -18,43 +20,65 @@
 	<div id="project_status" class="two_column_right_inner">
 		<div>
 			{{p.show_status_large}}<br /><br />
-			Status,<br />
-			Funding,<br />
-			Schedule,<br />
-			Funding and milestone details
+			<div style="width:140px; float:left; background-color:cyan">
+				<p>Funding</p>
+			</div>
+			<div style="width:120px; float:right; background-color:yellow">
+				<p>Schedule</p>
+			</div>
+			<div class="clear"></div>
 			<p class="small" style="margin:10px 0;">
 				<a style="color:#FDF47A;" href="{% url project_funding p.id %}">See funding and milestone details &#x25B6;</a>
 			</p>
 		</div>
 	</div>
-	<div class="two_column_right_inner">
-		<h2>Latest updates</h2>
-	</div>
-	<div style="background-color:#AFF167;padding:2px; padding-left:15px">
-		14-Jun-2010
-	</div>
-	<div class="two_column_right_inner">
-		<p>
-			<a href="#">Street level meetings held in Palada village</a><br />
-			Street level meetings where held on 14th April 2010 in Palada village ...
-		</p>
-	</div>
-	<div style="background-color:#AFF167;padding:2px;padding-left:15px">
-		14-Jun-2010
-	</div>
-	<div class="two_column_right_inner">
-		<p>
-			<a href="#">Street level meetings held in Palada village</a><br />
-			Street level meetings where held on 14th April 2010 in Palada village ...
-		</p>
-	</div>
+	{% if not hide_latest_updates %}
+		<div class="two_column_right_inner">
+			<div class="small" style="float:left; width:130px;">
+				<h2>Latest updates</h2>
+			</div>
+			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+				<a class="small" href="{% url project_updates p.id %}">See all updates &#x25B6;</a>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
+		</div>
+		<div class="two_column_right_inner" style="background-color:#fff;">
+			<p class="small" style="padding:5px">
+				<b>Street level meetings held in Palada village</b><br />
+				Street level meetings where held on 14th April 2010 in Palada village ...
+			</p>
+		</div>
+		<div style="background-color:#AFF167;padding:2px;padding-left:15px">
+			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
+		</div>
+		<div class="two_column_right_inner" style="background-color:#fff;">
+			<p class="small" style="padding:5px">
+				<b>Street level meetings held in Palada village</b><br />
+				Street level meetings where held on 14th April 2010 in Palada village ...
+			</p>
+		</div>
+		<div style="background-color:#AFF167;padding:2px;padding-left:15px">
+			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
+		</div>
+		<div class="two_column_right_inner" style="background-color:#fff;">
+			<p class="small" style="padding:5px">
+				<b>Street level meetings held in Palada village</b><br />
+				Street level meetings where held on 14th April 2010 in Palada village ...
+			</p>
+		</div>
+		
+	{% endif %}
+	
 	<div class="two_column_right_inner">
 		<h2>Tools for this page</h2>
 		<div class="round" style="background-color:#fff">
 			<div class="space20">
-				<p>
-					...
-				</p>
+				<ul>
+					<li>Get a widget</li>
+					<li>Permalink</li>
 			</div>
 		</div>
 		<br />
