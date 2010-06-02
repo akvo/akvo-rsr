@@ -1,20 +1,21 @@
-{% extends "rsr/project_base.html" %}
+{% extends "rsr/project_subpage_base.html" %}
 {% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">{{p.name}}</li>
+<li id="last_breadcrum_item">All project updates</li>
 {% endblock breadcrum_items %}
-
 
 {% block project_left_column %}
 	<div class="round" style="background-color:#fff;">
 		<div class="space20">
-			<h4>{% trans 'Description' %}</h4>
-			{{p.project_plan_summary|linebreaks}}
-			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
-			<br /><br />
-			City: {{p.city}}
+			<h2>All project updates</h2>
+			<br /><br />		
+			<ul>
+				{% for u in updates %}
+					<li><a href="{% url project_update p.id u.id%}">{{u.title}}</a> ({{u.time}})</li>
+				{% endfor%}
+			</ul>
 		</div>
 	</div>
 {% endblock project_left_column%}

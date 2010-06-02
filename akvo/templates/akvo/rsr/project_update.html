@@ -3,14 +3,21 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">Funding</li>
+<li><a href="{% url project_updates p.id %}"><span>{% trans 'All project updates' %}</span></a></li>
+<li id="last_breadcrum_item">{{u.title}}</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
 	<div class="round" style="background-color:#fff;">
 		<div class="space20">
-			<h2>Funding</h2>
-			<p>...
+			<h2>{{u.title}}</h2>
+			<p>
+				{% if u.text %}
+					{{u.text}}
+				{% endif %}
+	            {% if u.photo %}
+	                {% update_thumb u 400 300 %}
+	            {% endif %}			
 			</p>
 		</div>
 	</div>
