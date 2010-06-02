@@ -7,5 +7,66 @@
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="/rsr/projects/"><span>{% trans 'Projects' %}</span></a></li>
-<li id="last_breadcrum_item">{{p.name}}</li>
 {% endblock breadcrum_items %}
+
+{% block maincontent %}
+<div class="two_column_left">
+	{% block project_left_column %}{% endblock project_left_column%}
+</div>
+
+<div class="two_column_right">
+	<div id="project_status" class="two_column_right_inner">
+		<div>
+			{{p.show_status_large}}<br /><br />
+			Status,<br />
+			Funding,<br />
+			Schedule,<br />
+			Funding and milestone details
+			<p class="small" style="margin:10px 0;">
+				<a style="color:#FDF47A;" href="{% url project_funding p.id %}">See funding and milestone details &#x25B6;</a>
+			</p>
+		</div>
+	</div>
+	<div class="two_column_right_inner">
+		<h2>Latest updates</h2>
+	</div>
+	<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+		14-Jun-2010
+	</div>
+	<div class="two_column_right_inner">
+		<p>
+			<a href="#">Street level meetings held in Palada village</a><br />
+			Street level meetings where held on 14th April 2010 in Palada village ...
+		</p>
+	</div>
+	<div style="background-color:#AFF167;padding:2px;padding-left:15px">
+		14-Jun-2010
+	</div>
+	<div class="two_column_right_inner">
+		<p>
+			<a href="#">Street level meetings held in Palada village</a><br />
+			Street level meetings where held on 14th April 2010 in Palada village ...
+		</p>
+	</div>
+	<div class="two_column_right_inner">
+		<h2>Tools for this page</h2>
+		<div class="round" style="background-color:#fff">
+			<div class="space20">
+				<p>
+					...
+				</p>
+			</div>
+		</div>
+		<br />
+		<h2>Project partners</h2>
+		<div class="round" style="background-color:#fff">
+			<div class="space20">
+				<p>
+					...
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock maincontent %}
