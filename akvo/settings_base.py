@@ -153,4 +153,4 @@ TIME_ZONE = 'Europe/Stockholm'
 # to load the internationalization machinery.
 USE_I18N = True
 
-DEV_STYLES = False
+DEV_MEDIA_BUNDLES = False
