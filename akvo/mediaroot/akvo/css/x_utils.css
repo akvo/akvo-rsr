@@ -14,11 +14,11 @@
     border-radius: 2px;
     border: 1px solid #ccc;
     }
-
+    
 .linear_bg {
     border:1px solid #D9DBDC;
     background-color: #EFF3F3; /* fallback color */
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));  
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));
     background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
     }
     

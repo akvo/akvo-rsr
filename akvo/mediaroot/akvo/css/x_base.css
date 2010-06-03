@@ -1,17 +1,18 @@
 body {
-    background: #F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
-    color: #000;
+    background:#F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
+    color:#000;
     }
 
 div#main_container {
-    margin-top: 55px;
-    margin-bottom: 40px;
+    /*margin-top:55px;*/
+    margin-bottom:40px;
+    padding-top:55px;
     }
     
 #footer {
-    background: #F9F9FA url(../img/footer_gradient.png) repeat-x top;
-    color: #585E68;
-    padding-top: 40px;
+    background:#F9F9FA url(../img/footer_gradient.png) repeat-x top;
+    color:#585E68;
+    padding-top:40px;
     }
 
 #footer h2, h3 {
@@ -50,7 +51,7 @@ ul#breadcrum li a span {
     background: transparent url('../img/breadcrum.png') no-repeat right;
     display: block;
     height: 23px;
-    margin: 0; 
+    margin: 0;
     padding: 0;
     padding-top: 1px;
     padding-right: 20px;
