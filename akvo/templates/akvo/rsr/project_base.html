@@ -42,6 +42,26 @@
 			</div>
 			<div class="clear"></div>
 		</div>
+		
+		{% if not updates %}
+			<div class="two_column_right_inner" style="background-color:#fff;">
+				<p style="padding:5px">{% trans 'No updates' %}</p>
+			</div>
+		{% else %}
+			{% for update in updates %}
+				<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+					<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time}}</p>
+				</div>
+				<div class="two_column_right_inner" style="background-color:#fff;">
+					<p class="small" style="padding:5px">
+						<b>{{update.title}}</b><br />
+						{{update.text|smart_truncate:100}}
+					</p>
+				</div>
+			{% endfor %}
+		{% endif %}
+		
+		{% comment %}
 		<div style="background-color:#AFF167;padding:2px; padding-left:15px">
 			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
 		</div>
@@ -69,6 +89,7 @@
 				Street level meetings where held on 14th April 2010 in Palada village ...
 			</p>
 		</div>
+		{% endcomment %}
 		
 	{% endif %}
 	

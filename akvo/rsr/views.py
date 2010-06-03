@@ -912,7 +912,7 @@ def projectmain(request, project_id):
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
     can_add_update = p.connected_to_user(request.user)
-        
+    
     return {
         'p': p, 
         'updates': updates, 
@@ -929,13 +929,15 @@ def projectdetails(request, project_id):
 
 @render_to('rsr/project_partners.html')  
 def projectpartners(request, project_id):
-        p = get_object_or_404(Project, pk=project_id)    
+        p = get_object_or_404(Project, pk=project_id)
+        updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]    
         return { 'p': p, 'site_section': 'projects', }
 
 @render_to('rsr/project_funding.html')  
 def projectfunding(request, project_id):
-        p       = get_object_or_404(Project, pk=project_id)    
+        p = get_object_or_404(Project, pk=project_id)    
         public_donations = p.public_donations()
+        updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
         return { 'p': p, 'public_donations': public_donations, 'site_section': 'projects', }
 
 def getwidget(request, project_id):
