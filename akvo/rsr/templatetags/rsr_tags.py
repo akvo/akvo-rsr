@@ -177,7 +177,7 @@ def media_bundle(context, bundle):
         bundle_hash = '000'
         cant_get_map = True
     
-    if settings.DEV_STYLES or cant_get_map:
+    if settings.DEV_MEDIA_BUNDLES or cant_get_map:
         if media_bundles.MEDIA_BUNDLES['%s' % str(bundle)]['type'] == 'css':
             url = '%s%s%s_raw.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_type)
             script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
@@ -197,7 +197,7 @@ def media_bundle(context, bundle):
         include = script_string
     
     return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.DEV_STYLES, 'include': include, 'bundle_type': bundle_type,
+        'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.DEV_MEDIA_BUNDLES, 'include': include, 'bundle_type': bundle_type,
     }
 
 
