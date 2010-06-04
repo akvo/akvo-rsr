@@ -26,70 +26,72 @@ Akvo CSS classes is based on the Bluetrip (http://bluetrip.org/) CSS framework.
 [1. Basic] 
 */
 body {
-    font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
     font-size:100%; /* IE6 & 7 */
+    font-family:Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
     }
     
-a { color:#2B80AF; text-decoration: none; cursor: pointer;  }
+a { 
+    color:#2B80AF;
+    cursor:pointer;
+    text-decoration:none;
+    }
+    
 a:visited { color:#2B80AF; }
 a:hover { color:#0FA0CB; text-decoration: underline; }
 
 p {
+    color:#333;
     font-size:0.875em; /* 16*0.875 = 14*/
     line-height:1.4em; 
     margin-bottom:1.5em;
-    color:#333;
     }
 
 h1 {
-    /*color:#000;*/
     color:#71CDFF;
     font-size:1.625em;
+    font-weight:normal;
     line-height:1.2em;
     margin-bottom:0.5em;
-    font-weight:normal;
     }
 
 h2 {
-    /*color:#000;*/
     color:#71CDFF;
     font-size:1.125em;
+    font-weight:normal;
     line-height:1.2em;
     margin-bottom:0.5em;
-    font-weight:normal;
     }
 
 h3 {
-    /*color:#000;*/
     color:#71CDFF;
     font-size: 1.0em;
+    font-weight:normal;
     line-height:1.2em;
     margin-bottom:0.5em;
-    font-weight:normal;
     }
 
 h4 {
     color:#000;
-    font-size: 0.875em;
+    font-size:0.875em;
+    font-weight:normal;
     line-height:1.2em;
     margin-bottom:0.5em;
-    font-weight:normal;
     }
 
 h5 {
     color:#000;
-    font-size: 0.8125em;
-    line-height:1.2em;
-    margin-bottom:0.5em;
+    font-size:0.8125em;
     font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;    
     }
 
 h6 {
     color:#000;
     font-size: 0.6875em;
-    line-height:1.2em;
-    margin-bottom:0.5em;
     font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;    
     }
 
 
@@ -98,12 +100,12 @@ h6 {
 */
 
 ul, ol { 
-    margin-bottom:0.5em; 
-    line-height:1.7em;
-    font-size:0.875em;
     color:#333;
-    margin-top:-0.5em;
+    font-size:0.875em;
+    line-height:1.7em;
+    margin-bottom:0.5em; 
     margin-bottom:1.5em;   
+    margin-top:-0.5em;    
     }
 ul ul {font-size:1em; margin-top:0em;}
 ol ol {font-size:1em; margin-top:0em;}
@@ -127,22 +129,22 @@ cite, em, dfn { font-style: italic; }
 code, kbd, samp, pre, tt, var { font-size: 0.857em; font-family: monaco, "Lucida Console", courier, monospace; }
 code {
     background-color:#092125;
+    border:1px solid #9F9F9F;
     color:#98F39F;
-    border: 1px solid #9F9F9F;
-    padding: 6px 13px;
     display:block;
     margin-bottom:14px;
     margin-top:14px;
+    padding:6px 13px;
     }
 del { text-decoration: line-through; color: #666; }
 ins, dfn { border-bottom: 1px solid #ccc; }
 
 blockquote { 
-    border-top: 1px solid #ccc; 
-    border-bottom: 1px solid #ccc; 
-    color: #666; 
-    padding: 0 1em; 
-    margin: 1.6em 0;
+    border-top:1px solid #ccc; 
+    border-bottom:1px solid #ccc; 
+    color:#666; 
+    padding:0 1em; 
+    margin:1.6em 0;
     }
 blockquote *:first-child { margin: .8em 0; }
 blockquote *:first-child:before { content: "\201C"; }
@@ -154,42 +156,26 @@ blockquote *:first-child:after { content: "\201D"; }
 */
 fieldset { 
     padding:1.4em; 
-    margin: 0 0 1.5em 0; 
-    border: 1px solid #ccc; 
-    padding: 0 1em 1em 1em;  /* padding-top is margin-top for fieldsets in Opera */
-    margin: 1.6em 0; 
+    margin:0 0 1.5em 0; 
+    border:1px solid #ccc; 
+    padding:0 1em 1em 1em;  /* padding-top is margin-top for fieldsets in Opera */
+    margin:1.6em 0; 
     }
-legend { font-weight: bold; font-size:1.2em; }
-label { font-weight: bold; display: block; margin-top:5px; font-size:0.875em; }
+legend { font-weight:bold; font-size:1.2em; }
+label { font-weight:bold; display:block; margin-top:5px; font-size:0.875em; }
 
 input[type='text'], input[type='password'], textarea {
+    border:1px solid #ccc; background: #fff;
     font-size:0.875em;
-    margin: 0.5em 1px;
+    margin:0.5em 1px;
     padding:3px;
-    /*
-    margin-top:0px;
-    margin-bottom:21px;
-    */
-    /*
-    margin-top:0.5em;
-    margin-bottom:0.5em;
-    */
-    border: 1px solid #ccc; background: #fff;
-    
-    /*
-    border-top:2px solid #A1A4AE;
-    border-left:2px solid #A1A4AE;
-    border-right:2px solid #F2F0EC;
-    border-bottom:2px solid #F2F0EC;
-    */
     }
 
 input[type="submit"], input[type="button"] {
-    margin-top:0;
-    padding-top:0;
     display: block;
     margin-bottom:20px;
-    /*float:right;*/
+    margin-top:0;
+    padding-top:0;
     }
 
 textarea { border: 1px solid #ccc;}
@@ -199,12 +185,11 @@ textarea { border: 1px solid #ccc;}
     color:#000;
     }
 
-
 /*------------------------------------------------------------------ 
 [5. Tables] 
 */
-table { border-top: 1px solid #ccc;  border-left: 1px solid #ccc; }
-th, td { border-bottom: 1px solid #ddd; border-right: 1px solid #ccc; padding: .8em; }
+table { border-top:1px solid #ccc;  border-left:1px solid #ccc; }
+th, td { border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:.8em; }
 
 
 /*------------------------------------------------------------------ 
@@ -224,7 +209,7 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 */
 .hide { display:none; }
 .grey { color:#888; }
-.red {color:#E60113;}
+.red { color:#E60113; }
 
 
 /*------------------------------------------------------------------ 
@@ -232,8 +217,8 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 */
 p.lede {
     color:#888;
-    line-height:1.2em;
     font-size:1.125em;
+    line-height:1.2em;
     margin-bottom:1.3em;
     }
 
@@ -254,8 +239,8 @@ p.nano, .nano p, .nano label ul.nano, a.nano {
 
 p.nano-lede {
     color:#888;
-    line-height:1.2em;
     font-size:0.875em;
+    line-height:1.2em;
     margin-bottom:1.3em;
     }
 

@@ -12,7 +12,7 @@
 {% block maincontent %}
 <div class="two_column_left">
 	<h1>{{p.name}}</h1>
-	<p style="color:#7E8197;">{{p.subtitle}}</p>
+	<p class="grey">{{p.subtitle}}</p>
 	{% block project_left_column %}{% endblock project_left_column%}
 </div>
 
@@ -60,50 +60,9 @@
 				</div>
 			{% endfor %}
 		{% endif %}
-		
-		{% comment %}
-		<div style="background-color:#AFF167;padding:2px; padding-left:15px">
-			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
-		</div>
-		<div class="two_column_right_inner" style="background-color:#fff;">
-			<p class="small" style="padding:5px">
-				<b>Street level meetings held in Palada village</b><br />
-				Street level meetings where held on 14th April 2010 in Palada village ...
-			</p>
-		</div>
-		<div style="background-color:#AFF167;padding:2px;padding-left:15px">
-			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
-		</div>
-		<div class="two_column_right_inner" style="background-color:#fff;">
-			<p class="small" style="padding:5px">
-				<b>Street level meetings held in Palada village</b><br />
-				Street level meetings where held on 14th April 2010 in Palada village ...
-			</p>
-		</div>
-		<div style="background-color:#AFF167;padding:2px;padding-left:15px">
-			<p class="small" style="margin:0;padding:0; font-weight:bold;">14-Jun-2010</p>
-		</div>
-		<div class="two_column_right_inner" style="background-color:#fff;">
-			<p class="small" style="padding:5px">
-				<b>Street level meetings held in Palada village</b><br />
-				Street level meetings where held on 14th April 2010 in Palada village ...
-			</p>
-		</div>
-		{% endcomment %}
-		
 	{% endif %}
 	
 	<div class="two_column_right_inner">
-		<h2>Tools for this page</h2>
-		<div class="round" style="background-color:#fff">
-			<div class="space20">
-				<ul>
-					<li>Get a widget</li>
-					<li>Permalink</li>
-				</ul>
-			</div>
-		</div>
-		<br />
 		<div class="small" style="float:left; width:130px;">
 			<h2>Project partners</h2>
 		</div>
@@ -112,10 +71,32 @@
 		</div>
 		<div class="clear"></div>
 		<div class="round" style="background-color:#fff">
+			<div class="space10">
+				{% for partner in p.all_partners %}
+					<div style="float:left; width:110px;">
+						{% org_logo partner 98 60 'margin:0;' %}
+					</div>
+					<div style="float:left; width:160px;">
+						<p class="small grey" style="margin:0; padding:=;">
+							<a href="{% url org_detail partner.id %}">{{partner.name}}</a><br />
+							{{partner.city}}, {{partner.country}}
+						</p>
+					</div>
+					<div class="clear"></div>
+					{% if not forloop.last %}
+						<hr style="margin-bottom:12px; margin-top:10px;"/>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+		<br />
+		<h2>Tools for this page</h2>
+		<div class="round" style="background-color:#fff">
 			<div class="space20">
-				<p>
-					...
-				</p>
+				<ul>
+					<li>Get a widget</li>
+					<li>Permalink</li>
+				</ul>
 			</div>
 		</div>
 	</div>
