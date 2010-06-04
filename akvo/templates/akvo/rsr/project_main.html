@@ -10,11 +10,26 @@
 {% block project_left_column %}
 	<div class="round" style="background-color:#fff;">
 		<div class="space20">
-			<h4>{% trans 'Description' %}</h4>
+			<h2 class="black">{% trans 'Description' %}</h2>
 			{{p.project_plan_summary|linebreaks}}
-			{% project_thumb p 220 165 'margin: 10px 10px 0 0;' %}
-			<br /><br />
-			City: {{p.city}}
+			<div style="float:left; width:328px;">
+				{% project_thumb p 328 246 'margin:0px;' %}
+				{{p.current_image_caption}}
+			</div>
+			<div style="float:left; width:30px;">&nbsp;</div>
+			<div style="float:left; width:262px;">
+				<h2 class="black">{% trans 'Who will benefit?' %}</h2>
+				{% include "rsr/inc_target_benchmarks.html" %}
+				<h2 class="black">{% trans 'Location' %}</h2>
+				<p>
+					{{ p.country.get_continent_display }}, {{p.country}}<br />{{p.city}}
+					{% if p.longitude %}
+					{{ p.longitude }}, {{ p.latitude }}	
+					{% endif %}
+				</p>
+				 {% map_thumb p 242 242 'margin:0;' %}
+			</div>
+			<div class="clear"></div>
 		</div>
 	</div>
 {% endblock project_left_column%}
