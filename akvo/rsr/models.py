@@ -159,7 +159,7 @@ class Organisation(models.Model):
 
         def fundingpartners(self):
             return self.filter(funding_partner__exact=True)
-
+            
         def ngos(self):
             return self.filter(organisation_type__exact='N')
 
