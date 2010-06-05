@@ -8,13 +8,13 @@
 
 
 {% block project_left_column %}
-	<div class="round" style="background-color:#fff;">
+	<div class="white_box" style="background-color:#fff;">
 		<div class="space20">
 			<h2 class="black">{% trans 'Description' %}</h2>
 			{{p.project_plan_summary|linebreaks}}
 			<div style="float:left; width:328px;">
 				{% project_thumb p 328 246 'margin:0px;' %}
-				{{p.current_image_caption}}
+				<p class="small grey">{{p.current_image_caption}}</p>
 			</div>
 			<div style="float:left; width:30px;">&nbsp;</div>
 			<div style="float:left; width:262px;">
@@ -27,7 +27,7 @@
 					{{ p.longitude }}, {{ p.latitude }}	
 					{% endif %}
 				</p>
-				 {% map_thumb p 242 242 'margin:0;' %}
+				 {% map_thumb p 140 140 'margin-left:auto;margin-right:auto;' %}
 			</div>
 			<div class="clear"></div>
 		</div>

@@ -3,13 +3,13 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">All project updates</li>
+<li id="last_breadcrum_item">Project updates</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
-	<div class="round" style="background-color:#fff;">
+	<div class="white_box" style="background-color:#fff;">
 		<div class="space20">
-			<h2>All project updates</h2>
+			<h2>Project updates</h2>
 			<br /><br />		
 			<ul>
 				{% for u in updates %}
