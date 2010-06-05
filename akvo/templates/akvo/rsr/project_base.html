@@ -18,16 +18,33 @@
 
 <div class="two_column_right">
 	<div id="project_status" class="two_column_right_inner">
-		<div>
+		<div style="margin:15px; padding:20px 0px;">
 			{{p.show_status_large}}<br /><br />
-			<div style="width:140px; float:left; background-color:#fff">
-				<p>Funding</p>
+			<div style="width:175px; float:left; margin:0; padding:0;">
+				<h4 style="color:#A3FFFF;">Funding</h4>
+				<div class="round" style="background-color:#fff; width:144px">
+					<p class="tiny" style="padding:10px;">
+						€ 800,000 Requested<br />
+						€ 800,000 Raised<br />
+						€ 800,000 Still needed<br />
+						<br />
+						<span class="red">(Donate button)</span>
+					</p>
+					
+				</div>
 			</div>
-			<div style="width:120px; float:right; background-color:#fff">
-				<p>Schedule</p>
+			<div style="width:85px; float:right; margin:0; padding:0;">
+				<h4 style="color:#A3FFFF;">Schedule</h4>
+				<p class="tiny white">
+					Begun<br />
+					03 Mar 2010<br />
+					<br />
+					Expected finish<br />
+					03 Dev 2010<br />
+				</p>
 			</div>
 			<div class="clear"></div>
-			<p class="small" style="margin:10px 0;">
+			<p class="small space0">
 				<a style="color:#FDF47A;" href="{% url project_funding p.id %}">See funding and milestone details &#x25B6;</a>
 			</p>
 		</div>
@@ -44,8 +61,10 @@
 		</div>
 		
 		{% if not updates %}
-			<div class="two_column_right_inner" style="background-color:#fff;">
-				<p style="padding:5px">{% trans 'No updates' %}</p>
+			<div class="two_column_right_inner">
+				<div class="white_box">
+					<p style="padding:5px">{% trans 'No updates' %}</p>
+				</div>
 			</div>
 		{% else %}
 			{% for update in updates %}
@@ -64,7 +83,7 @@
 		{% endif %}
 	{% endif %}
 	
-	<div class="two_column_right_inner">
+	<div class="two_column_right_inner" style="margin-top:20px;">
 		<div class="small" style="float:left; width:130px;">
 			<h2>Project partners</h2>
 		</div>
@@ -72,7 +91,7 @@
 			<a class="small" href="{% url project_partners p.id %}">See details &#x25B6;</a>
 		</div>
 		<div class="clear"></div>
-		<div class="round" style="background-color:#fff">
+		<div class="white_box">
 			<div class="space10">
 				{% for partner in p.all_partners %}
 					<div style="float:left; width:110px;">
@@ -93,7 +112,7 @@
 		</div>
 		<br />
 		<h2>Tools for this page</h2>
-		<div class="round" style="background-color:#fff">
+		<div class="white_box" style="background-color:#fff">
 			<div class="space20">
 				<ul>
 					<li><a href="{% url project_get_widget p.id %}">Get a widget</a></li>
