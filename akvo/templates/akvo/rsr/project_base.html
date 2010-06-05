@@ -49,7 +49,10 @@
 			</p>
 		</div>
 	</div>
-	{% if not hide_latest_updates %}
+	
+	{# If no updates or at the updates listing page #}
+	{# {% if not hide_latest_updates and updates %} #}
+	{% if not hide_latest_updates and updates %}
 		<div class="two_column_right_inner">
 			<div class="small" style="float:left; width:130px;">
 				<h2>Latest updates</h2>
@@ -60,10 +63,39 @@
 			<div class="clear"></div>
 		</div>
 		
+		{% for update in updates %}
+			<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+				<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time}}</p>
+			</div>
+			<div class="two_column_right_inner" style="background-color:#fff;">
+				<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
+					<p class="small" style="padding:5px; margin-bottom:5px;">
+						<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
+						{{update.text|smart_truncate:100}}
+					</p>
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+	
+	{% comment %}
+	{% if not hide_latest_updates %}
+		<div class="two_column_right_inner">
+			<div class="small" style="float:left; width:130px;">
+				<h2>Latest updates</h2>
+			</div>
+			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+				<a class="small" href="{% url project_updates p.id %}">See all updates &#x25B6;</a>
+			</div>
+			<div class="clear"></div>
+		</div>
 		{% if not updates %}
 			<div class="two_column_right_inner">
 				<div class="white_box">
-					<p style="padding:5px">{% trans 'No updates' %}</p>
+					<div class="space10">
+						<p style="padding-top:7px;">{% trans 'This project don&#x27;t have any updates.' %}</p>
+					</div>
+					
 				</div>
 			</div>
 		{% else %}
@@ -82,6 +114,7 @@
 			{% endfor %}
 		{% endif %}
 	{% endif %}
+	{% endcomment %}
 	
 	<div class="two_column_right_inner" style="margin-top:20px;">
 		<div class="small" style="float:left; width:130px;">
