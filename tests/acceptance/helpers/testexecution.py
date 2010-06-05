@@ -4,6 +4,9 @@
 
 import nose
 
+from test_settings import TEST_MODE
+
+
 def create_test_suite_from_classes(test_class_list):
     return create_test_suite_from_suites(map(lambda test_class: load_tests_from(test_class), test_class_list))
 
@@ -14,4 +17,8 @@ def load_tests_from(test_case):
     return nose.loader.TestLoader().loadTestsFromTestCase(test_case)
 
 def run_test_suite(suite):
-    nose.core.TextTestRunner(verbosity=2).run(suite)
+    if TEST_MODE == 'ci':
+        from teamcity.unittestpy import TeamcityTestRunner
+        TeamcityTestRunner().run(suite)
+    else:
+        nose.core.TextTestRunner(verbosity=2).run(suite)

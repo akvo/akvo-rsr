@@ -6,8 +6,8 @@
 
 from extensions.xmlextensions import *
 from extensions.xmltestcase import XMLTestCase
-from helpers.nosetestloaders import *
 from helpers.rsrapi import *
+from helpers.testexecution import *
 
 from expectedelements import *
 
@@ -15,15 +15,10 @@ class AllProjectsTest(XMLTestCase):
 
     @classmethod
     def setup_class(cls):
-        super(AllProjectsTest, cls).setup_class()
         cls.all_projects_root = element_root_from(api_path("projects.xml"))
 
-    @classmethod
-    def description(cls):
-        return "Tests for all projects"
-
     def test_01_can_get_xml_data_for_all_projects(self):
-        """>>  1. Can get XML data for all projects"""
+        """api.xml.AllProjectsTest  1. Can get XML data for all projects"""
 
         self.assert_element(self.all_projects_root).is_not_none_and_has_tag("response")
 
@@ -33,7 +28,7 @@ class AllProjectsTest(XMLTestCase):
         self.assert_element(self.all_projects_root).has_exactly(expected_total_projects).children_with_tag("resource")
 
     def test_02_first_project_element_has_expected_xml_structure(self):
-        """>>  2. First project element has expected XML structure"""
+        """api.xml.AllProjectsTest  2. First project element has expected XML structure"""
 
         first_project_element = self.all_projects_root.find("resource") # each <resource> element represents a project
 
