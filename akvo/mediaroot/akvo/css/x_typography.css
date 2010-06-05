@@ -110,7 +110,7 @@ ul, ol {
 ul ul {font-size:1em; margin-top:0em;}
 ol ol {font-size:1em; margin-top:0em;}
 ul li { margin-left:1em;}
-ul { list-style-position: inside; list-style-type: disc; margin-left: 0.5em; }
+ul { list-style-position: outside; list-style-type: disc; margin-left: 0.5em; }
 ul ul { list-style-type: square; }
 ul ul ul { list-style-type: circle; }
 ol { list-style-position: inside; list-style-type: decimal; margin-left: 0.5em;}
@@ -222,7 +222,7 @@ p.lede {
     margin-bottom:1.3em;
     }
 
-p.small, .small p, .small label, ul.small, a.small {
+p.small, .small p, .small label, ul.small, a.small, .simplelist ul li {
     font-size:0.8125em;
     line-height:1.4em;
     }
@@ -243,5 +243,5 @@ p.nano-lede {
     line-height:1.2em;
     margin-bottom:1.3em;
     }
-
+    
 
