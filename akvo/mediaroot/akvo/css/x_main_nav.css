@@ -1,5 +1,6 @@
 #header {
-    background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;
+    /*background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;*/
+    background: transparent url('../img/main_nav_bkgd.png') repeat-x bottom;
     z-index:5;
     left: 0; /* IE 7 */
 	position: fixed;
@@ -19,23 +20,22 @@ ul#main_nav li {
     padding:0;
     }
 
-ul#main_nav li a {
-    /*background-color:#EFF3F5;*/ /* Needed for IE7 hover effect*/
+ul#main_nav li a {    
     color: #383C82;
+    cursor: pointer;
     display: block;
     float: left;
     font-size:0.875em;
     font-weight:bold;
-    width: 90px;
-    overflow:hidden;
-    margin:0;
-    padding:0;
-    /*height:30px;*/
     height:37px;
-    cursor: pointer;
+    margin:0;
+    overflow:hidden;
+    padding:0;
+    width: 90px;
+    -webkit-transition:background-color .2s ease-out;
     }
 
-ul#main_nav li a:hover {    
+ul#main_nav li a:hover {   
     background-color: #fff;
     color:#2097F7;
     text-decoration: none;
@@ -45,10 +45,6 @@ ul#main_nav li a.active {
     background-color: #fff;
     }
     
-ul#main_nav li a { 
-    -webkit-transition:background-color .2s ease-out;
-    }
-
 ul#main_nav li a span {
     border-right: 1px solid #ACACBA;
     display: block;

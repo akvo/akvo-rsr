@@ -60,7 +60,7 @@ urlpatterns = patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
     
 	(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', ),
-	#(r'^rsr/project/(?P<project_id>\d+)/customise-widget$', 'akvo.rsr.views.customisewidget', ),
+	url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
     
     url(r'^rsr/fundingbar/$', 'akvo.rsr.views.fundingbarimg', name='fundingbar'),    
 
