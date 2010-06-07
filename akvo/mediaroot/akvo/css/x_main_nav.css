@@ -32,7 +32,7 @@ ul#main_nav li a {
     overflow:hidden;
     padding:0;
     width: 90px;
-    -webkit-transition:background-color .2s ease-out;
+    /*-webkit-transition:background-color .2s ease-out;*/
     }
 
 ul#main_nav li a:hover {   
