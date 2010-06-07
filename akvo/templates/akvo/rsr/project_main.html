@@ -53,21 +53,31 @@
 
 					<h3>Detailed information</h3>
 					
-					<h4 style="font-weight:bold">context</h4>
-					<p>{{p.context}}</p>
-					
-					<h4 style="font-weight:bold">goals_overview</h4>
-					<p>{{p.goals_overview}}</p>
+					<div id="project_tabs">
+						<ul class="small">
+			                <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
+			                <li><a href="#tab_approach"><span>{% trans 'Approach' %}</span></a></li>
+							<li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
+			            </ul>
+						<div id="tab_background" class="tab">
+							<h4 style="font-weight:bold">p.context</h4>
+							<p>{{p.context}}</p>
+							<h4 style="font-weight:bold">p.goals_overview</h4>
+							<p>{{p.goals_overview}}</p>
+						</div>
+						<div id="tab_approach" class="tab">
+							<h4 style="font-weight:bold">p.current_status_detail</h4>
+							<p>{{p.current_status_detail}}</p>
 
-					<h4 style="font-weight:bold">current_status_detail</h4>
-					<p>{{p.current_status_detail}}</p>
-					
-					<h4 style="font-weight:bold">project_plan_detail</h4>
-					<p>{{p.project_plan_detail}}</p>
-					
-					<h4 style="font-weight:bold">sustainability</h4>
-					<p>{{p.sustainability}}</p>
-										
+							<h4 style="font-weight:bold">p.project_plan_detail</h4>
+							<p>{{p.project_plan_detail}}</p>
+							
+						</div>
+						<div id="tab_sustainability" class="tab">
+							<h4 style="font-weight:bold">p.sustainability</h4>
+							<p>{{p.sustainability}}</p>
+						</div>
+					</div>				
 				</div>
 			</div>
 		</div>
@@ -102,5 +112,17 @@
 		<div class="clear"></div>
 	</div>
 	
-	
 {% endblock project_left_column%}
+
+{% block js %}
+{{ block.super }}
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+{% endblock js %}
+
+{% block jq_ready %}
+	jQ('#project_tabs').tabs();
+	
+	{{block.super}}
+{% endblock jq_ready %}
+
+
