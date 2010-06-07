@@ -27,6 +27,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
 from paypal.standard.ipn.signals import payment_was_flagged
 from registration.models import RegistrationProfile, RegistrationManager
@@ -448,6 +449,11 @@ class Project(models.Model):
         if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         '''
+
+    @property
+    def view_count(self):
+        counter = ViewCounter.objects.get_for_object(self)
+        return counter.count or 0
             
     class QuerySet(QuerySet):
         def published(self):
@@ -1216,6 +1222,14 @@ class ProjectUpdate(models.Model):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
+
+    @property
+    def view_count(self):
+        counter = ViewCount.objects.get_for_object(self)
+        return counter.count or 0
+
+    def __unicode__(self):
+        return u'Project update for %s' % self.project.name
 
 
 class ProjectComment(models.Model):

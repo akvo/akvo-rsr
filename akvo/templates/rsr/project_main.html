@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags thumbnail counter_tags cache %}
+{% load humanize i18n rsr_tags thumbnail counter_tags cache %}
 
 {% comment %}
 	
@@ -44,9 +44,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<h1 class="section">{{p.name}}</h1>
 		<p>{{p.subtitle}}</p>
         {% counter p %}
-        {% view_count for rsr.project p.id as page_views %}
-        {% cache 60 page_views %}
-        <!-- (EXPERIMENTAL) Project viewed {{ page_views }} time{{ page_views|pluralize }} -->
+        {% cache 10 p.view_count %}
+        <p>Views: {{ p.view_count|intcomma }}</p>
         {% endcache %}
 	</div> <!-- .boxhead -->
 
