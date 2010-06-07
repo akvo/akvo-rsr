@@ -37,8 +37,11 @@
 		<div style="float:left; width:480px; background-color:cyan;">
 			<div class="white_box">
 				<div class="space20">
-					<h3>Expected outcomes</h3>
+					<h3>Focus areas</h3>
+					<p>{% category_icons p %}</p>
+					
 					{% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
+						<h3>Expected outcomes</h3>
 						<ul style="margin-top:15px;">
 							{% if p.goal_1 %}<li>{{p.goal_1}}</li>{% endif %}
 		                    {% if p.goal_2 %}<li>{{p.goal_2}}</li>{% endif %}
@@ -47,8 +50,7 @@
 		                    {% if p.goal_5 %}<li>{{p.goal_5}}</li>{% endif %}
 						</ul>
 					{% endif %}
-					<h3>Focus areas</h3>
-					<p>{% category_icons p %}</p>
+
 					<h3>Detailed information</h3>
 					
 					<h4 style="font-weight:bold">context</h4>
@@ -65,9 +67,7 @@
 					
 					<h4 style="font-weight:bold">sustainability</h4>
 					<p>{{p.sustainability}}</p>
-					
-					<h4 style="font-weight:bold">notes</h4>
-					<p>{{p.notes}}</p>
+										
 				</div>
 			</div>
 		</div>
