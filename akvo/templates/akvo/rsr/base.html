@@ -12,9 +12,11 @@
 		{% media_bundle 'akvo_ie6_style' %}
 	<![endif]-->
 	
-	
-	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://{{ request.META.HTTP_HOST }}/blog/?feed=rss2">
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
+	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
+	{% block head %}{% endblock head %}
+	
 </head>
 <body>
 	<div id="header">

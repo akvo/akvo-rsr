@@ -4,6 +4,10 @@
 
 {% block title %}{{p.name}}{% endblock title %}
 
+{% block head %}
+<link rel="alternate" type="application/rss+xml" title="Updates to {{p.name}}" href="/rsr/rss/updates/{{p.id}}/">
+{% endblock head %}
+
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="/rsr/projects/"><span>{% trans 'Projects' %}</span></a></li>
@@ -77,45 +81,7 @@
 			</div>
 		{% endfor %}
 	{% endif %}
-	
-	{% comment %}
-	{% if not hide_latest_updates %}
-		<div class="two_column_right_inner">
-			<div class="small" style="float:left; width:130px;">
-				<h2>Latest updates</h2>
-			</div>
-			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_updates p.id %}">See all updates &#x25B6;</a>
-			</div>
-			<div class="clear"></div>
-		</div>
-		{% if not updates %}
-			<div class="two_column_right_inner">
-				<div class="white_box">
-					<div class="space10">
-						<p style="padding-top:7px;">{% trans 'This project don&#x27;t have any updates.' %}</p>
-					</div>
-					
-				</div>
-			</div>
-		{% else %}
-			{% for update in updates %}
-				<div style="background-color:#AFF167;padding:2px; padding-left:15px">
-					<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time}}</p>
-				</div>
-				<div class="two_column_right_inner" style="background-color:#fff;">
-					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
-						<p class="small" style="padding:5px; margin-bottom:5px;">
-							<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
-							{{update.text|smart_truncate:100}}
-						</p>
-					</div>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endif %}
-	{% endcomment %}
-	
+		
 	<div class="two_column_right_inner" style="margin-top:20px;">
 		<div class="small" style="float:left; width:130px;">
 			<h2>Project partners</h2>
@@ -128,7 +94,9 @@
 			<div class="space10">
 				{% for partner in p.all_partners %}
 					<div style="float:left; width:110px;">
-						{% org_logo partner 98 60 'margin:0;' %}
+						<a href="{% url org_detail partner.id %}">
+							{% org_logo partner 98 60 'margin:0;' %}
+						</a>
 					</div>
 					<div style="float:left; width:160px;">
 						<p class="small grey" style="margin:0; padding:=;">
@@ -149,7 +117,8 @@
 			<div class="space20">
 				<ul>
 					<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
-					<li><a href=".">{% trans 'Permalink' %}</a> <span class="grey">(why?)</span></li>
+					<li><a href=".">{% trans 'Permalink' %}</a></li>
+					<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
 				</ul>
 			</div>
 		</div>
