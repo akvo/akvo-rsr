@@ -24,9 +24,9 @@
 				<h4 style="color:#A3FFFF;">Funding</h4>
 				<div class="round" style="background-color:#fff; width:144px">
 					<p class="tiny" style="padding:10px;">
-						€ 800,000 Requested<br />
-						€ 800,000 Raised<br />
-						€ 800,000 Still needed<br />
+						{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}} Requested<br />
+						{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}} Raised<br />
+ 						{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}} Still needed<br />
 						<br />
 						<span class="red">(Donate button)</span>
 					</p>
