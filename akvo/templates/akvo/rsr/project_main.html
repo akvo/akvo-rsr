@@ -53,7 +53,7 @@
 
 					<h3>Detailed information</h3>
 					
-					<div id="projecttabs">
+					<div id="project_tabs">
 						<ul class="small">
 			                <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
 			                <li><a href="#tab_approach"><span>{% trans 'Approach' %}</span></a></li>
@@ -120,7 +120,7 @@
 {% endblock js %}
 
 {% block jq_ready %}
-	jQ('#projecttabs').tabs();
+	jQ('#project_tabs').tabs();
 	
 	{{block.super}}
 {% endblock jq_ready %}
