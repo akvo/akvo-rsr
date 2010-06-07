@@ -20,7 +20,7 @@
 		<div id="header_container" class="container">
 			<ul id="main_nav">
 				<li>
-					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
+					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
 						<span>
 							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
 						</span>
@@ -76,9 +76,16 @@
 					</a>
 				</li>
 				<li>
-					<a id="main_nav_account" href="#">
-						<span>Sign In</span>
-					</a>
+					{% if not user.username %}
+						<a id="main_nav_account" href="{% url signin %}?next={{request.path}}">
+							<span>{% trans 'Sign in' %}</span>
+						</a>
+					{% else %}
+						<a id="main_nav_account" href="{% url akvo.rsr.views.signout %}" title="{{user.username}}">
+							<span>{% trans 'Account' %}</span>
+							{# <span>{% trans 'Sign out' %}</span> #}
+						</a>
+					{% endif %}
 				</li>
 			</ul>
 		</div>
