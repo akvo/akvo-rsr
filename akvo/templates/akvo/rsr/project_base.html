@@ -119,10 +119,12 @@
 					<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
 					<li><a href=".">{% trans 'Permalink' %}</a></li>
 					<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
-				</ul>
+				</ul>	
 			</div>
+		</div>
+		<div style="margin-top:15px">
+			<p class="grey tiny" style="text-align:right;">Akvo Ref: {{p.id}}</p>	
 		</div>
 	</div>
 </div>
-
 {% endblock maincontent %}
