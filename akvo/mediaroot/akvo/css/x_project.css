@@ -4,6 +4,10 @@
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#2096F5), to(#2D80AE));
     color:#fff;
     margin-bottom:20px;
+    -khtml-border-radius: 5px;
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     }
     
 #project_status div {
