@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags thumbnail cache rsr_filters %}
+{% load i18n rsr_tags thumbnail cache rsr_filters counter_tags humanize %}
 
 {% block style %}
 	{{ block.super }}
@@ -75,6 +75,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.0.project.country}}
 							</p>
+							<span style="display:none;">{% counter updates.0 %}</span>
+					        {% cache 10 updates.0.view_count %}
+								<p style="margin-top:6px; padding:0; color:#999;">
+									{{ updates.0.view_count|intcomma }} {% trans 'views' %}
+								</p>
+							{% endcache %}
 							{% if updates.0.photo %}
 								<a href="{% url project_updates updates.0.project.id %}#{{updates.0.id}}">
 									<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
@@ -108,6 +114,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.1.project.country}}
 							</p>
+							<span style="display:none;">{% counter updates.1 %}</span>
+					        {% cache 10 updates.1.view_count %}
+								<p style="margin-top:6px; padding:0; color:#999;">
+									{{ updates.1.view_count|intcomma }} {% trans 'views' %}
+								</p>
+							{% endcache %}
 							{% if updates.1.photo %}
 								<a href="{% url project_updates updates.1.project.id %}#{{updates.1.id}}">
 									<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />
@@ -140,6 +152,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							<p style="margin-top:6px; padding:0; color:#999;">
 								{{updates.2.project.country}}
 							</p>
+							<span style="display:none;">{% counter updates.2 %}</span>
+					        {% cache 10 updates.2.view_count %}
+								<p style="margin-top:6px; padding:0; color:#999;">
+									{{ updates.2.view_count|intcomma }} {% trans 'views' %}
+								</p>
+							{% endcache %}
 							{% if updates.2.photo %}
 								<a href="{% url project_updates updates.2.project.id %}#{{updates.2.id}}">
 									<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" style="margin-top:10px; display:block; margin-left:auto; margin-right:auto;" alt="" />

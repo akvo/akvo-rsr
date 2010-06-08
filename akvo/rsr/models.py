@@ -1225,7 +1225,7 @@ class ProjectUpdate(models.Model):
 
     @property
     def view_count(self):
-        counter = ViewCount.objects.get_for_object(self)
+        counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
     def __unicode__(self):
