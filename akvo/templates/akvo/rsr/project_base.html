@@ -34,7 +34,6 @@
 						<br />
 						<span class="red">(Donate button)</span>
 					</p>
-					
 				</div>
 			</div>
 			<div style="width:85px; float:right; margin:0; padding:0;">
@@ -73,10 +72,23 @@
 			</div>
 			<div class="two_column_right_inner" style="background-color:#fff;">
 				<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
-					<p class="small" style="padding:5px; margin-bottom:5px;">
-						<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
-						{{update.text|smart_truncate:100}}
-					</p>
+					{% if update.photo %}					
+						<div style="float:left; width:175px;">
+							<p class="small" style="padding:5px; margin-bottom:5px;">
+								<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
+								{{update.text|smart_truncate:50}}
+							</p>
+						</div>
+						<div style="float:left; width:116px; text-align:center;">
+							<img src="{% thumbnail update.photo 116x87 autocrop sharpen %}" alt="{{update.photo_caption}}" style="margin:0;" />
+						</div>
+						<div class="clear"></div>
+					{% else %}
+						<p class="small" style="padding:5px; margin-bottom:5px;">
+							<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
+							{{update.text|smart_truncate:100}}
+						</p>
+					{% endif %}
 				</div>
 			</div>
 		{% endfor %}
