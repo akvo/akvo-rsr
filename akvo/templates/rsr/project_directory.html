@@ -237,7 +237,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	 	</div>
 		<span style="display:none;">{% counter p %}</span>
         {% cache 10 p.view_count %}
-			<p style="margin-top:6px; padding:0; color:#999;">
+			<p style="margin-top:6px; padding:0; color:#999;display:none;">
 				{{ p.view_count|intcomma }} views
 			</p>
 		{% endcache %}

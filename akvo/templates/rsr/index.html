@@ -77,7 +77,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							</p>
 							<span style="display:none;">{% counter updates.0 %}</span>
 					        {% cache 10 updates.0.view_count %}
-								<p style="margin-top:6px; padding:0; color:#999;">
+								<p style="margin-top:6px; padding:0; color:#999;display:none;">
 									{{ updates.0.view_count|intcomma }} {% trans 'views' %}
 								</p>
 							{% endcache %}
@@ -116,7 +116,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							</p>
 							<span style="display:none;">{% counter updates.1 %}</span>
 					        {% cache 10 updates.1.view_count %}
-								<p style="margin-top:6px; padding:0; color:#999;">
+								<p style="margin-top:6px; padding:0; color:#999; display:none;">
 									{{ updates.1.view_count|intcomma }} {% trans 'views' %}
 								</p>
 							{% endcache %}
@@ -154,7 +154,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 							</p>
 							<span style="display:none;">{% counter updates.2 %}</span>
 					        {% cache 10 updates.2.view_count %}
-								<p style="margin-top:6px; padding:0; color:#999;">
+								<p style="margin-top:6px; padding:0; color:#999; display:none;">
 									{{ updates.2.view_count|intcomma }} {% trans 'views' %}
 								</p>
 							{% endcache %}

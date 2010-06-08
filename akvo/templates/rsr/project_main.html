@@ -42,7 +42,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div class="boxhead">
 		<!--<a class="actionbutton ab_grey" href="#" style="float: right" onclick="this.blur();"><span>Edit project</span></a>-->
 		<h1 class="section">{{p.name}}
-		<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px;"><span style="display:none;">{% counter p %}</span>
+		<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; display:none;"><span style="display:none;">{% counter p %}</span>
         	{% cache 10 p.view_count %}
         		{{ p.view_count|intcomma }} {% trans 'views' %}
         	{% endcache %}
