@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags counter_tags humanize cache %}
 
 {% block title %}{{block.super}} - {% trans 'All project updates' %}{% endblock title %}
 
@@ -24,7 +24,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if can_add_update %}
 		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>{% trans 'Add update' %}</span></a>
 		{% endif %}
-		<h1 class="section"><a href="{% url project_main p.id%}">{{p.name}}</a></h1>
+		<h1 class="section"><a href="{% url project_main p.id%}">{{p.name}}</a>
+			<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; display:none;"><span style="display:none;">{% counter p %}</span>
+	        	{% cache 10 p.view_count %}
+	        		{{ p.view_count|intcomma }} {% trans 'views' %}
+	        	{% endcache %}
+			</span>	
+		</h1>
 		<p>{{p.subtitle}}</p>
 
 	</div> <!-- .boxhead -->

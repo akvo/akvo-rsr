@@ -4,7 +4,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 
-{% load i18n rsr_tags rsr_filters generic_content thumbnail %}
+{% load i18n rsr_tags rsr_filters generic_content thumbnail cache counter_tags humanize %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -185,6 +185,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
 		</div>
 		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
+		<span style="display:none;">{% counter project %}</span>
 	</div>
 	<div id="contentwrapper" style="float:left; width:100%;">
 		<div id="center" style="margin: 0px 280px 0 284px">
