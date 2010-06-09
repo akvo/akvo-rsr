@@ -7,10 +7,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags thumbnail %}
 
+{% comment %}
+	
+
 {% block script %}
 {#<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> #}
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.3.2.min.js"></script>
-
 
 <script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -28,6 +30,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 </script>
 {% endblock script %}
+{% endcomment %}
 
 {% block breadcrumbs %}
 {{block.super}} &raquo; <a href="{% url akvo.rsr.views.projectlist %}">{% trans 'Project listing' %}</a> &raquo; {{p.name}}
@@ -67,7 +70,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 </ul>
                 
                 <div id="tab_description" class="tab clearfix">
-                    <p>{{p.project_plan_summary|linebreaks}}</p>
+                    {{p.project_plan_summary|linebreaks}}
                     <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}">{% trans 'View details' %}</a></p>
                     <br />		
                     <div style="float:left;width: 250px">
@@ -93,7 +96,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 </div> <!-- #tab_description -->
         
             <div id="tab_goals" class="tab clearfix">
-                <p style="padding-left:0;">{{p.goals_overview|linebreaks}}</p>
+				{{p.goals_overview|linebreaks}}
                 <br />			
                 <div style="float:left;width:230px;">
                     <p class="lightx1"><b>{% trans 'Target benchmarks' %}</b></p>
@@ -124,7 +127,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             </div> <!-- #tab_goals -->
         
             <div id="tab_sustainability" class="tab clearfix">
-                <p>{{p.sustainability|linebreaks}}</p>
+                {{p.sustainability|linebreaks}}
                 <p style="text-align:right"><a href="{% url akvo.rsr.views.projectdetails p.id %}#tab_sustainability">{% trans 'View details' %}</a></p>
             </div> <!-- #tab_sustainability -->
         
@@ -183,7 +186,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                 <p>{% trans 'You must be signed in to add a comment' %}</p>
                 <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
             {% else %}
-                <form enctype="multipart/form-data" method="post" action="comment">
+                <form enctype="multipart/form-data" method="post" action="{% url akvo.rsr.views.commentform p.id %}">
                     {{form.comment}}
                     <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a></p>
                     <input type="submit" value="{% trans 'Submit' %}" class="submit" />
@@ -268,3 +271,27 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div> <!-- #outer_leftwing -->
 
 {% endblock outer_leftwing %}
+
+{% block script %}
+{{block.super}}
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% comment %}
+<script type="text/javascript" charset="utf-8">
+	jQ(function(){
+    	jQ('#container-1 > ul').tabs();
+	});
+</script>
+{% endcomment %}
+{% endblock script %}
+
+{% block jquery_ready %}
+{{block.super}}
+jQ('#container-1 > ul').tabs();
+jQ(".btn-slide").click(function(){
+	jQ("#panel").slideToggle("slow");
+	jQ(this).toggleClass("active"); return false;
+});
+{% endblock jquery_ready %}
+
+
+

@@ -40,6 +40,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#progress_green {
 		background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
 	}
+	
+	#project_title {
+		display:block;
+		height:36px;
+		overflow:hidden;
+	}
+	
+	#project_subtitle {
+		display:block;
+		max-height:32px;
+		overflow:hidden;
+	}
+	
+	#project_location{
+		display:block;
+		max-height:32px;
+		height:32px;
+		overflow:hidden;
+	}
 
 {% endblock inline_styles %}
 
@@ -161,9 +180,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</p>
 		{% endcomment %}
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-		<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
-			{{project.country}}, {{project.city}}
-		</p>
+		<div id="project_location">
+			<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+				{{project.country}}, {{project.city}}
+			</p>
+		</div>
 		{% comment %}
 		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
 		<p class="smallFont">{{project.show_status}}</p>
