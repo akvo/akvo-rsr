@@ -68,7 +68,7 @@
 		
 		{% for update in updates %}
 			<div style="background-color:#AFF167;padding:2px; padding-left:15px">
-				<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time}}</p>
+				<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time|date:"d-M-Y"}}</p>
 			</div>
 			<div class="two_column_right_inner" style="background-color:#fff;">
 				<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">

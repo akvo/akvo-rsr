@@ -13,7 +13,7 @@
 			<br /><br />		
 			<ul>
 				{% for u in updates %}
-					<li><a href="{% url project_update p.id u.id%}">{{u.title}}</a> ({{u.time}})</li>
+					<li><a href="{% url project_update p.id u.id%}">{{u.title|capfirst}}</a> ({{u.time|date:"d-M-Y"}})</li>
 				{% endfor%}
 			</ul>
 		</div>

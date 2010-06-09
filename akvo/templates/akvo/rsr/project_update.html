@@ -10,7 +10,7 @@
 {% block project_left_column %}
 	<div class="white_box" style="background-color:#fff;">
 		<div class="space20">
-			<h2>{{u.title}}</h2>
+			<h2>{{u.title|capfirst}}</h2>
 			<p>
 				{% if u.text %}
 					{{u.text}}
@@ -18,6 +18,9 @@
 	            {% if u.photo %}
 	                {% update_thumb u 400 300 %}
 	            {% endif %}			
+			</p>
+			<p class="small grey">
+				({{u.time|date:"d-M-Y"}})
 			</p>
 		</div>
 	</div>
