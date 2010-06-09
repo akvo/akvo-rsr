@@ -242,7 +242,7 @@ class InvoiceForm(forms.ModelForm):
         self.fields['email2'] = forms.EmailField()
         if engine == 'ideal':
             self.fields['bank'] = forms.CharField(max_length=4, 
-                widget=forms.Select(choices=get_mollie_banklist(empty_label=_('Please select your bank'))))
+                widget=forms.Select(choices=get_mollie_banklist()))
 
     amount = forms.IntegerField(min_value=2)
         

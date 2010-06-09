@@ -88,7 +88,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.budget_management %}
 				<tr>
 					<td>{% trans 'Management costs' %}</td>
-					<td>{{p.get_currency_display|safe}} {{p.budget_management|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_management|round|intcomma}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_other %}

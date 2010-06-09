@@ -332,28 +332,27 @@ def filteredprojectlist(request, org_id):
     projs: list of all projects
     page: paginator
     o: organisation
-    '''
-    #for use in akvo at a glance
-    projs = Project.objects.published().funding()
+    '''    
+    
     # get all projects the org is asociated with
     o = Organisation.objects.get(pk=org_id)
-    #projects = o.published_projects().funding()
+    projs = o.published_projects().funding()
+    
+    query_string = ''
+    found_entries = None
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+        #projs = Project.objects.filter(project_query)
+        projs = projs.filter(project_query)
 
-    fundable = o.published_projects().funding()
-    showcases = get_random_from_qs(fundable, 3)
-
-    #qs_list = list(projects.values_list('pk', flat=True))
-    #random.shuffle(qs_list)
-    #showcases = projects.filter(pk__in=qs_list[:3])
-
-    page = project_list_data(request, fundable)
+    page = project_list_data(request, projs)
     return {
-        'projs': projs,
-        'orgs': Organisation.objects,
         'page': page,
-        'showcases': showcases,
         'o': o,
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'query_string': query_string,
+        'site_section': 'projects',
     }
 
 @render_to('rsr/organisation_directory.html')
