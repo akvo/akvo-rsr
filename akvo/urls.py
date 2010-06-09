@@ -44,28 +44,24 @@ urlpatterns = patterns('',
     (r'^rsr/admin/(.*)', admin.site.root),
     #(r'^rsr/admin/', include('django.contrib.admin.urls')),
     
-    url(r'^rsr/projects/$',
-        'akvo.rsr.views.projectlist',
-        name='project_list'),
+    # Project listing
+    url(r'^rsr/projects/$','akvo.rsr.views.projectlist',name='project_list'),
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
-    #(r'^rsr/projects/all/$', 'akvo.rsr.views.projectlist', ),
 
-    url(r'^rsr/project/(?P<project_id>\d+)/$',
-        'akvo.rsr.views.projectmain', 
-        name='project_main'),
-    (r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', ),
-    (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
+    # Project
+    url(r'^rsr/project/(?P<project_id>\d+)/$','akvo.rsr.views.projectmain', name='project_main'),
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
-    (r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', ),
-    (r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
     url(r'^rsr/project/(?P<project_id>\d+)/funding/$','akvo.rsr.views.projectfunding', name='project_funding'),
     url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
+    url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
     
-	(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', ),
-	url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
+    (r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', ),
+    (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
+    (r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', ),
+    (r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
     
-    url(r'^rsr/fundingbar/$', 'akvo.rsr.views.fundingbarimg', name='fundingbar'),    
+    #url(r'^rsr/fundingbar/$', 'akvo.rsr.views.fundingbarimg', name='fundingbar'),    
 
     #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_goals$', 'akvo.rsr.views.ajax_tab_goals', ),
     #(r'^rsr/project/(?P<project_id>\d+)/ajax_tab_sustainability$', 'akvo.rsr.views.ajax_tab_sustainability', ),
@@ -75,8 +71,6 @@ urlpatterns = patterns('',
     (r'^rsr/flashgallery.xml$', 'akvo.rsr.views.flashgallery', ),
     
     url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
-
-    
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
 
@@ -129,8 +123,6 @@ urlpatterns = patterns('',
 
     (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
-    
-    #url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),    
     
     #feedjack
     #(r'', include('feedjack.urls')),
