@@ -8,6 +8,12 @@
 
 {% block project_left_column %}
 	<div class="white_box" style="background-color:#fff;">
+		<div style="float:left; margin-left:20px; margin-top:10px">
+			<span class="small">
+				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+			</span>
+		</div>
+		<div class="clear"></div>
 		<div class="space20">
 			<h2>Funding and milestones details</h2>
 			<p>...
