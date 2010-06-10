@@ -9,7 +9,6 @@ import os, subprocess, sys
 from ci_cleanup import *
 from ci_environment import *
 from ci_paths import *
-from commandline import *
 
 
 def verify_script_parameters():
@@ -18,12 +17,12 @@ def verify_script_parameters():
         sys.exit(1)
 
 def run_django_tests():
-    shell_call("./run_django_tests %s ci_mode" % (sys.argv[1]))
+    subprocess.call("./run_django_tests %s ci_mode" % (sys.argv[1]))
     remove_project_links_to_prevent_subsequent_build_failure()
 
 def run_acceptance_tests():
     setup_acceptance_test_environment()
-    shell_call("./run_acceptance_tests")
+    subprocess.call("./run_acceptance_tests")
 
 
 if __name__ == "__main__":
