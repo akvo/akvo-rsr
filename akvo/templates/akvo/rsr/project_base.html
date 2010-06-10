@@ -32,7 +32,7 @@
 						{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}} Raised<br />
  						{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}} Still needed<br />
 						<br />
-						<span class="red">(Donate button)</span>
+						<a class="yellow awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
 					</p>
 				</div>
 			</div>
