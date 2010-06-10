@@ -16,17 +16,20 @@ def verify_script_parameters():
         print 'Usage: ci_wrapper <virtualenv_path>'
         sys.exit(1)
 
+def open_testing_scripts_directory():
+    os.chdir(os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'testing')))
+
 def run_django_tests():
-    shell_call("bash ../testing/run_django_tests %s ci_mode" % (sys.argv[1]))
+    shell_call("./run_django_tests %s ci_mode" % (sys.argv[1]))
     remove_project_links_to_prevent_subsequent_build_failure()
 
 def run_acceptance_tests():
     setup_acceptance_test_environment()
-    shell_call("bash ../testing/run_acceptance_tests")
+    shell_call("./run_acceptance_tests")
 
 
 if __name__ == "__main__":
     verify_script_parameters()
-    os.chdir(os.path.realpath(os.path.dirname(__file__)))
+    open_testing_scripts_directory()
     run_django_tests()
     run_acceptance_tests()
