@@ -16,7 +16,6 @@ def verify_script_parameters():
         sys.exit(1)
 
 def run_django_tests():
-    os.chdir(os.path.realpath(os.path.dirname(__file__)))
     os.system("bash ../testing/run_django_tests %s ci_mode" % (sys.argv[1]))
     remove_project_links_to_prevent_subsequent_build_failure()
 
@@ -27,5 +26,6 @@ def run_acceptance_tests():
 
 if __name__ == "__main__":
     verify_script_parameters()
+    os.chdir(os.path.realpath(os.path.dirname(__file__)))
     run_django_tests()
     run_acceptance_tests()
