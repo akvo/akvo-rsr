@@ -11,9 +11,10 @@ from helpers.testexecution import *
 from test_settings import SITE_UNDER_TEST
 
 from api.xml.xml_api_test_suite import xml_api_suite
+from web.web_test_suite import web_suite
 
 def all_suites():
-    return create_test_suite_from_suites([xml_api_suite()])
+    return create_test_suite_from_suites([xml_api_suite(), web_suite()])
 
 if __name__ == "__main__":
     acceptance_test_root_path = os.path.realpath(os.path.dirname(__file__))
