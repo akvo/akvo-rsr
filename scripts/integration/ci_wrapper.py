@@ -8,6 +8,7 @@ import os, subprocess, sys
 
 from ci_cleanup import *
 from ci_environment import *
+from ci_paths import *
 from commandline import *
 
 
@@ -15,9 +16,6 @@ def verify_script_parameters():
     if len(sys.argv) <= 1:
         print 'Usage: ci_wrapper <virtualenv_path>'
         sys.exit(1)
-
-def open_testing_scripts_directory():
-    os.chdir(os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'testing')))
 
 def run_django_tests():
     shell_call("./run_django_tests %s ci_mode" % (sys.argv[1]))
@@ -30,6 +28,6 @@ def run_acceptance_tests():
 
 if __name__ == "__main__":
     verify_script_parameters()
-    open_testing_scripts_directory()
+    os.chdir(TESTING_SCRIPTS_PATH)
     run_django_tests()
     run_acceptance_tests()
