@@ -21,7 +21,7 @@ def run_django_tests():
     remove_project_links_to_prevent_subsequent_build_failure()
 
 def run_acceptance_tests():
-    setup_acceptance_test_environment()
+    configure_acceptance_test_settings_for_ci()
     subprocess.call("./run_acceptance_tests")
 
 
