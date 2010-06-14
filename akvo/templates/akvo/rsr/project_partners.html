@@ -15,10 +15,77 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-			<h2>Partners</h2>
-			<p>
-				Funding, sponsor, field, support. Maybe one org on an own line.
-			</p>
+			<h2>{% trans 'Project partners' %}</h2>
+			<br />
+			{% if p.fieldpartner_set.count %}
+				{% ifequal p.fieldpartner_set.count 1 %}
+		            <h3>{% trans 'Field partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Field partners' %}</h3>
+		        {% endifequal %}
+				{% for fp in p.fieldpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+						<a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
+		                    {% org_logo fp.field_organisation 120 90 'margin: 10px 20px;' %}
+		                </a>
+						{# <a href="{% url org_detail fp.id %}">{{fp}}</a> #}
+					</div>
+				{% endfor %}
+				<br /><br />
+			{% endif %}
+			
+			
+			{% if p.supportpartner_set.count %}
+				{% ifequal p.supportpartner_set.count 1 %}
+		            <h3>{% trans 'Support partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Support partners' %}</h3>
+		        {% endifequal %}
+				{% for sp in p.supportpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+						<a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">
+		                    {% org_logo sp.support_organisation 120 90 'margin: 10px 20px;' %}
+		                </a>
+						{# <a href="{% url org_detail sp.id %}">{{sp}}</a> #}
+					</div>
+				{% endfor %}
+				<br /><br />
+			{% endif %}
+			
+			{% if p.sponsorpartner_set.count %}
+				{% ifequal p.sponsorpartner_set.count 1 %}
+		            <h3>{% trans 'Sponsor partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Sponsor partners' %}</h3>
+		        {% endifequal %}
+				{% for sponsor in p.sponsorpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+						<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">
+		                    {% org_logo sponsor.sponsor_organisation 120 90 'margin: 10px 20px;' %}
+		                </a>
+						{# <a href="{% url org_detail sponsor.id %}">{{sponsor}}</a> #}
+					</div>
+				{% endfor %}
+				<br /><br />
+			{% endif %}
+			
+			
+			{% if p.fundingpartner_set.count %}
+				{% ifequal p.fundingpartner_set.count 1 %}
+		            <h3>{% trans 'Funding partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Funding partners' %}</h3>
+		        {% endifequal %}
+				{% for funder in p.fundingpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+						<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
+		                    {% org_logo funder.funding_organisation 120 90 'margin: 10px 20px;' %}
+		                </a>
+						{# <a href="{% url org_detail funder.id %}">{{funder}}</a> #}
+					</div>
+				{% endfor %}
+			{% endif %}
+			
 		</div>
 	</div>
 {% endblock project_left_column%}
