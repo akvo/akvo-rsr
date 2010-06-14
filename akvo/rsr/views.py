@@ -705,7 +705,7 @@ def projectupdate(request, project_id, update_id):
     u           = get_object_or_404(ProjectUpdate, pk=update_id)
     #updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
     can_add_update = p.connected_to_user(request.user)
-    return {'p': p, 'u': u, 'can_add_update':can_add_update,'hide_latest_updates': True,'site_section': 'projects', }
+    return {'p': p, 'u': u, 'can_add_update':can_add_update, 'hide_latest_updates': True,'site_section': 'projects', }
 
     
 @render_to('rsr/project_comments.html')
@@ -928,16 +928,25 @@ def projectdetails(request, project_id):
 
 @render_to('rsr/project_partners.html')  
 def projectpartners(request, project_id):
-        p = get_object_or_404(Project, pk=project_id)
-        updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]    
-        return { 'p': p, 'site_section': 'projects', }
+	p = get_object_or_404(Project, pk=project_id)
+	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]    
+	return { 
+		'p': p, 
+		'site_section': 'projects', 
+		'updates': updates, 
+		'hide_project_partners': True
+	}
 
 @render_to('rsr/project_funding.html')  
 def projectfunding(request, project_id):
-        p = get_object_or_404(Project, pk=project_id)    
-        public_donations = p.public_donations()
-        updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-        return { 'p': p, 'public_donations': public_donations, 'site_section': 'projects', }
+	p = get_object_or_404(Project, pk=project_id)    
+	public_donations = p.public_donations()
+	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+	return { 
+		'p': p, 
+		'public_donations': public_donations, 
+		'site_section': 'projects', 
+	}
 
 def getwidget(request, project_id):
     '''
