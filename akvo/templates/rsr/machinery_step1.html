@@ -74,6 +74,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- project_narrow start ____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="projectNarrowForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'Project widget with Donation link (170 pixels wide by 840 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -130,6 +131,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_narrow start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedNarrowForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'Cobranded narrow project widget with Donation link (170 pixels wide by 911 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -184,6 +186,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_short start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedShortForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'Cobranded short project widget with Donation link (170 pixels wide by 627 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -238,6 +241,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_banner start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedBannerForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -292,6 +296,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% comment %}
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedBannerForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'E: Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -347,6 +352,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!-- cobranded_leader start _____________________________________________________________________________________________________ -->
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 			<form name="cobrandedLeaderForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'Cobranded leader widget (728 pixels wide by 207 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -406,6 +412,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #dedede; margin-bottom:30px; margin-top:30px;">
 			<form name="featureSideForm" action="." method="post">
+                {% csrf_token %}
 				<h3 style="padding-bottom:0;">{% trans 'Project widget with Donation link (202 pixels wide by 840 pixels high)' %}</h3>
 				<p class="machinerygrey" style="margin:0;padding:0;">
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -475,6 +482,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 				<form name="projectUpdatesForm" action="." method="post">
+                    {% csrf_token %}
 					<h3 style="padding-bottom:0;">{% trans 'Project widget with updates (202 pixels wide by 900 pixels high)' %}</h3>
 					<p class="machinerygrey" style="margin:0;padding:0;">
 						{% trans 'Shows basic description and updates. Users who click on this widget will go to Akvo.org.' %}
@@ -529,6 +537,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			
 			<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 				<form name="projectContributeForm" action="." method="post">
+                    {% csrf_token %}
 					<h3 style="padding-bottom:0;">{% trans 'Project with Donation Link (202 pixels wide by 570 pixels high)' %}</h3>
 					<p class="machinerygrey" style="margin:0;padding:0;">
 						{% trans 'Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -589,6 +598,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				
 					<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 						<form name="projectSmallForm" action="." method="post">
+                            {% csrf_token %}
 							<h3 style="padding-bottom:0;">{% trans 'Small project (170 pixels wide by 312 pixels high)' %}</h3>
 							<p class="machinerygrey" style="margin:0;padding:0;">
 								{% trans 'Shows project title and subtitle. Allows donations. Users who click on this widget will go to Akvo.org.' %}
@@ -647,6 +657,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				
 				<div style="background-color:#FEFCF4; padding-left:30px; padding-right:30px; padding-bottom:20px; border:1px solid #BFBEC9; margin-bottom:30px;">
 					<form name="projectListForm" action="." method="post">
+                        {% csrf_token %}
 						<h3 style="padding-bottom:0;">{% trans 'Project list widget (745 pixels wide by 730 pixels high)' %}</h3>
 						<p class="machinerygrey" style="margin:0;padding:0;">
 							{% trans 'Shows list of projects from your organisation. Users who click on this widget will go to Akvo.org.' %}
