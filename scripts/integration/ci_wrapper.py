@@ -9,6 +9,7 @@ import os, subprocess, sys
 from ci_cleanup import *
 from ci_environment import *
 from ci_paths import *
+from seleniumserver import SeleniumRCServer
 
 
 def verify_script_parameters():
@@ -22,7 +23,10 @@ def run_django_tests():
 
 def run_acceptance_tests():
     configure_acceptance_test_settings_for_ci()
+    selenium_server = SeleniumRCServer()
+    selenium_server.start()
     subprocess.call("./run_acceptance_tests")
+    selenium_server.stop()
 
 
 if __name__ == "__main__":
