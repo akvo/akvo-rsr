@@ -42,13 +42,9 @@ class SeleniumRCServer(LoggedSubprocess):
         print "Server started successfully\n"
 
     def stop(self):
-        selenium_server_host = "localhost"
-        selenium_server_port = 4444
-        browser_environment = "*firefox"
-
         try:
             print "\nStopping %s..." % (SELENIUM_SERVER_PROCESS_NAME)
-            selenium(selenium_server_host, selenium_server_port, browser_environment, '').shut_down_selenium_server()
+            selenium(SELENIUM_RC_HOST, SELENIUM_RC_PORT, BROWSER_ENVIRONMENT, '').shut_down_selenium_server()
         except Exception, exception:
             print "Unable to stop %s with shutdown command: %s" % (SELENIUM_SERVER_PROCESS_NAME, exception)
             print "\nStopping server with interrupt signal instead"
