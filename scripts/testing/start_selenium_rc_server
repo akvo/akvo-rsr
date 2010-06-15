@@ -3,7 +3,7 @@
 # Parameters:
 # $1: logging_path
 # $2: xvfb_logging_path (optional)
-# $3: display_number (optional but must exist with $2)
+# $3: display_number (optional but required if $2 is present)
 
 
 cd "`dirname $0`"
@@ -76,6 +76,6 @@ if [ -n "$2" ]; then
     echo $! > $XVFB_LOG_PATH/xvfb.pid
 fi
 
-printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n"
+printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n\n"
 java -version > $RC_SERVER_LOG_FILE 2>&1
 java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &

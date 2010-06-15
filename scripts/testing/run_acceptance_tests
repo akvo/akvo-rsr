@@ -1,15 +1,50 @@
 #!/bin/bash
 
-cd "`dirname $0`"
-cd ../../tests/acceptance
+# Parameters:
+# $1: rc_server_log_path
+# $2: xvfb_log_path (optional)
+# $3: display_number (optional but required if $2 is present)
 
-ACCEPTANCE_TEST_ROOT_DIR=`pwd`
 
-# check if PYTHONPATH exists
-if [ -z "$PYTHONPATH" ]; then
-    export PYTHONPATH=$ACCEPTANCE_TEST_ROOT_DIR
-else
-    export PYTHONPATH=$ACCEPTANCE_TEST_ROOT_DIR:$PYTHONPATH
+function display_usage_and_exit
+{
+    echo "Usage: run_acceptance_tests <rc_server_log_path> [xvfb_log_path] [display_number]"
+    echo "Optionally specify an xvfb_log_path and display_number to run tests in headless mode"
+    exit -1
+}
+
+# check if rc_server_log_path parameter exists
+if [ -z "$1" ]; then
+    echo ">> Missing rc_server_log_path parameter"
+    display_usage_and_exit
 fi
 
-./all_test_suites.py
+RC_SERVER_LOG_PATH="$1"
+
+cd "`dirname $0`"
+TESTING_SCRIPTS_DIR="`pwd`"
+cd "$TESTING_SCRIPTS_DIR/../../tests/acceptance"
+ACCEPTANCE_TEST_ROOT_DIR="`pwd`"
+cd "$TESTING_SCRIPTS_DIR"
+
+function set_python_path_for_acceptance_tests
+{
+    # check if PYTHONPATH exists
+    if [ -z "$PYTHONPATH" ]; then
+        export PYTHONPATH="$ACCEPTANCE_TEST_ROOT_DIR"
+    else
+        export PYTHONPATH="$ACCEPTANCE_TEST_ROOT_DIR:$PYTHONPATH"
+    fi
+}
+
+printf "DISPLAY environment variable: $DISPLAY\n"
+
+"$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH"
+
+# proceed if no error codes returned from last script
+if [ $? -eq 0 ]; then
+    set_python_path_for_acceptance_tests
+    "$ACCEPTANCE_TEST_ROOT_DIR/all_test_suites.py"
+else
+    printf "\nUnable to start Selenium RC server or Xvfb due to errors above\n"
+fi
