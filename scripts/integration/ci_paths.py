@@ -11,3 +11,5 @@ TOOLS_PATH = os.path.realpath(os.path.join(INTEGRATION_SCRIPTS_PATH, '..', '..',
 JAVA_RUNTIME_PATH = "/usr/bin/java"
 SELENIUM_SERVER_JAR_PATH = os.path.join(TOOLS_PATH, "selenium/1.0.3/rc-server/selenium-server.jar")
 SELENIUM_SERVER_LOG_PATH = "/var/tmp/log/selenium"
+SELENIUM_SERVER_LOG_FILE_PREFIX = "rc_server"
+SELENIUM_SERVER_PROCESS_NAME = "Selenium RC server"
