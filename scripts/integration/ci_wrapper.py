@@ -18,7 +18,8 @@ def verify_script_parameters():
         sys.exit(1)
 
 def run_django_tests():
-    subprocess.call("./run_django_tests %s ci_mode" % (sys.argv[1]))
+    print "Using virtualenv path: %s" % sys.argv[1]
+    subprocess.call(["./run_django_tests", sys.argv[1], "ci_mode"])
     remove_project_links_to_prevent_subsequent_build_failure()
 
 def run_acceptance_tests():
