@@ -6,7 +6,7 @@ import os, signal, subprocess
 
 from selenium import selenium
 
-from ci_paths import *
+from ci_settings import *
 from loggedsubprocess import LoggedSubprocess
 
 

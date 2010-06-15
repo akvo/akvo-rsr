@@ -8,7 +8,7 @@ import os, subprocess, sys
 
 from ci_cleanup import *
 from ci_environment import *
-from ci_paths import *
+from ci_settings import *
 from seleniumserver import SeleniumRCServer
 
 
