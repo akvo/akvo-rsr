@@ -1,6 +1,81 @@
 #!/bin/bash
 
+# Parameters:
+# $1: logging_path
+# $2: xvfb_logging_path (optional)
+# $3: display_number (optional but must exist with $2)
+
+
 cd "`dirname $0`"
 
-java -version
-java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar
+function display_usage_and_exit
+{
+    echo "Usage: start_selenium_rc_server <logging_path> [xvfb_logging_path] [display_number]"
+    echo "Optionally specify an xvfb_logging_path and display_number to operate in headless mode"
+    exit -1
+}
+
+# check whether the logging_path parameter exists
+if [ -z "$1" ]; then
+    echo ">> Missing logging_path parameter"
+    display_usage_and_exit
+fi
+
+function ensure_log_path_is_writable
+{
+    # Parameters:
+    # $1: log path to check
+    # $2: name of process being logged
+
+    # check whether the logging path exists and is writable
+    if [ ! -e "$1" ]; then
+        printf ">> $2 logging path does not exist: $1\n"
+        exit -1
+    elif [ ! -w "$1" ]; then
+        printf ">> $2 logging path is not writable: $1\n"
+        exit -1
+    fi
+}
+
+ensure_log_path_is_writable $1 "Selenium RC server"
+
+LOG_TIMESTAMP=`date -u +%Y%m%d_%H%M%S`
+RC_SERVER_LOG_PATH=$1
+RC_SERVER_LOG_FILE=$RC_SERVER_LOG_PATH/rc_server_$LOG_TIMESTAMP.log
+
+MODE="NORMAL"
+DISPLAY_NUMBER=""
+
+# check if we're running the Selenium server in headless mode
+if [ -n "$2" ]; then
+    # check whether display_number parameter also exists
+    if [ -z "$3" ]; then
+        echo ">> Missing display_number parameter"
+        display_usage_and_exit
+    fi
+
+    MODE="HEADLESS"
+    DISPLAY_NUMBER=":$3"
+    XVFB_PATH=`which Xvfb`
+
+    # check whether Xvfb is on the path and executable
+    if [ ! -x "$XVFB_PATH" ]; then
+        printf ">> Xvfb not found on the path: $PATH\n"
+        exit -1
+    fi
+
+    ensure_log_path_is_writable $2 "Xvfb"
+
+    XVFB_LOG_PATH=$2
+    XVFB_LOG_FILE=$XVFB_LOG_PATH/xvfb_$LOG_TIMESTAMP.log
+
+    export DISPLAY=$DISPLAY_NUMBER
+
+    printf "Xvfb log: $XVFB_LOG_FILE\n"
+    Xvfb $DISPLAY_NUMBER -ac > $XVFB_LOG_FILE 2>&1 &
+    echo $! > $XVFB_LOG_PATH/xvfb.pid
+fi
+
+printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n"
+java -version > $RC_SERVER_LOG_FILE 2>&1
+java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &
