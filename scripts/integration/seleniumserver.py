@@ -42,7 +42,8 @@ class SeleniumRCServer:
 
         if not os.path.exists(logging_path):
             print "Creating logging directory: %s" % (logging_path)
-            os.makedirs(logging_path, 0777)
+            os.makedirs(logging_path)
+            os.chmod(logging_path, 0777)
 
     def start(self):
         # The exec call with the shell=True parameter is a hack so that we can use the OS's output
