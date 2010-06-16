@@ -749,7 +749,7 @@ class Project(models.Model):
         
     def show_status_large(self):
         "Show the current project status with background"
-        return mark_safe("<span class='status_large' style='background-color:%s; color: inherit;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
     
     def show_current_image(self):
         try:
