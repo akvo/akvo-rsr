@@ -18,11 +18,11 @@
 			<h2>Funding and milestones details</h2>
 			<br />
 			<h3>{% trans 'Project Budget' %}</h3>
-			<table style="width: 80%">
+			<table style="width: 50%">
 				{% if p.budget_employment %}
 				<tr>
 					<td>{% trans 'Employment costs' %}</td>
-					<td>{{p.get_currency_display|safe}} {{p.budget_employment|round|intcomma}}</td>
+					<td width="100px">{{p.get_currency_display|safe}} {{p.budget_employment|round|intcomma}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_building %}
@@ -84,20 +84,19 @@
 			{% endfor %}
 			
 			{% if p.all_donations %}
-				<h4>{% trans 'Individuals raised' %}</h4>
-				<table width="80%">
+				<table width="50%">
 					<thead>
 						<tr>
-							<th width="200px">{% trans 'Individual raised' %}</th>
-							<th>
+							<th>{% trans 'Individual raised' %}</th>
+							<th width="100px">
 								{{p.get_currency_display|safe}}
 								{{p.all_donations_amount_received|round|intcomma}}
 							</th>
 						</tr>
 					</thead>
 					<tr>
-						<th width="100px">{% trans 'Amount' %}</th>
 						<th>{% trans 'Donor' %}</th>
+						<th>{% trans 'Amount' %}</th>
 					</tr>
 					{% for donors in public_donations %}
 						<tr>
