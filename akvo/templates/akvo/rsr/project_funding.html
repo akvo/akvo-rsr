@@ -16,12 +16,141 @@
 		<div class="clear"></div>
 		<div class="space20">
 			<h2>Funding and milestones details</h2>
-			<p>...
-			</p>
-			<ul>
-				<li>Funding organisations</li>
-				<li>Individual funding</li>
-			</ul>
+			<br />
+			<h3>{% trans 'Project Budget' %}</h3>
+			<table style="width: 80%">
+				{% if p.budget_employment %}
+				<tr>
+					<td>{% trans 'Employment costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_employment|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_building %}
+				<tr>
+					<td>{% trans 'Building Material costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_building|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_training %}
+				<tr>
+					<td>{% trans 'Training costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_training|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_maintenance %}
+				<tr>
+					<td>{% trans 'Maintenance costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_maintenance|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_management %}
+				<tr>
+					<td>{% trans 'Management costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_management|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_other %}
+				<tr>
+					<td>{% trans 'Other costs' %}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_other|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if p.budget_total %}
+				<tr>
+					<td><b>{% trans 'Total' %}</b></td>
+					<td><b>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</b></td>
+				</tr>
+				{% else %}
+				<tr>
+					<td><b>{% trans 'Total' %}</b></td>
+					<td><b>{{p.get_currency_display|safe}} 0</b></td>
+				</tr>
+				{% endif %}
+			</table>
+			<br />
+			<h3>Current funders</h3>
+			{% for funder in p.fundingpartner_set.all %}
+				<div style="float:left; width:190px;">
+					<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
+						{% org_logo funder.funding_organisation 140 105 'margin: 10px 20px 10px 20px;' %}
+					</a>
+				</div>
+				<div style="float:left; width:400px; padding-top:15px;">
+					{% trans 'Grant' %}: {{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}
+				</div>
+				<div class="clear"></div>
+			
+				<hr />
+			{% endfor %}
+			
+			{% if p.all_donations %}
+				<h4>{% trans 'Individuals raised' %}</h4>
+				<table width="80%">
+					<thead>
+						<tr>
+							<th width="200px">{% trans 'Individual raised' %}</th>
+							<th>
+								{{p.get_currency_display|safe}}
+								{{p.all_donations_amount_received|round|intcomma}}
+							</th>
+						</tr>
+					</thead>
+					<tr>
+						<th width="100px">{% trans 'Amount' %}</th>
+						<th>{% trans 'Donor' %}</th>
+					</tr>
+					{% for donors in public_donations %}
+						<tr>
+							<td style="text-align:right;">
+								{{donors.name}}
+							</td>
+							<td>
+								{{p.get_currency_display|safe}} {{ donors.amount }}
+							</td>
+						</tr>
+					{% endfor %}
+				</table>
+				<p>Raised equals donations minus transaction fees.</p>
+			{% endif %}
+			
+			{% comment %}
+
+			{% if p.all_donations %}
+				<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
+					<p style="margin: 10px 0 10px 0;">
+						<span style="margin-left: 10px; float:right;">
+							{{p.get_currency_display|safe}}
+							{{p.all_donations_amount_received|round|intcomma}}
+						</span></b>
+						<b>{% trans 'Individuals raised' %}:
+						<br /><br />
+						<b>{% trans 'Donations' %}:</b><br />
+						{% for donors in public_donations %}
+						<div style="margin:0px 20px">
+							<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
+							<span style="float:right;">{{p.get_currency_display|safe}}</span>
+							{{donors.name}}
+						</div>
+						{% endfor %}
+
+						{% ifnotequal p.anonymous_donations_amount_received 0 %}
+							<div style="margin:0px 20px">
+								<span style="margin-left: 5px; float:right;">
+									{{ p.anonymous_donations_amount_received|round|intcomma }}
+								</span>
+								<span style="float:right;">{{p.get_currency_display|safe}}</span>
+								{% trans 'Anonymous' %}:
+							</div>
+						{% endifnotequal %}					
+					</p>
+					<hr />
+					<p style="margin: 10px 0 10px 0; font-size:0.85em">
+						{% trans 'Raised equals donations minus transaction fees.' %}
+					</p>
+
+				</div>
+			{% endif %}
+			{% endcomment %}
 		</div>
 	</div>
 {% endblock project_left_column%}
