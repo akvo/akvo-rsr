@@ -4,15 +4,35 @@ ul.machinery_steps {
     }
     
 .machinery_widget_choice_left {
-    background-color:#cecece;
     float:left; 
     width:205px;
     }
 
 .machinery_widget_choice_right {
-    background-color:#ececec;
     float:left; 
-    width:540px;
-    margin-left:120px;
+    width:500px;
+    margin-left:80px;
     }    
+    
+ol.form_list {
+    margin-bottom:0;
+    }
+    
+ol.form_list li {
+    list-style:none;
+    }
 
+ol.form_list li input {
+    margin-top:1px;
+    }
+    
+ol.form_list li label {
+    display:inline;
+    margin-top:0;
+    }
+
+.machinery_widget-organisations {
+    margin-top:7px;
+    margin-left:45px;
+    margin-bottom:20px;
+    }

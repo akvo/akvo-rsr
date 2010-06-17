@@ -37,6 +37,7 @@
 	</noscript>
 </div>
 <div class="clear"></div>
+<hr />
 
 <div class="prepend-1" style="margin-top:40px;">
 	<h3>Step 1: Select the type of widget you wish to use</h3>
@@ -69,9 +70,35 @@
 						<span class="machinery_address_placeholder small"></span>
 					</p>
 					
-					
 					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
-					
+					<input type="hidden" name="widget-type" value="project-narrow" />
+					<ol class="form_list">
+						<li>
+							<input type="radio" id="project-narrow-specific-project" 
+								name="widget-choice" value="specific-project" 
+								checked="checked" /> 
+							<label for="project-narrow-specific-project">
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+							</label>
+						</li>
+						<li>
+							<input type="radio" id="project-narrow-random-from-org" 
+								name="widget-choice" value="random-from-org" /> 
+							<label for="project-narrow-random-from-org">
+								{% trans 'Display a random project from this organisation' %}:
+							</label>
+						</li>
+					</ol>
+					<select id="project-narrow-organisations" class="machinery_widget-organisations"
+						name="widget-organisations" size="1" disabled="disabled">
+						{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>	
+						
+					{% comment %}
+						
+
 					<input type="hidden" name="widget-type" value="project-narrow" />
 					<input type="radio" id="project-narrow-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;" /> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 					<br />
@@ -83,7 +110,7 @@
 						<option value="{{organisation.id}}">{{organisation.name}}</option>
 						{% endfor %}
 					</select>
-
+					{% endcomment %}
 					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
 					
 					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
@@ -109,13 +136,14 @@
 
 {% block jq_ready %}
 {{block.super}}
-
+	
+	{# Handle enable / disable of the specific .vs random project #}
 	jQ("#project-narrow-random-from-org").click(function() { 
 		jQ('#project-narrow-organisations').removeAttr("disabled"); });
 	jQ("#project-narrow-specific-project").click(function() { 
 		jQ('#project-narrow-organisations').attr("disabled", true); });
 
-	
+	{# If the browser don't support html5 placeholder add a description. #}
 	if (!Modernizr.input.placeholder) {
 		jQ('.machinery_address_placeholder').html('{% trans "Example" %}: www.akvo.org');
 	}
