@@ -52,10 +52,50 @@
 					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
 				</p>
 				<div class="machinery_widget_choice_left">
-					left
+					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+					<script type="text/javascript">
+						// think about refactor this to a general method in machinery.js
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-narrow/project/{{project.id}}/" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
-					right
+					<h3>{% trans 'Settings' %}</h3>
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold; margin-bottom:0;">
+						{% trans 'Enter the web address where you will embed this widget' %}
+					</p>
+					<p style="small">
+						<input type="text" name="widget-site" value="" size=45 style="margin-top:7px; margin-right:20px;" placeholder="{% trans 'Example' %}: www.akvo.org" /> 
+						<span class="machinery_address_placeholder small"></span>
+					</p>
+					
+					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					
+					<input type="hidden" name="widget-type" value="project-narrow" />
+					<input type="radio" id="project-narrow-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;" /> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+					<br />
+					<input type="radio" id="project-narrow-random-from-org" name="widget-choice" value="random-from-org" /> 
+					{% trans 'Display a random project from this organisation' %}:
+					<br />
+					<select name="widget-organisations" id="project-narrow-organisations" size="1" style="margin-left:23px;" disabled="disabled">
+						{% for organisation in organisations  %}
+						<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>
+
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<p style="margin:0; padding:0;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						</p>
+					</div>
+					<a class="aqua awesome" 
+						href="javascript:document.projectNarrowForm.submit();" onclick="this.blur();">
+						<span>{% trans 'Select and Proceed...' %}</span>
+					</a>
+					
 				</div>
 				<div class="clear"></div>
 			</form>
@@ -66,3 +106,20 @@
 </div>
 
 {% endblock maincontent %}
+
+{% block jq_ready %}
+{{block.super}}
+
+	jQ("#project-narrow-random-from-org").click(function() { 
+		jQ('#project-narrow-organisations').removeAttr("disabled"); });
+	jQ("#project-narrow-specific-project").click(function() { 
+		jQ('#project-narrow-organisations').attr("disabled", true); });
+
+	
+	if (!Modernizr.input.placeholder) {
+		jQ('.machinery_address_placeholder').html('{% trans "Example" %}: www.akvo.org');
+	}
+		
+{% endblock jq_ready %}
+
+

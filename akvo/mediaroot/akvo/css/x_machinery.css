@@ -4,13 +4,15 @@ ul.machinery_steps {
     }
     
 .machinery_widget_choice_left {
+    background-color:#cecece;
     float:left; 
     width:205px;
     }
 
 .machinery_widget_choice_right {
-    float:right; 
-    width:430px; 
-    padding-top:0px;
+    background-color:#ececec;
+    float:left; 
+    width:540px;
+    margin-left:120px;
     }    
 
