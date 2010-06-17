@@ -31,7 +31,7 @@ def verify_script_parameters():
         print ">> The rc_port parameter [%s] must be an integer" % sys.argv[3]
         display_usage_and_exit()
 
-    rc_server_log_path = os.path.abspath(sys.argv[1])
+    rc_server_log_path = os.path.realpath(sys.argv[1])
 
     if not os.path.exists(rc_server_log_path):
         print ">> Selenium RC server log path does not exist: %s" % (rc_server_log_path)
@@ -106,7 +106,7 @@ def process_id_exists(process_id):
             raise os_error
 
 def rc_server_process_id_file_path():
-    return os.path.join(os.path.abspath(sys.argv[1]), RC_SERVER_PID_FILE_NAME)
+    return os.path.join(os.path.realpath(sys.argv[1]), RC_SERVER_PID_FILE_NAME)
 
 
 if __name__ == "__main__":
