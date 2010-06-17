@@ -45,6 +45,7 @@ printf "DISPLAY environment variable: $DISPLAY\n"
 if [ $? -eq 0 ]; then
     set_python_path_for_acceptance_tests
     "$ACCEPTANCE_TEST_ROOT_DIR/all_test_suites.py"
+    "$TESTING_SCRIPTS_DIR/stop_selenium_rc_server.py" "$RC_SERVER_LOG_PATH"
 else
     printf "\nUnable to start Selenium RC server or Xvfb due to errors above\n"
 fi
