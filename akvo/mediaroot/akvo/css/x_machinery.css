@@ -1,0 +1,16 @@
+
+ul.machinery_steps {
+    margin-left: 1em;
+    }
+    
+.machinery_widget_choice_left {
+    float:left; 
+    width:205px;
+    }
+
+.machinery_widget_choice_right {
+    float:right; 
+    width:430px; 
+    padding-top:0px;
+    }    
+

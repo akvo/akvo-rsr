@@ -36,7 +36,7 @@ function getWidth(widget_type)
 	}	
 }
 
-function hex_validator(hexcolor) 
+function hex_validator(hexcolor)
 { 
 	var strPattern = /^([0-9a-f]{1,2}){3}$/i;
 	return strPattern.test(hexcolor);

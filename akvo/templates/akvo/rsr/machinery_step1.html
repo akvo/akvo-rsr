@@ -11,7 +11,58 @@
 {% block maincontent %}
 
 <h2>Get a widget to use on your web site</h2>
+<div style="float:left; width:48%;">
+	<p class="grey">
+		{% trans 'The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site&#x27;s code.' %}
+	</p>
+	<ul class="machinery_steps">
+		<li>{% trans 'Step 1: Select the type of widget you wish to use.' %}</li>
+		<li>{% trans 'Step 2: Select colours and preview your widget.' %}</li>
+		<li>{% trans 'Step 3: Copy the HTML code to your web site.' %}</li>
+	</ul>
+	{% ifequal account_level 'free' %}
+		<p class="small">
+			{% trans 'Sign in for more widget types, available to <a href="http://www.akvo.org/web/fees_plus">Akvo RSR Plus accounts</a>.' %}
+		</p>
+	{% endifequal %}
+</div>
+<div style="float:right; width:48%;">
+	<noscript>
+		<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+			<p>
+				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+				{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed. ' %}
+			</p>
+		</div>
+	</noscript>
+</div>
+<div class="clear"></div>
 
-Project: {{p.name}}
+<div class="prepend-1" style="margin-top:40px;">
+	<h3>Step 1: Select the type of widget you wish to use</h3>
+	<p class="small grey">
+		You can customise the top and bottom bar and title text colours on the next step.
+	</p>
+	<!-- project_narrow start _________________________________________________________________ -->
+	<div class="white_box" style="background-color:#fff;">
+		<div class="space20">
+			<form name="projectNarrowForm" action="." method="post">
+				<h3>{% trans 'Project widget with Donation link (170 pixels wide by 840 pixels high)' %}</h3>
+				<p class="grey small">
+					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
+				</p>
+				<div class="machinery_widget_choice_left">
+					left
+				</div>
+				<div class="machinery_widget_choice_right">
+					right
+				</div>
+				<div class="clear"></div>
+			</form>
+		</div>
+	</div>
+	<!-- project_narrow stop ___________________________________________________________________ -->
+	
+</div>
 
 {% endblock maincontent %}
