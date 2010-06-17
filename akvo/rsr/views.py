@@ -959,7 +959,7 @@ def getwidget(request, project_id):
             account_level = 'free'
         p = get_object_or_404(Project.objects, pk=project_id)
         orgs = p.all_partners()
-        return render_to_response('rsr/machinery_step1.html', {'project': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
+        return render_to_response('rsr/machinery_step1.html', {'project': p, 'p': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
     else:
         widget_type = request.POST['widget-type']
         widget_choice = request.POST['widget-choice']
@@ -971,7 +971,7 @@ def getwidget(request, project_id):
         else:
             o = None
         p = get_object_or_404(Project, pk=project_id)
-        return render_to_response('rsr/machinery_step2.html', {'project': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
+        return render_to_response('rsr/machinery_step2.html', {'project': p, 'p': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
 
 
 def flashgallery(request):

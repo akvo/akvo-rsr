@@ -1,3 +1,4 @@
+alert("In machinery.js");
 /*
  * Modernizr JavaScript library 1.1
  * http://modernizr.com/

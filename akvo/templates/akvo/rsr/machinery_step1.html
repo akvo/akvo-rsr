@@ -1,0 +1,17 @@
+{% extends "rsr/project_subpage_base.html" %}
+
+{% load i18n webdesign %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">Get a widget - step 1</li>
+{% endblock breadcrum_items %}
+
+
+{% block maincontent %}
+
+<h2>Get a widget to use on your web site</h2>
+
+Project: {{p.name}}
+
+{% endblock maincontent %}

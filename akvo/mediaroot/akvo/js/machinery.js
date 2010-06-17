@@ -1,0 +1,1 @@
+alert('In machinery.js');
