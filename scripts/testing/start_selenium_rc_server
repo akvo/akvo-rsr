@@ -73,9 +73,10 @@ if [ -n "$2" ]; then
 
     printf "Xvfb log: $XVFB_LOG_FILE\n"
     Xvfb $DISPLAY_NUMBER -ac > $XVFB_LOG_FILE 2>&1 &
-    echo $! > $XVFB_LOG_PATH/xvfb.pid
+    echo $! > $XVFB_LOG_PATH/xvfb.pid # save Xvfb process ID
 fi
 
 printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n\n"
 java -version > $RC_SERVER_LOG_FILE 2>&1
 java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &
+echo $! > $RC_SERVER_LOG_PATH/rc_server.pid # save RC server process ID
