@@ -26,6 +26,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, get_language
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from BeautifulSoup import BeautifulSoup
@@ -1131,6 +1132,7 @@ def mollie_report(request):
         return HttpResponse('OK')
     return HttpResponseServerError
 
+@csrf_exempt
 @require_POST
 @render_to('rsr/donate_thanks.html')
 def paypal_thanks(request):

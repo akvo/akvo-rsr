@@ -448,7 +448,37 @@ class Project(models.Model):
         if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         '''
-            
+
+    def has_valid_coordinates(self):
+        try:
+            latitude = float(self.latitude)
+            longitude = float(self.longitude)
+            return True
+        except:
+            return False
+
+    def get_location(self):
+        if self.has_valid_coordinates():
+            latitude = str(self.latitude.strip())
+            longitude = str(self.longitude.strip())
+            coordinates = '%s,%s' % (latitude, longitude)
+            return coordinates
+        else:
+            state = self.state.lstrip().rstrip().replace(' ', '+')
+            country = self.country.country_name.lstrip().rstrip().replace(' ', '+')
+            address = '%s+%s' % (state, country)
+            return address
+
+    def static_map_url(self, color='blue', width=140, height=140, zoom=9):
+        location = self.get_location()
+        base_url = 'http://maps.google.com/maps/api/staticmap?'
+        query = 'markers=color:%s|%s&size=%dx%d&zoom=%d&sensor=false' % \
+            (color, location, width, height, zoom)
+        url = base_url + query
+        #return mark_safe('<img src="%s" alt="%s" width=%d height=%d>' % \
+        #    (url, self.name, width, height))
+        return url
+
     class QuerySet(QuerySet):
         def published(self):
             return self.filter(publishingstatus__status='published')
