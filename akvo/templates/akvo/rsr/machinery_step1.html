@@ -56,7 +56,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-narrow/project/{{project.id}}/" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-narrow/project/{{p.id}}/" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
@@ -78,7 +78,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-narrow-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -96,21 +96,6 @@
 						{% endfor %}
 					</select>	
 						
-					{% comment %}
-						
-
-					<input type="hidden" name="widget-type" value="project-narrow" />
-					<input type="radio" id="project-narrow-specific-project" name="widget-choice" value="specific-project" checked="checked" style="margin-bottom:10px;" /> {% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
-					<br />
-					<input type="radio" id="project-narrow-random-from-org" name="widget-choice" value="random-from-org" /> 
-					{% trans 'Display a random project from this organisation' %}:
-					<br />
-					<select name="widget-organisations" id="project-narrow-organisations" size="1" style="margin-left:23px;" disabled="disabled">
-						{% for organisation in organisations  %}
-						<option value="{{organisation.id}}">{{organisation.name}}</option>
-						{% endfor %}
-					</select>
-					{% endcomment %}
 					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
 					
 					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
