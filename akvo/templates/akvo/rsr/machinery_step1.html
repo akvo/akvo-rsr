@@ -115,6 +115,220 @@
 	</div>
 	<!-- project_narrow stop ___________________________________________________________________ -->
 	
+	<!-- cobranded_narrow start _______________________________________________________________- -->
+	<div class="white_box" style="margin-top:40px;">
+		<div class="space20">
+			<form name="cobrandedNarrowForm" action="." method="post">
+				<h3>{% trans 'Cobranded narrow project widget with Donation link (170 pixels wide by 911 pixels high)' %}</h3>
+				<p class="grey small">
+					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
+				</p>
+				<div class="machinery_widget_choice_left">
+					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+					<script type="text/javascript">
+						{# think about refactor this to a general method in machinery.js #}
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-narrow/project/{{project.id}}/" width="170" height="911" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+				</div>
+				<div class="machinery_widget_choice_right">
+					<h3>{% trans 'Settings' %}</h3>
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold; margin-bottom:0;">
+						{% trans 'Enter the web address where you will embed this widget' %}
+					</p>
+					<p style="small">
+						<input type="text" name="widget-site" value="" size=45 style="margin-top:7px; margin-right:20px;" placeholder="{% trans 'Example' %}: www.akvo.org" /> 
+						<span class="machinery_address_placeholder small"></span>
+					</p>
+					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<input type="hidden" name="widget-type" value="cobranded-narrow" />
+					<ol class="form_list">
+						<li>
+							<input type="radio" id="cobranded-narrow-specific-project" 
+								name="widget-choice" value="specific-project" 
+								checked="checked" /> 
+							<label for="cobranded-narrow-specific-project">
+								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+							</label>
+						</li>
+						<li>
+							<input type="radio" id="cobranded-narrow-random-from-org" 
+								name="widget-choice" value="random-from-org" /> 
+							<label for="cobranded-narrow-random-from-org">
+								{% trans 'Display a random project from this organisation' %}:
+							</label>
+						</li>
+					</ol>
+					<select id="cobranded-narrow-organisations" class="machinery_widget-organisations"
+						name="widget-organisations" size="1" disabled="disabled">
+						{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>	
+						
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<p style="margin:0; padding:0;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						</p>
+					</div>
+					<a class="aqua awesome" 
+						href="javascript:document.cobrandedNarrowForm.submit();" onclick="this.blur();">
+						<span>{% trans 'Select and Proceed...' %}</span>
+					</a>
+					
+				</div>
+				<div class="clear"></div>
+			</form>
+		</div>
+	</div>
+	<!-- cobranded_narrow stop _______________________________________________________________- -->
+	
+	<!-- cobranded_short start _______________________________________________________________- -->
+	<div class="white_box" style="margin-top:40px;">
+		<div class="space20">
+			<form name="cobrandedShortForm" action="." method="post">
+				<h3>{% trans 'Cobranded short project widget with Donation link (170 pixels wide by 627 pixels high)' %}</h3>
+				<p class="grey small">
+					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
+				</p>
+				<div class="machinery_widget_choice_left">
+					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+					<script type="text/javascript">
+						{# think about refactor this to a general method in machinery.js #}
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-short/project/{{project.id}}/" width="170" height="627" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+				</div>
+				<div class="machinery_widget_choice_right">
+					<h3>{% trans 'Settings' %}</h3>
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold; margin-bottom:0;">
+						{% trans 'Enter the web address where you will embed this widget' %}
+					</p>
+					<p style="small">
+						<input type="text" name="widget-site" value="" size=45 style="margin-top:7px; margin-right:20px;" placeholder="{% trans 'Example' %}: www.akvo.org" /> 
+						<span class="machinery_address_placeholder small"></span>
+					</p>
+					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<input type="hidden" name="widget-type" value="cobranded-short" />
+					<ol class="form_list">
+						<li>
+							<input type="radio" id="cobranded-short-specific-project" 
+								name="widget-choice" value="specific-project" 
+								checked="checked" /> 
+							<label for="cobranded-short-specific-project">
+								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+							</label>
+						</li>
+						<li>
+							<input type="radio" id="cobranded-short-random-from-org" 
+								name="widget-choice" value="random-from-org" /> 
+							<label for="cobranded-short-random-from-org">
+								{% trans 'Display a random project from this organisation' %}:
+							</label>
+						</li>
+					</ol>
+					<select id="cobranded-short-organisations" class="machinery_widget-organisations"
+						name="widget-organisations" size="1" disabled="disabled">
+						{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>	
+						
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<p style="margin:0; padding:0;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						</p>
+					</div>
+					<a class="aqua awesome" 
+						href="javascript:document.cobrandedShortForm.submit();" onclick="this.blur();">
+						<span>{% trans 'Select and Proceed...' %}</span>
+					</a>
+					
+				</div>
+				<div class="clear"></div>
+			</form>
+		</div>
+	</div>
+	<!-- cobranded_short stop -_______________________________________________________________- -->
+	
+	<!-- cobranded_banner start -_____________________________________________________________- -->
+	<div class="white_box" style="margin-top:40px;">
+		<div class="space20">
+			<form name="cobrandedBannerForm" action="." method="post">
+				<h3>{% trans 'Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
+				<p class="grey small">
+					{% trans 'Shows basic description and allows donations. Users who click on this widget will go to Akvo.org.' %}
+				</p>
+				<div class="machinery_widget_choice_left" style="width:480px">
+					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+					<script type="text/javascript">
+						{# think about refactor this to a general method in machinery.js #}
+						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-banner/project/{{project.id}}/" width="468" height="234" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+				</div>
+				<div class="machinery_widget_choice_right" style="width:370px; margin-left:20px;">
+					<h3>{% trans 'Settings' %}</h3>
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold; margin-bottom:0;">
+						{% trans 'Enter the web address where you will embed this widget' %}
+					</p>
+					<p style="small">
+						<input type="text" name="widget-site" value="" size=45 style="margin-top:7px; margin-right:20px;" placeholder="{% trans 'Example' %}: www.akvo.org" /> 
+						<span class="machinery_address_placeholder small"></span>
+					</p>
+					
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<input type="hidden" name="widget-type" value="cobranded-banner" />
+					<ol class="form_list">
+						<li>
+							<input type="radio" id="cobranded-banner-specific-project" 
+								name="widget-choice" value="specific-project" 
+								checked="checked" /> 
+							<label for="cobranded-banner-specific-project">
+								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+							</label>
+						</li>
+						<li>
+							<input type="radio" id="cobranded-banner-random-from-org" 
+								name="widget-choice" value="random-from-org" /> 
+							<label for="cobranded-banner-random-from-org">
+								{% trans 'Display a random project from this organisation' %}:
+							</label>
+						</li>
+					</ol>
+					<select id="cobranded-banner-organisations" class="machinery_widget-organisations"
+						name="widget-organisations" size="1" disabled="disabled">
+						{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>	
+						
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px;" />
+					
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<p style="margin:0; padding:0;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						</p>
+					</div>
+					<a class="aqua awesome" 
+						href="javascript:document.cobrandedBannerForm.submit();" onclick="this.blur();">
+						<span>{% trans 'Select and Proceed...' %}</span>
+					</a>
+					
+				</div>
+				<div class="clear"></div>
+			</form>
+		</div>
+	</div>
+	
+	<!-- cobranded_banner stop -______________________________________________________________- -->
+	
 </div>
 
 {% endblock maincontent %}
@@ -127,6 +341,50 @@
 		jQ('#project-narrow-organisations').removeAttr("disabled"); });
 	jQ("#project-narrow-specific-project").click(function() { 
 		jQ('#project-narrow-organisations').attr("disabled", true); });
+
+	jQ("#cobranded-narrow-random-from-org").click(function() { 
+		jQ('#cobranded-narrow-organisations').removeAttr("disabled"); });
+	jQ("#cobranded-narrow-specific-project").click(function() {	
+		jQ('#cobranded-narrow-organisations').attr("disabled", true); });
+		
+	jQ("#cobranded-short-random-from-org").click(function() { 
+		jQ('#cobranded-short-organisations').removeAttr("disabled"); });
+	jQ("#cobranded-short-specific-project").click(function() {	
+		jQ('#cobranded-short-organisations').attr("disabled", true); });
+	
+
+
+
+	// ---
+	jQ("#feature-side-random-from-org").click(function() { 
+		jQ('#feature-side-organisations').removeAttr("disabled"); });
+	jQ("#feature-side-specific-project").click(function() {	
+		jQ('#feature-side-organisations').attr("disabled", true); });
+	
+	jQ("#cobranded-banner-random-from-org").click(function() { 
+		jQ('#cobranded-banner-organisations').removeAttr("disabled"); });
+	jQ("#cobranded-banner-specific-project").click(function() {	
+		jQ('#cobranded-banner-organisations').attr("disabled", true); });
+
+	jQ("#cobranded-leader-random-from-org").click(function() { 
+		jQ('#cobranded-leader-organisations').removeAttr("disabled"); });
+	jQ("#cobranded-leader-specific-project").click(function() {	
+		jQ('#cobranded-leader-organisations').attr("disabled", true); });
+
+	jQ("#project-updates-random-from-org").click(function() { 
+		jQ('#project-updates-organisations').removeAttr("disabled"); });
+	jQ("#project-updates-specific-project").click(function() {
+		jQ('#project-updates-organisations').attr("disabled", true); });
+
+	jQ("#project-contribute-random-from-org").click(function() {
+		jQ('#project-contribute-organisations').removeAttr("disabled"); });
+	jQ("#project-contribute-specific-project").click(function() {
+		jQ('#project-contribute-organisations').attr("disabled", true); });
+
+	jQ("#project-small-random-from-org").click(function() { 
+		jQ('#project-small-organisations').removeAttr("disabled"); });
+	jQ("#project-small-specific-project").click(function() { 
+		jQ('#project-small-organisations').attr("disabled", true); });
 
 	{# If the browser don't support html5 placeholder add a description. #}
 	if (!Modernizr.input.placeholder) {
