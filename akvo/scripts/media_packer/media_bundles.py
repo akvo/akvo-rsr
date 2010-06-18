@@ -4,7 +4,7 @@ MEDIA_BUNDLES = {
         'type': 'css',
         'path': 'akvo/css/',
         'compress': True,
-        'files': ['x_reset.css', 'x_grid.css', 'x_typography.css', 'x_base.css', 'x_main_nav.css', 'x_utils.css', 'x_project_directory.css', 'x_column.css','x_project.css','x_tabs.css','x_buttons.css',],
+        'files': ['x_reset.css', 'x_grid.css', 'x_typography.css', 'x_base.css', 'x_main_nav.css', 'x_utils.css', 'x_project_directory.css', 'x_column.css','x_project.css','x_tabs.css','x_buttons.css','x_machinery.css',],
     },
     'akvo_ie6_style': {
         'type': 'css',
@@ -16,7 +16,7 @@ MEDIA_BUNDLES = {
         'type': 'js',
         'path': 'akvo/js/',
         'compress': True,
-        'files': ['x_modernizr-1.1.js'],
+        'files': ['machinery.js', 'x_modernizr.js'],
     },
     'widget_cobranded_banner': {
         'type': 'css',

@@ -85,21 +85,21 @@ $(document).ready(function()
 	
 	
 	
-	// Toggle other selections for the colours		
-	$("#backgroundcolor_pulldown").change(function() { 
+	// Toggle other selections for the colours
+	$("#backgroundcolor_pulldown").change(function() {
 		if (document.getElementById('backgroundcolor_pulldown').value == 'x') {
-			$('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");			
+			$('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");
 		} else {
 			$('#backgroundcolor_other_section').animate({ opacity: "hide" }, "slow");
 		}
 	});
 	
-	$("#textcolor_pulldown").change(function() { 		
+	$("#textcolor_pulldown").change(function() {
 		if (document.getElementById('textcolor_pulldown').value == 'x') {
-			$('#textcolor_other_section').animate({ opacity: "show" }, "slow");			
+			$('#textcolor_other_section').animate({ opacity: "show" }, "slow");
 		} else {
 			$('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
-		}		
+		}
 	});
 
 });
