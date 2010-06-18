@@ -36,3 +36,18 @@ ol.form_list li label {
     margin-left:45px;
     margin-bottom:20px;
     }
+    
+#warning_color {
+    float:right;
+    width:380px;
+    background-color:#FFEFEB;
+    color:#FF0000;
+    border:1px solid #FFDAD9;
+    padding:10px;
+    /*margin-bottom:0px;*/
+    display:none;
+    }
+
+#warning_color p {
+    margin:0;
+    }
