@@ -26,7 +26,7 @@ def verify_script_parameters():
         print ">> Missing rc_server_log_path parameter"
         display_usage_and_exit()
     elif len(sys.argv) != 2 and len(sys.argv) != 5:
-        print ">> Unexpected number of parameters"
+        print ">> Unexpected number of parameters: %s" % (sys.argv[1:])
         display_usage_and_exit()
     elif len(sys.argv) == 5 and not sys.argv[3].isdigit():
         print ">> The rc_port parameter [%s] must be an integer" % sys.argv[3]

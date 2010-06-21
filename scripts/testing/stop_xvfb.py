@@ -20,7 +20,7 @@ def verify_script_parameters():
         print ">> Missing xvfb_log_path parameter"
         display_usage_and_exit()
     elif len(sys.argv) != 2:
-        print ">> Unexpected number of parameters"
+        print ">> Unexpected number of parameters: %s" % (sys.argv[1:])
         display_usage_and_exit()
 
     xvfb_log_path = os.path.realpath(sys.argv[1])
