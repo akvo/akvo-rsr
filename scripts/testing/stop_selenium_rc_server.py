@@ -26,6 +26,7 @@ def verify_script_parameters():
         print ">> Missing rc_server_log_path parameter"
         display_usage_and_exit()
     elif len(sys.argv) != 2 and len(sys.argv) != 5:
+        print ">> Unexpected number of parameters"
         display_usage_and_exit()
     elif len(sys.argv) == 5 and not sys.argv[3].isdigit():
         print ">> The rc_port parameter [%s] must be an integer" % sys.argv[3]
@@ -42,16 +43,16 @@ def verify_script_parameters():
 
 def stop_rc_server():
     if rc_server_process_is_not_running():
-        print "Selenium RC server does not appear to be running -- process ID file not found: %s" % rc_server_process_id_file_path()
+        print "Selenium RC server does not appear to be running -- process ID file not found at: %s" % rc_server_process_id_file_path()
         sys.exit(0)
 
     try:
         stop_rc_server_with_shutdown_command()
-        print "Server stopped successfully\n"
-        os.remove(rc_server_process_id_file_path())
     except Exception, exception:
         print "Unable to stop Selenium RC server with shutdown command: %s" % (exception)
-        kill_unresponsive_rc_server_process()
+        terminate_unresponsive_rc_server_process()
+
+    os.remove(rc_server_process_id_file_path())
 
 def rc_server_process_is_not_running():
     return not os.path.exists(rc_server_process_id_file_path())
@@ -69,22 +70,19 @@ def stop_rc_server_with_shutdown_command():
     try:
         print "\nStopping Selenium RC server [%s, %i, %s]..." % (selenium_rc_host, selenium_rc_port, browser_environment)
         selenium(selenium_rc_host, selenium_rc_port, browser_environment, '').shut_down_selenium_server()
+        print "Server stopped successfully\n"
     except Exception, exception:
         if str(exception).endswith('Connection refused'):
             print "Server already appears to have been stopped: %s" % (exception)
-            sys.exit(0)
         else:
             raise exception
 
-def kill_unresponsive_rc_server_process():
+def terminate_unresponsive_rc_server_process():
     process_id = rc_server_process_id()
 
     if process_id_exists(process_id):
-        print process_id
-        print "Killing unresponsive Selenium RC server process"
+        print "Terminating unresponsive Selenium RC server process ID %i" % (process_id)
         os.kill(process_id, signal.SIGTERM) # send terminate signal
-    else:
-        raise Exception("Server process ID %i no longer exists: %s" % (process_id, os_error))
 
 def rc_server_process_id():
     process_id_file_path = rc_server_process_id_file_path()
@@ -100,7 +98,8 @@ def process_id_exists(process_id):
         os.kill(process_id, 0) # attempt to send a harmless signal (0) to the process
         return True
     except OSError, os_error:
-        if os_error.endswith('No such process'):
+        if str(os_error).endswith('No such process'):
+            print "Process ID %i no longer exists" % (process_id)
             return False
         else:
             raise os_error
