@@ -34,7 +34,7 @@
 		</div>
 	</div>
 	<div class="space20">
-
+		<form method="post" action="." name="donate_form">
 		<div style="width:50%; float:left;">
 			<h3>{% trans 'Project to receive your donation' %}</h3>
 		</div>
@@ -160,8 +160,104 @@
 		</div>
 		<div class="clear"></div>
 		<hr style="margin-top:15px;"/>
+
+		<div style="float:left; width:400px;">
+			{% blocktrans with p.get_currency_display|safe as currency %}
+			<h3>Amount you with to donate (in {{currency}})</h3>
+            {% endblocktrans %}
+			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
+				<p class="grey">{% trans 'Amount' %}:</p>
+			</div>
+			<div style="float:left;">
+				{{ donate_form.amount }}<br />
+				<span class="grey tiny">
+                {% blocktrans with p.get_currency_display|safe as currency %}
+				Only whole {{currency}} amounts please
+                {% endblocktrans %}
+				</span>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div style="float:right; width:485px; padding:10px;">
+			{% if donate_form.amount.errors %}
+			<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:40px;">
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+						{% trans 'Amount' %}: {{ donate_form.amount.errors }}<br />
+					<br />
+			</div>
+			{% endif %}
+		</div>
+		<div class="clear" style="padding-bottom:40px;"></div>
 		
-		<p class="red">The form...</p>
+		
+		<div style="float:left; width:400px;">
+			<h3>{% trans 'Provide your full name and email address below.' %}</h3>
+			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
+				<div class="fieldWrapper" style="margin-bottom:32px; margin-top:7px;">	
+					<p class="grey">{% trans 'Your name' %}:</p>
+				</div>
+				<div class="fieldWrapper" style="margin-bottom:10px">	
+					<p class="grey">{% trans 'Your email' %}:</p>
+				</div>
+				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="grey">{% trans 'Confirm email' %}:</p>
+				</div>
+				{% ifequal payment_engine 'ideal' %}
+				<div class="fieldWrapper" style="">	
+					<p class="grey">{% trans 'Select your bank' %}:</p>
+				</div>
+				{% endifequal %}
+				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="grey"> &nbsp;</p>
+				</div>
+			</div>
+			<div style="float:left; width:218px;">
+				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
+				<p style="font-weight:bold; margin-bottom:4px">{{ donate_form.email }}</p>
+				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
+				{% ifequal payment_engine 'ideal' %}
+				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
+				{% endifequal %}
+				<p class="small" style="font-weight:normal; margin-bottom:18px;">{{ donate_form.is_anonymous }} {% trans 'I would like my donation to be' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a> {% trans '(tick the box)' %}.
+				</p>
+			</div>
+		</div>
+		<div style="float:right; width:485px; padding:10px;">
+			{% if donate_form.errors %}
+			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
+				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+				{% if donate_form.non_field_errors %}
+					{{ donate_form.non_field_errors }}<br />
+				{% endif %}
+
+				{% if donate_form.name.errors %}
+					{% trans 'Name' %}: {{ donate_form.name.errors }}<br />
+				{% endif %}
+				
+				{% if donate_form.email.errors %}
+					{% trans 'Email' %}: {{ donate_form.email.errors }}<br />
+				{% endif %}
+				
+				{% if donate_form.email2.errors %}
+					{% trans 'Email confirmation' %}: {{ donate_form.email2.errors }}<br />
+				{% endif %}
+				
+				{% if donate_form.bank.errors %}
+					{% trans 'Bank' %}: {{ donate_form.bank.errors }}<br />
+				{% endif %}
+			</div>
+			{% endif %}
+		</div>
+		<div class="clear"></div>
+		<hr />
+		<div style="margin-left:300px; padding-top:20px;">
+			<p style="margin-bottom:20px;" class="grey">{% trans 'You will be able to review and confirm your donation on the next page.' %}</p>
+			<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
+				<a class="small" href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+			</div>
+			<a class="aqua awesome" href="javascript:document.donate_form.submit();"><span>{% trans 'Next...' %}</span></a>
+		</div>
+		</form>
 	</div>
 </div>
 {% endblock maincontent %}

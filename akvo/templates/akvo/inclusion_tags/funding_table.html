@@ -9,7 +9,7 @@
 			</p>
 		</div>
 	{% else %}
-		<table class="fundingbox-table" cellspacing="0">
+		<table class="fundingbox-table">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
 				<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
@@ -24,7 +24,7 @@
 			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
 			{% endif %}
 		</div>
-		<table class="fundingbox-table" cellspacing="0">
+		<table class="fundingbox-table">
 			<tr class="black">
 				<th>{% trans 'Total budget' %}:</th>
 				<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
