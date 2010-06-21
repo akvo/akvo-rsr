@@ -4,7 +4,7 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">{% trans 'Donate' %}</li>
+<li id="last_breadcrum_item">{% trans 'Confirm Donation' %}</li>
 {% endblock breadcrum_items %}
 
 
@@ -17,10 +17,10 @@
 				<div class="donate_steps">
 					<p>{% trans 'Select payment system' %}</p>
 				</div>
-				<div class="donate_steps active_donate_step">
+				<div class="donate_steps">
 					<p>{% trans 'Enter amount' %}</p>
 				</div>
-				<div class="donate_steps">
+				<div class="donate_steps active_donate_step">
 					<p>{% trans 'Confirm amount' %}</p>
 				</div>
 				<div class="donate_steps">
@@ -169,12 +169,9 @@
 				<p class="grey">{% trans 'Amount' %}:</p>
 			</div>
 			<div style="float:left;">
-				{{ donate_form.amount }}<br />
-				<span class="grey tiny">
-                {% blocktrans with p.get_currency_display|safe as currency %}
-				Only whole {{currency}} amounts please
-                {% endblocktrans %}
-				</span>
+				<p style="color:#008C00; font-size:1.3em; font-weight:bold; margin-top:3px;">
+					{{p.get_currency_display|safe}}{{invoice.amount}}
+				</p>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -196,9 +193,12 @@
 				<div class="fieldWrapper" style="margin-bottom:32px; margin-top:7px;">	
 					<p class="grey">{% trans 'Your name' %}:</p>
 				</div>
-				<div class="fieldWrapper" style="margin-bottom:10px">	
+				<div class="fieldWrapper">	
 					<p class="grey">{% trans 'Your email' %}:</p>
 				</div>
+				{% comment %}
+					
+
 				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="grey">{% trans 'Confirm email' %}:</p>
 				</div>
@@ -210,16 +210,21 @@
 				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="grey"> &nbsp;</p>
 				</div>
+				{% endcomment %}
 			</div>
 			<div style="float:left; width:218px;">
-				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
-				<p style="font-weight:bold; margin-bottom:4px">{{ donate_form.email }}</p>
+				<p style="font-weight:bold; margin-bottom:32px; margin-top:7px;">{{ invoice.get_name }}</p>
+				<p style="font-weight:bold; margin-bottom:4px">{{ invoice.get_email }}</p>
+				{% comment %}
+					
+
 				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
 				{% ifequal payment_engine 'ideal' %}
 				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
 				{% endifequal %}
 				<p class="small" style="font-weight:normal; margin-bottom:18px;">{{ donate_form.is_anonymous }} {% trans 'I would like my donation to be' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a> {% trans '(tick the box)' %}.
 				</p>
+				{% endcomment %}
 			</div>
 		</div>
 		<div style="float:right; width:485px; padding:10px;">
@@ -250,12 +255,34 @@
 		</div>
 		<div class="clear"></div>
 		<hr />
-		<div style="margin-left:300px; padding-top:20px;">
-			<p style="margin-bottom:20px;" class="grey">{% trans 'You will be able to review and confirm your donation on the next page.' %}</p>
-			<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
-				<a class="small" href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+		<div style="width:500px; margin-left:auto; margin-right:auto; padding-top:20px;">
+			<p style="margin-bottom:20px;" class="grey">
+				{% blocktrans with invoice.get_engine_display as engine %}
+					Click the Donate button to proceed to {{engine}} checkout. 
+				{% endblocktrans %}
+				{% trans 'By clicking on the "Donate" button you agree to the' %} 
+				<a href="http://akvo.org/web/donate_terms_and_conditions" 
+					target="_blank">{% trans 'Terms and Conditions' %}
+				</a> 
+				{% trans 'for the donation.' %}
+			</p>
+			<div style="float:left; width:250px;">
+					<a class="small" href="{% url void_invoice invoice_id=invoice.id,action='cancel' %}">
+						{% trans 'Cancel' %}
+					</a>
+					<a class="red awesome" style="margin-left:20px;" href="{% url void_invoice invoice_id=invoice.id,action='back' %}">
+						<span>{% trans 'Back' %}</span>
+					</a>
+
 			</div>
-			<a class="aqua awesome" href="javascript:document.donate_form.submit();"><span>{% trans 'Next...' %}</span></a>
+			<div style="float:right; width:150px; text-align:right; margin-right:60px;">
+				{% ifequal payment_engine 'ideal' %}
+		            <a class="aqua awesome" href="{{mollie_order_url}}"><span>Donate</span></a>
+		        {% else %}
+		            {{ pp_button }}
+		        {% endifequal %}
+			</div>
+			<div class="clear"></div>
 		</div>
 		</form>
 	</div>
