@@ -3,21 +3,31 @@
 # Parameters:
 # $1: rc_server_log_path
 # $2: xvfb_log_path (optional)
-# $3: display_number (optional but required if $2 is present)
 
 
 function display_usage_and_exit
 {
-    echo "Usage: run_acceptance_tests <rc_server_log_path> [xvfb_log_path] [display_number]"
-    echo "Optionally specify an xvfb_log_path and display_number to run tests in headless mode"
+    echo "Usage: run_acceptance_tests <rc_server_log_path> [xvfb_log_path]"
+    echo "Optionally specify an xvfb_log_path to run tests in headless mode"
     exit -1
 }
 
-# check if rc_server_log_path parameter exists
-if [ -z "$1" ]; then
-    echo ">> Missing rc_server_log_path parameter"
-    display_usage_and_exit
-fi
+function verify_script_parameters
+{
+    # warn if extraneous parameters exist
+    if [ -n "$3" ]; then
+        printf ">> Unexpected number of parameters: $*\n"
+        display_usage_and_exit
+    fi
+
+    # check if rc_server_log_path parameter exists
+    if [ -z "$1" ]; then
+        echo ">> Missing rc_server_log_path parameter"
+        display_usage_and_exit
+    fi
+}
+
+verify_script_parameters $*
 
 RC_SERVER_LOG_PATH="$1"
 
@@ -37,15 +47,31 @@ function set_python_path_for_acceptance_tests
     fi
 }
 
-printf "DISPLAY environment variable: $DISPLAY\n"
+XVFB_LOG_PATH=""
+XVFB_DISPLAY_NUMBER=""
 
-"$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH"
+# check if the xvfb_log_path parameter was specified
+if [ -n "$2" ]; then
+    XVFB_LOG_PATH="$2"
+    XVFB_DISPLAY_NUMBER="$$" # use the current process ID as the display number to avoid clashes
+
+    export DISPLAY=":$XVFB_DISPLAY_NUMBER"
+
+    "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH" "$XVFB_LOG_PATH"
+else
+    "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH"
+fi
 
 # proceed if no error codes returned from last script
 if [ $? -eq 0 ]; then
     set_python_path_for_acceptance_tests
+
     "$ACCEPTANCE_TEST_ROOT_DIR/all_test_suites.py"
     "$TESTING_SCRIPTS_DIR/stop_selenium_rc_server.py" "$RC_SERVER_LOG_PATH"
+
+    if [ -n "$XVFB_LOG_PATH" ]; then
+        "$TESTING_SCRIPTS_DIR/stop_xvfb.py" "$XVFB_LOG_PATH"
+    fi
 else
     printf "\nUnable to start Selenium RC server or Xvfb due to errors above\n"
 fi
