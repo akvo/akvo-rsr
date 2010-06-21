@@ -7,10 +7,12 @@ import os
 
 INTEGRATION_SCRIPTS_PATH = os.path.realpath(os.path.dirname(__file__))
 TESTING_SCRIPTS_PATH = os.path.realpath(os.path.join(INTEGRATION_SCRIPTS_PATH, '..', 'testing'))
-TOOLS_PATH = os.path.realpath(os.path.join(INTEGRATION_SCRIPTS_PATH, '..', '..', 'tools'))
 
 # Selenium settings
 SELENIUM_SERVER_LOG_PATH = "/var/tmp/log/selenium"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 BROWSER_ENVIRONMENT = "*firefox"
+
+# Virtual frame buffer settings for headless mode
+XVFB_LOG_PATH = "/var/tmp/log/xvfb"

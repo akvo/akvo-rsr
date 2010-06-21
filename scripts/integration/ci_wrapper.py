@@ -13,6 +13,7 @@ from ci_settings import *
 
 def verify_script_parameters():
     if len(sys.argv) <= 1:
+        print ">> Missing virtualenv_path parameter"
         print 'Usage: ci_wrapper <virtualenv_path>'
         sys.exit(1)
 
@@ -23,7 +24,7 @@ def run_django_tests():
 
 def run_acceptance_tests():
     configure_acceptance_test_settings_for_ci()
-    subprocess.call(["./run_acceptance_tests", SELENIUM_SERVER_LOG_PATH])
+    subprocess.call(["./run_acceptance_tests", SELENIUM_SERVER_LOG_PATH, XVFB_LOG_PATH])
 
 
 if __name__ == "__main__":
