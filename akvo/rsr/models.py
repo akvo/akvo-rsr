@@ -20,7 +20,8 @@ from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
-#from django.core import validators
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.template import loader, Context
 from django.template.loader import render_to_string
@@ -75,6 +76,18 @@ class Country(models.Model):
         verbose_name = _('country')
         verbose_name_plural = _('countries')
         ordering = ['country_name']
+
+
+class Location(models.Model):
+    
+    city = models.CharField(_('city'), max_length=255)
+    state = models.CharField(_('state'), max_length=255)
+    country = models.ForeignKey(Country)
+    latitude = models.FloatField(_('latitude'), validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    longitude = models.FloatField(_('longitude'), validators=[MinValueValidator(-180), MaxValueValidator(180)])
+
+    def __unicode__(self):
+        return u'%s, %s, %s' % (self.city, self.state, self.country)
 
 
 class ProjectsQuerySetManager(QuerySetManager):
@@ -413,6 +426,8 @@ class Project(models.Model):
     date_request_posted = models.DateField(_('Date request posted'), default=date.today)
     date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
 
+    location            = models.ManyToManyField(Location)
+
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
     #http://simonwillison.net/2008/May/1/orm/
@@ -438,11 +453,7 @@ class Project(models.Model):
     def anonymous_donations_amount_received(self):
         amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
         amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-        
-        if amount:
-            return amount
-        else:
-            return 0
+        return amount or 0
         
         '''
         if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
@@ -461,23 +472,12 @@ class Project(models.Model):
         if self.has_valid_coordinates():
             latitude = str(self.latitude.strip())
             longitude = str(self.longitude.strip())
-            coordinates = '%s,%s' % (latitude, longitude)
-            return coordinates
+            location = '%s,%s' % (latitude, longitude)
         else:
-            state = self.state.lstrip().rstrip().replace(' ', '+')
-            country = self.country.country_name.lstrip().rstrip().replace(' ', '+')
-            address = '%s+%s' % (state, country)
-            return address
-
-    def static_map_url(self, color='blue', width=140, height=140, zoom=9):
-        location = self.get_location()
-        base_url = 'http://maps.google.com/maps/api/staticmap?'
-        query = 'markers=color:%s|%s&size=%dx%d&zoom=%d&sensor=false' % \
-            (color, location, width, height, zoom)
-        url = base_url + query
-        #return mark_safe('<img src="%s" alt="%s" width=%d height=%d>' % \
-        #    (url, self.name, width, height))
-        return url
+            state = self.state.strip().replace(' ', '+')
+            country = self.country.country_name.strip().replace(' ', '+')
+            location = '%s+%s' % (state, country)
+        return location
 
     class QuerySet(QuerySet):
         def published(self):

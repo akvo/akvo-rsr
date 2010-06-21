@@ -331,7 +331,6 @@ class PublishingStatusAdmin(admin.ModelAdmin):
     
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
-
 class ProjectAdminForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         # request is needed when validating
@@ -346,6 +345,8 @@ class ProjectAdminForm(forms.ModelForm):
     
 class RSR_FormSet(forms.formsets.BaseFormSet):
     pass
+
+admin.site.register(get_model('rsr', 'location'))
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')

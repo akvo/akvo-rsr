@@ -6,12 +6,20 @@ from django import template
 register = template.Library()
 
 @register.inclusion_tag('inclusion_tags/static_map.html')
-def static_map(project, width, height, zoom, color):
+def static_map(project, width, height, zoom, marker_color):
     base_url = 'http://maps.google.com/maps/api/staticmap?'
     query = 'markers=color:%s|%s&size=%sx%s&zoom=%d&sensor=false' % \
-        (color, project.get_location(), width, height, zoom)
+        (marker_color, project.get_location(), width, height, zoom)
     map_url = base_url + query
     return {'p': project,
             'map_url': map_url,
             'width': width,
             'height': height}
+
+@register.inclusion_tag('inclusion_tags/dynamic_map.html')
+def dynamic_map(project, width, height, zoom, marker_color):
+    return {'p': project,
+            'width': width,
+            'height': height,
+            'zoom': zoom,
+            'marker_color': marker_color}
