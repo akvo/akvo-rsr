@@ -42,7 +42,7 @@ def verify_script_parameters():
 
 def stop_rc_server():
     if rc_server_process_is_not_running():
-        print "Selenium RC server does not appear to be running -- process ID file not found: %s" % rc_server_log_file_path()
+        print "Selenium RC server does not appear to be running -- process ID file not found: %s" % rc_server_process_id_file_path()
         sys.exit(0)
 
     try:
