@@ -15,12 +15,6 @@ function display_usage_and_exit
     exit -1
 }
 
-# check whether the logging_path parameter exists
-if [ -z "$1" ]; then
-    echo ">> Missing logging_path parameter"
-    display_usage_and_exit
-fi
-
 function ensure_log_path_is_writable
 {
     # Parameters:
@@ -37,7 +31,42 @@ function ensure_log_path_is_writable
     fi
 }
 
-ensure_log_path_is_writable $1 "Selenium RC server"
+function verify_script_parameters
+{
+    # warn if extraneous parameters exist
+    if [ -n "$4" ]; then
+        echo ">> Unexpected number of parameters"
+        display_usage_and_exit
+    fi
+
+    # check whether the logging_path parameter exists
+    if [ -z "$1" ]; then
+        echo ">> Missing logging_path parameter"
+        display_usage_and_exit
+    fi
+
+    ensure_log_path_is_writable $1 "Selenium RC server"
+
+    # check Xvfb parameters if xvfb_logging_path parameter was specified
+    if [ -n "$2" ]; then
+        # check whether display_number parameter also exists
+        if [ -z "$3" ]; then
+            echo ">> Missing display_number parameter"
+            display_usage_and_exit
+        fi
+
+        # check that the display_number parameter is a number greater than 1
+        if echo $3 | egrep -q -v "^[1-9][0-9]*$"; then
+            printf ">> The display_number parameter [$3] must be a positive integer\n"
+            display_usage_and_exit
+        fi
+
+        ensure_log_path_is_writable $2 "Xvfb"
+    fi
+}
+
+
+verify_script_parameters $1 $2 $3 $4
 
 LOG_TIMESTAMP=`date -u +%Y%m%d_%H%M%S`
 RC_SERVER_LOG_PATH=$1
@@ -48,12 +77,6 @@ DISPLAY_NUMBER=""
 
 # check if we're running the Selenium server in headless mode
 if [ -n "$2" ]; then
-    # check whether display_number parameter also exists
-    if [ -z "$3" ]; then
-        echo ">> Missing display_number parameter"
-        display_usage_and_exit
-    fi
-
     MODE="HEADLESS"
     DISPLAY_NUMBER=":$3"
     XVFB_PATH=`which Xvfb`
@@ -64,16 +87,16 @@ if [ -n "$2" ]; then
         exit -1
     fi
 
-    ensure_log_path_is_writable $2 "Xvfb"
-
     XVFB_LOG_PATH=$2
     XVFB_LOG_FILE=$XVFB_LOG_PATH/xvfb_$LOG_TIMESTAMP.log
 
     export DISPLAY=$DISPLAY_NUMBER
 
+    printf "Xvfb display number = $DISPLAY_NUMBER\n"
     printf "Xvfb log: $XVFB_LOG_FILE\n"
     Xvfb $DISPLAY_NUMBER -ac > $XVFB_LOG_FILE 2>&1 &
     echo $! > $XVFB_LOG_PATH/xvfb.pid # save Xvfb process ID
+    echo $DISPLAY_NUMBER > $XVFB_LOG_PATH/xvfb_display.txt # save Xvfb display number
 fi
 
 printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n\n"
