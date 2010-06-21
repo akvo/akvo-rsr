@@ -27,14 +27,21 @@
 			<div style="margin-top:15px;">
 				<h3 style="color:#A3FFFF;">Funding</h3>
 				<div class="round" style="background-color:#fff;">
+					
+					<div style="width:172px; margin-left:auto; margin-right:auto; padding-top:15px; padding-bottom:15px">
+						{% funding_table p %}
+					</div>
+					{% comment %}
+					
 					<p style="padding:10px; margin-bottom:0;">
 						{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}} Requested<br />
 						{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}} Raised<br />
 						{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}} Still needed<br />
-					</p>
+					</p>	
+					{% endcomment %}
 					{% ifnotequal p.funding_still_needed|round 0 %}
 						<div style="text-align:center; padding-bottom:10px;">
-							<a class="yellow awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+							<a class="aqua awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
 						</div>
 					{% endifnotequal %}
 				</div>
