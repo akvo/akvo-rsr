@@ -30,11 +30,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
 				<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
-			</tr>	
+			</tr>				
 		</table>
 		<div class="fundingbox-progress-bar">
 			{% if p.budget_total %}
-			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
 			{% endif %}
 		</div>
 		<table class="fundingbox-table">
