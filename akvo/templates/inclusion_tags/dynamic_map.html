@@ -16,8 +16,8 @@
         var mapCanvas = document.getElementById('map_canvas')
         var map = new google.maps.Map(mapCanvas, mapOptions);
         var marker = new google.maps.Marker({
-            position: coordinates,
             map: map,
+            position: coordinates,
             title: 'Project location'
         });
     }
@@ -26,4 +26,4 @@
     });
 //]]></script>
 
-<div id="map_canvas" style="width:{{width}}px; height:{{height}}px; text-align: center; vertical-align: middle;"></div>
+<div id="map_canvas" style="width:{{width}}px; height:{{height}}px; {{style}}"></div>
