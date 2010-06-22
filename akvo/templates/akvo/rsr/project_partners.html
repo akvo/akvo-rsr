@@ -25,10 +25,24 @@
 		        {% endifequal %}
 				{% for fp in p.fieldpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+						<div style="float:left; width:80px;">							
+							<a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
+			                    {% org_logo fp.field_organisation 64 48 'margin: 10px 20px;' %}
+			                </a>
+						</div>
+						<div style="float:left; width:400px; margin-left:20px;">
+							<a href="{% url org_detail fp.id %}">{{fp.field_organisation}}</a><br />
+							{{fp.field_organisation.city}}, {{fp.field_organisation.state}}, {{fp.field_organisation.country}}
+						</div>
+						<div class="clear"></div>
+						
+						{% comment %}
 						<a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
 		                    {% org_logo fp.field_organisation 120 90 'margin: 10px 20px;' %}
-		                </a>
-						{# <a href="{% url org_detail fp.id %}">{{fp}}</a> #}
+		                </a>								
+						<a href="{% url org_detail fp.id %}">{{fp}}</a>
+						{% endcomment %}
+						
 					</div>
 				{% endfor %}
 				<br /><br />
