@@ -30,7 +30,7 @@
 			                    {% org_logo fp.field_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>
 						</div>
-						<div style="float:left; width:400px; margin-left:20px;">
+						<div style="float:left; width:300px; margin-left:40px;">
 							<a href="{% url org_detail fp.id %}">{{fp.field_organisation}}</a><br />
 							{{fp.field_organisation.city}}, {{fp.field_organisation.state}}, {{fp.field_organisation.country}}
 						</div>
@@ -54,7 +54,7 @@
 			                    {% org_logo sp.support_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>							
 						</div>
-						<div style="float:left; width:400px; margin-left:20px;">
+						<div style="float:left; width:300px; margin-left:40px;">
 							<a href="{% url org_detail sp.id %}">{{sp.support_organisation}}</a><br />
 							{{sp.support_organisation.city}}, {{sp.support_organisation.state}}, {{sp.support_organisation.country}}
 						</div>
@@ -77,7 +77,7 @@
 			                    {% org_logo sponsor.sponsor_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>
 						</div>
-						<div style="float:left; width:400px; margin-left:20px;">
+						<div style="float:left; width:300px; margin-left:40px;">
 							<a href="{% url org_detail sponsor.id %}">{{sponsor.sponsor_organisation}}</a><br />
 							{{sponsor.sponsor_organisation.city}}, {{sponsor.sponsor_organisation.state}}, {{sponsor.sponsor_organisation.country}}
 						</div>
@@ -100,7 +100,7 @@
 			                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>							
 						</div>
-						<div style="float:left; width:400px; margin-left:20px;">
+						<div style="float:left; width:300px; margin-left:40px;">
 							<a href="{% url org_detail funder.id %}">{{funder.funding_organisation}}</a><br />
 							{{funder.funding_organisation.city}}, {{funder.funding_organisation.state}}, {{funder.funding_organisation.country}}
 						</div>
