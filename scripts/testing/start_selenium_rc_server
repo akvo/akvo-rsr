@@ -74,6 +74,7 @@ if [ -n "$2" ]; then
 
     if [ -z "$DISPLAY" ]; then
         printf ">> DISPLAY environment variable should be set when using Xvfb\n"
+        exit -1
     fi
 
     XVFB_LOG_PATH=$2
