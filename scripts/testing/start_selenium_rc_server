@@ -89,8 +89,31 @@ if [ -n "$2" ]; then
     printf "Starting Selenium RC server on display $DISPLAY\n"
 fi
 
-printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n\n"
+printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n"
 
 java -version > $RC_SERVER_LOG_FILE 2>&1
 java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &
 echo $! > $RC_SERVER_LOG_PATH/rc_server.pid # save RC server process ID for later use
+
+function wait_for_selenium_rc_server_to_complete_startup
+{
+    echo "Waiting for Selenium RC server to finish starting..."
+
+    MAX_WAIT_ATTEMPTS=60
+    ATTEMPT=0
+    SECONDS_TO_SLEEP=2
+
+    while [ -z "`grep jetty.servlet $RC_SERVER_LOG_FILE`" -a $ATTEMPT -lt $MAX_WAIT_ATTEMPTS ]; do
+        let ATTEMPT++
+        sleep $SECONDS_TO_SLEEP
+    done
+
+    if [ -n "`grep jetty.servlet $RC_SERVER_LOG_FILE`" ]; then
+        printf "Selenium RC server startup completed\n\n"
+    else
+        echo ">> Selenium RC server failed to complete startup after waiting for 120 seconds"
+        exit -1
+    fi
+}
+
+wait_for_selenium_rc_server_to_complete_startup
