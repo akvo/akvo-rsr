@@ -27,21 +27,20 @@ function verify_script_parameters
     fi
 }
 
-function set_xvfb_display
+function ensure_xvfb_is_running_and_set_xvfb_display
 {
     # Parameters:
     # $1: xvfb_log_path
 
     XVFB_LOG_PATH="$1"
 
-    # check if Xvfb is already running
+    # export the Xvfb display if available
     if [ -e "$XVFB_LOG_PATH/xvfb.pid" -a -e "$XVFB_LOG_PATH/xvfb_display.txt" ]; then
-        XVFB_DISPLAY="`cat $XVFB_LOG_PATH/xvfb_display.txt`"
+        export DISPLAY="`cat $XVFB_LOG_PATH/xvfb_display.txt`"
     else
-        XVFB_DISPLAY=":$$" # use the current process ID as the display number to avoid clashes
+        echo ">> Xvfb does not appear to be running: xvfb.pid file not found in $XVFB_LOG_PATH"
+        exit -1
     fi
-
-    export DISPLAY="$XVFB_DISPLAY"
 }
 
 SCRIPT_FILE_DIR="`dirname $0`"
@@ -59,7 +58,7 @@ function ensure_selenium_rc_server_is_running
     if [ ! -e "$RC_SERVER_LOG_PATH/rc_server.pid" ]; then
         # check if the xvfb_log_path parameter was also provided
         if [ -n "$2" ]; then
-            set_xvfb_display "$2"
+            ensure_xvfb_is_running_and_set_xvfb_display "$2"
 
             "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH" "$2"
         else

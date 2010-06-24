@@ -5,29 +5,11 @@
 # $2: xvfb_logging_path (optional)
 
 
-cd "`dirname $0`"
-
 function display_usage_and_exit
 {
     echo "Usage: start_selenium_rc_server <logging_path> [xvfb_logging_path]"
     echo "Optionally specify an xvfb_logging_path to operate in headless mode"
     exit -1
-}
-
-function ensure_log_path_is_writable
-{
-    # Parameters:
-    # $1: log path to check
-    # $2: name of process being logged
-
-    # check whether the logging path exists and is writable
-    if [ ! -e "$1" ]; then
-        echo ">> $2 logging path does not exist: $1"
-        exit -1
-    elif [ ! -w "$1" ]; then
-        echo ">> $2 logging path is not writable: $1"
-        exit -1
-    fi
 }
 
 function verify_script_parameters
@@ -44,52 +26,40 @@ function verify_script_parameters
         display_usage_and_exit
     fi
 
-    ensure_log_path_is_writable $1 "Selenium RC server"
-
-    # check xvfb_logging_path parameter if specified
-    if [ -n "$2" ]; then
-        ensure_log_path_is_writable $2 "Xvfb"
+    # check whether the logging path exists and is writable
+    if [ ! -e "$1" ]; then
+        echo ">> Selenium RC server logging path does not exist: $1"
+        exit -1
+    elif [ ! -w "$1" ]; then
+        echo ">> Selenium RC server logging path is not writable: $1"
+        exit -1
     fi
 }
 
 
 verify_script_parameters $*
 
-LOG_TIMESTAMP=`date -u +%Y%m%d_%H%M%S`
-RC_SERVER_LOG_PATH=$1
-RC_SERVER_LOG_FILE=$RC_SERVER_LOG_PATH/rc_server_$LOG_TIMESTAMP.log
-
 # check if we're running the Selenium server in headless mode
 if [ -n "$2" ]; then
-    XVFB_PATH=`which Xvfb`
-
-    # check whether Xvfb is on the path and executable
-    if [ ! -x "$XVFB_PATH" ]; then
-        echo ">> Xvfb not found on the path: $PATH"
-        exit -1
-    fi
-
     if [ -z "$DISPLAY" ]; then
         echo ">> DISPLAY environment variable should be set when using Xvfb"
         exit -1
     fi
 
-    XVFB_LOG_PATH=$2
-    XVFB_LOG_FILE=$XVFB_LOG_PATH/xvfb_$LOG_TIMESTAMP.log
-
-    echo "Starting Xvfb on display $DISPLAY"
-    printf "Xvfb log: $XVFB_LOG_FILE\n\n"
-    Xvfb $DISPLAY -ac > $XVFB_LOG_FILE 2>&1 &
-    echo $! > $XVFB_LOG_PATH/xvfb.pid # save Xvfb process ID
-    echo $DISPLAY > $XVFB_LOG_PATH/xvfb_display.txt # save Xvfb display for later reference
-
     echo "Starting Selenium RC server on display $DISPLAY"
 fi
+
+UTC_LOG_TIMESTAMP=`date -u +%Y%m%d_%H%M%S`
+RC_SERVER_LOG_PATH=$1
+RC_SERVER_LOG_FILE=$RC_SERVER_LOG_PATH/rc_server_$UTC_LOG_TIMESTAMP.log
+
+SCRIPT_FILE_DIR="`dirname $0`"
+RC_SERVER_PATH="`cd $SCRIPT_FILE_DIR/../../tools/selenium/1.0.3/rc-server; pwd`"
 
 echo "Selenium RC server log: $RC_SERVER_LOG_FILE"
 
 java -version > $RC_SERVER_LOG_FILE 2>&1
-java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &
+java -jar $RC_SERVER_PATH/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &
 echo $! > $RC_SERVER_LOG_PATH/rc_server.pid # save RC server process ID for later use
 
 function wait_for_selenium_rc_server_to_complete_startup

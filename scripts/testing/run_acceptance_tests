@@ -78,10 +78,6 @@ if [ $? -eq 0 ]; then
 
     if [ "$RC_SERVER_WAS_STARTED_BY_THIS_SCRIPT" = "Y" ]; then
         "$TESTING_SCRIPTS_DIR/stop_selenium_rc_server.py" "$RC_SERVER_LOG_PATH"
-
-        if [ -n "$XVFB_LOG_PATH" ]; then
-            "$TESTING_SCRIPTS_DIR/stop_xvfb.py" "$XVFB_LOG_PATH"
-        fi
     fi
 else
     printf "\nUnable to start Selenium RC server or Xvfb due to errors above\n"
