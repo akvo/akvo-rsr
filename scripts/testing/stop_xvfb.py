@@ -71,7 +71,7 @@ def process_id_exists(process_id):
         return True
     except OSError, os_error:
         if str(os_error).endswith('No such process'):
-            print "Process ID %i no longer exists" % (process_id)
+            print "Xvfb process ID %i no longer exists" % (process_id)
             return False
         else:
             raise os_error
