@@ -11,15 +11,9 @@ from ci_environment import *
 from ci_settings import *
 
 
-def verify_script_parameters():
-    if len(sys.argv) <= 1:
-        print ">> Missing virtualenv_path parameter"
-        print 'Usage: ci_wrapper <virtualenv_path>'
-        sys.exit(1)
-
 def run_django_tests():
-    print "Using virtualenv path: %s" % sys.argv[1]
-    subprocess.call(["./run_django_tests", sys.argv[1], "ci_mode"])
+    print "Using virtualenv path: %s" % VIRTUAL_ENV_PATH
+    subprocess.call(["./run_django_tests", VIRTUAL_ENV_PATH, "ci_mode"])
     remove_project_links_to_prevent_subsequent_build_failure()
 
 def run_acceptance_tests():

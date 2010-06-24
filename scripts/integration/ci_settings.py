@@ -8,6 +8,9 @@ import os
 INTEGRATION_SCRIPTS_PATH = os.path.realpath(os.path.dirname(__file__))
 TESTING_SCRIPTS_PATH = os.path.realpath(os.path.join(INTEGRATION_SCRIPTS_PATH, '..', 'testing'))
 
+# Django settings
+VIRTUAL_ENV_PATH="/var/django/akvo"
+
 # Selenium settings
 SELENIUM_SERVER_LOG_PATH = "/var/tmp/log/selenium"
 SELENIUM_RC_HOST = "localhost"
