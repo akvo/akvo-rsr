@@ -5,10 +5,9 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load humanize i18n rsr_tags thumbnail counter_tags cache %}
+{% load cache counter_tags google_maps humanize i18n rsr_tags thumbnail %}
 
 {% comment %}
-	
 
 {% block script %}
 {#<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> #}
@@ -62,7 +61,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             </p>						
             <h2 class="lightx2">{% trans 'Location' %}</h2>
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
-            {% map_thumb p 140 140 'margin: 20px 20px 0px 20px;' %}
+            {# Google Map #}
+            {% if p.has_valid_coordinates %}
+                {% dynamic_map p 180 180 3 'blue' %}
+            {% else %}
+                <p style="color: red;">{% trans 'No map available' %}</p>
+            {% endif %}
+            <div class="clearfix"></div>
 		</div> <!-- #project_details_leftwing -->
 
         <div id="project_details_rightwing">

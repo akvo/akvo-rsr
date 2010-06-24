@@ -200,25 +200,3 @@ def media_bundle(context, bundle):
         'MEDIA_URL' : context['MEDIA_URL'], 'raw': settings.DEV_MEDIA_BUNDLES, 'include': include, 'bundle_type': bundle_type,
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
