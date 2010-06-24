@@ -22,10 +22,10 @@ function ensure_log_path_is_writable
 
     # check whether the logging path exists and is writable
     if [ ! -e "$1" ]; then
-        printf ">> $2 logging path does not exist: $1\n"
+        echo ">> $2 logging path does not exist: $1"
         exit -1
     elif [ ! -w "$1" ]; then
-        printf ">> $2 logging path is not writable: $1\n"
+        echo ">> $2 logging path is not writable: $1"
         exit -1
     fi
 }
@@ -34,7 +34,7 @@ function verify_script_parameters
 {
     # warn if extraneous parameters exist
     if [ -n "$3" ]; then
-        printf ">> Unexpected number of parameters: $*\n"
+        echo ">> Unexpected number of parameters: $*"
         display_usage_and_exit
     fi
 
@@ -65,28 +65,28 @@ if [ -n "$2" ]; then
 
     # check whether Xvfb is on the path and executable
     if [ ! -x "$XVFB_PATH" ]; then
-        printf ">> Xvfb not found on the path: $PATH\n"
+        echo ">> Xvfb not found on the path: $PATH"
         exit -1
     fi
 
     if [ -z "$DISPLAY" ]; then
-        printf ">> DISPLAY environment variable should be set when using Xvfb\n"
+        echo ">> DISPLAY environment variable should be set when using Xvfb"
         exit -1
     fi
 
     XVFB_LOG_PATH=$2
     XVFB_LOG_FILE=$XVFB_LOG_PATH/xvfb_$LOG_TIMESTAMP.log
 
-    printf "Starting Xvfb on display $DISPLAY\n"
-    printf "Xvfb log: $XVFB_LOG_FILE\n"
+    echo "Starting Xvfb on display $DISPLAY"
+    printf "Xvfb log: $XVFB_LOG_FILE\n\n"
     Xvfb $DISPLAY -ac > $XVFB_LOG_FILE 2>&1 &
     echo $! > $XVFB_LOG_PATH/xvfb.pid # save Xvfb process ID
     echo $DISPLAY > $XVFB_LOG_PATH/xvfb_display.txt # save Xvfb display for later reference
 
-    printf "Starting Selenium RC server on display $DISPLAY\n"
+    echo "Starting Selenium RC server on display $DISPLAY"
 fi
 
-printf "Selenium RC server log: $RC_SERVER_LOG_FILE\n"
+echo "Selenium RC server log: $RC_SERVER_LOG_FILE"
 
 java -version > $RC_SERVER_LOG_FILE 2>&1
 java -jar ../../tools/selenium/1.0.3/rc-server/selenium-server.jar >> $RC_SERVER_LOG_FILE 2>&1 &

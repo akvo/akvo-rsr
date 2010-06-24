@@ -16,7 +16,7 @@ function verify_script_parameters
 {
     # warn if extraneous parameters exist
     if [ -n "$3" ]; then
-        printf ">> Unexpected number of parameters: $*\n"
+        echo ">> Unexpected number of parameters: $*"
         display_usage_and_exit
     fi
 
@@ -71,7 +71,7 @@ if [ $? -eq 0 ]; then
 
         echo "Xvfb running on display $XVFB_DISPLAY"
         echo "DISPLAY environment variable is $DISPLAY"
-        echo "Running tests on display $DISPLAY"
+        printf "Running tests in headless mode on display $DISPLAY\n\n"
     fi
 
     "$ACCEPTANCE_TEST_ROOT_DIR/all_test_suites.py"
