@@ -1,0 +1,21 @@
+Installation of Xvfb scripts
+----------------------------
+
+ 1) Create a clone of the http://github.com/akvo/akvo-rsr repository in a temporary directory
+ 2) Create the /usr/local/ci/scripts directory if necessary
+ 3) From the akvo-rsr repository, copy the following files to the /usr/local/ci/scripts directory:
+      sudo cp -p scripts/testing/start_xvfb /usr/local/ci/scripts
+      sudo cp -p scripts/testing/stop_xvfb.py /usr/local/ci/scripts
+ 4) Change their ownership to root:
+      sudo chown root:root *xvfb*
+ 5) Copy the etc_init.d_xvfb.sh file to the /etc/init.d directory:
+      sudo cp -p setup/integration/scripts/etc_init.d_xvfb.sh /etc/init.d/xvfb
+ 6) Make the script executable and change its ownership to root:
+      sudo chmod 755 /etc/init.d/xvfb
+      sudo chown root:root /etc/init.d/xvfb
+ 7) Link the startup script to the startup directories:
+      sudo ln -s /etc/init.d/xvfb /etc/rc1.d/K99xvfb
+      sudo ln -s /etc/init.d/xvfb /etc/rc2.d/S99xvfb
+ 8) Reboot the server so that Xvfb will be started automatically:
+      sudo reboot
+ 9) Once the server has restarted, check that the Xvfb process is running on the expected display
