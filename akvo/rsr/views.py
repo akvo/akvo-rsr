@@ -853,7 +853,7 @@ def projectmain(request, project_id):
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, }
+        return {'p': p,}
 
 @render_to('rsr/project_funding.html')  
 def projectfunding(request, project_id):
