@@ -80,7 +80,7 @@ if [ -n "$2" ]; then
     XVFB_LOG_PATH=$2
     XVFB_LOG_FILE=$XVFB_LOG_PATH/xvfb_$LOG_TIMESTAMP.log
 
-    printf "Xvfb display = $DISPLAY\n"
+    printf "Starting Xvfb on display $DISPLAY\n"
     printf "Xvfb log: $XVFB_LOG_FILE\n"
     Xvfb $DISPLAY -ac > $XVFB_LOG_FILE 2>&1 &
     echo $! > $XVFB_LOG_PATH/xvfb.pid # save Xvfb process ID
