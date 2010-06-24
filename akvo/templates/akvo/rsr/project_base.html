@@ -1,6 +1,6 @@
 {% extends "rsr/base.html" %}
 
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 
 {% block title %}{{p.name}}{% endblock title %}
 
@@ -11,6 +11,23 @@
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="/rsr/projects/"><span>{% trans 'Projects' %}</span></a></li>
+
+<div style="float:right; margin-right:10px;">
+	<span style="display:none;">{% counter p %}</span>
+	<p style="margin:0; color:#999; margin-top:5px;" class="small">
+	{% cache 10 p.view_count %}
+		{{ p.view_count|intcomma }} {% trans 'views' %}
+	{% endcache %}
+	</p>
+</div>
+
+{% comment %}
+<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; "><span style="display:none;">{% counter p %}</span>
+	{% cache 10 p.view_count %}
+		{{ p.view_count|intcomma }} {% trans 'views' %}
+	{% endcache %}
+</span>
+{% endcomment %}
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
