@@ -59,11 +59,8 @@ LOG_TIMESTAMP=`date -u +%Y%m%d_%H%M%S`
 RC_SERVER_LOG_PATH=$1
 RC_SERVER_LOG_FILE=$RC_SERVER_LOG_PATH/rc_server_$LOG_TIMESTAMP.log
 
-MODE="NORMAL"
-
 # check if we're running the Selenium server in headless mode
 if [ -n "$2" ]; then
-    MODE="HEADLESS"
     XVFB_PATH=`which Xvfb`
 
     # check whether Xvfb is on the path and executable
