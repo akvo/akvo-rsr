@@ -51,6 +51,12 @@ if [ -n "$2" ]; then
     XVFB_LOG_PATH="$2"
 fi
 
+RC_SERVER_WAS_STARTED_BY_THIS_SCRIPT="Y"
+
+if [ -e "$RC_SERVER_LOG_PATH/rc_server.pid" ]; then
+    RC_SERVER_WAS_STARTED_BY_THIS_SCRIPT="N"
+fi
+
 "$TESTING_SCRIPTS_DIR/ensure_selenium_rc_server_has_started" "$RC_SERVER_LOG_PATH" "$XVFB_LOG_PATH"
 
 # proceed if no error codes returned from last script
@@ -70,10 +76,12 @@ if [ $? -eq 0 ]; then
 
     "$ACCEPTANCE_TEST_ROOT_DIR/all_test_suites.py"
 
-    "$TESTING_SCRIPTS_DIR/stop_selenium_rc_server.py" "$RC_SERVER_LOG_PATH"
+    if [ "$RC_SERVER_WAS_STARTED_BY_THIS_SCRIPT" = "Y" ]; then
+        "$TESTING_SCRIPTS_DIR/stop_selenium_rc_server.py" "$RC_SERVER_LOG_PATH"
 
-    if [ -n "$XVFB_LOG_PATH" ]; then
-        "$TESTING_SCRIPTS_DIR/stop_xvfb.py" "$XVFB_LOG_PATH"
+        if [ -n "$XVFB_LOG_PATH" ]; then
+            "$TESTING_SCRIPTS_DIR/stop_xvfb.py" "$XVFB_LOG_PATH"
+        fi
     fi
 else
     printf "\nUnable to start Selenium RC server or Xvfb due to errors above\n"
