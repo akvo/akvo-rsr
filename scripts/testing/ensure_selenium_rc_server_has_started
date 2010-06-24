@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Parameters:
+# $1: rc_server_log_path
+# $2: xvfb_log_path (optional)
+
+
+function display_usage_and_exit
+{
+    echo "Usage: ensure_selenium_rc_server_has_started <rc_server_log_path> [xvfb_log_path]"
+    echo "Optionally specify an xvfb_log_path to start the Selenium RC server in headless mode"
+    exit -1
+}
+
+function verify_script_parameters
+{
+    # warn if extraneous parameters exist
+    if [ -n "$3" ]; then
+        printf ">> Unexpected number of parameters: $*\n"
+        display_usage_and_exit
+    fi
+
+    # check if rc_server_log_path parameter exists
+    if [ -z "$1" ]; then
+        echo ">> Missing rc_server_log_path parameter"
+        display_usage_and_exit
+    fi
+}
+
+function set_xvfb_display
+{
+    # Parameters:
+    # $1: xvfb_log_path
+
+    XVFB_LOG_PATH="$1"
+
+    # check if Xvfb is already running
+    if [ -e "$XVFB_LOG_PATH/xvfb.pid" -a -e "$XVFB_LOG_PATH/xvfb_display.txt" ]; then
+        XVFB_DISPLAY="`cat $XVFB_LOG_PATH/xvfb_display.txt`"
+    else
+        XVFB_DISPLAY=":$$" # use the current process ID as the display number to avoid clashes
+    fi
+
+    export DISPLAY="$XVFB_DISPLAY"
+}
+
+SCRIPT_FILE_DIR="`dirname $0`"
+TESTING_SCRIPTS_DIR="`cd $SCRIPT_FILE_DIR; pwd`"
+
+function ensure_selenium_rc_server_is_running
+{
+    # Parameters:
+    # $1: rc_server_log_path
+    # $2: xvfb_log_path
+
+    RC_SERVER_LOG_PATH="$1"
+
+    # check if the Selenium RC server is already running
+    if [ ! -e "$RC_SERVER_LOG_PATH/rc_server.pid" ]; then
+        # check if the xvfb_log_path parameter was also provided
+        if [ -n "$2" ]; then
+            set_xvfb_display "$2"
+
+            "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH" "$2"
+        else
+            "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH"
+        fi    
+    fi
+}
+
+verify_script_parameters $*
+ensure_selenium_rc_server_is_running "$1" "$2"
