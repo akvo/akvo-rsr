@@ -1,5 +1,5 @@
 {% extends "rsr/project_base.html" %}
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail google_maps%}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -26,7 +26,16 @@
 					{{ p.longitude }}, {{ p.latitude }}	
 					{% endif %}
 				</p>
-				 {% map_thumb p 140 140 '' %}
+				{# Google Map #}
+	            {% if p.has_valid_coordinates %}
+	                {% dynamic_map p 180 180 3 'blue' %}
+	            {% else %}
+	                <p style="color: red;">{% trans 'No map available' %}</p>
+	            {% endif %}
+				{% comment %}
+					{% map_thumb p 140 140 '' %}
+				{% endcomment %}
+
 			</div>
 			<div class="clear"></div>
 		</div>

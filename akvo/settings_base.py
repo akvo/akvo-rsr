@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'rosetta',
     'django_counter',
+    'mollie.ideal',
 )
 
 #INTERNAL_IPS = (
