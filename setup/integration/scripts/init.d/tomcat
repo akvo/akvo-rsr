@@ -1,30 +1,33 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Tomcat auto-start script
 # 
 # description: Starts Tomcat automatically on server startup
 # processname: tomcat
-# pidfile: /var/run/tomcat.pid
 
-export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
-export CATALINA_HOME=/usr/local/tomcat6
-export CATALINA_BASE=/usr/local/tomcat6
+CATALINA_HOME=/usr/local/tomcat6
 
-export TOMCAT_JVM_OPTS="-Xmx512m -XX:MaxPermSize=128m"
-export TEAMCITY_OPTS="-Dlog4j.configuration=file:$CATALINA_HOME/conf/teamcity-server-log4j.xml -Dteamcity_logs=$CATALINA_HOME/logs/teamcity"
-export CATALINA_OPTS="$TOMCAT_JVM_OPTS $TEAMCITY_OPTS"
+
+function start_tomcat
+{
+    su -s /bin/bash -l tomcat $CATALINA_HOME/bin/startup.sh
+}
+
+function stop_tomcat
+{
+    su -s /bin/bash -l tomcat $CATALINA_HOME/bin/shutdown.sh
+}
 
 case $1 in
 start)
-        su -p -s /bin/sh tomcat $CATALINA_HOME/bin/startup.sh
+        start_tomcat
         ;; 
 stop)   
-        su -p -s /bin/sh tomcat $CATALINA_HOME/bin/shutdown.sh
+        stop_tomcat
         ;; 
 restart)
-        su -p -s /bin/sh tomcat $CATALINA_HOME/bin/shutdown.sh
-        su -p -s /bin/sh tomcat $CATALINA_HOME/bin/startup.sh
+        stop_tomcat
+        start_tomcat
         ;; 
 esac    
 exit 0

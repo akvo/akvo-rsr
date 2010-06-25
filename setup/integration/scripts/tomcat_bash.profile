@@ -9,9 +9,16 @@
 
 alias la="ls -la"
 
-# TeamCity settings
+# Tomcat settings
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
+export CATALINA_HOME=/usr/local/tomcat6
+export CATALINA_BASE=/usr/local/tomcat6
+
+# TeamCity settings
+export TOMCAT_JVM_OPTS="-Xmx512m -XX:MaxPermSize=128m"
+export TEAMCITY_OPTS="-Dlog4j.configuration=file:$CATALINA_HOME/conf/teamcity-server-log4j.xml -Dteamcity_logs=$CATALINA_HOME/logs/teamcity"
+export CATALINA_OPTS="$TOMCAT_JVM_OPTS $TEAMCITY_OPTS"
 export TEAMCITY_AGENTS_HOME=/home/tomcat/.BuildServer/agents
 
 # Xvfb and Selenium RC settings
