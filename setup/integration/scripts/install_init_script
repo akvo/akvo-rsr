@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Parameters:
+# $1: init_script_name (for deployment to /etc/init.d)
+
+
+SCRIPT_FILE_DIR="`dirname $0`"
+SOURCE_REPOSITORY_ROOT="`cd $SCRIPT_FILE_DIR/../../..; pwd`"
+INTEGRATION_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts
+
+
+function display_usage_and_exit
+{
+    echo "Usage: install_init_script <init_script_name>"
+    echo "Specify a script from the setup/integration/scripts directory for installation in /etc/init.d"
+    exit -1
+}
+
+function verify_script_parameters
+{
+    # warn if extraneous parameters exist
+    if [ -n "$2" ]; then
+        echo ">> Unexpected number of parameters: $*"
+        display_usage_and_exit
+    fi
+
+    # check whether the init_script_name parameter exists
+    if [ -z "$1" ]; then
+        echo ">> Missing init_script_name parameter"
+        display_usage_and_exit
+    fi
+
+    # check whether the specified init script exists
+    if [ ! -f "$1" ]; then
+        echo ">> Init script does not exist: $INTEGRATION_SCRIPTS_DIR/init.d_$1"
+        exit -1
+    fi
+}
+
+function install_script
+{
+    SCRIPT_NAME="$1"
+
+    cp -p $INTEGRATION_SCRIPTS_DIR/init.d_$SCRIPT_NAME /etc/init.d/$SCRIPT_NAME
+    chmod 755 /etc/init.d/$SCRIPT_NAME
+    chown root:root /etc/init.d/$SCRIPT_NAME
+
+    if [ -L "/etc/rc1.d/K99$SCRIPT_NAME" ]; then
+        rm /etc/rc1.d/K99$SCRIPT_NAME
+    fi
+
+    if [ -L "/etc/rc2.d/S99$SCRIPT_NAME" ]; then
+        rm /etc/rc2.d/S99$SCRIPT_NAME
+    fi
+
+    ln -s /etc/init.d/$SCRIPT_NAME /etc/rc1.d/K99$SCRIPT_NAME
+    ln -s /etc/init.d/$SCRIPT_NAME /etc/rc2.d/S99$SCRIPT_NAME
+}
+
+verify_script_parameters $*
+install_script "$1"
