@@ -77,14 +77,23 @@ class Country(models.Model):
         verbose_name_plural = _('countries')
         ordering = ['country_name']
 
+class LatitudeField(models.FloatField):
+    def __init__(self, *args, **kwargs):
+        super(LatitudeField, self).__init__(*args, **kwargs)
+        self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
+
+class LongitudeField(models.FloatField):
+    def __init__(self, *args, **kwargs):
+        super(LongitudeField, self).__init__(*args, **kwargs)
+        self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
     
     city = models.CharField(_('city'), max_length=255)
     state = models.CharField(_('state'), max_length=255)
     country = models.ForeignKey(Country)
-    latitude = models.FloatField(_('latitude'), validators=[MinValueValidator(-90), MaxValueValidator(90)])
-    longitude = models.FloatField(_('longitude'), validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    latitude = LatitudeField(_('latitude'))
+    longitude = LongitudeField(_('longitude'))
 
     def __unicode__(self):
         return u'%s, %s, %s' % (self.city, self.state, self.country)

@@ -58,6 +58,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <p>{{p.city}}<br />{{p.state}}, {{p.country}}</p>
             {# Google Map #}
             {% if p.has_valid_coordinates %}
+                {# {% dynamic map <project> <width> <height> <zoom> <marker_color> %} #}
                 {% dynamic_map p 180 180 3 'blue' %}
             {% else %}
                 <p style="color: red;">{% trans 'No map available' %}</p>
