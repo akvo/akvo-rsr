@@ -39,13 +39,36 @@ function verify_script_parameters
 
 verify_script_parameters $*
 
+function display_xvfb_startup_usage_and_exit
+{
+    echo "Use the start_xvfb script to start Xvfb separately"
+    echo "Use the ensure_selenium_rc_server_has_started script to start Selenium RC and Xvfb as necessary"
+    exit -1
+}
+
+function exit_if_xvfb_is_not_running
+{
+    # Parameters:
+    # $1: xvfb_log_path
+
+    XVFB_LOG_PATH="$1"
+
+    # check for Xvfb process files
+    if [ ! -e "$XVFB_LOG_PATH/xvfb.pid" ]; then
+        echo ">> Xvfb does not appear to be running: missing $XVFB_LOG_PATH/xvfb.pid file"
+        display_xvfb_startup_usage_and_exit
+    elif [ ! -e "$XVFB_LOG_PATH/xvfb_display.txt" ]; then
+        echo ">> Xvfb does not appear to be running: missing $XVFB_LOG_PATH/xvfb_display.txt file"
+        display_xvfb_startup_usage_and_exit
+    fi
+}
+
 # check if we're running the Selenium server in headless mode
 if [ -n "$2" ]; then
-    if [ -z "$DISPLAY" ]; then
-        echo ">> DISPLAY environment variable should be set when using Xvfb"
-        exit -1
-    fi
+    XVFB_LOG_PATH="$2"
+    exit_if_xvfb_is_not_running "$XVFB_LOG_PATH"
 
+    export DISPLAY="`cat $XVFB_LOG_PATH/xvfb_display.txt`"
     echo "Starting Selenium RC server on display $DISPLAY"
 fi
 
