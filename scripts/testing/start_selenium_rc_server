@@ -77,7 +77,7 @@ RC_SERVER_LOG_PATH=$1
 RC_SERVER_LOG_FILE=$RC_SERVER_LOG_PATH/rc_server_$UTC_LOG_TIMESTAMP.log
 
 SCRIPT_FILE_DIR="`dirname $0`"
-RC_SERVER_PATH="`cd $SCRIPT_FILE_DIR/../../tools/selenium/1.0.3/rc-server; pwd`"
+RC_SERVER_PATH="`cd $SCRIPT_FILE_DIR/tools/selenium/1.0.3/rc-server; pwd`"
 
 echo "Selenium RC server log: $RC_SERVER_LOG_FILE"
 
