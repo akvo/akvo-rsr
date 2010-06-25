@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SCRIPT_FILE_DIR="`dirname $0`"
+SOURCE_REPOSITORY_ROOT="`cd $SCRIPT_FILE_DIR/../../..; pwd`"
+
+mkdir -p /usr/local/ci/scripts
+mkdir -p /usr/local/ci/scripts/tools/selenium/1.0.3/rc-server
+
+cp -p $SOURCE_REPOSITORY_ROOT/scripts/testing/start* /usr/local/ci/scripts
+cp -p $SOURCE_REPOSITORY_ROOT/scripts/testing/stop* /usr/local/ci/scripts
+cp -p $SOURCE_REPOSITORY_ROOT/scripts/testing/ensure* /usr/local/ci/scripts
+cp -p -r $SOURCE_REPOSITORY_ROOT/scripts/testing/tools/selenium/1.0.3/rc-server/* /usr/local/ci/scripts/tools/selenium/1.0.3/rc-server
+
+chown root:root /usr/local/ci/scripts/*
+
+cp -p $SOURCE_REPOSITORY_ROOT/setup/integration/scripts/etc_init.d_selenium_rc.sh /etc/init.d/selenium_rc
+chmod 755 /etc/init.d/selenium_rc
+chown root:root /etc/init.d/selenium_rc
+ln -s /etc/init.d/selenium_rc /etc/rc1.d/K99selenium_rc
+ln -s /etc/init.d/selenium_rc /etc/rc2.d/S99selenium_rc
