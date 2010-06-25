@@ -9,9 +9,13 @@
 
 alias la="ls -la"
 
+# TeamCity settings
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 export TEAMCITY_AGENTS_HOME=/home/tomcat/.BuildServer/agents
+
+# Xvfb and Selenium RC settings
+export DISPLAY=:108
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
