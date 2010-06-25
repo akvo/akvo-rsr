@@ -6,13 +6,13 @@
 
 SCRIPT_FILE_DIR="`dirname $0`"
 SOURCE_REPOSITORY_ROOT="`cd $SCRIPT_FILE_DIR/../../..; pwd`"
-INTEGRATION_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts
+INIT_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts/init.d
 
 
 function display_usage_and_exit
 {
     echo "Usage: install_init_script <init_script_name>"
-    echo "Specify a script from the setup/integration/scripts directory for installation in /etc/init.d"
+    echo "Specify a script from the init scripts directory for installation in /etc/init.d"
     exit -1
 }
 
@@ -32,7 +32,7 @@ function verify_script_parameters
 
     # check whether the specified init script exists
     if [ ! -f "$1" ]; then
-        echo ">> Init script does not exist: $INTEGRATION_SCRIPTS_DIR/init.d_$1"
+        echo ">> Init script does not exist: $INIT_SCRIPTS_DIR/$1"
         exit -1
     fi
 }
@@ -41,7 +41,7 @@ function install_script
 {
     SCRIPT_NAME="$1"
 
-    cp -p $INTEGRATION_SCRIPTS_DIR/init.d_$SCRIPT_NAME /etc/init.d/$SCRIPT_NAME
+    cp -p $INIT_SCRIPTS_DIR/$SCRIPT_NAME /etc/init.d/$SCRIPT_NAME
     chmod 755 /etc/init.d/$SCRIPT_NAME
     chown root:root /etc/init.d/$SCRIPT_NAME
 
