@@ -2,6 +2,7 @@
 
 SCRIPT_FILE_DIR="`dirname $0`"
 SOURCE_REPOSITORY_ROOT="`cd $SCRIPT_FILE_DIR/../../..; pwd`"
+INTEGRATION_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts
 
 mkdir -p /usr/local/ci/scripts
 mkdir -p /usr/local/ci/scripts/tools/selenium/1.0.3/rc-server
@@ -13,17 +14,4 @@ cp -p -r $SOURCE_REPOSITORY_ROOT/scripts/testing/tools/selenium/1.0.3/rc-server/
 
 chown -R root:root /usr/local/ci/scripts/*
 
-cp -p $SOURCE_REPOSITORY_ROOT/setup/integration/scripts/etc_init.d_selenium_rc.sh /etc/init.d/selenium_rc
-chmod 755 /etc/init.d/selenium_rc
-chown root:root /etc/init.d/selenium_rc
-
-if [ -L "/etc/rc1.d/K99selenium_rc" ]; then
-    rm /etc/rc1.d/K99selenium_rc
-fi
-
-if [ -L "/etc/rc2.d/S99selenium_rc" ]; then
-    rm /etc/rc2.d/S99selenium_rc
-fi
-
-ln -s /etc/init.d/selenium_rc /etc/rc1.d/K99selenium_rc
-ln -s /etc/init.d/selenium_rc /etc/rc2.d/S99selenium_rc
+$INTEGRATION_SCRIPTS_DIR/install_init_script selenium_rc
