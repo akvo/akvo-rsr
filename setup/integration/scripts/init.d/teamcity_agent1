@@ -5,21 +5,17 @@
 # description: Starts the TeamCity build agent automatically on server startup
 # processname: teamcity_agent1
 
-TEAMCITY_AGENTS_HOME=/home/tomcat/.BuildServer/agents
-AGENT_LOG_PATH=$TEAMCITY_AGENTS_HOME/agent1/logs
-
-UTC_LOG_TIMESTAMP=`date -u +%Y%m%d_%H%M%S`
-PROCESS_OUTPUT_FILE=$AGENT_LOG_PATH/init_process_$UTC_LOG_TIMESTAMP.out
+TEAMCITY_AGENT_HOME=/home/tomcat/.BuildServer/agents/agent1
 
 
 function start_agent
 {
-    su -s /bin/bash -l tomcat $TEAMCITY_AGENTS_HOME/agent1/bin/agent.sh start > $PROCESS_OUTPUT_FILE 2>&1
+    su -s /bin/bash -l tomcat $TEAMCITY_AGENT_HOME/bin/agent.sh start
 }
 
 function stop_agent
 {
-    su -s /bin/bash -l tomcat $TEAMCITY_AGENTS_HOME/agent1/bin/agent.sh stop >> $PROCESS_OUTPUT_FILE 2>&1
+    su -s /bin/bash -l tomcat $TEAMCITY_AGENT_HOME/bin/agent.sh stop
 }
 
 case $1 in

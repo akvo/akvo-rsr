@@ -19,7 +19,6 @@ export CATALINA_BASE=/usr/local/tomcat6
 export TOMCAT_JVM_OPTS="-Xmx512m -XX:MaxPermSize=128m"
 export TEAMCITY_OPTS="-Dlog4j.configuration=file:$CATALINA_HOME/conf/teamcity-server-log4j.xml -Dteamcity_logs=$CATALINA_HOME/logs/teamcity"
 export CATALINA_OPTS="$TOMCAT_JVM_OPTS $TEAMCITY_OPTS"
-export TEAMCITY_AGENTS_HOME=/home/tomcat/.BuildServer/agents
 
 # Xvfb and Selenium RC settings
 export DISPLAY=:108
