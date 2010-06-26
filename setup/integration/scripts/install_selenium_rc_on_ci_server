@@ -19,5 +19,3 @@ cp -p -r $TESTING_SCRIPTS_DIR/$RC_SERVER_PATH/* $CI_SCRIPTS_HOME/$RC_SERVER_PATH
 chown -R root:root $CI_SCRIPTS_HOME/*
 
 echo "Installed automated testing scripts and tools in $CI_SCRIPTS_HOME"
-
-$INTEGRATION_SCRIPTS_DIR/install_init_script selenium_rc
