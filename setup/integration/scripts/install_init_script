@@ -37,39 +37,38 @@ function verify_script_parameters
     fi
 }
 
+verify_script_parameters $*
+
+SCRIPT_NAME="$1"
+INIT_D_SCRIPT_PATH="/etc/init.d/$SCRIPT_NAME"
+
 function install_script_link
 {
-    # Parameters:
-    # $1: runlevel (integer from 0-6)
-    # $2: kill_or_start (e.g. K99 or S99)
-    # $3: script_name
+    RUNLEVEL=$1 # runlevel (integer from 0-6)
+    KS_ID=$2    # kill_or_start ID (e.g. K99 or S99)
 
-    RUNLEVEL=$1
-    KS=$2
-    SCRIPT_NAME=$3
-    RUN_LEVEL_SCRIPT_PATH="/etc/rc$RUNLEVEL.d/$KS$SCRIPT_NAME"
+    RUN_LEVEL_SCRIPT_PATH="/etc/rc$RUNLEVEL.d/$KS_ID$SCRIPT_NAME"
 
     if [ -L $RUN_LEVEL_SCRIPT_PATH ]; then
         rm $RUN_LEVEL_SCRIPT_PATH
     fi
 
-    ln -s /etc/init.d/$SCRIPT_NAME $RUN_LEVEL_SCRIPT_PATH
+    ln -s $INIT_D_SCRIPT_PATH $RUN_LEVEL_SCRIPT_PATH
 }
 
 function install_script
 {
-    SCRIPT_NAME="$1"
+    echo "Installing $INIT_D_SCRIPT_PATH with associated runlevel links"
 
-    cp -p $INIT_SCRIPTS_DIR/$SCRIPT_NAME /etc/init.d/$SCRIPT_NAME
-    chmod 755 /etc/init.d/$SCRIPT_NAME
-    chown root:root /etc/init.d/$SCRIPT_NAME
+    cp -p $INIT_SCRIPTS_DIR/$SCRIPT_NAME $INIT_D_SCRIPT_PATH
+    chmod 755 $INIT_D_SCRIPT_PATH
+    chown root:root $INIT_D_SCRIPT_PATH
 
-    install_script_link 0 "K99" $SCRIPT_NAME
-    install_script_link 1 "K99" $SCRIPT_NAME
-    install_script_link 2 "S99" $SCRIPT_NAME
-    install_script_link 3 "S99" $SCRIPT_NAME
-    install_script_link 6 "K99" $SCRIPT_NAME
+    install_script_link 0 "K99"
+    install_script_link 1 "K99"
+    install_script_link 2 "S99"
+    install_script_link 3 "S99"
+    install_script_link 6 "K99"
 }
 
-verify_script_parameters $*
 install_script "$1"
