@@ -4,14 +4,20 @@ SCRIPT_FILE_DIR="`dirname $0`"
 SOURCE_REPOSITORY_ROOT="`cd $SCRIPT_FILE_DIR/../../..; pwd`"
 INTEGRATION_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts
 
-mkdir -p /usr/local/ci/scripts
-mkdir -p /usr/local/ci/scripts/tools/selenium/1.0.3/rc-server
+TESTING_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/scripts/testing
+CI_SCRIPTS_HOME=/usr/local/ci/scripts
+RC_SERVER_PATH=tools/selenium/1.0.3/rc-server
 
-cp -p $SOURCE_REPOSITORY_ROOT/scripts/testing/start* /usr/local/ci/scripts
-cp -p $SOURCE_REPOSITORY_ROOT/scripts/testing/stop* /usr/local/ci/scripts
-cp -p $SOURCE_REPOSITORY_ROOT/scripts/testing/ensure* /usr/local/ci/scripts
-cp -p -r $SOURCE_REPOSITORY_ROOT/scripts/testing/tools/selenium/1.0.3/rc-server/* /usr/local/ci/scripts/tools/selenium/1.0.3/rc-server
+mkdir -p $CI_SCRIPTS_HOME
+mkdir -p $CI_SCRIPTS_HOME/$RC_SERVER_PATH
 
-chown -R root:root /usr/local/ci/scripts/*
+cp -p $TESTING_SCRIPTS_DIR/start* $CI_SCRIPTS_HOME
+cp -p $TESTING_SCRIPTS_DIR/stop* $CI_SCRIPTS_HOME
+cp -p $TESTING_SCRIPTS_DIR/ensure* $CI_SCRIPTS_HOME
+cp -p -r $TESTING_SCRIPTS_DIR/$RC_SERVER_PATH/* $CI_SCRIPTS_HOME/$RC_SERVER_PATH
+
+chown -R root:root $CI_SCRIPTS_HOME/*
+
+echo "Installed automated testing scripts and tools in $CI_SCRIPTS_HOME"
 
 $INTEGRATION_SCRIPTS_DIR/install_init_script selenium_rc
