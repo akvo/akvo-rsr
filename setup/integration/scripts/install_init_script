@@ -49,20 +49,23 @@ function install_script_link
 
     RUN_LEVEL_SCRIPT_PATH="/etc/rc$RUNLEVEL.d/$KS_ID$SCRIPT_NAME"
 
+    echo "Creating $RUN_LEVEL_SCRIPT_PATH link"
+
     if [ -L $RUN_LEVEL_SCRIPT_PATH ]; then
         rm $RUN_LEVEL_SCRIPT_PATH
     fi
 
     ln -s $INIT_D_SCRIPT_PATH $RUN_LEVEL_SCRIPT_PATH
+    echo "Added $RUN_LEVEL_SCRIPT_PATH link"
 }
 
 function install_script
 {
-    echo "Installing $INIT_D_SCRIPT_PATH with associated runlevel links"
-
     cp -p $INIT_SCRIPTS_DIR/$SCRIPT_NAME $INIT_D_SCRIPT_PATH
     chmod 755 $INIT_D_SCRIPT_PATH
     chown root:root $INIT_D_SCRIPT_PATH
+
+    echo "Installed $INIT_D_SCRIPT_PATH script"
 
     install_script_link 0 "K99"
     install_script_link 1 "K99"
