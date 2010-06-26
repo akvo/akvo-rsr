@@ -49,8 +49,6 @@ function install_script_link
 
     RUN_LEVEL_SCRIPT_PATH="/etc/rc$RUNLEVEL.d/$KS_ID$SCRIPT_NAME"
 
-    echo "Creating $RUN_LEVEL_SCRIPT_PATH link"
-
     if [ -L $RUN_LEVEL_SCRIPT_PATH ]; then
         rm $RUN_LEVEL_SCRIPT_PATH
     fi
