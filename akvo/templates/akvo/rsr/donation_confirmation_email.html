@@ -1,0 +1,76 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Akvo.org - {% trans 'Thank you for your online contribution' %}</title>
+	
+</head>
+<body>
+	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
+	<p>
+		{% trans 'Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via' %} <a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/updates">{% trans 'updates' %}</a> {% trans 'on' %} Akvo.org.
+	</p>
+
+	<h3>{% trans 'A summary of your contribution' %}</h3>
+	<div style="float:left; background-color:; text-align:right; font-weight: normal;">
+		<p style="margin-top:0">
+			{% trans 'Name' %}:<br>
+			{% trans 'Email' %}:<br>
+			<br>
+			{% trans 'Your gift will help' %}:<br>
+			{% trans 'Contribution' %}:<br>
+			{% trans 'Akvo reference' %}: <br>
+			{% ifequal invoice.engine "paypal" %}
+		    {% trans 'PayPal reference' %}: <br>
+			{% endifequal %}
+			{% ifequal invoice.engine "ideal" %}
+			{% trans 'Bank' %}: <br>
+			{% trans 'iDEAL reference' %}:
+			{% endifequal %}
+		</p>
+	</div>
+	<div style="float:left; background-color:; margin-left:10px; font-weight: bold">
+		<p style="margin-top:0">
+			{{ invoice.get_name }}<br>
+			{{ invoice.get_email }}<br>
+			<br>
+			<a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/">{{ invoice.project.name|safe }}</a><br>
+			{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
+			{{ invoice.id }}<br>
+			{% ifequal invoice.engine "paypal" %}
+		    {{ invoice.ipn }}<br>
+			{% endifequal %}
+			{% ifequal invoice.engine "ideal" %}
+			{{ invoice.get_bank_display }} <br>
+			{{ invoice.transaction_id }}
+			{% endifequal %}
+			
+		</p>
+	</div>
+	<div style="clear:both;"></div>
+	<h3>{% trans 'About your contribution' %}</h3>
+	<p>
+		{% trans 'No goods or services were provided in exchange for your gift of funds. At this time, only residents of the following countries may treat this donation as a tax-deductible charitable contribution to the extent allowed by law. We are working hard to expand this list to new countries.' %}
+	</p>
+
+	<ul>
+		{% ifequal invoice.project.currency 'EUR' %}
+	    <li>{% trans 'The Netherlands (Nederland)' %}</li>
+		{% endifequal %}
+		{% ifequal invoice.project.currency 'USD' %}
+	    <li>{% trans 'United States of America' %}</li>
+		{% endifequal %}
+	</ul>
+	
+	<p>
+		{% trans 'Please retain this message as a record of your contribution. You may email us with technical questions at' %} <a href="mailto:contribute@akvo.org">contribute@akvo.org</a> {% trans 'and please tell your friends about' %} <a href="http://www.akvo.org/">Akvo.org</a>!  :)
+		<br>
+		<br>
+		{% trans 'Thanks' %}<br>
+		{% trans 'The Akvo team' %}
+	</p>
+
+</body>
+</html>
