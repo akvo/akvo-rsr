@@ -1,0 +1,69 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Update your Akvo RSR account information' %}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Update your Akvo RSR account information' %}</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+	<form method="post" action="" name="account_change_form">
+		{% if form.errors %}
+	    <div class="error" style="margin-right: 70px;">
+			<p class="c1">{% trans 'A problem occurred' %}</p>
+	        <p>{{ form.non_field_errors }}</p>
+	        <p>{% trans 'Please review messages below.' %}</p>
+	    </div>
+	 	{% endif %}
+		<div style="width:500px;">
+			<h1>{% trans 'Update your Akvo RSR account information' %}</h1>
+		
+			<p>
+				{% trans 'Your user name is' %}: {{request.user}}<br />
+				{% trans 'Your organisation is' %}: {{request.user.get_profile.organisation_name}}
+			</p>    
+	        <p>
+				{% trans 'You can also <a href="/rsr/accounts/password/change/">change your password</a>.' %}
+			</p>		
+		</div>
+		<div class="clear"></div>
+		<hr />
+		
+		{% if form.first_name.errors or form.last_name.errors %}
+        <div class="error">
+            <p class="c1">{% trans 'A problem occurred' %}</p>
+            {% if form.first_name.errors %}
+            <p>{{ form.first_name.errors|join:", " }}</p>
+            {% endif %}
+            {% if form.last_name.errors %}
+            <p>{{ form.last_name.errors|join:", " }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+		<div style="width:500px;">
+			<h3>{% trans 'Change your name:' %}</h3>
+			{{ form.first_name }}
+            <p class="small grey">{% trans 'Your first (given) name' %}.</p>
+            
+            {{ form.last_name }}
+            <p class="small grey">{% trans 'Your last (family) name' %}.</p>
+			
+			<p class="small grey">{% trans 'Your first and last name will be displayed when you post comments or updates to Akvo.' %}</p>
+		</div>
+		<div class="clear"></div>
+		<hr />
+		
+		<div style="text-align:center; padding-bottom:20px;">
+			<div style="float:left;">
+				<a href="{% url akvo.rsr.views.index %}" class="small">{% trans 'Cancel' %}</a>
+			</div>
+			<a class="aqua awesome" href="javascript:document.account_change_form.submit();">
+				{% trans 'Change' %}
+			</a>
+		</div>
+	</form>	
+{% endblock content %}	
+
