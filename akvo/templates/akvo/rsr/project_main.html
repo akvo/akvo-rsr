@@ -28,7 +28,7 @@
 				</p>
 				{# Google Map #}
 	            {% if p.has_valid_coordinates %}
-	                {% dynamic_map p 180 180 3 'blue' %}
+	                {% dynamic_map p 260 180 3 'blue' %}
 	            {% else %}
 	                <p style="color: red;">{% trans 'No map available' %}</p>
 	            {% endif %}

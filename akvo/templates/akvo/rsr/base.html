@@ -33,12 +33,12 @@
 					</a>
 				</li>
 				<li>
-					<a href="#">
+					<a href="/wiki/">
 						<span>Akvopedia</span>
 					</a>
 				</li>
 				<li>
-					<a href="/rsr/organisations/" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
+					<a href="/web/partners/" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
 						<span>Partners</span>
 					</a>
 				</li>
@@ -48,7 +48,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#">
+					<a href="/web/get_involved/">
 						<span>Get involved</span>
 					</a>
 				</li>
@@ -200,11 +200,27 @@
 				jQ('.container').toggleClass('showgrid');
 			});
 			
-			if (Modernizr.cssanimations) {
-				jQ('#modern_header').html('Browser supports CSS Animations');
+			if (Modernizr.placeholder) {
+				jQ('#modern_header').html('Browser supports html5 placeholders');
 			} else {
-				jQ('#modern_header').html('No browser support for CSS Animations');
+				jQ('#modern_header').html('No browser support for html5 placeholders');
 			};
+			
+			if(!Modernizr.input.placeholder){
+				$("input").each( function(){
+					if($(this).val()=="" && $(this).attr("placeholder")!=""){
+						$(this).val($(this).attr("placeholder"));
+						$(this).focus(function(){
+							if($(this).val()==$(this).attr("placeholder")) $(this).val("");
+						});
+						$(this).blur(function(){
+							if($(this).val()=="") $(this).val($(this).attr("placeholder"));
+						});
+					}
+				});
+			}
+			
+			
 			
 		});		
 	</script>	
