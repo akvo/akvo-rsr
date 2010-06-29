@@ -1,0 +1,20 @@
+{% extends "rsr/base_message.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Something went wrong with our servers (500)' %}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Something went wrong with our servers' %}</li>
+{% endblock breadcrum_items %}
+
+{% block message_head %}
+	{% trans "We&#x27;re sorry, Something went wrong with our servers (error 500)" %}
+{% endblock message_head %}
+
+{% block message_body %}
+	<p>
+		{% trans 'Our staff has been notified and will look into the problem as soon as possible.' %}
+	</p>
+{% endblock message_body %}
