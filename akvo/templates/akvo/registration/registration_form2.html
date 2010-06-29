@@ -13,6 +13,7 @@
 	<h1>{% trans 'Set up your account' %}</h1>
 	<hr />
 	<form method="post" action="" name="registrationForm">
+		{{ form.org_id }}
 	
 		{% if form.username.errors %}
 			<div class="error">
@@ -46,12 +47,12 @@
 			<h3>{% trans 'Enter your first and last name:' %}</h3>
 		
 			{{ form.first_name }}
-	        <p class="about_field">{% trans 'Enter first (given) name.' %}</p>
+	        <p class="small grey">{% trans 'Enter first (given) name.' %}</p>
         
 	        {{ form.last_name }}
-	        <p class="about_field">{% trans 'Enter last (family) name.' %}</p>
+	        <p class="small grey">{% trans 'Enter last (family) name.' %}</p>
 	
-			<p class="small grey">
+			<p class="small">
 				{% trans 'Your first and last name will be displayed when you post comments or updates to Akvo.' %}
 			</p>
 		</div>
@@ -72,14 +73,12 @@
 			<h3>{% trans 'Enter a password:' %}</h3>
 		
 			{{ form.password1 }}
-	        <p class="about_field">{% trans 'Enter password' %}.</p>
+	        <p class="small grey">{% trans 'Enter password' %}.</p>
         
 	        {{ form.password2 }}
-	        <p class="about_field">{% trans 'Retype password to verify' %}.</p>
-		
+	        <p class="small grey">{% trans 'Retype password to verify' %}.</p>
 		</div>
 		<hr />
-	
 	
 		{% if form.email.errors or form.email2.errors %}
 	     <div class="error">
@@ -96,10 +95,10 @@
 			<h3>{% trans 'Enter your email address:' %}</h3>
 		
 			{{ form.email }}
-	        <p class="about_field">{% trans 'Enter email address.' %}</p>
+	        <p class="small grey">{% trans 'Enter email address.' %}</p>
         
 	        {{ form.email2 }}
-	        <p class="about_field">{% trans 'Retype email address to verify.' %}</p>
+	        <p class="small grey">{% trans 'Retype email address to verify.' %}</p>
 		
 		</div>
 	<hr />
@@ -108,7 +107,7 @@
 			<a href="{% url akvo.rsr.views.index %}" class="small">{% trans 'Cancel' %}</a>
 		</div>
 		<a class="aqua awesome" href="javascript:document.registrationForm.submit();">
-			{% trans 'Register' %}
+			{% trans 'Reset' %}
 		</a>
 	</div>
 {% endblock content %}

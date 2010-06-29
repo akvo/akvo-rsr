@@ -24,7 +24,6 @@ feeds = {
 urlpatterns = patterns('',
     #(r'^rsr/', include('akvo.rsr.urls')),
     
-    url(r'^rsr/test_500/$', direct_to_template, {'template': '500.html'}, name='test_500'),
     # django_counter
     (r'^rsr/counter/', include('django_counter.urls')),
 
