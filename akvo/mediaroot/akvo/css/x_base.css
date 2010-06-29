@@ -70,3 +70,11 @@ ul#breadcrum li a span {
     padding-left: 12px !important;
     font-size: 12px;
     }
+    
+div.error {
+    background-color:#FFEBE7; 
+    border:1px solid #FFCDD1; 
+    color:red;
+    float:right; 
+    padding:10px; 
+    width:300px; }
