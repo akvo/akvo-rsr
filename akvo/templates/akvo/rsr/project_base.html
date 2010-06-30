@@ -175,11 +175,17 @@
 					{% endfor %}
 				</div>
 			</div>
-			<br />
+		</div>
+		<br />
+		{% endif %}
+		<div class="two_column_right_inner" style="margin-top:20px;">
 			<h2>Tools for this page</h2>
 			<div class="white_box" style="background-color:#fff">
 				<div class="space20">
 					<ul>
+						{% if can_add_update %}
+							<li><a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a></li>
+						{% endif %}
 						<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
 						<li><a href=".">{% trans 'Permalink' %}</a></li>
 						<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
@@ -190,6 +196,6 @@
 				<p class="grey tiny" style="text-align:right;">Akvo Ref: {{p.id}}</p>	
 			</div>
 		</div>
-	{% endif %}
+	
 </div>
 {% endblock maincontent %}

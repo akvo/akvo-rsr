@@ -750,8 +750,10 @@ def updateform(request, project_id):
     form: the update form
     '''
     p = get_object_or_404(Project, pk=project_id)
+    can_add_update = p.connected_to_user(request.user)
+    
     # check that the current user is allowed to edit
-    if not p.connected_to_user(request.user):
+    if not can_add_update:
         return HttpResponseRedirect('/rsr/error/access_denied/')
         
     if request.method == 'POST':
@@ -764,10 +766,17 @@ def updateform(request, project_id):
             update.user = request.user
             update.update_method = 'W'
             update.save()
-            return HttpResponseRedirect('./')
+            latest = ProjectUpdate.objects.all().order_by('-time')[0]
+            return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
     else:
         form = UpdateForm()
-    return render_to_response('rsr/update_form.html', {'form': form, 'p': p, }, RequestContext(request))
+        
+    return render_to_response('rsr/update_form.html', {
+        'form': form, 
+        'p': p, 
+        'can_add_update': can_add_update,
+        'updates': Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
+        }, RequestContext(request))
 
 def mms_update(request):
     '''
@@ -911,14 +920,13 @@ def projectmain(request, project_id):
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     form        = CommentForm()
-    can_add_update = p.connected_to_user(request.user)
     
     return {
         'p': p, 
         'updates': updates, 
         'comments': comments, 
         'form': form, 
-        'can_add_update': can_add_update, 
+        'can_add_update': p.connected_to_user(request.user),
         'site_section': 'projects',
         }
 
@@ -930,12 +938,13 @@ def projectdetails(request, project_id):
 @render_to('rsr/project_partners.html')  
 def projectpartners(request, project_id):
 	p = get_object_or_404(Project, pk=project_id)
-	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]    
+	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
 	return { 
 		'p': p, 
 		'site_section': 'projects', 
 		'updates': updates, 
-		'hide_project_partners': True
+		'hide_project_partners': True,
+		'can_add_update': p.connected_to_user(request.user),
 	}
 
 @render_to('rsr/project_funding.html')  
@@ -947,6 +956,8 @@ def projectfunding(request, project_id):
 		'p': p, 
 		'public_donations': public_donations, 
 		'site_section': 'projects', 
+		'updates': updates,
+		'can_add_update': p.connected_to_user(request.user),
 	}
 
 def getwidget(request, project_id):
