@@ -12,5 +12,11 @@
 
 {% block content %}
 <h1>Project partners</h1>
+<ul>
+	{% for org in orgs  %}
+		<li>{{org.name}}</li>
+	{% endfor %}
+	
+</ul>
 
 {% endblock content %}

@@ -203,27 +203,28 @@ def index(request):
 
 @render_to('rsr/partners.html')
 def partners(request):
-    return {'site_section': 'partners',}
+    return {'site_section':'partners',}
 
 @render_to('rsr/partners_strategic.html')
 def partners_strategic(request):
-    return {'site_section': 'partners',}
+    return {'site_section':'partners',}
 
 @render_to('rsr/partners_project.html')
 def partners_project(request):
-    return {'site_section': 'partners',}
+    orgs = Organisation.objects.all()
+    return {'site_section':'partners', 'orgs':orgs, }
 
 @render_to('rsr/partners_commercial.html')
 def partners_commercial(request):
-    return {'site_section': 'partners',}
+    return {'site_section':'partners',}
 
 @render_to('rsr/partners_knowledge_institutes.html')
 def partners_knowledge_institutes(request):
-    return {'site_section': 'partners',}
+    return {'site_section':'partners',}
 
 @render_to('rsr/partners_investors.html')
 def partners_investors(request):
-    return {'site_section': 'partners',}
+    return {'site_section':'partners',}
 
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"

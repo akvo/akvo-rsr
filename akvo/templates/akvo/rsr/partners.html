@@ -11,12 +11,28 @@
 
 {% block content %}
 <h1>Partners</h1>
+<p>(with description of the partnership types)</p>
 <ul>
-	<li><a href="{% url partners_strategic %}">Strategic partners</a></li>
-	<li><a href="{% url partners_project %}">Project partners</a></li>
-	<li><a href="{% url partners_commercial %}">Commercial partners</a></li>
-	<li><a href="{% url partners_knowledge_institutes %}">Knowledge institutions</a></li>
-	<li><a href="{% url partners_investors %}">Akvo investors</a></li>
+	<li>
+		<a href="{% url partners_strategic %}">Strategic partners</a>
+		<span class="small grey">(Organisations which we collaborate in one or the other way.)</span>
+	</li>
+	<li>
+		<a href="{% url partners_project %}">Project partners</a>
+		<span class="small grey">(Organisations who have projects in RSR)</span>
+	</li>
+	<li>
+		<a href="{% url partners_commercial %}">Commercial partners</a>
+		<span class="small grey">(Organisations which akvo ...)</span>
+	</li>
+	<li>
+		<a href="{% url partners_knowledge_institutes %}">Knowledge institutions</a>
+		<span class="small grey">(Organisations which have contributed to akvo's ...)</span>
+	</li>
+	<li>
+		<a href="{% url partners_investors %}">Akvo investors</a>
+		<span class="small grey">(Organisations which have helped to realize akvo ...)</span>
+	</li>
 </ul>
 
 {% endblock content %}
