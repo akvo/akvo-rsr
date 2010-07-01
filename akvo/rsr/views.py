@@ -210,9 +210,13 @@ def partners_strategic(request):
     return {'site_section':'partners',}
 
 @render_to('rsr/partners_project.html')
-def partners_project(request):
+def partners_project(request, org_type='all'):
     orgs = Organisation.objects.all()
-    return {'site_section':'partners', 'orgs':orgs, }
+    ORGS_PER_PAGE = 20
+    paginator = Paginator(orgs, ORGS_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
+    
+    return {'site_section':'partners', 'orgs':orgs, 'page':page, 'org_type':org_type, }
 
 @render_to('rsr/partners_commercial.html')
 def partners_commercial(request):

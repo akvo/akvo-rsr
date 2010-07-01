@@ -1,6 +1,6 @@
 {% extends "rsr/base_sheet.html" %}
 
-{% load i18n %}
+{% load i18n addparam %}
 
 {% block title %}{% trans 'Change password' %}{% endblock title %}
 
@@ -12,9 +12,35 @@
 
 {% block content %}
 <h1>Project partners</h1>
+<div style="background-color:cyan; margin-bottom:20px;">
+	<div style="float:right; width:300px; text-align:right;">
+		{% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
+	</div>
+	
+        {% ifequal page.number 1 %}
+        {% trans 'First' %} |
+        {% else %}
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+        {% endifequal %}
+        {% if page.has_previous %}
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+        {% else %}
+        {% trans 'Previous' %} |
+        {% endif %}
+        {% if page.has_next %}
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+        {% else %}
+        {% trans 'Next' %} |
+        {% endif %}
+        {% ifequal page.number page.paginator.num_pages %}
+        {% trans 'Last' %}
+        {% else %}
+        <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+        {% endifequal %}
+</div>
 <ul>
-	{% for org in orgs  %}
-		<li>{{org.name}}</li>
+	{% for org in page.object_list %}
+		<li><a href="{% url org_detail org.id %}">{{org.name}}</a></li>
 	{% endfor %}
 	
 </ul>
