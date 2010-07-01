@@ -346,12 +346,14 @@ class ProjectAdminForm(forms.ModelForm):
 class RSR_FormSet(forms.formsets.BaseFormSet):
     pass
 
-admin.site.register(get_model('rsr', 'location'))
+class LocationInline(admin.TabularInline):
+    model = get_model('rsr', 'location')
+    extra = 1
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (BudgetItemAdminInLine, LinkInline, FundingPartnerInline, SponsorPartnerInline, 
-               FieldPartnerInline, SupportPartnerInline)
+               FieldPartnerInline, SupportPartnerInline, LocationInline)
     fieldsets = (
         (_(u'Project description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(u"Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing."),

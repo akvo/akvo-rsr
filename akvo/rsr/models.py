@@ -78,25 +78,16 @@ class Country(models.Model):
         ordering = ['country_name']
 
 class LatitudeField(models.FloatField):
+    description = _('Latitude coordinate.')
     def __init__(self, *args, **kwargs):
         super(LatitudeField, self).__init__(*args, **kwargs)
         self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
 
 class LongitudeField(models.FloatField):
+    description = _('Longitude coordinate.)')
     def __init__(self, *args, **kwargs):
         super(LongitudeField, self).__init__(*args, **kwargs)
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
-
-class Location(models.Model):
-    
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
-    country = models.ForeignKey(Country)
-    latitude = LatitudeField(_('latitude'))
-    longitude = LongitudeField(_('longitude'))
-
-    def __unicode__(self):
-        return u'%s, %s, %s' % (self.city, self.state, self.country)
 
 
 class ProjectsQuerySetManager(QuerySetManager):
@@ -434,8 +425,6 @@ class Project(models.Model):
     currency            = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(_('Date request posted'), default=date.today)
     date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
-
-    location            = models.ManyToManyField(Location)
 
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1431,6 +1420,21 @@ def process_paypal_ipn(sender, **kwargs):
         invoice.save()
 payment_was_flagged.connect(process_paypal_ipn)
 
+
+class Location(models.Model):
+
+    latitude = LatitudeField(_('latitude'))
+    longitude = LongitudeField(_('longitude'))
+    city = models.CharField(_('city'), max_length=255)
+    state = models.CharField(_('state'), max_length=255)
+    country = models.ForeignKey(Country)
+    address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
+    address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
+    postcode = models.CharField(_('postcode'), max_length=10, blank=True)
+    project = models.ManyToManyField(Project)
+
+    def __unicode__(self):
+        return u'%s, %s, %s' % (self.city, self.state, self.country)
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)
