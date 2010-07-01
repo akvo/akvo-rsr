@@ -1,0 +1,22 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Change password' %}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Partners' %}</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+<h1>Partners</h1>
+<ul>
+	<li><a href="{% url partners_strategic %}">Strategic partners</a></li>
+	<li><a href="{% url partners_project %}">Project partners</a></li>
+	<li><a href="{% url partners_commercial %}">Commercial partners</a></li>
+	<li><a href="{% url partners_knowledge_institutes %}">Knowledge institutions</a></li>
+	<li><a href="{% url partners_investors %}">Akvo investors</a></li>
+</ul>
+
+{% endblock content %}

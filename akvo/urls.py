@@ -44,6 +44,15 @@ urlpatterns = patterns('',
     (r'^rsr/admin/(.*)', admin.site.root),
     #(r'^rsr/admin/', include('django.contrib.admin.urls')),
     
+    # Partners
+    url(r'^rsr/partners/$','akvo.rsr.views.partners',name='partners'),
+    url(r'^rsr/partners/strategic/$','akvo.rsr.views.partners_strategic',name='partners_strategic'),
+    url(r'^rsr/partners/project/$','akvo.rsr.views.partners_project',name='partners_project'),
+    url(r'^rsr/partners/commercial/$','akvo.rsr.views.partners_commercial',name='partners_commercial'),
+    url(r'^rsr/partners/knowledge_institutes/$','akvo.rsr.views.partners_knowledge_institutes',name='partners_knowledge_institutes'),
+    url(r'^rsr/partners/investors/$','akvo.rsr.views.partners_investors',name='partners_investors'),
+    
+    
     # Project listing
     url(r'^rsr/projects/$','akvo.rsr.views.projectlist',name='project_list'),
     (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
