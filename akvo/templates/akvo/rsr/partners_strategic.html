@@ -1,6 +1,6 @@
 {% extends "rsr/base_sheet.html" %}
 
-{% load i18n %}
+{% load i18n chunks %}
 
 {% block title %}{% trans 'Change password' %}{% endblock title %}
 
@@ -12,5 +12,7 @@
 
 {% block content %}
 <h1>Strategic partners</h1>
+
+{% chunk "partners_strategic" %}
 
 {% endblock content %}
