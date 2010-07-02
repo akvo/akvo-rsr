@@ -12,7 +12,7 @@ from web.webtestcase import AkvoWebTestCase
 class FooterLinksTest(AkvoWebTestCase):
 
     def test_01_home_page_footer_has_expected_links(self):
-        """web.home.FooterLinksTest  1. Home page footer has open license, terms of use, privacy policy, admin and help links"""
+        """web.home.FooterLinksTest  1. Home page footer has expected links"""
 
         self.open_home_page()
         self.assert_link_exists("Open License")
@@ -20,6 +20,7 @@ class FooterLinksTest(AkvoWebTestCase):
         self.assert_link_exists("Privacy policy")
         self.assert_link_exists("Admin")
         self.assert_link_exists("Help & Support")
+        self.assert_link_exists("Contact us")
 
     def test_02_open_license_link_redirects_to_licensing_page(self):
         """web.home.FooterLinksTest  2. Open License link redirects to licensing page"""
@@ -73,6 +74,21 @@ class FooterLinksTest(AkvoWebTestCase):
         self.assert_location_contains("help.akvo.org")
         self.assert_title_is("Welcome - Akvo Support")
         self.assert_page_contains_text("Akvo Support")
+
+    def test_07_contact_us_link_redirects_to_contact_page(self):
+        """web.home.FooterLinksTest  7. Contact us link redirects to contact page"""
+
+        self.open_home_page()
+        self.assert_link_exists("Contact us")
+        self.navigator.click_link("Contact us")
+        self.assert_location_contains("web/contact_us")
+        self.assert_title_starts_with("Contact us | Akvo")
+        self.assert_page_contains_text_items(["Contact us",
+                                              "Partnerships",
+                                              "Communications",
+                                              "Technical",
+                                              "Post address",
+                                              "Visiting address"])
 
 
 def suite():
