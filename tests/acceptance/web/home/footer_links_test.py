@@ -11,19 +11,8 @@ from web.webtestcase import AkvoWebTestCase
 
 class FooterLinksTest(AkvoWebTestCase):
 
-    def test_01_home_page_footer_has_expected_links(self):
-        """web.home.FooterLinksTest  1. Home page footer has expected links"""
-
-        self.open_home_page()
-        self.assert_link_exists("Open License")
-        self.assert_link_exists("Terms of use")
-        self.assert_link_exists("Privacy policy")
-        self.assert_link_exists("Admin")
-        self.assert_link_exists("Help & Support")
-        self.assert_link_exists("Contact us")
-
-    def test_02_open_license_link_redirects_to_licensing_page(self):
-        """web.home.FooterLinksTest  2. Open License link redirects to licensing page"""
+    def test_01_open_license_link_redirects_to_licensing_page(self):
+        """web.home.FooterLinksTest  1. Open License link redirects to licensing page"""
 
         self.open_home_page()
         self.assert_link_exists("Open License")
@@ -34,8 +23,8 @@ class FooterLinksTest(AkvoWebTestCase):
                                               "Akvo Foundation software",
                                               "Akvo Contributor Agreement"])
 
-    def test_03_terms_of_use_link_redirects_to_terms_of_use_page(self):
-        """web.home.FooterLinksTest  3. Terms of use link redirects to Terms of use page"""
+    def test_02_terms_of_use_link_redirects_to_terms_of_use_page(self):
+        """web.home.FooterLinksTest  2. Terms of use link redirects to Terms of use page"""
 
         self.open_home_page()
         self.assert_link_exists("Terms of use")
@@ -44,8 +33,8 @@ class FooterLinksTest(AkvoWebTestCase):
         self.assert_title_starts_with("Terms of use")
         self.assert_page_contains_text("use of and services provided by this website")
 
-    def test_04_privacy_link_redirects_to_privacy_policy_page(self):
-        """web.home.FooterLinksTest  4. Privacy policy link redirects to privacy policy page"""
+    def test_03_privacy_link_redirects_to_privacy_policy_page(self):
+        """web.home.FooterLinksTest  3. Privacy policy link redirects to privacy policy page"""
 
         self.open_home_page()
         self.assert_link_exists("Privacy policy")
@@ -55,8 +44,8 @@ class FooterLinksTest(AkvoWebTestCase):
         self.assert_page_contains_text_items(["Privacy policy",
                                               "handling of your personal information is governed by"])
 
-    def test_05_admin_link_redirects_to_rsr_admin_login_page(self):
-        """web.home.FooterLinksTest  5. Admin link redirects to RSR Admin login page"""
+    def test_04_admin_link_redirects_to_rsr_admin_login_page(self):
+        """web.home.FooterLinksTest  4. Admin link redirects to RSR Admin login page"""
 
         self.open_home_page()
         self.assert_link_exists("Admin")
@@ -65,8 +54,8 @@ class FooterLinksTest(AkvoWebTestCase):
         self.assert_title_is("Log in | Akvo RSR site admin")
         self.assert_page_contains_text("Akvo RSR administration")
 
-    def test_06_help_link_redirects_to_tender(self):
-        """web.home.FooterLinksTest  6. Help & Support link redirects to Akvo support site on Tender"""
+    def test_05_help_link_redirects_to_tender(self):
+        """web.home.FooterLinksTest  5. Help & Support link redirects to Akvo support site on Tender"""
 
         self.open_home_page()
         self.assert_link_exists("Help & Support")
@@ -75,8 +64,8 @@ class FooterLinksTest(AkvoWebTestCase):
         self.assert_title_is("Welcome - Akvo Support")
         self.assert_page_contains_text("Akvo Support")
 
-    def test_07_contact_us_link_redirects_to_contact_page(self):
-        """web.home.FooterLinksTest  7. Contact us link redirects to contact page"""
+    def test_06_contact_us_link_redirects_to_contact_page(self):
+        """web.home.FooterLinksTest  6. Contact us link redirects to contact page"""
 
         self.open_home_page()
         self.assert_link_exists("Contact us")
