@@ -7,11 +7,12 @@
 from helpers.seleniumclient import SeleniumClient
 from helpers.testexecution import *
 
+from web.home.akvo_platform_components_test import AkvoPlatformComponentsTest
 from web.home.home_page_test import HomePageTest
 from web.home.footer_links_test import FooterLinksTest
 
 def home_page_suite():
-    return create_test_suite_from_classes([HomePageTest, FooterLinksTest])
+    return create_test_suite_from_classes([AkvoPlatformComponentsTest, HomePageTest, FooterLinksTest])
 
 if __name__ == "__main__":
     run_test_suite(home_page_suite())

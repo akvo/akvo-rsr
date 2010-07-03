@@ -25,7 +25,7 @@ class SeleniumTestCase(TestCase):
 
     def assert_location_contains(self, expected_text):
         self.failIf(self.selenium.get_location().find(expected_text) == -1,
-                    "Page URL should contain: %s" % (expected_text))
+                    "\nPage URL should contain: %s\n             Actual URL: %s" % (expected_text, self.selenium.get_location()))
 
     def assert_title_is(self, expected_title):
         self.failUnlessEqual(expected_title, self.selenium.get_title(),
@@ -33,8 +33,13 @@ class SeleniumTestCase(TestCase):
 
     def assert_title_starts_with(self, expected_title_start):
         self.failUnless(self.selenium.get_title().startswith(expected_title_start),
-                        "\nExpected page title to start with: %s\n                Actual page title: %s" %
-                        (expected_title_start, self.selenium.get_title()))
+                        "\nPage title should start with: %s\n           Actual page title: %s" %
+                            (expected_title_start, self.selenium.get_title()))
+
+    def assert_title_contains(self, expected_title_content):
+        self.failIf(self.selenium.get_title().find(expected_title_content) == -1,
+                    "\nPage title should contain: %s\n        Actual page title: %s" %
+                        (expected_title_content, self.selenium.get_title()))
 
     def assert_page_contains_text(self, expected_text):
         self.failUnless(self.selenium.is_text_present(expected_text), "Page should contain: %s" % (expected_text))
