@@ -217,6 +217,26 @@ def partners_project(request, org_type='all'):
     page = paginator.page(request.GET.get('page', 1))
     
     return {'site_section':'partners', 'orgs':orgs, 'page':page, 'org_type':org_type, }
+    
+@render_to('rsr/partners_partner.html')
+def project_partner(request, org_id):
+    o = get_object_or_404(Organisation, pk=org_id)
+
+    has_sponsor_banner = False
+    if o.id == settings.LIVE_EARTH_ID:
+        has_sponsor_banner = True
+
+    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+    org_partners = o.partners()
+    return {
+        'o': o, 
+        'org_projects': org_projects, 
+        'org_partners': org_partners,
+        'has_sponsor_banner':has_sponsor_banner,
+        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
+        'site_section': 'partners',
+        }
+    
 
 @render_to('rsr/partners_commercial.html')
 def partners_commercial(request):
