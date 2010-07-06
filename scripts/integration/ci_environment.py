@@ -6,7 +6,7 @@
 
 import os, shutil
 
-def setup_acceptance_test_environment():
+def configure_acceptance_test_settings_for_ci():
     acceptance_test_root_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../tests/acceptance'))
     
     shutil.copy(os.path.join(acceptance_test_root_path, 'test_settings_ci.py'),
