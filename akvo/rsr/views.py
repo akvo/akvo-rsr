@@ -201,15 +201,15 @@ def index(request):
         'site_section': 'index',
     }
 
-@render_to('rsr/partners.html')
+@render_to('rsr/partners/partners.html')
 def partners(request):
     return {'site_section':'partners',}
 
-@render_to('rsr/partners_strategic.html')
+@render_to('rsr/partners/partners_strategic.html')
 def partners_strategic(request):
     return {'site_section':'partners',}
 
-@render_to('rsr/partners_project.html')
+@render_to('rsr/partners/partners_project.html')
 def partners_project(request, org_type='all'):
     orgs = Organisation.objects.all()
     ORGS_PER_PAGE = 20
@@ -218,7 +218,7 @@ def partners_project(request, org_type='all'):
     
     return {'site_section':'partners', 'orgs':orgs, 'page':page, 'org_type':org_type, }
     
-@render_to('rsr/partners_partner.html')
+@render_to('rsr/partners/partners_partner.html')
 def project_partner(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
 
@@ -238,15 +238,15 @@ def project_partner(request, org_id):
         }
     
 
-@render_to('rsr/partners_commercial.html')
+@render_to('rsr/partners/partners_commercial.html')
 def partners_commercial(request):
     return {'site_section':'partners',}
 
-@render_to('rsr/partners_knowledge_institutes.html')
+@render_to('rsr/partners/partners_knowledge_institutes.html')
 def partners_knowledge_institutes(request):
     return {'site_section':'partners',}
 
-@render_to('rsr/partners_investors.html')
+@render_to('rsr/partners/partners_investors.html')
 def partners_investors(request):
     return {'site_section':'partners',}
 
