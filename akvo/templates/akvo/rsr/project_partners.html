@@ -26,12 +26,12 @@
 				{% for fp in p.fieldpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
 						<div style="float:left; width:100px;">							
-							<a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
+							<a href="{% url partners_partner fp.field_organisation.id %}">
 			                    {% org_logo fp.field_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail fp.id %}">{{fp.field_organisation}}</a><br />
+							<a href="{% url partners_partner fp.id %}">{{fp.field_organisation}}</a><br />
 							{{fp.field_organisation.city}}, {{fp.field_organisation.state}}, {{fp.field_organisation.country}}
 						</div>
 						<div class="clear"></div>						
@@ -50,12 +50,12 @@
 				{% for sp in p.supportpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
 						<div style="float:left; width:100px;">
-							<a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">
+							<a href="{% url partners_partner sp.support_organisation.id %}">
 			                    {% org_logo sp.support_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>							
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail sp.id %}">{{sp.support_organisation}}</a><br />
+							<a href="{% url partners_partner sp.id %}">{{sp.support_organisation}}</a><br />
 							{{sp.support_organisation.city}}, {{sp.support_organisation.state}}, {{sp.support_organisation.country}}
 						</div>
 						<div class="clear"></div>
@@ -78,7 +78,7 @@
 			                </a>
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail sponsor.id %}">{{sponsor.sponsor_organisation}}</a><br />
+							<a href="{% url partners_partner sponsor.id %}">{{sponsor.sponsor_organisation}}</a><br />
 							{{sponsor.sponsor_organisation.city}}, {{sponsor.sponsor_organisation.state}}, {{sponsor.sponsor_organisation.country}}
 						</div>
 						<div class="clear"></div>						
@@ -101,7 +101,7 @@
 			                </a>							
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail funder.id %}">{{funder.funding_organisation}}</a><br />
+							<a href="{% url partners_partner funder.id %}">{{funder.funding_organisation}}</a><br />
 							{{funder.funding_organisation.city}}, {{funder.funding_organisation.state}}, {{funder.funding_organisation.country}}
 						</div>
 						<div class="clear"></div>

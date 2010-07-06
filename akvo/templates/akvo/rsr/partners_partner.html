@@ -7,18 +7,19 @@
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="{% url partners %}"><span>{% trans 'Partners' %}</span></a></li>
-<li><a href="{% url partners_project %}"><span>{% trans 'Project Partners' %}</span></a></li>
+<li><a href="{% url partners_project %}"><span>{% trans 'Project partners' %}</span></a></li>
 <li id="last_breadcrum_item">{{o.name}}</li>
 {% endblock breadcrum_items %}
 
+{% block pre_content %}
+	{% if live_earth_enabled %}
+		{% if not has_sponsor_banner %}
+		<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
+		{% endif %}
+	{% endif %}
+{% endblock pre_content %}
+
 {% block content %}
-{% if live_earth_enabled %}
-	{% if has_sponsor_banner %}
-		<div style="margin-bottom:30px;">
-				<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}img/lerfw-banner-org.png" alt="Live Earth" /></a>
-		</div>
-	{% endif %}	
-{% endif %}
 <h1 style="margin-bottom:0px;">{{o.name}}</h1>
 {% if o.long_name %}
 	<p class="grey">{{o.long_name}}</p>
