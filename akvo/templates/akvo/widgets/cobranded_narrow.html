@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% media_bundle 'widget_cobranded_short' %}
+	{% media_bundle 'widget_cobranded_narrow' %}
 	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
 	<!--[if IE]>
 	<style type="text/css" media="screen">
@@ -17,7 +17,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			margin-top:1px !important;
 			margin-bottom:1px !important;
 		}
-		
 	</style>
 	<![endif]-->
 {% endblock style %}
@@ -38,6 +37,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	#progress_back {
 		background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
 	}
+	
 	#progress_green {
 		background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
 	}
@@ -68,16 +68,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.3.2.min.js"></script>
 
 
+{% comment %}
+	presented by = sponsor
+	underwritten by = funder
+	implemented by = field partner?
+	supported by = support partner
+{% endcomment %}
+
 <script type="text/javascript" charset="utf-8">
 	
 	var index = 1;
 	
-	function Partner (orgName,partnerType,url) 
+	function Partner (orgName,logo,partnerType,url) 
 	{
 		this.orgName = orgName;
+		this.logo = logo;
 		this.partnerType = partnerType;
 		this.url = url;
 		this.getName = function () { return this.orgName; }
+		this.getLogo = function () { return this.logo; }
 		this.getType = function () { return this.partnerType; }
 		this.getUrl = function () { return this.url; }
 	}
@@ -86,31 +95,37 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	{% for sponsor in project.sponsorpartner_set.all %} 
 		
+        
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
-											'sponsor',
-											'{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}');											
+											'{% org_logo sponsor.sponsor_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
+											'sponsor', 
+											'{% url partners_partner sponsor.sponsor_organisation.id %}');											
 	{% endfor %}
 	
 	{% for funder in project.fundingpartner_set.all %}
 	
 	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
+											'{% org_logo funder.funding_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
 											'funding',
-											'{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}');
+											'{% url partners_partner funder.funding_organisation.id %}');
 	{% endfor %}
 	
 	{% for supporter in project.supportpartner_set.all %}
 	
 
 	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
+											'{% org_logo supporter.support_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
 											'support',
-											'{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}');
+											'{% url partners_partner supporter.support_organisation.id %}');
 	{% endfor %}
 
 	{% for operator in project.fieldpartner_set.all %}
 	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
+											'{% org_logo operator.field_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
 											'field',
-											'{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}');
+											'{% url partners_partner operator.field_organisation.id %}');
 	{% endfor %}
+	
 	
 	
 	
@@ -130,13 +145,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		switch(partners[index].getType())
 		{
-			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by' %}<br />'; break;
-			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by' %}<br />'; break;
-			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by' %}<br />'; break;
-			default: newHTML += '<p class="smallFont grey left">{% trans 'Presented by' %}<br />'; break;
+			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>'; break;
+			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by' %}</p>'; break;
+			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by' %}</p>'; break;
+			default: newHTML += '<p class="smallFont grey left">{% trans 'Presented by' %}</p>'; break;
 		}
 		
-		newHTML += '<a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
+		newHTML += '<a href="' + partners[index].getUrl() + '">';
+		newHTML += partners[index].getLogo() + '</a><br><a class="smallFont" href="' + partners[index].getUrl() + '">';
+		newHTML += partners[index].getName() +'</a>';
 		
 		
 		$("#partnerspace")
@@ -154,7 +171,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		animatePartnerSwitch();
 	});
 	
-	
 </script>
 	
 {% endblock inline_scripts %}
@@ -168,26 +184,23 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 <div id="heightconstrain">
 		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
-		{# <p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:50}}</p>	#}
+		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:30}}</p>	
         <div class="photo_frame">
             <a href="{% url akvo.rsr.views.projectmain project.id %}">
                 {% project_thumb project 150 113 %}
             </a>
         </div>
-		{% comment %}
-		
+	
 		<p id="project_plan_summary">
-			{{project.project_plan_summary|safe|smart_truncate:110}}
+			{{project.project_plan_summary|safe|smart_truncate:90}}
 			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
-		{% endcomment %}
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 		<div id="project_location">
 			<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
 				{{project.country}}, {{project.city}}
 			</p>
 		</div>
-		{% comment %}
 		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
 		<p class="smallFont">{{project.show_status}}</p>
 		<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
@@ -197,56 +210,74 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% else %}
 				<p class="smallFont">{% trans 'Not yet' %}</p>
 			{% endif %}
-		{% endwith %}
+		{% endwith %}		
 		<hr class="divider" />
-		{% endcomment %}
-		<div style="width:70px; float:left;" class="topmargin">
+		<div style="width:70px; float:left;">
 			<p class="smallFont grey">{% trans 'Funding' %}</p>
 		</div>
-		<div id="akvoref" style="float:right; width:75px; padding-top:0" class="topmargin">
+		<div id="akvoref" style="float:right; width:75px; padding-top:0">
 			<p class="miniFont lightgrey right" style="padding-top:2px; text-transform: capitalize;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
 		</div>
 		<div style="clear:both; line-height:1px; margin:0; padding:0;"> </div>
+		{% comment %}
+		<div style="width:47%; float:left;">
+			<p class="smallFont grey">{% trans 'Funding' %}</p>
+		</div>
+		<div style="width:50%; margin-left:50%;">
+			<p class="miniFont lightgrey right" style="margin-top:1px; margin-bottom:5px; text-transform: capitalize;">{% trans 'Ref' %}: {{project.id}}</p>
+		</div>
+		{% endcomment %}
 	
 		<div style="margin:0; margin-top:13px;">
 			{% funding_box_narrow2 project %}
 		</div>
-		<hr class="divider" />
-		
+		<hr class="divider">	
 		{% comment %}
 			Since we don't now what type of partner is the first so be presented we need to do some checking.
 		{% endcomment %}
-		<div style="height:35px;">
-		<div id="partnerspace" style="text-align:center; font-size:0.9em;">
+		<div style="height:95px;">
+		<div id="partnerspace" style="text-align:center;">
 		{% if project.sponsorpartner_set.all %}
 			{% for sponsor in project.sponsorpartner_set.all %}
 				{% if forloop.first %}
-				<p class="smallFont grey left">{% trans 'Presented by' %}<br />
-				<a class="smallFont" href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a></p>
+				<p class="smallFont grey left">{% trans 'Presented by' %}</p>
+				<a href="{% url partners_partner sponsor.sponsor_organisation.id %}">
+                    {% org_logo sponsor.sponsor_organisation 70 30 'margin-top:10px; margin-bottom:5px;' %}
+                </a><br />
+				<a class="smallFont" href="{% url partners_partner sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
 				{% endif%}
 			{% endfor %}
 		{% else %}
 			{% if project.fundingpartner_set.all %}
 				{% for funder in project.fundingpartner_set.all %}
 					{% if forloop.first %}
-					<p class="smallFont grey left">{% trans 'Underwritten by' %}<br />
-					<a class="smallFont" href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
+					<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>
+					<a href="{% url partners_partner funder.funding_organisation.id %}">
+                        {% org_logo funder.funding_organisation 70 30 'margin-top:10px; margin-bottom:5px;' %}
+                    </a><br />
+					<a class="smallFont" href="{% url partners_partner funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
 					{% endif%}
 				{% endfor %}
 			{% else %}
 				{% if project.supportpartner_set.all %}
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
-						<p class="smallFont grey left">{% trans 'Supported by' %}<br />
-						<a href="{% url akvo.rsr.views.orgdetail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a></p>
+						<p class="smallFont grey left">{% trans 'Supported by' %}</p>
+						<a href="{% url partners_partner supporter.support_organisation.id %}">
+                            {% org_logo supporter.support_organisation 70 30 'margin-top:10px; margin-bottom:5px;' %}
+                        </a><br />
+						<a href="{% url partners_partner supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
 						{% endif%}
 					{% endfor %}
 				{% else %}
 					{% if project.fieldpartner_set.all %}
 					{% for operator in project.fieldpartner_set.all %}
 						{% if forloop.first %}
-						<p class="smallFont grey left">{% trans 'Implemented by' %}<br />
-						<a href="{% url akvo.rsr.views.orgdetail operator.field_organisation.id %}">{{operator.field_organisation.name}}</a></p>
+						<p class="smallFont grey left">{% trans 'Implemented by' %}</p>
+						<a href="{% url partners_partner operator.field_organisation.id %}">
+                            {% org_logo operator.field_organisation 70 30 'margin-top:10px; margin-bottom:5px;' %}
+						</a><br />
+						<a href="{% url partners_partner operator.field_organisation.id %}">{{operator.field_organisation.name}}</a>
 						{% endif%}
 					{% endfor %}
 					{% endif %}

@@ -73,7 +73,7 @@
 				{% for sponsor in p.sponsorpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">						
 						<div style="float:left; width:100px;">
-							<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">
+							<a href="{% url partners_partner sponsor.sponsor_organisation.id %}">
 			                    {% org_logo sponsor.sponsor_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>
 						</div>
@@ -96,7 +96,7 @@
 				{% for funder in p.fundingpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
 						<div style="float:left; width:100px;">
-							<a href="{% url akvo.rsr.views.orgdetail funder.funding_organisation.id %}">
+							<a href="{% url partners_partner funder.funding_organisation.id %}">
 			                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>							
 						</div>
