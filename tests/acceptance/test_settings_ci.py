@@ -7,20 +7,20 @@
 import os
 
 # options are 'normal' or 'ci' for continuous integration
-TEST_MODE = 'normal'
+TEST_MODE = 'ci'
 
-BROWSER_ENVIRONMENT = "*firefox"
+BROWSER_ENVIRONMENT = "*firefox /usr/bin/firefox-bin"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 
-SUPERUSER_USERNAME = 'your_username'
-SUPERUSER_PASSWORD = 'your_password'
+SUPERUSER_USERNAME = 'not_yet_allocated'
+SUPERUSER_PASSWORD = 'not_yet_allocated'
 
 SITE_UNDER_TEST = "http://test.akvo.org"
 RSR_API_PATH    = "http://test.akvo.org/rsr/api/"
 RSR_MEDIA_PATH  = "http://test.akvo.org/rsr/media/"
 
-PAGE_LOAD_TIMEOUT_IN_SECONDS = 120
+PAGE_LOAD_TIMEOUT_IN_SECONDS = 180
 PAGE_LOAD_TIMEOUT = PAGE_LOAD_TIMEOUT_IN_SECONDS * 1000
 
 TESTS_ROOT_DIR = os.path.realpath(os.path.dirname(__file__))
