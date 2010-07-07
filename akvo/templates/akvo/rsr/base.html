@@ -74,10 +74,23 @@
 						</span>
 					</span>
 				</li>
+				{% comment %}
+					{% if not user.username %}
+						<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
+					{% else %}
+						<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
+					{% endif %}
+				{% endcomment %}
 				<li>
-					<a id="grid_toggle" href="#">
-						<span>My Akvo</span>
-					</a>
+					{% if not user.username %}
+						<a href="{% url akvo.rsr.views.register1 %}">
+							<span>{% trans 'Register' %}</span>
+						</a>
+					{% else %}
+						<a href="/rsr/accounts/update/">
+							<span>My Akvo</span>
+						</a>
+					{% endif %}
 				</li>
 				<li>
 					{% if not user.username %}
