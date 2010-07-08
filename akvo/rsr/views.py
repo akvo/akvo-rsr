@@ -342,7 +342,7 @@ def get_query(query_string, search_fields):
             query = query & or_query
     return query
     
-@render_to('rsr/project_directory.html')
+@render_to('rsr/project/project_directory.html')
 def projectlist(request):
     '''
     List of all projects in RSR
@@ -373,7 +373,7 @@ def projectlist(request):
         'query_string': query_string,
     }
 
-@render_to('rsr/project_directory.html')
+@render_to('rsr/project/project_directory.html')
 def filteredprojectlist(request, org_id):
     '''
     List of  projects in RSR
@@ -405,7 +405,7 @@ def filteredprojectlist(request, org_id):
         'site_section': 'projects',
     }
 
-@render_to('rsr/organisation_directory.html')
+@render_to('rsr/organisation/organisation_directory.html')
 def orglist(request, org_type='all'):
     '''
     List of all projects in RSR
@@ -724,7 +724,7 @@ def update_user_profile(request,
         context[key] = callable(value) and value() or value
     return render_to_response(template_name, {'form': form}, context_instance=context)
 
-@render_to('rsr/project_updates.html')
+@render_to('rsr/project/project_updates.html')
 def projectupdates(request, project_id):
     '''
     List of all updates for a project
@@ -743,7 +743,7 @@ def projectupdates(request, project_id):
         'site_section': 'projects',
         }
 
-@render_to('rsr/project_update.html')
+@render_to('rsr/project/project_update.html')
 def projectupdate(request, project_id, update_id):
     '''
     List of all updates for a project
@@ -758,7 +758,7 @@ def projectupdate(request, project_id, update_id):
     return {'p': p, 'u': u, 'can_add_update':can_add_update, 'hide_latest_updates': True,'site_section': 'projects', }
 
     
-@render_to('rsr/project_comments.html')
+@render_to('rsr/project/project_comments.html')
 def projectcomments(request, project_id):
     '''
     List of all updates for a project
@@ -820,7 +820,7 @@ def updateform(request, project_id):
     else:
         form = UpdateForm()
         
-    return render_to_response('rsr/update_form.html', {
+    return render_to_response('rsr/project/update_form.html', {
         'form': form, 
         'p': p, 
         'can_add_update': can_add_update,
@@ -955,7 +955,7 @@ def orgdetail(request, org_id):
         'site_section': 'partners',
         }
 
-@render_to('rsr/project_main.html')
+@render_to('rsr/project/project_main.html')
 def projectmain(request, project_id):
     '''
     The project overview page
@@ -979,12 +979,12 @@ def projectmain(request, project_id):
         'site_section': 'projects',
         }
 
-@render_to('rsr/project_details.html')    
+@render_to('rsr/project/project_details.html')    
 def projectdetails(request, project_id):
         p       = get_object_or_404(Project, pk=project_id)
         return {'p': p,}
 
-@render_to('rsr/project_partners.html')  
+@render_to('rsr/project/project_partners.html')  
 def projectpartners(request, project_id):
 	p = get_object_or_404(Project, pk=project_id)
 	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
@@ -996,7 +996,7 @@ def projectpartners(request, project_id):
 		'can_add_update': p.connected_to_user(request.user),
 	}
 
-@render_to('rsr/project_funding.html')  
+@render_to('rsr/project/project_funding.html')  
 def projectfunding(request, project_id):
 	p = get_object_or_404(Project, pk=project_id)    
 	public_donations = p.public_donations()
@@ -1020,7 +1020,7 @@ def getwidget(request, project_id):
             account_level = 'free'
         p = get_object_or_404(Project.objects, pk=project_id)
         orgs = p.all_partners()
-        return render_to_response('rsr/machinery_step1.html', {'project': p, 'p': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
+        return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {'project': p, 'p': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
     else:
         widget_type = request.POST['widget-type']
         widget_choice = request.POST['widget-choice']
@@ -1032,7 +1032,7 @@ def getwidget(request, project_id):
         else:
             o = None
         p = get_object_or_404(Project, pk=project_id)
-        return render_to_response('rsr/machinery_step2.html', {'project': p, 'p': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
+        return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {'project': p, 'p': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
 
 
 def flashgallery(request):
@@ -1155,7 +1155,7 @@ def project_list_widget(request, template='project-list', org_id=0):
         context_instance=RequestContext(request))
 
 @fetch_project
-@render_to('rsr/donate_step1.html')
+@render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
@@ -1201,7 +1201,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     invoice.save()
                 except:
                     return redirect('donate_500')
-                return render_to_response('rsr/donate_step3.html',
+                return render_to_response('rsr/project/donate/donate_step3.html',
                     {'invoice': invoice,
                      'p': p,
                      'payment_engine': engine,
@@ -1229,7 +1229,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                 else:
                     pp_button = pp_form.render()
                 action = request.POST.get('action', None)
-                return render_to_response('rsr/donate_step3.html',
+                return render_to_response('rsr/project/donate/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
                                        'pp_form': pp_form, 
@@ -1240,7 +1240,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                       context_instance=RequestContext(request))
     else:
         donate_form = InvoiceForm(project=p, engine=engine)
-    return render_to_response('rsr/donate_step2.html', 
+    return render_to_response('rsr/project/donate/donate_step2.html', 
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'p': p,
@@ -1282,7 +1282,7 @@ def mollie_report(request):
 
 @csrf_exempt
 @require_POST
-@render_to('rsr/donate_thanks.html')
+@render_to('rsr/project/donate/donate_thanks.html')
 def paypal_thanks(request):
     invoice_id = request.POST.get('invoice', None)
     if invoice_id:
@@ -1291,7 +1291,7 @@ def paypal_thanks(request):
     return redirect('/')
 
 @require_GET
-@render_to('rsr/donate_thanks.html')
+@render_to('rsr/project/donate/donate_thanks.html')
 def mollie_thanks(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
