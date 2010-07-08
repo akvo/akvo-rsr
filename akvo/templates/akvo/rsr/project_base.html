@@ -187,7 +187,7 @@
 							<li><a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a></li>
 						{% endif %}
 						<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
-						<li><a href=".">{% trans 'Permalink' %}</a></li>
+						<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
 						<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
 					</ul>	
 				</div>

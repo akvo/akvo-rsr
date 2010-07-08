@@ -5,9 +5,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags generic_content %}
 
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+
+{% comment %}
+
 <?xml version="1.0" encoding="UTF-8"?>	
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+	{% endcomment %}
 	<title>{% block title %}Akvo.org{% endblock title %}</title>
 	<base target="_parent" />
 	
@@ -20,11 +28,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
 		h2 a {color:#{{bgcolor}} !important;}
 	{% endblock inline_styles %}
-	</style>
-	{% block inline_scripts %}
-		
-	{% endblock inline_scripts %}
-	
+	</style>	
+
 </head>
 <body style="margin-left:0px; margin-top:0px; background-color:transparent;">
 	<div id="container" style="background-color:white;">
@@ -45,10 +50,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</a>
 		{% endblock footer %}
 		</div>
-	</div>	
+	</div>
+	
+	{% if debug %}
+	<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+	{% else %}
+	<script charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	{% endif %}
+	{% block inline_scripts %}{% endblock inline_scripts %}
+	
 	{% if debug %}
 		Debug:{% debug %}
-	
 		Sql_queries: {{ sql_queries }}
 	{% endif %}
 </body>
