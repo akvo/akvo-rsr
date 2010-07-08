@@ -1,4 +1,13 @@
 
+#fundingbox_fully_funded {
+    border-bottom:1px solid #888; 
+    margin-bottom:5px;
+    margin-left:auto; 
+    margin-right:auto; 
+    padding-bottom:5px;
+    width:90%; 
+    }
+
 #donate_step_box {
 	background: #fff url('../img/donate/step_box_bkgd.png') repeat-x;
 	border:1px solid #DFE0E6;
@@ -7,7 +16,7 @@
 	margin-right:auto;
 	margin-top:20px;
 	width:785px;
-}
+    }
 
 #donate_step_box_inner {
 	background: transparent url('../img/donate/step_box_line.png') repeat-x 0px 20px;
@@ -15,7 +24,8 @@
 	margin-right:auto;
 	width:750px;
 	height:40px;
-}
+    }
+    
 .donate_steps {
 	color:#8F94A3;
 	float:left;
@@ -29,16 +39,16 @@
 .active_donate_step {
 	color:#000;
 	background: transparent url('../img/donate/step_box_ball.gif') no-repeat center 15px;
-}
+    }
 
 #donate_step_5 {
 	margin-right:0;
-}
+    }
 
 #donate_step_box_inner p {
     font-size:0.8125em;
     line-height:1.4em;
-}
+    }
 
 .fundingbox-table, .fundingbox-table tr, .fundingbox-table tr th, .fundingbox-table tr td  { 
     border:none;
