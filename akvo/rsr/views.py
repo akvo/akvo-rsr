@@ -908,9 +908,9 @@ class CommentForm(ModelForm):
 
     comment     = forms.CharField(widget=forms.Textarea(attrs={
                                     'class':'textarea',
-                                    'rows':'10',
-                                    'cols':'30',
-                                    'width': '280px',
+                                    'rows':'5',
+                                    'cols':'75',
+                                    'width': '480px',
                                     'margin': '0 auto'
                                 }))
     
