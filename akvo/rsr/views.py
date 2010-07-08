@@ -1035,14 +1035,6 @@ def getwidget(request, project_id):
         return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {'project': p, 'p': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
 
 
-def flashgallery(request):
-    '''
-    Generate the xml file for TiltViewer
-    '''
-    # Get 12 random projects with a current image
-    projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
-    return render_to_response('rsr/gallery.xml', {'projects': projects, }, context_instance=RequestContext(request), mimetype='text/xml')
-
 def fundingbarimg(request):
     '''
     create an image for use in the funding bar graphic
