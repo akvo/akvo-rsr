@@ -16,7 +16,7 @@ MEDIA_BUNDLES = {
         'type': 'js',
         'path': 'akvo/js/',
         'compress': True,
-        'files': ['machinery.js', 'x_modernizr.js'],
+        'files': ['machinery.js', 'x_modernizr.js','utilities.js'],
     },
     'widget_cobranded_banner': {
         'type': 'css',

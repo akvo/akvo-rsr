@@ -208,35 +208,11 @@
 		
 		jQ(document).ready(function(){
 			{% block jq_ready %}{% endblock jq_ready %}
-			/*
-			jQ('#main_nav_account').click(function () {
-				jQ('#account_nav').slideToggle();
-			});
-			*/
 			
 			jQ('#grid_toggle').click(function () {
 				jQ('.container').toggleClass('showgrid');
 			});
 			
-			if (Modernizr.input.placeholder) {
-				jQ('#modern_header').html('Browser supports html5 placeholders');
-			} else {
-				jQ('#modern_header').html('No browser support for html5 placeholders');
-			};
-			
-			if(!Modernizr.input.placeholder){
-				$("input").each( function(){
-					if($(this).val()=="" && $(this).attr("placeholder")!=""){
-						$(this).val($(this).attr("placeholder"));
-						$(this).focus(function(){
-							if($(this).val()==$(this).attr("placeholder")) $(this).val("");
-						});
-						$(this).blur(function(){
-							if($(this).val()=="") $(this).val($(this).attr("placeholder"));
-						});
-					}
-				});
-			}
 		});		
 	</script>	
 </body>
