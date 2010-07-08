@@ -49,7 +49,6 @@
 						{% funding_table p %}
 					</div>
 					{% comment %}
-					
 					<p style="padding:10px; margin-bottom:0;">
 						{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}} Requested<br />
 						{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}} Raised<br />
@@ -95,7 +94,8 @@
 			</div>
 			<div class="clear"></div>
 			<p class="small space0">
-				<a style="color:#FDF47A;" href="{% url project_funding p.id %}">See funding and milestone details &#x25B6;</a>
+				<a style="color:#FDF47A;" 
+					href="{% url project_funding p.id %}">See funding and milestone details &#x25B6;</a>
 			</p>
 			{% endcomment %}
 		</div>
@@ -169,10 +169,10 @@
 	{% if not hide_project_partners %}
 		<div class="two_column_right_inner" style="margin-top:20px;">
 			<div class="small" style="float:left; width:130px;">
-				<h2>Project partners</h2>
+				<h2>{% trans 'Project partners' %}</h2>
 			</div>
 			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_partners p.id %}">See details &#x25B6;</a>
+				<a class="small" href="{% url project_partners p.id %}">{% trans 'See details' %} &#x25B6;</a>
 			</div>
 			<div class="clear"></div>
 			<div class="white_box">
@@ -190,6 +190,44 @@
 							</p>
 						</div>
 						<div class="clear"></div>
+						{% if not forloop.last %}
+							<hr style="margin-bottom:12px; margin-top:10px;"/>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<br />
+	{% endif %}
+	
+	{% if not hide_comments %}
+		<div class="two_column_right_inner" style="margin-top:20px;">
+			<div class="small" style="float:left; width:130px;">
+				<h2>{% trans 'Comments' %}</h2>
+			</div>
+			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+				<a class="small" href="{% url project_comments p.id %}">{% trans 'All comments' %} &#x25B6;</a>
+			</div>
+			<div class="clear"></div>
+			<div class="white_box">
+				<div class="space10">
+					{% for comment in comments %}
+						{{ comment.comment }}
+						
+						{% comment %}						
+						<div style="float:left; width:110px;">
+							<a href="{% url partners_partner partner.id %}">
+								{% org_logo partner 98 60 'margin:0;' %}
+							</a>
+						</div>
+						<div style="float:left; width:160px;">
+							<p class="small grey" style="margin:0; padding:=;">
+								<a href="{% url partners_partner partner.id %}">{{partner.name}}</a><br />
+								{{partner.city}}, {{partner.country}}
+							</p>
+						</div>
+						<div class="clear"></div>
+						{% endcomment %}
 						{% if not forloop.last %}
 							<hr style="margin-bottom:12px; margin-top:10px;"/>
 						{% endif %}

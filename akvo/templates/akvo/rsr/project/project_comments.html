@@ -1,0 +1,36 @@
+{% extends "rsr/project/project_subpage_base.html" %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Project comments' %}</li>
+{% endblock breadcrum_items %}
+
+{% block project_left_column %}
+	<div class="white_box" style="background-color:#fff;">
+		<div style="float:left; margin-left:20px; margin-top:10px">
+			<span class="small">
+				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+			</span>
+		</div>
+		<div class="clear"></div>
+		<div class="space20">
+			<h2>{% trans 'Project comments' %}</h2>
+			{% if not comments %}
+				<p>{% trans 'No comments yet.' %}</p>
+			{% else %}
+				{% for c in comments %}
+					<div style="background-color:#{% cycle 'fff' 'F1F5F9' %}; padding:15px 10px;">
+						<p style="margin:0;">
+							{{c.comment}} / {{c.user}}
+							{% comment %}
+							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
+							<a href="{% url project_update p.id u.id%}">{{u.title|capfirst}}</a>
+							{% endcomment %}
+						</p>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+{% endblock project_left_column%}

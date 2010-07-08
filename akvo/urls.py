@@ -52,10 +52,12 @@ urlpatterns = patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/funding/$','akvo.rsr.views.projectfunding', name='project_funding'),
     url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
+    url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
+    
     url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
     
     (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
-    (r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', ),
+    
     #(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
     
     

@@ -734,12 +734,14 @@ def projectupdates(request, project_id):
     '''
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     can_add_update = p.connected_to_user(request.user)
     return {
         'p': p, 
         'updates': updates, 
         'can_add_update':can_add_update, 
         'hide_latest_updates': True, 
+        'comments': comments,
         'site_section': 'projects',
         }
 
@@ -755,7 +757,15 @@ def projectupdate(request, project_id, update_id):
     u           = get_object_or_404(ProjectUpdate, pk=update_id)
     #updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
     can_add_update = p.connected_to_user(request.user)
-    return {'p': p, 'u': u, 'can_add_update':can_add_update, 'hide_latest_updates': True,'site_section': 'projects', }
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    return {
+        'p': p, 
+        'u': u, 
+        'can_add_update':can_add_update, 
+        'hide_latest_updates': True,
+        'site_section': 'projects', 
+        'comments': comments,
+        }
 
     
 @render_to('rsr/project/project_comments.html')
@@ -769,7 +779,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'comments': comments, 'form': form, }
+    return {'p': p, 'comments': comments, 'form': form, 'hide_comments': True, }
 
 class UpdateForm(ModelForm):
 
@@ -988,12 +998,14 @@ def projectdetails(request, project_id):
 def projectpartners(request, project_id):
 	p = get_object_or_404(Project, pk=project_id)
 	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+	comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
 	return { 
 		'p': p, 
 		'site_section': 'projects', 
 		'updates': updates, 
 		'hide_project_partners': True,
 		'can_add_update': p.connected_to_user(request.user),
+		'comments': comments,
 	}
 
 @render_to('rsr/project/project_funding.html')  
@@ -1001,11 +1013,13 @@ def projectfunding(request, project_id):
 	p = get_object_or_404(Project, pk=project_id)    
 	public_donations = p.public_donations()
 	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+	comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
 	return { 
 		'p': p, 
 		'public_donations': public_donations, 
 		'site_section': 'projects', 
 		'updates': updates,
+		'comments': comments,
 		'can_add_update': p.connected_to_user(request.user),
 	}
 
