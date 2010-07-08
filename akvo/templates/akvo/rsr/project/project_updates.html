@@ -16,14 +16,18 @@
 		<div class="clear"></div>
 		<div class="space20">
 			<h2>{% trans 'Project updates' %}</h2>
-			{% for u in updates %}
-				<div style="background-color:#{% cycle 'fff' 'F1F5F9' %}; padding:15px 10px;">
-					<p style="margin:0;">
-						<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
-						<a href="{% url project_update p.id u.id%}">{{u.title|capfirst}}</a>
-					</p>
-				</div>
-			{% endfor%}
+			{% if not updates %}
+				<p>{% trans 'No updates yet.' %}</p>
+			{% else %}
+				{% for u in updates %}
+					<div style="background-color:#{% cycle 'fff' 'F1F5F9' %}; padding:15px 10px;">
+						<p style="margin:0;">
+							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
+							<a href="{% url project_update p.id u.id%}">{{u.title|capfirst}}</a>
+						</p>
+					</div>
+				{% endfor %}
+			{% endif %}
 		</div>
 	</div>
 {% endblock project_left_column%}

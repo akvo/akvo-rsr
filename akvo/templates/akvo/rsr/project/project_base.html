@@ -69,9 +69,6 @@
 				</p>
 			</div>
 			
-			
-			
-			
 			{% comment %}
 			{{p.show_status_large}}<br /><br />
 			<div style="width:175px; float:left; margin:0; padding:0;">
@@ -106,44 +103,68 @@
 	
 	{# If no updates or at the updates listing page #}
 	{# {% if not hide_latest_updates and updates %} #}
-	{% if not hide_latest_updates and updates %}
-		<div class="two_column_right_inner">
-			<div class="small" style="float:left; width:130px;">
-				<h2>Latest updates</h2>
-			</div>
-			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_updates p.id %}">See all updates &#x25B6;</a>
-			</div>
-			<div class="clear"></div>
-		</div>
-		
-		{% for update in updates %}
-			<div style="background-color:#AFF167;padding:2px; padding-left:15px">
-				<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time|date:"d-M-Y"}}</p>
-			</div>
-			<div class="two_column_right_inner" style="background-color:#fff;">
-				<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
-					{% if update.photo %}					
-						<div style="float:left; width:175px;">
-							<p class="small" style="padding:5px; margin-bottom:5px;">
-								<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
-								{{update.text|smart_truncate:50}}
-							</p>
-						</div>
-						<div style="float:left; width:116px; text-align:center;">
-							<img src="{% thumbnail update.photo 116x87 autocrop sharpen %}" alt="{{update.photo_caption}}" style="margin:0;" />
-						</div>
-						<div class="clear"></div>
-					{% else %}
-						<p class="small" style="padding:5px; margin-bottom:5px;">
-							<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
-							{{update.text|smart_truncate:100}}
-						</p>
-					{% endif %}
+	{% if not hide_latest_updates %}
+		{% if not updates %}
+			<div class="two_column_right_inner">
+				<div class="small">
+					<h2>No updates yet</h2>
 				</div>
 			</div>
-		{% endfor %}
+		{% else %}
+			<div class="two_column_right_inner">
+				<div class="small" style="float:left; width:130px;">
+					<h2>Latest updates</h2>
+				</div>
+				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+					<a class="small" href="{% url project_updates p.id %}">See all updates &#x25B6;</a>
+				</div>
+				<div class="clear"></div>
+			</div>
+
+			{% for update in updates %}
+				<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+					<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time|date:"d-M-Y"}}</p>
+				</div>
+				<div class="two_column_right_inner" style="background-color:#fff;">
+					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
+						{% if update.photo %}					
+							<div style="float:left; width:175px;">
+								<p class="small" style="padding:5px; margin-bottom:5px;">
+									<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
+									{{update.text|smart_truncate:50}}
+								</p>
+							</div>
+							<div style="float:left; width:116px; text-align:center;">
+								<img src="{% thumbnail update.photo 116x87 autocrop sharpen %}" alt="{{update.photo_caption}}" style="margin:0;" />
+							</div>
+							<div class="clear"></div>
+						{% else %}
+							<p class="small" style="padding:5px; margin-bottom:5px;">
+								<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
+								{{update.text|smart_truncate:100}}
+							</p>
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+		{% endif %}
 	{% endif %}
+	
+	<div class="two_column_right_inner" style="margin-top:20px;">
+		<h2>Tools for this page</h2>
+		<div class="white_box" style="background-color:#fff">
+			<div class="space20">
+				<ul>
+					{% if can_add_update %}
+						<li><a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a></li>
+					{% endif %}
+					<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
+					<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
+					<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
+				</ul>	
+			</div>
+		</div>
+	</div>
 	
 	{% if not hide_project_partners %}
 		<div class="two_column_right_inner" style="margin-top:20px;">
@@ -177,25 +198,10 @@
 			</div>
 		</div>
 		<br />
-		{% endif %}
-		<div class="two_column_right_inner" style="margin-top:20px;">
-			<h2>Tools for this page</h2>
-			<div class="white_box" style="background-color:#fff">
-				<div class="space20">
-					<ul>
-						{% if can_add_update %}
-							<li><a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a></li>
-						{% endif %}
-						<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
-						<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
-						<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
-					</ul>	
-				</div>
-			</div>
-			<div style="margin-top:15px">
-				<p class="grey tiny" style="text-align:right;">Akvo Ref: {{p.id}}</p>	
-			</div>
-		</div>
-	
+	{% endif %}
+		
+	<div class="two_column_right_inner">
+		<p class="grey tiny" style="text-align:right;">Akvo Ref: {{p.id}}</p>
+	</div>
 </div>
 {% endblock maincontent %}
