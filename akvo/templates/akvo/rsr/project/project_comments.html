@@ -32,21 +32,20 @@
 		            </form>
 		        {% endif %}
 			</div>
+
 			<br /><br />
-			<h2>{% trans 'Project comments' %}</h2>
+			<h2>{% trans 'All comments' %}</h2>
 			{% if not comments %}
 				<p>{% trans 'No comments yet.' %}</p>
 			{% else %}
 				{% for c in comments %}
-					<div style="background-color:#{% cycle 'fff' 'F1F5F9' %}; padding:15px 10px;">
+					<div class="grey_hover" style="padding:15px 10px;">
 						<p style="margin:0;">
-							{{c.comment}} / {{c.user}} / {{c.time}}<br />
+							{{c.comment|capfirst}}<br />
+							<span class="grey small">
+ 								{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}},
 							<a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
-							
-							{% comment %}
-							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
-							<a href="{% url project_update p.id u.id%}">{{u.title|capfirst}}</a>
-							{% endcomment %}
+							</span>
 						</p>
 					</div>
 				{% endfor %}

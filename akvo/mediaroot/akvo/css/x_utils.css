@@ -36,3 +36,7 @@
     background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
     }
     
+.grey_hover:hover {
+    background-color:#F1F5F9;
+    }
+    

@@ -211,27 +211,24 @@
 			<div class="clear"></div>
 			<div class="white_box">
 				<div class="space10">
+					{% for c in comments %}
+						<p class="grey_hover">
+							{{ c.comment|capfirst }}<br />
+							<span class="grey small">
+								{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
+							</span>							
+						</p>
+					{% endfor %}
+					
+					{% comment %}
 					{% for comment in comments %}
 						{{ comment.comment }}
-						
-						{% comment %}						
-						<div style="float:left; width:110px;">
-							<a href="{% url partners_partner partner.id %}">
-								{% org_logo partner 98 60 'margin:0;' %}
-							</a>
-						</div>
-						<div style="float:left; width:160px;">
-							<p class="small grey" style="margin:0; padding:=;">
-								<a href="{% url partners_partner partner.id %}">{{partner.name}}</a><br />
-								{{partner.city}}, {{partner.country}}
-							</p>
-						</div>
-						<div class="clear"></div>
-						{% endcomment %}
+					
 						{% if not forloop.last %}
 							<hr style="margin-bottom:12px; margin-top:10px;"/>
 						{% endif %}
 					{% endfor %}
+					{% endcomment %}
 				</div>
 			</div>
 		</div>
