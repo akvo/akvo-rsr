@@ -140,13 +140,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 </div>
 
 {% if debug %}
-<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"></script>
 {% else %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 {% endif %}
 
-
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
 	var $ = jQ = jQuery.noConflict();
 	var index = 1;
 
