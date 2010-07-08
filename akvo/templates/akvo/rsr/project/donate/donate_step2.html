@@ -186,11 +186,19 @@
 			<div class="clear"></div>
 		</div>
 		<div style="float:right; width:485px; padding:10px;">
-			{% if donate_form.amount.errors %}
-			<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:40px;">
-					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
-						{% trans 'Amount' %}: {{ donate_form.amount.errors }}<br />
-					<br />
+			{% if donate_form.amount.errors or donate_form.non_field_errors%}
+			<div id="paypal_warning_deatil" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />				
+
+				{% if donate_form.non_field_errors %}
+					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Amount' %}:</p>
+					{{ donate_form.non_field_errors }}
+				{% endif %}
+					
+				{% if donate_form.amount.errors %}
+					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Amount' %}:</p>
+					{{ donate_form.amount.errors }}
+				{% endif %}
 			</div>
 			{% endif %}
 		</div>
@@ -230,28 +238,31 @@
 			</div>
 		</div>
 		<div style="float:right; width:485px; padding:10px;">
-			{% if donate_form.errors %}
+			{% if donate_form.name.errors or donate_form.email.errors or donate_form.email2.errors or donate_form.bank.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
+
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
-				{% if donate_form.non_field_errors %}
-					{{ donate_form.non_field_errors }}<br />
-				{% endif %}
 
 				{% if donate_form.name.errors %}
-					{% trans 'Name' %}: {{ donate_form.name.errors }}<br />
+					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Name' %}:</p>
+					{{ donate_form.name.errors }}
 				{% endif %}
-				
+								
 				{% if donate_form.email.errors %}
-					{% trans 'Email' %}: {{ donate_form.email.errors }}<br />
+					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Email' %}:</p>
+					{{ donate_form.email.errors }}
 				{% endif %}
 				
 				{% if donate_form.email2.errors %}
-					{% trans 'Email confirmation' %}: {{ donate_form.email2.errors }}<br />
+					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Email confirmation' %}:</p>
+					{{ donate_form.email2.errors }}
 				{% endif %}
 				
 				{% if donate_form.bank.errors %}
-					{% trans 'Bank' %}: {{ donate_form.bank.errors }}<br />
+					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Bank' %}:</p>
+					{{ donate_form.bank.errors }}
 				{% endif %}
+											
 			</div>
 			{% endif %}
 		</div>
