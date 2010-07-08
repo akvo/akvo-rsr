@@ -6,12 +6,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags rsr_filters generic_content thumbnail cache counter_tags humanize%}
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
-
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-
+	<meta charset="UTF-8" />
+	
 	<title>Akvo.org - {% block title %}{% trans 'the open source for water and sanitation' %}{% endblock %}</title>
 	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}">
 	<meta name="author" content="Akvo.org">
@@ -21,13 +21,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<meta http-equiv="cache-control" content="no-cache">
 	
 	{% media_bundle 'widget_cobranded_banner' %}
-	{% comment %}
-	{% block style %} 
-	<link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_banner/css/screen.css" type="text/css" media="screen, projection" />
-	{% endblock style %}	
-	{% endcomment %}
-	
-	
+		
 	<style type="text/css" media="screen">
 	{% block inline_styles %}
 		#header {background-color:#{{bgcolor}};}
@@ -154,15 +148,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="footer2" style="">
 		
 	</div>
-	{% block inline_scripts %} 
+	
 	{% if debug %}
 	<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
 	{% else %}
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	{% endif %}
-	
-	
+
 	<script type="text/javascript" charset="utf-8">
+		var $ = jQ = jQuery.noConflict();
 
 		var index = 1;
 
@@ -235,15 +229,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				.fadeIn(1000, switchPartner);
 		}
 
-		$(document).ready(function()
+		jQ(document).ready(function()
 		{
 			// Kick start the animation loop
 			animatePartnerSwitch();
 		});
-	
 	</script>
-	
-	{% endblock inline_scripts %}
-		
+			
 </body>
 </html>

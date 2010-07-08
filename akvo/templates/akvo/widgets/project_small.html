@@ -5,9 +5,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_tags rsr_filters generic_content thumbnail cache counter_tags humanize %}
 
-<?xml version="1.0" encoding="UTF-8"?>	
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
 <head>
+	<meta charset="UTF-8" />
+
 	<title>{% block title %}Akvo.org{% endblock title %}</title>
 	<base target="_parent" />
 	
@@ -73,10 +75,5 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		</div>
 	</div>	
-	{% if debug %}
-		Debug:{% debug %}
-	
-		Sql_queries: {{ sql_queries }}
-	{% endif %}
 </body>
 </html>

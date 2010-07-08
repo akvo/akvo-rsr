@@ -10,12 +10,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <head>
 	<meta charset="UTF-8" />
 
-{% comment %}
-
-<?xml version="1.0" encoding="UTF-8"?>	
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	{% endcomment %}
 	<title>{% block title %}Akvo.org{% endblock title %}</title>
 	<base target="_parent" />
 	
@@ -57,11 +51,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	{% else %}
 	<script charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	{% endif %}
-	{% block inline_scripts %}{% endblock inline_scripts %}
 	
+	{% block inline_scripts %} {% endblock inline_scripts %}
+	
+	<script type="text/javascript">
+		var $ = jQ = jQuery.noConflict();
+		
+		jQ(document).ready(function(){
+			{% block jq_ready %}{% endblock jq_ready %}
+		});		
+	</script>
+	
+	{% comment %}
 	{% if debug %}
 		Debug:{% debug %}
 		Sql_queries: {{ sql_queries }}
 	{% endif %}
+	{% endcomment %}
 </body>
 </html>

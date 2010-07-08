@@ -63,7 +63,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% endblock inline_styles %}
 
-	
 {% block header %}
 	<h1>{% trans 'Project' %}</h1>
 	<span style="display:none;">{% counter project %}</span>
@@ -292,21 +291,19 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		newHTML += partners[index].getName() +'</a>';
 		
 		
-		$("#partnerspace")
+		jQ("#partnerspace")
 			.animate({opacity: 1.0},7000) // Display time
 			.fadeOut(1000, function() {
-				$("#partnerspace").html(newHTML)
+				jQ("#partnerspace").html(newHTML)
 			})
 			.animate({opacity: 1.0},1000)
 			.fadeIn(1000, switchPartner);
 	}
-	
-	$(document).ready(function()
-	{
-		// Kick start the animation loop
-		animatePartnerSwitch();
-	});
-	
+		
 </script>
 	
 {% endblock inline_scripts %}
+{% block jq_ready %}
+	animatePartnerSwitch();
+{% endblock jq_ready %}
+
