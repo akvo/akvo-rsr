@@ -116,7 +116,7 @@
 					<h2>Latest updates</h2>
 				</div>
 				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-					<a class="small" href="{% url project_updates p.id %}">See all updates &#x25B6;</a>
+					<a class="small" href="{% url project_updates p.id %}">See all &#x25B6;</a>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -197,7 +197,6 @@
 				</div>
 			</div>
 		</div>
-		<br />
 	{% endif %}
 	
 	{% if not hide_comments %}
@@ -206,29 +205,20 @@
 				<h2>{% trans 'Comments' %}</h2>
 			</div>
 			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_comments p.id %}">{% trans 'All comments' %} &#x25B6;</a>
+				<a class="small" href="{% url project_comments p.id %}">{% trans 'See all' %} &#x25B6;</a>
 			</div>
 			<div class="clear"></div>
 			<div class="white_box">
 				<div class="space10">
 					{% for c in comments %}
-						<p class="grey_hover">
+						<p class="grey_hover" 
+							{% if not forloop.last %} style="border-bottom: 1px solid #eee;"{% endif %}>
 							{{ c.comment|capfirst }}<br />
 							<span class="grey small">
 								{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
 							</span>							
 						</p>
-					{% endfor %}
-					
-					{% comment %}
-					{% for comment in comments %}
-						{{ comment.comment }}
-					
-						{% if not forloop.last %}
-							<hr style="margin-bottom:12px; margin-top:10px;"/>
-						{% endif %}
-					{% endfor %}
-					{% endcomment %}
+					{% endfor %}					
 				</div>
 			</div>
 		</div>

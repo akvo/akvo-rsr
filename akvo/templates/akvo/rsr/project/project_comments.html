@@ -39,7 +39,7 @@
 				<p>{% trans 'No comments yet.' %}</p>
 			{% else %}
 				{% for c in comments %}
-					<div class="grey_hover" style="padding:15px 10px;">
+					<div class="grey_hover" style="padding:15px 10px; {% if not forloop.last %} border-bottom: 1px solid #eee;{% endif %}">
 						<p style="margin:0;">
 							{{c.comment|capfirst}}<br />
 							<span class="grey small">
