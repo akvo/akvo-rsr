@@ -450,7 +450,7 @@ def orglist(request, org_type='all'):
         'order_by': order_by,
         'lang': get_language(),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'site_section': 'partners',
+        'site_section': 'index',
     }
 
 @render_to('rsr/partners_widget.html')

@@ -1,11 +1,10 @@
 {% extends "rsr/base.html" %}
 
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 
-{% block title %} 
-	{{block.super}} - 
+{% block title %}  
 		{% ifequal org_type 'all' %}
-			{% trans 'Partners' %}
+			{% trans 'Organisations' %}
 		{% else %}
 			{% ifequal org_type 'funding' %}{% trans 'Funding partners' %}{% endifequal %}
 			{% ifequal org_type 'support' %}{% trans 'Support partners' %}{% endifequal %}
@@ -16,18 +15,232 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">Partners</li>
+
+{% ifequal org_type 'all' %}
+	<li id="last_breadcrum_item">{% trans 'Organisations' %}</li>
+{% else %}
+	<li><a href="{% url rsr_org_list%}"><span>{% trans 'Organisations' %}</span></a></li>
+	{% ifequal org_type 'funding' %}
+		<li id="last_breadcrum_item">{% trans 'Funding partners' %}</li>
+	{% endifequal %}
+	{% ifequal org_type 'support' %}
+		<li id="last_breadcrum_item">{% trans 'Support partners' %}</li>
+	{% endifequal %}
+	{% ifequal org_type 'field' %}
+		<li id="last_breadcrum_item">{% trans 'Field partners' %}</li>
+	{% endifequal %}
+	{% ifequal org_type 'sponsor' %}
+		<li id="last_breadcrum_item">{% trans 'Sponsor partners' %}</li>
+	{% endifequal %}
+{% endifequal %}
+
+
 {% endblock breadcrum_items %}
 
-
 {% block maincontent %}
-	<div class="span-18" style="background-color:#fff">
-		<div class="white_box">
-			<div style="margin:20px;">
-				<h1>Partners</h1>
-				{% lorem 6 p %}
+<h1>{% trans 'Organisations' %}</h1>
+<div class="span-18" style="background-color:#fff; margin-top:15px;">
+	<div class="round" style="border: 1px solid #ccc;">
+		<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
+			<div style="float:right;">
+				<p style="margin-bottom:0;">
+					{% ifequal page.number 1 %}
+	                {% trans 'First' %} |
+	                {% else %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+	                {% endifequal %}
+	                {% if page.has_previous %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+	                {% else %}
+	                {% trans 'Previous' %} |
+	                {% endif %}
+	                {% if page.has_next %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+	                {% else %}
+	                {% trans 'Next' %} |
+	                {% endif %}
+	                {% ifequal page.number page.paginator.num_pages %}
+	                {% trans 'Last' %}
+	                {% else %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+	                {% endifequal %}
+				</p>
 			</div>
+			<p style="margin-bottom:0;">
+				{% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}	
+			</p>
+		</div>
+		<div class="linear_bg" style="padding:0; margin:0; border-bottom:1px solid #979AA5;">
+			<div style="float:left; width:340px; text-align:center;">
+				<div style="border-right:1px solid #979AA5;">
+					<p style="padding:15px 0; margin:0;">{% trans 'Name' %}</p>
+				</div>
+			</div>
+			<div style="float:left; width:120px; text-align:center;">
+				<div style="border-right:1px solid #979AA5;">
+					<p style="padding:15px 0; margin:0;">{% trans 'Type' %}</p>
+				</div>
+			</div>
+			<div style="float:left; width:170px; text-align:center;">
+				<div style="border-right:1px solid #979AA5;">
+					<p style="padding:15px 0; margin:0;">{% trans 'Location' %}</p>
+				</div>
+			</div>
+			<div style="float:left; width:100px; text-align:center;">
+				<div style="border-right:1px solid #979AA5;">
+					<p style="padding:15px 0; margin:0;">{% trans 'Projects' %}</p>
+				</div>
+			</div>
+			<div style="float:left; width:100px; text-align:center;">
+				<div style="border-right:1px solid #979AA5;">
+					<p style="padding:15px 0; margin:0;">{% trans 'Requested' %}</p>
+				</div>
+			</div>
+			<div style="float:left; width:100px; text-align:center;">
+				<div>
+					<p style="padding:15px 0; margin:0;">{% trans 'Still needed' %}</p>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div>
+			{% for o in page.object_list %}
+			<div style="background-color:#{% cycle 'fff' 'F1F5F9' %}; min-height:100px; {% if not forloop.last %} border-bottom:1px solid #ccc;{% endif %}">
+				<div style="float: left; width:340px;">
+					<div class="space10">
+						<p style="margin:0;">
+							<a href="{% url akvo.rsr.views.orgdetail o.id %}">
+					        {% org_logo o 100 75 'margin-right: 10px; float: left;' %}</a>
+							<a href="{% url akvo.rsr.views.orgdetail o.id %}">
+							{{o.name}}
+					        </a><br />
+							<span class="grey">{{o.long_name}}</span>
+						</p>
+						{% category_icons_org o %}
+						<span style="display:none;">{% counter o %}</span>
+					</div>
+				</div>
+				<div style="float: left; width:120px;">
+					<div class="space10">
+						<p>{{o.get_organisation_type_display}}</p>
+					</div>
+				</div>
+				<div style="float: left; width:170px;">
+					<div class="space10">
+						<p>
+							{{o.country}}, {{o.country.get_continent_display}}
+						</p>
+					</div>
+				</div>
+				<div style="float: left; width:100px;">
+					<div class="space10">
+						<p>
+						<a href="{% url filtered_project_list o.id %}">{{o.published_projects.count}}</a>
+						</p>
+					</div>
+				</div>
+				<div style="float: left; width:100px;">
+					<div class="space10">
+						<p>
+						{% if o.funding.total_euros %}
+							{% ifequal o.funding.still_needed_euros|round 0 %}
+								<span style="color:green">
+							{% else %}
+								<span>
+							{% endifequal %}
+							&#8364; {{o.funding.total_euros|round|intcomma}}
+							</span>
+						{% endif %}
+
+						{% if o.funding.total_dollars %}
+							{% ifequal o.funding.still_needed_dollars|round 0 %}
+								<span style="color:green">
+							{% else %}
+								<span>
+							{% endifequal %}
+							&#36; {{o.funding.total_dollars|round|intcomma}}
+							</span>
+						{% endif %}
+						</p>
+					</div>
+				</div>
+				<div style="float: left; width:100px;">
+					<div class="space10">
+						<p>
+						{% if o.funding.total_euros %}
+							{% ifequal o.funding.still_needed_euros|round 0 %}
+								<span>
+							{% else %}
+								<span style="color:red">
+							{% endifequal %}
+							&#8364;{{o.funding.still_needed_euros|round|intcomma}}
+							</span>
+						{% endif %}
+						{% if o.funding.total_dollars %}
+							{% ifequal o.funding.still_needed_dollars|round 0 %}
+								<span>
+							{% else %}
+								<span style="color:red">
+							{% endifequal %}
+							&#36;{{o.funding.still_needed_dollars|round|intcomma}}
+							</span>
+						{% endif %}
+						</p>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			{% endfor %}
+		</div>
+		<div style="background-color:#E5E5E9; padding:15px; border-top:1px solid #979AA5;">
+			<div style="float:right;">
+				<p style="margin-bottom:0;">
+					{% ifequal page.number 1 %}
+	                {% trans 'First' %} |
+	                {% else %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a> |
+	                {% endifequal %}
+	                {% if page.has_previous %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> |
+	                {% else %}
+	                {% trans 'Previous' %} |
+	                {% endif %}
+	                {% if page.has_next %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a> |
+	                {% else %}
+	                {% trans 'Next' %} |
+	                {% endif %}
+	                {% ifequal page.number page.paginator.num_pages %}
+	                {% trans 'Last' %}
+	                {% else %}
+	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+	                {% endifequal %}
+				</p>
+			</div>
+			<p style="margin-bottom:0;">
+				{% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}	
+			</p>
 		</div>
 	</div>
-
+</div>
+{% comment %}
+<div>	
+	<ul>
+	{% for o in page.object_list %}
+	<li>{{o.name}}</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endcomment %}
+	
+{% comment %}
+<div class="span-18" style="background-color:#fff">
+	<div class="white_box">
+		<div style="margin:20px;">
+			
+				
+		</div>
+	</div>
+</div>
+{% endcomment %}
 {% endblock maincontent %}

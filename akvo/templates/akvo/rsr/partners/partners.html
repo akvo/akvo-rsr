@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block title %}{% trans 'Change password' %}{% endblock title %}
+{% block title %}{% trans 'Partners' %}{% endblock title %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -18,7 +18,7 @@
 		<span class="small grey">(Organisations which we collaborate in one or the other way.)</span>
 	</li>
 	<li>
-		<a href="{% url partners_project %}">Project partners</a>
+		<a href="{% url rsr_org_list %}">Project partners</a>
 		<span class="small grey">(Organisations who have projects in RSR)</span>
 	</li>
 	<li>

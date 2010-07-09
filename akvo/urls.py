@@ -43,7 +43,7 @@ urlpatterns = patterns('',
     
     # Project listing
     url(r'^rsr/projects/$','akvo.rsr.views.projectlist',name='project_list'),
-    (r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.filteredprojectlist', ),
+    url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
 
     # Project
     url(r'^rsr/project/(?P<project_id>\d+)/$','akvo.rsr.views.projectmain', name='project_main'),
@@ -73,9 +73,10 @@ urlpatterns = patterns('',
     url(r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn', name='paypal_ipn'),
     
     # Organisation
-    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
+    
     
     # Account
     url(r'^rsr/signin/$','akvo.rsr.views.login',{'template_name': 'rsr/sign_in.html'},name='signin'),
