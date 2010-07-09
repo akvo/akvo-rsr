@@ -438,7 +438,18 @@ def orglist(request, org_type='all'):
         orgs = orgs.order_by(order_by, 'name')
     except:
         pass
-    ORGS_PER_PAGE = 20
+    
+    query_string = ''
+    found_entries = None
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+        org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','description','contact_email',])
+        #projs = Project.objects.filter(project_query)
+        #orgs = Organisation.objects.filter(org_query)
+        orgs = orgs.filter(org_query)
+    
+
+    ORGS_PER_PAGE = 10
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
@@ -451,6 +462,7 @@ def orglist(request, org_type='all'):
         'lang': get_language(),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'site_section': 'index',
+        'query_string': query_string,
     }
 
 @render_to('rsr/partners_widget.html')
