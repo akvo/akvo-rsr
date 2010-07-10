@@ -958,7 +958,7 @@ def commentform(request, project_id):
 #    # remove organisation from queryset
 #    return assoc, partners.exclude(id=organisation.id)
 
-@render_to('rsr/organisation.html')
+@render_to('rsr/organisation/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
     
