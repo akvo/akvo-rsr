@@ -228,15 +228,17 @@ def liveearth(request):
     live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
     projs = live_earth.published_projects().funding()
     page = project_list_data(request, projs)
+    org_projects = live_earth.published_projects().exclude(status__exact='L').exclude(status__exact='C')
     return {
         'projs': projs,
         'orgs':live_earth.partners(),
         'page': page,
         'o': live_earth,
+        'org_projects': org_projects,
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
     }
 
-@render_to('rsr/walking-for-water.html')
+@render_to('rsr/organisation/landing_pages/wfw.html')
 def walking_for_water(request):
     '''                                                                            
     List of all projects associated with Walking for Water
@@ -248,11 +250,13 @@ def walking_for_water(request):
     wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
     projs = wfw.published_projects().funding()
     page = project_list_data(request, projs)
+    org_projects = wfw.published_projects().exclude(status__exact='L').exclude(status__exact='C')
     return {
         'projs': projs,
         'orgs': wfw.partners(),
         'page': page,
-        'walking_for_water': wfw,
+        'o': wfw,
+        'org_projects': org_projects,
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
     }
 
