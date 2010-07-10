@@ -75,13 +75,13 @@
 			{% for funder in p.fundingpartner_set.all %}
 				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
 					<div style="float:left; width:140px;">
-						<a href="{% url partners_partner funder.funding_organisation.id %}">
+						<a href="{% url org_detail funder.funding_organisation.id %}">
 		                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
 		                </a>							
 					</div>
 					<div style="float:left; width:250px; margin-left:20px;">
 						<p class="small">
-							<a href="{% url partners_partner funder.id %}">
+							<a href="{% url org_detail funder.id %}">
 								{{funder.funding_organisation}}</a><br />
 								{{funder.funding_organisation.city}}, 
 								{{funder.funding_organisation.state}}, 

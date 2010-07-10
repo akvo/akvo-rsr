@@ -126,7 +126,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% for sponsor in project.sponsorpartner_set.all %}
 				{% if forloop.first %}
 				<p class="smallFont grey left">{% trans 'Presented by' %}<br />
-				<a class="smallFont" href="{% url partners_partner sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a></p>
+				<a class="smallFont" href="{% url org_detail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a></p>
 				{% endif%}
 			{% endfor %}
 		{% else %}
@@ -134,7 +134,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% for funder in project.fundingpartner_set.all %}
 					{% if forloop.first %}
 					<p class="smallFont grey left">{% trans 'Underwritten by' %}<br />
-					<a class="smallFont" href="{% url partners_partner funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
+					<a class="smallFont" href="{% url org_detail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
 					{% endif%}
 				{% endfor %}
 			{% else %}
@@ -142,7 +142,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% for supporter in project.supportpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Supported by' %}<br />
-						<a href="{% url partners_partner supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a></p>
+						<a href="{% url org_detail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a></p>
 						{% endif%}
 					{% endfor %}
 				{% else %}
@@ -150,7 +150,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% for operator in project.fieldpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Implemented by' %}<br />
-						<a href="{% url partners_partner operator.field_organisation.id %}">{{operator.field_organisation.name}}</a></p>
+						<a href="{% url org_detail operator.field_organisation.id %}">{{operator.field_organisation.name}}</a></p>
 						{% endif%}
 					{% endfor %}
 					{% endif %}
@@ -209,14 +209,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
 											'sponsor',
-											'{% url partners_partner sponsor.sponsor_organisation.id %}');											
+											'{% url org_detail sponsor.sponsor_organisation.id %}');											
 	{% endfor %}
 	
 	{% for funder in project.fundingpartner_set.all %}
 	
 	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
 											'funding',
-											'{% url partners_partner funder.funding_organisation.id %}');
+											'{% url org_detail funder.funding_organisation.id %}');
 	{% endfor %}
 	
 	{% for supporter in project.supportpartner_set.all %}
@@ -224,13 +224,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
 											'support',
-											'{% url partners_partner supporter.support_organisation.id %}');
+											'{% url org_detail supporter.support_organisation.id %}');
 	{% endfor %}
 
 	{% for operator in project.fieldpartner_set.all %}
 	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
 											'field',
-											'{% url partners_partner operator.field_organisation.id %}');
+											'{% url org_detail operator.field_organisation.id %}');
 	{% endfor %}
 	
 	

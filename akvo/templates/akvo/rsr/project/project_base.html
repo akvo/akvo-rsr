@@ -179,13 +179,13 @@
 				<div class="space10">
 					{% for partner in p.all_partners %}
 						<div style="float:left; width:110px;">
-							<a href="{% url partners_partner partner.id %}">
+							<a href="{% url org_detail partner.id %}">
 								{% org_logo partner 98 60 'margin:0;' %}
 							</a>
 						</div>
 						<div style="float:left; width:160px;">
 							<p class="small grey" style="margin:0; padding:=;">
-								<a href="{% url partners_partner partner.id %}">{{partner.name}}</a><br />
+								<a href="{% url org_detail partner.id %}">{{partner.name}}</a><br />
 								{{partner.city}}, {{partner.country}}
 							</p>
 						</div>
@@ -201,26 +201,30 @@
 	
 	{% if not hide_comments %}
 		<div class="two_column_right_inner" style="margin-top:20px;">
-			<div class="small" style="float:left; width:130px;">
-				<h2>{% trans 'Comments' %}</h2>
-			</div>
-			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_comments p.id %}">{% trans 'See all' %} &#x25B6;</a>
-			</div>
-			<div class="clear"></div>
-			<div class="white_box">
-				<div class="space10">
-					{% for c in comments %}
-						<p class="grey_hover" 
-							{% if not forloop.last %} style="border-bottom: 1px solid #eee;"{% endif %}>
-							{{ c.comment|capfirst }}<br />
-							<span class="grey small">
-								{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
-							</span>							
-						</p>
-					{% endfor %}					
+			{% if not comments %}
+				<h2>{% trans 'No Comments yet' %}</h2>
+			{% else %}
+				<div class="small" style="float:left; width:130px;">
+					<h2>{% trans 'Comments' %}</h2>
 				</div>
-			</div>
+				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+					<a class="small" href="{% url project_comments p.id %}">{% trans 'See all' %} &#x25B6;</a>
+				</div>
+				<div class="clear"></div>
+				<div class="white_box">
+					<div class="space10">
+						{% for c in comments %}
+							<p class="grey_hover" 
+								{% if not forloop.last %} style="border-bottom: 1px solid #eee;"{% endif %}>
+								{{ c.comment|capfirst }}<br />
+								<span class="grey small">
+									{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
+								</span>							
+							</p>
+						{% endfor %}					
+					</div>
+				</div>
+			{% endif %}
 		</div>
 		<br />
 	{% endif %}

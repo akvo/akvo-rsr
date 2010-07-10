@@ -28,7 +28,7 @@
 		            {% endifequal %}			
 				{% else %}
 					{% if u.text %}
-						{{u.text}}
+						{{u.text|linebreaks}}
 					{% endif %}
 	            {% endif %}
 			</p>

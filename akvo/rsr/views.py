@@ -201,55 +201,6 @@ def index(request):
         'site_section': 'index',
     }
 
-@render_to('rsr/partners/partners.html')
-def partners(request):
-    return {'site_section':'partners',}
-
-@render_to('rsr/partners/partners_strategic.html')
-def partners_strategic(request):
-    return {'site_section':'partners',}
-
-@render_to('rsr/partners/partners_project.html')
-def partners_project(request, org_type='all'):
-    orgs = Organisation.objects.all()
-    ORGS_PER_PAGE = 20
-    paginator = Paginator(orgs, ORGS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
-    
-    return {'site_section':'partners', 'orgs':orgs, 'page':page, 'org_type':org_type, }
-    
-@render_to('rsr/partners/partners_partner.html')
-def project_partner(request, org_id):
-    o = get_object_or_404(Organisation, pk=org_id)
-
-    has_sponsor_banner = False
-    if o.id == settings.LIVE_EARTH_ID:
-        has_sponsor_banner = True
-
-    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    org_partners = o.partners()
-    return {
-        'o': o, 
-        'org_projects': org_projects, 
-        'org_partners': org_partners,
-        'has_sponsor_banner':has_sponsor_banner,
-        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
-        'site_section': 'partners',
-        }
-    
-
-@render_to('rsr/partners/partners_commercial.html')
-def partners_commercial(request):
-    return {'site_section':'partners',}
-
-@render_to('rsr/partners/partners_knowledge_institutes.html')
-def partners_knowledge_institutes(request):
-    return {'site_section':'partners',}
-
-@render_to('rsr/partners/partners_investors.html')
-def partners_investors(request):
-    return {'site_section':'partners',}
-
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"
     return HttpResponsePermanentRedirect('/')
