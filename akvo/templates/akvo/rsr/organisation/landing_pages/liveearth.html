@@ -1,0 +1,189 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n rsr_filters rsr_tags thumbnail humanize google_maps %}
+
+{% block title %}{{o.name}}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{{o.name}}</li>
+{% endblock breadcrum_items %}
+
+{% block maincontent %}
+<div class="two_column_left">
+	<div style="background-image:url({{MEDIA_URL}}akvo/img/landing_pages/le.png); height:383px">
+		asf
+	</div>
+</div>
+
+<div class="two_column_right">
+	<div class="two_column_right_inner">
+		<div class="white_box">
+			<div class="space20">
+				<h3><a href="{% url akvo.rsr.views.filteredprojectlist o.id %}">
+					{% trans 'Projects in Akvo' %}
+				</a></h3>
+				<table class="org_statistics_table bottom_grey_border">
+					{% comment %}
+					<tr>
+						<th colspan="2">
+							<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}">
+								{% trans 'Projects in Akvo' %}
+							</a>
+						</th>
+					</tr>
+					{% endcomment %}
+					<tr>
+						<td>
+							{% trans 'Active' %}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.status_active.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Need funding' %}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.status_onhold.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Complete' %}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.status_complete.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Cancelled' %}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.status_cancelled.count}}
+						</td>
+					</tr>
+					<tr style="font-weight:bold;">
+						<td>
+							{% trans 'Total projects' %}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.count}}
+						</td>
+					</tr>
+					<tr class="bottom_grey_border">
+						<td colspan="2">
+							&nbsp;
+						</td>
+					</tr>
+				</table>
+				
+				<h3>{% trans 'People who get...' %}</h3>
+				<table class="org_statistics_table">
+					<tr>
+						<td style="">&nbsp;</td>
+						<td style="text-align:right;">
+							<a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
+						</td>
+						<td style="text-align:right;">
+							<a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
+						<td style="text-align:right;">
+							{{o.published_projects.get_planned_water_calc|intcomma}}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.get_actual_water_calc|intcomma}}
+						</td>
+					</tr>
+					<tr class="bottom_grey_border">
+						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
+						<td style="text-align:right;">
+							{{o.published_projects.get_planned_sanitation_calc|intcomma}}
+						</td>
+						<td style="text-align:right;">
+							{{o.published_projects.get_actual_sanitation_calc|intcomma}}
+						</td>
+					</tr>
+				</table>
+				
+				<h3>{% trans 'Funding' %}</h3>
+				<table class="org_statistics_table">	
+					<tr>
+						<td colspan="2">
+							{{org_projects.euros.count}} 
+							project{{org_projects.euros.count|pluralize:"s"}} in Euros
+						</td>
+					</tr>
+					<tr style="color:green;">
+						<td style="width:123px;">{% trans 'Pledged' %}</td>
+						<td style="width:120px; text-align:right;">
+							{{org_projects.euros.0.get_currency_display|safe}}
+							{{o.funding.pledged_euros|round|intcomma}}
+						</td>
+					</tr>
+					<tr style="color:red;">
+						<td>{% trans 'Still needed' %}</td>
+						<td style="text-align:right;">
+							{{org_projects.euros.0.get_currency_display|safe}} 
+							{{o.funding.still_needed_euros|round|intcomma}}
+						</td>
+					</tr>
+					{% if org_projects.dollars.count %}
+					<tr>
+						<td colspan="2">
+							&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							{{org_projects.dollars.count}} 
+							project{{org_projects.dollars.count|pluralize:"s"}} in US Dollars
+						</td>
+					</tr>
+					<tr style="color:green;">
+						<td>{% trans 'Pledged' %}</td>
+						<td style="text-align:right;">
+							{{org_projects.dollars.0.get_currency_display|safe}} 
+							{{o.funding.pledged_dollars|round|intcomma}}
+						</td>
+					</tr>
+					<tr style="color:red;" class="hr">
+						<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
+						<td style="text-align:right;">
+							{{org_projects.dollars.0.get_currency_display|safe}} 
+							{{o.funding.still_needed_dollars|round|intcomma}}
+						</td>
+					</tr>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock maincontent %}
+
+{% block js %}
+{{ block.super }}
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+{% endblock js %}
+
+{% block jq_ready %}
+	jQ('#org_tabs').tabs();
+	{{block.super}}
+{% endblock jq_ready %}
+
+
+{% comment %}
+Projects:<br /><br />
+<ul>
+{% for project in org_projects %}
+	<li><a href="{% url project_main project.id %}">{{project}}</a></li>
+{% endfor %}
+</ul>
+{% endcomment %}

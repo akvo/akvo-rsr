@@ -216,7 +216,7 @@ def project_list_data(request, projects):
     page = paginator.page(request.GET.get('page', 1))
     return page
 
-@render_to('rsr/liveearth.html')
+@render_to('rsr/organisation/landing_pages/liveearth.html')
 def liveearth(request):
     '''
     List of all projects associated with Live Earth
@@ -232,7 +232,7 @@ def liveearth(request):
         'projs': projs,
         'orgs':live_earth.partners(),
         'page': page,
-        'live_earth': live_earth,
+        'o': live_earth,
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
     }
 

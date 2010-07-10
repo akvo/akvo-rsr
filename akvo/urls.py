@@ -32,15 +32,6 @@ urlpatterns = patterns('',
     # django_counter
     (r'^rsr/counter/', include('django_counter.urls')),
     
-    # Partners
-    # url(r'^rsr/partners/$','akvo.rsr.views.partners',name='partners'),
-    # url(r'^rsr/partners/strategic-partners/$','akvo.rsr.views.partners_strategic',name='partners_strategic'),
-    # url(r'^rsr/partners/commercial-partners/$','akvo.rsr.views.partners_commercial',name='partners_commercial'),
-    # url(r'^rsr/partners/knowledge_institutes/$','akvo.rsr.views.partners_knowledge_institutes',name='partners_knowledge_institutes'),
-    # url(r'^rsr/partners/investors/$','akvo.rsr.views.partners_investors',name='partners_investors'),
-    # url(r'^rsr/partners/project-partners/$','akvo.rsr.views.partners_project',name='partners_project'),
-    # url(r'^rsr/partners/project-partner/(?P<org_id>\d+)/$','akvo.rsr.views.project_partner',name='partners_partner'),
-
     
     # Project listing
     url(r'^rsr/projects/$','akvo.rsr.views.projectlist',name='project_list'),
@@ -54,7 +45,6 @@ urlpatterns = patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/funding/$','akvo.rsr.views.projectfunding', name='project_funding'),
     url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
     url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
-    
     url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
     
     (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),

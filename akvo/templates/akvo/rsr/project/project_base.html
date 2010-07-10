@@ -201,18 +201,20 @@
 	
 	{% if not hide_comments %}
 		<div class="two_column_right_inner" style="margin-top:20px;">
-			{% if not comments %}
-				<h2>{% trans 'No Comments yet' %}</h2>
-			{% else %}
-				<div class="small" style="float:left; width:130px;">
-					<h2>{% trans 'Comments' %}</h2>
-				</div>
-				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-					<a class="small" href="{% url project_comments p.id %}">{% trans 'See all' %} &#x25B6;</a>
-				</div>
-				<div class="clear"></div>
-				<div class="white_box">
-					<div class="space10">
+			<div class="small" style="float:left; width:130px;">
+				<h2>{% trans 'Comments' %}</h2>
+			</div>
+			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+				<a class="small" href="{% url project_comments p.id %}">{% trans 'See all' %} &#x25B6;</a>
+			</div>
+			<div class="clear"></div>
+			<div class="white_box">
+				<div class="space10">
+					{% if not comments %}
+					<a class="small" href="{% url project_comments p.id %}">
+						{% trans 'Add first comment' %}  &#x25B6;
+					</a>
+					{% else %}
 						{% for c in comments %}
 							<p class="grey_hover" 
 								{% if not forloop.last %} style="border-bottom: 1px solid #eee;"{% endif %}>
@@ -221,10 +223,10 @@
 									{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
 								</span>							
 							</p>
-						{% endfor %}					
-					</div>
+						{% endfor %}
+					{% endif %}
 				</div>
-			{% endif %}
+			</div>
 		</div>
 		<br />
 	{% endif %}
