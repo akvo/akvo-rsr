@@ -13,10 +13,19 @@
 			<span class="small">
 				<a href="{% url project_updates p.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
+			<h2 style="padding-top:20px;">{{u.title|capfirst}}</h2>
+		</div>
+		<div class="counter_badge">
+			<span style="display:none;">{% counter p %}</span>
+			{% cache 10 p.view_count %}
+				{{ p.view_count|intcomma }}
+			{% endcache %}
+			<br />
+			<span>{% trans 'views' %}</span>
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-			<h2>{{u.title|capfirst}}</h2>
+			
 			<p>
 				{% if u.photo %}
 					{% ifequal u.photo_location 'B' %}

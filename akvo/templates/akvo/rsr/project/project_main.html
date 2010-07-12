@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_base.html" %}
 
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail google_maps %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail google_maps counter_tags %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -11,6 +11,14 @@
 {% block project_left_column %}
 	<div class="white_box" style="background-color:#fff;">
 		<div class="space20">
+			<div class="counter_badge" style="margin-top:0; margin-right:0;">
+				<span style="display:none;">{% counter p %}</span>
+				{% cache 10 p.view_count %}
+					{{ p.view_count|intcomma }}
+				{% endcache %}
+				<br />
+				<span>{% trans 'views' %}</span>
+			</div>
 			<h2 class="black">{% trans 'Description' %}</h2>
 			{{p.project_plan_summary|linebreaks}}
 			<div style="float:left; width:328px;">

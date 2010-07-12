@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -12,10 +12,18 @@
 			<span class="small">
 				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
+			<h2 style="padding-top:20px;">{% trans 'Project updates' %}</h2>
+		</div>
+		<div class="counter_badge">
+			<span style="display:none;">{% counter p %}</span>
+			{% cache 10 p.view_count %}
+				{{ p.view_count|intcomma }}
+			{% endcache %}
+			<br />
+			<span>{% trans 'views' %}</span>
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-			<h2>{% trans 'Project updates' %}</h2>
 			{% if not updates %}
 				<p>{% trans 'No updates yet.' %}</p>
 			{% else %}
