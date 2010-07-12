@@ -42,8 +42,8 @@
 						{% endif %}
 						<div style="float:right; width:100px;">
 							{% if u.photo %}
-								<a href="{% url project_update p.id u.id%}">
-									{% update_thumb u 100 75 %}
+								<a href="{% url project_update p.id u.id %}">
+									<img src="{% thumbnail u.photo 100x75 autocrop,upscale,sharpen %}" />
 								</a>
 							{% endif %}
 						</div>
