@@ -219,13 +219,15 @@
 					</a>
 					{% else %}
 						{% for c in comments %}
-							<p class="grey_hover" 
+							<div class="grey_hover"
 								{% if not forloop.last %} style="border-bottom: 1px solid #eee;"{% endif %}>
-								{{ c.comment|capfirst }}<br />
-								<span class="grey small">
-									{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
-								</span>							
-							</p>
+								<p style="padding:5px; margin-bottom:5px;">
+									{{ c.comment|capfirst }}<br />
+									<span class="grey small">
+										{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
+									</span>
+								</p>								
+							</div>
 						{% endfor %}
 					{% endif %}
 				</div>
