@@ -28,11 +28,26 @@
 				<p>{% trans 'No updates yet.' %}</p>
 			{% else %}
 				{% for u in updates %}
-					<div style="background-color:#{% cycle 'fff' 'F1F5F9' %}; padding:15px 10px;">
-						<p style="margin:0;">
+					<div class="grey_hover" style="padding:10px; {% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %}">
+						<div style="float:left; width:100px;">
 							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
-							<a href="{% url project_update p.id u.id%}">{{u.title|capfirst}}</a>
-						</p>
+						</div>
+						{% if u.text %}
+						<div style="float:left; width:300px;">
+							<p style="margin:0;">
+							<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />
+							<span class="grey small">{{u.text|smart_truncate:150}}</span>
+							</p>
+						</div>
+						{% endif %}
+						<div style="float:right; width:100px;">
+							{% if u.photo %}
+								<a href="{% url project_update p.id u.id%}">
+									{% update_thumb u 100 75 %}
+								</a>
+							{% endif %}
+						</div>
+						<div class="clear"></div>
 					</div>
 				{% endfor %}
 			{% endif %}
