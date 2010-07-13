@@ -39,22 +39,22 @@
 				</li>
 				<li>
 					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
-						<span>Partners</span>
+						<span>{% trans 'Partners' %}</span>
 					</a>
 				</li>
 				<li>
 					<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
-						<span>Projects</span>
+						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>
 				<li>
 					<a href="/web/get_involved/">
-						<span>Get involved</span>
+						<span>{% trans 'Get involved' %}</span>
 					</a>
 				</li>
 				<li>
 					<a href="/blog/">
-						<span>Blog</span>
+						<span>{% trans 'Blog' %}</span>
 					</a>
 				</li>
 				{% comment %}
@@ -88,7 +88,7 @@
 						</a>
 					{% else %}
 						<a href="/rsr/accounts/update/">
-							<span>My Akvo</span>
+							<span>{% trans 'My Akvo' %}</span>
 						</a>
 					{% endif %}
 				</li>
