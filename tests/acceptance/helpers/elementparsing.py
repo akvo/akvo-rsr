@@ -14,7 +14,8 @@ def create_html_element_root_from(url):
     return etree.HTML(read_text_from(url))
 
 def read_text_from(url):
-    return urllib2.urlopen(urllib2.Request(url, None, {"Cache-Control": "no-cache, no-store, max-age=0", "Pragma": "no-cache"})).read()
+    headers = {"Cache-Control": "no-cache, no-store, max-age=0", "Pragma": "no-cache", "Connection": "close"}
+    return urllib2.urlopen(urllib2.Request(url, None, headers)).read()
 
 def elements_tostring(element_root):
     return etree.tostring(element_root, pretty_print=True)
