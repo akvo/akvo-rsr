@@ -6,10 +6,10 @@ class ViewCounter:
 
     def __init__(self, identifier, view_count):
         self.identifier = identifier
-        self.view_counts = [int(view_count)]
+        self.view_counts = [self.to_int(view_count)]
 
     def record_view_count(self, view_count):
-        self.view_counts.append(int(view_count))
+        self.view_counts.append(self.to_int(view_count))
 
     def counts_have_incremented_in_recording_period(self):
         return self.view_counts[-1] > self.view_counts[0]
@@ -17,6 +17,8 @@ class ViewCounter:
     def __str__(self):
         return str({self.identifier: self.view_counts})
 
+    def to_int(self, int_string):
+        return int(int_string.replace(',', ''))
 
 class ViewCountRecorder:
 
