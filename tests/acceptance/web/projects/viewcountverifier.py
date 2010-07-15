@@ -15,7 +15,10 @@ class ViewCountVerifier:
         self.view_count_recorder = ViewCountRecorder()
 
     def open_page(self, page_url):
-        self.page_root = create_html_element_root_from(page_url)
+        self.set_page_root(create_html_element_root_from(page_url))
+
+    def set_page_root(self, new_page_root):
+        self.page_root = new_page_root
 
     def expect_exactly(self, exact_value):
         self.expected_exact_value = exact_value
@@ -30,7 +33,7 @@ class ViewCountVerifier:
     def verify_elements_at_xpath(self, element_xpath):
         self.test_case.assert_element(self.page_root).has_exactly(self.expected_exact_value).elements_matching_xpath(element_xpath)
 
-    def read_view_counts_at(self, view_count_xpath):
+    def can_read_view_counts_at(self, view_count_xpath):
         # where view count text is of the form 'n views'
         view_count_text_elements = text_for_elements_at_xpath(self.page_root, view_count_xpath)
         self.current_view_counts = map(lambda view_count_element: view_count_element.split(' ')[0], view_count_text_elements)

@@ -6,31 +6,50 @@
 
 import time
 
-from testcases.elementparsingtestcase import ElementParsingTestCase
+from helpers.elementparsing import *
 from helpers.testexecution import *
 
+from testcases.elementparsingtestcase import ElementParsingTestCase
 from web.projects.viewcountverifier import ViewCountVerifier
 
 
 class ProjectViewCountersTest(ElementParsingTestCase):
 
-    def test_01_counters_for_featured_projects_on_home_page_increment_as_expected(self):
-        """web.projects.ProjectViewCountersTest  1. Counters for featured projects on home page increment as expected"""
+    def test_01_home_page_has_view_counters_for_featured_projects(self):
+        """web.projects.ProjectViewCountersTest  1. Home page has view counters for featured projects"""
 
         count_verifier = ViewCountVerifier(self)
         view_count_xpath = "//div[@class='featured_update']/div/div/p[2]"
         project_identifier_xpath = "//a[@class='staffpicks_update_title']/@href"
 
-        # featured projects on the home page are seldom displayed in the same order so we need to read the page
-        # a few times and verify that view counts have incremented as expected for matching projects
-        for page_loads in range(4):
-            count_verifier.open_page("http://test.akvo.org")
-            count_verifier.expect_exactly(3).view_counts_at_xpath(view_count_xpath)
-            count_verifier.expect_exactly(3).project_identifiers_at_xpath(project_identifier_xpath)
-            count_verifier.read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
-            time.sleep(1)
+        count_verifier.open_page("http://test.akvo.org")
+        count_verifier.expect_exactly(3).view_counts_at_xpath(view_count_xpath)
+        count_verifier.expect_exactly(3).project_identifiers_at_xpath(project_identifier_xpath)
+        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
 
-        count_verifier.verify_counts_have_incremented_as_expected()
+    def test_02_projects_page_has_view_counters_for_featured_projects(self):
+        """web.projects.ProjectViewCountersTest  2. Projects page has view counters for featured projects"""
+
+        self.fail("View counters for featured projects not found")
+
+    def test_03_projects_page_has_view_counters_for_each_listed_project(self):
+        """web.projects.ProjectViewCountersTest  3. Projects page has view counters for each project in the project listing"""
+
+        projects_page_root = create_html_element_root_from("http://test.akvo.org/rsr/projects")
+        count_verifier = ViewCountVerifier(self)
+        view_count_xpath = "//table[@id='project_table']/tr/td/p"
+        project_identifier_xpath = "//table[@id='project_table']/tr/td[1]/a[1]/@href"
+        number_of_listed_projects = self.read_number_of_listed_projects(projects_page_root)
+
+        count_verifier.set_page_root(projects_page_root)
+        count_verifier.expect_exactly(number_of_listed_projects).view_counts_at_xpath(view_count_xpath)
+        count_verifier.expect_exactly(number_of_listed_projects).project_identifiers_at_xpath(project_identifier_xpath)
+        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
+
+    def read_number_of_listed_projects(self, projects_page_root):
+        # where the project totals text is of the form: Projects 1-10 of 155
+        projects_totals_text = text_for_elements_at_xpath(projects_page_root, "//div[@id='page_project_directory']/div[2]/div/span")[0]
+        return int(projects_totals_text.split(' ')[1].split('-')[1])
 
 
 def suite():
