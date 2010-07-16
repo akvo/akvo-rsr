@@ -18,35 +18,28 @@ class ProjectViewCountersTest(ElementParsingTestCase):
     def test_01_home_page_has_view_counters_for_featured_projects(self):
         """web.projects.ProjectViewCountersTest  1. Home page has view counters for featured projects"""
 
-        count_verifier = ViewCountVerifier(self)
-        view_count_xpath = "//div[@class='featured_update']/div/div/p[2]"
-        project_identifier_xpath = "//a[@class='staffpicks_update_title']/@href"
-
-        count_verifier.open_page("http://test.akvo.org")
-        count_verifier.expect_exactly(3).view_counts_at_xpath(view_count_xpath)
-        count_verifier.expect_exactly(3).project_identifiers_at_xpath(project_identifier_xpath)
-        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
+        self.verify_multiple_view_counters_on_page("http://test.akvo.org", 3,
+                                                   "//div[@class='featured_update']/div/div/p[2]",
+                                                   "//a[@class='staffpicks_update_title']/@href")
 
     def test_02_project_listing_page_has_view_counters_for_featured_projects(self):
         """web.projects.ProjectViewCountersTest  2. Project listing page has view counters for featured projects"""
 
-        self.fail("View counters for featured projects not found")
+        self.fail("View counters for featured projects not implemented")
 
     def test_03_project_listing_page_has_view_counters_for_each_listed_project(self):
         """web.projects.ProjectViewCountersTest  3. Project listing page has view counters for each listed project"""
 
         projects_page_root = create_html_element_root_from("http://test.akvo.org/rsr/projects")
         count_verifier = ViewCountVerifier(self)
-        view_count_xpath = "//table[@id='project_table']/tr/td/p"
-        project_identifier_xpath = "//table[@id='project_table']/tr/td[1]/a[1]/@href"
-        number_of_listed_projects = self.read_number_of_listed_projects(projects_page_root)
-
         count_verifier.set_page_root(projects_page_root)
-        count_verifier.expect_exactly(number_of_listed_projects).view_counts_at_xpath(view_count_xpath)
-        count_verifier.expect_exactly(number_of_listed_projects).project_identifiers_at_xpath(project_identifier_xpath)
-        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
 
-    def read_number_of_listed_projects(self, projects_page_root):
+        self.verify_expected_view_counters(count_verifier,
+                                           self.number_of_listed_projects_in(projects_page_root),
+                                           "//table[@id='project_table']/tr/td/p",
+                                           "//table[@id='project_table']/tr/td[1]/a[1]/@href")
+
+    def number_of_listed_projects_in(self, projects_page_root):
         # where the project totals text is of the form: Projects 1-10 of 155
         projects_totals_text = text_for_elements_at_xpath(projects_page_root, "//div[@id='page_project_directory']/div[2]/div/span")[0]
         return int(projects_totals_text.split(' ')[1].split('-')[1])
@@ -54,25 +47,29 @@ class ProjectViewCountersTest(ElementParsingTestCase):
     def test_04_project_page_has_view_counter(self):
         """web.projects.ProjectViewCountersTest  4. Project page has view counter"""
 
-        count_verifier = ViewCountVerifier(self)
-        view_count_xpath = "//div[@id='outer_leftwing']/div/h1/span"
-        project_identifier_xpath = "//div[@id='tab_description']/p[3]/a/@href"
-
-        count_verifier.open_page("http://test.akvo.org/rsr/project/170")
-        count_verifier.expect_exactly(1).view_count_at_xpath(view_count_xpath)
-        count_verifier.expect_exactly(1).project_identifier_at_xpath(project_identifier_xpath)
-        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
+        self.verify_single_view_counter_on_page("http://test.akvo.org/rsr/project/170",
+                                                "//div[@id='outer_leftwing']/div/h1/span",
+                                                "//div[@id='tab_description']/p[3]/a/@href")
 
     def test_05_project_updates_page_has_view_counter(self):
         """web.projects.ProjectViewCountersTest  5. Project updates page has view counter"""
 
-        count_verifier = ViewCountVerifier(self)
-        view_count_xpath = "//div[@id='outer_leftwing']/div/h1/span"
-        project_identifier_xpath = "//div[@id='outer_leftwing']/div/h1/a/@href"
+        self.verify_single_view_counter_on_page("http://test.akvo.org/rsr/project/170/updates",
+                                                "//div[@id='outer_leftwing']/div/h1/span",
+                                                "//div[@id='outer_leftwing']/div/h1/a/@href")
 
-        count_verifier.open_page("http://test.akvo.org/rsr/project/170/updates")
-        count_verifier.expect_exactly(1).view_count_at_xpath(view_count_xpath)
-        count_verifier.expect_exactly(1).project_identifier_at_xpath(project_identifier_xpath)
+    def verify_single_view_counter_on_page(self, page_url, view_count_xpath, project_identifier_xpath):
+        self.verify_multiple_view_counters_on_page(page_url, 1, view_count_xpath, project_identifier_xpath)
+
+    def verify_multiple_view_counters_on_page(self, page_url, expected_number_of_view_counters, view_count_xpath, project_identifier_xpath):
+        count_verifier = ViewCountVerifier(self)
+        count_verifier.open_page(page_url)
+
+        self.verify_expected_view_counters(count_verifier, expected_number_of_view_counters, view_count_xpath, project_identifier_xpath)
+
+    def verify_expected_view_counters(self, count_verifier, expected_number_of_view_counters, view_count_xpath, project_identifier_xpath):
+        count_verifier.expect_exactly(expected_number_of_view_counters).view_counts_at_xpath(view_count_xpath)
+        count_verifier.expect_exactly(expected_number_of_view_counters).project_identifiers_at_xpath(project_identifier_xpath)
         count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
 
 
