@@ -112,11 +112,35 @@ def wordpress_get_lastest_posts(connection, limit):
     try:
         cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
         rows = cursor.fetchall()
-    except: 
-        rows = None
-    return rows
+    except:
+        return None
     
-    
+    posts = []
+    for post in rows:
+        post_content_soup = BeautifulSoup(post[4])
+
+        ## Find first image in post
+        try:
+            post_img = post_content_soup('img')[0]['src']
+        except:
+            post_img = 'No image'
+        
+        ## Find first paragraph in post
+        try:
+            post_p = post_content_soup('p')[0].contents
+        except:
+            # If no paragraph then use the raw content
+            post_p = post_content_soup
+        
+        ### Create one string
+        p = ''
+        for text in post_p:
+            p = '%s%s' % (p, text)
+
+        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': post[18], })
+
+    return posts
+        
 @render_to('rsr/index.html')
 def index(request):
     '''
@@ -134,11 +158,12 @@ def index(request):
     try:
         # Create exception to avoid loading the blogs whe we run in debug mode.
         # Speeds up the home page considerably when pulling over the inteweb
-        if settings.DEBUG:
+        if not settings.DEBUG:
             raise
         
         current_site = Site.objects.get_current()
-        feed = feedparser.parse("http://%s/blog?feed=rss2" % current_site)
+        #feed = feedparser.parse("http://%s/blog?feed=rss2" % current_site)
+        feed = feedparser.parse("http://%s/blog?feed=rss2" % 'akvo.org')
         latest1 = feed.entries[0]
         soup = BeautifulSoup(latest1.content[0].value)
         try:
@@ -191,8 +216,7 @@ def index(request):
         wfw_blog_category = settings.WALKING_FOR_WATER_NEWS_CATEGORY
     else:
         walking_for_water = None
-    
-    
+        
     return {
         'latest1': latest1,
         'img_src1': img_src1,
@@ -210,7 +234,7 @@ def index(request):
         'walking_for_water': walking_for_water,
         'wfw_blog_category': wfw_blog_category,
         'site_section': 'index',
-        'wp': wordpress_get_lastest_posts('wordpress', 3),
+        'blog_posts': wordpress_get_lastest_posts('wordpress', 2),
     }
 
 def oldindex(request):

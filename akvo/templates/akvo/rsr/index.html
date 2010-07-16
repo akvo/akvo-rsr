@@ -5,10 +5,44 @@
 {% block breadcrum  %}{% endblock breadcrum  %}
 
 {% block maincontent %}
-	<div class="span-12 first">
+<div class="two_column_left">
+	<div class="white_box">
+		<div class="space20">
+			<h2>Project updates — Staff picks</h2>
+		</div>
+	</div>
+	<div class="white_box" style="margin-top:20px">
+		<div class="space20">
+			<p>LE &amp; WW</p>
+		</div>
+	</div>
+	
+	<div class="white_box" style="margin-top:20px">
+		<div class="space20">
+			{% for post in blog_posts %}
+				<b>title:</b> {{ post.title }}<br />
+				<b>url:</b> {{ post.url }}<br />
+				<b>date:</b> {{ post.date }}<br />
+				<b>image:</b> {{ post.image }}<br />
+				<b>text:</b> {{ post.text|striptags|smart_truncate:20 }}<br />
+				<br /><br />
+			{% endfor %}
+		</div>
+	</div>
+</div>
+<div class="two_column_right">
+	<div class="two_column_right_inner">
 		<div class="white_box">
-			<div style="margin:20px;">
-				<h1 id="modern_header">&nbsp;</h1>
+			<div class="space20">
+				<h3>Learn about Akvo</h3>
+				<p>...</p>
+				<h3>Akvo at a glance</h3>
+				<p>...</p>
+			</div>
+		</div>
+				
+		<div class="white_box" style="margin-top:20px;">
+			<div class="space20">
 				<h2>To do</h2>
 				<ul>
 					<li class="green">Project listing page</li>
@@ -40,24 +74,9 @@
 					<li class="green">CMS template (Drupal theme)</li>
 					<li class="yellow">Front page</li>
 				</ul>
-				<h2>Lorems</h2>
-				{% lorem 4 p %}
 			</div>
 		</div>
 	</div>
-	<div class="span-6 last" style="background-color:#fff">
-		<div class="white_box">
-			<div style="margin:20px; font-size:0.85em">
-				{# {% lorem 5 p %} #}
-				{% for post in wp  %}
-				<h3>{{ post.5 }}</h3>
-				<p class="small grey">{{ post.2 }}</p>
-				<hr />
-				{% endfor %}
-
-			</div>
-		</div>			
-	</div>
+</div>
 
 {% endblock maincontent %}
-
