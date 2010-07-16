@@ -19,6 +19,7 @@ MEDIA_BUNDLES = {
             'x_machinery.css',
             'x_donate.css',
             'x_org.css',
+            'x_index.css',
             ],
     },
     'akvo_ie6_style': {

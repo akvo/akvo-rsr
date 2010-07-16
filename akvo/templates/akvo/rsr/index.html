@@ -49,7 +49,7 @@
 	
 	<div style="margin-top:20px">
 		{% if live_earth_enabled %}
-			<div style="width:321px; float:left;">
+			<div class="front_sponsor_box" style="float:left;">
 				<div class="white_box" >
 					<div class="space15" style="height:70px">
 						<div style="float:left; width:80px;">
@@ -71,9 +71,9 @@
 			</div>
 		{% endif %}
 		{% if walking_for_water_enabled %}
-			<div style="width:321px; float:right;">
+			<div class="front_sponsor_box" style="float:right;">
 				<div class="white_box" >
-					<div class="space15" style="height:70px">
+					<div class="space15">
 						<div style="float:left; width:80px;">
 							<a href="{% url wfw_landing_page %}">
 								<img src="{% thumbnail walking_for_water.logo 65x65 autocrop sharpen %}" style="margin: 10px 0px;"/>
