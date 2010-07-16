@@ -9,6 +9,8 @@ from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
+from akvo.rsr.utils import wordpress_get_lastest_posts
+
 from django import forms
 from django import http
 from django.conf import settings
@@ -29,7 +31,6 @@ from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 import time
 import feedparser
@@ -105,42 +106,8 @@ def get_setting(setting, default=None):
         return getattr(settings, setting)
     except:
         return default
-    
-def wordpress_get_lastest_posts(connection, limit):
-    from django.db import connections
-    cursor = connections[connection].cursor()
-    try:
-        cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
-        rows = cursor.fetchall()
-    except:
-        return None
-    
-    posts = []
-    for post in rows:
-        post_content_soup = BeautifulSoup(post[4])
 
-        ## Find first image in post
-        try:
-            post_img = post_content_soup('img')[0]['src']
-        except:
-            post_img = 'No image'
-        
-        ## Find first paragraph in post
-        try:
-            post_p = post_content_soup('p')[0].contents
-        except:
-            # If no paragraph then use the raw content
-            post_p = post_content_soup
-        
-        ### Create one string
-        p = ''
-        for text in post_p:
-            p = '%s%s' % (p, text)
 
-        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': post[18], })
-
-    return posts
-        
 @render_to('rsr/index.html')
 def index(request):
     '''
@@ -155,34 +122,6 @@ def index(request):
     
     bandwidth = 'low'
     host = 'unknown'
-    try:
-        # Create exception to avoid loading the blogs whe we run in debug mode.
-        # Speeds up the home page considerably when pulling over the inteweb
-        if not settings.DEBUG:
-            raise
-        
-        current_site = Site.objects.get_current()
-        #feed = feedparser.parse("http://%s/blog?feed=rss2" % current_site)
-        feed = feedparser.parse("http://%s/blog?feed=rss2" % 'akvo.org')
-        latest1 = feed.entries[0]
-        soup = BeautifulSoup(latest1.content[0].value)
-        try:
-            img_src1 = soup('img')[0]['src']
-        except:
-            img_src1 = ''
-        latest2 = feed.entries[1]
-        soup = BeautifulSoup(latest2.content[0].value)
-        try:
-            img_src2 = soup('img')[0]['src']
-        except:
-            img_src2 = ''        
-
-    except:
-        soup = img_src1 = img_src2 = ''
-        latest1 = latest2 = {
-            'author': '',
-            'summary': _('The blog is not available at the moment.'),
-        }
         
     projs = Project.objects.published()
     if bandwidth == 'low':
@@ -218,10 +157,6 @@ def index(request):
         walking_for_water = None
         
     return {
-        'latest1': latest1,
-        'img_src1': img_src1,
-        'latest2': latest2,
-        'img_src2': img_src2,
         'orgs': Organisation.objects,
         'projs': projs,
         'updates': updates,

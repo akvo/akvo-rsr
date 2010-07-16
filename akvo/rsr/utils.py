@@ -11,6 +11,8 @@ from django.db.models import get_model
 from django.template import loader, Context
 from django.utils.translation import ugettext_lazy as _
 
+from BeautifulSoup import BeautifulSoup
+
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
 GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
@@ -110,3 +112,38 @@ def send_donation_confirmation_emails(invoice_id):
     msg = EmailMessage(subject_field, message_body, from_field, [to_field], [bcc_field])
     msg.content_subtype = "html"
     msg.send()
+    
+def wordpress_get_lastest_posts(connection, limit):
+    from django.db import connections
+    cursor = connections[connection].cursor()
+    try:
+        cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
+        rows = cursor.fetchall()
+    except:
+        return None
+
+    posts = []
+    for post in rows:
+        post_content_soup = BeautifulSoup(post[4])
+
+        ## Find first image in post
+        try:
+            post_img = post_content_soup('img')[0]['src']
+        except:
+            post_img = 'No image'
+
+        ## Find first paragraph in post
+        try:
+            post_p = post_content_soup('p')[0].contents
+        except:
+            # If no paragraph then use the raw content
+            post_p = post_content_soup
+
+        ### Create one string
+        p = ''
+        for text in post_p:
+            p = '%s%s' % (p, text)
+
+        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': post[18], })
+
+    return posts
