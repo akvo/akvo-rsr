@@ -63,6 +63,18 @@ class ProjectViewCountersTest(ElementParsingTestCase):
         count_verifier.expect_exactly(1).project_identifier_at_xpath(project_identifier_xpath)
         count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
 
+    def test_05_project_updates_page_has_view_counter(self):
+        """web.projects.ProjectViewCountersTest  5. Project updates page has view counter"""
+
+        count_verifier = ViewCountVerifier(self)
+        view_count_xpath = "//div[@id='outer_leftwing']/div/h1/span"
+        project_identifier_xpath = "//div[@id='outer_leftwing']/div/h1/a/@href"
+
+        count_verifier.open_page("http://test.akvo.org/rsr/project/170/updates")
+        count_verifier.expect_exactly(1).view_count_at_xpath(view_count_xpath)
+        count_verifier.expect_exactly(1).project_identifier_at_xpath(project_identifier_xpath)
+        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
+
 
 def suite():
     return load_tests_from(ProjectViewCountersTest)
