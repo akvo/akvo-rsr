@@ -4,15 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from helpers.seleniumclient import SeleniumClient
 from helpers.testexecution import *
 
-from web.home.home_page_test_suite import home_page_suite
-from web.projects.projects_test_suite import projects_suite
+from web.projects.project_view_counters_test import ProjectViewCountersTest
 
-def web_suite():
-    return create_test_suite_from_suites([home_page_suite(), projects_suite()])
+
+def projects_suite():
+    return create_test_suite_from_classes([ProjectViewCountersTest])
 
 if __name__ == "__main__":
-    run_test_suite(web_suite())
-    SeleniumClient().stop()
+    run_test_suite(projects_suite())
