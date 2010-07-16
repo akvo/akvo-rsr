@@ -1,6 +1,6 @@
 {% extends "rsr/base.html" %}
 
-{% load i18n webdesign %}
+{% load i18n webdesign rsr_filters %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
@@ -48,7 +48,13 @@
 	<div class="span-6 last" style="background-color:#fff">
 		<div class="white_box">
 			<div style="margin:20px; font-size:0.85em">
-				{% lorem 5 p %}
+				{# {% lorem 5 p %} #}
+				{% for post in wp  %}
+				<h3>{{ post.5 }}</h3>
+				<p class="small grey">{{ post.2 }}</p>
+				<hr />
+				{% endfor %}
+
 			</div>
 		</div>			
 	</div>
