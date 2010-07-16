@@ -7,7 +7,7 @@
 {% block maincontent %}
 <div class="two_column_left">
 	<div class="white_box">
-		<div class="space20">
+		<div class="space20" style="height:250px">
 			<h2>Project updates — Staff picks</h2>
 			<ul>
 			{% for update in updates %}
@@ -15,37 +15,12 @@
 			{% endfor %}
 			</ul>
 		</div>
-		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;" >
+		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;">
 			<p style="margin:0" class="small grey">
 				<a href="#">first</a> | <a href="#">second</a> | <a href="#">third</a>
 			</p>
 		</div>
 	</div>
-	
-	{% comment %}
-		{% if live_earth_enabled %}
-			<div id="le_sponser_box" class="index_sponsor_box">
-				<div style="border:1px solid #D0D0D4; border-bottom:2px solid #D3D2D2; height:110px; overflow:hidden;">
-					<div style="margin:13px 20px">
-						<div class="index_sponsor_box_left">
-							<a href="{% url live_earth_landing_page %}">
-								<img src="{{MEDIA_URL}}img/liveearth_water_logo_65x65.gif" width="65" height="62" alt="" style="margin: 10px 0px;" />
-							</a>
-						</div>
-						<div class="index_sponsor_box_right">
-							<h1>{% trans 'Live Earth and Akvo' %}</h1>
-							<ul>
-								<li><a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
-								<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
-							</ul>
-						</div>
-						<div style="clear:both;"></div>
-					</div>
-				</div>
-			</div>
-		<div style="float:left; width:20px;">&nbsp;</div>
-		{% endif %}
-	{% endcomment %}
 	
 	<div style="margin-top:20px">
 		{% if live_earth_enabled %}
@@ -61,8 +36,14 @@
 						<div style="float:left; width:205px;">
 							<h4 style="color:#DE481C; margin-bottom:15px;">{% trans 'Live Earth and Akvo' %}</h4>
 							<ul class="small" style="margin-bottom:0;">
-								<li><a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
-								<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">{% trans 'Live Earth blog entries' %}</a>
+								<li>
+									<a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a>
+								</li>
+								<li>
+									<a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">
+										{% trans 'Live Earth blog entries' %}
+									</a>
+								</li>
 							</ul>
 						</div>
 						<div class="clear"></div>
@@ -82,8 +63,14 @@
 						<div style="float:left; width:205px;">
 							<h4 style="color:#DE481C; margin-bottom:15px;">{% trans 'Walking for Water 2010' %}</h4>
 							<ul class="small" style="margin-bottom:0;">
-								<li><a href="{% url wfw_landing_page %}">{% trans 'View projects on Akvo' %}</a></li>
-								<li><a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">{% trans 'Walking for Water blog entries' %}</a>
+								<li>
+									<a href="{% url wfw_landing_page %}">{% trans 'View projects on Akvo' %}</a>
+								</li>
+								<li>
+									<a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">
+										{% trans 'Walking for Water blog entries' %}
+									</a>
+								</li>
 							</ul>
 						</div>
 						<div class="clear"></div>
@@ -112,12 +99,43 @@
 </div>
 <div class="two_column_right">
 	<div class="two_column_right_inner">
+		<h2>{% trans 'Learn about Akvo' %}</h2>
 		<div class="white_box">
 			<div class="space20">
-				<h3>Learn about Akvo</h3>
-				<p>...</p>
-				<h3>Akvo at a glance</h3>
-				<p>...</p>
+				<h4>
+					<a href="/web/what_we_do">{% trans 'What we do' %}</a>
+					<span style="float:right;">
+						<a class="small" href="/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
+					</span>
+				</h4>				
+				<div class="clear"></div>
+				<p class="small">
+					{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}
+				</p>
+				
+				
+				<h4>
+					<a href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a>
+					<span style="float:right;">
+						
+						<a class="small" href="/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
+					</span>
+				</h4>				
+				<div class="clear"></div>
+				<p class="small">
+					{% trans 'Find projects to fund, or donors to fund projects. Report on projects. Share knowledge.' %}
+				</p>
+				
+				<h4>
+					<a href="/web/how_akvo_works">{% trans 'Why we do it' %}</a>
+					<span style="float:right;">
+						<a class="small" href="/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
+					</span>
+				</h4>				
+				<div class="clear"></div>
+				<p class="small">
+					{% trans 'Akvo&#x27;s approach: a large number of small projects work best.' %}
+				</p>
 			</div>
 		</div>
 				
