@@ -27,13 +27,13 @@ class ProjectViewCountersTest(ElementParsingTestCase):
         count_verifier.expect_exactly(3).project_identifiers_at_xpath(project_identifier_xpath)
         count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
 
-    def test_02_projects_page_has_view_counters_for_featured_projects(self):
-        """web.projects.ProjectViewCountersTest  2. Projects page has view counters for featured projects"""
+    def test_02_project_listing_page_has_view_counters_for_featured_projects(self):
+        """web.projects.ProjectViewCountersTest  2. Project listing page has view counters for featured projects"""
 
         self.fail("View counters for featured projects not found")
 
-    def test_03_projects_page_has_view_counters_for_each_listed_project(self):
-        """web.projects.ProjectViewCountersTest  3. Projects page has view counters for each project in the project listing"""
+    def test_03_project_listing_page_has_view_counters_for_each_listed_project(self):
+        """web.projects.ProjectViewCountersTest  3. Project listing page has view counters for each listed project"""
 
         projects_page_root = create_html_element_root_from("http://test.akvo.org/rsr/projects")
         count_verifier = ViewCountVerifier(self)
@@ -50,6 +50,18 @@ class ProjectViewCountersTest(ElementParsingTestCase):
         # where the project totals text is of the form: Projects 1-10 of 155
         projects_totals_text = text_for_elements_at_xpath(projects_page_root, "//div[@id='page_project_directory']/div[2]/div/span")[0]
         return int(projects_totals_text.split(' ')[1].split('-')[1])
+
+    def test_04_project_page_has_view_counter(self):
+        """web.projects.ProjectViewCountersTest  4. Project page has view counter"""
+
+        count_verifier = ViewCountVerifier(self)
+        view_count_xpath = "//div[@id='outer_leftwing']/div/h1/span"
+        project_identifier_xpath = "//div[@id='tab_description']/p[3]/a/@href"
+
+        count_verifier.open_page("http://test.akvo.org/rsr/project/170")
+        count_verifier.expect_exactly(1).view_count_at_xpath(view_count_xpath)
+        count_verifier.expect_exactly(1).project_identifier_at_xpath(project_identifier_xpath)
+        count_verifier.can_read_view_counts_at(view_count_xpath).with_project_identifiers_at(project_identifier_xpath)
 
 
 def suite():

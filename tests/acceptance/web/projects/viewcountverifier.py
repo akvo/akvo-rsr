@@ -24,8 +24,14 @@ class ViewCountVerifier:
         self.expected_exact_value = exact_value
         return self
 
+    def view_count_at_xpath(self, view_count_xpath):
+        self.view_counts_at_xpath(view_count_xpath)
+
     def view_counts_at_xpath(self, view_count_xpath):
         self.verify_elements_at_xpath(view_count_xpath)
+
+    def project_identifier_at_xpath(self, project_identifier_xpath):
+        self.project_identifiers_at_xpath(project_identifier_xpath)
 
     def project_identifiers_at_xpath(self, project_identifier_xpath):
         self.verify_elements_at_xpath(project_identifier_xpath)
