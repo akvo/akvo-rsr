@@ -45,7 +45,6 @@ REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org'
 
 def server_error(request, template_name='500.html'):
     '''
-    Daniel
     Overwrites the default error 500 view to pass MEDIA_URL to the template
     '''
     t = loader.get_template(template_name) # You need to create a 500.html template.
@@ -106,7 +105,6 @@ def get_setting(setting, default=None):
         return getattr(settings, setting)
     except:
         return default
-
 
 @render_to('rsr/index.html')
 def index(request):

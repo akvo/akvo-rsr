@@ -113,6 +113,7 @@ def send_donation_confirmation_emails(invoice_id):
     msg.content_subtype = "html"
     msg.send()
     
+
 def wordpress_get_lastest_posts(connection, limit):
     from django.db import connections
     cursor = connections[connection].cursor()
@@ -126,24 +127,24 @@ def wordpress_get_lastest_posts(connection, limit):
     for post in rows:
         post_content_soup = BeautifulSoup(post[4])
 
-        ## Find first image in post
+        # Find first image in post
         try:
             post_img = post_content_soup('img')[0]['src']
         except:
             post_img = 'No image'
 
-        ## Find first paragraph in post
+        # Find first paragraph in post
         try:
             post_p = post_content_soup('p')[0].contents
         except:
             # If no paragraph then use the raw content
             post_p = post_content_soup
 
-        ### Create one string
+        # Create one string
         p = ''
         for text in post_p:
             p = '%s%s' % (p, text)
-
+        
         posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': post[18], })
 
     return posts
