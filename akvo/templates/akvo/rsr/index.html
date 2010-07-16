@@ -9,6 +9,11 @@
 	<div class="white_box">
 		<div class="space20">
 			<h2>Project updates — Staff picks</h2>
+			<ul>
+			{% for update in updates %}
+			<li>{{update}}</li>
+			{% endfor %}
+			</ul>
 		</div>
 	</div>
 	<div class="white_box" style="margin-top:20px">
@@ -20,12 +25,13 @@
 	<div class="white_box" style="margin-top:20px">
 		<div class="space20">
 			{% for post in blog_posts %}
+			<p>
 				<b>title:</b> {{ post.title }}<br />
 				<b>url:</b> {{ post.url }}<br />
 				<b>date:</b> {{ post.date }}<br />
 				<b>image:</b> {{ post.image }}<br />
 				<b>text:</b> {{ post.text|striptags|smart_truncate:20 }}<br />
-				<br /><br />
+			</p>
 			{% endfor %}
 		</div>
 	</div>
