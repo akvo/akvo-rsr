@@ -106,11 +106,11 @@ def get_setting(setting, default=None):
     except:
         return default
     
-def get_last_wordpress_posts(connection, limit):
+def wordpress_get_lastest_posts(connection, limit):
     from django.db import connections
     cursor = connections[connection].cursor()
     try:
-        cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
+        cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
         rows = cursor.fetchall()
     except: 
         rows = None
@@ -210,7 +210,7 @@ def index(request):
         'walking_for_water': walking_for_water,
         'wfw_blog_category': wfw_blog_category,
         'site_section': 'index',
-        'wp': get_last_wordpress_posts('wordpress', 3),
+        'wp': wordpress_get_lastest_posts('wordpress', 3),
     }
 
 def oldindex(request):
