@@ -1,23 +1,55 @@
 {% extends "rsr/base.html" %}
 
-{% load i18n webdesign rsr_filters thumbnail %}
+{% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
 {% block maincontent %}
 <div class="two_column_left">
+	<h2>Project updates — Staff picks</h2>
 	<div class="white_box">
-		<div class="space20" style="height:250px">
-			<h2>Project updates — Staff picks</h2>
-			<ul>
-			{% for update in updates %}
-			<li>{{update}}</li>
-			{% endfor %}
-			</ul>
+		<div class="space20" style="height:220px">
+			<div id="staff_picks_1" class="staff_picks">
+				<h3>{{updates.0.title|smart_truncate:35}}</h3>
+				<div style="width:200px; float:left;">
+					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" />
+					{% if updates.0.photo_caption %}
+						<p class="tiny grey">{{updates.0.photo_caption}}</p>
+					{% endif %}
+				</div>
+				<div style="width:410px; float:right;">
+					<p>
+						{{updates.0.text|smart_truncate:100}}
+					</p>
+					<p>
+						{{updates.0.project.country}}
+					</p>
+					<p class="small grey">
+						{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
+					</p>
+					<span style="display:none;">{% counter updates.0 %}</span>
+			        {% cache 10 updates.0.view_count %}
+						<p style="margin-top:6px; padding:0; color:#999; ">
+							{{ updates.0.view_count|intcomma }} {% trans 'views' %}
+						</p>
+					{% endcache %}
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div id="staff_picks_2" class="staff_picks" style="display:none;">
+				<h2>Project updates — Staff picks</h2>
+				<p>2</p>
+			</div>
+			<div id="staff_picks_3" class="staff_picks" style="display:none;">
+				<h2>Project updates — Staff picks</h2>
+				<p>3</p>
+			</div>
 		</div>
 		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;">
 			<p style="margin:0" class="small grey">
-				<a href="#">first</a> | <a href="#">second</a> | <a href="#">third</a>
+				<a id="staff_picks_link_1">first</a> | 
+				<a id="staff_picks_link_2">second</a> | 
+				<a id="staff_picks_link_3">third</a>
 			</p>
 		</div>
 	</div>
@@ -195,3 +227,33 @@
 </div>
 
 {% endblock maincontent %}
+
+{% block jq_ready %}
+	{{ block.super }}
+
+	jQ('#staff_picks_link_1').click(function () {
+		jQ('.staff_picks').hide();
+		jQ('#staff_picks_1').show('slow');
+	});
+	
+	jQ('#staff_picks_link_2').click(function () {
+		jQ('.staff_picks').hide();
+		jQ('#staff_picks_2').show('slow');	
+	});
+	
+	jQ('#staff_picks_link_3').click(function () {
+		jQ('.staff_picks').hide();
+		jQ('#staff_picks_3').show('slow');	
+	});
+	
+	/*
+	<a id="staff_picks_link_1" href="#">first</a> | 
+	<a id="staff_picks_link_2" href="#">second</a> | 
+	<a id="staff_picks_link_3" href="#">third</a>
+
+	jQ('#grid_toggle').click(function () {
+		jQ('#maincontainer').toggleClass('showgrid');
+	});
+	*/
+
+{% endblock jq_ready %}
