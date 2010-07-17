@@ -82,16 +82,33 @@
 	</div>
 	
 	{% if blog_posts %}
-	<div class="white_box" style="margin-top:20px">
+	<h2 style="margin-top:20px;">{% trans 'Most recent blog articles' %}</h2>
+	<div class="white_box">
 		<div class="space20">
 			{% for post in blog_posts %}
-			<p>
-				<b>title:</b> {{ post.title }}<br />
-				<b>url:</b> {{ post.url }}<br />
-				<b>date:</b> {{ post.date }}<br />
-				<b>image:</b> {{ post.image }}<br />
-				<b>text:</b> {{ post.text|striptags|smart_truncate:20 }}<br />
-			</p>
+			<div style="margin-bottom:20px; padding-bottom:10px; {% if not forloop.last %} border-bottom:1px solid #ccc;{% endif %}">
+				<div style="float:left; width:400px;">
+					<h3>
+						<a href="{{ post.url }}">{{ post.title }}</a>
+					</h3>				
+					<p class="small">
+						{{ post.text|striptags|smart_truncate:160 }}
+						<a href="{{ post.url }}">{% trans 'read more' %} &gt;</a>
+					</p>
+					
+					<p class="tiny grey" style="margin:0;">{{ post.date|date:"l, j F Y" }}</p>
+
+				</div>
+				<div style="float:right; width:200px;">
+					{% if post.image %}
+						<img src="{{ post.image }}" style="width:180px" />
+					{% else %}
+						&nbsp;
+					{% endif %}
+				</div>
+				<div class="clear"></div>
+				{# <a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a> #}
+			</div>
 			{% endfor %}
 		</div>
 	</div>

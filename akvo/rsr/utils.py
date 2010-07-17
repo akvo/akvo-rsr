@@ -131,7 +131,7 @@ def wordpress_get_lastest_posts(connection, limit):
         try:
             post_img = post_content_soup('img')[0]['src']
         except:
-            post_img = 'No image'
+            post_img = ''
 
         # Find first paragraph in post
         try:
