@@ -6,50 +6,123 @@
 
 {% block maincontent %}
 <div class="two_column_left">
-	<h2>Project updates — Staff picks</h2>
+	<h2>{% trans 'Project updates — Staff picks' %}</h2>
 	<div class="white_box">
 		<div class="space20" style="height:220px">
-			<div id="staff_picks_1" class="staff_picks">
-				<h3>{{updates.0.title|smart_truncate:35}}</h3>
+			<div id="staff_picks_0" class="staff_picks">
+				<div class="counter_badge" style="margin-top:0; margin-right:0;">
+					<span style="display:none;">{% counter updates.0 %}</span>
+					{% cache 10 updates.0.view_count %}
+						{{ updates.0.view_count|intcomma }}
+					{% endcache %}
+					<br />
+					<span>{% trans 'views' %}</span>
+				</div>
+				<h2 style="margin-bottom:15px;">
+					<a href="{% url project_update updates.0.project.id updates.0.id %}">
+						{{updates.0.title|smart_truncate:35}}
+					</a>
+				</h2>
 				<div style="width:200px; float:left;">
 					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" />
 					{% if updates.0.photo_caption %}
 						<p class="tiny grey">{{updates.0.photo_caption}}</p>
 					{% endif %}
 				</div>
-				<div style="width:410px; float:right;">
-					<p>
-						{{updates.0.text|smart_truncate:100}}
+				<div style="width:300px; float:left; margin-left:20px;">
+					<p class="grey small">
+						{% trans 'Location' %}: {{updates.0.project.country}}
 					</p>
+				</div>
+				<div style="width:400px; float:left; margin-left:20px;">
 					<p>
-						{{updates.0.project.country}}
+						{{updates.0.text|smart_truncate:200}}
+						<a href="{% url project_update updates.0.project.id updates.0.id %}">read more &gt;</a>
 					</p>
 					<p class="small grey">
 						{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
 					</p>
-					<span style="display:none;">{% counter updates.0 %}</span>
-			        {% cache 10 updates.0.view_count %}
-						<p style="margin-top:6px; padding:0; color:#999; ">
-							{{ updates.0.view_count|intcomma }} {% trans 'views' %}
-						</p>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div id="staff_picks_1" class="staff_picks" style="display:none;">
+				<div class="counter_badge" style="margin-top:0; margin-right:0;">
+					<span style="display:none;">{% counter updates.1 %}</span>
+					{% cache 10 updates.1.view_count %}
+						{{ updates.1.view_count|intcomma }}
 					{% endcache %}
+					<br />
+					<span>{% trans 'views' %}</span>
+				</div>
+				<h2 style="margin-bottom:15px;">
+					<a href="{% url project_update updates.1.project.id updates.1.id %}">
+						{{updates.1.title|smart_truncate:35}}
+					</a>
+				</h2>
+				<div style="width:200px; float:left;">
+					<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" />
+					{% if updates.1.photo_caption %}
+						<p class="tiny grey">{{updates.1.photo_caption}}</p>
+					{% endif %}
+				</div>
+				<div style="width:300px; float:left; margin-left:20px;">
+					<p class="grey">
+						{% trans 'Location' %}: {{updates.1.project.country}}
+					</p>
+				</div>
+				<div style="width:400px; float:left; margin-left:20px;">
+					<p>
+						{{updates.1.text|smart_truncate:200}}
+						<a href="{% url project_update updates.1.project.id updates.1.id %}">read more &gt;</a>
+					</p>
+					<p class="small grey">
+						{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
+					</p>
 				</div>
 				<div class="clear"></div>
 			</div>
 			<div id="staff_picks_2" class="staff_picks" style="display:none;">
-				<h2>Project updates — Staff picks</h2>
-				<p>2</p>
-			</div>
-			<div id="staff_picks_3" class="staff_picks" style="display:none;">
-				<h2>Project updates — Staff picks</h2>
-				<p>3</p>
+				<div class="counter_badge" style="margin-top:0; margin-right:0;">
+					<span style="display:none;">{% counter updates.2 %}</span>
+					{% cache 10 updates.2.view_count %}
+						{{ updates.2.view_count|intcomma }}
+					{% endcache %}
+					<br />
+					<span>{% trans 'views' %}</span>
+				</div>
+				<h2 style="margin-bottom:15px;">
+					<a href="{% url project_update updates.2.project.id updates.2.id %}">
+						{{ updates.2.title|smart_truncate:35 }}
+					</a>
+				</h2>
+				<div style="width:200px; float:left;">
+					<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" />
+					{% if updates.2.photo_caption %}
+						<p class="tiny grey">{{ updates.2.photo_caption }}</p>
+					{% endif %}
+				</div>
+				<div style="width:300px; float:left; margin-left:20px;">
+					<p class="grey">
+						{% trans 'Location' %}: {{updates.2.project.country}}
+					</p>
+				</div>
+				<div style="width:400px; float:left; margin-left:20px;">
+					<p>
+						{{ updates.2.text|smart_truncate:200 }}
+						<a href="{% url project_update updates.2.project.id updates.2.id %}">read more &gt;</a>
+					</p>
+					<p class="small grey">
+						{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
+					</p>
+				</div>
+				<div class="clear"></div>
 			</div>
 		</div>
 		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;">
 			<p style="margin:0" class="small grey">
-				<a id="staff_picks_link_1">first</a> | 
-				<a id="staff_picks_link_2">second</a> | 
-				<a id="staff_picks_link_3">third</a>
+				<a id="staff_picks_link_0">first</a> | 
+				<a id="staff_picks_link_1">second</a> | 
+				<a id="staff_picks_link_2">third</a>
 			</p>
 		</div>
 	</div>
@@ -118,7 +191,7 @@
 	<div class="white_box">
 		<div class="space20">
 			{% for post in blog_posts %}
-			<div style="margin-bottom:20px; padding-bottom:10px; {% if not forloop.last %} border-bottom:1px solid #ccc;{% endif %}">
+			<div style="margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #ccc;">
 				<div style="float:left; width:400px;">
 					<h3>
 						<a href="{{ post.url }}">{{ post.title }}</a>
@@ -139,13 +212,18 @@
 					{% endif %}
 				</div>
 				<div class="clear"></div>
-				{# <a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a> #}
 			</div>
 			{% endfor %}
+			<div style="text-align:right;">
+				<p class="small">
+					<a href="http://www.akvo.org/blog/">{% trans 'View earlier blog entries' %}</a>	
+				</p>
+			</div>
 		</div>
 	</div>
 	{% endif %}
 </div>
+
 <div class="two_column_right">
 	<div class="two_column_right_inner">
 		<h2>{% trans 'Learn about Akvo' %}</h2>
@@ -187,10 +265,169 @@
 				</p>
 			</div>
 		</div>
-				
-		<div class="white_box" style="margin-top:20px;">
+		
+		<h2 style="margin-top:20px">{% trans 'Akvo at a glance' %}</h2>
+		<div class="white_box">
 			<div class="space20">
-				<h2>To do</h2>
+				<h3><a href="{% url rsr_org_list %}">
+					{% trans 'Projects in Akvo' %}
+				</a></h3>
+				<table class="org_statistics_table bottom_grey_border">
+					<tr>
+						<td>
+							{% trans 'Active' %}
+						</td>
+						<td style="text-align:right;">
+							{{projs.status_active.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Need funding' %}
+						</td>
+						<td style="text-align:right;">
+							{{projs.status_onhold.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Complete' %}
+						</td>
+						<td style="text-align:right;">
+							{{projs.status_complete.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Cancelled' %}
+						</td>
+						<td style="text-align:right;">
+							{{projs.status_cancelled.count}}
+						</td>
+					</tr>
+					<tr style="font-weight:bold;" class="bottom_grey_border">
+						<td style="padding-bottom:20px;">
+							{% trans 'Total projects' %}
+						</td>
+						<td style="text-align:right;">
+							{{projs.published.count}}
+						</td>
+					</tr>
+				</table>
+				
+				<h3>{% trans 'People who get...' %}</h3>
+				<table class="org_statistics_table ">
+					<tr>
+						<td style="">&nbsp;</td>
+						<td style="text-align:right;">
+							<a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
+						</td>
+						<td style="text-align:right;">
+							<a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
+						<td style="text-align:right;">
+							{{projs.get_planned_water_calc|intcomma}}
+						</td>
+						<td style="text-align:right;">
+							{{projs.get_actual_water_calc|intcomma}}
+						</td>
+					</tr>
+					<tr class="bottom_grey_border">
+						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
+						<td style="text-align:right;">
+							{{projs.get_planned_sanitation_calc|intcomma}}
+						</td>
+						<td style="text-align:right;">
+							{{projs.get_actual_sanitation_calc|intcomma}}
+						</td>
+					</tr>
+				</table>
+				
+				<h3>
+					<a href="{% url rsr_org_list %}">{% trans 'Project Partners' %}</a> 
+					<span class="small grey">({{orgs.all.count}})</span>
+				</h3>
+				<table class="org_statistics_table">
+					<tr>
+						<td>
+							{% trans 'Field partners' %}
+						</td>
+						<td style="text-align:right;">
+							{{orgs.fieldpartners.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Funding partners' %}
+						</td>
+						<td style="text-align:right;">
+							{{orgs.fundingpartners.count}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{% trans 'Sponsor partners' %}
+						</td>
+						<td style="text-align:right;">
+							{{orgs.sponsorpartners.count}}
+						</td>
+					</tr>
+					<tr class="bottom_grey_border">
+						<td style="padding-bottom:20px;">
+							{% trans 'Support partners' %}
+						</td>
+						<td style="text-align:right;">
+							{{orgs.supportpartners.count}}
+						</td>
+					</tr>
+				</table>
+				
+				<h3>{% trans 'Funding' %}</h3>
+				<table class="org_statistics_table">
+					<tr>
+						<td style="font-weight:bold;">
+							{{projs.status_not_cancelled.euros.count}} {% trans 'project' %}{{projs.status_not_cancelled.euros.count|pluralize:"s"}} {% trans 'in Euros' %}
+						</td>
+					</tr>
+					<tr style="color:green;">
+						<td>{% trans 'Raised' %}</td>
+						<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round|intcomma}}</td>
+					</tr>
+					<tr style="color:red;">
+						<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
+						<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
+					</tr>
+					
+					{% if projs.status_not_cancelled.dollars.count %}
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold;">
+							{{projs.status_not_cancelled.dollars.count}} {% trans 'project' %}{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} {% trans 'in US Dollars' %}</td>
+					</tr>
+					<tr style="color:green;">
+						<td>{% trans 'Raised' %}</td>
+						<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
+					</tr>
+					<tr style="color:red;">
+						<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
+						<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round|intcomma}}</td>
+					</tr>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+		
+		{% comment %}
+			
+
+		<h2 style="margin-top:20px">To do</h2>
+		<div class="white_box">
+			<div class="space20">
 				<ul>
 					<li class="green">Project listing page</li>
 					<li class="green">Filtered project listing page</li>
@@ -223,6 +460,7 @@
 				</ul>
 			</div>
 		</div>
+		{% endcomment %}	
 	</div>
 </div>
 
@@ -231,9 +469,14 @@
 {% block jq_ready %}
 	{{ block.super }}
 
+	jQ('#staff_picks_link_0').click(function () {
+		jQ('.staff_picks').hide();
+		jQ('#staff_picks_0').show('slow');
+	});
+	
 	jQ('#staff_picks_link_1').click(function () {
 		jQ('.staff_picks').hide();
-		jQ('#staff_picks_1').show('slow');
+		jQ('#staff_picks_1').show('slow');	
 	});
 	
 	jQ('#staff_picks_link_2').click(function () {
@@ -241,19 +484,4 @@
 		jQ('#staff_picks_2').show('slow');	
 	});
 	
-	jQ('#staff_picks_link_3').click(function () {
-		jQ('.staff_picks').hide();
-		jQ('#staff_picks_3').show('slow');	
-	});
-	
-	/*
-	<a id="staff_picks_link_1" href="#">first</a> | 
-	<a id="staff_picks_link_2" href="#">second</a> | 
-	<a id="staff_picks_link_3" href="#">third</a>
-
-	jQ('#grid_toggle').click(function () {
-		jQ('#maincontainer').toggleClass('showgrid');
-	});
-	*/
-
 {% endblock jq_ready %}
