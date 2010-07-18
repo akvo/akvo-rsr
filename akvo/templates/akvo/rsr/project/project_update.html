@@ -16,9 +16,9 @@
 			<h2 style="padding-top:20px;">{{u.title|capfirst}}</h2>
 		</div>
 		<div class="counter_badge">
-			<span style="display:none;">{% counter p %}</span>
-			{% cache 10 p.view_count %}
-				{{ p.view_count|intcomma }}
+			<span style="display:none;">{% counter u %}</span>
+			{% cache 10 u.view_count %}
+				{{ u.view_count|intcomma }}
 			{% endcache %}
 			<br />
 			<span>{% trans 'views' %}</span>
