@@ -36,6 +36,15 @@
 	#slide_box_2 {
 		/*background-color:orange;*/
 		}
+	
+	.staff_picks_link {
+		border-bottom:1px solid #ccc;
+		}
+	
+	#staff_picks_link_0 {
+		border-bottom:1px solid #888;
+		}
+		
 </style>
 {% endblock head %}
 
@@ -169,9 +178,9 @@
 		</div>
 		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;">
 			<p style="margin:0" class="small grey">
-				<a id="staff_picks_link_0">first</a> | 
-				<a id="staff_picks_link_1">second</a> | 
-				<a id="staff_picks_link_2">third</a>
+				<a id="staff_picks_link_0" class="staff_picks_link">first</a> | 
+				<a id="staff_picks_link_1" class="staff_picks_link">second</a> | 
+				<a id="staff_picks_link_2" class="staff_picks_link">third</a>
 			</p>
 		</div>
 	</div>
@@ -480,14 +489,20 @@
 	
 	jQ('#staff_picks_link_0').click(function () {
 		jQ('#slider').animate({'right': -1244}, 300);
+		jQ('.staff_picks_link').css("border-bottom","1px solid #ccc");
+		jQ('#staff_picks_link_0').css("border-bottom","1px solid #888");
 	});
 	
 	jQ('#staff_picks_link_1').click(function () {
-		jQ('#slider').animate({'right': -622}, 300);		
+		jQ('#slider').animate({'right': -622}, 300);
+		jQ('.staff_picks_link').css("border-bottom","1px solid #ccc");
+		jQ('#staff_picks_link_1').css("border-bottom","1px solid #888");
 	});
 	
 	jQ('#staff_picks_link_2').click(function () {
 		jQ('#slider').animate({'right': 0}, 300);
+		jQ('.staff_picks_link').css("border-bottom","1px solid #ccc");
+		jQ('#staff_picks_link_2').css("border-bottom","1px solid #888");
 	});
 	 
 	
