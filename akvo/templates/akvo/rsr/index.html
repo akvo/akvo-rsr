@@ -2,120 +2,169 @@
 
 {% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
 
+{% block head %}
+<style type="text/css" media="screen">
+	
+	#slide_box {
+		width:622px;
+		height:220px;
+		overflow:hidden;
+		position:relative;
+		max-height:220px;
+		}
+	
+	#slider {
+		position:absolute;
+		width:1866px;
+		height:220px;
+		right:-1244px;
+		}
+		
+	.slide_box_pic {
+		float:left;
+		position:relative;
+		width:622px;
+		height:220px;
+		}
+	
+	#slide_box_0 {
+		/*background-color:cyan;*/
+		}
+	#slide_box_1 {
+		/*background-color:yellow;*/
+		}
+	#slide_box_2 {
+		/*background-color:orange;*/
+		}
+</style>
+{% endblock head %}
+
+
 {% block breadcrum  %}{% endblock breadcrum  %}
 
 {% block maincontent %}
 <div class="two_column_left">
 	<h2>{% trans 'Project updates — Staff picks' %}</h2>
 	<div class="white_box">
-		<div class="space20" style="height:220px">
-			<div id="staff_picks_0" class="staff_picks">
-				<div class="counter_badge" style="margin-top:0; margin-right:0;">
-					<span style="display:none;">{% counter updates.0 %}</span>
-					{% cache 10 updates.0.view_count %}
-						{{ updates.0.view_count|intcomma }}
-					{% endcache %}
-					<br />
-					<span>{% trans 'views' %}</span>
+		<div class="space20" style="height:220px; overflow:hidden;">			
+			<div id="slide_box">
+				<div id="slider">
+					<div id="slide_box_0" class="slide_box_pic">
+						<div id="staff_picks_0" class="staff_picks">
+							<div class="counter_badge" style="margin-top:0; margin-right:0;">
+								<span style="display:none;">{% counter updates.0 %}</span>
+								{% cache 10 updates.0.view_count %}
+									{{ updates.0.view_count|intcomma }}
+								{% endcache %}
+								<br />
+								<span>{% trans 'views' %}</span>
+							</div>
+							<h2 style="margin-bottom:15px;">
+								<a href="{% url project_update updates.0.project.id updates.0.id %}">
+									{{updates.0.title|smart_truncate:35}}
+								</a>
+							</h2>
+							<div style="width:200px; float:left;">
+								<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" />
+								{% if updates.0.photo_caption %}
+									<p class="tiny grey">{{updates.0.photo_caption}}</p>
+								{% endif %}
+							</div>
+							<div style="width:300px; float:left; margin-left:20px;">
+								<p class="grey small">
+									{% trans 'Location' %}: {{updates.0.project.country}}
+								</p>
+							</div>
+							<div style="width:400px; float:left; margin-left:20px;">
+								<p>
+									{{updates.0.text|smart_truncate:200}}
+									<a href="{% url project_update updates.0.project.id updates.0.id %}">read more &gt;</a>
+								</p>
+								<p class="small grey">
+									{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
+								</p>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div id="slide_box_1" class="slide_box_pic">
+						<div id="staff_picks_1" class="staff_picks">
+							<div class="counter_badge" style="margin-top:0; margin-right:0;">
+								<span style="display:none;">{% counter updates.1 %}</span>
+								{% cache 10 updates.1.view_count %}
+									{{ updates.1.view_count|intcomma }}
+								{% endcache %}
+								<br />
+								<span>{% trans 'views' %}</span>
+							</div>
+							<h2 style="margin-bottom:15px;">
+								<a href="{% url project_update updates.1.project.id updates.1.id %}">
+									{{updates.1.title|smart_truncate:35}}
+								</a>
+							</h2>
+							<div style="width:200px; float:left;">
+								<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" />
+								{% if updates.1.photo_caption %}
+									<p class="tiny grey">{{updates.1.photo_caption}}</p>
+								{% endif %}
+							</div>
+							<div style="width:300px; float:left; margin-left:20px;">
+								<p class="grey">
+									{% trans 'Location' %}: {{updates.1.project.country}}
+								</p>
+							</div>
+							<div style="width:400px; float:left; margin-left:20px;">
+								<p>
+									{{updates.1.text|smart_truncate:200}}
+									<a href="{% url project_update updates.1.project.id updates.1.id %}">read more &gt;</a>
+								</p>
+								<p class="small grey">
+									{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
+								</p>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div id="slide_box_2" class="slide_box_pic">
+						<div id="staff_picks_2" class="staff_picks">
+							<div class="counter_badge" style="margin-top:0; margin-right:0;">
+								<span style="display:none;">{% counter updates.2 %}</span>
+								{% cache 10 updates.2.view_count %}
+									{{ updates.2.view_count|intcomma }}
+								{% endcache %}
+								<br />
+								<span>{% trans 'views' %}</span>
+							</div>
+							<h2 style="margin-bottom:15px;">
+								<a href="{% url project_update updates.2.project.id updates.2.id %}">
+									{{ updates.2.title|smart_truncate:35 }}
+								</a>
+							</h2>
+							<div style="width:200px; float:left;">
+								<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" />
+								{% if updates.2.photo_caption %}
+									<p class="tiny grey">{{ updates.2.photo_caption }}</p>
+								{% endif %}
+							</div>
+							<div style="width:300px; float:left; margin-left:20px;">
+								<p class="grey">
+									{% trans 'Location' %}: {{updates.2.project.country}}
+								</p>
+							</div>
+							<div style="width:400px; float:left; margin-left:20px;">
+								<p>
+									{{ updates.2.text|smart_truncate:200 }}
+									<a href="{% url project_update updates.2.project.id updates.2.id %}">read more &gt;</a>
+								</p>
+								<p class="small grey">
+									{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
+								</p>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div class="clear"></div>
 				</div>
-				<h2 style="margin-bottom:15px;">
-					<a href="{% url project_update updates.0.project.id updates.0.id %}">
-						{{updates.0.title|smart_truncate:35}}
-					</a>
-				</h2>
-				<div style="width:200px; float:left;">
-					<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" />
-					{% if updates.0.photo_caption %}
-						<p class="tiny grey">{{updates.0.photo_caption}}</p>
-					{% endif %}
-				</div>
-				<div style="width:300px; float:left; margin-left:20px;">
-					<p class="grey small">
-						{% trans 'Location' %}: {{updates.0.project.country}}
-					</p>
-				</div>
-				<div style="width:400px; float:left; margin-left:20px;">
-					<p>
-						{{updates.0.text|smart_truncate:200}}
-						<a href="{% url project_update updates.0.project.id updates.0.id %}">read more &gt;</a>
-					</p>
-					<p class="small grey">
-						{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
-					</p>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div id="staff_picks_1" class="staff_picks" style="display:none;">
-				<div class="counter_badge" style="margin-top:0; margin-right:0;">
-					<span style="display:none;">{% counter updates.1 %}</span>
-					{% cache 10 updates.1.view_count %}
-						{{ updates.1.view_count|intcomma }}
-					{% endcache %}
-					<br />
-					<span>{% trans 'views' %}</span>
-				</div>
-				<h2 style="margin-bottom:15px;">
-					<a href="{% url project_update updates.1.project.id updates.1.id %}">
-						{{updates.1.title|smart_truncate:35}}
-					</a>
-				</h2>
-				<div style="width:200px; float:left;">
-					<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" />
-					{% if updates.1.photo_caption %}
-						<p class="tiny grey">{{updates.1.photo_caption}}</p>
-					{% endif %}
-				</div>
-				<div style="width:300px; float:left; margin-left:20px;">
-					<p class="grey">
-						{% trans 'Location' %}: {{updates.1.project.country}}
-					</p>
-				</div>
-				<div style="width:400px; float:left; margin-left:20px;">
-					<p>
-						{{updates.1.text|smart_truncate:200}}
-						<a href="{% url project_update updates.1.project.id updates.1.id %}">read more &gt;</a>
-					</p>
-					<p class="small grey">
-						{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
-					</p>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div id="staff_picks_2" class="staff_picks" style="display:none;">
-				<div class="counter_badge" style="margin-top:0; margin-right:0;">
-					<span style="display:none;">{% counter updates.2 %}</span>
-					{% cache 10 updates.2.view_count %}
-						{{ updates.2.view_count|intcomma }}
-					{% endcache %}
-					<br />
-					<span>{% trans 'views' %}</span>
-				</div>
-				<h2 style="margin-bottom:15px;">
-					<a href="{% url project_update updates.2.project.id updates.2.id %}">
-						{{ updates.2.title|smart_truncate:35 }}
-					</a>
-				</h2>
-				<div style="width:200px; float:left;">
-					<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" />
-					{% if updates.2.photo_caption %}
-						<p class="tiny grey">{{ updates.2.photo_caption }}</p>
-					{% endif %}
-				</div>
-				<div style="width:300px; float:left; margin-left:20px;">
-					<p class="grey">
-						{% trans 'Location' %}: {{updates.2.project.country}}
-					</p>
-				</div>
-				<div style="width:400px; float:left; margin-left:20px;">
-					<p>
-						{{ updates.2.text|smart_truncate:200 }}
-						<a href="{% url project_update updates.2.project.id updates.2.id %}">read more &gt;</a>
-					</p>
-					<p class="small grey">
-						{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
-					</p>
-				</div>
-				<div class="clear"></div>
 			</div>
 		</div>
 		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;">
@@ -421,46 +470,6 @@
 				</table>
 			</div>
 		</div>
-		
-		{% comment %}
-			
-
-		<h2 style="margin-top:20px">To do</h2>
-		<div class="white_box">
-			<div class="space20">
-				<ul>
-					<li class="green">Project listing page</li>
-					<li class="green">Filtered project listing page</li>
-					<li class="yellow">Project</li>
-					<ul style="margin-bottom:0;">
-						<li>Main</li>
-						<li class="green">Get a widget</li>
-						<li class="green">Updates</li>
-						<li class="green">Donate pages</li>
-						<li class="green">Partners details (list distinct on name and not type)</li>
-						<li class="green">Funding details</li>
-						<li class="green">Add comments</li>
-					</ul>
-					<li class="green">Blog</li>
-					<li class="green">Account (new, password reset, change..)</li>
-					<li class="green">System error messages (permission denied..)</li>
-					<li class="green">My Akvo</li>
-					<li class="green">Rework partners tab</li>
-					<li class="green">Organisations</li>
-					<ul style="margin-bottom:0;">
-						<li class="green">Organisation listing (&amp; <a href="{% url rsr_org_list_filtered 'sponsor' %}">partner types</a>)</li>
-						<li class="green">Oragnisation page</li>
-						<li class="green">LE &amp; WW landing page</li>
-					</ul>
-					<li class="green">Counter badges</li>
-					<li class="green">Update footer links</li>
-					<li class="green">Akvopedia template</li>
-					<li class="green">CMS template (Drupal theme)</li>
-					<li class="yellow">Front page</li>
-				</ul>
-			</div>
-		</div>
-		{% endcomment %}	
 	</div>
 </div>
 
@@ -468,20 +477,18 @@
 
 {% block jq_ready %}
 	{{ block.super }}
-
+	
 	jQ('#staff_picks_link_0').click(function () {
-		jQ('.staff_picks').hide();
-		jQ('#staff_picks_0').show('slow');
+		jQ('#slider').animate({'right': -1244}, 300);
 	});
 	
 	jQ('#staff_picks_link_1').click(function () {
-		jQ('.staff_picks').hide();
-		jQ('#staff_picks_1').show('slow');	
+		jQ('#slider').animate({'right': -622}, 300);		
 	});
 	
 	jQ('#staff_picks_link_2').click(function () {
-		jQ('.staff_picks').hide();
-		jQ('#staff_picks_2').show('slow');	
+		jQ('#slider').animate({'right': 0}, 300);
 	});
+	 
 	
 {% endblock jq_ready %}
