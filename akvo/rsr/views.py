@@ -338,7 +338,8 @@ def orglist(request, org_type='all'):
     stats: the aggregate projects data
     page: paginated orgs
     '''
-    orgs = Organisation.objects
+    #orgs = Organisation.objects
+    orgs = Organisation.objects.select_related()
     if org_type == 'field':
         orgs = orgs.fieldpartners()
     elif org_type == 'support':
@@ -362,14 +363,15 @@ def orglist(request, org_type='all'):
         orgs = orgs.order_by(order_by, 'name')
     except:
         pass
+        
+    # import pdb; pdb.set_trace()
+    # assert False
     
     query_string = ''
     found_entries = None
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
         org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','description','contact_email',])
-        #projs = Project.objects.filter(project_query)
-        #orgs = Organisation.objects.filter(org_query)
         orgs = orgs.filter(org_query)
     
 
@@ -378,7 +380,6 @@ def orglist(request, org_type='all'):
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
     return {
-        'projs': projs,
         'orgs': orgs,
         'org_type': org_type,
         'page': page,
@@ -911,18 +912,24 @@ def projectmain(request, project_id):
     comments: the three latest comments
     form: the comment form
     '''
+    #form        = CommentForm()
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-    form        = CommentForm()
+    
+    #updates_with_images = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('time')
+    #Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+    
+    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('time')
     
     return {
         'p': p, 
         'updates': updates, 
         'comments': comments, 
-        'form': form, 
+        #'form': form, 
         'can_add_update': p.connected_to_user(request.user),
         'site_section': 'projects',
+        'updates_with_images': updates_with_images,
         }
 
 @render_to('rsr/project/project_details.html')    

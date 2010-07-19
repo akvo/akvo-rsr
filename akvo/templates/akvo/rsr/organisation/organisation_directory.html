@@ -68,6 +68,7 @@
 	</div>
 </form>
 
+{% cache RSR_CACHE_SECONDS organisation_directory_table request.META.PATH_INFO request.META.QUERY_STRING lang %}
 <div class="span-18" style="background-color:#fff; margin-top:15px;">
 	<div class="round" style="border: 1px solid #ccc;">
 		<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
@@ -139,13 +140,15 @@
 					<div class="space10">
 						<p style="margin:0;">
 							<a href="{% url akvo.rsr.views.orgdetail o.id %}">
-					        {% org_logo o 100 75 'margin-right: 10px; float: left;' %}</a>
-							<a href="{% url akvo.rsr.views.orgdetail o.id %}">
-							{{o.name}}
-					        </a><br />
+								<img src="{% thumbnail o.logo 100x75 autocrop,upscale,sharpen %}" />
+								{% comment %}
+									<img src="{% thumbnail o.logo 100x75 autocrop,upscale,sharpen %}" alt="" />
+									{% org_logo o 100 75 'margin-right: 10px; float: left;' %}
+								{% endcomment %}
+							</a>
+							<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a><br />
 							<span class="grey small">{{o.long_name}}</span>
 						</p>
-						{#{% category_icons_org o %}#}
 						<span style="display:none;">{% counter o %}</span>
 					</div>
 				</div>
@@ -262,24 +265,5 @@
 		</div>
 	</div>
 </div>
-{% comment %}
-<div>	
-	<ul>
-	{% for o in page.object_list %}
-	<li>{{o.name}}</li>
-	{% endfor %}
-	</ul>
-</div>
-{% endcomment %}
-	
-{% comment %}
-<div class="span-18" style="background-color:#fff">
-	<div class="white_box">
-		<div style="margin:20px;">
-			
-				
-		</div>
-	</div>
-</div>
-{% endcomment %}
+{% endcache %}
 {% endblock maincontent %}

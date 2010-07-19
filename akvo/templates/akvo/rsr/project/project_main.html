@@ -24,6 +24,14 @@
 			<div style="float:left; width:328px;">
 				{% project_thumb p 328 246 'margin:0px;' %}
 				<p class="small grey">{{p.current_image_caption}}</p>
+				<div style="background-color:orange;">
+					<img src="{% thumbnail p.current_image 100x75 %}" style="float:left; margin:10px;" />
+					
+					{% for update in updates_with_images %}
+						<img src="{% thumbnail update.photo 100x75 %}" style="float:left; margin:10px;" />
+					{% endfor %}
+				</div>
+				
 			</div>
 			<div style="float:left; width:30px;">&nbsp;</div>
 			<div style="float:left; width:262px;">
