@@ -26,11 +26,11 @@ class ViewCountRecorder:
         self.view_counter_dictionary = {}
 
     def record_view_counts(self, latest_view_count_dictionary):
-        for project_identifier, view_count in latest_view_count_dictionary.iteritems():
-            if project_identifier in self.view_counter_dictionary:
-                self.view_counter_dictionary[project_identifier].record_view_count(view_count)
+        for counter_identifier, view_count in latest_view_count_dictionary.iteritems():
+            if counter_identifier in self.view_counter_dictionary:
+                self.view_counter_dictionary[counter_identifier].record_view_count(view_count)
             else:
-                self.view_counter_dictionary[project_identifier] = ViewCounter(project_identifier, view_count)
+                self.view_counter_dictionary[counter_identifier] = ViewCounter(counter_identifier, view_count)
 
     def at_least_one_view_count_has_increased(self):
         for view_counter in self.view_counter_dictionary.values():

@@ -24,17 +24,11 @@ class ViewCountVerifier:
         self.expected_exact_value = exact_value
         return self
 
-    def view_count_at_xpath(self, view_count_xpath):
-        self.view_counts_at_xpath(view_count_xpath)
-
     def view_counts_at_xpath(self, view_count_xpath):
         self.verify_elements_at_xpath(view_count_xpath)
 
-    def project_identifier_at_xpath(self, project_identifier_xpath):
-        self.project_identifiers_at_xpath(project_identifier_xpath)
-
-    def project_identifiers_at_xpath(self, project_identifier_xpath):
-        self.verify_elements_at_xpath(project_identifier_xpath)
+    def counter_identifiers_at_xpath(self, counter_identifier_xpath):
+        self.verify_elements_at_xpath(counter_identifier_xpath)
 
     def verify_elements_at_xpath(self, element_xpath):
         self.test_case.assert_element(self.page_root).has_exactly(self.expected_exact_value).elements_matching_xpath(element_xpath)
@@ -45,9 +39,9 @@ class ViewCountVerifier:
         self.current_view_counts = map(lambda view_count_element: view_count_element.split(' ')[0], view_count_text_elements)
         return self
 
-    def with_project_identifiers_at(self, project_identifier_xpath):
-        self.current_project_identifiers = values_at_xpath(self.page_root, project_identifier_xpath)
-        self.view_count_recorder.record_view_counts(dict(zip(self.current_project_identifiers, self.current_view_counts)))
+    def with_counter_identifiers_at(self, counter_identifier_xpath):
+        self.current_identifiers = values_at_xpath(self.page_root, counter_identifier_xpath)
+        self.view_count_recorder.record_view_counts(dict(zip(self.current_identifiers, self.current_view_counts)))
 
     def verify_counts_have_incremented_as_expected(self):
         self.test_case.failUnless(self.view_count_recorder.at_least_one_view_count_has_increased(),
