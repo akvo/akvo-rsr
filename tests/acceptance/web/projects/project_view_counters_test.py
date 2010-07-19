@@ -25,7 +25,9 @@ class ProjectViewCountersTest(ElementParsingTestCase):
     def test_02_project_listing_page_has_view_counters_for_featured_projects(self):
         """web.projects.ProjectViewCountersTest  2. Project listing page has view counters for featured projects"""
 
-        self.fail("View counters for featured projects not implemented")
+        self.verify_multiple_view_counters_on_page("http://test.akvo.org/rsr/projects", 3,
+                                                   "//table[@id='project_showcase']/tr/td/div[3]/span",
+                                                   "//table[@id='project_showcase']/tr/td/a/@href")
 
     def test_03_project_listing_page_has_view_counters_for_each_listed_project(self):
         """web.projects.ProjectViewCountersTest  3. Project listing page has view counters for each listed project"""
