@@ -43,7 +43,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<div id="container" style="background-color:white; border-bottom:1px solid #9B9AAC;">
 		<div id="header" style="padding-top:1px; padding-bottom:1px;">
 			<h1>Project</h1>
-			<span style="display:none;">{% counter project %}</span>
+			<div style="float:right; padding-top:6px;">
+				<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-right:10px; display:none;">
+					<span style="display:none;">{% counter project %}</span>
+		        	{% cache 10 project.view_count %}
+		        		{{ project.view_count|intcomma }} {% trans 'views' %}
+		        	{% endcache %}
+				</span>
+			</div>
 		</div>
 		<div id="content">
 			<div id="heightconstrain">

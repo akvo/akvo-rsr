@@ -146,7 +146,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
 		</div>
 		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
-		<span style="display:none;">{% counter project %}</span>
+		
+		<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:20px; display:none;">
+			<span style="display:none;">{% counter project %}</span>
+        	{% cache 10 project.view_count %}
+        		{{ project.view_count|intcomma }} {% trans 'views' %}
+        	{% endcache %}
+		</span>
+		
 	</div>
 	<div id="contentwrapper" style="float:left; width:100%; height:202px">
 		<div id="left" style="float:left; width:284px;">
