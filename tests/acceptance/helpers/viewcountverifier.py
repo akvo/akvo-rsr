@@ -5,7 +5,7 @@
 from helpers.constraintmatchers import *
 from helpers.elementparsing import *
 
-from web.projects.viewcountrecorder import ViewCountRecorder
+from helpers.viewcountrecorder import ViewCountRecorder
 
 
 class ViewCountVerifier:

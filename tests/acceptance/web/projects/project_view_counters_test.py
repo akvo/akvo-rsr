@@ -8,7 +8,7 @@ from helpers.elementparsing import *
 from helpers.testexecution import *
 
 from testcases.elementparsingtestcase import ElementParsingTestCase
-from web.projects.viewcountverifier import ViewCountVerifier
+from helpers.viewcountverifier import ViewCountVerifier
 
 
 class ProjectViewCountersTest(ElementParsingTestCase):
