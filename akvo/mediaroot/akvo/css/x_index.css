@@ -1,3 +1,45 @@
+#slide_box {
+	width:622px;
+	height:220px;
+	overflow:hidden;
+	position:relative;
+	max-height:220px;
+	}
+
+#slider {
+	position:absolute;
+	width:1866px;
+	height:220px;
+	right:-1244px;
+	}
+	
+.slide_box_pic {
+	float:left;
+	position:relative;
+	width:622px;
+	height:220px;
+	}
+
+#slide_box_0 {
+	/*background-color:cyan;*/
+	}
+#slide_box_1 {
+	/*background-color:yellow;*/
+	}
+#slide_box_2 {
+	/*background-color:orange;*/
+	}
+
+a.staff_picks_link {
+	border-bottom:1px solid #ccc;
+	text-decoration:none;
+	}
+		
+#staff_picks_link_0 {
+	border-bottom:1px solid #888;
+	}
+
+
 .front_sponsor_box {
     width:321px;
     }

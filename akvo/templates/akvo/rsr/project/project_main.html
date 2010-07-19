@@ -2,6 +2,13 @@
 
 {% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail google_maps counter_tags %}
 
+{% block head %}
+<style type="text/css" media="screen">
+	
+</style>
+	
+{% endblock head %}
+
 {% block breadcrum_items %}
 {{block.super}}
 <li id="last_breadcrum_item">{{p.name}}</li>
@@ -24,14 +31,44 @@
 			<div style="float:left; width:328px;">
 				{% project_thumb p 328 246 'margin:0px;' %}
 				<p class="small grey">{{p.current_image_caption}}</p>
-				<div style="background-color:orange;">
-					<img src="{% thumbnail p.current_image 100x75 %}" style="float:left; margin:10px;" />
-					
-					{% for update in updates_with_images %}
-						<img src="{% thumbnail update.photo 100x75 %}" style="float:left; margin:10px;" />
-					{% endfor %}
-				</div>
+				<style type="text/css" media="screen">
+					div#gallery_box {
+						background-color:#fff;
+						overflow:hidden; 
+						position:relative; 
+						height:120px;
+						width:325px;
+						max-width:325px;
+						border:1px solid #ccc;
+						}
+					div#gallery_box_slider {
+						position:absolute;
+						height:95px;
+						width:1000px;
+						left:0;
+						}
+					#gallery_box_slider img {
+						float:left;
+						margin:10px;
+						}
+						
+				</style>
 				
+				<div id="gallery_box" class="round">
+					<div style="float:right; margin-right:5px;">
+						<span class="tiny">
+							<a id="prev">&lt;&lt;</a> | <a id="next">&gt;&gt;</a>
+						</span>
+					</div>
+					<div class="clear"></div>
+					
+					<div id="gallery_box_slider">
+						{% for update in updates_with_images %}
+							<img src="{% thumbnail update.photo 100x75 %}" />
+						{% endfor %}
+						<img src="{% thumbnail p.current_image 100x75 %}" />
+					</div>
+				</div>
 			</div>
 			<div style="float:left; width:30px;">&nbsp;</div>
 			<div style="float:left; width:262px;">
@@ -130,7 +167,6 @@
 					            <p><a href="{{link.url}}">{{link.caption}}</a></p>
 							{% endifequal %}
 						{% endfor %}
-						
 					{% endif %}
 				</div>
 			</div>
@@ -147,8 +183,16 @@
 
 {% block jq_ready %}
 	jQ('#project_tabs').tabs();
-	
 	{{block.super}}
+	
+	jQ('#prev').click(function () {
+		jQ('#gallery_box_slider').animate({'left': '+=250px'}, 0);
+	});
+	
+	jQ('#next').click(function () {
+		jQ('#gallery_box_slider').animate({'left': '-=250px'}, 0);
+	});
+	
 {% endblock jq_ready %}
 
 

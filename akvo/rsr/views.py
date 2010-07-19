@@ -338,8 +338,8 @@ def orglist(request, org_type='all'):
     stats: the aggregate projects data
     page: paginated orgs
     '''
-    #orgs = Organisation.objects
-    orgs = Organisation.objects.select_related()
+    orgs = Organisation.objects
+    #orgs = Organisation.objects.select_related()
     if org_type == 'field':
         orgs = orgs.fieldpartners()
     elif org_type == 'support':
