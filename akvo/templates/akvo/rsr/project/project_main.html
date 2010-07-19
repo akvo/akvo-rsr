@@ -186,11 +186,11 @@
 	{{block.super}}
 	
 	jQ('#prev').click(function () {
-		jQ('#gallery_box_slider').animate({'left': '+=250px'}, 0);
+		jQ('#gallery_box_slider').animate({'left': '+=250px'}, 300);
 	});
 	
 	jQ('#next').click(function () {
-		jQ('#gallery_box_slider').animate({'left': '-=250px'}, 0);
+		jQ('#gallery_box_slider').animate({'left': '-=250px'}, 300);
 	});
 	
 {% endblock jq_ready %}
