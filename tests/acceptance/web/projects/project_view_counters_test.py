@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from helpers.elementparsing import *
+from helpers.rsrpath import *
 from helpers.testexecution import *
 
 from testcases.elementparsingtestcase import ElementParsingTestCase
@@ -19,21 +20,21 @@ class ProjectViewCountersTest(ElementParsingTestCase):
     def test_01_home_page_has_view_counters_for_featured_projects(self):
         """web.projects.ProjectViewCountersTest  1. Home page has view counters for featured projects"""
 
-        self.count_verifier.verify_multiple_view_counters_on_page("http://test.akvo.org", 3,
+        self.count_verifier.verify_multiple_view_counters_on_page(home_page_path(), 3,
                                                                   "//div[@class='featured_update']/div/div/p[2]",
                                                                   "//div[@class='featured_update']/div/div/span/img/@src")
 
     def test_02_project_listing_page_has_view_counters_for_featured_projects(self):
         """web.projects.ProjectViewCountersTest  2. Project listing page has view counters for featured projects"""
 
-        self.count_verifier.verify_multiple_view_counters_on_page("http://test.akvo.org/rsr/projects", 3,
+        self.count_verifier.verify_multiple_view_counters_on_page(project_listing_path(), 3,
                                                                   "//table[@id='project_showcase']/tr/td/div[3]/span",
                                                                   "//table[@id='project_showcase']/tr/td/div[3]/span/span/img/@src")
 
     def test_03_project_listing_page_has_view_counters_for_each_listed_project(self):
         """web.projects.ProjectViewCountersTest  3. Project listing page has view counters for each listed project"""
 
-        projects_page_root = create_html_element_root_from("http://test.akvo.org/rsr/projects")
+        projects_page_root = create_html_element_root_from(project_listing_path())
         self.count_verifier.set_page_root(projects_page_root)
 
         # listed projects don't yet have counter images so we use the project URL as the view counter identifier
@@ -49,14 +50,14 @@ class ProjectViewCountersTest(ElementParsingTestCase):
     def test_04_project_page_has_view_counter(self):
         """web.projects.ProjectViewCountersTest  4. Project page has view counter"""
 
-        self.count_verifier.verify_single_view_counter_on_page("http://test.akvo.org/rsr/project/170",
+        self.count_verifier.verify_single_view_counter_on_page(project_path(170),
                                                                "//div[@id='outer_leftwing']/div/h1/span",
                                                                "//div[@id='outer_leftwing']/div/h1/span/span/img/@src")
 
     def test_05_project_updates_page_has_view_counter(self):
         """web.projects.ProjectViewCountersTest  5. Project updates page has view counter"""
 
-        self.count_verifier.verify_single_view_counter_on_page("http://test.akvo.org/rsr/project/170/updates",
+        self.count_verifier.verify_single_view_counter_on_page(project_updates_path(170),
                                                                "//div[@id='outer_leftwing']/div/h1/span",
                                                                "//div[@id='outer_leftwing']/div/h1/span/span/img/@src")
 
