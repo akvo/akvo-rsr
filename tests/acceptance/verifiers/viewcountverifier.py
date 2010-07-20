@@ -4,7 +4,7 @@
 
 from helpers.elementparsing import *
 
-from helpers.viewcountrecorder import ViewCountRecorder
+from verifiers.viewcountrecorder import ViewCountRecorder
 
 
 class ViewCountVerifier:
