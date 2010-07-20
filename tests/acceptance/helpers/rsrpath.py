@@ -12,10 +12,16 @@ def project_listing_path():
     return rsr_path("projects")
 
 def project_path(project_number):
-    return rsr_path("project/%i" % project_number)
+    return rsr_path(_project_number_path(project_number))
 
 def project_updates_path(project_number):
     return _url_path(project_path(project_number), "/updates")
+
+def widget_path_for_project(project_number, widget_type):
+    return rsr_path("widget/%s/%s" % (widget_type, _project_number_path(project_number)))
+
+def _project_number_path(project_number):
+    return "project/%i" % project_number
 
 def rsr_path(subpath):
     return _url_path(SITE_UNDER_TEST, "/rsr/%s" % subpath)

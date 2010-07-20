@@ -22,15 +22,20 @@ class RSRPathTest(TestCase):
 
         self.verify_path(self.url_path(SITE_UNDER_TEST, "/rsr/projects"), project_listing_path())
 
-    def test_can_get_path_for_a_specific_rsr_project(self):
-        """helpers.unittests.RSRPathTest  Can get path for a specific RSR project"""
+    def test_can_get_path_for_a_specified_rsr_project(self):
+        """helpers.unittests.RSRPathTest  Can get path for a specified RSR project"""
 
         self.verify_path(self.url_path(SITE_UNDER_TEST, "/rsr/project/108"), project_path(108))
 
-    def test_can_get_project_updates_path_for_a_specific_rsr_project(self):
-        """helpers.unittests.RSRPathTest  Can get project updates path for a specific RSR project"""
+    def test_can_get_project_updates_path_for_a_specified_rsr_project(self):
+        """helpers.unittests.RSRPathTest  Can get project updates path for a specified RSR project"""
 
         self.verify_path(self.url_path(SITE_UNDER_TEST, "/rsr/project/108/updates"), project_updates_path(108))
+
+    def test_can_get_widget_path_for_a_specified_rsr_project_and_widget_type(self):
+        """helpers.unittests.RSRPathTest  Can get widget path for a specified RSR project and widget type"""
+
+        self.verify_path(self.url_path(SITE_UNDER_TEST, "/rsr/widget/cobranded-short/project/108"), widget_path_for_project(108, "cobranded-short"))
 
     def url_path(self, base_url, path):
         return "%s%s" % (base_url, path)
