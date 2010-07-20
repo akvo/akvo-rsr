@@ -119,6 +119,13 @@ def wordpress_get_lastest_posts(connection, limit):
     from django.db import connections
     cursor = connections[connection].cursor()
     try:
+        cursor.execute("SELECT option_value FROM wp_options where option_id = 1")
+        option_rows = cursor.fetchall()
+        site_url = option_rows[0][0]
+    except:
+        site_url = 'http://akvo.org/blog'
+    
+    try:
         cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
         rows = cursor.fetchall()
     except:
@@ -146,6 +153,6 @@ def wordpress_get_lastest_posts(connection, limit):
         for text in post_p:
             p = '%s%s' % (p, text)
         
-        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': post[18], })
+        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), })
 
     return posts
