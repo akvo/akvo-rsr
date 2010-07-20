@@ -2,7 +2,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from helpers.constraintmatchers import *
 from helpers.elementparsing import *
 
 from helpers.viewcountrecorder import ViewCountRecorder
@@ -10,9 +9,21 @@ from helpers.viewcountrecorder import ViewCountRecorder
 
 class ViewCountVerifier:
 
-    def __init__(self, view_counter_test_case):
-        self.test_case = view_counter_test_case
+    def __init__(self, element_parsing_test_case):
+        self.test_case = element_parsing_test_case
         self.view_count_recorder = ViewCountRecorder()
+
+    def verify_single_view_counter_on_page(self, page_url, view_count_xpath, counter_identifier_xpath):
+        self.verify_multiple_view_counters_on_page(page_url, 1, view_count_xpath, counter_identifier_xpath)
+
+    def verify_multiple_view_counters_on_page(self, page_url, expected_number_of_view_counters, view_count_xpath, counter_identifier_xpath):
+        self.open_page(page_url)
+        self.verify_expected_view_counters(expected_number_of_view_counters, view_count_xpath, counter_identifier_xpath)
+
+    def verify_expected_view_counters(self, expected_number_of_view_counters, view_count_xpath, counter_identifier_xpath):
+        self.expect_exactly(expected_number_of_view_counters).view_counts_at_xpath(view_count_xpath)
+        self.expect_exactly(expected_number_of_view_counters).counter_identifiers_at_xpath(counter_identifier_xpath)
+        self.can_read_view_counts_at(view_count_xpath).with_counter_identifiers_at(counter_identifier_xpath)
 
     def open_page(self, page_url):
         self.set_page_root(create_html_element_root_from(page_url))
