@@ -9,7 +9,7 @@ import os
 # options are 'normal' or 'ci' for continuous integration
 TEST_MODE = 'ci'
 
-BROWSER_ENVIRONMENT = "*firefox"
+BROWSER_ENVIRONMENT = "*firefox /usr/bin/firefox-bin"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 

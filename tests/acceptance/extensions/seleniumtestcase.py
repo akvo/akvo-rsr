@@ -9,23 +9,13 @@ from unittest import TestCase
 
 from test_settings import *
 
+from helpers.seleniumclient import SeleniumClient
+
 class SeleniumTestCase(TestCase):
 
     @classmethod
     def setup_class(cls):
-        try:
-            cls.selenium = selenium(SELENIUM_RC_HOST, SELENIUM_RC_PORT, BROWSER_ENVIRONMENT, SITE_UNDER_TEST)
-            cls.selenium.start()
-        except Exception, exception:
-            print ">> Unable to start Selenium RC client: %s" % (exception)
-            raise exception
-
-    @classmethod
-    def teardown_class(cls):
-        try:
-            cls.selenium.stop()
-        except Exception, exception:
-            print ">> Unable to stop Selenium RC client: %s" % (exception)
+        cls.selenium = SeleniumClient().instance()
 
     def setUp(self):
         self.verification_errors = []
@@ -35,7 +25,7 @@ class SeleniumTestCase(TestCase):
 
     def assert_location_contains(self, expected_text):
         self.failIf(self.selenium.get_location().find(expected_text) == -1,
-                    "Page URL should contain: %s" % (expected_text))
+                    "\nPage URL should contain: %s\n             Actual URL: %s" % (expected_text, self.selenium.get_location()))
 
     def assert_title_is(self, expected_title):
         self.failUnlessEqual(expected_title, self.selenium.get_title(),
@@ -43,8 +33,13 @@ class SeleniumTestCase(TestCase):
 
     def assert_title_starts_with(self, expected_title_start):
         self.failUnless(self.selenium.get_title().startswith(expected_title_start),
-                        "\nExpected page title to start with: %s\n                Actual page title: %s" %
-                        (expected_title_start, self.selenium.get_title()))
+                        "\nPage title should start with: %s\n           Actual page title: %s" %
+                            (expected_title_start, self.selenium.get_title()))
+
+    def assert_title_contains(self, expected_title_content):
+        self.failIf(self.selenium.get_title().find(expected_title_content) == -1,
+                    "\nPage title should contain: %s\n        Actual page title: %s" %
+                        (expected_title_content, self.selenium.get_title()))
 
     def assert_page_contains_text(self, expected_text):
         self.failUnless(self.selenium.is_text_present(expected_text), "Page should contain: %s" % (expected_text))
@@ -65,6 +60,9 @@ class SeleniumTestCase(TestCase):
         self.failUnlessEqual(expected_text, actual_text,
             "\nExpected text at %s: %s\nActual text: %s" % (text_xpath, expected_text, actual_text))
 
+    def verify_field_is_required_warning_at_path(self, expected_warning_xpath):
+        self.verify_text_at_path("This field is required.", expected_warning_xpath)
+
     def verify_attribute_value_at_path(self, expected_attribute_value, attribute_xpath):
         actual_attribute_value = self.selenium.get_attribute(attribute_xpath)
         self.failUnlessEqual(expected_attribute_value, actual_attribute_value,
@@ -82,5 +80,17 @@ class SeleniumTestCase(TestCase):
                 (element_path, expected_element_height, actual_element_height))
 
     def assert_link_exists(self, expected_link_text):
-        self.failUnlessEqual(expected_link_text, self.selenium.get_text("link=%s" % (expected_link_text)),
+        self.failUnless(self.selenium.is_element_present("link=%s" % (expected_link_text)),
             "Expected [%s] link to exist" % (expected_link_text))
+
+    def assert_link_exists_starting_with_text(self, expected_link_text):
+        self.failUnless(self.selenium.is_element_present("link=%s*" % (expected_link_text)),
+            "Expected link starting with [%s] to exist" % (expected_link_text))
+
+    def assert_submit_button_with_text_exists(self, expected_button_text):
+        self.failUnless(self.selenium.is_element_present("//input[@value=\"%s\"]" % (expected_button_text)),
+            "Expected [%s] button to exist" % (expected_button_text))
+
+    def assert_field_with_id_exists(self, expected_field_id):
+        self.failUnless(self.selenium.is_element_present("//input[@id=\"%s\"]" % (expected_field_id)),
+            "Expected field with ID: [%s]" % (expected_field_id))

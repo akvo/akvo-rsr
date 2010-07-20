@@ -10,4 +10,4 @@ akvo/mediaroot/db
 scripts/deployment/static_project_structure.py
 tests/acceptance/test_settings.py
 akvo/data
-mollie_banklist.xml
+akvo/mollie_banklist.xml

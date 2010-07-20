@@ -1232,11 +1232,16 @@ def mollie_report(request):
 @csrf_exempt
 @require_POST
 @render_to('rsr/project/donate/donate_thanks.html')
+>>>>>>> integration_counters_django12
 def paypal_thanks(request):
     invoice_id = request.POST.get('invoice', None)
     if invoice_id:
         invoice = Invoice.objects.get(pk=invoice_id)
-        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+        return render_to_response('rsr/donate_thanks.html',
+                                  {'invoice': invoice,
+                                   'p': invoice.project,
+                                   'user': invoice.user},
+                                  context_instance=RequestContext(request))
     return redirect('/')
 
 @require_GET

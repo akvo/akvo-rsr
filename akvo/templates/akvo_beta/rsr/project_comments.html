@@ -62,6 +62,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
         {% else %}
             <form enctype="multipart/form-data" method="post" action="{% url akvo.rsr.views.commentform p.id %}">
+                {% csrf_token %}
                 {{form.comment}}
                 <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a><input type="submit" value="{% trans 'Submit' %}" class="submit" /></p>
                 
