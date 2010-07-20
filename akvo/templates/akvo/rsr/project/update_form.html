@@ -10,7 +10,7 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-	<form enctype="multipart/form-data" method="post" action="" name="add_update_form">
+	<form enctype="multipart/form-data" method="post" action="" name="add_update_form">{% csrf_token %}
 		<div class="space20">
 			{% if form.non_field_errors %}
 	        	<div class="error">
