@@ -46,7 +46,7 @@ class ViewCountVerifier:
 
     def can_read_view_counts_at(self, view_count_xpath):
         # where view count text is of the form 'n views'
-        view_count_text_elements = text_for_elements_at_xpath(self.page_root, view_count_xpath)
+        view_count_text_elements = text_values_at_xpath(self.page_root, view_count_xpath)
         self.current_view_counts = map(lambda view_count_element: view_count_element.split(' ')[0], view_count_text_elements)
         return self
 

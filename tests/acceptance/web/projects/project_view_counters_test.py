@@ -44,7 +44,7 @@ class ProjectViewCountersTest(ElementParsingTestCase):
 
     def number_of_listed_projects_in(self, projects_page_root):
         # where the project totals text is of the form: Projects 1-10 of 155
-        projects_totals_text = text_for_elements_at_xpath(projects_page_root, "//div[@id='page_project_directory']/div[2]/div/span")[0]
+        projects_totals_text = text_values_at_xpath(projects_page_root, "//div[@id='page_project_directory']/div[2]/div/span")[0]
         return int(projects_totals_text.split(' ')[1].split('-')[1])
 
     def test_04_project_page_has_view_counter(self):
