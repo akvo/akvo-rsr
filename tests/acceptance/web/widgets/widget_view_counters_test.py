@@ -16,13 +16,13 @@ class WidgetViewCountersTest(ElementParsingTestCase):
     def setUp(self):
         self.count_verifier = ViewCountVerifier(self)
 
-    def test_01_cobranded_narrow_widget_has_view_counter_in_footer(self):
-        """web.widgets.WidgetViewCountersTest  1. Cobranded narrow widget has view counter in footer"""
+    def test_01_narrow_cobranded_widget_has_view_counter_in_footer(self):
+        """web.widgets.WidgetViewCountersTest  1. Narrow cobranded widget has view counter in footer"""
 
         self.verify_widget_has_standard_view_counter_in_footer("cobranded-narrow")
 
-    def test_02_cobranded_short_widget_has_view_counter_in_footer(self):
-        """web.widgets.WidgetViewCountersTest  2. Cobranded short widget has view counter in footer"""
+    def test_02_short_cobranded_widget_has_view_counter_in_footer(self):
+        """web.widgets.WidgetViewCountersTest  2. Short cobranded widget has view counter in footer"""
 
         self.verify_widget_has_standard_view_counter_in_footer("cobranded-short")
 
@@ -35,6 +35,31 @@ class WidgetViewCountersTest(ElementParsingTestCase):
         """web.widgets.WidgetViewCountersTest  4. Cobranded leader widget has view counter in header"""
 
         self.verify_widget_has_standard_view_counter_in_header("cobranded-leader")
+
+    def test_05_narrow_project_widget_has_view_counter_in_footer(self):
+        """web.widgets.WidgetViewCountersTest  5. Narrow project widget has view counter in footer"""
+
+        self.verify_widget_has_standard_view_counter_in_footer("project-narrow")
+
+    def test_06_project_updates_widget_has_view_counter_in_footer(self):
+        """web.widgets.WidgetViewCountersTest  6. Project updates widget has view counter in footer"""
+
+        self.verify_widget_has_standard_view_counter_in_footer("project-updates")
+
+    def test_07_project_widget_with_donation_link_has_view_counter_in_footer(self):
+        """web.widgets.WidgetViewCountersTest  7. Project widget with donation link has view counter in footer"""
+
+        self.verify_widget_has_standard_view_counter_in_footer("project-contribute")
+
+    def test_08_small_project_widget_has_view_counter_in_header(self):
+        """web.widgets.WidgetViewCountersTest  8. Small project widget has view counter in header"""
+
+        self.verify_widget_has_standard_view_counter_at_xpath("project-small", "//div[@id='header']/div/span")
+
+    def test_09_side_feature_project_widget_with_donation_link_has_view_counter_in_footer(self):
+        """web.widgets.WidgetViewCountersTest  9. Side feature project widget with donation link has view counter in footer"""
+
+        self.verify_widget_has_standard_view_counter_in_footer("feature-side")
 
     def verify_widget_has_standard_view_counter_in_footer(self, widget_type):
         self.verify_widget_has_standard_view_counter_at_xpath(widget_type, "//div[@id='footer']/div/span")
