@@ -21,7 +21,7 @@ def elements_tostring(element_root):
     return etree.tostring(element_root, pretty_print=True)
 
 def text_values_at_xpath(element_search_root, elements_xpath):
-    trimmed_text_values = map(lambda text: text.strip(), element_search_root.xpath("%s/text()" % (elements_xpath)))
+    trimmed_text_values = map(lambda text: text.strip(), values_at_xpath(element_search_root, "%s/text()" % elements_xpath))
     return filter(lambda text: len(text) > 0, trimmed_text_values)
 
 def values_at_xpath(element_search_root, values_xpath):
