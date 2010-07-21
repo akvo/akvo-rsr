@@ -91,7 +91,7 @@
 		</h1>
 	{% endif %}
 	
-	<form action="." method="get" accept-charset="utf-8">
+	<form action="." method="get" accept-charset="utf-8">{% csrf_token %}
 		<div id="project_search" class="span-18">
 			<div class="round" style="border: 1px solid #ccc;">
 				<div class="space15">

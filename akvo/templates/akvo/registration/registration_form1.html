@@ -12,7 +12,7 @@
 {% block content %}
 	<h1>{% trans 'Set up your account' %}</h1>
 	<hr />
-	<form name="registrationForm" method="post" action="">
+	<form name="registrationForm" method="post" action="">{% csrf_token %}
 		{% if form.non_field_errors  %}
 			<div class="error">
 				<p><b>{% trans 'A problem occurred' %}:</b></p>

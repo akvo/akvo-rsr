@@ -18,7 +18,7 @@
 				<div style="float:left; width:465px;">
 					<div class="white_box" style="background-color:#D0FFFF;margin-right:30px;">
 						<div class="space20">
-							<form id="sign_in" class="boxbody" method="post" action="">
+							<form id="sign_in" class="boxbody" method="post" action="">{% csrf_token %}
 							    <h3>{% trans 'I have an online account' %}</h3>
 								<div style="margin-left:15px; margin-top:20px;">
 									<label for="id_username">{% trans 'Enter username' %}</label>

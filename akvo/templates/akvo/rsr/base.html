@@ -60,7 +60,7 @@
 				{% comment %}
 				<li>
 					<span id="main_nav_language">
-						<form action="." method="get" accept-charset="utf-8" style="display:none;">
+						<form action="." method="get" accept-charset="utf-8" style="display:none;">{% csrf_token %}
 							  <input name="q" placeholder="Search akvo.org" type="search" style="margin-left:20px;margin-top:7px;width:205px;">
 						</form>
 					</span>

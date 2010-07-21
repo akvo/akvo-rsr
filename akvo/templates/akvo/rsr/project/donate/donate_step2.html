@@ -41,7 +41,7 @@
 		</div>
 	</div>
 	<div class="space20">
-		<form method="post" action="." name="donate_form">
+		<form method="post" action="." name="donate_form">{% csrf_token %}
 		<div style="width:50%; float:left;">
 			<h3>{% trans 'Project to receive your donation' %}</h3>
 		</div>

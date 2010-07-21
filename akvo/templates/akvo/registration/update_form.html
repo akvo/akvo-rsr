@@ -10,7 +10,7 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-	<form method="post" action="" name="account_change_form">
+	<form method="post" action="" name="account_change_form">{% csrf_token %}
 		{% if form.errors %}
 	    <div class="error" style="margin-right: 70px;">
 			<p class="c1">{% trans 'A problem occurred' %}</p>
