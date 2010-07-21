@@ -13,10 +13,10 @@ class ViewCountVerifier:
         self.test_case = element_parsing_test_case
         self.view_count_recorder = ViewCountRecorder()
 
-    def verify_single_view_counter_on_page(self, page_url, view_count_xpath, counter_identifier_xpath):
-        self.verify_multiple_view_counters_on_page(page_url, 1, view_count_xpath, counter_identifier_xpath)
+    def verify_standard_view_counters_on_page(self, page_url, expected_number_of_view_counters, view_count_xpath):
+        self.verify_view_counters_on_page(page_url, expected_number_of_view_counters, view_count_xpath, "%s/span/img/@src" % view_count_xpath)
 
-    def verify_multiple_view_counters_on_page(self, page_url, expected_number_of_view_counters, view_count_xpath, counter_identifier_xpath):
+    def verify_view_counters_on_page(self, page_url, expected_number_of_view_counters, view_count_xpath, counter_identifier_xpath):
         self.open_page(page_url)
         self.verify_expected_view_counters(expected_number_of_view_counters, view_count_xpath, counter_identifier_xpath)
 
