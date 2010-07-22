@@ -71,7 +71,7 @@
 							<img src="{% thumbnail p.current_image 100x75 %}" />
 						</a>
 						{% for update_with_image in updates_with_images %}
-							<a class="gallery_links" href="{% thumbnail update_with_image.current_image 328x246 autocrop sharpen %}">
+							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}">
 								<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
 							</a>
 						{% endfor %}
