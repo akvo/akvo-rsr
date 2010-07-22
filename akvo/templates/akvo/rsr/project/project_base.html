@@ -46,7 +46,7 @@
 			{{p.show_status_large}}<br />
 			<div style="margin-top:15px;">
 				<h3 style="color:#A3FFFF;">Funding</h3>
-				<div class="round" style="background-color:#fff;">
+				<div class="round">
 					
 					<div style="width:172px; margin-left:auto; margin-right:auto; padding-top:15px; padding-bottom:15px">
 						{% funding_table p %}
@@ -60,7 +60,7 @@
 					{% endcomment %}
 					{% ifnotequal p.funding_still_needed|round 0 %}
 						<div style="text-align:center; padding-bottom:10px;">
-							<a class="aqua awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+							<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
 						</div>
 					{% endifnotequal %}
 				</div>

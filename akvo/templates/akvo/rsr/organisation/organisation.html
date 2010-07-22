@@ -11,12 +11,6 @@
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
-{% if live_earth_enabled %}
-	{% if not has_sponsor_banner %}
-	<a href="{% url live_earth_landing_page %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
-	{% endif %}
-{% endif %}
-
 <div>
 	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
 	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.country}}</p>{% endif %}

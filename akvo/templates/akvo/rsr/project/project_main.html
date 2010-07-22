@@ -62,7 +62,7 @@
 				{% project_thumb p 328 246 'margin:0px;' %}	
 				{% endcomment %}
 				
-				<p class="small grey">{{p.current_image_caption}}</p>
+				<p id="project_image_caption" class="small grey">{{p.current_image_caption}}</p>
 				
 				<div id="gallery_box" class="round">
 					{% comment %}
@@ -76,14 +76,14 @@
 					
 					<div id="gallery_box_slider">
 						<div class="gallery_links_container" style="border:2px solid #71CDFF;">
-							<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}">
+							<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}">
 								<img src="{% thumbnail p.current_image 100x75 %}" />
 							</a>
 						</div>
 						
 						{% for update_with_image in updates_with_images %}
 						<div class="gallery_links_container">
-							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}">
+							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update.photo_caption }}">
 								<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
 							</a>
 						</div>
@@ -225,6 +225,7 @@
 	jQ('.gallery_links').click(function () {
 		// Slide and highlight
 		jQ('#project_image').attr('src', jQ(this).attr('href') );
+		jQ('#project_image_caption').html( jQ(this).attr('title') );
 		jQ('.gallery_links_container').css('border', '2px solid #ccc');
 		jQ(this).parent().css('border', '2px solid #71CDFF');
 		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left) + 80 }, 300);
