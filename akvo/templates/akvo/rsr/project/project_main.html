@@ -25,7 +25,6 @@
 		margin:10px;
 		}
 		
-
 </style>
 {% endblock head %}
 
@@ -49,7 +48,14 @@
 			<h2 class="black">{% trans 'Description' %}</h2>
 			{{p.project_plan_summary|linebreaks}}
 			<div style="float:left; width:328px;">
-				{% project_thumb p 328 246 'margin:0px;' %}
+				<div style="height:246px; widht:328px;">
+					<img id="project_image" src="{% thumbnail p.current_image 328x246 autocrop sharpen %}" />	
+				</div>
+
+				{% comment %}
+				{% project_thumb p 328 246 'margin:0px;' %}	
+				{% endcomment %}
+				
 				<p class="small grey">{{p.current_image_caption}}</p>
 				
 				<div id="gallery_box" class="round">
@@ -61,10 +67,14 @@
 					<div class="clear"></div>
 					
 					<div id="gallery_box_slider">
-						{% for update in updates_with_images %}
-							<img src="{% thumbnail update.photo 100x75 %}" />
+						<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}">
+							<img src="{% thumbnail p.current_image 100x75 %}" />
+						</a>
+						{% for update_with_image in updates_with_images %}
+							<a class="gallery_links" href="{% thumbnail update_with_image.current_image 328x246 autocrop sharpen %}">
+								<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
+							</a>
 						{% endfor %}
-						<img src="{% thumbnail p.current_image 100x75 %}" />
 					</div>
 				</div>
 			</div>
@@ -176,7 +186,14 @@
 
 {% block js %}
 {{ block.super }}
+
+{% if debug %}
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+{% else %}
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+{% endif %}
+
+
 {% endblock js %}
 
 {% block jq_ready %}
@@ -189,6 +206,11 @@
 	
 	jQ('#next').click(function () {
 		jQ('#gallery_box_slider').animate({'left': '-=250px'}, 300);
+	});
+	
+	jQ('.gallery_links').click(function () {
+		jQ('#project_image').attr('src', jQ(this).attr('href') );
+		return false;
 	});
 	
 {% endblock jq_ready %}
