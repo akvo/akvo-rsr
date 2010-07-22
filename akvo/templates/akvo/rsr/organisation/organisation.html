@@ -31,11 +31,9 @@
 	                <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
 	            </ul>
 				<div id="tab_overview" class="tab">
-					<p>
-						<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" 
-							style="float:left; margin:15px;" />
-						{{o.description|linebreaks}}
-					</p>
+					<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" 
+						style="float:left; margin:15px;" />
+					{{o.description|linebreaks}}
 				</div>
 				<div id="tab_details" class="tab" style="padding-top:40px;">
 					<div style="float:left; width:250px;">

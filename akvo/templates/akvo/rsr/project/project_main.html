@@ -4,9 +4,29 @@
 
 {% block head %}
 <style type="text/css" media="screen">
-	
+
+	div#gallery_box {
+		background-color:#fff;
+		overflow:hidden; 
+		position:relative; 
+		height:120px;
+		width:325px;
+		max-width:325px;
+		border:1px solid #ccc;
+		}
+	div#gallery_box_slider {
+		position:absolute;
+		height:95px;
+		width:1000px;
+		left:0;
+		}
+	#gallery_box_slider img {
+		float:left;
+		margin:10px;
+		}
+		
+
 </style>
-	
 {% endblock head %}
 
 {% block breadcrum_items %}
@@ -31,28 +51,6 @@
 			<div style="float:left; width:328px;">
 				{% project_thumb p 328 246 'margin:0px;' %}
 				<p class="small grey">{{p.current_image_caption}}</p>
-				<style type="text/css" media="screen">
-					div#gallery_box {
-						background-color:#fff;
-						overflow:hidden; 
-						position:relative; 
-						height:120px;
-						width:325px;
-						max-width:325px;
-						border:1px solid #ccc;
-						}
-					div#gallery_box_slider {
-						position:absolute;
-						height:95px;
-						width:1000px;
-						left:0;
-						}
-					#gallery_box_slider img {
-						float:left;
-						margin:10px;
-						}
-						
-				</style>
 				
 				<div id="gallery_box" class="round">
 					<div style="float:right; margin-right:5px;">

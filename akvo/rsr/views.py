@@ -847,8 +847,8 @@ class CommentForm(ModelForm):
                                     'class':'textarea',
                                     'rows':'5',
                                     'cols':'75',
-                                    'width': '480px',
-                                    'margin': '0 auto'
+                                    #'width': '480px',
+                                    #'style': 'margin:0 auto;'
                                 }))
     
     class Meta:

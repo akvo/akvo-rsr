@@ -29,7 +29,7 @@
 				{% if p.budget_employment %}
 				<tr>
 					<td style="text-align:right;">{% trans 'Employment costs' %}:</td>
-					<td width="100px">{{p.get_currency_display|safe}} {{p.budget_employment|round|intcomma}}</td>
+					<td style="width:100px">{{p.get_currency_display|safe}} {{p.budget_employment|round|intcomma}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_building %}

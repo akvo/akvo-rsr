@@ -53,7 +53,7 @@
 							{{c.comment|capfirst}}<br />
 							<span class="grey small">
  								{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}},
-							<a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment abuse in project #{{p_id}}, comment #{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
+							<a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment%20abuse%20in%20project%20%23{{p_id}}%2C%20comment%20#{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
 							</span>
 						</p>
 					</div>

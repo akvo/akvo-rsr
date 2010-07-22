@@ -26,7 +26,7 @@
 		<div class="clear"></div>
 		<div class="space20">
 			
-			<p>
+			
 				{% if u.photo %}
 					{% ifequal u.photo_location 'B' %}
 	                	{% update_thumb u 400 300 %}
@@ -40,7 +40,7 @@
 						{{u.text|linebreaks}}
 					{% endif %}
 	            {% endif %}
-			</p>
+				
 			<p class="grey small">
 				{{u.time|date:"d-M-Y"}},
 				{% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}

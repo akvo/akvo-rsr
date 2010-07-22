@@ -399,7 +399,7 @@
 				<h3>{% trans 'Funding' %}</h3>
 				<table class="org_statistics_table">
 					<tr>
-						<td style="font-weight:bold;">
+						<td style="font-weight:bold;" colspan="2">
 							{{projs.status_not_cancelled.euros.count}} {% trans 'project' %}{{projs.status_not_cancelled.euros.count|pluralize:"s"}} {% trans 'in Euros' %}
 						</td>
 					</tr>
@@ -414,11 +414,12 @@
 					
 					{% if projs.status_not_cancelled.dollars.count %}
 					<tr>
-						<td>&nbsp;</td>
+						<td colspan="2">&nbsp;</td>
 					</tr>
 					<tr>
-						<td style="font-weight:bold;">
-							{{projs.status_not_cancelled.dollars.count}} {% trans 'project' %}{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} {% trans 'in US Dollars' %}</td>
+						<td style="font-weight:bold;" colspan="2">
+							{{projs.status_not_cancelled.dollars.count}} {% trans 'project' %}{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} {% trans 'in US Dollars' %}
+						</td>
 					</tr>
 					<tr style="color:green;">
 						<td>{% trans 'Raised' %}</td>
