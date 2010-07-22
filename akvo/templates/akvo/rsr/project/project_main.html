@@ -9,14 +9,14 @@
 		background-color:#fff;
 		overflow:hidden; 
 		position:relative; 
-		height:120px;
+		height:90px;
 		width:325px;
 		max-width:325px;
 		border:1px solid #ccc;
 		}
 	div#gallery_box_slider {
 		position:absolute;
-		height:95px;
+		height:75px;
 		width:1000px;
 		left:0;
 		padding-left:2px;
@@ -65,12 +65,14 @@
 				<p class="small grey">{{p.current_image_caption}}</p>
 				
 				<div id="gallery_box" class="round">
+					{% comment %}
 					<div style="float:right; margin-right:5px;">
 						<span class="tiny">
 							<a id="prev">&#x25C0;</a> <a id="next">&#x25B6;</a>
 						</span>
 					</div>
 					<div class="clear"></div>
+					{% endcomment %}
 					
 					<div id="gallery_box_slider">
 						<div class="gallery_links_container" style="border:2px solid #71CDFF;">
@@ -221,19 +223,11 @@
 	});
 	
 	jQ('.gallery_links').click(function () {
-		
-		// Set new image
+		// Slide and highlight
 		jQ('#project_image').attr('src', jQ(this).attr('href') );
-		
-		// Deselect current thumbnail
 		jQ('.gallery_links_container').css('border', '2px solid #ccc');
-		
-		// Select new thumbnail
 		jQ(this).parent().css('border', '2px solid #71CDFF');
-		
-		// Scroll to center
-		
-		jQ('#gallery_box_slider').animate({'left': '-=150px'}, 300);
+		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left) + 80 }, 300);
 		
 		return false;
 	});
