@@ -83,7 +83,7 @@
 						
 						{% for update_with_image in updates_with_images %}
 						<div class="gallery_links_container">
-							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update.photo_caption }}">
+							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}">
 								<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
 							</a>
 						</div>
