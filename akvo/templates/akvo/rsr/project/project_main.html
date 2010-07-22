@@ -57,12 +57,10 @@
 				<div style="height:246px; widht:328px;">
 					<img id="project_image" src="{% thumbnail p.current_image 328x246 autocrop sharpen %}" />	
 				</div>
-
-				{% comment %}
-				{% project_thumb p 328 246 'margin:0px;' %}	
-				{% endcomment %}
+				<div style="height:18px; padding-top:5px;">
+					<p id="project_image_caption" class="small grey">{{p.current_image_caption}}</p>
+				</div>
 				
-				<p id="project_image_caption" class="small grey">{{p.current_image_caption}}</p>
 				
 				<div id="gallery_box" class="round">
 					{% comment %}
