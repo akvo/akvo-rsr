@@ -24,13 +24,12 @@
 		float:left;
 		margin:6px;
 		}
-		
-	#gallery_links {
-		display:inline-block;
-		padding:3px;
+	.gallery_links_container {
 		border:1px solid #fff;
+		padding:2px;
+		float:left;
 		}
-		
+				
 </style>
 {% endblock head %}
 
@@ -67,20 +66,26 @@
 				<div id="gallery_box" class="round">
 					<div style="float:right; margin-right:5px;">
 						<span class="tiny">
-							<a id="prev">&lt;&lt;</a> | <a id="next">&gt;&gt;</a>
+							<a id="prev">&#x25C0;</a> <a id="next">&#x25B6;</a>
 						</span>
 					</div>
 					<div class="clear"></div>
 					
 					<div id="gallery_box_slider">
-						<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" style="border:1px solid #ccc;">
-							<img src="{% thumbnail p.current_image 100x75 %}" />
-						</a>
+						<div class="gallery_links_container" style="border:1px solid #ccc;">
+							<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}">
+								<img src="{% thumbnail p.current_image 100x75 %}" />
+							</a>
+						</div>
+						
 						{% for update_with_image in updates_with_images %}
+						<div class="gallery_links_container">
 							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}">
 								<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
 							</a>
+						</div>
 						{% endfor %}
+						<div class="clear"></div>
 					</div>
 				</div>
 			</div>
