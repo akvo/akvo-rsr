@@ -9,7 +9,7 @@
 		background-color:#fff;
 		overflow:hidden; 
 		position:relative; 
-		height:90px;
+		height:125px;
 		width:325px;
 		max-width:325px;
 		border:1px solid #ccc;
@@ -25,7 +25,7 @@
 		float:left;
 		}
 
-	.gallery_links_container {
+	.gallery_links_container > div {
 		border:2px solid #ccc;
 		float:left;
 		margin:5px;
@@ -63,29 +63,32 @@
 					</p>
 				</div>
 				
-				
 				<div id="gallery_box" class="round">
-					{% comment %}
-					<div style="float:right; margin-right:5px;">
-						<span class="tiny">
-							<a id="prev">&#x25C0;</a> <a id="next">&#x25B6;</a>
+
+					<div class="round" style="float:right; margin:5px; background-color:#F1F1F1; width:40px; text-align:center; border:1px solid #ccc">
+						<span class="small">
+							<a id="prev">&#x25C4;</a> <a id="next">&#x25BA;</a> 
 						</span>
 					</div>
 					<div class="clear"></div>
-					{% endcomment %}
+
 					
 					<div id="gallery_box_slider">
-						<div class="gallery_links_container" style="border:2px solid #71CDFF;">
-							<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}">
-								<img src="{% thumbnail p.current_image 100x75 %}" />
-							</a>
+						<div class="gallery_links_container">
+							<div style="border:2px solid #71CDFF;">
+								<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}">
+									<img src="{% thumbnail p.current_image 100x75 %}" />
+								</a>
+							</div>
 						</div>
-						
 						{% for update_with_image in updates_with_images %}
 						<div class="gallery_links_container">
-							<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}">
-								<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
-							</a>
+							<div>
+								<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}">
+									<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
+								</a>
+								
+							</div>
 						</div>
 						{% endfor %}
 						<div class="clear"></div>
@@ -226,9 +229,9 @@
 		// Slide and highlight
 		jQ('#project_image').attr('src', jQ(this).attr('href') );
 		jQ('#project_image_caption').html( jQ(this).attr('title') );
-		jQ('.gallery_links_container').css('border', '2px solid #ccc');
+		jQ('.gallery_links_container').children(':first-child').css('border', '2px solid #ccc');
 		jQ(this).parent().css('border', '2px solid #71CDFF');
-		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left) + 80 }, 300);
+		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left - 150)  }, 300);
 		
 		return false;
 	});
