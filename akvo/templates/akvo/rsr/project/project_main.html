@@ -59,8 +59,7 @@
 							<div>
 								<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}">
 									<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
-								</a>
-								
+								</a>								
 							</div>
 						</div>
 						{% endfor %}
@@ -145,10 +144,10 @@
 		<div style="float:right; width:166px; margin-left:15px;">
 			<div class="white_box">
 				<div class="space20">
-					<h3>Related to this project</h3>
+					<h3>{% trans 'Related to this project' %}</h3>
 					<hr />
 					{% if not p.link_set.all %}
-						<p>No relations.</p>
+						<p>{% trans 'No relations.' %}</p>
 					{% else %}
 						<h4>{% trans 'Akvopedia articles' %}</h4>
 						{% for link in p.link_set.all %}

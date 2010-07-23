@@ -48,7 +48,27 @@
 							<h2>{% trans 'Akvopedia entry' %}</h2>
 							<p>{{o.akvopedia_entry}}</p>
 						{% endif %}
-						
+						<h2>{% trans 'Contact' %}</h2>
+						<p>
+							{{o.contact_person}}<br />
+							<a href="mailto:{{o.contact_email}}">{{o.contact_email}}</a><br />
+							<br />
+							{% if o.phone %}
+								<b>{% trans 'Phone' %}</b><br />
+								{{o.phone}}<br />
+								<br />
+							{% endif %}							
+							{% if o.mobile %}
+								<b>{% trans 'Mobile' %}</b><br />
+								{{o.mobile}}<br />
+								<br />
+							{% endif %}
+							{% if o.fax %}
+								<b>{% trans 'Fax' %}</b><br />
+								{{o.fax}}<br />
+								<br />
+							{% endif %}
+						</p>
 					</div>
 					<div style="float:left; width:250px; border-left:1px solid #ccc; padding-left:15px;">
 						<h2>{% trans 'Location' %}</h2>
@@ -174,7 +194,7 @@
 					<tr>
 						<td colspan="2">
 							{{org_projects.euros.count}} 
-							project{{org_projects.euros.count|pluralize:"s"}} in Euros
+							{% trans 'project' %}{{org_projects.euros.count|pluralize:"s"}} {% trans 'in Euros' %}
 						</td>
 					</tr>
 					<tr style="color:green;">
@@ -200,7 +220,7 @@
 					<tr>
 						<td colspan="2">
 							{{org_projects.dollars.count}} 
-							project{{org_projects.dollars.count|pluralize:"s"}} in US Dollars
+							{% trans 'project' %}{{org_projects.dollars.count|pluralize:"s"}} {% trans 'in US Dollars' %}
 						</td>
 					</tr>
 					<tr style="color:green;">
@@ -219,7 +239,7 @@
 					</tr>
 					{% endif %}
 				</table>
-				<a href="{% url filtered_project_list o.id %}">View all {{ o.name }} projects</a>
+				<a href="{% url filtered_project_list o.id %}">{% trans 'View all' %} {{ o.name }} {% trans 'projects' %}</a>
 			</div>
 		</div>
 	</div>
