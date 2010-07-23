@@ -17,8 +17,11 @@ def project_path(project_number):
 def project_updates_path(project_number):
     return _url_path(project_path(project_number), "/updates")
 
-def widget_path_for_project(project_number, widget_type):
+def project_widget_path(project_number, widget_type):
     return rsr_path("widget/%s/%s" % (widget_type, _project_number_path(project_number)))
+
+def project_listing_widget_path_for_organisation(organisation_number):
+    return rsr_path("widget/project-list/organisation/%i" % organisation_number)
 
 def _project_number_path(project_number):
     return "project/%i" % project_number
