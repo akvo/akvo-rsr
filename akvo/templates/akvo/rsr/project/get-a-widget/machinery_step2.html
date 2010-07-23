@@ -188,6 +188,8 @@
 {% block js %}
 {{block.super}}
 
+{% media_bundle 'akvo_machinery_js' %}
+
 <script type="text/javascript">
 	var akvo_project_id = {{project.id}};
 	var akvo_widget_type = '{{widget_type}}';

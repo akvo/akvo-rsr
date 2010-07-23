@@ -767,6 +767,11 @@
 
 {% endblock maincontent %}
 
+{% block js %}
+{{block.super}}
+{% media_bundle 'akvo_machinery_js' %}
+{% endblock js %}
+
 {% block jq_ready %}
 {{block.super}}
 	

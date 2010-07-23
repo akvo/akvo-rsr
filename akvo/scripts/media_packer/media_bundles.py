@@ -28,7 +28,13 @@ MEDIA_BUNDLES = {
         'compress': True,
         'files': ['x_ie6.css',],
     },
-    'akvo_js': {
+    # 'akvo_js': {
+    #         'type': 'js',
+    #         'path': 'akvo/js/',
+    #         'compress': True,
+    #         'files': ['x_machinery.js', 'x_modernizr.js','x_utilities.js'],
+    #     },
+    'akvo_machinery_js': {
         'type': 'js',
         'path': 'akvo/js/',
         'compress': True,

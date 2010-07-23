@@ -233,7 +233,8 @@
 				{% ifequal payment_engine 'ideal' %}
 				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
 				{% endifequal %}
-				<p class="small" style="font-weight:normal; margin-bottom:18px;">{{ donate_form.is_anonymous }} {% trans 'I would like my donation to be' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a> {% trans '(tick the box)' %}.
+				<p class="small" style="font-weight:normal; margin-bottom:18px;">
+					{{ donate_form.is_anonymous }} {% trans 'Keep donation' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a>.
 				</p>
 			</div>
 		</div>

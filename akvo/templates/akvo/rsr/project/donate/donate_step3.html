@@ -202,35 +202,10 @@
 				<div class="fieldWrapper">	
 					<p class="grey">{% trans 'Your email' %}:</p>
 				</div>
-				{% comment %}
-					
-
-				<div class="fieldWrapper" style="margin-bottom:20px">
-					<p class="grey">{% trans 'Confirm email' %}:</p>
-				</div>
-				{% ifequal payment_engine 'ideal' %}
-				<div class="fieldWrapper" style="">	
-					<p class="grey">{% trans 'Select your bank' %}:</p>
-				</div>
-				{% endifequal %}
-				<div class="fieldWrapper" style="margin-bottom:20px">
-					<p class="grey"> &nbsp;</p>
-				</div>
-				{% endcomment %}
 			</div>
 			<div style="float:left; width:218px;">
 				<p style="font-weight:bold; margin-bottom:32px; margin-top:7px;">{{ invoice.get_name }}</p>
 				<p style="font-weight:bold; margin-bottom:4px">{{ invoice.get_email }}</p>
-				{% comment %}
-					
-
-				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
-				{% ifequal payment_engine 'ideal' %}
-				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
-				{% endifequal %}
-				<p class="small" style="font-weight:normal; margin-bottom:18px;">{{ donate_form.is_anonymous }} {% trans 'I would like my donation to be' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a> {% trans '(tick the box)' %}.
-				</p>
-				{% endcomment %}
 			</div>
 		</div>
 		<div style="float:right; width:485px; padding:10px;">
