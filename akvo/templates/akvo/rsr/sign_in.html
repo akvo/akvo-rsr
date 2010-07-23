@@ -14,7 +14,17 @@
 	<div class="span-18" style="background-color:#fff">
 		<div class="white_box">
 			<div class="space20">
-				<h1>Please sign in</h1>
+				<h1>{% trans 'Please sign in' %}</h1>
+				{% if form.non_field_errors %}
+				    <div class="error" style="float:left; width:600px;margin-bottom:20px;">
+						<span style="font-weight:bold;">{% trans 'Error when signing in' %}</span><br /><br />
+						{% for e in form.non_field_errors %}
+							<p>{{e}}</p>
+						{% endfor %}
+				    </div>
+					<div class="clear"></div>
+				{% endif %}
+				
 				<div style="float:left; width:465px;">
 					<div class="white_box" style="background-color:#D0FFFF;margin-right:30px;">
 						<div class="space20">
