@@ -49,7 +49,7 @@ urlpatterns = patterns('',
     
     (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
     
-    #(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
+    (r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
     
     # Payment engines
     url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),

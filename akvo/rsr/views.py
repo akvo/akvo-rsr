@@ -931,10 +931,11 @@ def projectmain(request, project_id):
         'slider_width': slider_width,
         }
 
-@render_to('rsr/project/project_details.html')    
+
 def projectdetails(request, project_id):
-        p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p,}
+    "Fix for old url with project details"
+    return http.HttpResponsePermanentRedirect ('/rsr/project/%s/' % project_id )
+
 
 @render_to('rsr/project/project_partners.html')  
 def projectpartners(request, project_id):

@@ -85,7 +85,6 @@
 			            {% else %}
 			                <p style="color: red;">{% trans 'No map available' %}</p>
 			            {% endif %}
-						
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -102,15 +101,6 @@
 					{% trans 'Projects in Akvo' %}
 				</a></h3>
 				<table class="org_statistics_table bottom_grey_border">
-					{% comment %}
-					<tr>
-						<th colspan="2">
-							<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}">
-								{% trans 'Projects in Akvo' %}
-							</a>
-						</th>
-					</tr>
-					{% endcomment %}
 					<tr>
 						<td>
 							{% trans 'Active' %}
@@ -256,13 +246,3 @@
 	jQ('#org_tabs').tabs();
 	{{block.super}}
 {% endblock jq_ready %}
-
-
-{% comment %}
-Projects:<br /><br />
-<ul>
-{% for project in org_projects %}
-	<li><a href="{% url project_main project.id %}">{{project}}</a></li>
-{% endfor %}
-</ul>
-{% endcomment %}

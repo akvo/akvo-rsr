@@ -13,7 +13,6 @@
 <li><a href="/rsr/projects/"><span>{% trans 'Projects' %}</span></a></li>
 
 {% comment %}
-	
 <div style="float:right; margin-right:10px;">
 	<span style="display:none;">{% counter p %}</span>
 	<p style="margin:0; color:#999; margin-top:5px;" class="small">
@@ -34,6 +33,14 @@
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
+
+{% if live_earth_enabled %}
+	{% if not has_sponsor_banner %}
+	<a href="{% url live_earth_landing_page %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
+	{% endif %}
+{% endif %}
+
+
 <div class="two_column_left">
 	<h1 style="margin-bottom:5px;">{{p.name}}</h1>
 	<p class="grey" style="font-weight:bold;">{{p.subtitle}}</p>
@@ -51,13 +58,6 @@
 					<div style="width:172px; margin-left:auto; margin-right:auto; padding-top:15px; padding-bottom:15px">
 						{% funding_table p %}
 					</div>
-					{% comment %}
-					<p style="padding:10px; margin-bottom:0;">
-						{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}} Requested<br />
-						{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}} Raised<br />
-						{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}} Still needed<br />
-					</p>	
-					{% endcomment %}
 					{% ifnotequal p.funding_still_needed|round 0 %}
 						<div style="text-align:center; padding-bottom:10px;">
 							<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
@@ -70,42 +70,9 @@
 					</a>
 				</p>
 			</div>
-			
-			{% comment %}
-			{{p.show_status_large}}<br /><br />
-			<div style="width:175px; float:left; margin:0; padding:0;">
-				<h4 style="color:#A3FFFF;">Funding</h4>
-				<div class="round" style="background-color:#fff; width:144px">
-					<p class="tiny" style="padding:10px;">
-						{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}} Requested<br />
-						{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}} Raised<br />
- 						{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}} Still needed<br />
-						<br />
-						<a class="yellow awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
-					</p>
-				</div>
-			</div>
-			<div style="width:85px; float:right; margin:0; padding:0;">
-				<h4 style="color:#A3FFFF;">Schedule</h4>
-				<p class="tiny white">
-					Begun<br />
-					03 Mar 2010<br />
-					<br />
-					Expected finish<br />
-					03 Dev 2010<br />
-				</p>
-			</div>
-			<div class="clear"></div>
-			<p class="small space0">
-				<a style="color:#FDF47A;" 
-					href="{% url project_funding p.id %}">See funding and milestone details &#x25B6;</a>
-			</p>
-			{% endcomment %}
 		</div>
 	</div>
 	
-	{# If no updates or at the updates listing page #}
-	{# {% if not hide_latest_updates and updates %} #}
 	{% if not hide_latest_updates %}
 		{% if not updates %}
 			<div class="two_column_right_inner">
