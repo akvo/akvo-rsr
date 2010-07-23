@@ -97,10 +97,10 @@
 		<div style="float:left; width:480px;">
 			<div class="white_box">
 				<div class="space20">
-					<h3>Focus areas</h3>
+					<h3>{% trans 'Focus areas' %}</h3>
 					<p>{% category_icons p %}</p>
 					
-					<h3>Detailed information</h3>
+					<h3>{% trans 'Detailed information' %}</h3>
 					
 					<div id="project_tabs">
 						<ul class="small">
@@ -110,13 +110,13 @@
 			            </ul>
 						<div id="tab_background" class="tab">
 							{# <h4 style="font-weight:bold">{% trans 'Background' %}</h4> #}
-							<p>{{p.context}}</p>
+							<p>{{p.context|linebreaks}}</p>
 							<h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
-							<p>{{p.goals_overview}}</p>
+							<p>{{p.goals_overview|linebreaks}}</p>
 							<h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
-							<p>{{p.current_status_detail}}</p>
+							<p>{{p.current_status_detail|linebreaks}}</p>
 							<h4 style="font-weight:bold">{% trans 'Project plan' %}</h4>
-							<p>{{p.project_plan_detail}}</p>
+							<p>{{p.project_plan_detail|linebreaks}}</p>
 						</div>
 						<div id="tab_outcomes" class="tab">
 							<h4 style="font-weight:bold">{% trans 'Who will benefit?' %}</h4>
@@ -136,7 +136,7 @@
 						</div>
 						<div id="tab_sustainability" class="tab">
 							{# <h4 style="font-weight:bold">p.sustainability</h4> #}
-							<p>{{p.sustainability}}</p>
+							<p>{{p.sustainability|linebreaks}}</p>
 						</div>
 					</div>				
 				</div>
