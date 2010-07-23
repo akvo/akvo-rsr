@@ -92,7 +92,7 @@
 			</div>
 
 			{% for update in updates %}
-				<div style="background-color:#AFF167;padding:2px; padding-left:15px">
+				<div style="background-color:#AFF167;padding:2px; padding-left:15px;">
 					<p class="small" style="margin:0;padding:0; font-weight:bold;">
 						{{update.time|date:"d-M-Y"}}
 					</p>
@@ -101,7 +101,7 @@
 					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
 						{% if update.photo %}					
 							<div style="float:left; width:175px;">
-								<p class="small" style="padding:5px; margin-bottom:5px;">
+								<p class="small" style="padding:5px;">
 									<b>
 										<a href="{% url project_update p.id update.id %}">{{update.title}}</a>
 									</b><br />
