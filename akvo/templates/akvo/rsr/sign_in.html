@@ -25,11 +25,11 @@
 					<div class="clear"></div>
 				{% endif %}
 				
-				<div style="float:left; width:465px;">
+				<div style="float:left; width:465px; width:270px;">
 					<div class="white_box" style="background-color:#D0FFFF;margin-right:30px;">
 						<div class="space20">
 							<form id="sign_in" class="boxbody" method="post" action="">{% csrf_token %}
-							    <h3>{% trans 'I have an online account' %}</h3>
+							    <h3>{% trans 'I have an account' %}</h3>
 								<div style="margin-left:15px; margin-top:20px;">
 									<label for="id_username">{% trans 'Enter username' %}</label>
 									{{ form.username }}<br />
@@ -37,14 +37,19 @@
 									{{ form.password }}<br />
 									<input type="hidden" name="next" value="{{ next }}" />
 									<br />
-									{% submit_button _('Sign in') 'ab_d0ffff' %}
+									<div style="text-align:right;">
+										<a class="aqua awesome" 
+											href="javascript:document.forms['sign_in'].submit();">
+											<span>{% trans 'Sign in' %}</span>
+										</a>		
+									</div>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
-				<div style="float:left; width:465px; padding-top:20px;">
-					<h3>{% trans "I don&#x27;t have an online account" %}</h3>
+				<div style="float:left; width:465px; padding-top:20px; margin-left:70px;">
+					<h3>{% trans "I don&#x27;t have an account" %}</h3>
 					<p>{% trans "By <a href='/rsr/accounts/register1/'>registering</a> with Akvo, you&#x27;ll be able to:" %}</p>
 					<ul class="simplelist">
 						<li>{% trans "Create updates on your organisation&#x27;s projects" %}</li>
@@ -55,7 +60,9 @@
 				</div>
 				<div class="clear"></div>
 				<br /><br />
-				<a href="/rsr/accounts/password/reset/">{% trans 'I forgot my username and/or password' %}</a>
+				<p>
+					<a href="/rsr/accounts/password/reset/">{% trans 'I forgot my username and/or password' %}</a>
+				</p>
 			</div>
 		</div>
 	</div>
