@@ -1,10 +1,10 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 
-{% load i18n webdesign %}
+{% load i18n rsr_tags %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">Get a widget - step 2</li>
+<li id="last_breadcrum_item">{% trans 'Get a widget - step 2' %}</li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
@@ -239,7 +239,3 @@
 	preview_widget();
 	
 {% endblock jq_ready %}
-
-
-
-

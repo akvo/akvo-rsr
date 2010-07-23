@@ -1,16 +1,16 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 
-{% load i18n webdesign %}
+{% load i18n rsr_tags %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">Get a widget - step 1</li>
+<li id="last_breadcrum_item">{% trans 'Get a widget - step 1' %}</li>
 {% endblock breadcrum_items %}
 
 
 {% block maincontent %}
 
-<h2>Get a widget to use on your web site</h2>
+<h2>{% trans 'Get a widget to use on your web site' %}</h2>
 <div style="float:left; width:48%;">
 	<p class="grey">
 		{% trans 'The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site&#x27;s code.' %}
@@ -40,9 +40,9 @@
 <hr />
 
 <div class="prepend-1" style="margin-top:40px;">
-	<h3>Step 1: Select the type of widget you wish to use</h3>
+	<h3>{% trans 'Step 1: Select the type of widget you wish to use' %}</h3>
 	<p class="small grey">
-		You can customise the top and bottom bar and title text colours on the next step.
+		{% trans 'You can customise the top and bottom bar and title text colours on the next step.' %}
 	</p>
 	<!-- project_narrow start _________________________________________________________________ -->
 	<div class="white_box" style="background-color:#fff;">
@@ -753,16 +753,8 @@
 			</div>
 		</div>
 		<!-- project list widget stop -_________________________________________________________- -->
-		
-		
-		
-		
-	
-	
-	
-	
-	{% endifequal %}
-	
+
+	{% endifequal %}	
 </div>
 
 {% endblock maincontent %}
