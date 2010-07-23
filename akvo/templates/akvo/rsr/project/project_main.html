@@ -49,7 +49,7 @@
 					<div id="gallery_box_slider">
 						<div class="gallery_links_container">
 							<div style="border:2px solid #71CDFF;">
-								<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}">
+								<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}" target="_blank">
 									<img src="{% thumbnail p.current_image 100x75 %}" />
 								</a>
 							</div>
@@ -57,7 +57,7 @@
 						{% for update_with_image in updates_with_images %}
 						<div class="gallery_links_container">
 							<div>
-								<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}">
+								<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}" target="_blank">
 									<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
 								</a>								
 							</div>
@@ -177,11 +177,10 @@
 {{ block.super }}
 
 {% if debug %}
-<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
 {% else %}
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 {% endif %}
-
 
 {% endblock js %}
 
