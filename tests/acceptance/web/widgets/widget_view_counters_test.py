@@ -68,7 +68,9 @@ class WidgetViewCountersTest(ElementParsingTestCase):
         self.verify_widget_has_standard_view_counter_at_xpath(widget_type, "//div[@id='header']/span")
 
     def verify_widget_has_standard_view_counter_at_xpath(self, widget_type, view_count_xpath):
-        self.count_verifier.verify_standard_view_counters_on_page(widget_path_for_project(108, widget_type), 1, view_count_xpath)
+        self.count_verifier.open_page(widget_path_for_project(108, widget_type))
+        self.count_verifier.expect_exactly(1).view_counter_on_page()
+        self.count_verifier.expect_exactly(1).standard_view_counter_at_xpath(view_count_xpath)
 
 
 def suite():
