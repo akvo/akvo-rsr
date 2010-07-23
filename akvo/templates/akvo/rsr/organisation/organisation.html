@@ -220,16 +220,33 @@
 							{{o.funding.pledged_dollars|round|intcomma}}
 						</td>
 					</tr>
-					<tr style="color:red;" class="hr">
-						<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
+					<tr style="color:red;">
+						<td>{% trans 'Still needed' %}</td>
 						<td style="text-align:right;">
 							{{org_projects.dollars.0.get_currency_display|safe}} 
 							{{o.funding.still_needed_dollars|round|intcomma}}
 						</td>
 					</tr>
 					{% endif %}
+					<tr class="bottom_grey_border">
+						<td colspan="2">
+							&nbsp;
+						</td>
+					</tr>
 				</table>
-				<a href="{% url filtered_project_list o.id %}">{% trans 'View all' %} {{ o.name }} {% trans 'projects' %}</a>
+				
+				<h3>{% trans 'Project partners' %}</h3>
+				<ul class="small">
+					{% for partner in org_partners %}
+					<li>
+						<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a>
+					</li>
+					{% endfor %}
+				</ul>
+				<hr />
+				<div style="text-align:center;">
+					<a href="{% url filtered_project_list o.id %}">{% trans 'View all' %} {{ o.name }} {% trans 'projects' %} &#x25BA;</a>	
+				</div>
 			</div>
 		</div>
 	</div>
