@@ -52,7 +52,7 @@
 		<div style="margin:15px; padding:20px 0px;">
 			{{p.show_status_large}}<br />
 			<div style="margin-top:15px;">
-				<h3 style="color:#A3FFFF;">Funding</h3>
+				<h3 style="color:#A3FFFF;">{% trans 'Funding' %}</h3>
 				<div class="round">
 					
 					<div style="width:172px; margin-left:auto; margin-right:auto; padding-top:15px; padding-bottom:15px">
@@ -77,35 +77,39 @@
 		{% if not updates %}
 			<div class="two_column_right_inner">
 				<div class="small">
-					<h2>No updates yet</h2>
+					<h2>{% trans 'No updates yet' %}</h2>
 				</div>
 			</div>
 		{% else %}
 			<div class="two_column_right_inner">
 				<div class="small" style="float:left; width:130px;">
-					<h2>Latest updates</h2>
+					<h2>{% trans 'Latest updates' %}</h2>
 				</div>
 				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-					<a class="small" href="{% url project_updates p.id %}">See all &#x25B6;</a>
+					<a class="small" href="{% url project_updates p.id %}">{% trans 'See all' %} &#x25B6;</a>
 				</div>
 				<div class="clear"></div>
 			</div>
 
 			{% for update in updates %}
 				<div style="background-color:#AFF167;padding:2px; padding-left:15px">
-					<p class="small" style="margin:0;padding:0; font-weight:bold;">{{update.time|date:"d-M-Y"}}</p>
+					<p class="small" style="margin:0;padding:0; font-weight:bold;">
+						{{update.time|date:"d-M-Y"}}
+					</p>
 				</div>
 				<div class="two_column_right_inner" style="background-color:#fff;">
 					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
 						{% if update.photo %}					
 							<div style="float:left; width:175px;">
 								<p class="small" style="padding:5px; margin-bottom:5px;">
-									<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
+									<b>
+										<a href="{% url project_update p.id update.id %}">{{update.title}}</a>
+									</b><br />
 									{{update.text|smart_truncate:50}}
 								</p>
 							</div>
-							<div style="float:left; width:116px; text-align:center;">
-								<img src="{% thumbnail update.photo 116x87 autocrop sharpen %}" alt="{{update.photo_caption}}" style="margin:0;" />
+							<div style="float:right; width:116px; text-align:right;">
+								<img src="{% thumbnail update.photo 116x87 autocrop sharpen %}" alt="" style="margin:0;" />
 							</div>
 							<div class="clear"></div>
 						{% else %}
@@ -121,7 +125,7 @@
 	{% endif %}
 	
 	<div class="two_column_right_inner" style="margin-top:20px;">
-		<h2>Tools for this page</h2>
+		<h2>{% trans 'Tools for this page' %}</h2>
 		<div class="white_box" style="background-color:#fff">
 			<div class="space20">
 				<ul>
@@ -204,7 +208,7 @@
 	{% endif %}
 		
 	<div class="two_column_right_inner">
-		<p class="grey tiny" style="text-align:right;">Akvo Ref: {{p.id}}</p>
+		<p class="grey tiny" style="text-align:right;">{% trans 'Akvo Ref' %}: {{p.id}}</p>
 	</div>
 </div>
 {% endblock maincontent %}
