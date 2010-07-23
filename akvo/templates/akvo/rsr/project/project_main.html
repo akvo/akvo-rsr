@@ -3,34 +3,8 @@
 {% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail google_maps counter_tags %}
 
 {% block head %}
-<style type="text/css" media="screen">
-
-	div#gallery_box {
-		background-color:#fff;
-		overflow:hidden; 
-		position:relative; 
-		height:125px;
-		width:325px;
-		max-width:325px;
-		border:1px solid #ccc;
-		}
-	div#gallery_box_slider {
-		position:absolute;
-		height:75px;
-		width:1000px;
-		left:0;
-		padding-left:2px;
-		}
-	#gallery_box_slider img {
-		float:left;
-		}
-
-	.gallery_links_container > div {
-		border:2px solid #ccc;
-		float:left;
-		margin:5px;
-		}
-				
+<style type="text/css">
+	div#gallery_box_slider {width:{{slider_width}}px;}
 </style>
 {% endblock head %}
 
@@ -71,7 +45,6 @@
 						</span>
 					</div>
 					<div class="clear"></div>
-
 					
 					<div id="gallery_box_slider">
 						<div class="gallery_links_container">

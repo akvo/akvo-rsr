@@ -25,13 +25,12 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-			
-			
+						
 				{% if u.photo %}
 					{% ifequal u.photo_location 'B' %}
 	                	{% update_thumb u 400 300 %}
 	            	{% endifequal %}
-	                {% if u.text %}{{u.text}}{% endif %}	
+	                {% if u.text %}{{u.text|linebreaks}}{% endif %}	
 					{% ifequal u.photo_location 'E' %}
 		                {% update_thumb u 400 300 %}
 		            {% endifequal %}			
@@ -40,7 +39,6 @@
 						{{u.text|linebreaks}}
 					{% endif %}
 	            {% endif %}
-				
 			<p class="grey small">
 				{{u.time|date:"d-M-Y"}},
 				{% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}

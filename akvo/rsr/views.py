@@ -916,11 +916,9 @@ def projectmain(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-    
-    #updates_with_images = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('time')
-    #Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-    
+        
     updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('time')
+    slider_width = (len(updates_with_images) + 1) * 150
     
     return {
         'p': p, 
@@ -930,6 +928,7 @@ def projectmain(request, project_id):
         'can_add_update': p.connected_to_user(request.user),
         'site_section': 'projects',
         'updates_with_images': updates_with_images,
+        'slider_width': slider_width,
         }
 
 @render_to('rsr/project/project_details.html')    
