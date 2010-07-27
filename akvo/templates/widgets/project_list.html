@@ -108,7 +108,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<div style="height:55px">
 							{% category_icons project %}	
 						</div>
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>	
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
+						<span style="display:none;">
+    		        	    {% cache 10 project.view_count %}
+    		        		    {{ project.view_count|intcomma }} {% trans 'views' %}
+    		        	    {% endcache %}
+    				    </span>	
 					</div>
                     <a href="{% url akvo.rsr.views.projectmain project.id %}">
                         {% project_thumb project 100 75 %}
