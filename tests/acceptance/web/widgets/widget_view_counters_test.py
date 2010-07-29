@@ -76,8 +76,10 @@ class WidgetViewCountersTest(ElementParsingTestCase):
         """web.widgets.WidgetViewCountersTest 10. Project listing widget has view counter images for each listed project"""
 
         self.count_verifier.open_page(project_listing_widget_path_for_organisation(15))
-        self.count_verifier.expect_exactly(0).view_counts_on_page()
-        self.count_verifier.expect_exactly(12).view_counter_images_on_page()
+        self.count_verifier.expect_exactly(12).view_counts_on_page()
+        self.count_verifier.expect_exactly(0).view_counter_images_on_page()
+        self.count_verifier.expect_exactly(12).view_counters_and_counter_identifiers_with_xpaths("//table[1]/tr/td[1]/div/span",
+                                                                                                 "//table[1]/tr/td[1]/div/a/@href")
 
 
 def suite():
