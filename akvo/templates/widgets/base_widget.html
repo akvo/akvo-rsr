@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags generic_content %}
+{% load i18n rsr_tags generic_content counter_tags humanize cache %}
 
 <?xml version="1.0" encoding="UTF-8"?>	
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -11,13 +11,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<title>{% block title %}Akvo.org{% endblock title %}</title>
 	<base target="_parent" />
 	
-	{% block style %} {% endblock style %}
+	{% block style %}
+	{% endblock style %}
 	
 	<style type="text/css" media="screen">
 	{% block inline_styles %}
 		#header {background-color:#{{bgcolor}};}
 		#header h1 { color:#{{textcolor}}; }
-		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
+		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; height:30px; }
 		h2 a {color:#{{bgcolor}} !important;}
 	{% endblock inline_styles %}
 	</style>
@@ -40,9 +41,24 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div id="footer">
 		{% block footer %}
-			<a href="http://akvo.org">
-				<img src="{{MEDIA_URL}}widgets/img/akvo-badge.gif" width="100" height="30" alt="Akvo.org" />
-			</a>
+			{% block  footer_counter %}
+			<div style="float:left; padding-top:6px; display:none;">
+				<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
+					<span style="display:none;">{% counter project %}</span>
+		        	{% cache 10 project.view_count %}
+		        		{{ project.view_count|intcomma }} {% trans 'views' %}
+		        	{% endcache %}
+				</span>
+			</div>
+			{% endblock footer_counter %}
+			<div class="float:right;">
+				<a href="http://akvo.org">
+					<img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+					{# <img src="{{MEDIA_URL}}widgets/img/akvo-badge.gif" width="100" height="30" alt="Akvo.org" /> #}
+				</a>
+			</div>
+			<div class="clear"></div>
+			
 		{% endblock footer %}
 		</div>
 	</div>	

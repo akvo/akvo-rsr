@@ -39,6 +39,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endif %}
 
 <form id="sign_in" class="boxbody" method="post" action="">
+    {% csrf_token %}
     <fieldset>
         <legend>{% trans 'I have an online account' %}</legend>
         <ul>
