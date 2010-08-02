@@ -32,15 +32,17 @@
 		            <h3>{% trans 'Field partners' %}</h3>
 		        {% endifequal %}
 				{% for fp in p.fieldpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">							
 							<a href="{% url org_detail fp.field_organisation.id %}">
 			                    {% org_logo fp.field_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail fp.id %}">{{fp.field_organisation}}</a><br />
+							<p style="margin:0">
+							<a href="{% url org_detail fp.field_organisation.id %}">{{fp.field_organisation}}</a><br />
 							{{fp.field_organisation.city}}, {{fp.field_organisation.state}}, {{fp.field_organisation.country}}
+							</p>
 						</div>
 						<div class="clear"></div>						
 					</div>
@@ -56,15 +58,17 @@
 		            <h3>{% trans 'Support partners' %}</h3>
 		        {% endifequal %}
 				{% for sp in p.supportpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
 							<a href="{% url org_detail sp.support_organisation.id %}">
 			                    {% org_logo sp.support_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>							
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail sp.id %}">{{sp.support_organisation}}</a><br />
+							<p style="margin:0">
+							<a href="{% url org_detail sp.support_organisation.id %}">{{sp.support_organisation}}</a><br />
 							{{sp.support_organisation.city}}, {{sp.support_organisation.state}}, {{sp.support_organisation.country}}
+							</p>
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -79,15 +83,17 @@
 		            <h3>{% trans 'Sponsor partners' %}</h3>
 		        {% endifequal %}
 				{% for sponsor in p.sponsorpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">						
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">						
 						<div style="float:left; width:100px;">
 							<a href="{% url org_detail sponsor.sponsor_organisation.id %}">
 			                    {% org_logo sponsor.sponsor_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail sponsor.id %}">{{sponsor.sponsor_organisation}}</a><br />
+							<p style="margin:0">
+							<a href="{% url org_detail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation}}</a><br />
 							{{sponsor.sponsor_organisation.city}}, {{sponsor.sponsor_organisation.state}}, {{sponsor.sponsor_organisation.country}}
+							</p>
 						</div>
 						<div class="clear"></div>						
 					</div>
@@ -102,15 +108,17 @@
 		            <h3>{% trans 'Funding partners' %}</h3>
 		        {% endifequal %}
 				{% for funder in p.fundingpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#{% cycle 'fff' 'F1F5F9' %};">
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
 							<a href="{% url org_detail funder.funding_organisation.id %}">
 			                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
 			                </a>							
 						</div>
 						<div style="float:left; width:300px; margin-left:40px;">
-							<a href="{% url org_detail funder.id %}">{{funder.funding_organisation}}</a><br />
+							<p style="margin:0">
+							<a href="{% url org_detail funder.funding_organisation.id %}">{{funder.funding_organisation}}</a><br />
 							{{funder.funding_organisation.city}}, {{funder.funding_organisation.state}}, {{funder.funding_organisation.country}}
+							</p>
 						</div>
 						<div class="clear"></div>
 					</div>
