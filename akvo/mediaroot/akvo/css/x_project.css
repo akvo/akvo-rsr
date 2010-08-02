@@ -36,7 +36,7 @@ div#gallery_box {
 	height:125px;
 	width:325px;
 	max-width:325px;
-	border:1px solid #ccc;
+	border:2px solid #ccc;
 	}
 	
 /* width is calculated in the view and defined inline*/

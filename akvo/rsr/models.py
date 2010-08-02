@@ -349,7 +349,7 @@ STATUSES = (
     ('L', _('Cancelled')),
 )
 #STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
-STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
+STATUSES_COLORS = {'N':'black', 'A':'#AFF167', 'H':'orange', 'C':'grey', 'L':'red', }
 
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
