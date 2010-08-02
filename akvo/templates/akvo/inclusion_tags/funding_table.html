@@ -35,25 +35,11 @@
 				<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
 			</tr>					
 		</table>
+		{% ifnotequal p.status 'L' %}
+			<br />
+			<div style="text-align:center; padding-bottom:10px;">
+				<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+			</div>
+		{% endifnotequal %}
 	{% endifequal %}
 </div>
-
-{% comment %}
-	
-	
-		{% if p.budget_total %}
-			<table class="fundingbox-table" cellspacing="0">
-				<tr class="green">
-					<th>{% trans 'Raised' %}:</th>
-					<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
-				</tr>
-				<tr class="red">
-					<th>{% trans 'Still needed' %}:</th>
-					<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
-				</tr>	
-			</table>
-			<div class="fundingbox-progress-bar-progress" 
-				style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> 
-			</div>
-		{% endif %}
-{% endcomment %}

@@ -58,11 +58,13 @@
 					<div style="width:172px; margin-left:auto; margin-right:auto; padding-top:15px; padding-bottom:15px">
 						{% funding_table p %}
 					</div>
+					{% comment %}
 					{% ifnotequal p.funding_still_needed|round 0 %}
 						<div style="text-align:center; padding-bottom:10px;">
 							<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
 						</div>
 					{% endifnotequal %}
+					{% endcomment %}
 				</div>
 				<p class="small space0" style="padding-top:10px;">
 					<a style="color:#FDF47A;" href="{% url project_funding p.id %}">
@@ -128,14 +130,24 @@
 		<h2>{% trans 'Tools for this page' %}</h2>
 		<div class="white_box" style="background-color:#fff">
 			<div class="space20">
-				<ul>
+				<div style="width:45%; float:left; padding-top:10px;">
+					<a class="aqua awesome" href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a>
+				</div>
+				<div style="width:45%; float:right;">
+					<p style="margin:0;" class="tiny grey">
+						{% trans 'Embed a live link to this project to your web site our blog.' %}
+					</p>
+				</div>
+				<div class="clear"></div>
+				<br />
+				<hr />
+				<p class="small grey">
 					{% if can_add_update %}
-						<li><a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a></li>
-					{% endif %}
-					<li><a href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a></li>
-					<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
-					<li><a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Project feed' %}</a></li>
-				</ul>	
+						<a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a> {% trans 'to this project.' %}<br />	
+					{% endif %}			
+					<a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
+					<a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Subscribe' %}</a> {% trans 'to this projects feed' %}
+				</p>
 			</div>
 		</div>
 	</div>

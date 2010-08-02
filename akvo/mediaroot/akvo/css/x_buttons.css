@@ -40,8 +40,12 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .red.awesome:hover							{ background-color: #872300; }
 .magenta.awesome, .magenta.awesome:visited		{ background-color: #a9014b; }
 .magenta.awesome:hover							{ background-color: #630030; }
+.orange.awesome, .orange.awesome:visited		{ background-color: #FFA500; }
+.orange.awesome:hover							{ background-color: #ff5c00; }
+/*
 .orange.awesome, .orange.awesome:visited		{ background-color: #ff5c00; }
 .orange.awesome:hover							{ background-color: #d45500; }
+*/
 .yellow.awesome, .yellow.awesome:visited		{ background-color: #ffb515; }
 .yellow.awesome:hover	                        { background-color: #fc9200; }
 .aqua.awesome, .aqua.awesome:visited		{ background-color: #4593B1; }
