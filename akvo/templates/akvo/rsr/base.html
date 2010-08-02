@@ -27,19 +27,6 @@
 						<span>
 							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
 						</span>
-						{% comment %}
-						<span>Akvo.org</span>	
-						{% endcomment %}
-					</a>
-				</li>
-				<li>
-					<a href="/wiki/">
-						<span>Akvopedia</span>
-					</a>
-				</li>
-				<li>
-					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
-						<span>{% trans 'Partners' %}</span>
 					</a>
 				</li>
 				<li>
@@ -48,8 +35,18 @@
 					</a>
 				</li>
 				<li>
+					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
+						<span>{% trans 'Partners' %}</span>
+					</a>
+				</li>
+				<li>
+					<a href="/wiki/">
+						<span>Akvopedia</span>
+					</a>
+				</li>
+				<li>
 					<a href="/web/get_involved/">
-						<span>{% trans 'Get involved' %}</span>
+						<span>{% trans 'About' %}</span>
 					</a>
 				</li>
 				<li>
