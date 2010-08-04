@@ -912,7 +912,7 @@ def projectmain(request, project_id):
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
         
     updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('time')
-    slider_width = (len(updates_with_images) + 1) * 150
+    slider_width = (len(updates_with_images) + 1) * 100
     
     return {
         'p': p, 

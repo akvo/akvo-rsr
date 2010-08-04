@@ -46,7 +46,7 @@
 					</div>
 					<div class="clear"></div>
 					
-					<div id="gallery_box_slider">
+					<div id="gallery_box_slider" style="background-color:orange">
 						<div class="gallery_links_container">
 							<div style="border:2px solid #71CDFF;">
 								<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}" target="_blank">
@@ -194,13 +194,22 @@
 {% block jq_ready %}
 	jQ('#project_tabs').tabs();
 	{{block.super}}
-	
-	jQ('#prev').click(function () {
-		jQ('#gallery_box_slider').animate({'left': '+=250px'}, 300);
+		
+	jQ('#prev').click(function () {		
+		if ( jQ('#gallery_box_slider').offset().left < 119 ) {
+			jQ('#gallery_box_slider').animate({'left': '+=250px'}, 300);
+		}
 	});
 	
 	jQ('#next').click(function () {
-		jQ('#gallery_box_slider').animate({'left': '-=250px'}, 300);
+		// {{slider_width}}
+		// gallery_box_slider
+		
+		var left = jQ('#gallery_box_slider').offset().left;
+		
+		if ( (({{slider_width}} - 119 * 4) + left) > 0 ) {
+			jQ('#gallery_box_slider').animate({'left': '-=250px'}, 300);
+		} 
 	});
 	
 	jQ('.gallery_links').click(function () {
