@@ -1109,7 +1109,7 @@ def setup_donation(request, p):
 def donate(request, p, engine, has_sponsor_banner=False):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
-    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
+    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():
         has_sponsor_banner = True
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
