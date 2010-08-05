@@ -201,6 +201,10 @@
 						{% trans 'Add first comment' %}  &#x25B6;
 					</a>
 					{% else %}
+						<a class="small" href="{% url project_comments p.id %}">
+							{% trans 'Add comment' %}  &#x25B6;
+						</a>
+						<hr style="margin-top:10px; margin-bottom:5px;"/>
 						{% for c in comments %}
 							<div class="grey_hover"
 								{% if not forloop.last %} style="border-bottom: 1px solid #eee;"{% endif %}>
