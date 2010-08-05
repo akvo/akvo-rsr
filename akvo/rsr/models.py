@@ -1368,7 +1368,7 @@ class Invoice(models.Model):
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, max_length=75)
     # Mollie
     bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
