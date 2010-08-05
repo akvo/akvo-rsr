@@ -13,6 +13,7 @@ from os.path import basename, splitext
 from rsr.models import *
 from django.db.models.fields.files import ImageField
 from django.db.models import get_model
+from django.contrib.contenttypes.models import ContentType
 
 def mark_existing_invoices_as_anonymous():
     invoices = get_model('rsr', 'invoice').admin_objects.all()
@@ -102,7 +103,22 @@ def budget_refactor():
                 BudgetItem.objects.create(project=p, item='other', amount=p.budget.other, currency='EUR')
         except:
             print "Error importing project budget, for id:", p.id 
-                
+
+def create_project_locations():
+    content_type = ContentType.objects.get_for_model(get_model('rsr', 'project'))
+    projects = get_model('rsr', 'project').objects.all()
+    location = get_model('rsr', 'location').objects
+    for p in projects:
+        if p.has_valid_legacy_coordinates():
+            latitude, longitude = p.latitude, p.longitude
+        else:
+            latitude, longitude = 0, 0
+        print 'Creating location object for project %d' % p.id
+        location.create(latitude=latitude, longitude=longitude,
+                        city=p.city, state=p.state, country=p.country,
+                        content_type=content_type, object_id=p.id,
+                        address_1=p.location_1, address_2=p.location_2,
+                        postcode=p.postcode, primary=True)
+
 if __name__ == '__main__':
-    create_default_mollie_gateway()
-    mark_existing_invoices_as_anonymous()
+    create_project_locations()

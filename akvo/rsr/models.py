@@ -19,6 +19,8 @@ from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -458,7 +460,16 @@ class Project(models.Model):
         return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         '''
 
-    def has_valid_coordinates(self):
+    @property
+    def coordinates(self, coordinates=None):
+        content_type = ContentType.objects.get_for_model(Project)
+        location = Location.objects.get(content_type=content_type, object_id=self.id)
+        invalid = location.latitude == 0 and location.longitude == 0
+        if not invalid:
+            coordinates = (location.latitude, location.longitude)
+        return coordinates
+
+    def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
         try:
             latitude = float(self.latitude)
             longitude = float(self.longitude)
@@ -466,8 +477,8 @@ class Project(models.Model):
         except:
             return False
 
-    def get_location(self):
-        if self.has_valid_coordinates():
+    def get_location(self): # TO BE DEPRECATED
+        if self.has_valid_legacy_coordinates():
             latitude = str(self.latitude.strip())
             longitude = str(self.longitude.strip())
             location = '%s,%s' % (latitude, longitude)
@@ -1335,7 +1346,7 @@ class Invoice(models.Model):
         help_text=_('This flag is set if the donation was made in test mode.'))
     engine = models.CharField(_('payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
     # Common
     amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
@@ -1343,13 +1354,13 @@ class Invoice(models.Model):
         blank=True, null=True,
         help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    name = models.CharField(max_length=75)
+    email = models.EmailField()
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, max_length=75)
     # Mollie
     bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
@@ -1422,19 +1433,22 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 
 class Location(models.Model):
-
-    latitude = LatitudeField(_('latitude'))
-    longitude = LongitudeField(_('longitude'))
+    latitude = LatitudeField(_('latitude'), default=0)
+    longitude = LongitudeField(_('longitude'), default=0)
     city = models.CharField(_('city'), max_length=255)
     state = models.CharField(_('state'), max_length=255)
     country = models.ForeignKey(Country)
     address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
     address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
     postcode = models.CharField(_('postcode'), max_length=10, blank=True)
-    project = models.ManyToManyField(Project)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    primary = models.BooleanField()
 
     def __unicode__(self):
-        return u'%s, %s, %s' % (self.city, self.state, self.country)
+        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)

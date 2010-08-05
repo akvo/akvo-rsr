@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.contrib import auth
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
+from django.contrib.contenttypes import generic
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
@@ -54,6 +55,10 @@ class CountryAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
+class LocationInline(generic.GenericStackedInline):
+    model = get_model('rsr', 'location')
+    extra = 0
+
 class OrganisationAdminForm(forms.ModelForm):
     pass
     #def save(self, *args, **kwargs):
@@ -67,6 +72,7 @@ class OrganisationAdminForm(forms.ModelForm):
     #    super(OrganisationAdminForm, self).__init__(*args, **kwargs)
 
 class OrganisationAdmin(admin.ModelAdmin):
+    inlines = (LocationInline,)
     fieldsets = (
         (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
@@ -345,10 +351,6 @@ class ProjectAdminForm(forms.ModelForm):
     
 class RSR_FormSet(forms.formsets.BaseFormSet):
     pass
-
-class LocationInline(admin.TabularInline):
-    model = get_model('rsr', 'location')
-    extra = 1
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')

@@ -4,26 +4,43 @@
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 <script type="text/javascript">//<![CDATA[
-    function showMap() {
-        var latitude = {{p.latitude}};
-        var longitude = {{p.longitude}};
-        var coordinates = new google.maps.LatLng(latitude, longitude);
-        var mapOptions = {
-            zoom: {{zoom}},
-            center: coordinates,
+
+    function loadGoogleMap() {
+
+        var latitude = {{ object.coordinates.0 }};
+        var longitude = {{ object.coordinates.1 }};
+        var zoom = {{ zoom }};
+
+        var mapData = {
+            coordinates: new google.maps.LatLng(latitude, longitude),
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var mapCanvas = document.getElementById('map_canvas')
+
+        var mapOptions = {
+            zoom: zoom,
+            center: mapData.coordinates,
+            mapTypeId: mapData.mapTypeId,
+            scrollwheel: false
+        };
+
+        var mapCanvas = document.getElementById('map_canvas');
+
         var map = new google.maps.Map(mapCanvas, mapOptions);
+
         var marker = new google.maps.Marker({
             map: map,
-            position: coordinates,
+            position: mapData.coordinates,
             title: 'Project location'
         });
+
     }
-    $(document).ready(function(){
-        showMap();
-    });
+
+    $(document).ready(
+        function() {
+            loadGoogleMap();
+        }
+    );
+
 //]]></script>
 
-<div id="map_canvas" style="width:{{width}}px; height:{{height}}px;></div>
+<div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;>"</div>
