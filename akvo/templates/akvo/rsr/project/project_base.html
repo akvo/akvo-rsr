@@ -141,9 +141,12 @@
 				<div class="clear"></div>
 				<br />
 				<hr />
+					
 				<p class="small grey">
 					{% if can_add_update %}
 						<a href="{% url akvo.rsr.views.updateform p.id %}">{% trans 'Add update' %}</a> {% trans 'to this project.' %}<br />	
+					{% else %}
+						<a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign in' %}</a>  {% trans 'to add update' %}<br />
 					{% endif %}			
 					<a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
 					<a href="/rsr/rss/updates/{{p.id}}/">{% trans 'Subscribe' %}</a> {% trans 'to this projects feed' %}
