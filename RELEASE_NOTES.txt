@@ -9,7 +9,7 @@ Akvo RSR v 0.9.18 release notes
 -------------------------------------------
 6 Aug 2010, (Code name: Supercharge) gvh
 
-This release introduces page couters in RSR. We are also updating the version of Django that RSR runs on to 1.2.
+This release introduces page couters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
 
 New features
 ------------
@@ -18,11 +18,11 @@ New features
 In this first iteration page counters are created for projects, project updates and widgets showing one project. The counters record how many visits to a particular project have been made. However we are still only gathering the page count data for these objects, it is not shown in the interface. This will be added in a later release.
 
 ### Django 1.2
-RSR now runs on Django version 1.2. The new version of Django required changes to forms handling. The changes should be backwards compatible however and we have not introduced any new features requiring 1.2 yet.
+Akvo RSR now runs on Django version 1.2. The new version of Django required changes to forms handling. The changes should be backwards compatible however and we have not introduced any new features requiring 1.2 yet.
 
 ### Pip requirements
-We use pip whenever possible for installing python libaries. We have added scripts/deployment/pip-requirements.txt describing all python components needed to run RSR. We use this together with virtualenv to set up our environment. While not technically necessary to run RSR it is warmly recommended.
-Note: On ubuntu you may need developer versions of certain python bindings: we had to
+We use pip whenever possible for installing python libaries. We have added scripts/deployment/pip-requirements.txt describing all python components needed to run Akvo RSR. We use this together with virtualenv to set up our environment. While not technically necessary to run Akvo RSR it is warmly recommended.
+Note: On Ubuntu you may need developer versions of certain python bindings: we had to
 
 sudo aptitude install libxml2-dev libxslt-dev libmysqlclient-dev
 
