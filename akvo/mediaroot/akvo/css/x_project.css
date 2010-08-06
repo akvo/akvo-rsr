@@ -42,7 +42,7 @@ div#gallery_box {
 /* width is calculated in the view and defined inline*/
 div#gallery_box_slider {
 	position:absolute;
-	height:75px;
+	height:90px;
 	left:0;
 	padding-left:2px;
 	}
