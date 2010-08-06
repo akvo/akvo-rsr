@@ -22,6 +22,12 @@ RSR now runs on Django version 1.2. The new version of Django required changes t
 
 ### Pip requirements
 We use pip whenever possible for installing python libaries. We have added scripts/deployment/pip-requirements.txt describing all python components needed to run RSR. We use this together with virtualenv to set up our environment. While not technically necessary to run RSR it is warmly recommended.
+Note: On ubuntu you may need developer versions of certain python bindings: we had to
+
+sudo aptitude install libxml2-dev libxslt-dev libmysqlclient-dev
+
+to get lxml and MySQL-python to install. Similar upgrades may be needed on other *nixes.
+
 
 ---
 
