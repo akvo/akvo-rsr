@@ -14,6 +14,7 @@
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Project updates' %}</h2>
 		</div>
+		{% comment %}
 		<div class="counter_badge">
 			<span style="display:none;">{% counter p %}</span>
 			{% cache 10 p.view_count %}
@@ -22,6 +23,7 @@
 			<br />
 			<span>{% trans 'views' %}</span>
 		</div>
+		{% endcomment %}
 		<div class="clear"></div>
 		<div class="space20">
 			{% if not updates %}
