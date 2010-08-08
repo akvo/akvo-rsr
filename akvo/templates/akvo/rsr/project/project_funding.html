@@ -12,7 +12,7 @@
 			<span class="small">
 				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
-			<h2 style="padding-top:20px;">{% trans 'Funding and milestones details' %}</h2>
+			<h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
 		</div>
 		<div class="counter_badge">
 			<span style="display:none;">{% counter p %}</span>
@@ -132,7 +132,7 @@
 						</td>
 					</tr>
 				</table>
-				<p class="small grey">* Raised equals donations minus transaction fees.</p>
+				<p class="small grey">{% trans '* The amount indicated is the donation minus transaction fees.' %}</p>
 			{% endif %}
 			
 			{% comment %}
