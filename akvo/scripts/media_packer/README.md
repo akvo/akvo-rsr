@@ -1,24 +1,23 @@
 # Media Packer
 
 ## Goal
-To be able to handle css & javascript files in a more organised and efficient way.
+To be able to handle css & javascript files in a more organised and efficient way. And at the same time provide better performance by reduce http requests, enable better use of browser cache and compression of css & javascript files. 
 
 ## What
-Instead of having a large css file we want to have several small ones. Each representing a block of styles, can be part of the site like mainnav or something like typography. The use of several small css files makes it much easier to manage updates and retain an overview of the evolving styles and scripts. At the same time we want don't want to serve several css & javascript files to the user because of the http request overhead which is bad for performance.
+Instead of having a large css file we want to have several small ones. Each representing a block of styles, a block can be part of the site such as 'typography' or 'mainnav'. The use of several small css files makes it much easier to manage updates and retain an overview of the evolving styles and scripts. At the same time we don't want to serve several css & javascript files to the user. This since each separate file creates an extra http request which is dreadful for performance. That's why we should combine all css files into one and only serve that one. While we are at it we will also compress the files using Yahoo's great YUICompressor.
 
 ## How
-We define media bundles in a python file. Each media bundle can consist of one or more source files. All those source files will be combined into one file for use on the site. 
+We define media bundles in a python file. Each media bundle consists of one or more source files. All those source files will be combined into one file representing the bundle for use on the site.
 
 ### Overview
-When a developer makes a commit in git the packer script parses the media_bundles.py file where we have defined our media bundles. For each bundle the source files are combined into one file. The file is persisted to disk, and also added to the git index. In our templates we can then with the "media_bundle" template tag call for a specific media bundle e.g. {% media_bundle 'akvo_style' %}. Depending on the media bundle type (css or js) the template tag will add the corresponding code block pointing to the combined file.
-
+When a developer makes a commit in git the packer script parses the media_bundles.py file where we have defined our media bundles. For each defined bundle the source files are combined into one file. The file is persisted to disk, and also added to the git index. In our templates we can then with the 'media_bundle' template tag call for a specific media bundle e.g. {% media_bundle 'akvo_style' %}. Depending on the media bundle type (css or js) the template tag will add the corresponding code block pointing to the combined file.
 
 ###In depth
 Besides combining the bundles files the media packer also enables support for compression of bundle files, naming based on the content (with a hash) and a way to make development easier by bypassing the combined files and link directly agains the source files.
 
-The media packer uses the YUICompressor(http://developer.yahoo.com/yui/compressor/) for compressing the bundle files, one can chose it the bundle should be compressed on bundle level in the media_bundle file.
+The media packer uses the YUICompressor(http://developer.yahoo.com/yui/compressor/) for compressing the bundle files, compression is selectable with the 'compress' (True, or False) setting.
 
-The combined files are named with a fingerprint (hash) based on the file contents. This makes it possible to set expires header to the files in the webserver. In practice this will make users cache our styles and javascript files on their first visit. Since we can have a long expire date it's a good chance the user will not need to load those form our server but use their browser cache. To make sure that new styles and javascript get's used and not old ones stored in the users browser cache we add a hash to the file name. The template tag uses a map file named map.py to locate the current file name for the bundle. This file is separated from the media_bundles file since we don't wan't to mix user defined files and auto generated files. In this way one can comment in the media_bundles.py file without any risk.
+The combined files are named with a fingerprint (hash) based on the file contents. This makes it possible to set expires header to the files on the webserver. In practice this will make users cache styles and javascript files on their first visit. Since we thanks to the fingerprint naming can have a very long expire date, it's a good chance the user will not need to download those from our server but use their browsers cache. The fingerprint nameing forces users to download new styles and javascipt if we have updates them since last time they visited out website. The template tag uses a map file named map.py to locate the current file name for the bundle. This file is separated from the media_bundles file since we don't wan't to mix user defined files and auto generated files. In this way one can make comments in the media_bundles.py file without any risk of confusion.
 
 The development mode is utilised by adding a DEV_MEDIA_BUNDLES=TRUE to the settings file. For styles the template tag will link against a raw file which are generated by the packer script. The raw file then imports the source files by using css @imports. For javascript the template tag will link directly to the source files.
 
@@ -38,7 +37,7 @@ The development mode is utilised by adding a DEV_MEDIA_BUNDLES=TRUE to the setti
 One can name the source files to whatever but it's recommended to use a prefix such as "x_" e.g. x_style_name.css.
 
 ### Aborted commits
-If the script stumbles upon errors because of a misconfiguration of the media_bundles the commit will be aborted. This is done by design. We don't want to checkin broken code. And only changes to the media bundles will be a possibility for errors.
+If the script stumbles upon errors because of a misconfiguration of the media_bundles the commit will be aborted. This is done by design. We don't want to checkin broken code. And only changes to the media bundles will be a possibility for those errors.
 
 ### Git hook setup
 The pre-commit git hook is setup on the first http request. Hence if you clone the system the git-hook will not be in place before you have run the project. If you want you can always manually symlink the pre-commit hook from ".git/hooks/" to "git_hooks/" in the project root. The automatic sym-linking is made in "akvo/scripts/media_packer/__init__.py"
@@ -52,6 +51,4 @@ http://developer.yahoo.com/yui/compressor/
 http://cjohansen.no/en/apache/using_a_far_future_expires_header
 
 ## Roadmap:
-Maybe add JSLint as an test for javascript bundles.
-
-
+Would be nice to have validation of css & javascript(maybe even JSLint) as a requirement.
