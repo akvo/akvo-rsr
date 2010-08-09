@@ -118,7 +118,7 @@ def project_thumb(context, project, width, height, style=''):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'div_style'     : style,
+        'div_style' : style,
     }
     
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
@@ -144,11 +144,11 @@ def map_thumb(context, object, width, height, style=''):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'div_style'     : style,
+        'div_style' : style,
     }
 
 @register.inclusion_tag('inclusion_tags/update_thumb.html', takes_context=True)
-def update_thumb(context, update, width, height):
+def update_thumb(context, update, width, height, style=''):
     '''
     '''
     return {
@@ -157,6 +157,7 @@ def update_thumb(context, update, width, height):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
+        'div_style' : style,
     }
 
 from akvo.scripts.media_packer import map, media_bundles
