@@ -3,7 +3,7 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">Funding</li>
+<li id="last_breadcrum_item">{% trans 'Funding' %}</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
@@ -77,7 +77,8 @@
 			<br />
 			
 			{% if p.fundingpartner_set.all %}
-			<h3>Current funders</h3>
+			<hr />
+			<h3>{% trans 'Current funders' %}</h3>
 			{% endif %}
 			{% for funder in p.fundingpartner_set.all %}
 				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
@@ -104,7 +105,8 @@
 				</div>
 			{% endfor %}
 			{% if p.all_donations %}
-				<h3 style="margin-top:40px;">Individual donations</h3>
+				<hr />
+				<h3 style="margin-top:40px;">{% trans 'Individual donations' %}</h3>
 				<table class="project_budget_table" style="width:50%;">
 					<tr>
 						<td style="font-weight:bold; text-align:right;">{% trans 'Individual raised' %}*:</td>
