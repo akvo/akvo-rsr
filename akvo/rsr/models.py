@@ -460,10 +460,29 @@ class Project(models.Model):
         return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         '''
 
+    def _get_locations(self):
+        '''Returns a queryset of all the project's locations'''
+        content_type = ContentType.objects.get_for_model(Project)
+        locations = Location.objects.filter(content_type=content_type, object_id=self.id)
+        return locations
+
+    @property
+    def primary_location(self, location=None):
+        '''Returns a project's primary location'''
+        locations = self._get_locations()
+        if locations:
+            location = locations[0]
+        return location
+
     @property
     def coordinates(self, coordinates=None):
-        content_type = ContentType.objects.get_for_model(Project)
-        location = Location.objects.get(content_type=content_type, object_id=self.id)
+        '''
+        Currently returns a latitude, longitude tuple for the
+        primary location of a project or None.
+        In future releases we will need to return data
+        for more than one location.
+        '''
+        location = self.primary_location
         invalid = location.latitude == 0 and location.longitude == 0
         if not invalid:
             coordinates = (location.latitude, location.longitude)
@@ -477,16 +496,6 @@ class Project(models.Model):
         except:
             return False
 
-    def get_location(self): # TO BE DEPRECATED
-        if self.has_valid_legacy_coordinates():
-            latitude = str(self.latitude.strip())
-            longitude = str(self.longitude.strip())
-            location = '%s,%s' % (latitude, longitude)
-        else:
-            state = self.state.strip().replace(' ', '+')
-            country = self.country.country_name.strip().replace(' ', '+')
-            location = '%s+%s' % (state, country)
-        return location
 
     class QuerySet(QuerySet):
         def published(self):
@@ -1346,7 +1355,7 @@ class Invoice(models.Model):
         help_text=_('This flag is set if the donation was made in test mode.'))
     engine = models.CharField(_('payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
     # Common
     amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
@@ -1354,13 +1363,13 @@ class Invoice(models.Model):
         blank=True, null=True,
         help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75)
-    email = models.EmailField()
+    name = models.CharField(max_length=75, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
     bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
@@ -1411,7 +1420,7 @@ class Invoice(models.Model):
     
     @property
     def donation_fee(self):
-        return self.amount-self.amount_received
+        return (self.amount - self.amount_received)
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
@@ -1444,7 +1453,7 @@ class Location(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-    primary = models.BooleanField()
+    primary = models.BooleanField(_('primary location'))
 
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)

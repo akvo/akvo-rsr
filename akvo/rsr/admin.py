@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
@@ -55,9 +56,26 @@ class CountryAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
+
+class LocationInlineForm(forms.ModelForm):
+    model = get_model('rsr', 'location')
+
+    def clean_primary(self):
+        content_type = self.instance.content_type
+        object_id = self.instance.object_id
+        primary = self.cleaned_data['primary']
+        if primary:
+            locations = self.model.objects
+            qs = locations.filter(content_type=content_type, object_id=object_id, primary=True)
+            if qs.count() != 0:
+                raise forms.ValidationError(_('You can only have one primary location!'))
+        return primary
+
 class LocationInline(generic.GenericStackedInline):
     model = get_model('rsr', 'location')
     extra = 0
+    form = LocationInlineForm
+
 
 class OrganisationAdminForm(forms.ModelForm):
     pass
