@@ -43,7 +43,14 @@
 
 <div class="two_column_left">
 	<h1 style="margin-bottom:5px;">{{p.name}}</h1>
+	<div style="float:right; width:100px; text-align:right;">
+		<a href="/rsr/rss/updates/{{p.id}}/">
+			<img src="{{MEDIA_URL}}akvo/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+		</a>
+	</div>
 	<p class="grey" style="font-weight:bold;">{{p.subtitle}}</p>
+	<div class="clear"></div>
+	
 	{% block project_left_column %}{% endblock project_left_column%}
 </div>
 
