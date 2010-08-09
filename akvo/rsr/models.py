@@ -1363,13 +1363,13 @@ class Invoice(models.Model):
         blank=True, null=True,
         help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    name = models.CharField(max_length=75)
+    email = models.EmailField()
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), max_length=75)
     # Mollie
     bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
