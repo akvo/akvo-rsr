@@ -279,7 +279,7 @@
 									{% else %}
 										{% ifnotequal p.status 'L' %}
 											<div style="text-align:center; padding-top:5px; padding-bottom:5px;">
-												<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+												<a class="orange awesome small" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
 											</div>
 										{% endifnotequal %}
 									{% endifequal %}

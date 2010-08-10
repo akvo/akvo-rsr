@@ -21,10 +21,11 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .awesome:hover { background-color: #111; color: #fff; text-decoration:none;}
 .awesome:active { top: 1px; }
 
-.small.awesome, .small.awesome:visited { font-size: 11px; padding: ; }
+
 .awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited { 
     font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
     }
+.small.awesome, .small.awesome:visited { font-size: 11px; padding: 4px 8px 5px; }
 /*
 .small.awesome, .small.awesome:visited { font-size: 0.8125em; padding: ; }
 .awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited { 
