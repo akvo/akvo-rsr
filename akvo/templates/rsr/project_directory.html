@@ -93,7 +93,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="width:172px;">
 			{% funding_box_march_directory showcase %}
 			<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; display:none;"><span style="display:none;">{% counter showcase %}</span>
-	        	{% cache 10 showcase_view_count %}
+	        	{% cache 10 showcase_view_count showcase.id %}
 	        		{{ showcase.view_count|intcomma }} {% trans 'views' %}
 	        	{% endcache %}
 			</span>
@@ -240,7 +240,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<div style="clear: left;">
 			<div style="padding-top: 5px">{% category_icons p %}</div>
 	 	</div>
-        {% cache 10 project_listing_view_count %}
+        {% cache 10 project_view_count p.id %}
 			<p style="margin-top:6px; padding:0; color:#999; display:none;">
 				{{ p.view_count|intcomma }} views
 			</p>

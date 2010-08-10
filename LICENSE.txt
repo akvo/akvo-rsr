@@ -1,6 +1,6 @@
-LICENSE.txt, v1.0, 7 January 2009, tbp
+LICENSE.txt, v1.0, 10 August 2010, pb
 
-Copyright 2007, 2008, 2009 Stichting Akvo (Akvo Foundation)
+Copyright 2007, 2008, 2009, 2010 Stichting Akvo (Akvo Foundation)
 
 This file is part of Akvo RSR.
 
