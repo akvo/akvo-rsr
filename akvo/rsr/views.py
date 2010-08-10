@@ -276,6 +276,7 @@ def projectlist(request):
     page: paginator
     '''
     projs = Project.objects.published().funding().select_related()
+    projs = projs.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     fundable = projs.need_funding()
     showcases = get_random_from_qs(fundable, 3)
     

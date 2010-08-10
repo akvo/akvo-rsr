@@ -157,27 +157,27 @@
 						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Name' %}</p>
 					</div>
 				</div>
-				<div style="float:left; width:130px; text-align:center;">
+				<div style="float:left; width:120px; text-align:center;">
 					<div style="border-right:1px solid #979AA5;">
 						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Location' %}</p>
 					</div>
 				</div>
-				<div style="float:left; width:150px; text-align:center;">
+				<div style="float:left; width:110px; text-align:center;">
 					<div style="border-right:1px solid #979AA5;">
 						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Status' %}</p>
 					</div>
 				</div>
-				<div style="float:left; width:150px; text-align:center;">
+				<div style="float:left; width:180px; text-align:center;">
 					<div style="border-right:1px solid #979AA5;">
 						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Partners' %}</p>
 					</div>
 				</div>
-				<div style="float:left; width:80px; text-align:center;">
+				<div style="float:left; width:120px; text-align:center;">
 					<div style="border-right:1px solid #979AA5;">
 						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Last update' %}</p>
 					</div>
 				</div>
-				<div style="float:left; width:80px; text-align:center;">
+				<div style="float:left; width:165px; text-align:center;">
 					<div>
 						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Funding' %}</p>
 					</div>
@@ -188,7 +188,7 @@
 			<div>
 				{% for p in page.object_list %}
 					<div class="grey_hover" style="min-height:100px; {% if not forloop.last %} border-bottom:1px solid #ccc;	{% endif %}">
-						<div style="float:left; width:100px;">
+						<div style="float:left; width:110px;">
 							<div class="space10">
 								<a href="{% url akvo.rsr.views.projectmain p.id %}">
 						            {% project_thumb p 84 63 'float:left; margin-right: 10px;' %}
@@ -201,14 +201,10 @@
 							<div class="space10">
 								<p class="small" style="margin-bottom:0;">
 									<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a><br />
-									{% comment %}
-									{{p.subtitle}}<br />
-									{{p.country}}
-									{% endcomment %}
 								</p>
 							</div>
 						</div>
-						<div style="float:left; width:130px;">
+						<div style="float:left; width:120px;">
 							<div class="space10">
 								<p class="small" style="margin-bottom:0;">
 									{{p.country}}<br />
@@ -216,19 +212,51 @@
 								</p>
 							</div>
 						</div>
-						<div style="float:left; width:150px;">
+						<div style="float:left; width:110px;">
 							<div class="space10">
-								<p class="small" style="margin-bottom:0;">
+								<p class="small" style="margin-bottom:0; font-size:1em;">
 									{{p.show_status}}
 								</p>
 							</div>
 						</div>
-						<div style="float:left; width:200px;">
+						<div style="float:left; width:180px;">
 							<div class="space10">
 								<p class="small" style="margin-bottom:0;">
 									{% for partner in p.all_partners %}
 										<a href="{% url org_detail partner.id %}">{{partner.name}}</a>{% if not forloop.last %},<br />{% endif %}
 									{% endfor %}
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:120px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0;">
+									{% with p.last_update as last_update %}						
+										{% ifequal last_update None %}
+											{% trans 'Not yet' %}
+										{% else %}
+											{{last_update|string_to_date|date:"d M Y"}}
+										{% endifequal %}
+									{% endwith %}
+									{% comment %}
+									{{p.last_update}}
+									{% with p.last_update as last_update %}						
+										{% ifequal last_update None %}
+											<span style="color:#000;">{% trans 'Not yet' %}</span>
+										{% else %}
+											<a href="{% url project_update p.id last_update.id %}">
+												{{last_update|string_to_date|date:"Y-m-d  H:i"}}
+											</a>
+										{% endifequal %}
+									{% endwith %}
+									{% endcomment %}
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:160px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0;">
+									funding
 								</p>
 							</div>
 						</div>
