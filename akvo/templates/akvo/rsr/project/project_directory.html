@@ -255,9 +255,37 @@
 						</div>
 						<div style="float:left; width:160px;">
 							<div class="space10">
-								<p class="small" style="margin-bottom:0;">
-									funding
-								</p>
+								<div style="text-align:center;">
+									<p class="small" style="margin:0;">
+										{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}
+									</p>
+								</div>
+								<div class="fundingbox-progress-bar" style="height:5px;">
+									{% if p.budget_total %}
+									<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> 
+									</div>
+									{% endif %}
+								</div>
+								<div style="text-align:center;">
+									<p class="tiny grey" style="margin:0;">
+										{% widthratio p.funding_total_given p.budget_total 100 %} %
+									</p>
+								</div>
+								<div style="text-align:center;">
+									{% ifequal p.funding_still_needed|round 0 %}
+										<p class="green" style="font-weight:bold;">
+											{% trans 'Fully funded' %}
+										</p>
+									{% else %}
+										{% ifnotequal p.status 'L' %}
+											<div style="text-align:center; padding-top:5px; padding-bottom:5px;">
+												<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+											</div>
+										{% endifnotequal %}
+									{% endifequal %}
+								</div>
+								
+								
 							</div>
 						</div>
 						<div class="clear"></div>
