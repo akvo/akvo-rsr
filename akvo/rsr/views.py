@@ -277,8 +277,6 @@ def projectlist(request):
     '''
     projs = Project.objects.published().funding().select_related()
     projs = projs.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    fundable = projs.need_funding()
-    showcases = get_random_from_qs(fundable, 3)
     
     query_string = ''
     found_entries = None
@@ -295,15 +293,17 @@ def projectlist(request):
         projs = projs.order_by(order_by, 'country__country_name', 'name')
     elif order_by == 'status':
         projs = projs.order_by(order_by, 'status', 'name')
+
+    # last_update and funds_needed don't work
     elif order_by == 'last_update': 
         projs = projs.order_by('-last_update', 'name')
+    elif order_by == 'funds_needed': 
+        projs = projs.order_by('funds_needed', 'name')
 
     page = project_list_data(request, projs)
     return {
         'projs': projs,
-        'orgs': Organisation.objects,
         'page': page,
-        'showcases': showcases,
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'site_section': 'projects',
         'query_string': query_string,

@@ -187,15 +187,25 @@
 				<div style="float:left; width:120px; text-align:center;">
 					<div style="border-right:1px solid #979AA5;{% ifequal request_get.order_by 'last_update' %}background-color:#ECEFF2;{% endifequal %}">
 						<p class="small" style="padding:15px 0; margin:0;">
+							{% comment %}
 							<a href="{% url project_list %}{% addparam "order_by" "last_update" %}">
 								{% trans 'Last update' %}
-							</a>
+							</a>	
+							{% endcomment %}
+							{% trans 'Last update' %}
 						</p>
 					</div>
 				</div>
-				<div style="float:left; width:165px; text-align:center;">
-					<div>
-						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Funding' %}</p>
+				<div style="float:left; width:171px; text-align:center;">
+					<div style="{% ifequal request_get.order_by 'funds_needed' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							{% comment %}
+							<a href="{% url project_list %}{% addparam "order_by" "funds_needed" %}">
+								{% trans 'Funding' %}
+							</a>
+							{% endcomment %}
+							{% trans 'Funding' %}
+						</p>
 					</div>
 				</div>
 				<div class="clear"></div>
