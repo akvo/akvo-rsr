@@ -14,7 +14,7 @@
     
     }
     
-/* Get's the color in the models file!*/
+/* Color is set in the models file */
 .status_large {
     padding:5px 10px;
     -khtml-border-radius:13px;
@@ -26,6 +26,10 @@
     
 .project_budget_table, .project_budget_table tr, .project_budget_table tr td {
     border:none;
+    }
+
+.project_budget_table tr td {
+    padding-top:0;
     }
 
 
