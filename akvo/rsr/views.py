@@ -287,6 +287,17 @@ def projectlist(request):
         project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
         projs = Project.objects.filter(project_query)
     
+    order_by = request.GET.get('order_by', 'name')
+
+    if order_by == 'name':
+        projs = projs.order_by(order_by, 'name')
+    elif order_by == 'country__country_name':
+        projs = projs.order_by(order_by, 'country__country_name', 'name')
+    elif order_by == 'status':
+        projs = projs.order_by(order_by, 'status', 'name')
+    elif order_by == 'last_update': 
+        projs = projs.order_by('-last_update', 'name')
+
     page = project_list_data(request, projs)
     return {
         'projs': projs,
@@ -296,6 +307,7 @@ def projectlist(request):
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'site_section': 'projects',
         'query_string': query_string,
+        'request_get': request.GET,
     }
 
 @render_to('rsr/project/project_directory.html')

@@ -96,7 +96,7 @@
 			<div class="round" style="border: 1px solid #ccc;">
 				<div class="space15">
 					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}">					
-					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">
+					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
 				</div>
 			</div>
 		</div>
@@ -152,19 +152,31 @@
 				</p>
 			</div>
 			<div class="linear_bg" style="padding:0; margin:0; border-bottom:1px solid #979AA5;">
-				<div style="float:left; width:270px; text-align:center;">
+				<div style="float:left; width:270px; text-align:center;{% ifequal request_get.order_by 'name' %}background-color:#ECEFF2;{% endifequal %}">
 					<div style="border-right:1px solid #979AA5;">
-						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Name' %}</p>
+						<p class="small" style="padding:15px 0; margin:0;">
+							<a href="{% url project_list %}{% addparam "order_by" "name" %}">
+								{% trans 'Name' %}
+							</a>
+						</p>
 					</div>
 				</div>
 				<div style="float:left; width:120px; text-align:center;">
-					<div style="border-right:1px solid #979AA5;">
-						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Location' %}</p>
+					<div style="border-right:1px solid #979AA5;{% ifequal request_get.order_by 'country__country_name' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							<a href="{% url project_list %}{% addparam "order_by" "country__country_name" %}">
+								{% trans 'Location' %}
+							</a>
+						</p>
 					</div>
 				</div>
 				<div style="float:left; width:110px; text-align:center;">
-					<div style="border-right:1px solid #979AA5;">
-						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Status' %}</p>
+					<div style="border-right:1px solid #979AA5; {% ifequal request_get.order_by 'status' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							<a href="{% url project_list %}{% addparam "order_by" "status" %}">
+								{% trans 'Status' %}
+							</a>
+						</p>
 					</div>
 				</div>
 				<div style="float:left; width:180px; text-align:center;">
@@ -173,8 +185,12 @@
 					</div>
 				</div>
 				<div style="float:left; width:120px; text-align:center;">
-					<div style="border-right:1px solid #979AA5;">
-						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Last update' %}</p>
+					<div style="border-right:1px solid #979AA5;{% ifequal request_get.order_by 'last_update' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							<a href="{% url project_list %}{% addparam "order_by" "last_update" %}">
+								{% trans 'Last update' %}
+							</a>
+						</p>
 					</div>
 				</div>
 				<div style="float:left; width:165px; text-align:center;">
@@ -187,7 +203,7 @@
 			</div>
 			<div>
 				{% for p in page.object_list %}
-					<div class="grey_hover" style="min-height:100px; {% if not forloop.last %} border-bottom:1px solid #ccc;	{% endif %}">
+					<div class="grey_hover" style="min-height:105px; {% if not forloop.last %} border-bottom:1px solid #ccc;	{% endif %}">
 						<div style="float:left; width:110px;">
 							<div class="space10">
 								<a href="{% url akvo.rsr.views.projectmain p.id %}">
