@@ -11,7 +11,10 @@
     />
 </div>
 {% else %}
-<div style="width: {{width}}px; height:{{height}}px; background: #F6F6F6; text-align: center; {{div_style}}">
-    {% trans 'Image missing' %}{% if project.current_image_caption %}: {{project.current_image_caption}}{% endif %}
+<div style="width: {{width}}px; height:{{height}}px; background: #F9F9FA; text-align: center; {{div_style}}; overflow:hidden;">
+	<p class="tiny" style="margin:0; padding:0; color:#888">
+    	{% trans 'Image missing' %}
+		{# {% if project.current_image_caption %}: {{project.current_image_caption}}{% endif %} #}
+	</p>
 </div>
 {% endif %}
