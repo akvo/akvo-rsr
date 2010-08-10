@@ -13,6 +13,9 @@
 				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
+			<p class="grey small">
+				{% trans 'Request posted' %} {{p.date_request_posted|date:"d-M-Y"}}				
+			</p>
 		</div>
 		<div class="counter_badge">
 			<span style="display:none;">{% counter p %}</span>

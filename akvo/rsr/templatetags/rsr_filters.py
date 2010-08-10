@@ -20,7 +20,7 @@ def string_to_date(value):
         return datetime.datetime(*fmt_time[:6])
     except:
         return value
-
+        
 # http://stackoverflow.com/questions/250357/smart-truncate-in-python
 @register.filter("smart_truncate")
 def smart_truncate(content, length=100, suffix='...'):
