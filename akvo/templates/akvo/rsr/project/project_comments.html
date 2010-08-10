@@ -33,7 +33,7 @@
 		            <form name="comment_form" enctype="multipart/form-data" style="margin-bottom:0;"
 						method="post" action="{% url akvo.rsr.views.commentform p.id %}">{% csrf_token %}
 						{{form.comment}}
-						<div style="text-align:right;">
+						<div class="text_right">
 							<a id="add_comment" class="aqua awesome" href="javascript:document.comment_form.submit();">
 								<span>{% trans 'Add comment' %}</span>
 							</a>
