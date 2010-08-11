@@ -184,11 +184,7 @@
 										{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
 									{% endif %}						
 								{% else %}
-									{% if not request_get.sort %}
-										{% addparam "order_by" "country__country_name" "sort" "desc" "last_order" order_by %}
-									{% else %}
-										{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
-									{% endif %}
+									{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
 								{% endif %}
 							">{% trans 'Location' %}</a>
 						</p>
@@ -197,9 +193,17 @@
 				<div style="float:left; width:110px; text-align:center;">
 					<div style="border-right:1px solid #979AA5; {% ifequal request_get.order_by 'status' %}background-color:#ECEFF2;{% endifequal %}">
 						<p class="small" style="padding:15px 0; margin:0;">
-							<a href="{% url project_list %}{% addparam "order_by" "status" "sort" sort "last_order" order_by %}">
-								{% trans 'Status' %}
-							</a>
+							<a href="{% url project_list %}
+								{% if request_get.order_by == 'status' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "status" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "status" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "status" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							">{% trans 'Status' %}</a>
 						</p>
 					</div>
 				</div>
