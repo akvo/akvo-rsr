@@ -65,6 +65,7 @@ CONTINENTS = (
     (5, _('North America')),
     (6, _('South America')),
 )
+
 class Country(models.Model):
     
     country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)

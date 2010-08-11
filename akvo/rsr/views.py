@@ -248,7 +248,6 @@ def normalize_query(query_string,
 def get_query(query_string, search_fields):
     ''' Returns a query, that is a combination of Q objects. That combination
         aims to search keywords within a model by testing the given search fields.
-    
     '''
     query = None # Query to search for every search term        
     terms = normalize_query(query_string)
@@ -270,24 +269,52 @@ def get_query(query_string, search_fields):
 @render_to('rsr/project/project_directory.html')
 def projectlist(request):
     '''
-    List of all projects in RSR
-    Context:
-    projects: list of all projects
-    stats: the aggregate projects data
-    page: paginator
-    
+    List of relevant projects in RSR
+        
     To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-    '''    
-    # Get projects and add extra last_update column
+    '''
+    
+    # Get relevant projects
     projects = Project.objects.published().funding().select_related()
-    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-
-    # Filter query
+    
+    # Get projects either by using the query or all
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-        projects = Project.objects.filter(project_query)
+
+        '''
+        Super dump continent filtering
+        This needs to be made much better, (case, multi continent, same time as query...)
+        
+        CONTINENTS = (
+            (1, _('Africa')),
+            (2, _('Asia')),
+            (3, _('Australia')),
+            (4, _('Europe')),
+            (5, _('North America')),
+            (6, _('South America')),
+        )
+        '''
+        
+        if 'Africa' in query_string:
+            projects = projects.filter(country__continent='1')
+        elif 'Asia' in query_string:
+            projects = projects.filter(country__continent='2')
+        elif 'Australia' in query_string:
+            projects = projects.filter(country__continent='3')
+        elif 'Europe' in query_string:
+            projects = projects.filter(country__continent='4')
+        elif 'North America' in query_string:
+            projects = projects.filter(country__continent='5')
+        elif 'South America' in query_string:
+            projects = projects.filter(country__continent='6')
+        else:
+            #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+            project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+            projects = projects.filter(project_query)
+    
+    # Add extra last_update column
+    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     
     # Sort query
     order_by = request.GET.get('order_by', 'name')
@@ -299,6 +326,7 @@ def projectlist(request):
     else:
         projects = projects.order_by('-%s' % order_by, 'name')
         
+    # Setup paginator
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))

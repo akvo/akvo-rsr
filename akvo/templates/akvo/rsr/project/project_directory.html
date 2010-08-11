@@ -97,6 +97,14 @@
 				<div class="space15">
 					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}">					
 					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
+					<div style="float:right; width:400px;">
+						<p style="margin:0; padding:0" class="tiny red">
+							Filter is very basic at the moment. Only one continent at a time, 
+							have to capitalize and can't filter on continent and other search 
+							terms at the same time. We need to spec this before we put some time into it.<br />
+							Maybe we should have a "funded percentage" for funding column sorting.
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -226,13 +234,6 @@
 									{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
 								{% endif %}
 							">{% trans 'Last update' %}</a>
-							
-							{% comment %}
-							<a href="{% url project_list %}{% addparam "order_by" "last_update" %}">
-								{% trans 'Last update' %}
-							</a>	
-							{% trans 'Last update' %}
-							{% endcomment %}
 						</p>
 					</div>
 				</div>
@@ -250,18 +251,10 @@
 									{% addparam "order_by" "total_budget" "sort" "asc" "last_order" order_by %}
 								{% endif %}
 							">{% trans 'Funding' %}</a>
-							
-							{% comment %}
-							<a href="{% url project_list %}{% addparam "order_by" "funds_needed" %}">
-								{% trans 'Funding' %}
-							</a>
-							{% trans 'Funding' %}
-							{% endcomment %}
 						</p>
 					</div>
 				</div>
 				<div class="clear"></div>
-				{# <p style="margin-bottom:0;">Name, Country, Status, Partners, Last Update, Funding</p> #}
 			</div>
 			<div>
 				{% for p in page.object_list %}
@@ -274,7 +267,6 @@
 								<span style="display:none;">{% counter p %}</span>
 							</div>
 						</div>
-						{# <div style="float:left; width:270px;"> #}
 						<div style="float:left; width:170px;">
 							<div class="space10">
 								<p class="small" style="margin-bottom:0;">
@@ -316,18 +308,6 @@
 											{{last_update|string_to_date|date:"d M Y"}}
 										{% endifequal %}
 									{% endwith %}
-									{% comment %}
-									{{p.last_update}}
-									{% with p.last_update as last_update %}						
-										{% ifequal last_update None %}
-											<span style="color:#000;">{% trans 'Not yet' %}</span>
-										{% else %}
-											<a href="{% url project_update p.id last_update.id %}">
-												{{last_update|string_to_date|date:"Y-m-d  H:i"}}
-											</a>
-										{% endifequal %}
-									{% endwith %}
-									{% endcomment %}
 								</p>
 							</div>
 						</div>
