@@ -23,7 +23,7 @@ feeds = {
 
 urlpatterns = patterns('',
 
-    (r'^rsr/admin/(.*)', admin.site.root),
+    (r'^rsr/admin/', include(admin.site.urls)),
     
     # Front page
     url(r'^$', 'akvo.rsr.views.index', name='index'),    

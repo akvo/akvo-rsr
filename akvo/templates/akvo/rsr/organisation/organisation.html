@@ -80,8 +80,8 @@
 						{% if o.state %}{{o.state}}<br />{% endif %}
 						{% if o.state %}{{o.country}}{% endif %}
 						</p>
-						{% if p.has_valid_coordinates %}
-			                {% dynamic_map o 260 180 3 'blue' %}
+						{% if o.coordinates %}
+			                {% google_map 'organisation' o.id 260 180 3 %}
 			            {% else %}
 			                <p style="color: red;">{% trans 'No map available' %}</p>
 			            {% endif %}
