@@ -265,6 +265,7 @@ def get_query(query_string, search_fields):
         else:
             query = query & or_query
     return query
+
     
 @render_to('rsr/project/project_directory.html')
 def projectlist(request):
@@ -274,40 +275,85 @@ def projectlist(request):
     projects: list of all projects
     stats: the aggregate projects data
     page: paginator
-    '''
-    projs = Project.objects.published().funding().select_related()
-    projs = projs.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    
+    '''    
+    # Get projects and add extra last_update column
+    projects = Project.objects.published().funding().select_related()
+    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+
+    # Filter query
     query_string = ''
-    found_entries = None
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
         project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-        projs = Project.objects.filter(project_query)
+        projects = Project.objects.filter(project_query)
     
+    # Sort query
     order_by = request.GET.get('order_by', 'name')
+    last_order = request.GET.get('last_order')
+    sort = request.GET.get('sort', 'asc')
+    
+    if sort == 'asc':
+        projects = projects.order_by(order_by, 'name')
+    else:
+        projects = projects.order_by('-%s' % order_by, 'name')
+    
+    '''
+    # Almost working
+    if not last_order:
+        projects = projects.order_by(order_by, 'name')
+        sort = 'desc'
+    elif order_by == last_order:
+        if sort == 'asc':
+            projects = projects.order_by(order_by, 'name')
+            sort = 'desc'
+        else:
+            projects = projects.order_by('-%s' % order_by, 'name')
+            sort = 'asc'
+    else:
+        projects = projects.order_by(order_by, 'name')
+        sort = 'asc'
+    '''
+    
+    '''
+    if order_by == last_order and sort == 'asc':
+        projects = projects.order_by('-%s' % order_by, 'name')
+        sort = 'desc'
+    else:
+        projects = projects.order_by(order_by, 'name')
+        sort = 'asc'
+    ''' 
+    
+    # Manage sort order
+    ''''
+    if order_by == last_order:
+        if sort == 'asc':
+            sort = 'desc'
+        else:
+            sort = 'asc'
+    else:
+        sort = 'asc'
 
-    if order_by == 'name':
-        projs = projs.order_by(order_by, 'name')
-    elif order_by == 'country__country_name':
-        projs = projs.order_by(order_by, 'country__country_name', 'name')
-    elif order_by == 'status':
-        projs = projs.order_by(order_by, 'status', 'name')
-
-    # last_update and funds_needed don't work
-    elif order_by == 'last_update': 
-        projs = projs.order_by('-last_update', 'name')
-    elif order_by == 'funds_needed': 
-        projs = projs.order_by('funds_needed', 'name')
-
-    page = project_list_data(request, projs)
+    if sort == 'asc':
+        projects = projects.order_by('-%s' % order_by, 'name')
+    else:
+        projects = projects.order_by(order_by, 'name')
+    '''
+    
+    
+    
+    PROJECTS_PER_PAGE = 10
+    paginator = Paginator(projects, PROJECTS_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
+    
     return {
-        'projs': projs,
-        'page': page,
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'site_section': 'projects',
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'page': page,
         'query_string': query_string,
         'request_get': request.GET,
+        'sort': sort,
+        'order_by': order_by,
+        'last_order': last_order,
     }
 
 @render_to('rsr/project/project_directory.html')
