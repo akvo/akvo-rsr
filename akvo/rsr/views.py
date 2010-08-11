@@ -275,6 +275,8 @@ def projectlist(request):
     projects: list of all projects
     stats: the aggregate projects data
     page: paginator
+    
+    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
     '''    
     # Get projects and add extra last_update column
     projects = Project.objects.published().funding().select_related()
@@ -296,51 +298,7 @@ def projectlist(request):
         projects = projects.order_by(order_by, 'name')
     else:
         projects = projects.order_by('-%s' % order_by, 'name')
-    
-    '''
-    # Almost working
-    if not last_order:
-        projects = projects.order_by(order_by, 'name')
-        sort = 'desc'
-    elif order_by == last_order:
-        if sort == 'asc':
-            projects = projects.order_by(order_by, 'name')
-            sort = 'desc'
-        else:
-            projects = projects.order_by('-%s' % order_by, 'name')
-            sort = 'asc'
-    else:
-        projects = projects.order_by(order_by, 'name')
-        sort = 'asc'
-    '''
-    
-    '''
-    if order_by == last_order and sort == 'asc':
-        projects = projects.order_by('-%s' % order_by, 'name')
-        sort = 'desc'
-    else:
-        projects = projects.order_by(order_by, 'name')
-        sort = 'asc'
-    ''' 
-    
-    # Manage sort order
-    ''''
-    if order_by == last_order:
-        if sort == 'asc':
-            sort = 'desc'
-        else:
-            sort = 'asc'
-    else:
-        sort = 'asc'
-
-    if sort == 'asc':
-        projects = projects.order_by('-%s' % order_by, 'name')
-    else:
-        projects = projects.order_by(order_by, 'name')
-    '''
-    
-    
-    
+        
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))

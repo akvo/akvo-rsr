@@ -215,24 +215,48 @@
 				<div style="float:left; width:120px; text-align:center;">
 					<div style="border-right:1px solid #979AA5;{% ifequal request_get.order_by 'last_update' %}background-color:#ECEFF2;{% endifequal %}">
 						<p class="small" style="padding:15px 0; margin:0;">
+							<a href="{% url project_list %}
+								{% if request_get.order_by == 'last_update' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							">{% trans 'Last update' %}</a>
+							
 							{% comment %}
 							<a href="{% url project_list %}{% addparam "order_by" "last_update" %}">
 								{% trans 'Last update' %}
 							</a>	
-							{% endcomment %}
 							{% trans 'Last update' %}
+							{% endcomment %}
 						</p>
 					</div>
 				</div>
 				<div style="float:left; width:171px; text-align:center;">
-					<div style="{% ifequal request_get.order_by 'funds_needed' %}background-color:#ECEFF2;{% endifequal %}">
+					<div style="{% ifequal request_get.order_by 'total_budget' %}background-color:#ECEFF2;{% endifequal %}">
 						<p class="small" style="padding:15px 0; margin:0;">
+							<a href="{% url project_list %}
+								{% if request_get.order_by == 'total_budget' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "total_budget" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "total_budget" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "total_budget" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							">{% trans 'Funding' %}</a>
+							
 							{% comment %}
 							<a href="{% url project_list %}{% addparam "order_by" "funds_needed" %}">
 								{% trans 'Funding' %}
 							</a>
-							{% endcomment %}
 							{% trans 'Funding' %}
+							{% endcomment %}
 						</p>
 					</div>
 				</div>
