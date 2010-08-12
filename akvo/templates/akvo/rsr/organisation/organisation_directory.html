@@ -103,7 +103,23 @@
 		<div class="linear_bg" style="padding:0; margin:0; border-bottom:1px solid #979AA5;">
 			<div style="float:left; width:340px; text-align:center;">
 				<div style="border-right:1px solid #979AA5;">
-					<p style="padding:15px 0; margin:0;">{% trans 'Name' %}</p>
+					<p style="padding:15px 0; margin:0;">
+						<a href="{% url rsr_org_list %}
+							{% if request_get.order_by == 'name' %}
+								{% if request_get.sort == 'asc' %}
+									{% addparam "order_by" "name" "sort" "desc" "last_order" order_by %}
+								{% else %}
+									{% addparam "order_by" "name" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							{% else %}
+								{% if not request_get.sort %}
+									{% addparam "order_by" "name" "sort" "desc" "last_order" order_by %}
+								{% else %}
+									{% addparam "order_by" "name" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							{% endif %}
+						">{% trans 'Name' %}</a>
+					</p>
 				</div>
 			</div>
 			<div style="float:left; width:120px; text-align:center;">
@@ -113,7 +129,19 @@
 			</div>
 			<div style="float:left; width:170px; text-align:center;">
 				<div style="border-right:1px solid #979AA5;">
-					<p style="padding:15px 0; margin:0;">{% trans 'Location' %}</p>
+					<p style="padding:15px 0; margin:0;">
+						<a href="{% url rsr_org_list %}
+							{% if request_get.order_by == 'country__country_name' %}
+								{% if request_get.sort == 'asc' %}
+									{% addparam "order_by" "country__country_name" "sort" "desc" "last_order" order_by %}
+								{% else %}
+									{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
+								{% endif %}						
+							{% else %}
+								{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
+							{% endif %}
+						">{% trans 'Location' %}</a>
+					</p>
 				</div>
 			</div>
 			<div style="float:left; width:100px; text-align:center;">
@@ -146,56 +174,59 @@
 									{% org_logo o 100 75 'margin-right: 10px; float: left;' %}
 								{% endcomment %}
 							</a>
-							<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a><br />
-							<span class="grey small">{{o.long_name}}</span>
+							<span class="small" style="font-size:1em;">
+								<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+							</span><br />
+							<span class="grey small" style="">{{o.long_name}}</span>
 						</p>
 						<span style="display:none;">{% counter o %}</span>
 					</div>
 				</div>
 				<div style="float: left; width:120px;">
 					<div class="space10">
-						<p>{{o.get_organisation_type_display}}</p>
+						<p class="small">{{o.get_organisation_type_display}}</p>
 					</div>
 				</div>
 				<div style="float: left; width:170px;">
 					<div class="space10">
-						<p>
-							{{o.country}}, {{o.country.get_continent_display}}
+						<p class="small" style="margin-bottom:0;">
+							{{o.country}}<br />
+							<span class="grey">{{ o.country.get_continent_display }}</span>
 						</p>
 					</div>
 				</div>
 				<div style="float: left; width:100px;">
 					<div class="space10">
-						<p>
+						<p class="small">
 						<a href="{% url filtered_project_list o.id %}">{{o.published_projects.count}}</a>
 						</p>
 					</div>
 				</div>
 				<div style="float: left; width:100px;">
 					<div class="space10">
-						<p>
+						<p class="small">
 						{% if not o.funding.total_euros and not o.funding.total_dollars %}
 							0
 						{% endif %}
 							
 						{% if o.funding.total_euros %}
-							{% ifequal o.funding.still_needed_euros|round 0 %}
-								<span style="color:green">
-							{% else %}
-								<span>
-							{% endifequal %}
-							&#8364; {{o.funding.total_euros|round|intcomma}}
+							<span style="font-size:1em;"
+								{% ifequal o.funding.still_needed_euros|round 0 %}
+								class="green"
+								{% endifequal %}
+								>
+								&#8364; {{o.funding.total_euros|round|intcomma}}
 							</span>
 							<br />
 						{% endif %}
 
 						{% if o.funding.total_dollars %}
-							{% ifequal o.funding.still_needed_dollars|round 0 %}
-								<span style="color:green">
-							{% else %}
-								<span>
-							{% endifequal %}
-							&#36; {{o.funding.total_dollars|round|intcomma}}
+							<span style="font-size:1em;"
+								{% ifequal o.funding.still_needed_dollars|round 0 %}
+								class="green"
+								{% endifequal %}
+								>
+								&#36; {{o.funding.total_dollars|round|intcomma}}
 							</span>
 						{% endif %}
 						</p>
@@ -203,30 +234,30 @@
 				</div>
 				<div style="float: left; width:100px;">
 					<div class="space10">
-						<p>
+						<p class="small">
 							{% if not o.funding.total_euros and not o.funding.total_dollars %}
 								0
 							{% endif %}
 							
-						{% if o.funding.total_euros %}
-							{% ifequal o.funding.still_needed_euros|round 0 %}
-								<span>
-							{% else %}
-								<span style="color:red">
-							{% endifequal %}
-							&#8364; {{o.funding.still_needed_euros|round|intcomma}}
-							</span>
-							<br />
-						{% endif %}
-						{% if o.funding.total_dollars %}
-							{% ifequal o.funding.still_needed_dollars|round 0 %}
-								<span>
-							{% else %}
-								<span style="color:red">
-							{% endifequal %}
-							&#36; {{o.funding.still_needed_dollars|round|intcomma}}
-							</span>
-						{% endif %}
+							{% if o.funding.total_euros %}
+								<span style="font-size:1em;"
+									{% ifnotequal o.funding.still_needed_euros|round 0 %}
+										class="red" 
+									{% endifnotequal %}
+									>
+									&#8364; {{o.funding.still_needed_euros|round|intcomma}}
+								</span>
+								<br />
+							{% endif %}
+							{% if o.funding.total_dollars %}
+								<span
+									{% ifnotequal o.funding.still_needed_dollars|round 0 %}
+										class="red"
+									{% endifnotequal %}
+									>
+									&#36; {{o.funding.still_needed_dollars|round|intcomma}}
+								</span>
+							{% endif %}
 						</p>
 					</div>
 				</div>
