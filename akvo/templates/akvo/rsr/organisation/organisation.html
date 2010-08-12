@@ -11,84 +11,77 @@
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
-<div>
-	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
-	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.country}}</p>{% endif %}
-</div>
 
 <div class="two_column_left">
+	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
+	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.country}}</p>{% endif %}
 	<div class="white_box">
 		<div class="space20">
-			<div id="org_tabs">
-				<ul class="small">
-	                <li><a href="#tab_overview"><span>{% trans 'Overview' %}</span></a></li>
-	                <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
-	            </ul>
-				<div id="tab_overview" class="tab">
-					<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" 
-						style="float:left; margin:15px;" />
-					{{o.description|linebreaks}}
-				</div>
-				<div id="tab_details" class="tab" style="padding-top:40px;">
-					<div style="float:left; width:250px;">
-						<h2>{% trans 'Activities' %}</h2>
-						<p>
-							{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
-							{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
-							{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
-							{% if o.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
-						</p>
-						<h2>{% trans 'Type' %}</h2>
-						<p>{{o.get_organisation_type_display}}</p>
-						{% if o.url %}
-							<h2>{% trans 'Website' %}</h2>
-							<p><a href="{{o.url}}">{{o.url}}</a></p>
-						{% endif %}
-						{% if o.akvopedia_entry %}
-							<h2>{% trans 'Akvopedia entry' %}</h2>
-							<p>{{o.akvopedia_entry}}</p>
-						{% endif %}
-						<h2>{% trans 'Contact' %}</h2>
-						<p>
-							{{o.contact_person}}<br />
-							<a href="mailto:{{o.contact_email}}">{{o.contact_email}}</a><br />
-							<br />
-							{% if o.phone %}
-								<b>{% trans 'Phone' %}</b><br />
-								{{o.phone}}<br />
-								<br />
-							{% endif %}							
-							{% if o.mobile %}
-								<b>{% trans 'Mobile' %}</b><br />
-								{{o.mobile}}<br />
-								<br />
-							{% endif %}
-							{% if o.fax %}
-								<b>{% trans 'Fax' %}</b><br />
-								{{o.fax}}<br />
-								<br />
-							{% endif %}
-						</p>
-					</div>
-					<div style="float:left; width:250px; border-left:1px solid #ccc; padding-left:15px;">
-						<h2>{% trans 'Location' %}</h2>
-						<p>
-						{% if o.address_1 %}{{o.address_1}}<br />{% endif %}
-						{% if o.address_2 %}{{o.address_2}}<br />{% endif %}
-						{% if o.postcode %}{{o.postcode}}<br />{% endif %}
-						{% if o.city %}{{o.city}}<br />{% endif %}
-						{% if o.state %}{{o.state}}<br />{% endif %}
-						{% if o.state %}{{o.country}}{% endif %}
-						</p>
-						{% if p.has_valid_coordinates %}
-			                {% dynamic_map o 260 180 3 'blue' %}
-			            {% else %}
-			                <p style="color: red;">{% trans 'No map available' %}</p>
-			            {% endif %}
-					</div>
-					<div class="clear"></div>
-				</div>
+			<div style="float:left; width:196px; height:280px">
+				<img src="{% thumbnail o.logo 100x75 %}" style="margin:15px;" />
+				<h3>{% trans 'Activities' %}</h3>
+				<p class="small">
+					{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
+					{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
+					{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
+					{% if o.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
+				</p>
+				<h3>{% trans 'Type' %}</h3>
+				<p class="small">{{o.get_organisation_type_display}}</p>
+				{% if o.url %}
+					<h3>{% trans 'Website' %}</h3>
+					<p class="small"><a href="{{o.url}}">{{o.url}}</a></p>
+				{% endif %}
+				{% if o.akvopedia_entry %}
+					<h3>{% trans 'Akvopedia entry' %}</h3>
+					<p class="small">{{o.akvopedia_entry}}</p>
+				{% endif %}
+				
 			</div>
+			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
+				<h3>{% trans 'Location' %}</h3>
+				<p class="small">
+				{% if o.address_1 %}{{o.address_1}}<br />{% endif %}
+				{% if o.address_2 %}{{o.address_2}}<br />{% endif %}
+				{% if o.postcode %}{{o.postcode}}<br />{% endif %}
+				{% if o.city %}{{o.city}}<br />{% endif %}
+				{% if o.state %}{{o.state}}<br />{% endif %}
+				{% if o.state %}{{o.country}}{% endif %}
+				</p>
+				{% if p.has_valid_coordinates %}
+	                {% dynamic_map o 180 135 3 'blue' %}
+	            {% else %}
+	                <p class="small" style="color: red;">{% trans 'No map available' %}</p>
+	            {% endif %}
+			</div>
+			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
+				<h3>{% trans 'Contact' %}</h3>
+				<p class="small">
+					{{o.contact_person}}<br />
+					<a href="mailto:{{o.contact_email}}">{{o.contact_email}}</a><br />
+					<br />
+					{% if o.phone %}
+						<b>{% trans 'Phone' %}</b><br />
+						{{o.phone}}<br />
+						<br />
+					{% endif %}							
+					{% if o.mobile %}
+						<b>{% trans 'Mobile' %}</b><br />
+						{{o.mobile}}<br />
+						<br />
+					{% endif %}
+					{% if o.fax %}
+						<b>{% trans 'Fax' %}</b><br />
+						{{o.fax}}<br />
+						<br />
+					{% endif %}
+				</p>
+			</div>
+			<div class="clear"></div>
+			<br /><br />
+			<hr />
+			<h2>{% trans 'Description' %}</h2>
+			<span class="small" style="font-size:1em;">{{o.description|linebreaks}}</span>
 		</div>
 	</div>
 </div>
@@ -261,13 +254,3 @@
 </div>
 
 {% endblock maincontent %}
-
-{% block js %}
-{{ block.super }}
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-{% endblock js %}
-
-{% block jq_ready %}
-	jQ('#org_tabs').tabs();
-	{{block.super}}
-{% endblock jq_ready %}
