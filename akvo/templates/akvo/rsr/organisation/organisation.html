@@ -28,7 +28,7 @@
 					<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" 
 						style="float:left; margin:15px;" />
 					{{o.description|linebreaks}}
-                    {% google_map 'organisation' o.id 260 180 3 %}
+                    {% google_map 'organisation' o.id 260 180 6 %}
 				</div>
 				<div id="tab_details" class="tab" style="padding-top:40px;">
 					<div style="float:left; width:250px;">
@@ -81,11 +81,13 @@
 						{% if o.primary_location.state %}{{o.primary_location.state}}<br />{% endif %}
 						{% if o.primary_location.country %}{{o.primary_location.country}}{% endif %}
 						</p>
+                        {% comment %}
 						{% if o.coordinates %}
 			                {% google_map 'organisation' o.id 260 180 3 %}
 			            {% else %}
 			                <p style="color: red;">{% trans 'No map available' %}</p>
 			            {% endif %}
+                        {% endcomment %}
 					</div>
 					<div class="clear"></div>
 				</div>
