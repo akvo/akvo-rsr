@@ -6,7 +6,7 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 	background: #222 url(../img/awesome_buttons/alert-overlay.png) repeat-x; 
 	display: inline-block; 
 	padding: 5px 10px 6px; 
-	color: #fff; 
+	color: #fff;
 	text-decoration: none;
 	-moz-border-radius: 5px; 
 	-webkit-border-radius: 5px;
