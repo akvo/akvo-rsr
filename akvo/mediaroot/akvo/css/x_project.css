@@ -43,6 +43,28 @@ div#gallery_box {
 	border:2px solid #ccc;
 	}
 	
+#gallery_box_controller {
+    margin-top:5px;
+    margin-right:5px;
+    float:right; 
+    width:42px;
+    height:21px;
+    background: transparent url(../img/minigallery/arrows.png) no-repeat;
+    }
+
+#gallery_box_controller_prev {
+    width:21px;
+    height:21px;
+    float:left;
+    }
+
+#gallery_box_controller_next {
+    width:21px;
+    height:21px;
+    float:left;
+    }
+
+	
 /* width is calculated in the view and defined inline*/
 div#gallery_box_slider {
 	position:absolute;
