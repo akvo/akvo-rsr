@@ -34,21 +34,31 @@
 						<div style="float:left; width:100px;">
 							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
 						</div>
-						{% if u.text %}
-						<div style="float:left; width:300px;">
-							<p style="margin:0;">
-							<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />
-							<span class="grey small">{{u.text|smart_truncate:150}}</span>
-							</p>
-						</div>
-						{% endif %}
-						<div style="float:right; width:100px;">
+						
+						<div style="float:left; width:100px;">
 							{% if u.photo %}
 								<a href="{% url project_update p.id u.id %}">
 									<img src="{% thumbnail u.photo 100x75 autocrop,upscale,sharpen %}" />
 								</a>
 							{% endif %}
+							&nbsp;
 						</div>
+						
+						{% if u.text %}
+						<div style="float:left; width:300px;">
+							<p style="margin:0;">
+								<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />
+								<span class="grey small">{{u.text|smart_truncate:150}}</span>
+							</p>
+						</div>
+						{% else %}
+						<p class="small grey">
+							<span class="grey small">
+								{% if u.photo_caption %}
+									{{u.photo_caption}}<br />									
+								{% endif %}
+							</span>
+						{% endif %}
 						<div class="clear"></div>
 					</div>
 				{% endfor %}
