@@ -342,37 +342,85 @@ def projectlist(request):
         'last_order': last_order,
     }
 
+
 @render_to('rsr/project/project_directory.html')
 def filteredprojectlist(request, org_id):
     '''
-    List of  projects in RSR
-    filtered on an organisation
-    Context:
-    projs: list of all projects
-    page: paginator
-    o: organisation
+    List of relevant projects in RSR for a specific organisation
+        
+    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
     '''    
-    
+
     # get all projects the org is asociated with
     o = Organisation.objects.get(pk=org_id)
-    projs = o.published_projects().funding()
+    projects = o.published_projects().funding()
     
+    # Get projects either by using the query or all
     query_string = ''
-    found_entries = None
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-        #projs = Project.objects.filter(project_query)
-        projs = projs.filter(project_query)
 
-    page = project_list_data(request, projs)
+        '''
+        Super dump continent filtering
+        This needs to be made much better, (case, multi continent, same time as query...)
+        
+        CONTINENTS = (
+            (1, _('Africa')),
+            (2, _('Asia')),
+            (3, _('Australia')),
+            (4, _('Europe')),
+            (5, _('North America')),
+            (6, _('South America')),
+        )
+        '''
+        
+        if 'Africa' in query_string:
+            projects = projects.filter(country__continent='1')
+        elif 'Asia' in query_string:
+            projects = projects.filter(country__continent='2')
+        elif 'Australia' in query_string:
+            projects = projects.filter(country__continent='3')
+        elif 'Europe' in query_string:
+            projects = projects.filter(country__continent='4')
+        elif 'North America' in query_string:
+            projects = projects.filter(country__continent='5')
+        elif 'South America' in query_string:
+            projects = projects.filter(country__continent='6')
+        else:
+            #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+            project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+            projects = projects.filter(project_query)
+    
+    # Add extra last_update column
+    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    
+    # Sort query
+    order_by = request.GET.get('order_by', 'name')
+    last_order = request.GET.get('last_order')
+    sort = request.GET.get('sort', 'asc')
+    
+    if sort == 'asc':
+        projects = projects.order_by(order_by, 'name')
+    else:
+        projects = projects.order_by('-%s' % order_by, 'name')
+        
+    # Setup paginator
+    PROJECTS_PER_PAGE = 10
+    paginator = Paginator(projects, PROJECTS_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
+    
     return {
-        'page': page,
-        'o': o,
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'query_string': query_string,
         'site_section': 'projects',
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'page': page,
+        'query_string': query_string,
+        'request_get': request.GET,
+        'sort': sort,
+        'order_by': order_by,
+        'last_order': last_order,
+        'o': o,    
     }
+
 
 @render_to('rsr/organisation/organisation_directory.html')
 def orglist(request, org_type='all'):
@@ -438,63 +486,6 @@ def orglist(request, org_type='all'):
         'org_type': org_type,
     }
 
-@render_to('rsr/organisation/organisation_directory.html')
-def orglist_old(request, org_type='all'):
-    '''
-    List of all projects in RSR
-    Context:
-    orgs: list of all organisations
-    stats: the aggregate projects data
-    page: paginated orgs
-    '''
-    orgs = Organisation.objects
-    #orgs = Organisation.objects.select_related()
-    if org_type == 'field':
-        orgs = orgs.fieldpartners()
-    elif org_type == 'support':
-        orgs = orgs.supportpartners()
-    elif org_type == 'funding':
-        orgs = orgs.fundingpartners()
-    elif org_type == 'sponsor':
-        orgs = orgs.sponsorpartners()
-    elif org_type == 'ngos':
-        orgs = orgs.ngos()
-    elif org_type == 'governmental':
-        orgs = orgs.governmental()
-    elif org_type == 'commercial':
-        orgs = orgs.commercial()
-    elif org_type == 'knowledge':
-        orgs = orgs.knowledge()
-    else:
-        orgs = orgs.all()
-    try:
-        order_by = request.GET.get('order_by', 'name')
-        orgs = orgs.order_by(order_by, 'name')
-    except:
-        pass
-        
-    query_string = ''
-    found_entries = None
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-        org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','description','contact_email',])
-        orgs = orgs.filter(org_query)
-    
-
-    ORGS_PER_PAGE = 10
-    paginator = Paginator(orgs, ORGS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
-    projs = Project.objects.published()
-    return {
-        'orgs': orgs,
-        'org_type': org_type,
-        'page': page,
-        'order_by': order_by,
-        'lang': get_language(),
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'site_section': 'index',
-        'query_string': query_string,
-    }
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
