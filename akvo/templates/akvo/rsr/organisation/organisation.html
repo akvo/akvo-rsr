@@ -235,6 +235,7 @@
 				</table>
 			</div>
 		</div>
+		
 		<div class="small" style="margin-top:20px;">
 			<h2>{% trans 'Project partners' %}</h2>
 		</div>
@@ -242,11 +243,17 @@
 		<div class="white_box">
 			<div class="space20">
 				<ul class="small">
-					{% for partner in org_partners %}
-					<li>
-						<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a>
-					</li>
-					{% endfor %}
+					{% if org_partners %}
+						{% for partner in org_partners %}
+						<li>
+							<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a>
+						</li>
+						{% endfor %}
+					{% else %}
+							{% trans 'No partners yet' %}
+					{% endif %}
+					
+					
 				</ul>
 			</div>
 		</div>
