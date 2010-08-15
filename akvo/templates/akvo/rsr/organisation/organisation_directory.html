@@ -61,7 +61,7 @@
 	<div id="project_search" class="span-18">
 		<div class="round" style="border: 1px solid #ccc;">
 			<div class="space15">
-				<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}">					
+				<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}">			
 				<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">
 			</div>
 		</div>
@@ -75,36 +75,60 @@
 			<div style="float:right;">
 				<p style="margin-bottom:0;">
 					{% ifequal page.number 1 %}
-	                {% trans 'First' %} |
+	                	{% trans 'First' %} |
 	                {% else %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}">{% trans 'First' %}</a> |
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+							{% addparam "page" 1 %}">{% trans 'First' %}</a> |
 	                {% endifequal %}
 	                {% if page.has_previous %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+						{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
 	                {% else %}
 	                {% trans 'Previous' %} |
 	                {% endif %}
 	                {% if page.has_next %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+						{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
 	                {% else %}
 	                {% trans 'Next' %} |
 	                {% endif %}
 	                {% ifequal page.number page.paginator.num_pages %}
 	                {% trans 'Last' %}
 	                {% else %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+						{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
 	                {% endifequal %}
 				</p>
 			</div>
 			<p style="margin-bottom:0;">
-				{% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}	
+				{% blocktrans with page.start_index as page_start and page.end_index as page_end and orgs.count as o_count %}Organisations {{page_start}}-{{page_end}} of {{o_count}}{% endblocktrans %}
 			</p>
 		</div>
 		<div class="linear_bg" style="padding:0; margin:0; border-bottom:1px solid #979AA5;">
 			<div style="float:left; width:340px; text-align:center;">
 				<div style="border-right:1px solid #979AA5;">
 					<p style="padding:15px 0; margin:0;">
-						<a href="{% url rsr_org_list %}
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
 							{% if request_get.order_by == 'name' %}
 								{% if request_get.sort == 'asc' %}
 									{% addparam "order_by" "name" "sort" "desc" "last_order" order_by %}
@@ -130,7 +154,11 @@
 			<div style="float:left; width:170px; text-align:center;">
 				<div style="border-right:1px solid #979AA5;">
 					<p style="padding:15px 0; margin:0;">
-						<a href="{% url rsr_org_list %}
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
 							{% if request_get.order_by == 'country__country_name' %}
 								{% if request_get.sort == 'asc' %}
 									{% addparam "order_by" "country__country_name" "sort" "desc" "last_order" order_by %}
@@ -269,24 +297,44 @@
 			<div style="float:right;">
 				<p style="margin-bottom:0;">
 					{% ifequal page.number 1 %}
-	                {% trans 'First' %} |
+	                	{% trans 'First' %} |
 	                {% else %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}">{% trans 'First' %}</a> |
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+						{% addparam "page" 1 %}">{% trans 'First' %}</a> |
 	                {% endifequal %}
 	                {% if page.has_previous %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+	                	{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
 	                {% else %}
-	                {% trans 'Previous' %} |
+	                	{% trans 'Previous' %} |
 	                {% endif %}
 	                {% if page.has_next %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+						{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
 	                {% else %}
-	                {% trans 'Next' %} |
+	                	{% trans 'Next' %} |
 	                {% endif %}
 	                {% ifequal page.number page.paginator.num_pages %}
-	                {% trans 'Last' %}
+	                	{% trans 'Last' %}
 	                {% else %}
-	                <a href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
+						{% if org_type = 'all' %}
+							<a href="{% url rsr_org_list %}
+						{% else %}
+							<a href="{% url rsr_org_list_filtered org_type %}
+						{% endif %}
+						{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
 	                {% endifequal %}
 				</p>
 			</div>

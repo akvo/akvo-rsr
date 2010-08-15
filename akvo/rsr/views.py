@@ -484,6 +484,7 @@ def orglist(request, org_type='all'):
         'order_by': order_by,
         'last_order': last_order,
         'org_type': org_type,
+        'orgs': orgs,
     }
 
 
