@@ -249,7 +249,7 @@ def get_query(query_string, search_fields):
     ''' Returns a query, that is a combination of Q objects. That combination
         aims to search keywords within a model by testing the given search fields.
     '''
-    query = None # Query to search for every search term        
+    query = None # Query to search for every search term
     terms = normalize_query(query_string)
     for term in terms:
         or_query = None # Query to search for a given term in each field
@@ -263,6 +263,39 @@ def get_query(query_string, search_fields):
             query = or_query
         else:
             query = query & or_query
+        
+    '''
+    for term in terms:
+        or_query = None # Query to search for a given term in each field
+        if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
+            if term == 'Africa' or term == 'africa':
+                q = Q(**{"country__continent__exact":1})
+            elif term == 'Asia' or term == 'asia':
+                q = Q(**{"country__continent__exact":2})
+            elif 'Australia' or 'australia' in term:
+                q = Q(**{"country__continent__exact":3})
+            elif 'Europe' or 'europe' in term:
+                q = Q(**{"country__continent__exact":4})
+            elif 'North America' or 'north america' or 'North america' or 'north America' in term:
+                q = Q(**{"country__continent__exact":5})
+            elif 'South America' or 'south america' or 'South america' or 'south America' in term:
+                q = Q(**{"country__continent__exact":6})
+            if query is None:
+                query = q
+            else:
+                query = query & q
+        else:            
+            for field_name in search_fields:
+                q = Q(**{"%s__icontains" % field_name: term})
+                if or_query is None:
+                    or_query = q
+                else:
+                    or_query = or_query | q
+            if query is None:
+                query = or_query
+            else:
+                query = query & or_query
+    '''
     return query
 
     
@@ -282,36 +315,9 @@ def projectlist(request):
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
 
-        '''
-        Super dump continent filtering
-        This needs to be made much better, (case, multi continent, same time as query...)
-        
-        CONTINENTS = (
-            (1, _('Africa')),
-            (2, _('Asia')),
-            (3, _('Australia')),
-            (4, _('Europe')),
-            (5, _('North America')),
-            (6, _('South America')),
-        )
-        '''
-        
-        if 'Africa' in query_string:
-            projects = projects.filter(country__continent='1')
-        elif 'Asia' in query_string:
-            projects = projects.filter(country__continent='2')
-        elif 'Australia' in query_string:
-            projects = projects.filter(country__continent='3')
-        elif 'Europe' in query_string:
-            projects = projects.filter(country__continent='4')
-        elif 'North America' in query_string:
-            projects = projects.filter(country__continent='5')
-        elif 'South America' in query_string:
-            projects = projects.filter(country__continent='6')
-        else:
-            #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-            project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
-            projects = projects.filter(project_query)
+        #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+        projects = projects.filter(project_query)
     
     # Add extra last_update column
     projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
