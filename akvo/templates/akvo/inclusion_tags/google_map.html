@@ -9,8 +9,8 @@
 
     function loadGoogleMap() {
 
-        var latitude = {{ object.coordinates.0 }};
-        var longitude = {{ object.coordinates.1 }};
+        var latitude = {{ object.primary_location.latitude }};
+        var longitude = {{ object.primary_location.longitude }};
         var zoom = {{ zoom }};
 
         var mapData = {

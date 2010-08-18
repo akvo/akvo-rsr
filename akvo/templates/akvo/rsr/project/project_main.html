@@ -81,7 +81,7 @@
 					{% endif %}
 				</p>
 				{# Google Map #}
-	            {% if p.coordinates %}
+	            {% if p.primary_location %}
 	                {% google_map 'project' p.id 260 180 3 %}
 	            {% else %}
 	                <p style="color: red;">{% trans 'No map available' %}</p>

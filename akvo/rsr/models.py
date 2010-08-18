@@ -92,6 +92,22 @@ class LongitudeField(models.FloatField):
         super(LongitudeField, self).__init__(*args, **kwargs)
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
+class Location(models.Model):
+    latitude = LatitudeField(_('latitude'), default=0)
+    longitude = LongitudeField(_('longitude'), default=0)
+    city = models.CharField(_('city'), max_length=255)
+    state = models.CharField(_('state'), max_length=255)
+    country = models.ForeignKey(Country)
+    address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
+    address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
+    postcode = models.CharField(_('postcode'), max_length=10, blank=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    primary = models.BooleanField(_('primary location'))
+
+    def __unicode__(self):
+        return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
@@ -155,6 +171,8 @@ class Organisation(models.Model):
     contact_email               = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
     description                 = models.TextField(_('description'), blank=True, help_text=_('Describe what your organisation does in the water and sanitation sector.') )
 
+    locations                   = generic.GenericRelation(Location)
+
     #Managers, one default, one custom
     #objects = models.Manager()    
     objects     = QuerySetManager()
@@ -163,33 +181,13 @@ class Organisation(models.Model):
     def get_absolute_url(self):
         return '/rsr/organisation/%d/' % self.id
 
-    def _get_locations(self):
-        '''Returns a queryset of all the organisations's locations'''
-        content_type = ContentType.objects.get_for_model(Organisation)
-        locations = Location.objects.filter(content_type=content_type, object_id=self.id)
-        return locations
-
     @property
-    def primary_location(self, location=None):
+    def primary_location(self, primary_location=None):
         '''Returns an organisations's primary location'''
-        locations = self._get_locations()
+        locations = self.locations.all()
         if locations:
-            location = locations[0]
-        return location
-
-    @property
-    def coordinates(self, coordinates=None):
-        '''
-        Currently returns a latitude, longitude tuple for the
-        primary location of an organisation or None.
-        In future releases we will need to return data
-        for more than one location.
-        '''
-        location = self.primary_location
-        invalid = location.latitude == 0 and location.longitude == 0
-        if not invalid:
-            coordinates = (location.latitude, location.longitude)
-        return coordinates
+            primary_location = locations[0]
+        return primary_location
 
     
     class QuerySet(QuerySet):
@@ -457,6 +455,8 @@ class Project(models.Model):
     date_request_posted = models.DateField(_('Date request posted'), default=date.today)
     date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
 
+    locations           = generic.GenericRelation(Location)
+
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
     #http://simonwillison.net/2008/May/1/orm/
@@ -494,33 +494,13 @@ class Project(models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
             
-    def _get_locations(self):
-        '''Returns a queryset of all the project's locations'''
-        content_type = ContentType.objects.get_for_model(Project)
-        locations = Location.objects.filter(content_type=content_type, object_id=self.id)
-        return locations
-
     @property
     def primary_location(self, location=None):
         '''Returns a project's primary location'''
-        locations = self._get_locations()
+        locations = self.locations.all()
         if locations:
             location = locations[0]
         return location
-
-    @property
-    def coordinates(self, coordinates=None):
-        '''
-        Currently returns a latitude, longitude tuple for the
-        primary location of a project or None.
-        In future releases we will need to return data
-        for more than one location.
-        '''
-        location = self.primary_location
-        invalid = location.latitude == 0 and location.longitude == 0
-        if not invalid:
-            coordinates = (location.latitude, location.longitude)
-        return coordinates
 
     def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
         try:
@@ -1486,7 +1466,7 @@ def process_paypal_ipn(sender, **kwargs):
         invoice.save()
 payment_was_flagged.connect(process_paypal_ipn)
 
-
+"""
 class Location(models.Model):
     latitude = LatitudeField(_('latitude'), default=0)
     longitude = LongitudeField(_('longitude'), default=0)
@@ -1503,7 +1483,7 @@ class Location(models.Model):
 
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
-
+"""
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)

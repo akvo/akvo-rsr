@@ -28,7 +28,9 @@
 					<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" 
 						style="float:left; margin:15px;" />
 					{{o.description|linebreaks}}
-                    {% google_map 'organisation' o.id 260 180 6 %}
+                    {% if o.primary_location %}
+                        {% google_map 'organisation' o.id 260 180 6 %}
+                    {% endif %}
 				</div>
 				<div id="tab_details" class="tab" style="padding-top:40px;">
 					<div style="float:left; width:250px;">
