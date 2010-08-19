@@ -6,11 +6,14 @@
 from django.conf.urls.defaults import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
 from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
 from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
+
+from paypal.standard.ipn.views import ipn as paypal_ipn
 
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
@@ -60,7 +63,7 @@ urlpatterns = patterns('',
     url(r'^rsr/donate/ideal/thanks/$', 'akvo.rsr.views.mollie_thanks', name='mollie_thanks'),
     url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
     url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
-    url(r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn', name='paypal_ipn'),
+    url(r'^rsr/ipn/$', csrf_exempt(paypal_ipn), name='paypal_ipn'),
     
     # Organisation
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),

@@ -87,7 +87,7 @@ class LatitudeField(models.FloatField):
         self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
 
 class LongitudeField(models.FloatField):
-    description = _('Longitude coordinate.)')
+    description = _('Longitude coordinate.')
     def __init__(self, *args, **kwargs):
         super(LongitudeField, self).__init__(*args, **kwargs)
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
@@ -495,12 +495,12 @@ class Project(models.Model):
         return counter.count or 0
             
     @property
-    def primary_location(self, location=None):
+    def primary_location(self, primary_location=None):
         '''Returns a project's primary location'''
         locations = self.locations.all()
         if locations:
-            location = locations[0]
-        return location
+            primary_location = locations[0]
+        return primary_location
 
     def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
         try:
@@ -786,7 +786,7 @@ class Project(models.Model):
             #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
 
     def __unicode__(self):
-        return self.name
+        return u'Project %d: %s' % (self.id,self.name)
         
     def project_type(self):
         pt = ""

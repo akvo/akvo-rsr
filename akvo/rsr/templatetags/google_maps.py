@@ -26,9 +26,7 @@ def static_map(model_path, object_id, width, height, zoom, marker_color):
 """
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
-def google_map(model, object_id, width, height, zoom):
-    content_type = ContentType.objects.get(app_label='rsr', model=model)
-    object = content_type.get_object_for_this_type(id=object_id)
+def google_map(object, width, height, zoom):
     return {'object': object,
             'width': width,
             'height': height,
