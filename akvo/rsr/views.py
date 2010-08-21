@@ -1244,3 +1244,8 @@ def mollie_thanks(request):
         invoice = Invoice.objects.get(transaction_id=transaction_id)
         return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
     return redirect('/')
+
+@render_to('rsr/global_map.html')
+def global_map(request):
+    projects = Project.objects.published()
+    return {'projects': projects}

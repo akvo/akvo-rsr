@@ -34,7 +34,8 @@ urlpatterns = patterns('',
     
     # django_counter
     (r'^rsr/counter/', include('django_counter.urls')),
-    
+
+    url(r'^rsr/globalmap/$', 'akvo.rsr.views.global_map', name='global_map'),
     
     # Project listing
     url(r'^rsr/projects/$','akvo.rsr.views.projectlist',name='project_list'),
