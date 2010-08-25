@@ -80,6 +80,7 @@ class Country(models.Model):
         verbose_name_plural = _('countries')
         ordering = ['country_name']
 
+
 class LatitudeField(models.FloatField):
     description = _('Latitude coordinate.')
     def __init__(self, *args, **kwargs):
@@ -108,6 +109,7 @@ class Location(models.Model):
 
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
+
 
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
