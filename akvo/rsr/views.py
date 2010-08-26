@@ -265,6 +265,7 @@ def get_query(query_string, search_fields):
             query = query & or_query
         
     '''
+    Initial try for continent filtering, this is obsolete, since the new_look_maps branch introduces the Location model.
     for term in terms:
         or_query = None # Query to search for a given term in each field
         if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
@@ -322,23 +323,17 @@ def projectlist(request):
     # Add extra last_update column
     projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     
-    # Sort query
+    # Setup sort query
     order_by = request.GET.get('order_by', 'name')
     last_order = request.GET.get('last_order')
     sort = request.GET.get('sort', 'asc')
     
-    # Switch sort order for last_updates to show last update as default
-    if order_by == 'last_update':
-        if sort == 'asc':
-            projects = projects.order_by('-%s' % order_by, 'name')
-        else:
-            projects = projects.order_by(order_by, 'name')
-    else:    
-        if sort == 'asc':
-            projects = projects.order_by(order_by, 'name')
-        else:
-            projects = projects.order_by('-%s' % order_by, 'name')
-            
+    # sort desv or asc
+    if sort == 'asc':
+        projects = projects.order_by(order_by, 'name')
+    else:
+        projects = projects.order_by('-%s' % order_by, 'name')
+
     # Setup paginator
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)

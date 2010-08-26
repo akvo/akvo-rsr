@@ -97,13 +97,6 @@
 				<div class="space15">
 					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}" autofocus>					
 					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
-					<div style="float:right; width:400px;">
-						<p style="margin:0; padding:0" class="tiny red">
-							Only one capitalized continent at a time OR other search terms.
-							Maybe we should have a "funded percentage" for funding column sorting.
-							We need to spec this before we put some time into it.
-						</p>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -240,6 +233,16 @@
 								<a href="{% url project_list %}
 							{% endif %}
 								{% if request_get.order_by == 'last_update' %}
+									{% if request_get.sort == 'desc' %}
+										{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
+								{% endif %}
+								{% comment %}
+								{% if request_get.order_by == 'last_update' %}
 									{% if request_get.sort == 'asc' %}
 										{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
 									{% else %}
@@ -248,6 +251,7 @@
 								{% else %}
 									{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
 								{% endif %}
+								{% endcomment %}
 							">{% trans 'Last update' %}</a>
 						</p>
 					</div>
