@@ -327,11 +327,18 @@ def projectlist(request):
     last_order = request.GET.get('last_order')
     sort = request.GET.get('sort', 'asc')
     
-    if sort == 'asc':
-        projects = projects.order_by(order_by, 'name')
-    else:
-        projects = projects.order_by('-%s' % order_by, 'name')
-        
+    # Switch sort order for last_updates to show last update as default
+    if order_by == 'last_update':
+        if sort == 'asc':
+            projects = projects.order_by('-%s' % order_by, 'name')
+        else:
+            projects = projects.order_by(order_by, 'name')
+    else:    
+        if sort == 'asc':
+            projects = projects.order_by(order_by, 'name')
+        else:
+            projects = projects.order_by('-%s' % order_by, 'name')
+            
     # Setup paginator
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
