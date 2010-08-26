@@ -212,8 +212,8 @@
 		// Slide and highlight
 		jQ('#project_image').attr('src', jQ(this).attr('href') );
 		jQ('#project_image_caption').html( jQ(this).attr('title') );
-		jQ('.gallery_links_container').children(':first-child').css('border', '2px solid #ccc');
-		jQ(this).parent().css('border', '2px solid #71CDFF');
+		jQ('.gallery_links_container').children(':first-child').css('border', '3px solid #ccc');
+		jQ(this).parent().css('border', '3px solid #71CDFF');
 		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left - 150)  }, 300);
 		
 		return false;
