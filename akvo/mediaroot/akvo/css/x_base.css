@@ -1,6 +1,7 @@
 body {
     background:#F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
     color:#000;
+    color:#444;
     }
 
 div#main_container {
