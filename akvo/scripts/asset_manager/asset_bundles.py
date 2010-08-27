@@ -1,5 +1,5 @@
 
-MEDIA_BUNDLES = {
+ASSET_BUNDLES = {
     'akvo_style': {
         'type': 'css',
         'path': 'akvo/css/',

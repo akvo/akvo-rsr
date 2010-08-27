@@ -10,7 +10,7 @@
 
 #echo 'In update pre-commit'
 
-exec python `pwd`'/akvo/scripts/media_packer/packer.py'
+exec python `pwd`'/akvo/scripts/asset_manager/packer.py'
 
 # --- Finished
 exit 0
