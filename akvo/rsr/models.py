@@ -333,10 +333,11 @@ STATUSES = (
     ('H', _('Needs funding')),
     ('A', _('Active')),    
     ('C', _('Complete')),
-    ('L', _('Cancelled')),
+	('L', _('Cancelled')),
+	('R', _('Archived')),
 )
 #STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
-STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
+STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'R':'grey', 'L':'red', }
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
@@ -479,7 +480,16 @@ class Project(models.Model):
         
         def status_not_cancelled(self):
             return self.exclude(status__exact='L')
-      
+
+        def status_archived(self):
+            return self.filter(status__exact='R')
+
+        def status_not_archived(self):
+            return self.exclude(status__exact='R')
+
+        def project_in_glance(self):
+            return self.published().status_not_cancelled().status_not_archived()
+
         def euros(self):
             return self.filter(currency='EUR')
 

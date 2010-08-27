@@ -13,4 +13,4 @@ akvo/data
 akvo/mollie_banklist.xml
 .project
 .pydevproject
-
+.settings
