@@ -19,6 +19,8 @@ from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -79,17 +81,17 @@ class Country(models.Model):
         verbose_name_plural = _('countries')
         ordering = ['country_name']
 
+class LatitudeField(models.FloatField):
+    description = _('Latitude coordinate.')
+    def __init__(self, *args, **kwargs):
+        super(LatitudeField, self).__init__(*args, **kwargs)
+        self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
 
-class Location(models.Model):
-    
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
-    country = models.ForeignKey(Country)
-    latitude = models.FloatField(_('latitude'), validators=[MinValueValidator(-90), MaxValueValidator(90)])
-    longitude = models.FloatField(_('longitude'), validators=[MinValueValidator(-180), MaxValueValidator(180)])
-
-    def __unicode__(self):
-        return u'%s, %s, %s' % (self.city, self.state, self.country)
+class LongitudeField(models.FloatField):
+    description = _('Longitude coordinate.)')
+    def __init__(self, *args, **kwargs):
+        super(LongitudeField, self).__init__(*args, **kwargs)
+        self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 
 class ProjectsQuerySetManager(QuerySetManager):
@@ -161,6 +163,35 @@ class Organisation(models.Model):
 
     def get_absolute_url(self):
         return '/rsr/organisation/%d/' % self.id
+
+    def _get_locations(self):
+        '''Returns a queryset of all the organisations's locations'''
+        content_type = ContentType.objects.get_for_model(Organisation)
+        locations = Location.objects.filter(content_type=content_type, object_id=self.id)
+        return locations
+
+    @property
+    def primary_location(self, location=None):
+        '''Returns an organisations's primary location'''
+        locations = self._get_locations()
+        if locations:
+            location = locations[0]
+        return location
+
+    @property
+    def coordinates(self, coordinates=None):
+        '''
+        Currently returns a latitude, longitude tuple for the
+        primary location of an organisation or None.
+        In future releases we will need to return data
+        for more than one location.
+        '''
+        location = self.primary_location
+        invalid = location.latitude == 0 and location.longitude == 0
+        if not invalid:
+            coordinates = (location.latitude, location.longitude)
+        return coordinates
+
     
     class QuerySet(QuerySet):
         def fieldpartners(self):
@@ -427,8 +458,6 @@ class Project(models.Model):
     date_request_posted = models.DateField(_('Date request posted'), default=date.today)
     date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
 
-    location            = models.ManyToManyField(Location)
-
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
     #http://simonwillison.net/2008/May/1/orm/
@@ -466,7 +495,35 @@ class Project(models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
             
-    def has_valid_coordinates(self):
+    def _get_locations(self):
+        '''Returns a queryset of all the project's locations'''
+        content_type = ContentType.objects.get_for_model(Project)
+        locations = Location.objects.filter(content_type=content_type, object_id=self.id)
+        return locations
+
+    @property
+    def primary_location(self, location=None):
+        '''Returns a project's primary location'''
+        locations = self._get_locations()
+        if locations:
+            location = locations[0]
+        return location
+
+    @property
+    def coordinates(self, coordinates=None):
+        '''
+        Currently returns a latitude, longitude tuple for the
+        primary location of a project or None.
+        In future releases we will need to return data
+        for more than one location.
+        '''
+        location = self.primary_location
+        invalid = location.latitude == 0 and location.longitude == 0
+        if not invalid:
+            coordinates = (location.latitude, location.longitude)
+        return coordinates
+
+    def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
         try:
             latitude = float(self.latitude)
             longitude = float(self.longitude)
@@ -474,16 +531,6 @@ class Project(models.Model):
         except:
             return False
 
-    def get_location(self):
-        if self.has_valid_coordinates():
-            latitude = str(self.latitude.strip())
-            longitude = str(self.longitude.strip())
-            location = '%s,%s' % (latitude, longitude)
-        else:
-            state = self.state.strip().replace(' ', '+')
-            country = self.country.country_name.strip().replace(' ', '+')
-            location = '%s+%s' % (state, country)
-        return location
 
     class QuerySet(QuerySet):
         def published(self):
@@ -1363,13 +1410,13 @@ class Invoice(models.Model):
         blank=True, null=True,
         help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75)
-    email = models.EmailField()
+    name = models.CharField(max_length=75, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
     bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
@@ -1420,7 +1467,7 @@ class Invoice(models.Model):
     
     @property
     def donation_fee(self):
-        return self.amount-self.amount_received
+        return (self.amount - self.amount_received)
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
@@ -1439,6 +1486,24 @@ def process_paypal_ipn(sender, **kwargs):
         invoice.status = 3
         invoice.save()
 payment_was_flagged.connect(process_paypal_ipn)
+
+
+class Location(models.Model):
+    latitude = LatitudeField(_('latitude'), default=0)
+    longitude = LongitudeField(_('longitude'), default=0)
+    city = models.CharField(_('city'), max_length=255)
+    state = models.CharField(_('state'), max_length=255)
+    country = models.ForeignKey(Country)
+    address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
+    address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
+    postcode = models.CharField(_('postcode'), max_length=10, blank=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    primary = models.BooleanField(_('primary location'))
+
+    def __unicode__(self):
+        return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
 
 # signals!

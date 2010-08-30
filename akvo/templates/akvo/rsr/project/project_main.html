@@ -73,15 +73,15 @@
 				
 				<h2 class="black">{% trans 'Location' %}</h2>
 				<p class="grey">
-					{{ p.country.get_continent_display }}, {{p.country}}<br />{{p.city}}
-					{% if p.longitude %}
+					{{ p.primary_location.country.get_continent_display }}, {{p.primary_location.country}}<br />{{p.primary_location.city}}
+					{% if p.primary_location %}
 					<br />
-					{{ p.longitude }}, {{ p.latitude }}	
+					{{ p.primary_location.longitude }}, {{ p.primary_location.latitude }}	
 					{% endif %}
 				</p>
 				{# Google Map #}
-	            {% if p.has_valid_coordinates %}
-	                {% dynamic_map p 260 180 3 'blue' %}
+	            {% if p.coordinates %}
+	                {% google_map 'project' p.id 260 180 3 %}
 	            {% else %}
 	                <p style="color: red;">{% trans 'No map available' %}</p>
 	            {% endif %}
