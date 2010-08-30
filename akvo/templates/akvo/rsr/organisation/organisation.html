@@ -36,7 +36,6 @@
 					<h3>{% trans 'Akvopedia entry' %}</h3>
 					<p class="small">{{o.akvopedia_entry}}</p>
 				{% endif %}
-				
 			</div>
 			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
 				<h3>{% trans 'Location' %}</h3>
@@ -49,7 +48,7 @@
 					{% if o.primary_location.country %}{{o.primary_location.country}}{% endif %}					
 				</p>
 				{% if p.has_valid_coordinates %}
-	                {% dynamic_map o 180 135 3 'blue' %}
+	                {% google_maps o 180 135 3 'blue' %}
 	            {% else %}
 	                <p class="small" style="color: red;">{% trans 'No map available' %}</p>
 	            {% endif %}
