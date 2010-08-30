@@ -29,14 +29,14 @@ Since we don’t want to do anything manual that can be done automatically we wi
 We will use a Python dictionary to define asset bundles. You will load a asset bundle where you used to load a css or a javascript file in the templates. A asset bundle can consist of one or several CSS or JS files. The asset bundles will then be loaded in the template with the help of a Django template tag named "asset_bundle". A Git hook is used to automatically repack the asset bundles on every new commit. 
 
 ### Asset Manager elements
-- akvo/scripts/asset_manager/asset_bundle.py, file where asset_bundles are defined by the develper.
-- akvo/scripts/asset_manager/map.py, file used by Django for template tags lookups (populated by packer.py).
-- akvo/scripts/asset_manager/packer.py, generates combined & compressed bundle files.
-- {% asset_bundle ‘foo’ %}, Django template tag loading the 'foo' bundle (uses the map.py for lookup).
-- git_hooks/pre-commit, Hook that call the packer script before a commit.
-- akvo/scripts/asset_manager/__init__.py, On first request and execution a symlink to the git hook is made. (hence one need to run the project to setup the githook!!!)
-- A DEV_ASSET_BUNDLES=TRUE setting.
-- Expires header to the web server configuration. (optional)
+- akvo/scripts/asset_manager/asset_bundle.py, file where asset_bundles are defined by the develper.   
+- akvo/scripts/asset_manager/map.py, file used by Django for template tags lookups (populated by packer.py).   
+- akvo/scripts/asset_manager/packer.py, generates combined & compressed bundle files.  
+- {% asset_bundle ‘foo’ %}, Django template tag loading the 'foo' bundle (uses the map.py for lookup).   
+- git_hooks/pre-commit, Hook that call the packer script before a commit.   
+- akvo/scripts/asset_manager/__init__.py, On first request and execution a symlink to the git hook is made.    (hence one need to run the project to setup the githook!!!)   
+- A DEV_ASSET_BUNDLES=TRUE setting.   
+- Expires header to the web server configuration. (optional)   
 
 ### In depth / example
 On commit the git hook kickstarts the packer script which parses the asset_bundle.py files for asset_bundles. When it finds a bundle, e.g. ‘akvo_styles’, it reads the bundle settings and starts to combine the bundle files (e.g. ‘typography” or ”footer”) into one bundle file. When this is done the bundle file is compressed with YUICompressor. The combined and compressed file is then named with a fingerprint (hash) based on it’s contents. The hash is added to the map.py file for Django template tag lookup. In the template we would then add the template tag {% asset_bundle ‘akvo_styles’ %} to load the latest fingerprinted bundle file.
@@ -53,19 +53,19 @@ One can name the source files to whatever but it's recommended to use a prefix s
 If the script stumbles upon errors because of a misconfiguration of the asset_bundles the commit will be aborted. This is done by design. We don't want to checkin broken code. And only changes to the asset bundles will be a possibility for those errors.
 
 ### Git hook setup
-The pre-commit git hook is setup on the first http request. Hence if you clone the system the git-hook will not be in place before you have run the project. If you want you can always manually symlink the pre-commit hook from ".git/hooks/" to "git_hooks/" in the project root. The automatic sym-linking is made in "akvo/scripts/asset_manager/__init__.py"
+The pre-commit git hook is setup on the first http request. Hence if you clone the system the git-hook will not be in place before you have run the project. If you want you can always manually symlink the pre-commit hook from ".git/hooks/" to "git_hooks/" in the project root. The automatic sym-linking is made in "akvo/scripts/asset_manager/__init__.py". 
 
 ### New source files
 If you want to add a new source file to a bundle the actual asset_bundle definition needs to commit before it's used for combining. Hence you need an extra commit of adding the source file to asset_bundles and then before the second commit the pre-commit hook is triggered and that will generate a new combined file and include that in the new commit.
 
 ## Resources:
-http://developer.yahoo.com/performance/rules.html
-http://developer.yahoo.com/yui/compressor/
-http://cjohansen.no/en/apache/using_a_far_future_expires_header
+http://developer.yahoo.com/performance/rules.html   
+http://developer.yahoo.com/yui/compressor/   
+http://cjohansen.no/en/apache/using_a_far_future_expires_header   
 
 ## Roadmap:
 Would be nice to have validation of css & javascript(maybe even JSLint) as a requirement.
 
 At the moment all asset are repacked on every commit. One could implement some smartness by using git and only repack when there is changes but since the packing is not that time consuming it's probably better to keep it as is.
 
-The git hook is setup on execution of the akvo/scripts/asset_manager/__init__.py, it would be nice to setup this in an other way. Maybe with the deployment script. There is a potential problem with permissions on a web server and symlinking.
+The git hook is setup on execution of the akvo/scripts/asset_manager/__init__.py, it would be nice to setup this in an other way. Maybe with the deployment script.
