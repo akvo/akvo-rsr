@@ -79,7 +79,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 								{% trans 'Total projects' %}
 							</td>
 							<td style="text-align:right; padding-top:3px;">
-								{{projs.published.count}}
+								{{projs.status_not_archived.count}}
 							</td>
 						</tr>
 					</table>
@@ -140,31 +140,31 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<table class="overall_statistics" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">	
 						<tr class="font-weight:bold;">
 							<th colspan="2" style="padding-bottom:10px;">
-								{% trans 'Funding' %} {#<span style="font-weight:normal; color:#999">({{projs.published.count}} {% trans 'Projects' %})</span>#}
+								{% trans 'Funding' %} {#<span style="font-weight:normal; color:#999">({{projs.count}} {% trans 'Projects' %})</span>#}
 							</th>
 						</tr>
 						<tr>
-							<td>{{projs.status_not_cancelled.euros.count}} project{{projs.status_not_cancelled.euros.count|pluralize:"s"}} in Euros</td>
+							<td>{{projs.status_not_cancelled.status_not_archived.euros.count}} project{{projs.status_not_cancelled.status_not_archived.euros.count|pluralize:"s"}} in Euros</td>
 						</tr>
 						<tr style="color:green;">
 							<td>{% trans 'Raised' %}</td>
-							<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round|intcomma}}</td>
+							<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.status_not_archived.euros.total_pledged|add:projs.status_not_cancelled.status_not_archived.euros.total_donated|round|intcomma}}</td>
 						</tr>
 						<tr style="color:red;">
 							<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-							<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
+							<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.status_not_archived.euros.total_funds_needed|round|intcomma}}</td>
 						</tr>
-						{% if projs.status_not_cancelled.dollars.count %}
+						{% if projs.status_not_cancelled.status_not_archived.dollars.count %}
 						<tr>
-							<td>{{projs.status_not_cancelled.dollars.count}} project{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} in US Dollars</td>
+							<td>{{projs.status_not_cancelled.status_not_archived.dollars.count}} project{{projs.status_not_cancelled.status_not_archived.dollars.count|pluralize:"s"}} in US Dollars</td>
 						</tr>
 						<tr style="color:green;">
 							<td>{% trans 'Raised' %}</td>
-							<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
+							<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.status_not_archived.dollars.total_pledged|add:projs.status_not_cancelled.status_not_archived.dollars.total_donated|round|intcomma}}</td>
 						</tr>
 						<tr style="color:red;">
 							<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-							<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round|intcomma}}</td>
+							<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.status_not_archived.dollars.total_funds_needed|round|intcomma}}</td>
 						</tr>
 						{% endif %}
 					</table>

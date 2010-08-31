@@ -264,7 +264,7 @@ def projectlist(request):
     stats: the aggregate projects data
     page: paginator
     '''
-    projs = Project.objects.published().funding().select_related()
+    projs = Project.objects.published().status_not_archived().funding().select_related()
     fundable = projs.need_funding()
     showcases = get_random_from_qs(fundable, 3)
 
@@ -292,12 +292,12 @@ def filteredprojectlist(request, org_id):
     o: organisation
     '''
     #for use in akvo at a glance
-    projs = Project.objects.published().funding()
+    projs = Project.objects.published().status_not_archived().funding()
     # get all projects the org is asociated with
     o = Organisation.objects.get(pk=org_id)
     #projects = o.published_projects().funding()
 
-    fundable = o.published_projects().funding()
+    fundable = o.published_projects().status_not_archived().funding()
     showcases = get_random_from_qs(fundable, 3)
 
     #qs_list = list(projects.values_list('pk', flat=True))
@@ -822,9 +822,15 @@ def orgdetail(request, org_id):
     if o.id == settings.LIVE_EARTH_ID:
         has_sponsor_banner = True
     
-    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+    org_projects = o.published_projects().status_not_cancelled().status_not_complete()
     org_partners = o.partners()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
+    return {
+        'o': o, 
+        'org_projects': org_projects, 
+        'org_partners': org_partners,
+        'has_sponsor_banner':has_sponsor_banner,
+        'live_earth_enabled': settings.LIVE_EARTH_ENABLED,
+    }
 
 @render_to('rsr/project_main.html')
 def projectmain(request, project_id):
@@ -848,7 +854,7 @@ def projectmain(request, project_id):
         'comments': comments, 
         'form': form, 
         'can_add_update': can_add_update, 
-        }
+    }
 
 @render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
@@ -960,7 +966,7 @@ def project_widget(request, template='feature-side', project_id=None):
     if project_id:
         p = get_object_or_404(Project, pk=project_id)
     else:
-        p = random.choice(Project.objects.published())
+        p = random.choice(Project.objects.published().status_not_archived())
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
@@ -977,7 +983,7 @@ def project_list_widget(request, template='project-list', org_id=0):
         o = get_object_or_404(Organisation, pk=org_id)
         p = o.published_projects().funding()
     else:
-        p = Project.objects.published().funding()
+        p = Project.objects.published().status_not_archived().funding()
     order_by = request.GET.get('order_by', 'name')
     #p = p.annotate(last_update=Max('project_updates__time'))
     p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})

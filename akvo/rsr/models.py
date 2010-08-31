@@ -282,12 +282,12 @@ class Organisation(models.Model):
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
    
     def funding(self):
-        my_projs = self.published_projects().status_not_cancelled()
+        my_projs = self.published_projects().status_not_cancelled().status_not_archived()
         # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
         # work because values_list used in qs_column_sum will not return more
         # than one of the same value. This leads to the wrong sum when same amount
         # has been pledged to multiple projects
-        all_active = Project.objects.published().status_not_cancelled()
+        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
         return {
             'total_euros': my_projs.euros().total_total_budget(),
             'donated_euros': my_projs.euros().total_donated(),
@@ -474,6 +474,9 @@ class Project(models.Model):
     
         def status_complete(self):
             return self.filter(status__exact='C')
+           
+        def status_not_complete(self):
+			return self.exclude(status__exact='C')
     
         def status_cancelled(self):
             return self.filter(status__exact='L')
@@ -486,9 +489,6 @@ class Project(models.Model):
 
         def status_not_archived(self):
             return self.exclude(status__exact='R')
-
-        def project_in_glance(self):
-            return self.published().status_not_cancelled().status_not_archived()
 
         def euros(self):
             return self.filter(currency='EUR')
@@ -660,7 +660,7 @@ class Project(models.Model):
         def total_pledged(self, org=None):
             '''
             how much money has been commited to the projects
-            if org is supplied, only money pledeg by that org is calculated
+            if org is supplied, only money pledged by that org is calculated
             '''
             return qs_column_sum(self.funding(org), 'pledged')
 

@@ -5,7 +5,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_filters humanize %}
 
-{% ifnotequal p.status 'L' %}
+{% if p.status != 'L' and  p.status != 'R' %}
 
 <div class="fundingwrap">
 
@@ -62,4 +62,4 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div class="fundingbox-footer"> </div>
 </div>
-{% endifnotequal%}
+{% endif %}

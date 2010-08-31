@@ -43,8 +43,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<!--<p><b>Total: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{p.funding.total|round|intcomma}}</span></b></p>-->
 		<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>
 		
-		
-		{% ifnotequal p.status 'L' %}
+		{% if p.status != 'L' and  p.status != 'R' %}
 			<hr />
 			<p style="margin: 10px 0 10px 0;">
 							
@@ -59,7 +58,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% endifequal %}
 
 	        </p>
-		{% endifnotequal %}
     
  		{% for funder in p.fundingpartner_set.all %}
 			{% if not forloop.first %}
@@ -90,6 +88,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</p>
 			<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>	
 		{% endif %}
+  {% endif %}
+
 	</div> <!-- #project_funding & .boxbody -->
     {% endblock funding %}
 
