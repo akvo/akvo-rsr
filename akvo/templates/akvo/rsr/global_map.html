@@ -36,7 +36,7 @@
                 title: 'Project location'
             });
             var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({
-                content: 'Project information goes here.'
+                content: 'Project {{ project.id }} information goes here.'
             });
             google.maps.event.addListener(project_{{ project.id }}_marker, 'click', function() {
                 project_{{ project.id }}_infowindow.open(map, project_{{ project.id }}_marker);
