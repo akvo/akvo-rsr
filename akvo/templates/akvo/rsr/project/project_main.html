@@ -1,0 +1,224 @@
+{% extends "rsr/project/project_base.html" %}
+
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail google_maps counter_tags %}
+
+{% block head %}
+<style type="text/css">
+	div#gallery_box_slider {width:{{slider_width}}px;}
+</style>
+{% endblock head %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{{p.name}}</li>
+{% endblock breadcrum_items %}
+
+
+{% block project_left_column %}
+	<div class="white_box" style="background-color:#fff;">
+		<div class="space20">
+			<div class="counter_badge" style="margin-top:0; margin-right:0;">
+				<span style="display:none;">{% counter p %}</span>
+				{% cache 10 p.view_count %}
+					{{ p.view_count|intcomma }}
+				{% endcache %}
+				<br />
+				<span>{% trans 'views' %}</span>
+			</div>
+			<h2 class="black">{% trans 'Description' %}</h2>
+			{{p.project_plan_summary|linebreaks}}
+			<div style="float:left; width:328px;">
+				<div style="height:246px; widht:328px;">
+					<img id="project_image" src="{% thumbnail p.current_image 328x246 autocrop sharpen %}" />	
+				</div>
+				<div style="min-height:20px; padding-top:5px; margin-bottom:10px;">
+					<p id="project_image_caption" class="small grey" style="margin:0;">
+						{{p.current_image_caption}}
+					</p>
+				</div>
+				
+				<div id="gallery_box" class="round">
+					<div id="gallery_box_controller">
+						<div id="gallery_box_controller_prev"> </div>
+						<div id="gallery_box_controller_next"> </div>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
+						
+					<div id="gallery_box_slider">
+						<div class="gallery_links_container">
+							<div style="border:2px solid #71CDFF;">
+								<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}" target="_blank">
+									<img src="{% thumbnail p.current_image 100x75 %}" />
+								</a>
+							</div>
+						</div>
+						{% for update_with_image in updates_with_images %}
+						<div class="gallery_links_container">
+							<div>
+								<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}" target="_blank">
+									<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
+								</a>								
+							</div>
+						</div>
+						{% endfor %}
+						<div class="clear"></div>
+					</div>
+				</div>
+			</div>
+			<div style="float:left; width:30px;">&nbsp;</div>
+			<div style="float:left; width:262px;">
+				<h2 class="black">{% trans 'Who will benefit?' %}</h2>
+				{% include "rsr/inc_target_benchmarks.html" %}
+				
+				<h2 class="black">{% trans 'Location' %}</h2>
+				<p class="grey">
+					{{ p.country.get_continent_display }}, {{p.country}}<br />{{p.city}}
+					{% if p.longitude %}
+					<br />
+					{{ p.longitude }}, {{ p.latitude }}	
+					{% endif %}
+				</p>
+				{# Google Map #}
+	            {% if p.has_valid_coordinates %}
+	                {% dynamic_map p 260 180 3 'blue' %}
+	            {% else %}
+	                <p style="color: red;">{% trans 'No map available' %}</p>
+	            {% endif %}
+				{% comment %}
+					{% map_thumb p 140 140 '' %}
+				{% endcomment %}
+
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div style="margin-top:35px;">
+		<h2>{% trans 'Project in depth' %}</h2>
+		<div style="float:left; width:480px;">
+			<div class="white_box">
+				<div class="space20">
+					<h3>{% trans 'Focus areas' %}</h3>
+					<p>{% category_icons p %}</p>
+					
+					<h3>{% trans 'Detailed information' %}</h3>
+					
+					<div id="project_tabs">
+						<ul class="small">
+			                <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
+							{% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
+			                <li><a href="#tab_outcomes"><span>{% trans 'Outcomes' %}</span></a></li>
+							{% endif %}
+							<li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
+			            </ul>
+						<div id="tab_background" class="tab">
+							{# <h4 style="font-weight:bold">{% trans 'Background' %}</h4> #}
+							<p>{{p.context|linebreaks}}</p>
+							<h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
+							<p>{{p.goals_overview|linebreaks}}</p>
+							<h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
+							<p>{{p.current_status_detail|linebreaks}}</p>
+							<h4 style="font-weight:bold">{% trans 'Project plan' %}</h4>
+							<p>{{p.project_plan_detail|linebreaks}}</p>
+						</div>
+						{% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
+						<div id="tab_outcomes" class="tab">
+								<h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
+								<ul style="margin-top:15px;">
+									{% if p.goal_1 %}<li>{{p.goal_1}}</li>{% endif %}
+				                    {% if p.goal_2 %}<li>{{p.goal_2}}</li>{% endif %}
+				                    {% if p.goal_3 %}<li>{{p.goal_3}}</li>{% endif %}
+				                    {% if p.goal_4 %}<li>{{p.goal_4}}</li>{% endif %}
+				                    {% if p.goal_5 %}<li>{{p.goal_5}}</li>{% endif %}
+								</ul>							
+						</div>										
+						{% endif %}
+						<div id="tab_sustainability" class="tab">
+							{# <h4 style="font-weight:bold">p.sustainability</h4> #}
+							<p>{{p.sustainability|linebreaks}}</p>
+						</div>
+					</div>				
+				</div>
+			</div>
+		</div>
+		<div style="float:right; width:166px; margin-left:15px;">
+			<div class="white_box">
+				<div class="space20">
+					<h2>{% trans 'Related to this project' %}</h2>
+					<hr />
+					{% if not p.link_set.all %}
+						<p>{% trans 'Nothing related.' %}</p>
+					{% else %}
+						<h4>{% trans 'Akvopedia articles' %}</h4>
+						{% for link in p.link_set.all %}
+							{% ifequal link.kind 'A' %}
+					            <p><a href="{{link.url}}">{{link.caption}}</a></p>
+							{% endifequal %}
+							{% if forloop.last %}
+								<hr />
+							{% endif %}
+						{% endfor %}
+						<h4>{% trans 'External links' %}</h4>
+						<p class="small grey">
+							({% trans 'Will open in new window' %})
+						</p>
+						{% for link in p.link_set.all %}
+							{% ifequal link.kind 'E' %}
+					            <p><a href="{{link.url}}" target="_black">{{link.caption}}</a></p>
+							{% endifequal %}
+						{% endfor %}
+						<p class="small grey">
+							{% trans 'Akvo.org is not responsible for content of external links' %}
+						</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	
+{% endblock project_left_column%}
+
+{% block js %}
+{{ block.super }}
+
+{% if debug %}
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+{% else %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+{% endif %}
+
+{% endblock js %}
+
+{% block jq_ready %}
+	jQ('#project_tabs').tabs();
+	{{block.super}}
+		
+	jQ('#gallery_box_controller_prev').click(function () {		
+		if ( jQ('#gallery_box_slider').offset().left < 119 ) {
+			jQ('#gallery_box_slider').animate({'left': '+=250px'}, 300);
+		}
+	});
+	
+	jQ('#gallery_box_controller_next').click(function () {
+		var left = jQ('#gallery_box_slider').offset().left;
+		
+		if ( (({{slider_width}} - 119 * 4) + left) > 0 ) {
+			jQ('#gallery_box_slider').animate({'left': '-=250px'}, 300);
+		} 
+	});
+	
+	jQ('.gallery_links').click(function () {
+		// Slide and highlight
+		jQ('#project_image').attr('src', jQ(this).attr('href') );
+		jQ('#project_image_caption').html( jQ(this).attr('title') );
+		jQ('.gallery_links_container').children(':first-child').css('border', '3px solid #ccc');
+		jQ(this).parent().css('border', '3px solid #71CDFF');
+		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left - 150)  }, 300);
+		
+		return false;
+	});
+	
+{% endblock jq_ready %}
+
+

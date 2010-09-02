@@ -1,0 +1,86 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n rsr_tags rsr_filters generic_content thumbnail cache counter_tags humanize %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+
+	<title>{% block title %}Akvo.org{% endblock title %}</title>
+	<base target="_parent" />
+	
+	{% block style %}
+	{% media_bundle 'widget_project_small' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_small/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{% endblock style %}
+	
+	<style type="text/css" media="screen">
+	{% block inline_styles %}
+		#header {background-color:#{{bgcolor}};}
+		#header h1 { color:#{{textcolor}}; }
+		#footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
+		h2 a {color:#{{bgcolor}} !important;}
+		
+		#project_title {
+			display:block;
+			height:36px;
+			overflow:hidden;
+		}
+		
+		#project_location{
+			display:block;
+			max-height:32px;
+			height:32px;
+			overflow:hidden;
+		}
+		
+	{% endblock inline_styles %}
+	</style>
+	
+</head>
+<body style="margin-left:0px; margin-top:0px; background-color:transparent;">
+	<div id="container" style="background-color:white; border-bottom:1px solid #9B9AAC;">
+		<div id="header" style="padding-top:1px; padding-bottom:1px;">
+			<h1>Project</h1>
+			<div style="float:right; padding-top:6px;">
+				<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-right:10px; display:none;">
+					<span style="display:none;">{% counter project %}</span>
+		        	{% cache 10 project.view_count %}
+		        		{{ project.view_count|intcomma }} {% trans 'views' %}
+		        	{% endcache %}
+				</span>
+			</div>
+		</div>
+		<div id="content">
+			<div id="heightconstrain">
+				<h2 id="project_title" style="margin-top:5px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+                <div class="photo_frame">
+                    <a href="{% url akvo.rsr.views.projectmain project.id %}">
+                        {% project_thumb project 150 113 %}
+                    </a>
+                </div>
+				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+				<div id="project_location">
+					<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+						{{project.country}}, {{project.city}}
+					</p>
+				</div>
+				{% comment %}
+				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+					{{project.country}}, {{project.city}}
+				</p>
+				{% endcomment %}
+				<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">
+				
+					{% trans 'Powered by' %} <a href="http://{{ request.META.HTTP_HOST }}">Akvo</a>. {% trans 'Ref' %}: {{project.id}}
+				</p>
+			</div>
+		</div>
+	</div>	
+</body>
+</html>

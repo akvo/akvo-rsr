@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block pretitle %}
+    {{ block.super }}
+	<div style="width:75%">
+    	<h1>{% trans 'Update listing' %}</h1>
+    	<p>{% trans 'Select the update ID to make changes to an individual update. Use the Filters listed on the right to view particular update groupings, such as all Featured updates or updates connected to a particular project. Multiple filters can also be used, to permit viewing Featured updates for a particular project from the last 7 days, for example.' %}</p>
+    	<p>{% trans 'To make changes to more than one update at a time, such as deleting updates from or adding updates to the <em>Featured update</em> pool, first select the checkboxes next to the updates. Then use the Action pulldown to select what you would like to do, and press Go. You cannot add updates without images to the Featured pool from this page, but can put it in the pool through the box on the individual update page.' %}</p>
+    	<p>{% trans 'When fewer than 3 updates are in the Featured pool, the 3 most recent updates with images are displayed as Staff picks.' %}</p>
+    	<br />
+    </div>
+    
+{% endblock %}

@@ -1,4 +1,9 @@
-{% load i18n rsr_filters thumbnail rsr_tags addparam %}
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n rsr_filters thumbnail rsr_tags addparam cache %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,6 +166,7 @@
 </head>
 <body>	
 <div id="wrap">
+    {% cache RSR_CACHE_SECONDS all_orgs_widget request.META.QUERY_STRING lang %}
 	<table class="project_table" style="width:710px; max-width:710px;">
 		<thead>
 			<tr>
@@ -206,7 +212,12 @@
 			</tr>
 		</thead>
 	</table>
-	<div id="heightcontrain">
+    <div id="heightcontrain">
+    {% if debug %}
+        TIME: {% now "jS F Y H:i:s" %}
+        QUERY_STRING: {{request.META.QUERY_STRING}}
+        LANG: {{lang}}
+    {% endif %}
 		<table class="project_table">
 			<tbody>
 			{% for o in orgs %}
@@ -248,6 +259,8 @@
 			</tbody>
 		</table>
 	</div>
+    {% endcache %}
+
 </div>
 </body>
 </html>

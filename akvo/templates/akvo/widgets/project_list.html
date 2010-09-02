@@ -1,0 +1,182 @@
+{% extends "widgets/base_widget.html" %}
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+{% load i18n rsr_tags rsr_filters generic_content addparam thumbnail cache counter_tags humanize %}
+
+{% block title %}projects@{{block.super}}{% endblock title %}
+
+{% block style %}
+	{% media_bundle 'widget_project_list' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_list/css/screen.css" type="text/css" media="screen, projection" /> #}
+{% endblock style %}
+
+{% block inline_styles %}
+{{block.super}}
+	#heightconstrain {
+		height: expression( this.scrollHeight > 4 ? "585px" : "auto" ); /* sets max-height for IE */
+		max-height:585px;
+		height:585px;
+		overflow:auto;
+	}
+
+	.fundingbox-content{
+		height: expression( this.scrollHeight > 4 ? "131px" : "auto" ); /* sets max-height for IE */
+		max-height:126px;
+		height:126px;
+		overflow:hidden;
+	}
+
+{% endblock inline_styles %}
+
+	
+{% block header %}
+	{% with projects.count as total %}
+	<h1>{% trans 'Project List' %}<span> ({{ total }} {% trans 'total' %})</span></h1>
+	{% endwith %}
+{% endblock header %}
+
+{% block content %}
+{% cache RSR_CACHE_SECONDS widget_project_list request.META.PATH_INFO request.META.QUERY_STRING lang %}
+	<div id="tableHeader">
+		<table cellspacing="0">
+				<tr>
+				{% if not request_get.order_by %}
+					<th scope="col" id="projectColumnHeader" class="activeTableHeader">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+                    {% if debug %}
+                        TIME DEBUG: {% now "jS F Y H:i:s" %}
+                    {% endif %}
+					</th>	
+				{% else %}
+					{% ifequal request_get.order_by "name" %}
+					<th scope="col" id="projectColumnHeader" class="activeTableHeader">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+                    {% if debug %}
+                        TIME DEBUG: {% now "jS F Y H:i:s" %}
+                    {% endif %}
+					</th>
+					{% else %}
+					<th scope="col" id="projectColumnHeader">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+                    {% if debug %}
+                        TIME DEBUG: {% now "jS F Y H:i:s" %}
+                    {% endif %}
+					</th>
+					{% endifequal %}
+				{% endif %}
+					{% comment %}
+					<th scope="col" id="projectColumnHeader" class="{% if not request_get.order_by %}activeTableHeader{% endif %}">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "bgcolor" bgcolor "order_by" "name" %}" target="_self">{% trans 'Project' %}</a>
+					</th>
+					{% endcomment %}
+					<th scope="col" id="locationColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'country__continent' %}activeTableHeader{% endifequal %}{% ifequal request_get.order_by 'country__country_name' %}activeTableHeader{% endifequal %}">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "country__continent"%}" target="_self" {% ifequal request_get.order_by 'country__country_name'%} style="font-weight:normal;" {% endifequal %}>{% trans 'Continent' %}</a> 
+						
+						<span style="font-weight:normal;">/</span><br /> 
+						
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "country__country_name" %}" target="_self" {% ifequal request_get.order_by 'country__continent' %}style="font-weight:normal" {% endifequal %} >{% trans 'Country' %}</a>
+					</th>
+					<th scope="col" id="statusColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'status' %}activeTableHeader{% endifequal %} {% ifequal request_get.order_by 'last_update' %}activeTableHeader{% endifequal %}">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "status" %}" target="_self" {% ifequal request_get.order_by 'last_update' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Status' %}</a> <span style="font-weight:normal;">/</span><br /> 
+
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "last_update" %}" target="_self"  {% ifequal request_get.order_by 'status' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Last update' %}</a>
+						
+					</th>
+					<th scope="col" id="partnerColumnHeader" class="tableHeaderCell">
+						{% comment %}
+							<a href="#">{% trans 'Partners' %}</a>
+						{% endcomment %}
+						{% trans 'Partners' %}
+					</th>
+					<th scope="col" id="fundingColumnHeader" class="tableHeaderCell {% ifequal request_get.order_by 'total_budget' %}activeTableHeader{% endifequal %}{% ifequal request_get.order_by 'funds_needed' %}activeTableHeader{% endifequal %}">
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "total_budget" %}" target="_self" {% ifequal request_get.order_by 'funds_needed' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Total Budget' %}</a> <span style="font-weight: normal;">/</span><br /> 
+						<a href="/rsr/widget/project-list/organisation/{{org_id}}/{% addparam "order_by" "funds_needed" %}" target="_self" {% ifequal request_get.order_by 'total_budget' %} style="font-weight:normal;" {%  endifequal %}>{% trans 'Funding Needed' %}</a><br />
+					</th>
+				</tr>
+		</table>
+	</div>
+	<div id="heightconstrain">
+		<table cellspacing="0" border="0" cellpadding="0">
+			{% for project in projects %} <!-- If no projects do something-->
+			<tr class="{% cycle 'row' 'altrow' %}">
+				<td class="tableRow projectCell">
+					<h2 style="margin-bottom:4px; padding-bottom:0; font-weight:bold"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name}}</a></h2>
+					<p class="grey" style="margin-top:4px;margin-bottom:4px;">{{project.subtitle}}</p>
+					
+					<div class="category-icons">
+						<div style="height:55px">
+							{% category_icons project %}	
+						</div>
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>	
+					</div>
+                    <a href="{% url akvo.rsr.views.projectmain project.id %}">
+                        {% project_thumb project 100 75 %}
+                    </a>
+					<span style="display:none;">{% counter project %}</span>
+				</td>
+				<td class="tableRow locationCell">
+					<p style="margin-top:3px;"><span class="capz">{{project.country.get_continent_display}}</span><br />
+						{{project.country}}, {{project.city}}
+					</p>
+					<p class="miniFont lightgrey">
+						{% trans 'Akvo Ref' %}: {{project.id}}
+					</p>
+				</td>
+				<td class="tableRow statusCell grey">
+					<p style="margin-top:2px;">{% trans 'Status' %}<br />
+						{{project.show_status}}
+					</p>
+					<p class="topmargin">{% trans 'Last Update' %}<br />
+					{% with project.last_update as last_update %}						
+						{% ifequal last_update None %}
+							<span style="color:#000;">{% trans 'Not yet' %}</span>
+						{% else %}
+							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{project.project_updates.latest.id}}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
+						{% endifequal %}
+					{% endwith %}
+					</p>
+				</td>
+				<td class="tableRow partnerCell">
+					{% with project.fieldpartner_set.all as fieldpartners %}
+						{% if fieldpartners %}
+							<p class="grey" style="margin-top:2px;">{% trans 'Field Partner' %}{{fieldpartners.count|pluralize}}<br />
+							{% for fieldpartner in fieldpartners %}
+								<a href="{% url org_detail fieldpartner.field_organisation.id %}">{{fieldpartner.field_organisation.name}}</a>{% if not forloop.last %},{% endif %}
+							{% endfor %}
+							</p>
+						{% endif %}						
+					{% endwith %}						
+					{% with project.fundingpartner_set.all as fundingpartners %}
+						{% if fundingpartners %}
+							<p class="grey">{% trans 'Funding Partner' %}{{fundingpartners.count|pluralize}}<br />
+							{% for fundingpartner in fundingpartners %}
+								<a href="{% url org_detail fundingpartner.funding_organisation.id %}">{{fundingpartner.funding_organisation.name}}</a>{% if not forloop.last %},{% endif %}
+							{% endfor %}
+							</p>
+						{% endif %}						
+					{% endwith %}
+					{% with project.supportpartner_set.all as supportpartners %}
+						{% if supportpartners %}
+							<p class="grey">{% trans 'Support Partner' %}{{supportpartners.count|pluralize}}<br />
+							{% for supportpartner in supportpartners %}
+								<a href="{% url org_detail supportpartner.support_organisation.id %}">{{supportpartner.support_organisation.name}}</a>{% if not forloop.last %},{% endif %}
+							{% endfor %}
+							</p>
+						{% endif %}						
+					{% endwith %}
+				</td>
+				<td class="tableRow fundingCell">
+					<div style="margin: 0 auto 0 auto; text-align:center;">
+						{% funding_box project %}
+					</div>
+				</td>
+			{% endfor %}
+		</table>
+	</div>
+{% endcache %}
+{% endblock content %}
+
+{% block footer_counter %}{% endblock footer_counter %}
+

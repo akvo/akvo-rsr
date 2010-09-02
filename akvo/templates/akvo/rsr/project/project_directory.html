@@ -1,0 +1,427 @@
+{% extends "rsr/base.html" %}
+
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+
+{% block title %} {{block.super}} - {% trans 'Projects' %}{% endblock %}
+
+{% block breadcrum_items %}
+{{block.super}}
+{% if o %}
+	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li id="last_breadcrum_item">
+		{% if query_string%}
+			{% trans 'Searched' %} {{o.name}} {% trans 'projects for' %} <span style="font-style:italic;">{{ query_string|escape }}&quot;</span>
+		{% else %}
+			{{o.name}}
+		{% endif %}
+	</li>
+{% else %}
+	<li id="last_breadcrum_item">
+		{% if query_string%}
+			{% trans 'Searched all projects for' %} <span style="font-style:italic;">{{ query_string|escape }}</span>
+		{% else %}
+			{% trans 'Projects' %}
+		{% endif %}
+	</li>	
+{% endif %}
+{% endblock breadcrum_items %}
+
+{% block maincontent %}	
+	{% comment %}
+	<h1 style="color: #2097F7">Find projects and programmes</h1>
+	<form action="." method="get" accept-charset="utf-8">
+		<div id="project_search" class="span-18">
+			<div class="span-7 first">
+				<div class="space20">
+					<input type="search" name="project_search" value="" id="search" style="width:350px;"> 
+				</div>
+			</div>
+			<div class="span-11 last">
+				<div class="space20">
+					<input type="submit" value="Search">
+				</div>
+			</div>
+		</div>
+		<div class="span-18">
+			<div class="linear_bg" style="height:100px;">
+				<div class="span-4 first">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Sectors</h3>						
+					</div>
+				</div>
+				<div class="span-3">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Regions</h3>
+					</div>
+				</div>
+				<div class="span-3">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Updates</h3>
+					</div>
+				</div>
+				<div class="span-3">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Status</h3>
+					</div>
+				</div>
+				<div class="span-4 last">
+					<div class="space15">
+						<h3 style="color:#3EACF8">Budget Range</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	{% endcomment %}
+	{% if o %}
+		<h1>
+			{% if query_string%}
+				{% trans 'Searched' %} {{o.name}} {% trans 'projects for' %} <span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
+			{% else %}
+				{{o.name}}
+			{% endif %}
+		</h1>
+	{% else %}
+		<h1>
+			{% if query_string%}
+				{% trans 'Searched all projects for' %} <span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
+			{% else %}
+				{% trans 'Projects' %}
+			{% endif %}
+		</h1>
+	{% endif %}
+	
+	<form action="." method="get" accept-charset="utf-8">
+		<div id="project_search" class="span-18">
+			<div class="round" style="border: 1px solid #ccc;">
+				<div class="space15">
+					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}" autofocus>					
+					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="span-18" style="background-color:#fff; margin-top:15px;">
+		<div class="round" style="border: 1px solid #ccc;">
+			<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
+				<div style="float:right;">
+					<p style="margin-bottom:0;">
+						{% ifequal page.number 1 %}
+							{% trans 'First' %} |
+						{% else %}
+							{# if we have an organisation in the context, we are displaying the list filtered on that org, url have to conform to that #}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}">{% trans 'First' %}</a> |
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}">{% trans 'First' %}</a> |
+							{% endif %}
+						{% endifequal %}
+						{% if page.has_previous %}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+							{% endif %}
+						{% else %}
+						{% trans 'Previous' %} |
+						{% endif %}
+						{% if page.has_next %}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+							{% endif %}
+						{% else %}
+						{% trans 'Next' %} |
+						{% endif %}
+						{% ifequal page.number page.paginator.num_pages %}
+						{% trans 'Last' %}
+						{% else %}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
+							{% endif %}
+						{% endifequal %}
+					</p>
+				</div>
+				<p style="margin-bottom:0;">
+					{% blocktrans with page.start_index as page_start and page.end_index as page_end and page.paginator.count as p_count %}
+						Projects {{page_start}}-{{page_end}} of {{p_count}}
+					{% endblocktrans %}
+				</p>
+			</div>
+			<div class="linear_bg" style="padding:0; margin:0; border-bottom:1px solid #979AA5;">
+				<div style="float:left; width:270px; text-align:center;{% ifequal request_get.order_by 'name' %}background-color:#ECEFF2;{% endifequal %} {% if not request_get.order_by %}background-color:#ECEFF2;{% endif %} ">
+					<div style="border-right:1px solid #979AA5;">
+						<p class="small" style="padding:15px 0; margin:0;">
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}
+							{% else %}
+								<a href="{% url project_list %}
+							{% endif %}
+								{% if request_get.order_by == 'name' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "name" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "name" "sort" "asc" "last_order" order_by %}
+									{% endif %}
+								{% else %}
+									{% if not request_get.sort %}
+										{% addparam "order_by" "name" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "name" "sort" "asc" "last_order" order_by %}
+									{% endif %}
+								{% endif %}
+							">{% trans 'Name' %}</a>
+						</p>
+					</div>
+				</div>
+				<div style="float:left; width:120px; text-align:center;">
+					<div style="border-right:1px solid #979AA5;{% ifequal request_get.order_by 'country__country_name' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}
+							{% else %}
+								<a href="{% url project_list %}
+							{% endif %}
+								{% if request_get.order_by == 'country__country_name' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "country__country_name" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "country__country_name" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							">{% trans 'Location' %}</a>
+						</p>
+					</div>
+				</div>
+				<div style="float:left; width:110px; text-align:center;">
+					<div style="border-right:1px solid #979AA5; {% ifequal request_get.order_by 'status' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}
+							{% else %}
+								<a href="{% url project_list %}
+							{% endif %}
+								{% if request_get.order_by == 'status' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "status" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "status" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "status" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							">{% trans 'Status' %}</a>
+						</p>
+					</div>
+				</div>
+				<div style="float:left; width:180px; text-align:center;">
+					<div style="border-right:1px solid #979AA5;">
+						<p class="small" style="padding:15px 0; margin:0;">{% trans 'Partners' %}</p>
+					</div>
+				</div>
+				<div style="float:left; width:120px; text-align:center;">
+					<div style="border-right:1px solid #979AA5;{% ifequal request_get.order_by 'last_update' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}
+							{% else %}
+								<a href="{% url project_list %}
+							{% endif %}
+								{% if request_get.order_by == 'last_update' %}
+									{% if request_get.sort == 'desc' %}
+										{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
+								{% endif %}
+								{% comment %}
+								{% if request_get.order_by == 'last_update' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "last_update" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "last_update" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+								{% endcomment %}
+							">{% trans 'Last update' %}</a>
+						</p>
+					</div>
+				</div>
+				<div style="float:left; width:171px; text-align:center;">
+					<div style="{% ifequal request_get.order_by 'total_budget' %}background-color:#ECEFF2;{% endifequal %}">
+						<p class="small" style="padding:15px 0; margin:0;">
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}
+							{% else %}
+								<a href="{% url project_list %}
+							{% endif %}
+								{% if request_get.order_by == 'total_budget' %}
+									{% if request_get.sort == 'asc' %}
+										{% addparam "order_by" "total_budget" "sort" "desc" "last_order" order_by %}
+									{% else %}
+										{% addparam "order_by" "total_budget" "sort" "asc" "last_order" order_by %}
+									{% endif %}						
+								{% else %}
+									{% addparam "order_by" "total_budget" "sort" "asc" "last_order" order_by %}
+								{% endif %}
+							">{% trans 'Funding' %}</a>
+						</p>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div>
+				{% for p in page.object_list %}
+					<div class="grey_hover" style="min-height:105px; {% if not forloop.last %} border-bottom:1px solid #ccc;	{% endif %}">
+						<div style="float:left; width:110px;">
+							<div class="space10">
+								<a href="{% url akvo.rsr.views.projectmain p.id %}">
+						            {% project_thumb p 84 63 'float:left; margin-right: 10px;' %}
+						        </a>
+								<span style="display:none;">{% counter p %}</span>
+							</div>
+						</div>
+						<div style="float:left; width:170px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0;">
+									<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a><br />
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:120px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0;">
+									{{p.country}}<br />
+									<span class="grey">{{ p.country.get_continent_display }}</span>
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:110px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0; font-size:1em;">
+									{{p.show_status}}
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:180px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0;">
+									{% for partner in p.all_partners %}
+										<a href="{% url org_detail partner.id %}">{{partner.name}}</a>{% if not forloop.last %},<br />{% endif %}
+									{% endfor %}
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:120px;">
+							<div class="space10">
+								<p class="small" style="margin-bottom:0;">
+									{% with p.last_update as last_update %}						
+										{% ifequal last_update None %}
+											{% trans 'Not yet' %}
+										{% else %}
+											{{last_update|string_to_date|date:"d M Y"}}
+										{% endifequal %}
+									{% endwith %}
+								</p>
+							</div>
+						</div>
+						<div style="float:left; width:160px;">
+							<div class="space10">
+								<div style="text-align:center;">
+									<p class="small" style="margin:0;">
+										{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}
+									</p>
+								</div>
+								<div class="fundingbox-progress-bar" style="height:5px;">
+									{% if p.budget_total %}
+									<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> 
+									</div>
+									{% endif %}
+								</div>
+								<div style="text-align:center;">
+									<p class="tiny grey" style="margin:0;">
+										{% widthratio p.funding_total_given p.budget_total 100 %} %
+									</p>
+								</div>
+								<div style="text-align:center;">
+									{% ifequal p.funding_still_needed|round 0 %}
+										<p class="green" style="font-weight:bold;">
+											{% trans 'Fully funded' %}
+										</p>
+									{% else %}
+										{% ifnotequal p.status 'L' %}
+											<div style="text-align:center; padding-top:5px; padding-bottom:5px;">
+												<a class="orange awesome small" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+											</div>
+										{% endifnotequal %}
+									{% endifequal %}
+								</div>
+								
+								
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+				{% endfor %}
+			</div>
+			<div style="background-color:#E5E5E9; padding:15px; border-top:1px solid #979AA5;">
+				<div style="float:right;">
+					<p style="margin-bottom:0;">
+						{% ifequal page.number 1 %}
+						{% trans 'First' %} |
+						{% else %}
+							{# if we have an organisation in the context, we are displaying the list filtered on that org, url have to conform to that #}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" 1 %}">{% trans 'First' %}</a> |
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" 1 %}">{% trans 'First' %}</a> |
+							{% endif %}
+						{% endifequal %}
+						{% if page.has_previous %}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+							{% endif %}
+						{% else %}
+						{% trans 'Previous' %} |
+						{% endif %}
+						{% if page.has_next %}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+							{% endif %}
+						{% else %}
+						{% trans 'Next' %} |
+						{% endif %}
+						{% ifequal page.number page.paginator.num_pages %}
+						{% trans 'Last' %}
+						{% else %}
+							{% if o %}
+								<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
+							{% else %}
+								<a href="{% url akvo.rsr.views.projectlist %}{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
+							{% endif %}
+						{% endifequal %}
+					</p>
+				</div>
+				<p style="margin-bottom:0;">
+					{% blocktrans with page.start_index as page_start and page.end_index as page_end and page.paginator.count as p_count %}
+						Projects {{page_start}}-{{page_end}} of {{p_count}}
+					{% endblocktrans %}
+				</p>
+			</div>
+		</div>
+	</div>
+	
+{% endblock maincontent %}

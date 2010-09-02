@@ -1,0 +1,130 @@
+{% extends "rsr/project/project_subpage_base.html" %}
+
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">Partners</li>
+{% endblock breadcrum_items %}
+
+{% block project_left_column %}
+	<div class="white_box" style="background-color:#fff;">
+		<div style="float:left; margin-left:20px; margin-top:10px">
+			<span class="small">
+				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+			</span>
+			<h2 style="padding-top:20px;">{% trans 'Project partners' %}</h2>
+		</div>
+		<div class="counter_badge">
+			<span style="display:none;">{% counter p %}</span>
+			{% cache 10 p.view_count %}
+				{{ p.view_count|intcomma }}
+			{% endcache %}
+			<br />
+			<span>{% trans 'views' %}</span>
+		</div>
+		<div class="clear"></div>
+		<div class="space20">	
+			{% if p.fieldpartner_set.count %}
+				{% ifequal p.fieldpartner_set.count 1 %}
+		            <h3>{% trans 'Field partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Field partners' %}</h3>
+		        {% endifequal %}
+				{% for fp in p.fieldpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">
+						<div style="float:left; width:100px;">							
+							<a href="{% url org_detail fp.field_organisation.id %}">
+			                    {% org_logo fp.field_organisation 98 60 'margin: 10px 20px;' %}
+			                </a>
+						</div>
+						<div style="float:left; width:300px; margin-left:40px;">
+							<p style="margin:0">
+							<a href="{% url org_detail fp.field_organisation.id %}">{{fp.field_organisation}}</a><br />
+							{{fp.field_organisation.city}}, {{fp.field_organisation.state}}, {{fp.field_organisation.country}}
+							</p>
+						</div>
+						<div class="clear"></div>						
+					</div>
+				{% endfor %}
+				<br /><br />
+			{% endif %}
+			
+			
+			{% if p.supportpartner_set.count %}
+				{% ifequal p.supportpartner_set.count 1 %}
+		            <h3>{% trans 'Support partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Support partners' %}</h3>
+		        {% endifequal %}
+				{% for sp in p.supportpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">
+						<div style="float:left; width:100px;">
+							<a href="{% url org_detail sp.support_organisation.id %}">
+			                    {% org_logo sp.support_organisation 98 60 'margin: 10px 20px;' %}
+			                </a>							
+						</div>
+						<div style="float:left; width:300px; margin-left:40px;">
+							<p style="margin:0">
+							<a href="{% url org_detail sp.support_organisation.id %}">{{sp.support_organisation}}</a><br />
+							{{sp.support_organisation.city}}, {{sp.support_organisation.state}}, {{sp.support_organisation.country}}
+							</p>
+						</div>
+						<div class="clear"></div>
+					</div>
+				{% endfor %}
+				<br /><br />
+			{% endif %}
+			
+			{% if p.sponsorpartner_set.count %}
+				{% ifequal p.sponsorpartner_set.count 1 %}
+		            <h3>{% trans 'Sponsor partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Sponsor partners' %}</h3>
+		        {% endifequal %}
+				{% for sponsor in p.sponsorpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">						
+						<div style="float:left; width:100px;">
+							<a href="{% url org_detail sponsor.sponsor_organisation.id %}">
+			                    {% org_logo sponsor.sponsor_organisation 98 60 'margin: 10px 20px;' %}
+			                </a>
+						</div>
+						<div style="float:left; width:300px; margin-left:40px;">
+							<p style="margin:0">
+							<a href="{% url org_detail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation}}</a><br />
+							{{sponsor.sponsor_organisation.city}}, {{sponsor.sponsor_organisation.state}}, {{sponsor.sponsor_organisation.country}}
+							</p>
+						</div>
+						<div class="clear"></div>						
+					</div>
+				{% endfor %}
+				<br /><br />
+			{% endif %}
+			
+			{% if p.fundingpartner_set.count %}
+				{% ifequal p.fundingpartner_set.count 1 %}
+		            <h3>{% trans 'Funding partner' %}</h3>
+		        {% else %}
+		            <h3>{% trans 'Funding partners' %}</h3>
+		        {% endifequal %}
+				{% for funder in p.fundingpartner_set.all %}
+					<div style=" border-bottom:1px solid #ccc; padding:10px;">
+						<div style="float:left; width:100px;">
+							<a href="{% url org_detail funder.funding_organisation.id %}">
+			                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
+			                </a>							
+						</div>
+						<div style="float:left; width:300px; margin-left:40px;">
+							<p style="margin:0">
+							<a href="{% url org_detail funder.funding_organisation.id %}">{{funder.funding_organisation}}</a><br />
+							{{funder.funding_organisation.city}}, {{funder.funding_organisation.state}}, {{funder.funding_organisation.country}}
+							</p>
+						</div>
+						<div class="clear"></div>
+					</div>
+				{% endfor %}
+			{% endif %}
+			
+		</div>
+	</div>
+{% endblock project_left_column%}

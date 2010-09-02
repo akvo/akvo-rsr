@@ -5,7 +5,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags counter_tags humanize cache %}
 
 {% block title %}{{block.super}} - {% trans 'All project updates' %}{% endblock title %}
 
@@ -24,7 +24,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% if can_add_update %}
 		<a class="actionbutton ab_grey" href="{% url akvo.rsr.views.updateform p.id %}" onclick="this.blur();"><span>{% trans 'Add update' %}</span></a>
 		{% endif %}
-		<h1 class="section">{{p.name}}</h1>
+		<h1 class="section"><a href="{% url project_main p.id%}">{{p.name}}</a>
+			<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; display:none;"><span style="display:none;">{% counter p %}</span>
+	        	{% cache 10 p.view_count %}
+	        		{{ p.view_count|intcomma }} {% trans 'views' %}
+	        	{% endcache %}
+			</span>	
+		</h1>
 		<p>{{p.subtitle}}</p>
 
 	</div> <!-- .boxhead -->
@@ -36,8 +42,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         <p class="lightx1">{% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}</p>
         {% for u in updates %}
             <hr />
-            <a name={{u.id}} />
-            <h2>{{u.title}}</h2>
+            <a name={{u.id}}></a>
+            <h2 style="font-size:1.2em;">{{u.title}}</h2>
             <p>
                 <span class="lightx1">
                     {{u.time|date:"Y-m-d H:i" }}
@@ -55,7 +61,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             {% ifequal u.photo_location 'E' %}
                 {% update_thumb u 668 501 %}
             {% endifequal %}
-            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">{% trans 'Permalink' %}</a></p>
+            <p style="text-align:right">
+				<a href="{% url project_main p.id %}">&lt; Back to project summary</a> |
+				<a href="{% url akvo.rsr.views.projectupdates p.id %}#{{u.id}}">{% trans 'Permalink' %}</a>
+			</p>
         {% endfor %}
 
 	</div> <!-- #project_updates & .boxbody -->

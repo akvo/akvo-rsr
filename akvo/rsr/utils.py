@@ -6,10 +6,12 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.db.models import get_model
 from django.template import loader, Context
 from django.utils.translation import ugettext_lazy as _
+
+from BeautifulSoup import BeautifulSoup
 
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
@@ -104,11 +106,55 @@ def send_donation_confirmation_emails(invoice_id):
     c = Context({'invoice': invoice, 'domain_name': settings.DOMAIN_NAME})
     message_body = t.render(c)
     subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
-    bcc_field = invoice.notification_email
+    bcc_field = settings.DONATION_EMAIL_ADMINS
+    bcc_field = bcc_field.append(invoice.notification_email)
     if invoice.user:
-        to_field = invoice.user.email
+        to_field = [invoice.user.email]
     else:
-        to_field = invoice.email
-    msg = EmailMessage(subject_field, message_body, from_field, [to_field], [bcc_field])
+        to_field = [invoice.email]
+    msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send()
+    
+
+def wordpress_get_lastest_posts(connection, limit):
+    from django.db import connections
+    cursor = connections[connection].cursor()
+    try:
+        cursor.execute("SELECT option_value FROM wp_options where option_id = 1")
+        option_rows = cursor.fetchall()
+        site_url = option_rows[0][0]
+    except:
+        site_url = 'http://akvo.org/blog'
+    
+    try:
+        cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
+        rows = cursor.fetchall()
+    except:
+        return None
+
+    posts = []
+    for post in rows:
+        post_content_soup = BeautifulSoup(post[4])
+
+        # Find first image in post
+        try:
+            post_img = post_content_soup('img')[0]['src']
+        except:
+            post_img = ''
+
+        # Find first paragraph in post
+        try:
+            post_p = post_content_soup('p')[0].contents
+        except:
+            # If no paragraph then use the raw content
+            post_p = post_content_soup
+
+        # Create one string
+        p = ''
+        for text in post_p:
+            p = '%s%s' % (p, text)
+        
+        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), })
+
+    return posts

@@ -19,7 +19,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% block content %}
 
 <div class="boxbody">
-<form enctype="multipart/form-data" method="post" action="">
+<form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
 
 <div class="clearfix">
     

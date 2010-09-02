@@ -1,0 +1,64 @@
+{% extends "rsr/project/project_subpage_base.html" %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Project comments' %}</li>
+{% endblock breadcrum_items %}
+
+{% block project_left_column %}
+	<div class="white_box" style="background-color:#fff;">
+		<div style="float:left; margin-left:20px; margin-top:10px">
+			<span class="small">
+				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+			</span>
+			<h2 style="padding-top:20px;">{% trans 'New comment' %}</h2>
+		</div>
+		<div class="counter_badge">
+			<span style="display:none;">{% counter p %}</span>
+			{% cache 10 p.view_count %}
+				{{ p.view_count|intcomma }}
+			{% endcache %}
+			<br />
+			<span>{% trans 'views' %}</span>
+		</div>
+		<div class="clear"></div>
+		<div class="space20">
+			
+			<div id="comment_form_div">
+				{% if not user.username %}
+		            <p>{% trans 'You must be signed in to add a comment.' %}</p>
+		            <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
+		        {% else %}
+		            <form name="comment_form" enctype="multipart/form-data" style="margin-bottom:0;"
+						method="post" action="{% url akvo.rsr.views.commentform p.id %}">{% csrf_token %}
+						{{form.comment}}
+						<div class="text_right">
+							<a id="add_comment" class="aqua awesome" href="javascript:document.comment_form.submit();">
+								<span>{% trans 'Add comment' %}</span>
+							</a>
+						</div>
+		            </form>
+		        {% endif %}
+			</div>
+
+			<br /><br />
+			<h2>{% trans 'All comments' %}</h2>
+			{% if not comments %}
+				<p>{% trans 'No comments yet.' %}</p>
+			{% else %}
+				{% for c in comments %}
+					<div class="grey_hover" style="padding:15px 10px; {% if not forloop.last %} border-bottom: 1px solid #eee;{% endif %}">
+						<p style="margin:0;">
+							{{c.comment|capfirst}}<br />
+							<span class="grey small">
+ 								{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}},
+							<a href="mailto:abuse@akvo.org?subject={% blocktrans with p.id as p_id and c.id as c_id %}Comment%20abuse%20in%20project%20%23{{p_id}}%2C%20comment%20#{{c_id}}{% endblocktrans %}">{% trans 'Report abuse' %}</a>
+							</span>
+						</p>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+{% endblock project_left_column %}

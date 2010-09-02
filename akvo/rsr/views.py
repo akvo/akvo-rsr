@@ -9,6 +9,8 @@ from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
+from akvo.rsr.utils import wordpress_get_lastest_posts
+
 from django import forms
 from django import http
 from django.conf import settings
@@ -25,10 +27,10 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 import time
 import feedparser
@@ -36,14 +38,13 @@ from registration.models import RegistrationProfile
 import random
 from decimal import Decimal
 
-from mollie.ideal.utils import query_mollie
+from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
 def server_error(request, template_name='500.html'):
     '''
-    Daniel
     Overwrites the default error 500 view to pass MEDIA_URL to the template
     '''
     t = loader.get_template(template_name) # You need to create a 500.html template.
@@ -70,8 +71,12 @@ def render_to(template):
         def wrapper(request, *args, **kw):
             output = func(request, *args, **kw)
             if isinstance(output, (list, tuple)):
+                # add current language for template caching purposes
+                output[0].update({'lang':get_language()})
                 return render_to_response(output[1], output[0], RequestContext(request))
             elif isinstance(output, dict):
+                # add current language for template caching purposes
+                output.update({'lang':get_language()})
                 return render_to_response(template, output, RequestContext(request))
             return output
         return wrapper
@@ -89,6 +94,18 @@ def set_test_cookie(request):
     request.session.set_test_cookie()
     return HttpResponseRedirect('/rsr/?nocookie=test')
 
+def get_random_from_qs(qs, count):
+    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
+    qs_list = list(qs.values_list('pk', flat=True))
+    random.shuffle(qs_list)
+    return qs.filter(pk__in=qs_list[:count])
+
+def get_setting(setting, default=None):
+    try:
+        return getattr(settings, setting)
+    except:
+        return default
+
 @render_to('rsr/index.html')
 def index(request):
     '''
@@ -98,53 +115,63 @@ def index(request):
     soup: the blog entry HTML
     img_src: the url to the first image of the blog entry
     '''
+    #from dbgp.client import brk
+    #brk(host="90.130.213.8", port=9000)
     
-    try:
-        # Create exception to avoid loading the blogs whe we run in debug mode.
-        # Speeds up the home page considerably when pulling over the inteweb
+    bandwidth = 'low'
+    host = 'unknown'
+        
+    projs = Project.objects.published()
+    if bandwidth == 'low':
+        #find all projects that need funding and have an image
+        unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
+        if len(unfunded_visible_projs) > 7:
+            grid_projects = get_random_from_qs(unfunded_visible_projs, 8)
+        else:
+            visible_projs = projs.filter(current_image__startswith='db')
+            grid_projects = get_random_from_qs(visible_projs, 8)
+    else:
+        grid_projects = None
+    
+    if settings.PVW_RSR:
+        updates = {}
+    else:
+        featured = ProjectUpdate.objects.filter(featured__exact=True)
+        if len(featured) < 3:
+            updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
+        else:
+            updates = get_random_from_qs(featured, 3)
+    #stats = akvo_at_a_glance(p)
+    #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
 
-        if settings.DEBUG:
-            raise
+    if not settings.PVW_RSR and settings.LIVE_EARTH_ENABLED:
+        live_earth = Organisation.objects.get(pk= settings.LIVE_EARTH_ID)
+        le_blog_category = settings.LIVE_EARTH_NEWS_CATEGORY
+    else:
+        live_earth = None
+        le_blog_category = None
         
-        current_site = Site.objects.get_current()
-        
-        # Generate the main blog content
-        feed = feedparser.parse("http://%s/news?feed=rss2" % current_site)
-         
-        latest1 = feed.entries[0]
-        soup = BeautifulSoup(latest1.content[0].value)
-        try:
-            img_src1 = soup('img')[0]['src']
-        except:
-            img_src1 = ''
-        latest2 = feed.entries[1]
-        soup = BeautifulSoup(latest2.content[0].value)
-        try:
-            img_src2 = soup('img')[0]['src']
-        except:
-            img_src2 = ''  
-        
-        # Generate the special blog category
-        news_feed = feedparser.parse('http://%s/news?feed=rss2&cat=%d' % (current_site, settings.WORDPRESS_NEWS_CATEGORY))
-        news = news_feed.entries[0]
-        
-    except:
-        soup = img_src1 = img_src2 = ''
-        news = {
-            'title': _('The blog is not available at the moment.'),
-        }
-        latest1 = latest2 = {
-            'author': '',
-            'summary': _('The blog is not available at the moment.'),
-        }
+    if not settings.PVW_RSR and settings.WALKING_FOR_WATER_ENABLED:
+        walking_for_water = Organisation.objects.get(pk= settings.WALKING_FOR_WATER_ID)
+        wfw_blog_category = settings.WALKING_FOR_WATER_NEWS_CATEGORY
+    else:
+        walking_for_water = None
+        wfw_blog_category = None
         
     return {
-        'latest1': latest1,
-        'img_src1': img_src1,
-        'latest2': latest2,
-        'img_src2': img_src2,
-        'news': news,
-        'site_section':'index',
+        'orgs': Organisation.objects,
+        'projs': projs,
+        'updates': updates,
+        'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
+        'live_earth': live_earth,
+        'le_blog_category': le_blog_category,
+        'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
+        'walking_for_water': walking_for_water,
+        'wfw_blog_category': wfw_blog_category,
+        'site_section': 'index',
+    #    'blog_posts': wordpress_get_lastest_posts('wordpress', 2),
     }
 
 def oldindex(request):
@@ -162,19 +189,6 @@ def project_list_data(request, projects):
     page = paginator.page(request.GET.get('page', 1))
     return page
 
-@render_to('rsr/liveearth.html')
-def liveearth(request):
-    '''
-    List of all projects in RSR
-    Context:
-    projects: list of all projects
-    stats: the aggregate projects data
-    page: paginator
-    '''
-    live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
-    projs = live_earth.published_projects().funding()
-    page = project_list_data(request, projs)
-    return {'projs': projs, 'orgs': live_earth.partners(), 'page': page, 'live_earth': live_earth }
 
 @render_to('rsr/focus_areas.html')
 def focusareas(request):
@@ -201,6 +215,10 @@ if settings.PVW_RSR:
         page = project_list_data(request, projects)
         return {'page': page, 'site_section': 'areas', 'focusarea': area, 'org': org}
     
+    @render_to('rsr/directory.html')
+    def directory(request, org_type='all'):
+        return {'site_section': 'directory',}
+
 else:
     
     @render_to('rsr/project_directory.html')
@@ -238,14 +256,251 @@ else:
         showcases = projects.order_by('?')[:3]
         page = project_list_data(request, projects)
         return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
-    
-@render_to('rsr/directory.html')
-def directory(request, org_type='all'):
-    
-    return {'site_section': 'directory',}
 
+    @render_to('rsr/organisation/landing_pages/liveearth.html')
+    def liveearth(request):
+        '''
+        List of all projects associated with Live Earth
+        Context:
+        projects: list of all projects
+        stats: the aggregate projects data
+        page: paginator
+        '''
+        live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
+        projs = live_earth.published_projects().funding()
+        page = project_list_data(request, projs)
+        org_projects = live_earth.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        return {
+            'projs': projs,
+            'orgs':live_earth.partners(),
+            'page': page,
+            'o': live_earth,
+            'org_projects': org_projects,
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        }
+    
+    @render_to('rsr/organisation/landing_pages/wfw.html')
+    def walking_for_water(request):
+        '''                                                                            
+        List of all projects associated with Walking for Water
+        Context:                                                                       
+        projects: list of all projects                                                 
+        stats: the aggregate projects data                                             
+        page: paginator                                                                
+        '''
+        wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
+        projs = wfw.published_projects().funding()
+        page = project_list_data(request, projs)
+        org_projects = wfw.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        return {
+            'projs': projs,
+            'orgs': wfw.partners(),
+            'page': page,
+            'o': wfw,
+            'org_projects': org_projects,
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        }
+    
+    # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
+    import re
+    from django.db.models import Q
+    def normalize_query(query_string,
+                        findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                        normspace=re.compile(r'\s{2,}').sub):
+        ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
+            and grouping quoted words together.
+            Example:
+            
+            >>> normalize_query('  some random  words "with   quotes  " and   spaces')
+            ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
+        
+        '''
+        return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
+    
+    def get_query(query_string, search_fields):
+        ''' Returns a query, that is a combination of Q objects. That combination
+            aims to search keywords within a model by testing the given search fields.
+        '''
+        query = None # Query to search for every search term
+        terms = normalize_query(query_string)
+        for term in terms:
+            or_query = None # Query to search for a given term in each field
+            for field_name in search_fields:
+                q = Q(**{"%s__icontains" % field_name: term})
+                if or_query is None:
+                    or_query = q
+                else:
+                    or_query = or_query | q
+            if query is None:
+                query = or_query
+            else:
+                query = query & or_query
+            
+        '''
+        Initial try for continent filtering, this is obsolete, since the new_look_maps branch introduces the Location model.
+        for term in terms:
+            or_query = None # Query to search for a given term in each field
+            if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
+                if term == 'Africa' or term == 'africa':
+                    q = Q(**{"country__continent__exact":1})
+                elif term == 'Asia' or term == 'asia':
+                    q = Q(**{"country__continent__exact":2})
+                elif 'Australia' or 'australia' in term:
+                    q = Q(**{"country__continent__exact":3})
+                elif 'Europe' or 'europe' in term:
+                    q = Q(**{"country__continent__exact":4})
+                elif 'North America' or 'north america' or 'North america' or 'north America' in term:
+                    q = Q(**{"country__continent__exact":5})
+                elif 'South America' or 'south america' or 'South america' or 'south America' in term:
+                    q = Q(**{"country__continent__exact":6})
+                if query is None:
+                    query = q
+                else:
+                    query = query & q
+            else:            
+                for field_name in search_fields:
+                    q = Q(**{"%s__icontains" % field_name: term})
+                    if or_query is None:
+                        or_query = q
+                    else:
+                        or_query = or_query | q
+                if query is None:
+                    query = or_query
+                else:
+                    query = query & or_query
+        '''
+        return query
+        
+    @render_to('rsr/project/project_directory.html')
+    def projectlist(request):
+        '''
+        List of relevant projects in RSR
+            
+        To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
+        '''
+        
+        # Get relevant projects
+        projects = Project.objects.published().funding().select_related()
+        
+        # Get projects either by using the query or all
+        query_string = ''
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+    
+            #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+            project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+            projects = projects.filter(project_query)
+        
+        # Add extra last_update column
+        projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+        
+        # Setup sort query
+        order_by = request.GET.get('order_by', 'name')
+        last_order = request.GET.get('last_order')
+        sort = request.GET.get('sort', 'asc')
+        
+        # sort desv or asc
+        if sort == 'asc':
+            projects = projects.order_by(order_by, 'name')
+        else:
+            projects = projects.order_by('-%s' % order_by, 'name')
+    
+        # Setup paginator
+        PROJECTS_PER_PAGE = 10
+        paginator = Paginator(projects, PROJECTS_PER_PAGE)
+        page = paginator.page(request.GET.get('page', 1))
+        
+        return {
+            'site_section': 'projects',
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'page': page,
+            'query_string': query_string,
+            'request_get': request.GET,
+            'sort': sort,
+            'order_by': order_by,
+            'last_order': last_order,
+        }
+    
+    
+    @render_to('rsr/project/project_directory.html')
+    def filteredprojectlist(request, org_id):
+        '''
+        List of relevant projects in RSR for a specific organisation
+            
+        To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
+        '''    
+    
+        # get all projects the org is asociated with
+        o = Organisation.objects.get(pk=org_id)
+        projects = o.published_projects().funding()
+        
+        # Get projects either by using the query or all
+        query_string = ''
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+    
+            '''
+            Super dump continent filtering
+            This needs to be made much better, (case, multi continent, same time as query...)
+            
+            CONTINENTS = (
+                (1, _('Africa')),
+                (2, _('Asia')),
+                (3, _('Australia')),
+                (4, _('Europe')),
+                (5, _('North America')),
+                (6, _('South America')),
+            )
+            '''
+            
+            if 'Africa' in query_string:
+                projects = projects.filter(country__continent='1')
+            elif 'Asia' in query_string:
+                projects = projects.filter(country__continent='2')
+            elif 'Australia' in query_string:
+                projects = projects.filter(country__continent='3')
+            elif 'Europe' in query_string:
+                projects = projects.filter(country__continent='4')
+            elif 'North America' in query_string:
+                projects = projects.filter(country__continent='5')
+            elif 'South America' in query_string:
+                projects = projects.filter(country__continent='6')
+            else:
+                #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+                project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+                projects = projects.filter(project_query)
+        
+        # Add extra last_update column
+        projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+        
+        # Sort query
+        order_by = request.GET.get('order_by', 'name')
+        last_order = request.GET.get('last_order')
+        sort = request.GET.get('sort', 'asc')
+        
+        if sort == 'asc':
+            projects = projects.order_by(order_by, 'name')
+        else:
+            projects = projects.order_by('-%s' % order_by, 'name')
+            
+        # Setup paginator
+        PROJECTS_PER_PAGE = 10
+        paginator = Paginator(projects, PROJECTS_PER_PAGE)
+        page = paginator.page(request.GET.get('page', 1))
+        
+        return {
+            'site_section': 'projects',
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'page': page,
+            'query_string': query_string,
+            'request_get': request.GET,
+            'sort': sort,
+            'order_by': order_by,
+            'last_order': last_order,
+            'o': o,    
+        }
 
-@render_to('rsr/organisation_directory.html')
+@render_to('rsr/organisation/organisation_directory.html')
 def orglist(request, org_type='all'):
     '''
     List of all projects in RSR
@@ -255,6 +510,7 @@ def orglist(request, org_type='all'):
     page: paginated orgs
     '''
     orgs = Organisation.objects
+    #orgs = Organisation.objects.select_related()
     if org_type == 'field':
         orgs = orgs.fieldpartners()
     elif org_type == 'support':
@@ -273,16 +529,43 @@ def orglist(request, org_type='all'):
         orgs = orgs.knowledge()
     else:
         orgs = orgs.all()
-    try:
-        order_by = request.GET.get('order_by', 'name')
+
+    query_string = ''
+    found_entries = None
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+        org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','contact_email',])
+        orgs = orgs.filter(org_query)
+    
+    # Sort query
+    order_by = request.GET.get('order_by', 'name')
+    last_order = request.GET.get('last_order')
+    sort = request.GET.get('sort', 'asc')
+
+    if sort == 'asc':
         orgs = orgs.order_by(order_by, 'name')
-    except:
-        pass
+    else:
+        orgs = orgs.order_by('-%s' % order_by, 'name')
+    
     ORGS_PER_PAGE = 10
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
     projs = Project.objects.published()
-    return {'projs': projs, 'orgs': orgs, 'org_type': org_type, 'page': page,}
+
+    return {
+        'site_section': 'index',
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'lang': get_language(),
+        'page': page,
+        'projs': projs,
+        'query_string': query_string,
+        'request_get': request.GET,
+        'sort': sort,
+        'order_by': order_by,
+        'last_order': last_order,
+        'org_type': org_type,
+        'orgs': orgs,
+    }
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
@@ -325,7 +608,13 @@ def partners_widget(request, org_type='all'):
     elif order_by == 'country__continent':
         orgs = orgs.order_by(sort_order_value+order_by,'country','organisation_type','name')
     
-    return {'orgs':orgs,'order_by':order_by,'sort':sort_order,'mode':mode}
+    return {
+        'orgs': orgs,
+        'order_by': order_by,
+        'sort': sort_order,
+        'mode': mode,
+        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+    }
 
 
 class SigninForm(forms.Form):
@@ -551,7 +840,7 @@ def update_user_profile(request,
         context[key] = callable(value) and value() or value
     return render_to_response(template_name, {'form': form}, context_instance=context)
 
-@render_to('rsr/project_updates.html')
+@render_to('rsr/project/project_updates.html')
 def projectupdates(request, project_id):
     '''
     List of all updates for a project
@@ -561,10 +850,40 @@ def projectupdates(request, project_id):
     '''
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
     can_add_update = p.connected_to_user(request.user)
-    return {'p': p, 'updates': updates, 'can_add_update':can_add_update, 'all_updates': True, 'site_section': 'areas', }
-    
-@render_to('rsr/project_comments.html')
+    return {
+        'p': p, 
+        'updates': updates, 
+        'can_add_update':can_add_update, 
+        'hide_latest_updates': True, 
+        'comments': comments,
+        'site_section': 'areas',
+        }
+
+@render_to('rsr/project/project_update.html')
+def projectupdate(request, project_id, update_id):
+    '''
+    List of all updates for a project
+    Context:
+    p: project
+    updates: list of updates, ordered by time in reverse
+    '''
+    p           = get_object_or_404(Project, pk=project_id)
+    u           = get_object_or_404(ProjectUpdate, pk=update_id)
+    #updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
+    can_add_update = p.connected_to_user(request.user)
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    return {
+        'p': p, 
+        'u': u, 
+        'can_add_update':can_add_update, 
+        'hide_latest_updates': True,
+        'site_section': 'projects', 
+        'comments': comments,
+        }
+
+@render_to('rsr/project/project_comments.html')
 def projectcomments(request, project_id):
     '''
     List of all updates for a project
@@ -575,7 +894,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'comments': comments, 'form': form,'project_section':'comments' }
+    return {'p': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
 
 class UpdateForm(ModelForm):
 
@@ -605,8 +924,10 @@ def updateform(request, project_id):
     form: the update form
     '''
     p = get_object_or_404(Project, pk=project_id)
+    can_add_update = p.connected_to_user(request.user)
+    
     # check that the current user is allowed to edit
-    if not p.connected_to_user(request.user):
+    if not can_add_update:
         return HttpResponseRedirect('/rsr/error/access_denied/')
         
     if request.method == 'POST':
@@ -619,10 +940,17 @@ def updateform(request, project_id):
             update.user = request.user
             update.update_method = 'W'
             update.save()
-            return HttpResponseRedirect(reverse('project_main', args=[project_id]))
+            latest = ProjectUpdate.objects.all().order_by('-time')[0]
+            return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
     else:
         form = UpdateForm()
-    return render_to_response('rsr/project_update.html', {'form': form, 'p': p, }, RequestContext(request))
+        
+    return render_to_response('rsr/project/update_form.html', {
+        'form': form, 
+        'p': p, 
+        'can_add_update': can_add_update,
+        'updates': Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
+        }, RequestContext(request))
 
 def mms_update(request):
     '''
@@ -693,14 +1021,13 @@ def sms_update(request):
 
 class CommentForm(ModelForm):
 
-    comment     = forms.CharField(widget=forms.Textarea(attrs={
-                                    'class':'textarea',
-                                    'rows':'10',
-                                    'cols':'30',
-                                    #'width': '280px',
-                                    #'margin': '0 auto'
-                                }))
-    
+    comment = forms.CharField(widget=forms.Textarea(attrs={
+        'class':'textarea',
+        'rows':'5',
+        'cols':'75',
+        #'width': '480px',
+        #'style': 'margin:0 auto;'
+    }))    
     class Meta:
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
@@ -719,7 +1046,7 @@ def commentform(request, project_id):
             comment.time = datetime.now()
             comment.user = request.user
             comment.save()
-    return HttpResponseRedirect(reverse('project_main', args=[project_id]))
+    return HttpResponseRedirect(reverse('project_comments', args=[project_id]))
 
 #def org_activities(organisation):
 #    # assoc resolves to all projects associated with organisation, where organisation can function in any of the three partner functions
@@ -732,24 +1059,29 @@ def commentform(request, project_id):
 #    # remove organisation from queryset
 #    return assoc, partners.exclude(id=organisation.id)
 
-@render_to('rsr/organisation.html')
+if settings.PVW_RSR:
+    path_to_templ_organisation = 'rsr/organisation.html'
+    path_to_templ_project_main = 'rsr/project_main.html'
+else:
+    path_to_templ_organisation = 'rsr/organisation/organisation.html'
+    path_to_templ_project_main = 'rsr/project/project_main.html'
+    
+@render_to(path_to_templ_organisation)
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
-    
-    has_sponsor_banner = False
-    try:
-        if o.id == settings.LIVE_EARTH_ID:
-            has_sponsor_banner = True
-    except:
-        pass
     if settings.PVW_RSR:
         org_projects = o.published_projects()
     else:
         org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    org_partners = o.my_partners()
-    return {'o': o, 'org_projects': org_projects, 'org_partners': org_partners,'has_sponsor_banner':has_sponsor_banner,'live_earth_enabled': settings.LIVE_EARTH_ENABLED}
+    org_partners = o.partners()
+    return {
+        'o': o, 
+        'org_projects': org_projects, 
+        'org_partners': org_partners,
+        'site_section': 'index',
+        }
 
-@render_to('rsr/project_main.html')
+@render_to(path_to_templ_project_main)
 def projectmain(request, project_id):
     '''
     The project overview page
@@ -759,31 +1091,56 @@ def projectmain(request, project_id):
     comments: the three latest comments
     form: the comment form
     '''
+    #form        = CommentForm()
     p           = get_object_or_404(Project, pk=project_id)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-    form        = CommentForm()
-    can_add_update = p.connected_to_user(request.user)
-        
+    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('time')
+    slider_width = (len(updates_with_images) + 1) * 115    
     return {
         'p': p, 
         'updates': updates, 
         'comments': comments, 
-        'form': form, 
-        'can_add_update': can_add_update,
-        'all_updates': False,
-        'site_section': 'areas',
+        #'form': form, 
+        'can_add_update': p.connected_to_user(request.user),
+        'site_section': 'projects',
+        'updates_with_images': updates_with_images,
+        'slider_width': slider_width,
         }
 
-@render_to('rsr/project_details.html')    
 def projectdetails(request, project_id):
-        p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, 'site_section': 'projects', 'project_section':'details' }
-    
-@render_to('rsr/project_funding.html')    
+    "Fix for old url with project details"
+    return http.HttpResponsePermanentRedirect ('/rsr/project/%s/' % project_id )
+
+
+@render_to('rsr/project/project_partners.html')  
+def projectpartners(request, project_id):
+    p = get_object_or_404(Project, pk=project_id)
+    updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    return { 
+        'p': p, 
+        'site_section': 'projects', 
+        'updates': updates, 
+        'hide_project_partners': True,
+        'can_add_update': p.connected_to_user(request.user),
+        'comments': comments,
+    }
+
+@render_to('rsr/project/project_funding.html')  
 def projectfunding(request, project_id):
-        p       = get_object_or_404(Project, pk=project_id)
-        return {'p': p, 'project_section':'funding' }
+    p = get_object_or_404(Project, pk=project_id)    
+    public_donations = p.public_donations()
+    updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    return { 
+        'p': p, 
+        'public_donations': public_donations, 
+        'site_section': 'projects', 
+        'updates': updates,
+        'comments': comments,
+        'can_add_update': p.connected_to_user(request.user),
+    }
 
 def getwidget(request, project_id):
     '''
@@ -796,13 +1153,13 @@ def getwidget(request, project_id):
             account_level = 'free'
         p = get_object_or_404(Project.objects, pk=project_id)
         orgs = p.all_partners()
-        
-        return render_to_response('rsr/machinery_step1.html', {
-            'project': p, 
-            'account_level': account_level, 
-            'organisations': orgs,
-            'site_section': 'areas',
-            }, context_instance=RequestContext(request))
+        return render_to_response(
+            'rsr/project/get-a-widget/machinery_step1.html', {
+                'project': p, 
+                'p': p, 
+                'account_level': account_level, 'organisations': orgs,
+            }, context_instance=RequestContext(request)
+        )
     else:
         widget_type = request.POST['widget-type']
         widget_choice = request.POST['widget-choice']
@@ -821,7 +1178,33 @@ def getwidget(request, project_id):
             'widget_type': widget_type, 
             'widget_site': widget_site,
             'site_section': 'areas',
-            }, context_instance=RequestContext(request))
+        }, context_instance=RequestContext(request))
+
+def fundingbarimg(request):
+    '''
+    create an image for use in the funding bar graphic
+    '''
+    import Image, ImageDraw 
+
+    size = (100,20)             # size of the image to create
+    im = Image.new('RGB', size, '#fff') # create the image
+    draw = ImageDraw.Draw(im)   # create a drawing object that is
+                                # used to draw on the new image
+    # Now, we'll do the drawing:
+    pct = request.GET.get('pct', 0)
+    if pct:
+        box = [(0,0),(min(int(pct), 100),20)]
+        draw.rectangle(box, fill='#99ff99')
+    
+    del draw # I'm done drawing so I don't need this anymore
+    
+    # We need an HttpResponse object with the correct mimetype
+    response = HttpResponse(mimetype="image/png")
+    # now, we tell the image to save as a PNG to the 
+    # provided file-like object
+    im.save(response, 'PNG')
+
+    return response # and we're done!
     
 def templatedev(request, template_name):
     "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
@@ -902,12 +1285,14 @@ def project_list_widget(request, template='project-list', org_id=0):
             'projects': p,
             'org_id': org_id, 
             'request_get': request.GET, 
-            'site': site
+            'site': site,
+            'lang': get_language(),
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         },
         context_instance=RequestContext(request))
 
 @fetch_project
-@render_to('rsr/donate_step1.html')
+@render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
@@ -918,20 +1303,17 @@ def setup_donation(request, p):
 def donate(request, p, engine, has_sponsor_banner=False):
     if p not in Project.objects.published().need_funding():
         return redirect('project_main', project_id=p.id)
-    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():            
+    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():
         has_sponsor_banner = True
     if request.method == 'POST':
-        donate_form = InvoiceForm(data=request.POST, user=request.user, project=p, engine=engine)
+        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
-            if request.user.is_authenticated() and request.user.email:
-                invoice.user = request.user
-            else:
-                invoice.name = cd['name']
-                invoice.email = cd['email']
+            invoice.name = cd['name']
+            invoice.email = cd['email']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
@@ -956,7 +1338,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     invoice.save()
                 except:
                     return redirect('donate_500')
-                return render_to_response('rsr/donate_step3.html',
+                return render_to_response('rsr/project/donate/donate_step3.html',
                     {'invoice': invoice,
                      'p': p,
                      'payment_engine': engine,
@@ -984,7 +1366,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                 else:
                     pp_button = pp_form.render()
                 action = request.POST.get('action', None)
-                return render_to_response('rsr/donate_step3.html',
+                return render_to_response('rsr/project/donate/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
                                        'pp_form': pp_form, 
@@ -994,8 +1376,8 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = InvoiceForm(user=request.user, project=p, engine=engine)
-    return render_to_response('rsr/donate_step2.html', 
+        donate_form = InvoiceForm(project=p, engine=engine)
+    return render_to_response('rsr/project/donate/donate_step2.html', 
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'p': p,
@@ -1026,7 +1408,8 @@ def mollie_report(request):
         except:
             return HttpResonseServerError
         if mollie_response['paid'] == 'true':
-            invoice.amount_received = invoice.amount - Decimal('1.18')
+            mollie_fee = get_mollie_fee()
+            invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
         else:
             invoice.status = 2
@@ -1034,17 +1417,21 @@ def mollie_report(request):
         return HttpResponse('OK')
     return HttpResponseServerError
 
+@csrf_exempt
 @require_POST
-@render_to('rsr/donate_thanks.html')
 def paypal_thanks(request):
     invoice_id = request.POST.get('invoice', None)
     if invoice_id:
         invoice = Invoice.objects.get(pk=invoice_id)
-        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+        return render_to_response('rsr/project/donate/donate_thanks.html',
+                                  {'invoice': invoice,
+                                   'p': invoice.project,
+                                   'user': invoice.user},
+                                  context_instance=RequestContext(request))
     return redirect('/')
 
 @require_GET
-@render_to('rsr/donate_thanks.html')
+@render_to('rsr/project/donate/donate_thanks.html')
 def mollie_thanks(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:

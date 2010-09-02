@@ -88,7 +88,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if p.budget_management %}
 				<tr>
 					<td>{% trans 'Management costs' %}</td>
-					<td>{{p.get_currency_display|safe}} {{p.budget_management|round}}</td>
+					<td>{{p.get_currency_display|safe}} {{p.budget_management|round|intcomma}}</td>
 				</tr>
 				{% endif %}
 				{% if p.budget_other %}
@@ -136,28 +136,48 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="padding-left: 20px; clear: both;">
 			{% endifequal %}
 		{% endfor %}    
-
-		{% if p.funding_donated %}
+		
+				
+		{% if p.all_donations %}
 			<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 				<p style="margin: 10px 0 10px 0;">
-					<b>{% trans 'Donations from individuals' %}</b>
+					<span style="margin-left: 10px; float:right;">
+						{{p.get_currency_display|safe}}
+						{{p.all_donations_amount_received|round|intcomma}}
+					</span></b>
+					<b>{% trans 'Individuals raised' %}:
+					<br /><br />
+					<b>{% trans 'Donations' %}:</b><br />
+					{% for donors in public_donations %}
+					<div style="margin:0px 20px">
+						<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
+						<span style="float:right;">{{p.get_currency_display|safe}}</span>
+						{{donors.name}}
+					</div>
+					{% endfor %}
+ 
+					{% ifnotequal p.anonymous_donations_amount_received 0 %}
+						<div style="margin:0px 20px">
+							<span style="margin-left: 5px; float:right;">
+								{{ p.anonymous_donations_amount_received|round|intcomma }}
+							</span>
+							<span style="float:right;">{{p.get_currency_display|safe}}</span>
+							{% trans 'Anonymous' %}:
+						</div>
+					{% endifnotequal %}					
 				</p>
-				<p><img src="{{MEDIA_URL}}akvo/img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" /></p>
-				<p style="margin:10px 0">
-					<b>{% trans 'Total' %}:
-						<span style="margin-left: 10px">
-							{{p.get_currency_display|safe}}
-							{{p.funding_donated|round|intcomma}}
-						</span>
-					</b>
+				<hr />
+				<p style="margin: 10px 0 10px 0; font-size:0.85em">
+					{% trans 'Raised equals donations minus transaction fees.' %}
 				</p>
+				
 			</div>
 		{% endif %}			
-		</div> <!-- style -->
-
+		</div> <!-- style -->	
+		
 		<div style="clear:left"></div>
 
-		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">< {% trans 'Back to project summary' %}</a></p>
+		<p style="margin: 30px 0 0 20px;"><a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Back to project summary' %}</a></p>
 
 	</div> <!-- .boxbody -->
 

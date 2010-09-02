@@ -1,0 +1,52 @@
+
+ul.machinery_steps {
+    margin-left: 1em;
+    }
+    
+.machinery_widget_choice_left {
+    float:left; 
+    width:205px;
+    }
+
+.machinery_widget_choice_right {
+    float:left; 
+    width:500px;
+    margin-left:80px;
+    }    
+    
+ol.form_list {
+    margin-bottom:0;
+    }
+    
+ol.form_list li {
+    list-style:none;
+    }
+
+ol.form_list li input {
+    margin-top:1px;
+    }
+    
+ol.form_list li label {
+    display:inline;
+    margin-top:0;
+    }
+
+.machinery_widget-organisations {
+    margin-top:7px;
+    margin-left:45px;
+    margin-bottom:20px;
+    }
+    
+#warning_color {
+    float:right;
+    width:380px;
+    background-color:#FFEFEB;
+    color:#FF0000;
+    border:1px solid #FFDAD9;
+    padding:10px;
+    display:none;
+    }
+
+#warning_color p {
+    margin:0;
+    }

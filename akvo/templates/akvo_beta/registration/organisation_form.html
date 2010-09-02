@@ -19,6 +19,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 <div class="boxbody">
 <form method="post" action="">
+{% csrf_token %}
 <div class="clearfix">
     
 	{% if form.errors %}
@@ -67,6 +68,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <button type="submit"><a class="actionbutton ab_white" onclick="this.blur();" style="margin:0"><span>{% trans 'Continue' %}</span></a></button>
 </div> <!-- style -->
 <form method="post" action="">
+{% csrf_token %}
 </div> <!-- boxbody -->
 
 {% endblock %}

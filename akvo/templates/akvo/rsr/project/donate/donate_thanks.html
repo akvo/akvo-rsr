@@ -1,0 +1,180 @@
+{% extends "rsr/project/donate/donate_base.html" %}
+
+{% load i18n rsr_tags thumbnail %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Confirm Donation' %}</li>
+{% endblock breadcrum_items %}
+
+
+{% block maincontent %}
+<h1>{% trans 'Thanks for your donation' %}</h1>
+<div class="white_box">
+	<div>
+		<div id="donate_step_box">
+			<div id="donate_step_box_inner">
+				<div class="donate_steps">
+					<p>{% trans 'Select payment system' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Enter amount' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Confirm amount' %}</p>
+				</div>
+				<div class="donate_steps">
+					<p>{% trans 'Use payment system' %}</p>
+				</div>
+				<div id="donate_step_5" class="donate_steps active_donate_step">
+					<p>{% trans 'Thank you!' %}</p>
+				</div>	
+			</div>
+			<div class="clear">	</div>
+		</div>
+	</div>
+	<div class="space20">
+		<p>
+			{% blocktrans with invoice.get_engine_display as payment_engine %}You will receive email confirmation from both Akvo.org and {{ payment_engine }}.{% endblocktrans %}<br />
+			{% trans 'You may wish to print this page for your records.' %}
+		</p>
+		
+		<h3>{% trans 'Transaction information' %}</h3>
+		<div class="donate_details_left" style="width:200px;">
+			<p style="padding-top:12px;">
+				{% trans 'Akvo transaction number' %}:
+			</p>
+		</div>
+		<div class="donate_details_right">
+			<p style="font-weight:bold; color:#00960F; font-size:1.6em; margin-top:0px;">
+		 		{{ invoice.id }}
+			</p>
+		</div>
+		<div class="clear" style="padding-bottom:5px;"></div>
+		<div class="donate_details_left" style="width:200px;">
+			<p>
+				{% trans 'Date and time' %}:
+			</p>
+		</div>
+		<div class="donate_details_right">
+			<p>
+				{{ invoice.time|date:"l, j F Y" }}
+			</p>
+		</div>
+		<div class="clear" style="padding-bottom:40px;"></div>
+		
+		<div style="float:left; width:47%;">
+			<h3>{% trans 'Your information' %}</h3>
+			<div class="donate_details_left" style="width:200px;">
+				<p>
+					{% trans 'Your name' %}:
+				</p>
+			</div>
+			<div class="donate_details_right">
+				<p style="font-weight:bold;">
+					{{ invoice.get_name }}
+				</p>
+			</div>
+			<div class="clear" style="padding-bottom:5px;"></div>
+			<div class="donate_details_left" style="width:200px;">
+				<p>
+					{% trans 'Your email' %}:
+				</p>
+			</div>
+			<div class="donate_details_right">
+				<p style="font-weight:bold;">
+					{{ invoice.get_email }}
+				</p>
+			</div>
+			<div class="clear" style="padding-bottom:5px;"></div>
+			{% ifequal invoice.engine 'ideal'  %}
+			<div class="donate_details_left" style="width:200px;">
+				<p>
+					{% trans 'Your bank' %}:
+				</p>
+			</div>
+			<div class="donate_details_right">
+				<p style="font-weight:bold;">
+					{{ invoice.get_bank_display }}
+				</p>
+			</div>
+			<div class="clear" style="padding-bottom:5px;"></div>
+			{% endifequal %}
+		</div>
+		<div style="float:right; width:47%">
+			<div style="border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; padding:10px; margin-top:20px;">
+				<p class="grey small">
+					{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
+				</p>
+				<ul class="grey small" style="margin-top:15px; list-style-type: disc; margin-bottom:0;">
+					<li style="margin-left:30px;">
+					    {% ifequal invoice.project.currency 'EUR' %}
+					        {% trans 'The Netherlands (Nederland)' %}
+					    {% endifequal %}
+					    {% ifequal invoice.project.currency 'USD' %}
+					        {% trans 'United States of America' %}
+					    {% endifequal %}
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="clear" style="padding-bottom:40px;"></div>
+		
+		<h3 style="padding-bottom:12px;">{% trans 'Project to which you donated' %}</h3>
+		<div class="donate_details_left" style="width:200px;">
+			<p>{% trans 'Project name' %}:</p>
+		</div>
+		<div class="donate_details_right">
+			<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
+		</div>
+		<div class="clear" style="padding-bottom:5px;"></div>
+		
+		<div class="donate_details_left" style="width:200px;">
+			<p>{% trans 'Location' %}:</p>
+		</div>
+		<div class="donate_details_right">
+			<p>{{ p.country.get_continent_display }} / {{p.country}}, {{p.city}}</p>
+		</div>
+		<div class="clear" style="padding-bottom:5px;"></div>
+		
+		<div class="donate_details_left" style="width:200px;">
+			<p>{% trans 'Akvo ref' %}:</p>
+		</div>
+		<div class="donate_details_right">
+			<p>{{ p.id }}</p>
+			{% if p.current_image %}
+				<div style="margin-top:5px;">
+					<a href="{% url akvo.rsr.views.projectmain p.id %}">
+						<img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />			    			
+					</a>
+				</div>
+		    {% endif %}
+		</div>
+		<div class="clear" style="padding-bottom:5px;"></div>
+		
+		<div class="donate_details_left" style="width:200px;">
+			<p>{% trans 'Updated view' %}:</p>
+		</div>
+		<div class="donate_details_right">
+			<div style="width:172px;">
+				{% funding_table p %}
+			</div>
+		</div>
+		<div class="clear" style="padding-bottom:40px;"></div>
+		
+		<h3 style="padding-bottom:12px;">{% trans 'Amount you donated' %}</h3>
+		<div class="donate_details_left" style="width:200px;">
+			<p style="margin-top:7px;">{% trans 'Amount' %}:</p>
+		</div>
+		<div class="donate_details_right">
+			<p style="color:#008C00; font-size:1.3em; font-weight:bold; margin-top:0px;">{{ invoice.project.get_currency_display|safe }}{{ invoice.amount}}</p>
+		</div>
+		<div class="clear" style="padding-bottom:40px;"></div>
+	
+		<div style="width:500px; margin-left:auto; margin-right:auto; text-align:center;">
+			<a href="{% url akvo.rsr.views.projectmain invoice.project.id %}">{% trans 'Return to Project' %}</a>
+		
+		</div>
+	</div>
+</div>
+{% endblock maincontent %}

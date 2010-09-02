@@ -20,7 +20,8 @@ from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
-#from django.core import validators
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.template import loader, Context
 from django.template.loader import render_to_string
@@ -28,6 +29,7 @@ from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
+from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
 from paypal.standard.ipn.signals import payment_was_flagged
 from registration.models import RegistrationProfile, RegistrationManager
@@ -35,9 +37,9 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 from akvo.settings import MEDIA_ROOT
 
 from utils import (GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
-				   GROUP_RSR_PARTNER_EDITORS)
+                   GROUP_RSR_PARTNER_EDITORS)
 from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
-				   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
+                   PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
@@ -64,6 +66,7 @@ CONTINENTS = (
     (5, _('North America')),
     (6, _('South America')),
 )
+
 class Country(models.Model):
     
     country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
@@ -76,6 +79,18 @@ class Country(models.Model):
         verbose_name = _('country')
         verbose_name_plural = _('countries')
         ordering = ['country_name']
+
+
+class Location(models.Model):
+    
+    city = models.CharField(_('city'), max_length=255)
+    state = models.CharField(_('state'), max_length=255)
+    country = models.ForeignKey(Country)
+    latitude = models.FloatField(_('latitude'), validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    longitude = models.FloatField(_('longitude'), validators=[MinValueValidator(-180), MaxValueValidator(180)])
+
+    def __unicode__(self):
+        return u'%s, %s, %s' % (self.city, self.state, self.country)
 
 
 class ProjectsQuerySetManager(QuerySetManager):
@@ -108,13 +123,13 @@ class Organisation(models.Model):
     sponsor_partner             = models.BooleanField(_(u'sponsor partner'))
 
     name                        = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).')
-    							)
+                                )
     long_name                   = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).')
-    							)
+                                )
     organisation_type           = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
 
     logo                        = ImageWithThumbnailsField(
-    								_('logo'),
+                                    _('logo'),
                                     blank=True,
                                     upload_to=image_path,
                                     thumbnail={'size': (360,270)},
@@ -160,7 +175,7 @@ class Organisation(models.Model):
 
         def fundingpartners(self):
             return self.filter(funding_partner__exact=True)
-
+            
         def ngos(self):
             return self.filter(organisation_type__exact='N')
 
@@ -288,7 +303,7 @@ class Organisation(models.Model):
         '''
         return Organisation.projects.filter(pk=self.pk).all()
 
-    def my_partners(self):
+    def partners(self):
         '''
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
@@ -353,8 +368,7 @@ STATUSES = (
     ('L', _('Cancelled')),
 )
 #STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
-STATUSES_COLORS = {'N':'black', 'A':'green', 'H':'orange', 'C':'grey', 'L':'red', }
-
+STATUSES_COLORS = {'N':'black', 'A':'#AFF167', 'H':'orange', 'C':'grey', 'L':'red', }
 
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
@@ -460,8 +474,8 @@ if settings.PVW_RSR: #pvw-rsr
         #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
         #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
         #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
+        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
+        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
         current_status_detail       = models.TextField(_('current status detail'), blank=True, max_length=600, help_text=_('(600 characters).'))
         project_plan_detail         = models.TextField(_('project plan details'), blank=True, help_text=_('(unlimited)'))
         impact                      = models.TextField(_('impact'), blank=True, help_text=_('(unlimited)'))
@@ -477,6 +491,7 @@ if settings.PVW_RSR: #pvw-rsr
         #duration
         start_date                  = models.DateField(_('start date'), default=date.today)
         end_date                    = models.DateField(_('end date'), null=True, blank=True)
+        location                    = models.ManyToManyField(Location)
     
         #Custom manager
         #based on http://www.djangosnippets.org/snippets/562/ and
@@ -487,7 +502,31 @@ if settings.PVW_RSR: #pvw-rsr
         @models.permalink
         def get_absolute_url(self):
             return ('project_main', (), {'project_id': self.pk})
-        
+    
+        @property
+        def view_count(self):
+            counter = ViewCounter.objects.get_for_object(self)
+            return counter.count or 0
+                
+        def has_valid_coordinates(self):
+            try:
+                latitude = float(self.latitude)
+                longitude = float(self.longitude)
+                return True
+            except:
+                return False
+    
+        def get_location(self):
+            if self.has_valid_coordinates():
+                latitude = str(self.latitude.strip())
+                longitude = str(self.longitude.strip())
+                location = '%s,%s' % (latitude, longitude)
+            else:
+                state = self.state.strip().replace(' ', '+')
+                country = self.country.country_name.strip().replace(' ', '+')
+                location = '%s+%s' % (state, country)
+            return location        
+
         class QuerySet(QuerySet):
             def published(self):
                 return self.filter(publishingstatus__status='published')
@@ -997,6 +1036,27 @@ else: #akvo-rsr
         def get_absolute_url(self):
             return ('project_main', (), {'project_id': self.pk})
         
+        def all_donations(self):
+            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
+            
+        def public_donations(self):
+            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
+        
+        def all_donations_amount(self):
+            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        
+        def all_donations_amount_received(self):
+            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        
+        def anonymous_donations_amount_received(self):
+            amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
+            amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+            return amount or 0
+            '''
+            if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+            return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+            '''
+
         class QuerySet(QuerySet):
             def published(self):
                 return self.filter(publishingstatus__status='published')
@@ -1363,6 +1423,7 @@ else: #akvo-rsr
             return Project.objects.budget_total().get(pk=self.pk).budget_total
     
         #shortcuts to linked orgs for a single project
+
         def support_partners(self):
             return Project.objects.filter(pk=self.pk).support_partners()
     
@@ -1374,7 +1435,11 @@ else: #akvo-rsr
     
         def field_partners(self):
             return Project.objects.filter(pk=self.pk).field_partners()
-    
+        
+	    def show_status_large(self):
+	        "Show the current project status with background"
+	        return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        
         def all_partners(self):
             return Project.objects.filter(pk=self.pk).all_partners()
     
@@ -1400,8 +1465,8 @@ class BudgetItem(models.Model):
     amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
     
     class Meta:
-    	verbose_name=_('Budget item')
-    	verbose_name_plural=_('Budget items')
+        verbose_name=_('Budget item')
+        verbose_name_plural=_('Budget items')
         unique_together     = ('project', 'item')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
@@ -1462,8 +1527,8 @@ class FundingPartner(models.Model):
     project                 = models.ForeignKey(Project,)
     
     class Meta:
-    	verbose_name=_('Funding partner')
-    	verbose_name_plural=_('Funding partners')
+        verbose_name=_('Funding partner')
+        verbose_name_plural=_('Funding partners')
 
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
@@ -1473,8 +1538,8 @@ class SponsorPartner(models.Model):
     project                 = models.ForeignKey(Project,)
     
     class Meta:
-    	verbose_name=_('Sponsor partner')
-    	verbose_name_plural=_('Sponsor partners')
+        verbose_name=_('Sponsor partner')
+        verbose_name_plural=_('Sponsor partners')
 
     def __unicode__(self):
         return "%s" % (self.sponsor_organisation.name, )
@@ -1484,8 +1549,8 @@ class SupportPartner(models.Model):
     project                 = models.ForeignKey(Project,)
 
     class Meta:
-    	verbose_name=_('Support partner')
-    	verbose_name_plural=_('Support partners')
+        verbose_name=_('Support partner')
+        verbose_name_plural=_('Support partners')
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
@@ -1495,8 +1560,8 @@ class FieldPartner(models.Model):
     project                 = models.ForeignKey(Project,)
 
     class Meta:
-    	verbose_name=_('Field partner')
-    	verbose_name_plural=_('Field partners')
+        verbose_name=_('Field partner')
+        verbose_name_plural=_('Field partners')
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
@@ -1535,10 +1600,10 @@ UPDATE_METHODS = (
 def isValidGSMnumber(field_data, all_data):
     #TODO: fix for django 1.0
     pass
-	#if not field_data.startswith("467"):
-	#	raise validators.ValidationError("The phone number must start with 467")
-	#if not len(field_data) == 11:
-	#	raise validators.ValidationError("The phone number must be 11 digits long.")
+    #if not field_data.startswith("467"):
+    #    raise validators.ValidationError("The phone number must start with 467")
+    #if not len(field_data) == 11:
+    #    raise validators.ValidationError("The phone number must be 11 digits long.")
 
 class UserProfile(models.Model):
     '''
@@ -1765,6 +1830,8 @@ class ProjectUpdate(models.Model):
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
+    if not settings.PVW_RSR:
+        featured        = models.BooleanField(_(u'featured'), )
     
     class Meta:
         get_latest_by = "time"
@@ -1777,6 +1844,20 @@ class ProjectUpdate(models.Model):
         except:
             return ''
     img.allow_tags = True
+
+    def get_is_featured(self):
+        return self.featured
+    get_is_featured.boolean = True #make pretty icons in the admin list view
+    get_is_featured.short_description = 'update is featured'
+
+    @property
+    def view_count(self):
+        counter = ViewCounter.objects.get_for_object(self)
+        return counter.count or 0
+
+    def __unicode__(self):
+        return u'Project update for %s' % self.project.name
+
 
 class ProjectComment(models.Model):
     project         = models.ForeignKey(Project, verbose_name=_('project'))
@@ -1853,46 +1934,39 @@ class InvoiceManager(models.Manager):
 
 class Invoice(models.Model):
     STATUS_CHOICES = (
-        (PAYPAL_INVOICE_STATUS_PENDING, _(u'Pending')),
-        (PAYPAL_INVOICE_STATUS_VOID, _(u'Void')),
-        (PAYPAL_INVOICE_STATUS_COMPLETE, _(u'Complete')),
-        (PAYPAL_INVOICE_STATUS_STALE, _(u'Stale')),
+        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
+        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
+        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
     )
     PAYMENT_ENGINES = (
-        ('paypal', _(u'PayPal')),
-        ('ideal', _(u'iDEAL')),
+        ('paypal', _('PayPal')),
+        ('ideal', _('iDEAL')),
     )
     # Setup
-    test = models.BooleanField(_(u'test donation'),
-        help_text=_(u'This flag is set if the donation was made in test mode.'))
-    engine = models.CharField(_(u'payment engine'), choices=PAYMENT_ENGINES,
+    test = models.BooleanField(_('test donation'),
+        help_text=_('This flag is set if the donation was made in test mode.'))
+    engine = models.CharField(_('payment engine'), choices=PAYMENT_ENGINES,
         max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project)
     # Common
-    amount = models.PositiveIntegerField(help_text=_(u'Amount requested by user.'))
+    amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
     amount_received = models.DecimalField(max_digits=10, decimal_places=2,
         blank=True, null=True,
-        help_text=_(u'Amount actually received after charges have been applied.'))
+        help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CHOICES, default=1)
-    http_referer = models.CharField(_(u'HTTP referer'), max_length=255, blank=True)
-    is_anonymous = models.BooleanField(_(u'anonymous donation'))
+    name = models.CharField(max_length=75)
+    email = models.EmailField()
+    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+    http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
+    is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_(u'PayPal IPN'), blank=True, null=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, max_length=75)
     # Mollie
-    try:
-        bank = models.CharField(_(u'mollie.nl bank ID'), max_length=4,
-            choices=get_mollie_banklist(), blank=True)
-    except Exception, e:
-        if settings.DEBUG:
-            bank = 'None, (debug mode)'
-        else:
-            raise e
-        
-    transaction_id = models.CharField(_(u'mollie.nl transaction ID'), max_length=100, blank=True)
+    bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
+        choices=get_mollie_banklist(), blank=True)
+    transaction_id = models.CharField(_('mollie.nl transaction ID'), max_length=100, blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -1936,12 +2010,16 @@ class Invoice(models.Model):
             return self.project.paymentgatewayselector.paypal_gateway.notification_email
         elif self.engine == 'ideal':
             return self.project.paymentgatewayselector.mollie_gateway.notification_email
+    
+    @property
+    def donation_fee(self):
+        return self.amount-self.amount_received
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)
 
     class Meta:
-        verbose_name = _(u'invoice')
+        verbose_name = _('invoice')
 
 
 # PayPal IPN listener
@@ -1967,13 +2045,13 @@ if settings.DONATION_NOTIFICATION_EMAILS:
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
-post_save.connect(change_name_of_file_on_create, sender=Image)
 post_save.connect(change_name_of_file_on_create, sender=ProjectUpdate)
 
 pre_save.connect(change_name_of_file_on_change, sender=Organisation)
 pre_save.connect(change_name_of_file_on_change, sender=Project)
-pre_save.connect(change_name_of_file_on_change, sender=Image)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
 if settings.PVW_RSR:
+    post_save.connect(change_name_of_file_on_create, sender=Image)
+    pre_save.connect(change_name_of_file_on_change, sender=Image)
     post_save.connect(change_name_of_file_on_create, sender=Category)
     pre_save.connect(change_name_of_file_on_change, sender=Category)

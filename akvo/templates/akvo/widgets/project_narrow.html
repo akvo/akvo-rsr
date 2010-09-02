@@ -1,0 +1,107 @@
+{% extends "widgets/base_widget.html" %}
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n rsr_tags rsr_filters generic_content thumbnail cache counter_tags humanize %}
+
+{% block title %}project@{{block.super}}{% endblock title %}
+
+{% block style %}
+	{% media_bundle 'widget_project_narrow' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+	</style>
+	<![endif]-->
+{% endblock style %}
+
+{% block inline_styles %}
+{{block.super}}
+	#heightconstrain {
+		height: expression( this.scrollHeight > 809 ? "810px" : "auto" ); /* sets max-height for IE */
+		max-height:810px;
+		overflow:hidden;
+	}
+	.fundingbox-content {
+		height: expression( this.scrollHeight > 4 ? "123px" : "auto" ); /* sets max-height for IE */
+		max-height:121px;
+		height:121px;
+	}
+	
+	#project_title {
+		display:block;
+		height:36px;
+		overflow:hidden;
+	}
+	
+	#project_subtitle {
+		display:block;
+		max-height:32px;
+		overflow:hidden;
+	}
+	
+	#project_location{
+		display:block;
+		max-height:32px;
+		height:32px;
+		overflow:hidden;
+	}
+	
+{% endblock inline_styles %}
+	
+{% block header %}
+	<h1>{% trans 'Project' %}</h1>
+	<span style="display:none;">{% counter project %}</span>
+{% endblock header %}
+
+{% block content %}
+<div id="heightconstrain">
+		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:33}}</a></h2>
+		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:40}}</p>	
+        <div class="photo_frame">
+            <a href="{% url akvo.rsr.views.projectmain project.id %}">
+                {% project_thumb project 150 113 %}
+            </a>
+        </div>
+	
+		<p id="project_plan_summary">
+			{{project.project_plan_summary|safe|smart_truncate:100}}
+			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+		</p>
+		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+		<div id="project_location">
+			<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+				{{project.country}}, {{project.city}}
+			</p>
+		</div>
+		
+		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
+		<p class="smallFont">{{project.show_status}}</p>
+		<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
+		{% with project.project_updates.latest as latest_update %}
+			{% if latest_update %}
+				<p class="smallFont"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a></p>
+			{% else %}
+				<p class="smallFont">{% trans 'Not yet' %}</p>
+			{% endif %}
+		{% endwith %}
+		<hr class="divider" />
+		<p class="smallFont grey">{% trans 'Funding' %}</p>
+		<div style="margin:0;">
+			{% funding_box_narrow project %}
+		</div>
+		<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+		
+		{% comment %}
+		<div id="name" style="clear:both; height:1px; overflow:hidden;"> </div>
+		<p class="miniFont lightgrey right" style="padding-right:9px;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
+		<div id="name" style="clear:both; height:7px; overflow:hidden;"> </div>
+		{% endcomment %}
+</div>
+{% endblock content %}

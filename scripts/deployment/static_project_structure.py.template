@@ -6,6 +6,9 @@
 
 import django, os
 
+# Django paths, should never change
+STATIC_DJANGO_DESTINATION = os.path.join(django.__path__[0])
+MEDIAROOT_ADMIN_DESTINATION = os.path.join(STATIC_DJANGO_DESTINATION, 'contrib/admin/media')
 
 PROJECT_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PROJECT_ROOT_DIR_NAME = PROJECT_ROOT_DIR.split(os.sep)[-1]
@@ -18,12 +21,10 @@ STATIC_AKVO_DESTINATION = os.path.join('..', PROJECT_ROOT_DIR_NAME, 'akvo')
 STATIC_AKVO_VIRTUALENV_DESTINATION = '/var/django/akvo'
 STATIC_DB_DIR_IS_LINK = True
 STATIC_DB_DESTINATION = '/var/www/akvo/db'
-STATIC_DJANGO_DESTINATION = os.path.join(django.__path__[0])
 
 # Configurable paths for the mediaroot directory and settings.py file
 SETTINGS_FILE_DESTINATION = '../../static/settings.py'
 STATIC_DIR_RELATIVE_TO_MEDIAROOT = '../../../static'
-MEDIAROOT_ADMIN_DESTINATION = os.path.join(STATIC_DJANGO_DESTINATION, 'contrib/admin/media')
 MEDIAROOT_DB_DESTINATION = os.path.join(STATIC_DIR_RELATIVE_TO_MEDIAROOT, 'db')
 
 # Configurable paths for the akvo web directory

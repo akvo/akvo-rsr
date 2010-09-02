@@ -1,0 +1,47 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Register with Akvo RSR - Step 1 of 2' %}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Register account - step 1 of 2' %}</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+	<h1>{% trans 'Set up your account' %}</h1>
+	<hr />
+	<form name="registrationForm" method="post" action="">{% csrf_token %}
+		{% if form.non_field_errors  %}
+			<div class="error">
+				<p><b>{% trans 'A problem occurred' %}:</b></p>
+				<p>{% trans 'Please review message below.' %} {{ form.non_field_errors }}</p>
+			</div>
+		{% endif %}	
+
+		{% if form.organisation.errors %}
+			<div class="error">
+				<p><b>{% trans 'A problem occurred' %}:</b></p>
+				<p>{{ form.organisation.errors|join:", " }}</p>
+			</div>
+        {% endif %}
+		
+		<h3>{% trans 'Select your organisation:' %}</h3>
+		{{ form.organisation }}
+		
+		<p class="grey small" style="margin-right:400px; margin-top:40px;">
+			{% trans 'To set up your account, your organisation must be already registered with Akvo. If you do not see your organisation on the list above, <a href="/web/become_a_project_partner">contact us</a> to begin registering your organisation. After registration is complete, please return to set up your account.' %}
+		</p>
+		<hr />
+		
+		<div style="text-align:center; padding-bottom:20px;">
+			<div style="float:left;">
+				<a href="{% url akvo.rsr.views.index %}" class="small">{% trans 'Cancel' %}</a>
+			</div>
+			<a class="aqua awesome" href="javascript:document.registrationForm.submit();">
+				{% trans 'Continue to step 2' %}
+			</a>
+		</div>		
+	</form>
+{% endblock content %}

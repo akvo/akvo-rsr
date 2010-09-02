@@ -1,0 +1,41 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% load i18n humanize %}
+
+{% block title %}
+	{% if account %}
+        {% trans 'Confirmed account' %}
+    {% else %}
+        {% trans 'Account confirmation failed' %}
+    {% endif %}
+{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">
+	{% if account %}
+        {% trans 'Confirmed account ' %}
+    {% else %}
+        {% trans 'Account confirmation failed' %}
+    {% endif %}
+</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+	{% if account %}
+		<h1>{% trans 'Thank you!' %}</h1>
+		<p>
+			{% trans 'Your account will be activated as soon as we have reviewed your request.' %}
+		</p>
+	{% else %}
+		<h1>{% trans 'We&#x27;re sorry, the account activation failed' %}</h1>
+		<p>
+			{% blocktrans with expiration_days|apnumber as exp_days %}Either your activation link was incorrect, or the activation key for your account has expired. Activation keys are only valid for {{ exp_days }} days after registration.{% endblocktrans %}
+		</p>
+	    <p class="grey">{% trans 'Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.' %}
+		</p>
+	
+	{% endif %}
+		
+{% endblock content %}	
+

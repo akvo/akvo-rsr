@@ -335,7 +335,6 @@ class PublishingStatusAdmin(admin.ModelAdmin):
     
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
-
 class ProjectAdminForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         # request is needed when validating
@@ -347,6 +346,8 @@ class ProjectAdminForm(forms.ModelForm):
 
     def clean(self):
         return self.cleaned_data
+
+admin.site.register(get_model('rsr', 'location'))
 
 if settings.PVW_RSR:
 
@@ -405,10 +406,10 @@ if settings.PVW_RSR:
                 'fields': ('city', 'state', 'country',)
             }),
             #
-            (_(u'Location extra'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example latitude and longitude coordinates, or a map image.</p>'),
-                'fields': (('longitude', 'latitude'), 'map',),
-            }),
+#            (_(u'Location extra'), {
+#                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example latitude and longitude coordinates, or a map image.</p>'),
+#                'fields': (('longitude', 'latitude'), 'map',),
+#            }),
             #(_(u'Map'), {
             #    'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
             #        _(u"In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris."),
@@ -554,9 +555,9 @@ if settings.PVW_RSR:
                 #brk(host="localhost", port=9000)            
                 if all_valid(formsets) and form_validated:
                     if hasattr(new_object, 'found') and not new_object.found:
-                        form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
+                        form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'You cannot completely remove your organisation as a partner.')])
                         for fs in new_object.partner_formsets:
-                            fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
+                            fs._non_form_errors = ErrorList([_(u'Your organisation should be listed as a partner in one of these sections.')])
                     else:
                         self.save_model(request, new_object, form, change=False)
                         form.save_m2m()
@@ -647,9 +648,9 @@ if settings.PVW_RSR:
                 
                 if all_valid(formsets) and form_validated:
                     if hasattr(new_object, 'found') and not new_object.found:
-                        form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
+                        form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'You cannot completely remove your organisation as a partner.')])
                         for fs in new_object.partner_formsets:
-                            fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])                        
+                            fs._non_form_errors = ErrorList([_(u'Your organisation should be listed as a partner in one of these sections.')])
                     else:
                         self.save_model(request, new_object, form, change=True)
                         form.save_m2m()
@@ -1093,25 +1094,6 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
-
-
-class ProjectUpdateAdmin(admin.ModelAdmin):
-
-    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
-    def __init__(self, model, admin_site):
-        """
-        Override to add self.formfield_overrides.
-        Needed to get the ImageWithThumbnailsField working in the admin.
-        """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
-        super(ProjectUpdateAdmin, self).__init__(model, admin_site)
-
-    list_display    = ('project', 'user', 'text', 'time', 'img',)    
-    list_filter     = ('project', 'time', )
-
-admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
-
-
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display    = ('project', 'user', 'comment', 'time', )    
     list_filter     = ('project', 'time', )
@@ -1119,7 +1101,63 @@ class ProjectCommentAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 
-if not settings.PVW_RSR:
+if settings.PVW_RSR:
+
+    class ProjectUpdateAdmin(admin.ModelAdmin):
+    
+        list_display    = ('id', 'project', 'user', 'text', 'time', 'img',)    
+        list_filter     = ('time', 'project', )
+    
+        #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+        def __init__(self, model, admin_site):
+            """
+            Override to add self.formfield_overrides.
+            Needed to get the ImageWithThumbnailsField working in the admin.
+            """
+            self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+            super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+    
+    admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
+
+
+else: #akvo-rsr
+
+
+    class ProjectUpdateAdmin(admin.ModelAdmin):
+    
+        list_display    = ('id', 'project', 'user', 'text', 'time', 'get_is_featured', 'img',)    
+        list_filter     = ('featured', 'time', 'project', )
+        actions         = ['featured_on', 'featured_off']
+    
+        #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+        def __init__(self, model, admin_site):
+            """
+            Override to add self.formfield_overrides.
+            Needed to get the ImageWithThumbnailsField working in the admin.
+            """
+            self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+            super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+    
+        def featured_on(self, request, queryset):
+            rows_updated = queryset.exclude(photo__exact='').update(featured=True)
+            if rows_updated == 1:
+                message_bit = _(u'1 update was')
+            else:
+                message_bit = _(u'%d updates were')  % rows_updated
+            self.message_user(request, _(u'%s marked as featured.') % message_bit)
+        featured_on.short_description = _(u'Mark selected updates as featured')
+            
+        def featured_off(self, request, queryset):
+            rows_updated = queryset.update(featured=False)
+            if rows_updated == 1:
+                message_bit = _(u'1 update was')
+            else:
+                message_bit = _(u'%d updates were')  % rows_updated
+            self.message_user(request, _(u'%s removed from featured.') % message_bit)
+        featured_off.short_description = _(u'Remove selected updates from featured')
+            
+    admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
+    
     class MoMmsFileInline(admin.TabularInline):
         model = get_model('rsr', 'mommsfile')
         extra = 1

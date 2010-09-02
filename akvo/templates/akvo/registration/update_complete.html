@@ -1,0 +1,20 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Update complete' %}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Update complete' %}</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+	<h1>{% trans 'Update complete' %}</h1>
+	<hr />
+	
+	<p>
+		{% trans 'Your account has been updated.' %}
+	</p>
+{% endblock content %}	
+

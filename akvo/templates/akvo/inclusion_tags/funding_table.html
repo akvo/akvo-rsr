@@ -1,0 +1,45 @@
+
+{% load i18n rsr_filters humanize %}
+
+<div class="round" style="border:1px solid #65BBCE; background-color:#FBFAF6; padding:5px 0;">
+	{% ifequal p.funding_still_needed|round 0 %}
+		<div style="padding:20px 0px; text-align:center;">
+			<div id="fundingbox_fully_funded">
+				<p style="margin:0;">
+					{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round|intcomma}}
+				</p>
+			</div>
+			<p class="green" style="margin:0; padding:0;">
+				{% trans 'Fully funded' %}
+			</p>
+		</div>
+	{% else %}
+		<table class="fundingbox-table">
+			<tr class="green">
+				<th>{% trans 'Raised' %}:</th>
+				<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+			</tr>
+			<tr class="red">
+				<th>{% trans 'Still needed' %}:</th>
+				<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+			</tr>	
+		</table>
+		<div class="fundingbox-progress-bar">
+			{% if p.budget_total %}
+			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+			{% endif %}
+		</div>
+		<table class="fundingbox-table">
+			<tr class="black">
+				<th>{% trans 'Total budget' %}:</th>
+				<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
+			</tr>					
+		</table>
+		{% ifnotequal p.status 'L' %}
+			<br />
+			<div style="text-align:center; padding-bottom:10px;">
+				<a class="orange awesome" href="{% url project_donate p.id %}">{% trans 'Donate' %}</a>
+			</div>
+		{% endifnotequal %}
+	{% endifequal %}
+</div>

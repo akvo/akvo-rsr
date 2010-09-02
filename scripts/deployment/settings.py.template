@@ -28,6 +28,13 @@ DOMAIN_NAME = 'your_server_name.akvo.org'
     
 DEFAULT_FROM_EMAIL = 'noreply@%s' % DOMAIN_NAME
 
+# Caching. enable by changing active CACHE_BACKEND
+CACHE_BACKEND = 'dummy://'
+#CACHE_BACKEND = 'johnny.backends.memcached://127.0.0.1:11211/'
+JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_akvo_rsr'
+JOHNNY_MIDDLEWARE_SECONDS = 0 # = "forever"
+RSR_CACHE_SECONDS = 300
+
 #INTERNAL_IPS = (
 #    '87.227.60.54', '192.168.38.68', '192.168.1.0'
 #)
@@ -46,6 +53,7 @@ TEMPLATE_DEBUG = DEBUG
 # Donation
 DONATION_TEST = True
 DONATION_NOTIFICATION_EMAILS = False
+DONATION_EMAIL_ADMINS = ['kathelyne@akvo.org',]
 
 # PayPal settings
 PAYPAL_DEBUG = DONATION_TEST

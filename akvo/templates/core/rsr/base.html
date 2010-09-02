@@ -1,0 +1,72 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="description" content="Akvo RSR" />
+	<meta name="keywords" content="" />
+	<title>{% block title %}Akvo RSR{% endblock title %}</title>
+	
+	<link rel="stylesheet" href="{{MEDIA_URL}}styles/core/style.css" type="text/css" media="screen" title="style" charset="utf-8" />
+	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
+
+	<link rel="alternate" type="application/rss+xml" title="{% trans 'RSR updates' %}" href="/rsr/rss/all-updates" />
+</head>
+<body>
+<div id="maincontainer" class="container">
+	{% block header %}
+	<div id="header" class="span-18">
+		<div class="span-14 first">
+			<h1>Akvo RSR</h1>
+		</div>
+		<div class="span-4 last" style="text-align:right;">
+			{% if not user.username %}
+					<a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a>
+			{% else %}
+					<a href="{% url akvo.rsr.views.signout %}">{% trans 'Sign out' %}</a><br />
+					{% trans 'Signed in as' %}: {{user.username}}
+			{% endif %}
+		</div>
+	</div>
+	<div id="nav" class="span-18">
+		<ul>
+			<li><a href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">Home</a></li>
+			<li><a href="/rsr/organisations/" class="{% ifequal site_section 'partners' %}active{% endifequal %}">Partners</a></li>
+			<li><a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">Projects</a></li>
+		</ul>
+	</div>
+	{% endblock header %}
+	
+	{% block content %}
+		<p>Content</p>
+	{% endblock content %}
+	
+
+	<div class="span-18">
+		<div style="margin-top:20px; padding:10px; border-top:1px solid #ccc">
+			<p><a id="grid_toggle">Show grid</a></p>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+{% block js %}{% endblock js %}
+
+<script type="text/javascript">
+	jQ = jQuery.noConflict();
+
+	jQ(document).ready(function(){
+		{% block jquery_ready %}{% endblock jquery_ready %}
+
+		jQ('#grid_toggle').click(function () {
+			jQ('#maincontainer').toggleClass('showgrid');
+		});
+		
+	});
+</script>
+
+</body>
+</html>
+
+	
+

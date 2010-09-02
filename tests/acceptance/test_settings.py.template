@@ -6,6 +6,9 @@
 
 import os
 
+# options are 'normal' or 'ci' for continuous integration
+TEST_MODE = 'normal'
+
 BROWSER_ENVIRONMENT = "*firefox"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
@@ -13,14 +16,11 @@ SELENIUM_RC_PORT = 4444
 SUPERUSER_USERNAME = 'your_username'
 SUPERUSER_PASSWORD = 'your_password'
 
-UAT_EMAIL_ADDRESS = "gmail_address"
-GMAIL_USERNAME = "gmail_username"
-GMAIL_PASSWORD = "gmail_password"
+SITE_UNDER_TEST = "http://test.akvo.org"
+RSR_API_PATH    = "http://test.akvo.org/rsr/api/"
+RSR_MEDIA_PATH  = "http://test.akvo.org/rsr/media/"
 
-SITE_UNDER_TEST = "http://pvw-dev.akvo.org"
-ORGANISATION_NAME = "DutchWaterSector"
-
-PAGE_LOAD_TIMEOUT_IN_SECONDS = 60
+PAGE_LOAD_TIMEOUT_IN_SECONDS = 120
 PAGE_LOAD_TIMEOUT = PAGE_LOAD_TIMEOUT_IN_SECONDS * 1000
 
 TESTS_ROOT_DIR = os.path.realpath(os.path.dirname(__file__))

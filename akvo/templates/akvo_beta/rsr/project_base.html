@@ -73,20 +73,22 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			<p style="margin:10px 0"><b>{% trans 'Grant' %}: <span style="margin-left: 10px">{{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}</span></b></p>
 		{% endfor %}
 
-		{% if p.funding_donated %}
+		{% if p.all_donations %}
 			<hr />
 			<p style="margin: 10px 0 10px 0;">
 				<b>{% trans 'Donations from individuals' %}</b>
 			</p>
 			<p><img src="{{MEDIA_URL}}akvo/img/avatar.jpg" style="width:60px;height:60px;background-color:#dedede;margin-left: 15px;" /></p>
 			<p style="margin:10px 0">
-				<b>{% trans 'Total' %}:
+				<b>{% trans 'Raised' %}:
 					<span style="margin-left: 10px">
 						{{p.get_currency_display|safe}}
-						{{p.funding_donated|round|intcomma}}
+						{{p.all_donations_amount_received|round|intcomma}}
+						{#{{p.funding_donated|round|intcomma}}#}
 					</span>
 				</b>
 			</p>
+			<p style="text-align: right"><a href="{% url akvo.rsr.views.projectfunding p.id %}">{% trans 'View details' %}</a></p>	
 		{% endif %}
 	</div> <!-- #project_funding & .boxbody -->
     {% endblock funding %}
