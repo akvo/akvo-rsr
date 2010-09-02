@@ -13,3 +13,10 @@ div.two_column_right {
 div.two_column_right_inner {
     margin-left:7px;
     }
+    
+div.green_fold {
+    background: transparent url(../img/project/green_fold.png) no-repeat;
+    float:left; 
+    height:7px;
+    width:7px;
+    }
