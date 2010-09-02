@@ -28,12 +28,6 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': ['x_ie6.css',],
     },
-    'akvo_project_main_js': {
-        'type': 'js',
-        'path': 'akvo/js/',
-        'compress': True,
-        'files': ['x_google_maps.js',],
-         },
     # 'akvo_js': {
     #         'type': 'js',
     #         'path': 'akvo/js/',
