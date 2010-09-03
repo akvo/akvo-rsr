@@ -68,4 +68,4 @@ Would be nice to have validation of css & javascript(maybe even JSLint) as a req
 
 At the moment all asset are repacked on every commit. One could implement some smartness by using git and only repack when there is changes but since the packing is not that time consuming it's probably better to keep it as is.
 
-The git hook is setup on execution of the akvo/scripts/asset_manager/__init__.py, it would be nice to setup this in an other way. Maybe with the deployment script.
+The git hook is setup on execution of the akvo/scripts/asset_manager/__init__.py, The hook should probably be set with the deployment script
