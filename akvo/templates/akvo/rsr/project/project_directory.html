@@ -10,7 +10,7 @@
 	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
 	<li id="last_breadcrum_item">
 		{% if query_string%}
-			{% trans 'Searched' %} {{o.name}} {% trans 'projects for' %} <span style="font-style:italic;">{{ query_string|escape }}&quot;</span>
+			{{o.name}} {% trans 'projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ query_string|escape }}&quot;</span>		
 		{% else %}
 			{{o.name}}
 		{% endif %}
@@ -18,7 +18,7 @@
 {% else %}
 	<li id="last_breadcrum_item">
 		{% if query_string%}
-			{% trans 'Searched all projects for' %} <span style="font-style:italic;">{{ query_string|escape }}</span>
+			{% trans 'Projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ query_string|escape }}&quot;</span>
 		{% else %}
 			{% trans 'Projects' %}
 		{% endif %}
@@ -76,7 +76,8 @@
 	{% if o %}
 		<h1>
 			{% if query_string%}
-				{% trans 'Searched' %} {{o.name}} {% trans 'projects for' %} <span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
+				{{o.name}} {% trans 'projects filtered by keywords:' %} 
+				<span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
 			{% else %}
 				{{o.name}}
 			{% endif %}
@@ -84,7 +85,8 @@
 	{% else %}
 		<h1>
 			{% if query_string%}
-				{% trans 'Searched all projects for' %} <span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
+			{% trans 'Projects filtered by keywords:' %} 
+			<span class="grey" style="font-style:italic;">&quot;{{ query_string|escape }}&quot;</span>
 			{% else %}
 				{% trans 'Projects' %}
 			{% endif %}
