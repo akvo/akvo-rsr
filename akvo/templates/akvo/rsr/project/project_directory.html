@@ -118,7 +118,7 @@
 					</select>
 					{% endcomment %}
 										
-					<select name="continent" id="continent" size="1" style="margin-left:20px;">
+					<select name="continent" id="continent" size="1" style="margin-left:20px;width:120px">
 						<option value="all">{% trans 'All continents' %}</option>
 						{% for continent in continents %}
 						<option value="{{continent.0}}"
@@ -128,7 +128,7 @@
 						{% endfor %}
 					</select>
 
-					<select name="country" id="country" size="1">
+					<select name="country" id="country" size="1" style="width:150px">
 						<option id="all_country" value="all">{% trans 'All countries' %}</option>
 						{% if selected_continent == 'all' %}	
 							{% for country in countries %}
