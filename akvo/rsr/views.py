@@ -357,6 +357,24 @@ def projectlist(request):
         #selected_continent = Country.objects.filter(pk__exact=selected_country).continent
         
     
+    countries_in_africa = []
+    countries_in_africa = Country.objects.all().filter(continent__exact=1)
+    
+    countries_in_asia = []
+    countries_in_asia = Country.objects.all().filter(continent__exact=2)
+    
+    countries_in_australia = []
+    countries_in_australia = Country.objects.all().filter(continent__exact=3)
+
+    countries_in_europe = []
+    countries_in_europe = Country.objects.all().filter(continent__exact=4)
+    
+    countries_in_north_america = []
+    countries_in_north_america = Country.objects.all().filter(continent__exact=5)
+    
+    countries_in_south_america = []
+    countries_in_south_america = Country.objects.all().filter(continent__exact=6)
+    
 
     # --------------------------------------------------    
     
@@ -377,7 +395,14 @@ def projectlist(request):
         'continents': continents,
         'selected_continent': selected_continent,
         'countries': countries,
-        'selected_country':selected_country,
+        'selected_country': selected_country,
+        'selected_continent': selected_continent,
+        'countries_in_africa': countries_in_africa,
+        'countries_in_asia': countries_in_asia,
+        'countries_in_australia': countries_in_australia,
+        'countries_in_europe': countries_in_europe,
+        'countries_in_north_america': countries_in_north_america,
+        'countries_in_south_america': countries_in_south_america,
     }
 
 

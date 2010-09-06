@@ -129,13 +129,66 @@
 					</select>
 
 					<select name="country" id="country" size="1">
-						<option value="all">{% trans 'All countries' %}</option>
-						{% for country in countries %}
-						<option value="{{country.id}}"
-							{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-							{{country.country_name}}
-						</option>
-						{% endfor %}
+						<option id="all_country" value="all">{% trans 'All countries' %}</option>
+						{% if selected_continent == 'all' %}	
+							{% for country in countries %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 1 %}
+							{% for country in countries_in_africa %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 2 %}
+							{% for country in countries_in_asia %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 3 %}
+							{% for country in countries_in_australia %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 4 %}
+							{% for country in countries_in_europe %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 5 %}
+							{% for country in countries_in_north_america %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 6 %}
+							{% for country in countries_in_south_america %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						
+						
+						
 					</select>
 					
 					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:20px">
@@ -471,6 +524,98 @@
 
 {% block jq_ready %}
 jQ('#continent').change(function() {
-	jQ('#country').val('all');
+
+	function Country(countryName, countryId) {
+		this.countryName = countryName;
+		this.countryId = countryId;
+		this.getName = function () { return this.countryName; }
+		this.getId = function () { return this.countryId; }
+	}
+	
+	/*
+	function Continent(continentName, continentId) {
+		this.continentName = continentName;
+		this.continentId = continentId;
+		this.getName = function () { return this.continentName; }
+		this.getId = function () { return this.continentId; }
+	}
+	*/
+	
+	function add_countires(countries) {
+		jQ('#country >option').remove();
+		jQ('#country').append('<option value="all">{% trans 'All countries' %}</option>');
+		for (var i=0; i < countries.length; i++) {				
+			jQ('#country').append('<option value="' + countries[i].getId() + '">' 
+				+ countries[i].getName() + '</option>');
+		};
+	}
+	
+	
+	var all_countries = [];
+	all_countries[all_countries.length] = new Country('{% trans 'All countries' %}','all');
+	{% for country in countries %}
+		all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_africa = [];
+	{% for country in countries_in_africa %}
+		countries_in_africa[countries_in_africa.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_asia = [];
+	{% for country in countries_in_asia %}
+		countries_in_asia[countries_in_asia.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_australia = [];
+	{% for country in countries_in_australia %}
+		countries_in_australia[countries_in_australia.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_europe = [];
+	{% for country in countries_in_europe %}
+		countries_in_europe[countries_in_europe.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_north_america = [];
+	{% for country in countries_in_north_america %}
+		countries_in_north_america[countries_in_north_america.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_south_america = [];
+	{% for country in countries_in_south_america %}
+		countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var selected_country = jQ('#country').val();
+	
+	
+	jQ('#continent').val(selected_continent);
+	
+	
+	var selected_continent = jQ('#continent').val();
+	if (selected_continent == 1 ) {		
+		add_countires(countries_in_africa);
+	} 
+	else if (selected_continent == 2 ) {		
+		add_countires(countries_in_asia);
+	}
+	else if (selected_continent == 3) {
+		add_countires(countries_in_australia);
+	}
+	else if (selected_continent == 4) {
+		add_countires(countries_in_europe);
+	}
+	else if (selected_continent == 5) {
+		add_countires(countries_in_north_america);
+	}
+	else if (selected_continent == 6) {
+		add_countires(countries_in_south_america);
+	}
+	else {
+		add_countires(all_countries);	
+	}
+	
+	
 });
 {% endblock jq_ready %}
