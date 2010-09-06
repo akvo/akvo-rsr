@@ -97,8 +97,35 @@
 		<div id="project_search" class="span-18">
 			<div class="round" style="border: 1px solid #ccc;">
 				<div class="space15">
-					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}" autofocus>					
+					<input name="q" placeholder="Filter with keywords" 
+						type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" 
+						value="{{ query_string|escape }}" autofocus>					
 					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
+					<br />
+
+					{% comment %}
+					<select id="cobranded-narrow-organisations" class="machinery_widget-organisations"
+						name="widget-organisations" size="1" disabled="disabled">
+						{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>
+					{% endcomment %}
+										
+					<select name="continent" id="continent" size="1">
+						<option value="all">{% trans 'All continents' %}</option>
+						{% for continent in continents %}
+						<option value="{{continent.0}}"{% ifequal continent.0 selected_continent %} SELECTED {% endifequal %}>{{continent.1}}</option>
+						{% endfor %}
+					</select>
+					{% comment %}
+					<select name="location" id="partner" size="1">
+						<option value="all">{% trans 'All locations' %}</option>
+						{% for location in locations %}
+						<option value="{{location.0}}"{% ifequal location.0 selected_location %} SELECTED {% endifequal %}>{{location.1}}</option>
+						{% endfor %}
+					</select>
+					{% endcomment %}
 				</div>
 			</div>
 		</div>

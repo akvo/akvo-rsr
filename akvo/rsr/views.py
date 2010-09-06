@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
@@ -333,6 +333,22 @@ def projectlist(request):
         projects = projects.order_by(order_by, 'name')
     else:
         projects = projects.order_by('-%s' % order_by, 'name')
+        
+    # --------------------------------------------------    
+    
+    # Prepare locations for the select dropdown
+    continents = []
+    for continent in CONTINENTS:
+        continents.append(continent)
+    
+    selected_continent = request.GET.get('continent', 'all')
+    if selected_continent != 'all':
+        projects = projects.filter(country__continent=selected_continent)
+        selected_continent = int(selected_continent)
+
+
+    # --------------------------------------------------    
+    
 
     # Setup paginator
     PROJECTS_PER_PAGE = 10
@@ -348,6 +364,8 @@ def projectlist(request):
         'sort': sort,
         'order_by': order_by,
         'last_order': last_order,
+        'continents': continents,
+        'selected_continent': selected_continent,
     }
 
 
