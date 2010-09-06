@@ -1,0 +1,74 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+
+{% block breadcrum  %}{% endblock breadcrum  %}
+
+{% block maincontent %}
+
+<div class='container'>
+   
+  <div class='column span-10'>
+    <div class="white_box" style="background-color:#fff;">
+      <div class="space20">     
+        Film
+      </div> 
+    </div> 
+  </div>
+   
+  <div class='column last span-4'>
+    <div class="white_box" style="background-color:#fff;">
+      <div class="space20">     
+        let's work together
+      </div> 
+    </div> 
+  </div>
+   
+</div> 
+
+<div class='container'>
+   
+  <div class='column last span-14'>
+    <div class="top-margin"> 
+      <div class="white_box" style="background-color:#fff;">
+        news
+      </div> 
+    </div> 
+  </div> 
+</div> 
+
+<div class='container'> 
+  <div class="top-margin"> 
+    
+    <div class='column span-5'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class="space20">     
+          articles 
+        </div> 
+      </div> 
+    </div>
+     
+    <div class='column span-5'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class="space20">     
+          projects 
+        </div> 
+      </div> 
+    </div>
+     
+    <div class='column last span-4'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class="space20">     
+          focus areas 
+        </div> 
+      </div> 
+    </div>
+
+  </div>
+</div> 
+
+{% endblock maincontent %}
+
+{% block jq_ready %}
+	{{ block.super }}
+{% endblock jq_ready %}

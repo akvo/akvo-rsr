@@ -147,9 +147,9 @@ else:
     TEMPLATE_LEAF_DIR = 'akvo'
     
 TEMPLATE_DIRS = (
+    os.path.join(os.path.dirname(__file__), 'templates/%s-take2' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
-    os.path.join(os.path.dirname(__file__), 'templates/akvo_beta').replace('\\','/'),
 )
 
 # Local time zone for this installation. Choices can be found here:

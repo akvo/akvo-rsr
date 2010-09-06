@@ -1,0 +1,222 @@
+{% load i18n rsr_tags webdesign %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
+	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org, water, sanitation" />
+	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
+
+	{% media_bundle 'pvw_style' %}
+	<!--[if IE 6]>
+		{% media_bundle 'pvw_ie6_style' %}
+	<![endif]-->
+	
+	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
+	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
+	{% block head %}{% endblock head %}
+	
+</head>
+<body>
+	<div id="header">
+		<div id="header_container" class="container">
+			<ul id="main_nav">
+				<li>
+					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+						<span>
+							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+						<span>{% trans 'Projects' %}</span>
+					</a>
+				</li>
+				<li>
+					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
+						<span>{% trans 'Partners' %}</span>
+					</a>
+				</li>
+				<li>
+					<a href="/wiki/">
+						<span>Akvopedia</span>
+					</a>
+				</li>
+				<li>
+					<a href="/web/get_involved/">
+						<span>{% trans 'About' %}</span>
+					</a>
+				</li>
+				<li>
+					<a href="/blog/">
+						<span>{% trans 'Blog' %}</span>
+					</a>
+				</li>
+				{% comment %}
+				<li>
+					<span id="main_nav_language">
+						<form action="." method="get" accept-charset="utf-8" style="display:none;">
+							  <input name="q" placeholder="Search akvo.org" type="search" style="margin-left:20px;margin-top:7px;width:205px;">
+						</form>
+					</span>
+				</li>
+				{% endcomment %}
+				<li>
+					<span id="main_nav_language">
+						<span class="small" style="margin-left:20px; margin-top:9px; display:block; ">
+							&nbsp;
+							{# Site language: English #}
+						</span>
+					</span>
+				</li>
+				{% comment %}
+					{% if not user.username %}
+						<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
+					{% else %}
+						<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
+					{% endif %}
+				{% endcomment %}
+				<li>
+					{% if not user.username %}
+						<a href="{% url akvo.rsr.views.register1 %}">
+							<span>{% trans 'Register' %}</span>
+						</a>
+					{% else %}
+						<a href="/rsr/accounts/update/">
+							<span>{% trans 'My Akvo' %}</span>
+						</a>
+					{% endif %}
+				</li>
+				<li>
+					{% if not user.username %}
+						<a id="main_nav_account" href="{% url signin %}?next={{request.path}}">
+							<span>{% trans 'Sign in' %}</span>
+						</a>
+					{% else %}
+						<a id="main_nav_account" href="{% url akvo.rsr.views.signout %}" title="{{user.username}}">
+							<span>{% trans 'Sign out' %}</span>
+							{# <span>{% trans 'Account' %}</span> #}
+						</a>
+					{% endif %}
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div id="main_container" class="container">
+		{% block breadcrum  %}
+			<div class="span-18" style="margin-bottom:20px;">
+				<div id="breadcrum_back">
+					<ul id="breadcrum">
+						{% block breadcrum_items %}
+						<li><a href="/"><span>Home</span></a></li>
+						{% endblock breadcrum_items %}
+					</ul>
+					<div class="clear"></div>
+				</div>
+			</div>
+		{% endblock breadcrum %}
+		
+		{% block maincontent %}
+			<h1>Akvo RSR</h1>
+		{% endblock maincontent %}
+	</div>
+	<div id="footer">
+		<div id="footer_container" class="container">
+			<div class="span-18">
+				<h2>{% trans 'About Akvo.org' %}</h2>
+				<p>
+					{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects. Money flows quickly because donors choose what to fund and follow progress online. People can use these storylines to build exciting new campaigns and networks. Our partners lead the world in sharing updates using Akvo tools. Better feedback means happy donors, and dialogue between field workers builds skills and improves quality. Time and money are saved while people across the world get safe drinking water and proper sanitation.' %}
+				</p>
+				<p class="grey small">
+					{% trans 'Content posted on the web site is the responsibility of the Poster, for details see our <a href="/web/open_license">Open License</a> policy.' %}
+				</p>
+			</div>
+			<div class="span-18">
+				<div class="span-3 first">
+					<h3>{% trans 'Policies' %}</h3>
+					<p class="small">
+						<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a><br />
+						<a href="/web/donation_policy">{% trans 'Donations' %}</a><br />
+						<a href="/web/partners_and_projects_policy">{% trans 'Partners' %}</a><br />
+						<a href="/web/user_contribution_policy">{% trans 'User Contribution Policy' %}</a><br />
+						<a href="/web/open_license">{% trans 'Akvo licensing and copyrights' %}</a><br />
+						<a href="/web/privacy_policy">{% trans 'Privacy' %}</a><br />
+						<a href="/web/akvo-rsr-api-code-of-conduct">{% trans 'Akvo RSR API Code of Conduct' %}</a><br />
+					</p>
+				</div>
+				<div class="span-3">
+					<h3>{% trans 'About' %}</h3>
+					<p class="small">
+						<a href="/web/what_we_do">{% trans 'What we do' %}</a><br />
+						<a href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a><br />
+						<a href="/web/why_we_do_it">{% trans 'Why we do it' %}</a><br />
+						<a href="/web/faq">{% trans 'Akvo Frequently Asked Questions' %}</a><br />
+						<a href="/web/map_partners_projects">{% trans 'Map' %}</a><br />
+						<a href="/web/team">{% trans 'Team' %}</a><br />
+						<a href="/web/jobs">{% trans 'Working at Akvo' %}</a><br />
+						<a href="/web/press">{% trans 'Press' %}</a><br />
+						<a href="/web/annual_reports">{% trans 'Akvo annual reports & Articles of incorporation' %}</a><br />
+					</p>
+				</div>
+				<div class="span-3">
+					<h3>{% trans 'Partners' %}</h3>
+					<p class="small">
+						<a href="/web/partners">{% trans 'Strategic partners' %}</a><br />
+						<a href="{% url rsr_org_list %}">{% trans 'Project partners' %}</a><br />
+						<a href="/web/commercial_partners">{% trans 'Commercial partners' %}</a><br />
+						<a href="/web/knowledge_institute_partners">{% trans 'Knowledge institute partners' %}</a><br />
+						<a href="/web/akvo_investors">{% trans 'Akvo investors' %}</a><br />
+					</p>
+				</div>
+				<div class="span-3">
+					<h3>{% trans 'Developers' %}</h3>
+					<p class="small">
+						<a href="/labs/index.php/Main_Page">{% trans 'Akvo Labs' %}</a><br />
+						<a href="http://github.com/akvo/">{% trans 'Source Code' %}</a><br />
+					</p>
+				</div>
+				<div class="span-3">
+					<h3>{% trans 'Contact us' %}</h3>
+					<p class="small">
+						<a href="http://help.akvo.org/">Help &amp; Support</a><br />
+						<a href="/web/contact_us">{% trans 'Contact us' %}</a><br />
+						<br />
+						<a class="red" href="http://help.akvo.org/discussion/new ">{% trans 'Report a problem' %}</a><br />
+					</p>
+				</div>
+				<div class="span-3 last">
+					<h3>{% trans 'Tools' %}</h3>
+					<p class="small">
+						<a href="/rsr/admin/">{% trans 'Akvo RSR admin' %}</a><br />
+						<a href="/blog/wp-login.php">{% trans 'Blog admin' %}</a><br />
+						<a href="/web/?q=user">{% trans 'CMS admin' %}</a><br />
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	 <script>
+		!window.jQuery && document.write('<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"><\/script>')
+	</script>
+	
+	{% block js %}{% endblock js %}
+	
+	<script type="text/javascript">
+		var $ = jQ = jQuery.noConflict();
+		
+		jQ(document).ready(function(){
+			{% block jq_ready %}{% endblock jq_ready %}
+			
+			jQ('#grid_toggle').click(function () {
+				jQ('.container').toggleClass('showgrid');
+			});
+			
+		});		
+	</script>	
+</body>
+</html>

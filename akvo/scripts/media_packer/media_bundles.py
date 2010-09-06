@@ -1,5 +1,33 @@
 
 MEDIA_BUNDLES = {
+    'pvw_style': {
+        'type': 'css',
+        'path': 'pvw-take2/css/',
+        'compress': False,
+        'files': [
+            'reset.css',
+            'grid.css',
+            'typography.css',
+            'base.css',
+            'main_nav.css',
+            'utils.css',
+#            'x_project_directory.css', 
+#            'x_column.css',
+#            'x_project.css',
+#            'x_tabs.css',
+#            'x_buttons.css',
+#            'x_machinery.css',
+#            'x_donate.css',
+#            'x_org.css',
+            'index.css',
+            ],
+    },
+    'pvw_ie6_style': {
+        'type': 'css',
+        'path': 'pvw-take2/css/',
+        'compress': False,
+        'files': ['ie6.css',],
+    },
     'akvo_style': {
         'type': 'css',
         'path': 'akvo/css/',
@@ -27,7 +55,7 @@ MEDIA_BUNDLES = {
         'path': 'akvo/css/',
         'compress': True,
         'files': ['x_ie6.css',],
-    },
+    },    
     # 'akvo_js': {
     #         'type': 'js',
     #         'path': 'akvo/js/',
