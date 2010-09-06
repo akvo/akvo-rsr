@@ -97,10 +97,15 @@
 		<div id="project_search" class="span-18">
 			<div class="round" style="border: 1px solid #ccc;">
 				<div class="space15">
+					<div style="float:right; width:400px; overflow:hidden;">
+						<p style="margin:0;" class="small">
+							At the moment keyword only filter on project name &amp; subtitle. Available text field on the project model is: project_plan_summary, goals_overview, current_status_detail, project_plan_detail, sustainability, context and notes.
+						</p>
+					</div>
+					
 					<input name="q" placeholder="Filter with keywords" 
 						type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" 
-						value="{{ query_string|escape }}" autofocus>					
-					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
+						value="{{ query_string|escape }}" autofocus>									
 					<br />
 
 					{% comment %}
@@ -112,20 +117,28 @@
 					</select>
 					{% endcomment %}
 										
-					<select name="continent" id="continent" size="1">
+					<select name="continent" id="continent" size="1" style="margin-left:20px;">
 						<option value="all">{% trans 'All continents' %}</option>
 						{% for continent in continents %}
-						<option value="{{continent.0}}"{% ifequal continent.0 selected_continent %} SELECTED {% endifequal %}>{{continent.1}}</option>
+						<option value="{{continent.0}}"
+							{% ifequal continent.0 selected_continent %} SELECTED {% endifequal %}>
+							{{continent.1}}
+						</option>
 						{% endfor %}
 					</select>
-					{% comment %}
-					<select name="location" id="partner" size="1">
-						<option value="all">{% trans 'All locations' %}</option>
-						{% for location in locations %}
-						<option value="{{location.0}}"{% ifequal location.0 selected_location %} SELECTED {% endifequal %}>{{location.1}}</option>
+
+					<select name="country" id="country" size="1">
+						<option value="all">{% trans 'All countries' %}</option>
+						{% for country in countries %}
+						<option value="{{country.id}}"
+							{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+							{{country.country_name}}
+						</option>
 						{% endfor %}
 					</select>
-					{% endcomment %}
+					
+					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:20px">
+
 				</div>
 			</div>
 		</div>
@@ -454,3 +467,9 @@
 	</div>
 	
 {% endblock maincontent %}
+
+{% block jq_ready %}
+jQ('#continent').change(function() {
+	jQ('#country').val('all');
+});
+{% endblock jq_ready %}

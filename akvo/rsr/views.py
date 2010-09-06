@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS
+from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS, Country
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
@@ -317,7 +317,7 @@ def projectlist(request):
         query_string = request.GET['q']
 
         #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+        project_query = get_query(query_string, ['name', 'subtitle',])
         projects = projects.filter(project_query)
     
     # Add extra last_update column
@@ -336,7 +336,7 @@ def projectlist(request):
         
     # --------------------------------------------------    
     
-    # Prepare locations for the select dropdown
+    # Contient dropdown
     continents = []
     for continent in CONTINENTS:
         continents.append(continent)
@@ -345,11 +345,21 @@ def projectlist(request):
     if selected_continent != 'all':
         projects = projects.filter(country__continent=selected_continent)
         selected_continent = int(selected_continent)
-
+    
+    # Country dropdown
+    countries = Country.objects.all()
+    
+    selected_country = request.GET.get('country', 'all')
+    if selected_country != 'all':
+        projects = projects.filter(country__exact=selected_country)
+        selected_country = int(selected_country)
+        selected_continent = Country.objects.get(id=selected_country).continent
+        #selected_continent = Country.objects.filter(pk__exact=selected_country).continent
+        
+    
 
     # --------------------------------------------------    
     
-
     # Setup paginator
     PROJECTS_PER_PAGE = 10
     paginator = Paginator(projects, PROJECTS_PER_PAGE)
@@ -366,6 +376,8 @@ def projectlist(request):
         'last_order': last_order,
         'continents': continents,
         'selected_continent': selected_continent,
+        'countries': countries,
+        'selected_country':selected_country,
     }
 
 
