@@ -97,15 +97,16 @@
 		<div id="project_search" class="span-18">
 			<div class="round" style="border: 1px solid #ccc;">
 				<div class="space15">
-					<div style="float:right; width:400px; overflow:hidden;">
+					<div style="float:right; width:480px; overflow:hidden;">
 						<p style="margin:0;" class="small">
-							At the moment keyword only filter on project name &amp; subtitle. Available text field on the project model is: project_plan_summary, goals_overview, current_status_detail, project_plan_detail, sustainability, context and notes.
+							Keyword only filters on project name &amp; subtitle. Available text field on the project model(which can be added) is: project_plan_summary, goals_overview, current_status_detail, project_plan_detail, sustainability, context and notes.<br />
+							Maybe we should remove the keyword filter...
 						</p>
 					</div>
 					
-					<input name="q" placeholder="Filter with keywords" 
+					<input name="q" placeholder="Filter on project name and subtitle" 
 						type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" 
-						value="{{ query_string|escape }}" autofocus>									
+						value="{{ query_string|escape }}">									
 					<br />
 
 					{% comment %}
