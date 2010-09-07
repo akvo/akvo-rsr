@@ -1,0 +1,877 @@
+
+
+/*---------------------------------------------------------------------------
+ Contents from: utils.css
+---------------------------------------------------------------------------*/
+
+.hide { display:none; }
+.space0 { margin:0; }
+.space5 { margin:5px; }
+.space10 { margin:10px; }
+.space15 { margin:15px; }
+.space20 { margin:20px; }
+
+.top-margin { margin-top: 19px; }
+
+.green      { color:#4D8722; }
+.red        { color:#A5000F; }
+.blue       { color:#3A8CB9; }
+.yellow     { color:#FEC344; }
+.grey       { color:#7E8197; }
+.black      { color:#000; }
+.white      { color:#fff; }
+
+.dk_grey    { color: #3D414B; }
+.lt_grey    { color: #7D818E; }
+.dk_blue    { color: #343D84; }
+.link_blue  { color: #1877B8; }
+.orange     { color: #E35D18; }
+
+.text_left {text-align:left;}
+.text_right {text-align:right;}
+
+.round {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+.white_box {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background-color:#fff;
+    }
+    
+
+.linear_bg {
+    border:1px solid #D9DBDC;
+    background-color: #EFF3F3; /* fallback color */
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));
+    background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
+    }
+    
+.grey_hover:hover {
+    background-color:#F1F5F9;
+    }
+    
+
+/*---------------------------------------------------------------------------
+ Contents from: reset.css
+---------------------------------------------------------------------------*/
+
+/* 
+html5doctor.com Reset Stylesheet
+v1.4.1 
+2010-03-01
+Author: Richard Clark - http://richclarkdesign.com
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,canvas,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section,summary { 
+	display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    border:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted #000;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+
+
+/*---------------------------------------------------------------------------
+ Contents from: grid.css
+---------------------------------------------------------------------------*/
+
+/* --------------------------------------------------------------
+		Blueprint grid.css file for version 0.9.1
+		Width: 975px
+		Columns: 14		Column width: 52px
+		Gutter width: 19px
+		
+		This file was generated with GridCalc (http://www.problem.se/labs/gridcalc/)
+---------------------------------------------------------------*/
+
+/* --------------------------------------------------------------
+
+   grid.css
+   * Sets up an easy-to-use grid of 24 columns.
+
+   By default, the grid is 950px wide, with 24 columns
+   spanning 30px, and a 10px margin between columns.
+
+   If you need fewer or more columns, namespaces or semantic
+   element names, use the compressor script (lib/compress.rb)
+
+-------------------------------------------------------------- */
+
+/* A container should group all your columns. */
+.container {
+  width: 975px;
+  margin: 0 auto;
+}
+
+/* Use this class on any .span / container to see the grid. */
+.showgrid {
+  background: url(src/grid.png);
+}
+
+
+/* Columns
+-------------------------------------------------------------- */
+
+/* Sets up basic grid floating and margin. */
+.column, .span-1, .span-2, .span-3, .span-4, .span-5, .span-6, .span-7, .span-8, .span-9, .span-10, .span-11, .span-12, .span-13, .span-14 {
+  float: left;
+  margin-right: 19px;
+}
+
+/* The last column in a row needs this class. */
+.last { margin-right: 0; }
+
+/* Use these classes to set the width of a column. */
+.span-1 {width: 52px;}
+.span-2 {width: 123px;}
+.span-3 {width: 194px;}
+.span-4 {width: 265px;}
+.span-5 {width: 336px;}
+.span-6 {width: 407px;}
+.span-7 {width: 478px;}
+.span-8 {width: 549px;}
+.span-9 {width: 620px;}
+.span-10 {width: 691px;}
+.span-11 {width: 762px;}
+.span-12 {width: 833px;}
+.span-13 {width: 904px;}
+.span-14 {width: 975px; margin-right: 0;}
+
+/* Use these classes to set the width of an input. */
+input.span-1, textarea.span-1, input.span-2, textarea.span-2, input.span-3, textarea.span-3, input.span-4, textarea.span-4, input.span-5, textarea.span-5, input.span-6, textarea.span-6, input.span-7, textarea.span-7, input.span-8, textarea.span-8, input.span-9, textarea.span-9, input.span-10, textarea.span-10, input.span-11, textarea.span-11, input.span-12, textarea.span-12, input.span-13, textarea.span-13, input.span-14, textarea.span-14 {
+  border-left-width: 1px;
+  border-right-width: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+input.span-1, textarea.span-1 {width: 40px;}
+input.span-2, textarea.span-2 {width: 111px;}
+input.span-3, textarea.span-3 {width: 182px;}
+input.span-4, textarea.span-4 {width: 253px;}
+input.span-5, textarea.span-5 {width: 324px;}
+input.span-6, textarea.span-6 {width: 395px;}
+input.span-7, textarea.span-7 {width: 466px;}
+input.span-8, textarea.span-8 {width: 537px;}
+input.span-9, textarea.span-9 {width: 608px;}
+input.span-10, textarea.span-10 {width: 679px;}
+input.span-11, textarea.span-11 {width: 750px;}
+input.span-12, textarea.span-12 {width: 821px;}
+input.span-13, textarea.span-13 {width: 892px;}
+input.span-14, textarea.span-14 {width: 963px;}
+
+/* Add these to a column to append empty cols. */
+
+.append-1 {padding-right: 71px;}
+.append-2 {padding-right: 142px;}
+.append-3 {padding-right: 213px;}
+.append-4 {padding-right: 284px;}
+.append-5 {padding-right: 355px;}
+.append-6 {padding-right: 426px;}
+.append-7 {padding-right: 497px;}
+.append-8 {padding-right: 568px;}
+.append-9 {padding-right: 639px;}
+.append-10 {padding-right: 710px;}
+.append-11 {padding-right: 781px;}
+.append-12 {padding-right: 852px;}
+.append-13 {padding-right: 923px;}
+
+/* Add these to a column to prepend empty cols. */
+
+.prepend-1 {padding-left: 71px;}
+.prepend-2 {padding-left: 142px;}
+.prepend-3 {padding-left: 213px;}
+.prepend-4 {padding-left: 284px;}
+.prepend-5 {padding-left: 355px;}
+.prepend-6 {padding-left: 426px;}
+.prepend-7 {padding-left: 497px;}
+.prepend-8 {padding-left: 568px;}
+.prepend-9 {padding-left: 639px;}
+.prepend-10 {padding-left: 710px;}
+.prepend-11 {padding-left: 781px;}
+.prepend-12 {padding-left: 852px;}
+.prepend-13 {padding-left: 923px;}
+
+/* Border on right hand side of a column. */
+.border {
+  padding-right: 9px;
+  margin-right: 9px;
+  border-right: 1px solid #eee;
+}
+
+/* Border with more whitespace, spans one column. */
+.colborder {
+  padding-right: 44px;
+  margin-right: 45px;
+  border-right: 1px solid #eee;
+}
+
+
+/* Use these classes on an element to push it into the
+next column, or to pull it into the previous column.  */
+
+.pull-1 {margin-left: -71px;}
+.pull-2 {margin-left: -142px;}
+.pull-3 {margin-left: -213px;}
+.pull-4 {margin-left: -284px;}
+.pull-5 {margin-left: -355px;}
+.pull-6 {margin-left: -426px;}
+.pull-7 {margin-left: -497px;}
+.pull-8 {margin-left: -568px;}
+.pull-9 {margin-left: -639px;}
+.pull-10 {margin-left: -710px;}
+.pull-11 {margin-left: -781px;}
+.pull-12 {margin-left: -852px;}
+.pull-13 {margin-left: -923px;}
+.pull-14 {margin-left: -994px;}
+
+.pull-1, .pull-2, .pull-3, .pull-4, .pull-5, .pull-6, .pull-7, .pull-8, .pull-9, .pull-10, .pull-11, .pull-12, .pull-13, .pull-14 {float: left; position:relative;}
+
+.push-1 {margin: 0 -71px 1.5em 71px;}
+.push-2 {margin: 0 -142px 1.5em 142px;}
+.push-3 {margin: 0 -213px 1.5em 213px;}
+.push-4 {margin: 0 -284px 1.5em 284px;}
+.push-5 {margin: 0 -355px 1.5em 355px;}
+.push-6 {margin: 0 -426px 1.5em 426px;}
+.push-7 {margin: 0 -497px 1.5em 497px;}
+.push-8 {margin: 0 -568px 1.5em 568px;}
+.push-9 {margin: 0 -639px 1.5em 639px;}
+.push-10 {margin: 0 -710px 1.5em 710px;}
+.push-11 {margin: 0 -781px 1.5em 781px;}
+.push-12 {margin: 0 -852px 1.5em 852px;}
+.push-13 {margin: 0 -923px 1.5em 923px;}
+.push-14 {margin: 0 -994px 1.5em 994px;}
+
+.push-1, .push-2, .push-3, .push-4, .push-5, .push-6, .push-7, .push-8, .push-9, .push-10, .push-11, .push-12, .push-13, .push-14 {float: right; position:relative;}
+
+
+/* Misc classes and elements
+-------------------------------------------------------------- */
+
+/* In case you need to add a gutter above/below an element */
+.prepend-top {
+  margin-top:1.5em;
+}
+.append-bottom {
+  margin-bottom:1.5em;
+}
+
+/* Use a .box to create a padded box inside a column.  */
+.box {
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+  background: #E5ECF9;
+}
+
+/* Use this to create a horizontal ruler across a column. */
+hr {
+  background: #ddd;
+  color: #ddd;
+  clear: both;
+  float: none;
+  width: 100%;
+  height: .1em;
+  margin: 0 0 1.45em;
+  border: none;
+}
+
+hr.space {
+  background: #fff;
+  color: #fff;
+  visibility: hidden;
+}
+
+
+/* Clearing floats without extra markup
+   Based on How To Clear Floats Without Structural Markup by PiE
+   [http://www.positioniseverything.net/easyclearing.html] */
+
+.clearfix:after, .container:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow:hidden;
+}
+.clearfix, .container {display: block;}
+
+/* Regular clearing
+   apply to column that should drop below previous ones. */
+
+.clear { clear:both; }
+
+
+/*---------------------------------------------------------------------------
+ Contents from: typography.css
+---------------------------------------------------------------------------*/
+
+/*
+Akvo RSR is covered by the GNU Affero General Public License.
+See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+Akvo CSS classes is based on the Bluetrip (http://bluetrip.org/) CSS framework.
+
+*/
+
+
+/*------------------------------------------------------------------ 
+[Table of contents] 
+ 
+1. Basic
+2. Lists 
+3. Tags 		
+4. Forms
+5. Tables
+6. Margins & paddings
+7. Nice to have classes
+8. Text sizes
+-------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------ 
+[1. Basic] 
+*/
+body {
+    font-size:100%; /* IE6 & 7 */
+    font-family:Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+    }
+    
+a { 
+    color:#2B80AF;
+    cursor:pointer;
+    text-decoration:none;
+    }
+    
+a:visited { color:#2B80AF; }
+a:hover { color:#0FA0CB; text-decoration: underline; }
+
+p {
+    color:#333;
+    font-size:0.875em; /* 16*0.875 = 14*/
+    line-height:1.4em; 
+    margin-bottom:1.5em;
+    }
+
+h1 {
+    color:#E35D18;
+    font-size:1.25em;
+    font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;
+    }
+
+h2 {
+    color:#2097F7;
+    font-size:1.125em;
+    font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;
+    }
+
+h3 {
+    color:#E35D18;
+    font-size: 1.0em;
+    font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;
+    }
+
+h4 {
+    color:#2097F7;
+    font-size:0.875em;
+    font-weight:bold;
+    line-height:1.2em;
+    margin-bottom:0.75em;
+    }
+
+h5 {
+    color:#E35D18;
+    font-size:0.8125em;
+    font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;    
+    }
+
+h6 {
+    color:#000;
+    font-size: 0.6875em;
+    font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.5em;    
+    }
+
+
+/*------------------------------------------------------------------ 
+[2. Lists] 
+*/
+
+ul, ol { 
+    color:#333;
+    font-size:0.875em;
+    line-height:1.7em;
+    margin-bottom:0.5em; 
+    margin-bottom:1.5em;   
+    margin-top:-0.5em;    
+    }
+ul ul {font-size:1em; margin-top:0em;}
+ol ol {font-size:1em; margin-top:0em;}
+ul li { margin-left:1em;}
+ul { list-style-position: outside; list-style-type: disc; margin-left: 0.5em; }
+ul ul { list-style-type: square; }
+ul ul ul { list-style-type: circle; }
+ol { list-style-position: inside; list-style-type: decimal; margin-left: 0.5em;}
+ol li {  margin-left:1em; }
+dt { font-weight: bold; margin-top: .8em; margin-bottom: .4em; }
+/*
+ol ol, ul ol { margin-left: 1.0em; }
+*/
+
+
+/*------------------------------------------------------------------ 
+[3. Tags] 
+*/
+strong, th, thead td {font-weight: bold;}
+cite, em, dfn { font-style: italic; }
+code, kbd, samp, pre, tt, var { font-size: 0.857em; font-family: monaco, "Lucida Console", courier, monospace; }
+code {
+    background-color:#092125;
+    border:1px solid #9F9F9F;
+    color:#98F39F;
+    display:block;
+    margin-bottom:14px;
+    margin-top:14px;
+    padding:6px 13px;
+    }
+del { text-decoration: line-through; color: #666; }
+ins, dfn { border-bottom: 1px solid #ccc; }
+
+blockquote { 
+    border-top:1px solid #ccc; 
+    border-bottom:1px solid #ccc; 
+    color:#666; 
+    padding:0 1em; 
+    margin:1.6em 0;
+    }
+blockquote *:first-child { margin: .8em 0; }
+blockquote *:first-child:before { content: "\201C"; }
+blockquote *:first-child:after { content: "\201D"; }
+
+
+/*------------------------------------------------------------------ 
+[4. Forms] 
+*/
+fieldset { 
+    padding:1.4em; 
+    margin:0 0 1.5em 0; 
+    border:1px solid #ccc; 
+    padding:0 1em 1em 1em;  /* padding-top is margin-top for fieldsets in Opera */
+    margin:1.6em 0; 
+    }
+legend { font-weight:bold; font-size:1.2em; }
+label { font-weight:bold; display:block; margin-top:5px; font-size:0.875em; }
+
+input[type='text'], input[type='password'], textarea {
+    border:1px solid #ccc; background: #fff;
+    font-size:0.875em;
+    margin:0.5em 1px;
+    padding:3px;
+    }
+
+input[type="submit"], input[type="button"] {
+    display: block;
+    margin-bottom:20px;
+    margin-top:0;
+    padding-top:0;
+    }
+
+textarea { border: 1px solid #ccc;}
+
+.focusField {
+    background-color:#e5fff3 !important;
+    color:#000;
+    }
+
+/*------------------------------------------------------------------ 
+[5. Tables] 
+*/
+table { border-top:1px solid #ccc;  border-left:1px solid #ccc; font-size:0.875em; }
+th, td { border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:.8em; }
+
+
+/*------------------------------------------------------------------ 
+[6. Margins & paddings] 
+*/
+hr, p, dl, pre, blockquote, address, table, form { margin-bottom: 0.75em; }
+caption { padding-bottom: .8em; } /* padding instead of margin for IE */
+legend { padding-left: .8em; padding-right: .8em; }
+legend+* { margin-top: 1em; } /* compensates for the opera margin bug */
+select { padding: .1em .2em 0 .2em; }
+option { padding: 0 .4em; }
+a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
+.last {margin-bottom: 0;}
+.strong {font-weight: bold;}
+
+/*------------------------------------------------------------------ 
+[7. Nice to have classes] 
+*/
+.hide { display:none; }
+.grey { color:#888; }
+.red { color:#E60113; }
+
+
+/*------------------------------------------------------------------ 
+[8. Text sizes] 
+*/
+p.lede {
+    color:#7D818E;
+    font-size:1.125em;
+    line-height:1.2em;
+    margin-bottom:1.3em;
+    }
+
+p.small, .small p, span.small, .small span,  .small label, ul.small, a.small, .simplelist ul li {
+    font-size:0.8125em;
+    line-height:1.4em;
+    }
+
+p.tiny, .tiny p, span.tiny, .tiny span, .tiny label, ul.tiny, a.tiny {
+    font-size:0.6875em;
+    line-height:1.4em;
+    }
+
+p.nano, .nano p, span.nano, .nano span, .nano label ul.nano, a.nano {
+    font-size:0.56725em;
+    line-height:1.4em;
+    }
+
+p.nano-lede {
+    color:#7D818E;
+    font-size:0.8125em;
+    line-height:1.2em;
+    margin-bottom:0.75em;
+    }
+
+
+
+/*---------------------------------------------------------------------------
+ Contents from: base.css
+---------------------------------------------------------------------------*/
+
+body {
+    background:#F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
+    color:#000;
+    }
+
+div#main_container {
+    margin-bottom:40px;
+    padding-top:55px;
+    }
+    
+#footer {
+    background:#F9F9FA url(../img/footer_gradient.png) repeat-x top;
+    color:#585E68;
+    padding-top:40px;
+    }
+
+#footer h3, #footer h2  {
+    color: #585E68;
+    }
+
+#breadcrum_back {
+    background-color: #EFF3F5;
+    border: 1px solid #D6D7DD;
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+ul#breadcrum {
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li {
+    list-style: none;
+    display: inline;
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li a {
+    display: block;
+    float: left;
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li a span {
+    background: transparent url('../img/breadcrum.png') no-repeat right;
+    display: block;
+    height: 23px;
+    margin: 0;
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-left: 12px;
+    font-size: 12px;
+    }
+
+#last_breadcrum_item {
+    display: block;
+    color: #3D414B;
+    height: 23px;
+    margin: 0; 
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-left: 12px !important;
+    font-size: 12px;
+    }
+    
+div.error {
+    background-color:#FFEBE7; 
+    border:1px solid #FFCDD1; 
+    color:red;
+    float:right; 
+    padding:10px; 
+    width:300px; 
+    }
+    
+div.counter_badge {
+    background-color:#EFF3F5; 
+    border:1px solid #A2A2A2;
+    color:#000;
+    float:right; 
+    text-align:center; 
+    width:47px;
+    font-size:0.8125em;
+    line-height:1.4em;
+    padding: 5px 3px 0px 3px;
+    font-weight:bold;
+    
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    
+    margin:20px;
+    }
+    
+div.counter_badge span {
+    font-size:0.8125em;
+    font-weight:normal;
+    }
+
+/*---------------------------------------------------------------------------
+ Contents from: main_nav.css
+---------------------------------------------------------------------------*/
+
+#header {
+    /*background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;*/
+    background: transparent url('../img/main_nav_bkgd.png') repeat-x bottom;
+    z-index:5;
+    left: 0; /* IE 7 */
+	position: fixed;
+	top: 0;
+	width: 100%;
+    }
+
+ul#main_nav {
+    margin:0; 
+    padding:0
+    }
+
+ul#main_nav li {
+    list-style: none;
+    display: inline;
+    margin:0;
+    padding:0;
+    }
+
+ul#main_nav li a {    
+    color: #383C82;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size:0.875em;
+    font-weight:bold;
+    height:37px;
+    margin:0;
+    overflow:hidden;
+    padding:0;
+    width: 90px;
+    /*-webkit-transition:background-color .2s ease-out;*/
+    }
+
+ul#main_nav li a:hover {   
+    background-color: #fff;
+    color:#2097F7;
+    text-decoration: none;
+    }
+
+ul#main_nav li a.active {
+    background-color: #fff;
+    }
+    
+ul#main_nav li a span {
+    border-right: 1px solid #ACACBA;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    /* height and padding-top decides sets height on 
+    the main_nav, use padding-top to position your text. */
+    height:28px;
+    padding-top:5px;
+    cursor: pointer;
+    }
+
+a#main_nav_left {
+    width:100px !important;
+    overflow:hidden;
+    }
+
+#main_nav_language {
+    float:left;
+    width:244px;
+    overflow:hidden;
+    border-right: 1px solid #ACACBA;
+    height:32px;
+    }
+
+#main_nav_account {    
+    color:#32842F !important;
+    }
+
+#main_nav_account span {
+    border-right: None !important;
+    }
+
+/*ul#account_nav {
+    background-color:cyan;
+    display:none;
+    height:198px; 
+    min-width:200px;
+    position:absolute;
+    width:100%;
+    right:0;
+    z-index:2;
+    top:100%;
+    }*/
+
+
+
+
+
+
+
+/*---------------------------------------------------------------------------
+ Contents from: index.css
+---------------------------------------------------------------------------*/
+
+.h1_companion {
+  /* text that floats to the right of a h1 */
+  float: right;
+  margin-top: 0.5em;
+  font-size: 0.8125em;
+}
+
+.small_link {
+  font-size: 0.8125em;
+}

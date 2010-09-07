@@ -5,12 +5,12 @@ MEDIA_BUNDLES = {
         'path': 'pvw-take2/css/',
         'compress': False,
         'files': [
+            'utils.css',
             'reset.css',
             'grid.css',
             'typography.css',
             'base.css',
             'main_nav.css',
-            'utils.css',
 #            'x_project_directory.css', 
 #            'x_column.css',
 #            'x_project.css',

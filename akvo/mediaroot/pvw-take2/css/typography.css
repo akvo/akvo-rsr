@@ -40,22 +40,22 @@ a:visited { color:#2B80AF; }
 a:hover { color:#0FA0CB; text-decoration: underline; }
 
 p {
-    color:#333;
+    color:#3D414B;
     font-size:0.875em; /* 16*0.875 = 14*/
     line-height:1.4em; 
     margin-bottom:1.5em;
     }
 
 h1 {
-    color:#2097F7;
-    font-size:1.625em;
+    color:#E35D18;
+    font-size:1.25em;
     font-weight:normal;
     line-height:1.2em;
     margin-bottom:0.5em;
     }
 
 h2 {
-    color:#2097F7;
+    color:#1877B8;
     font-size:1.125em;
     font-weight:normal;
     line-height:1.2em;
@@ -63,7 +63,7 @@ h2 {
     }
 
 h3 {
-    color:#000;
+    color:#E35D18;
     font-size: 1.0em;
     font-weight:normal;
     line-height:1.2em;
@@ -71,15 +71,15 @@ h3 {
     }
 
 h4 {
-    color:#000;
+    color:#1877B8;
     font-size:0.875em;
-    font-weight:normal;
+    font-weight:bold;
     line-height:1.2em;
-    margin-bottom:0.5em;
+    margin-bottom:0.75em;
     }
 
 h5 {
-    color:#000;
+    color:#E35D18;
     font-size:0.8125em;
     font-weight:normal;
     line-height:1.2em;
@@ -87,7 +87,7 @@ h5 {
     }
 
 h6 {
-    color:#000;
+    color:#1877B8;
     font-size: 0.6875em;
     font-weight:normal;
     line-height:1.2em;
@@ -100,7 +100,7 @@ h6 {
 */
 
 ul, ol { 
-    color:#333;
+    color:#3D414B;
     font-size:0.875em;
     line-height:1.7em;
     margin-bottom:0.5em; 
@@ -195,14 +195,15 @@ th, td { border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:.8em
 /*------------------------------------------------------------------ 
 [6. Margins & paddings] 
 */
-hr, p, dl, pre, blockquote, address, table, form { margin-bottom: 1.5em; }
+hr, p, dl, pre, blockquote, address, table, form { margin-bottom: 0.75em; }
 caption { padding-bottom: .8em; } /* padding instead of margin for IE */
 legend { padding-left: .8em; padding-right: .8em; }
 legend+* { margin-top: 1em; } /* compensates for the opera margin bug */
 select { padding: .1em .2em 0 .2em; }
 option { padding: 0 .4em; }
 a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
-
+.last {margin-bottom: 0;}
+.strong {font-weight: bold;}
 
 /*------------------------------------------------------------------ 
 [7. Nice to have classes] 
@@ -216,7 +217,6 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 [8. Text sizes] 
 */
 p.lede {
-    color:#888;
     font-size:1.125em;
     line-height:1.2em;
     margin-bottom:1.3em;
@@ -238,8 +238,8 @@ p.nano, .nano p, span.nano, .nano span, .nano label ul.nano, a.nano {
     }
 
 p.nano-lede {
-    color:#888;
-    font-size:0.875em;
+    font-size:0.8125em;
     line-height:1.2em;
-    margin-bottom:1.3em;
+    margin-bottom:0.75em;
     }
+
