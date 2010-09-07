@@ -448,6 +448,7 @@ p {
     margin-bottom:1.5em;
     }
 
+
 h1 {
     color:#E35D18;
     font-size:1.25em;
@@ -455,6 +456,10 @@ h1 {
     line-height:1.2em;
     margin-bottom:0.5em;
     }
+
+h1.h0 {
+    font-size:1.75em;
+}
 
 h2 {
     color:#1877B8;

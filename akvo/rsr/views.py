@@ -1081,7 +1081,7 @@ def orgdetail(request, org_id):
         'site_section': 'index',
         }
 
-@render_to(path_to_templ_project_main)
+@render_to('rsr/project/project_main.html')
 def projectmain(request, project_id):
     '''
     The project overview page

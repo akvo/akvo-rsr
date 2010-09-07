@@ -1,0 +1,81 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+
+{% block breadcrum  %}{% endblock breadcrum  %}
+
+{% block maincontent %}
+
+<div class='container'>
+
+  <div class='column span-11'>
+    
+    <div class='column span-11 last'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class='column span-11 last' style="width: 760px;">
+          <div class="space20">
+            <div style="float: left;">
+              <h1 class="h0">Projects title</h1> 
+            </div>
+            <div class="h1_companion">
+              <a href="#">Edit</a>
+            </div>
+            <div class="clear"></div>
+            <p class="lt_grey">Sub-title of project</p>
+          </div>
+        </div>
+        <div class='column span-8' style="width: 548px;">
+          Pics and summary
+        </div>
+        <div class='column span-3 last' style="width: 193px;">
+          Map
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    
+    <div class='column span-8'>
+      <div class="white_box" style="background-color:#fff;">
+        Project details
+      </div>
+    </div>
+    
+    <div class='column span-3 last'>
+      <div class="white_box" style="background-color:#fff;">
+        Related to project
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class='column span-3 last'>
+    <div class='column span-3 last'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class="space20">
+          Status
+        </div> 
+      </div> 
+    </div>
+    <div class='column span-3 last'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class="space20">
+          Page tools
+        </div> 
+      </div> 
+    </div>
+    <div class='column span-3 last'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class="space20">
+          Project partners
+        </div> 
+      </div> 
+    </div>
+  </div>
+
+</div> 
+
+{% endblock maincontent %}
+
+{% block jq_ready %}
+	{{ block.super }}
+{% endblock jq_ready %}
