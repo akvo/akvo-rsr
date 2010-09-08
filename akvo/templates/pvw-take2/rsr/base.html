@@ -16,7 +16,7 @@
 	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
 	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
 	{% block head %}{% endblock head %}
-	
+		
 </head>
 <body>
 	<div id="header">
@@ -25,44 +25,40 @@
 				<li>
 					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
 						<span>
-							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
+							DWS
+							{% comment %}
+								<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
+							{% endcomment %}							
 						</span>
 					</a>
 				</li>
+				<li>
+	                <a href="{% url areas %}" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
+	                    <span>{% trans 'Focus Areas' %}</span>
+	                </a>
+	            </li>
 				<li>
 					<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>
 				<li>
-					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
-						<span>{% trans 'Partners' %}</span>
+					<a href="/rsr/projects/">
+						<span>{% trans 'History' %}</span>
 					</a>
 				</li>
 				<li>
-					<a href="/wiki/">
-						<span>Akvopedia</span>
+					<a href="/web/education">
+						<span>{% trans 'Education' %}</span>
 					</a>
 				</li>
 				<li>
-					<a href="/web/get_involved/">
-						<span>{% trans 'About' %}</span>
+					<a href="{% url directory %}" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
+						<span>{% trans 'Directory' %}</span>
 					</a>
 				</li>
-				<li>
-					<a href="/blog/">
-						<span>{% trans 'Blog' %}</span>
-					</a>
-				</li>
-				{% comment %}
-				<li>
-					<span id="main_nav_language">
-						<form action="." method="get" accept-charset="utf-8" style="display:none;">
-							  <input name="q" placeholder="Search akvo.org" type="search" style="margin-left:20px;margin-top:7px;width:205px;">
-						</form>
-					</span>
-				</li>
-				{% endcomment %}
+				<li><a href="/news"><span>{% trans 'News' %}</span></a></li>
+				<li><a href="/web/who_we_are"><span>{% trans 'About' %}</span></a></li>
 				<li>
 					<span id="main_nav_language">
 						<span class="small" style="margin-left:20px; margin-top:9px; display:block; ">
@@ -70,24 +66,6 @@
 							{# Site language: English #}
 						</span>
 					</span>
-				</li>
-				{% comment %}
-					{% if not user.username %}
-						<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
-					{% else %}
-						<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
-					{% endif %}
-				{% endcomment %}
-				<li>
-					{% if not user.username %}
-						<a href="{% url akvo.rsr.views.register1 %}">
-							<span>{% trans 'Register' %}</span>
-						</a>
-					{% else %}
-						<a href="/rsr/accounts/update/">
-							<span>{% trans 'My Akvo' %}</span>
-						</a>
-					{% endif %}
 				</li>
 				<li>
 					{% if not user.username %}

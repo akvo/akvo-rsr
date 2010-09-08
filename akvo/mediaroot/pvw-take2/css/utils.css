@@ -40,8 +40,18 @@
     border: 1px solid #9C9CAC;
     background-color:#fff;
     }
-    
 
+.gradient_box {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background-color:#fff;
+	background: -moz-linear-gradient(top, #F1F4F9, #fff);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#F1F4F9), to(#fff));
+}
+    
 .linear_bg {
     border:1px solid #D9DBDC;
     background-color: #EFF3F3; /* fallback color */
