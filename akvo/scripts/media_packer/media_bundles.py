@@ -1,4 +1,3 @@
-
 MEDIA_BUNDLES = {
     'pvw_style': {
         'type': 'css',
@@ -20,7 +19,14 @@ MEDIA_BUNDLES = {
 #            'x_donate.css',
 #            'x_org.css',
             'index.css',
+            'thumbs_scroller.css',
             ],
+    },
+    'pvw_ie6_style': {
+        'type': 'css',
+        'path': 'pvw-take2/css/',
+        'compress': False,
+        'files': ['ie6.css',],
     },
     'pvw_ie6_style': {
         'type': 'css',

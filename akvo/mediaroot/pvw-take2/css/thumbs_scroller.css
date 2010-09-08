@@ -1,0 +1,29 @@
+div.thumbs_scroller {
+  position: relative;   
+  height: 301px;
+  /* Make bigger than a photo, because we need a place for a scroll-bar. */
+  width: 120px;
+  overflow: auto;
+  float: right;
+}
+
+/*div.thumbs {
+  padding: 15px 0;
+}*/
+
+.thumbs a {
+  display: block;
+
+  /* When image support is turned off */
+  color: #fff;
+  background: #FFF;  
+}
+.thumbs a:hover {
+  border-color: #9C9CAC;
+  border-style: dotted;
+}
+.thumbs img {
+  display: block;
+  border: none;
+  margin: 0 0 5px 25px;
+}
