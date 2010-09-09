@@ -7,9 +7,9 @@
 	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org, water, sanitation" />
 	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
 
-	{% media_bundle 'pvw_style' %}
+	{% asset_bundle 'pvw_style' %}
 	<!--[if IE 6]>
-		{% media_bundle 'pvw_ie6_style' %}
+		{% asset_bundle 'pvw_ie6_style' %}
 	<![endif]-->
 	
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
