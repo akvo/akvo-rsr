@@ -110,6 +110,16 @@ class Location(models.Model):
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
+    def save(self, *args, **kwargs):
+        if self.primary:
+            qs = Location.objects.filter(content_type=self.content_type,
+                    object_id=self.object_id, primary=True)
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+                if qs.count() != 0:
+                    self.primary = False
+        super(Location, self).save(*args, **kwargs)
+
 
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
@@ -184,12 +194,12 @@ class Organisation(models.Model):
         return '/rsr/organisation/%d/' % self.id
 
     @property
-    def primary_location(self, primary_location=None):
+    def primary_location(self, location=None):
         '''Returns an organisations's primary location'''
-        locations = self.locations.all()
-        if locations:
-            primary_location = locations[0]
-        return primary_location
+        qs = self.locations.filter(primary=True)
+        if qs:
+            location = qs[0]
+        return location
 
     
     class QuerySet(QuerySet):
@@ -497,12 +507,12 @@ class Project(models.Model):
         return counter.count or 0
             
     @property
-    def primary_location(self, primary_location=None):
+    def primary_location(self, location=None):
         '''Returns a project's primary location'''
-        locations = self.locations.all()
-        if locations:
-            primary_location = locations[0]
-        return primary_location
+        qs = self.locations.filter(primary=True)
+        if qs:
+            location = qs[0]
+        return location
 
     def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
         try:
@@ -1468,24 +1478,6 @@ def process_paypal_ipn(sender, **kwargs):
         invoice.save()
 payment_was_flagged.connect(process_paypal_ipn)
 
-"""
-class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0)
-    longitude = LongitudeField(_('longitude'), default=0)
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
-    country = models.ForeignKey(Country)
-    address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
-    address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
-    postcode = models.CharField(_('postcode'), max_length=10, blank=True)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-    primary = models.BooleanField(_('primary location'))
-
-    def __unicode__(self):
-        return u'%s, %s (%s)' % (self.city, self.state, self.country)
-"""
 
 # signals!
 post_save.connect(create_organisation_account, sender=Organisation)
