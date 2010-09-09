@@ -59,10 +59,10 @@ Generate new content.
 '''
 def generate():
     cwd = os.path.abspath(os.path.dirname(__file__))
-    
     try:
         from asset_bundles import ASSET_BUNDLES
     except Exception, e:
+        print e.message
         return False
         
     cwd = os.path.abspath(os.path.dirname(__file__))

@@ -20,6 +20,7 @@ ASSET_BUNDLES = {
 #            'x_donate.css',
 #            'x_org.css',
             'index.css',
+            'thumbs_scroller.css'
             ],
     },
     'pvw_ie6_style': {
