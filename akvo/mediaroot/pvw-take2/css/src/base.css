@@ -1,5 +1,5 @@
 body {
-    background:#F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
+    background:#F9F9FA url(../../img/top_gradient.png) repeat-x top fixed;
     color:#000;
     }
 
@@ -9,7 +9,7 @@ div#main_container {
     }
     
 #footer {
-    background:#F9F9FA url(../img/footer_gradient.png) repeat-x top;
+    background:#F9F9FA url(../../img/footer_gradient.png) repeat-x top;
     color:#585E68;
     padding-top:40px;
     }
@@ -47,7 +47,7 @@ ul#breadcrum li a {
     }
     
 ul#breadcrum li a span {
-    background: transparent url('../img/breadcrum.png') no-repeat right;
+    background: transparent url(../../img/breadcrum.png) no-repeat right;
     display: block;
     height: 23px;
     margin: 0;

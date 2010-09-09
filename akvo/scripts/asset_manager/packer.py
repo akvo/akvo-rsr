@@ -83,7 +83,7 @@ def generate():
                 source_file.close()                
                 file_contents = '%s\n\n/*%s\n Contents from: %s\n%s*/\n\n%s' % (file_contents, 75*'-', file_element, 75*'-', tmp)
                 if ASSET_BUNDLES[bundle]['type'] == 'css':
-                    raw_file_contents = '%s@import url("%s%s");\n' % (raw_file_contents, 'src/', file_element)
+                    raw_file_contents = '%s@import url("%s%s");\n' % (raw_file_contents, '../src/', file_element)
             except Exception, e:
                 print 'Could not find bundle source file: %s' % file_element
                 raise e
