@@ -1,7 +1,7 @@
 
 
 /*---------------------------------------------------------------------------
- Contents from: reset.css
+ Contents from: x_reset.css
 ---------------------------------------------------------------------------*/
 
 /* 
@@ -106,7 +106,7 @@ input, select {
 
 
 /*---------------------------------------------------------------------------
- Contents from: grid.css
+ Contents from: x_grid.css
 ---------------------------------------------------------------------------*/
 
 /* --------------------------------------------------------------
@@ -337,7 +337,78 @@ hr.space {
 
 
 /*---------------------------------------------------------------------------
- Contents from: typography.css
+ Contents from: x_utils.css
+---------------------------------------------------------------------------*/
+
+.hide { display:none; }
+.space0 { margin:0; }
+.space5 { margin:5px; }
+.space10 { margin:10px; }
+.space15 { margin:15px; }
+.space20 { margin:20px; }
+
+.top-margin { margin-top: 19px; }
+
+.green      { color:#4D8722; }
+.red        { color:#A5000F; }
+.blue       { color:#3A8CB9; }
+.yellow     { color:#FEC344; }
+.grey       { color:#7E8197; }
+.black      { color:#000; }
+.white      { color:#fff; }
+
+.dk_grey    { color: #3D414B; }
+.lt_grey    { color: #7D818E; }
+.dk_blue    { color: #343D84; }
+.link_blue  { color: #1877B8; }
+.orange     { color: #E35D18; }
+
+.text_left {text-align:left;}
+.text_right {text-align:right;}
+
+.link_triangle { font-size: 70%; }
+.round {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+.white_box {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background-color:#fff;
+    }
+
+.gradient_box {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background-color:#fff;
+	background: -moz-linear-gradient(top, #F1F4F9, #fff);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#F1F4F9), to(#fff));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F1F4F9', endColorstr='#ffffff');
+}
+    
+.linear_bg {
+    border:1px solid #D9DBDC;
+    background-color: #EFF3F3; /* fallback color */
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));
+    background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
+    }
+    
+.grey_hover:hover {
+    background-color:#F1F5F9;
+    }
+    
+
+/*---------------------------------------------------------------------------
+ Contents from: x_typography.css
 ---------------------------------------------------------------------------*/
 
 /*
@@ -382,11 +453,12 @@ a:visited { color:#2B80AF; }
 a:hover { color:#0FA0CB; text-decoration: underline; }
 
 p {
-    color:#333;
+    color:#3D414B;
     font-size:0.875em; /* 16*0.875 = 14*/
     line-height:1.4em; 
     margin-bottom:1.5em;
     }
+
 
 h1 {
     color:#E35D18;
@@ -396,8 +468,12 @@ h1 {
     margin-bottom:0.5em;
     }
 
+h1.h0 {
+    font-size:1.75em;
+}
+
 h2 {
-    color:#2097F7;
+    color:#1877B8;
     font-size:1.125em;
     font-weight:normal;
     line-height:1.2em;
@@ -413,7 +489,7 @@ h3 {
     }
 
 h4 {
-    color:#2097F7;
+    color:#1877B8;
     font-size:0.875em;
     font-weight:bold;
     line-height:1.2em;
@@ -429,7 +505,7 @@ h5 {
     }
 
 h6 {
-    color:#000;
+    color:#1877B8;
     font-size: 0.6875em;
     font-weight:normal;
     line-height:1.2em;
@@ -442,7 +518,7 @@ h6 {
 */
 
 ul, ol { 
-    color:#333;
+    color:#3D414B;
     font-size:0.875em;
     line-height:1.7em;
     margin-bottom:0.5em; 
@@ -559,7 +635,6 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 [8. Text sizes] 
 */
 p.lede {
-    color:#7D818E;
     font-size:1.125em;
     line-height:1.2em;
     margin-bottom:1.3em;
@@ -581,7 +656,6 @@ p.nano, .nano p, span.nano, .nano span, .nano label ul.nano, a.nano {
     }
 
 p.nano-lede {
-    color:#7D818E;
     font-size:0.8125em;
     line-height:1.2em;
     margin-bottom:0.75em;
@@ -590,7 +664,7 @@ p.nano-lede {
 
 
 /*---------------------------------------------------------------------------
- Contents from: base.css
+ Contents from: x_base.css
 ---------------------------------------------------------------------------*/
 
 body {
@@ -700,7 +774,7 @@ div.counter_badge span {
     }
 
 /*---------------------------------------------------------------------------
- Contents from: main_nav.css
+ Contents from: x_main_nav.css
 ---------------------------------------------------------------------------*/
 
 #header {
@@ -770,7 +844,7 @@ a#main_nav_left {
 
 #main_nav_language {
     float:left;
-    width:244px;
+    width:154px;
     overflow:hidden;
     border-right: 1px solid #ACACBA;
     height:32px;
@@ -803,66 +877,7 @@ a#main_nav_left {
 
 
 /*---------------------------------------------------------------------------
- Contents from: utils.css
----------------------------------------------------------------------------*/
-
-.hide { display:none; }
-.space0 { margin:0; }
-.space5 { margin:5px; }
-.space10 { margin:10px; }
-.space15 { margin:15px; }
-.space20 { margin:20px; }
-
-.top-margin { margin-top: 19px; }
-
-.green      { color:#4D8722; }
-.red        { color:#A5000F; }
-.blue       { color:#3A8CB9; }
-.yellow     { color:#FEC344; }
-.grey       { color:#7E8197; }
-.black      { color:#000; }
-.white      { color:#fff; }
-
-.dk_grey    { color: #3D414B; }
-.lt_grey    { color: #7D818E; }
-.dk_blue    { color: #343D84; }
-.link_blue  { color: #1877B8; }
-.orange     { color: #E35D18; }
-
-.text_left {text-align:left;}
-.text_right {text-align:right;}
-
-.round {
-    -khtml-border-radius: 2px;
-    -moz-border-radius: 2px; 
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    }
-
-.white_box {
-    -khtml-border-radius: 2px;
-    -moz-border-radius: 2px; 
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    border: 1px solid #9C9CAC;
-    background-color:#fff;
-    }
-    
-
-.linear_bg {
-    border:1px solid #D9DBDC;
-    background-color: #EFF3F3; /* fallback color */
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));
-    background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
-    }
-    
-.grey_hover:hover {
-    background-color:#F1F5F9;
-    }
-    
-
-/*---------------------------------------------------------------------------
- Contents from: index.css
+ Contents from: x_index.css
 ---------------------------------------------------------------------------*/
 
 .h1_companion {
