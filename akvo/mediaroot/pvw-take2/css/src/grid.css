@@ -176,7 +176,13 @@ next column, or to pull it into the previous column.  */
   margin-top:1.5em;
 }
 .append-bottom {
-  margin-bottom:1.5em;
+  margin-bottom: 1.5em;
+}
+.gutter-top {
+  margin-top: 19px;
+}
+.gutter-bottom {
+  margin-bottom: 19px;
 }
 
 /* Use a .box to create a padded box inside a column.  */

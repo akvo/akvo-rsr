@@ -56,7 +56,7 @@ h1 {
     }
 
 h1.h0 {
-    font-size:1.75em;
+    font-size:1.5em;
 }
 
 h2 {
@@ -234,12 +234,12 @@ p.small, .small p, span.small, .small span,  .small label, ul.small, a.small, .s
 
 p.tiny, .tiny p, span.tiny, .tiny span, .tiny label, ul.tiny, a.tiny {
     font-size:0.6875em;
-    line-height:1.4em;
+    line-height:1.2em;
     }
 
 p.nano, .nano p, span.nano, .nano span, .nano label ul.nano, a.nano {
     font-size:0.56725em;
-    line-height:1.4em;
+    line-height:1.1em;
     }
 
 p.nano-lede {
