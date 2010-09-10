@@ -37,8 +37,7 @@ ul#main_nav li a {
     }
 
 ul#main_nav li a:hover {   
-    background-color: #fff;
-    color:#2097F7;
+    background: #fff url('../../img/mainnav/background_hover.png') no-repeat center;
     text-decoration: none;
     }
 
