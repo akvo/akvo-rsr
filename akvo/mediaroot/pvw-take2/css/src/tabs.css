@@ -48,7 +48,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     display: block;
     padding: 0 10px;
     padding: 0px 15px; /*dk*/
-    background: url('../img/tab.png') no-repeat;
+    background: url(../../img/tab.png) no-repeat;
     }
 
 .ui-tabs-nav a {
@@ -133,7 +133,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 .ui-tabs-loading em {
     padding: 0 0 0 20px;
-    background: url('../img/loading.gif') no-repeat 0 50%;
+    background: url(../../img/loading.gif) no-repeat 0 50%;
     }
 
 /* Additional IE specific bug fixes... */

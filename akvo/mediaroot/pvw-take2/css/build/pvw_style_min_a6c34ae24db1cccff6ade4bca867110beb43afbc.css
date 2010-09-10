@@ -139,7 +139,7 @@ input, select {
 
 /* Use this class on any .span / container to see the grid. */
 .showgrid {
-  background: url(src/grid.png);
+  background: url(../img/grid.png);
 }
 
 
@@ -337,6 +337,77 @@ hr.space {
 
 
 /*---------------------------------------------------------------------------
+ Contents from: utils.css
+---------------------------------------------------------------------------*/
+
+.hide { display:none; }
+.space0 { margin:0; }
+.space5 { margin:5px; }
+.space10 { margin:10px; }
+.space15 { margin:15px; }
+.space20 { margin:20px; }
+
+.top-margin { margin-top: 19px; }
+
+.green      { color:#4D8722; }
+.red        { color:#A5000F; }
+.blue       { color:#3A8CB9; }
+.yellow     { color:#FEC344; }
+.grey       { color:#7E8197; }
+.black      { color:#000; }
+.white      { color:#fff; }
+
+.dk_grey    { color: #3D414B; }
+.lt_grey    { color: #7D818E; }
+.dk_blue    { color: #343D84; }
+.link_blue  { color: #1877B8; }
+.orange     { color: #E35D18; }
+
+.text_left {text-align:left;}
+.text_right {text-align:right;}
+
+.link_triangle { font-size: 70%; }
+.round {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+.white_box {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background-color:#fff;
+    }
+
+.gradient_box {
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background-color:#fff;
+	background: -moz-linear-gradient(top, #F1F4F9, #fff);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#F1F4F9), to(#fff));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F1F4F9', endColorstr='#ffffff');
+}
+    
+.linear_bg {
+    border:1px solid #D9DBDC;
+    background-color: #EFF3F3; /* fallback color */
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));
+    background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
+    }
+    
+.grey_hover:hover {
+    background-color:#F1F5F9;
+    }
+    
+
+/*---------------------------------------------------------------------------
  Contents from: typography.css
 ---------------------------------------------------------------------------*/
 
@@ -382,11 +453,12 @@ a:visited { color:#2B80AF; }
 a:hover { color:#0FA0CB; text-decoration: underline; }
 
 p {
-    color:#333;
+    color:#3D414B;
     font-size:0.875em; /* 16*0.875 = 14*/
     line-height:1.4em; 
     margin-bottom:1.5em;
     }
+
 
 h1 {
     color:#E35D18;
@@ -396,8 +468,12 @@ h1 {
     margin-bottom:0.5em;
     }
 
+h1.h0 {
+    font-size:1.75em;
+}
+
 h2 {
-    color:#2097F7;
+    color:#1877B8;
     font-size:1.125em;
     font-weight:normal;
     line-height:1.2em;
@@ -413,7 +489,7 @@ h3 {
     }
 
 h4 {
-    color:#2097F7;
+    color:#1877B8;
     font-size:0.875em;
     font-weight:bold;
     line-height:1.2em;
@@ -429,7 +505,7 @@ h5 {
     }
 
 h6 {
-    color:#000;
+    color:#1877B8;
     font-size: 0.6875em;
     font-weight:normal;
     line-height:1.2em;
@@ -442,7 +518,7 @@ h6 {
 */
 
 ul, ol { 
-    color:#333;
+    color:#3D414B;
     font-size:0.875em;
     line-height:1.7em;
     margin-bottom:0.5em; 
@@ -559,7 +635,6 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 [8. Text sizes] 
 */
 p.lede {
-    color:#7D818E;
     font-size:1.125em;
     line-height:1.2em;
     margin-bottom:1.3em;
@@ -581,7 +656,6 @@ p.nano, .nano p, span.nano, .nano span, .nano label ul.nano, a.nano {
     }
 
 p.nano-lede {
-    color:#7D818E;
     font-size:0.8125em;
     line-height:1.2em;
     margin-bottom:0.75em;
@@ -594,7 +668,7 @@ p.nano-lede {
 ---------------------------------------------------------------------------*/
 
 body {
-    background:#F9F9FA url(../img/top_gradient.png) repeat-x top fixed;
+    background:#F9F9FA url(../../img/top_gradient.png) repeat-x top fixed;
     color:#000;
     }
 
@@ -604,7 +678,7 @@ div#main_container {
     }
     
 #footer {
-    background:#F9F9FA url(../img/footer_gradient.png) repeat-x top;
+    background:#F9F9FA url(../../img/footer_gradient.png) repeat-x top;
     color:#585E68;
     padding-top:40px;
     }
@@ -642,7 +716,7 @@ ul#breadcrum li a {
     }
     
 ul#breadcrum li a span {
-    background: transparent url('../img/breadcrum.png') no-repeat right;
+    background: transparent url(../../img/breadcrum.png) no-repeat right;
     display: block;
     height: 23px;
     margin: 0;
@@ -704,162 +778,35 @@ div.counter_badge span {
 ---------------------------------------------------------------------------*/
 
 #header {
-    /*background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;*/
-    background: transparent url('../img/main_nav_bkgd.png') repeat-x bottom;
+    background-color:#FF7A2C;
+    background: -moz-linear-gradient(top, #fff, #FF7A2C);
+	/*background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#FF7A2C));*/
+	background: -webkit-gradient(linear, 50% 0%, 50% 0%, from(#fff), to(#FF7A2C));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#FF7A2C');
     z-index:5;
-    left: 0; /* IE 7 */
-	position: fixed;
-	top: 0;
-	width: 100%;
+    left:0; /* IE 7 */
+	position:fixed;
+	top:0px;
+	width:100%;
     }
 
+#header_container {
+    
+    
+    }
+    
 ul#main_nav {
     margin:0; 
     padding:0
     }
 
 ul#main_nav li {
-    list-style: none;
+    list-style:none;
     display: inline;
     margin:0;
     padding:0;
     }
 
-ul#main_nav li a {    
-    color: #383C82;
-    cursor: pointer;
-    display: block;
-    float: left;
-    font-size:0.875em;
-    font-weight:bold;
-    height:37px;
-    margin:0;
-    overflow:hidden;
-    padding:0;
-    width: 90px;
-    /*-webkit-transition:background-color .2s ease-out;*/
-    }
-
-ul#main_nav li a:hover {   
-    background-color: #fff;
-    color:#2097F7;
-    text-decoration: none;
-    }
-
-ul#main_nav li a.active {
-    background-color: #fff;
-    }
-    
-ul#main_nav li a span {
-    border-right: 1px solid #ACACBA;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    /* height and padding-top decides sets height on 
-    the main_nav, use padding-top to position your text. */
-    height:28px;
-    padding-top:5px;
-    cursor: pointer;
-    }
-
-a#main_nav_left {
-    width:100px !important;
-    overflow:hidden;
-    }
-
-#main_nav_language {
-    float:left;
-    width:244px;
-    overflow:hidden;
-    border-right: 1px solid #ACACBA;
-    height:32px;
-    }
-
-#main_nav_account {    
-    color:#32842F !important;
-    }
-
-#main_nav_account span {
-    border-right: None !important;
-    }
-
-/*ul#account_nav {
-    background-color:cyan;
-    display:none;
-    height:198px; 
-    min-width:200px;
-    position:absolute;
-    width:100%;
-    right:0;
-    z-index:2;
-    top:100%;
-    }*/
-
-
-
-
-
-
-
-/*---------------------------------------------------------------------------
- Contents from: utils.css
----------------------------------------------------------------------------*/
-
-.hide { display:none; }
-.space0 { margin:0; }
-.space5 { margin:5px; }
-.space10 { margin:10px; }
-.space15 { margin:15px; }
-.space20 { margin:20px; }
-
-.top-margin { margin-top: 19px; }
-
-.green      { color:#4D8722; }
-.red        { color:#A5000F; }
-.blue       { color:#3A8CB9; }
-.yellow     { color:#FEC344; }
-.grey       { color:#7E8197; }
-.black      { color:#000; }
-.white      { color:#fff; }
-
-.dk_grey    { color: #3D414B; }
-.lt_grey    { color: #7D818E; }
-.dk_blue    { color: #343D84; }
-.link_blue  { color: #1877B8; }
-.orange     { color: #E35D18; }
-
-.text_left {text-align:left;}
-.text_right {text-align:right;}
-
-.round {
-    -khtml-border-radius: 2px;
-    -moz-border-radius: 2px; 
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    }
-
-.white_box {
-    -khtml-border-radius: 2px;
-    -moz-border-radius: 2px; 
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    border: 1px solid #9C9CAC;
-    background-color:#fff;
-    }
-    
-
-.linear_bg {
-    border:1px solid #D9DBDC;
-    background-color: #EFF3F3; /* fallback color */
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#FDFEFE), to(#EFF3F3));
-    background-image: -moz-linear-gradient(100% 100% 90deg, #FDFEFE, #EFF3F3);
-    }
-    
-.grey_hover:hover {
-    background-color:#F1F5F9;
-    }
-    
 
 /*---------------------------------------------------------------------------
  Contents from: index.css
@@ -874,4 +821,39 @@ a#main_nav_left {
 
 .small_link {
   font-size: 0.8125em;
+}
+
+
+/*---------------------------------------------------------------------------
+ Contents from: thumbs_scroller.css
+---------------------------------------------------------------------------*/
+
+div.thumbs_scroller {
+  position: relative;   
+  height: 301px;
+  /* Make bigger than a photo, because we need a place for a scroll-bar. */
+  width: 120px;
+  overflow: auto;
+  float: right;
+}
+
+/*div.thumbs {
+  padding: 15px 0;
+}*/
+
+.thumbs a {
+  display: block;
+
+  /* When image support is turned off */
+  color: #fff;
+  background: #FFF;  
+}
+.thumbs a:hover {
+  border-color: #9C9CAC;
+  border-style: dotted;
+}
+.thumbs img {
+  display: block;
+  border: none;
+  margin: 0 0 5px 25px;
 }

@@ -1,0 +1,29 @@
+#header {
+    background-color:#FF7A2C;
+    background: -moz-linear-gradient(top, #fff, #FF7A2C);
+	/*background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#FF7A2C));*/
+	background: -webkit-gradient(linear, 50% 0%, 50% 0%, from(#fff), to(#FF7A2C));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#FF7A2C');
+    z-index:5;
+    left:0; /* IE 7 */
+	position:fixed;
+	top:0px;
+	width:100%;
+    }
+
+#header_container {
+    
+    
+    }
+    
+ul#main_nav {
+    margin:0; 
+    padding:0
+    }
+
+ul#main_nav li {
+    list-style:none;
+    display: inline;
+    margin:0;
+    padding:0;
+    }
