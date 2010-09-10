@@ -22,69 +22,66 @@
 	
 </head>
 <body>
-	<div id="header">
-		<div id="header_container" class="container">
-			<ul id="main_nav">
-				<li>
-					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
-						<span>
-							DWS
-							{% comment %}
-								<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
-							{% endcomment %}							
-						</span>
-					</a>
-				</li>
-				<li>
-	                <a href="{% url areas %}" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
-	                    <span>{% trans 'Focus Areas' %}</span>
-	                </a>
-	            </li>
-				<li>
-					<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
-						<span>{% trans 'Projects' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="/rsr/projects/">
-						<span>{% trans 'History' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="/web/education">
-						<span>{% trans 'Education' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url directory %}" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
-						<span>{% trans 'Directory' %}</span>
-					</a>
-				</li>
-				<li><a href="/news"><span>{% trans 'News' %}</span></a></li>
-				<li><a href="/web/who_we_are"><span>{% trans 'About' %}</span></a></li>
-				<li>
-					<span id="main_nav_language">
-						<span class="small" style="margin-left:20px; margin-top:9px; display:block; ">
-							&nbsp;
-							{# Site language: English #}
-						</span>
+	<div id="header_container" class="container">
+		<ul id="main_nav">
+			<li>
+				<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+					<img src="{{MEDIA_URL}}pvw-take2/img/mainnav/dws_logo.png" width="222" height="41" 
+						alt="Dutch Waster Sector" style="margin:0;padding:0;">
+					<span>
+						{% comment %}
+							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
+						{% endcomment %}							
 					</span>
-				</li>
-				<li>
-					{% if not user.username %}
-						<a id="main_nav_account" href="{% url signin %}?next={{request.path}}">
-							<span>{% trans 'Sign in' %}</span>
-						</a>
-					{% else %}
-						<a id="main_nav_account" href="{% url akvo.rsr.views.signout %}" title="{{user.username}}">
-							<span>{% trans 'Sign out' %}</span>
-							{# <span>{% trans 'Account' %}</span> #}
-						</a>
-					{% endif %}
-				</li>
-			</ul>
-		</div>
+				</a>
+			</li>
+			<li>
+                <a href="{% url areas %}" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
+                    <span>{% trans 'Focus Areas' %}</span>
+                </a>
+            </li>
+			<li>
+				<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+					<span>{% trans 'Projects' %}</span>
+				</a>
+			</li>
+			<li>
+				<a href="/rsr/projects/">
+					<span>{% trans 'History' %}</span>
+				</a>
+			</li>
+			<li>
+				<a href="/web/education">
+					<span>{% trans 'Education' %}</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url directory %}" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
+					<span>{% trans 'Directory' %}</span>
+				</a>
+			</li>
+			<li><a href="/news"><span>{% trans 'News' %}</span></a></li>
+			<li><a href="/web/who_we_are"><span>{% trans 'About' %}</span></a></li>
+			<li>
+				<span id="main_nav_language">
+						&nbsp;
+				</span>
+			</li>
+			<li id="mainnav_right">
+				{% if not user.username %}
+					<a id="main_nav_account" href="{% url signin %}?next={{request.path}}">
+						<span>{% trans 'Sign in' %}</span>
+					</a>
+				{% else %}
+					<a id="main_nav_account" href="{% url akvo.rsr.views.signout %}" title="{{user.username}}">
+						<span>{% trans 'Sign out' %}</span>
+						{# <span>{% trans 'Account' %}</span> #}
+					</a>
+				{% endif %}
+			</li>
+		</ul>
 	</div>
+
 	<div id="main_container" class="container">
 		{% block breadcrum  %}
 			<div class="span-18" style="margin-bottom:20px;">
