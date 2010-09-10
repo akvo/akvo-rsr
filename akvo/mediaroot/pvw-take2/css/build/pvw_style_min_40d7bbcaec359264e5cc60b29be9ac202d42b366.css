@@ -785,10 +785,7 @@ div.counter_badge span {
 ul#main_nav {
     margin:0; 
     padding:0;
-    background-color:#FE7A2C;
-    background: #DDD url(../../img/mainnav/background.png) repeat-x;
-    
-    
+    background:#FE7A2C url(../../img/mainnav/background.png) repeat-x;
     height:41px;
     }
 
@@ -811,12 +808,12 @@ ul#main_nav li a {
     margin:0;
     overflow:hidden;
     padding:0;
-    width: 90px;
+    margin-right:30px;
     /*-webkit-transition:background-color .2s ease-out;*/
     }
 
 ul#main_nav li a:hover {   
-    background: #fff url('../../img/mainnav/background_hover.png') no-repeat center;
+    background: transparent url(../../img/mainnav/background_hover2.png) no-repeat center bottom;
     text-decoration: none;
     }
 
@@ -837,22 +834,26 @@ a#main_nav_left {
     color:#0078B5 !important;
     width:222px !important;
     overflow:hidden;
+    margin-right:20px !important;
     }
-
-a#main_nav_left span {
-    text-align:left !important;
-    }
-    
-
-li#mainnav_right {
-    float:right;
-    }
-    
 
 a#main_nav_left:hover {
     color:#FE7A2C !important;
     background-color:#ccc !important;
     }
+
+a#main_nav_left span {
+    text-align:left !important;
+    }
+
+li#mainnav_right {
+    float:right;
+    }
+
+li#mainnav_right a {
+    margin-right:20px !important;
+    }
+
     
 
     
