@@ -126,9 +126,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     }
 
 .ui-tabs-panel {
+  /*
     border-top: 1px solid #ccc;
     padding: 1em 8px;
     background: #fff; /* declare background color for container to avoid distorted fonts in IE while fading */
+    
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background:#fff;
     }
 
 .ui-tabs-loading em {
@@ -146,7 +154,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     }
 
 .tab {
-    padding-top: 20px;
+    /*padding-top: 20px;*/
     margin:0;
     min-height: 300px;
     }
