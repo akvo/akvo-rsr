@@ -674,7 +674,7 @@ body {
 
 div#main_container {
     margin-bottom:40px;
-    padding-top:55px;
+    /*padding-top:55px;*/
     }
     
 #footer {
@@ -779,7 +779,7 @@ div.counter_badge span {
 
 
 #header_container {
-    margin-top:25px;
+    margin-top:15px;
     }
     
 ul#main_nav {

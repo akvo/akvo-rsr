@@ -83,6 +83,18 @@
 	</div>
 
 	<div id="main_container" class="container">
+		{% if not user.username %}
+			<div style="text-align:right; margin-top:5px; margin-bottom:10px;">
+				<p class="small grey" style="margin:0; padding:0;">
+					{% trans 'Welcome!' %} <a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a> {% trans 'or' %} <a href="/rsr/accounts/register1/">{% trans 'Register' %}</a>
+				</p>
+			</div>
+		{% else %}
+			<div style="height:15px;">
+				&nbsp;
+			</div>
+		{% endif %}
+		
 		{% block breadcrum  %}
 			<div class="span-18" style="margin-bottom:20px;">
 				<div id="breadcrum_back">
