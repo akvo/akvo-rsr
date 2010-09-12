@@ -14,6 +14,7 @@ ASSET_BUNDLES = {
             'buttons.css',
             'index.css',
             'project_main.css',
+            'project_directory.css',
             'thumbs_scroller.css',
             'tabs.css',
 #            'x_project_directory.css', 

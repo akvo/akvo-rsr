@@ -367,6 +367,7 @@ hr.space {
 .lt_grey    { color: #7D818E; }
 .dk_blue    { color: #343D84; }
 .link_blue  { color: #1877B8; }
+.link_blue:hover  { color: #1E95E6; }
 .orange     { color: #E35D18; }
 
 .text_left {text-align:left;}
@@ -450,13 +451,13 @@ body {
     }
     
 a { 
-    color:#2B80AF;
+    color:#1877B8;
     cursor:pointer;
     text-decoration:none;
     }
     
 a:visited { color:#2B80AF; }
-a:hover { color:#0FA0CB; text-decoration: underline; }
+a:hover { color:#1E95E6; text-decoration: underline; }
 
 p {
     color:#3D414B;
@@ -479,7 +480,7 @@ h1.h0 {
 }
 
 h2 {
-    color:#1877B8;
+    color:#0097F6;
     font-size:1.125em;
     font-weight:normal;
     line-height:1.2em;
@@ -495,7 +496,7 @@ h3 {
     }
 
 h4 {
-    color:#1877B8;
+    color:#0097F6;
     font-size:0.875em;
     font-weight:bold;
     line-height:1.2em;
@@ -924,6 +925,104 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
   font-size: 1.2em;
   padding: 5px 10px;
 }
+
+/*---------------------------------------------------------------------------
+ Contents from: project_directory.css
+---------------------------------------------------------------------------*/
+
+
+table#projects {
+  border: 0;
+  border-bottom: 1px solid #9C9CAC;
+  margin: 0;
+  font-size: 100%; 
+  width: 973px;
+}
+
+#projects th {
+  border: 0;
+  border-bottom: 1px solid #9C9CAC;
+  border-right: 1px solid #9C9CAC;
+  border-top: 1px solid #9C9CAC;
+  padding: 0;
+  font-weight: normal;
+  background: EAECEF;
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#EFF3F5), to(#EAECEF));
+  background: -moz-linear-gradient(90deg, #EAECEF, #EFF3F5);
+}
+
+#projects th.activeTableHeaderAsc {
+  background: DEE0E3;
+  background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EDEFF2), to(#DEE0E3));
+  background: -moz-linear-gradient(90deg, #DEE0E3, #EDEFF2);
+}
+ 
+div.activeTableHeaderAsc {
+  background: url('../../img/table/header_up_arrow.gif') no-repeat scroll right;  
+  font-weight:bold !important;
+}
+
+#projects th.activeTableHeaderDesc {
+  background: DEE0E3;
+  background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EDEFF2), to(#DEE0E3));
+  background: -moz-linear-gradient(90deg, #DEE0E3, #EDEFF2);
+}
+
+div.activeTableHeaderDesc {
+  background: url('../../img/table/header_down_arrow.gif') no-repeat scroll right;
+  font-weight:bold !important;
+}
+
+#projects td {
+  border: 0;
+  border-top: 1px solid #9C9CAC;
+  padding: 0;
+}
+
+#projects tr:hover {
+  background: #F4F8FA;
+  background: -moz-linear-gradient(90deg, #F4F8FA, #F9FDFF);
+  background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F9FDFF), to(#F4F8FA));
+}
+
+.name_col {
+  width: 343px;
+}
+
+.colgroup {
+  width: 105px;
+}
+
+.td-text {
+  margin: 10px;
+  font-size:0.8125em;
+  line-height:1.2em;
+  margin-bottom:0.75em;
+}
+
+#projects th div {
+  padding: 10px;
+}
+
+.blue_box {
+  -khtml-border-radius: 2px;
+  -moz-border-radius: 2px; 
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #72DBCC;
+  background-color:#F1F5FA;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0F4F9), to(#FFFFFF), color-stop(.6,#FFFFFF));  
+}
+
+.pagination {
+  background: #E5E5E9;
+  padding: 10px;
+}
+.pagination p {
+  margin: 0;
+  text-align: right;
+}
+
 
 /*---------------------------------------------------------------------------
  Contents from: thumbs_scroller.css

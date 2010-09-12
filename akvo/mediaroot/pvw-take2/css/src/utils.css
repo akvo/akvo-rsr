@@ -19,6 +19,7 @@
 .lt_grey    { color: #7D818E; }
 .dk_blue    { color: #343D84; }
 .link_blue  { color: #1877B8; }
+.link_blue:hover  { color: #1E95E6; }
 .orange     { color: #E35D18; }
 
 .text_left {text-align:left;}

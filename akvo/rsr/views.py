@@ -195,7 +195,7 @@ def focusareas(request):
     return {'site_section': 'areas',}
 
 if settings.PVW_RSR:
-    @render_to('rsr/project_directory.html')
+    @render_to('rsr/project/project_directory.html')
     def project_list(request, area=None, org_id=None):
         '''
         List of  projects in RSR
