@@ -1,10 +1,11 @@
 {% extends "rsr/base.html" %}
 
-{% load i18n rsr_tags webdesign thumbnail counter_tags cache humanize %}
+{% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
 {% block maincontent %}
+
 
 <div class='container'>
 
@@ -30,174 +31,96 @@
     </div>
     
     <div class='column span-14 last'>
-      <h1>Our projects <span class="lt_grey">(17 results)</span></h1>
+      <h1>Our projects <span class="lt_grey">({{projects.count}} results)</span></h1>
+      {% autosort projects %}
+      {% autopaginate projects 4 %}
       <div class="white_box">
-        <div class="pagination">
-          <p class="small" style="">
-            Page 1 of 17
-          </p>
-        </div>
+        {% paginate %}
         <table id="projects">
           <colgroup class="name_col"></colgroup>
           <colgroup span="6" class="colgroup"></colgroup>
           <tr>
-            <th class="activeTableHeaderAsc">
-              <a href="#" class="small">
-                <div class="activeTableHeaderAsc">Name</div>
-              </a>
+            <th style="padding: 10px;">
+              {% anchor name Name %}
             </th>
-            <th class="activeTableHeaderDesc">
+            <!--<th class="activeTableHeaderDesc">
               <a href="#" class="small">
                 <div class="activeTableHeaderDesc">Country</div>
               </a>
+            </th>-->
+            <th>{% anchor country Country %}</th>
+            <th>
+               {% anchor country__continent Continent %}
             </th>
             <th>
-              <a href="#" class="small">
-                <div>Continent</div>
-              </a>
+              {% anchor status Status %}
             </th>
             <th>
-              <a href="#" class="small">
-                <div>Status</div>
-              </a>
+              {% anchor latest_update 'Latest update' %}
             </th>
             <th>
-              <a href="#" class="small">
-                <div>Update</div>
-              </a>
-            </th>
-            <th>
-              <a href="#" class="small">
-                <div>Partners</div>
-              </a>
+                <p class="small">Partners</p>
             </th>
             <th style="border-right: 0;">
-              <a href="#" class="small">
-                <div>Focus area</div>
-              </a>
+              {% if focusarea %}
+                <p class="small">Focus area</p>
+              {% else %}
+                {% anchor status Status %}
+              {% endif %}
             </th>
           </tr>
-  
-          <tr>
-            <td>
-              <div class="space10">
-                <a href="/">
-                  <img style="float: left; margin: 0 10px 10px 0;" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="100" height="75" alt="Project image">
-                  <p class="nano-lede strong link_blue">
-                      Feugiat nulla facilisis at vero eros
+          {% for project in projects %}
+            <tr>
+              <td>
+                <div class="space10">
+                  <a href="{% url project_main project.id %}">
+                    {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
+                    <p class="nano-lede strong link_blue">
+                        {{project.name}}
+                    </p> 
+                  </a>
+                  <p class="nano-lede">
+                    Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.
                   </p> 
-                </a>
-                <p class="nano-lede">
-                  Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.
-                </p> 
-              </div>
-            </td>
-            <td>
-              <p class="td-text">Bangladesh</p>
-            </td>
-            <td>
-              <p class="td-text">Asia</p>
-            </td>
-            <td>
-              <p class="td-text green">Bangladesh</p>
-            </td>
-            <td>
-              <p class="td-text"><a href="#">04 Feb 2010</a></p>
-            </td>
-            <td>
-              <p class="td-text">
-                <a href="#">FODRA</a><br/>
-                <a href="#">WASTE</a><br/>
-                <a href="#">ICCO</a><br/>
-              </p>
-            </td>
-            <td>
-              <p class="td-text">Clean water</p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="space10">
-                <a href="/">
-                  <img style="float: left; margin: 0 10px 10px 0;" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="100" height="75" alt="Project image">
-                  <p class="nano-lede strong link_blue">
-                      Feugiat nulla facilisis at vero eros
-                  </p> 
-                </a>
-                <p class="nano-lede">
-                  Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.
-                </p> 
-              </div>
-            </td>
-            <td>
-              <p class="td-text">Bangladesh</p>
-            </td>
-            <td>
-              <p class="td-text">Asia</p>
-            </td>
-            <td>
-              <p class="td-text green">Bangladesh</p>
-            </td>
-            <td>
-              <p class="td-text"><a href="#">04 Feb 2010</a></p>
-            </td>
-            <td>
-              <p class="td-text">
-                <a href="#">FODRA</a><br/>
-                <a href="#">WASTE</a><br/>
-                <a href="#">ICCO</a><br/>
-              </p>
-            </td>
-            <td>
-              <p class="td-text">Clean water</p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="space10">
-                <a href="/">
-                  <img style="float: left; margin: 0 10px 10px 0;" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="100" height="75" alt="Project image">
-                  <p class="nano-lede strong link_blue">
-                      Feugiat nulla facilisis at vero eros
-                  </p> 
-                </a>
-                <p class="nano-lede">
-                  Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.
-                </p> 
-              </div>
-            </td>
-            <td>
-              <p class="td-text">Bangladesh</p>
-            </td>
-            <td>
-              <p class="td-text">Asia</p>
-            </td>
-            <td>
-              <p class="td-text green">Bangladesh</p>
-            </td>
-            <td>
-              <p class="td-text"><a href="#">04 Feb 2010</a></p>
-            </td>
-            <td>
-              <p class="td-text">
-                <a href="#">FODRA</a><br/>
-                <a href="#">WASTE</a><br/>
-                <a href="#">ICCO</a><br/>
-              </p>
-            </td>
-            <td>
-              <p class="td-text">Clean water</p>
-            </td>
-          </tr>
-          
+                </div>
+              </td>
+              <td>
+                <p class="td-text">{{project.country}}</p>
+              </td>
+              <td>
+                <p class="td-text">{{project.country.get_continent_display}}</p>
+              </td>
+              <td>
+                <p class="td-text green">{{project.show_status}}</p>
+              </td>
+              <td>
+                <p class="td-text">
+                    {% if project.latest_update %}
+                      <a href="{% url project_updates project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
+                    {% else %}
+                      {% trans 'Not yet' %}
+                    {% endif %}
+                </p>
+              </td>
+              <td>
+                <p class="td-text">
+                  {% for partner in project.project_partners.all %}
+                    <a href="{% url org_detail partner.partner.id %}">{{partner.partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                  {% endfor %}
+                </p>
+              </td>
+              <td>
+                <p class="td-text">
+                  {% if focusarea == 'clean'      %}{% trans 'Clean water' %}{% endif %}
+                  {% if focusarea == 'safety'     %}{% trans 'Safety' %}{% endif %}
+                  {% if focusarea == 'sharing'    %}{% trans 'Sharing water' %}{% endif %}
+                  {% if focusarea == 'governance' %}{% trans 'Governance' %}{% endif %}
+                </p>
+              </td>
+            </tr>
+          {% endfor %}
         </table>
-        <div class="pagination">
-          <p class="small">
-            Page 1 of 17
-          </p>
-        </div>
+        {% paginate %}
       </div>
     </div>
   </div>

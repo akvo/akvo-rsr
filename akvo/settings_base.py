@@ -64,6 +64,8 @@ INSTALLED_APPS = (
     'rosetta',
     'django_counter',
     'mollie.ideal',
+    'django_sorting',
+    'pagination',
 )
 
 #INTERNAL_IPS = (
@@ -103,6 +105,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
+    'django_sorting.middleware.SortingMiddleware',
+    'pagination.middleware.PaginationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',

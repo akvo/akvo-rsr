@@ -212,8 +212,14 @@ if settings.PVW_RSR:
         if area:
             criteria = {str('categories__focus_area_%s' % (area,)): True}
             projects = Project.objects.published().filter(**criteria).distinct()
-        page = project_list_data(request, projects)
-        return {'page': page, 'site_section': 'areas', 'focusarea': area, 'org': org}
+#        page = project_list_data(request, projects)
+        projects = projects.extra(
+            select={
+                'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
+                'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
+            }
+        )
+        return {'projects': projects, 'site_section': 'areas', 'focusarea': area, 'org': org}
     
     @render_to('rsr/directory.html')
     def directory(request, org_type='all'):

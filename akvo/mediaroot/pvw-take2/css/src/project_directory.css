@@ -19,6 +19,10 @@ table#projects {
   background: -moz-linear-gradient(90deg, #EAECEF, #EFF3F5);
 }
 
+#projects th a {
+  font-size:0.8125em;  
+}
+
 #projects th.activeTableHeaderAsc {
   background: DEE0E3;
   background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EDEFF2), to(#DEE0E3));
@@ -85,8 +89,14 @@ div.activeTableHeaderDesc {
 .pagination {
   background: #E5E5E9;
   padding: 10px;
-}
-.pagination p {
   margin: 0;
   text-align: right;
 }
+
+.pagination span, .pagination a {
+  font-size:0.8125em;  
+}
+.disabled, .current {
+  color: #3D414B;
+}
+
