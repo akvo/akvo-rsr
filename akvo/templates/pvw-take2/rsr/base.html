@@ -112,85 +112,24 @@
 			<h1>Akvo RSR</h1>
 		{% endblock maincontent %}
 	</div>
-	<div id="footer">
-		<div id="footer_container" class="container">
-			<div class="span-18">
-				<h2>{% trans 'About Akvo.org' %}</h2>
-				<p>
-					{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects. Money flows quickly because donors choose what to fund and follow progress online. People can use these storylines to build exciting new campaigns and networks. Our partners lead the world in sharing updates using Akvo tools. Better feedback means happy donors, and dialogue between field workers builds skills and improves quality. Time and money are saved while people across the world get safe drinking water and proper sanitation.' %}
-				</p>
-				<p class="grey small">
-					{% trans 'Content posted on the web site is the responsibility of the Poster, for details see our <a href="/web/open_license">Open License</a> policy.' %}
-				</p>
-			</div>
-			<div class="span-18">
-				<div class="span-3 first">
-					<h3>{% trans 'Policies' %}</h3>
-					<p class="small">
-						<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a><br />
-						<a href="/web/donation_policy">{% trans 'Donations' %}</a><br />
-						<a href="/web/partners_and_projects_policy">{% trans 'Partners' %}</a><br />
-						<a href="/web/user_contribution_policy">{% trans 'User Contribution Policy' %}</a><br />
-						<a href="/web/open_license">{% trans 'Akvo licensing and copyrights' %}</a><br />
-						<a href="/web/privacy_policy">{% trans 'Privacy' %}</a><br />
-						<a href="/web/akvo-rsr-api-code-of-conduct">{% trans 'Akvo RSR API Code of Conduct' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'About' %}</h3>
-					<p class="small">
-						<a href="/web/what_we_do">{% trans 'What we do' %}</a><br />
-						<a href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a><br />
-						<a href="/web/why_we_do_it">{% trans 'Why we do it' %}</a><br />
-						<a href="/web/faq">{% trans 'Akvo Frequently Asked Questions' %}</a><br />
-						<a href="/web/map_partners_projects">{% trans 'Map' %}</a><br />
-						<a href="/web/team">{% trans 'Team' %}</a><br />
-						<a href="/web/jobs">{% trans 'Working at Akvo' %}</a><br />
-						<a href="/web/press">{% trans 'Press' %}</a><br />
-						<a href="/web/annual_reports">{% trans 'Akvo annual reports & Articles of incorporation' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'Partners' %}</h3>
-					<p class="small">
-						<a href="/web/partners">{% trans 'Strategic partners' %}</a><br />
-						<a href="{% url rsr_org_list %}">{% trans 'Project partners' %}</a><br />
-						<a href="/web/commercial_partners">{% trans 'Commercial partners' %}</a><br />
-						<a href="/web/knowledge_institute_partners">{% trans 'Knowledge institute partners' %}</a><br />
-						<a href="/web/akvo_investors">{% trans 'Akvo investors' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'Developers' %}</h3>
-					<p class="small">
-						<a href="/labs/index.php/Main_Page">{% trans 'Akvo Labs' %}</a><br />
-						<a href="http://github.com/akvo/">{% trans 'Source Code' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'Contact us' %}</h3>
-					<p class="small">
-						<a href="http://help.akvo.org/">Help &amp; Support</a><br />
-						<a href="/web/contact_us">{% trans 'Contact us' %}</a><br />
-						<br />
-						<a class="red" href="http://help.akvo.org/discussion/new ">{% trans 'Report a problem' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3 last">
-					<h3>{% trans 'Tools' %}</h3>
-					<p class="small">
-						<a href="/rsr/admin/">{% trans 'Akvo RSR admin' %}</a><br />
-						<a href="/blog/wp-login.php">{% trans 'Blog admin' %}</a><br />
-						<a href="/web/?q=user">{% trans 'CMS admin' %}</a><br />
-					</p>
-				</div>
-			</div>
-		</div>
+	
+	<div id="footer" class="container">
+		<div id="footer_bar">&nbsp;</div>
+		
+		<p class="small grey">
+			Site under 
+			<a href="/web/open_license">Open licence</a> &nbsp;|&nbsp;
+			<a href="/web/terms_of_use">Terms of use</a> &nbsp;|&nbsp;
+			<a href="/web/donation_policy">Privacy policy</a> &nbsp;|&nbsp;
+			<a href="/web/credits">Credits</a> &nbsp;|&nbsp;
+			<a href="/web/?q=user">Admin</a>
+			
+			<a href="/web/contact_us" style="margin-left:30px;">Contact us</a>
+		</p>
 	</div>
 	
-	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-	 <script>
+	<script>
 		!window.jQuery && document.write('<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"><\/script>')
 	</script>
 	

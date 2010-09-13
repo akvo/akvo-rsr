@@ -7,12 +7,24 @@ div#main_container {
     margin-bottom:40px;
     /*padding-top:55px;*/
     }
+
     
 #footer {
-    background:#F9F9FA url(../../img/footer_gradient.png) repeat-x top;
-    color:#585E68;
-    padding-top:40px;
+    /*background:#F9F9FA url(../../img/footer_gradient.png) repeat-x top;*/
+    padding-top:10px;
+    padding-bottom:40px
     }
+    
+div#footer_bar {
+    height:4px;
+    max-height:4px;
+    overflow:hidden;
+    background-color:#C4C9D0;
+	background: -moz-linear-gradient(top, #B9BFC8, #fff);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#B9BFC8), to(#fff));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#B9BFC8', endColorstr='#ffffff');
+	margin-bottom:15px;
+}
 
 #footer h3, #footer h2  {
     color: #585E68;
