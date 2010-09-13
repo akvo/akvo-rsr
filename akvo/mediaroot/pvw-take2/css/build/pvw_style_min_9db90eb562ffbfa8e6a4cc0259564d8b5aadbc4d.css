@@ -230,14 +230,14 @@ input.span-14, textarea.span-14 {width: 963px;}
 .border {
   padding-right: 9px;
   margin-right: 9px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #DDDDDD;
 }
 
 /* Border with more whitespace, spans one column. */
 .colborder {
   padding-right: 44px;
   margin-right: 45px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #DDDDDD;
 }
 
 
@@ -505,8 +505,8 @@ h4 {
 
 h5 {
     color:#E35D18;
-    font-size:0.8125em;
-    font-weight:normal;
+    font-size:0.875em;
+    font-weight:bold;
     line-height:1.2em;
     margin-bottom:0.5em;    
     }

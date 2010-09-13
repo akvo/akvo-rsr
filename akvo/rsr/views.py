@@ -1065,14 +1065,8 @@ def commentform(request, project_id):
 #    # remove organisation from queryset
 #    return assoc, partners.exclude(id=organisation.id)
 
-if settings.PVW_RSR:
-    path_to_templ_organisation = 'rsr/organisation.html'
-    path_to_templ_project_main = 'rsr/project_main.html'
-else:
-    path_to_templ_organisation = 'rsr/organisation/organisation.html'
-    path_to_templ_project_main = 'rsr/project/project_main.html'
     
-@render_to(path_to_templ_organisation)
+@render_to('rsr/organisation/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
     if settings.PVW_RSR:
