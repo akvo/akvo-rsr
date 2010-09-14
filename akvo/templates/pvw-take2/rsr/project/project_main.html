@@ -15,33 +15,29 @@
         <div class='column span-11 last' style="width: 760px;">
           <div class="space20">
             <div style="float: left;">
-              <h1 class="h0">Projects title</h1> 
+              <h1 class="h0">{{project.name}}</h1> 
             </div>
             <div class="h1_companion">
               <a href="#" class="awesome aqua small">Edit</a>
             </div>
             <div class="clear"></div>
-            <p class="lt_grey">Sub-title of project</p>
+            <p class="lt_grey">{{project.subtitle}}</p>
           </div>
         </div>
         <div class='column span-8' style="width: 548px;">          
           <div style="border-right: 1px solid #9C9CAC;">
             <div style="margin-left: 20px;">
-              <img width="403" height="301" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="main pic"/>
+              {% project_thumb project 403 301 'float:left;' %}
               <div class="thumbs_scroller">
                 <div class="thumbs">
-                  <a title="pic1" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic1"/></a>
-                  <a title="pic2" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic2"/></a>
-                  <a title="pic3" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic3"/></a>        
-                  <a title="pic4" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic4"/></a>
-                  <a title="pic5" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic5"/></a>
-                  <a title="pic6" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic6"/></a>
-                  <a title="pic7" href="#"><img width="60" height="60" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic7"/></a>    
+                  {% for update in updates_with_images %}
+                    {% gallery_thumb update 403 301 %}  
+                  {% endfor %}  
                 </div>
               </div>
               <div class="clear"></div>
               <p style="margin: 20px 20px 20px 0;">
-                Ad minim veniam quis nostrud exerci tation ullamcorper suscipit. Nunc nobis videntur parum clari fiant sollemnes in. Vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat.
+                {{project.project_plan_summary|linebreaks}}
               </p>
             </div>
           </div>
@@ -125,42 +121,39 @@
               <a href="#" class="awesome aqua small">Add update</a>
             </div>          
             <div class="clear"></div>
-            <div style="margin-top: 15px;">
-              <div class="space5">
+            <div class="space5" style="margin-top: 15px;">
+            {% for update in updates %}
                 <p>
-                  <h3><a href="#">Ex ea commodo consequat duis autem vel eum iriure.</a></h3>
-                  <span class="small lt_grey">2010-09-09 23:59 by Dalai Lama, <a href="#">The monks</a>, via web</span>
+                  <h3><a href="#">{{update.title}}</a></h3>
+                  <span class="small lt_grey">
+                    {{update.time|date:"Y-m-d H:i" }}
+                    {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}
+                        by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}
+                    {% endblocktrans %}
+                  </span>
                 </p>
-                <p>
-                  Nisl ut aliquip ex ea commodo consequat duis autem vel eum iriure. Euismod tincidunt ut, laoreet dolore magna aliquam erat volutpat. Demonstraverunt lectores legere me lius quod ii legunt saepius claritas est etiam processus dynamicus. Quam littera gothica quam nunc putamus parum claram anteposuerit litterarum formas humanitatis per seacula. In vulputate velit esse molestie consequat vel illum dolore eu feugiat!
-                </p>
-              </div>
-              <hr/>
-              <div class="space5">
-                <p>
-                  <h3><a href="#">Ex ea commodo consequat duis autem vel eum iriure.</a></h3>
-                  <span class="small lt_grey">2010-09-09 23:59 by Dalai Lama, <a href="#">The monks</a>, via web</span>
-                </p>
+                {% if update.photo %}
                 <div style="float: right; margin: 0 0 10px 10px;">
-                  <img width="160" height="120" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Project title"/>
+                  <img width="160" height="120" src="{% thumbnail update.photo 160x120 autocrop sharpen %}" alt="{{update.photo_caption}}"/>
+                  
+                    {% if update.photo_caption or update.photo_credit %}
+                        <p class="tiny grey">
+                        {% if update.photo_caption %}   
+                            {{update.photo_caption}}<br/>
+                        {% endif %}
+                        {% if update.photo_credit %}
+                            {% trans 'Photo credit' %}: {{update.photo_credit}}
+                        {% endif %}
+                        </p>
+                    {% endif %}
                 </div>          
+                {% endif %}
                 <p>
-                  Nisl ut aliquip ex ea commodo consequat duis autem vel eum iriure. Euismod tincidunt ut, laoreet dolore magna aliquam erat volutpat. Demonstraverunt lectores legere me lius quod ii legunt saepius claritas est etiam processus dynamicus. Quam littera gothica quam nunc putamus parum claram anteposuerit litterarum formas humanitatis per seacula. In vulputate velit esse molestie consequat vel illum dolore eu feugiat!
-                  Possim assum typi non habent claritatem insitam est, usus legentis in iis.
-                  Liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id.
+                    {{update.text|linebreaks}}
                 </p>
-              </div>
-              <hr/>
-              <div class="space5">
-                <p>
-                  <h3><a href="#">Ex ea commodo consequat duis autem vel eum iriure.</a></h3>
-                  <span class="small lt_grey">2010-09-09 23:59 by Dalai Lama, <a href="#">The monks</a>, via web</span>
-                </p>
-                <p>
-                  Nisl ut aliquip ex ea commodo consequat duis autem vel eum iriure. Euismod tincidunt ut, laoreet dolore magna aliquam erat volutpat. Demonstraverunt lectores legere me lius quod ii legunt saepius claritas est etiam processus dynamicus. Quam littera gothica quam nunc putamus parum claram anteposuerit litterarum formas humanitatis per seacula. In vulputate velit esse molestie consequat vel illum dolore eu feugiat!
-                </p>
-              </div>
-              <hr/>
+                <hr/>
+            {% endfor %}
+            <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25B6;</a>
             </div>
           </div>
         </div>

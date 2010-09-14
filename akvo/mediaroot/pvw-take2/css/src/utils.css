@@ -11,7 +11,7 @@
 .red        { color:#A5000F; }
 .blue       { color:#3A8CB9; }
 .yellow     { color:#FEC344; }
-.grey       { color:#7E8197; }
+.grey       { color:#7D818E; }
 .black      { color:#000; }
 .white      { color:#fff; }
 
@@ -24,6 +24,8 @@
 
 .text_left {text-align:left;}
 .text_right {text-align:right;}
+
+.float_right { float: right; }
 
 .link_triangle { font-size: 70%; }
 .round {

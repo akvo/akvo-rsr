@@ -160,6 +160,19 @@ def update_thumb(context, update, width, height, style=''):
         'div_style' : style,
     }
     
+@register.inclusion_tag('inclusion_tags/gallery_thumb.html', takes_context=True)
+def gallery_thumb(context, update, width, height, style=''):
+    '''
+    '''
+    return {
+        'MEDIA_URL' : context['MEDIA_URL'],
+        'update'    : update,
+        'width'     : width,
+        'height'    : height,
+        'wxh'       : '%sx%s' % (width, height,),
+        'div_style' : style,
+    }
+    
 from akvo.scripts.asset_manager import map, asset_bundles
 @register.inclusion_tag('inclusion_tags/asset_bundle.html', takes_context=True)
 def asset_bundle(context, bundle):
