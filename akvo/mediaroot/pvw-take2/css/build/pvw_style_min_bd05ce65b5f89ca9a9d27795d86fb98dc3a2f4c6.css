@@ -230,14 +230,14 @@ input.span-14, textarea.span-14 {width: 963px;}
 .border {
   padding-right: 9px;
   margin-right: 9px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #DDDDDD;
 }
 
 /* Border with more whitespace, spans one column. */
 .colborder {
   padding-right: 44px;
   margin-right: 45px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #DDDDDD;
 }
 
 
@@ -287,7 +287,13 @@ next column, or to pull it into the previous column.  */
   margin-top:1.5em;
 }
 .append-bottom {
-  margin-bottom:1.5em;
+  margin-bottom: 1.5em;
+}
+.gutter-top {
+  margin-top: 19px;
+}
+.gutter-bottom {
+  margin-bottom: 19px;
 }
 
 /* Use a .box to create a padded box inside a column.  */
@@ -353,7 +359,7 @@ hr.space {
 .red        { color:#A5000F; }
 .blue       { color:#3A8CB9; }
 .yellow     { color:#FEC344; }
-.grey       { color:#7E8197; }
+.grey       { color:#7D818E; }
 .black      { color:#000; }
 .white      { color:#fff; }
 
@@ -361,10 +367,13 @@ hr.space {
 .lt_grey    { color: #7D818E; }
 .dk_blue    { color: #343D84; }
 .link_blue  { color: #1877B8; }
+.link_blue:hover  { color: #1E95E6; }
 .orange     { color: #E35D18; }
 
 .text_left {text-align:left;}
 .text_right {text-align:right;}
+
+.float_right { float: right; }
 
 .link_triangle { font-size: 70%; }
 .round {
@@ -444,13 +453,13 @@ body {
     }
     
 a { 
-    color:#2B80AF;
+    color:#1877B8;
     cursor:pointer;
     text-decoration:none;
     }
     
 a:visited { color:#2B80AF; }
-a:hover { color:#0FA0CB; text-decoration: underline; }
+a:hover { color:#1E95E6; text-decoration: underline; }
 
 p {
     color:#3D414B;
@@ -469,11 +478,11 @@ h1 {
     }
 
 h1.h0 {
-    font-size:1.75em;
+    font-size:1.5em;
 }
 
 h2 {
-    color:#1877B8;
+    color:#0097F6;
     font-size:1.125em;
     font-weight:normal;
     line-height:1.2em;
@@ -489,7 +498,7 @@ h3 {
     }
 
 h4 {
-    color:#1877B8;
+    color:#0097F6;
     font-size:0.875em;
     font-weight:bold;
     line-height:1.2em;
@@ -498,8 +507,8 @@ h4 {
 
 h5 {
     color:#E35D18;
-    font-size:0.8125em;
-    font-weight:normal;
+    font-size:0.875em;
+    font-weight:bold;
     line-height:1.2em;
     margin-bottom:0.5em;    
     }
@@ -647,12 +656,12 @@ p.small, .small p, span.small, .small span,  .small label, ul.small, a.small, .s
 
 p.tiny, .tiny p, span.tiny, .tiny span, .tiny label, ul.tiny, a.tiny {
     font-size:0.6875em;
-    line-height:1.4em;
+    line-height:1.2em;
     }
 
 p.nano, .nano p, span.nano, .nano span, .nano label ul.nano, a.nano {
     font-size:0.56725em;
-    line-height:1.4em;
+    line-height:1.1em;
     }
 
 p.nano-lede {
@@ -674,14 +683,26 @@ body {
 
 div#main_container {
     margin-bottom:40px;
-    padding-top:55px;
+    /*padding-top:55px;*/
     }
+
     
 #footer {
-    background:#F9F9FA url(../../img/footer_gradient.png) repeat-x top;
-    color:#585E68;
-    padding-top:40px;
+    /*background:#F9F9FA url(../../img/footer_gradient.png) repeat-x top;*/
+    padding-top:10px;
+    padding-bottom:40px
     }
+    
+div#footer_bar {
+    height:4px;
+    max-height:4px;
+    overflow:hidden;
+    background-color:#C4C9D0;
+	background: -moz-linear-gradient(top, #B9BFC8, #fff);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#B9BFC8), to(#fff));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#B9BFC8', endColorstr='#ffffff');
+	margin-bottom:15px;
+}
 
 #footer h3, #footer h2  {
     color: #585E68;
@@ -777,27 +798,16 @@ div.counter_badge span {
  Contents from: main_nav.css
 ---------------------------------------------------------------------------*/
 
-#header {
-    background-color:#FF7A2C;
-    background: -moz-linear-gradient(top, #fff, #FF7A2C);
-	/*background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#FF7A2C));*/
-	background: -webkit-gradient(linear, 50% 0%, 50% 0%, from(#fff), to(#FF7A2C));
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#FF7A2C');
-    z-index:5;
-    left:0; /* IE 7 */
-	position:fixed;
-	top:0px;
-	width:100%;
-    }
 
 #header_container {
-    
-    
+    margin-top:15px;
     }
     
 ul#main_nav {
     margin:0; 
-    padding:0
+    padding:0;
+    background:#FE7A2C url(../../img/mainnav/background.png) repeat-x;
+    height:41px;
     }
 
 ul#main_nav li {
@@ -806,6 +816,70 @@ ul#main_nav li {
     margin:0;
     padding:0;
     }
+
+ul#main_nav li a {    
+    color: #fff;
+    /*background-color:#FE7A2C;*/
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size:0.875em;
+    font-weight:bold;
+    height:41px;
+    margin:0;
+    overflow:hidden;
+    padding:0;
+    margin-right:30px;
+    /*-webkit-transition:background-color .2s ease-out;*/
+    }
+
+ul#main_nav li a:hover {   
+    background: transparent url(../../img/mainnav/background_hover2.png) no-repeat center bottom;
+    text-decoration: none;
+    }
+
+ul#main_nav li a span {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    /* height and padding-top decides sets height on 
+    the main_nav, use padding-top to position your text. */
+    padding-top:11px;
+    cursor: pointer;
+    }
+
+
+a#main_nav_left {
+    background-color:#fff !important;
+    color:#0078B5 !important;
+    width:222px !important;
+    overflow:hidden;
+    margin-right:20px !important;
+    }
+
+a#main_nav_left:hover {
+    color:#FE7A2C !important;
+    background-color:#ccc !important;
+    }
+
+a#main_nav_left span {
+    text-align:left !important;
+    }
+
+li#mainnav_right {
+    float:right;
+    }
+
+li#mainnav_right a {
+    margin-right:20px !important;
+    }
+
+    
+
+    
+
+
 
 
 /*---------------------------------------------------------------------------
@@ -839,7 +913,7 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited { 
     font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
     }
-.small.awesome, .small.awesome:visited { font-size: 11px; padding: 4px 8px 5px; }
+.small.awesome, .small.awesome:visited { font-size: 11px; padding: 4px 8px 5px; line-height: 1em;}
 /*
 .small.awesome, .small.awesome:visited { font-size: 0.8125em; padding: ; }
 .awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited { 
@@ -896,6 +970,138 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 
 
 /*---------------------------------------------------------------------------
+ Contents from: project_main.css
+---------------------------------------------------------------------------*/
+
+#project_status {
+  background-color: #2096F5;
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#2096F5), to(#2D80AE));
+  border-bottom-left-radius: 2px 2px;
+  border-bottom-right-radius: 2px 2px;
+  border-top-left-radius: 2px 2px;
+  border-top-right-radius: 2px 2px;
+  color: white;
+  padding: 8px;
+}
+
+#status_large {
+  border-bottom-left-radius: 13px 13px;
+  border-bottom-right-radius: 13px 13px;
+  border-top-left-radius: 13px 13px;
+  border-top-right-radius: 13px 13px;
+  font-size: 1.2em;
+  padding: 5px 10px;
+}
+
+/*---------------------------------------------------------------------------
+ Contents from: project_directory.css
+---------------------------------------------------------------------------*/
+
+
+table#projects {
+  border: 0;
+  border-bottom: 1px solid #9C9CAC;
+  margin: 0;
+  font-size: 100%; 
+  width: 973px;
+}
+
+#projects th {
+  border: 0;
+  border-bottom: 1px solid #9C9CAC;
+  border-right: 1px solid #9C9CAC;
+  border-top: 1px solid #9C9CAC;
+  padding: 0;
+  font-weight: normal;
+  background: EAECEF;
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#EFF3F5), to(#EAECEF));
+  background: -moz-linear-gradient(90deg, #EAECEF, #EFF3F5);
+}
+
+#projects th a {
+  font-size:0.8125em;  
+}
+
+#projects th.activeTableHeaderAsc {
+  background: DEE0E3;
+  background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EDEFF2), to(#DEE0E3));
+  background: -moz-linear-gradient(90deg, #DEE0E3, #EDEFF2);
+}
+ 
+div.activeTableHeaderAsc {
+  background: url('../../img/table/header_up_arrow.gif') no-repeat scroll right;  
+  font-weight:bold !important;
+}
+
+#projects th.activeTableHeaderDesc {
+  background: DEE0E3;
+  background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EDEFF2), to(#DEE0E3));
+  background: -moz-linear-gradient(90deg, #DEE0E3, #EDEFF2);
+}
+
+div.activeTableHeaderDesc {
+  background: url('../../img/table/header_down_arrow.gif') no-repeat scroll right;
+  font-weight:bold !important;
+}
+
+#projects td {
+  border: 0;
+  border-top: 1px solid #9C9CAC;
+  padding: 0;
+}
+
+#projects tr:hover {
+  background: #F4F8FA;
+  background: -moz-linear-gradient(90deg, #F4F8FA, #F9FDFF);
+  background-image:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F9FDFF), to(#F4F8FA));
+}
+
+.name_col {
+  width: 343px;
+}
+
+.colgroup {
+  width: 105px;
+}
+
+.td-text {
+  margin: 10px;
+  font-size:0.8125em;
+  line-height:1.2em;
+  margin-bottom:0.75em;
+}
+
+#projects th div {
+  padding: 10px;
+}
+
+.blue_box {
+  -khtml-border-radius: 2px;
+  -moz-border-radius: 2px; 
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #72DBCC;
+  background-color:#F1F5FA;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0F4F9), to(#FFFFFF), color-stop(.6,#FFFFFF));  
+}
+
+.pagination {
+  background: #E5E5E9;
+  padding: 10px;
+  margin: 0;
+  text-align: right;
+}
+
+.pagination span, .pagination a {
+  font-size:0.8125em;  
+}
+.disabled, .current {
+  color: #3D414B;
+}
+
+
+
+/*---------------------------------------------------------------------------
  Contents from: thumbs_scroller.css
 ---------------------------------------------------------------------------*/
 
@@ -928,3 +1134,174 @@ div.thumbs_scroller {
   border: none;
   margin: 0 0 5px 25px;
 }
+
+/*---------------------------------------------------------------------------
+ Contents from: tabs.css
+---------------------------------------------------------------------------*/
+
+/* 
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+ */
+
+/* Caution! Ensure accessibility in print and other media types... */
+@media projection, screen { /* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+    .ui-tabs-hide {
+        display: none;
+        }
+    }
+
+/* Hide useless elements in print layouts... */
+@media print {
+    .ui-tabs-nav {
+        display: none;
+        }
+    }
+
+/* Skin */
+.ui-tabs-nav, .ui-tabs-panel {
+    /*font-family: Arial, Verdana, "Trebuchet MS", Trebuchet, Helvetica, sans-serif;*/
+    /*font-size: 12px;*/
+    }
+
+.ui-tabs-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 4px;
+    padding: 0 0 4px 4px; /*dk*/
+    height: 25px;
+    }
+
+.ui-tabs-nav:after { /* clearing without presentational markup, IE gets extra treatment */
+    display: block;
+    clear: both;
+    content: " ";
+    }
+
+.ui-tabs-nav li {
+    float: left;
+    margin: 0 0 0 1px;
+    min-width: 84px; /* be nice to Opera */
+    background-color: #fff;
+    }
+
+.ui-tabs-nav a, .ui-tabs-nav a span {
+    display: block;
+    padding: 0 10px;
+    padding: 0px 15px; /*dk*/
+    background: url(../../img/tab.png) no-repeat;
+    }
+
+.ui-tabs-nav a {
+    margin: 1px 0 0; /* position: relative makes opacity fail for disabled tab in IE */
+    padding-left: 0;
+    color: #333;
+    color:#415294;
+    font-weight: bold;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap; /* required in IE 6 */    
+    outline: 0; /* prevent dotted border in Firefox */
+    }
+
+.ui-tabs-nav .ui-tabs-selected a {
+    position: relative;
+    top: 1px;
+    z-index: 2;
+    margin-top: 0;
+    color: #000;
+    color:#415294;
+    }
+
+.ui-tabs-nav a span {
+    width: 64px; /* IE 6 treats width as min-width */
+    min-width: 64px;
+    height: 18px; /* IE 6 treats height as min-height */
+    min-height: 18px;    
+    
+    height: 22px; /* IE 6 treats height as min-height */
+    min-height: 22px;
+    
+    padding-top: 6px;
+    padding-right: 0;
+    }
+
+*>.ui-tabs-nav a span { /* hide from IE 6 */
+    width: auto;
+    height: auto;
+    }
+
+.ui-tabs-nav .ui-tabs-selected a span {
+    padding-bottom: 1px;
+    }
+    
+.ui-tabs-nav .ui-tabs-selected a, .ui-tabs-nav a:hover, .ui-tabs-nav a:focus, .ui-tabs-nav a:active {
+    background-position: 100% -150px;
+    }
+    
+.ui-tabs-nav a, .ui-tabs-nav .ui-tabs-disabled a:hover, .ui-tabs-nav .ui-tabs-disabled a:focus, .ui-tabs-nav .ui-tabs-disabled a:active {
+    background-position: 100% -100px;
+    }
+    
+.ui-tabs-nav .ui-tabs-selected a span, .ui-tabs-nav a:hover span, .ui-tabs-nav a:focus span, .ui-tabs-nav a:active span {
+    background-position: 0 -50px;
+    }
+    
+.ui-tabs-nav a span, .ui-tabs-nav .ui-tabs-disabled a:hover span, .ui-tabs-nav .ui-tabs-disabled a:focus span, .ui-tabs-nav .ui-tabs-disabled a:active span {
+    background-position: 0 0;
+    }
+    
+.ui-tabs-nav .ui-tabs-selected a:link, .ui-tabs-nav .ui-tabs-selected a:visited, .ui-tabs-nav .ui-tabs-disabled a:link, .ui-tabs-nav .ui-tabs-disabled a:visited { /* @ Opera, use pseudo classes otherwise it confuses cursor... */
+    cursor: text;
+    }
+    
+.ui-tabs-nav a:hover, .ui-tabs-nav a:focus, .ui-tabs-nav a:active,
+.ui-tabs-nav .ui-tabs-unselect a:hover, .ui-tabs-nav .ui-tabs-unselect a:focus, .ui-tabs-nav .ui-tabs-unselect a:active { /* @ Opera, we need to be explicit again here now... */
+    cursor: pointer;
+    }
+
+.ui-tabs-disabled {
+    opacity: .4;
+    filter: alpha(opacity=40);
+    }
+
+.ui-tabs-panel {
+  /*
+    border-top: 1px solid #ccc;
+    padding: 1em 8px;
+    background: #fff; /* declare background color for container to avoid distorted fonts in IE while fading */
+    
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #9C9CAC;
+    background:#fff;
+    }
+
+.ui-tabs-loading em {
+    padding: 0 0 0 20px;
+    background: url(../../img/loading.gif) no-repeat 0 50%;
+    }
+
+/* Additional IE specific bug fixes... */
+* html .ui-tabs-nav { /* auto clear, @ IE 6 & IE 7 Quirks Mode */
+    display: inline-block;
+    }
+    
+*:first-child+html .ui-tabs-nav  { /* @ IE 7 Standards Mode - do not group selectors, otherwise IE 6 will ignore complete rule (because of the unknown + combinator)... */
+    display: inline-block;
+    }
+
+.tab {
+    /*padding-top: 20px;*/
+    margin:0;
+    min-height: 300px;
+    }
+
+/*
+#container-1 div p, #container-1 div h2, #container-2 div p, #container-2 div h2 {
+    padding-left: 0;
+    }
+*/

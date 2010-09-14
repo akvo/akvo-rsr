@@ -1,24 +1,13 @@
-#header {
-    background-color:#FF7A2C;
-    background: -moz-linear-gradient(top, #fff, #FF7A2C);
-	/*background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#FF7A2C));*/
-	background: -webkit-gradient(linear, 50% 0%, 50% 0%, from(#fff), to(#FF7A2C));
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#FF7A2C');
-    z-index:5;
-    left:0; /* IE 7 */
-	position:fixed;
-	top:0px;
-	width:100%;
-    }
 
 #header_container {
-    
-    
+    margin-top:15px;
     }
     
 ul#main_nav {
     margin:0; 
-    padding:0
+    padding:0;
+    background:#FE7A2C url(../../img/mainnav/background.png) repeat-x;
+    height:41px;
     }
 
 ul#main_nav li {
@@ -27,3 +16,67 @@ ul#main_nav li {
     margin:0;
     padding:0;
     }
+
+ul#main_nav li a {    
+    color: #fff;
+    /*background-color:#FE7A2C;*/
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size:0.875em;
+    font-weight:bold;
+    height:41px;
+    margin:0;
+    overflow:hidden;
+    padding:0;
+    margin-right:30px;
+    /*-webkit-transition:background-color .2s ease-out;*/
+    }
+
+ul#main_nav li a:hover {   
+    background: transparent url(../../img/mainnav/background_hover2.png) no-repeat center bottom;
+    text-decoration: none;
+    }
+
+ul#main_nav li a span {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    /* height and padding-top decides sets height on 
+    the main_nav, use padding-top to position your text. */
+    padding-top:11px;
+    cursor: pointer;
+    }
+
+
+a#main_nav_left {
+    background-color:#fff !important;
+    color:#0078B5 !important;
+    width:222px !important;
+    overflow:hidden;
+    margin-right:20px !important;
+    }
+
+a#main_nav_left:hover {
+    color:#FE7A2C !important;
+    background-color:#ccc !important;
+    }
+
+a#main_nav_left span {
+    text-align:left !important;
+    }
+
+li#mainnav_right {
+    float:right;
+    }
+
+li#mainnav_right a {
+    margin-right:20px !important;
+    }
+
+    
+
+    
+
+
