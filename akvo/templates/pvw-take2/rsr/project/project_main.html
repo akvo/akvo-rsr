@@ -27,17 +27,25 @@
         <div class='column span-8' style="width: 548px;">          
           <div style="border-right: 1px solid #9C9CAC;">
             <div style="margin-left: 20px;">
-              {% project_thumb project 403 301 'float:left;' %}
+              {% thumbnail project.current_image 403x301 upscale autocrop sharpen as project_image %}
+              <!-- remove comment when js loading of images is added
+                <noscript>
+              -->
+                <iframe width="403" height="301" name="project_images" src="{{project_image.absolute_url}}" style="float:left;"></iframe>
+              <!-- remove comment when js loading of images is added
+                </noscript>
+              -->
               <div class="thumbs_scroller">
                 <div class="thumbs">
+                  {% gallery_thumb project.current_image 403 301 %}  
                   {% for update in updates_with_images %}
-                    {% gallery_thumb update 403 301 %}  
+                    {% gallery_thumb update.photo 403 301 %}  
                   {% endfor %}  
                 </div>
               </div>
               <div class="clear"></div>
               <p style="margin: 20px 20px 20px 0;">
-                {{project.project_plan_summary|linebreaks}}
+                {{ project.project_plan_summary|capfirst|linebreaks }}
               </p>
             </div>
           </div>
@@ -110,11 +118,16 @@
       
       <div id="project_tabs" class="gutter-top"> 
         <ul class="small"> 
-          <li><a href="#tab_updates"><span>Updates</span></a></li> 
-          <li><a href="#tab_goals"><span>Goals</span></a></li> 
-          <li><a href="#tab_details"><span>Details</span></a></li> 
-          <li><a href="#tab_impact"><span>Impact</span></a></li> 
-        </ul> 
+          <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
+          <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
+          {% if project.current_status_detail or project.project_plan_detail %}
+              <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
+          {% endif %}
+          {% if project.impact or project.spin_off or project.lessons_learned or project.technologies_used %}
+              <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
+          {% endif %}
+        </ul>
+        
         <div id="tab_updates" class="tab">
           <div class="space15">
             <div style="float: right;">
@@ -156,28 +169,74 @@
             <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25B6;</a>
             </div>
           </div>
-        </div>
+        </div><!-- End tab_updates -->
+        
         <div id="tab_goals" class="tab">
           <div class="space20">
+						<div class="space10" style="width: 170px; float:right;">
+              <ul>
+                {% if project.goal_1 %}
+                  <li>{{project.goal_1}}</li>
+                {% endif %}
+                {% if project.goal_2 %}
+                  <li>{{project.goal_2}}</li>
+                {% endif %}
+                {% if project.goal_3 %}
+                  <li>{{project.goal_3}}</li>
+                {% endif %}
+                {% if project.goal_4 %}
+                  <li>{{project.goal_4}}</li>
+                {% endif %}
+                {% if project.goal_5 %}
+                  <li>{{project.goal_5}}</li>
+                {% endif %}
+              </ul>
+            </div>
+            <h5>{% trans 'Goals' %}</h5>
             <p>
-              Minim veniam quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo? Usus legentis in iis qui, facit eorum claritatem Investigationes demonstraverunt lectores legere me lius quod ii. Quod mazim placerat facer possim assum typi non habent.
+  						{{project.goals_overview|capfirst|linebreaks}}
             </p>
           </div>
-        </div>
-        <div id="tab_details" class="tab">
-          <div class="space20">
-            <p>
-              Praesent luptatum zzril delenit augue duis dolore, te feugait nulla facilisi. Claritatem Investigationes demonstraverunt lectores legere me lius; quod ii legunt. Ea commodo consequat duis autem vel; eum iriure dolor in hendrerit in vulputate velit esse molestie! Et quinta decima eodem modo typi qui nunc nobis videntur parum clari fiant sollemnes in. Eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim. Vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.
-            </p>
+        </div><!-- End tab_goals -->
+        
+        {% if project.current_status_detail or project.project_plan_detail %}
+          <div id="tab_details" class="tab">
+            <div class="space20">
+              {% if project.current_status_detail %}
+                <h5>{% trans 'Details of current status' %}</h5>
+                <p>{{project.current_status_detail|capfirst|linebreaks}}</p>
+              {% endif %}
+              {% if project.project_plan_detail %}
+                <h5>{% trans 'Details of project plan' %}</h5>
+                <p>{{project.project_plan_detail|capfirst|linebreaks}}</p>
+              {% endif %}
+            </div>
           </div>
-        </div>
-        <div id="tab_impact" class="tab">
-          <div class="space20">
-            <p>
-              Vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto? Legentis in iis qui facit; eorum claritatem Investigationes demonstraverunt lectores legere me lius. Ii legunt saepius claritas est, etiam processus dynamicus? Eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum typi.
-            </p>
+        {% endif %}
+        
+        {% if project.impact or project.spin_off or project.lessons_learned or project.technologies_used %}
+          <div id="tab_impact" class="tab">
+            <div class="space20">
+              {% if project.impact %}
+                <h5>{% trans 'Impact' %}</h5>
+                {{project.impact|capfirst|linebreaks}}
+              {% endif %}
+              {% if project.spin_off %}
+                <h5>{% trans 'Spin off and market impact' %}</h5>
+                {{project.spin_off|capfirst|linebreaks}}
+              {% endif %}
+              {% if project.lessons_learned %}
+                <h5>{% trans 'Lessons learned' %}</h5>
+                {{project.lessons_learned|capfirst|linebreaks}}
+              {% endif %}
+              {% if project.technologies_used %}
+                <h5>{% trans 'Technologies used' %}</h5>
+                {{project.technologies_used|capfirst|linebreaks}}
+              {% endif %}
+            </div>
           </div>
-        </div>
+        {% endif %}
+        
       </div>
     </div>
     
@@ -277,7 +336,28 @@
         <div class="space15">
           <h1>Project partners</h1>
         </div>
-        <div style="margin: 0 8px;">
+        {% for partner in project.project_partners.all %}
+          {% with partner.partner as org %}
+          <div style="margin: 0 8px;">
+            <hr/>
+          </div>
+          <div class="space15">
+            <a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
+              {% org_logo org 162 120 %}
+            </a>
+            <br/>
+            <a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">
+              {{org.name}}
+            </a>
+            <p class="tiny lt_grey">
+              {{org.city}}, {{org.country}}<br/>
+              {{org.get_organisation_type_display}}
+            </p>
+          </div>
+          {% endwith %}
+        {% endfor %}
+        
+        <!--<div style="margin: 0 8px;">
           <hr/>
         </div>
         <div class="space15">
@@ -292,39 +372,8 @@
             Rotterdam, Netherlands<br/>
             NGO
           </p>
-        </div>
-        <div style="margin: 0 8px;">
-          <hr/>
-        </div>
-        <div class="space15">
-          <a title="Deltares" href="#">
-            <img width="80" height="40" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Deltares"/>
-          </a>
-          <br/>
-          <a title="Deltares" href="#" class="tiny">
-            Deltares
-          </a>
-          <p class="tiny lt_grey">
-            Rotterdam, Netherlands<br/>
-            NGO
-          </p>
-        </div>
-        <div style="margin: 0 8px;">
-          <hr/>
-        </div>
-        <div class="space15">
-          <a title="Deltares" href="#">
-            <img width="80" height="40" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Deltares"/>
-          </a>
-          <br/>
-          <a title="Deltares" href="#" class="tiny">
-            Deltares
-          </a>
-          <p class="tiny lt_grey">
-            Rotterdam, Netherlands<br/>
-            NGO
-          </p>
-        </div>
+        </div>-->
+        
       </div> 
     </div>
   </div>

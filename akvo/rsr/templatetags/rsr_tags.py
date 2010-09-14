@@ -109,7 +109,7 @@ def funding_box_wide(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
     
 @register.inclusion_tag('inclusion_tags/project_thumb.html', takes_context=True)
-def project_thumb(context, project, width, height, style=''):
+def project_thumb(context, project, width, height, img_style='', div_style=''):
     '''
     '''
     return {
@@ -118,7 +118,8 @@ def project_thumb(context, project, width, height, style=''):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'div_style' : style,
+        'img_style' : img_style,
+        'div_style' : div_style,
     }
     
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
@@ -161,16 +162,17 @@ def update_thumb(context, update, width, height, style=''):
     }
     
 @register.inclusion_tag('inclusion_tags/gallery_thumb.html', takes_context=True)
-def gallery_thumb(context, update, width, height, style=''):
+def gallery_thumb(context, image, width, height, caption='', style=''):
     '''
     '''
     return {
         'MEDIA_URL' : context['MEDIA_URL'],
-        'update'    : update,
+        'image'    : image,
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'div_style' : style,
+        'caption'   : caption,
+        'style'     : style,
     }
     
 from akvo.scripts.asset_manager import map, asset_bundles
