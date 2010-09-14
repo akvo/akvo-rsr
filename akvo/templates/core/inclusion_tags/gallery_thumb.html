@@ -1,0 +1,15 @@
+{% load i18n thumbnail %}
+
+{% thumbnail update.photo wxh autocrop sharpen as photo %}
+
+{% if photo %}
+    
+    <a class="gallery_links"
+       href="{{ photo }}"
+       title="{{ update.photo_caption }}"
+       target="_blank"
+    >
+        <img src="{% thumbnail update.photo 60x60 autocrop sharpen %}" {% if div_style %}style="{{div_style}}" {% endif %}/>
+    </a>
+
+{% endif %}
