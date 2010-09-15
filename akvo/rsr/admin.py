@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib import auth
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
+from django.contrib.contenttypes import generic
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
@@ -51,6 +52,11 @@ class CountryAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
+
+class LocationInline(generic.GenericStackedInline):
+    model = get_model('rsr', 'location')
+    extra = 0
+
 class OrganisationAdminForm(forms.ModelForm):
     pass
     #def save(self, *args, **kwargs):
@@ -71,6 +77,7 @@ class OrganisationAdmin(admin.ModelAdmin):
             (_(u'About the organisation'), {'fields': ('description', )}),
         )    
     else:
+        inlines = (LocationInline,)
         fieldsets = (
             (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
             (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
@@ -389,7 +396,7 @@ if settings.PVW_RSR:
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')
         #inlines = (CategoryInLine, LocationInLine, LinkInline, PartnerInline, ImageInline, )
-        inlines = (LinkInline, PartnerInline, )
+        inlines = (LinkInline, PartnerInline, LocationInLine,)
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
@@ -705,10 +712,11 @@ if settings.PVW_RSR:
         
 else:
     
+    
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')
         inlines = (BudgetItemAdminInLine, LinkInline, FundingPartnerInline, SponsorPartnerInline, 
-                   FieldPartnerInline, SupportPartnerInline)
+                   FieldPartnerInline, SupportPartnerInline, LocationInline)
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(u"Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing."),
@@ -767,7 +775,7 @@ else:
         
         #form = ProjectAdminModelForm
         form = ProjectAdminForm
-    
+        
         def get_actions(self, request):
             """ Remove delete admin action for "non certified" users"""
             actions = super(ProjectAdmin, self).get_actions(request)

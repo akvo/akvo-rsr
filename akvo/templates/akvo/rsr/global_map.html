@@ -1,0 +1,60 @@
+{% load i18n thumbnail %}
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
+
+    var jQ = jQuery.noConflict();
+
+    function loadGlobalMap() {
+
+        var center = new google.maps.LatLng(0,0);
+
+        {% for project in projects %}
+            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
+            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
+            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
+        {% endfor %}
+
+        var mapCanvas = document.getElementById('map_canvas');
+
+        var mapOptions = {
+            center: center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            scrollwheel: false,
+            zoom: 3
+        };
+
+
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+
+        {% for project in projects %}
+            var project_{{ project.id }}_marker = new google.maps.Marker({
+                map: map,
+                position: project_{{ project.id }}_coordinates,
+                title: 'Project location'
+            });
+            var project_{{ project.id }}_info = '<div id="mapInfoWindow">' +
+                '<p>{{ project.name }}</p>' +
+                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" />' +
+                '</div>';
+            var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({
+                content: project_{{ project.id }}_info
+            });
+            google.maps.event.addListener(project_{{ project.id }}_marker, 'click', function() {
+                project_{{ project.id }}_infowindow.open(map, project_{{ project.id }}_marker);
+            });
+        {% endfor %}
+
+    }
+
+    jQ(document).ready(
+        function() {
+            loadGlobalMap();
+        }
+    );
+
+</script>
+
+<div id="map_canvas" style="width: 100%; height: 100%;"></div>

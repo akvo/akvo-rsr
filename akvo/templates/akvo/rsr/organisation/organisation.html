@@ -41,18 +41,19 @@
 			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
 				<h3>{% trans 'Location' %}</h3>
 				<p class="small">
-				{% if o.address_1 %}{{o.address_1}}<br />{% endif %}
-				{% if o.address_2 %}{{o.address_2}}<br />{% endif %}
-				{% if o.postcode %}{{o.postcode}}<br />{% endif %}
-				{% if o.city %}{{o.city}}<br />{% endif %}
-				{% if o.state %}{{o.state}}<br />{% endif %}
-				{% if o.state %}{{o.country}}{% endif %}
+          {% if o.primary_location.address_1 %}{{o.primary_location.address_1}}<br />{% endif %}
+          {% if o.primary_location.address_2 %}{{o.primary_location.address_2}}<br />{% endif %}
+          {% if o.primary_location.postcode %}{{o.primary_location.postcode}}<br />{% endif %}
+          {% if o.primary_location.city %}{{o.primary_location.city}}<br />{% endif %}
+          {% if o.primary_location.state %}{{o.primary_location.state}}<br />{% endif %}
+          {% if o.primary_location.country %}{{o.primary_location.country}}{% endif %}
 				</p>
-				{% if p.has_valid_coordinates %}
-	                {% dynamic_map o 180 135 3 'blue' %}
-	            {% else %}
-	                <p class="small" style="color: red;">{% trans 'No map available' %}</p>
-	            {% endif %}
+        
+        {% if o.primary_location %}
+          {% google_map o 180 135 6 %}
+        {% else %}
+          <p class="small" style="color: red;">{% trans 'No map available' %}</p>
+        {% endif %}
 			</div>
 			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
 				<h3>{% trans 'Contact' %}</h3>

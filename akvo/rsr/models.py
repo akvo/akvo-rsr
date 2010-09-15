@@ -19,6 +19,8 @@ from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -81,16 +83,44 @@ class Country(models.Model):
         ordering = ['country_name']
 
 
+class LatitudeField(models.FloatField):
+    description = _('Latitude coordinate.')
+    def __init__(self, *args, **kwargs):
+        super(LatitudeField, self).__init__(*args, **kwargs)
+        self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
+
+class LongitudeField(models.FloatField):
+    description = _('Longitude coordinate.')
+    def __init__(self, *args, **kwargs):
+        super(LongitudeField, self).__init__(*args, **kwargs)
+        self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
+
 class Location(models.Model):
-    
+    latitude = LatitudeField(_('latitude'), default=0)
+    longitude = LongitudeField(_('longitude'), default=0)
     city = models.CharField(_('city'), max_length=255)
     state = models.CharField(_('state'), max_length=255)
     country = models.ForeignKey(Country)
-    latitude = models.FloatField(_('latitude'), validators=[MinValueValidator(-90), MaxValueValidator(90)])
-    longitude = models.FloatField(_('longitude'), validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
+    address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
+    postcode = models.CharField(_('postcode'), max_length=10, blank=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    primary = models.BooleanField(_('primary location'))
 
     def __unicode__(self):
-        return u'%s, %s, %s' % (self.city, self.state, self.country)
+        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+
+    def save(self, *args, **kwargs):
+        if self.primary:
+            qs = Location.objects.filter(content_type=self.content_type,
+                    object_id=self.object_id, primary=True)
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+                if qs.count() != 0:
+                    self.primary = False
+        super(Location, self).save(*args, **kwargs)
 
 
 class ProjectsQuerySetManager(QuerySetManager):
@@ -155,6 +185,8 @@ class Organisation(models.Model):
     contact_email               = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
     description                 = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
 
+    locations                   = generic.GenericRelation(Location)
+
     #Managers, one default, one custom
     #objects = models.Manager()    
     objects     = QuerySetManager()
@@ -162,6 +194,15 @@ class Organisation(models.Model):
 
     def get_absolute_url(self):
         return '/rsr/organisation/%d/' % self.id
+
+    @property
+    def primary_location(self, location=None):
+        '''Returns an organisations's primary location'''
+        qs = self.locations.filter(primary=True)
+        if qs:
+            location = qs[0]
+        return location
+
     
     class QuerySet(QuerySet):
         def fieldpartners(self):
@@ -962,19 +1003,6 @@ if settings.PVW_RSR: #pvw-rsr
             return self.partner.name
 
 
-    class Location(models.Model):
-        project                 = models.ForeignKey(Project, related_name='locations',)
-        city                    = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        state                   = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        country                 = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        longitude               = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        latitude                = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
-
-        class Meta:
-            verbose_name=_('location')
-            verbose_name_plural=_('locations')
-
-
     class Image(models.Model):
         def image_path(instance, file_name):
             return rsr_image_path(instance.project, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
@@ -998,7 +1026,7 @@ else: #akvo-rsr
 
     class Project(models.Model):
         def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
+            return rsr_image_path(instance, file_name, 'db/project/%s/%s')
     
         name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
@@ -1067,6 +1095,8 @@ else: #akvo-rsr
         date_request_posted = models.DateField(_('Date request posted'), default=date.today)
         date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
     
+        locations           = generic.GenericRelation(Location)
+    
         #Custom manager
         #based on http://www.djangosnippets.org/snippets/562/ and
         #http://simonwillison.net/2008/May/1/orm/
@@ -1093,11 +1123,34 @@ else: #akvo-rsr
             amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
             amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
             return amount or 0
+            
             '''
             if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
             return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
             '''
-
+    
+        @property
+        def view_count(self):
+            counter = ViewCounter.objects.get_for_object(self)
+            return counter.count or 0
+                
+        @property
+        def primary_location(self, location=None):
+            '''Returns a project's primary location'''
+            qs = self.locations.filter(primary=True)
+            if qs:
+                location = qs[0]
+            return location
+    
+        def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
+            try:
+                latitude = float(self.latitude)
+                longitude = float(self.longitude)
+                return True
+            except:
+                return False
+    
+    
         class QuerySet(QuerySet):
             def published(self):
                 return self.filter(publishingstatus__status='published')
@@ -1344,6 +1397,7 @@ else: #akvo-rsr
     
             def all_partners(self):
                 return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
+                
     
         #TODO: is this relly needed? the default QS has identical methods
         class OrganisationsQuerySet(QuerySet):
@@ -1372,7 +1426,7 @@ else: #akvo-rsr
                 #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
     
         def __unicode__(self):
-            return self.name
+            return u'Project %d: %s' % (self.id,self.name)
             
         def project_type(self):
             pt = ""
@@ -1389,6 +1443,10 @@ else: #akvo-rsr
         def show_status(self):
             "Show the current project status"
             return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+            
+        def show_status_large(self):
+            "Show the current project status with background"
+            return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
         
         def show_current_image(self):
             try:
@@ -1464,7 +1522,6 @@ else: #akvo-rsr
             return Project.objects.budget_total().get(pk=self.pk).budget_total
     
         #shortcuts to linked orgs for a single project
-
         def support_partners(self):
             return Project.objects.filter(pk=self.pk).support_partners()
     
@@ -1476,14 +1533,14 @@ else: #akvo-rsr
     
         def field_partners(self):
             return Project.objects.filter(pk=self.pk).field_partners()
-        
-	    def show_status_large(self):
-	        "Show the current project status with background"
-	        return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
-        
+    
         def all_partners(self):
             return Project.objects.filter(pk=self.pk).all_partners()
     
+        def show_status_large(self):
+            "Show the current project status with background"
+            return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        
         class Meta:
             permissions = (
                 ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
@@ -1997,13 +2054,13 @@ class Invoice(models.Model):
         blank=True, null=True,
         help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75)
-    email = models.EmailField()
+    name = models.CharField(max_length=75, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, max_length=75)
+    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
     bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
         choices=get_mollie_banklist(), blank=True)
@@ -2054,7 +2111,7 @@ class Invoice(models.Model):
     
     @property
     def donation_fee(self):
-        return self.amount-self.amount_received
+        return (self.amount - self.amount_received)
 
     def __unicode__(self):
         return u'Invoice %s (Project: %s)' % (self.id, self.project)

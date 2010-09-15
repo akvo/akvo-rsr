@@ -6,11 +6,14 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
 from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
 from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
+
+from paypal.standard.ipn.views import ipn as paypal_ipn
 
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
@@ -114,6 +117,7 @@ else:
     )
 
 urlpatterns += patterns('',
+
     
     url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate'),
     (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),

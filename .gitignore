@@ -17,3 +17,4 @@ tests/acceptance/test_settings.py
 akvo/data
 akvo/mollie_banklist.xml
 akvo/datadir.zip
+dev.db
