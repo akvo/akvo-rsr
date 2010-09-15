@@ -351,6 +351,13 @@ admin.site.register(get_model('rsr', 'location'))
 
 if settings.PVW_RSR:
 
+    class FocusAreaAdmin(admin.ModelAdmin):
+        model = get_model('rsr', 'FocusArea')
+        list_display = ('name', 'slug', 'image',)
+    
+    admin.site.register(get_model('rsr', 'FocusArea'), FocusAreaAdmin)
+
+
     class CategoryAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'Category')
         list_display = ('name', 'areas',)
@@ -423,6 +430,7 @@ if settings.PVW_RSR:
                     'project_plan_summary',
                     'current_image',
                     'current_image_caption',
+                    'beneficiaries',
                 )
             }),
             (_(u'Goals'), {
@@ -452,6 +460,8 @@ if settings.PVW_RSR:
                     _(u"Set the Currency to be used in budget and on funding calculations. Use the Notes and comments field to communicate with other members of your organisation or partners with access to your projects in the Admin. Check the Showcase box to include this project as a featured project on the site."),
                 'fields': (
                     'currency',
+                    'total_budget',
+                    'pvw_budget',
                     'showcase',
                     'notes',
                 ),

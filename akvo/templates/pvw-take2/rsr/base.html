@@ -25,7 +25,7 @@
 	<div id="header_container" class="container">
 		<ul id="main_nav">
 			<li>
-				<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+				<a id="main_nav_left" href="{% url index %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
 					<img src="{{MEDIA_URL}}pvw-take2/img/mainnav/dws_logo.png" width="222" height="41" 
 						alt="Dutch Waster Sector" style="margin:0;padding:0;">
 					<span>
@@ -36,10 +36,10 @@
 				</a>
 			</li>
 			<li>
-                <a href="{% url areas %}" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
-                    <span>{% trans 'Focus Areas' %}</span>
-                </a>
-            </li>
+        <a href="{% url areas %}" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
+          <span>{% trans 'Focus Areas' %}</span>
+        </a>
+      </li>
 			<li>
 				<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 					<span>{% trans 'Projects' %}</span>

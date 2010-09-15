@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
@@ -196,7 +196,7 @@ def focusareas(request):
 
 if settings.PVW_RSR:
     @render_to('rsr/project/project_directory.html')
-    def project_list(request, area=None, org_id=None):
+    def project_list(request, slug=None, org_id=None):
         '''
         List of  projects in RSR
         filtered on either a focus area or an organisation
@@ -209,9 +209,9 @@ if settings.PVW_RSR:
         if org_id:
             org = Organisation.objects.get(pk=org_id)
             projects = org.published_projects().funding()
-        if area:
-            criteria = {str('categories__focus_area_%s' % (area,)): True}
-            projects = Project.objects.published().filter(**criteria).distinct()
+        if slug:
+            focus_area = get_object_or_404(FocusArea, slug=slug)
+            projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
 #        page = project_list_data(request, projects)
         projects = projects.extra(
             select={
@@ -219,7 +219,7 @@ if settings.PVW_RSR:
                 'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
             }
         )
-        return {'projects': projects, 'site_section': 'areas', 'focusarea': area, 'org': org}
+        return {'projects': projects, 'site_section': 'areas', 'focus_area': focus_area, 'org': org}
     
     @render_to('rsr/directory.html')
     def directory(request, org_type='all'):
@@ -1093,19 +1093,22 @@ def projectmain(request, project_id):
     '''
     #form        = CommentForm()
     p           = get_object_or_404(Project, pk=project_id)
+    related = Project.objects.filter(categories__in=Category.objects.filter(projects=p)).distinct().exclude(pk=p.pk)    
+    related = get_random_from_qs(related, 2)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('time')
+    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('-time')
     slider_width = (len(updates_with_images) + 1) * 115    
     return {
-        'project': p, 
-        'updates': updates, 
-        'comments': comments, 
+        'project'               : p,
+        'related'               : related,
+        'updates'               : updates, 
+        'comments'              : comments, 
         #'form': form, 
-        'can_add_update': p.connected_to_user(request.user),
-        'site_section': 'projects',
-        'updates_with_images': updates_with_images,
-        'slider_width': slider_width,
+        'can_add_update'        : p.connected_to_user(request.user),
+        'site_section'          : 'projects',
+        'updates_with_images'   : updates_with_images,
+        'slider_width'          : slider_width,
         }
 
 def projectdetails(request, project_id):

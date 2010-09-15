@@ -375,6 +375,26 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 if settings.PVW_RSR: #pvw-rsr
+    
+    class FocusArea(models.Model):
+        def image_path(instance, file_name):
+            return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
+        name        = models.CharField(_('focus area name'), max_length=50, help_text=_('The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
+        slug        = models.SlugField(_('slug'), max_length=20, help_text=_('Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
+        description = models.TextField(_('description'), max_length=500, help_text=_('Enter the text that will appear on the focus area project listing page. (500 characters).'))
+        image       = ImageWithThumbnailsField(
+                        _('focus area image'),
+                        upload_to=image_path,
+                        thumbnail={'size': (20, 20), 'options': ('crop', )},
+                        help_text=_('The image that will appear on the focus area project listing page.'),
+                    )
+
+        def __unicode__(self):
+            return self.name
+
+        class Meta:
+            verbose_name=_('focus area')
+            verbose_name_plural=_('focus areas')
 
     class Category(models.Model):
         def image_path(instance, file_name):
@@ -399,11 +419,12 @@ if settings.PVW_RSR: #pvw-rsr
                                     upload_to=image_path,
                                     thumbnail={'size': (20, 20), 'options': ('crop', )},
                                     help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
-                                )    
-        focus_area_clean        = models.BooleanField(_('focus area clean water'))
-        focus_area_safety       = models.BooleanField(_('focus area safety'))
-        focus_area_sharing      = models.BooleanField(_('focus area sharing water'))
-        focus_area_governance   = models.BooleanField(_('focus area governance'))
+                                )
+        focus_area              = models.ManyToManyField(FocusArea, related_name='categories',)
+        #focus_area_clean        = models.BooleanField(_('focus area clean water'))
+        #focus_area_safety       = models.BooleanField(_('focus area safety'))
+        #focus_area_sharing      = models.BooleanField(_('focus area sharing water'))
+        #focus_area_governance   = models.BooleanField(_('focus area governance'))
         
         def __unicode__(self):
             return '%s (%s)' % (self.name, self.areas(),)
@@ -413,7 +434,9 @@ if settings.PVW_RSR: #pvw-rsr
             verbose_name_plural=_('categories')
             
         def areas(self):
-            return ', '.join([capfirst(area) for area in ['clean', 'safety', 'sharing', 'governance'] if getattr(self, 'focus_area_%s' % area)])
+            return ', '.join([capfirst(area.name) for area in self.focus_area.all()])
+        areas.allow_tags = True
+
 
     class Project(models.Model):    
         def image_path(instance, file_name):
@@ -459,6 +482,7 @@ if settings.PVW_RSR: #pvw-rsr
         goal_3                      = models.CharField(_('deliverable or activity 3'), blank=True, max_length=60)
         goal_4                      = models.CharField(_('deliverable or activity 4'), blank=True, max_length=60)
         goal_5                      = models.CharField(_('deliverable or activity 5'), blank=True, max_length=60)
+        beneficiaries               = models.IntegerField(_(u'beneficiaries'), blank=True, default=0, help_text=_(u'Enter the number pf people that benefit from this project.'), )
         #Project target benchmarks
         #water_systems               = models.IntegerField(_('water systems'), default=0)
         #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
@@ -491,8 +515,10 @@ if settings.PVW_RSR: #pvw-rsr
         #duration
         start_date                  = models.DateField(_('start date'), default=date.today)
         end_date                    = models.DateField(_('end date'), null=True, blank=True)
+        total_budget                = models.IntegerField(_(u'total budget'), blank=True, help_text=_(u'Enter the total budget for the project.'), )
+        pvw_budget                  = models.IntegerField(_(u'pvw budget'), blank=True, help_text=_(u'Enter the amount that Partners for Water contribute to the project.'), )
         location                    = models.ManyToManyField(Location)
-    
+        
         #Custom manager
         #based on http://www.djangosnippets.org/snippets/562/ and
         #http://simonwillison.net/2008/May/1/orm/
@@ -753,20 +779,20 @@ if settings.PVW_RSR: #pvw-rsr
             def get_actual_sanitation_calc(self):
                 "how many have gotten improved sanitation"
                 return qs_column_sum(self.status_complete(), 'improved_sanitation')
-    
-            #the following 4 return an organisation queryset!
-    
+
             def all_partners(self):
                 o = Organisation.objects.all()
-                return o.filter(partner_projects__project__in=self).distinct()
-
+                return o.filter(
+                    partner_projects__project__in=self
+                )
+            
             def lead_partners(self):
                 o = Organisation.objects.all()
                 return o.filter(
                     partner_projects__project__in=self,
                     partner_projects__partner_type__exact='L'
                 )
-    
+            
             def other_partners(self):
                 "All partners except lead partners"
                 o = Organisation.objects.all()
@@ -883,6 +909,21 @@ if settings.PVW_RSR: #pvw-rsr
         def budget_total(self):
             return Project.objects.budget_total().get(pk=self.pk).budget_total
     
+        def focus_areas(self):
+            return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
+        focus_areas.allow_tags = True
+            
+        def areas_and_categories(self):
+            area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
+            areas = []
+            for area_obj in area_objs:
+                area = {'area': area_obj}
+                area['categories'] = []
+                for cat_obj in Category.objects.filter(focus_area=area_obj, projects=self).order_by('name'):
+                    area['categories'] += [cat_obj.name]
+                areas += [area]
+            return areas
+                
         #shortcuts to linked orgs for a single project
         def all_partners(self):
             return Project.objects.filter(pk=self.pk).all_partners()
@@ -1507,7 +1548,7 @@ class Link(models.Model):
     kind    = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
     url     = models.URLField(_(u'URL'))
     caption = models.CharField(_('caption'), max_length=50)
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, related_name='links')
     
     def __unicode__(self):
         return self.url

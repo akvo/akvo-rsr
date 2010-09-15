@@ -18,7 +18,7 @@
               <h1 class="h0">{{project.name}}</h1> 
             </div>
             <div class="h1_companion">
-              <a href="#" class="awesome aqua small">Edit</a>
+              <a href="#" class="awesome aqua small">{% trans 'Edit' %}</a>
             </div>
             <div class="clear"></div>
             <p class="lt_grey">{{project.subtitle}}</p>
@@ -51,9 +51,11 @@
           </div>
         </div>
         <div class='column span-3 last' style="width: 193px;">
-          <h2 class="black">How many benefit?</h2>
-          <h2 class="green">123,456 people</h2>
-          <h2 class="black prepend-top">Location</h2>
+          {% if project.beneficiaries %}
+            <h2 class="black">{% trans 'How many benefit?' %}</h2>
+            <h2 class="green">{{project.beneficiaries|intcomma}} {% trans 'people' %}</h2>
+          {% endif %}
+          <h2 class="black {% if project.beneficiaries %}prepend-top{% endif %}">Location</h2>
           
           <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
           
@@ -108,6 +110,28 @@
             Ruhango<br>
             29.858377, -2.014189
           </p>
+          {% if project.areas_and_categories %}
+            <h2 class="black">
+              {% blocktrans count project.areas_and_categories|length  as areas %}
+                Focus area
+              {% plural %}
+                Focus areas
+              {% endblocktrans %}
+            </h2>
+            {% for area in project.areas_and_categories %}
+              <p>{{area.area}}
+              <br/>
+              <span class="small">
+                {% blocktrans count area.categories|length as cats %}
+                  Category:
+                {% plural %}
+                  Categories:
+                {% endblocktrans %}
+                {{area.categories|join:", "}}
+              </span>
+            </p>
+            {% endfor %}
+          {% endif %}
           
         </div>
         <div class="clear"></div>
@@ -131,7 +155,7 @@
         <div id="tab_updates" class="tab">
           <div class="space15">
             <div style="float: right;">
-              <a href="#" class="awesome aqua small">Add update</a>
+              <a href="#" class="awesome aqua small">{% trans 'Add update' %}</a>
             </div>          
             <div class="clear"></div>
             <div class="space5" style="margin-top: 15px;">
@@ -243,45 +267,39 @@
     <div class='column span-3 last'>
       <div class="white_box" style="background-color:#fff; margin-top: 48px;">
         <div class="space15">
-          <h1>Related to this project</h1>
+          <h1>{% trans 'Related to this project' %}</h1>
         </div>
         <div style="margin: 0 8px;">
           <hr/>
         </div>
         <div class="space15">
-          <p class="dk_grey">Similar projects</p>
-          <div>
-            <a title="Project title" href="#">
-              <img width="162" height="123" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Project title"/>
-            </a>
-            <br/>
-            <a title="Project title" href="#" class="small">
-              Project title
-            </a>
-          </div>
-          <div style="margin-top: 1em;">
-            <a title="Project title" href="#">
-              <img width="162" height="123" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Project title"/>
-            </a>
-            <br/>
-            <a title="Project title" href="#" class="small">
-              Project title
-            </a>
-          </div>
+          <p class="dk_grey">{% trans 'Similar projects' %}</p>
+          {% for rel_proj in related %}
+            <div{% if not forloop.first %} style="margin-top: 1em;"{% endif %}>
+              <a title="{{rel_proj.name}}" href="{{rel_proj.get_absolute_url}}">
+                {% project_thumb rel_proj 162 123 %}
+              </a>
+              <a title="{{rel_proj.name}}" href="{{rel_proj.get_absolute_url}}" class="small">
+                {{rel_proj.name}}
+              </a>
+            </div>
+          {% endfor %}
         </div>
+        {% if project.links.all.count %}
         <div style="margin: 0 8px;">
           <hr/>
         </div>
         <div class="space15">
-          <p class="dk_grey" style="line-height: 1em;">External links<br/>
-            <span class="tiny lt_grey">(Will open in new window)</span>
+          <p class="dk_grey" style="line-height: 1em;">{% trans 'External links' %}<br/>
+            <span class="tiny lt_grey">{% trans '(Will open in new window)' %}</span>
           </p>
           <p class="tiny">
-            <a title="Deltares" href="#">Government of Gujarat</a><br/>
-            <a title="Deltares" href="#">Government of Gujarat</a><br/>
-            <a title="Deltares" href="#">Government of Gujarat</a>
+            {% for link in project.links.all %}
+              <a href="{{link.url}}" target="_new">{{link.caption}}</a><br/>
+            {% endfor %}
           </p>
         </div>
+        {% endif %}
       </div> 
     </div>
         
@@ -294,40 +312,52 @@
           <h1 class="h0" style="color: #9FFFFE;">Project status</h1>
           <span id="status_large" style="background-color:green; color:inherit; display:inline-block;">Needs funding</span>            
         </div>
+        {% if project.start_date or project.end_date %}
         <hr/>
         <div style="padding: 0 7px 7px 7px;">
-          <p style="line-height:1.2em; color: white;">Time line</p>
+          <p style="line-height:1.2em; color: white;">{% trans 'Time line' %}</p>
+          {% if project.start_date %}
           <p class="tiny white">
-            Start date: 9 Sep 2010
+            Start date: {{project.start_date|date:"d-M-Y"}}
           </p>
+          {% endif %}
+          {% if project.end_date %}
           <p class="tiny white">
-            End date: 9 Aug 2012
+            End date: {{project.end_date|date:"d-M-Y"}}
           </p>
-        </div> 
-        <hr/>
-        <div style="padding: 0 7px 0 7px;">
-          <p style="line-height:1.2em; color: white;">Budget</p>
-          <p class="tiny white">
-            € 100,000,000<br/>
-            <span class="nano" style="color: #C2C0CE;">
-              Total budget
-            </span>
-          </p>
-          <p class="tiny white">
-            € 50,000,000<br/>
-            <span class="nano" style="color: #C2C0CE;">
-              Contributed by Partners for Water
-            </span>
-          </p>
-        </div> 
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if project.total_budget or project.pvw_budget %}
+          <hr/>
+          <div style="padding: 0 7px 0 7px;">
+            <p style="line-height:1.2em; color: white;">{% trans 'Budget' %}</p>
+            {% if project.total_budget %}
+              <p class="tiny white">
+                € {{project.total_budget|intcomma}}<br/>
+                <span class="nano" style="color: #C2C0CE;">
+                  {% trans 'Total budget' %}
+                </span>
+              </p>
+            {% endif %}
+            {% if project.pvw_budget %}
+              <p class="tiny white">
+                € {{project.pvw_budget|intcomma}}<br/>
+                <span class="nano" style="color: #C2C0CE;">
+                  {% trans 'Contributed by Partners for Water' %}
+                </span>
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
       </div> 
     </div>
     <div class='column span-3 last'>
       <div class="white_box gutter-top" style="background-color:#fff;">
         <div class="space15">
           <h1>Page tools</h1>
-          <a class="awesome aqua small append-bottom" href="#">Get a widget</a>
-          <p class="tiny"><a href="#">Permalink</a> for this page</p>
+          <a class="awesome aqua small append-bottom" href="#">{% trans 'Get a widget' %}</a>
+          <p class="tiny"><a href="{{project.get_absolute_url}}">{% trans 'Permalink for this page' %}</a></p>
         </div> 
       </div> 
     </div>
@@ -336,8 +366,7 @@
         <div class="space15">
           <h1>Project partners</h1>
         </div>
-        {% for partner in project.project_partners.all %}
-          {% with partner.partner as org %}
+        {% for org in project.all_partners.distinct %}
           <div style="margin: 0 8px;">
             <hr/>
           </div>
@@ -354,7 +383,6 @@
               {{org.get_organisation_type_display}}
             </p>
           </div>
-          {% endwith %}
         {% endfor %}
         
         <!--<div style="margin: 0 8px;">

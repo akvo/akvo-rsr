@@ -109,7 +109,7 @@ def funding_box_wide(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
     
 @register.inclusion_tag('inclusion_tags/project_thumb.html', takes_context=True)
-def project_thumb(context, project, width, height, img_style='', div_style=''):
+def project_thumb(context, project, width, height, style='',):
     '''
     '''
     return {
@@ -118,8 +118,7 @@ def project_thumb(context, project, width, height, img_style='', div_style=''):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'img_style' : img_style,
-        'div_style' : div_style,
+        'style'     : style,
     }
     
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)

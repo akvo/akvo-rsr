@@ -11,21 +11,18 @@
 
   <div class='column span-14'>
     
-    <h1 class="h0">Clean water projects</h1>
+    <h1 class="h0">{{focus_area}} projects</h1>
     <div class='column span-11'>
-      <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="pic1"/>
+      <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
       <p>
-        Te feugait nulla facilisi nam liber tempor, cum soluta nobis eleifend option congue. Iriure dolor in hendrerit in vulputate velit esse molestie consequat vel illum. Seacula quarta decima et quinta decima eodem modo typi qui nunc nobis videntur parum clari fiant. Assum typi non habent claritatem insitam est usus legentis. Est etiam processus dynamicus qui sequitur mutationem consuetudium lectorum mirum est notare. Nostrud exerci tation ullamcorper; suscipit lobortis nisl ut aliquip ex? Odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore nihil imperdiet doming.
-      </p>
-      <p>
-        Facit eorum claritatem Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius claritas! Eodem modo typi qui nunc nobis videntur parum clari fiant sollemnes in? Usus legentis in iis qui est etiam processus dynamicus qui sequitur mutationem consuetudium lectorum mirum est. Iusto odio dignissim qui blandit praesent luptatum zzril delenit augue. Placerat facer possim assum typi non habent claritatem insitam est notare quam littera! Litterarum formas humanitatis per seacula, quarta decima et quinta decima.
+        {{focus_area.description|linebreaks}}
       </p>
     </div>    
     <div class='column span-3 last'>
       <div class="blue_box">
         <div class="space20">
           <h2>Related focus area</h2>
-          <a href="#" class="small">Learn more about<br/>clean water <span class="link_triangle">▶</span></a>
+          <a href="#" class="small">Learn more about<br/>{{focus_area}} &#x25B6;</a>
         </div>
       </div>
     </div>
@@ -62,11 +59,7 @@
                 <p class="small">Partners</p>
             </th>
             <th style="border-right: 0;">
-              {% if focusarea %}
                 <p class="small">Focus area</p>
-              {% else %}
-                {% anchor status Status %}
-              {% endif %}
             </th>
           </tr>
           {% for project in projects %}
@@ -111,10 +104,9 @@
               </td>
               <td>
                 <p class="td-text">
-                  {% if focusarea == 'clean'      %}{% trans 'Clean water' %}{% endif %}
-                  {% if focusarea == 'safety'     %}{% trans 'Safety' %}{% endif %}
-                  {% if focusarea == 'sharing'    %}{% trans 'Sharing water' %}{% endif %}
-                  {% if focusarea == 'governance' %}{% trans 'Governance' %}{% endif %}
+                    {% for area in project.focus_areas %}
+                        <a href="{% url focus_area area.slug %}">{{area.name}}</a><br/>
+                    {% endfor %}
                 </p>
               </td>
             </tr>
