@@ -34,6 +34,7 @@ if settings.PVW_RSR:
         url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
         
         # changed compared to akvo-rsr; don't know if we should have an "if settings.PVW_RSR:" here for that or separate urls.py
+        url(r'^rsr/projects/$', 'akvo.rsr.views.project_list', name='project_list' ),
         url(r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list', name='project_list_for_org' ),
         url(r'^rsr/projects/(?P<slug>[_\-a-zA-Z]+)/$', 'akvo.rsr.views.project_list', name='focus_area' ),
     

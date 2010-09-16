@@ -206,13 +206,16 @@ if settings.PVW_RSR:
         o: organisation
         '''
         org = None
+        focus_area = None
         if org_id:
             org = Organisation.objects.get(pk=org_id)
             projects = org.published_projects().funding()
-        if slug:
+        elif slug:
             focus_area = get_object_or_404(FocusArea, slug=slug)
             projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
-#        page = project_list_data(request, projects)
+        else:
+            projects = Project.objects.published()
+        # extra columns to be able to sort on latest updates
         projects = projects.extra(
             select={
                 'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',

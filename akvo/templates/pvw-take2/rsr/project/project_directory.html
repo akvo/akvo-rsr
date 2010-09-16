@@ -10,27 +10,36 @@
 <div class='container'>
 
   <div class='column span-14'>
+    {% if focus_area %}
     
-    <h1 class="h0">{{focus_area}} projects</h1>
-    <div class='column span-11'>
-      <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
-      <p>
-        {{focus_area.description|linebreaks}}
-      </p>
-    </div>    
-    <div class='column span-3 last'>
-      <div class="blue_box">
-        <div class="space20">
-          <h2>Related focus area</h2>
-          <a href="#" class="small">Learn more about<br/>{{focus_area}} &#x25B6;</a>
+      <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
+      <div class='column span-11'>
+        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
+        <p>
+          {{focus_area.description|linebreaks}}
+        </p>
+      </div>    
+      <div class='column span-3 last'>
+        <div class="blue_box">
+          <div class="space20">
+            <h2>Related focus area</h2>
+            <a href="#" class="small">{% trans 'Learn more about' %}<br/>{{focus_area}} &#x25B6;</a>
+          </div>
         </div>
       </div>
-    </div>
-    
+    {% else %}  
+      <h1 class="h0">{% trans 'All projects' %}</h1>
+      <div class='column span-14 last'>
+        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
+        <p>
+          {% trans 'Accumsan et iusto odio dignissim qui blandit praesent luptatum? Consuetudium lectorum mirum est notare quam littera gothica quam nunc putamus parum claram. In iis qui facit eorum claritatem Investigationes demonstraverunt. Typi qui nunc nobis videntur parum clari fiant sollemnes in.' %}
+        </p>
+      </div>    
+    {% endif %}
     <div class='column span-14 last'>
       <h1>Our projects <span class="lt_grey">({{projects.count}} results)</span></h1>
       {% autosort projects %}
-      {% autopaginate projects 4 %}
+      {% autopaginate projects 10 %}
       <div class="white_box">
         {% paginate %}
         <table id="projects">
