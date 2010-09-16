@@ -1,5 +1,30 @@
 {% extends "rsr/base_sheet.html" %}
-{% load i18n  thumbnail %}
+{% load i18n thumbnail rsr_filters %}
+
+{% block title %}{% trans 'Global map' %}{% endblock %}
+
+{% block head %}
+<style type="text/css" media="screen">
+	.mapInfoWindow {
+		min-height:150px;
+	}
+	.mapInfoWindow h4 {
+		color:#BE0903;
+		padding:5px 5px;
+	}
+
+	div.bubble_header {
+		background-color:#BE0903;
+		padding-top:8px;
+		padding-bottom:4px;
+		padding-left:5px;
+	}
+	div.bubble_header h3 {
+		color:#fff;
+	}
+</style>
+	
+{% endblock head %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -46,10 +71,16 @@
 	                position: project_{{ project.id }}_coordinates,
 	                title: 'Project location'
 	            });
-	            var project_{{ project.id }}_info = '<div id="mapInfoWindow">' +
-	                '<p>{{ project.name }}</p>' +
+	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
+					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
+	                '<h4>{{ project.name|smart_truncate:35}}</h4>' +
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" />' +
+					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
+					'<div id="project_location"><p class="small">' +
+					'{{project.country.get_continent_display}}<br />' +
+					'{{project.country}}, {{project.city}} </p></div>'
 	                '</div>';
+	
 	            var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({
 	                content: project_{{ project.id }}_info
 	            });
