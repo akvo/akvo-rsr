@@ -558,7 +558,7 @@ if settings.PVW_RSR: #pvw-rsr
         end_date                    = models.DateField(_('end date'), null=True, blank=True)
         total_budget                = models.IntegerField(_(u'total budget'), blank=True, help_text=_(u'Enter the total budget for the project.'), )
         pvw_budget                  = models.IntegerField(_(u'pvw budget'), blank=True, help_text=_(u'Enter the amount that Partners for Water contribute to the project.'), )
-        location                    = models.ManyToManyField(Location)
+        locations                   = generic.GenericRelation(Location)
         
         #Custom manager
         #based on http://www.djangosnippets.org/snippets/562/ and
@@ -974,7 +974,32 @@ if settings.PVW_RSR: #pvw-rsr
     
         def other_partners(self):
             return Project.objects.filter(pk=self.pk).other_partners()
+
+        @property
+        def view_count(self):
+            counter = ViewCounter.objects.get_for_object(self)
+            return counter.count or 0
+                
+        @property
+        def primary_location(self, location=None):
+            '''Returns a project's primary location'''
+            qs = self.locations.filter(primary=True)
+            if qs:
+                location = qs[0]
+            return location
     
+        def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
+            try:
+                latitude = float(self.latitude)
+                longitude = float(self.longitude)
+                return True
+            except:
+                return False
+
+        def show_status_large(self):
+            "Show the current project status with background"
+            return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+
         class Meta:
             verbose_name=_('project')
             verbose_name_plural=_('projects')
@@ -1444,10 +1469,6 @@ else: #akvo-rsr
             "Show the current project status"
             return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
             
-        def show_status_large(self):
-            "Show the current project status with background"
-            return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
-        
         def show_current_image(self):
             try:
                 return self.current_image.thumbnail_tag

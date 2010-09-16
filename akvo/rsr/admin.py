@@ -77,13 +77,14 @@ class OrganisationAdmin(admin.ModelAdmin):
             (_(u'About the organisation'), {'fields': ('description', )}),
         )    
     else:
-        inlines = (LocationInline,)
         fieldsets = (
             (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
             (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
             (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
             (_(u'About the organisation'), {'fields': ('description', )}),
         )    
+
+    inlines = (LocationInline,)
     list_display = ('name', 'long_name', 'website', 'partner_types', )
     form = OrganisationAdminForm
 
@@ -376,9 +377,9 @@ if settings.PVW_RSR:
     #    model = get_model('rsr', 'category')
     #    extra = 3
 
-    class LocationInLine(admin.TabularInline):
-        model = get_model('rsr', 'location')
-        extra = 2
+    #class LocationInLine(admin.TabularInline):
+    #    model = get_model('rsr', 'location')
+    #    extra = 2
 
     class RSR_PartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
         def clean(self):
@@ -396,7 +397,7 @@ if settings.PVW_RSR:
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')
         #inlines = (CategoryInLine, LocationInLine, LinkInline, PartnerInline, ImageInline, )
-        inlines = (LinkInline, PartnerInline, LocationInLine,)
+        inlines = (LinkInline, PartnerInline, LocationInline,)
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %

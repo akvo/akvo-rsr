@@ -984,7 +984,7 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
   padding: 8px;
 }
 
-#status_large {
+.status_large {
   border-bottom-left-radius: 13px 13px;
   border-bottom-right-radius: 13px 13px;
   border-top-left-radius: 13px 13px;
