@@ -17,6 +17,7 @@ ASSET_BUNDLES = {
             'project_directory.css',
             'thumbs_scroller.css',
             'tabs.css',
+            'jquery-ui-1.8.4.custom.css',
 #            'x_project_directory.css', 
 #            'x_column.css',
 #            'x_project.css',

@@ -32,11 +32,11 @@
           Based on an age-old relationship with water, the Netherlands can lead the way. We're a place where global expertise and experience come together.          
         </p> 
         <div class="h1_companion">
-          <a href="#">Find a partner <span class="link_triangle">▶</span></a>
+          <a href="#">Find a partner <span class="link_triangle">&#x25B6;</span></a>
         </div>          
           <div class="clear"></div>
         <div class="h1_companion">
-          <a href="#">Our story <span class="link_triangle">▶</span></a>
+          <a href="#">Our story <span class="link_triangle">&#x25B6;</span></a>
         </div>          
           <div class="clear"></div>
       </div> 
@@ -91,7 +91,7 @@
           </div>        
           <div class="clear"><hr /></div>
           <div class="h1_companion">
-            <a href="#">View earlier articles <span class="link_triangle">▶</span></a>
+            <a href="#">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
           </div>          
           <div class="clear"></div>
         </div> 
@@ -105,7 +105,7 @@
             <h1>Projects worldwide</h1> 
           </div>
           <div class="h1_companion">
-            <a href="#">See all <span class="link_triangle">▶</span></a>
+            <a href="#">See all <span class="link_triangle">&#x25B6;</span></a>
           </div>
           <div class="clear"></div>
           <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss">
@@ -116,7 +116,7 @@
           </p>
           <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
           <div class="h1_companion">
-            <a href="#">View in Google maps <span class="link_triangle">▶</span></a>
+            <a href="#">View in Google maps <span class="link_triangle">&#x25B6;</span></a>
           </div>          
           <div class="clear"></div>
         </div> 
@@ -125,18 +125,68 @@
      
     <div class='column last span-4'>
       <div class="white_box" style="background-color:#fff;">
-        <div class="space20">     
+        <div style="margin: 20px 20px 0px 20px;">     
           <div style="float: left;">
             <h1>Focus areas</h1> 
           </div>
           <div class="h1_companion">
-            <a href="#">See all <span class="link_triangle">▶</span></a>
+            <a href="#">See all <span class="link_triangle">&#x25B6;</span></a>
           </div>
           <div class="clear"></div>
-        </div> 
-      </div> 
+        </div>
+      </div>
+      <div style="height: 500px;">
+        <div id="accordion">
+          <h3><a href="#">Section 1</a></h3>
+          <div>
+            <p class="nano-lede" style="font-size: 0.9375em;">
+              <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="220" height="165" alt="Icon Rss">
+              Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+            </p>
+            <p class="nano-lede lt_grey" style="font-size: 0.9375em;">
+              Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+            </p>
+          </div>
+          <h3><a href="#">Section 2</a></h3>
+          <div>
+            <p>
+            Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+            purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+            velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+            suscipit faucibus urna.
+            </p>
+          </div>
+          <h3><a href="#">Section 3</a></h3>
+          <div>
+            <p>
+            Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+            Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+            ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+            lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+            </p>
+            <ul>
+              <li>List item one</li>
+              <li>List item two</li>
+              <li>List item three</li>
+            </ul>
+          </div>
+          <h3><a href="#">Section 4</a></h3>
+          <div>
+            <p>
+            Cras dictum. Pellentesque habitant morbi tristique senectus et netus
+            et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
+            faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
+            mauris vel est.
+            </p>
+            <p>
+            Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+            Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+            inceptos himenaeos.
+            </p>
+          </div>
+        </div>              
+      </div>          
     </div>
-
   </div>
 </div> 
 
@@ -144,4 +194,6 @@
 
 {% block jq_ready %}
 	{{ block.super }}
+  $("#accordion").accordion();
+  $(".selector").accordion({ fillSpace: true });
 {% endblock jq_ready %}
