@@ -136,7 +136,7 @@
             <img width="220" height="165" src="{% thumbnail focus_area.image 220x165 sharpen %}" alt="{{focus_area}}"/>
             <p class="nano-lede" style="font-size: 0.9375em;">
               {{focus_area.description|smart_truncate}}
-              <a style="color: #1877B8;" href={{focus_area.get_absolute_url}}>Read more <span class="link_triangle">&#x25B6;</span></a>
+              <a style="color: #1877B8;" href="/web/{{focus_area.slug}}">Read more <span class="link_triangle">&#x25B6;</span></a>
             </p>
           </div>
           {% endfor %}
