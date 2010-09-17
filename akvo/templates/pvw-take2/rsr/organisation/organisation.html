@@ -21,7 +21,13 @@
         <div class='column span-3 border' style="width: 204px; min-height: 330px;">
           {% org_logo org 200 150 'margin-bottom: 10px' %}
           {% if org.partner_types %}
-            <h5>Activites</h5>
+            <h5>
+              {% blocktrans count org.partner_types|length as opt %}
+                Activity
+              {% plural %}
+                Activities
+              {% endblocktrans %}
+            </h5>
             <p class="small">
               {% for role in org.partner_types %}
                 {{role}}<br />
@@ -96,22 +102,48 @@
   <div class='column span-4 last'>
     <div class="white_box">      
       <div class="space15">
-        <h1>{% trans 'Participant activities' %}</h1>
-        
-        <p class="strong black">{{org.published_projects.count}} {% trans 'Total projects' %}</p>
-        
-        <h3>{% trans 'Project partners' %}</h3>
-        <p>
-          {% for partner in org_partners %}
-              <a href="{% url org_detail partner.pk %}">{{partner}}</a><br/>
-          {% endfor %}
+        <h1>
+          {% blocktrans count org.published_projects.count as areas %}
+            Participant activity
+          {% plural %}
+            Participant activities
+          {% endblocktrans %}
+        </h1>
+        <p class="strong black">{{org.published_projects.count}}
+          {% blocktrans count org.published_projects.count as areas %}
+            project
+          {% plural %}
+            total projects
+          {% endblocktrans %}
         </p>
-        <h3>{% trans 'Current projects' %}</h3>
-        <p>
-          {% for project in org_projects %}
-            <a href="{{project.get_absolute_url}}">{{project}}</a><br/>
-          {% endfor %}
-        </p>
+        {% if org_partners.count %}
+          <h3>
+            {% blocktrans count org_partners.count as opc %}
+              Project partner
+            {% plural %}
+              Project partners
+            {% endblocktrans %}
+          </h3>
+          <p>
+            {% for partner in org_partners %}
+                <a href="{% url org_detail partner.pk %}">{{partner}}</a><br/>
+            {% endfor %}
+          </p>
+        {% endif %}
+        {% if org_projects.count %}
+          <h3>
+            {% blocktrans count org_projects.count as opc %}
+              Current project
+            {% plural %}
+              Current projects
+            {% endblocktrans %}
+          </h3>
+          <p>
+            {% for project in org_projects %}
+              <a href="{{project.get_absolute_url}}">{{project}}</a><br/>
+            {% endfor %}
+          </p>
+        {% endif %}
       </div>
     </div>
   </div>

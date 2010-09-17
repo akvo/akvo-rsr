@@ -131,7 +131,7 @@ def org_logo(context, org, width, height, style=''):
         'width'     : width,
         'height'    : height,
         'wxh'       : '%sx%s' % (width, height,),
-        'div_style' : style,
+        'style'     : style,
     }
     
 @register.inclusion_tag('inclusion_tags/map_thumb.html', takes_context=True)

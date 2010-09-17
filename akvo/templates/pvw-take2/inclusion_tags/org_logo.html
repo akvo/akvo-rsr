@@ -2,7 +2,7 @@
 {% thumbnail org.logo wxh upscale sharpen as org_logo %}
 
 {% if org_logo %}
-  <img src="{{org_logo}}" alt="{% trans 'Logo of' %} {{org.name}}" style="{{img_style}}" />
+  <img src="{{org_logo}}" alt="{% trans 'Logo of' %} {{org.name}}" style="{{style}}" />
 {% else %}
-  <div style="width: {{width}}px; height:{{height}}px; background: #F6F6F6; text-align: center; {{div_style}}">{% trans 'Logo missing' %}</div>
+  <div style="width: {{width}}px; height:{{height}}px; background: #F6F6F6; text-align: center; {{style}}">{% trans 'Logo missing' %}</div>
 {% endif %}
