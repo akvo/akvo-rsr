@@ -15,7 +15,7 @@
 	
   	{% block style %}{% endblock style %}
 	
-	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="{{MEDIA_URL}}pvw-take2/img/favicon.ico" type="image/x-icon">
 	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
 	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
 	{% block head %}{% endblock head %}
@@ -131,6 +131,10 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script>
 		!window.jQuery && document.write('<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"><\/script>')
+	</script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
+	<script>
+		!window.jQuery && document.write('<script src="{{MEDIA_URL}}pvw-take2/js/jquery-ui-1.8.4.custom.min.js"><\/script>')
 	</script>
 	
 	{% block js %}{% endblock js %}
