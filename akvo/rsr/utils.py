@@ -118,8 +118,8 @@ def send_donation_confirmation_emails(invoice_id):
 
 def wordpress_get_lastest_posts(connection, limit):
     from django.db import connections
-    cursor = connections[connection].cursor()
     try:
+        cursor = connections[connection].cursor()
         cursor.execute("SELECT option_value FROM wp_options where option_id = 1")
         option_rows = cursor.fetchall()
         site_url = option_rows[0][0]

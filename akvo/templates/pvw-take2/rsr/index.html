@@ -21,8 +21,7 @@
   <div class='column span-4 last'>
     <div class="gradient_box">
       <div class="space20">
-        <div style="background-image:url(/rsr/media/pvw-take2/img/project/storm_barrier.jpg); height: 67px; text-align: center; padding-top: 100px;">
-          let's work together
+        <div style="background-image:url({{MEDIA_URL}}pvw-take2/img/lets-work-together-logo-233x172-trans.gif); height: 67px; text-align: center; padding-top: 100px;">
         </div>
         <h3 class="prepend-top" style="font-size:0.875em;">The Dutch water sector:<br/>Your worldwide partner for water</h3>
         <p class="nano-lede">
@@ -63,7 +62,7 @@
       <div class="white_box" style="background-color:#fff;">
         <div class="space20">
           <div style="float: left;">
-            <h1>Recent articles</h1> 
+            <h1>{% trans 'Recent articles' %}</h1> 
           </div>
           <div class="h1_companion">
             <a class="" href="/news/?feed=rss2">
@@ -72,19 +71,25 @@
             </a>
           </div>
           <div class="clear"></div>
-          <div class="column span-2">
+          {% for blog_post in blog_posts %}
+            {% if blog_post.image %}
+              <div class="column span-2">
+                <img src="{{blog_post.image}}" width="123">
+              </div>
+              <div class="column span-3 last" style="width: 152px;"><!-- 194-2*20-2 -->
+            {% else %}
+              <div class="column span-5 last" style="width: 294px;"><!-- 336-2*20-2 -->
+            {% endif %}
+                <a class="nano-lede strong" href="{{blog_post.url}}">{{blog_post.title}}</a>
+                <p class="nano-lede lt_grey">{{post.date|date:"l, j F Y"}}</p> 
+                <p class="nano-lede">{{blog_post.text|striptags|smart_truncate:160}}</p> 
+              </div>
+            <div class="clear"><hr /></div>
+          {% endfor %}
+          <!--<div class="column span-2">
             <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="123" height="164" alt="Icon Rss">
           </div>        
-          <div class="column span-3 last" style="width: 152px;"><!-- 194-2*20-2 -->
-            <h4>Accumsan et iusto odio dignissim qui blandit praesent.</h4> 
-            <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
-            <p class="nano-lede">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
-          </div>        
-          <div class="clear"><hr /></div>
-          <div class="column span-2">
-            <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="123" height="164" alt="Icon Rss">
-          </div>        
-          <div class="column span-3 last" style="width: 152px;"><!-- 194-2*20-2 -->
+          <div class="column span-3 last" style="width: 152px;"><!-- 194-2*20-2 --
             <h4>Feugiat nulla facilisis at vero eros</h4> 
             <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
             <p class="nano-lede">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
@@ -93,7 +98,7 @@
           <div class="h1_companion">
             <a href="#">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
           </div>          
-          <div class="clear"></div>
+          <div class="clear"></div>-->
         </div> 
       </div>
     </div>
