@@ -430,6 +430,10 @@ if settings.PVW_RSR: #pvw-rsr
                         help_text=_('The image that will appear on the focus area project listing page.'),
                     )
 
+        @models.permalink
+        def get_absolute_url(self):
+            return ('focus_area', (), {'slug': self.slug})
+
         def __unicode__(self):
             return self.name
 

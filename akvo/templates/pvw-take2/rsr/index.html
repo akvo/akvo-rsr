@@ -63,7 +63,7 @@
       <div class="white_box" style="background-color:#fff;">
         <div class="space20">
           <div style="float: left;">
-            <h1>Articles</h1> 
+            <h1>Recent articles</h1> 
           </div>
           <div class="h1_companion">
             <a class="" href="/news/?feed=rss2">
@@ -135,18 +135,19 @@
           <div class="clear"></div>
         </div>
       </div>
-      <div style="height: 500px;">
+      <div id="index-accordion" style="height: 500px;">
         <div id="accordion">
-          <h3><a href="#">Section 1</a></h3>
+          {% for focus_area in focus_areas %}
+          <h3><a href="#">{{focus_area.name}}</a></h3>
           <div>
+            <img width="220" height="165" src="{% thumbnail focus_area.image 220x165 sharpen %}" alt="{{focus_area}}"/>
             <p class="nano-lede" style="font-size: 0.9375em;">
-              <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="220" height="165" alt="Icon Rss">
-              Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
-            </p>
-            <p class="nano-lede lt_grey" style="font-size: 0.9375em;">
-              Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+              {{focus_area.description|smart_truncate}}
+              <a style="color: #1877B8;" href={{focus_area.get_absolute_url}}>Read more <span class="link_triangle">&#x25B6;</span></a>
             </p>
           </div>
+          {% endfor %}
+          <!--
           <h3><a href="#">Section 2</a></h3>
           <div>
             <p>
@@ -184,6 +185,7 @@
             inceptos himenaeos.
             </p>
           </div>
+          -->
         </div>              
       </div>          
     </div>

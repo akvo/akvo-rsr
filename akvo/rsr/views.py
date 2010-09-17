@@ -134,8 +134,10 @@ def index(request):
         grid_projects = None
     
     if settings.PVW_RSR:
+        focus_areas = FocusArea.objects.all()
         updates = {}
     else:
+        focus_areas = None
         featured = ProjectUpdate.objects.filter(featured__exact=True)
         if len(featured) < 3:
             updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
@@ -162,6 +164,7 @@ def index(request):
         'orgs': Organisation.objects,
         'projs': projs,
         'updates': updates,
+        'focus_areas': focus_areas,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),

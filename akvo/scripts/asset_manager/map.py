@@ -1,1 +1,1 @@
-BUNDLE_MAP = {'pvw_ie6_style': {'path': 'pvw-take2/css/', 'hash': '7590132c8e598b0159ae6ceb34fcf30bcb3f6d8b', 'type': 'css'}, 'pvw_style': {'path': 'pvw-take2/css/', 'hash': 'c1435ef20d49c9608f443eff002fe23272c35325', 'type': 'css'}}
+BUNDLE_MAP = {'pvw_ie6_style': {'path': 'pvw-take2/css/', 'hash': '7590132c8e598b0159ae6ceb34fcf30bcb3f6d8b', 'type': 'css'}, 'pvw_style': {'path': 'pvw-take2/css/', 'hash': '4fef8d0fc9c3bc5f78b1f91eab6cd2b434ba38c1', 'type': 'css'}}
