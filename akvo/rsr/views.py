@@ -159,7 +159,9 @@ def index(request):
     else:
         walking_for_water = None
         wfw_blog_category = None
-        
+    
+    news_post, blog_posts = wordpress_get_lastest_posts('wordpress', get_setting('NEWS_CATEGORY_ID', 3), get_setting('INDEX_ARTICLE_COUNT', 2))
+    
     return {
         'orgs': Organisation.objects,
         'projs': projs,
@@ -174,7 +176,8 @@ def index(request):
         'walking_for_water': walking_for_water,
         'wfw_blog_category': wfw_blog_category,
         'site_section': 'index',
-        'blog_posts': wordpress_get_lastest_posts('wordpress', 2),
+        'blog_posts': blog_posts,
+        'news_post': news_post,
     }
 
 def oldindex(request):

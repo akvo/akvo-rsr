@@ -49,7 +49,7 @@
   <div class='column last span-14'>
     <div class="white_box gutter-top" style="background-color:#f1f1f1;">
       <div class="space5"> 
-        <h5 style="display: inline; padding-left: 15px;">Latest news: </h5><a href="#" class="small_link">Feugait nulla facilisi nam liber.</a>
+        <h5 style="display: inline; padding-left: 15px;">Latest news: </h5><a href="{{news_post.url}}" class="small_link">{{news_post.title}}</a>
       </div> 
     </div> 
   </div> 
@@ -70,36 +70,24 @@
               <img src="/rsr/media/base/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
             </a>
           </div>
-          <div class="clear"></div>
-          {% for blog_post in blog_posts %}
-            {% if blog_post.image %}
-              <div class="column span-2">
-                <img src="{{blog_post.image}}" width="123">
-              </div>
-              <div class="column span-3 last" style="width: 152px;"><!-- 194-2*20-2 -->
-            {% else %}
-              <div class="column span-5 last" style="width: 294px;"><!-- 336-2*20-2 -->
-            {% endif %}
-                <a class="nano-lede strong" href="{{blog_post.url}}">{{blog_post.title}}</a>
-                <p class="nano-lede lt_grey">{{post.date|date:"l, j F Y"}}</p> 
-                <p class="nano-lede">{{blog_post.text|striptags|smart_truncate:160}}</p> 
-              </div>
-            <div class="clear"><hr /></div>
-          {% endfor %}
-          <!--<div class="column span-2">
-            <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="123" height="164" alt="Icon Rss">
-          </div>        
-          <div class="column span-3 last" style="width: 152px;"><!-- 194-2*20-2 --
-            <h4>Feugiat nulla facilisis at vero eros</h4> 
-            <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
-            <p class="nano-lede">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
-          </div>        
-          <div class="clear"><hr /></div>
-          <div class="h1_companion">
-            <a href="#">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
-          </div>          
-          <div class="clear"></div>-->
         </div> 
+        <div class="clear"></div>
+        {% for blog_post in blog_posts %}
+          <div class="space20" style="margin-top: 0;">
+            <p><a class="strong" href="{{blog_post.url}}">{{blog_post.title}}</a></p>
+            <p class="nano-lede lt_grey">{{blog_post.date|date:"l, j F Y"}}</p> 
+            {% if blog_post.image %}
+              <div class="clear"></div>
+              <img src="{{blog_post.image}}" width="123" style="margin: 0 10px 10px 0; float: left;">
+            {% endif %}
+            <p class="nano-lede">{{blog_post.text|striptags|smart_truncate:160}}</p> 
+          </div>
+          <div style="margin: 0 8px;"><hr/></div>
+        {% endfor %}
+        <div class="h1_companion" style="margin: 20px; margin-top: 5px;">
+          <a href="/news">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
+        </div>          
+        <div class="clear"></div>
       </div>
     </div>
      
