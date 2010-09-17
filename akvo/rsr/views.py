@@ -174,7 +174,7 @@ def index(request):
         'walking_for_water': walking_for_water,
         'wfw_blog_category': wfw_blog_category,
         'site_section': 'index',
-    #    'blog_posts': wordpress_get_lastest_posts('wordpress', 2),
+        'blog_posts': wordpress_get_lastest_posts('wordpress', 2),
     }
 
 def oldindex(request):
