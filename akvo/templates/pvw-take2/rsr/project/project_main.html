@@ -111,9 +111,11 @@
         
         <div id="tab_updates" class="tab">
           <div class="space15">
-            <div style="float: right;">
-              <a href="#" class="awesome aqua small">{% trans 'Add update' %}</a>
-            </div>          
+            {% if can_add_update %}
+              <div style="float: right;">
+                <a href="#" class="awesome aqua small">{% trans 'Add update' %}</a>
+              </div>
+            {% endif %}
             <div class="clear"></div>
             <div class="space5" style="margin-top: 15px;">
             {% for update in updates %}
