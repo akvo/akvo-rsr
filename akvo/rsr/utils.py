@@ -118,40 +118,40 @@ def send_donation_confirmation_emails(invoice_id):
 
 def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2):
     from django.db import connections
-    #try:
-    cursor = connections[connection].cursor()
-    cursor.execute("SELECT option_value FROM options where option_id = 1")
-    option_rows = cursor.fetchall()
-    site_url = option_rows[0][0]
-    #except:
-    #    site_url = 'http://akvo.org/blog'
+    try:
+        cursor = connections[connection].cursor()
+        cursor.execute("SELECT option_value FROM options where option_id = 1")
+        option_rows = cursor.fetchall()
+        site_url = option_rows[0][0]
+    except:
+        site_url = 'http://akvo.org/blog'
     
-    #try:
-    cursor.execute("""
-        SELECT * FROM posts, term_relationships
-            WHERE post_status != 'draft'
-                AND post_status != 'auto-draft'
-                AND post_type = 'post'
-                AND term_taxonomy_id = %d
-                and ID = object_id
-            ORDER By post_date DESC LIMIT %d
-        """ % (new_section_id, limit)
-    )
-    rows = cursor.fetchall()
+    try:
+        cursor.execute("""
+            SELECT * FROM posts, term_relationships
+                WHERE post_status != 'draft'
+                    AND post_status != 'auto-draft'
+                    AND post_type = 'post'
+                    AND term_taxonomy_id = %d
+                    and ID = object_id
+                ORDER By post_date DESC LIMIT %d
+            """ % (new_section_id, limit)
+        )
+        rows = cursor.fetchall()
+        
+        news_post = {'title': rows[0][5], 'url': '%s/?p=%s' % (site_url, rows[0][0],)}
     
-    news_post = {'title': rows[0][5], 'url': '%s/?p=%s' % (site_url, rows[0][0],)}
-
-    cursor.execute("""
-        SELECT * FROM posts
-            WHERE post_status != 'draft'
-                AND post_status != 'auto-draft'
-                AND post_type = 'post'
-            ORDER By post_date DESC LIMIT %d
-        """ % limit
-    )
-    rows = cursor.fetchall()
-    #except:
-    #    return None
+        cursor.execute("""
+            SELECT * FROM posts
+                WHERE post_status != 'draft'
+                    AND post_status != 'auto-draft'
+                    AND post_type = 'post'
+                ORDER By post_date DESC LIMIT %d
+            """ % limit
+        )
+        rows = cursor.fetchall()
+    except:
+        return None, None
 
     posts = []
     for post in rows:
