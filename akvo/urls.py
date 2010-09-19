@@ -45,7 +45,7 @@ if settings.PVW_RSR:
         url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
         url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),
         url(r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', name='project_funding'),
-        (r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', ),
+        url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='get_widget'),
             
         url(r'^rsr/directory/$', 'akvo.rsr.views.directory', name='directory'),
         url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
@@ -70,11 +70,7 @@ else:
         # Front page
         url(r'^$', 'akvo.rsr.views.index', name='index'),    
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
-        
-        # django_counter
-        (r'^rsr/counter/', include('django_counter.urls')),
-        
-        
+                
         # Project listing
         url(r'^rsr/projects/$','akvo.rsr.views.projectlist', name='project_list'),
         url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
@@ -147,6 +143,9 @@ urlpatterns += patterns('',
 	url(r'^rsr/widget/(?P<template>[\w-]+)/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/(?P<template>[\w-]+)/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	
+    # django_counter
+    (r'^rsr/counter/', include('django_counter.urls')),
+        
 
     (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
     

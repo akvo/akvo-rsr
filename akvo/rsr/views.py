@@ -1183,7 +1183,7 @@ def getwidget(request, project_id):
         else:
             o = None
         p = get_object_or_404(Project, pk=project_id)
-        return render_to_response('rsr/machinery_step2.html', {
+        return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {
             'project': p, 
             'organisation':o, 
             'widget_choice': widget_choice, 

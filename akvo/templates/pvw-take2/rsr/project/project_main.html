@@ -26,7 +26,7 @@
         </div>
         <div class='column span-8' style="width: 548px;">          
           <div style="border-right: 1px solid #9C9CAC;">
-            <div style="margin-left: 20px;">
+            <div class="space20" style="margin-top: 0;">
               {% thumbnail project.current_image 403x301 upscale autocrop sharpen as project_image %}
               <!-- remove comment when js loading of images is added
                 <noscript>
@@ -44,9 +44,7 @@
                 </div>
               </div>
               <div class="clear"></div>
-              <p style="margin: 20px 20px 20px 0;">
-                {{ project.project_plan_summary|capfirst|linebreaks }}
-              </p>
+              {{ project.project_plan_summary|capfirst|linebreaks }}
             </div>
           </div>
         </div>
@@ -55,7 +53,7 @@
             <h2 class="black">{% trans 'How many benefit?' %}</h2>
             <h2 class="green">{{project.beneficiaries|intcomma}} {% trans 'people' %}</h2>
           {% endif %}
-          <h2 class="black {% if project.beneficiaries %}prepend-top{% endif %}">Location</h2>
+          <h2 class="black {% if project.beneficiaries %}prepend-top{% endif %}">{% trans 'Location' %}</h2>
           {% if project.primary_location %}
             {% google_map project 173 173 3 %}
             <p class="small prepend-top">
@@ -268,7 +266,7 @@
     <div class='column span-3 last'>
       <div id="project_status">
         <div style="padding: 7px 7px 15px 7px;">
-          <h1 class="h0" style="color: #9FFFFE;">Project status</h1>
+          <h1 class="h0" style="color: #9FFFFE;">{% trans 'Project status' %}</h1>
           {{project.show_status_large}}
         </div>
         {% if project.start_date or project.end_date %}
@@ -315,7 +313,7 @@
       <div class="white_box gutter-top" style="background-color:#fff;">
         <div class="space15">
           <h1>Page tools</h1>
-          <a class="awesome aqua small append-bottom" href="#">{% trans 'Get a widget' %}</a>
+          <a class="awesome aqua small append-bottom" href="{% url get_widget project.id %}">{% trans 'Get a widget' %}</a>
           <p class="tiny"><a href="{{project.get_absolute_url}}">{% trans 'Permalink for this page' %}</a></p>
         </div> 
       </div> 
@@ -323,7 +321,7 @@
     <div class='column span-3 last'>
       <div class="white_box gutter-top" style="background-color:#fff;">
         <div class="space15">
-          <h1>Project partners</h1>
+          <h1>{% trans 'Project partners' %}</h1>
         </div>
         {% for org in project.all_partners.distinct %}
           <div style="margin: 0 8px;">
@@ -342,25 +340,7 @@
               {{org.get_organisation_type_display}}
             </p>
           </div>
-        {% endfor %}
-        
-        <!--<div style="margin: 0 8px;">
-          <hr/>
-        </div>
-        <div class="space15">
-          <a title="Deltares" href="#">
-            <img width="80" height="40" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Deltares"/>
-          </a>
-          <br/>
-          <a title="Deltares" href="#" class="tiny">
-            Deltares
-          </a>
-          <p class="tiny lt_grey">
-            Rotterdam, Netherlands<br/>
-            NGO
-          </p>
-        </div>-->
-        
+        {% endfor %}        
       </div> 
     </div>
   </div>
