@@ -1,0 +1,125 @@
+{% extends "rsr/base.html" %}
+{% load i18n rsr_tags webdesign %}
+
+{% block inline_styles %}
+h1 {
+	color:#1DAAFB;
+}
+{% endblock inline_styles %}
+
+{% block content %}
+
+<div class="span-14 first">
+	<div id="movie_container" style="width:753px; max-width:753px; max-height:446px height:446px; overflow:hidden;">
+		<object width="753" height="446">
+			<param name="movie" value="http://www.youtube.com/v/LqwtH6qYjmo&hl=en_US&fs=1&rel=0&hd=1"></param>
+			<param name="allowFullScreen" value="true"></param>
+			<param name="allowscriptaccess" value="always"></param>
+			<embed src="http://www.youtube.com/v/LqwtH6qYjmo&hl=en_US&fs=1&rel=0&hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="753" height="446">
+			</embed>
+		</object>
+	</div>
+	<div class="frame" id="left_news" style="padding-top:15px; margin-top:15px;">
+		<div class="span-3 first" style="text-align:right;">
+			<p style="color:#DF5B18; margin-bottom:15px;">
+				{% trans 'News' %}:
+			</p>
+		</div>
+		<div class="span-10 first">
+			<p style="margin-bottom:15px;">
+				{% if news.link  %}
+				<a href="{{ news.link }}">
+					{{ news.title|safe|truncatewords:20 }}
+				</a>
+				{% else %}
+					{{ news.title|safe|truncatewords:20 }}
+				{% endif %}
+			</p>
+		</div>
+		<div class="clear"></div>
+	</div>
+	
+	<div class="frame">
+		<div class="sliding_box_header">
+			<a href="/news">{% trans 'Recent contributions' %}</a>
+			<div style="float:right; width:200px; height:17px; overflow:hidden; text-align:right; margin-right:15px;">
+				<a class="small" href="/news/?feed=rss2">{% trans 'Subscribe via RSS' %}</a>
+				<a href="/news/?feed=rss2" style="margin-left:5px; margin-right:0">
+					<img src="{{MEDIA_URL}}base/img/icon_rss.gif" width="12" height="12" alt="Icon Rss" />
+				</a>
+			</div>
+		</div>
+		<div class="space20">
+			<h4><a href="{{latest1.link}}">{{latest1.title|safe}}</a></h4>
+			{% if img_src1 %}
+			<div style="float:left; width: 210px;">
+				<img src="{{img_src1}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+			</div> 
+			{% endif %}
+			<p>
+				{{latest1.summary|safe|truncatewords:45}}
+			</p>
+			{% if latest1.updated %}
+			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>				
+			{% endif %}
+			
+			<hr />
+			<h4><a href="{{latest2.link}}">{{latest2.title|safe}}</a></h4>
+			{% if img_src2 %}
+			<div style="float:left; width: 210px;">
+				<img src="{{img_src2}}" style="width: 140px; margin: 15px 15px 5px 15px"/>
+			</div> 
+			{% endif %}
+			<p>
+				{{latest2.summary|safe|truncatewords:45}}
+			</p>
+			{% if latest1.updated %}
+			<p class="tiny grey">{{latest1.updated|safe}} {% trans 'by' %} {{latest1.author|safe}}</p>
+			{% endif %}
+		</div>
+	</div>
+</div>
+<div class="span-4 last">
+	<div class="frame" style="background-color:#F4F7F8">
+		<div class="space20">
+			<p class="highlight" style="font-size:1.125em; margin-bottom:10px;">
+			{% trans 'The Dutch water sector' %}:<br>{% trans 'Resourcefulness and cooperation around the world' %}
+			</p>
+			<hr style="margin-bottom:15px">
+			<p class="tiny" style="font-weight:bold; margin-bottom:0.5em;">
+				{% trans 'The history of Dutch Water' %}
+			</p>
+			<p class="tiny">
+				{% lorem 10 w random %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<p class="highlight" style="font-size:1.05em; margin-bottom:1em;">{% trans 'Focus Areas' %}</p>
+			
+			<a href="/rsr/projects/clean/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/focus_area/clean_water_thumb.jpg" width="163" height="122" alt="" />
+			</a>
+			<p style="margin-top:3px;" class="highlight small no_b_marg">{% trans 'Clean water' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>
+			
+			<a href="/rsr/projects/safety/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/focus_area/sharing_water_thumb.jpg" width="163" height="122" alt="" />
+			</a>
+			<p style="margin-top:3px;" class="highlight small no_b_marg">{% trans 'Safety' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>
+			
+			<a href="/rsr/projects/sharing/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/focus_area/governance_thumb.jpg" width="163" height="122" alt="" />
+			</a>
+			<p style="margin-top:3px;" class="highlight small no_b_marg">{% trans 'Sharing water' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>
+			
+			<a href="/rsr/projects/governance/">
+				<img src="{{ MEDIA_URL}}pvw/img/base/focus_area/safety_thumb.jpg" width="163" height="122" alt="" />
+			</a>
+			<p style="margin-top:3px;" class="highlight small no_b_marg">{% trans 'Governance' %}</p>
+			<p class="tiny">{% lorem 4 w random %}</p>			
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

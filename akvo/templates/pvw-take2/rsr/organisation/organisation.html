@@ -1,0 +1,173 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n rsr_tags rsr_filters google_maps webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
+
+{% block breadcrum  %}{% endblock breadcrum  %}
+
+{% block maincontent %}
+
+
+<div class='container'>
+
+  <div class='column span-10'>
+    <div class="white_box">      
+      <div class="space20">      
+      
+        <h1 class="h0">{{org.name}}</h1>    
+        <p class="lt_grey">
+          {{org.long_name}}
+        </p>
+        
+        <div class='column span-3 border' style="width: 204px; min-height: 330px;">
+          {% org_logo org 200 150 'margin-bottom: 10px' %}
+          {% if org.partner_types %}
+            <h5>
+              {% blocktrans count org.partner_types|length as opt %}
+                Activity
+              {% plural %}
+                Activities
+              {% endblocktrans %}
+            </h5>
+            <p class="small">
+              {% for role in org.partner_types %}
+                {{role}}<br />
+              {% endfor %}
+            </p>
+          {% endif %}
+
+          <h5>Type</h5>
+          <p class="small">
+            {{org.get_organisation_type_display}}
+          </p>
+
+          {% if org.url %}
+            <h5>{% trans 'Website' %}</h5>
+            <p class="small">
+              <a href="{{org.url}}">{{org.url}}</a>
+            </p>
+          {% endif %}
+        </div>
+    
+        <div class='column span-4 border' style="width: 203px; min-height: 330px;">
+          <h5>Location</h5>
+          <p class="small">
+            {% if org.primary_location.address_1 %}{{org.primary_location.address_1}}<br />{% endif %}
+            {% if org.primary_location.address_2 %}{{org.primary_location.address_2}}<br />{% endif %}
+            {% if org.primary_location.postcode %}{{org.primary_location.postcode}}<br />{% endif %}
+            {% if org.primary_location.city %}{{org.primary_location.city}}<br />{% endif %}
+            {% if org.primary_location.state %}{{org.primary_location.state}}<br />{% endif %}
+            {% if org.primary_location.country %}{{org.primary_location.country}}{% endif %}
+           </p>
+          {% if org.primary_location %}
+            {% google_map org 204 204 3 %}
+          {% endif %}
+        </div>
+    
+        <div class='column span-3 last' style="width: 204px; min-height: 330px;">
+          <h5>Contact</h5>
+          <p class="small">
+            {{org.contact_person}}<br />
+            <a href="mailto:{{org.contact_email}}">{{org.contact_email}}</a>
+          </p>
+          <p class="small">
+            {% if org.phone %}
+              <strong>{% trans 'Phone' %}</strong><br />
+              {{org.phone}}<br />
+            {% endif %}							
+            {% if org.mobile %}
+              <strong>{% trans 'Mobile' %}</strong><br />
+              {{org.mobile}}<br />
+            {% endif %}
+            {% if org.fax %}
+              <strong>{% trans 'Fax' %}</strong><br />
+              {{org.fax}}<br />
+            {% endif %}
+          </p>
+        </div>
+        <div class="clear"></div>
+        
+        <div style="padding-top: 15px;">
+          <hr/> 
+        </div>
+        
+        <h5>{% trans 'Description' %}</h5>    
+        <p>{{org.description|linebreaks}}</p>
+  
+        <div class="clear"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class='column span-4 last'>
+    <div class="white_box">      
+      <div class="space15">
+        <h1>
+          {% blocktrans count org.published_projects.count as areas %}
+            Participant activity
+          {% plural %}
+            Participant activities
+          {% endblocktrans %}
+        </h1>
+        <p class="strong black">{{org.published_projects.count}}
+          {% blocktrans count org.published_projects.count as areas %}
+            project
+          {% plural %}
+            total projects
+          {% endblocktrans %}
+        </p>
+        {% if org_partners.count %}
+          <h3>
+            {% blocktrans count org_partners.count as opc %}
+              Project partner
+            {% plural %}
+              Project partners
+            {% endblocktrans %}
+          </h3>
+          <p>
+            {% for partner in org_partners %}
+                <a href="{% url org_detail partner.pk %}">{{partner}}</a><br/>
+            {% endfor %}
+          </p>
+        {% endif %}
+        {% if org_projects.count %}
+          <h3>
+            {% blocktrans count org_projects.count as opc %}
+              Current project
+            {% plural %}
+              Current projects
+            {% endblocktrans %}
+          </h3>
+          <p>
+            {% for project in org_projects %}
+              <a href="{{project.get_absolute_url}}">{{project}}</a><br/>
+            {% endfor %}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+{% endblock maincontent %}
+
+{% block js %}
+
+{{ block.super }}
+
+{% if debug %}
+  <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+{% else %}
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+{% endif %}
+
+{% endblock js %}
+
+{% block jq_ready %}
+
+  jQ('#project_tabs').tabs();
+  {{block.super}}
+
+{% endblock jq_ready %}

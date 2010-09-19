@@ -38,14 +38,13 @@
 				</div>
 				
 				<div id="gallery_box" class="round">
-
-					<div class="round" style="float:right; margin:5px; background-color:#F1F1F1; width:40px; text-align:center; border:1px solid #ccc">
-						<span class="small">
-							<a id="prev">&#x25C4;</a> <a id="next">&#x25BA;</a> 
-						</span>
+					<div id="gallery_box_controller">
+						<div id="gallery_box_controller_prev"> </div>
+						<div id="gallery_box_controller_next"> </div>
+						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
-					
+						
 					<div id="gallery_box_slider">
 						<div class="gallery_links_container">
 							<div style="border:2px solid #71CDFF;">
@@ -195,13 +194,13 @@
 	jQ('#project_tabs').tabs();
 	{{block.super}}
 		
-	jQ('#prev').click(function () {		
+	jQ('#gallery_box_controller_prev').click(function () {		
 		if ( jQ('#gallery_box_slider').offset().left < 119 ) {
 			jQ('#gallery_box_slider').animate({'left': '+=250px'}, 300);
 		}
 	});
 	
-	jQ('#next').click(function () {
+	jQ('#gallery_box_controller_next').click(function () {
 		var left = jQ('#gallery_box_slider').offset().left;
 		
 		if ( (({{slider_width}} - 119 * 4) + left) > 0 ) {
@@ -213,8 +212,8 @@
 		// Slide and highlight
 		jQ('#project_image').attr('src', jQ(this).attr('href') );
 		jQ('#project_image_caption').html( jQ(this).attr('title') );
-		jQ('.gallery_links_container').children(':first-child').css('border', '2px solid #ccc');
-		jQ(this).parent().css('border', '2px solid #71CDFF');
+		jQ('.gallery_links_container').children(':first-child').css('border', '3px solid #ccc');
+		jQ(this).parent().css('border', '3px solid #71CDFF');
 		jQ('#gallery_box_slider').animate({'left': - (jQ(this).position().left - 150)  }, 300);
 		
 		return false;

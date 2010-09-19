@@ -1,0 +1,158 @@
+{% load i18n rsr_tags %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="description" content="{% trans 'Dutch Water Sector' %}" />
+	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
+	<title>{% block title %}{% trans 'DutchWaterSector' %}{% endblock %}</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	{% page_styles %}
+	<style type="text/css" media="screen">{% block inline_styles %}{% endblock inline_styles %}</style>
+	
+	<link rel="alternate" type="application/rss+xml" title="{% trans 'RSR updates' %}" href="/rsr/rss/all-updates" />
+	<link rel="alternate" type="application/rss+xml" title="{% trans 'News entries' %}" href="/news/?feed=rss2" />
+</head>
+<body>
+{% block menu %}
+<form action="" method="get" accept-charset="utf-8">
+<div id="header">
+	<div id="header_menu">
+		<ul id="mainmenu">
+			<li>
+                <a id="mainmenu_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %}">
+                    <span style="color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;">DutchWaterSector</span>
+                </a>
+            </li>
+			<li>
+                <a href="{% url areas %}" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
+                    <span>{% trans 'Focus Areas' %}</span>
+                </a>
+            </li>
+			<li>
+                <a href="/web/get_solutions">
+                    <span>{% trans 'Get Solutions' %}</span>
+                </a>
+            </li>
+			<li><a href="/web/education"><span>{% trans 'Education' %}</span></a></li>
+			
+			<li><a href="{% url directory %}" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
+				<span>{% trans 'Directory' %}</span></a></li>
+			<li><a href="/news"><span>{% trans 'News' %}</span></a></li>
+			<li><a href="/web/who_we_are"><span>{% trans 'About' %}</span></a></li>
+			<li>
+				<div id="mainmenu_search">
+					<span>
+					</span>
+				</div>
+			</li>
+			{% comment %}
+			<li><div id="mainmenu_search"><span>
+					<input type="text" name="q" value="{% if query_string %}{{ query_string }}{% else %}Search projects{% endif %}" id="main_search" style="padding-top:0; padding-bottom:0;">
+			</span></div></li>
+			{% endcomment %}
+			<li>
+				{% if not user.username %}
+				<a id="signInMenuItem" href="{% url signin %}?next={{request.path}}"><span>{% trans 'Sign In' %}</span></a>
+				{% else %}
+				<a id="signInMenuItem" href="{% url akvo.rsr.views.signout %}?next={{request.path}}" title="{{ user.username }}"><span>{% trans 'Sign Out' %}</span></a>
+				{% endif %}
+			</li>
+		</ul>
+	</div>
+</div>
+</form>
+{% endblock menu %}
+
+<div id="maincontainer" class="container">
+{% block content %}
+		<p>RSR</p>
+{% endblock content %}
+</div>
+
+{% block footer %}
+<div id="footer_area">
+	<div id="footer" class="container">
+		<div class="span-14 first">
+			<p class="grey small"> 
+				{% trans 'Site content under' %} 
+				<a href="/web/open_license">{% trans 'Open Licence' %}</a> | 
+				<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a> | 
+				<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a> | 
+				<a href="/rsr/admin">{% trans 'Admin' %}</a>
+			</p>
+		</div>
+		<div class="span-4 last" style="text-align:right;">
+			<p class="grey small"> 
+				<a href="/web/contact">{% trans 'Contact us' %}</a> 
+			</p>
+		</div>
+	</div>
+</div>
+{% endblock footer %}
+
+{% block js %}
+<script type="text/javascript" charset="utf-8">
+	var jQ = jQuery.noConflict();
+
+	jQ(document).ready(function(){
+		{% block jquery_ready %}{% endblock jquery_ready %}	
+		jQ('#grid_toggle').click(function () {
+			jQ('#maincontainer').toggleClass('showgrid');
+		});
+	});
+</script>
+
+
+{% comment %}
+<script type="text/javascript">
+(function() {
+	var google_script=document.createElement('script'), backup_script=document.createElement('script');
+    var tryCounter=10, delay=250;
+    google_script.setAttribute('src','http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js');
+    backup_script.setAttribute('src','{{MEDIA_URL}}js/jquery-1.4.2.min.js');
+	
+    document.getElementsByTagName('head')[0].appendChild(google_script);
+	
+    function load_ready() {
+        window.setTimeout(function() {
+            if (typeof jQuery=='undefined') {
+                alert('jQuery could not be loaded.');
+            } else {
+                var jQ = jQuery.noConflict();
+				jQ(document).ready(function(){
+					{% block jquery_ready %}{% endblock jquery_ready %}	
+					jQ('#grid_toggle').click(function () {
+						jQ('#maincontainer').toggleClass('showgrid');
+					});
+				});
+            }
+        } ,delay);
+    }
+    
+    var tryjQuery=function() {
+        setTimeout(function() {
+            if (typeof jQuery=='undefined') {
+                if (tryCounter) {
+                    tryCounter--;
+                    tryjQuery();
+                } else {
+                    document.getElementsByTagName('head')[0].appendChild(backup_script);
+                    load_ready();
+                }
+            } else {
+                load_ready();
+            }
+        }, delay);
+     };
+     tryjQuery();
+})();
+</script>
+{% endcomment %}
+{% endblock js %}
+
+</body>
+</html>
+
+	
+

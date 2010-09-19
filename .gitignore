@@ -7,8 +7,14 @@ akvo/settings.py
 akvo/datadir
 akvo/mediaroot/admin
 akvo/mediaroot/db
+akvo/rebuild_db.py
+akvo/testing.py
 scripts/deployment/static_project_structure.py
+.project
+.pydevproject
+.settings
 tests/acceptance/test_settings.py
 akvo/data
 akvo/mollie_banklist.xml
+akvo/datadir.zip
 dev.db

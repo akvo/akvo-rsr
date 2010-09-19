@@ -41,7 +41,7 @@
 						<td>
 							{% trans 'Active' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_active.count}}
 						</td>
 					</tr>
@@ -49,7 +49,7 @@
 						<td>
 							{% trans 'Need funding' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_onhold.count}}
 						</td>
 					</tr>
@@ -57,7 +57,7 @@
 						<td>
 							{% trans 'Complete' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_complete.count}}
 						</td>
 					</tr>
@@ -65,7 +65,7 @@
 						<td>
 							{% trans 'Cancelled' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_cancelled.count}}
 						</td>
 					</tr>
@@ -73,7 +73,7 @@
 						<td>
 							{% trans 'Total projects' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.count}}
 						</td>
 					</tr>
@@ -88,28 +88,28 @@
 				<table class="org_statistics_table">
 					<tr>
 						<td style="">&nbsp;</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							<a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							<a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
 						</td>
 					</tr>
 					<tr>
 						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_planned_water_calc|intcomma}}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_actual_water_calc|intcomma}}
 						</td>
 					</tr>
 					<tr class="bottom_grey_border">
 						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_planned_sanitation_calc|intcomma}}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_actual_sanitation_calc|intcomma}}
 						</td>
 					</tr>
@@ -132,7 +132,7 @@
 					</tr>
 					<tr style="color:red;">
 						<td>{% trans 'Still needed' %}</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{org_projects.euros.0.get_currency_display|safe}} 
 							{{o.funding.still_needed_euros|round|intcomma}}
 						</td>
@@ -151,14 +151,14 @@
 					</tr>
 					<tr style="color:green;">
 						<td>{% trans 'Pledged' %}</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{org_projects.dollars.0.get_currency_display|safe}} 
 							{{o.funding.pledged_dollars|round|intcomma}}
 						</td>
 					</tr>
 					<tr style="color:red;" class="hr">
 						<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{org_projects.dollars.0.get_currency_display|safe}} 
 							{{o.funding.still_needed_dollars|round|intcomma}}
 						</td>

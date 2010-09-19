@@ -1,0 +1,389 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n rsr_tags webdesign thumbnail counter_tags google_maps cache humanize %}
+
+{% block breadcrum  %}{% endblock breadcrum  %}
+
+{% block maincontent %}
+
+<div class='container'>
+
+  <div class='column span-11'>
+    
+    <div class='column span-11 last'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class='column span-11 last' style="width: 760px;">
+          <div class="space20">
+            <div style="float: left;">
+              <h1 class="h0">{{project.name}}</h1> 
+            </div>
+            <div class="h1_companion">
+              <a href="#" class="awesome aqua small">{% trans 'Edit' %}</a>
+            </div>
+            <div class="clear"></div>
+            <p class="lt_grey">{{project.subtitle}}</p>
+          </div>
+        </div>
+        <div class='column span-8' style="width: 548px;">          
+          <div style="border-right: 1px solid #9C9CAC;">
+            <div style="margin-left: 20px;">
+              {% thumbnail project.current_image 403x301 upscale autocrop sharpen as project_image %}
+              <!-- remove comment when js loading of images is added
+                <noscript>
+              -->
+                <iframe width="403" height="301" name="project_images" src="{{project_image.absolute_url}}" style="float:left;"></iframe>
+              <!-- remove comment when js loading of images is added
+                </noscript>
+              -->
+              <div class="thumbs_scroller">
+                <div class="thumbs">
+                  {% gallery_thumb project.current_image 403 301 %}  
+                  {% for update in updates_with_images %}
+                    {% gallery_thumb update.photo 403 301 %}  
+                  {% endfor %}  
+                </div>
+              </div>
+              <div class="clear"></div>
+              <p style="margin: 20px 20px 20px 0;">
+                {{ project.project_plan_summary|capfirst|linebreaks }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class='column span-3 last' style="width: 193px;">
+          {% if project.beneficiaries %}
+            <h2 class="black">{% trans 'How many benefit?' %}</h2>
+            <h2 class="green">{{project.beneficiaries|intcomma}} {% trans 'people' %}</h2>
+          {% endif %}
+          <h2 class="black {% if project.beneficiaries %}prepend-top{% endif %}">Location</h2>
+          {% if project.primary_location %}
+            {% google_map project 173 173 3 %}
+            <p class="small prepend-top">
+              {{project.primary_location.country.get_continent_display}}, {{project.primary_location.country}}<br>
+              {{project.primary_location.state}}, {{project.primary_location.city}}<br>
+              {{project.primary_location.latitude}}, {{project.primary_location.longitude}}
+            </p>
+          {% else %}
+              <p class="small red">{% trans 'No map available' %}</p>
+          {% endif %}
+
+          {% if project.areas_and_categories %}
+            <h2 class="black">
+              {% blocktrans count project.areas_and_categories|length as areas %}
+                Focus area
+              {% plural %}
+                Focus areas
+              {% endblocktrans %}
+            </h2>
+            {% for area in project.areas_and_categories %}
+              <p>{{area.area}}
+              <br/>
+              <span class="small">
+                {% blocktrans count area.categories|length as cats %}
+                  Category:
+                {% plural %}
+                  Categories:
+                {% endblocktrans %}
+                {{area.categories|join:", "}}
+              </span>
+            </p>
+            {% endfor %}
+          {% endif %}
+          
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div class='column span-8'>
+      
+      <div id="project_tabs" class="gutter-top"> 
+        <ul class="small"> 
+          <li><a href="#tab_updates"><span>{% trans 'Updates' %}</span></a></li>
+          <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
+          {% if project.current_status_detail or project.project_plan_detail %}
+              <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
+          {% endif %}
+          {% if project.impact or project.spin_off or project.lessons_learned or project.technologies_used %}
+              <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
+          {% endif %}
+        </ul>
+        
+        <div id="tab_updates" class="tab">
+          <div class="space15">
+            {% if can_add_update %}
+              <div style="float: right;">
+                <a href="#" class="awesome aqua small">{% trans 'Add update' %}</a>
+              </div>
+            {% endif %}
+            <div class="clear"></div>
+            <div class="space5" style="margin-top: 15px;">
+            {% for update in updates %}
+                <p>
+                  <h3><a href="#">{{update.title}}</a></h3>
+                  <span class="small lt_grey">
+                    {{update.time|date:"Y-m-d H:i" }}
+                    {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}
+                        by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}
+                    {% endblocktrans %}
+                  </span>
+                </p>
+                {% if update.photo %}
+                <div style="float: right; margin: 0 0 10px 10px;">
+                  <img width="160" height="120" src="{% thumbnail update.photo 160x120 autocrop sharpen %}" alt="{{update.photo_caption}}"/>
+                  
+                    {% if update.photo_caption or update.photo_credit %}
+                        <p class="tiny grey">
+                        {% if update.photo_caption %}   
+                            {{update.photo_caption}}<br/>
+                        {% endif %}
+                        {% if update.photo_credit %}
+                            {% trans 'Photo credit' %}: {{update.photo_credit}}
+                        {% endif %}
+                        </p>
+                    {% endif %}
+                </div>          
+                {% endif %}
+                <p>
+                    {{update.text|linebreaks}}
+                </p>
+                <hr/>
+            {% endfor %}
+            <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25B6;</a>
+            </div>
+          </div>
+        </div><!-- End tab_updates -->
+        
+        <div id="tab_goals" class="tab">
+          <div class="space20">
+						<div class="space10" style="width: 170px; float:right;">
+              <ul>
+                {% if project.goal_1 %}
+                  <li>{{project.goal_1}}</li>
+                {% endif %}
+                {% if project.goal_2 %}
+                  <li>{{project.goal_2}}</li>
+                {% endif %}
+                {% if project.goal_3 %}
+                  <li>{{project.goal_3}}</li>
+                {% endif %}
+                {% if project.goal_4 %}
+                  <li>{{project.goal_4}}</li>
+                {% endif %}
+                {% if project.goal_5 %}
+                  <li>{{project.goal_5}}</li>
+                {% endif %}
+              </ul>
+            </div>
+            <h5>{% trans 'Goals' %}</h5>
+            <p>
+  						{{project.goals_overview|capfirst|linebreaks}}
+            </p>
+          </div>
+        </div><!-- End tab_goals -->
+        
+        {% if project.current_status_detail or project.project_plan_detail %}
+          <div id="tab_details" class="tab">
+            <div class="space20">
+              {% if project.current_status_detail %}
+                <h5>{% trans 'Details of current status' %}</h5>
+                <p>{{project.current_status_detail|capfirst|linebreaks}}</p>
+              {% endif %}
+              {% if project.project_plan_detail %}
+                <h5>{% trans 'Details of project plan' %}</h5>
+                <p>{{project.project_plan_detail|capfirst|linebreaks}}</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        
+        {% if project.impact or project.spin_off or project.lessons_learned or project.technologies_used %}
+          <div id="tab_impact" class="tab">
+            <div class="space20">
+              {% if project.impact %}
+                <h5>{% trans 'Impact' %}</h5>
+                {{project.impact|capfirst|linebreaks}}
+              {% endif %}
+              {% if project.spin_off %}
+                <h5>{% trans 'Spin off and market impact' %}</h5>
+                {{project.spin_off|capfirst|linebreaks}}
+              {% endif %}
+              {% if project.lessons_learned %}
+                <h5>{% trans 'Lessons learned' %}</h5>
+                {{project.lessons_learned|capfirst|linebreaks}}
+              {% endif %}
+              {% if project.technologies_used %}
+                <h5>{% trans 'Technologies used' %}</h5>
+                {{project.technologies_used|capfirst|linebreaks}}
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        
+      </div>
+    </div>
+    
+    <div class='column span-3 last'>
+      <div class="white_box" style="background-color:#fff; margin-top: 48px;">
+        <div class="space15">
+          <h1>{% trans 'Related to this project' %}</h1>
+        </div>
+        <div style="margin: 0 8px;">
+          <hr/>
+        </div>
+        <div class="space15">
+          <p class="dk_grey">{% trans 'Similar projects' %}</p>
+          {% for rel_proj in related %}
+            <div{% if not forloop.first %} style="margin-top: 1em;"{% endif %}>
+              <a title="{{rel_proj.name}}" href="{{rel_proj.get_absolute_url}}">
+                {% project_thumb rel_proj 162 123 %}
+              </a>
+              <a title="{{rel_proj.name}}" href="{{rel_proj.get_absolute_url}}" class="small">
+                {{rel_proj.name}}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+        {% if project.links.all.count %}
+        <div style="margin: 0 8px;">
+          <hr/>
+        </div>
+        <div class="space15">
+          <p class="dk_grey" style="line-height: 1em;">{% trans 'External links' %}<br/>
+            <span class="tiny lt_grey">{% trans '(Will open in new window)' %}</span>
+          </p>
+          <p class="tiny">
+            {% for link in project.links.all %}
+              <a href="{{link.url}}" target="_new">{{link.caption}}</a><br/>
+            {% endfor %}
+          </p>
+        </div>
+        {% endif %}
+      </div> 
+    </div>
+        
+  </div>
+  
+  <div class='column span-3 last'>
+    <div class='column span-3 last'>
+      <div id="project_status">
+        <div style="padding: 7px 7px 15px 7px;">
+          <h1 class="h0" style="color: #9FFFFE;">Project status</h1>
+          {{project.show_status_large}}
+        </div>
+        {% if project.start_date or project.end_date %}
+          <hr/>
+          <div style="padding: 0 7px 7px 7px;">
+            <p style="line-height:1.2em; color: white;">{% trans 'Time line' %}</p>
+            {% if project.start_date %}
+            <p class="tiny white">
+              Start date: {{project.start_date|date:"d-M-Y"}}
+            </p>
+            {% endif %}
+            {% if project.end_date %}
+            <p class="tiny white">
+              End date: {{project.end_date|date:"d-M-Y"}}
+            </p>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if project.total_budget or project.pvw_budget %}
+          <hr/>
+          <div style="padding: 0 7px 0 7px;">
+            <p style="line-height:1.2em; color: white;">{% trans 'Budget' %}</p>
+            {% if project.total_budget %}
+              <p class="tiny white">
+                € {{project.total_budget|intcomma}}<br/>
+                <span class="nano" style="color: #C2C0CE;">
+                  {% trans 'Total budget' %}
+                </span>
+              </p>
+            {% endif %}
+            {% if project.pvw_budget %}
+              <p class="tiny white">
+                € {{project.pvw_budget|intcomma}}<br/>
+                <span class="nano" style="color: #C2C0CE;">
+                  {% trans 'Contributed by Partners for Water' %}
+                </span>
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div> 
+    </div>
+    <div class='column span-3 last'>
+      <div class="white_box gutter-top" style="background-color:#fff;">
+        <div class="space15">
+          <h1>Page tools</h1>
+          <a class="awesome aqua small append-bottom" href="#">{% trans 'Get a widget' %}</a>
+          <p class="tiny"><a href="{{project.get_absolute_url}}">{% trans 'Permalink for this page' %}</a></p>
+        </div> 
+      </div> 
+    </div>
+    <div class='column span-3 last'>
+      <div class="white_box gutter-top" style="background-color:#fff;">
+        <div class="space15">
+          <h1>Project partners</h1>
+        </div>
+        {% for org in project.all_partners.distinct %}
+          <div style="margin: 0 8px;">
+            <hr/>
+          </div>
+          <div class="space15">
+            <a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
+              {% org_logo org 162 120 %}
+            </a>
+            <br/>
+            <a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">
+              {{org.name}}
+            </a>
+            <p class="tiny lt_grey">
+              {{org.city}}, {{org.country}}<br/>
+              {{org.get_organisation_type_display}}
+            </p>
+          </div>
+        {% endfor %}
+        
+        <!--<div style="margin: 0 8px;">
+          <hr/>
+        </div>
+        <div class="space15">
+          <a title="Deltares" href="#">
+            <img width="80" height="40" src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" alt="Deltares"/>
+          </a>
+          <br/>
+          <a title="Deltares" href="#" class="tiny">
+            Deltares
+          </a>
+          <p class="tiny lt_grey">
+            Rotterdam, Netherlands<br/>
+            NGO
+          </p>
+        </div>-->
+        
+      </div> 
+    </div>
+  </div>
+
+</div> 
+
+{% endblock maincontent %}
+
+{% block js %}
+
+{{ block.super }}
+
+{% if debug %}
+  <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+{% else %}
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+{% endif %}
+
+{% endblock js %}
+
+{% block jq_ready %}
+
+  jQ('#project_tabs').tabs();
+  {{block.super}}
+
+{% endblock jq_ready %}

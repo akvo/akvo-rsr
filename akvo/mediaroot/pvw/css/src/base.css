@@ -1,0 +1,57 @@
+body {
+    background: #F7F9F9 url('../../img/base/top_bkgd.png') repeat-x 0 35px fixed;
+    }
+
+.container {
+    padding-bottom:80px;
+    }
+    
+#maincontainer {
+    padding-top:55px;
+    }
+    
+/* @Index */
+#left_news {
+        background: #F6F8F9 url('../../img/base/index/grey_white_gradient.png') repeat-x 0 -30px;
+    }
+
+#footer {
+    padding-top:20px;
+    }
+    
+#footer_area {
+    background: #F6F8F9 url('../../img/base/footer/footer_top.png') repeat-x;
+    min-height:270px;
+    height:270px;
+    }
+    
+.frame {
+    border:1px solid #BCBCC6;
+    margin-bottom:15px;
+    background: #fff;
+}
+
+#proj_summary {
+    background-color:#00AAF7;
+}
+
+#proj_summary h2 {
+    color:#9BFEFE;
+}
+
+#proj_summary p {
+    color:#fff;
+}
+
+#focusareas p {
+    color:#fff;
+}
+
+#focusareas a {
+    color:#FFEE1A;
+}
+
+#focusareas h1 {
+    color:#fff;
+}
+

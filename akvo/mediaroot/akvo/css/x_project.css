@@ -14,7 +14,7 @@
     
     }
     
-/* Get's the color in the models file!*/
+/* Color is set in the models file */
 .status_large {
     padding:5px 10px;
     -khtml-border-radius:13px;
@@ -28,6 +28,10 @@
     border:none;
     }
 
+.project_budget_table tr td {
+    padding-top:0;
+    }
+
 
 div#gallery_box {
 	background-color:#fff;
@@ -38,6 +42,28 @@ div#gallery_box {
 	max-width:325px;
 	border:2px solid #ccc;
 	}
+	
+#gallery_box_controller {
+    margin-top:5px;
+    margin-right:5px;
+    float:right; 
+    width:42px;
+    height:21px;
+    background: transparent url(../img/minigallery/arrows.png) no-repeat;
+    }
+
+#gallery_box_controller_prev {
+    width:21px;
+    height:21px;
+    float:left;
+    }
+
+#gallery_box_controller_next {
+    width:21px;
+    height:21px;
+    float:left;
+    }
+
 	
 /* width is calculated in the view and defined inline*/
 div#gallery_box_slider {

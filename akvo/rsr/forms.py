@@ -200,38 +200,6 @@ class RSR_SetPasswordForm(SetPasswordForm):
 class RSR_PasswordResetForm(PasswordResetForm):
     email = forms.EmailField(label=_("E-mail"), max_length=75, widget=forms.TextInput(attrs={'class': 'input'}))
 #        self.fields['email'].widget.attrs = {'class': 'input'}
-        
-############################### WYMEditor support ############################### 
-
-class WYMEditor(forms.Textarea):
-    class Media:
-        js = (
-            'js/jquery/jquery.js',
-            'js/wymeditor/jquery.wymeditor.pack.js',
-        )
-
-    def __init__(self, language=None, attrs=None):
-        self.language = language or settings.LANGUAGE_CODE[:2]
-        self.attrs = {'class': 'wymeditor'}
-        if attrs:
-            self.attrs.update(attrs)
-        super(WYMEditor, self).__init__(attrs)
-
-    def render(self, name, value, attrs=None):
-        rendered = super(WYMEditor, self).render(name, value, attrs)
-        return rendered + mark_safe(u'''<script type="text/javascript">
-            jQuery('#id_%s').wymeditor({
-                updateSelector: '.submit-row input[type=submit]',
-                updateEvent: 'click',
-                lang: '%s',
-            });
-            </script>''' % (name, self.language))
-        
-class ProjectAdminModelForm(forms.ModelForm):
-    project_plan_summary = forms.CharField(widget=WYMEditor(), help_text='<p><b>This text is bold</b> This is not... <a href="#">And this is a link!</a></p><p>Morbi non erat non ipsum pharetra tempus. Donec orci. Proin in ante. Pellentesque sit amet purus. Cras egestas diam sed ante. Etiam imperdiet urna sit amet risus. Donec ornare arcu id erat. Aliquam ultrices scelerisque sem. In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris. Etiam dignissim imperdiet metus.</p>')
-
-    class Meta:
-        model = get_model('rsr', 'project')
 
 
 class InvoiceForm(forms.ModelForm):

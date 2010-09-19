@@ -225,7 +225,7 @@
 				<div class="clear"></div>
 			</div>
 			{% endfor %}
-			<div style="text-align:right;">
+			<div class="text_right">
 				<p class="small">
 					<a href="http://{{ request.META.HTTP_HOST }}/blog/">{% trans 'View earlier blog entries' %}</a>	
 				</p>
@@ -288,7 +288,7 @@
 						<td>
 							{% trans 'Active' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.status_active.count}}
 						</td>
 					</tr>
@@ -296,7 +296,7 @@
 						<td>
 							{% trans 'Need funding' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.status_onhold.count}}
 						</td>
 					</tr>
@@ -304,7 +304,7 @@
 						<td>
 							{% trans 'Complete' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.status_complete.count}}
 						</td>
 					</tr>
@@ -312,7 +312,7 @@
 						<td>
 							{% trans 'Cancelled' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.status_cancelled.count}}
 						</td>
 					</tr>
@@ -320,7 +320,7 @@
 						<td style="padding-bottom:20px;">
 							{% trans 'Total projects' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.published.count}}
 						</td>
 					</tr>
@@ -330,28 +330,28 @@
 				<table class="org_statistics_table ">
 					<tr>
 						<td style="">&nbsp;</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							<a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							<a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
 						</td>
 					</tr>
 					<tr>
 						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.get_planned_water_calc|intcomma}}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.get_actual_water_calc|intcomma}}
 						</td>
 					</tr>
 					<tr class="bottom_grey_border">
 						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.get_planned_sanitation_calc|intcomma}}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{projs.get_actual_sanitation_calc|intcomma}}
 						</td>
 					</tr>
@@ -366,7 +366,7 @@
 						<td>
 							{% trans 'Field partners' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{orgs.fieldpartners.count}}
 						</td>
 					</tr>
@@ -374,7 +374,7 @@
 						<td>
 							{% trans 'Funding partners' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{orgs.fundingpartners.count}}
 						</td>
 					</tr>
@@ -382,7 +382,7 @@
 						<td>
 							{% trans 'Sponsor partners' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{orgs.sponsorpartners.count}}
 						</td>
 					</tr>
@@ -390,7 +390,7 @@
 						<td style="padding-bottom:20px;">
 							{% trans 'Support partners' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{orgs.supportpartners.count}}
 						</td>
 					</tr>
@@ -405,11 +405,11 @@
 					</tr>
 					<tr style="color:green;">
 						<td>{% trans 'Raised' %}</td>
-						<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round|intcomma}}</td>
+						<td class="text_right">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round|intcomma}}</td>
 					</tr>
 					<tr style="color:red;">
 						<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-						<td style="text-align:right;">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
+						<td class="text_right">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
 					</tr>
 					
 					{% if projs.status_not_cancelled.dollars.count %}
@@ -423,11 +423,11 @@
 					</tr>
 					<tr style="color:green;">
 						<td>{% trans 'Raised' %}</td>
-						<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
+						<td class="text_right">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
 					</tr>
 					<tr style="color:red;">
 						<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-						<td style="text-align:right;">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round|intcomma}}</td>
+						<td class="text_right">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round|intcomma}}</td>
 					</tr>
 					{% endif %}
 				</table>

@@ -1,0 +1,8 @@
+{# The different styles should be packed together in one file and minified on deployment, or on commit #}
+{% if debug %}
+<link rel="stylesheet" href="{{MEDIA_URL}}pvw/css/src/style.css" type="text/css" media="screen" title="main">
+{% else %}
+<link rel="stylesheet" href="{{MEDIA_URL}}pvw/css/src/style.css" type="text/css" media="screen" title="main">
+{% endif%}
+<!--[if IE 6]><link rel="stylesheet" href="{{MEDIA_URL}}pvw/css/ie6.css" type="text/css" media="screen, projection"><![endif]-->
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}pvw/css/tabs.css" media="screen" />

@@ -1,0 +1,60 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block inline_styles %}
+.form_error {
+    float: right;
+    width: 250px;
+    background-color: #FFEBE7;
+    border: 1px solid #FFCDD1;
+    padding: 10px;
+    color: red;
+    margin-right: 20px;
+}
+{% endblock inline_styles %}
+
+{% block content %}
+	{% if form.non_field_errors %}
+		<div id="non_field_errors">
+			<h1 class="section">{% trans 'Error when registering' %}</h1>
+			{% for e in form.non_field_errors %}
+			<p>{{e}}</p>
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="span-18 last">
+		<div class="push-3 span-12 first">
+			<form class="boxbody" method="post" action="#">
+			    <fieldset>
+			        <legend>{% trans 'Set up your account - Step 1' %}</legend>
+                    <h2>{% trans 'Important note' %}</h2>
+                    <p>
+                        {% trans 'To set up your account, your organisation must be already registered. If you do not see your organisation on the list above, <a href="/web/contact">contact us</a> to begin registering your organisation. After registration is complete, please return to set up your account.' %}
+                    </p>
+			        <ul>
+			            <li class="clearfix">
+                            <label for="id_organisation">
+                                {% trans 'Select the organisation that you belong to' %}
+                            </label><br />
+                            {% if form.errors %}
+                                <div class="form_error">
+                                    {{ form.organisation.errors|join:", " }}
+                                </div>
+                            {% endif %}
+							{{ form.organisation }}
+			            </li>
+						<li class="clearfix">
+                            <div style="float:right; margin-top: 20px;">
+    							<a style="vertical-align: baseline;" href="{% url index %}">{% trans 'Cancel' %}</a>
+    							<input style="display: inline; margin:0 20px 0 20px; vertical-align: baseline;" type="submit" name="some_name" value="{% trans 'Continue' %}" id="some_name">
+                            </div>
+						</li>
+			        </ul>
+					
+			    </fieldset>
+			    <input type="hidden" name="next" value="{{ next }}" />
+			</form>
+		</div>
+	</div>
+	<div class="clear"></div>	
+{% endblock content %}

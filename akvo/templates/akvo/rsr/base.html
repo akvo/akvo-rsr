@@ -57,7 +57,7 @@
 				{% comment %}
 				<li>
 					<span id="main_nav_language">
-						<form action="." method="get" accept-charset="utf-8" style="display:none;">{% csrf_token %}
+						<form action="." method="get" accept-charset="utf-8" style="display:none;">
 							  <input name="q" placeholder="Search akvo.org" type="search" style="margin-left:20px;margin-top:7px;width:205px;">
 						</form>
 					</span>
@@ -198,13 +198,11 @@
 		</div>
 	</div>
 	
-	{% if debug %}
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"></script>
-	{% else %}
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-	{% endif %}
 	
-	{# {% media_bundle 'akvo_js' %} #}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	 <script>
+		!window.jQuery && document.write('<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"><\/script>')
+	</script>
 	
 	{% block js %}{% endblock js %}
 	

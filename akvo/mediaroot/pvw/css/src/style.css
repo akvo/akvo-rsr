@@ -1,0 +1,107 @@
+@import url("reset.css");
+@import url("grid.css");
+@import url("typography.css");
+@import url("base.css");
+@import url("menu.css");
+@import url("utility.css");
+@import url("projlist.css");
+
+.globe {
+    background-color:#F4F7F8;
+    background: #F4F7F8 url(../../img/globe.gif) no-repeat center bottom;
+}
+
+.sliding_box_header {
+    /*background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;*/
+    background-color:#dfdfe3;
+    /*border-bottom: 1px solid #ccc;*/
+    padding:8px 5px; 
+}
+
+.sliding_box_header a, .sliding_box_header span {
+    margin-left:15px; 
+    color:#00008b;
+}
+
+.sliding_box_header span {
+    color:#000;
+    }
+
+.sliding_box_header a {
+    text-shadow: #eee 1px 1px 0px;
+}
+
+.img_border_top {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-x top;
+    }
+.img_border_right {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-y right;
+    }
+.img_border_left {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-y left;
+    }
+.img_border_bottom {
+    background: transparent url(../../../base/img/grey_dot.png) repeat-x bottom;
+    }
+
+
+#list_table {
+    background: #fff url(../../../base/img/grey_dot.png) repeat-y right;
+}
+
+#list_table_header {
+    background-color:#E5E5E9;
+    /*background: #fff url(../../../base/img/grey_dot.png) repeat;*/
+}
+
+
+/* 
+http://www.smashingmagazine.com/2009/12/02/pushing-your-buttons-with-practical-css3/ 
+http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
+*/
+.awesome, .awesome:visited {
+	background: #222 url(../../img/base/awesome/alert-overlay.png) repeat-x; 
+	display: inline-block; 
+	padding: 5px 10px 6px; 
+	color: #fff; 
+	text-decoration: none;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	cursor: pointer;
+}
+
+.awesome:hover { background-color: #111; color: #fff; text-decoration:none;}
+.awesome:active { top: 1px; }
+
+.small.awesome, .small.awesome:visited { font-size: 11px; padding: ; }
+.awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited { 
+    font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
+    }
+/*
+.small.awesome, .small.awesome:visited { font-size: 0.8125em; padding: ; }
+.awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited { 
+    font-size: 0.875em; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
+    }
+*/
+.large.awesome, .large.awesome:visited { font-size: 14px; padding: 8px 14px 9px; }
+.green.awesome, .green.awesome:visited		{ background-color: #91bd09; }
+.green.awesome:hover						{ background-color: #749a02; }
+.blue.awesome, .blue.awesome:visited		{ background-color: #2daebf; }
+.blue.awesome:hover							{ background-color: #007d9a; }
+.red.awesome, .red.awesome:visited			{ background-color: #e33100; }
+.red.awesome:hover							{ background-color: #872300; }
+.magenta.awesome, .magenta.awesome:visited		{ background-color: #a9014b; }
+.magenta.awesome:hover							{ background-color: #630030; }
+.orange.awesome, .orange.awesome:visited		{ background-color: #ff5c00; }
+.orange.awesome:hover							{ background-color: #d45500; }
+.yellow.awesome, .yellow.awesome:visited		{ background-color: #ffb515; }
+.yellow.awesome:hover	                        { background-color: #fc9200; }
+.aqua.awesome, .aqua.awesome:visited		{ background-color: #4593B1; }
+.aqua.awesome:hover	                        { background-color: #2D9CC4; }
+.grey.awesome, .grey.awesome:visited		{ background-color: #888; }
+.grey.awesome:hover	                        { background-color: #999; }

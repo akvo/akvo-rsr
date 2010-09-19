@@ -11,106 +11,99 @@
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
-<div>
-	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
-	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.country}}</p>{% endif %}
-</div>
 
 <div class="two_column_left">
+	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
+	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.country}}</p>{% endif %}
 	<div class="white_box">
 		<div class="space20">
-			<div id="org_tabs">
-				<ul class="small">
-	                <li><a href="#tab_overview"><span>{% trans 'Overview' %}</span></a></li>
-	                <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
-	            </ul>
-				<div id="tab_overview" class="tab">
-					<img src="{% thumbnail o.logo 100x75 %}" alt="{{o.name}}" 
-						style="float:left; margin:15px;" />
-					{{o.description|linebreaks}}
-                    {% if o.primary_location %}
-                        {% google_map o 400 300 6 %}
-                    {% endif %}
-				</div>
-				<div id="tab_details" class="tab" style="padding-top:40px;">
-					<div style="float:left; width:250px;">
-						<h2>{% trans 'Activities' %}</h2>
-						<p>
-							{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
-							{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
-							{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
-							{% if o.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
-						</p>
-						<h2>{% trans 'Type' %}</h2>
-						<p>{{o.get_organisation_type_display}}</p>
-						{% if o.url %}
-							<h2>{% trans 'Website' %}</h2>
-							<p><a href="{{o.url}}">{{o.url}}</a></p>
-						{% endif %}
-						{% if o.akvopedia_entry %}
-							<h2>{% trans 'Akvopedia entry' %}</h2>
-							<p>{{o.akvopedia_entry}}</p>
-						{% endif %}
-						<h2>{% trans 'Contact' %}</h2>
-						<p>
-							{{o.contact_person}}<br />
-							<a href="mailto:{{o.contact_email}}">{{o.contact_email}}</a><br />
-							<br />
-							{% if o.phone %}
-								<b>{% trans 'Phone' %}</b><br />
-								{{o.phone}}<br />
-								<br />
-							{% endif %}							
-							{% if o.mobile %}
-								<b>{% trans 'Mobile' %}</b><br />
-								{{o.mobile}}<br />
-								<br />
-							{% endif %}
-							{% if o.fax %}
-								<b>{% trans 'Fax' %}</b><br />
-								{{o.fax}}<br />
-								<br />
-							{% endif %}
-						</p>
-					</div>
-					<div style="float:left; width:250px; border-left:1px solid #ccc; padding-left:15px;">
-						<h2>{% trans 'Location' %}</h2>
-						<p>
-						{% if o.primary_location.address_1 %}{{o.primary_location.address_1}}<br />{% endif %}
-						{% if o.primary_location.address_2 %}{{o.primary_location.address_2}}<br />{% endif %}
-						{% if o.primary_location.postcode %}{{o.primary_location.postcode}}<br />{% endif %}
-						{% if o.primary_location.city %}{{o.primary_location.city}}<br />{% endif %}
-						{% if o.primary_location.state %}{{o.primary_location.state}}<br />{% endif %}
-						{% if o.primary_location.country %}{{o.primary_location.country}}{% endif %}
-						</p>
-                        {% comment %}
-						{% if o.coordinates %}
-			                {% google_map 'organisation' o.id 260 180 3 %}
-			            {% else %}
-			                <p style="color: red;">{% trans 'No map available' %}</p>
-			            {% endif %}
-                        {% endcomment %}
-					</div>
-					<div class="clear"></div>
-				</div>
+			<div style="float:left; width:196px; height:280px">
+				<img src="{% thumbnail o.logo 100x75 %}" style="margin:15px;" />
+				<h3>{% trans 'Activities' %}</h3>
+				<p class="small">
+					{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
+					{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
+					{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
+					{% if o.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
+				</p>
+				<h3>{% trans 'Type' %}</h3>
+				<p class="small">{{o.get_organisation_type_display}}</p>
+				{% if o.url %}
+					<h3>{% trans 'Website' %}</h3>
+					<p class="small"><a href="{{o.url}}">{{o.url}}</a></p>
+				{% endif %}
+				{% if o.akvopedia_entry %}
+					<h3>{% trans 'Akvopedia entry' %}</h3>
+					<p class="small">{{o.akvopedia_entry}}</p>
+				{% endif %}
+				
 			</div>
+			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
+				<h3>{% trans 'Location' %}</h3>
+				<p class="small">
+          {% if o.primary_location.address_1 %}{{o.primary_location.address_1}}<br />{% endif %}
+          {% if o.primary_location.address_2 %}{{o.primary_location.address_2}}<br />{% endif %}
+          {% if o.primary_location.postcode %}{{o.primary_location.postcode}}<br />{% endif %}
+          {% if o.primary_location.city %}{{o.primary_location.city}}<br />{% endif %}
+          {% if o.primary_location.state %}{{o.primary_location.state}}<br />{% endif %}
+          {% if o.primary_location.country %}{{o.primary_location.country}}{% endif %}
+				</p>
+        
+        {% if o.primary_location %}
+          {% google_map o 180 135 6 %}
+        {% else %}
+          <p class="small" style="color: red;">{% trans 'No map available' %}</p>
+        {% endif %}
+			</div>
+			<div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
+				<h3>{% trans 'Contact' %}</h3>
+				<p class="small">
+					{{o.contact_person}}<br />
+					<a href="mailto:{{o.contact_email}}">{{o.contact_email}}</a><br />
+					<br />
+					{% if o.phone %}
+						<b>{% trans 'Phone' %}</b><br />
+						{{o.phone}}<br />
+						<br />
+					{% endif %}							
+					{% if o.mobile %}
+						<b>{% trans 'Mobile' %}</b><br />
+						{{o.mobile}}<br />
+						<br />
+					{% endif %}
+					{% if o.fax %}
+						<b>{% trans 'Fax' %}</b><br />
+						{{o.fax}}<br />
+						<br />
+					{% endif %}
+				</p>
+			</div>
+			<div class="clear"></div>
+			<br /><br />
+			<hr />
+			<h2>{% trans 'Description' %}</h2>
+			<span class="small" style="font-size:1em;">{{o.description|linebreaks}}</span>
 		</div>
 	</div>
 </div>
 
 <div class="two_column_right">
 	<div class="two_column_right_inner">
+		<div class="small" style="float:left; width:130px;">
+			<h2>{% trans 'Projects in Akvo' %}</h2>
+		</div>
+		<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+			<a class="small" href="{% url akvo.rsr.views.filteredprojectlist o.id %}">{% trans 'See all' %} &#x25B6;</a>
+		</div>
+		<div class="clear"></div>
 		<div class="white_box">
 			<div class="space20">
-				<h3><a href="{% url akvo.rsr.views.filteredprojectlist o.id %}">
-					{% trans 'Projects in Akvo' %}
-				</a></h3>
 				<table class="org_statistics_table bottom_grey_border">
 					<tr>
 						<td>
 							{% trans 'Active' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_active.count}}
 						</td>
 					</tr>
@@ -118,7 +111,7 @@
 						<td>
 							{% trans 'Need funding' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_onhold.count}}
 						</td>
 					</tr>
@@ -126,7 +119,7 @@
 						<td>
 							{% trans 'Complete' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_complete.count}}
 						</td>
 					</tr>
@@ -134,7 +127,7 @@
 						<td>
 							{% trans 'Cancelled' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.status_cancelled.count}}
 						</td>
 					</tr>
@@ -142,49 +135,56 @@
 						<td>
 							{% trans 'Total projects' %}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.count}}
 						</td>
 					</tr>
-					<tr class="bottom_grey_border">
-						<td colspan="2">
-							&nbsp;
-						</td>
-					</tr>
 				</table>
-				
-				<h3>{% trans 'People who get...' %}</h3>
+			</div>
+		</div>
+		<div class="small" style="margin-top:20px;">
+			<h2>{% trans 'People who get...' %}</h2>
+		</div>
+		<div class="clear"></div>
+		<div class="white_box">
+			<div class="space20">
 				<table class="org_statistics_table">
 					<tr>
 						<td style="">&nbsp;</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							<a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							<a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
 						</td>
 					</tr>
 					<tr>
 						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_planned_water_calc|intcomma}}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_actual_water_calc|intcomma}}
 						</td>
 					</tr>
-					<tr class="bottom_grey_border">
+					<tr>
 						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_planned_sanitation_calc|intcomma}}
 						</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{o.published_projects.get_actual_sanitation_calc|intcomma}}
 						</td>
 					</tr>
 				</table>
-				
-				<h3>{% trans 'Funding' %}</h3>
+			</div>
+		</div>
+		<div class="small" style="margin-top:20px;">
+			<h2>{% trans 'Funding' %}</h2>
+		</div>
+		<div class="clear"></div>
+		<div class="white_box">
+			<div class="space20">
 				<table class="org_statistics_table">	
 					<tr>
 						<td colspan="2">
@@ -201,7 +201,7 @@
 					</tr>
 					<tr style="color:red;">
 						<td>{% trans 'Still needed' %}</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{org_projects.euros.0.get_currency_display|safe}} 
 							{{o.funding.still_needed_euros|round|intcomma}}
 						</td>
@@ -220,51 +220,43 @@
 					</tr>
 					<tr style="color:green;">
 						<td>{% trans 'Pledged' %}</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{org_projects.dollars.0.get_currency_display|safe}} 
 							{{o.funding.pledged_dollars|round|intcomma}}
 						</td>
 					</tr>
 					<tr style="color:red;">
 						<td>{% trans 'Still needed' %}</td>
-						<td style="text-align:right;">
+						<td class="text_right">
 							{{org_projects.dollars.0.get_currency_display|safe}} 
 							{{o.funding.still_needed_dollars|round|intcomma}}
 						</td>
 					</tr>
 					{% endif %}
-					<tr class="bottom_grey_border">
-						<td colspan="2">
-							&nbsp;
-						</td>
-					</tr>
 				</table>
-				
-				<h3>{% trans 'Project partners' %}</h3>
+			</div>
+		</div>
+		
+		<div class="small" style="margin-top:20px;">
+			<h2>{% trans 'Project partners' %}</h2>
+		</div>
+		<div class="clear"></div>
+		<div class="white_box">
+			<div class="space20">
 				<ul class="small">
-					{% for partner in org_partners %}
-					<li>
-						<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a>
-					</li>
-					{% endfor %}
+					{% if org_partners %}
+						{% for partner in org_partners %}
+						<li>
+							<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner.name}}</a>
+						</li>
+						{% endfor %}
+					{% else %}
+						{% trans 'No partners yet' %}
+					{% endif %}
 				</ul>
-				<hr />
-				<div style="text-align:center;">
-					<a href="{% url filtered_project_list o.id %}">{% trans 'View all' %} {{ o.name }} {% trans 'projects' %} &#x25BA;</a>	
-				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 {% endblock maincontent %}
-
-{% block js %}
-{{ block.super }}
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-{% endblock js %}
-
-{% block jq_ready %}
-	jQ('#org_tabs').tabs();
-	{{block.super}}
-{% endblock jq_ready %}

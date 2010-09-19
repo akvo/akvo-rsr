@@ -11,6 +11,8 @@
 .grey {color:#7E8197;}
 .black {color:#000;}
 .white {color:#fff;}
+.text_left {text-align:left;}
+.text_right {text-align:right;}
 
 .round {
     -khtml-border-radius: 2px;

@@ -42,7 +42,7 @@
 
 
 <div class="two_column_left">
-	<h1 style="margin-bottom:5px;">{{p.name}}</h1>
+	<a href="{% url project_main p.id %}"><h1 style="margin-bottom:5px;">{{p.name}}</h1></a>
 	<div style="float:right; width:100px; text-align:right;">
 		<a href="/rsr/rss/updates/{{p.id}}/">
 			<img src="{{MEDIA_URL}}akvo/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
@@ -135,7 +135,7 @@
 	
 	<div class="two_column_right_inner" style="margin-top:20px;">
 		<h2>{% trans 'Tools for this page' %}</h2>
-		<div class="white_box" style="background-color:#fff">
+		<div class="white_box">
 			<div class="space20">
 				<div style="width:45%; float:left; padding-top:10px;">
 					<a class="aqua awesome" href="{% url project_get_widget p.id %}">{% trans 'Get a widget' %}</a>
@@ -234,7 +234,7 @@
 	{% endif %}
 		
 	<div class="two_column_right_inner">
-		<p class="grey tiny" style="text-align:right;">{% trans 'Akvo Ref' %}: {{p.id}}</p>
+		<p class="grey tiny" class="text_right">{% trans 'Akvo Ref' %}: {{p.id}}</p>
 	</div>
 </div>
 {% endblock maincontent %}

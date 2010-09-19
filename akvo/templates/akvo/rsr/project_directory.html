@@ -1,0 +1,12 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans 'Projects' %}</h1>
+<ul>
+	{% for p in projs  %}
+	<li><a href="{% url project_main p.id %}">{{ p.name }}</li>
+	{% endfor %}
+</ul>
+
+{% endblock content %}

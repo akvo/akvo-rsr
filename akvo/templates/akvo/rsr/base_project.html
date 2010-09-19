@@ -1,0 +1,353 @@
+{% extends "rsr/base.html" %}
+{% load i18n rsr_tags rsr_filters humanize %}
+
+{% block inline_head %}
+{% comment %}
+<a href="/rsr/rss/updates/{{p.id}}/" class="rss">{% trans 'Subscribe via RSS' %}</a>
+{% endcomment %}
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Updates to' %} {{p.name}}" href="/rsr/rss/updates/{{p.id}}/" />
+{% endblock inline_head %}
+
+{% block inline_styles %}
+	
+	#summary_right {
+		background: #7C808B url({{ MEDIA_URL }}akvo/img/project/project_summary_right_background.png) repeat-x;
+		/*background-color:#7C808B;*/
+		border-radius: 5px;
+		-moz-border-radius: 5px; 
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border: 1px solid #ccc;
+		border-bottom: 2px solid #ccc;
+	}
+	
+	.white_section {
+		background-color:#fff;
+		border-radius: 5px;
+		-moz-border-radius: 5px; 
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		border: 1px solid #ccc;
+		border-bottom: 2px solid #ccc;
+	}
+{% endblock inline_styles%}
+
+{% block title %}Akvo.org - {{ p.name }}{% endblock title %}
+{% block content %}
+<h1 style="margin-bottom:0px;"><a href="{% url project_main p.id %}" style="color:#1DAAFB; text-shadow: rgb(255, 255, 255) 1px 1px 0px;">{{ p.name }}</a></h1>
+<p class="grey small" style="margin-bottom:0; text-shadow: #fff 1px 1px 0px;">
+	{{ p.subtitle }}
+</p>
+<div class="span-18">
+	<div class="right">
+		<span class="grey">
+			<a style="{% ifequal project_section 'details' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
+			href="{% url project_details p.id %}">Details</a> |
+						
+			<a style="{% ifequal project_section 'updates' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
+			href="{% url project_updates p.id %}">Updates</a> |
+						
+			<a style="{% ifequal project_section 'funding' %}color:#1DAAFB;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
+			href="{% url project_funding p.id %}">Funding</a> 
+
+			{% ifnotequal p.funding_still_needed|round 0 %}
+			|
+			<a style="{% ifequal project_section 'donate' %}color:#1DAAFB;{% else %}color:#F7982C;{% endifequal %} text-shadow: #fff 1px 1px 0px;" 
+			href="{% url project_donate p.id %}">Donate</a>
+			{% endifnotequal %}
+		</span>
+	</div>
+</div>
+<br><br>
+<div class="span-13 first">
+	{% block project_content %}
+	<div class="white_section" style="margin-bottom:15px;">
+		<div style="margin:15px;">
+			<p>
+				Project subpage content
+			</p>
+		</div>
+	</div>
+	{% endblock project_content%}
+</div>
+<div class="span-5 last">
+	<div class="project_summary" id="summary_right">
+		<div style="margin:15px;">
+			<p style="color:white;">
+				<b>Project status</b><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">{{p.show_status}}</span><br>	
+				<br>
+				{% ifequal p.funding_still_needed|round 0 %}
+				<b>Fully funded</b>
+				{% else %}
+				<div class="white_section" style="background-color:#fff;">
+					<div style="margin:5px">
+						<table class="funding_box-table">
+							<tr>
+								<th>{% trans 'Total budget' %}:</th>
+								<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
+							</tr>					
+						</table>
+						<div class="funding_box-progress-bar">
+						{% if p.budget_total %}
+							<div class="funding_box-progress-bar-progress" 
+								style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> 
+							</div>
+						{% endif %}
+						</div>
+						<table class="funding_box-table" cellspacing="0">
+							<tr class="green">
+								<th>{% trans 'Raised' %}:</th>
+								<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+							</tr>
+							<tr class="red">
+								<th>{% trans 'Still needed' %}:</th>
+								<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+							</tr>	
+						</table>
+						<hr style="background-color:cyan; margin:5px 0;" />
+						<div>
+							<div style="float:left; width:50%; text-align:center;">
+								<p class="small grey" style="margin:0">
+									{% trans 'Individuals' %}
+								</p>
+								<a href="{% url project_donate project_id=p.id %}" 
+									class="donate_button" onclick="this.blur();">
+									<span>{% trans 'Donate' %}</span>
+								</a>
+							</div>
+							<div style="float:left; width:50%; text-align:center;">
+								<p class="small grey" style="margin:0;">
+									{% trans 'Institutions' %}
+								</p>
+								<p class="small" style="margin:0; padding-top:6px;">
+									<a href="...">{% trans 'Sponsor' %}</a>
+								</p>
+							</div>
+							<div class="clear"></div>
+	
+						</div>
+					</div>					
+				</div>
+				{% endifequal %}
+				
+			</p>
+			{% comment %}
+			{% funding_box_march p %}
+			
+			<p>
+				{% ifequal p.funding_still_needed|round 0 %}
+				<b>Fully funded</b><br>
+				{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round|intcomma}}
+				{% else %}
+				<table class="fundingbox-table" cellspacing="0">
+					<tr class="green">
+						<th>{% trans 'Raised' %}:</th>
+						<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+					</tr>
+					<tr class="red">
+						<th>{% trans 'Still needed' %}:</th>
+						<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+					</tr>	
+				</table>
+				{% endifequal %}
+			</p>
+			
+			<ul>
+				<li>budget items</li>
+				<li><a style="color:#F7982C;" href="{% url project_donate p.id %}">Donate button</a></li>
+			</ul>
+			{% endcomment %}
+			
+		</div>
+		<div class="clear"></div>
+	</div>
+	
+	<div class="white_section" id="slidingBox" style="margin-top:15px;">
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="comment_link">Comments</a>
+		</div>
+		<div style="margin:15px;" id="comment_content">
+			
+			{% for c in comments %}
+			<p class="nano grey" style="margin:0; padding:0;">
+				{{c.user.get_full_name}}, {{c.time|date:"Y-m-d H:i"}}
+			</p>
+			<p class="small" style="margin:0; padding:0;">
+				{{c.comment}}
+			</p>
+			<hr style="margin:5px 0px">
+			{% endfor %}
+			{% if not user.username %}
+                <p class="small">
+					<a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> {% trans 'to add a comment' %}				
+				</p>
+			{% else %}
+				<form enctype="multipart/form-data" method="post" action="comment">
+                    {{form.comment}}						
+                    <input type="submit" value="{% trans 'Add comment' %}" class="submit" />
+                </form>
+			{% endif %}
+			
+			
+		</div>
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="pagetools_link">Page Tools</a>
+		</div>
+		<div style="margin:15px; display: none;" id="pagetools_content">
+			<ul class="small">
+				<li><a href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Permalink to this project' %}</a></li>
+				<li><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></li>
+				<li>Printable version</li>
+			</ul>
+		</div>
+		
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="partners_link">Partners</a>
+		</div>
+		<div style="margin:15px; display: none;" id="partners_content">
+			{% ifequal p.fieldpartner_set.count 1 %}
+	            <h4>{% trans 'Field partner' %}</h4>
+	        {% else %}
+	            <h4>{% trans 'Field partners' %}</h4>
+	        {% endifequal %}
+				{% for fp in p.fieldpartner_set.all %}
+					{% if not forloop.first %}
+						<hr />
+					{% endif %}
+	                <a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">
+	                    {% org_logo fp.field_organisation 120 90 'margin: 10px 20px;' %}
+	                </a>
+					<p class="small"><a href="{% url akvo.rsr.views.orgdetail fp.field_organisation.id %}">{{fp.field_organisation.name}}</a></p>
+					<p class="small">{{fp.field_organisation.city}}, {{fp.field_organisation.country}}</p>
+			{% endfor %}
+			{% if p.supportpartner_set.count %}
+				{% if p.fieldpartner_set.count %}
+					<hr />
+				{% endif %}
+				{% ifequal p.supportpartner_set.count 1 %}
+					<h4>{% trans 'Support partner' %}</h4>
+				{% else %}
+					<h4>{% trans 'Support partners' %}</h4>
+				{% endifequal %}
+				{% for sp in p.supportpartner_set.all %}
+					{% if not forloop.first %}
+						<hr />
+					{% endif %}
+	                <a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">
+	                    {% org_logo sp.support_organisation 120 90 'margin: 10px 20px;' %}
+	                </a>
+					<p class="small"><a href="{% url akvo.rsr.views.orgdetail sp.support_organisation.id %}">{{sp.support_organisation.name}}</a></p>
+					<p class="small">{{sp.support_organisation.city}}, {{sp.support_organisation.country}}</p>
+				{% endfor %}
+			{% endif %}     
+
+			{% if p.sponsorpartner_set.count %}
+				<hr />
+				 {% ifequal p.sponsorpartner_set.count 1 %}
+				<h4> {% trans 'Sponsor partner' %}</h4>
+				{% else %}
+				<h4> {% trans 'Sponsor partners' %}</h4>
+				{% endifequal %}
+				{% for sponsor in p.sponsorpartner_set.all %}
+	                <a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">
+	                    {% org_logo sponsor.sponsor_organisation 120 90 'margin: 10px 20px;' %}
+	                </a>
+					<p>
+						<a href="{% url akvo.rsr.views.orgdetail sponsor.sponsor_organisation.id %}">{{ sponsor.sponsor_organisation.name }}</a><br />
+						{{ sponsor.sponsor_organisation.city }}, {{ sponsor.sponsor_organisation.country }}
+					</p>
+
+				{% endfor %}			
+
+			{% endif %}
+			
+			{% comment %}
+				
+
+			<p class="small">
+				Practica<br>
+				<br>
+				Akvo<br>
+				<br>
+				Global Water Challenge<br>
+				<br>
+				<a>Become a partner &#x25BA;</a>
+			</p>
+			{% endcomment %}
+		</div>
+		
+		<div class="sliding_box_header">
+			<a style="margin-left:15px; text-shadow: #fff 1px 1px 0px;" id="related_link">Related to this project</a>
+		</div>
+		<div style="margin:15px; display: none;" id="related_content">
+			
+			<h4>{% trans 'Akvopedia entries' %}</h4>			
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'A' %}
+					<li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
+
+            <h4>{% trans 'External links' %}</h4>
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'E' %}
+		            <li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
+			{% comment %}
+				
+
+			<p class="small">
+				<b>Akvopedia entries:</b><br>
+				<a href="#">Rain Water Harvesting</a><br>
+				<br>
+				<b>External links:</b><br>	
+			</p>
+			{% endcomment %}
+		</div>
+	</div>
+</div>
+
+<div class="clear"></div>	
+
+{% endblock content %}
+
+{% block inline_js %}
+	{{ block.super }}
+	
+	$('#comment_link').click(function () {
+			$('#pagetools_content').slideUp(300);
+			$('#partners_content').slideUp(300);
+			$('#related_content').slideUp(300);
+			$('#comment_content').slideDown(300);
+	});
+	
+	$('#pagetools_link').click(function () {
+			$('#comment_content').slideUp(300);
+			$('#partners_content').slideUp(300);
+			$('#related_content').slideUp(300);
+			$('#pagetools_content').slideDown(300); 
+	});
+	
+	$('#partners_link').click(function () {
+			$('#comment_content').slideUp(300);
+			$('#pagetools_content').slideUp(300);
+			$('#related_content').slideUp(300); 
+			$('#partners_content').slideDown(300); 
+	});
+	$('#related_link').click(function () {
+			$('#comment_content').slideUp(300);
+			$('#pagetools_content').slideUp(300);
+			$('#partners_content').slideUp(300); 
+			$('#related_content').slideDown(300); 
+	});
+	
+	$('#comment_content').animate({opacity: 1.0}, 1000).slideUp(300);
+	$('#partners_content').animate({opacity: 1.0}, 1000).slideDown(300);
+
+{% endblock inline_js %}

@@ -1,0 +1,251 @@
+{% extends "rsr/project_base.html" %}
+{% load i18n rsr_tags rsr_filters %}
+
+{% block inline_styles %}
+#panel {
+    display: none;
+}
+{% endblock inline_styles %}
+
+{% block project_content %}
+<div class="span-14 first last">
+	<div class="frame">
+		<div class="space20">
+			<h1 style="margin:0; padding:0; color:#00ABFA;">{{p.name}}</h1>
+			<p class="grey">{{p.subtitle}}</p>
+		</div>
+		
+        <div id="container-1">
+            <ul>
+                <li><a href="#tab_summary"><span>{% trans 'Summary' %}</span></a></li>
+                <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
+                {% if p.current_status_detail or p.project_plan_detail %}
+                    <li><a href="#tab_details"><span>{% trans 'Details' %}</span></a></li>
+                {% endif %}
+                {% if p.impact or p.spin_off or p.lessons_learned or p.technologies_used %}
+                    <li><a href="#tab_impact"><span>{% trans 'Impact' %}</span></a></li>
+                {% endif %}
+            </ul>
+            <div style="width: 170px; margin-top: 20px; float:right;">
+                <div class="space15">
+                    <h2>{% trans 'Location' %}</h2>
+                    {% map_thumb p 140 140 '' %}
+                    <p class="tiny" style="margin-top:5px;">
+                        {{p.country.get_continent_display}}<br>
+                        {{p.city}}, {{p.country}}<br>
+                        {{p.longitude}} {{p.latitude}}
+                    </p>
+                </div>
+            </div>
+            <div id="tab_summary" class="tab">
+                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                    <div style="float:right; width:120px;">
+                        {% category_icons p %}
+                    </div>
+                    {% project_thumb p 400 300 'margin: 0 10px 10px 0;' %}
+					<div style="width:525px;">
+						{{ p.project_plan_summary|capfirst|linebreaks }}
+					</div>
+                </div>
+            </div>
+            <div id="tab_goals" class="tab">
+                <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+					<div style="width:525px;">
+						<div class="space10" style="width: 170px; float:right;">
+	                        <ul>
+	                            {% if p.goal_1 %}
+	                                <li>{{p.goal_1}}</li>
+	                            {% endif %}
+	                            {% if p.goal_2 %}
+	                                <li>{{p.goal_2}}</li>
+	                            {% endif %}
+	                            {% if p.goal_3 %}
+	                                <li>{{p.goal_3}}</li>
+	                            {% endif %}
+	                            {% if p.goal_4 %}
+	                                <li>{{p.goal_4}}</li>
+	                            {% endif %}
+	                            {% if p.goal_5 %}
+	                                <li>{{p.goal_5}}</li>
+	                            {% endif %}
+	                        </ul>
+	                    </div>
+						{{p.goals_overview|capfirst|linebreaks}}
+					</div>
+                </div>
+            </div>
+            {% if p.current_status_detail or p.project_plan_detail %}
+                <div id="tab_details" class="tab">
+                    <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                        <div style="width:525px;">
+                            {% if p.current_status_detail %}
+                                <h2>{% trans 'Details of current status' %}</h2>
+                                {{p.current_status_detail|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.project_plan_detail %}
+                                <h2>{% trans 'Details of project plan' %}</h2>
+                                {{p.project_plan_detail|capfirst|linebreaks}}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if p.impact or p.spin_off or p.lessons_learned or p.technologies_used %}
+                <div id="tab_impact" class="tab">
+                    <div class="space20" style="width: 550px; border-right:1px solid #BBBBC5;">
+                        <div style="width:525px;">
+                            {% if p.impact %}
+                                <h2>{% trans 'Impact' %}</h2>
+                                {{p.impact|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.spin_off %}
+                                <h2>{% trans 'Spin off and market impact' %}</h2>
+                                {{p.spin_off|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.lessons_learned %}
+                                <h2>{% trans 'Lessons learned' %}</h2>
+                                {{p.lessons_learned|capfirst|linebreaks}}
+                            {% endif %}
+                            {% if p.technologies_used %}
+                                <h2>{% trans 'Technologies used' %}</h2>
+                                {{p.technologies_used|capfirst|linebreaks}}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+		<div class="clear small" style="">&nbsp;</div>
+		
+	</div>
+</div>
+{# lower area starts #}
+<div class="span-10 first">
+    <div id="container-2">
+		<ul>
+            <li><a href="#tab_updates"><span>{% trans 'Latest updates' %}</span></a></li>
+            <li><a href="#tab_comments"><span>{% trans 'Comments' %}</span></a></li>
+        </ul>
+        <div style="border:1px solid #BBBBC5; border-top: 0;">
+            <div id="tab_updates" class="tab">
+                <div class="space20">
+                    <p class="clear">
+                        {% if can_add_update %}
+                            <a href="{% url akvo.rsr.views.updateform p.id %}"
+                               style="float:right;">
+                                    {% trans 'Add update' %}
+                            </a>
+                        {% endif %}
+                        <a href="/rsr/rss/updates/{{p.id}}/"
+                           style="background: url('{{MEDIA_URL}}base/img/icon_rss.gif') no-repeat right; padding-right: 1em;">
+                                {% trans 'Subscribe via RSS' %}
+                        </a>
+                    </p>
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    {% updates updates %}
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    <a href="{% url project_updates p.id %}" class="small" style="float:right; padding:0;">
+                        {% trans 'Earlier updates' %}
+                    </a>
+                    <p class="small">
+                        {% trans 'The updates are owned by whoever posted them. We are not responsible for them in any way.' %}
+                    </p>
+                </div>
+            </div>
+            <div id="tab_comments" class="tab">
+                <div class="space20">
+                    <p class="clear">
+                        <a class="btn-slide" style="float:right" href="#" onclick="this.blur();">{% trans 'Add comment' %}</a>
+                        &nbsp;
+                    </p>
+                    <div id="panel">
+                        {% if not user.username %}
+                            <p>{% trans 'You must be signed in to add a comment' %}</p>
+                            <p><a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign In' %}</a> <!--| <a href="#">Register</a></p>-->
+                        {% else %}
+                            <form enctype="multipart/form-data" method="post" action="{% url comment_form p.id %}">
+                                {{form.comment}}
+                                <p><a href="#" class="btn-slide">{% trans 'Cancel' %}</a></p>
+                                <input type="submit" value="{% trans 'Submit' %}" class="submit" />
+                            </form>
+                        {% endif %}
+                    </div> <!-- #panel -->
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    {% comments comments p %}
+                </div>
+                <div class="space10">
+                    <hr />
+                </div>
+                <div class="space20">
+                    <a href="{% url project_comments p.id %}" class="small" style="float:right; padding:0;">
+                        {% trans 'Earlier comments' %}
+                    </a>
+                    <p class="small">
+                        {% trans 'The comments are owned by whoever posted them. We are not responsible for them in any way.' %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="span-4 last">
+	<p class="tiny grey" style="margin:0;padding:0;margin-bottom:14px;text-align:right;">
+		RSR Ref: {{ p.id }}
+	</p>
+	<div class="frame" style="">
+		<div class="space15">
+			<h2 style="color:#00ABFA;">{% trans 'Related to this project' %}...</h2>
+
+            <h4>{% trans 'External links' %}</h4>
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'E' %}
+		            <li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>			
+
+			<h4>{% trans 'Video links' %}</h4>			
+			<ul class="small">
+			{% for link in p.link_set.all %}
+				{% ifequal link.kind 'V' %}
+					<li><a href="{{link.url}}">{{link.caption}}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+
+{% endblock project_content %}
+{% block js %}
+{{ block.super }}
+<script src="{{MEDIA_URL}}js/ui.tabs.pack.js" type="text/javascript"></script>
+{% endblock js %}
+
+{% block jquery_ready %}
+	jQ('#container-1 > ul').tabs();
+	jQ('#container-2 > ul').tabs();
+	
+	{{ block.super }}
+	
+	jQ(".btn-slide").click(function(){
+        jQ("#panel").slideToggle("slow");
+        jQ(this).toggleClass("active"); return false;
+    });
+
+{% endblock jquery_ready %}	
+
