@@ -1,0 +1,159 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {{project.name}} {% trans 'widgets' %}{% endblock %}
+
+{% block maincontent %}
+
+<div class="span-18">
+	<div class="span-18">
+		<h1>{% trans 'Get a widget' %} (1/2)</h1>
+	</div>
+	<div class="span-10 first">
+		<p class="grey small">
+			{% trans 'The following steps will produce a snippet of widget code you can copy and paste into your own web site&#x27;s code' %}
+		</p>
+		<ol>
+			<li>{% trans 'Select the type of widget you wish to use' %}.</li>
+			<li>{% trans 'Select colours and preview your widget' %}.</li>
+			<li>{% trans 'Copy the HTML code to your web site' %}.</li>
+		</ol>
+	</div>
+	<div class="span-8 last">
+		<noscript>
+			<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+				<p>
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+					{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed.' %}
+				</p>
+			</div>
+		</noscript>
+	</div>
+	<hr />
+	<div class="push-1 span-17 first last">
+		<h2>{% trans 'Step 1: Select the type of widget you wish to use' %}</h2>
+		<p class="grey small">
+			{% trans 'You can customise the top and bottom bar and title text colours on the next step' %}.
+		</p>
+		{# start Project widget with updates #}
+		<div class="frame" style="margin-bottom:40px;">
+			<div class="space20">
+			<form name="projectUpdatesForm" action="." method="post">
+				<h4>{% trans 'Project widget with updates (202 pixels wide by 900 pixels high)' %}</h4>
+				<p class="grey small">{% trans 'Shows basic description and updates.' %}</p>
+				<div style="float:left; width:205px;">
+					<script type="text/javascript">
+						// think about refactor this to a general method in machinery.js
+						document.write('<iframe src="{% url project_widget 'project-updates' project.pk %}" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+				</div>
+				<div style="float:right; width:580px;">
+					<h3>{% trans 'Settings' %}</h3>
+					<hr />
+					<p class="bold">{% trans 'Enter the web address where you will embed this widget' %}</p>
+					<p class="small">
+					<input type="text" name="widget-site" value="" style="margin-top:2px; margin-right:20px;" /> 
+					{% trans 'This will help us track statistics for you.' %}<br>
+					<span class="grey">{% trans 'Example' %}: dutchwatersector.org</span>
+					</p>
+					<hr />
+					<p>
+						<input type="hidden" name="widget-type" value="project-updates" />
+						<input type="radio" id="project-updates-specific-project" name="widget-choice" 
+							value="specific-project" checked="checked" style="margin-bottom:10px;" /> 
+							<label style="display:inline;" for="project-updates-specific-project">{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}</label>
+							
+						<br />
+						<input type="radio" id="project-updates-random-from-org" name="widget-choice" 
+							value="random-from-org" /> 
+						<label style="display:inline;" for="project-updates-random-from-org">
+							{% trans 'Display a random project from this organisation' %}:</label>
+						<br /><br />
+						<select name="widget-organisations" id="project-updates-organisations" 
+							size="1" style="margin-left:33px;" disabled="disabled">
+							{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select>
+					</p>
+					<hr />
+										
+					<a class="grey awesome" style="margin-right:10px;"
+						href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+					<a class="aqua awesome" href="javascript:document.projectUpdatesForm.submit();" 
+						onclick="this.blur();" style="margin-left:10px;">{% trans 'Select and Proceed...' %}</a>
+				</div>
+				<div style="clear:both;"> </div>
+			</form>
+			</div>
+		</div>
+		{# end Project widget with updates #}
+		
+		{# start Small project widget #}
+		<div class="frame">
+			<div class="space20">
+			<form name="projectSmallForm" action="." method="post">
+				<h4>{% trans 'Small project (170 pixels wide by 312 pixels high)' %}</h4>
+				<p class="grey small">{% trans 'Shows project image and location.' %}</p>
+				<div style="float:left; width:205px;">
+					<script type="text/javascript">
+						// think about refactor this to a general method in machinery.js
+
+						document.write('<iframe src="{% url project_widget 'project-small' project.pk %}" width="170" height="312" frameborder="0" allowTransparency="yes"> </iframe>');
+							
+					</script>
+				</div>
+				<div style="float:right; width:580px;">
+					<h3>{% trans 'Settings' %}</h3>
+					<hr />
+					<p class="bold">{% trans 'Enter the web address where you will embed this widget' %}</p>
+					<p class="small">
+					<input type="text" name="widget-site" value="" style="margin-top:2px; margin-right:20px;" /> 
+					{% trans 'This will help us track statistics for you.' %}<br>
+					<span class="grey">{% trans 'Example' %}: www.akvo.org</span>
+					</p>
+					<hr />
+					<p>
+						<input type="hidden" name="widget-type" value="project-small" />
+						<input type="radio" id="project-small-specific-project" name="widget-choice" 
+							value="specific-project" checked="checked" style="margin-bottom:10px;" /> 
+							<label style="display:inline;" for="project-small-specific-project">{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}</label>
+							
+						<br />
+						<input type="radio" id="project-small-random-from-org" name="widget-choice" 
+							value="random-from-org" /> 
+						<label style="display:inline;" for="project-updates-random-from-org">
+							{% trans 'Display a random project from this organisation' %}:</label>
+						<br /><br />
+						<select name="widget-organisations" id="project-small-organisations" 
+							size="1" style="margin-left:33px;" disabled="disabled">
+							{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select>
+					</p>
+					<hr />
+										
+					<a class="grey awesome" style="margin-right:10px;"
+						href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+					<a class="aqua awesome" href="javascript:document.projectSmallForm.submit();" 
+						onclick="this.blur();" style="margin-left:10px;">{% trans 'Select and Proceed...' %}</a>
+				</div>
+				<div style="clear:both;"> </div>
+			</form>
+			</div>
+		</div>
+		{# end Small project widget #}
+	</div>
+</div>
+	
+{% endblock maincontent %}
+
+{% block jquery_ready %}
+
+jQ("#project-updates-random-from-org").click(function() { jQ('#project-updates-organisations').removeAttr("disabled"); });
+jQ("#project-updates-specific-project").click(function() { jQ('#project-updates-organisations').attr("disabled", true); });
+jQ("#project-small-random-from-org").click(function() { jQ('#project-small-organisations').removeAttr("disabled"); });
+jQ("#project-small-specific-project").click(function() { jQ('#project-small-organisations').attr("disabled", true); });
+
+{% endblock jquery_ready %}	

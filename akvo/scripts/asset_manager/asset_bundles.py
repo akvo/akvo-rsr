@@ -114,16 +114,16 @@ ASSET_BUNDLES = {
     #     'compress': True,
     #     'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_narrow.css','../../base/css/widget_global.css',],
     # },
-    # 'widget_project_small': {
-    #     'type': 'css',
-    #     'path': 'widgets/project_small/css/',
-    #     'compress': True,
-    #     'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_small.css','../../base/css/widget_global.css',],
-    # },
-    # 'widget_project_updates': {
-    #     'type': 'css',
-    #     'path': 'widgets/project_updates/css/',
-    #     'compress': True,
-    #     'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_updates.css','../../base/css/widget_global.css',],
-    # },
+    'widget_project_small': {
+        'type': 'css',
+        'path': 'widgets/project_small/css/',
+        'compress': True,
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_small.css','../../../base/css/widget_global.css',],
+    },
+    'widget_project_updates': {
+        'type': 'css',
+        'path': 'widgets/project_updates/css/',
+        'compress': True,
+        'files': ['x_reset.css','x_typography.css', 'x_grid.css', 'x_forms.css','x_widget_project_updates.css','../../../base/css/widget_global.css',],
+    },
 }
