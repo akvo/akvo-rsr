@@ -1,7 +1,7 @@
 
 table#projects {
   border: 0;
-  border-bottom: 1px solid #CCCCCC;
+  border-bottom: 1px solid #b8b8bf;
   margin: 0;
   font-size: 100%; 
   width: 973px;
@@ -9,9 +9,9 @@ table#projects {
 
 #projects th {
   border: 0;
-  border-bottom: 1px solid #CCCCCC;
-  border-right: 1px solid #CCCCCC;
-  border-top: 1px solid #CCCCCC;
+  border-bottom: 1px solid #b8b8bf;
+  border-right: 1px solid #b8b8bf;
+  border-top: 1px solid #b8b8bf;
   padding: 0;
   font-weight: normal;
   background: EAECEF;
@@ -47,7 +47,7 @@ div.activeTableHeaderDesc {
 
 #projects td {
   border: 0;
-  border-top: 1px solid #CCCCCC;
+  border-top: 1px solid #b8b8bf;
   padding: 0;
 }
 
