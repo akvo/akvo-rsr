@@ -79,7 +79,7 @@
               {% endblocktrans %}
             </h2>
             {% for area in project.areas_and_categories %}
-              <p>{{area.area}}
+              <p><a href="{{area.area.get_absolute_url}}">{{area.area}}</a>
               <br/>
               <span class="small">
                 {% blocktrans count area.categories|length as cats %}
