@@ -96,8 +96,8 @@ class LongitudeField(models.FloatField):
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0)
-    longitude = LongitudeField(_('longitude'), default=0)
+    latitude = LatitudeField(_('latitude'))
+    longitude = LongitudeField(_('longitude'))
     city = models.CharField(_('city'), max_length=255)
     state = models.CharField(_('state'), max_length=255)
     country = models.ForeignKey(Country)
@@ -107,7 +107,7 @@ class Location(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-    primary = models.BooleanField(_('primary location'))
+    primary = models.BooleanField(_('primary location'), default=True)
 
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
@@ -198,9 +198,8 @@ class Organisation(models.Model):
     @property
     def primary_location(self, location=None):
         "Returns an organisations's primary location"
-        pl = self.locations.get(primary=True)
-        if pl and not (pl.latitude, pl.longitude) == 0:
-            location = pl
+        if self.locations:
+            location = self.locations.get(primary=True)
         return location
 
     
@@ -987,16 +986,16 @@ if settings.PVW_RSR: #pvw-rsr
         @property
         def primary_location(self, location=None):
             "Returns a project's primary location"
-            pl = self.locations.get(primary=True)
-            if pl and not (pl.latitude, pl.longitude) == 0:
-                location = pl
+            if self.locations:
+                location = self.locations.get(primary=True)
             return location
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
                 latitude = float(self.latitude)
                 longitude = float(self.longitude)
-                return True
+                if not latitude == 0 and not longitude == 0:
+                    return True
             except:
                 return False
 
@@ -1166,9 +1165,8 @@ else: #akvo-rsr
         @property
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
-            qs = self.locations.filter(primary=True)
-            if qs:
-                location = qs[0]
+            if self.locations:
+                location = self.locations.get(primary=True)
             return location
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
