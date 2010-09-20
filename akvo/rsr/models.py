@@ -197,10 +197,10 @@ class Organisation(models.Model):
 
     @property
     def primary_location(self, location=None):
-        '''Returns an organisations's primary location'''
-        qs = self.locations.filter(primary=True)
-        if qs:
-            location = qs[0]
+        "Returns an organisations's primary location"
+        pl = self.locations.get(primary=True)
+        if pl and not (pl.latitude, pl.longitude) == 0:
+            location = pl
         return location
 
     
@@ -986,10 +986,10 @@ if settings.PVW_RSR: #pvw-rsr
                 
         @property
         def primary_location(self, location=None):
-            '''Returns a project's primary location'''
-            qs = self.locations.filter(primary=True)
-            if qs:
-                location = qs[0]
+            "Returns a project's primary location"
+            pl = self.locations.get(primary=True)
+            if pl and not (pl.latitude, pl.longitude) == 0:
+                location = pl
             return location
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
