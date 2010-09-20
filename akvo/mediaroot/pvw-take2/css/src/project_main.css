@@ -1,10 +1,10 @@
 #project_status {
   background-color: #2096F5;
   background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#2096F5), to(#2D80AE));
-  border-bottom-left-radius: 2px 2px;
-  border-bottom-right-radius: 2px 2px;
-  border-top-left-radius: 2px 2px;
-  border-top-right-radius: 2px 2px;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
   color: white;
   padding: 8px;
 }
@@ -16,4 +16,9 @@
   border-top-right-radius: 13px 13px;
   font-size: 1.2em;
   padding: 5px 10px;
+}
+
+.ui-tabs-nav a span {
+    font-size: 1.1em;
+    font-weight: normal;
 }

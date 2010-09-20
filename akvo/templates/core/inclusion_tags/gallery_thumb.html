@@ -7,5 +7,5 @@
    title="{{ caption }}"
    target="project_images"
 >
-    <img src="{% thumbnail image 60x60 autocrop sharpen %}" {% if style %}style="{{style}}" {% endif %}/>
+    <img src="{% thumbnail image 60x60 crop sharpen %}" {% if style %}style="{{style}}" {% endif %}/>
 </a>

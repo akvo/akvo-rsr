@@ -19,7 +19,7 @@ div.thumbs_scroller {
   background: #FFF;  
 }
 .thumbs a:hover {
-  border-color: #9C9CAC;
+  border-color: #CCCCCC;
   border-style: dotted;
 }
 .thumbs img {

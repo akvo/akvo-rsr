@@ -388,7 +388,7 @@ hr.space {
     -moz-border-radius: 2px; 
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    border: 1px solid #9C9CAC;
+    border: 1px solid #CCCCCC;
     background-color:#fff;
     }
 
@@ -397,7 +397,7 @@ hr.space {
     -moz-border-radius: 2px; 
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    border: 1px solid #9C9CAC;
+    border: 1px solid #CCCCCC;
     background-color:#fff;
 	background: -moz-linear-gradient(top, #F1F4F9, #fff);
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#F1F4F9), to(#fff));
@@ -976,10 +976,10 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 #project_status {
   background-color: #2096F5;
   background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#2096F5), to(#2D80AE));
-  border-bottom-left-radius: 2px 2px;
-  border-bottom-right-radius: 2px 2px;
-  border-top-left-radius: 2px 2px;
-  border-top-right-radius: 2px 2px;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
   color: white;
   padding: 8px;
 }
@@ -993,6 +993,11 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
   padding: 5px 10px;
 }
 
+.ui-tabs-nav a span {
+    font-size: 1.1em;
+    font-weight: normal;
+}
+
 /*---------------------------------------------------------------------------
  Contents from: project_directory.css
 ---------------------------------------------------------------------------*/
@@ -1000,7 +1005,7 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 
 table#projects {
   border: 0;
-  border-bottom: 1px solid #9C9CAC;
+  border-bottom: 1px solid #CCCCCC;
   margin: 0;
   font-size: 100%; 
   width: 973px;
@@ -1008,9 +1013,9 @@ table#projects {
 
 #projects th {
   border: 0;
-  border-bottom: 1px solid #9C9CAC;
-  border-right: 1px solid #9C9CAC;
-  border-top: 1px solid #9C9CAC;
+  border-bottom: 1px solid #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+  border-top: 1px solid #CCCCCC;
   padding: 0;
   font-weight: normal;
   background: EAECEF;
@@ -1046,7 +1051,7 @@ div.activeTableHeaderDesc {
 
 #projects td {
   border: 0;
-  border-top: 1px solid #9C9CAC;
+  border-top: 1px solid #CCCCCC;
   padding: 0;
 }
 
@@ -1075,12 +1080,7 @@ div.activeTableHeaderDesc {
   padding: 10px;
 }
 
-.blue_box {
-  -khtml-border-radius: 2px;
-  -moz-border-radius: 2px; 
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-  border: 1px solid #72DBCC;
+.blue_tint {
   background-color:#F1F5FA;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0F4F9), to(#FFFFFF), color-stop(.6,#FFFFFF));  
 }
@@ -1126,7 +1126,7 @@ div.thumbs_scroller {
   background: #FFF;  
 }
 .thumbs a:hover {
-  border-color: #9C9CAC;
+  border-color: #CCCCCC;
   border-style: dotted;
 }
 .thumbs img {
@@ -1276,7 +1276,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     -moz-border-radius: 2px; 
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    border: 1px solid #9C9CAC;
+    border: 1px solid #CCCCCC;
     background:#fff;
     }
 
@@ -1362,7 +1362,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
  *
  * http://docs.jquery.com/UI/Theming/API
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Arial,%20Helvetica&fwDefault=normal&fsDefault=1.2em&cornerRadius=2px&bgColorHeader=3d414b&bgTextureHeader=12_gloss_wave.png&bgImgOpacityHeader=55&borderColorHeader=3d414b&fcHeader=ffffff&iconColorHeader=d8e7f3&bgColorContent=fcfdfd&bgTextureContent=06_inset_hard.png&bgImgOpacityContent=100&borderColorContent=9c9cac&fcContent=3d414b&iconColorContent=9c9cac&bgColorDefault=e0e0e4&bgTextureDefault=04_highlight_hard.png&bgImgOpacityDefault=100&borderColorDefault=9c9cac&fcDefault=343d84&iconColorDefault=343d84&bgColorHover=eeeef0&bgTextureHover=04_highlight_hard.png&bgImgOpacityHover=100&borderColorHover=9c9cac&fcHover=343d84&iconColorHover=343d84&bgColorActive=fcfdfd&bgTextureActive=03_highlight_soft.png&bgImgOpacityActive=100&borderColorActive=9c9cac&fcActive=e35d18&iconColorActive=e35d18&bgColorHighlight=fbec88&bgTextureHighlight=01_flat.png&bgImgOpacityHighlight=55&borderColorHighlight=fad42e&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=02_glass.png&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Arial,%20Helvetica&fwDefault=normal&fsDefault=1.2em&cornerRadius=2px&bgColorHeader=3d414b&bgTextureHeader=12_gloss_wave.png&bgImgOpacityHeader=55&borderColorHeader=3d414b&fcHeader=ffffff&iconColorHeader=d8e7f3&bgColorContent=fcfdfd&bgTextureContent=06_inset_hard.png&bgImgOpacityContent=100&borderColorContent=cccccc&fcContent=3d414b&iconColorContent=9c9cac&bgColorDefault=e0e0e4&bgTextureDefault=04_highlight_hard.png&bgImgOpacityDefault=100&borderColorDefault=cccccc&fcDefault=343d84&iconColorDefault=343d84&bgColorHover=eeeef0&bgTextureHover=04_highlight_hard.png&bgImgOpacityHover=100&borderColorHover=cccccc&fcHover=343d84&iconColorHover=343d84&bgColorActive=fcfdfd&bgTextureActive=03_highlight_soft.png&bgImgOpacityActive=100&borderColorActive=cccccc&fcActive=e35d18&iconColorActive=e35d18&bgColorHighlight=fbec88&bgTextureHighlight=01_flat.png&bgImgOpacityHighlight=55&borderColorHighlight=fad42e&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=02_glass.png&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
  */
 
 
@@ -1371,18 +1371,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 #index-accordion .ui-widget { font-family: Arial, Helvetica; font-size: 0.875em; }
 #index-accordion .ui-widget .ui-widget { font-size: 100%; }
 #index-accordion .ui-widget input, #index-accordion .ui-widget select, #index-accordion .ui-widget textarea, #index-accordion .ui-widget button { font-family: Arial, Helvetica; font-size: 100%; }
-#index-accordion .ui-widget-content { border: 1px solid #9c9cac; background: #fcfdfd url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_inset-hard_100_fcfdfd_1x100.png) 50% bottom repeat-x; color: #3d414b; }
+#index-accordion .ui-widget-content { border: 1px solid #cccccc; background: #fcfdfd url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_inset-hard_100_fcfdfd_1x100.png) 50% bottom repeat-x; color: #3d414b; }
 #index-accordion .ui-widget-content a { color: #3d414b; }
 #index-accordion .ui-widget-header { border: 1px solid #3d414b; background: #3d414b url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_gloss-wave_55_3d414b_500x100.png) 50% 50% repeat-x; color: #ffffff; font-weight: bold; }
 #index-accordion .ui-widget-header a { color: #ffffff; }
 
 /* Interaction states
 ----------------------------------*/
-#index-accordion .ui-state-default, #index-accordion .ui-widget-content .ui-state-default, #index-accordion .ui-widget-header .ui-state-default { border: 1px solid #9c9cac; background: #e0e0e4 url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_highlight-hard_100_e0e0e4_1x100.png) 50% 50% repeat-x; font-weight: normal; color: #343d84; }
+#index-accordion .ui-state-default, #index-accordion .ui-widget-content .ui-state-default, #index-accordion .ui-widget-header .ui-state-default { border: 1px solid #cccccc; background: #e0e0e4 url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_highlight-hard_100_e0e0e4_1x100.png) 50% 50% repeat-x; font-weight: normal; color: #343d84; }
 #index-accordion .ui-state-default a, #index-accordion .ui-state-default a:link, #index-accordion .ui-state-default a:visited { color: #343d84; text-decoration: none; }
-#index-accordion .ui-state-hover, #index-accordion .ui-widget-content .ui-state-hover, #index-accordion .ui-widget-header #index-accordion .ui-state-hover, #index-accordion .ui-state-focus, #index-accordion .ui-widget-content .ui-state-focus, #index-accordion .ui-widget-header .ui-state-focus { border: 1px solid #9c9cac; background: #eeeef0 url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_highlight-hard_100_eeeef0_1x100.png) 50% 50% repeat-x; font-weight: normal; color: #343d84; }
+#index-accordion .ui-state-hover, #index-accordion .ui-widget-content .ui-state-hover, #index-accordion .ui-widget-header #index-accordion .ui-state-hover, #index-accordion .ui-state-focus, #index-accordion .ui-widget-content .ui-state-focus, #index-accordion .ui-widget-header .ui-state-focus { border: 1px solid #cccccc; background: #eeeef0 url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_highlight-hard_100_eeeef0_1x100.png) 50% 50% repeat-x; font-weight: normal; color: #343d84; }
 #index-accordion .ui-state-hover a, #index-accordion .ui-state-hover a:hover { color: #343d84; text-decoration: none; }
-#index-accordion .ui-state-active, #index-accordion .ui-widget-content .ui-state-active, #index-accordion .ui-widget-header .ui-state-active { border: 1px solid #9c9cac; background: #fcfdfd url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_highlight-soft_100_fcfdfd_1x100.png) 50% 50% repeat-x; font-weight: normal; color: #e35d18; }
+#index-accordion .ui-state-active, #index-accordion .ui-widget-content .ui-state-active, #index-accordion .ui-widget-header .ui-state-active { border: 1px solid #cccccc; background: #fcfdfd url(../../img/jquery-ui-1.8.4-custom-images/ui-bg_highlight-soft_100_fcfdfd_1x100.png) 50% 50% repeat-x; font-weight: normal; color: #e35d18; }
 #index-accordion .ui-state-active a, #index-accordion .ui-state-active a:link, #index-accordion .ui-state-active a:visited { color: #e35d18; text-decoration: none; }
 #index-accordion .ui-widget :active { outline: none; }
 

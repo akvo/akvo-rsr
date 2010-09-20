@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class='column span-8' style="width: 548px;">          
-          <div style="border-right: 1px solid #9C9CAC;">
+          <div style="border-right: 1px solid #DDDDDD;">
             <div class="space20" style="margin-top: 0;">
               {% thumbnail project.current_image 403x301 upscale autocrop sharpen as project_image %}
               <!-- remove comment when js loading of images is added
@@ -152,7 +152,7 @@
                 </p>
                 <hr/>
             {% endfor %}
-            <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25B6;</a>
+            <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} <span class="link_triangle">&#x25B6;</span></a>
             </div>
           </div>
         </div><!-- End tab_updates -->

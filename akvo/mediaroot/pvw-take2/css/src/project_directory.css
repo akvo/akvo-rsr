@@ -1,7 +1,7 @@
 
 table#projects {
   border: 0;
-  border-bottom: 1px solid #9C9CAC;
+  border-bottom: 1px solid #CCCCCC;
   margin: 0;
   font-size: 100%; 
   width: 973px;
@@ -9,9 +9,9 @@ table#projects {
 
 #projects th {
   border: 0;
-  border-bottom: 1px solid #9C9CAC;
-  border-right: 1px solid #9C9CAC;
-  border-top: 1px solid #9C9CAC;
+  border-bottom: 1px solid #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+  border-top: 1px solid #CCCCCC;
   padding: 0;
   font-weight: normal;
   background: EAECEF;
@@ -47,7 +47,7 @@ div.activeTableHeaderDesc {
 
 #projects td {
   border: 0;
-  border-top: 1px solid #9C9CAC;
+  border-top: 1px solid #CCCCCC;
   padding: 0;
 }
 
@@ -76,12 +76,7 @@ div.activeTableHeaderDesc {
   padding: 10px;
 }
 
-.blue_box {
-  -khtml-border-radius: 2px;
-  -moz-border-radius: 2px; 
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-  border: 1px solid #72DBCC;
+.blue_tint {
   background-color:#F1F5FA;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0F4F9), to(#FFFFFF), color-stop(.6,#FFFFFF));  
 }
