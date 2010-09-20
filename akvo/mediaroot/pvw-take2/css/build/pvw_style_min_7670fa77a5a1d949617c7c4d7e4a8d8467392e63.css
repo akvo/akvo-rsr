@@ -833,7 +833,7 @@ ul#main_nav li a {
     /*-webkit-transition:background-color .2s ease-out;*/
     }
 
-ul#main_nav li a:hover {   
+ul#main_nav li a:hover, ul#main_nav li a.active {   
     background: transparent url(../../img/mainnav/background_hover2.png) no-repeat center bottom;
     text-decoration: none;
     }

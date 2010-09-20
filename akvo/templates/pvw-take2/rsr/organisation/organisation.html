@@ -2,7 +2,11 @@
 
 {% load i18n rsr_tags rsr_filters google_maps webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 
-{% block breadcrum  %}{% endblock breadcrum  %}
+{% block breadcrum_items %}
+{{block.super}}
+  <li><a href="{% url rsr_org_list %}"><span>{% trans 'Organisations' %}</span></a></li>
+  <li id="last_breadcrum_item">{{org.name}}</li>
+{% endblock breadcrum_items %}
 
 {% block maincontent %}
 

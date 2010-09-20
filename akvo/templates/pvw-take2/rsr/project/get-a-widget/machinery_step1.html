@@ -3,13 +3,21 @@
 
 {% block title %}{{ block.super }} - {{project.name}} {% trans 'widgets' %}{% endblock %}
 
+{% block breadcrum_items %}
+{{block.super}}
+  <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{{project.get_absolute_url}}"><span>{{project.name}}</span></a></li>
+  <li id="last_breadcrum_item">{% trans 'Get a widget - step 1' %}</li>
+{% endblock breadcrum_items %}
+
+
 {% block maincontent %}
 
-<div class="span-18">
-	<div class="span-18">
+<div class="span-14">
+	<div class="span-14">
 		<h1>{% trans 'Get a widget' %} (1/2)</h1>
 	</div>
-	<div class="span-10 first">
+	<div class="span-8 first">
 		<p class="grey small">
 			{% trans 'The following steps will produce a snippet of widget code you can copy and paste into your own web site&#x27;s code' %}
 		</p>
@@ -19,7 +27,7 @@
 			<li>{% trans 'Copy the HTML code to your web site' %}.</li>
 		</ol>
 	</div>
-	<div class="span-8 last">
+	<div class="span-6 last">
 		<noscript>
 			<div id="machinery_step1_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
 				<p>
@@ -30,7 +38,7 @@
 		</noscript>
 	</div>
 	<hr />
-	<div class="push-1 span-17 first last">
+	<div class="push-1 span-13 first last">
 		<h2>{% trans 'Step 1: Select the type of widget you wish to use' %}</h2>
 		<p class="grey small">
 			{% trans 'You can customise the top and bottom bar and title text colours on the next step' %}.
@@ -38,7 +46,7 @@
 		{# start Project widget with updates #}
 		<div class="frame" style="margin-bottom:40px;">
 			<div class="space20">
-			<form name="projectUpdatesForm" action="." method="post">
+			<form name="projectUpdatesForm" action="." method="post">{% csrf_token %}
 				<h4>{% trans 'Project widget with updates (202 pixels wide by 900 pixels high)' %}</h4>
 				<p class="grey small">{% trans 'Shows basic description and updates.' %}</p>
 				<div style="float:left; width:205px;">
@@ -92,7 +100,7 @@
 		{# start Small project widget #}
 		<div class="frame">
 			<div class="space20">
-			<form name="projectSmallForm" action="." method="post">
+			<form name="projectSmallForm" action="." method="post">{% csrf_token %}
 				<h4>{% trans 'Small project (170 pixels wide by 312 pixels high)' %}</h4>
 				<p class="grey small">{% trans 'Shows project image and location.' %}</p>
 				<div style="float:left; width:205px;">

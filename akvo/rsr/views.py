@@ -228,7 +228,7 @@ if settings.PVW_RSR:
                 'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
             }
         )
-        return {'projects': projects, 'site_section': 'areas', 'focus_area': focus_area, 'org': org}
+        return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
     
     @render_to('rsr/directory.html')
     def directory(request, org_type='all'):
