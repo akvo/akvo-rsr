@@ -29,7 +29,7 @@ if settings.PVW_RSR:
     urlpatterns = patterns('',
         url(r'^$', 'akvo.rsr.views.index', name='index'),
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
-        (r'^rsr/admin/(.*)', admin.site.root),
+        (r'^rsr/admin/', include(admin.site.urls)),
         
         url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
         
