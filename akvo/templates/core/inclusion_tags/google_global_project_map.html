@@ -35,7 +35,7 @@
 	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
 	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
 	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
-                var zoom = {{ zoom }}
+                var zoom = {{ zoom }};
 	        {% endfor %}
 
 	        var mapCanvas = document.getElementById('map_canvas');
