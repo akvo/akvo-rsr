@@ -38,19 +38,9 @@ if settings.PVW_RSR:
         url(r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list', name='project_list_for_org' ),
         url(r'^rsr/projects/(?P<slug>[_\-a-zA-Z]+)/$', 'akvo.rsr.views.project_list', name='focus_area' ),
     
-        url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
-        (r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', ),
-        url(r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', name='comment_form'),
-        url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
-        url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
-        url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),
-        url(r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', name='project_funding'),
         url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='get_widget'),
             
         url(r'^rsr/directory/$', 'akvo.rsr.views.directory', name='directory'),
-        url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
-        url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
-        url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
         url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
     
         (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
@@ -76,18 +66,13 @@ else:
         url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
     
         # Project
-        url(r'^rsr/project/(?P<project_id>\d+)/$','akvo.rsr.views.projectmain', name='project_main'),
-        url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
-        url(r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', name='project_add_update'),
-        url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
-        url(r'^rsr/project/(?P<project_id>\d+)/funding/$','akvo.rsr.views.projectfunding', name='project_funding'),
+        url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),
+        url(r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', name='project_funding'),
         url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
         url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
         url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
-        
         (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
         
-        (r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', ),
         
         # Payment engines
         url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),
@@ -100,11 +85,6 @@ else:
         url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
         url(r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn', name='paypal_ipn'),
         
-        # Organisation
-        url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
-        url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
-        url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
-        
         
         # Account
         url(r'^rsr/signin/$','akvo.rsr.views.login',{'template_name': 'rsr/sign_in.html'},name='signin'),
@@ -115,7 +95,18 @@ else:
 
 urlpatterns += patterns('',
 
-    
+    # Project
+    url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
+    url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
+    url(r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', name='project_add_update'),
+    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
+
+    # Organisation
+    url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
+    url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
+
+
     url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate'),
     (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
     (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),

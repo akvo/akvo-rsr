@@ -860,20 +860,20 @@ def projectupdates(request, project_id):
     '''
     List of all updates for a project
     Context:
-    p: project
+    project: project
     updates: list of updates, ordered by time in reverse
     '''
-    p           = get_object_or_404(Project, pk=project_id)
-    updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
-    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-    can_add_update = p.connected_to_user(request.user)
+    project     = get_object_or_404(Project, pk=project_id)
+    updates     = project.project_updates.all().order_by('-time')
+    comments    = project.projectcomment_set.all().order_by('-time')[:3]
+    can_add_update = project.connected_to_user(request.user)
     return {
-        'p': p, 
+        'project': project, 
         'updates': updates, 
         'can_add_update':can_add_update, 
         'hide_latest_updates': True, 
         'comments': comments,
-        'site_section': 'areas',
+        'site_section': 'project',
         }
 
 @render_to('rsr/project/project_update.html')
@@ -884,18 +884,17 @@ def projectupdate(request, project_id, update_id):
     p: project
     updates: list of updates, ordered by time in reverse
     '''
-    p           = get_object_or_404(Project, pk=project_id)
-    u           = get_object_or_404(ProjectUpdate, pk=update_id)
-    #updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')
+    project     = get_object_or_404(Project, pk=project_id)
+    update      = get_object_or_404(ProjectUpdate, pk=update_id)
     can_add_update = p.connected_to_user(request.user)
-    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
-        'p': p, 
-        'u': u, 
-        'can_add_update':can_add_update, 
-        'hide_latest_updates': True,
-        'site_section': 'projects', 
-        'comments': comments,
+        'project'               : project, 
+        'update'                : update, 
+        'can_add_update'        : can_add_update, 
+        'hide_latest_updates'   : True,
+        'site_section'          : 'projects', 
+        'comments'              : comments,
         }
 
 @render_to('rsr/project/project_comments.html')

@@ -1002,6 +1002,7 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
  Contents from: project_directory.css
 ---------------------------------------------------------------------------*/
 
+/* project_directory.css */
 
 table#projects {
   border: 0;
@@ -1097,6 +1098,18 @@ div.activeTableHeaderDesc {
 }
 .disabled, .current {
   color: #3D414B;
+}
+
+
+
+/*---------------------------------------------------------------------------
+ Contents from: project_updates.css
+---------------------------------------------------------------------------*/
+
+/* project_updates.css */
+
+.update_frame:hover {
+  background: #F2F5F9;
 }
 
 

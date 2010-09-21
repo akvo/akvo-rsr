@@ -15,6 +15,7 @@ ASSET_BUNDLES = {
             'index.css',
             'project_main.css',
             'project_directory.css',
+            'project_updates.css',
             'thumbs_scroller.css',
             'tabs.css',
             'jquery-ui-1.8.4.custom.css',

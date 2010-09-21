@@ -2,10 +2,6 @@
 
 {% load i18n rsr_tags webdesign thumbnail counter_tags google_maps cache humanize %}
 
-{% block breadcrum_items %}
-{{block.super}}
-  <li id="last_breadcrum_item">{{project.name}}</li>
-{% endblock breadcrum_items %}
 
 {% block project_main %}  
   <div class='column span-11'>
