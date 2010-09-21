@@ -1,10 +1,15 @@
 {% extends "rsr/base.html" %}
 
 {% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+{% load google_maps %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
 {% block maincontent %}
+
+<div id="globalProjectMap" style="width: 100%; height: 400px;">
+    {% google_global_project_map 3 %}
+</div>
 
 <div class='container'>
   <div class='column span-10'>

@@ -198,8 +198,9 @@ class Organisation(models.Model):
     @property
     def primary_location(self, location=None):
         "Returns an organisations's primary location"
-        if self.locations:
-            location = self.locations.get(primary=True)
+        qs = self.locations.filter(primary=True)
+        if qs:
+            location = qs[0]
         return location
 
     
@@ -577,27 +578,23 @@ if settings.PVW_RSR: #pvw-rsr
         def view_count(self):
             counter = ViewCounter.objects.get_for_object(self)
             return counter.count or 0
-                
-        def has_valid_coordinates(self):
-            try:
-                latitude = float(self.latitude)
-                longitude = float(self.longitude)
-                return True
-            except:
-                return False
-    
-        def get_location(self):
-            if self.has_valid_coordinates():
-                latitude = str(self.latitude.strip())
-                longitude = str(self.longitude.strip())
-                location = '%s,%s' % (latitude, longitude)
-            else:
-                state = self.state.strip().replace(' ', '+')
-                country = self.country.country_name.strip().replace(' ', '+')
-                location = '%s+%s' % (state, country)
-            return location        
+
+        @property
+        def primary_location(self, location=None):
+            qs = self.locations.filter(primary=True)
+            if qs:
+                location = qs[0]
+            return location
+
 
         class QuerySet(QuerySet):
+            def has_primary_location(self):
+                content_type = ContentType.objects.get_for_model(Project)
+                locations = Location.objects.filter(content_type=content_type,
+                    primary=True)
+                project_ids = [location.object_id for location in locations]
+                return self.filter(id__in=project_ids)
+
             def published(self):
                 return self.filter(publishingstatus__status='published')
         
@@ -986,8 +983,9 @@ if settings.PVW_RSR: #pvw-rsr
         @property
         def primary_location(self, location=None):
             "Returns a project's primary location"
-            if self.locations:
-                location = self.locations.get(primary=True)
+            qs = self.locations.filter(primary=True)
+            if qs:
+                location = qs[0]
             return location
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
@@ -1165,8 +1163,9 @@ else: #akvo-rsr
         @property
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
-            if self.locations:
-                location = self.locations.get(primary=True)
+            qs = self.locations.filter(primary=True)
+            if qs:
+                location = qs[0]
             return location
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
@@ -1179,6 +1178,13 @@ else: #akvo-rsr
     
     
         class QuerySet(QuerySet):
+            def has_primary_location(self):
+                content_type = ContentType.objects.get_for_model(Project)
+                locations = Location.objects.filter(content_type=content_type,
+                    primary=True)
+                project_ids = [location.object_id for location in locations]
+                return self.filter(id__in=project_ids)
+
             def published(self):
                 return self.filter(publishingstatus__status='published')
         

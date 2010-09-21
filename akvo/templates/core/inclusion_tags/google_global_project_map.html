@@ -1,6 +1,7 @@
 {% load i18n thumbnail rsr_filters %}
 
-{% block head %}
+{% if projects %}
+
 <style type="text/css" media="screen">
 	.mapInfoWindow {
 		min-height:150px;
@@ -20,10 +21,8 @@
 		color:#fff;
 	}
 </style>
-{% endblock head %}
 
-{% block js %}
-	{{block.super}}
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></scripet>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	
 	<script type="text/javascript">
@@ -36,6 +35,7 @@
 	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
 	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
 	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
+                var zoom = {{ zoom }}
 	        {% endfor %}
 
 	        var mapCanvas = document.getElementById('map_canvas');
@@ -44,7 +44,7 @@
 	            center: center,
 	            mapTypeId: google.maps.MapTypeId.ROADMAP,
 	            scrollwheel: false,
-	            zoom: 3
+	            zoom: zoom
 	        };
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
@@ -75,12 +75,13 @@
 	        {% endfor %}
 
 	    }
-	</script>
-{% endblock js %}
 
-{% block jq_ready %}
-	{{block.super}}
-	loadGlobalMap();
-{% endblock jq_ready %}
+    $(document).ready(function() {
+	    loadGlobalMap();
+    });
+
+	</script>
 
 <div id="map_canvas" style="width: {{ width }}px; height={{ height }}px;"></div>
+
+{% endif %}

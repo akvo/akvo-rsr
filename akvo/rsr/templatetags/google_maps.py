@@ -32,8 +32,7 @@ def google_map(object, width, height, zoom):
     return template_context
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
-def google_global_project_map(width, height, zoom):
-    projects = Project.objects.published()
-    template_context = dict(projects=projects, width=width,
-        height=height, zoom=zoom)
+def google_global_project_map(zoom):
+    projects = Project.objects.published().has_primary_location()
+    template_context = dict(projects=projects, zoom=zoom)
     return template_context
