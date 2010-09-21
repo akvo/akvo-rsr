@@ -862,7 +862,7 @@ if settings.PVW_RSR: #pvw-rsr
             #    return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
     
         def __unicode__(self):
-            return self.name
+            return u'Project %d: %s' % (self.id, self.name)
             
         def project_type(self):
             pt = ""
