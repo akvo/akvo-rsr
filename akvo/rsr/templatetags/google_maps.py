@@ -38,5 +38,5 @@ def google_global_project_map(width, height, zoom):
     projects = Project.objects.published().has_primary_location()
     marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     template_context = dict(marker_icon=marker_icon, projects=projects,
-        zoom=zoom)
+        width=width, height=height, zoom=zoom)
     return template_context
