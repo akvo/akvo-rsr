@@ -7,8 +7,6 @@
 
 {% block maincontent %}
 
-{% google_global_project_map 500 500 3 %}
-
 <div class='container'>
   <div class='column span-10'>
     <div id="movie_container" style="width:689px; max-width:689px; max-height:408px height:408px; overflow:hidden;">
@@ -104,7 +102,8 @@
             <a href="{% url project_list %}">See all <span class="link_triangle">&#x25B6;</span></a>
           </div>
           <div class="clear"></div>
-          <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss">
+          {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
+          {% google_global_project_map 292 219 3 %}
           <p class="nano-lede strong">
             117 countries.<br/>
             € 20 billion in project budgets.<br/>
