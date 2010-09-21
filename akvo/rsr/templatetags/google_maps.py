@@ -7,6 +7,8 @@
 from django import template
 register = template.Library()
 
+from akvo.rsr.models import Project
+
 """
 @register.inclusion_tag('inclusion_tags/_static_map.html')
 def static_map(model_path, object_id, width, height, zoom, marker_color):
@@ -25,7 +27,13 @@ def static_map(model_path, object_id, width, height, zoom, marker_color):
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
 def google_map(object, width, height, zoom):
-    return {'object': object,
-            'width': width,
-            'height': height,
-            'zoom': zoom}
+    template_context = dict(object=object, width=width, height=height,
+        zoom=zoom)
+    return template_context
+
+@register.inclusion_tag('inclusion_tags/google_global_project_map.html')
+def google_global_project_map(width, height, zoom):
+    projects = Project.objects.published()
+    template_context = dict(projects=projects, width=width,
+        height=height, zoom=zoom)
+    return template_context
