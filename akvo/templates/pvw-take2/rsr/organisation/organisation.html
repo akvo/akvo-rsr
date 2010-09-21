@@ -144,7 +144,7 @@
           </h3>
           <p>
             {% for project in org_projects %}
-              <a href="{{project.get_absolute_url}}">{{project}}</a><br/>
+              <a href="{{project.get_absolute_url}}">{{project.name}}</a><br/>
             {% endfor %}
           </p>
         {% endif %}

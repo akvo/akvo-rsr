@@ -859,7 +859,7 @@ if settings.PVW_RSR: #pvw-rsr
             #    return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
     
         def __unicode__(self):
-            return u'Project %d: %s' % (self.id, self.name)
+            return _(u'Project %d: %s') % (self.id, self.name)
             
         def project_type(self):
             pt = ""
@@ -1981,6 +1981,10 @@ class ProjectUpdate(models.Model):
     def view_count(self):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('project_update', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
         return u'Project update for %s' % self.project.name

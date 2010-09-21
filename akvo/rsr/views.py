@@ -4,12 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from akvo.rsr.admin import ProjectAdmin
 from akvo.rsr.models import FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
-from akvo.rsr.utils import wordpress_get_lastest_posts
+from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission
 
 from django import forms
 from django import http
@@ -1094,28 +1095,42 @@ def projectmain(request, project_id):
     '''
     The project overview page
     Context:
-    p: the project
+    project: the project
+    related: 2 projects sharing the same Categories as project, chosen randomly
     updates: the three latest updates
+    updates_with_images: all updates for this project that includes an image
+    can_add_update: boolean telling if the user is logged in and connected to the project
+    admin_change_url: url to the change view in the admin for the project, set to None if the user is not allowed to edit
     comments: the three latest comments
-    form: the comment form
+    site_section: for use in the main nav hilighting
+    slider_width: used by the thumbnail image slider
     '''
-    #form        = CommentForm()
-    p           = get_object_or_404(Project, pk=project_id)
-    related = Project.objects.filter(categories__in=Category.objects.filter(projects=p)).distinct().exclude(pk=p.pk)    
-    related = get_random_from_qs(related, 2)
-    updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-    comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('-time')
-    slider_width = (len(updates_with_images) + 1) * 115    
+    project             = get_object_or_404(Project, pk=project_id)
+    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk)    
+    related             = get_random_from_qs(related, 2)
+    all_updates         = project.project_updates.all().order_by('-time')
+    updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
+    slider_width        = (len(updates_with_images) + 1) * 115    
+    comments            = project.projectcomment_set.all().order_by('-time')[:3]
+    
+    # a little model meta data magic
+    opts = project._meta
+    if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        admin_change_url = reverse('admin:rsr_project_change', args=(project.id,)),
+        admin_change_url = admin_change_url[0]
+    else:
+        admin_change_url = None
+
+    print admin_change_url
     return {
-        'project'               : p,
+        'project'               : project,
         'related'               : related,
-        'updates'               : updates, 
-        'comments'              : comments, 
-        #'form': form, 
-        'can_add_update'        : p.connected_to_user(request.user),
-        'site_section'          : 'projects',
+        'updates'               : all_updates[:3], 
         'updates_with_images'   : updates_with_images,
+        'can_add_update'        : project.connected_to_user(request.user),
+        'admin_change_url'      : admin_change_url,
+        'comments'              : comments, 
+        'site_section'          : 'projects',
         'slider_width'          : slider_width,
         }
 

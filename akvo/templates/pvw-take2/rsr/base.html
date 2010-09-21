@@ -67,33 +67,12 @@
 						&nbsp;
 				</span>
 			</li>
-			<li id="mainnav_right">
-				{% if not user.username %}
-					<a id="main_nav_account" href="{% url signin %}?next={{request.path}}">
-						<span>{% trans 'Sign in' %}</span>
-					</a>
-				{% else %}
-					<a id="main_nav_account" href="{% url akvo.rsr.views.signout %}" title="{{user.username}}">
-						<span>{% trans 'Sign out' %}</span>
-						{# <span>{% trans 'Account' %}</span> #}
-					</a>
-				{% endif %}
-			</li>
 		</ul>
 	</div>
 
 	<div id="main_container" class="container">
-		{% if not user.username %}
-			<div style="text-align:right; margin-top:5px; margin-bottom:10px;">
-				<p class="small grey" style="margin:0; padding:0;">
-					{% trans 'Welcome!' %} <a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a> {% trans 'or' %} <a href="/rsr/accounts/register1/">{% trans 'Register' %}</a>
-				</p>
-			</div>
-		{% else %}
-			<div style="height:15px;">
-				&nbsp;
-			</div>
-		{% endif %}
+
+		<div style="height:17px;">&nbsp;</div>
 		
 		{% block breadcrum  %}
 			<div class="span-14" style="margin-bottom:20px;">
@@ -123,13 +102,17 @@
 			<a href="/web/donation_policy">Privacy policy</a> &nbsp;|&nbsp;
 			<a href="/web/credits">Credits</a> &nbsp;|&nbsp;
 			<a href="/web/?q=user">Admin</a>  &nbsp;|&nbsp;
-			<a href="/web/?q=user">Sign in</a>  &nbsp;|&nbsp;
-			<a href="/web/?q=user">Register</a>
-			
+			<a href="{% url register1 %}">{% trans 'Register' %}</a>  &nbsp;|&nbsp;
+  		{% if not user.username %}      
+        <a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a>
+      {% else %}
+        <a href="{% url signout %}?next={{request.path}}">{% trans 'Sign out' %}</a>
+			{% endif %}
 			<a href="/web/contact_us" style="margin-left:30px;">Contact us</a>
       <img src="{{MEDIA_URL}}pvw-take2/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
 		</p>
 	</div>
+
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script>

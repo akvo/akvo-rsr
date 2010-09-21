@@ -18,9 +18,11 @@
             <div style="float: left;">
               <h1 class="h0">{{project.name}}</h1> 
             </div>
-            <div class="h1_companion">
-              <a href="#" class="awesome aqua small">{% trans 'Edit' %}</a>
-            </div>
+            {% if admin_change_url %}
+              <div class="h1_companion">
+                <a href="{{admin_change_url}}" class="awesome aqua small">{% trans 'Edit' %}</a>
+              </div>
+            {% endif %}
             <div class="clear"></div>
             <p class="lt_grey">{{project.subtitle}}</p>
           </div>
@@ -119,7 +121,7 @@
             <div class="space5" style="margin-top: 15px;">
             {% for update in updates %}
                 <p>
-                  <h3><a href="#">{{update.title}}</a></h3>
+                  <h3><a href="{{update.get_absolute_url}}">{{update.title}}</a></h3>
                   <span class="small lt_grey">
                     {{update.time|date:"Y-m-d H:i" }}
                     {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}

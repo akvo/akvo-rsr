@@ -48,7 +48,7 @@ if settings.PVW_RSR:
         (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
     
         url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
-        (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
+        url(r'^rsr/signout/$', 'akvo.rsr.views.signout', name='signout'),
         
         url(r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', name='register1'),
         url(r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', name='register2'),

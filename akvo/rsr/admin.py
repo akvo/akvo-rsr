@@ -529,7 +529,7 @@ if settings.PVW_RSR:
             If `obj` is None, this should return True if the given request has
             permission to change *any* object of the given type.
     
-            get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
+            get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
             "own" projects, organisation and user profiles
             """
             opts = self.opts
