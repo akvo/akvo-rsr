@@ -887,7 +887,7 @@ def projectupdate(request, project_id, update_id):
     '''
     project     = get_object_or_404(Project, pk=project_id)
     update      = get_object_or_404(ProjectUpdate, pk=update_id)
-    can_add_update = p.connected_to_user(request.user)
+    can_add_update = project.connected_to_user(request.user)
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
         'project'               : project, 
@@ -1117,11 +1117,10 @@ def projectmain(request, project_id):
     opts = project._meta
     if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
         admin_change_url = reverse('admin:rsr_project_change', args=(project.id,)),
-        admin_change_url = admin_change_url[0]
+        admin_change_url = admin_change_url[0] #don't friggin ask why!!!
     else:
         admin_change_url = None
 
-    print admin_change_url
     return {
         'project'               : project,
         'related'               : related,
@@ -1132,7 +1131,7 @@ def projectmain(request, project_id):
         'comments'              : comments, 
         'site_section'          : 'projects',
         'slider_width'          : slider_width,
-        }
+    }
 
 def projectdetails(request, project_id):
     "Fix for old url with project details"
