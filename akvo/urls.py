@@ -14,10 +14,13 @@ from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
+import oembed
 
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
 admin.autodiscover()
+# djangoembed
+oembed.autodiscover()
 
 feeds = {
     'updates': ProjectUpdates,

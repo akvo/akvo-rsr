@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
 
 {% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+{% load oembed_tags %}
 {% load google_maps %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
@@ -9,20 +10,23 @@
 
 <div class='container'>
   <div class='column span-10'>
-    <div id="movie_container" style="width:689px; max-width:689px; max-height:408px height:408px; overflow:hidden;">
+    {% oembed 689x413 %}http://www.youtube.com/watch?v=dD6mk9Yxwsc{% endoembed %}
+  </div>
+    
+    <!--<div id="movie_container" style="width:689px; max-width:689px; max-height:408px height:408px; overflow:hidden;">
       <object width="689" height="408">
         <param name="movie" value="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1">
         <param name="allowFullScreen" value="true">
         <param name="allowscriptaccess" value="always">
         <embed src="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="689" height="408">
       </object>
-    </div>
-  </div>
+    </div>-->
   
   <div class='column span-4 last'>
-    <div class="gradient_box">
+    <div class="gradient_box" style="height: 411px;">
       <div class="space20">
-        <div style="background-image:url({{MEDIA_URL}}pvw-take2/img/lets-work-together-logo-233x172-trans.gif); height: 67px; text-align: center; padding-top: 100px;">
+        <div style="text-align:center;">
+          <img src="{{MEDIA_URL}}pvw-take2/img/lets-work-together-logo-233x172-trans.gif" width="156" height="120"/>
         </div>
         <h3 class="prepend-top" style="font-size:0.875em;">The Dutch water sector:<br/>Your worldwide partner for water</h3>
         <p class="nano-lede">

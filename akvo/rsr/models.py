@@ -1617,7 +1617,7 @@ class PublishingStatus(models.Model):
         verbose_name_plural = _('publishing statuses')
     
     def project_info(self):
-        return '%d - %s' % (self.project.pk, self.project,)
+        return self.project
 
     
 class Link(models.Model):

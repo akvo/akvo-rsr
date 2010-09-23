@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'mollie.ideal',
     'django_sorting',
     'pagination',
+    'oembed',
 )
 
 #INTERNAL_IPS = (
