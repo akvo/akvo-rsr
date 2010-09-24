@@ -62,7 +62,15 @@
       {% endif %}
     {% endif %}
     <div class='column span-14 last'>
-      <h1>Our projects <span class="lt_grey">({{projects.count}} results)</span></h1>
+      <h1>{% trans 'Our projects' %}
+        <span class="lt_grey">
+          {% blocktrans count projects.count as projects_count %}
+            ({{projects_count}} result)
+          {% plural %}
+            ({{projects_count}} results)
+          {% endblocktrans %}
+        </span>
+      </h1>
       {% autosort projects %}
       {% autopaginate projects 10 %}
       <div class="white_box">

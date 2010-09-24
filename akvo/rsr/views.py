@@ -240,6 +240,18 @@ if settings.PVW_RSR:
 
     def old_project_list(request):
         return HttpResponsePermanentRedirect(reverse('project_list'))
+
+    @render_to('rsr/organisation/organisation_directory.html')
+    def orglist(request):
+        '''
+        '''
+        orgs = Organisation.objects.all()
+    
+        return {
+            'site_section': 'directory',
+            'orgs': orgs,
+        }
+
 else:
     
     @render_to('rsr/project_directory.html')
@@ -521,72 +533,72 @@ else:
             'o': o,    
         }
 
-@render_to('rsr/organisation/organisation_directory.html')
-def orglist(request, org_type='all'):
-    '''
-    List of all projects in RSR
-    Context:
-    orgs: list of all organisations
-    stats: the aggregate projects data
-    page: paginated orgs
-    '''
-    orgs = Organisation.objects
-    #orgs = Organisation.objects.select_related()
-    if org_type == 'field':
-        orgs = orgs.fieldpartners()
-    elif org_type == 'support':
-        orgs = orgs.supportpartners()
-    elif org_type == 'funding':
-        orgs = orgs.fundingpartners()
-    elif org_type == 'sponsor':
-        orgs = orgs.sponsorpartners()
-    elif org_type == 'ngos':
-        orgs = orgs.ngos()
-    elif org_type == 'governmental':
-        orgs = orgs.governmental()
-    elif org_type == 'commercial':
-        orgs = orgs.commercial()
-    elif org_type == 'knowledge':
-        orgs = orgs.knowledge()
-    else:
-        orgs = orgs.all()
-
-    query_string = ''
-    found_entries = None
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-        org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','contact_email',])
-        orgs = orgs.filter(org_query)
+    @render_to('rsr/organisation/organisation_directory.html')
+    def orglist(request, org_type='all'):
+        '''
+        List of all projects in RSR
+        Context:
+        orgs: list of all organisations
+        stats: the aggregate projects data
+        page: paginated orgs
+        '''
+        orgs = Organisation.objects
+        #orgs = Organisation.objects.select_related()
+        if org_type == 'field':
+            orgs = orgs.fieldpartners()
+        elif org_type == 'support':
+            orgs = orgs.supportpartners()
+        elif org_type == 'funding':
+            orgs = orgs.fundingpartners()
+        elif org_type == 'sponsor':
+            orgs = orgs.sponsorpartners()
+        elif org_type == 'ngos':
+            orgs = orgs.ngos()
+        elif org_type == 'governmental':
+            orgs = orgs.governmental()
+        elif org_type == 'commercial':
+            orgs = orgs.commercial()
+        elif org_type == 'knowledge':
+            orgs = orgs.knowledge()
+        else:
+            orgs = orgs.all()
     
-    # Sort query
-    order_by = request.GET.get('order_by', 'name')
-    last_order = request.GET.get('last_order')
-    sort = request.GET.get('sort', 'asc')
-
-    if sort == 'asc':
-        orgs = orgs.order_by(order_by, 'name')
-    else:
-        orgs = orgs.order_by('-%s' % order_by, 'name')
+        query_string = ''
+        found_entries = None
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+            org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','contact_email',])
+            orgs = orgs.filter(org_query)
+        
+        # Sort query
+        order_by = request.GET.get('order_by', 'name')
+        last_order = request.GET.get('last_order')
+        sort = request.GET.get('sort', 'asc')
     
-    ORGS_PER_PAGE = 10
-    paginator = Paginator(orgs, ORGS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
-    projs = Project.objects.published()
-
-    return {
-        'site_section': 'index',
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'lang': get_language(),
-        'page': page,
-        'projs': projs,
-        'query_string': query_string,
-        'request_get': request.GET,
-        'sort': sort,
-        'order_by': order_by,
-        'last_order': last_order,
-        'org_type': org_type,
-        'orgs': orgs,
-    }
+        if sort == 'asc':
+            orgs = orgs.order_by(order_by, 'name')
+        else:
+            orgs = orgs.order_by('-%s' % order_by, 'name')
+        
+        ORGS_PER_PAGE = 10
+        paginator = Paginator(orgs, ORGS_PER_PAGE)
+        page = paginator.page(request.GET.get('page', 1))
+        projs = Project.objects.published()
+    
+        return {
+            'site_section': 'index',
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'lang': get_language(),
+            'page': page,
+            'projs': projs,
+            'query_string': query_string,
+            'request_get': request.GET,
+            'sort': sort,
+            'order_by': order_by,
+            'last_order': last_order,
+            'org_type': org_type,
+            'orgs': orgs,
+        }
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
