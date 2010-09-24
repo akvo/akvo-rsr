@@ -968,6 +968,25 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
   font-size: 0.8125em;
 }
 
+div#top_right_box p {
+    font-size:0.8125em;
+    line-height:1.2em;
+    margin-bottom:0.75em;    
+}
+
+div#top_right_box p, div#map_box p {
+    font-size:0.8125em;
+    line-height:1.2em;
+    margin-bottom:0.6em;    
+}
+
+div#top_right_box h3 {
+    color:#E35D18;
+    font-size:0.875em;
+    font-weight:normal;
+    line-height:1.2em;
+    margin-bottom:0.75em;
+}
 
 /*---------------------------------------------------------------------------
  Contents from: project_main.css

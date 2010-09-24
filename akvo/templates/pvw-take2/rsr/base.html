@@ -41,7 +41,7 @@
         </a>
       </li>
 			<li>
-				<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+				<a href="{% url project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 					<span>{% trans 'Projects' %}</span>
 				</a>
 			</li>

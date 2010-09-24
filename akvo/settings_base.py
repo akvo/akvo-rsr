@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     'django_sorting',
     'pagination',
     'oembed',
+    'django_markup',
 )
 
 #INTERNAL_IPS = (

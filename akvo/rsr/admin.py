@@ -359,6 +359,13 @@ admin.site.register(get_model('rsr', 'location'))
 
 if settings.PVW_RSR:
 
+    class MiniCMSAdmin(admin.ModelAdmin):
+        model = get_model('rsr', 'MiniCMS')
+        list_display = ('video_url',)
+    
+    admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
+
+
     class FocusAreaAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'FocusArea')
         list_display = ('name', 'slug', 'image',)

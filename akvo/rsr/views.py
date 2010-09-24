@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.admin import ProjectAdmin
-from akvo.rsr.models import FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
+from akvo.rsr.models import MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
@@ -135,7 +135,8 @@ def index(request):
         grid_projects = None
     
     if settings.PVW_RSR:
-        focus_areas = FocusArea.objects.all()
+        focus_areas = FocusArea.objects.exclude(slug='all')
+        cms = MiniCMS.objects.get(pk=1)
         updates = {}
     else:
         focus_areas = None
@@ -168,6 +169,7 @@ def index(request):
         'projs': projs,
         'updates': updates,
         'focus_areas': focus_areas,
+        'cms': cms,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
@@ -203,7 +205,7 @@ def focusareas(request):
 
 if settings.PVW_RSR:
     @render_to('rsr/project/project_directory.html')
-    def project_list(request, slug=None, org_id=None):
+    def project_list(request, slug='all', org_id=None):
         '''
         List of  projects in RSR
         filtered on either a focus area or an organisation
@@ -219,9 +221,10 @@ if settings.PVW_RSR:
             projects = org.published_projects().funding()
         elif slug:
             focus_area = get_object_or_404(FocusArea, slug=slug)
-            projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
-        else:
-            projects = Project.objects.published()
+            if slug == 'all':
+                projects = Project.objects.published()
+            else:
+                projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
         # extra columns to be able to sort on latest updates
         projects = projects.extra(
             select={

@@ -3,13 +3,19 @@
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 
 {% block breadcrum_items %}
-  {% if focus_area %}
+  {% if org %}
     {{block.super}}
       <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-      <li id="last_breadcrum_item">{{focus_area.name}}</li>
+      <li id="last_breadcrum_item">{% trans 'Project listing for' %} {{org.name}}</li>
   {% else %}
-    {{block.super}}
-      <li id="last_breadcrum_item">{% trans 'Projects' %}</li>
+    {% if focus_area.slug != 'all' %}
+      {{block.super}}
+        <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+        <li id="last_breadcrum_item">{{focus_area.name}}</li>
+    {% else %}
+      {{block.super}}
+        <li id="last_breadcrum_item">{% trans 'All projects' %}</li>
+    {% endif %}
   {% endif %}
 {% endblock breadcrum_items %}
 
@@ -18,30 +24,42 @@
 <div class='container'>
 
   <div class='column span-14'>
-    {% if focus_area %}
-      <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
-      <div class='column span-11'>
-        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
-        <p>
-          {{focus_area.description|linebreaks}}
-        </p>
-      </div>    
-      <div class='column span-3 last'>
-        <div class="white_box blue_tint">
-          <div class="space20">
-            <h2>Related focus area</h2>
-            <a href="/web/{{focus_area.slug}}" class="small">{% trans 'Learn more about'%} <br/>{{focus_area}}&nbsp;<span class="link_triangle">&#x25B6;</span></a>
-          </div>
-        </div>
-      </div>
-    {% else %}  
-      <h1 class="h0">{% trans 'All projects' %}</h1>
+    {% if org %}
+      <h1 class="h0">{% trans 'Project listing for' %} {{org.name}}</h1>
       <div class='column span-14 last'>
-        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{{MEDIA_URL}}pvw-take2/img/meisje-drinkt-water-240x180.jpg" alt="{{focus_area}}"/>
+        {% org_logo org 240 180 'float: left; margin: 0 20px 20px 0;' %}
         <p>
-          {% trans 'Accumsan et iusto odio dignissim qui blandit praesent luptatum? Consuetudium lectorum mirum est notare quam littera gothica quam nunc putamus parum claram. In iis qui facit eorum claritatem Investigationes demonstraverunt. Typi qui nunc nobis videntur parum clari fiant sollemnes in.' %}
+          {{org.description|linebreaks}}
         </p>
       </div>    
+    {% else %}
+      {% if focus_area %}
+        <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
+        <div class='column span-11'>
+          <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
+          <p>
+            {{focus_area.description|linebreaks}}
+          </p>
+        </div>
+        {% if focus_area.slug != 'all' %}
+          <div class='column span-3 last'>
+            <div class="white_box blue_tint">
+              <div class="space20">
+                <h2>Related focus area</h2>
+                <a href="/web/{{focus_area.slug}}" class="small">{% trans 'Learn more about'%} <br/>{{focus_area}}&nbsp;<span class="link_triangle">&#x25B6;</span></a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% else %}  
+        <h1 class="h0">{% trans 'All projects' %}</h1>
+        <div class='column span-14 last'>
+          <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{{MEDIA_URL}}pvw-take2/img/meisje-drinkt-water-240x180.jpg" alt="{{focus_area}}"/>
+          <p>
+            {% trans 'Accumsan et iusto odio dignissim qui blandit praesent luptatum? Consuetudium lectorum mirum est notare quam littera gothica quam nunc putamus parum claram. In iis qui facit eorum claritatem Investigationes demonstraverunt. Typi qui nunc nobis videntur parum clari fiant sollemnes in.' %}
+          </p>
+        </div>    
+      {% endif %}
     {% endif %}
     <div class='column span-14 last'>
       <h1>Our projects <span class="lt_grey">({{projects.count}} results)</span></h1>

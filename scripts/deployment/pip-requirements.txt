@@ -16,6 +16,7 @@ django-piston
 -e git+git://github.com/directeur/django-sorting.git#egg=django_sorting
 -e git+git://github.com/worldcompany/djangoembed.git#egg=oembed
 django-counter
+django-markup
 
 # Other Python Modules
 BeautifulSoup==3.0.8.1
@@ -25,6 +26,8 @@ PIL
 lxml
 simplejson
 httplib2
+markdown
+
 
 
 

@@ -1,8 +1,7 @@
 {% extends "rsr/base.html" %}
 
 {% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
-{% load oembed_tags %}
-{% load google_maps %}
+{% load oembed_tags markup_tags google_maps %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
@@ -10,7 +9,7 @@
 
 <div class='container'>
   <div class='column span-10'>
-    {% oembed 689x413 %}http://www.youtube.com/watch?v=dD6mk9Yxwsc{% endoembed %}
+    {% oembed 689x413 %}{{cms.video_url}}{% endoembed %}
   </div>
     
     <!--<div id="movie_container" style="width:689px; max-width:689px; max-height:408px height:408px; overflow:hidden;">
@@ -24,21 +23,22 @@
   
   <div class='column span-4 last'>
     <div class="gradient_box" style="height: 411px;">
-      <div class="space20">
+      <div id="top_right_box" class="space20">
         <div style="text-align:center;">
           <img src="{{MEDIA_URL}}pvw-take2/img/lets-work-together-logo-233x172-trans.gif" width="156" height="120"/>
         </div>
-        <h3 class="prepend-top" style="font-size:0.875em;">The Dutch water sector:<br/>Your worldwide partner for water</h3>
+        {{cms.top_right_box|apply_markup:"markdown"}}
+        <!--<h3 class="prepend-top" style="font-size:0.875em;">The Dutch water sector:<br/>Your worldwide partner for water</h3>
         <p class="nano-lede">
           The world faces many water challenges: climate change, droughts, rising water levels, a growing world economy.
         </p> 
         <p class="nano-lede">
           Based on an age-old relationship with water, the Netherlands can lead the way. We're a place where global expertise and experience come together.          
-        </p> 
+        </p> -->
         <div class="h1_companion">
           <a href="/web/directory">Find a partner <span class="link_triangle">&#x25B6;</span></a>
         </div>          
-          <div class="clear"></div>
+        <div class="clear"></div>
         <div class="h1_companion">
           <a href="/web/history">Our story <span class="link_triangle">&#x25B6;</span></a>
         </div>          
@@ -98,7 +98,7 @@
      
     <div class='column span-5'>
       <div class="white_box" style="background-color:#fff;">
-        <div class="space20">     
+        <div id="map_box" class="space20">     
           <div style="float: left;">
             <h1>Projects worldwide</h1> 
           </div>
@@ -108,12 +108,14 @@
           <div class="clear"></div>
           {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
           {% google_global_project_map 292 219 3 %}
-          <p class="nano-lede strong">
+          {{cms.map_box|apply_markup:"markdown"}}
+          <!--<p class="nano-lede strong">
             117 countries.<br/>
             € 20 billion in project budgets.<br/>
             178 million people's lives made better.
           </p>
-          <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p> 
+          <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p>
+          -->
           <div class="h1_companion">
             <a href="#">View in Google maps <span class="link_triangle">&#x25B6;</span></a>
           </div>          
