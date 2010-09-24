@@ -238,6 +238,8 @@ if settings.PVW_RSR:
     def directory(request, org_type='all'):
         return {'site_section': 'directory',}
 
+    def old_project_list(request):
+        return HttpResponsePermanentRedirect(reverse('project_list'))
 else:
     
     @render_to('rsr/project_directory.html')
