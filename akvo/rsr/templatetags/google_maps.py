@@ -40,3 +40,15 @@ def google_global_project_map(width, height, zoom):
     template_context = dict(marker_icon=marker_icon, projects=projects,
         width=width, height=height, zoom=zoom)
     return template_context
+
+@register.inclusion_tag('inclusion_tags/google_static_global_project_map.html')
+def google_static_global_project_map(width, height, zoom):
+    locations = ''
+    projects = Project.objects.published().has_primary_location()
+    for project in projects:
+        locations += '%f,%f|' % (project.primary_location.latitude, project.primary_location.longitude)
+    base_url = 'http://maps.google.com/maps/api/staticmap?'
+    query = 'markers=color:blue|%s&size=%dx%d&zoom=%d&sensor=false' % \
+        (locations, width, height, zoom)
+    template_context = dict(width=width, height=height, zoom=zoom)
+    return template_context
