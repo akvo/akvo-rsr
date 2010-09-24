@@ -25,9 +25,9 @@
 
   <div class='column span-14'>
     {% if org %}
-      <h1 class="h0">{% trans 'Project listing for' %} {{org.name}}</h1>
+      <h1 class="h0"><a href="{{org.get_absolute_url}}">{% trans 'Project listing for' %} {{org.name}}</a></h1>
       <div class='column span-14 last'>
-        {% org_logo org 240 180 'float: left; margin: 0 20px 20px 0;' %}
+        <a href="{{org.get_absolute_url}}">{% org_logo org 240 180 'float: left; margin: 0 20px 20px 0;' %}</a>
         <p>
           {{org.description|linebreaks}}
         </p>
