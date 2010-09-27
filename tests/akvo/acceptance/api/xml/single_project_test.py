@@ -34,7 +34,7 @@ class SingleProjectTest(XMLTestCase):
 
         project_country_element = project_element.find("country")
 
-        self.assert_element(project_country_element).has_exactly(len(COUNTRY_CHILDREN)).children()
+        self.assert_element(project_country_element).has_at_least(len(COUNTRY_CHILDREN)).children()
         self.assert_element(project_country_element).has_single_children_in_list(COUNTRY_CHILDREN)
 
 

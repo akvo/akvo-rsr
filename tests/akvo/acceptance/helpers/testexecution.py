@@ -17,8 +17,10 @@ def load_tests_from(test_case):
     return nose.loader.TestLoader().loadTestsFromTestCase(test_case)
 
 def run_test_suite(suite):
+    test_runner = nose.core.TextTestRunner(verbosity=2)
+
     if TEST_MODE == 'ci':
         from teamcity.unittestpy import TeamcityTestRunner
-        TeamcityTestRunner().run(suite)
-    else:
-        nose.core.TextTestRunner(verbosity=2).run(suite)
+        test_runner = TeamcityTestRunner()
+
+    return test_runner.run(suite)
