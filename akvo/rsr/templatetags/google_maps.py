@@ -42,14 +42,15 @@ def google_global_project_map(width, height, zoom):
     return template_context
 
 @register.inclusion_tag('inclusion_tags/google_static_global_project_map.html')
-def google_static_global_project_map(width, height, zoom, color):
-    locations = ''
+def google_static_global_project_map(width, height, zoom, marker_color, marker_size):
+    if marker_size not in ('normal', 'mid', 'small', 'tiny'):
+        marker_size = 'normal'
     projects = Project.objects.published().has_primary_location()
+    locations = ''
     for project in projects:
         locations += '%f,%f|' % (project.primary_location.latitude, project.primary_location.longitude)
-    base_url = 'http://maps.google.com/maps/api/staticmap?'
-    query = 'markers=size:small|color:%s|%s&size=%dx%d&zoom=%d&sensor=false' % \
-        (color, locations, width, height, zoom)
-    map_url = base_url + query
+    base_url = 'http://maps.google.com/maps/api/staticmap'
+    markers = 'markers=size:%s|color:%s|%s' % (marker_size, marker_color, locations)
+    map_url = '%s?%s&size=%dx%d&zoom=%d&sensor=false' % (base_url, markers, width, height, zoom)
     template_context = dict(map_url=map_url, width=width, height=height, zoom=zoom)
     return template_context
