@@ -65,7 +65,7 @@
   <div class='column span-10 gutter-top'>
       
     <div class='column span-5'>
-      <div class="white_box" style="background-color:#fff;">
+      <div class="white_box" style="background-color:#fff; min-height: 485px;">
         <div class="space20">
           <div style="float: left;">
             <h1>{% trans 'Recent articles' %}</h1> 
@@ -98,7 +98,7 @@
     </div>
 
     <div class='column span-5 last'>
-      <div class="white_box" style="background-color:#fff;">
+      <div class="white_box" style="background-color:#fff; min-height: 485px;">
         <div id="map_box" class="space20">     
           <div style="float: left;">
             <h1>Projects worldwide</h1> 
@@ -108,7 +108,7 @@
           </div>
           <div class="clear"></div>
           {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
-          {% google_static_global_project_map 292 219 3 'blue' %}n
+          {% google_static_global_project_map 292 219 3 'blue' %}
           {{cms.map_box|apply_markup:"markdown"}}
           <!--<p class="nano-lede strong">
             117 countries.<br/>
