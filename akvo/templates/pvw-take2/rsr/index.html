@@ -61,8 +61,9 @@
 </div> 
 
 <div class='container'> 
-  <div class="gutter-top"> 
           
+  <div class='column span-10 gutter-top'>
+      
     <div class='column span-5'>
       <div class="white_box" style="background-color:#fff;">
         <div class="space20">
@@ -95,8 +96,8 @@
         <div class="clear"></div>
       </div>
     </div>
-     
-    <div class='column span-5'>
+
+    <div class='column span-5 last'>
       <div class="white_box" style="background-color:#fff;">
         <div id="map_box" class="space20">     
           <div style="float: left;">
@@ -107,7 +108,7 @@
           </div>
           <div class="clear"></div>
           {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
-          {% google_static_global_project_map 292 219 3 'blue' %}
+          {% google_static_global_project_map 292 219 3 'blue' %}n
           {{cms.map_box|apply_markup:"markdown"}}
           <!--<p class="nano-lede strong">
             117 countries.<br/>
@@ -123,35 +124,48 @@
         </div> 
       </div> 
     </div>
-     
-    <div class='column last span-4'>
-      <div class="white_box" style="background-color:#fff;">
-        <div style="margin: 20px 20px 0px 20px;">     
-          <div style="float: left;">
-            <h1>Focus areas</h1> 
-          </div>
-          <div class="h1_companion">
-            <a href="/web/focus-areas">See all <span class="link_triangle">&#x25B6;</span></a>
-          </div>
+
+    <div class='column span-10 gutter-top last'>
+      <div class="white_box">
+        <div class="space20">
+          <img style="float: right;" src="{{MEDIA_URL}}pvw-take2/img/holland_logo_oranje_130x44.gif">
+          <p class="strong" style="padding-top: 12px;">Tation ullamcorper suscipit lobortis nisl ut aliquip</p>
           <div class="clear"></div>
         </div>
       </div>
-      <div id="index-accordion" style="height: 500px;">
-        <div id="accordion">
-          {% for focus_area in focus_areas %}
-          <h3><a href="#">{{focus_area.name}}</a></h3>
-          <div>
-            <img width="220" height="165" src="{% thumbnail focus_area.image 220x165 sharpen %}" alt="{{focus_area}}"/>
-            <p class="nano-lede" style="font-size: 0.9375em;">
-              {{focus_area.description|smart_truncate}}
-              <a style="color: #1877B8;" href="/web/{{focus_area.slug}}">Read more <span class="link_triangle">&#x25B6;</span></a>
-            </p>
-          </div>
-          {% endfor %}
-        </div>              
-      </div>          
     </div>
+
   </div>
+
+  <div class='column last span-4 gutter-top'>
+    <div class="white_box" style="background-color:#fff;">
+      <div style="margin: 20px 20px 0px 20px;">     
+        <div style="float: left;">
+          <h1>Focus areas</h1> 
+        </div>
+        <div class="h1_companion">
+          <a href="/web/focus-areas">See all <span class="link_triangle">&#x25B6;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div id="index-accordion" style="height: 500px;">
+      <div id="accordion">
+        {% for focus_area in focus_areas %}
+        <h3><a href="#">{{focus_area.name}}</a></h3>
+        <div>
+          <img width="220" height="165" src="{% thumbnail focus_area.image 220x165 sharpen %}" alt="{{focus_area}}"/>
+          <p class="nano-lede" style="font-size: 0.9375em;">
+            {{focus_area.description|smart_truncate}}
+            <a style="color: #1877B8;" href="/web/{{focus_area.slug}}">Read more <span class="link_triangle">&#x25B6;</span></a>
+          </p>
+        </div>
+        {% endfor %}
+      </div>              
+    </div>          
+  </div>
+
+
 </div> 
 
 {% endblock maincontent %}
