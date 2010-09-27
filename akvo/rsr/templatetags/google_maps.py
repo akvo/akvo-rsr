@@ -48,7 +48,7 @@ def google_static_global_project_map(width, height, zoom, color):
     for project in projects:
         locations += '%f,%f|' % (project.primary_location.latitude, project.primary_location.longitude)
     base_url = 'http://maps.google.com/maps/api/staticmap?'
-    query = 'markers=color:%s|%s&size=%dx%d&zoom=%d&sensor=false' % \
+    query = 'markers=size:small|color:%s|%s&size=%dx%d&zoom=%d&sensor=false' % \
         (color, locations, width, height, zoom)
     map_url = base_url + query
     template_context = dict(map_url=map_url, width=width, height=height, zoom=zoom)
