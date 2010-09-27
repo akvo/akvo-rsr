@@ -6,6 +6,7 @@
 
 from django import template
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -55,6 +56,6 @@ def google_static_global_project_map(width, height, zoom, marker_color, marker_s
         marker_color, locations)
     map_url = '%s?%s&size=%dx%d&zoom=%d&sensor=false' % (base_url, 
         markers, width, height, zoom)
-    template_context = dict(map_url=map_url, width=width,
+    template_context = dict(map_url=mark_safe(map_url), width=width,
         height=height, zoom=zoom)
     return template_context
