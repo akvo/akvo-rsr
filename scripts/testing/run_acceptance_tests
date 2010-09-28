@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Parameters:
-# $1: rc_server_log_path
-# $2: xvfb_log_path (optional)
+# $1: acceptance_test_root_dir
+# $2: rc_server_log_path
+# $3: xvfb_log_path (optional)
 
 
 function display_usage_and_exit
 {
-    echo "Usage: run_acceptance_tests <rc_server_log_path> [xvfb_log_path]"
+    echo "Usage: run_acceptance_tests <acceptance_test_root_dir> <rc_server_log_path> [xvfb_log_path]"
     echo "Optionally specify an xvfb_log_path to run tests in headless mode"
     exit -1
 }
@@ -15,13 +16,19 @@ function display_usage_and_exit
 function verify_script_parameters
 {
     # warn if extraneous parameters exist
-    if [ -n "$3" ]; then
+    if [ -n "$4" ]; then
         echo ">> Unexpected number of parameters: $*"
         display_usage_and_exit
     fi
 
-    # check if rc_server_log_path parameter exists
+    # check if acceptance_test_root_dir parameter exists
     if [ -z "$1" ]; then
+        echo ">> Missing acceptance_test_root_dir parameter"
+        display_usage_and_exit
+    fi
+
+    # check if rc_server_log_path parameter exists
+    if [ -z "$2" ]; then
         echo ">> Missing rc_server_log_path parameter"
         display_usage_and_exit
     fi
@@ -42,9 +49,9 @@ verify_script_parameters $*
 
 SCRIPT_FILE_DIR="`dirname $0`"
 TESTING_SCRIPTS_DIR="`cd $SCRIPT_FILE_DIR; pwd`"
-ACCEPTANCE_TEST_ROOT_DIR="`cd $TESTING_SCRIPTS_DIR/../../tests/akvo/acceptance; pwd`"
+ACCEPTANCE_TEST_ROOT_DIR="$1"
 
-RC_SERVER_LOG_PATH="$1"
+RC_SERVER_LOG_PATH="$2"
 XVFB_LOG_PATH=""
 
 RC_SERVER_WAS_STARTED_BY_THIS_SCRIPT="Y"
@@ -54,8 +61,8 @@ if [ -e "$RC_SERVER_LOG_PATH/rc_server.pid" ]; then
     RC_SERVER_WAS_STARTED_BY_THIS_SCRIPT="N"
 fi
 
-if [ -n "$2" ]; then
-    XVFB_LOG_PATH="$2"
+if [ -n "$3" ]; then
+    XVFB_LOG_PATH="$3"
 
     if [ -e "$XVFB_LOG_PATH/xvfb.pid" ]; then
         XVFB_WAS_STARTED_BY_THIS_SCRIPT="N"

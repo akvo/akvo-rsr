@@ -18,7 +18,7 @@ def run_django_tests():
 
 def run_acceptance_tests():
     configure_acceptance_test_settings_for_ci()
-    subprocess.call(["./run_acceptance_tests", SELENIUM_SERVER_LOG_PATH, XVFB_LOG_PATH])
+    subprocess.call(["./run_akvo_acceptance_tests", SELENIUM_SERVER_LOG_PATH, XVFB_LOG_PATH])
 
 
 if __name__ == "__main__":
