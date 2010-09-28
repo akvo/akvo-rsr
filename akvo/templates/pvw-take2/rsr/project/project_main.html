@@ -2,6 +2,10 @@
 
 {% load i18n rsr_tags webdesign thumbnail counter_tags google_maps cache humanize %}
 
+{% block title %}
+  - {{project.name}}
+{% endblock title %}
+
 {% block breadcrum_items %}
 {{block.super}}
   <li id="last_breadcrum_item">{{project.name}}</li>

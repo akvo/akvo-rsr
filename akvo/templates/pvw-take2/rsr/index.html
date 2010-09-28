@@ -116,7 +116,7 @@
           <div class="clear"></div>
           {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
           <a href="{% url global_project_map %}">
-            {% google_static_global_project_map 292 219 3 'blue' 'small' %}
+            {% google_static_global_project_map 292 219 0 'blue' 'small' %}
           </a>
           {{cms.map_box|apply_markup:"markdown"}}
           <!--<p class="nano-lede strong">
@@ -127,7 +127,7 @@
           <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p>
           -->
           <div class="h1_companion">
-            <a href="#">View in Google maps <span class="link_triangle">&#x25B6;</span></a>
+            <a href="{% url global_project_map %}">View large map <span class="link_triangle">&#x25B6;</span></a>
           </div>          
           <div class="clear"></div>
         </div> 
@@ -136,9 +136,9 @@
 
     <div class='column span-10 gutter-top last'>
       <div class="white_box">
-        <div id="slogan_box" class="space20">
+        <div id="tagline_box" class="space20">
           <img style="float: right;" src="{{MEDIA_URL}}pvw-take2/img/holland_logo_oranje_130x44.gif">
-          {{cms.slogan_box|apply_markup:"markdown"}}
+          {{cms.tagline_box|apply_markup:"markdown"}}
           <div class="clear"></div>
         </div>
       </div>

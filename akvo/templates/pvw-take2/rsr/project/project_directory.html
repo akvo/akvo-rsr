@@ -2,6 +2,19 @@
 
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 
+{% block title %}
+  {% if org %}
+    - {% trans 'Project listing for' %} {{org.name}}
+  {% else %}
+    {% if focus_area.slug != 'all' %}
+      - {% trans 'Projects' %} - {{focus_area.name}}
+    {% else %}
+      - {% trans 'All projects' %}
+    {% endif %}
+  {% endif %}
+{% endblock title %}
+
+
 {% block breadcrum_items %}
   {% if org %}
     {{block.super}}

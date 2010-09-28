@@ -1,6 +1,6 @@
 Organisation: {{organisation.name}}
 
-A new user has registered under your organisation in the Akvo RSR system.
+A new user has registered under your organisation in the DWS RSR system.
 
 Name: {{user.get_full_name}}
 Username: {{user.username}}
@@ -10,4 +10,4 @@ Please check the credentials of this user and then activate here:
 http://{{site}}/rsr/admin/rsr/userprofile/{{user.get_profile.pk}}/
 
 Thank you,
-Akvo.org
+Dutch Water Sector

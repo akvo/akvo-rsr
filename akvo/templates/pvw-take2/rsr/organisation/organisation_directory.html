@@ -2,9 +2,14 @@
 
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 
+{% block title %}
+  - {% trans 'Projects' %}
+  - {% trans 'Project participants' %}
+{% endblock title %}
+
 {% block breadcrum_items %}
   {{block.super}}
-    <li><a href="/web/directory"><span>{% trans 'Directory of Dutch Water Expertise' %}</span></a></li>
+    <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
     <li id="last_breadcrum_item">{% trans 'Project participants' %}</li>
 {% endblock breadcrum_items %}
 

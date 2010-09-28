@@ -3,9 +3,9 @@
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
 	<meta charset="UTF-8" />
-	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
-	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org, water, sanitation" />
-	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
+	<meta name="description" content="{% trans 'Dutch Water Sector' %}" />
+	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
+	<title>Dutch Water Sector{% block title %}{% endblock %}</title>
 
 
 	{% asset_bundle 'pvw_style' %}
@@ -13,12 +13,13 @@
 		{% asset_bundle 'pvw_ie6_style' %}
 	<![endif]-->
 	
-  	{% block style %}{% endblock style %}
+  {% block style %}{% endblock style %}
 	
 	<link rel="shortcut icon" href="{{MEDIA_URL}}pvw-take2/img/favicon.ico" type="image/x-icon">
 	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
 	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
-	{% block head %}{% endblock head %}
+	
+  {% block head %}{% endblock head %}
 	
 </head>
 <body>
@@ -28,11 +29,6 @@
 				<a id="main_nav_left" href="{% url index %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
 					<img src="{{MEDIA_URL}}pvw-take2/img/mainnav/dws_logo.png" width="222" height="41" 
 						alt="Dutch Waster Sector" style="margin:0;padding:0;">
-					<span>
-						{% comment %}
-							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
-						{% endcomment %}							
-					</span>
 				</a>
 			</li>
 			<li>
@@ -88,7 +84,7 @@
 		{% endblock breadcrum %}
 		
 		{% block maincontent %}
-			<h1>Akvo RSR</h1>
+			<h1>DWS RSR</h1>
 		{% endblock maincontent %}
 	</div>
 	
@@ -100,16 +96,23 @@
 			<a href="/web/open_license">Open licence</a> &nbsp;|&nbsp;
 			<a href="/web/terms_of_use">Terms of use</a> &nbsp;|&nbsp;
 			<a href="/web/donation_policy">Privacy policy</a> &nbsp;|&nbsp;
-			<a href="/web/credits">Credits</a> &nbsp;|&nbsp;
-			<a href="/web/?q=user">Admin</a>  &nbsp;|&nbsp;
-			<a href="{% url register1 %}">{% trans 'Register' %}</a>  &nbsp;|&nbsp;
-  		{% if not user.username %}      
-        <a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a>
-      {% else %}
-        <a href="{% url signout %}?next={{request.path}}">{% trans 'Sign out' %}</a>
-			{% endif %}
+			<a href="/web/credits">Credits</a> 
+      {% if site_section != 'index' %}
+        &nbsp;|&nbsp;
+        <a href="/web/?q=user">Admin</a>  &nbsp;|&nbsp;
+        <a href="{% url register1 %}">{% trans 'Register' %}</a>  &nbsp;|&nbsp;
+        {% if not user.username %}      
+          <a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a>
+        {% else %}
+          <a href="{% url signout %}?next={{request.path}}">{% trans 'Sign out' %}</a>
+        {% endif %}
+      {% endif %}
 			<a href="/web/contact_us" style="margin-left:30px;">Contact us</a>
-      <img src="{{MEDIA_URL}}pvw-take2/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
+      {% if site_section != 'index' %}
+        <img src="{{MEDIA_URL}}pvw-take2/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
+      {% else %}
+        <a href="http://www.akvo.org/"><img src="{{MEDIA_URL}}pvw-take2/img/Akvo-badge-grey.png" alt="Akvo.org"  style="float: right; margin-top: -7px;"></a>
+      {% endif %}
 		</p>
 	</div>
 
