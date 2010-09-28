@@ -14,4 +14,4 @@ class DWSWebTestCase(SeleniumTestCase):
 
     def open_home_page(self):
         self.rsr.open_home_page()
-        self.assert_title_contains("Dutch Water Sector")
+        # self.assert_title_contains("Dutch Water Sector")
