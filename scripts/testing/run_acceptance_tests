@@ -42,7 +42,7 @@ verify_script_parameters $*
 
 SCRIPT_FILE_DIR="`dirname $0`"
 TESTING_SCRIPTS_DIR="`cd $SCRIPT_FILE_DIR; pwd`"
-ACCEPTANCE_TEST_ROOT_DIR="`cd $TESTING_SCRIPTS_DIR/../../tests/acceptance; pwd`"
+ACCEPTANCE_TEST_ROOT_DIR="`cd $TESTING_SCRIPTS_DIR/../../tests/akvo/acceptance; pwd`"
 
 RC_SERVER_LOG_PATH="$1"
 XVFB_LOG_PATH=""
