@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Parameters:
+# $1: rc_server_log_path
+# $2: xvfb_log_path (optional)
+
+
+function display_usage_and_exit
+{
+    echo "Usage: run_akvo_acceptance_tests <rc_server_log_path> [xvfb_log_path]"
+    echo "Optionally specify an xvfb_log_path to run tests in headless mode"
+    exit -1
+}
+
+function verify_script_parameters
+{
+    # warn if extraneous parameters exist
+    if [ -n "$3" ]; then
+        echo ">> Unexpected number of parameters: $*"
+        display_usage_and_exit
+    fi
+
+    # check if rc_server_log_path parameter exists
+    if [ -z "$1" ]; then
+        echo ">> Missing rc_server_log_path parameter"
+        display_usage_and_exit
+    fi
+}
+
+
+verify_script_parameters $*
+
+SCRIPT_FILE_DIR="`dirname $0`"
+TESTING_SCRIPTS_DIR="`cd $SCRIPT_FILE_DIR; pwd`"
+ACCEPTANCE_TEST_ROOT_DIR="`cd $TESTING_SCRIPTS_DIR/../../tests/akvo/acceptance; pwd`"
+
+"$TESTING_SCRIPTS_DIR/run_acceptance_tests" "$ACCEPTANCE_TEST_ROOT_DIR" $1 $2
