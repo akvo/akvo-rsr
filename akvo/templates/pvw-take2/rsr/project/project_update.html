@@ -2,10 +2,16 @@
 
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
 
+{% block title %}
+  - {{project.name}}
+  - {% trans 'Project updates' %}
+  - {{update.title}}
+{% endblock title %}
+
 {% block breadcrum_items %}
 {{block.super}}
   <li><a href="{{project.get_absolute_url}}"><span>{{project.name}}</span></a></li>
-  <li><a href="{% url project_updates project.id %}"><span>Project updates</span></a></li>
+  <li><a href="{% url project_updates project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
   <li id="last_breadcrum_item">{{update.title}}</li>
 {% endblock breadcrum_items %}
 

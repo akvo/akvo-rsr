@@ -2,6 +2,11 @@
 
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
 
+{% block title %}
+  - {{project.name}}
+  - {% trans 'Project updates' %}
+{% endblock title %}
+
 {% block breadcrum_items %}
 {{block.super}}
   <li><a href="{% url project_main project.pk %}"><span>{{project.name}}</span></a></li>

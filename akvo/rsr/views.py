@@ -1113,7 +1113,7 @@ def orgdetail(request, org_id):
         'org': o, 
         'org_projects': org_projects, 
         'org_partners': org_partners,
-        'site_section': 'directory',
+        'site_section': 'projects',
         }
 
 @render_to('rsr/project/project_main.html')
