@@ -36,7 +36,7 @@ if settings.PVW_RSR:
         
         url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
 
-        url(r'^rsr/maps/projects/all/$', direct_to_template, {'template': 'global_project_map.html'},
+        url(r'^rsr/maps/projects/all/$', direct_to_template, {'template': 'rsr/project/global_project_map.html'},
             name='global_project_map'),
         
         # changed compared to akvo-rsr; don't know if we should have an "if settings.PVW_RSR:" here for that or separate urls.py

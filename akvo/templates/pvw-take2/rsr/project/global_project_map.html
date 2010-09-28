@@ -1,0 +1,7 @@
+{% extends 'rsr/base.html' %}
+
+{% load i18n google_maps %}
+
+{% block maincontent %}
+    {% google_global_project_map 500 500 3 %}
+{% endblock %}
