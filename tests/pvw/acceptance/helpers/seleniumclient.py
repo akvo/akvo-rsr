@@ -23,7 +23,6 @@ class SeleniumClient:
     def start(self):
         if SeleniumClient.__instance is None:
             try:
-                print "Running tests on: %s" % (SITE_UNDER_TEST)
                 SeleniumClient.__instance = selenium(SELENIUM_RC_HOST, SELENIUM_RC_PORT, BROWSER_ENVIRONMENT, SITE_UNDER_TEST)
                 SeleniumClient.__instance.start()
             except Exception, exception:
