@@ -7,23 +7,23 @@
 import os
 
 # options are 'normal' or 'ci' for continuous integration
-TEST_MODE = 'normal'
+TEST_MODE = 'ci'
 
-BROWSER_ENVIRONMENT = "*firefox"
+BROWSER_ENVIRONMENT = "*firefox /usr/bin/firefox-bin"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 
-SUPERUSER_USERNAME = 'your_username'
-SUPERUSER_PASSWORD = 'your_password'
+SUPERUSER_USERNAME = 'not_yet_allocated'
+SUPERUSER_PASSWORD = 'not_yet_allocated'
 
-UAT_EMAIL_ADDRESS = "gmail_address"
-GMAIL_USERNAME = "gmail_username"
-GMAIL_PASSWORD = "gmail_password"
+UAT_EMAIL_ADDRESS = "akvo.uat@gmail.com"
+GMAIL_USERNAME = "akvo.uat"
+GMAIL_PASSWORD = "R4inDr0p"
 
 SITE_UNDER_TEST = "http://pvw-dev.akvo.org"
 ORGANISATION_NAME = "DutchWaterSector"
 
-PAGE_LOAD_TIMEOUT_IN_SECONDS = 120
+PAGE_LOAD_TIMEOUT_IN_SECONDS = 180
 PAGE_LOAD_TIMEOUT = PAGE_LOAD_TIMEOUT_IN_SECONDS * 1000
 
 TESTS_ROOT_DIR = os.path.realpath(os.path.dirname(__file__))
