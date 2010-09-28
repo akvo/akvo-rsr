@@ -108,7 +108,7 @@ def get_setting(setting, default=None):
         return default
 
 @render_to('rsr/index.html')
-def index(request):
+def index(request, cms_id=None):
     '''
     The RSR home page.
     Context:
@@ -133,10 +133,18 @@ def index(request):
             grid_projects = get_random_from_qs(visible_projs, 8)
     else:
         grid_projects = None
-    
+
+    preview = False
     if settings.PVW_RSR:
         focus_areas = FocusArea.objects.exclude(slug='all')
-        cms = MiniCMS.objects.get(pk=1)
+        if cms_id:
+            cms = MiniCMS.objects.get(pk=cms_id)
+            preview = True
+        else:
+            try:
+                cms = MiniCMS.objects.filter(active=True)[0]
+            except:
+                cms = MiniCMS.objects.get(pk=1)
         updates = {}
     else:
         focus_areas = None
@@ -181,6 +189,7 @@ def index(request):
         'site_section': 'index',
         'blog_posts': blog_posts,
         'news_post': news_post,
+        'preview':  preview,
     }
 
 def oldindex(request):
@@ -716,7 +725,7 @@ def register1(request):
         form = OrganisationForm()    
     context = RequestContext(request)
     return render_to_response('registration/registration_form1.html', { 'form': form }, context_instance=context)
-    
+
 def register2(request,
         form_class=RSR_RegistrationFormUniqueEmail,
         template_name='registration/registration_form2.html',

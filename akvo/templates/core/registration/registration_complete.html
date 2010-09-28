@@ -1,15 +1,20 @@
-{% extends "rsr/message_base.html" %}
+{% extends "rsr/base_sheet.html" %}
 
 {% load i18n %}
 
-{% block title %}{{block.super}} - {% trans 'Registration complete' %}{% endblock %}
+{% block title %}{% trans 'Registration complete' %}{% endblock title %}
 
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Registration complete' %}</li>
+{% endblock breadcrum_items %}
 
-{% block message_header %}
-{% trans 'Thank you for registering!' %}
-{% endblock message_header %}
+{% block content %}
+	<h1>{% trans 'Thank you!' %}</h1>
+	<hr />
+	
+	<p>
+	{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}
+	</p>
+{% endblock content %}	
 
-{% block message_content %}
-{% trans 'Please check your email account.' %}</p><p>
-{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}
-{% endblock message_content %}

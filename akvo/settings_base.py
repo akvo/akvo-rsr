@@ -154,7 +154,7 @@ else:
     
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates/%s-take2' % TEMPLATE_LEAF_DIR).replace('\\','/'),
-    os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
+    #os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
 )
 

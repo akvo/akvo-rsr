@@ -54,11 +54,7 @@ if settings.PVW_RSR:
         (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
         (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
     
-        url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
-        url(r'^rsr/signout/$', 'akvo.rsr.views.signout', name='signout'),
-        
-        url(r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', name='register1'),
-        url(r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', name='register2'),
+        url(r'^rsr/index-preview/(?P<cms_id>\d+)/$', 'akvo.rsr.views.index', name='index_preview'),
     )
 else:
     urlpatterns = patterns('',
@@ -91,13 +87,6 @@ else:
         url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
         url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
         url(r'^rsr/ipn/$', 'paypal.standard.ipn.views.ipn', name='paypal_ipn'),
-        
-        
-        # Account
-        url(r'^rsr/signin/$','akvo.rsr.views.login',{'template_name': 'rsr/sign_in.html'},name='signin'),
-        (r'^rsr/signout/$', 'akvo.rsr.views.signout', ),
-        (r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', ),
-        (r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', ),
     )
 
 urlpatterns += patterns('',
@@ -113,7 +102,11 @@ urlpatterns += patterns('',
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
     url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
 
-
+    # Account
+    url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
+    url(r'^rsr/signout/$', 'akvo.rsr.views.signout', name='signout'),
+    url(r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', name='register1'),
+    url(r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', name='register2'),
     url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate'),
     (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
     (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),

@@ -28,3 +28,24 @@ div#top_right_box h3 {
     line-height:1.2em;
     margin-bottom:0.75em;
 }
+
+div#slogan_box p {
+    padding-top: 12px;
+}
+
+#preview_cover {
+    z-index: 5000;
+    filter: alpha(opacity=20); /*older IE*/
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20); /* IE */
+    -moz-opacity: .20; /*older Mozilla*/
+    -khtml-opacity: 0.2;   /*older Safari*/
+    opacity: 0.2;   /*supported by current Mozilla, Safari, and Opera*/
+    background-color:#000000;
+    position:fixed; top:0px; left:0px; width:100%; height:100%; text-align:center; vertical-align:middle;    
+}
+
+#preview_alert {
+    z-index: 6000;
+    position:fixed; top:20%; left:0px; width:100%; text-align:center; vertical-align:middle;
+    font-size: 500%;    
+}

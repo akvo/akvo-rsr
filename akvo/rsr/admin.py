@@ -361,7 +361,7 @@ if settings.PVW_RSR:
 
     class MiniCMSAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'MiniCMS')
-        list_display = ('video_url',)
+        list_display = ('__unicode__', 'active', )
     
     admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
 

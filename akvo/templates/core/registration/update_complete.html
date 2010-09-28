@@ -1,18 +1,20 @@
-{% extends "rsr/message_base.html" %}
-
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
+{% extends "rsr/base_sheet.html" %}
 
 {% load i18n %}
 
-{% block title %}{{block.super}} - {% trans 'Update complete' %}{% endblock %}
+{% block title %}{% trans 'Update complete' %}{% endblock title %}
 
-{% block message_header %}
-    {% trans 'Update complete' %}
-{% endblock message_header %}
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Update complete' %}</li>
+{% endblock breadcrum_items %}
 
-{% block message_content %}
-    {% trans 'Your account has been updated.' %}
-{% endblock message_content %}
+{% block content %}
+	<h1>{% trans 'Update complete' %}</h1>
+	<hr />
+	
+	<p>
+		{% trans 'Your account has been updated.' %}
+	</p>
+{% endblock content %}	
+
