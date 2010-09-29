@@ -64,7 +64,8 @@
 					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
 	                '<h4><a href="' + project_{{ project.id }}_url + '">' +
                     '{{ project.name|smart_truncate:35}}</a></h4>' +
-	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" />' +
+                    '<a href="' + project_{{ project.id }}_url + '">' +
+	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
 					'<div id="project_location"><p class="small">' +
 					'{{project.country.get_continent_display}}<br />' +
