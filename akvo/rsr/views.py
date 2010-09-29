@@ -1108,7 +1108,7 @@ def orgdetail(request, org_id):
         org_projects = o.published_projects()
     else:
         org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    org_partners = org_projects.all_partners().distinct()
+    org_partners = o.partners().distinct()
     return {
         'org': o, 
         'org_projects': org_projects, 
