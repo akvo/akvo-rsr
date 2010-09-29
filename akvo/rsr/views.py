@@ -1138,7 +1138,7 @@ def projectmain(request, project_id):
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
     slider_width        = (len(updates_with_images) + 1) * 115    
     comments            = project.projectcomment_set.all().order_by('-time')[:3]
-    foo
+    
     # a little model meta data magic
     opts = project._meta
     if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
