@@ -167,10 +167,10 @@ if settings.DEBUG:
         (r'^500/$', 'akvo.rsr.views.server_error'),
     )
 
-if settings.DEBUG:
-    urlpatterns += patterns('',
-		(r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    )
+#if settings.DEBUG:
+urlpatterns += patterns('',
+    (r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+)
 
 if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',

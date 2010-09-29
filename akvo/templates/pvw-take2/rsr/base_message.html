@@ -1,0 +1,23 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n %}
+
+{% block maincontent %}
+	<div class="span-14">
+		<div class="white_box">
+			<div class="space20" style="min-height:250px;">
+				<h1>
+					{% block message_head %}
+					Message title
+					{% endblock message_head %}
+				</h1>
+				{% block message_body %}
+					Message body copy
+				{% endblock message_body %}
+				<p>
+					{% trans 'Please <a href="mailto:c.boomsma@nwp.nl">contact us</a> if you have any questions.' %}
+				</p>
+			</div>
+		</div>
+	</div>
+{% endblock maincontent %}
