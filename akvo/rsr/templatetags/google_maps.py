@@ -30,8 +30,9 @@ def static_map(model_path, object_id, width, height, zoom, marker_color):
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
 def google_map(object, width, height, zoom):
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     template_context = dict(object=object, width=width, height=height,
-        zoom=zoom)
+        zoom=zoom, marker_icon=marker_icon)
     return template_context
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
