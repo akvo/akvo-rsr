@@ -67,3 +67,8 @@ class RSRNavigator:
 
     def open_project_page(self, project_number):
         self.navigator.open_page("/rsr/project/%i/" % (project_number))
+
+class DWSNavigator(RSRNavigator):
+
+    def open_focus_areas_page(self):
+        self.navigator.open_page("/web/focus-areas")

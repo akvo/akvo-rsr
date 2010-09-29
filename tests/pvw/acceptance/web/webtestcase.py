@@ -3,15 +3,19 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from extensions.seleniumtestcase import SeleniumTestCase
-from helpers.navigation import RSRNavigator, SeleniumNavigator
+from helpers.navigation import DWSNavigator, SeleniumNavigator
 
 class DWSWebTestCase(SeleniumTestCase):
 
     def setUp(self):
         SeleniumTestCase.setUp(self)
         self.navigator = SeleniumNavigator(self.selenium)
-        self.rsr = RSRNavigator(self.selenium)
+        self.site_navigator = DWSNavigator(self.selenium)
 
     def open_home_page(self):
-        self.rsr.open_home_page()
+        self.site_navigator.open_home_page()
         self.assert_title_is("Dutch Water Sector")
+
+    def open_focus_areas_page(self):
+        self.site_navigator.open_focus_areas_page()
+        self.assert_title_is("Focus Areas | Dutch Water Sector")

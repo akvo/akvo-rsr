@@ -7,10 +7,11 @@
 from helpers.seleniumclient import SeleniumClient
 from helpers.testexecution import *
 
-from web.navigation.menu_navigation_test import MenuNavigationTest
+from web.navigation.home_page_menu_navigation_test import HomePageMenuNavigationTest
+from web.navigation.focus_areas_page_menu_navigation_test import FocusAreasPageMenuNavigationTest
 
 def navigation_suite():
-    return create_test_suite_from_classes([MenuNavigationTest])
+    return create_test_suite_from_classes([HomePageMenuNavigationTest, FocusAreasPageMenuNavigationTest])
 
 if __name__ == "__main__":
     run_test_suite(navigation_suite())
