@@ -71,4 +71,25 @@ class RSRNavigator:
 class DWSNavigator(RSRNavigator):
 
     def open_focus_areas_page(self):
-        self.navigator.open_page("/web/focus-areas")
+        self.open_cms_page("focus-areas")
+
+    def open_projects_page(self):
+        self.navigator.open_page("/rsr/projects/all")
+
+    def open_netherlands_page(self):
+        self.open_cms_page("netherlands")
+
+    def open_education_page(self):
+        self.open_cms_page("education")
+
+    def open_directory_page(self):
+        self.open_cms_page("directory")
+
+    def open_news_page(self):
+        self.navigator.open_page("/news")
+
+    def open_about_page(self):
+        self.open_cms_page("about")
+
+    def open_cms_page(self, cms_page_name):
+        self.navigator.open_page("/web/%s" % cms_page_name)
