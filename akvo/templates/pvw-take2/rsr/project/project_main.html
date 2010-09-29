@@ -161,7 +161,7 @@
         
         <div id="tab_goals" class="tab">
           <div class="space20">
-						<div class="space10" style="width: 170px; float:right;">
+			<div class="space10" style="width: 170px; float:right;">
               <ul>
                 {% if project.goal_1 %}
                   <li>{{project.goal_1}}</li>
@@ -182,8 +182,9 @@
             </div>
             <h5>{% trans 'Goals' %}</h5>
             <p>
-  						{{project.goals_overview|capfirst|linebreaks}}
+  				{{project.goals_overview|capfirst|linebreaks}}
             </p>
+			<div class="clear"></div>
           </div>
         </div><!-- End tab_goals -->
         
