@@ -123,46 +123,48 @@
             {% endif %}
             <div class="clear"></div>
             <div class="space5" style="margin-top: 15px;">
-            {% for update in updates %}
-                <p>
+            {% if not updates %}
+              <h4 class="black">No updates yet</h4>
+            {% else %}
+              {% for update in updates %}
                   <h3><a href="{{update.get_absolute_url}}">{{update.title}}</a></h3>
-                  <span class="small lt_grey">
-                    {{update.time|date:"Y-m-d H:i" }}
-                    {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}
-                        by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}
-                    {% endblocktrans %}
-                  </span>
-                </p>
-                {% if update.photo %}
-                <div style="float: right; margin: 0 0 10px 10px;">
-                  <img width="160" height="120" src="{% thumbnail update.photo 160x120 autocrop sharpen %}" alt="{{update.photo_caption}}"/>
-                  
-                    {% if update.photo_caption or update.photo_credit %}
-                        <p class="tiny grey">
-                        {% if update.photo_caption %}   
-                            {{update.photo_caption}}<br/>
-                        {% endif %}
-                        {% if update.photo_credit %}
-                            {% trans 'Photo credit' %}: {{update.photo_credit}}
-                        {% endif %}
-                        </p>
-                    {% endif %}
-                </div>          
-                {% endif %}
-                <p>
-                    {{update.text|linebreaks}}
-                </p>
-                <hr/>
-            {% endfor %}
-            <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} <span class="link_triangle">&#x25B6;</span></a>
+                  <p>
+                    <span class="small lt_grey">
+                      {{update.time|date:"Y-m-d H:i" }}
+                      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}
+                          by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}
+                      {% endblocktrans %}
+                    </span>
+                  </p>
+                  {% if update.photo %}
+                  <div style="float: right; margin: 0 0 10px 10px;">
+                    <img width="160" height="120" src="{% thumbnail update.photo 160x120 autocrop sharpen %}" alt="{{update.photo_caption}}"/>
+                    
+                      {% if update.photo_caption or update.photo_credit %}
+                          <p class="tiny grey">
+                          {% if update.photo_caption %}   
+                              {{update.photo_caption}}<br/>
+                          {% endif %}
+                          {% if update.photo_credit %}
+                              {% trans 'Photo credit' %}: {{update.photo_credit}}
+                          {% endif %}
+                          </p>
+                      {% endif %}
+                  </div>          
+                  {% endif %}
+                  {{update.text|linebreaks}}
+                  <hr/>
+              {% endfor %}
+              <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} <span class="link_triangle">&#x25B6;</span></a>
+            {% endif %}
             </div>
           </div>
         </div><!-- End tab_updates -->
         
         <div id="tab_goals" class="tab">
           <div class="space20">
-						<div class="space10" style="width: 170px; float:right;">
-              <ul>
+			<div class="space10" style="width: 170px; float:right; padding-top: 1.35em; margin-bottom: 0;">
+              <ul style=" margin-bottom: 0.7em;">
                 {% if project.goal_1 %}
                   <li>{{project.goal_1}}</li>
                 {% endif %}
@@ -182,8 +184,9 @@
             </div>
             <h5>{% trans 'Goals' %}</h5>
             <p>
-  						{{project.goals_overview|capfirst|linebreaks}}
+  				{{project.goals_overview|capfirst|linebreaks}}
             </p>
+			<div class="clear"></div>
           </div>
         </div><!-- End tab_goals -->
         

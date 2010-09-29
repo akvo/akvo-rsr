@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
 
-{% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
+{% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache %}
+{% load markup_tags humanize sorting_tags pagination_tags %}
 
 {% block title %}
   {% if org %}
@@ -46,32 +47,20 @@
         </p>
       </div>    
     {% else %}
-      {% if focus_area %}
-        <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
-        <div class='column span-11'>
-          <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
-          <p>
-            {{focus_area.description|linebreaks}}
-          </p>
-        </div>
-        {% if focus_area.slug != 'all' %}
-          <div class='column span-3 last'>
-            <div class="white_box blue_tint">
-              <div class="space20">
-                <h2>Related focus area</h2>
-                <a href="/web/{{focus_area.slug}}" class="small">{% trans 'Learn more about'%} <br/>{{focus_area}}&nbsp;<span class="link_triangle">&#x25B6;</span></a>
-              </div>
+      <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
+      <div id="focus_area_description" class="column span-{% if focus_area.slug != 'all' %}11{% else %}14{% endif %}">
+        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
+        {{focus_area.description|apply_markup:"markdown"}}
+      </div>
+      {% if focus_area.slug != 'all' %}
+        <div class='column span-3 last'>
+          <div class="white_box blue_tint">
+            <div class="space20">
+              <h2>Related focus area</h2>
+              <a href="/web/{{focus_area.slug}}" class="small">{% trans 'Learn more about'%} <br/>{{focus_area}}&nbsp;<span class="link_triangle">&#x25B6;</span></a>
             </div>
           </div>
-        {% endif %}
-      {% else %}  
-        <h1 class="h0">{% trans 'All projects' %}</h1>
-        <div class='column span-14 last'>
-          <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{{MEDIA_URL}}pvw-take2/img/meisje-drinkt-water-240x180.jpg" alt="{{focus_area}}"/>
-          <p>
-            {% trans 'Accumsan et iusto odio dignissim qui blandit praesent luptatum? Consuetudium lectorum mirum est notare quam littera gothica quam nunc putamus parum claram. In iis qui facit eorum claritatem Investigationes demonstraverunt. Typi qui nunc nobis videntur parum clari fiant sollemnes in.' %}
-          </p>
-        </div>    
+        </div>
       {% endif %}
     {% endif %}
     <div class='column span-14 last'>
