@@ -1135,7 +1135,7 @@ def projectmain(request, project_id):
     slider_width: used by the thumbnail image slider
     '''
     project             = get_object_or_404(Project, pk=project_id)
-    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk)    
+    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
     related             = get_random_from_qs(related, 2)
     all_updates         = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
