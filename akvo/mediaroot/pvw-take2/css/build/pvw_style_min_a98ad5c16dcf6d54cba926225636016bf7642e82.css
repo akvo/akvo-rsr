@@ -1107,6 +1107,9 @@ div.activeTableHeaderDesc {
   width: 343px;
 }
 
+.org_name_col {
+  width: 364px;
+}
 .colgroup {
   width: 105px;
 }
@@ -1176,7 +1179,8 @@ div.thumbs_scroller {
 
 .thumbs a {
   display: block;
-
+  margin: 0;
+  width: 60px; /* FF needs this to not generate a horiz scrollbar */
   /* When image support is turned off */
   color: #fff;
   background: #FFF;  
@@ -1188,7 +1192,7 @@ div.thumbs_scroller {
 .thumbs img {
   display: block;
   border: none;
-  margin: 0 0 5px 25px;
+  margin: 0 5px 5px 25px;
 }
 
 /*---------------------------------------------------------------------------

@@ -55,7 +55,7 @@
             </div>
           </div>
         </div>
-        <div class='column span-3 last' style="width: 193px;">
+        <div class='column span-3 last' style="width: 173px; margin-right: 0px;">
           {% if project.beneficiaries %}
             <h2 class="black">{% trans 'How many benefit?' %}</h2>
             <h2 class="green">{{project.beneficiaries|intcomma}} {% trans 'people' %}</h2>
@@ -118,7 +118,7 @@
           <div class="space15">
             {% if can_add_update %}
               <div style="float: right;">
-                <a href="#" class="awesome aqua small">{% trans 'Add update' %}</a>
+                <a href="{% url project_add_update project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
               </div>
             {% endif %}
             <div class="clear"></div>

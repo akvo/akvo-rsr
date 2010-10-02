@@ -580,8 +580,8 @@ if settings.PVW_RSR: #pvw-rsr
         #duration
         start_date                  = models.DateField(_('start date'), default=date.today)
         end_date                    = models.DateField(_('end date'), null=True, blank=True)
-        total_budget                = models.IntegerField(_(u'total budget'), blank=True, help_text=_(u'Enter the total budget for the project.'), )
-        pvw_budget                  = models.IntegerField(_(u'pvw budget'), blank=True, help_text=_(u'Enter the amount that Partners for Water contribute to the project.'), )
+        total_budget                = models.IntegerField(_(u'total budget'), default=0, help_text=_(u'Enter the total budget for the project.'), )
+        pvw_budget                  = models.IntegerField(_(u'pvw budget'), default=0, help_text=_(u'Enter the amount that Partners for Water contribute to the project.'), )
         locations                   = generic.GenericRelation(Location)
         
         #Custom manager

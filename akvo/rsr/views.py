@@ -896,6 +896,7 @@ def projectupdates(request, project_id):
     can_add_update = project.connected_to_user(request.user)
     return {
         'project': project, 
+        'p': project, #compatibility with new_look
         'updates': updates, 
         'can_add_update':can_add_update, 
         'hide_latest_updates': True, 
@@ -917,6 +918,7 @@ def projectupdate(request, project_id, update_id):
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
         'project'               : project, 
+        'p'                     : project, #compatibility with new_look
         'update'                : update, 
         'can_add_update'        : can_add_update, 
         'hide_latest_updates'   : True,
@@ -988,7 +990,8 @@ def updateform(request, project_id):
         
     return render_to_response('rsr/project/update_form.html', {
         'form': form, 
-        'p': p, 
+        'project': p, 
+        'p': p, #compatibility with new_look
         'can_add_update': can_add_update,
         'updates': Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
         }, RequestContext(request))
@@ -1132,7 +1135,7 @@ def projectmain(request, project_id):
     slider_width: used by the thumbnail image slider
     '''
     project             = get_object_or_404(Project, pk=project_id)
-    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk)    
+    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
     related             = get_random_from_qs(related, 2)
     all_updates         = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
@@ -1149,6 +1152,7 @@ def projectmain(request, project_id):
 
     return {
         'project'               : project,
+        'p'                     : project, #compatibility with new_look
         'related'               : related,
         'updates'               : all_updates[:3], 
         'updates_with_images'   : updates_with_images,
@@ -1207,7 +1211,7 @@ def getwidget(request, project_id):
         return render_to_response(
             'rsr/project/get-a-widget/machinery_step1.html', {
                 'project': p, 
-                'p': p, 
+                'p': p, #compatibility with new_look
                 'account_level': account_level, 'organisations': orgs,
             }, context_instance=RequestContext(request)
         )
@@ -1224,6 +1228,7 @@ def getwidget(request, project_id):
         p = get_object_or_404(Project, pk=project_id)
         return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {
             'project': p, 
+            'p': p, #compatibility with new_look
             'organisation':o, 
             'widget_choice': widget_choice, 
             'widget_type': widget_type, 
@@ -1302,8 +1307,15 @@ def project_widget(request, template='feature-side', project_id=None):
     site = request.GET.get('site', 'www.akvo.org')
     
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
-                                 {'project': p, 'request_get': request.GET, 'bgcolor': bgcolor, 'textcolor': textcolor, 'site': site },
-                                 context_instance=RequestContext(request))
+        {
+            'project': p,
+            'p': p, #compatibility with new_look
+            'request_get': request.GET,
+            'bgcolor': bgcolor,
+            'textcolor': textcolor,
+            'site': site
+        },
+        context_instance=RequestContext(request))
 
 def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')

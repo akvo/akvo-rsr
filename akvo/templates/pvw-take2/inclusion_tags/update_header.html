@@ -1,4 +1,11 @@
+{% load i18n %}
+
 <div class="space20">
+  {% if can_add_update %}
+    <div style="float: right;">
+      <a href="{% url project_add_update project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
+    </div>
+  {% endif %}
   <div style="float: left;">
     <h1 class="h0"><a href="{{project.get_absolute_url}}" class="h0_link">{{project.name}}</a></h1> 
   </div>
