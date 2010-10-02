@@ -14,7 +14,7 @@ from helpers.testexecution import *
 class DWSURLsTest(TestCase):
 
     def test_can_get_home_page_url(self):
-        """helpers.unittests.DWSURLsTest  Can get URL for home page"""
+        """helpers.unittests.DWSURLsTest  Can get URL for Home page"""
 
         self.verify_url(SITE_UNDER_TEST, home_page_url())
 
@@ -23,8 +23,13 @@ class DWSURLsTest(TestCase):
 
         self.verify_url(self.full_url(focus_areas_page()), focus_areas_url())
 
-    def test_can_get_all_projects_url(self):
+    def test_can_get_projects_url(self):
         """helpers.unittests.DWSURLsTest  Can get URL for Projects page"""
+
+        self.verify_url(self.full_url(projects_page()), projects_url())
+
+    def test_can_get_all_projects_url(self):
+        """helpers.unittests.DWSURLsTest  Can get URL for All Projects page"""
 
         self.verify_url(self.full_url(all_projects_page()), all_projects_url())
 

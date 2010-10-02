@@ -12,13 +12,23 @@ from helpers.testexecution import *
 
 class DWSPathsTest(TestCase):
 
+    def test_can_get_home_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Home page"""
+
+        self.verify_path("/", home_page())
+
     def test_can_get_focus_areas_page_path(self):
         """helpers.unittests.DWSPathsTest  Can get path for Focus Areas page"""
 
         self.verify_path("/web/focus-areas", focus_areas_page())
 
-    def test_can_get_all_projects_page_path(self):
+    def test_can_get_projects_page_path(self):
         """helpers.unittests.DWSPathsTest  Can get path for Projects page"""
+
+        self.verify_path("/rsr/projects", projects_page())
+
+    def test_can_get_all_projects_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for All Projects page"""
 
         self.verify_path("/rsr/projects/all", all_projects_page())
 

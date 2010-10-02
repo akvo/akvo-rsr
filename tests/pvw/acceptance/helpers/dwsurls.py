@@ -13,6 +13,9 @@ def home_page_url():
 def focus_areas_url():
     return _full_url(focus_areas_page())
 
+def projects_url():
+    return _full_url(projects_page())
+
 def all_projects_url():
     return _full_url(all_projects_page())
 
