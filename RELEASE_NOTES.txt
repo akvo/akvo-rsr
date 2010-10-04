@@ -10,7 +10,7 @@ Akvo RSR v 0.9.19 release notes
 -------------------------------------------
 4 Oct 2010, (Code name: Magic) bethw
 
-This release introduces page couters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
+This release adds a new project status to Akvo RSR, fixes a bug in the donations process and includes a point release update of the Django framework. 
 
 New features
 ------------
