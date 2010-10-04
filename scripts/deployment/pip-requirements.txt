@@ -1,5 +1,5 @@
 # Django
-Django==1.2.1
+Django==1.2.3
 
 # Django Apps
 django-paypal

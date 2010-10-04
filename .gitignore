@@ -2,6 +2,7 @@
 .TemporaryItems
 .project
 .pydevproject
+*~
 *.kpf
 *.mo
 *.pyc

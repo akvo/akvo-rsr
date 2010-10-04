@@ -1,15 +1,39 @@
-RELEASE_NOTES.txt, v0.9.18
-last changed: 6 Aug 2010, gvh
+RELEASE_NOTES.txt, v0.9.19
+last changed: 4 Oct 2010, bethw
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+
+Akvo RSR v 0.9.19 release notes
+-------------------------------------------
+4 Oct 2010, (Code name: Magic) bethw
+
+This release introduces page couters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
+
+New features
+------------
+
+### Project Status
+A new project status has been added, Archived. Projects set to Archived will no longer appear in Akvo at a Glance figures, project lists or organisation pages. Donations boxes still appear on widgets; this is Lighthouse ticket #74.
+
+### Django 1.2.3
+Akvo RSR now runs on Django version 1.2.3. The security fix in 1.2.2 caused some problems with which have been remedied in this release.
+
+Bug fixes
+------------
+
+### Donation emails not being sent.
+A code regression prevented donations from proceeding to Complete status. As a result, confirmation emails and funding totals in the Akvo at a Glance portlets were not appropriately updated. This has now been fixed.
+
+---
+
 Akvo RSR v 0.9.18 release notes
 -------------------------------------------
 6 Aug 2010, (Code name: Supercharge) gvh
 
-This release introduces page couters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
+This release introduces page counters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
 
 New features
 ------------
