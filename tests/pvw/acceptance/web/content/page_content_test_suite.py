@@ -9,10 +9,11 @@ from helpers.testexecution import *
 
 from web.content.home_page_content_test import HomePageContentTest
 from web.content.focus_areas_page_content_test import FocusAreasPageContentTest
+from web.content.projects_page_content_test import ProjectsPageContentTest
 
 
 def page_content_suite():
-    return create_test_suite_from_classes([HomePageContentTest, FocusAreasPageContentTest])
+    return create_test_suite_from_classes([HomePageContentTest, FocusAreasPageContentTest, ProjectsPageContentTest])
 
 if __name__ == "__main__":
     run_test_suite(page_content_suite())
