@@ -15,3 +15,11 @@ class SharedPageContentVerifier:
                                            "Directory",
                                            "News",
                                            "About"])
+
+    def verify_dutch_water_history_panel(self):
+        self.test_case.assert_page_contains_text("Dutch Water History")
+        self.test_case.assert_link_exists_starting_with_text("Learn more")
+
+    def verify_holland_water_valley_panel(self):
+        self.test_case.assert_page_contains_text("Holland Water Valley")
+        self.test_case.assert_link_exists_starting_with_text("Learn more")

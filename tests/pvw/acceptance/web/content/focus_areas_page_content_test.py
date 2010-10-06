@@ -65,14 +65,12 @@ class FocusAreasPageContentTest(DWSWebTestCase):
     def test_08_dutch_water_history_panel_has_expected_content_and_links(self):
         """web.content.FocusAreasPageContentTest  8. Dutch water history panel has expected content and links"""
 
-        self.assert_page_contains_text("Dutch Water History")
-        self.assert_link_exists_starting_with_text("Learn more")
+        self.content_verifier.verify_dutch_water_history_panel()
 
     def test_09_holland_water_valley_panel_has_expected_content_and_links(self):
         """web.content.FocusAreasPageContentTest  9. Holland water valley panel has expected content and links"""
 
-        self.assert_page_contains_text("Holland Water Valley")
-        self.assert_link_exists_starting_with_text("Learn more")
+        self.content_verifier.verify_holland_water_valley_panel()
 
 
 def suite():
