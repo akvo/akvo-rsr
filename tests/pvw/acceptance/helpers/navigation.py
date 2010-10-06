@@ -77,6 +77,9 @@ class DWSNavigator(RSRNavigator):
         self.open_page(focus_areas_page())
 
     def open_projects_page(self):
+        self.open_page(projects_page())
+
+    def open_all_projects_page(self):
         self.open_page(all_projects_page())
 
     def open_netherlands_page(self):

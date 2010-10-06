@@ -27,6 +27,10 @@ class DWSWebTestCase(SeleniumTestCase):
         self.site_navigator.open_projects_page()
         self.verify_location_and_page_title(all_projects_page(), "Dutch Water Sector - All projects")
 
+    def open_all_projects_page(self):
+        self.site_navigator.open_all_projects_page()
+        self.verify_location_and_page_title(all_projects_page(), "Dutch Water Sector - All projects")
+
     def open_netherlands_page(self):
         self.site_navigator.open_netherlands_page()
         self.verify_location_and_page_title(netherlands_page(), "The Netherlands now | Dutch Water Sector")
