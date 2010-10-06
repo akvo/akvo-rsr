@@ -15,7 +15,5 @@ django-counter
 BeautifulSoup
 Cython
 FeedParser
-python-memcached
 PIL
 lxml
-MySQL-python
