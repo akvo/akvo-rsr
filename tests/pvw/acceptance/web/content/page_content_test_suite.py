@@ -14,12 +14,13 @@ from web.content.netherlands_page_content_test import NetherlandsPageContentTest
 from web.content.education_page_content_test import EducationPageContentTest
 from web.content.directory_page_content_test import DirectoryPageContentTest
 from web.content.news_page_content_test import NewsPageContentTest
+from web.content.about_page_content_test import AboutPageContentTest
 
 
 def page_content_suite():
     return create_test_suite_from_classes([HomePageContentTest, FocusAreasPageContentTest, ProjectsPageContentTest,
                                            NetherlandsPageContentTest, EducationPageContentTest, DirectoryPageContentTest,
-                                           NewsPageContentTest])
+                                           NewsPageContentTest, AboutPageContentTest])
 
 if __name__ == "__main__":
     run_test_suite(page_content_suite())
