@@ -8,7 +8,7 @@ from helpers.seleniumclient import SeleniumClient
 from helpers.testexecution import *
 
 from testcases.webtestcase import DWSWebTestCase
-from verifiers.sharepagecontentverifier import SharedPageContentVerifier
+from verifiers.sharedpagecontentverifier import SharedPageContentVerifier
 
 
 class FocusAreasPageContentTest(DWSWebTestCase):
