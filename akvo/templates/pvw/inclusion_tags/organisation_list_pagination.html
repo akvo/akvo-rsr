@@ -1,0 +1,46 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n addparam %}
+
+<div class="sliding_box_header img_border_bottom" style="background-color:#EFF3F5">
+    <div style="float:right;">
+        <p class="small" style="margin:2px 5px">
+            {% ifequal page.start_index page.end_index %}
+                <span style="margin-right: 20px;" class="grey">{% blocktrans with page.start_index as start_index and page.paginator.count as count %}Organisation {{start_index}} of {{count}}{% endblocktrans %}</span>
+            {% else %}
+                <span style="margin-right: 20px;" class="grey">{% blocktrans with page.start_index as start_index and page.end_index as end_index and page.paginator.count as count %}Organisations {{start_index}}-{{end_index}} of {{count}}{% endblocktrans %}</span>
+            {% endifequal %}
+            |
+            {% ifequal page.number 1 %}
+                <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'First' %}</span>
+            {% else %}
+                <a style="margin-right: 5px; margin-left: 5px;" href="{% url rsr_org_list_filtered org_type %}{% addparam "page" 1 %}#list">{% trans 'First' %}</a>
+            {% endifequal %}
+            |
+            {% if page.has_previous %}
+                <a style="margin-right: 5px; margin-left: 5px;" href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a>
+            {% else %}
+                <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'Previous' %}</span>
+            {% endif %}
+            |
+            {% if page.has_next %}
+                <a style="margin-right: 5px; margin-left: 5px;" href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+            {% else %}
+                <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'Next' %}</span>
+            {% endif %}
+            |
+            {% ifequal page.number page.paginator.num_pages %}
+                <span style="margin-right: 5px; margin-left: 5px;" class="grey">{% trans 'Last' %}</span>
+            {% else %}
+                <a style="margin-right: 5px; margin-left: 5px;" href="{% url rsr_org_list_filtered org_type %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+            {% endifequal %}
+                 
+        </p>
+    </div>
+    <div>
+        <p style="margin:2px 5px" class="clear"></p>
+    </div>
+</div>

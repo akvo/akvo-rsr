@@ -1,0 +1,79 @@
+{% extends "rsr/base.html" %}
+{% load i18n rsr_tags %}
+
+{% block title %}{{ block.super }} - {{project.name}}{% endblock %}
+
+{% block content %}	
+<div class="span-14 first">
+{% block project_content %}
+{% endblock project_content %}
+</div>
+<div class="span-4 last">
+	<div id="proj_summary" class="frame">
+		<div class="space20">
+			<h2>Project status</h2>
+            <p>{{p.show_status}}</p>
+            {% ifnotequal p.start_date None %}
+                </div>
+                <div class="space10">
+					<hr />
+                </div>
+                <div class="space20">
+                <h2>Timeline</h2>
+                <p>
+                    {% ifnotequal p.start_date None %}
+                        {% trans 'Start date:' %} {{p.start_date}}<br/>
+                    {% endifnotequal %}
+                    {% ifnotequal p.end_date None %}
+                        {% trans 'End date:' %} {{p.end_date}}
+                    {% endifnotequal %}
+                </p>
+            {% endifnotequal %}
+        </div>
+	</div>
+	
+	<div class="frame">
+        <div class="sliding_box_header">
+            <span>{% trans 'Page tools' %}</span>
+        </div>
+		<div class="space20" style="margin-top:20px;margin-left:0;">
+			<ul class="small">
+				<li><a href="{% url akvo.rsr.views.getwidget p.id %}">{% trans 'Get a widget' %}</a></li>
+				<li><a href="{% url project_main p.id %}">{% trans 'Permalink' %}</a></li>
+				{#<li>{% trans 'Printable version' %}</li>#}
+			</ul>
+		</div>
+	</div>
+
+	<div class="frame">
+        <div class="sliding_box_header">
+            <span>{% trans 'Partners' %}</span>
+        </div>
+		<div class="space20">
+            {% for o in p.all_partners  %}
+                {% if not forloop.first %}
+        </div>
+        <div class="space10">
+            <hr style="margin-top:10px;" />
+        </div>
+        <div class="space20">
+                {% endif %}
+                <a href="{% url akvo.rsr.views.orgdetail o.id %}" style="text-align:center;">
+                    {% org_logo o 100 75 'margin-left:auto; margin-right:auto; margin-bottom: 10px;' %}
+                </a>
+                <p class="small">
+                    <a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a><br />
+                    {{o.city}}, {{o.country}}<br />
+                    {% for partner in p.project_partners.all %}
+                        {% ifequal o partner.partner %}
+                            {# the br tag is a poor solution, but there will hopefully not be many instances of the same org having more than one role in a project #}
+                            {{partner.get_partner_type_display}}<br />
+                        {% endifequal %}
+                    {% endfor %}
+                </p>
+            {% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

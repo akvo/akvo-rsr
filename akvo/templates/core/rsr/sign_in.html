@@ -1,0 +1,59 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block content %}
+	{% if form.non_field_errors %}
+		<div id="name">
+			<h1 class="section">{% trans 'Error when signing in' %}</h1>
+			{% for e in form.non_field_errors %}
+			<p>{{e}}</p>
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="span-18 last">
+		<div class="push-1 span-8 first">
+			<form id="sign_in" class="boxbody" method="post" action="#">
+			    <fieldset>
+			        <legend>{% trans 'I have an online account' %}</legend>
+			        <ul>
+			            <li class="clearfix">
+			                <label for="id_username">{% trans 'Enter username' %}</label>
+							{{ form.username }}<br />
+			            </li>
+			            <li class="clearfix">
+			                <label for="id_password">{% trans 'Enter password' %}</label>
+							{{ form.password }}<br />
+			            </li>
+						<li class="clearfix">
+							<a href="/rsr/accounts/password/reset/">{% trans 'I forgot my username and/or password' %}</a>
+						</li>
+						<li class="clearfix">
+							<br>
+							<input type="submit" name="some_name" value="Sign In" id="some_name">
+						</li>
+			        </ul>
+					
+			    </fieldset>
+			    <input type="hidden" name="next" value="{{ next }}" />
+			</form>
+		</div>
+		<div class="push-1 span-8 last" style="margin-top:25px;">
+			<h2>{% trans 'I don&#x27;t have an online account' %}</h2>
+			<p>
+				<a href="{% url register1 %}">{% trans 'Register' %}</a> {% trans 'and you&#x27;ll be able to' %}:
+			</p>
+			<ul>
+				<li>{% trans 'Create updates on your organisation&#x27;s projects' %}</li>
+				<li>{% trans 'Leave comments on projects' %}</li>
+			</ul>
+			<p>
+				{% trans 'And much more' %}, <a href="/">{% trans 'Get Started now!' %}</a>
+			</p>
+		</div>
+	</div>
+	<div class="clear"></div>
+	
+	
+	
+	
+{% endblock content %}

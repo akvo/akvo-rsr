@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS, Country
+from akvo.rsr.models import FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
@@ -133,31 +133,40 @@ def index(request):
     else:
         grid_projects = None
     
-    featured = ProjectUpdate.objects.filter(featured__exact=True)
-    if len(featured) < 3:
-        updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
+    if settings.PVW_RSR:
+        focus_areas = FocusArea.objects.all()
+        updates = {}
     else:
-        updates = get_random_from_qs(featured, 3)
+        focus_areas = None
+        featured = ProjectUpdate.objects.filter(featured__exact=True)
+        if len(featured) < 3:
+            updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
+        else:
+            updates = get_random_from_qs(featured, 3)
     #stats = akvo_at_a_glance(p)
     #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
 
-    if settings.LIVE_EARTH_ENABLED:
+    if not settings.PVW_RSR and settings.LIVE_EARTH_ENABLED:
         live_earth = Organisation.objects.get(pk= settings.LIVE_EARTH_ID)
         le_blog_category = settings.LIVE_EARTH_NEWS_CATEGORY
     else:
         live_earth = None
         le_blog_category = None
         
-    if settings.WALKING_FOR_WATER_ENABLED:
+    if not settings.PVW_RSR and settings.WALKING_FOR_WATER_ENABLED:
         walking_for_water = Organisation.objects.get(pk= settings.WALKING_FOR_WATER_ID)
         wfw_blog_category = settings.WALKING_FOR_WATER_NEWS_CATEGORY
     else:
         walking_for_water = None
-        
+        wfw_blog_category = None
+    
+    news_post, blog_posts = wordpress_get_lastest_posts('wordpress', get_setting('NEWS_CATEGORY_ID', 3), get_setting('INDEX_ARTICLE_COUNT', 2))
+    
     return {
         'orgs': Organisation.objects,
         'projs': projs,
         'updates': updates,
+        'focus_areas': focus_areas,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
@@ -167,7 +176,8 @@ def index(request):
         'walking_for_water': walking_for_water,
         'wfw_blog_category': wfw_blog_category,
         'site_section': 'index',
-        'blog_posts': wordpress_get_lastest_posts('wordpress', 2),
+        'blog_posts': blog_posts,
+        'news_post': news_post,
     }
 
 def oldindex(request):
@@ -185,107 +195,151 @@ def project_list_data(request, projects):
     page = paginator.page(request.GET.get('page', 1))
     return page
 
-@render_to('rsr/organisation/landing_pages/liveearth.html')
-def liveearth(request):
-    '''
-    List of all projects associated with Live Earth
-    Context:
-    projects: list of all projects
-    stats: the aggregate projects data
-    page: paginator
-    '''
-    live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
-    projs = live_earth.published_projects().funding()
-    page = project_list_data(request, projs)
-    org_projects = live_earth.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    return {
-        'projs': projs,
-        'orgs':live_earth.partners(),
-        'page': page,
-        'o': live_earth,
-        'org_projects': org_projects,
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-    }
 
-@render_to('rsr/organisation/landing_pages/wfw.html')
-def walking_for_water(request):
-    '''                                                                            
-    List of all projects associated with Walking for Water
-    Context:                                                                       
-    projects: list of all projects                                                 
-    stats: the aggregate projects data                                             
-    page: paginator                                                                
-    '''
-    wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
-    projs = wfw.published_projects().funding()
-    page = project_list_data(request, projs)
-    org_projects = wfw.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    return {
-        'projs': projs,
-        'orgs': wfw.partners(),
-        'page': page,
-        'o': wfw,
-        'org_projects': org_projects,
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-    }
+@render_to('rsr/focus_areas.html')
+def focusareas(request):
+    return {'site_section': 'areas',}
 
-# http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
-import re
-from django.db.models import Q
-def normalize_query(query_string,
-                    findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
-                    normspace=re.compile(r'\s{2,}').sub):
-    ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
-        and grouping quoted words together.
-        Example:
-        
-        >>> normalize_query('  some random  words "with   quotes  " and   spaces')
-        ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
-    
-    '''
-    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
-
-def get_query(query_string, search_fields):
-    ''' Returns a query, that is a combination of Q objects. That combination
-        aims to search keywords within a model by testing the given search fields.
-    '''
-    query = None # Query to search for every search term
-    terms = normalize_query(query_string)
-    for term in terms:
-        or_query = None # Query to search for a given term in each field
-        for field_name in search_fields:
-            q = Q(**{"%s__icontains" % field_name: term})
-            if or_query is None:
-                or_query = q
-            else:
-                or_query = or_query | q
-        if query is None:
-            query = or_query
+if settings.PVW_RSR:
+    @render_to('rsr/project/project_directory.html')
+    def project_list(request, slug=None, org_id=None):
+        '''
+        List of  projects in RSR
+        filtered on either a focus area or an organisation
+        Context:
+        projs: list of all projects
+        page: paginator
+        o: organisation
+        '''
+        org = None
+        focus_area = None
+        if org_id:
+            org = Organisation.objects.get(pk=org_id)
+            projects = org.published_projects().funding()
+        elif slug:
+            focus_area = get_object_or_404(FocusArea, slug=slug)
+            projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
         else:
-            query = query & or_query
+            projects = Project.objects.published()
+        # extra columns to be able to sort on latest updates
+        projects = projects.extra(
+            select={
+                'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
+                'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
+            }
+        )
+        return {'projects': projects, 'site_section': 'areas', 'focus_area': focus_area, 'org': org}
+    
+    @render_to('rsr/directory.html')
+    def directory(request, org_type='all'):
+        return {'site_section': 'directory',}
+
+else:
+    
+    @render_to('rsr/project_directory.html')
+    def projectlist(request):
+        '''
+        List of all projects in RSR
+        Context:
+        projects: list of all projects
+        stats: the aggregate projects data
+        page: paginator
+        '''
+        if settings.PVW_RSR:
+            return HttpResponsePermanentRedirect('/')
+        else:
+            projs = Project.objects.published()#.funding().select_related()
+            showcases = projs.need_funding().order_by('?')[:3]
+            page = project_list_data(request, projs)
+            return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}  
+    
+    @render_to('rsr/project_directory.html')
+    def filteredprojectlist(request, org_id):
+        '''
+        List of  projects in RSR
+        filtered on an organisation
+        Context:
+        projs: list of all projects
+        page: paginator
+        o: organisation
+        '''
+        #for use in akvo at a glance
+        projs = Project.objects.published().funding()
+        # get all projects the org is asociated with
+        o = Organisation.objects.get(pk=org_id)
+        projects = o.published_projects().funding()
+        showcases = projects.order_by('?')[:3]
+        page = project_list_data(request, projects)
+        return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
+
+    @render_to('rsr/organisation/landing_pages/liveearth.html')
+    def liveearth(request):
+        '''
+        List of all projects associated with Live Earth
+        Context:
+        projects: list of all projects
+        stats: the aggregate projects data
+        page: paginator
+        '''
+        live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
+        projs = live_earth.published_projects().funding()
+        page = project_list_data(request, projs)
+        org_projects = live_earth.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        return {
+            'projs': projs,
+            'orgs':live_earth.partners(),
+            'page': page,
+            'o': live_earth,
+            'org_projects': org_projects,
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        }
+    
+    @render_to('rsr/organisation/landing_pages/wfw.html')
+    def walking_for_water(request):
+        '''                                                                            
+        List of all projects associated with Walking for Water
+        Context:                                                                       
+        projects: list of all projects                                                 
+        stats: the aggregate projects data                                             
+        page: paginator                                                                
+        '''
+        wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
+        projs = wfw.published_projects().funding()
+        page = project_list_data(request, projs)
+        org_projects = wfw.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        return {
+            'projs': projs,
+            'orgs': wfw.partners(),
+            'page': page,
+            'o': wfw,
+            'org_projects': org_projects,
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        }
+    
+    # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
+    import re
+    from django.db.models import Q
+    def normalize_query(query_string,
+                        findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                        normspace=re.compile(r'\s{2,}').sub):
+        ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
+            and grouping quoted words together.
+            Example:
+            
+            >>> normalize_query('  some random  words "with   quotes  " and   spaces')
+            ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
         
-    '''
-    Initial try for continent filtering, this is obsolete, since the new_look_maps branch introduces the Location model.
-    for term in terms:
-        or_query = None # Query to search for a given term in each field
-        if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
-            if term == 'Africa' or term == 'africa':
-                q = Q(**{"country__continent__exact":1})
-            elif term == 'Asia' or term == 'asia':
-                q = Q(**{"country__continent__exact":2})
-            elif 'Australia' or 'australia' in term:
-                q = Q(**{"country__continent__exact":3})
-            elif 'Europe' or 'europe' in term:
-                q = Q(**{"country__continent__exact":4})
-            elif 'North America' or 'north america' or 'North america' or 'north America' in term:
-                q = Q(**{"country__continent__exact":5})
-            elif 'South America' or 'south america' or 'South america' or 'south America' in term:
-                q = Q(**{"country__continent__exact":6})
-            if query is None:
-                query = q
-            else:
-                query = query & q
-        else:            
+        '''
+        return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
+    
+    def get_query(query_string, search_fields):
+        ''' Returns a query, that is a combination of Q objects. That combination
+            aims to search keywords within a model by testing the given search fields.
+        '''
+        query = None # Query to search for every search term
+        terms = normalize_query(query_string)
+        for term in terms:
+            or_query = None # Query to search for a given term in each field
             for field_name in search_fields:
                 q = Q(**{"%s__icontains" % field_name: term})
                 if or_query is None:
@@ -296,194 +350,170 @@ def get_query(query_string, search_fields):
                 query = or_query
             else:
                 query = query & or_query
-    '''
-    return query
-
-    
-@render_to('rsr/project/project_directory.html')
-def projectlist(request):
-    '''
-    List of relevant projects in RSR
-        
-    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-    '''
-    
-    # Get relevant projects
-    projects = Project.objects.published().funding().select_related()
-    
-    # Get projects either by using the query or all
-    query_string = ''
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-
-        #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-        project_query = get_query(query_string, ['name', 'subtitle',])
-        projects = projects.filter(project_query)
-    
-    # Add extra last_update column
-    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    
-    # Setup sort query
-    order_by = request.GET.get('order_by', 'name')
-    last_order = request.GET.get('last_order')
-    sort = request.GET.get('sort', 'asc')
-    
-    # sort desv or asc
-    if sort == 'asc':
-        projects = projects.order_by(order_by, 'name')
-    else:
-        projects = projects.order_by('-%s' % order_by, 'name')
-        
-    # --------------------------------------------------    
-    
-    # Contient dropdown
-    continents = []
-    for continent in CONTINENTS:
-        continents.append(continent)
-    
-    selected_continent = request.GET.get('continent', 'all')
-    if selected_continent != 'all':
-        projects = projects.filter(country__continent=selected_continent)
-        selected_continent = int(selected_continent)
-    
-    # Country dropdown
-    countries = Country.objects.all()
-    
-    selected_country = request.GET.get('country', 'all')
-    if selected_country != 'all':
-        projects = projects.filter(country__exact=selected_country)
-        selected_country = int(selected_country)
-        selected_continent = Country.objects.get(id=selected_country).continent
-        #selected_continent = Country.objects.filter(pk__exact=selected_country).continent
-        
-    
-    countries_in_africa = []
-    countries_in_africa = Country.objects.all().filter(continent__exact=1)
-    
-    countries_in_asia = []
-    countries_in_asia = Country.objects.all().filter(continent__exact=2)
-    
-    countries_in_australia = []
-    countries_in_australia = Country.objects.all().filter(continent__exact=3)
-
-    countries_in_europe = []
-    countries_in_europe = Country.objects.all().filter(continent__exact=4)
-    
-    countries_in_north_america = []
-    countries_in_north_america = Country.objects.all().filter(continent__exact=5)
-    
-    countries_in_south_america = []
-    countries_in_south_america = Country.objects.all().filter(continent__exact=6)
-    
-
-    # --------------------------------------------------    
-    
-    # Setup paginator
-    PROJECTS_PER_PAGE = 10
-    paginator = Paginator(projects, PROJECTS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
-    
-    return {
-        'site_section': 'projects',
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'page': page,
-        'query_string': query_string,
-        'request_get': request.GET,
-        'sort': sort,
-        'order_by': order_by,
-        'last_order': last_order,
-        'continents': continents,
-        'selected_continent': selected_continent,
-        'countries': countries,
-        'selected_country': selected_country,
-        'selected_continent': selected_continent,
-        'countries_in_africa': countries_in_africa,
-        'countries_in_asia': countries_in_asia,
-        'countries_in_australia': countries_in_australia,
-        'countries_in_europe': countries_in_europe,
-        'countries_in_north_america': countries_in_north_america,
-        'countries_in_south_america': countries_in_south_america,
-    }
-
-
-@render_to('rsr/project/project_directory.html')
-def filteredprojectlist(request, org_id):
-    '''
-    List of relevant projects in RSR for a specific organisation
-        
-    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-    '''    
-
-    # get all projects the org is asociated with
-    o = Organisation.objects.get(pk=org_id)
-    projects = o.published_projects().funding()
-    
-    # Get projects either by using the query or all
-    query_string = ''
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-
+            
         '''
-        Super dump continent filtering
-        This needs to be made much better, (case, multi continent, same time as query...)
+        Initial try for continent filtering, this is obsolete, since the new_look_maps branch introduces the Location model.
+        for term in terms:
+            or_query = None # Query to search for a given term in each field
+            if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
+                if term == 'Africa' or term == 'africa':
+                    q = Q(**{"country__continent__exact":1})
+                elif term == 'Asia' or term == 'asia':
+                    q = Q(**{"country__continent__exact":2})
+                elif 'Australia' or 'australia' in term:
+                    q = Q(**{"country__continent__exact":3})
+                elif 'Europe' or 'europe' in term:
+                    q = Q(**{"country__continent__exact":4})
+                elif 'North America' or 'north america' or 'North america' or 'north America' in term:
+                    q = Q(**{"country__continent__exact":5})
+                elif 'South America' or 'south america' or 'South america' or 'south America' in term:
+                    q = Q(**{"country__continent__exact":6})
+                if query is None:
+                    query = q
+                else:
+                    query = query & q
+            else:            
+                for field_name in search_fields:
+                    q = Q(**{"%s__icontains" % field_name: term})
+                    if or_query is None:
+                        or_query = q
+                    else:
+                        or_query = or_query | q
+                if query is None:
+                    query = or_query
+                else:
+                    query = query & or_query
+        '''
+        return query
         
-        CONTINENTS = (
-            (1, _('Africa')),
-            (2, _('Asia')),
-            (3, _('Australia')),
-            (4, _('Europe')),
-            (5, _('North America')),
-            (6, _('South America')),
-        )
+    @render_to('rsr/project/project_directory.html')
+    def projectlist(request):
+        '''
+        List of relevant projects in RSR
+            
+        To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
         '''
         
-        if 'Africa' in query_string:
-            projects = projects.filter(country__continent='1')
-        elif 'Asia' in query_string:
-            projects = projects.filter(country__continent='2')
-        elif 'Australia' in query_string:
-            projects = projects.filter(country__continent='3')
-        elif 'Europe' in query_string:
-            projects = projects.filter(country__continent='4')
-        elif 'North America' in query_string:
-            projects = projects.filter(country__continent='5')
-        elif 'South America' in query_string:
-            projects = projects.filter(country__continent='6')
-        else:
+        # Get relevant projects
+        projects = Project.objects.published().funding().select_related()
+        
+        # Get projects either by using the query or all
+        query_string = ''
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+    
             #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
             project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
             projects = projects.filter(project_query)
-    
-    # Add extra last_update column
-    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    
-    # Sort query
-    order_by = request.GET.get('order_by', 'name')
-    last_order = request.GET.get('last_order')
-    sort = request.GET.get('sort', 'asc')
-    
-    if sort == 'asc':
-        projects = projects.order_by(order_by, 'name')
-    else:
-        projects = projects.order_by('-%s' % order_by, 'name')
         
-    # Setup paginator
-    PROJECTS_PER_PAGE = 10
-    paginator = Paginator(projects, PROJECTS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
+        # Add extra last_update column
+        projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+        
+        # Setup sort query
+        order_by = request.GET.get('order_by', 'name')
+        last_order = request.GET.get('last_order')
+        sort = request.GET.get('sort', 'asc')
+        
+        # sort desv or asc
+        if sort == 'asc':
+            projects = projects.order_by(order_by, 'name')
+        else:
+            projects = projects.order_by('-%s' % order_by, 'name')
     
-    return {
-        'site_section': 'projects',
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'page': page,
-        'query_string': query_string,
-        'request_get': request.GET,
-        'sort': sort,
-        'order_by': order_by,
-        'last_order': last_order,
-        'o': o,    
-    }
-
+        # Setup paginator
+        PROJECTS_PER_PAGE = 10
+        paginator = Paginator(projects, PROJECTS_PER_PAGE)
+        page = paginator.page(request.GET.get('page', 1))
+        
+        return {
+            'site_section': 'projects',
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'page': page,
+            'query_string': query_string,
+            'request_get': request.GET,
+            'sort': sort,
+            'order_by': order_by,
+            'last_order': last_order,
+        }
+    
+    
+    @render_to('rsr/project/project_directory.html')
+    def filteredprojectlist(request, org_id):
+        '''
+        List of relevant projects in RSR for a specific organisation
+            
+        To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
+        '''    
+    
+        # get all projects the org is asociated with
+        o = Organisation.objects.get(pk=org_id)
+        projects = o.published_projects().funding()
+        
+        # Get projects either by using the query or all
+        query_string = ''
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+    
+            '''
+            Super dump continent filtering
+            This needs to be made much better, (case, multi continent, same time as query...)
+            
+            CONTINENTS = (
+                (1, _('Africa')),
+                (2, _('Asia')),
+                (3, _('Australia')),
+                (4, _('Europe')),
+                (5, _('North America')),
+                (6, _('South America')),
+            )
+            '''
+            
+            if 'Africa' in query_string:
+                projects = projects.filter(country__continent='1')
+            elif 'Asia' in query_string:
+                projects = projects.filter(country__continent='2')
+            elif 'Australia' in query_string:
+                projects = projects.filter(country__continent='3')
+            elif 'Europe' in query_string:
+                projects = projects.filter(country__continent='4')
+            elif 'North America' in query_string:
+                projects = projects.filter(country__continent='5')
+            elif 'South America' in query_string:
+                projects = projects.filter(country__continent='6')
+            else:
+                #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+                project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+                projects = projects.filter(project_query)
+        
+        # Add extra last_update column
+        projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+        
+        # Sort query
+        order_by = request.GET.get('order_by', 'name')
+        last_order = request.GET.get('last_order')
+        sort = request.GET.get('sort', 'asc')
+        
+        if sort == 'asc':
+            projects = projects.order_by(order_by, 'name')
+        else:
+            projects = projects.order_by('-%s' % order_by, 'name')
+            
+        # Setup paginator
+        PROJECTS_PER_PAGE = 10
+        paginator = Paginator(projects, PROJECTS_PER_PAGE)
+        page = paginator.page(request.GET.get('page', 1))
+        
+        return {
+            'site_section': 'projects',
+            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'page': page,
+            'query_string': query_string,
+            'request_get': request.GET,
+            'sort': sort,
+            'order_by': order_by,
+            'last_order': last_order,
+            'o': o,    
+        }
 
 @render_to('rsr/organisation/organisation_directory.html')
 def orglist(request, org_type='all'):
@@ -535,12 +565,14 @@ def orglist(request, org_type='all'):
     ORGS_PER_PAGE = 10
     paginator = Paginator(orgs, ORGS_PER_PAGE)
     page = paginator.page(request.GET.get('page', 1))
+    projs = Project.objects.published()
 
     return {
         'site_section': 'index',
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'lang': get_language(),
         'page': page,
+        'projs': projs,
         'query_string': query_string,
         'request_get': request.GET,
         'sort': sort,
@@ -549,7 +581,6 @@ def orglist(request, org_type='all'):
         'org_type': org_type,
         'orgs': orgs,
     }
-
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
@@ -653,7 +684,7 @@ def signout(request):
     Redirects to /rsr/
     '''
     logout(request)
-    return HttpResponseRedirect('/rsr/')
+    return HttpResponseRedirect('/')
 
 def register1(request):
     '''
@@ -750,7 +781,9 @@ def activate(request, activation_key,
         context[key] = callable(value) and value() or value
     return render_to_response(template_name,
                               { 'account': account,
-                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
+                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                'support_email': settings.SUPPORT_EMAIL,
+                                },
                               context_instance=context)    
     
     #activation_key = activation_key.lower() # Normalize before trying anything with it.
@@ -840,7 +873,7 @@ def projectupdates(request, project_id):
         'can_add_update':can_add_update, 
         'hide_latest_updates': True, 
         'comments': comments,
-        'site_section': 'projects',
+        'site_section': 'areas',
         }
 
 @render_to('rsr/project/project_update.html')
@@ -865,7 +898,6 @@ def projectupdate(request, project_id, update_id):
         'comments': comments,
         }
 
-    
 @render_to('rsr/project/project_comments.html')
 def projectcomments(request, project_id):
     '''
@@ -877,7 +909,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'comments': comments, 'form': form, 'hide_comments': True, }
+    return {'p': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
 
 class UpdateForm(ModelForm):
 
@@ -1004,14 +1036,13 @@ def sms_update(request):
 
 class CommentForm(ModelForm):
 
-    comment     = forms.CharField(widget=forms.Textarea(attrs={
-                                    'class':'textarea',
-                                    'rows':'5',
-                                    'cols':'75',
-                                    #'width': '480px',
-                                    #'style': 'margin:0 auto;'
-                                }))
-    
+    comment = forms.CharField(widget=forms.Textarea(attrs={
+        'class':'textarea',
+        'rows':'5',
+        'cols':'75',
+        #'width': '480px',
+        #'style': 'margin:0 auto;'
+    }))    
     class Meta:
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
@@ -1020,7 +1051,6 @@ class CommentForm(ModelForm):
 def commentform(request, project_id):
     '''
     URL for posting a comment to a project
-    Redirects to the project overview page (/rsr/project/n/ n=project id)
     '''
     p = get_object_or_404(Project, pk=project_id)
     if request.method == 'POST':
@@ -1044,14 +1074,17 @@ def commentform(request, project_id):
 #    # remove organisation from queryset
 #    return assoc, partners.exclude(id=organisation.id)
 
+    
 @render_to('rsr/organisation/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
-        
-    org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
-    org_partners = o.partners()
+    if settings.PVW_RSR:
+        org_projects = o.published_projects()
+    else:
+        org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+    org_partners = org_projects.all_partners().distinct()
     return {
-        'o': o, 
+        'org': o, 
         'org_projects': org_projects, 
         'org_partners': org_partners,
         'site_section': 'index',
@@ -1069,23 +1102,23 @@ def projectmain(request, project_id):
     '''
     #form        = CommentForm()
     p           = get_object_or_404(Project, pk=project_id)
+    related = Project.objects.filter(categories__in=Category.objects.filter(projects=p)).distinct().exclude(pk=p.pk)    
+    related = get_random_from_qs(related, 2)
     updates     = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-        
-    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('time')
-    slider_width = (len(updates_with_images) + 1) * 115
-    
+    updates_with_images = Project.objects.get(id=project_id).project_updates.all().exclude(photo__exact='').order_by('-time')
+    slider_width = (len(updates_with_images) + 1) * 115    
     return {
-        'p': p, 
-        'updates': updates, 
-        'comments': comments, 
+        'project'               : p,
+        'related'               : related,
+        'updates'               : updates, 
+        'comments'              : comments, 
         #'form': form, 
-        'can_add_update': p.connected_to_user(request.user),
-        'site_section': 'projects',
-        'updates_with_images': updates_with_images,
-        'slider_width': slider_width,
+        'can_add_update'        : p.connected_to_user(request.user),
+        'site_section'          : 'projects',
+        'updates_with_images'   : updates_with_images,
+        'slider_width'          : slider_width,
         }
-
 
 def projectdetails(request, project_id):
     "Fix for old url with project details"
@@ -1094,32 +1127,32 @@ def projectdetails(request, project_id):
 
 @render_to('rsr/project/project_partners.html')  
 def projectpartners(request, project_id):
-	p = get_object_or_404(Project, pk=project_id)
-	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-	comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-	return { 
-		'p': p, 
-		'site_section': 'projects', 
-		'updates': updates, 
-		'hide_project_partners': True,
-		'can_add_update': p.connected_to_user(request.user),
-		'comments': comments,
-	}
+    p = get_object_or_404(Project, pk=project_id)
+    updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    return { 
+        'p': p, 
+        'site_section': 'projects', 
+        'updates': updates, 
+        'hide_project_partners': True,
+        'can_add_update': p.connected_to_user(request.user),
+        'comments': comments,
+    }
 
 @render_to('rsr/project/project_funding.html')  
 def projectfunding(request, project_id):
-	p = get_object_or_404(Project, pk=project_id)    
-	public_donations = p.public_donations()
-	updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-	comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
-	return { 
-		'p': p, 
-		'public_donations': public_donations, 
-		'site_section': 'projects', 
-		'updates': updates,
-		'comments': comments,
-		'can_add_update': p.connected_to_user(request.user),
-	}
+    p = get_object_or_404(Project, pk=project_id)    
+    public_donations = p.public_donations()
+    updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    return { 
+        'p': p, 
+        'public_donations': public_donations, 
+        'site_section': 'projects', 
+        'updates': updates,
+        'comments': comments,
+        'can_add_update': p.connected_to_user(request.user),
+    }
 
 def getwidget(request, project_id):
     '''
@@ -1132,7 +1165,13 @@ def getwidget(request, project_id):
             account_level = 'free'
         p = get_object_or_404(Project.objects, pk=project_id)
         orgs = p.all_partners()
-        return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {'project': p, 'p': p, 'account_level': account_level, 'organisations': orgs}, context_instance=RequestContext(request))
+        return render_to_response(
+            'rsr/project/get-a-widget/machinery_step1.html', {
+                'project': p, 
+                'p': p, 
+                'account_level': account_level, 'organisations': orgs,
+            }, context_instance=RequestContext(request)
+        )
     else:
         widget_type = request.POST['widget-type']
         widget_choice = request.POST['widget-choice']
@@ -1144,8 +1183,14 @@ def getwidget(request, project_id):
         else:
             o = None
         p = get_object_or_404(Project, pk=project_id)
-        return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {'project': p, 'p': p, 'organisation':o, 'widget_choice': widget_choice, 'widget_type': widget_type, 'widget_site': widget_site }, context_instance=RequestContext(request))
-
+        return render_to_response('rsr/machinery_step2.html', {
+            'project': p, 
+            'organisation':o, 
+            'widget_choice': widget_choice, 
+            'widget_type': widget_type, 
+            'widget_site': widget_site,
+            'site_section': 'areas',
+        }, context_instance=RequestContext(request))
 
 def fundingbarimg(request):
     '''
@@ -1405,3 +1450,9 @@ def mollie_thanks(request):
         invoice = Invoice.objects.get(transaction_id=transaction_id)
         return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
     return redirect('/')
+
+@render_to('rsr/global_map.html')
+def global_map(request):
+    projects = Project.objects.published()
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    return {'projects': projects, 'marker_icon': marker_icon}

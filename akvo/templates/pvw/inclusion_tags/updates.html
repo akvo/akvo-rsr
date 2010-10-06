@@ -1,0 +1,37 @@
+{% load i18n rsr_tags rsr_filters %}
+
+{% if updates %}
+    {% for u in updates %}
+        <a id="{{u.pk}}"></a>
+        <h3>{{u.title}}</h3>
+        <p class="small" style="margin:0; padding:0">
+            <span class="grey">{{u.time|date:"Y-m-d H:i" }}</span>
+            {% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+        </p>
+        <br>
+        {% ifequal u.photo_location 'B' %}
+            {% update_thumb u width height %}
+        {% endifequal %}
+        {% if u.text %}
+        <p class="small" style="margin:0; padding:0;">
+        {% if show_permalinks %}
+            {{u.text}}
+        {% else %}
+            {{u.text|smart_truncate:400}}
+        {% endif %}
+        </p>
+        {% endif %}
+        {% ifequal u.photo_location 'E' %}
+            {% update_thumb u width height %}
+        {% endifequal %}
+        {% if show_permalinks %}
+            <p style="text-align:right"><a href="{% url akvo.rsr.views.projectupdates u.project.pk %}#{{u.pk}}">{% trans 'Permalink' %}</a></p>
+        {% endif %}
+        {% if not forloop.last %}
+            <hr />	
+        {% endif %}
+
+    {% endfor %}
+{% else %}
+    {% trans 'No updates yet.' %}
+{% endif %}                    

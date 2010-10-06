@@ -1,0 +1,10 @@
+.h1_companion {
+  /* text that floats to the right of a h1 */
+  float: right;
+  margin-top: 0.5em;
+  font-size: 0.8125em;
+}
+
+.small_link {
+  font-size: 0.8125em;
+}

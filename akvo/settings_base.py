@@ -20,6 +20,8 @@ ADMINS = (
      ('Gabriel von Heijne', 'gabriel@akvo.org'),
 )
 
+SUPPORT_EMAIL = ADMINS[0][1]
+
 #Additional information about a User
 AUTH_PROFILE_MODULE = 'rsr.userprofile'
 
@@ -57,11 +59,13 @@ INSTALLED_APPS = (
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
 #    'akvo.status',
-    'paypal.standard.ipn',
+    #'paypal.standard.ipn',
     'sorl.thumbnail',
     'rosetta',
     'django_counter',
     'mollie.ideal',
+    'django_sorting',
+    'pagination',
 )
 
 #INTERNAL_IPS = (
@@ -101,6 +105,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
+    'django_sorting.middleware.SortingMiddleware',
+    'pagination.middleware.PaginationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
@@ -108,6 +114,9 @@ MIDDLEWARE_CLASSES = (
 
 # PAUL
 # PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
+
+# Is this the pvw-rsr?
+PVW_RSR = True
 
 ROOT_URLCONF = 'akvo.urls'
 
@@ -128,21 +137,23 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 #TEMPLATE_DEBUG = DEBUG
 
-import os.path
-TEMPLATE_LEAF_DIR = 'akvo'
-
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
-    os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
-    os.path.join(os.path.dirname(__file__), 'templates/akvo_beta').replace('\\','/'),
-)
-
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
 #     'django.template.loaders.eggs.load_template_source',
+)
+
+import os.path
+if PVW_RSR:
+    TEMPLATE_LEAF_DIR = 'pvw'
+else:
+    TEMPLATE_LEAF_DIR = 'akvo'
+    
+TEMPLATE_DIRS = (
+    os.path.join(os.path.dirname(__file__), 'templates/%s-take2' % TEMPLATE_LEAF_DIR).replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
 )
 
 # Local time zone for this installation. Choices can be found here:
@@ -155,5 +166,5 @@ TIME_ZONE = 'Europe/Stockholm'
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
+USE_L10N = True
 
-DEV_MEDIA_BUNDLES = False

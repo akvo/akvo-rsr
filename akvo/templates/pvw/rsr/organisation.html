@@ -1,0 +1,149 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n rsr_tags thumbnail humanize %}
+
+{% block title %}{{ block.super }} - {{o.name}}{% endblock %}
+
+{% block content %}
+
+	<div class="span-14 first">
+    	<div class="frame">
+            <div class="space20">
+                <h1 style="margin:0; padding:0; color:#00ABFA;">{{o.name}}</h1>
+                <p class="grey">{{o.long_name}}</p>
+            </div>
+            <div class="space10" style="clear:both;">
+                <hr />
+            </div>
+            <div style="width: 33%; float: right;">
+                <div class="space20">
+                    <div style="padding-right: 20px">
+                    {% if o.contact_person %}
+                    <p class="nano-lede" style="margin-bottom:0;">{% trans 'Contact' %}</p>
+                        <p>
+                            {{o.contact_person}}
+                        </p>
+                    {% endif %}
+                    {% if o.contact_email %}
+                    <p class="nano-lede" style="margin-bottom:0;">{% trans 'Email' %}</p>
+                        <p>
+							{% comment %}
+							{{o.contact_email}}	
+							{% endcomment %}
+                            
+							{% encrypt_email o.contact_email %}
+                        </p>
+                    {% endif %}
+                    {% if o.phone %}
+                    <p class="nano-lede" style="margin-bottom:0;">{% trans 'Phone' %}</p>
+                        <p>
+                            {{o.phone}}
+                        </p>
+                    {% endif %}
+                    {% if o.mobile %}
+                    <p class="nano-lede" style="margin-bottom:0;">{% trans 'Mobile' %}</p>
+                        <p>
+                            {{o.mobile}}
+                        </p>
+                    {% endif %}
+                    {% if o.fax %}
+                    <p class="nano-lede" style="margin-bottom:0;">{% trans 'Fax' %}</p>
+                        <p>
+                            {{o.fax}}
+                        </p>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div style="width: 34%; float: right;">
+                <div class="space20 border">
+                    <div style="padding-right: 20px">
+                    {% map_thumb o 200 200 'margin-bottom: 20px;' %}
+                    <p class="nano-lede" style="margin-bottom:0;">{% trans 'Location' %}</p>
+                    <p>
+                        {% if o.address_1 %}
+                            {{o.address_1}}<br />
+                        {% endif %}
+                        {% if o.address_2 %}
+                            {{o.address_2}}<br />
+                        {% endif %}
+                        {% if o.postcode %}
+                            {{o.postcode}}<br />
+                        {% endif %}
+                        {% if o.city %}
+                            {{o.city}}<br />
+                        {% endif %}
+                        {% if o.state %}
+                            {{o.state}}<br />
+                        {% endif %}
+                        {% if o.country %}
+                            {{o.country}}<br />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div style="width: 33%; float: right;">
+                <div class="space20 border">
+                    <div style="padding-right: 20px">
+                        {% org_logo o 200 150 'margin: 10px 0;' %}
+                        {% if o.partner_types %}
+                            <p class="nano-lede" style="margin-bottom:0;">{% trans 'Roles' %}</p>
+                            <p>
+                            {% for role in o.partner_types %}
+                                {{role}}<br />
+                            {% endfor %}
+                            </p>
+                        {% endif %}
+                        <p class="nano-lede" style="margin-bottom:0;">{% trans 'Type' %}</p>
+                        <p>{{o.get_organisation_type_display}}</p>
+                        {% if o.url %}
+                        <p class="nano-lede" style="margin-bottom:0;">{% trans 'Website' %}</p>
+                        <p><a href="{{o.url}}">{{o.url}}</a></p>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="space10" style="clear:both;">
+                <hr />
+            </div>
+            <div class="space20">
+                {{o.description|linebreaks}}
+            </div>
+        </div>
+    </div>
+	<div class="span-4 last">
+        <div class="frame">
+            <div class="sliding_box_header">
+                <span>{% trans 'Participant activities' %}</span>
+            </div>
+            <div class="space20">
+                <p class="small"><strong>{{o.all_projects.count}} Total projects</strong></p>
+            </div>
+            <div class="space10">
+                <hr />
+            </div>
+            <div class="space20">
+                <p class="small"><strong>Project partners</strong></p>
+                <p class="small">
+                    {% for partner in o.my_partners.distinct %}
+                        <a href="{% url org_detail partner.pk %}">{{partner}}</a><br/>
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="frame">
+            <div class="sliding_box_header">
+                <a href="{% url project_list_for_org o.pk %}">{% trans 'Current projects' %}</a>
+            </div>
+            <div class="space20">
+                <p class="small">
+                    {% for project in o.all_projects %}
+                        <a href="{% url project_main project.pk %}">{{project}}</a><br/>
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

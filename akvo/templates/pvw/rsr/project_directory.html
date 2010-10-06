@@ -1,0 +1,172 @@
+{% extends "rsr/base.html" %}
+
+{% load i18n rsr_tags generic_content rsr_filters addparam webdesign %}
+{% load google_maps %}
+
+{% block title %}{{ block.super }} - {% trans 'Projects' %}{% endblock %}
+
+{% block inline_styles %}
+h2 {
+	color:#1DAAFB;
+}
+{% endblock inline_styles %}
+
+{% block content %}
+
+{% google_global_project_map 500 500 3 %}
+
+{% if focusarea %}
+<div class="span-14 first" id="focusareas">
+    {% focus_area focusarea 0 %}
+</div>
+<div class="span-4 last">
+    <div class="frame globe" style="">
+        <div class="space20" style="height: 190px;">
+            <p class="highlight" style="font-size:1em; margin-bottom:10px;">
+                {% trans 'Did you know...' %}
+            </p>
+            <p class="tiny">
+                {% lorem 10 w random %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="span-18">
+	<h2>{% trans 'Projects' %}</h2>
+</div>
+
+<div class="span-18">
+	<div class="frame" style="margin-bottom:0; border-bottom:none;">
+        {% if org %}
+            {% project_list_pagination page org %}
+        {% else %}
+            {% project_list_pagination page %}
+        {% endif %}
+	</div>
+
+	<div class="span-18 img_border_left" id="list_table_header">
+		<div class="span-6 first img_border_right">
+			<p class="small" style="margin-top:5px; padding-left:10px">
+                {% if org %}
+                    <a href="{% url project_list_for_org org.id %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project Name' %}</a>
+                {% else %}
+                    <a href="{% url focus_area focusarea %}{% addparam "order_by" "name" %}#list" title="{% trans 'Sort projects by name' %}">{% trans 'Project Name' %}</a>
+                {% endif %}
+            </p>			
+		</div>
+		<div class="span-2 img_border_right">
+			<p class="small" style="margin-top:5px;">
+				{% if org %}
+				<a href="{% url project_list_for_org org.id %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
+				{% else %}
+				<a href="{% url focus_area focusarea %}{% addparam "order_by" "country__country_name" %}#list" title="{% trans 'Sort projects by country' %}">{% trans 'Country' %}</a>
+				{% endif %}
+			</p>
+		</div>
+		<div class="span-2 img_border_right">
+			<p class="small" style="margin-top:5px;">
+				{% if org %}
+				<a href="{% url project_list_for_org org.id %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
+				{% else %}
+				<a href="{% url focus_area focusarea %}{% addparam "order_by" "country__continent" %}#list" title="{% trans 'Sort projects by continent' %}">{% trans 'Continent' %}</a>
+				{% endif %}
+			</p>
+		</div>
+		<div class="span-2 img_border_right">
+			<p class="small" style="margin-top:5px;">
+				{% if org %}
+				<a href="{% url project_list_for_org org.id %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
+				{% else %}
+				<a href="{% url focus_area focusarea %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by status' %}">{% trans 'Status' %}</a>
+				{% endif %}
+			</p>
+		</div>
+		<div class="span-2 img_border_right">
+			<p class="small" style="margin-top:5px;">
+				{% if org %}
+				<a href="{% url project_list_for_org org.id %}{% addparam "order_by" "last_update" %}#list" title="{% trans 'Sort projects by latest update' %}">{% trans 'Update' %}</a>
+				{% else %}
+				<a href="{% url focus_area focusarea %}{% addparam "order_by" "status" %}#list" title="{% trans 'Sort projects by latest update' %}">{% trans 'Update' %}</a>
+				{% endif %}
+			</p>
+		</div>
+		<div class="span-2 img_border_right">
+			<p class="small" style="margin-top:5px;">{% trans 'Lead partners' %}</p>
+		</div>
+		<div class="span-2 last img_border_right">
+			<p class="small" style="margin-top:5px;">{% trans 'Other partners' %}</p>
+		</div>
+	</div>
+    
+    {% for project in page.object_list %}
+	<div class="span-18 first last img_border_right" id="list_table" style="background-color:{% cycle '#fff' '#F5F7F9' %}">
+		<div class="img_border_left">		
+			<div class="span-6 first img_border_right projlistcell">
+
+				<a href="{% url project_main project.id %}">
+					{% project_thumb project 100 75 'float:left; margin: 10px;' %}
+		        </a>
+	            <p class="small" style="margin-top:5px;">
+					<a href="{% url project_main project.id %}">{{project.name}}</a><br/>
+	                {{project.subtitle}}
+	            </p>
+	            <p style="margin:0; padding:0;">
+	                {% category_icons project %}
+	            </p>
+			</div>
+			<div class="span-2 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">
+					{{project.city}}, {{project.country}}
+				</p>
+			</div>
+			<div class="span-2 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">
+	            	{{project.country.get_continent_display}}
+				</p>
+			</div>
+			<div class="span-2 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">
+					{{project.show_status}}
+				</p>				
+			</div>
+			<div class="span-2 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">
+					{% with project.project_updates.latest as latest_update %}						
+						{% ifequal latest_update None %}
+							<span style="color:#000;">{% trans 'Not yet' %}</span>
+						{% else %}
+							<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|string_to_date|date:"Y-m-d  H:i"}}</a>
+						{% endifequal %}
+					{% endwith %}
+				</p>
+			</div>
+			<div class="span-2 img_border_right projlistcell">
+				<p class="small" style="margin-top:5px;">
+					{% for partner in project.lead_partners %}
+					<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner}}</a><br />    
+	                {% endfor %}
+				</p>
+			</div>
+			<div class="span-2 last">
+				<p class="small" style="margin-top:5px;">
+					{% for partner in project.other_partners %}    
+					<a href="{% url akvo.rsr.views.orgdetail partner.id %}">{{partner}}</a><br />
+	                {% endfor %}
+	 			</p>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	{% endfor %}
+	<div class="clear"></div>
+	<div class="frame">
+        {% if o %}
+            {% project_list_pagination page org %}
+        {% else %}
+            {% project_list_pagination page %}
+        {% endif %}
+	</div>
+</div>
+
+{% endblock content %}

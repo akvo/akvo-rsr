@@ -13,7 +13,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% block header %}
     <div id="header" class="clearfix">
-		<a href="{% url index %}"><img src="{{MEDIA_URL}}img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" /></a>
+		<a href="{% url index %}"><img src="{{MEDIA_URL}}akvo/img/logo_akvo_250.png" alt="{% trans 'Akvo.org' %}" id="header_logo" /></a>
     </div>
 {% endblock header %}
 
@@ -44,7 +44,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         <hr>
             
         <form method="post" action="">
-        {% csrf_token %}
         <fieldset class="form">
             <div id="username" class="clearfix">
                 <label>{% trans 'Enter a username' %}</label>

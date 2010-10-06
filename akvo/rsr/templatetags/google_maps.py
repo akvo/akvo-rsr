@@ -4,8 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.contrib.contenttypes.models import ContentType
-
 from django import template
 register = template.Library()
 
@@ -26,9 +24,7 @@ def static_map(model_path, object_id, width, height, zoom, marker_color):
 """
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
-def google_map(model, object_id, width, height, zoom):
-    content_type = ContentType.objects.get(app_label='rsr', model=model)
-    object = content_type.get_object_for_this_type(id=object_id)
+def google_map(object, width, height, zoom):
     return {'object': object,
             'width': width,
             'height': height,

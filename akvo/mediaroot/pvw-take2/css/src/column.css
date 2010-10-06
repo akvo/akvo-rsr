@@ -1,0 +1,15 @@
+div.two_column_left {
+    float:left;
+    margin-right:11px;
+    width:664px;
+    }
+
+div.two_column_right {
+    float:left;
+    margin-right:0;
+    width:300px;
+    }
+    
+div.two_column_right_inner {
+    margin-left:7px;
+    }

@@ -1,0 +1,47 @@
+{% extends "rsr/base.html" %}
+{% load i18n rsr_tags webdesign %}
+
+{% block title %}{{ block.super }} - {% trans 'Focus Areas' %}{% endblock %}
+
+{% block content %}
+<div class="span-14 first" id="focusareas">
+
+    {% focus_area 'clean' %}
+	
+    {% focus_area 'safety' %}
+
+    {% focus_area 'sharing' %}
+
+    {% focus_area 'governance' %}
+
+</div>
+<div class="span-4 last">
+	<div class="frame" style="background-color:#F4F7F8">
+		<div class="space20">
+			<p class="highlight" style="font-size:1em; margin-bottom:10px;">
+				{% trans 'Centuries of experience knowing what to do when there is too much water – or not enough' %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<a class="tiny" href="/web/history" style="font-weight:bold;">{% trans 'The history of Dutch Water' %}</a>
+			<p class="tiny" style="padding-top:0.5em">
+				{% lorem 10 w random %}
+			</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny" style="margin-bottom:0.5em;">
+				<a href="/web/what" class="bold">{% trans 'What we do' %}</a><br />
+			</p>
+			<p class="tiny">{% lorem 10 w random %}</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny" style="margin-bottom:0.5em;">
+				<a href="/web/why" class="bold">{% trans 'Why we do it' %}</a><br />
+			</p>
+			<p class="tiny">{% lorem 10 w random %}</p>
+			<hr style="margin-bottom:10px">
+			<p class="tiny" style="margin-bottom:0.5em;">
+				<a href="/web/how" class="bold">{% trans 'How we do it' %}</a><br />
+			</p>
+			<p class="tiny">{% lorem 10 w random %}</p>
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -48,9 +48,11 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     Modify path by supplying a path_tempate string
     """
     if instance.pk:
-        return path_template % (str(instance.pk), file_name)
+        instance_pk = str(instance.pk)
     else:
-        return path_template % ('temp', file_name)
+        # for new objects that have no id yet
+        instance_pk = 'temp'
+    return path_template % locals()
 
 
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
@@ -104,8 +106,7 @@ def send_donation_confirmation_emails(invoice_id):
     c = Context({'invoice': invoice, 'domain_name': settings.DOMAIN_NAME})
     message_body = t.render(c)
     subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
-    bcc_field = settings.DONATION_EMAIL_ADMINS
-    bcc_field = bcc_field.append(invoice.notification_email)
+    bcc_field = [invoice.notification_email]
     if invoice.user:
         to_field = [invoice.user.email]
     else:
@@ -115,21 +116,42 @@ def send_donation_confirmation_emails(invoice_id):
     msg.send()
     
 
-def wordpress_get_lastest_posts(connection, limit):
+def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2):
     from django.db import connections
-    cursor = connections[connection].cursor()
     try:
-        cursor.execute("SELECT option_value FROM wp_options where option_id = 1")
+        cursor = connections[connection].cursor()
+        cursor.execute("SELECT option_value FROM options where option_id = 1")
         option_rows = cursor.fetchall()
         site_url = option_rows[0][0]
     except:
         site_url = 'http://akvo.org/blog'
     
     try:
-        cursor.execute("SELECT * FROM wp_posts where post_status != 'draft' and post_status != 'auto-draft'and post_type = 'post' ORDER By post_date DESC LIMIT %d" % limit)
+        cursor.execute("""
+            SELECT * FROM posts, term_relationships
+                WHERE post_status != 'draft'
+                    AND post_status != 'auto-draft'
+                    AND post_type = 'post'
+                    AND term_taxonomy_id = %d
+                    and ID = object_id
+                ORDER By post_date DESC LIMIT %d
+            """ % (new_section_id, limit)
+        )
+        rows = cursor.fetchall()
+        
+        news_post = {'title': rows[0][5], 'url': '%s/?p=%s' % (site_url, rows[0][0],)}
+    
+        cursor.execute("""
+            SELECT * FROM posts
+                WHERE post_status != 'draft'
+                    AND post_status != 'auto-draft'
+                    AND post_type = 'post'
+                ORDER By post_date DESC LIMIT %d
+            """ % limit
+        )
         rows = cursor.fetchall()
     except:
-        return None
+        return None, None
 
     posts = []
     for post in rows:
@@ -155,4 +177,4 @@ def wordpress_get_lastest_posts(connection, limit):
         
         posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), })
 
-    return posts
+    return news_post, posts
