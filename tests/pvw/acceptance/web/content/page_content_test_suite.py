@@ -12,11 +12,12 @@ from web.content.focus_areas_page_content_test import FocusAreasPageContentTest
 from web.content.projects_page_content_test import ProjectsPageContentTest
 from web.content.netherlands_page_content_test import NetherlandsPageContentTest
 from web.content.education_page_content_test import EducationPageContentTest
+from web.content.directory_page_content_test import DirectoryPageContentTest
 
 
 def page_content_suite():
     return create_test_suite_from_classes([HomePageContentTest, FocusAreasPageContentTest, ProjectsPageContentTest,
-                                           NetherlandsPageContentTest, EducationPageContentTest])
+                                           NetherlandsPageContentTest, EducationPageContentTest, DirectoryPageContentTest])
 
 if __name__ == "__main__":
     run_test_suite(page_content_suite())
