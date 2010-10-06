@@ -1,8 +1,5 @@
 .DS_Store
 .TemporaryItems
-.project
-.pydevproject
-.settings
 *.kpf
 *.mo
 *.pyc

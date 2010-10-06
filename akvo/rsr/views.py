@@ -1505,4 +1505,5 @@ def mollie_thanks(request):
 @render_to('rsr/global_map.html')
 def global_map(request):
     projects = Project.objects.published()
-    return {'projects': projects}
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    return {'projects': projects, 'marker_icon': marker_icon}
