@@ -36,8 +36,8 @@ class EducationPageContentTest(DWSWebTestCase):
                                               "Want to know more?"])
         self.assert_link_exists_starting_with_text("schools, institutes and universities in the Netherlands")
 
-    def test_04_institutions_panel_has_expected_content_and_links(self):
-        """web.content.EducationPageContentTest  4. Institutions panel has expected content and links"""
+    def test_04_institutions_panel_has_expected_links_for_listed_institutions(self):
+        """web.content.EducationPageContentTest  4. Institutions panel has expected links for listed institutions"""
 
         self.assert_page_contains_text("Institutions")
         self.assert_links_exist_starting_with_text(["NHL",
