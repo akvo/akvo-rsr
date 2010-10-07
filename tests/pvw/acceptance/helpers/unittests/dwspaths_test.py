@@ -57,6 +57,51 @@ class DWSPathsTest(TestCase):
 
         self.verify_path("/web/about", about_page())
 
+    def test_can_get_open_license_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Open license page"""
+
+        self.verify_path("/web/open_license", open_license_page())
+
+    def test_can_get_terms_of_use_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Terms of use page"""
+
+        self.verify_path("/web/terms_of_use", terms_of_use_page())
+
+    def test_can_get_privacy_policy_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Privacy policy page"""
+
+        self.verify_path("/web/privacy_policy", privacy_policy_page())
+
+    def test_can_get_credits_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Credits page"""
+
+        self.verify_path("/web/credits", credits_page())
+
+    def test_can_get_admin_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Admin page"""
+
+        self.verify_path("/web/admin", admin_page())
+
+    def test_can_get_register_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Register page"""
+
+        self.verify_path("/rsr/accounts/register1", register_page())
+
+    def test_can_get_sign_in_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Sign in page"""
+
+        self.verify_path("/rsr/signin/?next=/rsr/projects/all", sign_in_page())
+
+    def test_can_get_contact_us_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Contact us page"""
+
+        self.verify_path("/web/contact_us", contact_us_page())
+
+    def test_can_get_akvo_home_page_path(self):
+        """helpers.unittests.DWSPathsTest  Can get path for Akvo home page"""
+
+        self.verify_path("http://www.akvo.org", akvo_home_page())
+
     def verify_path(self, expected_path, actual_path):
         self.failUnlessEqual(expected_path, actual_path, "\nExpected path: %s\n  Actual path: %s" % (expected_path, actual_path))
 

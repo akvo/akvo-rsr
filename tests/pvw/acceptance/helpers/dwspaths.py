@@ -29,6 +29,33 @@ def news_page():
 def about_page():
     return cms_path("about")
 
+def open_license_page():
+    return cms_path("open_license")
+
+def terms_of_use_page():
+    return cms_path("terms_of_use")
+
+def privacy_policy_page():
+    return cms_path("privacy_policy")
+
+def credits_page():
+    return cms_path("credits")
+
+def admin_page():
+    return cms_path("admin")
+
+def register_page():
+    return rsr_path("accounts/register1")
+
+def sign_in_page():
+    return rsr_path("signin/?next=%s" % all_projects_page())
+
+def contact_us_page():
+    return cms_path("contact_us")
+
+def akvo_home_page():
+    return "http://www.akvo.org"
+
 def rsr_path(subpath):
     return "/rsr/%s" % subpath
 
