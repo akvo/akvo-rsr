@@ -7,10 +7,11 @@
 from helpers.testexecution import *
 
 from web.navigation.menu_navigation_test import MenuNavigationTest
+from web.navigation.footer_navigation_test import FooterNavigationTest
 
 
 def navigation_suite():
-    return create_test_suite_from_classes([MenuNavigationTest])
+    return create_test_suite_from_classes([MenuNavigationTest, FooterNavigationTest])
 
 if __name__ == "__main__":
     run_test_suite(navigation_suite())
