@@ -572,7 +572,7 @@ def orglist(request, org_type='all'):
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         'lang': get_language(),
         'page': page,
-        'projs': projs,
+        'projs': projs,  #TODO: rename to projects and fix template
         'query_string': query_string,
         'request_get': request.GET,
         'sort': sort,
@@ -1085,6 +1085,7 @@ def orgdetail(request, org_id):
     org_partners = org_projects.all_partners().distinct()
     return {
         'org': o, 
+        'o': o, #TODO: fix template and remove
         'org_projects': org_projects, 
         'org_partners': org_partners,
         'site_section': 'index',
@@ -1110,6 +1111,7 @@ def projectmain(request, project_id):
     slider_width = (len(updates_with_images) + 1) * 115    
     return {
         'project'               : p,
+        'p'                     : p, #TODO: fix template and remove
         'related'               : related,
         'updates'               : updates, 
         'comments'              : comments, 

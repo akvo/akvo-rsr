@@ -395,6 +395,71 @@ class OrganisationAccount(models.Model):
         verbose_name = _('organisation account')
         verbose_name_plural = _('organisation accounts')
 
+class FocusArea(models.Model):
+    def image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
+    name        = models.CharField(_('focus area name'), max_length=50, help_text=_('The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
+    slug        = models.SlugField(_('slug'), max_length=20, help_text=_('Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
+    description = models.TextField(_('description'), max_length=500, help_text=_('Enter the text that will appear on the focus area project listing page. (500 characters).'))
+    image       = ImageWithThumbnailsField(
+                    _('focus area image'),
+                    upload_to=image_path,
+                    thumbnail={'size': (20, 20), 'options': ('crop', )},
+                    help_text=_('The image that will appear on the focus area project listing page.'),
+                )
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('focus_area', (), {'slug': self.slug})
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name=_('focus area')
+        verbose_name_plural=_('focus areas')
+
+class Category(models.Model):
+    def image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
+    #CHOICES_CATEGORY = (
+    #    (1, _('Water for food and nature')),
+    #    (2, _('Water and climate')),
+    #    (3, _('Millennium goals water and sanitation')),
+    #    (4, _('Integrated resource management')),
+    #    (5, _('Ground water management')),
+    #    (6, _('Delta technology')),
+    #    (7, _('Clean water')),
+    #    (8, _('Safety')),
+    #    (9, _('Waste')),
+    #    (10, _('Resource management')),
+    #    (11, _('Water & climate')),
+    #)
+    name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
+    icon                    = ImageWithThumbnailsField(
+                                _('category icon'),
+                                blank=True,
+                                upload_to=image_path,
+                                thumbnail={'size': (20, 20), 'options': ('crop', )},
+                                help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
+                            )
+    focus_area              = models.ManyToManyField(FocusArea, related_name='categories',)
+    #focus_area_clean        = models.BooleanField(_('focus area clean water'))
+    #focus_area_safety       = models.BooleanField(_('focus area safety'))
+    #focus_area_sharing      = models.BooleanField(_('focus area sharing water'))
+    #focus_area_governance   = models.BooleanField(_('focus area governance'))
+    
+    def __unicode__(self):
+        return '%s (%s)' % (self.name, self.areas(),)
+
+    class Meta:
+        verbose_name=_('category')
+        verbose_name_plural=_('categories')
+        
+    def areas(self):
+        return ', '.join([capfirst(area.name) for area in self.focus_area.all()])
+    areas.allow_tags = True
+
 
 CURRENCY_CHOICES = (
     ('USD', '$'),
@@ -417,70 +482,6 @@ class OrganisationsQuerySetManager(QuerySetManager):
 
 if settings.PVW_RSR: #pvw-rsr
     
-    class FocusArea(models.Model):
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
-        name        = models.CharField(_('focus area name'), max_length=50, help_text=_('The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
-        slug        = models.SlugField(_('slug'), max_length=20, help_text=_('Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
-        description = models.TextField(_('description'), max_length=500, help_text=_('Enter the text that will appear on the focus area project listing page. (500 characters).'))
-        image       = ImageWithThumbnailsField(
-                        _('focus area image'),
-                        upload_to=image_path,
-                        thumbnail={'size': (20, 20), 'options': ('crop', )},
-                        help_text=_('The image that will appear on the focus area project listing page.'),
-                    )
-
-        @models.permalink
-        def get_absolute_url(self):
-            return ('focus_area', (), {'slug': self.slug})
-
-        def __unicode__(self):
-            return self.name
-
-        class Meta:
-            verbose_name=_('focus area')
-            verbose_name_plural=_('focus areas')
-
-    class Category(models.Model):
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
-        #CHOICES_CATEGORY = (
-        #    (1, _('Water for food and nature')),
-        #    (2, _('Water and climate')),
-        #    (3, _('Millennium goals water and sanitation')),
-        #    (4, _('Integrated resource management')),
-        #    (5, _('Ground water management')),
-        #    (6, _('Delta technology')),
-        #    (7, _('Clean water')),
-        #    (8, _('Safety')),
-        #    (9, _('Waste')),
-        #    (10, _('Resource management')),
-        #    (11, _('Water & climate')),
-        #)
-        name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
-        icon                    = ImageWithThumbnailsField(
-                                    _('category icon'),
-                                    blank=True,
-                                    upload_to=image_path,
-                                    thumbnail={'size': (20, 20), 'options': ('crop', )},
-                                    help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
-                                )
-        focus_area              = models.ManyToManyField(FocusArea, related_name='categories',)
-        #focus_area_clean        = models.BooleanField(_('focus area clean water'))
-        #focus_area_safety       = models.BooleanField(_('focus area safety'))
-        #focus_area_sharing      = models.BooleanField(_('focus area sharing water'))
-        #focus_area_governance   = models.BooleanField(_('focus area governance'))
-        
-        def __unicode__(self):
-            return '%s (%s)' % (self.name, self.areas(),)
-
-        class Meta:
-            verbose_name=_('category')
-            verbose_name_plural=_('categories')
-            
-        def areas(self):
-            return ', '.join([capfirst(area.name) for area in self.focus_area.all()])
-        areas.allow_tags = True
 
 
     class Project(models.Model):    
@@ -1060,6 +1061,7 @@ else: #akvo-rsr
         name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
         status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+        categories                  = models.ManyToManyField(Category, related_name='projects',)
         city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
         state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
         country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
