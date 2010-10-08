@@ -6,12 +6,12 @@
 
 from helpers.testexecution import *
 
-from web.navigation.menu_navigation_test import MenuNavigationTest
-from web.navigation.footer_navigation_test import FooterNavigationTest
+from helpers.unittests.dwspaths_test import DWSPathsTest
+from helpers.unittests.dwsurls_test import DWSURLsTest
 
 
-def navigation_suite():
-    return create_test_suite_from_classes([MenuNavigationTest, FooterNavigationTest])
+def helpers_suite():
+    return create_test_suite_from_classes([DWSPathsTest, DWSURLsTest])
 
 if __name__ == "__main__":
-    run_test_suite(navigation_suite())
+    run_test_suite(helpers_suite())
