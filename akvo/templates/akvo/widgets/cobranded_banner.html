@@ -20,7 +20,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	
-	{% media_bundle 'widget_cobranded_banner' %}
+	{% asset_bundle 'widget_cobranded_banner' %}
 		
 	<style type="text/css" media="screen">
 	{% block inline_styles %}
@@ -169,8 +169,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 		function Partner (orgName,partnerType,url) {
 			this.orgName = orgName;
-			this.partnerType = partnerType
-			this.url = url
+			this.partnerType = partnerType;
+			this.url = url;
 			this.getName = function () { return this.orgName; }
 			this.getType = function () { return this.partnerType; }
 			this.getUrl = function () { return this.url; }

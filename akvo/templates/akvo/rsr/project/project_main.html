@@ -47,8 +47,8 @@
 						
 					<div id="gallery_box_slider">
 						<div class="gallery_links_container">
-							<div style="border:2px solid #71CDFF;">
-								<a class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}" target="_blank">
+							<div style="border:3px solid #71CDFF;">
+								<a id="gallery_links_first" class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}" target="_blank">
 									<img src="{% thumbnail p.current_image 100x75 %}" />
 								</a>
 							</div>
@@ -56,7 +56,7 @@
 						{% for update_with_image in updates_with_images %}
 						<div class="gallery_links_container">
 							<div>
-								<a class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}" target="_blank">
+								<a {% if forloop.last %}id="gallery_links_last" {% endif %} class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}" target="_blank">
 									<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
 								</a>								
 							</div>
@@ -85,10 +85,6 @@
 	            {% else %}
 	                <p style="color: red;">{% trans 'No map available' %}</p>
 	            {% endif %}
-				{% comment %}
-					{% map_thumb p 140 140 '' %}
-				{% endcomment %}
-
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -188,6 +184,7 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 {% endif %}
 
+
 {% endblock js %}
 
 {% block jq_ready %}
@@ -202,7 +199,6 @@
 	
 	jQ('#gallery_box_controller_next').click(function () {
 		var left = jQ('#gallery_box_slider').offset().left;
-		
 		if ( (({{slider_width}} - 119 * 4) + left) > 0 ) {
 			jQ('#gallery_box_slider').animate({'left': '-=250px'}, 300);
 		} 

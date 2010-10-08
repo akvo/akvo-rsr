@@ -10,7 +10,7 @@
 	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
 	<li id="last_breadcrum_item">
 		{% if query_string%}
-			{% trans 'Searched' %} {{o.name}} {% trans 'projects for' %} <span style="font-style:italic;">{{ query_string|escape }}&quot;</span>
+			{{o.name}} {% trans 'projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ query_string|escape }}&quot;</span>		
 		{% else %}
 			{{o.name}}
 		{% endif %}
@@ -18,7 +18,7 @@
 {% else %}
 	<li id="last_breadcrum_item">
 		{% if query_string%}
-			{% trans 'Searched all projects for' %} <span style="font-style:italic;">{{ query_string|escape }}</span>
+			{% trans 'Projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ query_string|escape }}&quot;</span>
 		{% else %}
 			{% trans 'Projects' %}
 		{% endif %}
@@ -76,7 +76,8 @@
 	{% if o %}
 		<h1>
 			{% if query_string%}
-				{% trans 'Searched' %} {{o.name}} {% trans 'projects for' %} <span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
+				{{o.name}} {% trans 'projects filtered by keywords:' %} 
+				<span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
 			{% else %}
 				{{o.name}}
 			{% endif %}
@@ -84,7 +85,8 @@
 	{% else %}
 		<h1>
 			{% if query_string%}
-				{% trans 'Searched all projects for' %} <span class="grey" style="font-style:italic;">{{ query_string|escape }}</span>
+			{% trans 'Projects filtered by keywords:' %} 
+			<span class="grey" style="font-style:italic;">&quot;{{ query_string|escape }}&quot;</span>
 			{% else %}
 				{% trans 'Projects' %}
 			{% endif %}
@@ -95,8 +97,102 @@
 		<div id="project_search" class="span-18">
 			<div class="round" style="border: 1px solid #ccc;">
 				<div class="space15">
-					<input name="q" placeholder="Filter with keywords" type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" value="{{ query_string|escape }}" autofocus>					
-					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">				
+					<div style="float:right; width:480px; overflow:hidden;">
+						<p style="margin:0;" class="small">
+							Keyword only filters on project name &amp; subtitle. Available text field on the project model(which can be added) is: project_plan_summary, goals_overview, current_status_detail, project_plan_detail, sustainability, context and notes.<br />
+							Maybe we should remove the keyword filter...
+						</p>
+					</div>
+					
+					<input name="q" placeholder="Filter on project name and subtitle" 
+						type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" 
+						value="{{ query_string|escape }}">									
+					<br />
+
+					{% comment %}
+					<select id="cobranded-narrow-organisations" class="machinery_widget-organisations"
+						name="widget-organisations" size="1" disabled="disabled">
+						{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+						{% endfor %}
+					</select>
+					{% endcomment %}
+										
+					<select name="continent" id="continent" size="1" style="margin-left:20px;width:120px">
+						<option value="all">{% trans 'All continents' %}</option>
+						{% for continent in continents %}
+						<option value="{{continent.0}}"
+							{% ifequal continent.0 selected_continent %} SELECTED {% endifequal %}>
+							{{continent.1}}
+						</option>
+						{% endfor %}
+					</select>
+
+					<select name="country" id="country" size="1" style="width:150px">
+						<option id="all_country" value="all">{% trans 'All countries' %}</option>
+						{% if selected_continent == 'all' %}	
+							{% for country in countries %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 1 %}
+							{% for country in countries_in_africa %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 2 %}
+							{% for country in countries_in_asia %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 3 %}
+							{% for country in countries_in_australia %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 4 %}
+							{% for country in countries_in_europe %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 5 %}
+							{% for country in countries_in_north_america %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						{% if selected_continent == 6 %}
+							{% for country in countries_in_south_america %}
+							<option value="{{country.id}}"
+								{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+								{{country.country_name}}
+							</option>
+							{% endfor %}
+						{% endif %}
+						
+						
+						
+					</select>
+					
+					<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:20px">
+
 				</div>
 			</div>
 		</div>
@@ -425,3 +521,101 @@
 	</div>
 	
 {% endblock maincontent %}
+
+{% block jq_ready %}
+jQ('#continent').change(function() {
+
+	function Country(countryName, countryId) {
+		this.countryName = countryName;
+		this.countryId = countryId;
+		this.getName = function () { return this.countryName; }
+		this.getId = function () { return this.countryId; }
+	}
+	
+	/*
+	function Continent(continentName, continentId) {
+		this.continentName = continentName;
+		this.continentId = continentId;
+		this.getName = function () { return this.continentName; }
+		this.getId = function () { return this.continentId; }
+	}
+	*/
+	
+	function add_countires(countries) {
+		jQ('#country >option').remove();
+		jQ('#country').append('<option value="all">{% trans 'All countries' %}</option>');
+		for (var i=0; i < countries.length; i++) {				
+			jQ('#country').append('<option value="' + countries[i].getId() + '">' 
+				+ countries[i].getName() + '</option>');
+		};
+	}
+	
+	
+	var all_countries = [];
+	all_countries[all_countries.length] = new Country('{% trans 'All countries' %}','all');
+	{% for country in countries %}
+		all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_africa = [];
+	{% for country in countries_in_africa %}
+		countries_in_africa[countries_in_africa.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_asia = [];
+	{% for country in countries_in_asia %}
+		countries_in_asia[countries_in_asia.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_australia = [];
+	{% for country in countries_in_australia %}
+		countries_in_australia[countries_in_australia.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_europe = [];
+	{% for country in countries_in_europe %}
+		countries_in_europe[countries_in_europe.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_north_america = [];
+	{% for country in countries_in_north_america %}
+		countries_in_north_america[countries_in_north_america.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var countries_in_south_america = [];
+	{% for country in countries_in_south_america %}
+		countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
+	{% endfor %}
+	
+	var selected_country = jQ('#country').val();
+	
+	
+	jQ('#continent').val(selected_continent);
+	
+	
+	var selected_continent = jQ('#continent').val();
+	if (selected_continent == 1 ) {		
+		add_countires(countries_in_africa);
+	} 
+	else if (selected_continent == 2 ) {		
+		add_countires(countries_in_asia);
+	}
+	else if (selected_continent == 3) {
+		add_countires(countries_in_australia);
+	}
+	else if (selected_continent == 4) {
+		add_countires(countries_in_europe);
+	}
+	else if (selected_continent == 5) {
+		add_countires(countries_in_north_america);
+	}
+	else if (selected_continent == 6) {
+		add_countires(countries_in_south_america);
+	}
+	else {
+		add_countires(all_countries);	
+	}
+	
+	
+});
+{% endblock jq_ready %}
