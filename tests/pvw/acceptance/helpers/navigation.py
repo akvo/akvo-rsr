@@ -6,6 +6,9 @@
 
 from test_settings import *
 
+from helpers.dwspaths import *
+
+
 class SeleniumNavigator:
 
     def __init__(self, selenium_client):
@@ -67,3 +70,32 @@ class RSRNavigator:
 
     def open_project_page(self, project_number):
         self.navigator.open_page("/rsr/project/%i/" % (project_number))
+
+class DWSNavigator(RSRNavigator):
+
+    def open_focus_areas_page(self):
+        self.open_page(focus_areas_page())
+
+    def open_projects_page(self):
+        self.open_page(projects_page())
+
+    def open_all_projects_page(self):
+        self.open_page(all_projects_page())
+
+    def open_netherlands_page(self):
+        self.open_page(netherlands_page())
+
+    def open_education_page(self):
+        self.open_page(education_page())
+
+    def open_directory_page(self):
+        self.open_page(directory_page())
+
+    def open_news_page(self):
+        self.open_page(news_page())
+
+    def open_about_page(self):
+        self.open_page(about_page())
+
+    def open_page(self, page_path):
+        self.navigator.open_page(page_path)

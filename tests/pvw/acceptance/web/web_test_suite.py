@@ -7,11 +7,13 @@
 from helpers.seleniumclient import SeleniumClient
 from helpers.testexecution import *
 
+from web.general.general_test_suite import general_suite
 from web.navigation.navigation_test_suite import navigation_suite
+from web.content.page_content_test_suite import page_content_suite
 
 
 def web_suite():
-    return create_test_suite_from_suites([navigation_suite()])
+    return create_test_suite_from_suites([general_suite(), navigation_suite(), page_content_suite()])
 
 if __name__ == "__main__":
     run_test_suite(web_suite())
