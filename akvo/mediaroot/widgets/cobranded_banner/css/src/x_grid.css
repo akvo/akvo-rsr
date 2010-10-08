@@ -1,0 +1,86 @@
+.widget_cobranded_banner-container {width:459px;margin:0 auto;}
+.widget_cobranded_banner-showgrid {background:url(src/grid.png);}
+.widget_cobranded_banner-column, div.widget_cobranded_banner-span-1, div.widget_cobranded_banner-span-2, div.widget_cobranded_banner-span-3, div.widget_cobranded_banner-span-4, div.widget_cobranded_banner-span-5, div.widget_cobranded_banner-span-6, div.widget_cobranded_banner-span-7, div.widget_cobranded_banner-span-8, div.widget_cobranded_banner-span-9, div.widget_cobranded_banner-span-10, div.widget_cobranded_banner-span-11, div.widget_cobranded_banner-span-12 {float:left;margin-right:9px;}
+.widget_cobranded_banner-last, div.widget_cobranded_banner-last {margin-right:0;}
+.widget_cobranded_banner-span-1 {width:30px;}
+.widget_cobranded_banner-span-2 {width:69px;}
+.widget_cobranded_banner-span-3 {width:108px;}
+.widget_cobranded_banner-span-4 {width:147px;}
+.widget_cobranded_banner-span-5 {width:186px;}
+.widget_cobranded_banner-span-6 {width:225px;}
+.widget_cobranded_banner-span-7 {width:264px;}
+.widget_cobranded_banner-span-8 {width:303px;}
+.widget_cobranded_banner-span-9 {width:342px;}
+.widget_cobranded_banner-span-10 {width:381px;}
+.widget_cobranded_banner-span-11 {width:420px;}
+.widget_cobranded_banner-span-12, div.widget_cobranded_banner-span-12 {width:459px;margin:0;}
+input.widget_cobranded_banner-span-1, textarea.widget_cobranded_banner-span-1, select.widget_cobranded_banner-span-1 {width:30px!important;}
+input.widget_cobranded_banner-span-2, textarea.widget_cobranded_banner-span-2, select.widget_cobranded_banner-span-2 {width:50px!important;}
+input.widget_cobranded_banner-span-3, textarea.widget_cobranded_banner-span-3, select.widget_cobranded_banner-span-3 {width:89px!important;}
+input.widget_cobranded_banner-span-4, textarea.widget_cobranded_banner-span-4, select.widget_cobranded_banner-span-4 {width:128px!important;}
+input.widget_cobranded_banner-span-5, textarea.widget_cobranded_banner-span-5, select.widget_cobranded_banner-span-5 {width:167px!important;}
+input.widget_cobranded_banner-span-6, textarea.widget_cobranded_banner-span-6, select.widget_cobranded_banner-span-6 {width:206px!important;}
+input.widget_cobranded_banner-span-7, textarea.widget_cobranded_banner-span-7, select.widget_cobranded_banner-span-7 {width:245px!important;}
+input.widget_cobranded_banner-span-8, textarea.widget_cobranded_banner-span-8, select.widget_cobranded_banner-span-8 {width:284px!important;}
+input.widget_cobranded_banner-span-9, textarea.widget_cobranded_banner-span-9, select.widget_cobranded_banner-span-9 {width:323px!important;}
+input.widget_cobranded_banner-span-10, textarea.widget_cobranded_banner-span-10, select.widget_cobranded_banner-span-10 {width:362px!important;}
+input.widget_cobranded_banner-span-11, textarea.widget_cobranded_banner-span-11, select.widget_cobranded_banner-span-11 {width:401px!important;}
+input.widget_cobranded_banner-span-12, textarea.widget_cobranded_banner-span-12, select.widget_cobranded_banner-span-12 {width:449px!important;}
+.widget_cobranded_banner-append-1 {padding-right:39px;}
+.widget_cobranded_banner-append-2 {padding-right:78px;}
+.widget_cobranded_banner-append-3 {padding-right:117px;}
+.widget_cobranded_banner-append-4 {padding-right:156px;}
+.widget_cobranded_banner-append-5 {padding-right:195px;}
+.widget_cobranded_banner-append-6 {padding-right:234px;}
+.widget_cobranded_banner-append-7 {padding-right:273px;}
+.widget_cobranded_banner-append-8 {padding-right:312px;}
+.widget_cobranded_banner-append-9 {padding-right:351px;}
+.widget_cobranded_banner-append-10 {padding-right:390px;}
+.widget_cobranded_banner-append-11 {padding-right:429px;}
+.widget_cobranded_banner-prepend-1 {padding-left:39px;}
+.widget_cobranded_banner-prepend-2 {padding-left:78px;}
+.widget_cobranded_banner-prepend-3 {padding-left:117px;}
+.widget_cobranded_banner-prepend-4 {padding-left:156px;}
+.widget_cobranded_banner-prepend-5 {padding-left:195px;}
+.widget_cobranded_banner-prepend-6 {padding-left:234px;}
+.widget_cobranded_banner-prepend-7 {padding-left:273px;}
+.widget_cobranded_banner-prepend-8 {padding-left:312px;}
+.widget_cobranded_banner-prepend-9 {padding-left:351px;}
+.widget_cobranded_banner-prepend-10 {padding-left:390px;}
+.widget_cobranded_banner-prepend-11 {padding-left:429px;}
+div.widget_cobranded_banner-border {padding-right:3px;margin-right:4px;border-right:1px solid #eee;}
+div.widget_cobranded_banner-colborder {padding-right:24px;margin-right:25px;border-right:1px solid #eee;}
+.widget_cobranded_banner-pull-1 {margin-left:-39px;}
+.widget_cobranded_banner-pull-2 {margin-left:-78px;}
+.widget_cobranded_banner-pull-3 {margin-left:-117px;}
+.widget_cobranded_banner-pull-4 {margin-left:-156px;}
+.widget_cobranded_banner-pull-5 {margin-left:-195px;}
+.widget_cobranded_banner-pull-6 {margin-left:-234px;}
+.widget_cobranded_banner-pull-7 {margin-left:-273px;}
+.widget_cobranded_banner-pull-8 {margin-left:-312px;}
+.widget_cobranded_banner-pull-9 {margin-left:-351px;}
+.widget_cobranded_banner-pull-10 {margin-left:-390px;}
+.widget_cobranded_banner-pull-11 {margin-left:-429px;}
+.widget_cobranded_banner-pull-12 {margin-left:-468px;}
+.widget_cobranded_banner-pull-1, .widget_cobranded_banner-pull-2, .widget_cobranded_banner-pull-3, .widget_cobranded_banner-pull-4, .widget_cobranded_banner-pull-5, .widget_cobranded_banner-pull-6, .widget_cobranded_banner-pull-7, .widget_cobranded_banner-pull-8, .widget_cobranded_banner-pull-9, .widget_cobranded_banner-pull-10, .widget_cobranded_banner-pull-11, .widget_cobranded_banner-pull-12 {float:left;position:relative;}
+.widget_cobranded_banner-push-1 {margin:0 -39px 1.5em 39px;}
+.widget_cobranded_banner-push-2 {margin:0 -78px 1.5em 78px;}
+.widget_cobranded_banner-push-3 {margin:0 -117px 1.5em 117px;}
+.widget_cobranded_banner-push-4 {margin:0 -156px 1.5em 156px;}
+.widget_cobranded_banner-push-5 {margin:0 -195px 1.5em 195px;}
+.widget_cobranded_banner-push-6 {margin:0 -234px 1.5em 234px;}
+.widget_cobranded_banner-push-7 {margin:0 -273px 1.5em 273px;}
+.widget_cobranded_banner-push-8 {margin:0 -312px 1.5em 312px;}
+.widget_cobranded_banner-push-9 {margin:0 -351px 1.5em 351px;}
+.widget_cobranded_banner-push-10 {margin:0 -390px 1.5em 390px;}
+.widget_cobranded_banner-push-11 {margin:0 -429px 1.5em 429px;}
+.widget_cobranded_banner-push-12 {margin:0 -468px 1.5em 468px;}
+.widget_cobranded_banner-push-1, .widget_cobranded_banner-push-2, .widget_cobranded_banner-push-3, .widget_cobranded_banner-push-4, .widget_cobranded_banner-push-5, .widget_cobranded_banner-push-6, .widget_cobranded_banner-push-7, .widget_cobranded_banner-push-8, .widget_cobranded_banner-push-9, .widget_cobranded_banner-push-10, .widget_cobranded_banner-push-11, .widget_cobranded_banner-push-12 {float:right;position:relative;}
+.widget_cobranded_banner-prepend-top {margin-top:1.5em;}
+.widget_cobranded_banner-append-bottom {margin-bottom:1.5em;}
+.widget_cobranded_banner-box {padding:1.5em;margin-bottom:1.5em;background:#E5ECF9;}
+hr {background:#ddd;color:#ddd;clear:both;float:none;width:100%;height:.1em;margin:0 0 1.45em;border:none;}
+hr.widget_cobranded_banner-space {background:#fff;color:#fff;}
+.widget_cobranded_banner-clearfix:after, .widget_cobranded_banner-container:after {content:"\0020";display:block;height:0;clear:both;visibility:hidden;overflow:hidden;}
+.widget_cobranded_banner-clearfix, .widget_cobranded_banner-container {display:block;}
+.widget_cobranded_banner-clear {clear:both;}

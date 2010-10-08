@@ -1,0 +1,20 @@
+
+
+.org_statistics_table, .org_statistics_table tr, .org_statistics_table tr td, .org_statistics_table th {
+    border:none;
+    padding:3px;
+    }
+    
+.org_statistics_table {
+    width:100%;
+    font-size:0.8125em;
+    }
+
+tr.bottom_grey_border {
+    padding-bottom:20px;
+    border-bottom:1px solid #ccc;
+    }
+
+
+
+    
