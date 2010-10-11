@@ -422,7 +422,7 @@ else:
         '''
         
         # Get relevant projects
-        projects = Project.objects.published().funding().select_related()
+        projects = Project.objects.published().status_not_archived().funding().select_related()
         
         # Get projects either by using the query or all
         query_string = ''
@@ -474,7 +474,7 @@ else:
     
         # get all projects the org is asociated with
         o = Organisation.objects.get(pk=org_id)
-        projects = o.published_projects().funding()
+        projects = o.published_projects().status_not_archived().funding()
         
         # Get projects either by using the query or all
         query_string = ''
@@ -1111,7 +1111,7 @@ def orgdetail(request, org_id):
     if settings.PVW_RSR:
         org_projects = o.published_projects()
     else:
-        org_projects = o.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        org_projects = o.published_projects().status_not_cancelled().status_not_complete()
     org_partners = o.partners().distinct()
     return {
         'org': o, 
@@ -1303,7 +1303,7 @@ def project_widget(request, template='feature-side', project_id=None):
     if project_id:
         p = get_object_or_404(Project, pk=project_id)
     else:
-        p = random.choice(Project.objects.published())
+        p = random.choice(Project.objects.published().status_not_archived().status_not_cancelled())
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
@@ -1325,9 +1325,9 @@ def project_list_widget(request, template='project-list', org_id=0):
     site = request.GET.get('site', 'www.akvo.org')
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)
-        p = o.published_projects().funding()
+        p = o.published_projects().status_not_archived().status_not_cancelled().funding()
     else:
-        p = Project.objects.published().funding()
+        p = Project.objects.published().status_not_archived().status_not_cancelled().funding()
     order_by = request.GET.get('order_by', 'name')
     #p = p.annotate(last_update=Max('project_updates__time'))
     p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
