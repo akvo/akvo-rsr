@@ -1,15 +1,39 @@
-RELEASE_NOTES.txt, v0.9.18
-last changed: 6 Aug 2010, gvh
+RELEASE_NOTES.txt, v0.9.19
+last changed: 4 Oct 2010, bethw
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+
+Akvo RSR v 0.9.19 release notes
+-------------------------------------------
+4 Oct 2010, (Code name: Magic) bethw
+
+This release adds a new project status to Akvo RSR, fixes a bug in the donations process and includes a point release update of the Django framework. 
+
+New features
+------------
+
+### Project Status
+A new project status has been added, Archived. Projects set to Archived will no longer appear in Akvo at a Glance figures, project lists or organisation pages. Donations boxes still appear on widgets; this is Lighthouse ticket #74.
+
+### Django 1.2.3
+Akvo RSR now runs on Django version 1.2.3. The security fix in 1.2.2 caused some problems with which have been remedied in this release.
+
+Bug fixes
+------------
+
+### Donation emails not being sent.
+A code regression prevented donations from proceeding to Complete status. As a result, confirmation emails and funding totals in the Akvo at a Glance portlets were not appropriately updated. This has now been fixed.
+
+---
+
 Akvo RSR v 0.9.18 release notes
 -------------------------------------------
 6 Aug 2010, (Code name: Supercharge) gvh
 
-This release introduces page couters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
+This release introduces page counters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
 
 New features
 ------------
@@ -190,8 +214,8 @@ Added 'Management cost' to the Budget item ITEM_CHOICES tuple.
 http://www.pivotaltracker.com/story/show/1407959
 
 ### The version of Django that is running is visible in the source
-One can now in the front page source see which version of Django that is runnig. e.g. "Â«!--
-Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) --Â»".
+One can now in the front page source see which version of Django that is runnig. e.g. "Ç!--
+Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) --È".
 http://www.pivotaltracker.com/story/show/1464719
 
 ### Humanised funding boxes.
@@ -258,7 +282,7 @@ http://www.pivotaltracker.com/story/show/1510571
 
 ### Prevented display of funding amounts less than 0 in templates.
 Over-funded projects could result in the round filter displaying very confusing amounts such
-as "â‚¬-0".
+as "Û-0".
 http://www.pivotaltracker.com/story/show/1493650
 
 ### Pledged sum in Org activities wrong with certain data
