@@ -187,7 +187,7 @@ def asset_bundle(context, bundle):
         bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
         bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
         bundle_path = map.BUNDLE_MAP['%s' % str(bundle)]['path']
-    except:
+    except Exception, e:
         print 'Got problems'
         bundle_hash = '000'
         cant_get_map = True

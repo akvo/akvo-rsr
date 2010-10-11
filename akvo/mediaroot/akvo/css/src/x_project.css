@@ -49,7 +49,7 @@ div#gallery_box {
     float:right; 
     width:42px;
     height:21px;
-    background: transparent url(../img/minigallery/arrows.png) no-repeat;
+    background: transparent url(../../img/minigallery/arrows.png) no-repeat;
     }
 
 #gallery_box_controller_prev {

@@ -1,6 +1,6 @@
 #header {
-    /*background: #EFF3F5 url('../img/main_nav_bottom.png') repeat-x bottom;*/
-    background: transparent url('../img/main_nav_bkgd.png') repeat-x bottom;
+    /*background: #EFF3F5 url('../../img/main_nav_bottom.png') repeat-x bottom;*/
+    background: transparent url('../../img/main_nav_bkgd.png') repeat-x bottom;
     z-index:5;
     left: 0; /* IE 7 */
 	position: fixed;

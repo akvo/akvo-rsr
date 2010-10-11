@@ -1114,6 +1114,7 @@ def orgdetail(request, org_id):
     org_partners = o.partners().distinct()
     return {
         'org': o, 
+        'o': o, #TODO: fix template and remove
         'org_projects': org_projects, 
         'org_partners': org_partners,
         'site_section': 'projects',
