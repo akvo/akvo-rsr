@@ -147,6 +147,7 @@ def index(request, cms_id=None):
         updates = {}
     else:
         focus_areas = None
+        cms = None
         featured = ProjectUpdate.objects.filter(featured__exact=True)
         if len(featured) < 3:
             updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]

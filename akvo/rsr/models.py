@@ -461,6 +461,27 @@ class Category(models.Model):
     areas.allow_tags = True
 
 
+class MiniCMS(models.Model):
+    '''
+    A model that holds a bunch of fields for editable text on the home page and the project listing page.
+    '''
+    def image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
+        
+    top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
+    map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
+    video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The URL to the video to be shown on the home page.'))
+    tagline_box          = models.TextField(_(_(u'tagline box text'), ), max_length=100, help_text=_('Enter the text that will appear in the on-line box at the bottom of the home page. (100 characters).'))
+    active              = models.BooleanField(_(u'currently active home page'), default=False)
+
+    def __unicode__(self):
+        return self.top_right_box[:50]
+    
+    class Meta:
+        verbose_name        =_(u'MiniCMS')
+        verbose_name_plural =_(u'MiniCMS')
+
+
 CURRENCY_CHOICES = (
     ('USD', '$'),
     ('EUR', '€'),
@@ -480,28 +501,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
 
-if settings.PVW_RSR: #pvw-rsr
-    
-    class MiniCMS(models.Model):
-        '''
-        A model that holds a bunch of fields for editable text on the home page and the project listing page.
-        '''
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
-            
-        top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
-        map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
-        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The URL to the video to be shown on the home page.'))
-        tagline_box          = models.TextField(_(_(u'tagline box text'), ), max_length=100, help_text=_('Enter the text that will appear in the on-line box at the bottom of the home page. (100 characters).'))
-        active              = models.BooleanField(_(u'currently active home page'), default=False)
-
-        def __unicode__(self):
-            return self.top_right_box[:50]
-        
-        class Meta:
-            verbose_name        =_(u'MiniCMS')
-            verbose_name_plural =_(u'MiniCMS')
-    
+if settings.PVW_RSR: #pvw-rsr    
 
     class Project(models.Model):    
         def image_path(instance, file_name):

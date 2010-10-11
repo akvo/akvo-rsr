@@ -66,8 +66,8 @@ INSTALLED_APPS = (
     'mollie.ideal',
     'django_sorting',
     'pagination',
-    'oembed',
-    'django_markup',
+    #'oembed',
+    #'django_markup',
 )
 
 #INTERNAL_IPS = (
@@ -154,7 +154,7 @@ else:
     
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates/%s-take2' % TEMPLATE_LEAF_DIR).replace('\\','/'),
-    #os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
 )
 
