@@ -1,10 +1,35 @@
-RELEASE_NOTES.txt, v0.9.17
-last changed: 11 May 2010, bw
+RELEASE_NOTES.txt, v0.9.18
+last changed: 6 Aug 2010, gvh
 
 Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
 
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR v 0.9.18 release notes
+-------------------------------------------
+6 Aug 2010, (Code name: Supercharge) gvh
+
+This release introduces page couters in Akvo RSR. We are also updating the version of Django that Akvo RSR runs on to 1.2.
+
+New features
+------------
+
+### Page counters
+In this first iteration page counters are created for projects, project updates and widgets showing one project. The counters record how many visits to a particular project have been made. However we are still only gathering the page count data for these objects, it is not shown in the interface. This will be added in a later release.
+
+### Django 1.2
+Akvo RSR now runs on Django version 1.2. The new version of Django required changes to forms handling. The changes should be backwards compatible however and we have not introduced any new features requiring 1.2 yet.
+
+### Pip requirements
+We use pip whenever possible for installing python libaries. We have added scripts/deployment/pip-requirements.txt describing all python components needed to run Akvo RSR. We use this together with virtualenv to set up our environment. While not technically necessary to run Akvo RSR it is warmly recommended.
+Note: On Ubuntu you may need developer versions of certain python bindings: we had to
+
+sudo aptitude install libxml2-dev libxslt-dev libmysqlclient-dev
+
+to get lxml and MySQL-python to install. Similar upgrades may be needed on other *nixes.
+
+
+---
 
 Akvo RSR v 0.9.17 release notes
 -------------------------------------------

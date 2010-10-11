@@ -3,7 +3,7 @@
 Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
-{% load i18n rsr_tags rsr_filters generic_content addparam thumbnail cache counter_tags humanize %}
+{% load i18n rsr_tags rsr_filters generic_content addparam thumbnail cache humanize %}
 
 {% block title %}projects@{{block.super}}{% endblock title %}
 
@@ -109,12 +109,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						<div style="height:55px">
 							{% category_icons project %}	
 						</div>
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>	
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
+						<span style="display:none;">
+    		        	    {% cache 10 project.view_count %}
+    		        		    {{ project.view_count|intcomma }} {% trans 'views' %}
+    		        	    {% endcache %}
+    				    </span>	
 					</div>
                     <a href="{% url akvo.rsr.views.projectmain project.id %}">
                         {% project_thumb project 100 75 %}
                     </a>
-					<span style="display:none;">{% counter project %}</span>
 				</td>
 				<td class="tableRow locationCell">
 					<p style="margin-top:3px;"><span class="capz">{{project.country.get_continent_display}}</span><br />
