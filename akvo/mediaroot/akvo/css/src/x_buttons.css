@@ -3,7 +3,7 @@ http://www.smashingmagazine.com/2009/12/02/pushing-your-buttons-with-practical-c
 http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 */
 .awesome, .awesome:visited {
-	background: #222 url(../img/awesome_buttons/alert-overlay.png) repeat-x; 
+	background: #222 url(../../img/awesome_buttons/alert-overlay.png) repeat-x; 
 	display: inline-block; 
 	padding: 5px 10px 6px; 
 	color: #fff;

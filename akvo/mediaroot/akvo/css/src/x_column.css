@@ -15,7 +15,7 @@ div.two_column_right_inner {
     }
     
 div.green_fold {
-    background: transparent url(../img/project/green_fold.png) no-repeat;
+    background: transparent url(../../img/project/green_fold.png) no-repeat;
     float:left; 
     height:7px;
     width:7px;
