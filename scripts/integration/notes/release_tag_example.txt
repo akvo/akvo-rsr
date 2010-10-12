@@ -1,0 +1,10 @@
+Example release tag command:
+
+GIT_COMMITTER_DATE="2010-10-06 12:00" git tag -a v0.9.19 9a3308eec8ca45b47 -m "Akvo RSR release v0.9.19 (Magic)"
+
+
+Notes:
+- Use GIT_COMMITTER_DATE when applying tags retrospectively -- note that the date and time combination should be
+  just after the commit being tagged but before the next one in time sequence
+- Specify a brief description, e.g. the release name and version as above.  This will be visible on the Github
+  downloads page: http://github.com/akvo/akvo-rsr/downloads

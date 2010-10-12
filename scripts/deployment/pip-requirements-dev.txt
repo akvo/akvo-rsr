@@ -20,6 +20,7 @@ template_utils
 
 # Other Python Modules
 BeautifulSoup
+Cython
 FeedParser
 PIL
 httplib2
