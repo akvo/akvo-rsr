@@ -58,7 +58,7 @@ INSTALLED_APPS = (
     'template_utils', #see http://code.google.com/p/django-template-utils/
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
-#    'akvo.status',
+    #'akvo.status',
     #'paypal.standard.ipn',
     'sorl.thumbnail',
     'rosetta',
@@ -66,8 +66,8 @@ INSTALLED_APPS = (
     'mollie.ideal',
     'django_sorting',
     'pagination',
-    #'oembed',
-    #'django_markup',
+    'oembed',
+    'django_markup',
 )
 
 #INTERNAL_IPS = (
