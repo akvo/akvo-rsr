@@ -3,30 +3,19 @@ Django==1.2.3
 
 # Django Apps
 django-paypal
+-e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
 django-rosetta
 sorl-thumbnail
 template_utils
 django-piston
--e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie
--e git+git://github.com/zzgvh/django-notification.git#egg=notification
--e git+git://github.com/ericflo/django-pagination.git#egg=pagination
--e git+git://github.com/directeur/django-sorting.git#egg=django_sorting
--e git+git://github.com/worldcompany/djangoembed.git#egg=oembed
 django-counter
-django-markup
 
 # Other Python Modules
-BeautifulSoup==3.0.8.1
+BeautifulSoup
+Cython
 FeedParser
 python-memcached
 PIL
 lxml
-simplejson
-httplib2
-markdown
-
-
-
-
-
+MySQL-python
