@@ -19,7 +19,11 @@ New features
 A new project status has been added, Archived. Projects set to Archived will no longer appear in Akvo at a Glance figures, project lists or organisation pages. Donations boxes still appear on widgets; this is Lighthouse ticket #74.
 
 ### Django 1.2.3
-Akvo RSR now runs on Django version 1.2.3. The security fix in 1.2.2 caused some problems with which have been remedied in this release.
+Akvo RSR now runs on Django version 1.2.3. The security fix in 1.2.2 caused some problems with which have been remedied in this release. Additionally, to run Akvo RSR, you will want get zzgvh patch here:
+
+http://github.com/zzgvh/django/tree/1.2.1_patched
+
+which fixes Django ticket 10046. http://code.djangoproject.com/ticket/10046
 
 Bug fixes
 ------------
@@ -214,8 +218,8 @@ Added 'Management cost' to the Budget item ITEM_CHOICES tuple.
 http://www.pivotaltracker.com/story/show/1407959
 
 ### The version of Django that is running is visible in the source
-One can now in the front page source see which version of Django that is runnig. e.g. "Ç!--
-Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) --È".
+One can now in the front page source see which version of Django that is runnig. e.g. "Â«!--
+Akvo RSR runs on Django, version: Django/1.1.1 (http://www.djangoproject.com) --Â»".
 http://www.pivotaltracker.com/story/show/1464719
 
 ### Humanised funding boxes.
@@ -282,7 +286,7 @@ http://www.pivotaltracker.com/story/show/1510571
 
 ### Prevented display of funding amounts less than 0 in templates.
 Over-funded projects could result in the round filter displaying very confusing amounts such
-as "Û-0".
+as "â‚¬-0".
 http://www.pivotaltracker.com/story/show/1493650
 
 ### Pledged sum in Org activities wrong with certain data
