@@ -212,43 +212,48 @@ def project_list_data(request, projects):
 def focusareas(request):
     return {'site_section': 'areas',}
 
+
+@render_to('rsr/project/project_directory.html')
+def project_list(request, slug='all', org_id=None):
+    '''
+    List of  projects in RSR
+    filtered on either a focus area or an organisation
+    Context:
+    projs: list of all projects
+    page: paginator
+    o: organisation
+    '''
+    org = None
+    focus_area = None
+    if org_id:
+        org = Organisation.objects.get(pk=org_id)
+        projects = org.published_projects().funding()
+    elif slug:
+        focus_area = get_object_or_404(FocusArea, slug=slug)
+        if slug == 'all':
+            projects = Project.objects.published()
+        else:
+            projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
+    # extra columns to be able to sort on latest updates
+    projects = projects.extra(
+        select={
+            'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
+            'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
+        }
+    )
+    return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
+
+
+def old_project_list(request):
+    return HttpResponsePermanentRedirect(reverse('project_list'))
+
+
 if settings.PVW_RSR:
-    @render_to('rsr/project/project_directory.html')
-    def project_list(request, slug='all', org_id=None):
-        '''
-        List of  projects in RSR
-        filtered on either a focus area or an organisation
-        Context:
-        projs: list of all projects
-        page: paginator
-        o: organisation
-        '''
-        org = None
-        focus_area = None
-        if org_id:
-            org = Organisation.objects.get(pk=org_id)
-            projects = org.published_projects().funding()
-        elif slug:
-            focus_area = get_object_or_404(FocusArea, slug=slug)
-            if slug == 'all':
-                projects = Project.objects.published()
-            else:
-                projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
-        # extra columns to be able to sort on latest updates
-        projects = projects.extra(
-            select={
-                'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
-                'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
-            }
-        )
-        return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
     
     @render_to('rsr/directory.html')
     def directory(request, org_type='all'):
         return {'site_section': 'directory',}
 
-    def old_project_list(request):
-        return HttpResponsePermanentRedirect(reverse('project_list'))
 
     @render_to('rsr/organisation/organisation_directory.html')
     def orglist(request):
@@ -262,24 +267,7 @@ if settings.PVW_RSR:
         }
 
 else:
-    
-    @render_to('rsr/project_directory.html')
-    def projectlist(request):
-        '''
-        List of all projects in RSR
-        Context:
-        projects: list of all projects
-        stats: the aggregate projects data
-        page: paginator
-        '''
-        if settings.PVW_RSR:
-            return HttpResponsePermanentRedirect('/')
-        else:
-            projs = Project.objects.published()#.funding().select_related()
-            showcases = projs.need_funding().order_by('?')[:3]
-            page = project_list_data(request, projs)
-            return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'site_section': 'areas'}  
-    
+        
     @render_to('rsr/project_directory.html')
     def filteredprojectlist(request, org_id):
         '''

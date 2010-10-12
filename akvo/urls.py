@@ -40,10 +40,6 @@ if settings.PVW_RSR:
             name='global_project_map'),
         
         # changed compared to akvo-rsr; don't know if we should have an "if settings.PVW_RSR:" here for that or separate urls.py
-        url(r'^rsr/projects/all/$', 'akvo.rsr.views.project_list', name='project_list' ),
-        url(r'^rsr/projects/$', 'akvo.rsr.views.old_project_list', name='old_project_list' ),
-        url(r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list', name='project_list_for_org' ),
-        url(r'^rsr/projects/(?P<slug>[_\-a-zA-Z]+)/$', 'akvo.rsr.views.project_list', name='focus_area' ),
     
         url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='get_widget'),
             
@@ -65,8 +61,8 @@ else:
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
                 
         # Project listing
-        url(r'^rsr/projects/$','akvo.rsr.views.projectlist', name='project_list'),
-        url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
+        #url(r'^rsr/projects/$','akvo.rsr.views.projectlist', name='project_list'),
+        #url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
     
         # Project
         url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),
@@ -90,6 +86,12 @@ else:
     )
 
 urlpatterns += patterns('',
+
+    # Project listing
+    url(r'^rsr/projects/all/$', 'akvo.rsr.views.project_list', name='project_list' ),
+    url(r'^rsr/projects/$', 'akvo.rsr.views.old_project_list', name='old_project_list' ),
+    url(r'^rsr/projects/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list', name='project_list_for_org' ),
+    url(r'^rsr/projects/(?P<slug>[_\-a-zA-Z]+)/$', 'akvo.rsr.views.project_list', name='focus_area' ),
 
     # Project
     url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),

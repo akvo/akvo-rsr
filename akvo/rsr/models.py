@@ -1583,6 +1583,10 @@ else: #akvo-rsr
     
         def budget_total(self):
             return Project.objects.budget_total().get(pk=self.pk).budget_total
+        
+        def focus_areas(self):
+            return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
+        focus_areas.allow_tags = True
     
         #shortcuts to linked orgs for a single project
         def support_partners(self):

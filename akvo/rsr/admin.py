@@ -343,6 +343,7 @@ class PublishingStatusAdmin(admin.ModelAdmin):
     
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
+
 class ProjectAdminForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         # request is needed when validating
@@ -357,6 +358,21 @@ class ProjectAdminForm(forms.ModelForm):
 
 admin.site.register(get_model('rsr', 'location'))
 
+
+class FocusAreaAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'FocusArea')
+    list_display = ('name', 'slug', 'image',)
+
+admin.site.register(get_model('rsr', 'FocusArea'), FocusAreaAdmin)
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'Category')
+    list_display = ('name', 'areas',)
+
+admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
+
+
 if settings.PVW_RSR:
 
     class MiniCMSAdmin(admin.ModelAdmin):
@@ -364,20 +380,6 @@ if settings.PVW_RSR:
         list_display = ('__unicode__', 'active', )
     
     admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
-
-
-    class FocusAreaAdmin(admin.ModelAdmin):
-        model = get_model('rsr', 'FocusArea')
-        list_display = ('name', 'slug', 'image',)
-    
-    admin.site.register(get_model('rsr', 'FocusArea'), FocusAreaAdmin)
-
-
-    class CategoryAdmin(admin.ModelAdmin):
-        model = get_model('rsr', 'Category')
-        list_display = ('name', 'areas',)
-    
-    admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
 
 
     #class CategoryInLine(admin.StackedInline):
@@ -737,7 +739,7 @@ else:
             (_(u'Categories'), {
                 'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Please select all categories applicable to your project.</p>'),
                 'fields': (('category_water', 'category_sanitation', 'category_maintenance'), 
-                        ('category_training', 'category_education', 'category_product_development'), 'category_other',), 
+                        ('category_training', 'category_education', 'category_product_development'), 'category_other', ('categories',)),
             }),
             
             (_(u'Location'), {
