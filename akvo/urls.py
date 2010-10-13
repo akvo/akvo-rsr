@@ -32,7 +32,6 @@ if settings.PVW_RSR:
     urlpatterns = patterns('',
         url(r'^$', 'akvo.rsr.views.index', name='index'),
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
-        (r'^rsr/admin/', include(admin.site.urls)),
         
         url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
 
@@ -54,7 +53,6 @@ if settings.PVW_RSR:
     )
 else:
     urlpatterns = patterns('',
-        (r'^rsr/admin/(.*)', admin.site.root),
         
         # Front page
         url(r'^$', 'akvo.rsr.views.index', name='index'),    
@@ -86,6 +84,8 @@ else:
     )
 
 urlpatterns += patterns('',
+
+    (r'^rsr/admin/', include(admin.site.urls)),
 
     # Project listing
     url(r'^rsr/projects/all/$', 'akvo.rsr.views.project_list', name='project_list' ),
