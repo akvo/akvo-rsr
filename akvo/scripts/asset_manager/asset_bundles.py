@@ -20,6 +20,7 @@ ASSET_BUNDLES = {
             'x_donate.css',
             'x_org.css',
             'x_index.css',
+            'jquery-ui-1.8.5.custom.css',
             ],
     },
     'pvw_style': {

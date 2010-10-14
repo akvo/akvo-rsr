@@ -1101,6 +1101,7 @@ else: #akvo-rsr
                             )
         top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
         map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
+        lower_height        = models.IntegerField(_(u'lower section height'), default=500, )
         active              = models.BooleanField(_(u'currently active home page'), default=False)
     
         def __unicode__(self):

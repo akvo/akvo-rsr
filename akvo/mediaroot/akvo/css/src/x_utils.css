@@ -19,6 +19,10 @@
 
 .link_triangle { font-size: 70%; }
 
+.last {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
 .round {
     -khtml-border-radius: 2px;
     -moz-border-radius: 2px; 
