@@ -23,10 +23,22 @@
 		<li id="last_breadcrum_item">{% trans 'Project listing for' %} {{org.name}}</li>
   	{% else %}
     	{% if focus_area.slug == 'all' %}
-			<li id="last_breadcrum_item">{% trans 'All projects' %}</li>
+			{% if request.GET.q %}
+				<li id="last_breadcrum_item">
+				{% trans 'All Projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ request.GET.q|escape }}&quot;</span>
+				</li>
+			{% else %}
+				<li id="last_breadcrum_item">{% trans 'All projects' %}</li>
+			{% endif %}
 		{% else %}
-        	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-        	<li id="last_breadcrum_item">{{focus_area.name}}</li>
+			{% if request.GET.q %}
+			asf
+			{% else %}
+				<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	        	<li id="last_breadcrum_item">{{focus_area.name}}</li>
+			{% endif %}
+			
+        	
     	{% endif %}
   	{% endif %}
 {% endblock breadcrum_items %}

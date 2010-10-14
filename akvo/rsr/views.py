@@ -229,12 +229,8 @@ def project_list(request, slug='all', org_id=None):
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-
         project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
         projects = projects.filter(project_query)
-    
-    
-    
     
     projects = projects.extra(
         select={
@@ -242,7 +238,6 @@ def project_list(request, slug='all', org_id=None):
             'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
         }
     )
-    
     
     # Contient dropdown
     continents = []
@@ -290,6 +285,7 @@ def project_list(request, slug='all', org_id=None):
         'focus_area': focus_area, 
         'org': org,
         'continents': continents,
+        'query_string': query_string,
         'selected_continent': selected_continent,
         'countries': countries,
         'selected_country': selected_country,
