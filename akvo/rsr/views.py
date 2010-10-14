@@ -212,17 +212,8 @@ def project_list_data(request, projects):
 def focusareas(request):
     return {'site_section': 'areas',}
 
-
 @render_to('rsr/project/project_directory.html')
 def project_list(request, slug='all', org_id=None):
-    '''
-    List of  projects in RSR
-    filtered on either a focus area or an organisation
-    Context:
-    projs: list of all projects
-    page: paginator
-    o: organisation
-    '''
     org = None
     focus_area = None
     if org_id:
@@ -234,14 +225,114 @@ def project_list(request, slug='all', org_id=None):
             projects = Project.objects.published()
         else:
             projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
-    # extra columns to be able to sort on latest updates
+    
+    query_string = ''
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+
+        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+        projects = projects.filter(project_query)
+    
+    
+    
+    
     projects = projects.extra(
         select={
             'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
             'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
         }
     )
-    return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
+    
+    
+    # Contient dropdown
+    continents = []
+    for continent in CONTINENTS:
+        continents.append(continent)
+    
+    selected_continent = request.GET.get('continent', 'all')
+    if selected_continent != 'all':
+        projects = projects.filter(country__continent=selected_continent)
+        selected_continent = int(selected_continent)
+    
+    # Country dropdown
+    countries = Country.objects.all()
+    
+    selected_country = request.GET.get('country', 'all')
+    if selected_country != 'all':
+        projects = projects.filter(country__exact=selected_country)
+        selected_country = int(selected_country)
+        selected_continent = Country.objects.get(id=selected_country).continent
+        #selected_continent = Country.objects.filter(pk__exact=selected_country).continent
+        
+    
+    countries_in_africa = []
+    countries_in_africa = Country.objects.all().filter(continent__exact=1)
+    
+    countries_in_asia = []
+    countries_in_asia = Country.objects.all().filter(continent__exact=2)
+    
+    countries_in_australia = []
+    countries_in_australia = Country.objects.all().filter(continent__exact=3)
+
+    countries_in_europe = []
+    countries_in_europe = Country.objects.all().filter(continent__exact=4)
+    
+    countries_in_north_america = []
+    countries_in_north_america = Country.objects.all().filter(continent__exact=5)
+    
+    countries_in_south_america = []
+    countries_in_south_america = Country.objects.all().filter(continent__exact=6)
+    
+    
+    return {
+        'projects': projects, 
+        'site_section': 'projects', 
+        'focus_area': focus_area, 
+        'org': org,
+        'continents': continents,
+        'selected_continent': selected_continent,
+        'countries': countries,
+        'selected_country': selected_country,
+        'selected_continent': selected_continent,
+        'countries_in_africa': countries_in_africa,
+        'countries_in_asia': countries_in_asia,
+        'countries_in_australia': countries_in_australia,
+        'countries_in_europe': countries_in_europe,
+        'countries_in_north_america': countries_in_north_america,
+        'countries_in_south_america': countries_in_south_america,
+        }
+
+
+
+# @render_to('rsr/project/project_directory.html')
+# def project_list(request, slug='all', org_id=None):
+#     '''
+#     List of  projects in RSR
+#     filtered on either a focus area or an organisation
+#     Context:
+#     projs: list of all projects
+#     page: paginator
+#     o: organisation
+#     '''
+#     org = None
+#     focus_area = None
+#     if org_id:
+#         org = Organisation.objects.get(pk=org_id)
+#         projects = org.published_projects().funding()
+#     elif slug:
+#         focus_area = get_object_or_404(FocusArea, slug=slug)
+#         if slug == 'all':
+#             projects = Project.objects.published()
+#         else:
+#             projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
+#     # extra columns to be able to sort on latest updates
+#     projects = projects.extra(
+#         select={
+#             'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
+#             'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
+#         }
+#     )
+#     return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
 
 
 def old_project_list(request):
