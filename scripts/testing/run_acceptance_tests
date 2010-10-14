@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Parameters:
-# $1: acceptance_test_root_dir
+# $1: acceptance_test_project_name
 # $2: rc_server_log_path
 # $3: xvfb_log_path (optional)
 
 
 function display_usage_and_exit
 {
-    echo "Usage: run_acceptance_tests <acceptance_test_root_dir> <rc_server_log_path> [xvfb_log_path]"
+    echo "Usage: run_acceptance_tests <acceptance_test_project_name> <rc_server_log_path> [xvfb_log_path]"
     echo "Optionally specify an xvfb_log_path to run tests in headless mode"
     exit -1
 }
@@ -21,9 +21,10 @@ function verify_script_parameters
         display_usage_and_exit
     fi
 
-    # check if acceptance_test_root_dir parameter exists
+    # check if acceptance_test_project_name parameter exists
+    # tests are expected in the tests/PROJECT_NAME/acceptance directory
     if [ -z "$1" ]; then
-        echo ">> Missing acceptance_test_root_dir parameter"
+        echo ">> Missing acceptance_test_project_name parameter (e.g. akvo)"
         display_usage_and_exit
     fi
 
@@ -49,7 +50,8 @@ verify_script_parameters $*
 
 SCRIPT_FILE_DIR="`dirname $0`"
 TESTING_SCRIPTS_DIR="`cd $SCRIPT_FILE_DIR; pwd`"
-ACCEPTANCE_TEST_ROOT_DIR="$1"
+PROJECT_NAME="$1"
+ACCEPTANCE_TEST_ROOT_DIR="`cd $TESTING_SCRIPTS_DIR/../../tests/$PROJECT_NAME/acceptance; pwd`"
 
 RC_SERVER_LOG_PATH="$2"
 XVFB_LOG_PATH=""
