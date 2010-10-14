@@ -1,463 +1,158 @@
 {% extends "rsr/base.html" %}
 
 {% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+{% load oembed_tags markup_tags google_maps %}
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
 {% block maincontent %}
-<div class="two_column_left">
-	<h2>{% trans 'Project updates — Staff picks' %}</h2>
-	<div class="white_box">
-		<div class="space20" style="height:220px; overflow:hidden;">			
-			<div id="slide_box">
-				<div id="slider">
-					<div id="slide_box_0" class="slide_box_pic">
-						<div id="staff_picks_0" class="staff_picks">
-							<div class="counter_badge" style="margin-top:0; margin-right:0;">
-								<span style="display:none;">{% counter updates.0 %}</span>
-								{% cache 10 updates.0.view_count %}
-									{{ updates.0.view_count|intcomma }}
-								{% endcache %}
-								<br />
-								<span>{% trans 'views' %}</span>
-							</div>
-							<h2 style="margin-bottom:15px;">
-								<a href="{% url project_update updates.0.project.id updates.0.id %}">
-									{{updates.0.title|smart_truncate:35}}
-								</a>
-							</h2>
-							<div style="width:200px; float:left;">
-								<img src="{% thumbnail updates.0.photo 195x146 autocrop sharpen %}" />
-								{% if updates.0.photo_caption %}
-									<p class="tiny grey">{{updates.0.photo_caption}}</p>
-								{% endif %}
-							</div>
-							<div style="width:300px; float:left; margin-left:20px;">
-								<p class="grey small">
-									{% trans 'Location' %}: {{updates.0.project.country}}
-								</p>
-							</div>
-							<div style="width:400px; float:left; margin-left:20px;">
-								<p>
-									{{updates.0.text|smart_truncate:200}}
-									<a href="{% url project_update updates.0.project.id updates.0.id %}">read more &gt;</a>
-								</p>
-								<p class="small grey">
-									{% blocktrans with updates.0.user.get_full_name as user_name and updates.0.user.userprofile.organisation.name as user_org and updates.0.user.userprofile.organisation.get_absolute_url as org_url and updates.0.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.0.time|date:"Y-m-d" }}.
-								</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-					</div>
-					<div id="slide_box_1" class="slide_box_pic">
-						<div id="staff_picks_1" class="staff_picks">
-							<div class="counter_badge" style="margin-top:0; margin-right:0;">
-								<span style="display:none;">{% counter updates.1 %}</span>
-								{% cache 10 updates.1.view_count %}
-									{{ updates.1.view_count|intcomma }}
-								{% endcache %}
-								<br />
-								<span>{% trans 'views' %}</span>
-							</div>
-							<h2 style="margin-bottom:15px;">
-								<a href="{% url project_update updates.1.project.id updates.1.id %}">
-									{{updates.1.title|smart_truncate:35}}
-								</a>
-							</h2>
-							<div style="width:200px; float:left;">
-								<img src="{% thumbnail updates.1.photo 195x146 autocrop sharpen %}" />
-								{% if updates.1.photo_caption %}
-									<p class="tiny grey">{{updates.1.photo_caption}}</p>
-								{% endif %}
-							</div>
-							<div style="width:300px; float:left; margin-left:20px;">
-								<p class="grey">
-									{% trans 'Location' %}: {{updates.1.project.country}}
-								</p>
-							</div>
-							<div style="width:400px; float:left; margin-left:20px;">
-								<p>
-									{{updates.1.text|smart_truncate:200}}
-									<a href="{% url project_update updates.1.project.id updates.1.id %}">read more &gt;</a>
-								</p>
-								<p class="small grey">
-									{% blocktrans with updates.1.user.get_full_name as user_name and updates.1.user.userprofile.organisation.name as user_org and updates.1.user.userprofile.organisation.get_absolute_url as org_url and updates.1.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.1.time|date:"Y-m-d" }}.
-								</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-					</div>
-					<div id="slide_box_2" class="slide_box_pic">
-						<div id="staff_picks_2" class="staff_picks">
-							<div class="counter_badge" style="margin-top:0; margin-right:0;">
-								<span style="display:none;">{% counter updates.2 %}</span>
-								{% cache 10 updates.2.view_count %}
-									{{ updates.2.view_count|intcomma }}
-								{% endcache %}
-								<br />
-								<span>{% trans 'views' %}</span>
-							</div>
-							<h2 style="margin-bottom:15px;">
-								<a href="{% url project_update updates.2.project.id updates.2.id %}">
-									{{ updates.2.title|smart_truncate:35 }}
-								</a>
-							</h2>
-							<div style="width:200px; float:left;">
-								<img src="{% thumbnail updates.2.photo 195x146 autocrop sharpen %}" />
-								{% if updates.2.photo_caption %}
-									<p class="tiny grey">{{ updates.2.photo_caption }}</p>
-								{% endif %}
-							</div>
-							<div style="width:300px; float:left; margin-left:20px;">
-								<p class="grey">
-									{% trans 'Location' %}: {{updates.2.project.country}}
-								</p>
-							</div>
-							<div style="width:400px; float:left; margin-left:20px;">
-								<p>
-									{{ updates.2.text|smart_truncate:200 }}
-									<a href="{% url project_update updates.2.project.id updates.2.id %}">read more &gt;</a>
-								</p>
-								<p class="small grey">
-									{% blocktrans with updates.2.user.get_full_name as user_name and updates.2.user.userprofile.organisation.name as user_org and updates.2.user.userprofile.organisation.get_absolute_url as org_url and updates.2.get_update_method_display as update_meth %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %} {% trans 'on' %} {{updates.2.time|date:"Y-m-d" }}.
-								</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-					</div>
-					<div class="clear"></div>
-				</div>
-			</div>
-		</div>
-		<div style="bottom:0; height:25px; padding-top:5px; background-color:#ccc; text-align:center;">
-			<p style="margin:0" class="small grey">
-				<a id="staff_picks_link_0" class="staff_picks_link">{% trans 'first' %}</a> | 
-				<a id="staff_picks_link_1" class="staff_picks_link">{% trans 'second' %}</a> | 
-				<a id="staff_picks_link_2" class="staff_picks_link">{% trans 'third' %}</a>
-			</p>
-		</div>
-	</div>
-	
-	<div style="margin-top:20px">
-		{% if live_earth_enabled %}
-			<div class="front_sponsor_box" style="float:left;">
-				<div class="white_box" >
-					<div class="space15" style="height:70px">
-						<div style="float:left; width:80px;">
-							<a href="{% url live_earth_landing_page %}">
-								<img src="{{MEDIA_URL}}img/liveearth_water_logo_65x65.gif" width="65" height="62" 
-									alt="" />
-							</a>
-						</div>
-						<div style="float:left; width:205px;">
-							<h4 style="color:#DE481C; margin-bottom:15px;">{% trans 'Live Earth and Akvo' %}</h4>
-							<ul class="small" style="margin-bottom:0;">
-								<li>
-									<a href="{% url live_earth_landing_page %}">{% trans 'View projects on Akvo' %}</a>
-								</li>
-								<li>
-									<a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{le_blog_category}}">
-										{% trans 'Live Earth blog entries' %}
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div class="clear"></div>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		{% if walking_for_water_enabled %}
-			<div class="front_sponsor_box" style="float:right;">
-				<div class="white_box" >
-					<div class="space15">
-						<div style="float:left; width:80px;">
-							<a href="{% url wfw_landing_page %}">
-								<img src="{% thumbnail walking_for_water.logo 65x65 autocrop sharpen %}"/>
-							</a>
-						</div>
-						<div style="float:left; width:205px;">
-							<h4 style="color:#DE481C; margin-bottom:15px;">{% trans 'Walking for Water 2010' %}</h4>
-							<ul class="small" style="margin-bottom:0;">
-								<li>
-									<a href="{% url wfw_landing_page %}">{% trans 'View projects on Akvo' %}</a>
-								</li>
-								<li>
-									<a href="http://{{ request.META.HTTP_HOST }}/blog/?cat={{wfw_blog_category}}">
-										{% trans 'Walking for Water blog entries' %}
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div class="clear"></div>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		<div class="clear"></div>		
-	</div>
-	
-	{% if blog_posts %}
-	<h2 style="margin-top:20px;">{% trans 'Most recent blog articles' %}</h2>
-	<div class="white_box">
-		<div class="space20">
-			{% for post in blog_posts %}
-			<div style="margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #ccc;">
-				<div style="float:left; width:400px;">
-					<h3>
-						<a href="{{ post.url }}">{{ post.title }}</a>
-					</h3>				
-					<p class="small">
-						{{ post.text|striptags|smart_truncate:160 }}
-						<a href="{{ post.url }}">{% trans 'read more' %} &gt;</a>
-					</p>
-					
-					<p class="tiny grey" style="margin:0;">{{ post.date|date:"l, j F Y" }}</p>
 
-				</div>
-				<div style="float:right; width:200px;">
-					{% if post.image %}
-						<img src="{{ post.image }}" style="width:180px" />
-					{% else %}
-						&nbsp;
-					{% endif %}
-				</div>
-				<div class="clear"></div>
-			</div>
-			{% endfor %}
-			<div class="text_right">
-				<p class="small">
-					<a href="http://{{ request.META.HTTP_HOST }}/blog/">{% trans 'View earlier blog entries' %}</a>	
-				</p>
-			</div>
-		</div>
-	</div>
-	{% endif %}
-</div>
+{% if preview %}
+  <div id="preview_cover"></div>
+  <div id="preview_alert">
+    <h1 style="color: orange;">{% trans 'Preview!' %}</h1><a href="{% url admin:rsr_minicms_change cms.pk %}">{% trans 'Return to admin' %}</a>
+  </div>
+{% endif %}
 
-<div class="two_column_right">
-	<div class="two_column_right_inner">
-		<h2>{% trans 'Learn about Akvo' %}</h2>
-		<div class="white_box">
-			<div class="space20">
-				<h4>
-					<a href="/web/what_we_do">{% trans 'What we do' %}</a>
-					<span style="float:right;">
-						<a class="small" href="/web/what_we_do">{% trans 'Learn more' %} &gt;</a>
-					</span>
-				</h4>				
-				<div class="clear"></div>
-				<p class="small">
-					{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}
-				</p>
-				
-				
-				<h4>
-					<a href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a>
-					<span style="float:right;">
-						
-						<a class="small" href="/web/how_akvo_works">{% trans 'Learn more' %} &gt;</a>
-					</span>
-				</h4>				
-				<div class="clear"></div>
-				<p class="small">
-					{% trans 'Find projects to fund, or donors to fund projects. Report on projects. Share knowledge.' %}
-				</p>
-				
-				<h4>
-					<a href="/web/how_akvo_works">{% trans 'Why we do it' %}</a>
-					<span style="float:right;">
-						<a class="small" href="/web/why_we_do_it">{% trans 'Learn more' %} &gt;</a>
-					</span>
-				</h4>				
-				<div class="clear"></div>
-				<p class="small">
-					{% trans 'Akvo&#x27;s approach: a large number of small projects work best.' %}
-				</p>
-			</div>
-		</div>
-		
-		<h2 style="margin-top:20px">{% trans 'Akvo at a glance' %}</h2>
-		<div class="white_box">
-			<div class="space20">
-				<h3><a href="{% url rsr_org_list %}">
-					{% trans 'Projects in Akvo' %}
-				</a></h3>
-				<table class="org_statistics_table bottom_grey_border">
-					<tr>
-						<td>
-							{% trans 'Active' %}
-						</td>
-						<td class="text_right">
-							{{projs.status_active.count}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{% trans 'Need funding' %}
-						</td>
-						<td class="text_right">
-							{{projs.status_onhold.count}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{% trans 'Complete' %}
-						</td>
-						<td class="text_right">
-							{{projs.status_complete.count}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{% trans 'Cancelled' %}
-						</td>
-						<td class="text_right">
-							{{projs.status_cancelled.count}}
-						</td>
-					</tr>
-					<tr style="font-weight:bold;" class="bottom_grey_border">
-						<td style="padding-bottom:20px;">
-							{% trans 'Total projects' %}
-						</td>
-						<td class="text_right">
-							{{projs.published.count}}
-						</td>
-					</tr>
-				</table>
-				
-				<h3>{% trans 'People who get...' %}</h3>
-				<table class="org_statistics_table ">
-					<tr>
-						<td style="">&nbsp;</td>
-						<td class="text_right">
-							<a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
-						</td>
-						<td class="text_right">
-							<a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
-						</td>
-					</tr>
-					<tr>
-						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
-						<td class="text_right">
-							{{projs.get_planned_water_calc|intcomma}}
-						</td>
-						<td class="text_right">
-							{{projs.get_actual_water_calc|intcomma}}
-						</td>
-					</tr>
-					<tr class="bottom_grey_border">
-						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
-						<td class="text_right">
-							{{projs.get_planned_sanitation_calc|intcomma}}
-						</td>
-						<td class="text_right">
-							{{projs.get_actual_sanitation_calc|intcomma}}
-						</td>
-					</tr>
-				</table>
-				
-				<h3>
-					<a href="{% url rsr_org_list %}">{% trans 'Project Partners' %}</a> 
-					<span class="small grey">({{orgs.all.count}})</span>
-				</h3>
-				<table class="org_statistics_table">
-					<tr>
-						<td>
-							{% trans 'Field partners' %}
-						</td>
-						<td class="text_right">
-							{{orgs.fieldpartners.count}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{% trans 'Funding partners' %}
-						</td>
-						<td class="text_right">
-							{{orgs.fundingpartners.count}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{% trans 'Sponsor partners' %}
-						</td>
-						<td class="text_right">
-							{{orgs.sponsorpartners.count}}
-						</td>
-					</tr>
-					<tr class="bottom_grey_border">
-						<td style="padding-bottom:20px;">
-							{% trans 'Support partners' %}
-						</td>
-						<td class="text_right">
-							{{orgs.supportpartners.count}}
-						</td>
-					</tr>
-				</table>
-				
-				<h3>{% trans 'Funding' %}</h3>
-				<table class="org_statistics_table">
-					<tr>
-						<td style="font-weight:bold;" colspan="2">
-							{{projs.status_not_cancelled.euros.count}} {% trans 'project' %}{{projs.status_not_cancelled.euros.count|pluralize:"s"}} {% trans 'in Euros' %}
-						</td>
-					</tr>
-					<tr style="color:green;">
-						<td>{% trans 'Raised' %}</td>
-						<td class="text_right">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_pledged|add:projs.status_not_cancelled.euros.total_donated|round|intcomma}}</td>
-					</tr>
-					<tr style="color:red;">
-						<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-						<td class="text_right">{{projs.euros.0.get_currency_display|safe}} {{projs.status_not_cancelled.euros.total_funds_needed|round|intcomma}}</td>
-					</tr>
-					
-					{% if projs.status_not_cancelled.dollars.count %}
-					<tr>
-						<td colspan="2">&nbsp;</td>
-					</tr>
-					<tr>
-						<td style="font-weight:bold;" colspan="2">
-							{{projs.status_not_cancelled.dollars.count}} {% trans 'project' %}{{projs.status_not_cancelled.dollars.count|pluralize:"s"}} {% trans 'in US Dollars' %}
-						</td>
-					</tr>
-					<tr style="color:green;">
-						<td>{% trans 'Raised' %}</td>
-						<td class="text_right">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_pledged|add:projs.status_not_cancelled.dollars.total_donated|round|intcomma}}</td>
-					</tr>
-					<tr style="color:red;">
-						<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
-						<td class="text_right">{{projs.dollars.0.get_currency_display|safe}} {{projs.status_not_cancelled.dollars.total_funds_needed|round|intcomma}}</td>
-					</tr>
-					{% endif %}
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
+<div class='container'>
+  <div class='column span-12'>
+    {{cms.feature_box|apply_markup:"markdown"}}
+  </div>
+    
+    <!--<div id="movie_container" style="width:689px; max-width:689px; max-height:408px height:408px; overflow:hidden;">
+      <object width="689" height="408">
+        <param name="movie" value="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1">
+        <param name="allowFullScreen" value="true">
+        <param name="allowscriptaccess" value="always">
+        <embed src="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="689" height="408">
+      </object>
+    </div>-->
+  
+  <div class='column span-6 last'>
+    <div class="gradient_box" style="height: 411px;">
+      <div id="top_right_box" class="space20">
+        {{cms.top_right_box|apply_markup:"markdown"}}
+      </div> 
+    </div> 
+  </div>
+   
+</div> 
+
+<div class='container'>
+   
+  <div class='column last span-18'>
+    <div class="white_box gutter-top" style="background-color:#f1f1f1;">
+      <div class="space5"> 
+        <h5 style="display: inline; padding-left: 15px;">Latest news: </h5><a href="{{news_post.url}}" class="small_link">{{news_post.title}}</a>
+      </div> 
+    </div> 
+  </div> 
+</div> 
+
+<div class='container'> 
+          
+  <div class='column span-12 gutter-top'>
+      
+    <div class='column span-6'>
+      <div class="white_box" style="background-color:#fff; min-height: 485px;">
+        <div class="space20">
+          <div style="float: left;">
+            <h1>{% trans 'Recent articles' %}</h1> 
+          </div>
+          <div class="h1_companion">
+            <a class="" href="/news/?feed=rss2">
+              RSS
+              <img src="/rsr/media/base/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+            </a>
+          </div>
+        </div> 
+        <div class="clear"></div>
+        {% for blog_post in blog_posts %}
+          <div class="space20" style="margin-top: 0;">
+            <p><a class="strong" href="{{blog_post.url}}">{{blog_post.title}}</a></p>
+            <p class="nano-lede lt_grey">{{blog_post.date|date:"l, j F Y"}}</p> 
+            {% if blog_post.image %}
+              <div class="clear"></div>
+              <img src="{{blog_post.image}}" width="123" style="margin: 0 10px 10px 0; float: left;">
+            {% endif %}
+            <p class="nano-lede">{{blog_post.text|striptags|smart_truncate:160}}</p> 
+          </div>
+          <div style="margin: 0 8px;"><hr/></div>
+        {% endfor %}
+        <div class="h1_companion" style="margin: 20px; margin-top: 5px;">
+          <a href="/news">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
+        </div>          
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div class='column span-6 last'>
+      <div class="white_box" style="background-color:#fff; min-height: 485px;">
+        <div id="map_box" class="space20">     
+          <div style="float: left;">
+            <h1>Projects worldwide</h1> 
+          </div>
+          <div class="h1_companion">
+            <a href="{% url project_list %}">See all <span class="link_triangle">&#x25B6;</span></a>
+          </div>
+          <div class="clear"></div>
+          {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
+          <a href="{% url global_project_map %}">
+            {% google_static_global_project_map 292 219 0 'blue' 'small' %}
+          </a>
+          {{cms.map_box|apply_markup:"markdown"}}
+          <!--<p class="nano-lede strong">
+            117 countries.<br/>
+            € 20 billion in project budgets.<br/>
+            178 million people's lives made better.
+          </p>
+          <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p>
+          -->
+          <div class="h1_companion">
+            <a href="{% url global_project_map %}">View large map <span class="link_triangle">&#x25B6;</span></a>
+          </div>          
+          <div class="clear"></div>
+        </div> 
+      </div> 
+    </div>
+
+  </div>
+
+  <div class='column last span-6 gutter-top'>
+    <div class="white_box" style="background-color:#fff;">
+      <div style="margin: 20px 20px 0px 20px;">     
+        <div style="float: left;">
+          <h1>Focus areas</h1> 
+        </div>
+        <div class="h1_companion">
+          <a href="/web/focus-areas">See all <span class="link_triangle">&#x25B6;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div id="index-accordion" style="height: 500px;">
+      <div id="accordion">
+        {% for focus_area in focus_areas %}
+        <h3><a href="#">{{focus_area.name}}</a></h3>
+        <div>
+          <img width="220" height="165" src="{% thumbnail focus_area.image 220x165 sharpen %}" alt="{{focus_area}}"/>
+          <p class="nano-lede" style="font-size: 0.9375em;">
+            {{focus_area.description|smart_truncate:80}}
+            <a style="color: #1877B8;" href="/web/{{focus_area.slug}}">Read more <span class="link_triangle">&#x25B6;</span></a>
+          </p>
+        </div>
+        {% endfor %}
+      </div>              
+    </div>          
+  </div>
+
+
+</div> 
 
 {% endblock maincontent %}
 
 {% block jq_ready %}
 	{{ block.super }}
-	
-	jQ('#staff_picks_link_0').click(function () {
-		jQ('#slider').animate({'right': -1244}, 300);
-		jQ('.staff_picks_link').css("border-bottom","1px solid #ccc");
-		jQ('#staff_picks_link_0').css("border-bottom","1px solid #888");
-	});
-	
-	jQ('#staff_picks_link_1').click(function () {
-		jQ('#slider').animate({'right': -622}, 300);
-		jQ('.staff_picks_link').css("border-bottom","1px solid #ccc");
-		jQ('#staff_picks_link_1').css("border-bottom","1px solid #888");
-	});
-	
-	jQ('#staff_picks_link_2').click(function () {
-		jQ('#slider').animate({'right': 0}, 300);
-		jQ('.staff_picks_link').css("border-bottom","1px solid #ccc");
-		jQ('#staff_picks_link_2').css("border-bottom","1px solid #888");
-	});
-	 
-	
+  $("#accordion").accordion();
+  $(".selector").accordion({ fillSpace: true });
 {% endblock jq_ready %}

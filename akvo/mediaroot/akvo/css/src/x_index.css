@@ -47,3 +47,58 @@ a.staff_picks_link {
 .front_sponsor_box div div {
     height:70px;
     }
+
+
+/* from pvw-take2 */
+
+.h1_companion {
+  /* text that floats to the right of a h1 */
+  float: right;
+  margin-top: 0.5em;
+  font-size: 0.8125em;
+}
+
+.small_link {
+  font-size: 0.8125em;
+}
+
+div.gradient_box {
+  background-color: #2096F5;
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#2096F5), to(#2D80AE));
+  background-image: -moz-linear-gradient(0% 50% 270deg,#2096F5, #2D80AE);
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  color: white;
+  padding: 5px;
+}
+
+#top_right_box p, #top_right_box h1, #top_right_box h3, #top_right_box h5 {
+    color: yellow;
+}
+
+#top_right_box p, #top_right_box hr {
+    margin-bottom: 0.7em;
+}
+
+#top_right_box a {
+    color: white;
+}
+
+#preview_cover {
+    z-index: 5000;
+    filter: alpha(opacity=20); /*older IE*/
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20); /* IE */
+    -moz-opacity: .20; /*older Mozilla*/
+    -khtml-opacity: 0.2;   /*older Safari*/
+    opacity: 0.2;   /*supported by current Mozilla, Safari, and Opera*/
+    background-color:#000000;
+    position:fixed; top:0px; left:0px; width:100%; height:100%; text-align:center; vertical-align:middle;    
+}
+
+#preview_alert {
+    z-index: 6000;
+    position:fixed; top:20%; left:0px; width:100%; text-align:center; vertical-align:middle;
+    font-size: 500%;    
+}
