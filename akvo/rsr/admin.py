@@ -373,14 +373,14 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
 
 
+class MiniCMSAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'MiniCMS')
+    list_display = ('__unicode__', 'active', )
+
+admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
+
+
 if settings.PVW_RSR:
-
-    class MiniCMSAdmin(admin.ModelAdmin):
-        model = get_model('rsr', 'MiniCMS')
-        list_display = ('__unicode__', 'active', )
-    
-    admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
-
 
     #class CategoryInLine(admin.StackedInline):
     #    model = get_model('rsr', 'category')

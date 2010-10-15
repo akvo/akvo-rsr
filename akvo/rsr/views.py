@@ -110,82 +110,35 @@ def get_setting(setting, default=None):
 def index(request, cms_id=None):
     '''
     The RSR home page.
-    Context:
-    latest: the latest entry from the akvo.org/blog feed
-    soup: the blog entry HTML
-    img_src: the url to the first image of the blog entry
-    '''
-    #from dbgp.client import brk
-    #brk(host="90.130.213.8", port=9000)
-    
-    bandwidth = 'low'
-    host = 'unknown'
-        
-    projs = Project.objects.published()
-    if bandwidth == 'low':
-        #find all projects that need funding and have an image
-        unfunded_visible_projs = projs.need_funding().filter(current_image__startswith='db')
-        if len(unfunded_visible_projs) > 7:
-            grid_projects = get_random_from_qs(unfunded_visible_projs, 8)
-        else:
-            visible_projs = projs.filter(current_image__startswith='db')
-            grid_projects = get_random_from_qs(visible_projs, 8)
-    else:
-        grid_projects = None
-
+    '''        
     preview = False
-    if settings.PVW_RSR:
-        focus_areas = FocusArea.objects.exclude(slug='all')
-        if cms_id:
-            cms = MiniCMS.objects.get(pk=cms_id)
-            preview = True
-        else:
-            try:
-                cms = MiniCMS.objects.filter(active=True)[0]
-            except:
-                cms = MiniCMS.objects.get(pk=1)
-        updates = {}
-    else:
-        focus_areas = None
-        cms = None
-        featured = ProjectUpdate.objects.filter(featured__exact=True)
-        if len(featured) < 3:
-            updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
-        else:
-            updates = get_random_from_qs(featured, 3)
-    #stats = akvo_at_a_glance(p)
-    #return render_to_response('rsr/index.html', {'latest': latest, 'img_src': img_src, 'soup':soup, }, context_instance=RequestContext(request))
+    focus_areas = FocusArea.objects.exclude(slug='all')
 
-    if not settings.PVW_RSR and settings.LIVE_EARTH_ENABLED:
-        live_earth = Organisation.objects.get(pk= settings.LIVE_EARTH_ID)
-        le_blog_category = settings.LIVE_EARTH_NEWS_CATEGORY
+    if cms_id:
+        cms = MiniCMS.objects.get(pk=cms_id)
+        preview = True
     else:
-        live_earth = None
-        le_blog_category = None
-        
-    if not settings.PVW_RSR and settings.WALKING_FOR_WATER_ENABLED:
-        walking_for_water = Organisation.objects.get(pk= settings.WALKING_FOR_WATER_ID)
-        wfw_blog_category = settings.WALKING_FOR_WATER_NEWS_CATEGORY
-    else:
-        walking_for_water = None
-        wfw_blog_category = None
-    
+        try:
+            cms = MiniCMS.objects.filter(active=True)[0]
+        except:
+            cms = MiniCMS.objects.get(pk=1)
+
     news_post, blog_posts = wordpress_get_lastest_posts('wordpress', get_setting('NEWS_CATEGORY_ID', 3), get_setting('INDEX_ARTICLE_COUNT', 2))
     
     return {
-        'orgs': Organisation.objects,
-        'projs': projs,
-        'updates': updates,
+        #'orgs': Organisation.objects,
+        #'projs': projs,
+        #'updates': updates,
         'focus_areas': focus_areas,
         'cms': cms,
         'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
         'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
-        'live_earth': live_earth,
-        'le_blog_category': le_blog_category,
-        'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
-        'walking_for_water': walking_for_water,
-        'wfw_blog_category': wfw_blog_category,
+        #'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
+        #'live_earth': live_earth,
+        #'le_blog_category': le_blog_category,
+        #'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
+        #'walking_for_water': walking_for_water,
+        #'wfw_blog_category': wfw_blog_category,
         'site_section': 'index',
         'blog_posts': blog_posts,
         'news_post': news_post,
