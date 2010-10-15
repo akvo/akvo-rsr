@@ -80,15 +80,6 @@
 							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
 							value="{{ query_string|escape }}">
 
-
-						<select name="" id="" size="1" style="margin-left:40px;width:150px; margin-top:4px;">
-							<option value="all">{% trans 'All organisations' %}</option>
-							{% for organisation in organisations  %}
-								<option value="{{organisation.id}}">{{organisation.name}}</option>
-							{% endfor %}
-						</select>
-
-
 						<select name="continent" id="continent" size="1" style="margin-left:40px;width:120px; margin-top:4px;">
 							<option value="all">{% trans 'All continents' %}</option>
 							{% for continent in continents %}
@@ -159,7 +150,14 @@
 							{% endif %}
 
 						</select>
-						&nbsp;
+						
+						<select name="organisation" id="organisation" size="1" style="margin-left:40px;width:150px; margin-top:4px;">
+							<option value="all">{% trans 'All organisations' %}</option>
+							{% for organisation in organisations  %}
+								<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select>
+						
 						<a class="orange awesome" style="float:right;"
 							href="javascript:document.filter_form.submit();" onclick="this.blur();">
 							<span>{% trans 'Filter' %}</span>
@@ -280,7 +278,23 @@
 
 {% block jq_ready %}
 	{{block.super}}
-
+		
+	jQ('#organisation').val({{org.id}});
+	
+	jQ('#organisation').change(function() {
+		
+		url = "/rsr/projects/" + jQ(this).val();
+		query_string = window.location.search.substring(1)
+		
+		if (query_string) {
+			url += "/?" + query_string;
+			window.location = url
+		} else {
+			window.location = url
+		}
+	});
+	
+	
 	jQ('#continent').change(function() {
 
 		function Country(countryName, countryId) {
@@ -346,7 +360,6 @@
 		{% endfor %}
 
 		var selected_country = jQ('#country').val();
-
 
 		jQ('#continent').val(selected_continent);
 
