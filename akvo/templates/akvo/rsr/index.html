@@ -16,7 +16,7 @@
 {% if preview %}
   <div id="preview_cover"></div>
   <div id="preview_alert">
-    <h1 style="color: orange;">{% trans 'Preview!' %}</h1><a href="{% url admin:rsr_minicms_change cms.pk %}">{% trans 'Return to admin' %}</a>
+    <h1 style="color: yellow;">{% trans 'Preview!' %}</h1><a href="{% url admin:rsr_minicms_change cms.pk %}">{% trans 'Return to admin' %}</a>
   </div>
 {% endif %}
 
@@ -123,7 +123,7 @@
     <div class="white_box" style="background-color:#fff;">
       <div style="margin: 20px 20px 0px 20px;">     
         <div style="float: left;">
-          <h1>Focus areas</h1> 
+          <h1 style="margin-bottom: 18px;">Focus areas</h1> 
         </div>
         <div class="h1_companion">
           <a href="/web/focus-areas">See all <span class="link_triangle">&#x25B6;</span></a>
@@ -131,7 +131,7 @@
         <div class="clear"></div>
       </div>
     </div>
-    <div id="index-accordion" style="height: {{cms.lower_height|add:-64}}px;">
+    <div id="index-accordion" style="height: {{cms.lower_height|add:-69}}px;">
       <div id="accordion">
         {% for focus_area in focus_areas %}
         <h3><a href="#">{{focus_area.name}}</a></h3>
@@ -139,7 +139,7 @@
           <img src="{% thumbnail focus_area.image 275x206 sharpen %}" alt="{{focus_area}}"/>
           <p class="nano-lede" style="font-size: 0.9375em;">
             {{focus_area.description|smart_truncate:80}}
-            <a style="color: #1877B8;" href="/web/{{focus_area.slug}}">Read more <span class="link_triangle">&#x25B6;</span></a>
+            <a style="color: #1877B8;" href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">Read more <span class="link_triangle">&#x25B6;</span></a>
           </p>
         </div>
         {% endfor %}

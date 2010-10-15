@@ -407,6 +407,7 @@ class FocusArea(models.Model):
                     thumbnail={'size': (20, 20), 'options': ('crop', )},
                     help_text=_('The image that will appear on the focus area project listing page.'),
                 )
+    link_to     = models.URLField(_('accordion link'), max_length=200, blank=True, help_text=_('Where the link in the accordion for the focus area points if other than the focus area project listing.'))
 
     @models.permalink
     def get_absolute_url(self):
@@ -1092,7 +1093,20 @@ else: #akvo-rsr
         def image_path(instance, file_name):
             return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
             
-        feature_box         = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_('Enter the text that will appear in the feature box of the home page. (350 characters)'))
+        feature_box         = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
+            '''Enter the text that will appear in the feature box of the home page. (350 characters)
+            <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
+            <p>The outer &lt;div&gt; can use the classes<br/>
+            <code>quarter, half, three_quarters and full</code><br/>
+            to specify the width of the text and 
+            <code>bottom and right</code><br/> if a position other than top left is desired.</p>
+            <p>The inner &lt;div&gt; should have the class<br/>
+            <code>text_bg</code><br/> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
+            The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
+            </p>
+            <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; generates white text.</p>
+            '''
+        ))
         feature_image       = models.ImageField(
                                 _('feature image'),
                                 blank=True,
