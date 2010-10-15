@@ -77,19 +77,19 @@
 						{% endcomment %}
 
 						<input name="q" placeholder="Filter on project name and subtitle" 
-							type="search" style="margin-left:20px;margin-top:4px;width:400px;display:inline;" 
+							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
 							value="{{ query_string|escape }}">
 
-						{% comment %}
-						<select id="cobranded-narrow-organisations" class="machinery_widget-organisations"
-							name="widget-organisations" size="1" disabled="disabled">
+
+						<select name="" id="" size="1" style="margin-left:40px;width:150px; margin-top:4px;">
+							<option value="all">{% trans 'All organisations' %}</option>
 							{% for organisation in organisations  %}
 								<option value="{{organisation.id}}">{{organisation.name}}</option>
 							{% endfor %}
 						</select>
-						{% endcomment %}
 
-						<select name="continent" id="continent" size="1" style="margin-left:60px;width:120px; margin-top:4px;">
+
+						<select name="continent" id="continent" size="1" style="margin-left:40px;width:120px; margin-top:4px;">
 							<option value="all">{% trans 'All continents' %}</option>
 							{% for continent in continents %}
 							<option value="{{continent.0}}"
@@ -99,7 +99,7 @@
 							{% endfor %}
 						</select>
 						&nbsp;
-						<select name="country" id="country" size="1" style="width:150px; margin-left:10px; margin-top:4px;">
+						<select name="country" id="country" size="1" style="width:120px; margin-left:10px; margin-top:4px;">
 							<option id="all_country" value="all">{% trans 'All countries' %}</option>
 							{% if selected_continent == 'all' %}	
 								{% for country in countries %}

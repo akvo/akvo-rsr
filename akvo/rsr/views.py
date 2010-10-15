@@ -214,6 +214,7 @@ def focusareas(request):
 
 @render_to('rsr/project/project_directory.html')
 def project_list(request, slug='all', org_id=None):
+    
     org = None
     focus_area = None
     if org_id:
@@ -238,6 +239,9 @@ def project_list(request, slug='all', org_id=None):
             'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
         }
     )
+    
+    # Organisations dropdown
+    organisations = Organisation.objects.all()
     
     # Contient dropdown
     continents = []
@@ -284,6 +288,7 @@ def project_list(request, slug='all', org_id=None):
         'site_section': 'projects', 
         'focus_area': focus_area, 
         'org': org,
+        'organisations': organisations,
         'continents': continents,
         'query_string': query_string,
         'selected_continent': selected_continent,
