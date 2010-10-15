@@ -14,6 +14,11 @@
 .white {color:#fff;}
 .link_blue { color: #1877B8; }
 
+.bold {font-weight: bold;}
+
+.right {float:right;}
+.left {float:left;}
+
 .text_left {text-align:left;}
 .text_right {text-align:right;}
 
