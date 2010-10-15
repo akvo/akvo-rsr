@@ -298,6 +298,25 @@
 
 {% endblock js %}
 
+{% block inline_js %}
+
+/* http://stackoverflow.com/questions/1634748/how-can-i-delete-a-query-string-parameter-in-javascript */
+function RemoveParameterFromUrl( url, parameter ) {
+
+    if( typeof parameter == "undefined" || parameter == null || parameter == "" ) throw new Error( "parameter is required" );
+
+    url = url.replace( new RegExp( "\\b" + parameter + "=[^&;]+[&;]?", "gi" ), "" ); "$1" );
+
+    // remove any leftover crud
+    url = url.replace( /[&;]$/, "" );
+
+    return url;
+}
+	
+{% endblock inline_js%}
+
+
+
 {% block jq_ready %}
 	{{block.super}}
 		
@@ -305,11 +324,16 @@
 	
 	jQ('#organisation').change(function() {
 		
-		url = "/rsr/projects/" + jQ(this).val();
+		
+		url = "/rsr/projects/" + jQ(this).val();		
 		query_string = window.location.search.substring(1)
+		
+		{# We need to remove the page item from the query_string #}
 		
 		if (query_string) {
 			url += "/?" + query_string;
+			url = RemoveParameterFromUrl(url, 'page');
+			
 			window.location = url
 		} else {
 			window.location = url
