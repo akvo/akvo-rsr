@@ -67,17 +67,18 @@
 			<div id="project_search" class="span-18">
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
+						{% comment %}
 						<div style="float:right; width:480px; overflow:hidden;">
 							<p style="margin:0;" class="small">
 								Keyword only filters on project name &amp; subtitle. Available text field on the project model(which can be added) is: project_plan_summary, goals_overview, current_status_detail, project_plan_detail, sustainability, context and notes.<br />
 								Maybe we should remove the keyword filter...
 							</p>
 						</div>
+						{% endcomment %}
 
 						<input name="q" placeholder="Filter on project name and subtitle" 
-							type="search" style="margin-left:20px;margin-top:7px;width:400px;display:inline;" 
-							value="{{ query_string|escape }}">									
-						<br />
+							type="search" style="margin-left:20px;margin-top:4px;width:400px;display:inline;" 
+							value="{{ query_string|escape }}">
 
 						{% comment %}
 						<select id="cobranded-narrow-organisations" class="machinery_widget-organisations"
@@ -88,7 +89,7 @@
 						</select>
 						{% endcomment %}
 
-						<select name="continent" id="continent" size="1" style="margin-left:20px;width:120px">
+						<select name="continent" id="continent" size="1" style="margin-left:60px;width:120px; margin-top:4px;">
 							<option value="all">{% trans 'All continents' %}</option>
 							{% for continent in continents %}
 							<option value="{{continent.0}}"
@@ -97,8 +98,8 @@
 							</option>
 							{% endfor %}
 						</select>
-
-						<select name="country" id="country" size="1" style="width:150px">
+						&nbsp;
+						<select name="country" id="country" size="1" style="width:150px; margin-left:10px; margin-top:4px;">
 							<option id="all_country" value="all">{% trans 'All countries' %}</option>
 							{% if selected_continent == 'all' %}	
 								{% for country in countries %}
@@ -158,9 +159,17 @@
 							{% endif %}
 
 						</select>
-
-						<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:20px">
-
+						&nbsp;
+						<a class="orange awesome" style="float:right;"
+							href="javascript:document.projectNarrowForm.submit();" onclick="this.blur();">
+							<span>{% trans 'Filter' %}</span>
+						</a>
+						<input type="submit" value="Filter" 
+							style="display:none;">
+						{% comment %}
+						<input type="submit" value="Filter" 
+							style="display:inline; margin-left:15px; margin-top:20px;">
+						{% endcomment %}
 					</div>
 				</div>
 			</div>
