@@ -67,16 +67,7 @@
 			<div id="project_search" class="span-18">
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
-						{% comment %}
-						<div style="float:right; width:480px; overflow:hidden;">
-							<p style="margin:0;" class="small">
-								Keyword only filters on project name &amp; subtitle. Available text field on the project model(which can be added) is: project_plan_summary, goals_overview, current_status_detail, project_plan_detail, sustainability, context and notes.<br />
-								Maybe we should remove the keyword filter...
-							</p>
-						</div>
-						{% endcomment %}
-
-						<input name="q" placeholder="Filter on project name and subtitle" 
+						<input name="q" placeholder="Filter on project name or subtitle" 
 							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
 							value="{{ query_string|escape }}">
 
@@ -152,7 +143,7 @@
 						</select>
 						
 						<select name="organisation" id="organisation" size="1" style="margin-left:40px;width:150px; margin-top:4px;">
-							<option value="all">{% trans 'All organisations' %}</option>
+							<option value="all">{% trans 'All partners' %}</option>
 							{% for organisation in organisations  %}
 								<option value="{{organisation.id}}">{{organisation.name}}</option>
 							{% endfor %}
@@ -193,7 +184,7 @@
                 <span class="small">Partners</span>
             </th>
             <th>
-              {% anchor latest_update 'Latest update' %}
+              {% anchor latest_update 'Updated' %}
             </th>
             <th>
                 <span class="small">Focus area</span>
@@ -249,7 +240,38 @@
               </td>
               <td>
                 <p class="td-text">
-                    Funding
+					{# --- funding start --- #}
+					<div style="text-align:center;">
+						<p class="small" style="margin:0;">
+							{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}
+						</p>
+					</div>
+					<div class="fundingbox-progress-bar" style="height:5px;">
+						{% if project.budget_total %}
+						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> 
+						</div>
+						{% endif %}
+					</div>
+					<div style="text-align:center;">
+						<p class="tiny grey" style="margin:0;">
+							{% widthratio project.funding_total_given project.budget_total 100 %} %
+						</p>
+					</div>
+					<div style="text-align:center;">
+						{% if project.funding_still_needed|round == 0 %}
+							<p class="green" style="font-weight:bold;">
+								{% trans 'Fully funded' %}
+							</p>
+						{% else %}
+							{% if not project.status == 'L' and not project.status == 'R' %}
+								<div style="text-align:center; padding-top:5px; padding-bottom:5px;">
+									<a class="orange awesome small" href="{% url project_donate project.id %}">{% trans 'Donate' %}</a>
+								</div>
+							{% endif %}
+						{% endif %}
+					</div>
+					
+					{# --- funding stop --- #}
                 </p>
               </td>
             </tr>
