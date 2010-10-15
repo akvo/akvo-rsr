@@ -18,23 +18,30 @@
 
 {% block breadcrum_items %}
 	{{block.super}}
-	{% if org %}  
-		<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-		<li id="last_breadcrum_item">{% trans 'Project listing for' %} {{org.name}}</li>
+	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	{% if org %}
+		{% if request.GET.q %}
+			<li id="last_breadcrum_item">
+				{{org.name}} {% trans 'projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ request.GET.q|escape }}&quot;</span>
+			</li>
+		{% else %}
+			<li id="last_breadcrum_item">{% trans 'Project listing for' %} {{org.name}}</li>
+		{% endif %}
   	{% else %}
     	{% if focus_area.slug == 'all' %}
 			{% if request.GET.q %}
 				<li id="last_breadcrum_item">
-				{% trans 'All Projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ request.GET.q|escape }}&quot;</span>
+				{% trans 'All projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ request.GET.q|escape }}&quot;</span>
 				</li>
 			{% else %}
 				<li id="last_breadcrum_item">{% trans 'All projects' %}</li>
 			{% endif %}
 		{% else %}
 			{% if request.GET.q %}
-			asf
+			<li id="last_breadcrum_item">
+				{{focus_area.name}} {% trans 'projects filtered by keywords:' %} <span style="font-style:italic;">&quot;{{ request.GET.q|escape }}&quot;</span>
+			</li>
 			{% else %}
-				<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
 	        	<li id="last_breadcrum_item">{{focus_area.name}}</li>
 			{% endif %}
 			
