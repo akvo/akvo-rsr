@@ -1111,7 +1111,7 @@ else: #akvo-rsr
                                 _('feature image'),
                                 blank=True,
                                 upload_to=image_path,
-                                help_text=_('Ideally the image should be WWxHH pixels in size.')
+                                help_text=_('Ideally the image should be 645x363 pixels in size.')
                             )
         top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
         map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
@@ -1280,11 +1280,23 @@ else: #akvo-rsr
             def status_complete(self):
                 return self.filter(status__exact='C')
         
+            def status_not_complete(self):
+                return self.exclude(status__exact='C')
+        
             def status_cancelled(self):
                 return self.filter(status__exact='L')
             
             def status_not_cancelled(self):
                 return self.exclude(status__exact='L')
+
+            def status_archived(self):
+                return self.filter(status__exact='R')
+
+            def status_not_archived(self):
+                return self.exclude(status__exact='R')
+
+            def project_in_glance(self):
+                return self.published().status_not_cancelled().status_not_archived()
           
             def euros(self):
                 return self.filter(currency='EUR')
