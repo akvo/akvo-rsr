@@ -96,7 +96,7 @@ a.staff_picks_link {
 }
 
 #feature_box .full {
-    width: 643  px;
+    width: 645px;
 }
 
 #feature_box .text_bg {
@@ -124,15 +124,11 @@ div.gradient_box {
 }
 
 #top_right_box p, #top_right_box h1, #top_right_box h3, #top_right_box h5 {
-    color: yellow;
+    color: #333;
 }
 
 #top_right_box p, #top_right_box hr {
     margin-bottom: 0.7em;
-}
-
-#top_right_box a {
-    color: white;
 }
 
 #preview_cover {

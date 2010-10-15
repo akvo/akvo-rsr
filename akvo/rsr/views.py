@@ -941,10 +941,6 @@ def projectupdates(request, project_id):
 @render_to('rsr/project/project_update.html')
 def projectupdate(request, project_id, update_id):
     '''
-    List of all updates for a project
-    Context:
-    p: project
-    updates: list of updates, ordered by time in reverse
     '''
     project     = get_object_or_404(Project, pk=project_id)
     update      = get_object_or_404(ProjectUpdate, pk=update_id)
@@ -954,6 +950,7 @@ def projectupdate(request, project_id, update_id):
         'project'               : project, 
         'p'                     : project, #compatibility with new_look
         'update'                : update, 
+        'u'                     : update,  #compatibility with new_look
         'can_add_update'        : can_add_update, 
         'hide_latest_updates'   : True,
         'site_section'          : 'projects', 
@@ -1144,7 +1141,8 @@ def orgdetail(request, org_id):
     if settings.PVW_RSR:
         org_projects = o.published_projects()
     else:
-        org_projects = o.published_projects().status_not_cancelled().status_not_complete()
+        org_projects = o.published_projects()
+        org_projects = org_projects.status_not_cancelled().status_not_complete()
     org_partners = o.partners().distinct()
     return {
         'org': o, 
@@ -1358,7 +1356,10 @@ def project_list_widget(request, template='project-list', org_id=0):
     site = request.GET.get('site', 'www.akvo.org')
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)
-        p = o.published_projects().status_not_archived().status_not_cancelled().funding()
+        #p = o.published_projects().status_not_archived().status_not_cancelled().funding()
+        p = o.published_projects()
+        p = p.status_not_archived().status_not_cancelled().funding()
+
     else:
         p = Project.objects.published().status_not_archived().status_not_cancelled().funding()
     order_by = request.GET.get('order_by', 'name')
