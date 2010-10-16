@@ -24,7 +24,7 @@ WEB_MEDIAROOT_DESTINATION = os.path.join(STATIC_DIR, 'akvo/mediaroot')
 
 # Configurable paths for the static directory
 STATIC_AKVO_DESTINATION = os.path.join('..', PROJECT_ROOT_DIR_NAME, 'akvo')
-STATIC_AKVO_VIRTUALENV_DESTINATION = '/var/django/akvo'
+STATIC_AKVO_VIRTUALENV_DESTINATION = '/var/virtualenv/akvo'
 
 # Configurable paths for the mediaroot directory and settings.py file
 SETTINGS_FILE_DESTINATION = '../../static/settings.py'
