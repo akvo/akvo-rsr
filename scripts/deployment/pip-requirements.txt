@@ -3,6 +3,7 @@ Django==1.2.3
 
 # Django Apps
 django-counter
+django-markup
 django-paypal
 django-piston
 django-rosetta
@@ -11,14 +12,18 @@ template_utils
 
 # Django apps from VCS web services
 -e git+git://github.com/directeur/django-sorting.git#egg=django_sorting
+-e git+git://github.com/ericflo/django-pagination.git#egg=pagination
 -e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie
+-e git+git://github.com/worldcompany/djangoembed.git#egg=oembed
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
 
 # Other Python Modules
 BeautifulSoup
 Cython
 FeedParser
-lxml
 MySQL-python
 PIL
+httplib2
+lxml
 python-memcached
+simplejson
