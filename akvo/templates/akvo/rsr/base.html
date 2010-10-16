@@ -11,7 +11,11 @@
 	<!--[if IE 6]>
 		{% asset_bundle 'akvo_ie6_style' %}
 	<![endif]-->
-	
+
+  <style type="text/css" media="screen">
+  	{% block inline_styles %}{% endblock inline_styles %}
+	</style>
+  
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
 	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
 	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
@@ -203,6 +207,7 @@
 	 <script>
 		!window.jQuery && document.write('<script src="{{MEDIA_URL}}js/jquery-1.4.2.min.js"><\/script>')
 	</script>
+	<script type="text/javascript" charset="utf-8">{% block inline_js %}{% endblock inline_js %}</script>
 	
 	{% block js %}{% endblock js %}
 	
@@ -212,9 +217,9 @@
 		jQ(document).ready(function(){
 			{% block jq_ready %}{% endblock jq_ready %}
 			
-			jQ('#grid_toggle').click(function () {
-				jQ('.container').toggleClass('showgrid');
-			});
+			//jQ('#grid_toggle').click(function () {
+			//	jQ('.container').toggleClass('showgrid');
+			//});
 			
 		});		
 	</script>	

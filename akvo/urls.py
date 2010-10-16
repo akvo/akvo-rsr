@@ -30,7 +30,6 @@ feeds = {
 #hack to get going without having to comb through differences in urls btw pvw and akvo
 if settings.PVW_RSR:
     urlpatterns = patterns('',
-        url(r'^$', 'akvo.rsr.views.index', name='index'),
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
         
         url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
@@ -47,13 +46,11 @@ if settings.PVW_RSR:
         (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
         (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
     
-        url(r'^rsr/index-preview/(?P<cms_id>\d+)/$', 'akvo.rsr.views.index', name='index_preview'),
     )
 else:
     urlpatterns = patterns('',
         
         # Front page
-        url(r'^$', 'akvo.rsr.views.index', name='index'),    
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
                 
         # Project listing
@@ -84,6 +81,10 @@ else:
 urlpatterns += patterns('',
 
     (r'^rsr/admin/', include(admin.site.urls)),
+
+    # Home page
+    url(r'^$', 'akvo.rsr.views.index', name='index'),    
+    url(r'^rsr/index-preview/(?P<cms_id>\d+)/$', 'akvo.rsr.views.index', name='index_preview'),
 
     # Project listing
     url(r'^rsr/projects/all/$', 'akvo.rsr.views.project_list', name='project_list' ),
