@@ -53,7 +53,31 @@
 {% block maincontent %}
 
 <div class='container'>
-	<div class='column span-18'>
+	<div class='column span-18 last'>
+    {% if org %}
+      <h1 class="h0"><a href="{{org.get_absolute_url}}">{% trans 'Project listing for' %} {{org.name}}</a></h1>
+        <a href="{{org.get_absolute_url}}">{% org_logo org 240 180 'float: left; margin: 0 20px 20px 0;' %}</a>
+        <p>
+          {{org.description|linebreaks}}
+        </p>
+    {% else %}
+      <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
+      <div id="focus_area_description" class="column span-{% if focus_area.slug != 'all' %}15{% else %}18{% endif %}">
+        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
+        {{focus_area.description|apply_markup:"markdown"}}
+      </div>
+      {% if focus_area.slug != 'all' %}
+        <div class='column span-3 last'>
+          <div class="white_box blue_tint">
+            <div class="space20">
+              <h2>Related focus area</h2>
+              <a href="/web/{{focus_area.slug}}" class="small">{% trans 'Learn more about'%} <br/>{{focus_area}}&nbsp;<span class="link_triangle">&#x25B6;</span></a>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+    <div class="clear"></div>
 		<h1 class="h0">
 			{% if org %}
 				<a href="{{org.get_absolute_url}}">{% trans 'Project listing for' %} {{org.name}}</a>

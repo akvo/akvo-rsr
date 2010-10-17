@@ -56,7 +56,7 @@
 
 /* Component containers
 ----------------------------------*/
-#index-accordion .ui-widget { font-family: Arial, Helvetica; font-size: 1.2em; }
+#index-accordion .ui-widget { font-family: Arial, Helvetica; font-size: 1em; }
 #index-accordion .ui-widget .ui-widget { font-size: 1em; }
 #index-accordion .ui-widget input, #index-accordion .ui-widget select, #index-accordion .ui-widget textarea, #index-accordion .ui-widget button { font-family: Arial, Helvetica; font-size: 1em; }
 #index-accordion .ui-widget-content { border: 1px solid #b8b8bf; background: #fcfdfd url(../../img/jquery-ui-1.8.5-custom-images/ui-bg_inset-hard_100_fcfdfd_1x100.png) 50% bottom repeat-x; color: #3d414b; }
