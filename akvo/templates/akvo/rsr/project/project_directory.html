@@ -414,12 +414,8 @@
 			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
 		{% endfor %}
 
-		var selected_country = jQ('#country').val();
-
-		jQ('#continent').val(selected_continent);
-
-
-		var selected_continent = jQ('#continent').val();
+		var selected_continent = jQ('#continent').val();		
+		
 		if (selected_continent == 1 ) {		
 			add_countires(countries_in_africa);
 		} 
