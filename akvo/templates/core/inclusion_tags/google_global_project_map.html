@@ -44,6 +44,10 @@
 	        var mapCanvas = document.getElementById('map_canvas');
 
 	        var mapOptions = {
+                {% if map_type == 'static' %}
+                    draggable: false,
+                    disableDefaultUI: true,
+                {% endif %}
 	            center: center,
 	            mapTypeId: google.maps.MapTypeId.ROADMAP,
 	            scrollwheel: false,
@@ -54,7 +58,9 @@
 
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({
-                    {% if marker_icon %}icon: '{{ marker_icon }}',{% endif %}
+                    {% if marker_icon %}
+                        icon: '{{ marker_icon }}',
+                    {% endif %}
 	                map: map,
 	                position: project_{{ project.id }}_coordinates,
 	                title: 'Project location'
