@@ -11,25 +11,6 @@
     background: #F4F7F8 url(../../img/globe.gif) no-repeat center bottom;
 }
 
-.sliding_box_header {
-    /*background: #e1e1e5 url(../../../base/img/sliding_box_header_background.png) repeat-x;*/
-    background-color:#dfdfe3;
-    /*border-bottom: 1px solid #ccc;*/
-    padding:8px 5px; 
-}
-
-.sliding_box_header a, .sliding_box_header span {
-    margin-left:15px; 
-    color:#00008b;
-}
-
-.sliding_box_header span {
-    color:#000;
-    }
-
-.sliding_box_header a {
-    text-shadow: #eee 1px 1px 0px;
-}
 
 .img_border_top {
     background: transparent url(../../../base/img/grey_dot.png) repeat-x top;
