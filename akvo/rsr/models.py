@@ -279,12 +279,13 @@ class Organisation(models.Model):
     #    if self.funding_partner: pt += "M"
     #    return pt
 
-    def partner_types(self):
-        """
-        return a list all ProjectPartner partner_types the org has
-        """
-        partners = ProjectPartner.objects.filter(partner=self)
-        return list(set([partner.get_partner_type_display() for partner in partners]))
+    if settings.PVW_RSR:
+        def partner_types(self):
+            """
+            return a list all ProjectPartner partner_types the org has
+            """
+            partners = ProjectPartner.objects.filter(partner=self)
+            return list(set([partner.get_partner_type_display() for partner in partners]))
 
     def has_water_projects(self):
         if self.all_projects().filter(category_water__exact=True):

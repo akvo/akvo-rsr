@@ -170,15 +170,16 @@ def project_list(request, slug='all', org_id=None):
     
     org = None
     focus_area = None
+    # TODO: fix DWS, they don't need funding()
     if org_id:
         org = Organisation.objects.get(pk=org_id)
         projects = org.published_projects().funding()
     elif slug:
         focus_area = get_object_or_404(FocusArea, slug=slug)
         if slug == 'all':
-            projects = Project.objects.published()
+            projects = Project.objects.published().funding()
         else:
-            projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
+            projects = Project.objects.published().filter(categories__focus_area=focus_area).funding().distinct()
     
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():

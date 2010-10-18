@@ -85,7 +85,10 @@ class OrganisationAdmin(admin.ModelAdmin):
         )    
 
     inlines = (LocationInline,)
-    list_display = ('name', 'long_name', 'website', 'partner_types', )
+    if settings.PVW_RSR:
+        list_display = ('name', 'long_name', 'website', 'partner_types', )
+    else:
+        list_display = ('name', 'long_name', 'website', )
     form = OrganisationAdminForm
 
     def get_actions(self, request):
