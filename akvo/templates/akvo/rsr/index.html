@@ -63,7 +63,7 @@
           <div class="h1_companion">
             <a class="" href="/news/?feed=rss2">
               RSS
-              <img src="/rsr/media/base/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+              <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
             </a>
           </div>
         </div> 
@@ -137,10 +137,10 @@
         <h3><a href="#">{{focus_area.name}}</a></h3>
         <div>
           <img src="{% thumbnail focus_area.image 275x206 sharpen %}" alt="{{focus_area}}"/>
-          <p class="nano-lede" style="font-size: 0.9375em;">
-            {{focus_area.description|smart_truncate:80}}
-            <a style="color: #1877B8;" href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">Read more <span class="link_triangle">&#x25B6;</span></a>
-          </p>
+            {{focus_area.description|smart_truncate:120|apply_markup:"markdown"}}
+            <div class="h1_companion">
+              <a style="color: #1877B8;" href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">Read more <span class="link_triangle">&#x25B6;</span></a>
+            </div>
         </div>
         {% endfor %}
       </div>              
