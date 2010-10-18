@@ -379,7 +379,6 @@
 
 
 		var all_countries = [];
-		all_countries[all_countries.length] = new Country('{% trans 'All countries' %}','all');
 		{% for country in countries %}
 			all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
 		{% endfor %}
