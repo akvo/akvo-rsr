@@ -103,52 +103,6 @@
 	});
 </script>
 
-
-{% comment %}
-<script type="text/javascript">
-(function() {
-	var google_script=document.createElement('script'), backup_script=document.createElement('script');
-    var tryCounter=10, delay=250;
-    google_script.setAttribute('src','http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js');
-    backup_script.setAttribute('src','{{MEDIA_URL}}js/jquery-1.4.2.min.js');
-	
-    document.getElementsByTagName('head')[0].appendChild(google_script);
-	
-    function load_ready() {
-        window.setTimeout(function() {
-            if (typeof jQuery=='undefined') {
-                alert('jQuery could not be loaded.');
-            } else {
-                var jQ = jQuery.noConflict();
-				jQ(document).ready(function(){
-					{% block jquery_ready %}{% endblock jquery_ready %}	
-					jQ('#grid_toggle').click(function () {
-						jQ('#maincontainer').toggleClass('showgrid');
-					});
-				});
-            }
-        } ,delay);
-    }
-    
-    var tryjQuery=function() {
-        setTimeout(function() {
-            if (typeof jQuery=='undefined') {
-                if (tryCounter) {
-                    tryCounter--;
-                    tryjQuery();
-                } else {
-                    document.getElementsByTagName('head')[0].appendChild(backup_script);
-                    load_ready();
-                }
-            } else {
-                load_ready();
-            }
-        }, delay);
-     };
-     tryjQuery();
-})();
-</script>
-{% endcomment %}
 {% endblock js %}
 
 </body>
