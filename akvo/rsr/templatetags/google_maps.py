@@ -38,10 +38,7 @@ def google_map(object, width, height, zoom):
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
 def google_global_project_map(map_type, width, height, zoom):
     projects = Project.objects.published().has_primary_location()
-    if map_type == 'static':
-        marker_icon = getattr(settings, 'GOOGLE_MAPS_SMALL_MARKER_ICON', '')
-    else:
-        marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     template_context = dict(map_type=map_type,
         marker_icon=marker_icon,
         projects=projects,
