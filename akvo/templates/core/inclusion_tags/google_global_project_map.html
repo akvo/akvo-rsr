@@ -66,6 +66,7 @@
 	                title: 'Project location'
 	            });
 
+                {% if map_type != 'static' %}
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
 					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
 	                '<h4><a href="' + project_{{ project.id }}_url + '">' +
@@ -84,6 +85,7 @@
 	            google.maps.event.addListener(project_{{ project.id }}_marker, 'click', function() {
 	                project_{{ project.id }}_infowindow.open(map, project_{{ project.id }}_marker);
 	            });
+                {% endif %}
 	        {% endfor %}
 
 	    }
