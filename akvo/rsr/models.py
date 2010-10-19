@@ -1129,7 +1129,7 @@ else: #akvo-rsr
 
     class Project(models.Model):
         def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%s/%s')
+            return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
     
         name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
