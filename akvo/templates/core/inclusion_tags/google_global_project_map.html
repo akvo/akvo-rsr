@@ -54,13 +54,18 @@
 	            zoom: zoom
 	        };
 
-            var icon = MapIconMaker.createMarkerIcon({width: 32, height: 32, primaryColor: "blue"});
+            var smallIcon = new google.maps.Size(16, 16);
+            var largeIcon = new google.maps.Size(32, 32);
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({
-                    icon: icon,
+                    {% if map_type == 'static' %}
+                        size: smallIcon,
+                    {% else %}
+                        size: largeIcon,
+                    {% endif %}
 	                map: map,
 	                position: project_{{ project.id }}_coordinates,
 	                title: 'Project location'
