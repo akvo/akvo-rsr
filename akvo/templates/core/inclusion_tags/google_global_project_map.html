@@ -51,21 +51,20 @@
 	            center: center,
 	            mapTypeId: google.maps.MapTypeId.ROADMAP,
 	            scrollwheel: false,
-	            zoom: zoom
+	            zoom: zoom,
+                streetViewControl: false
 	        };
 
+            var markerIcon = "{{ marker_icon }}";
             var smallIcon = new google.maps.Size(16, 16);
             var largeIcon = new google.maps.Size(32, 32);
+            var icon = new google.maps.MarkerImage(markerIcon);
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({
-                    {% if map_type == 'static' %}
-                        size: smallIcon,
-                    {% else %}
-                        size: largeIcon,
-                    {% endif %}
+                    icon: icon,
 	                map: map,
 	                position: project_{{ project.id }}_coordinates,
 	                title: 'Project location'
