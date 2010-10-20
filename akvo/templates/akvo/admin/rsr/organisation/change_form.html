@@ -37,7 +37,7 @@
     
         {% for fieldset in adminform %}
           {% include "admin/includes/fieldset.html" %}
-          {% if fieldset.name == 'General information' %}
+          {% if forloop.counter == 2 %}
             {% for inline_admin_formset in inline_admin_formsets %}
                 {% include inline_admin_formset.opts.template %}
             {% endfor %}
