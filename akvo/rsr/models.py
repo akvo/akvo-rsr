@@ -400,7 +400,7 @@ class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
     name        = models.CharField(_('focus area name'), max_length=50, help_text=_('The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
-    slug        = models.SlugField(_('slug'), max_length=20, help_text=_('Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
+    slug        = models.SlugField(_('slug'), max_length=50, help_text=_('Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
     description = models.TextField(_('description'), max_length=500, help_text=_('Enter the text that will appear on the focus area project listing page. (500 characters).'))
     image       = ImageWithThumbnailsField(
                     _('focus area image'),
