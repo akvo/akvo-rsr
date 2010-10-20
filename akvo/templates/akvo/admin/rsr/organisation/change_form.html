@@ -1,9 +1,62 @@
 {% extends "admin/change_form.html" %}
-{% load i18n %}
+{% load i18n admin_modify %}
 
 {% block pretitle %}
     {{ block.super }}
     <h2>{% trans 'Adding and Editing Organisations.' %}</h2>
     <p>{% trans 'Describe your organisation to the international Akvo community of users: tell us who you are, what you do, and what you as an organisation hope to accomplish. Your audience may include people unfamiliar with the sector or with your sphere of operation, so a bit of explanation in plain language (no acronyms) might be helpful. Details will help viewers get a sense of who you are: do you work on all continents? In both water and sanitation, perhaps even with other goals in mind? Are you part of a network or programme? ' %}</p>
     <br>
- {% endblock %}
+{% endblock pretitle %}
+
+{% block content %}
+  <div id="content-main">
+    {% block object-tools %}
+      {% if change %}
+        {% if not is_popup %}
+          <ul class="object-tools">
+            <li><a href="history/" class="historylink">{% trans "History" %}</a></li>
+            {% if has_absolute_url %}
+              <li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>
+            {% endif%}
+          </ul>
+        {% endif %}
+      {% endif %}
+    {% endblock object-tools %}
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">
+      {% csrf_token %}
+      {% block form_top %}{% endblock %}
+      <div>
+        {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+        {% if save_on_top %}{% submit_row %}{% endif %}
+        {% if errors %}
+          <p class="errornote">
+            {% blocktrans count errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+          </p>
+          {{ adminform.form.non_field_errors }}
+        {% endif %}
+    
+        {% for fieldset in adminform %}
+          {% include "admin/includes/fieldset.html" %}
+          {% if fieldset.name == 'General information' %}
+            {% for inline_admin_formset in inline_admin_formsets %}
+                {% include inline_admin_formset.opts.template %}
+            {% endfor %}
+            {% block after_related_objects %}{% endblock %}
+          {% endif %}
+        {% endfor %}
+    
+        {% block after_field_sets %}{% endblock %}
+    
+        {% submit_row %}
+    
+        {% if adminform and add %}
+           <script type="text/javascript">document.getElementById("{{ adminform.first_field.auto_id }}").focus();</script>
+        {% endif %}
+    
+        {# JavaScript for prepopulated fields #}
+        {% prepopulated_fields_js %}
+    
+      </div>
+    </form>
+  </div>
+{% endblock %}
