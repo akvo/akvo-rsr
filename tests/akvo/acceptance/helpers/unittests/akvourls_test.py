@@ -13,8 +13,8 @@ from helpers.testexecution import *
 
 class AkvoURLsTest(TestCase):
 
-    def test_akvo_urls(self):
-        """helpers.unittests.AkvoURLsTest  akvourls module has a URL function for each Akvo page path"""
+    def test_ensure_akvourls_module_has_url_function_for_each_akvo_page_path(self):
+        """helpers.unittests.AkvoURLsTest  Ensure helpers.akvourls module has a URL function for each Akvo page path"""
 
         expected_url_function_names = self.expected_akvo_url_function_names()
         actual_url_function_names = self.actual_akvo_url_function_names()
