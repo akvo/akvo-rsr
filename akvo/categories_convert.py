@@ -51,7 +51,7 @@ for cat in old_cats:
 projects = Project.objects.all()
 
 for project in projects:
-    print "Project %d - %s:" % (project.pk, project.name)
+    print "Project %d:" % (project.pk, )
     for category in Category.objects.filter(focus_area__name="Water and sanitation"):
         if getattr(project, 'category_%s' % category.name.lower(), False):
             project.categories.add(category)
