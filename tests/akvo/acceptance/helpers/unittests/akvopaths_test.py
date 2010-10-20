@@ -153,7 +153,7 @@ class AkvoPathsTest(TestCase):
         self.verify_path("/web/?q=user", cms_admin_page())
 
     def verify_path(self, expected_path, actual_path):
-        self.failUnlessEqual(expected_path, actual_path, "\nExpected path: %s\n  Actual path: %s" % (expected_path, actual_path))
+        self.assertEqual(expected_path, actual_path, "\nExpected path: %s\n  Actual path: %s" % (expected_path, actual_path))
 
 
 def suite():
