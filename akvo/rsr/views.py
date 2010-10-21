@@ -9,7 +9,7 @@ from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
-from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission
+from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs
 
 from django import forms
 from django import http
@@ -126,13 +126,23 @@ def index(request, cms_id=None):
 
     news_post, blog_posts = wordpress_get_lastest_posts('wordpress', get_setting('NEWS_CATEGORY_ID', 3), get_setting('INDEX_ARTICLE_COUNT', 2))
     
-    if not settings.PVW_RSR:
+    if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()
+        # projects where improved_water is the greater number compared to improved_sanitation
         greater_improved_water = projects.filter(improved_water__gt=F('improved_sanitation'))
+        # the other way around
         greater_improved_sanitation = projects.filter(improved_sanitation__gte=F('improved_water'))
+        #for each of the collections, aggregate the numbers and add them together
         people_served = greater_improved_water.aggregate(Sum('improved_water'))['improved_water__sum'] + greater_improved_sanitation.aggregate(Sum('improved_sanitation'))['improved_sanitation__sum']
+        #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
+        #get three featured updates
+        featured = ProjectUpdate.objects.filter(featured__exact=True)
+        if len(featured) < 3:
+            updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
+        else:
+            updates = get_random_from_qs(featured, 3)
 
     context_dict = {
         #'updates': updates,
@@ -151,12 +161,13 @@ def index(request, cms_id=None):
         'news_post': news_post,
         'preview':  preview,
     }
-    if not settings.PVW_RSR:
+    if not settings.PVW_RSR: #extra stuff for akvo home page
         context_dict.update({
             'orgs': orgs,
             'projects': projects,
             'people_served': people_served,
-            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0
+            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
+            'updates': updates,
         })
     return context_dict
 
