@@ -58,7 +58,7 @@ class SiteComponentsSmokeTest(AkvoWebTestCase):
         """web.general.SiteComponentsSmokeTest  7. Can load About page (CMS content loads as expected)"""
 
         self.open_about_page()
-        self.assert_page_contains_text_items(["How you can help", "Get involved", "Akvo platform"])
+        self.assert_page_contains_text_items(["Get involved with Akvo", "Akvo platform", "How to fund a project"])
 
     def test_0_can_load_blog_page(self):
         """web.general.SiteComponentsSmokeTest  8. Can load Akvo blog"""
