@@ -38,12 +38,20 @@
     </div> 
     
     <div class='column span-12 gutter-top'>
+      <div style="margin-bottom: .4em;">
+        <h1 class="top_of_box">{% trans 'Most recent project updates' %}</h1>
+        <a class="small top_of_box" style="margin-left: 2em;" href="/news/?feed=rss2">
+          RSS
+          <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+        </a>
+      </div>
+      
       {% for update in updates %}
       <div class='column span-4{% if forloop.last %} last{% endif %}'>
-        <div class="white_box" style="min-height: 320px;">
+        <div class="white_box" style="min-height: 340px;">
 					{% if update.photo %}
             <a href="{% url project_update update.project.id update.id %}">
-              <img src="{% thumbnail update.photo 203x152 autocrop sharpen %}" style="margin:0;"  alt="foo"  title="bar"/>
+              <img src="{% thumbnail update.photo 205x152 crop sharpen upscale %}" style="margin:0;"  alt="foo"  title="bar"/>
             </a>
           {% endif %}
           <div class="space10">
@@ -65,19 +73,15 @@
     
     <div class='column span-12 gutter-top'>
         
+      <div style="margin-bottom: .4em;">
+        <h1 class="top_of_box">{% trans 'Recent blog posts' %}</h1>
+        <a class="small top_of_box" style="margin-left: 2em;" href="/news/?feed=rss2">
+          RSS
+          <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+        </a>
+      </div>
+
       <div class="white_box" style="background-color:#fff; min-height: {{cms.lower_height}}px;">
-        <div class="space20">
-          <div style="float: left;">
-            <h1>{% trans 'Recent articles' %}</h1> 
-          </div>
-          <div class="h1_companion">
-            <a class="" href="/news/?feed=rss2">
-              RSS
-              <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
-            </a>
-          </div>
-        </div> 
-        <div class="clear"></div>
         {% for blog_post in blog_posts %}
           <div class="space20" style="margin-top: 0;">
             <p><a class="strong" href="{{blog_post.url}}">{{blog_post.title}}</a></p>
@@ -128,7 +132,7 @@
           <h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
           <p class="small lt_grey">{% trans 'People served' %}</p>
           <h1 class="white last" style="line-height: 1em">€ {{projects_total_total_budget}}M</h1>
-          <p class="small lt_grey last">{% trans 'Project bugets' %}</p>
+          <p class="small lt_grey last">{% trans 'Project budgets' %}</p>
         </div>
       </div>
       <a href="{% url global_project_map %}">
@@ -144,16 +148,9 @@
 <!--
 -->
   <div class='column span-6 gutter-top last'>
-    <div class="white_box" style="background-color:#fff;">
-      <div style="margin: 20px 20px 0px 20px;">     
-        <div style="float: left;">
-          <h1 style="margin-bottom: 18px;">Focus areas</h1> 
-        </div>
-        <div class="h1_companion">
-          <a href="/web/focus-areas">See all <span class="link_triangle">&#x25B6;</span></a>
-        </div>
-        <div class="clear"></div>
-      </div>
+    <div style="margin-bottom: .4em;">
+      <h1 class="top_of_box">{% trans 'Project focus areas' %}</h1>
+      <a class="small" style="margin-left: 2em;" href="/web/focus-areas">See all <span class="link_triangle">&#x25B6;</span></a>
     </div>
     <div id="index-accordion" style="height: {{cms.lower_height|add:-69}}px;">
       <div id="accordion">

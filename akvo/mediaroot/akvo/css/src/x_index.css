@@ -143,3 +143,8 @@ a.staff_picks_link {
     position:fixed; top:20%; left:0px; width:100%; text-align:center; vertical-align:middle;
     font-size: 500%;    
 }
+
+.top_of_box {
+    display: inline;
+    vertical-align: baseline;
+}
