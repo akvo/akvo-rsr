@@ -5,11 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from extensions.xmlextensions import *
-from extensions.xmltestcase import XMLTestCase
 from helpers.rsrapi import *
 from helpers.testexecution import *
+from testcases.xmltestcase import XMLTestCase
 
 from expectedelements import *
+
 
 class SingleProjectTest(XMLTestCase):
 
