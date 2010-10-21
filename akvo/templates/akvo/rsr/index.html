@@ -40,7 +40,7 @@
     <div class='column span-12 gutter-top'>
       <div style="margin-bottom: .4em;">
         <h1 class="top_of_box">{% trans 'Most recent project updates' %}</h1>
-        <a class="small top_of_box" style="margin-left: 2em;" href="/news/?feed=rss2">
+        <a class="small top_of_box" style="margin-left: 2em;" href="#">
           RSS
           <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
         </a>
@@ -48,21 +48,21 @@
       
       {% for update in updates %}
       <div class='column span-4{% if forloop.last %} last{% endif %}'>
-        <div class="white_box" style="min-height: 340px;">
+        <div class="white_box" style="min-height: 350px;">
 					{% if update.photo %}
             <a href="{% url project_update update.project.id update.id %}">
-              <img src="{% thumbnail update.photo 205x152 crop sharpen upscale %}" style="margin:0;"  alt="foo"  title="bar"/>
+              <img src="{% thumbnail update.photo 203x152 crop sharpen upscale %}" style="margin:0;"{% if update.photo_caption %} title="{{update.photo_caption}}"{% endif %}/>
             </a>
           {% endif %}
           <div class="space10">
             <a href="{% url project_update update.project.id update.id %}">
               <h2 class="link_blue">{{update.title|smart_truncate:40}}</h2>
             </a>
-            <p class="small grey" style="margin-bottom: 0">
+            <p class="small grey last">
               {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth and update.time|date:"Y-m-d" as update_time %}By {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}} on {{update_time}}{% endblocktrans %}
               <br/>{{update.project.country}}
             </p>
-            <p class="small" style="">
+            <p class="small last">
               {{update.text|smart_truncate:100}}
             </p>
           </div>
@@ -75,7 +75,7 @@
         
       <div style="margin-bottom: .4em;">
         <h1 class="top_of_box">{% trans 'Recent blog posts' %}</h1>
-        <a class="small top_of_box" style="margin-left: 2em;" href="/news/?feed=rss2">
+        <a class="small top_of_box" style="margin-left: 2em;" href="/blog/?feed=rss2">
           RSS
           <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
         </a>
