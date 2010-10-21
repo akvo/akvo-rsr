@@ -6,6 +6,9 @@
 
 from test_settings import *
 
+from helpers.akvopaths import *
+
+
 class SeleniumNavigator:
 
     def __init__(self, selenium_client):
@@ -40,21 +43,39 @@ class SeleniumNavigator:
     def click_submit_button_with_text(self, button_text):
         self.click_element_at_path("//input[@value=\"%s\"]" % (button_text))
 
-class RSRNavigator:
+
+class AkvoSiteNavigator:
 
     def __init__(self, selenium_client):
         self.selenium = selenium_client
         self.navigator = SeleniumNavigator(self.selenium)
 
-    def open_home_page(self):
-        self.navigator.open_page("/")
+    def open_page(self, page_path):
+        self.navigator.open_page(page_path)
 
-    def open_admin_page(self, extended_admin_path = ""):
-        self.navigator.open_page("/rsr/admin/%s" % (extended_admin_path))
-        if self.selenium.is_text_present("Password:"):
-            self.selenium.type("id_username", SUPERUSER_USERNAME)
-            self.selenium.type("id_password", SUPERUSER_PASSWORD)
-            self.navigator.click_submit_button_with_text("Log in")
+    def open_home_page(self):
+        self.open_page(home_page())
+
+    def open_projects_page(self):
+        self.open_page(projects_page())
+
+    def open_all_projects_page(self):
+        self.open_page(all_projects_page())
+
+    def open_focus_areas_page(self):
+        self.open_page(focus_areas_page())
+
+    def open_partners_page(self):
+        self.open_page(partners_page())
+
+    def open_akvopedia_page(self):
+        self.open_page(akvopedia_page())
+
+    def open_about_page(self):
+        self.open_page(about_page())
+
+    def open_blog_page(self):
+        self.open_page(blog_page())
 
     def open_auth_admin_page(self):
         self.open_admin_page("auth/")
@@ -66,4 +87,11 @@ class RSRNavigator:
         self.open_admin_page("rsr/")
 
     def open_project_page(self, project_number):
-        self.navigator.open_page("/rsr/project/%i/" % (project_number))
+        self.open_page("/rsr/project/%i/" % (project_number))
+
+    def open_admin_page(self, extended_admin_path = ""):
+        self.open_page("/rsr/admin/%s" % (extended_admin_path))
+        if self.selenium.is_text_present("Password:"):
+            self.selenium.type("id_username", SUPERUSER_USERNAME)
+            self.selenium.type("id_password", SUPERUSER_PASSWORD)
+            self.navigator.click_submit_button_with_text("Log in")

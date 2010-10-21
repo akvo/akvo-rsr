@@ -101,6 +101,6 @@ div.activeTableHeaderDesc {
 .pagination span, .pagination a {
   font-size:0.8125em;  
 }
-.disabled, .current {
+.disabled {
   color: #3D414B;
 }

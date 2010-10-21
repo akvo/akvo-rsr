@@ -51,21 +51,30 @@
 	            center: center,
 	            mapTypeId: google.maps.MapTypeId.ROADMAP,
 	            scrollwheel: false,
-	            zoom: zoom
+	            zoom: zoom,
+                streetViewControl: false
 	        };
+
+            var markerIcon = "{{ marker_icon }}";
+            var smallIcon = new google.maps.MarkerImage(markerIcon,
+                null, null, null, new google.maps.Size(10.5,17));
+            var normalIcon = new google.maps.MarkerImage(markerIcon);
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({
-                    {% if marker_icon %}
-                        icon: '{{ marker_icon }}',
+                    {% if map_type == 'static' %}
+                        icon: smallIcon,
+                    {% else %}
+                        icon: normalIcon,
                     {% endif %}
 	                map: map,
 	                position: project_{{ project.id }}_coordinates,
 	                title: 'Project location'
 	            });
 
+                {% if map_type != 'static' %}
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
 					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
 	                '<h4><a href="' + project_{{ project.id }}_url + '">' +
@@ -84,6 +93,7 @@
 	            google.maps.event.addListener(project_{{ project.id }}_marker, 'click', function() {
 	                project_{{ project.id }}_infowindow.open(map, project_{{ project.id }}_marker);
 	            });
+                {% endif %}
 	        {% endfor %}
 
 	    }
