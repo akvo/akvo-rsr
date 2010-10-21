@@ -22,6 +22,7 @@ from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
+from django.db.models import F, Sum
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
@@ -128,8 +129,11 @@ def index(request, cms_id=None):
     if not settings.PVW_RSR:
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()
+        greater_improved_water = projects.filter(improved_water__gt=F('improved_sanitation'))
+        greater_improved_sanitation = projects.filter(improved_sanitation__gte=F('improved_water'))
+        people_served = greater_improved_water.aggregate(Sum('improved_water'))['improved_water__sum'] + greater_improved_sanitation.aggregate(Sum('improved_sanitation'))['improved_sanitation__sum']
+        people_served = int(people_served / 1000) * 1000
 
-        
     context_dict = {
         #'updates': updates,
         'focus_areas': focus_areas,
@@ -151,6 +155,8 @@ def index(request, cms_id=None):
         context_dict.update({
             'orgs': orgs,
             'projects': projects,
+            'people_served': people_served,
+            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0
         })
     return context_dict
 

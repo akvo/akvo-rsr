@@ -107,20 +107,20 @@
       </div>
       <div class='column span-3 border' style="margin-bottom:20px">
         <div style="padding-left: 20px;">
-          <h1 class="white last" style="line-height: .8em">{{projects.count}}</h1>
-          <p class="small right_now_blue">{% trans 'projects' %}</p>
-          <h1 class="white last" style="line-height: .8em">{{orgs.count}}</h1>
-          <p class="small right_now_blue">{% trans 'project partners' %}</p>
-          <h1 class="white last" style="line-height: .8em">000</h1>
-          <p class="small lt_grey last">{% trans 'countries' %}</p>
+          <h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
+          <p class="small right_now_blue">{% trans 'Projects' %}</p>
+          <h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
+          <p class="small right_now_blue last">{% trans 'Project partners' %}</p>
+          <!--<h1 class="white last" style="line-height: 1em">000</h1>
+          <p class="small lt_grey last">{% trans 'Countries' %}</p>-->
         </div>
       </div>
       <div class='column span-3 last' style="margin-bottom:20px">
         <div style="padding-left: 20px;">
-          <h1 class="white last" style="line-height: .8em">000,000</h1>
-          <p class="small lt_grey">{% trans 'people served' %}</p>
-          <h1 class="white last" style="line-height: .8em">€{{projects.total_total_budget|intword}}</h1>
-          <p class="small lt_grey last">{% trans 'buget' %}</p>
+          <h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
+          <p class="small lt_grey">{% trans 'People served' %}</p>
+          <h1 class="white last" style="line-height: 1em">€ {{projects_total_total_budget}}M</h1>
+          <p class="small lt_grey last">{% trans 'Project bugets' %}</p>
         </div>
       </div>
       <a href="{% url global_project_map %}">
