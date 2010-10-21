@@ -22,7 +22,7 @@ class AllProjectsTest(XMLTestCase):
 
         self.assert_element(self.all_projects_root).is_not_none_and_has_tag("response")
 
-        expected_total_projects = 159 # to be retrieved from RSR Admin
+        expected_total_projects = 163 # to be retrieved from RSR Admin
 
         self.assert_element(self.all_projects_root).has_at_least(2).children()
         self.assert_element(self.all_projects_root).has_exactly(expected_total_projects).children_with_tag("resource")
