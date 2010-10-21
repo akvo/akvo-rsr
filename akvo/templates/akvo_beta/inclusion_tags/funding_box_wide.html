@@ -4,8 +4,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load i18n rsr_filters rsr_tags humanize %}
-{% ifnotequal p.status 'L' %}
 
+{% if not p.status == 'L' and not p.status == 'R' %}
 <div class="fundingwrap">
 	<div class="fundingboxwide-header"> </div>
 	<div class="fundingboxwide-content" style="padding:10px 0;">
@@ -31,5 +31,5 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div class="fundingboxwide-footer"> </div>
 </div>
-{% endifnotequal%}
+{% endif %}
 	

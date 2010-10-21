@@ -5,11 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from extensions.xmlextensions import *
-from extensions.xmltestcase import XMLTestCase
 from helpers.rsrapi import *
 from helpers.testexecution import *
+from testcases.xmltestcase import XMLTestCase
 
 from expectedelements import *
+
 
 class AllLESponsoredProjectsTest(XMLTestCase):
 
@@ -22,7 +23,7 @@ class AllLESponsoredProjectsTest(XMLTestCase):
 
         self.assert_element(self.all_LE_projects_root).is_not_none_and_has_tag("response")
 
-        expected_total_LE_projects = 30 # to be retrieved from RSR Admin
+        expected_total_LE_projects = 24 # to be retrieved from RSR Admin
 
         self.assert_element(self.all_LE_projects_root).has_at_least(2).children()
         self.assert_element(self.all_LE_projects_root).has_exactly(expected_total_LE_projects).children_with_tag("resource")

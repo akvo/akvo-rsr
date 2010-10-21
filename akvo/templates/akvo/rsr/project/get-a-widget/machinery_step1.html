@@ -766,6 +766,34 @@
 
 {% block jq_ready %}
 {{block.super}}
+
+	/* Set to default state */
+	jQ("#project-narrow-specific-project").attr('checked', true);
+	jQ("#project-narrow-random-from-org").attr('checked', false);
+
+	jQ("#cobranded-narrow-specific-project").attr('checked', true);
+	jQ("#cobranded-narrow-random-from-org").attr('checked', false);
+
+	jQ("#cobranded-short-specific-project").attr('checked', true);
+	jQ("#cobranded-short-random-from-org").attr('checked', false);
+
+	jQ("#cobranded-banner-specific-project").attr('checked', true);
+	jQ("#cobranded-banner-random-from-org").attr('checked', false);
+
+	jQ("#cobranded-leader-specific-project").attr('checked', true);
+	jQ("#cobranded-leader-random-from-org").attr('checked', false);
+
+	jQ("#feature-side-specific-project").attr('checked', true);
+	jQ("#feature-side-random-from-org").attr('checked', false);
+
+	jQ("#project-updates-specific-project").attr('checked', true);
+	jQ("#project-updates-random-from-org").attr('checked', false);
+
+	jQ("#project-contribute-specific-project").attr('checked', true);
+	jQ("#project-contribute-random-from-org").attr('checked', false);
+
+	jQ("#project-small-specific-project").attr('checked', true);
+	jQ("#project-small-random-from-org").attr('checked', false);
 	
 	{# Handle enable / disable of the specific .vs random project #}
 	jQ("#project-narrow-random-from-org").click(function() { 
