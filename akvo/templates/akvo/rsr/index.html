@@ -23,38 +23,40 @@
 <div class='container'>
 
   <div class='column span-12'>
-    <div id="feature_box" class="white_box">
-      {{cms.feature_box|apply_markup:"markdown"}}
-    </div>
-  </div>
-  
-  <div class='column span-6 last'>
-    <div class="white_box" style="height: 361px; background:url({{MEDIA_URL}}akvo/img/earth-300x78.png) no-repeat bottom;">
-      <div id="top_right_box" class="space20">
-        {{cms.top_right_box|apply_markup:"markdown"}}
+    <div class='column span-12'>
+      <div id="feature_box" class="white_box">
+        {{cms.feature_box|apply_markup:"markdown"}}
       </div>
-    </div> 
-  </div>
-   
-</div> 
-
-<div class='container'>
-   
-  <div class='column last span-18'>
-    <div class="white_box gutter-top" style="background-color:#f1f1f1;">
-      <div class="space5"> 
-        <h5 style="display: inline; padding-left: 15px;">Latest news: </h5><a href="{{news_post.url}}" class="small_link">{{news_post.title}}</a>
+    </div>
+  
+    <div class='column span-12'>
+      <div class="white_box gutter-top" style="background-color:#f1f1f1;">
+        <div class="space5"> 
+          <h5 style="display: inline; padding-left: 15px;">Latest news: </h5><a href="{{news_post.url}}" class="small_link">{{news_post.title}}</a>
+        </div> 
       </div> 
     </div> 
-  </div> 
-
-</div> 
-
-<div class='container'> 
-          
-  <div class='column span-12 gutter-top'>
-      
-    <div class='column span-6'>
+    
+    <div class='column span-12 gutter-top'>
+      <div class='column span-4'>
+        <div class="white_box" style="min-height: 300px;">
+          Latest update 1
+        </div>
+      </div>   
+      <div class='column span-4'>
+        <div class="white_box" style="min-height: 300px;">
+          Latest update 2
+        </div>
+      </div>   
+      <div class='column last span-4'>
+        <div class="white_box" style="min-height: 300px;">
+          Latest update 3
+        </div>
+      </div>   
+    </div>
+    
+    <div class='column span-12 gutter-top'>
+        
       <div class="white_box" style="background-color:#fff; min-height: {{cms.lower_height}}px;">
         <div class="space20">
           <div style="float: left;">
@@ -85,41 +87,55 @@
         </div>          
         <div class="clear"></div>
       </div>
-    </div>
 
-    <div class='column span-6 last'>
-      <div class="white_box" style="background-color:#fff; min-height: {{cms.lower_height}}px;">
-        <div id="map_box" class="space20">     
-          <div style="float: left;">
-            <h1>Projects worldwide</h1> 
-          </div>
-          <div class="h1_companion">
-            <a href="{% url project_list %}">See all <span class="link_triangle">&#x25B6;</span></a>
-          </div>
-          <div class="clear"></div>
-          {# <img src="/rsr/media/pvw-take2/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
-          <a href="{% url global_project_map %}">
-            {% google_global_project_map 'static' 292 219 0 %}
-          </a>
-          {{cms.map_box|apply_markup:"markdown"}}
-          <!--<p class="nano-lede strong">
-            117 countries.<br/>
-            € 20 billion in project budgets.<br/>
-            178 million people's lives made better.
-          </p>
-          <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p>
-          -->
-          <div class="h1_companion">
-            <a href="{% url global_project_map %}">View large map <span class="link_triangle">&#x25B6;</span></a>
-          </div>          
-          <div class="clear"></div>
-        </div> 
-      </div> 
     </div>
-
+  </div>
+     
+  <div class='column span-6 last'>
+    <div class="white_box" style="height: 361px; background:url({{MEDIA_URL}}akvo/img/earth-300x78.png) no-repeat bottom;">
+      <div id="top_right_box" class="space20">
+        {{cms.top_right_box|apply_markup:"markdown"}}
+      </div>
+    </div> 
   </div>
 
-  <div class='column last span-6 gutter-top'>
+  <div class='column span-6 gutter-top last'>
+    <div class="right_now_box">
+      <div style="padding: 20px 20px 0px 20px;">
+        <h1 class="right_now_green">{% trans 'Right now in Akvo.org...' %}</h1>
+        <div class="clear"></div>
+      </div>
+      <div class='column span-3 border' style="margin-bottom:20px">
+        <div style="padding-left: 20px;">
+          <h1 class="white last" style="line-height: .8em">{{projects.count}}</h1>
+          <p class="small right_now_blue">{% trans 'projects' %}</p>
+          <h1 class="white last" style="line-height: .8em">{{orgs.count}}</h1>
+          <p class="small right_now_blue">{% trans 'project partners' %}</p>
+          <h1 class="white last" style="line-height: .8em">000</h1>
+          <p class="small lt_grey last">{% trans 'countries' %}</p>
+        </div>
+      </div>
+      <div class='column span-3 last' style="margin-bottom:20px">
+        <div style="padding-left: 20px;">
+          <h1 class="white last" style="line-height: .8em">000,000</h1>
+          <p class="small lt_grey">{% trans 'people served' %}</p>
+          <h1 class="white last" style="line-height: .8em">€{{projects.total_total_budget|intword}}</h1>
+          <p class="small lt_grey last">{% trans 'buget' %}</p>
+        </div>
+      </div>
+      <a href="{% url global_project_map %}">
+        {% google_global_project_map 'static' 315 235 0 %}
+      </a>
+      <div style="padding: .5em .5em .7em .5em;">
+        <a class="right small right_now_blue" href="{% url global_project_map %}">View large map <span class="link_triangle">&#x25B6;</span></a>
+        <div class="clear"></div>
+      </div> 
+    </div> 
+  </div>
+
+<!--
+-->
+  <div class='column span-6 gutter-top last'>
     <div class="white_box" style="background-color:#fff;">
       <div style="margin: 20px 20px 0px 20px;">     
         <div style="float: left;">
@@ -146,8 +162,9 @@
       </div>              
     </div>          
   </div>
-
+    
 </div> 
+
 
 {% endblock maincontent %}
 

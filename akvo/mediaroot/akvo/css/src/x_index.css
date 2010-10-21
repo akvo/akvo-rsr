@@ -108,18 +108,15 @@ a.staff_picks_link {
     color: yellow;
 }
 
-#feature_box p {
-}
-div.gradient_box {
+
+.right_now_box {
   background-color: #2096F5;
   background-image: -webkit-gradient(linear, 0% 0, 0% 100%, from(#2096F5), to(#2D80AE));
   background-image: -moz-linear-gradient(0% 50% 270deg,#2096F5, #2D80AE);
-  border-bottom-left-radius: 3px 3px;
-  border-bottom-right-radius: 3px 3px;
-  border-top-left-radius: 3px 3px;
-  border-top-right-radius: 3px 3px;
-  color: white;
-  padding: 5px;
+  border-bottom-left-radius: 2px 2px;
+  border-bottom-right-radius: 2px 2px;
+  border-top-left-radius: 2px 2px;
+  border-top-right-radius: 2px 2px;
 }
 
 #top_right_box p, #top_right_box h1, #top_right_box h3, #top_right_box h5 {

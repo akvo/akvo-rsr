@@ -125,9 +125,12 @@ def index(request, cms_id=None):
 
     news_post, blog_posts = wordpress_get_lastest_posts('wordpress', get_setting('NEWS_CATEGORY_ID', 3), get_setting('INDEX_ARTICLE_COUNT', 2))
     
-    return {
-        #'orgs': Organisation.objects,
-        #'projs': projs,
+    if not settings.PVW_RSR:
+        projects = Project.objects.published().funding()
+        orgs = Organisation.objects.all()
+
+        
+    context_dict = {
         #'updates': updates,
         'focus_areas': focus_areas,
         'cms': cms,
@@ -144,6 +147,12 @@ def index(request, cms_id=None):
         'news_post': news_post,
         'preview':  preview,
     }
+    if not settings.PVW_RSR:
+        context_dict.update({
+            'orgs': orgs,
+            'projects': projects,
+        })
+    return context_dict
 
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"
