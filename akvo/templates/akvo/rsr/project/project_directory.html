@@ -55,15 +55,14 @@
 <div class='container'>
 	<div class='column span-18 last'>
     {% if org %}
-      <h1 class="h0"><a href="{{org.get_absolute_url}}">{% trans 'Project listing for' %} {{org.name}}</a></h1>
-        <a href="{{org.get_absolute_url}}">{% org_logo org 240 180 'float: left; margin: 0 20px 20px 0;' %}</a>
-        <p>
-          {{org.description|linebreaks}}
-        </p>
+      <h1 class="h0">{% trans 'Project listing for' %} <a href="{{org.get_absolute_url}}">{{org.name}}</a></h1>
+        <a href="{{org.get_absolute_url}}">{% org_logo org 120 90 'float: left; margin: 0 20px 20px 0;' %}</a>
+        {{org.description|smart_truncate:300|linebreaks|safe}}
+        <p><a href="{{org.get_absolute_url}}">{% trans 'Read more about' %} {{org.name}}</a></p>
     {% else %}
       <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
       <div id="focus_area_description" class="column span-{% if focus_area.slug != 'all' %}15{% else %}18{% endif %}">
-        <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 240x180 sharpen %}" alt="{{focus_area}}"/>
+        <img width="120" height="90" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 120x90 sharpen %}" alt="{{focus_area}}"/>
         {{focus_area.description|apply_markup:"markdown"}}
       </div>
       {% if focus_area.slug != 'all' %}
@@ -79,12 +78,12 @@
     {% endif %}
     <div class="clear"></div>
 		<h1 class="h0">
-			{% if org %}
-				<a href="{{org.get_absolute_url}}">{% trans 'Project listing for' %} {{org.name}}</a>
-    		{% else %}
-      			{{focus_area}} {% trans 'projects' %}
-    		{% endif %}
-			({{projects.count}})
+			{{projects.count}}
+      {% blocktrans count projects.count as project_count %}
+        project
+      {% plural %}
+        projects
+      {% endblocktrans %}
 		</h1>
 		
 		<form action="." method="get" accept-charset="utf-8" name="filter_form">
