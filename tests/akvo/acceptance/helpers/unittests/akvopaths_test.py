@@ -50,7 +50,7 @@ class AkvoPathsTest(TestCase):
 
     def test_can_get_sign_in_page_path(self):
         """helpers.unittests.AkvoPathsTest  Can get path for Sign in page"""
-        self.verify_path("/rsr/signin/?next=/rsr/projects/all", sign_in_page())
+        self.verify_path("/rsr/signin/?next=/", sign_in_page())
 
     def test_can_get_terms_of_use_page_path(self):
         """helpers.unittests.AkvoPathsTest  Can get path for Terms of use page"""

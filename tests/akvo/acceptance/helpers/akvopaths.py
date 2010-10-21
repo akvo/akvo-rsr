@@ -30,7 +30,7 @@ def register_page():
     return rsr_path("accounts/register1")
 
 def sign_in_page():
-    return rsr_path("signin/?next=%s" % all_projects_page())
+    return rsr_path("signin/?next=%s" % home_page())
 
 def terms_of_use_page():
     return cms_path("terms_of_use")
