@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, Organisation
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
 def google_map(object, width, height, zoom):
@@ -26,6 +26,18 @@ def google_global_project_map(map_type, width, height, zoom):
     template_context = dict(map_type=map_type,
         marker_icon=marker_icon,
         projects=projects,
+        width=width,
+        height=height,
+        zoom=zoom)
+    return template_context
+
+@register.inclusion_tag('inclusion_tags/google_global_organisation_map.html')
+def google_global_organisation_map(map_type, width, height, zoom):
+    organisations = Organisation.objects.has_primary_location()
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    template_context = dict(map_type=map_type,
+        marker_icon=marker_icon,
+        organisations=organisations,
         width=width,
         height=height,
         zoom=zoom)

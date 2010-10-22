@@ -155,4 +155,4 @@ def create_primary_organisation_locations(): # Akvo RSR only!
 
 
 if __name__ == '__main__':
-    create_primary_project_locations()
+    create_primary_organisation_locations()

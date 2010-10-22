@@ -205,6 +205,13 @@ class Organisation(models.Model):
 
     
     class QuerySet(QuerySet):
+        def has_primary_location(self):
+            content_type = ContentType.objects.get_for_model(Organisation)
+            locations = Location.objects.filter(content_type=content_type,
+                primary=True)
+            project_ids = [location.object_id for location in locations]
+            return self.filter(id__in=project_ids)
+
         def fieldpartners(self):
             return self.filter(field_partner__exact=True)
     
