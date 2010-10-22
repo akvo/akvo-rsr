@@ -81,21 +81,20 @@
         </a>
       </div>
 
-      <div class="white_box" style="background-color:#fff; min-height: {{cms.lower_height}}px;">
+      <div class="white_box" style="background-color:#fff;">
         {% for blog_post in blog_posts %}
-          <div class="space20" style="margin-top: 0;">
-            <p><a class="strong" href="{{blog_post.url}}">{{blog_post.title}}</a></p>
-            <p class="nano-lede lt_grey">{{blog_post.date|date:"l, j F Y"}}</p> 
+          <div class="space20">
             {% if blog_post.image %}
-              <div class="clear"></div>
-              <img src="{{blog_post.image}}" width="123" style="margin: 0 10px 10px 0; float: left;">
+              <img src="{{blog_post.image}}" width="200" style="margin: 0 20px 15px 0; float: left;">
             {% endif %}
-            <p class="nano-lede">{{blog_post.text|striptags|smart_truncate:160}}</p> 
+            <a class="strong" href="{{blog_post.url}}"><h2 class="link_blue serif">{{blog_post.title}}</h2></a>
+            <p class="small grey" style="margin-bottom: .5em;">{{blog_post.date|date:"l, j F Y"}} {% trans 'by' %} {{bloag_post.author}}</p> 
+            <p class="small">{{blog_post.text|striptags|smart_truncate:300}}</p> 
           </div>
           <div style="margin: 0 8px;"><hr/></div>
         {% endfor %}
-        <div class="h1_companion" style="margin: 20px; margin-top: 5px;">
-          <a href="/news">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
+        <div class="h1_companion" style="margin: 20px; margin-top: 0;">
+          <a href="/blog">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
         </div>          
         <div class="clear"></div>
       </div>
@@ -120,9 +119,9 @@
       <div class='column span-3 border' style="margin-bottom:20px">
         <div style="padding-left: 20px;">
           <h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
-          <p class="small right_now_blue">{% trans 'Projects' %}</p>
+          <p class="small"><a class="right_now_blue" href={% url project_list %}>{% trans 'Projects' %}</a></p>
           <h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
-          <p class="small right_now_blue last">{% trans 'Project partners' %}</p>
+          <p class="small"><a class="right_now_blue" href={% url rsr_org_list %}>{% trans 'Project partners' %}</a></p>
           <!--<h1 class="white last" style="line-height: 1em">000</h1>
           <p class="small lt_grey last">{% trans 'Countries' %}</p>-->
         </div>

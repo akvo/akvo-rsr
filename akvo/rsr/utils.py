@@ -143,10 +143,11 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         news_post = {'title': rows[0][5], 'url': '%s/?p=%s' % (site_url, rows[0][0],)}
     
         cursor.execute("""
-            SELECT * FROM posts
+            SELECT * FROM posts, users
                 WHERE post_status != 'draft'
                     AND post_status != 'auto-draft'
                     AND post_type = 'post'
+                    AND posts.post_author = users.ID
                 ORDER By post_date DESC LIMIT %d
             """ % limit
         )
@@ -176,7 +177,7 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         for text in post_p:
             p = '%s%s' % (p, text)
         
-        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), })
+        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[33]})
 
     return news_post, posts
 
