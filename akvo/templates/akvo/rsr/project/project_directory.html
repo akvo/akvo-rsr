@@ -90,7 +90,7 @@
 			<div id="project_search" class="span-18">
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
-						<input name="q" placeholder="Filter on project name or subtitle" 
+						<input id="q" name="q" placeholder="Filter on project name or subtitle" 
 							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
 							value="{{ query_string|escape }}">
 
@@ -317,6 +317,7 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 {% endif %}
 
+{% asset_bundle 'akvo_project_list_js' %}
 {% endblock js %}
 
 {% block inline_js %}
@@ -473,5 +474,9 @@ function replaceQueryString(url, param, value) {
 		}
 
 	});
+	
+	if (!Modernizr.input.placeholder) {
+		jQ('#q').html('{% trans "Filter on project name or subtitle" %}');
+	}
 
 {% endblock jq_ready %}
