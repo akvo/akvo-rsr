@@ -88,7 +88,7 @@
               <img src="{{blog_post.image}}" width="200" style="margin: 0 20px 15px 0; float: left;">
             {% endif %}
             <a class="strong" href="{{blog_post.url}}"><h2 class="link_blue serif">{{blog_post.title}}</h2></a>
-            <p class="small grey" style="margin-bottom: .5em;">{{blog_post.date|date:"l, j F Y"}} {% trans 'by' %} {{bloag_post.author}}</p> 
+            <p class="small grey" style="margin-bottom: .5em;">{{blog_post.date|date:"l, j F Y"}} {% trans 'by' %} {{blog_post.author}}</p> 
             <p class="small">{{blog_post.text|striptags|smart_truncate:300}}</p> 
           </div>
           <div style="margin: 0 8px;"><hr/></div>
