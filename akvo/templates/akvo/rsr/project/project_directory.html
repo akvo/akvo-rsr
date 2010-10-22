@@ -90,7 +90,7 @@
 			<div id="project_search" class="span-18">
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
-						<input name="q" placeholder="Filter on project name or subtitle" 
+						<input id="q" name="q" placeholder="Filter on project name or subtitle" 
 							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
 							value="{{ query_string|escape }}">
 
@@ -172,7 +172,7 @@
 							{% endfor %}
 						</select>
 						
-						<a class="orange awesome" style="float:right;"
+						<a class="blue awesome" style="float:right;"
 							href="javascript:document.filter_form.submit();" onclick="this.blur();">
 							<span>{% trans 'Filter' %}</span>
 						</a>
@@ -271,13 +271,14 @@
 					</div>
 					<div class="fundingbox-progress-bar" style="height:5px;">
 						{% if project.budget_total %}
-						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> 
+						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}%"> 
 						</div>
 						{% endif %}
 					</div>
 					<div style="text-align:center;">
 						<p class="tiny grey" style="margin:0;">
-							{% widthratio project.funding_total_given project.budget_total 100 %} %
+              {# |add:1 truncates so we get truc(funding_total_given+1) #}
+							{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %} %
 						</p>
 					</div>
 					<div style="text-align:center;">
@@ -312,15 +313,56 @@
 {{ block.super }}
 
 {% if debug %}
-  <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="{{MEDIA_URL}}core/js/jquery-ui.min.js"></script>
 {% else %}
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 {% endif %}
 
+{% asset_bundle 'akvo_project_list_js' %}
 {% endblock js %}
 
 {% block inline_js %}
+
+/* Credits: http://praveenbattula.blogspot.com/2009/04/replace-querystrng-with-some-value-in.html */
+function replaceQueryString(url, param, value) { 
+	var preURL = ""; 
+	var postURL = ""; 
+	var newURL = "";
+
+	var start = url.indexOf(param+"="); 
 	
+	if(start > -1) { 
+		var end = url.indexOf("=", start); 
+		preURL=url.substring(0,end)+"="+value;
+
+		var startRest = url.indexOf("&",start); 
+		postURL=""; 
+		if(startRest > -1) { 
+			postURL=url.substring(startRest); 
+		} 
+	} else {
+		var delimeter = ""; 
+		preURL=url; 
+		if (url.indexOf("?") > 0) 
+			delimeter = '&'; 
+		else 
+			delimeter = '?';
+
+		postURL=delimeter+param+"="+value; 
+	} 
+	
+	newURL = preURL+postURL; 
+	var index = newURL.indexOf('id=',0); 
+	if(index > -1) {
+		var Nurl = newURL.substring(0,index); 
+		var EUrl = newURL.substr(index,newURL.length - index); 
+		var eIndex = EUrl.indexOf('&',0); 
+		if(eIndex > -1) 
+			EUrl = EUrl.substr(eIndex, EUrl.length - eIndex); 
+		//newURL = newURL.substring();
+		newURL = Nurl + EUrl; } return newURL; 
+	}
+
 {% endblock inline_js%}
 
 
@@ -331,17 +373,13 @@
 	jQ('#organisation').val({{org.id}});
 	
 	jQ('#organisation').change(function() {
-		
-		
+				
 		url = "/rsr/projects/" + jQ(this).val();		
 		query_string = window.location.search.substring(1);		
-
-		{# We need to remove the page item from the query_string #}
 		
-		if (query_string) {
+		if (query_string) {	
 			url += "/?" + query_string;
-			url = RemoveParameterFromUrl(url, 'page');
-
+			url = replaceQueryString(url, 'page', 1);
 			window.location = url;
 		} else {
 			window.location = url;
@@ -437,5 +475,9 @@
 		}
 
 	});
+	
+	if (!Modernizr.input.placeholder) {
+		jQ('#q').html('{% trans "Filter on project name or subtitle" %}');
+	}
 
 {% endblock jq_ready %}

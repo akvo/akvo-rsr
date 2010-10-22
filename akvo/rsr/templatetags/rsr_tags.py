@@ -206,7 +206,7 @@ def asset_bundle(context, bundle):
         else:
             script_import_string = ''
             for file_element in asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['files']:
-                url = '%s%sbuild/%s' % (settings.MEDIA_URL, asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['path'], file_element)
+                url = '%s%ssrc/%s' % (settings.MEDIA_URL, asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['path'], file_element)
                 script_import_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n\t' % (script_import_string, url)
             include = script_import_string
     else:
@@ -338,4 +338,49 @@ def encrypt_email(parser, token):
     
 register.tag('encrypt_email', encrypt_email)
 
- 
+from django.template.defaulttags import WidthRatioNode
+
+class WidthRatioTruncNode(WidthRatioNode):
+    def render(self, context):
+        try:
+            value = self.val_expr.resolve(context)
+            maxvalue = self.max_expr.resolve(context)
+            max_width = int(self.max_width.resolve(context))
+        except VariableDoesNotExist:
+            return ''
+        except ValueError:
+            raise TemplateSyntaxError("widthratio final argument must be an number")
+        try:
+            value = float(value)
+            maxvalue = float(maxvalue)
+            ratio = (value / maxvalue) * max_width
+        except (ValueError, ZeroDivisionError):
+            return ''
+        return str(int(ratio))
+
+@register.tag
+def widthratio_trunc(parser, token):
+    """
+    For creating bar charts and such, this tag calculates the ratio of a given
+    value to a maximum value, and then applies that ratio to a constant.
+
+    For example::
+
+        <img src='bar.gif' height='10' width='{% widthratio this_value max_value 100 %}' />
+
+    Above, if ``this_value`` is 175 and ``max_value`` is 200, the image in
+    the above example will be 88 pixels wide (because 175/200 = .875;
+    .875 * 100 = 87.5 which is rounded up to 88).
+    """
+    bits = token.contents.split()
+    if len(bits) != 4:
+        raise TemplateSyntaxError("widthratio takes three arguments")
+    tag, this_value_expr, max_value_expr, max_width = bits
+
+    return WidthRatioTruncNode(
+        parser.compile_filter(this_value_expr),
+        parser.compile_filter(max_value_expr),
+        parser.compile_filter(max_width)
+    )
+
+

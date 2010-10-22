@@ -43,7 +43,7 @@
 
 /* Use this class on any div.span / container to see the grid. */
 .showgrid { 
-  background: url(../../img/base/grid.png); 
+  background: url(img/grid.png); 
 }
 
 /* Body margin for a sensile default look. */
@@ -56,7 +56,10 @@ body {
 -------------------------------------------------------------- */
 
 /* Sets up basic grid floating and margin. */
-div.span-1, div.span-2, div.span-3, div.span-4, div.span-5, div.span-6, div.span-7, div.span-8, div.span-9, div.span-10, div.span-11, div.span-12, div.span-13, div.span-14, div.span-15, div.span-16, div.span-17, div.span-18 {float:left;margin-right: 15px;}
+div.span-1, div.span-2, div.span-3, div.span-4, div.span-5, div.span-6, div.span-7, div.span-8, div.span-9, div.span-10, div.span-11, div.span-12, div.span-13, div.span-14, div.span-15, div.span-16, div.span-17, div.span-18 {
+    float:left;
+    margin-right: 15px;
+}
 
 /* The last column in a row needs this class. */
 div.last { margin-right: 0; }
@@ -187,6 +190,20 @@ div.colborder {
 
 /* Misc classes and elements
 -------------------------------------------------------------- */
+
+/* In case you need to add a gutter above/below an element */
+.prepend-top {
+  margin-top:1.5em;
+}
+.append-bottom {
+  margin-bottom: 1.5em;
+}
+.gutter-top {
+  margin-top: 15px;
+}
+.gutter-bottom {
+  margin-bottom: 15px;
+}
 
 /* Use a .box to create a padded box inside a column.  */ 
 .box { 

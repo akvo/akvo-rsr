@@ -1,6 +1,6 @@
 {% load i18n thumbnail rsr_filters %}
 
-{% if projects %}
+{% if organisations %}
 
 <style type="text/css" media="screen">
 	.mapInfoWindow {
@@ -33,11 +33,11 @@
 
 	        var center = new google.maps.LatLng(0,0);
 
-	        {% for project in projects %}
-                var project_{{ project.id }}_url = "{% url project_main project_id=project.id %}";
-	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
-	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
-	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
+	        {% for organisation in organisations %}
+                var organisation_{{ organisation.id }}_url = "{% url org_detail org_id=organisation.id %}";
+	            var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude }};
+	            var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude }};
+	            var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);
                 var zoom = {{ zoom }};
 	        {% endfor %}
 
@@ -62,36 +62,36 @@
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 
-	        {% for project in projects %}
-	            var project_{{ project.id }}_marker = new google.maps.Marker({
+	        {% for organisation in organisations %}
+	            var organisation_{{ organisation.id }}_marker = new google.maps.Marker({
                     {% if map_type == 'static' %}
                         icon: smallIcon,
                     {% else %}
                         icon: normalIcon,
                     {% endif %}
 	                map: map,
-	                position: project_{{ project.id }}_coordinates,
-	                title: 'Project {{ project.id }}'
+	                position: organisation_{{ organisation.id }}_coordinates,
+	                title: 'Organisation {{ organisation.id }}'
 	            });
 
                 {% if map_type != 'static' %}
-	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
-					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
-	                '<h4><a href="' + project_{{ project.id }}_url + '">' +
-                    '{{ project.name|smart_truncate:35}}</a></h4>' +
-                    '<a href="' + project_{{ project.id }}_url + '">' +
-	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
+	            var organisation_{{ organisation.id }}_info = '<div class="mapInfoWindow">' +
+					'<div class="bubble_header"><h3>{% trans 'organisation' %}</h3></div>' +
+	                '<h4><a href="' + organisation_{{ organisation.id }}_url + '">' +
+                    '{{ organisation.name|smart_truncate:35}}</a></h4>' +
+                    '<a href="' + organisation_{{ organisation.id }}_url + '">' +
+	                '<img src="{% thumbnail organisation.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
-					'<div id="project_location"><p class="small">' +
-					'{{project.country.get_continent_display}}<br />' +
-					'{{project.country}}, {{project.city}} </p></div>'
+					'<div id="organisation_location"><p class="small">' +
+					'{{organisation.location.country.get_continent_display}}<br />' +
+					'{{organisation.location.country}}, {{organisation.location.city}} </p></div>'
 	                '</div>';
 	
-	            var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({
-	                content: project_{{ project.id }}_info
+	            var organisation_{{ organisation.id }}_infowindow = new google.maps.InfoWindow({
+	                content: organisation_{{ organisation.id }}_info
 	            });
-	            google.maps.event.addListener(project_{{ project.id }}_marker, 'click', function() {
-	                project_{{ project.id }}_infowindow.open(map, project_{{ project.id }}_marker);
+	            google.maps.event.addListener(organisation_{{ organisation.id }}_marker, 'click', function() {
+	                organisation_{{ organisation.id }}_infowindow.open(map, organisation_{{ organisation.id }}_marker);
 	            });
                 {% endif %}
 	        {% endfor %}

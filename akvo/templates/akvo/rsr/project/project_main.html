@@ -28,43 +28,7 @@
 			<h2 class="black">{% trans 'Description' %}</h2>
 			{{p.project_plan_summary|linebreaks}}
 			<div style="float:left; width:338px; margin-left: -10px;">
-				<div id="galleria" style="width:338px; height: 350px;">
-				</div>
-				
-        <!--<div style="min-height:20px; padding-top:5px; margin-bottom:10px;">
-					<p id="project_image_caption" class="small grey" style="margin:0;">
-						{{p.current_image_caption}}
-					</p>
-				</div>
-				
-				<div id="gallery_box" class="round">
-					<div id="gallery_box_controller">
-						<div id="gallery_box_controller_prev"> </div>
-						<div id="gallery_box_controller_next"> </div>
-						<div class="clear"></div>
-					</div>
-					<div class="clear"></div>
-						
-					<div id="gallery_box_slider">
-						<div class="gallery_links_container">
-							<div style="border:3px solid #71CDFF;">
-								<a id="gallery_links_first" class="gallery_links" href="{% thumbnail p.current_image 328x246 autocrop sharpen %}" title="{{ p.current_image_caption }}" target="_blank">
-									<img src="{% thumbnail p.current_image 100x75 %}" />
-								</a>
-							</div>
-						</div>
-						{% for update_with_image in updates_with_images %}
-						<div class="gallery_links_container">
-							<div>
-								<a {% if forloop.last %}id="gallery_links_last" {% endif %} class="gallery_links" href="{% thumbnail update_with_image.photo 328x246 autocrop sharpen %}" title="{{ update_with_image.photo_caption }}" target="_blank">
-									<img src="{% thumbnail update_with_image.photo 100x75 autocrop sharpen %}" />
-								</a>								
-							</div>
-						</div>
-						{% endfor %}
-						<div class="clear"></div>
-					</div>
-				</div>-->
+				<div id="galleria" style="width:338px; height: 350px;"></div>
 			</div>
         
 			<div style="float:left; width:30px;">&nbsp;</div>
@@ -96,8 +60,27 @@
 		<div style="float:left; width:480px;">
 			<div class="white_box">
 				<div class="space20">
-					<h3>{% trans 'Focus areas' %}</h3>
-					<p>{% category_icons p %}</p>
+          {% if project.areas_and_categories %}
+            <h3 class="black">
+              {% blocktrans count project.areas_and_categories|length as areas %}
+                Focus area
+              {% plural %}
+                Focus areas
+              {% endblocktrans %}
+            </h3>
+            {% for area in project.areas_and_categories %}
+              <p><a href="{{area.area.get_absolute_url}}">{{area.area}}</a>
+              <span class="small" style="padding-left: 2em;">
+                {% blocktrans count area.categories|length as cats %}
+                  Category:
+                {% plural %}
+                  Categories:
+                {% endblocktrans %}
+                {{area.categories|join:", "}}
+              </span>
+            </p>
+            {% endfor %}
+          {% endif %}
 					
 					<h3>{% trans 'Detailed information' %}</h3>
 					

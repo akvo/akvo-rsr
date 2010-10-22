@@ -12,8 +12,11 @@
 .grey {color:#7E8197;}
 .black {color:#000;}
 .white {color:#fff;}
-.link_blue { color: #1877B8; }
 
+.lt_grey {color:#C8CDF0;}
+.link_blue { color: #1877B8; }
+.right_now_green {color: #5DFF51; }
+.right_now_blue ,a.right_now_blue { color: #21ffff; }
 .bold {font-weight: bold;}
 
 .right {float:right;}
