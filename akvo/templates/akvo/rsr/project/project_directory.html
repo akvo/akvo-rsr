@@ -312,7 +312,7 @@
 {{ block.super }}
 
 {% if debug %}
-  <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="{{MEDIA_URL}}core/js/jquery-ui.min.js"></script>
 {% else %}
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 {% endif %}
@@ -320,7 +320,47 @@
 {% endblock js %}
 
 {% block inline_js %}
+
+/* Credits: http://praveenbattula.blogspot.com/2009/04/replace-querystrng-with-some-value-in.html */
+function replaceQueryString(url, param, value) { 
+	var preURL = ""; 
+	var postURL = ""; 
+	var newURL = "";
+
+	var start = url.indexOf(param+"="); 
 	
+	if(start > -1) { 
+		var end = url.indexOf("=", start); 
+		preURL=url.substring(0,end)+"="+value;
+
+		var startRest = url.indexOf("&",start); 
+		postURL=""; 
+		if(startRest > -1) { 
+			postURL=url.substring(startRest); 
+		} 
+	} else {
+		var delimeter = ""; 
+		preURL=url; 
+		if (url.indexOf("?") > 0) 
+			delimeter = '&'; 
+		else 
+			delimeter = '?';
+
+		postURL=delimeter+param+"="+value; 
+	} 
+	
+	newURL = preURL+postURL; 
+	var index = newURL.indexOf('id=',0); 
+	if(index > -1) {
+		var Nurl = newURL.substring(0,index); 
+		var EUrl = newURL.substr(index,newURL.length - index); 
+		var eIndex = EUrl.indexOf('&',0); 
+		if(eIndex > -1) 
+			EUrl = EUrl.substr(eIndex, EUrl.length - eIndex); 
+		//newURL = newURL.substring();
+		newURL = Nurl + EUrl; } return newURL; 
+	}
+
 {% endblock inline_js%}
 
 
@@ -331,17 +371,13 @@
 	jQ('#organisation').val({{org.id}});
 	
 	jQ('#organisation').change(function() {
-		
-		
+				
 		url = "/rsr/projects/" + jQ(this).val();		
 		query_string = window.location.search.substring(1);		
-
-		{# We need to remove the page item from the query_string #}
 		
-		if (query_string) {
+		if (query_string) {	
 			url += "/?" + query_string;
-			url = RemoveParameterFromUrl(url, 'page');
-
+			url = replaceQueryString(url, 'page', 1);
 			window.location = url;
 		} else {
 			window.location = url;
