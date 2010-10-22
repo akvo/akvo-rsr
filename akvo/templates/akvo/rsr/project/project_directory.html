@@ -271,13 +271,14 @@
 					</div>
 					<div class="fundingbox-progress-bar" style="height:5px;">
 						{% if project.budget_total %}
-						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> 
+						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}%"> 
 						</div>
 						{% endif %}
 					</div>
 					<div style="text-align:center;">
 						<p class="tiny grey" style="margin:0;">
-							{% widthratio project.funding_total_given project.budget_total 100 %} %
+              {# |add:1 truncates so we get truc(funding_total_given+1) #}
+							{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %} %
 						</p>
 					</div>
 					<div style="text-align:center;">

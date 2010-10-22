@@ -782,8 +782,7 @@ else:
             }),        
         )
         list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
-                        'city', 'project_plan_summary', 'show_current_image',
-                        'show_map', 'is_published')
+                        'city', 'project_plan_summary', 'show_current_image', 'is_published',)
         list_filter = ('currency',)
         
         #form = ProjectAdminModelForm
