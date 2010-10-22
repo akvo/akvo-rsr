@@ -206,7 +206,7 @@ def asset_bundle(context, bundle):
         else:
             script_import_string = ''
             for file_element in asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['files']:
-                url = '%s%sbuild/%s' % (settings.MEDIA_URL, asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['path'], file_element)
+                url = '%s%ssrc/%s' % (settings.MEDIA_URL, asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['path'], file_element)
                 script_import_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n\t' % (script_import_string, url)
             include = script_import_string
     else:
