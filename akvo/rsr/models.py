@@ -1643,7 +1643,18 @@ else: #akvo-rsr
         def focus_areas(self):
             return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
         focus_areas.allow_tags = True
-    
+
+        def areas_and_categories(self):
+            area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
+            areas = []
+            for area_obj in area_objs:
+                area = {'area': area_obj}
+                area['categories'] = []
+                for cat_obj in Category.objects.filter(focus_area=area_obj, projects=self).order_by('name'):
+                    area['categories'] += [cat_obj.name]
+                areas += [area]
+            return areas
+                    
         #shortcuts to linked orgs for a single project
         def support_partners(self):
             return Project.objects.filter(pk=self.pk).support_partners()

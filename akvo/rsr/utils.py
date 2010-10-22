@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from BeautifulSoup import BeautifulSoup
 
+import random
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
 GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
@@ -178,3 +179,10 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), })
 
     return news_post, posts
+
+def get_random_from_qs(qs, count):
+    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
+    qs_list = list(qs.values_list('pk', flat=True))
+    random.shuffle(qs_list)
+    return qs.filter(pk__in=qs_list[:count])
+

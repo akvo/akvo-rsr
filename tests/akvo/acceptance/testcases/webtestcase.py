@@ -41,7 +41,7 @@ class AkvoWebTestCase(SeleniumTestCase):
 
     def open_about_page(self):
         self.site_navigator.open_about_page()
-        self.verify_location_and_cms_page_title(about_page(), "How you can help")
+        self.verify_location_and_cms_page_title(about_page(), "Get involved with Akvo")
 
     def open_blog_page(self):
         self.site_navigator.open_blog_page()

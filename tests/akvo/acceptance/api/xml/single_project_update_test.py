@@ -7,12 +7,13 @@
 import urllib2
 
 from extensions.xmlextensions import *
-from extensions.xmltestcase import XMLTestCase
 from helpers.rsrapi import *
 from helpers.testexecution import *
+from testcases.xmltestcase import XMLTestCase
 
 from expectedelements import *
 from test_settings import RSR_MEDIA_PATH
+
 
 class SingleProjectUpdateTest(XMLTestCase):
 
