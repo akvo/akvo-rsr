@@ -19,7 +19,7 @@ class SiteComponentsSmokeTest(AkvoWebTestCase):
         """web.general.SiteComponentsSmokeTest  1. Can load Home page"""
 
         self.open_home_page()
-        self.assert_page_contains_text_items(["Recent articles", "Projects worldwide", "Focus areas"])
+        self.assert_page_contains_text_items(["Most recent project updates", "Project focus areas"])
 
     def test_02_can_load_projects_page(self):
         """web.general.SiteComponentsSmokeTest  2. Can load Projects page, which redirects to All Projects page (Django + RSR operates as expected)"""
@@ -40,7 +40,7 @@ class SiteComponentsSmokeTest(AkvoWebTestCase):
         """web.general.SiteComponentsSmokeTest  4. Can load Focus Areas page (CMS content loads as expected)"""
 
         self.open_focus_areas_page()
-        self.assert_page_contains_text("Focus Areas")
+        self.assert_page_contains_text_items(["Focus areas", "Water and sanitation"])
 
     def test_05_can_load_partners_page(self):
         """web.general.SiteComponentsSmokeTest  5. Can load Partners page (CMS content loads as expected)"""
@@ -58,7 +58,7 @@ class SiteComponentsSmokeTest(AkvoWebTestCase):
         """web.general.SiteComponentsSmokeTest  7. Can load About page (CMS content loads as expected)"""
 
         self.open_about_page()
-        self.assert_page_contains_text_items(["Get involved with Akvo", "Akvo platform", "How to fund a project"])
+        self.assert_page_contains_text_items(["How you can help", "Get involved", "Akvo platform"])
 
     def test_0_can_load_blog_page(self):
         """web.general.SiteComponentsSmokeTest  8. Can load Akvo blog"""

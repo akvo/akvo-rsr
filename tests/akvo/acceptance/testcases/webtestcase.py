@@ -29,7 +29,7 @@ class AkvoWebTestCase(SeleniumTestCase):
 
     def open_focus_areas_page(self):
         self.site_navigator.open_focus_areas_page()
-        self.verify_location_and_cms_page_title(focus_areas_page(), "Focus Areas")
+        self.verify_location_and_cms_page_title(focus_areas_page(), "Focus areas")
 
     def open_partners_page(self):
         self.site_navigator.open_partners_page()
@@ -41,7 +41,7 @@ class AkvoWebTestCase(SeleniumTestCase):
 
     def open_about_page(self):
         self.site_navigator.open_about_page()
-        self.verify_location_and_cms_page_title(about_page(), "Get involved with Akvo")
+        self.verify_location_and_cms_page_title(about_page(), "How you can help")
 
     def open_blog_page(self):
         self.site_navigator.open_blog_page()
