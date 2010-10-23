@@ -80,11 +80,11 @@
 	                '<h4><a href="' + organisation_{{ organisation.id }}_url + '">' +
                     '{{ organisation.name|smart_truncate:35}}</a></h4>' +
                     '<a href="' + organisation_{{ organisation.id }}_url + '">' +
-	                '<img src="{% thumbnail organisation.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
+	                '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
 					'<div id="organisation_location"><p class="small">' +
-					'{{organisation.location.country.get_continent_display}}<br />' +
-					'{{organisation.location.country}}, {{organisation.location.city}} </p></div>'
+					'{{organisation.primary_location.country.get_continent_display}}<br />' +
+					'{{organisation.primary_location.country}}, {{organisation.primary_location.city}} </p></div>'
 	                '</div>';
 	
 	            var organisation_{{ organisation.id }}_infowindow = new google.maps.InfoWindow({
