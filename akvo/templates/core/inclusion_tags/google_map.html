@@ -31,7 +31,9 @@
         var map = new google.maps.Map(mapCanvas, mapOptions);
 
         var marker = new google.maps.Marker({
-            {% if marker_icon %}icon: "{{ marker_icon }}",{% endif %}
+            {% if marker_icon %}
+                icon: '{{ marker_icon }}',
+            {% endif %}
             map: map,
             position: mapData.coordinates,
             title: 'Main location'
