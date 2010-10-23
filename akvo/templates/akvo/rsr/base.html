@@ -34,7 +34,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="/rsr/projects/" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+					<a href="{% url project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>
@@ -84,7 +84,7 @@
 					{% if not user.username %}
 						<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
 					{% else %}
-						<li style="float:right; border-left: 1px solid #fff;"><a href="/rsr/accounts/update/">{% trans 'My account' %}</a></li>
+						<li style="float:right; border-left: 1px solid #fff;"><a href="{% url registration_update %}">{% trans 'My account' %}</a></li>
 					{% endif %}
 				{% endcomment %}
 				<li>
@@ -93,7 +93,7 @@
 							<span>{% trans 'Register' %}</span>
 						</a>
 					{% else %}
-						<a href="/rsr/accounts/update/">
+						<a href="{% url registration_update %}">
 							<span>{% trans 'My Akvo' %}</span>
 						</a>
 					{% endif %}
@@ -198,7 +198,7 @@
 				<div class="span-3 last">
 					<h3>{% trans 'Tools' %}</h3>
 					<p class="small">
-						<a href="/rsr/admin/">{% trans 'Akvo RSR admin' %}</a><br />
+						<a href="{% url admin:index %}">{% trans 'Akvo RSR admin' %}</a><br />
 						<a href="/blog/wp-login.php">{% trans 'Blog admin' %}</a><br />
 						<a href="/web/?q=user">{% trans 'CMS admin' %}</a><br />
 					</p>

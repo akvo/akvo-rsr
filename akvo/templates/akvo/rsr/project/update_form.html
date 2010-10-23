@@ -4,7 +4,7 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="/rsr/projects/"><span>{% trans 'Projects' %}</span></a></li>
+<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
 <li><a href="{% url project_main p.id %}"><span>{{p.name}}</span></a></li>
 <li id="last_breadcrum_item">Add update</li>
 {% endblock breadcrum_items %}

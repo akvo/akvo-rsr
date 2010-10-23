@@ -107,16 +107,16 @@ urlpatterns += patterns('',
     # Organisation
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
-    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name="org_detail"),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name='org_detail'),
 
     # Account
     url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
     url(r'^rsr/signout/$', 'akvo.rsr.views.signout', name='signout'),
     url(r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', name='register1'),
     url(r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', name='register2'),
-    url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate'),
-    (r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', ),
-    (r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', ),
+    url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate', ),
+    url(r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', name='registration_update', ),
+    url(r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', name='password_change'),
     url(r'^rsr/accounts/password/reset/$',
         auth_views.password_reset,
         {'password_reset_form': RSR_PasswordResetForm,
@@ -127,7 +127,7 @@ urlpatterns += patterns('',
         auth_views.password_reset_confirm,
         {'set_password_form': RSR_SetPasswordForm},
         name='auth_password_reset_confirm'),
-    (r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'} ),
+    url(r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'}, name='registration_update_complete' ),
     (r'^rsr/accounts/', include('registration.urls')),
 	
 	# Widgets
@@ -138,8 +138,8 @@ urlpatterns += patterns('',
 	url(r'^rsr/widget/(?P<template>[\w-]+)/$','akvo.rsr.views.project_widget', name='project_widget_default', ),
 	
 	
-	url(r'^rsr/widget/(?P<template>[\w-]+)/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
-	url(r'^rsr/widget/(?P<template>[\w-]+)/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
+	url(r'^rsr/widget/project-list/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
+	url(r'^rsr/widget/project-list/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget_for_org', ),
 	
     # django_counter
     (r'^rsr/counter/', include('django_counter.urls')),

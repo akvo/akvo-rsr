@@ -374,7 +374,7 @@ function replaceQueryString(url, param, value) {
 	
 	jQ('#organisation').change(function() {
 				
-		url = "/rsr/projects/" + jQ(this).val();		
+		url = "{% url project_list %}" + jQ(this).val();		
 		query_string = window.location.search.substring(1);		
 		
 		if (query_string) {	

@@ -26,7 +26,7 @@
 				{% trans 'Your organisation is' %}: {{request.user.get_profile.organisation_name}}
 			</p>    
 	        <p>
-				{% trans 'You can also <a href="/rsr/accounts/password/change/">change your password</a>.' %}
+				{% trans 'You can also <a href="{% url password_change %}">change your password</a>.' %}
 			</p>		
 		</div>
 		<div class="clear"></div>

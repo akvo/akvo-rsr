@@ -10,7 +10,7 @@
 <body>
 	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
 	<p>
-		{% trans 'Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via' %} <a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/updates">{% trans 'updates' %}</a> {% trans 'on' %} Akvo.org.
+		{% trans 'Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via' %} <a href="{% url project_updates invoice.project.id %}">{% trans 'updates' %}</a> {% trans 'on' %} Akvo.org.
 	</p>
 
 	<h3>{% trans 'A summary of your contribution' %}</h3>
@@ -36,7 +36,7 @@
 			{{ invoice.get_name }}<br>
 			{{ invoice.get_email }}<br>
 			<br>
-			<a href="http://{{domain_name}}/rsr/project/{{invoice.project.id}}/">{{ invoice.project.name|safe }}</a><br>
+			<a href="{% url project_main invoice.project.id %}">{{ invoice.project.name|safe }}</a><br>
 			{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
 			{{ invoice.id }}<br>
 			{% ifequal invoice.engine "paypal" %}

@@ -56,7 +56,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-narrow/project/{{p.id}}/" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'project-narrow' p.id %}" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
@@ -127,7 +127,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						{# think about refactor this to a general method in machinery.js #}
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-narrow/project/{{project.id}}/" width="170" height="911" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'cobranded-narrow' project.id %}" width="170" height="911" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
@@ -198,7 +198,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						{# think about refactor this to a general method in machinery.js #}
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-short/project/{{project.id}}/" width="170" height="627" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'cobranded-short' project.id %}" width="170" height="627" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
@@ -269,7 +269,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						{# think about refactor this to a general method in machinery.js #}
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-banner/project/{{project.id}}/" width="468" height="234" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'cobranded-banner' project.id %}" width="468" height="234" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right" style="width:370px; margin-left:20px;">
@@ -341,7 +341,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						{# think about refactor this to a general method in machinery.js #}
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/cobranded-leader/project/{{project.id}}/" width="728" height="207" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'cobranded-leader' project.id %}" width="728" height="207" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				
@@ -413,7 +413,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						{# think about refactor this to a general method in machinery.js #}
-						document.write('<iframe src="http://'+ location.host +'/rsr/widget/feature-side/project/{{project.id}}/" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'feature-side' project.id %}" width="202" height="840" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
@@ -476,7 +476,7 @@
 	
 	{% comment %}
 		<p>
-		<a href="/rsr/signin/?next={% url akvo.rsr.views.getwidget project.id %}">{% trans 'Sign in' %}</a> {% trans 'for more content.' %}
+		<a href="{% url signin %}?next={% url akvo.rsr.views.getwidget project.id %}">{% trans 'Sign in' %}</a> {% trans 'for more content.' %}
 		</p>
 	{% endcomment %}
 	
@@ -494,7 +494,7 @@
 						<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 						<script type="text/javascript">
 							{# think about refactor this to a general method in machinery.js #}
-							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-updates/project/{{project.id}}/" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
+							document.write('<iframe src="{% url project_widget 'project-updates' project.id %}" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
 						</script>
 					</div>
 					<div class="machinery_widget_choice_right">
@@ -565,7 +565,7 @@
 						<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 						<script type="text/javascript">
 							{# think about refactor this to a general method in machinery.js #}
-							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-contribute/project/{{project.id}}/" width="202" height="570" frameborder="0" allowTransparency="true"> </iframe>');
+							document.write('<iframe src="{% url project_widget 'project-contribute' project.id %}" width="202" height="570" frameborder="0" allowTransparency="true"> </iframe>');
 						</script>
 					</div>
 					<div class="machinery_widget_choice_right">
@@ -636,7 +636,7 @@
 						<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 						<script type="text/javascript">
 							{# think about refactor this to a general method in machinery.js #}
-							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-small/project/{{project.id}}/" width="170" height="312" frameborder="0" allowTransparency="yes"> </iframe>');
+							document.write('<iframe src="{% url project_widget 'project-small' project.id %}" width="170" height="312" frameborder="0" allowTransparency="yes"> </iframe>');
 						</script>
 					</div>
 					<div class="machinery_widget_choice_right">
@@ -707,7 +707,7 @@
 						<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 						<script type="text/javascript">
 							{# think about refactor this to a general method in machinery.js #}
-							document.write('<iframe src="http://'+ location.host +'/rsr/widget/project-list/organisation/{% for organisation in organisations %}{% if forloop.first %}{{organisation.id}}{% endif %}{% endfor %}/" width="745" height="730" frameborder="0" allowTransparency="true"> </iframe>');
+							document.write('<iframe src="{% url project_list_widget_for_org organisations.0.id %}" width="745" height="730" frameborder="0" allowTransparency="true"> </iframe>');
 						</script>
 					</div>
 
