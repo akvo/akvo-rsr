@@ -35,10 +35,10 @@
 							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
 						</div>
 						
-						<div style="float:left; width:100px;">
+						<div style="float:left; width:116px; height: 100px; margin: 0 10px;">
 							{% if u.photo %}
 								<a href="{% url project_update p.id u.id %}">
-									<img src="{% thumbnail u.photo 100x75 autocrop,upscale,sharpen %}" />
+									<img src="{% thumbnail u.photo 116x100 crop autocrop upscale sharpen %}" />
 								</a>
 							{% endif %}
 							&nbsp;

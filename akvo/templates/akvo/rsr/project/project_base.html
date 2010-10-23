@@ -110,21 +110,19 @@
 					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
 						{% if update.photo %}					
 							<div style="float:left; width:175px;">
-								<p class="small" style="padding:5px;">
-									<b>
-										<a href="{% url project_update p.id update.id %}">{{update.title}}</a>
-									</b><br />
-									{{update.text|smart_truncate:50}}
+								<p class="small last" style="padding:5px 5px 0 5px;">
+                  <b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b>
+									<br/>{{update.text|smart_truncate:50}}
 								</p>
 							</div>
-							<div style="float:right; width:116px; text-align:right;">
-								<img src="{% thumbnail update.photo 116x87 autocrop sharpen %}" alt="" style="margin:0;" />
+							<div style="float:right; width:116px; height: 100px; text-align:right;">
+								<img src="{% thumbnail update.photo 116x100 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
 							</div>
 							<div class="clear"></div>
 						{% else %}
 							<p class="small" style="padding:5px; margin-bottom:5px;">
 								<b><a href="{% url project_update p.id update.id %}">{{update.title}}</a></b><br />
-								{{update.text|smart_truncate:100}}
+								{{update.text|smart_truncate:150}}
 							</p>
 						{% endif %}
 					</div>
