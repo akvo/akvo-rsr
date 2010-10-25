@@ -11,15 +11,19 @@
 
 {% block maincontent %}
 <div class="two_column_left">
+	{% comment %}
 	<div style="background-image:url({{MEDIA_URL}}akvo/img/landing_pages/le.png); height:408px;">
 		<div style="padding:40px; padding-top:210px;">
-			<p class="tiny" style="color:#fff">
+	{% endcomment %}
+	<div style="background: #000 url({{MEDIA_URL}}akvo/img/landing_pages/le.png) no-repeat top; height:483px;">
+		<div style="padding:40px; padding-top:210px;">
+			<p class="" style="color:#fff">
 				The Dow Live Earth Run for Water is the largest solutions-based initiative in history aimed at solving the world’s water crisis. Taking place on April 18, 2010, the Dow Live Earth Run for Water will consist of a series of 6km runs / walks (the average distance many women and children walk every day to secure water) occurring over the course of 24 hours. The events will feature live musical performances and water education activities in an effort to ignite a massive global movement to put an end to this epidemic.
 			</p>
-			<p class="tiny" style="color:#fff">
+			<p class="" style="color:#fff">
 				Live Earth’s global network of water charity partners is working with Akvo to help donors and doers reach out to fund thousands of new water and sanitation projects.
 			</p>
-			<p class="tiny" style="color:#fff">
+			<p class="" style="color:#fff">
 				Visit <a href="http://liveearth.org/run">Live Earth's web site</a> to see lists of events in your area and around the world.
 			</p>
 		</div>
@@ -154,7 +158,7 @@
 						</td>
 					</tr>
 					<tr style="color:red;" class="hr">
-						<td style="padding-bottom:20px;">{% trans 'Still needed' %}</td>
+						<td style="padding-bottom:0px; ">{% trans 'Still needed' %}</td>
 						<td class="text_right">
 							{{org_projects.dollars.0.get_currency_display|safe}} 
 							{{o.funding.still_needed_dollars|round|intcomma}}
