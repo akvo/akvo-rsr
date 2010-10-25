@@ -192,6 +192,50 @@ def project_list(request, slug='all', org_id=None):
     
     org = None
     focus_area = None
+    
+    try:
+        selected_organisation = request.GET.__getitem__('organisation')
+        
+        if selected_organisation != org_id:
+            query_string = ''
+            if request.GET:
+                get_dict = request.GET.copy()
+                del get_dict['organisation']
+                try:
+                    del get_dict['page']
+                except Exception, e:
+                    pass
+                query_string = '?%s' % get_dict.urlencode()          
+            return HttpResponseRedirect('/rsr/projects/%s/%s' % (selected_organisation, query_string))
+            
+    except KeyError, e:
+        pass
+    
+    
+    '''
+    try:
+        selected_organisation = request.GET.get('organisation', 'all')
+    except Exception, e:
+        selected_organisation = 'all'
+
+    if selected_organisation != 'all':
+        query_string = ''
+        if request.GET:
+            get_dict = request.GET.copy()
+            del get_dict['organisation']
+            try:
+                del get_dict['page']
+            except Exception, e:
+                pass
+            query_string = '?%s' % get_dict.urlencode()          
+        return HttpResponseRedirect('/rsr/projects/%s/%s' % (selected_organisation, query_string))
+    else:
+        if org_id != None:
+            return HttpResponseRedirect('/rsr/projects/%s/' % org_id)
+        else:
+            return HttpResponseRedirect('/rsr/projects/all/')
+    '''
+    
     # TODO: fix DWS, they don't need funding()
     if org_id:
         org = Organisation.objects.get(pk=org_id)
