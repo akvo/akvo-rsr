@@ -29,12 +29,6 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': ['ie6.css',],
     },
-    'akvo_project_list_js': {
-        'type': 'js',
-        'path': 'akvo/js/',
-        'compress': True,
-        'files': ['x_modernizr.js','x_utilities.js'],
-    },
     'akvo_machinery_js': {
         'type': 'js',
         'path': 'akvo/js/',

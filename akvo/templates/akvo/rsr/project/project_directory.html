@@ -90,7 +90,7 @@
 			<div id="project_search" class="span-18">
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
-						<input id="q" name="q" placeholder="Filter on project name or subtitle" 
+						<input id="q" name="q" 
 							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
 							value="{{ query_string|escape }}">
 
@@ -171,17 +171,28 @@
 								<option value="{{organisation.id}}">{{organisation.name}}</option>
 							{% endfor %}
 						</select>
-						
-						<a class="blue awesome" style="float:right;"
+						<a id="filterButton" class="blue awesome" style="float:right;"
+							href="javascript:document.filter_form.submit();">
+							<span>{% trans 'Filter' %}</span>
+						</a>
+						{% comment %}
+						<a id="filterButton" class="blue awesome" style="float:right;"
 							href="javascript:document.filter_form.submit();" onclick="this.blur();">
 							<span>{% trans 'Filter' %}</span>
 						</a>
+						{% endcomment %}
 						<input type="submit" value="Filter" 
 							style="display:none;">
 						{% comment %}
 						<input type="submit" value="Filter" 
 							style="display:inline; margin-left:15px; margin-top:20px;">
 						{% endcomment %}
+
+						<div id="q_help" style="padding-left:25px; margin-top:10px;">
+							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">
+								{% trans 'Filter on project name or subtitle' %}
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -318,7 +329,6 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 {% endif %}
 
-{% asset_bundle 'akvo_project_list_js' %}
 {% endblock js %}
 
 {% block inline_js %}
@@ -369,6 +379,8 @@ function replaceQueryString(url, param, value) {
 
 {% block jq_ready %}
 	{{block.super}}
+	
+	var qDefaultValue = jQ('#q').val();
 		
 	jQ('#organisation').val({{org.id}});
 	
@@ -477,9 +489,6 @@ function replaceQueryString(url, param, value) {
 		}
 
 	});
-	
-	if (!Modernizr.input.placeholder) {
-		jQ('#q').html('{% trans "Filter on project name or subtitle" %}');
-	}
+
 
 {% endblock jq_ready %}

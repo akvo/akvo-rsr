@@ -1,5 +1,6 @@
 
 // html5 placeholder functionality
+
 if(!Modernizr.input.placeholder){
 	$("input").each( function(){
 		if($(this).val()=="" && $(this).attr("placeholder")!=""){
