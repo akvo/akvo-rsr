@@ -24,9 +24,12 @@
 			<p>
 				{% trans 'Your user name is' %}: {{request.user}}<br />
 				{% trans 'Your organisation is' %}: {{request.user.get_profile.organisation_name}}
-			</p>    
+			</p>
+			{% url password_change as password_change_url%}
 	        <p>
-				{% trans 'You can also <a href="{% url password_change %}">change your password</a>.' %}
+				{% blocktrans  %}
+					You can also <a href="{{password_change_url}}">change your password</a>.				
+				{% endblocktrans %}
 			</p>		
 		</div>
 		<div class="clear"></div>
