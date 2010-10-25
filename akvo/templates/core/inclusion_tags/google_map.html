@@ -3,7 +3,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
-<script>
+<script type="text/javascript" charset="utf-8">
 
     var jQ = jQuery.noConflict();
 
@@ -36,7 +36,7 @@
             {% endif %}
             map: map,
             position: mapData.coordinates,
-            title: 'Main location'
+            // title: '{{ object.title }}'
         });
 
     }
