@@ -40,7 +40,7 @@
     <div class='column span-12 gutter-top'>
       <div style="margin-bottom: .4em;">
         <h1 class="top_of_box">{% trans 'Most recent project updates' %}</h1>
-        <a class="small top_of_box" style="margin-left: 2em;" href="#">
+        <a class="small top_of_box" style="margin-left: 2em;" href="{% url akvo_feeds 'all-updates' %}">
           RSS
           <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
         </a>
@@ -91,10 +91,12 @@
             <p class="small grey" style="margin-bottom: .5em;">{{blog_post.date|date:"l, j F Y"}} {% trans 'by' %} {{blog_post.author}}</p> 
             <p class="small">{{blog_post.text|striptags|smart_truncate:300}}</p> 
           </div>
-          <div style="margin: 0 8px;"><hr/></div>
+          {% if not forloop.last %}
+            <div style="margin: 0 8px;"><hr/></div>
+          {% endif %}
         {% endfor %}
         <div class="h1_companion" style="margin: 20px; margin-top: 0;">
-          <a href="/blog">View earlier articles <span class="link_triangle">&#x25B6;</span></a>
+          <a href="/blog">{% trans 'Read earlier blog posts' %} <span class="link_triangle">&#x25B6;</span></a>
         </div>          
         <div class="clear"></div>
       </div>
@@ -131,14 +133,14 @@
           <h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
           <p class="small lt_grey">{% trans 'People served' %}</p>
           <h1 class="white last" style="line-height: 1em">€ {{projects_total_total_budget}}M</h1>
-          <p class="small lt_grey last">{% trans 'Project budgets' %}</p>
+          <p class="small lt_grey last">{% trans 'In project budgets' %}</p>
         </div>
       </div>
       <a href="{% url global_project_map %}">
-        {% google_global_project_map 'static' 315 235 0 %}
+        {% google_global_project_map 'static' 315 190 0 %}
       </a>
       <div style="padding: .5em .5em .7em .5em;">
-        <a class="right small right_now_blue" href="{% url global_project_map %}">View large map <span class="link_triangle">&#x25B6;</span></a>
+        <a class="right small right_now_blue" href="{% url global_project_map %}">{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span></a>
         <div class="clear"></div>
       </div> 
     </div> 
