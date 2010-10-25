@@ -51,7 +51,12 @@
 				</div>
 				<div style="float:left; width:465px; padding-top:20px; margin-left:70px;">
 					<h3>{% trans "I don&#x27;t have an account" %}</h3>
-					<p>{% trans "By <a href='{% url register1 %}'>registering</a> with Akvo, you&#x27;ll be able to:" %}</p>
+					{% url register1 as register1_url %}
+					<p>
+						{% blocktrans %}
+							By <a href='{{ register1_url }}'>registering</a> with Akvo, you&#x27;ll be able to:
+						{% endblocktrans %}
+					</p>
 					<ul class="simplelist">
 						<li>{% trans "Create updates on your organisation&#x27;s projects" %}</li>
 						<li>{% trans 'Leave comments on projects' %}</li>

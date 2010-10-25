@@ -9,8 +9,11 @@
 </head>
 <body>
 	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
+	{% url project_updates invoice.project.id as project_updates_url %}
 	<p>
-		{% trans 'Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via' %} <a href="{% url project_updates invoice.project.id %}">{% trans 'updates' %}</a> {% trans 'on' %} Akvo.org.
+		{% blocktrans %}
+		Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via <a href="{{ project_updates_url }}">updates</a> on Akvo.org.
+		{% endblocktrans %}
 	</p>
 
 	<h3>{% trans 'A summary of your contribution' %}</h3>
