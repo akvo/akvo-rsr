@@ -97,11 +97,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<p class="smallFont">{% trans 'Not yet' %}</p>
 			{% endif %}
 		{% endwith %}		
-		{% if not project.status == 'L' and not project.status == 'R' %}
+		{% if p.status != 'L' and p.status != 'R' %}
 			<hr class="divider" />
 		{% endif %}
 		<div style="width:70px; float:left;">
-			{% if not project.status == 'L' and not project.status == 'R' %}
+			{% if p.status != 'L' and p.status != 'R' %}
 				<p class="smallFont grey">{% trans 'Funding' %}</p>
 			{% else %}
 				&nbsp;

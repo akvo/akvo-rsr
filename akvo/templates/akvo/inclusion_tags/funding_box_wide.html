@@ -23,9 +23,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% project_budget p %}
 			</div>
 			<div style="float:left; width:105px; border-left:1px solid #BCDAE0; padding-top:5px;";>
-				{% individual_donate_button p %}
-				<br />
-				{% institutions_sponsor p %}
+				{% if p.status != 'L' and p.status != 'R' %}
+					{% individual_donate_button p %}
+					<br />
+					{% institutions_sponsor p %}
+				{% endif %}
 			</div>
 		{% endifequal%}
 	</div>

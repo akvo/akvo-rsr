@@ -5,9 +5,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n rsr_filters humanize %}
 
-{% ifnotequal p.status 'L' %}
 <div class="fundingwrap">
-
 <div class="fundingbox-header"> </div>
 	<div class="fundingbox-content">
 	{% ifequal p.funding_still_needed|round 0 %}
@@ -43,6 +41,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
 			</tr>					
 		</table>
+		
+		{% if p.status != 'L' and p.status != 'R' %}
 		<div id="donate_individual">
 			<p class="grey" style="line-height:1.0em;">
 				{% trans 'Individuals' %}<br />
@@ -55,9 +55,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<span class="fundingbox-donate-right-sponsor">&nbsp;<a href="http://akvo.org/web/how_to_fund_a_project">{% trans 'Sponsor' %}&nbsp;&#x25BA;</a></span>
 			</p>
 		</div>
-		<div id="name" style="clear: both;"></div>		
+		<div id="name" style="clear: both;"></div>
+		{% endif %}
 	{% endifequal %}
 	</div>
 	<div class="fundingbox-footer"> </div>
 </div>
-{% endifnotequal%}

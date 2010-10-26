@@ -41,6 +41,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
 			</tr>
 		</table>
+		{% if p.status != 'L' and p.status != 'R' %}
 		<div id="donate44" style="margin:10px; border-bottom:1px solid #A1A0AD; padding-bottom:5px;">
 			<p class="grey" style="text-align:center; line-height:1.0em; margin-bottom:5px;">{% trans 'Individuals' %}:<br />
 				<a href="{% url project_donate project_id=p.id %}" class="donate_button" onclick="this.blur();" style="margin:0 auto; margin-top:1px;"><span>Donate</span></a>
@@ -53,6 +54,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				</span>
 			</p>
 		</div>
+		{% endif %}
 		{% comment %}		
 		<div id="donate44" style="margin: 10px; border-bottom:1px solid #A1A0AD; padding-bottom:7px;">
 			<p class="grey" style="text-align:center; line-height:1.0em; margin-bottom:5px;">{% trans 'Individuals' %}:</p>
