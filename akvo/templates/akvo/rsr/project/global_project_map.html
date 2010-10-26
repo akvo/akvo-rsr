@@ -3,22 +3,24 @@
 {% load i18n google_maps %}
 
 {% block title %}
-  - {% trans 'Map of all projects' %}
+{% trans 'Map of all projects' %}
 {% endblock title %}
 
 {% block breadcrum_items %}
-  {{block.super}}
-    <li id="last_breadcrum_item">{% trans 'Map of all projects' %}</li>
+	{{block.super}}
+	<li id="last_breadcrum_item">{% trans 'Map of all projects' %}</li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
+	<div class="right">
+		<p class="small" style="margin:0; padding:0; padding-top:11px;">
+			<a href="{% url rsr_org_list %}">{% trans 'List of all organisations' %}</a> |
+            <a href="{% url project_list %}">{% trans 'List of all projects' %}</a> |
+            <a href="{% url global_organisation_map %}">{% trans 'Map of all organisations' %}</a>
+		</p>		
+	</div>
     <h1>
         {% trans 'Map of all projects' %}
-        <span class="small right">
-            <a href="{% url rsr_org_list %}">List of all organisations</a>
-            <a href="{% url project_list %}">List of all projects</a>
-            <a href="{% url global_organisation_map %}">Map of all organisations</a>
-        </span>
     </h1>
     {% google_global_project_map 'dynamic' 975 600 2 %}
 {% endblock %}
