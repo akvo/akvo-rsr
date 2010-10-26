@@ -351,6 +351,9 @@ class Organisation(models.Model):
         returns a queryset with all projects that has self as any kind of partner
         '''
         return Organisation.projects.filter(pk=self.pk).all()
+    
+    def active_projects(self):
+        return self.published_projects().status_not_cancelled().status_not_archived()
 
     def partners(self):
         '''
@@ -358,23 +361,22 @@ class Organisation(models.Model):
         '''
         return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
    
-    def funding(self):
-        my_projs = self.published_projects().status_not_cancelled().status_not_archived()
-        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
-        # work because values_list used in qs_column_sum will not return more
-        # than one of the same value. This leads to the wrong sum when same amount
-        # has been pledged to multiple projects
-        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
-        return {
-            'total_euros': my_projs.euros().total_total_budget(),
-            'donated_euros': my_projs.euros().total_donated(),
-            'pledged_euros': all_active.euros().total_pledged(self),
-            'still_needed_euros': my_projs.euros().total_funds_needed(),
-            'total_dollars': my_projs.dollars().total_total_budget(),
-            'donated_dollars': my_projs.dollars().total_donated(),
-            'pledged_dollars': all_active.dollars().total_pledged(self),
-            'still_needed_dollars': my_projs.dollars().total_funds_needed()
-        }
+    #def funding(self):
+    #    my_projs = self.published_projects().status_not_cancelled().status_not_archived()
+    #    return {
+    #        'total_euros': my_projs.euros().total_total_budget(),
+    #        'donated_euros': my_projs.euros().total_donated() - my_projs.euros().total_pending(),
+    #        'pledged_euros': my_projs.euros().total_pledged(self),
+    #        'total_pledged_euros': my_projs.euros().total_pledged(),
+    #        'total_raised_euros': my_projs.euros().total_pledged() + my_projs.euros().total_donated() - my_projs.euros().total_pending(),
+    #        'still_needed_euros': my_projs.euros().total_funds_needed(),
+    #        'total_dollars': my_projs.dollars().total_total_budget(),
+    #        'donated_dollars': my_projs.dollars().total_donated() - my_projs.dollars().total_pending(),
+    #        'pledged_dollars': my_projs.dollars().total_pledged(self),
+    #        'total_pledged_dollars': my_projs.dollars().total_pledged(),
+    #        'total_raised_dollars': my_projs.dollars().total_pledged() + my_projs.dollars().total_donated() - my_projs.dollars().total_pending(),
+    #        'still_needed_dollars': my_projs.dollars().total_funds_needed()
+    #    }
 
     class Meta: 
         verbose_name=_('Organisation')

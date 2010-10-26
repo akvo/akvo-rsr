@@ -10,17 +10,17 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+				<a href="{% url project_main project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
 			<p class="grey small">
-				{% trans 'Request posted' %} {{p.date_request_posted|date:"d-M-Y"}}				
+				{% trans 'Request posted' %} {{project.date_request_posted|date:"d-M-Y"}}				
 			</p>
 		</div>
 		<div class="counter_badge">
-			<span style="display:none;">{% counter p %}</span>
-			{% cache 10 p.view_count %}
-				{{ p.view_count|intcomma }}
+			<span style="display:none;">{% counter project %}</span>
+			{% cache 10 project.view_count %}
+				{{ project.view_count|intcomma }}
 			{% endcache %}
 			<br />
 			<span>{% trans 'views' %}</span>
@@ -29,64 +29,64 @@
 		<div class="space20">
 			<h3>{% trans 'Project Budget' %}</h3>
 			<table class="project_budget_table" style="border:none; margin-top:20px;">
-				{% if p.budget_employment %}
+				{% if project.budget_employment %}
 				<tr>
 					<td>{% trans 'Employment costs' %}:</td>
-					<td class="text_right">{{p.get_currency_display|safe}} {{p.budget_employment|round|intcomma}}</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_employment|round|intcomma}}</td>
 				</tr>
 				{% endif %}
-				{% if p.budget_building %}
+				{% if project.budget_building %}
 				<tr>
 					<td>{% trans 'Building Material costs' %}:</td>
-					<td class="text_right">{{p.get_currency_display|safe}} {{p.budget_building|round|intcomma}}</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_building|round|intcomma}}</td>
 				</tr>
 				{% endif %}
-				{% if p.budget_training %}
+				{% if project.budget_training %}
 				<tr>
 					<td>{% trans 'Training costs' %}:</td>
-					<td class="text_right">{{p.get_currency_display|safe}} {{p.budget_training|round|intcomma}}</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_training|round|intcomma}}</td>
 				</tr>
 				{% endif %}
-				{% if p.budget_maintenance %}
+				{% if project.budget_maintenance %}
 				<tr>
 					<td>{% trans 'Maintenance costs' %}:</td>
-					<td class="text_right">{{p.get_currency_display|safe}} {{p.budget_maintenance|round|intcomma}}</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_maintenance|round|intcomma}}</td>
 				</tr>
 				{% endif %}
-				{% if p.budget_management %}
+				{% if project.budget_management %}
 				<tr>
 					<td>{% trans 'Management costs' %}:</td>
-					<td class="text_right">{{p.get_currency_display|safe}} {{p.budget_management|round|intcomma}}</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_management|round|intcomma}}</td>
 				</tr>
 				{% endif %}
-				{% if p.budget_other %}
+				{% if project.budget_other %}
 				<tr>
 					<td>{% trans 'Other costs' %}:</td>
-					<td class="text_right">{{p.get_currency_display|safe}} {{p.budget_other|round|intcomma}}</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_other|round|intcomma}}</td>
 				</tr>
 				{% endif %}
-				{% if p.budget_total %}
+				{% if project.budget_total %}
 				<tr>
 					<td><b>{% trans 'Total' %}:</b></td>
-					<td class="text_right"><b>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</b></td>
+					<td class="text_right"><b>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</b></td>
 				</tr>
 				{% else %}
 				<tr>
 					<td><b>{% trans 'Total' %}:</b></td>
-					<td class="text_right"><b>{{p.get_currency_display|safe}} 0</b></td>
+					<td class="text_right"><b>{{project.get_currency_display|safe}} 0</b></td>
 				</tr>
 				{% endif %}
 			</table>
 			<br />
 			
-			{% if p.all_donations %}
+			{% if project.all_donations %}
 				<h3 style="margin-top:40px;">{% trans 'Individual donations' %}</h3>
 				<table class="project_budget_table" style="width:50%;">
 					<tr>
 						<td style="font-weight:bold; text-align:right;">{% trans 'Individual raised' %}*:</td>
 						<td style="font-weight:bold; width:100px; ">
-							{{p.get_currency_display|safe}}
-							{{p.all_donations_amount_received|round|intcomma}}
+							{{project.get_currency_display|safe}}
+							{{project.all_donations_amount_received|round|intcomma}}
 						</td>
 					</tr>
 					{% for donors in public_donations %}
@@ -95,7 +95,7 @@
 								{{donors.name}}:
 							</td>
 							<td>
-								{{p.get_currency_display|safe}} {{ donors.amount }}
+								{{project.get_currency_display|safe}} {{ donors.amount }}
 							</td>
 						</tr>
 					{% endfor %}
@@ -104,18 +104,18 @@
 							{% trans 'Anonymous' %}:
 						</td>
 						<td>
-							{{p.get_currency_display|safe}} {{ p.anonymous_donations_amount_received|round|intcomma }}
+							{{project.get_currency_display|safe}} {{ project.anonymous_donations_amount_received|round|intcomma }}
 						</td>
 					</tr>
 				</table>
 				<p class="small grey">{% trans '* The amount indicated is the donation minus transaction fees.' %}</p>
 			{% endif %}
 			
-			{% if p.fundingpartner_set.all %}
+			{% if project.fundingpartner_set.all %}
 			<hr />
 			<h3>{% trans 'Current funders' %}</h3>
 			{% endif %}
-			{% for funder in p.fundingpartner_set.all %}
+			{% for funder in project.fundingpartner_set.all %}
 				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
 					<div style="float:left; width:140px;">
 						<a href="{% url org_detail funder.funding_organisation.id %}">
@@ -133,7 +133,7 @@
 					</div>
 					<div style="float:left; width:100px; margin-left:20px;">
 						<p class="small">
-							{% trans 'Grant' %}: {{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}
+							{% trans 'Grant' %}: {{project.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}
 						</p>
 					</div>
 					<div class="clear"></div>
@@ -143,12 +143,12 @@
 			
 			{% comment %}
 
-			{% if p.all_donations %}
+			{% if project.all_donations %}
 				<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
 					<p style="margin: 10px 0 10px 0;">
 						<span style="margin-left: 10px; float:right;">
-							{{p.get_currency_display|safe}}
-							{{p.all_donations_amount_received|round|intcomma}}
+							{{project.get_currency_display|safe}}
+							{{project.all_donations_amount_received|round|intcomma}}
 						</span></b>
 						<b>{% trans 'Individuals raised' %}:
 						<br /><br />
@@ -156,17 +156,17 @@
 						{% for donors in public_donations %}
 						<div style="margin:0px 20px">
 							<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
-							<span style="float:right;">{{p.get_currency_display|safe}}</span>
+							<span style="float:right;">{{project.get_currency_display|safe}}</span>
 							{{donors.name}}
 						</div>
 						{% endfor %}
 
-						{% ifnotequal p.anonymous_donations_amount_received 0 %}
+						{% ifnotequal project.anonymous_donations_amount_received 0 %}
 							<div style="margin:0px 20px">
 								<span style="margin-left: 5px; float:right;">
-									{{ p.anonymous_donations_amount_received|round|intcomma }}
+									{{ project.anonymous_donations_amount_received|round|intcomma }}
 								</span>
-								<span style="float:right;">{{p.get_currency_display|safe}}</span>
+								<span style="float:right;">{{project.get_currency_display|safe}}</span>
 								{% trans 'Anonymous' %}:
 							</div>
 						{% endifnotequal %}					

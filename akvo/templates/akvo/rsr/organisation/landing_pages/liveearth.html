@@ -2,11 +2,11 @@
 
 {% load i18n rsr_filters rsr_tags thumbnail humanize google_maps addparam counter_tags %}
 
-{% block title %}{{o.name}}{% endblock title %}
+{% block title %}{{org.name}}{% endblock title %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">{{o.name}}</li>
+<li id="last_breadcrum_item">{{org.name}}</li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
@@ -34,7 +34,7 @@
 	<div class="two_column_right_inner" >
 		<div class="white_box">
 			<div class="space20">
-				<h3><a href="{% url project_list_for_org o.id %}">
+				<h3><a href="{% url project_list_for_org org.id %}">
 					{% trans 'Projects in Akvo' %}
 				</a></h3>
 				<table class="org_statistics_table bottom_grey_border">
@@ -43,7 +43,7 @@
 							{% trans 'Active' %}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.status_active.count}}
+							{{org.published_projects.status_active.count}}
 						</td>
 					</tr>
 					<tr>
@@ -51,7 +51,7 @@
 							{% trans 'Need funding' %}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.status_onhold.count}}
+							{{org.published_projects.status_onhold.count}}
 						</td>
 					</tr>
 					<tr>
@@ -59,7 +59,7 @@
 							{% trans 'Complete' %}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.status_complete.count}}
+							{{org.published_projects.status_complete.count}}
 						</td>
 					</tr>
 					<tr>
@@ -67,7 +67,7 @@
 							{% trans 'Cancelled' %}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.status_cancelled.count}}
+							{{org.published_projects.status_cancelled.count}}
 						</td>
 					</tr>
 					<tr style="font-weight:bold;">
@@ -75,7 +75,7 @@
 							{% trans 'Total projects' %}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.count}}
+							{{org.published_projects.count}}
 						</td>
 					</tr>
 					<tr class="bottom_grey_border">
@@ -99,46 +99,50 @@
 					<tr>
 						<td style="font-weight:bold;">{% trans 'Water' %}:</td>
 						<td class="text_right">
-							{{o.published_projects.get_planned_water_calc|intcomma}}
+							{{org.published_projects.get_planned_water_calc|intcomma}}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.get_actual_water_calc|intcomma}}
+							{{org.published_projects.get_actual_water_calc|intcomma}}
 						</td>
 					</tr>
 					<tr class="bottom_grey_border">
 						<td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
 						<td class="text_right">
-							{{o.published_projects.get_planned_sanitation_calc|intcomma}}
+							{{org.published_projects.get_planned_sanitation_calc|intcomma}}
 						</td>
 						<td class="text_right">
-							{{o.published_projects.get_actual_sanitation_calc|intcomma}}
+							{{org.published_projects.get_actual_sanitation_calc|intcomma}}
 						</td>
 					</tr>
 				</table>
 				
 				<h3>{% trans 'Funding' %}</h3>
-				<table class="org_statistics_table">	
+				<table class="org_statistics_table">
+          {% with active_projects.euros as eu_projects %}
 					<tr>
 						<td colspan="2">
-							{{org_projects.euros.count}} 
-							Project{{org_projects.euros.count|pluralize:"s"}} in Euros
+							{{eu_projects.count}} 
+							Project{{eu_projects.count|pluralize:"s"}} in Euros
 						</td>
 					</tr>
 					<tr style="color:green;">
-						<td style="width:123px;">{% trans 'Pledged' %}</td>
+						<td style="width:123px;">{% trans 'Raised' %}</td>
 						<td style="width:120px; text-align:right;">
-							{{org_projects.euros.0.get_currency_display|safe}}
-							{{o.funding.pledged_euros|round|intcomma}}
+							{{eu_projects.0.get_currency_display|safe}}
+							{{eu_projects.total_pledged|add:eu_projects.total_donated|add:eu_projects.total_pending_negative|round|intcomma}}
 						</td>
 					</tr>
 					<tr style="color:red;">
 						<td>{% trans 'Still needed' %}</td>
 						<td class="text_right">
-							{{org_projects.euros.0.get_currency_display|safe}} 
-							{{o.funding.still_needed_euros|round|intcomma}}
+							{{eu_projects.0.get_currency_display|safe}}
+							{{eu_projects.total_funds_needed|round|intcomma}}
 						</td>
 					</tr>
-					{% if org_projects.dollars.count %}
+          {% endwith %}
+
+					{% if active_projects.dollars.count %}
+          {% with active_projects.dollars as us_projects %}
 					<tr>
 						<td colspan="2">
 							&nbsp;
@@ -146,24 +150,25 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							{{org_projects.dollars.count}} 
-							project{{org_projects.dollars.count|pluralize:"s"}} in US Dollars
+							{{us_projects.count}} 
+							project{{us_projects.count|pluralize:"s"}} in US Dollars
 						</td>
 					</tr>
 					<tr style="color:green;">
-						<td>{% trans 'Pledged' %}</td>
+						<td>{% trans 'Raised' %}</td>
 						<td class="text_right">
-							{{org_projects.dollars.0.get_currency_display|safe}} 
-							{{o.funding.pledged_dollars|round|intcomma}}
+							{{us_projects.0.get_currency_display|safe}}
+							{{us_projects.total_pledged|add:us_projects.total_donated|add:us_projects.total_pending_negative|round|intcomma}}
 						</td>
 					</tr>
 					<tr style="color:red;" class="hr">
 						<td style="padding-bottom:0px; ">{% trans 'Still needed' %}</td>
 						<td class="text_right">
-							{{org_projects.dollars.0.get_currency_display|safe}} 
-							{{o.funding.still_needed_dollars|round|intcomma}}
+							{{us_projects.0.get_currency_display|safe}}
+							{{us_projects.total_funds_needed|round|intcomma}}
 						</td>
 					</tr>
+          {% endwith %}
 					{% endif %}
 				</table>
 			</div>
