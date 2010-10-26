@@ -20,9 +20,12 @@
 		<li>{% trans 'Step 2: Select colours and preview your widget.' %}</li>
 		<li>{% trans 'Step 3: Copy the HTML code to your web site.' %}</li>
 	</ul>
+	
 	{% if account_level == 'free' %}
 		<p class="small">
-			{% trans 'Sign in for more widget types, available to <a href="http://www.akvo.org/web/fees_plus">Akvo RSR Plus accounts</a>.' %}
+			{% blocktrans  %}
+				Sign in for more widget types, available to <a href="http://{{current_site}}/web/fees_plus">Akvo RSR Plus accounts</a>.	
+			{% endblocktrans %}
 		</p>
 	{% endif %}
 </div>
