@@ -79,34 +79,6 @@
 			</table>
 			<br />
 			
-			{% if p.fundingpartner_set.all %}
-			<hr />
-			<h3>{% trans 'Current funders' %}</h3>
-			{% endif %}
-			{% for funder in p.fundingpartner_set.all %}
-				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
-					<div style="float:left; width:140px;">
-						<a href="{% url org_detail funder.funding_organisation.id %}">
-		                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
-		                </a>							
-					</div>
-					<div style="float:left; width:250px; margin-left:20px;">
-						<p class="small">
-							<a href="{% url org_detail funder.id %}">
-								{{funder.funding_organisation}}</a><br />
-								{{funder.funding_organisation.city}}, 
-								{{funder.funding_organisation.state}}, 
-								{{funder.funding_organisation.country}}
-						</p>
-					</div>
-					<div style="float:left; width:100px; margin-left:20px;">
-						<p class="small">
-							{% trans 'Grant' %}: {{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}
-						</p>
-					</div>
-					<div class="clear"></div>
-				</div>
-			{% endfor %}
 			{% if p.all_donations %}
 				<h3 style="margin-top:40px;">{% trans 'Individual donations' %}</h3>
 				<table class="project_budget_table" style="width:50%;">
@@ -138,6 +110,36 @@
 				</table>
 				<p class="small grey">{% trans '* The amount indicated is the donation minus transaction fees.' %}</p>
 			{% endif %}
+			
+			{% if p.fundingpartner_set.all %}
+			<hr />
+			<h3>{% trans 'Current funders' %}</h3>
+			{% endif %}
+			{% for funder in p.fundingpartner_set.all %}
+				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
+					<div style="float:left; width:140px;">
+						<a href="{% url org_detail funder.funding_organisation.id %}">
+		                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
+		                </a>							
+					</div>
+					<div style="float:left; width:250px; margin-left:20px;">
+						<p class="small">
+							<a href="{% url org_detail funder.id %}">
+								{{funder.funding_organisation}}</a><br />
+								{{funder.funding_organisation.city}}, 
+								{{funder.funding_organisation.state}}, 
+								{{funder.funding_organisation.country}}
+						</p>
+					</div>
+					<div style="float:left; width:100px; margin-left:20px;">
+						<p class="small">
+							{% trans 'Grant' %}: {{p.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}
+						</p>
+					</div>
+					<div class="clear"></div>
+				</div>
+			{% endfor %}
+			
 			
 			{% comment %}
 
