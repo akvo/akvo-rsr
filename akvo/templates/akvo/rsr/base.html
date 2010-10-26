@@ -54,7 +54,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="/web/get_involved/">
+					<a href="/web/about">
 						<span>{% trans 'About' %}</span>
 					</a>
 				</li>
@@ -146,61 +146,63 @@
 				<div class="span-3 first">
 					<h3>{% trans 'Policies' %}</h3>
 					<p class="small">
-						<a href="/web/terms_of_use">{% trans 'Terms of use' %}</a><br />
+						<a href="/web/terms_of_use">{% trans 'General terms of use' %}</a><br />
+						<a href="/web/privacy_policy">{% trans 'Privacy' %}</a><br />
 						<a href="/web/donation_policy">{% trans 'Donations' %}</a><br />
 						<a href="/web/partners_and_projects_policy">{% trans 'Partners' %}</a><br />
-						<a href="/web/user_contribution_policy">{% trans 'User Contribution Policy' %}</a><br />
-						<a href="/web/open_license">{% trans 'Akvo licensing and copyrights' %}</a><br />
-						<a href="/web/privacy_policy">{% trans 'Privacy' %}</a><br />
-						<a href="/web/akvo-rsr-api-code-of-conduct">{% trans 'Akvo RSR API Code of Conduct' %}</a><br />
+						<a href="/web/akvo-rsr-api-code-of-conduct">
+							{% trans 'Akvo RSR API Code of Conduct' %}
+						</a><br />
+						<a href="/web/user_contribution_policy">{% trans 'User Contribution Policy' %}</a><br />	
+						<a href="/web/open_license">{% trans 'Licensing and copyrights' %}</a><br />
 					</p>
 				</div>
 				<div class="span-3">
 					<h3>{% trans 'About' %}</h3>
 					<p class="small">
-						<a href="/web/what_we_do">{% trans 'What we do' %}</a><br />
-						<a href="/web/how_akvo_works">{% trans 'How Akvo works' %}</a><br />
-						<a href="/web/why_we_do_it">{% trans 'Why we do it' %}</a><br />
-						<a href="/web/faq">{% trans 'Akvo Frequently Asked Questions' %}</a><br />
-						<a href="/web/map_partners_projects">{% trans 'Map' %}</a><br />
+						<a href="/web/about">{% trans 'About us' %}</a><br />
+						<a href="/web/how-it-works">{% trans 'How it works' %}</a><br />
 						<a href="/web/team">{% trans 'Team' %}</a><br />
 						<a href="/web/jobs">{% trans 'Working at Akvo' %}</a><br />
+						<a href="/web/faq">{% trans 'Akvo Frequently Asked Questions' %}</a><br />
+						<br />
 						<a href="/web/press">{% trans 'Press' %}</a><br />
-						<a href="/web/annual_reports">{% trans 'Akvo annual reports & Articles of incorporation' %}</a><br />
+						<a href="/web/annual_reports">{% trans 'Annual reports' %}</a><br />
+						<a href="/web/articles_of_incorporation">{% trans 'Articles of incorporation' %}</a><br />											
 					</p>
 				</div>
 				<div class="span-3">
 					<h3>{% trans 'Partners' %}</h3>
 					<p class="small">
-						<a href="/web/partners">{% trans 'Strategic partners' %}</a><br />
-						<a href="{% url rsr_org_list %}">{% trans 'Project partners' %}</a><br />
-						<a href="/web/commercial_partners">{% trans 'Commercial partners' %}</a><br />
-						<a href="/web/knowledge_institute_partners">{% trans 'Knowledge institute partners' %}</a><br />
+						<a href="/web/partners">{% trans 'Strategic' %}</a><br />
+						<a href="{% url rsr_org_list %}">{% trans 'Project' %}</a><br />
+						<a href="/web/commercial_partners">{% trans 'Commercial' %}</a><br />
+						<a href="/web/knowledge_institute_partners">{% trans 'Knowledge institutes' %}</a><br />
 						<a href="/web/akvo_investors">{% trans 'Akvo investors' %}</a><br />
 					</p>
 				</div>
 				<div class="span-3">
 					<h3>{% trans 'Developers' %}</h3>
 					<p class="small">
-						<a href="/labs/index.php/Main_Page">{% trans 'Akvo Labs' %}</a><br />
-						<a href="http://github.com/akvo/">{% trans 'Source Code' %}</a><br />
+						<a href="/rsr/admin">{% trans 'Akvo RSR login' %}</a><br />
+						<a href="/blog/wp-login.php">{% trans 'Blog' %}</a><br />
+						<a href="/web/?q=node/24">{% trans 'CMS' %}</a><br />
 					</p>
 				</div>
 				<div class="span-3">
-					<h3>{% trans 'Contact us' %}</h3>
+					<h3>{% trans 'Admin' %}</h3>
 					<p class="small">
-						<a href="http://help.akvo.org/">Help &amp; Support</a><br />
-						<a href="/web/contact_us">{% trans 'Contact us' %}</a><br />
-						<br />
-						<a class="red" href="http://help.akvo.org/discussion/new ">{% trans 'Report a problem' %}</a><br />
+						<a href="/labs/">{% trans 'AkvoLabs' %}</a><br />
+						<a href="http://github.com/akvo/">{% trans 'Source Code' %}</a><br />
 					</p>
 				</div>
 				<div class="span-3 last">
-					<h3>{% trans 'Tools' %}</h3>
+					<h3>{% trans 'Contact us' %}</h3>
 					<p class="small">
-						<a href="{% url admin:index %}">{% trans 'Akvo RSR admin' %}</a><br />
-						<a href="/blog/wp-login.php">{% trans 'Blog admin' %}</a><br />
-						<a href="/web/?q=user">{% trans 'CMS admin' %}</a><br />
+						<a href="http://help.akvo.org/">Help + Support</a><br />
+						<a href="/web/contact_us">{% trans 'Contact info' %}</a><br />
+						<br />
+						<a class="red" href="http://help.akvo.org/discussion/new ">{% trans 'Report a problem' %}</a><br />
 					</p>
 				</div>
 			</div>
