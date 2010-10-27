@@ -48,11 +48,14 @@
       
       {% for update in updates %}
       <div class='column span-4{% if forloop.last %} last{% endif %}'>
-        <div class="white_box" style="min-height: 350px;">
+        <div class="white_box" style="min-height: 370px;">
 					{% if update.photo %}
-            <a href="{% url project_update update.project.id update.id %}">
-              <img src="{% thumbnail update.photo 203x152 crop sharpen upscale %}" style="margin:0;"{% if update.photo_caption %} title="{{update.photo_caption}}"{% endif %}/>
-            </a>
+            {% thumbnail update.photo 203x152 crop sharpen upscale as update_photo %}
+            {% if update_photo %}
+              <a href="{% url project_update update.project.id update.id %}">
+                <img src="{{update_photo}}" style="margin:0;"{% if update.photo_caption %} title="{{update.photo_caption}}"{% endif %}/>
+              </a>
+            {% endif %}
           {% endif %}
           <div class="space10">
             <a href="{% url project_update update.project.id update.id %}">
