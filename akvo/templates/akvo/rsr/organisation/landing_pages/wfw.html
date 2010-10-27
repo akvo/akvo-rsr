@@ -124,7 +124,7 @@
 						</td>
 					</tr>
 					<tr style="color:green;">
-						<td style="width:123px;">{% trans 'Raised' %} {{eu_projects.total_pending_negative}}</td>
+						<td style="width:123px;">{% trans 'Raised' %}</td>
 						<td style="width:120px; text-align:right;">
 							{{eu_projects.0.get_currency_display|safe}}
 							{{eu_projects.total_pledged|add:eu_projects.total_donated|add:eu_projects.total_pending_negative|round|intcomma}}
