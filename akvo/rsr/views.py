@@ -1456,15 +1456,17 @@ def project_list_widget(request, template='project-list', org_id=0):
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
-    if p not in Project.objects.published().need_funding():
+    if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
     request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
     return {'p': p}
 
 @fetch_project
 def donate(request, p, engine, has_sponsor_banner=False):
-    if p not in Project.objects.published().need_funding():
+    if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
+    # if p not in Project.objects.status_not_cancelled().status_not_archived():
+    #     return redirect('project_main', project_id=p.id)
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():
         has_sponsor_banner = True
     if request.method == 'POST':
