@@ -103,7 +103,7 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    t = loader.get_template('rsr/donation_confirmation_email.html')
+    t = loader.get_template('rsr/project/donate/donation_confirmation_email.html')
     #c = Context({'invoice': invoice, 'domain_name': settings.DOMAIN_NAME})
     c = RequestContext(dict(invoice=invoice))
     message_body = t.render(c)
