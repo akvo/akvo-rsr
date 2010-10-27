@@ -108,7 +108,7 @@ def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
     site = Site.objects.get_current()
     site_url = 'http://%s/' % site
-    base_project_url = reverse('projectmain', kwargs=dict(project_id=invoice.project.id))
+    base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
     project_url = 'http://%s%s' % (site, base_project_url)
     base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
     project_updates_url = 'http://%s%s' % (site, base_project_updates_url)
