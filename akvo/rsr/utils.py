@@ -7,6 +7,7 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail, EmailMessage
+from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.template import loader, Context
 from django.utils.translation import ugettext_lazy as _
@@ -105,9 +106,11 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site = settings.DOMAIN_NAME
+    site = Site.objects.get_current()
+    base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
+    project_updates_url = 'http://%s%s' % (site, base_project_updates_url)
     t = loader.get_template('rsr/project/donate/donation_confirmation_email.html')
-    c = Context(dict(invoice=invoice, site=site))
+    c = Context(dict(invoice=invoice, project_updates_url=project_updates_url))
     message_body = t.render(c)
     subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
     bcc_field = [invoice.notification_email]
