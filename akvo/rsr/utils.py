@@ -110,7 +110,7 @@ def send_donation_confirmation_emails(invoice_id):
     base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
     project_updates_url = 'http://%s%s' % (site, base_project_updates_url)
     t = loader.get_template('rsr/project/donate/donation_confirmation_email.html')
-    c = Context(dict(invoice=invoice, project_updates_url=project_updates_url))
+    c = Context(dict(invoice=invoice, site=site, project_updates_url=project_updates_url))
     message_body = t.render(c)
     subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
     bcc_field = [invoice.notification_email]
