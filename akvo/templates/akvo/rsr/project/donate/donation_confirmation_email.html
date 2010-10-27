@@ -11,8 +11,9 @@
 	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
 	<p>
 		{% blocktrans %}
-		Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via <a href="{{ project_updates_url }}">updates</a> on Akvo.org.
-		{% endblocktrans %}
+		Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via the following link on Akvo.org:<br>
+        {% endblocktrans %}
+        <a href="{{ project_updates_url }}">updates</a>
 	</p>
 
 	<h3>{% trans 'A summary of your contribution' %}</h3>
