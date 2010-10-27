@@ -91,13 +91,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% endif %}
 		{% endwith %}
 
-		{% if not project.status == 'L' and not project.status == 'R' %}
-			<hr class="divider" />
-			<p class="smallFont grey">{% trans 'Funding' %}</p>
-			<div style="margin:0;">
-				{% funding_box_narrow project %}
-			</div>
-		{% endif %}
+		
+		<hr class="divider" />
+		<p class="smallFont grey">{% trans 'Funding' %}</p>
+		<div style="margin:0;">
+			{% funding_box_narrow project %}
+		</div>
+		
 		<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
 		
 		{% comment %}
