@@ -63,7 +63,7 @@ PAYPAL_SANDBOX_GATEWAY = 'paul.b_1252334846_biz@gmail.com'
 PAYPAL_PRODUCT_DESCRIPTION_PREFIX = 'Akvo Project Donation'
 PAYPAL_SANDBOX_PRODUCT_DESCRIPTION_PREFIX = 'TEST %s' % PAYPAL_PRODUCT_DESCRIPTION_PREFIX
 PAYPAL_NOTIFY_URL = 'http://%s/rsr/ipn/' % DOMAIN_NAME
-PAYPAL_RETURN_URL = 'http://%s/donate/paypal/thanks/' % DOMAIN_NAME
+PAYPAL_RETURN_URL = 'http://%s/rsr/donate/paypal/thanks/' % DOMAIN_NAME
 PAYPAL_CANCEL_URL = 'http://%s/' % DOMAIN_NAME
 #PAYPAL_IMAGE = 'https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif'
 #PAYPAL_SANDBOX_IMAGE = 'https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif'
@@ -77,7 +77,7 @@ PAYPAL_INVOICE_TIMEOUT = 15 # minutes
 MOLLIE_TEST = DONATION_TEST
 MOLLIE_PRODUCT_DESCRIPTION = 'Akvo project donation'
 MOLLIE_REPORT_URL = 'http://%s/rsr/mollie/report/' % DOMAIN_NAME
-MOLLIE_RETURN_URL = 'http://%s/donate/ideal/thanks/' % DOMAIN_NAME
+MOLLIE_RETURN_URL = 'http://%s/rsr/donate/ideal/thanks/' % DOMAIN_NAME
 
 DECIMALS_DEBUG = False
 DECIMALS_DECIMAL_PLACES = 2
