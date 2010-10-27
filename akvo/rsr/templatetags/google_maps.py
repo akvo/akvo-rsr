@@ -13,15 +13,17 @@ from akvo.rsr.models import Project, Organisation
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
 def google_map(object, width, height, zoom):
-    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    project_marker_icon = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
+    organisation_marker_icon = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
     template_context = dict(object=object, width=width, height=height,
-        zoom=zoom, marker_icon=marker_icon)
+        zoom=zoom, project_marker_icon=project_marker_icon,
+        organisation_marker_icon=organisation_marker_icon)
     return template_context
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
 def google_global_project_map(map_type, width, height, zoom):
     projects = Project.objects.published().has_primary_location()
-    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
     template_context = dict(map_type=map_type,
         marker_icon=marker_icon,
         projects=projects,
@@ -33,7 +35,7 @@ def google_global_project_map(map_type, width, height, zoom):
 @register.inclusion_tag('inclusion_tags/google_global_organisation_map.html')
 def google_global_organisation_map(map_type, width, height, zoom):
     organisations = Organisation.objects.has_primary_location()
-    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
+    marker_icon = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
     template_context = dict(map_type=map_type,
         marker_icon=marker_icon,
         organisations=organisations,
