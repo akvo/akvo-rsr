@@ -11,9 +11,8 @@
 	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
 	<p>
 		{% blocktrans %}
-		Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via the following link on Akvo.org:<br>
+		Thank you for your contribution on Akvo.org. By giving, you have personally helped to advance the cause of clean water and sanitation around the world. You can follow the project&#x27;s progress via <a href="{{ project_updates_url }}">updates</a> on Akvo.org.
         {% endblocktrans %}
-        <a href="{{ project_updates_url }}">updates</a>
 	</p>
 
 	<h3>{% trans 'A summary of your contribution' %}</h3>
@@ -39,7 +38,7 @@
 			{{ invoice.get_name }}<br>
 			{{ invoice.get_email }}<br>
 			<br>
-			<a href="{% url project_main invoice.project.id %}">{{ invoice.project.name|safe }}</a><br>
+			<a href="{{ project_url }}">{{ invoice.project.name|safe }}</a><br>
 			{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
 			{{ invoice.id }}<br>
 			{% ifequal invoice.engine "paypal" %}
@@ -68,7 +67,7 @@
 	</ul>
 	
 	<p>
-		{% trans 'Please retain this message as a record of your contribution. You may email us with technical questions at' %} <a href="mailto:contribute@akvo.org">contribute@akvo.org</a> {% trans 'and please tell your friends about' %} <a href="http://{{site}}/">Akvo.org</a>!  :)
+		{% trans 'Please retain this message as a record of your contribution. You may email us with technical questions at' %} <a href="mailto:contribute@akvo.org">contribute@akvo.org</a> {% trans 'and please tell your friends about' %} <a href="http://{{site_url}}/">Akvo.org</a>!  :)
 		<br>
 		<br>
 		{% trans 'Thanks' %}<br>
