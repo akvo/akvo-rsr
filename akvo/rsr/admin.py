@@ -371,9 +371,16 @@ admin.site.register(get_model('rsr', 'FocusArea'), FocusAreaAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Category')
-    list_display = ('name', 'areas',)
+    list_display = ('name', 'focus_areas', 'category_benchmarks', )
 
 admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
+
+
+class BenchmarknameAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'BenchmarkName')
+    list_display = ('name', )
+    
+admin.site.register(get_model('rsr', 'BenchmarkName'), BenchmarknameAdmin)
 
 
 class MiniCMSAdmin(admin.ModelAdmin):
@@ -725,11 +732,14 @@ if settings.PVW_RSR:
         
 else:
     
-    
+    class BenchmarkInline(admin.TabularInline):
+        model = get_model('rsr', 'benchmark')
+        extra = 0
+
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')
         inlines = (BudgetItemAdminInLine, LinkInline, FundingPartnerInline, SponsorPartnerInline, 
-                   FieldPartnerInline, SupportPartnerInline, LocationInline)
+                   FieldPartnerInline, SupportPartnerInline, LocationInline, BenchmarkInline)
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(u"Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing."),
