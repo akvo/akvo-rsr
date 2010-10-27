@@ -408,16 +408,14 @@ else:
         stats: the aggregate projects data
         page: paginator
         '''
-        live_earth = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
-        projs = live_earth.published_projects().funding()
-        page = project_list_data(request, projs)
-        org_projects = live_earth.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        org = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
+        projects = org.published_projects().funding()
+        page = project_list_data(request, projects)
+        active_projects = projects.status_not_cancelled().status_not_archived()
         return {
-            'projs': projs,
-            'orgs':live_earth.partners(),
             'page': page,
-            'o': live_earth,
-            'org_projects': org_projects,
+            'org': org,
+            'active_projects': active_projects,
             'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         }
     
@@ -430,16 +428,14 @@ else:
         stats: the aggregate projects data                                             
         page: paginator                                                                
         '''
-        wfw = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
-        projs = wfw.published_projects().funding()
-        page = project_list_data(request, projs)
-        org_projects = wfw.published_projects().exclude(status__exact='L').exclude(status__exact='C')
+        org = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
+        projects = org.published_projects().funding()
+        page = project_list_data(request, projects)
+        active_projects = projects.status_not_cancelled().status_not_archived()
         return {
-            'projs': projs,
-            'orgs': wfw.partners(),
             'page': page,
-            'o': wfw,
-            'org_projects': org_projects,
+            'org': org,
+            'active_projects': active_projects,
             'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
         }
     
@@ -1284,17 +1280,17 @@ def projectpartners(request, project_id):
 
 @render_to('rsr/project/project_funding.html')  
 def projectfunding(request, project_id):
-    p = get_object_or_404(Project, pk=project_id)    
-    public_donations = p.public_donations()
-    updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    project = get_object_or_404(Project, pk=project_id)    
+    public_donations = project.public_donations()
+    updates = project.project_updates.all().order_by('-time')[:3]
+    comments = project.projectcomment_set.all().order_by('-time')[:3]
     return { 
-        'p': p, 
+        'project': project, 
         'public_donations': public_donations, 
         'site_section': 'projects', 
         'updates': updates,
         'comments': comments,
-        'can_add_update': p.connected_to_user(request.user),
+        'can_add_update': project.connected_to_user(request.user),
     }
 
 def getwidget(request, project_id):
@@ -1460,14 +1456,14 @@ def project_list_widget(request, template='project-list', org_id=0):
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
-    if p not in Project.objects.published().need_funding():
+    if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
     request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
     return {'p': p}
 
 @fetch_project
 def donate(request, p, engine, has_sponsor_banner=False):
-    if p not in Project.objects.published().need_funding():
+    if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
     if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():
         has_sponsor_banner = True

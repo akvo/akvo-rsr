@@ -85,9 +85,11 @@ def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
 
 
 def qs_column_sum(qs, col):
-    "return sum of a queryset column"
-    return sum(qs.values_list(col, flat=True))
-
+    #This won't work:
+    #return sum(qs.values_list(col, flat=True))
+    #when you have multiple rows with the exact same amount. They only get counted once
+    #Workoaround:
+    return sum([row[col] for row in qs.values()])
 
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     """ Create a file name for an image based on the model name, the current object's pk,

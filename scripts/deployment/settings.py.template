@@ -67,8 +67,8 @@ PAYPAL_RETURN_URL = 'http://%s/donate/paypal/thanks/' % DOMAIN_NAME
 PAYPAL_CANCEL_URL = 'http://%s/' % DOMAIN_NAME
 #PAYPAL_IMAGE = 'https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif'
 #PAYPAL_SANDBOX_IMAGE = 'https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif'
-PAYPAL_IMAGE = 'http://%s/rsr/media/img/paypal_donate.gif' % DOMAIN_NAME
-PAYPAL_SANDBOX_IMAGE = 'http://%s/rsr/media/img/paypal_donate.gif' % DOMAIN_NAME
+PAYPAL_IMAGE = 'http://%s/rsr/media/core/img/paypal_donate.gif' % DOMAIN_NAME
+PAYPAL_SANDBOX_IMAGE = 'http://%s/rsr/media/core/img/paypal_donate.gif' % DOMAIN_NAME
 PAYPAL_RECEIVER_EMAIL = ''
 PAYPAL_INVOICE_TIMEOUT = 15 # minutes
 
