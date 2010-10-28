@@ -16,7 +16,7 @@
 			<h2 style="padding-top:20px;">{% trans 'Project partners' %}</h2>
 		</div>
 		<div class="counter_badge">
-			<span style="display:none;">{% counter p %}</span>
+			<span style="display:none;">{% counter project %}</span>
 			{% cache 10 project_view_count project.id %}
 				{{ project.view_count|intcomma }}
 			{% endcache %}
