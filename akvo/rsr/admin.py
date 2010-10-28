@@ -376,7 +376,7 @@ class BenchmarknameInline(admin.TabularInline):
 class CategoryAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Category')
     #inlines = (BenchmarknameInline,)
-    list_display = ('name', 'focus_areas', 'category_benchmarks', )
+    list_display = ('name', 'focus_areas_html', 'category_benchmarks', )
     #fieldsets = (
     #    ('', {
     #        'fields': (
@@ -748,7 +748,10 @@ else:
     
     class BenchmarkInline(admin.TabularInline):
         model = get_model('rsr', 'benchmark')
+        # only show the value, category and benchmark are not to be edited here
+        fields = ('value',)
         extra = 0
+        max_num = 0
 
     class ProjectAdmin(admin.ModelAdmin):
         model = get_model('rsr', 'project')

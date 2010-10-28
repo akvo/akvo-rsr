@@ -466,15 +466,19 @@ class Category(models.Model):
     category_benchmarks.allow_tags = True
 
     def __unicode__(self):
-        return '%s (%s)' % (self.name, self.focus_areas(),)
+        return '%s' % self.name
 
     class Meta:
         verbose_name=_('category')
         verbose_name_plural=_('categories')
         
     def focus_areas(self):
-        return '<br/>'.join([capfirst(area.name) for area in self.focus_area.all()])
+        return ', '.join([capfirst(area.name) for area in self.focus_area.all()])
     focus_areas.allow_tags = True
+
+    def focus_areas_html(self):
+        return '<br/>'.join([capfirst(area.name) for area in self.focus_area.all()])
+    focus_areas_html.allow_tags = True
 
 
 
@@ -1704,12 +1708,12 @@ class Benchmark(models.Model):
     value       = models.IntegerField(_(u'benchmark value'), )
 
     def __unicode__(self):
-        return '%s (%s): %d' % (self.name, self.category, self.value,)
+        return 'Focus area: %s, Category: %s, Benchmark: %d %s' % (self.category.focus_areas(), self.category, self.value, self.name, )
 
     class Meta:
         ordering=['category__name', 'name__order']
-        verbose_name=_('category')
-        verbose_name_plural=_('categories')
+        verbose_name=_('benchmark')
+        verbose_name_plural=_('benchmarks')
 
 
 class BudgetItem(models.Model):
