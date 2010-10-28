@@ -1,6 +1,11 @@
 {% extends "admin/change_form.html" %}
 {% load i18n %}
 
+{% block extrastyle %}
+  {{block.super}}
+  <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}akvo/akvo_admin.css" />
+{% endblock %}
+
 {% block pretitle %}
     {{ block.super }}
     <div style="width:75%">

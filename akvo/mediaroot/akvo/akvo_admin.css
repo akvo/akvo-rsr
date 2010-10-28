@@ -1,0 +1,5 @@
+/* used in the project form to make the text for the benchmarks larger */
+
+.inline-group tr.dynamic-benchmarks td.original p {
+    font-size: 12px;
+}
