@@ -18,6 +18,7 @@ from django.db.models import Sum, F
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -45,7 +46,9 @@ from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
 from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, set_active_cms)
+    create_payment_gateway_selector, donation_completed, set_active_cms,
+    act_on_log_entry
+)
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -430,46 +433,47 @@ class FocusArea(models.Model):
         verbose_name=_('focus area')
         verbose_name_plural=_('focus areas')
 
-class Category(models.Model):
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
-    #CHOICES_CATEGORY = (
-    #    (1, _('Water for food and nature')),
-    #    (2, _('Water and climate')),
-    #    (3, _('Millennium goals water and sanitation')),
-    #    (4, _('Integrated resource management')),
-    #    (5, _('Ground water management')),
-    #    (6, _('Delta technology')),
-    #    (7, _('Clean water')),
-    #    (8, _('Safety')),
-    #    (9, _('Waste')),
-    #    (10, _('Resource management')),
-    #    (11, _('Water & climate')),
-    #)
-    name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
-    icon                    = ImageWithThumbnailsField(
-                                _('category icon'),
-                                blank=True,
-                                upload_to=image_path,
-                                thumbnail={'size': (20, 20), 'options': ('crop', )},
-                                help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
-                            )
-    focus_area              = models.ManyToManyField(FocusArea, related_name='categories',)
-    #focus_area_clean        = models.BooleanField(_('focus area clean water'))
-    #focus_area_safety       = models.BooleanField(_('focus area safety'))
-    #focus_area_sharing      = models.BooleanField(_('focus area sharing water'))
-    #focus_area_governance   = models.BooleanField(_('focus area governance'))
-    
+class Benchmarkname(models.Model):
+    name    = models.CharField(_('benchmark name'), max_length=50, help_text=_('Enter a name for the benchmark. (50 characters).'))
+
     def __unicode__(self):
-        return '%s (%s)' % (self.name, self.areas(),)
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name=_('benchmark name')
+        verbose_name_plural=_('benchmark names')
+
+    
+class Category(models.Model):
+    #def image_path(instance, file_name):
+    #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
+
+    name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
+    #icon                    = ImageWithThumbnailsField(
+    #                            _('category icon'),
+    #                            blank=True,
+    #                            upload_to=image_path,
+    #                            thumbnail={'size': (20, 20), 'options': ('crop', )},
+    #                            help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
+    #                        )
+    focus_area              = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
+    benchmarknames          = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), help_text=_('Select the benchmark names for the category.'), )
+    
+    def category_benchmarks(self):
+        return "<br/>".join([b.name for b in self.benchmarknames.all()])
+    category_benchmarks.allow_tags = True
+
+    def __unicode__(self):
+        return '%s (%s)' % (self.name, self.focus_areas(),)
 
     class Meta:
         verbose_name=_('category')
         verbose_name_plural=_('categories')
         
-    def areas(self):
-        return ', '.join([capfirst(area.name) for area in self.focus_area.all()])
-    areas.allow_tags = True
+    def focus_areas(self):
+        return '<br/>'.join([capfirst(area.name) for area in self.focus_area.all()])
+    focus_areas.allow_tags = True
 
 
 
@@ -1692,6 +1696,21 @@ else: #akvo-rsr
             verbose_name_plural=_('projects')
 
 
+class Benchmark(models.Model):
+    project     = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
+    category    = models.ForeignKey(Category, verbose_name=_(u'category'), )
+    name        = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
+    value       = models.IntegerField(_(u'benchmark value'), )
+
+    def __unicode__(self):
+        return '%s (%s): %d' % (self.name, self.category, self.value,)
+
+    class Meta:
+        ordering=['category']
+        verbose_name=_('category')
+        verbose_name_plural=_('categories')
+
+
 class BudgetItem(models.Model):
     ITEM_CHOICES = (
         ('employment', _('employment')),
@@ -2291,10 +2310,12 @@ if settings.DONATION_NOTIFICATION_EMAILS:
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
 post_save.connect(change_name_of_file_on_create, sender=ProjectUpdate)
+post_save.connect(act_on_log_entry, sender=LogEntry)
 
 pre_save.connect(change_name_of_file_on_change, sender=Organisation)
 pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
+
 if settings.PVW_RSR:
     post_save.connect(change_name_of_file_on_create, sender=Image)
     pre_save.connect(change_name_of_file_on_change, sender=Image)

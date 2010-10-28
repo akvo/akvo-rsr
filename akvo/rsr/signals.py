@@ -14,6 +14,8 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from utils import send_donation_confirmation_emails
 
+import models
+
 def create_publishing_status(sender, **kwargs):
     """
     called when a new project is saved so an associated published record for the
@@ -114,3 +116,46 @@ def set_active_cms(instance, created, **kwargs):
     MiniCMS = get_model('rsr', 'MiniCMS')
     if instance.active:
         MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
+
+def create_benchmark_objects(project):
+    """
+    create the relevant Benchmark objects for this project based on the Categories of the project
+    """
+    for category in project.categories.all():
+        for benchmarkname in category.benchmarknames.all():
+            benchmark, created = models.Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
+    #if kwargs['created']:
+    #technology = kwargs['instance']
+    #for factor in Factor.objects.filter(pk__in=[pk for pk in technology.factors.all().values_list('pk', flat=True)]):
+    #    for criterion in factor.criteria.all():
+    #        try:
+    #            Relevancy.objects.get(technology=technology, criterion=criterion,)
+    #        except Relevancy.DoesNotExist:
+    #            Relevancy.objects.create(technology=technology, criterion=criterion,)
+
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.contrib.contenttypes.models import ContentType
+def act_on_log_entry(sender, **kwargs):
+    """
+    catch the LogEntry post_save to grab newly added Technology instances and create
+    relevancy objects for it
+    we do this at this time to be able to work with a fully populated Technology
+    instance
+    """
+    CRITERIA = [
+        {'app': 'rsr', 'model': 'project', 'action': ADDITION, 'call': create_benchmark_objects},
+        {'app': 'rsr', 'model': 'project', 'action': CHANGE,   'call': create_benchmark_objects},
+    ]
+    if kwargs.get('created', False):
+        log_entry = kwargs['instance']
+        content_type = ContentType.objects.get(pk=log_entry.content_type_id)
+        for criterion in CRITERIA:
+            if (
+                content_type.app_label == criterion['app']
+                and content_type.model == criterion['model']
+                and log_entry.action_flag == criterion['action']
+            ):
+                #user = User.objects.get(pk=log_entry.user_id)
+                object = content_type.get_object_for_this_type(pk=log_entry.object_id)
+                criterion['call'](object)
+       

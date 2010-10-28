@@ -8,9 +8,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 {% load i18n %}
 
-{% load comparison %}
-
 <ul class="simplelist">
+  {% for benchmark in project.benchmarks.all %}
+    {% ifchanged %}
+      </ul>
+      <h3>Category: {{benchmark.category.name}}</h3>
+      <ul class="simplelist">
+    {% endifchanged %}
+      {% if benchmark.value %}
+        <li>{{benchmark.name|capfirst}}: {{benchmark.value}} </li>
+      {% endif %}
+  {% endfor %}
+      </ul>
+
+  {% comment %}
     {% if p.water_systems %}
         <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
     {% endif %}
@@ -37,4 +48,5 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
     {% if p.trainees %}
         <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
     {% endif %}
+  {% endcomment %}
 </ul>
