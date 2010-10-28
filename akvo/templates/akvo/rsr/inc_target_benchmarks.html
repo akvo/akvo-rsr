@@ -9,14 +9,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% load i18n %}
 
 <ul class="simplelist">
-  {% for benchmark in project.benchmarks.all %}
+  {% for benchmark in benchmarks %}
     {% ifchanged %}
       </ul>
       <h3>Category: {{benchmark.category.name}}</h3>
       <ul class="simplelist">
     {% endifchanged %}
       {% if benchmark.value %}
-        <li>{{benchmark.name|capfirst}}: {{benchmark.value}} </li>
+        <li>{{benchmark.value}} {{benchmark.name}}</li>
       {% endif %}
   {% endfor %}
       </ul>

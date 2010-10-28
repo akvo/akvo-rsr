@@ -51,20 +51,26 @@ print
 
 #mapping between categories and the benchmarks for that cat, old and possibly new names
 category_benchmarks = {
-    'Water': ['water_systems', ('improved_water', 'number of people affected',), ('improved_water_years', 'duration of impact (years)', ),],
-    'Sanitation': ['sanitation_systems', 'hygiene_facilities', ('improved_sanitation', 'number of people affected',), ('improved_sanitation_years', 'duration of impact (years)', ),],
-    'Training': ['trainees',],
-    'Education': ['trainees',],
+    'Water': [
+        ('water_systems', 'water systems', 10),
+        ('improved_water', 'people affected', 50),
+        ('improved_water_years', 'years duration', 60),
+    ],
+    'Sanitation': [
+        ('sanitation_systems', 'sanitation systems', 20),
+        ('hygiene_facilities', 'hygiene facilities', 30),
+        ('improved_sanitation', 'people affected', 50),
+        ('improved_sanitation_years', 'years duration', 60),
+    ],
+    'Training': [('trainees', 'trainees', 40),],
+    'Education': [('trainees', 'trainees', 40),],
 }
 
 for cat_name, bm_names in category_benchmarks.items():
     category = Category.objects.get(name=cat_name)
     for name in bm_names:
-        if isinstance(name, types.TupleType):
-            bm_name = name[1]
-        else:
-            bm_name = name.replace('_', ' ')
-        new_bmn, created = Benchmarkname.objects.get_or_create(name=bm_name)
+        bm_name = name[1]
+        new_bmn, created = Benchmarkname.objects.get_or_create(name=bm_name, defaults={'order': name[2]})
         if created:
             print 'No benchmark name "%s". Creating...' % (new_bmn.name, )
         else:
@@ -90,12 +96,8 @@ for project in projects:
         category = Category.objects.get(name=cat_name)
         if project.categories.filter(pk=category.pk):
             for name in bm_names:
-                if isinstance(name, types.TupleType):
-                    bm_name = name[1]
-                    project_prop = name[0]
-                else:
-                    bm_name = name.replace('_', ' ')
-                    project_prop = name
+                bm_name = name[1]
+                project_prop = name[0]
                 benchmark = Benchmark.objects.get(project=project, category=category, name__name=bm_name)
                 benchmark.value = getattr(project, project_prop, 0)
                 benchmark.save()

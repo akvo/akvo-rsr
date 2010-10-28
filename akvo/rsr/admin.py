@@ -369,18 +369,32 @@ class FocusAreaAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'FocusArea'), FocusAreaAdmin)
 
 
+class BenchmarknameInline(admin.TabularInline):
+    model = get_model('rsr', 'Category').benchmarknames.through
+    extra = 3
+
 class CategoryAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Category')
+    #inlines = (BenchmarknameInline,)
     list_display = ('name', 'focus_areas', 'category_benchmarks', )
+    #fieldsets = (
+    #    ('', {
+    #        'fields': (
+    #            'name',
+    #            'focus_area',
+    #        ),
+    #    }),
+    #)
+    
 
 admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
 
 
 class BenchmarknameAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'BenchmarkName')
-    list_display = ('name', )
+    model = get_model('rsr', 'Benchmarkname')
+    list_display = ('name', 'order',)
     
-admin.site.register(get_model('rsr', 'BenchmarkName'), BenchmarknameAdmin)
+admin.site.register(get_model('rsr', 'Benchmarkname'), BenchmarknameAdmin)
 
 
 class MiniCMSAdmin(admin.ModelAdmin):

@@ -435,12 +435,13 @@ class FocusArea(models.Model):
 
 class Benchmarkname(models.Model):
     name    = models.CharField(_('benchmark name'), max_length=50, help_text=_('Enter a name for the benchmark. (50 characters).'))
+    order   = models.IntegerField(_(u'order'), default=0, help_text=_('Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ['order', 'name',]
         verbose_name=_('benchmark name')
         verbose_name_plural=_('benchmark names')
 

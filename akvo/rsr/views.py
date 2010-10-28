@@ -1235,8 +1235,10 @@ def projectmain(request, project_id):
     related             = get_random_from_qs(related, 2)
     all_updates         = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
-    slider_width        = (len(updates_with_images) + 1) * 115    
+    #slider_width        = (len(updates_with_images) + 1) * 115    
     comments            = project.projectcomment_set.all().order_by('-time')[:3]
+    # comprehensions are fun! here we use it to get the categories that don't contain only 0 value benchmarks
+    benchmarks          = project.benchmarks.filter(category__in=[category for category in project.categories.all() if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']])
     
     # a little model meta data magic
     opts = project._meta
@@ -1250,13 +1252,14 @@ def projectmain(request, project_id):
         'project'               : project,
         'p'                     : project, #compatibility with new_look
         'related'               : related,
-        'updates'               : all_updates[:3], 
+        'updates'               : all_updates[:3],
+        'benchmarks'            : benchmarks,
         'updates_with_images'   : updates_with_images,
         'can_add_update'        : project.connected_to_user(request.user),
         'admin_change_url'      : admin_change_url,
         'comments'              : comments, 
         'site_section'          : 'projects',
-        'slider_width'          : slider_width,
+        #'slider_width'          : slider_width,
     }
 
 def projectdetails(request, project_id):
