@@ -1266,15 +1266,15 @@ def projectdetails(request, project_id):
 
 @render_to('rsr/project/project_partners.html')  
 def projectpartners(request, project_id):
-    p = get_object_or_404(Project, pk=project_id)
-    updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
-    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')[:3]
+    project = get_object_or_404(Project, pk=project_id)
+    updates = project.project_updates.all().order_by('-time')[:3]
+    comments = project.projectcomment_set.all().order_by('-time')[:3]
     return { 
-        'p': p, 
+        'project': project, 
         'site_section': 'projects', 
         'updates': updates, 
         'hide_project_partners': True,
-        'can_add_update': p.connected_to_user(request.user),
+        'can_add_update': project.connected_to_user(request.user),
         'comments': comments,
     }
 
