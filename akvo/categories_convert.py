@@ -52,7 +52,7 @@ print
 #mapping between categories and the benchmarks for that cat, old and possibly new names
 category_benchmarks = {
     'Water': ['water_systems', ('improved_water', 'number of people affected',), ('improved_water_years', 'duration of impact (years)', ),],
-    'Sanitation': ['sanitation_systems', 'hygiene_facilities', ('improved_sanitation', 'number of people affected',), ('improved_sanitation_years', 'duration of impact', ),],
+    'Sanitation': ['sanitation_systems', 'hygiene_facilities', ('improved_sanitation', 'number of people affected',), ('improved_sanitation_years', 'duration of impact (years)', ),],
     'Training': ['trainees',],
     'Education': ['trainees',],
 }

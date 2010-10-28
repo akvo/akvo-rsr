@@ -116,7 +116,9 @@
 								</p>
 							</div>
 							<div style="float:right; width:116px; height: 100px; text-align:right;">
-								<img src="{% thumbnail update.photo 116x100 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
+                <a href="{% url project_update project.id update.id %}">
+                  <img src="{% thumbnail update.photo 116x100 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
+                </a>
 							</div>
 							<div class="clear"></div>
 						{% else %}
