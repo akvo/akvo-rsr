@@ -19,7 +19,7 @@
 		<div class="space20">
 			<div class="counter_badge" style="margin-top:0; margin-right:0;">
 				<span style="display:none;">{% counter p %}</span>
-				{% cache 10 p.view_count %}
+				{% cache 10 project_view_count p.id %}
 					{{ p.view_count|intcomma }}
 				{% endcache %}
 				<br />

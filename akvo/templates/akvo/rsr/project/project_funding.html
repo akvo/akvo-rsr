@@ -19,7 +19,7 @@
 		</div>
 		<div class="counter_badge">
 			<span style="display:none;">{% counter project %}</span>
-			{% cache 10 project.view_count %}
+			{% cache 10 project_view_count project.id %}
 				{{ project.view_count|intcomma }}
 			{% endcache %}
 			<br />
