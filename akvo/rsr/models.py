@@ -1707,7 +1707,7 @@ class Benchmark(models.Model):
         return '%s (%s): %d' % (self.name, self.category, self.value,)
 
     class Meta:
-        ordering=['category']
+        ordering=['name__order']
         verbose_name=_('category')
         verbose_name_plural=_('categories')
 
