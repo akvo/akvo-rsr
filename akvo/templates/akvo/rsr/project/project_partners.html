@@ -11,27 +11,27 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+				<a href="{% url project_main project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Project partners' %}</h2>
 		</div>
 		<div class="counter_badge">
 			<span style="display:none;">{% counter p %}</span>
-			{% cache 10 project_view_count p.id %}
-				{{ p.view_count|intcomma }}
+			{% cache 10 project_view_count project.id %}
+				{{ project.view_count|intcomma }}
 			{% endcache %}
 			<br />
 			<span>{% trans 'views' %}</span>
 		</div>
 		<div class="clear"></div>
 		<div class="space20">	
-			{% if p.fieldpartner_set.count %}
-				{% ifequal p.fieldpartner_set.count 1 %}
+			{% if project.fieldpartner_set.count %}
+				{% ifequal project.fieldpartner_set.count 1 %}
 		            <h3>{% trans 'Field partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Field partners' %}</h3>
 		        {% endifequal %}
-				{% for fp in p.fieldpartner_set.all %}
+				{% for fp in project.fieldpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">							
 							<a href="{% url org_detail fp.field_organisation.id %}">
@@ -51,13 +51,13 @@
 			{% endif %}
 			
 			
-			{% if p.supportpartner_set.count %}
-				{% ifequal p.supportpartner_set.count 1 %}
+			{% if project.supportpartner_set.count %}
+				{% ifequal project.supportpartner_set.count 1 %}
 		            <h3>{% trans 'Support partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Support partners' %}</h3>
 		        {% endifequal %}
-				{% for sp in p.supportpartner_set.all %}
+				{% for sp in project.supportpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
 							<a href="{% url org_detail sp.support_organisation.id %}">
@@ -76,13 +76,13 @@
 				<br /><br />
 			{% endif %}
 			
-			{% if p.sponsorpartner_set.count %}
-				{% ifequal p.sponsorpartner_set.count 1 %}
+			{% if project.sponsorpartner_set.count %}
+				{% ifequal project.sponsorpartner_set.count 1 %}
 		            <h3>{% trans 'Sponsor partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Sponsor partners' %}</h3>
 		        {% endifequal %}
-				{% for sponsor in p.sponsorpartner_set.all %}
+				{% for sponsor in project.sponsorpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">						
 						<div style="float:left; width:100px;">
 							<a href="{% url org_detail sponsor.sponsor_organisation.id %}">
@@ -101,13 +101,13 @@
 				<br /><br />
 			{% endif %}
 			
-			{% if p.fundingpartner_set.count %}
-				{% ifequal p.fundingpartner_set.count 1 %}
+			{% if project.fundingpartner_set.count %}
+				{% ifequal project.fundingpartner_set.count 1 %}
 		            <h3>{% trans 'Funding partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Funding partners' %}</h3>
 		        {% endifequal %}
-				{% for funder in p.fundingpartner_set.all %}
+				{% for funder in project.fundingpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
 							<a href="{% url org_detail funder.funding_organisation.id %}">
