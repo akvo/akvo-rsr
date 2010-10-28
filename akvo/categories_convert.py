@@ -24,7 +24,7 @@ focus_areas = [
     {'name': 'Education', 'slug': 'education'},
     {'name': 'Healthcare', 'slug': 'healthcare'},
     {'name': 'Economic development', 'slug': 'economic-development'},
-    {'name': 'ICT for development', 'slug': 'ict-for-development'},
+    {'name': 'IT and communication', 'slug': 'it-and-communication'},
 ]
 
 for focus_area in focus_areas:
@@ -50,6 +50,7 @@ for cat in old_cats:
 print
 
 #mapping between categories and the benchmarks for that cat, old and possibly new names
+benchmarked_categories = ['Water', 'Sanitation', 'Training', 'Education',]
 category_benchmarks = {
     'Water': [
         ('water_systems', 'water systems', 10),
@@ -91,17 +92,24 @@ for project in projects:
             print "    Belongs to cat %s" % category.name                
 
     create_benchmark_objects(project)
+    set_training = False
+    print "set_training: False"
 
-    for cat_name, bm_names in category_benchmarks.items():
+    for cat_name in benchmarked_categories:
+        bm_names = category_benchmarks[cat_name]
         category = Category.objects.get(name=cat_name)
         if project.categories.filter(pk=category.pk):
             for name in bm_names:
                 bm_name = name[1]
                 project_prop = name[0]
-                benchmark = Benchmark.objects.get(project=project, category=category, name__name=bm_name)
-                benchmark.value = getattr(project, project_prop, 0)
-                benchmark.save()
-                print '    "%s" category benchmark "%s" set to %d.' % (category.name, benchmark.name, benchmark.value)
+                if project_prop == 'trainees' and category.name == 'Training':
+                    set_training = True
+                    print "set_training: True"
+                if set_training == False or (project_prop != 'trainees' or category.name != 'Education'):                        
+                    benchmark = Benchmark.objects.get(project=project, category=category, name__name=bm_name)
+                    benchmark.value = getattr(project, project_prop, 0)
+                    benchmark.save()
+                    print '    "%s" category benchmark "%s" set to %d.' % (category.name, benchmark.name, benchmark.value)
             
 #projects = Project.objects.all()
 #water_cat = Category.objects.get(name='Water')
