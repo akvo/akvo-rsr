@@ -12,12 +12,14 @@ register = template.Library()
 from akvo.rsr.models import Project, Organisation
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
-def google_map(object, width, height, zoom):
-    project_marker_icon = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
-    organisation_marker_icon = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
+def google_map(object, width, height, zoom, marker_icon=None):
+    object_type = object.__class__.__name__.lower()
+    if object_type == 'project':
+        marker_icon = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
+    elif object_type == 'organisation':
+        marker_icon = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
     template_context = dict(object=object, width=width, height=height,
-        zoom=zoom, project_marker_icon=project_marker_icon,
-        organisation_marker_icon=organisation_marker_icon)
+        zoom=zoom, marker_icon=marker_icon)
     return template_context
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
