@@ -34,9 +34,10 @@
 			<div style="float:left; width:30px;">&nbsp;</div>
 			<div style="float:left; width:262px;">
 				
-        <h2 class="black">{% trans 'Who will benefit?' %}</h2>
-        {% include "rsr/inc_target_benchmarks.html" %}
-
+        {% if benchmarks %}
+          <h2 class="black">{% trans 'Who will benefit?' %}</h2>
+          {% include "rsr/inc_target_benchmarks.html" %}
+        {% endif %}
 				<h2 class="black">{% trans 'Location' %}</h2>
 				<p class="grey">
 					{% if p.primary_location %}
