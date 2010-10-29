@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#to be run in the akvo rsr root folder. setting up all projects as published, if they have no status
-# and setting all orgs to free account if they have none
+# to be run in the akvo rsr root folder
 
 from __future__ import with_statement
 from django.core.management import setup_environ
@@ -27,7 +26,7 @@ def create_primary_project_locations():
             postcode=p.postcode, primary=True)
         print 'Successfully created location object for project id: %d' % p.id
 
-def create_primary_organisation_locations(): # Akvo RSR only!
+def create_primary_organisation_locations():
     import csv
     content_type = ContentType.objects.get_for_model(get_model('rsr', 'organisation'))
     location = get_model('rsr', 'location').objects
