@@ -1609,3 +1609,12 @@ def global_map(request):
     projects = Project.objects.published()
     marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     return {'projects': projects, 'marker_icon': marker_icon}
+
+@render_to('rsr/akvo_at_a_glance.html')
+def data_overview(request):
+    projects = Project.objects.published().funding()
+    orgs = Organisation.objects.all()
+    rsr_cache_seconds = getattr(settings, 'RSR_CACHE_SETTINGS', 300)
+    template_context = dict(orgs=orgs, projects=projects,
+        RSR_CACHE_SECONDS=rsr_cache_seconds)
+    return template_context

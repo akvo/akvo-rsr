@@ -52,6 +52,9 @@ else:
         
         # Front page
         (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
+
+        # Data collections
+        url(r'^rsr/data/overview/$', 'akvo.rsr.views.data_overview', name='akvo_at_a_glance'),
                 
         # Project listing
         #url(r'^rsr/projects/$','akvo.rsr.views.projectlist', name='project_list'),
