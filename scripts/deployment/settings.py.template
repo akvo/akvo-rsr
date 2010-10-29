@@ -8,12 +8,21 @@
 
 from settings_base import *
 
-DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'rsrdb' # Or path to database file if using sqlite3.
-DATABASE_USER = 'rsruser'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'u5r6vKSBwUxE4EMB'         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASES = {
+    'default': {
+        'NAME': 'rsrdb',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'rsruser',
+        'PASSWORD': 'u5r6vKSBwUxE4EMB',
+    },
+    'wordpress': {
+        'NAME': 'wpdb',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'wpuser',
+        'PASSWORD': 'X',
+        'HOST': 'localhost',
+    }
+}
 
 TEST_RUNNER = 'test_runner.run_tests'
 
@@ -82,3 +91,9 @@ MOLLIE_RETURN_URL = 'http://%s/rsr/donate/ideal/thanks/' % DOMAIN_NAME
 DECIMALS_DEBUG = False
 DECIMALS_DECIMAL_PLACES = 2
 
+# Front page wordpress news
+WORDPRESS_NEWS_CATEGORY = 3
+
+# Google Maps
+GOOGLE_MAPS_PROJECT_MARKER_ICON = os.path.join(MEDIA_URL, 'core/img/blueMarker.png')
+GOOGLE_MAPS_ORGANISATION_MARKER_ICON = os.path.join(MEDIA_URL, 'core/img/redMarker.png')
