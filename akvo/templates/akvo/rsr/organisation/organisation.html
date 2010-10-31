@@ -185,6 +185,7 @@
 		<div class="white_box">
 			<div class="space20">
 				<table class="org_statistics_table">	
+					{% if org_projects.euros.count %}
 					<tr>
 						<td colspan="2">
 							{{org_projects.euros.count}} 
@@ -205,6 +206,7 @@
 							{{o.funding.still_needed_euros|round|intcomma}}
 						</td>
 					</tr>
+          {% endif %}
 					{% if org_projects.dollars.count %}
 					<tr>
 						<td colspan="2">

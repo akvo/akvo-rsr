@@ -1204,8 +1204,8 @@ def orgdetail(request, org_id):
     if settings.PVW_RSR:
         org_projects = o.published_projects()
     else:
-        org_projects = o.published_projects()
-        org_projects = org_projects.status_not_cancelled().status_not_complete()
+        org_projects = o.published_projects().status_not_cancelled().status_not_complete()
+        #org_projects = org_projects.status_not_cancelled().status_not_complete()
     org_partners = o.partners().distinct()
     return {
         'org': o, 
