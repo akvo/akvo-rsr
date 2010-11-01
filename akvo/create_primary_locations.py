@@ -4,6 +4,7 @@
 # to be run in the akvo rsr root folder
 
 from __future__ import with_statement
+from django.contrib.contenttypes.models import ContentType
 from django.core.management import setup_environ
 import settings
 setup_environ(settings)
