@@ -1031,7 +1031,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
+    return {'p': p, 'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
 
 class UpdateForm(ModelForm):
 
