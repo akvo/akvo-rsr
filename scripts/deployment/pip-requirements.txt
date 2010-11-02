@@ -27,3 +27,4 @@ httplib2
 lxml
 python-memcached
 simplejson
+markdown
