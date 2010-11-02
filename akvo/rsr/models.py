@@ -1635,6 +1635,12 @@ else: #akvo-rsr
                 return self.publishingstatus.status == 'published'
             return False
         is_published.boolean = True
+        
+        def akvopedia_links(self):
+            return self.links.filter(kind='A')
+    
+        def external_links(self):
+            return self.links.filter(kind='E')
     
         #shortcuts to funding/budget data for a single project
         def funding_pledged(self, organisation=None):

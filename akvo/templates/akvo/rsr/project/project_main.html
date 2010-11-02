@@ -129,30 +129,42 @@
 				<div class="space20">
 					<h2>{% trans 'Related to this project' %}</h2>
 					<hr />
-					{% if not p.link_set.all %}
+					{% if not p.links.all %}
 						<p>{% trans 'Nothing related.' %}</p>
 					{% else %}
-						<h4>{% trans 'Akvopedia articles' %}</h4>
-						{% for link in p.link_set.all %}
-							{% ifequal link.kind 'A' %}
-					            <p><a href="{{link.url}}">{{link.caption}}</a></p>
-							{% endifequal %}
-							{% if forloop.last %}
-								<hr />
-							{% endif %}
-						{% endfor %}
-						<h4>{% trans 'External links' %}</h4>
-						<p class="small grey">
-							({% trans 'Will open in new window' %})
-						</p>
-						{% for link in p.link_set.all %}
-							{% ifequal link.kind 'E' %}
-					            <p><a href="{{link.url}}" target="_black">{{link.caption}}</a></p>
-							{% endifequal %}
-						{% endfor %}
-						<p class="small grey">
-							{% trans 'Akvo.org is not responsible for content of external links' %}
-						</p>
+            {% if p.akvopedia_links %}
+              <h4>
+                {% blocktrans count p.akvopedia_links.count as links %}
+                  Akvopedia article
+                {% plural %}
+                  Akvopedia articles
+                {% endblocktrans %}
+              </h4>
+              {% for link in p.akvopedia_links %}
+                <p><a href="{{link.url}}">{{link.caption}}</a></p>
+                {% if forloop.last and p.external_links %}
+                  <hr />
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {% if p.external_links %}
+              <h4>
+                {% blocktrans count p.external_links.count as links %}
+                  External link
+                {% plural %}
+                  External links
+                {% endblocktrans %}
+              </h4>
+              <p class="small grey">
+                ({% trans 'Will open in new window' %})
+              </p>
+              {% for link in p.external_links %}
+                <p><a href="{{link.url}}" target="_black">{{link.caption}}</a></p>
+              {% endfor %}
+              <p class="small grey">
+                {% trans 'Akvo.org is not responsible for content of external links' %}
+              </p>
+  					{% endif %}
 					{% endif %}
 				</div>
 			</div>
