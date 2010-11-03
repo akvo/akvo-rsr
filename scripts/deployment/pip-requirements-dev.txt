@@ -25,6 +25,6 @@ FeedParser
 PIL
 httplib2
 lxml
-markdown
+Markdown
 python-memcached
 simplejson

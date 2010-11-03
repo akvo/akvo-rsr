@@ -21,10 +21,10 @@ template_utils
 BeautifulSoup
 Cython
 FeedParser
+Markdown
 MySQL-python
 PIL
 httplib2
 lxml
 python-memcached
 simplejson
-markdown
