@@ -229,7 +229,7 @@ p#project_plan_summary {
 }
 
 .fundingbox-header {
-	background: transparent url(../../img/fundingbox.png) no-repeat 0 0;
+	background: transparent url(../../../img/fundingbox.png) no-repeat 0 0;
 	height:5px;
 	width:172px;
 	overflow:hidden;
@@ -237,7 +237,7 @@ p#project_plan_summary {
 }
 
 .fundingbox-footer {
-    background: transparent url(../../img/fundingbox.png) no-repeat -344px 0;
+    background: transparent url(../../../img/fundingbox.png) no-repeat -344px 0;
 	height:6px;
 	width:172px;
 	overflow:hidden;
@@ -245,7 +245,7 @@ p#project_plan_summary {
 }
 
 .fundingbox-content {
-	background: transparent url(../../img/fundingbox.png) repeat-y -172px 0;
+	background: transparent url(../../../img/fundingbox.png) repeat-y -172px 0;
 	width:172px;
 	margin:0px auto 0px auto;
 	overflow:hidden;
@@ -349,7 +349,7 @@ div.fullyfunded-text {
 
 a.fundingbox-donate-left-button {
 	color:#000 !important;
-	background: transparent url('../../img/donate-button.gif') no-repeat;
+	background: transparent url(../../../img/donate-button.gif) no-repeat;
 	display:block;
 	width:75px;
 	padding-top:5px;
@@ -371,21 +371,21 @@ a.fundingbox-donate-left-button {
 /* funding_box_wide */
 
 .fundingboxwide-header {
-	background: transparent url(../../img/fundingbox_wide.png) no-repeat 0 0;
+	background: transparent url(../../../img/fundingbox_wide.png) no-repeat 0 0;
 	height:5px;
 	width:260px;
 	overflow:hidden;
 	margin:5px auto 0px auto;
 }
 .fundingboxwide-footer {
-    background: transparent url(../../img/fundingbox_wide.png) no-repeat -520px 0;
+    background: transparent url(../../../img/fundingbox_wide.png) no-repeat -520px 0;
 	height:6px;
 	width:260px;
 	overflow:hidden;
 	margin:0px auto 5px auto;
 }
 .fundingboxwide-content {
-	background: transparent url(../../img/fundingbox_wide.png) repeat-y -260px 0;
+	background: transparent url(../../../img/fundingbox_wide.png) repeat-y -260px 0;
 	width:260px;
 	margin:0px auto 0px auto;
 	overflow:hidden;
@@ -421,7 +421,7 @@ div#donate_institutions {
 
 
 a.donate_button {
-	background:  transparent url(../../img/donate_button.gif) no-repeat 0px 0px;
+	background:  transparent url(../../../img/donate_button.gif) no-repeat 0px 0px;
 	color: #000 !important;
 	display: block;
 	font: normal 12px arial, sans-serif;
@@ -432,7 +432,7 @@ a.donate_button {
 	margin-top:3px;
 }
 a.donate_button:hover {
-	background:  transparent url(../../img/donate_button.gif) no-repeat 0px -23px;
+	background:  transparent url(../../../img/donate_button.gif) no-repeat 0px -23px;
 	color: #000 !important;
 	display: block;
 	font: normal 12px arial, sans-serif;
@@ -442,7 +442,7 @@ a.donate_button:hover {
 	outline: none;
 }
 a.donate_button:active {
-	background:  transparent url(../../img/donate_button.gif) no-repeat 0px -46px;
+	background:  transparent url(../../../img/donate_button.gif) no-repeat 0px -46px;
 	color: #fff !important;
 	display: block;
 	font: normal 12px arial, sans-serif;
