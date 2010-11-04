@@ -768,8 +768,11 @@ else:
             
             (_(u'Categories'), {
                 'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Please select all categories applicable to your project.</p>'),
-                'fields': (('category_water', 'category_sanitation', 'category_maintenance'), 
-                        ('category_training', 'category_education', 'category_product_development'), 'category_other', ('categories',)),
+                'fields': (
+                    #('category_water', 'category_sanitation', 'category_maintenance'), 
+                    #('category_training', 'category_education', 'category_product_development'), 'category_other',
+                    ('categories',)
+                ),
             }),
             
             (_(u'Location'), {
@@ -790,11 +793,11 @@ else:
                 'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
                 'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
             }),
-            (_(u'Project target benchmarks'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
-                'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water', 
-                'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
-            }),
+            #(_(u'Project target benchmarks'), {
+            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
+            #    'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water', 
+            #    'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
+            #}),
             (_(u'Project details'), {
                 'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Context, Plan Detail, Status Detail and Sustainability fields to tell people more about the project.</p>'),
                 'fields': ('context', 'project_plan_detail', 'current_status_detail', 'sustainability', ),

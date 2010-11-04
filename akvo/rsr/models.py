@@ -14,7 +14,7 @@ from decimal import Decimal
 from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, F
+from django.db.models import F, Max, Sum
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save
 from django.contrib import admin
@@ -43,7 +43,7 @@ from utils import (GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMI
                    GROUP_RSR_PARTNER_EDITORS)
 from utils import (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
                    PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE)
-from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum
+from utils import groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum, get_setting
 from signals import (change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, set_active_cms,
@@ -1183,13 +1183,13 @@ else: #akvo-rsr
                                         help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
                                     )
         #Project categories
-        category_water              = models.BooleanField(_('water'))
-        category_sanitation         = models.BooleanField(_('sanitation'))
-        category_maintenance        = models.BooleanField(_('maintenance'))
-        category_training           = models.BooleanField(_('training'))
-        category_education          = models.BooleanField(_('education'))
-        category_product_development= models.BooleanField(_('product development'))
-        category_other              = models.BooleanField(_('other'))
+        #category_water              = models.BooleanField(_('water'))
+        #category_sanitation         = models.BooleanField(_('sanitation'))
+        #category_maintenance        = models.BooleanField(_('maintenance'))
+        #category_training           = models.BooleanField(_('training'))
+        #category_education          = models.BooleanField(_('education'))
+        #category_product_development= models.BooleanField(_('product development'))
+        #category_other              = models.BooleanField(_('other'))
         
         #current_status_summary = models.TextField()
         project_plan_summary        = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
@@ -1208,14 +1208,14 @@ else: #akvo-rsr
         goal_4                      = models.CharField(_('goal 4'), blank=True, max_length=60)
         goal_5                      = models.CharField(_('goal 5'), blank=True, max_length=60)
         #Project target benchmarks
-        water_systems               = models.IntegerField(_('water systems'), default=0)
-        sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
-        hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
-        improved_water              = models.IntegerField(_('water: # people affected'), default=0)
-        improved_water_years        = models.IntegerField(_('for # years'), default=0)
-        improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
-        improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
-        trainees                    = models.IntegerField(_('# people trained'), default=0)
+        #water_systems               = models.IntegerField(_('water systems'), default=0)
+        #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
+        #hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
+        #improved_water              = models.IntegerField(_('water: # people affected'), default=0)
+        #improved_water_years        = models.IntegerField(_('for # years'), default=0)
+        #improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
+        #improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
+        #trainees                    = models.IntegerField(_('# people trained'), default=0)
         #mdg_count_water             = models.IntegerField(default=0)
         #mdg_count_sanitation        = models.IntegerField(default=0)
     
@@ -1522,23 +1522,52 @@ else: #akvo-rsr
             def total_pending_negative(self):
                 "individual donations still pending NEGATIVE (used by akvo at a glance)"
                 return -qs_column_sum(self.funding(), 'pending')
+
                 
+            def get_largest_value_sum(self, benchmarkname, cats):
+                return self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                    benchmarks__name__name=benchmarkname,
+                    benchmarks__category__name__in=cats
+                ).annotate( #annotate the greatest of the "benchmarkname" values into max_value
+                    max_value=Max('benchmarks__value')
+                ).aggregate( #sum max_value for all projects
+                    Sum('max_value')
+                )['max_value__sum'] or 0
+    
             def get_planned_water_calc(self):
                 "how many will get improved water"
-                return qs_column_sum(self.status_not_cancelled(), 'improved_water') - qs_column_sum(self.status_complete(), 'improved_water')
-    
+                return self.status_not_cancelled().get_largest_value_sum(
+                    get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+                    ['Water']
+                ) - self.status_complete().get_largest_value_sum(
+                    get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+                    ['Water']
+                )
+
             def get_planned_sanitation_calc(self):
                 "how many will get improved sanitation"
-                return qs_column_sum(self.status_not_cancelled(), 'improved_sanitation') - qs_column_sum(self.status_complete(), 'improved_sanitation')
-    
+                return self.status_not_cancelled().get_largest_value_sum(
+                    get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+                    ['Sanitation']
+                ) - self.status_complete().get_largest_value_sum(
+                    get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+                    ['Sanitation']
+                )
+
             def get_actual_water_calc(self):
                 "how many have gotten improved water"
-                return qs_column_sum(self.status_complete(), 'improved_water')
+                return self.status_complete().get_largest_value_sum(
+                    get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+                    ['Water']
+                )                
     
             def get_actual_sanitation_calc(self):
                 "how many have gotten improved sanitation"
-                return qs_column_sum(self.status_complete(), 'improved_sanitation')
-    
+                return self.status_complete().get_largest_value_sum(
+                    get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+                    ['Sanitation']
+                )                
+
             #the following 4 return an organisation queryset!
             def support_partners(self):
                 o = Organisation.objects.all()

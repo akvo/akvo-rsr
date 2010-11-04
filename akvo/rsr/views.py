@@ -9,7 +9,7 @@ from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
-from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs
+from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, get_setting
 
 from django import forms
 from django import http
@@ -101,12 +101,6 @@ def get_random_from_qs(qs, count):
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
-def get_setting(setting, default=None):
-    try:
-        return getattr(settings, setting)
-    except:
-        return default
-
 @render_to('rsr/index.html')
 def index(request, cms_id=None):
     '''
@@ -129,14 +123,19 @@ def index(request, cms_id=None):
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()
-        # projects where improved_water is the greater number compared to improved_sanitation
-        greater_improved_water = projects.filter(improved_water__gt=F('improved_sanitation'))
-        # the other way around
-        greater_improved_sanitation = projects.filter(improved_sanitation__gte=F('improved_water'))
-        #for each of the collections, aggregate the numbers and add them together
-        people_served = greater_improved_water.aggregate(Sum('improved_water'))['improved_water__sum'] + greater_improved_sanitation.aggregate(Sum('improved_sanitation'))['improved_sanitation__sum']
+
+        people_served = projects.get_largest_value_sum(get_setting('AFFECTED_BENCHMARKNAME', 'people affected'), get_setting('AFFECTED_CATEGORY_NAMES', ['Water', 'Sanitation']))
+        #people_served = projects.filter( #filter finds largest "people affected" value in benchmarks for Water and Sanitation categories
+        #    benchmarks__name__name=get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
+        #    benchmarks__category__name__in=get_setting('AFFECTED_CATEGORY_NAMES', ['Water', 'Sanitation'])
+        #).annotate( #annotate the greatest of the people affected values into max_value
+        #    max_value=Max('benchmarks__value')
+        #).aggregate( #sum max_value for all projects
+        #    Sum('max_value')
+        #)['max_value__sum'] # aggregate returns a dict        
         #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
+        
         #get three featured updates
         updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
 

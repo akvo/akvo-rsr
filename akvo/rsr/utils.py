@@ -197,3 +197,10 @@ def get_random_from_qs(qs, count):
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
+def get_setting(setting, default=None):
+    try:
+        return getattr(settings, setting)
+    except:
+        return default
+
+
