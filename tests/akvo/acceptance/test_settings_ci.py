@@ -16,9 +16,9 @@ SELENIUM_RC_PORT = 4444
 SUPERUSER_USERNAME = 'not_yet_allocated'
 SUPERUSER_PASSWORD = 'not_yet_allocated'
 
-SITE_UNDER_TEST = "http://new-look.akvo.org"
-RSR_API_PATH    = "http://new-look.akvo.org/rsr/api/"
-RSR_MEDIA_PATH  = "http://new-look.akvo.org/rsr/media/"
+SITE_UNDER_TEST = "http://test.akvo.org"
+RSR_API_PATH    = "http://test.akvo.org/rsr/api/"
+RSR_MEDIA_PATH  = "http://test.akvo.org/rsr/media/"
 
 PAGE_LOAD_TIMEOUT_IN_SECONDS = 180
 PAGE_LOAD_TIMEOUT = PAGE_LOAD_TIMEOUT_IN_SECONDS * 1000
