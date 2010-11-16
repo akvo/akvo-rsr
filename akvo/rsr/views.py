@@ -241,7 +241,7 @@ def project_list(request, slug='all', org_id=None):
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-        project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+        project_query = get_query(query_string, ['name', 'subtitle','locations__country__country_name','locations__city','locations__state',])
         projects = projects.filter(project_query)
     
     projects = projects.extra(
@@ -261,7 +261,7 @@ def project_list(request, slug='all', org_id=None):
     
     selected_continent = request.GET.get('continent', 'all')
     if selected_continent != 'all':
-        projects = projects.filter(country__continent=selected_continent)
+        projects = projects.filter(locations__country__continent=selected_continent)
         selected_continent = int(selected_continent)
     
     # Country dropdown
@@ -269,7 +269,7 @@ def project_list(request, slug='all', org_id=None):
     
     selected_country = request.GET.get('country', 'all')
     if selected_country != 'all':
-        projects = projects.filter(country__exact=selected_country)
+        projects = projects.filter(locations__country__exact=selected_country)
         selected_country = int(selected_country)
         selected_continent = Country.objects.get(id=selected_country).continent
         #selected_continent = Country.objects.filter(pk__exact=selected_country).continent
@@ -664,7 +664,7 @@ else:
         found_entries = None
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
-            org_query = get_query(query_string, ['name', 'long_name','country__country_name','city','state','contact_person','contact_email',])
+            org_query = get_query(query_string, ['name', 'long_name','locations__country__country_name','locations__city','locations__state','contact_person','contact_email',])
             orgs = orgs.filter(org_query)
         
         # Sort query
@@ -677,8 +677,7 @@ else:
         else:
             orgs = orgs.order_by('-%s' % order_by, 'name')
         
-        ORGS_PER_PAGE = 10
-        paginator = Paginator(orgs, ORGS_PER_PAGE)
+        paginator = Paginator(orgs, get_setting('ORGANISATION_LIST_COUNT', default=20))
         page = paginator.page(request.GET.get('page', 1))
         projs = Project.objects.published()
     

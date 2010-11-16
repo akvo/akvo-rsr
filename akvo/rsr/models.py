@@ -476,7 +476,7 @@ class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name                    = models.CharField(_('category name'), blank=True, max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
+    name                    = models.CharField(_('category name'), max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
     #icon                    = ImageWithThumbnailsField(
     #                            _('category icon'),
     #                            blank=True,
@@ -485,7 +485,7 @@ class Category(models.Model):
     #                            help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
     #                        )
     focus_area              = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
-    benchmarknames          = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), help_text=_('Select the benchmark names for the category.'), )
+    benchmarknames          = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_('Select the benchmark names for the category.'), )
     
     class Meta:
         verbose_name=_('category')

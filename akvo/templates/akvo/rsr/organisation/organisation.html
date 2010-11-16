@@ -18,7 +18,7 @@
 	<div class="white_box">
 		<div class="space20">
 			<div style="float:left; width:196px; height:280px">
-				<img src="{% thumbnail o.logo 100x75 %}" style="margin:15px;" />
+				{% org_logo o 100 75 'margin-bottom: 1.5em;' %}
 				<h3>{% trans 'Activities' %}</h3>
 				<p class="small">
 					{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}

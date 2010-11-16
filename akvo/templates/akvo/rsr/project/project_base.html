@@ -142,7 +142,7 @@
 				</div>
 				<div style="width:45%; float:right;">
 					<p style="margin:0;" class="tiny grey">
-						{% trans 'Embed a live link to this project to your web site our blog.' %}
+						{% trans 'Embed a live link to this project to your web site or blog.' %}
 					</p>
 				</div>
 				<div class="clear"></div>
@@ -174,15 +174,15 @@
 			<div class="white_box">
 				<div class="space10">
 					{% for partner in project.all_partners %}
-						<div style="float:left; width:110px;">
+						<div style="float:left; width:100px;">
 							<a href="{% url org_detail partner.id %}">
-								{% org_logo partner 98 60 'margin:0;' %}
+								{% org_logo partner 90 60 'margin:0;' %}
 							</a>
 						</div>
-						<div style="float:left; width:160px;">
+						<div style="float:left; width:170px;">
 							<p class="small grey" style="margin:0; padding:=;">
 								<a href="{% url org_detail partner.id %}">{{partner.name}}</a><br />
-								{{partner.city}}, {{partner.country}}
+								{{partner.primary_location.city}}, {{partner.primary_location.country}}
 							</p>
 						</div>
 						<div class="clear"></div>

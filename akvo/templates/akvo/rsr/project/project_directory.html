@@ -210,7 +210,7 @@
             <th>
               {% anchor name Name %}
             </th>
-            <th>{% anchor country Location %}</th>
+            <th>{% anchor locations__country Location %}</th>
             <th>
               {% anchor status Status %}
             </th>
@@ -243,8 +243,8 @@
                 </div>
               </td>
               <td>
-                <p class="td-text">{{project.country}}</p>
-                <p class="td-text">{{project.country.get_continent_display}}</p>
+                <p class="td-text">{{project.primary_location.country}}</p>
+                <p class="td-text">{{project.primary_location.country.get_continent_display}}</p>
               </td>
               <td>
                 <p class="td-text green">{{project.show_status}}</p>
