@@ -487,17 +487,17 @@ class Category(models.Model):
     focus_area              = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
     benchmarknames          = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), help_text=_('Select the benchmark names for the category.'), )
     
-    def category_benchmarks(self):
-        return "<br/>".join([b.name for b in self.benchmarknames.all()])
-    category_benchmarks.allow_tags = True
-
-    def __unicode__(self):
-        return '%s' % self.name
-
     class Meta:
         verbose_name=_('category')
         verbose_name_plural=_('categories')
         
+    def __unicode__(self):
+        return '%s (%s)' % (self.name, self.focus_areas())
+
+    def category_benchmarks_html(self):
+        return "<br/>".join([b.name for b in self.benchmarknames.all()])
+    category_benchmarks_html.allow_tags = True
+
     def focus_areas(self):
         return ', '.join([capfirst(area.name) for area in self.focus_area.all()])
     focus_areas.allow_tags = True
@@ -1767,7 +1767,7 @@ else: #akvo-rsr
         value       = models.IntegerField(_(u'benchmark value'), )
     
         def __unicode__(self):
-            return 'Focus area: %s, Category: %s, Benchmark: %d %s' % (self.category.focus_areas(), self.category, self.value, self.name, )
+            return _(u'Category: %s, Benchmark: %d %s') % (self.category, self.value, self.name, )
     
         class Meta:
             ordering=['category__name', 'name__order']

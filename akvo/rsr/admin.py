@@ -378,7 +378,7 @@ class BenchmarknameInline(admin.TabularInline):
 class CategoryAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Category')
     #inlines = (BenchmarknameInline,)
-    list_display = ('name', 'focus_areas_html', 'category_benchmarks', )
+    list_display = ('name', 'focus_areas_html', 'category_benchmarks_html', )
     #fieldsets = (
     #    ('', {
     #        'fields': (
@@ -769,7 +769,12 @@ else:
             }),
             
             (_(u'Categories'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Please select all categories applicable to your project.</p>'),
+                'description': _(u'''
+                    <p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">
+                        Please select all categories applicable to your project.
+                        (The Focus area(s) of each category is shown in paranthesis after the category name)
+                    </p>
+                '''),
                 'fields': (
                     #('category_water', 'category_sanitation', 'category_maintenance'), 
                     #('category_training', 'category_education', 'category_product_development'), 'category_other',
