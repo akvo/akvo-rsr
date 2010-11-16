@@ -168,19 +168,19 @@ class Organisation(models.Model):
                                     thumbnail={'size': (360,270)},
                                     help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
                                 )
-    city                        = models.CharField(_('city'), max_length=25)
-    state                       = models.CharField(_('state'), max_length=15)
-    country                     = models.ForeignKey(Country)
+    #city                        = models.CharField(_('city'), max_length=25)
+    #state                       = models.CharField(_('state'), max_length=15)
+    #country                     = models.ForeignKey(Country)
     url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
-    map                         = models.ImageField(
-                                    _('map'),
-                                    blank=True,
-                                    upload_to=image_path,
-                                    help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'),
-                                )
-    address_1                   = models.CharField(_('address 1'), blank=True, max_length=35, help_text=_('Street address (35 characters).'))
-    address_2                   = models.CharField(_('address 2'), blank=True, max_length=35, help_text=_('Street address 2 (35 characters).'))
-    postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
+    #map                         = models.ImageField(
+    #                                _('map'),
+    #                                blank=True,
+    #                                upload_to=image_path,
+    #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'),
+    #                            )
+    #address_1                   = models.CharField(_('address 1'), blank=True, max_length=35, help_text=_('Street address (35 characters).'))
+    #address_2                   = models.CharField(_('address 2'), blank=True, max_length=35, help_text=_('Street address 2 (35 characters).'))
+    #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
     phone                       = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
     mobile                      = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
     fax                         = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
@@ -297,47 +297,47 @@ class Organisation(models.Model):
             partners = ProjectPartner.objects.filter(partner=self)
             return list(set([partner.get_partner_type_display() for partner in partners]))
 
-    def has_water_projects(self):
-        if self.all_projects().filter(category_water__exact=True):
-            return True
-        else:
-            return False
-
-    def has_sanitation_projects(self):
-        if self.all_projects().filter(category_sanitation__exact=True):
-            return True
-        else:
-            return False
-    
-    def has_training_projects(self):
-        if self.all_projects().filter(category_training__exact=True):
-            return True
-        else:
-            return False
-            
-    def has_maintenance_projects(self):
-        if self.all_projects().filter(category_maintenance__exact=True):
-            return True
-        else:
-            return False
-    
-    def has_education_projects(self):
-        if self.all_projects().filter(category_education__exact=True):
-            return True
-        else:
-            return False
-
-    def has_product_development_projects(self):
-        if self.all_projects().filter(category_product_development__exact=True):
-            return True
-        else:
-            return False
-
-    def has_other_projects(self):
-        if self.all_projects().filter(category_other__exact=True):
-            return True
-        else:
-            return False
+    #def has_water_projects(self):
+    #    if self.all_projects().filter(category_water__exact=True):
+    #        return True
+    #    else:
+    #        return False
+    #
+    #def has_sanitation_projects(self):
+    #    if self.all_projects().filter(category_sanitation__exact=True):
+    #        return True
+    #    else:
+    #        return False
+    #
+    #def has_training_projects(self):
+    #    if self.all_projects().filter(category_training__exact=True):
+    #        return True
+    #    else:
+    #        return False
+    #        
+    #def has_maintenance_projects(self):
+    #    if self.all_projects().filter(category_maintenance__exact=True):
+    #        return True
+    #    else:
+    #        return False
+    #
+    #def has_education_projects(self):
+    #    if self.all_projects().filter(category_education__exact=True):
+    #        return True
+    #    else:
+    #        return False
+    #
+    #def has_product_development_projects(self):
+    #    if self.all_projects().filter(category_product_development__exact=True):
+    #        return True
+    #    else:
+    #        return False
+    #
+    #def has_other_projects(self):
+    #    if self.all_projects().filter(category_other__exact=True):
+    #        return True
+    #    else:
+    #        return False
     
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
@@ -445,7 +445,13 @@ class FocusArea(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('focus_area', (), {'slug': self.slug})
-
+        
+    def projects(self):
+        """
+        return all projects that "belong" to the FA through the Categories it links to
+        """
+        return Project.objects.filter(categories__in=self.categories.all())
+        
     def __unicode__(self):
         return self.name
 
@@ -691,9 +697,12 @@ if settings.PVW_RSR: #pvw-rsr
             def status_not_archived(self):
                 return self.exclude(status__exact='R')
 
-            def project_in_glance(self):
+            def active(self):
+                """
+                return projects that are publushed and not cancelled or archived
+                """
                 return self.published().status_not_cancelled().status_not_archived()
-
+          
             def euros(self):
                 return self.filter(currency='EUR')
     
@@ -936,16 +945,16 @@ if settings.PVW_RSR: #pvw-rsr
         def __unicode__(self):
             return _(u'Project %d: %s') % (self.id, self.name)
             
-        def project_type(self):
-            pt = ""
-            if self.category_water: pt += "W"
-            if self.category_sanitation: pt += "S"
-            if self.category_maintenance: pt += "M"
-            if self.category_training: pt += "T"
-            if self.category_education: pt += "E"
-            if self.category_product_development: pt += "P"
-            if self.category_other: pt += "O"
-            return pt
+        #def project_type(self):
+        #    pt = ""
+        #    if self.category_water: pt += "W"
+        #    if self.category_sanitation: pt += "S"
+        #    if self.category_maintenance: pt += "M"
+        #    if self.category_training: pt += "T"
+        #    if self.category_education: pt += "E"
+        #    if self.category_product_development: pt += "P"
+        #    if self.category_other: pt += "O"
+        #    return pt
         #project_type.allow_tags = True
         
         def show_status(self):
@@ -1124,7 +1133,7 @@ if settings.PVW_RSR: #pvw-rsr
 
         
 else: #akvo-rsr
-
+    
     class MiniCMS(models.Model):
         '''
         A model that holds a bunch of fields for editable text on the home page and the project listing page.
@@ -1153,8 +1162,8 @@ else: #akvo-rsr
                                 help_text=_('Ideally the image should be 645x363 pixels in size.')
                             )
         top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
-        map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
-        lower_height        = models.IntegerField(_(u'lower section height'), default=500, )
+        #map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
+        lower_height        = models.IntegerField(_(u'accordion height'), default=500, )
         active              = models.BooleanField(_(u'currently active home page'), default=False)
     
         def __unicode__(self):
@@ -1163,8 +1172,8 @@ else: #akvo-rsr
         class Meta:
             verbose_name        =_(u'MiniCMS')
             verbose_name_plural =_(u'MiniCMS')
-
-
+    
+    
     class Project(models.Model):
         def image_path(instance, file_name):
             return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
@@ -1173,15 +1182,15 @@ else: #akvo-rsr
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
         status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
         categories                  = models.ManyToManyField(Category, related_name='projects',)
-        city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        map                         = models.ImageField(
-                                        _('map'),
-                                        blank=True,
-                                        upload_to=image_path,
-                                        help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
-                                    )
+        #city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
+        #state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
+        #country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
+        #map                         = models.ImageField(
+        #                                _('map'),
+        #                                blank=True,
+        #                                upload_to=image_path,
+        #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
+        #                            )
         #Project categories
         #category_water              = models.BooleanField(_('water'))
         #category_sanitation         = models.BooleanField(_('sanitation'))
@@ -1219,11 +1228,11 @@ else: #akvo-rsr
         #mdg_count_water             = models.IntegerField(default=0)
         #mdg_count_sanitation        = models.IntegerField(default=0)
     
-        location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
-        location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
-        postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
+        #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
+        #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
+        #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
+        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
+        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
         current_status_detail       = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
         project_plan_detail         = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
         sustainability              = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
@@ -1300,7 +1309,7 @@ else: #akvo-rsr
                     primary=True)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
-
+    
             def published(self):
                 return self.filter(publishingstatus__status='published')
         
@@ -1327,14 +1336,17 @@ else: #akvo-rsr
             
             def status_not_cancelled(self):
                 return self.exclude(status__exact='L')
-
+    
             def status_archived(self):
                 return self.filter(status__exact='R')
-
+    
             def status_not_archived(self):
                 return self.exclude(status__exact='R')
-
-            def project_in_glance(self):
+    
+            def active(self):
+                """
+                return projects that are publushed and not cancelled or archived
+                """
                 return self.published().status_not_cancelled().status_not_archived()
           
             def euros(self):
@@ -1522,7 +1534,7 @@ else: #akvo-rsr
             def total_pending_negative(self):
                 "individual donations still pending NEGATIVE (used by akvo at a glance)"
                 return -qs_column_sum(self.funding(), 'pending')
-
+    
                 
             def get_largest_value_sum(self, benchmarkname, cats):
                 return self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
@@ -1543,7 +1555,7 @@ else: #akvo-rsr
                     get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
                     ['Water']
                 )
-
+    
             def get_planned_sanitation_calc(self):
                 "how many will get improved sanitation"
                 return self.status_not_cancelled().get_largest_value_sum(
@@ -1553,7 +1565,7 @@ else: #akvo-rsr
                     get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
                     ['Sanitation']
                 )
-
+    
             def get_actual_water_calc(self):
                 "how many have gotten improved water"
                 return self.status_complete().get_largest_value_sum(
@@ -1567,7 +1579,7 @@ else: #akvo-rsr
                     get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
                     ['Sanitation']
                 )                
-
+    
             #the following 4 return an organisation queryset!
             def support_partners(self):
                 o = Organisation.objects.all()
@@ -1618,16 +1630,8 @@ else: #akvo-rsr
         def __unicode__(self):
             return u'Project %d: %s' % (self.id,self.name)
             
-        def project_type(self):
-            pt = ""
-            if self.category_water: pt += "W"
-            if self.category_sanitation: pt += "S"
-            if self.category_maintenance: pt += "M"
-            if self.category_training: pt += "T"
-            if self.category_education: pt += "E"
-            if self.category_product_development: pt += "P"
-            if self.category_other: pt += "O"
-            return pt
+        #def project_type(self):
+        #    pass
         #project_type.allow_tags = True
         
         def show_status(self):
@@ -1716,7 +1720,7 @@ else: #akvo-rsr
         def focus_areas(self):
             return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
         focus_areas.allow_tags = True
-
+    
         def areas_and_categories(self):
             area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
             areas = []
@@ -1754,43 +1758,43 @@ else: #akvo-rsr
             )
             verbose_name=_('project')
             verbose_name_plural=_('projects')
-
-
-class Benchmark(models.Model):
-    project     = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
-    category    = models.ForeignKey(Category, verbose_name=_(u'category'), )
-    name        = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
-    value       = models.IntegerField(_(u'benchmark value'), )
-
-    def __unicode__(self):
-        return 'Focus area: %s, Category: %s, Benchmark: %d %s' % (self.category.focus_areas(), self.category, self.value, self.name, )
-
-    class Meta:
-        ordering=['category__name', 'name__order']
-        verbose_name=_('benchmark')
-        verbose_name_plural=_('benchmarks')
-
-
-class BudgetItem(models.Model):
-    ITEM_CHOICES = (
-        ('employment', _('employment')),
-        ('building', _('building')),
-        ('training', _('training')),
-        ('maintenance', _('maintenance')),
-        ('management', _('management')),
-        ('other', _('other')),
-    )
-    project             = models.ForeignKey(Project)
-    item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
-    amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
     
-    class Meta:
-        verbose_name=_('Budget item')
-        verbose_name_plural=_('Budget items')
-        unique_together     = ('project', 'item')
-        permissions = (
-            ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
+    
+    class Benchmark(models.Model):
+        project     = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
+        category    = models.ForeignKey(Category, verbose_name=_(u'category'), )
+        name        = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
+        value       = models.IntegerField(_(u'benchmark value'), )
+    
+        def __unicode__(self):
+            return 'Focus area: %s, Category: %s, Benchmark: %d %s' % (self.category.focus_areas(), self.category, self.value, self.name, )
+    
+        class Meta:
+            ordering=['category__name', 'name__order']
+            verbose_name=_('benchmark')
+            verbose_name_plural=_('benchmarks')
+    
+    
+    class BudgetItem(models.Model):
+        ITEM_CHOICES = (
+            ('employment', _('employment')),
+            ('building', _('building')),
+            ('training', _('training')),
+            ('maintenance', _('maintenance')),
+            ('management', _('management')),
+            ('other', _('other')),
         )
+        project             = models.ForeignKey(Project)
+        item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
+        amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
+        
+        class Meta:
+            verbose_name=_('Budget item')
+            verbose_name_plural=_('Budget items')
+            unique_together     = ('project', 'item')
+            permissions = (
+                ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
+            )
 
 class PublishingStatus(models.Model):
     """
@@ -1949,6 +1953,19 @@ class UserProfile(models.Model):
     
     def organisation_name(self):
         return self.organisation.name
+    
+    def updates(self):
+        """
+        return all updates created by the user
+        """
+        return ProjectUpdate.objects.filter(user=self.user).order_by('-time')
+
+    def latest_update_date(self):
+        updates = self.updates()
+        if updates:
+            return updates[0].time
+        else:
+            return None
     
     #methods that insteract with the User model
     def get_is_active(self):

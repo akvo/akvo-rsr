@@ -106,11 +106,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					<p class="grey" style="margin-top:4px;margin-bottom:4px;">{{project.subtitle}}</p>
 					
 					<div class="category-icons">
-						{% comment %}
-						<div style="height:55px">
-							{% category_icons project %}	
-						</div>
-						{% endcomment %}
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
 						<span style="display:none;">
     		        	    {% cache 10 project.view_count %}

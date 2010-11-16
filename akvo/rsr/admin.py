@@ -79,8 +79,10 @@ class OrganisationAdmin(admin.ModelAdmin):
     else:
         fieldsets = (
             (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
-            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
+            #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
             (_(u'About the organisation'), {'fields': ('description', )}),
         )    
 
@@ -775,15 +777,15 @@ else:
                 ),
             }),
             
-            (_(u'Location'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
-                'fields': ('city', 'state', 'country',)
-            }),
+            #(_(u'Location'), {
+            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
+            #    'fields': ('city', 'state', 'country',)
+            #}),
             
-            (_(u'Location extra'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
-                'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',),
-            }),
+            #(_(u'Location extra'), {
+            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
+            #    'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',),
+            #}),
             
             (_(u'Project info'), {
                 'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The summary should <em>briefly</em> explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished.</p>'),
@@ -811,8 +813,9 @@ else:
                 'fields': ('currency', 'date_request_posted', 'date_complete', ),
             }),        
         )
-        list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
-                        'city', 'project_plan_summary', 'show_current_image', 'is_published',)
+        #list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
+        #                'city', 'project_plan_summary', 'show_current_image', 'is_published',)
+        list_display = ('id', 'name', 'status', 'project_plan_summary', 'show_current_image', 'is_published',)
         list_filter = ('currency',)
         
         #form = ProjectAdminModelForm
@@ -1068,11 +1071,12 @@ class UserProfileAdminForm(forms.ModelForm):
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor',)
+    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
+    search_fields = ('user_name', 'organisation',)
     list_filter  = ('organisation', )
+    ordering = ('user__username',)
     form = UserProfileAdminForm
-
-
+        
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(UserProfileAdmin, self).get_actions(request)

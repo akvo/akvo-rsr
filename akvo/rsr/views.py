@@ -125,14 +125,6 @@ def index(request, cms_id=None):
         orgs = Organisation.objects.all()
 
         people_served = projects.get_largest_value_sum(get_setting('AFFECTED_BENCHMARKNAME', 'people affected'), get_setting('AFFECTED_CATEGORY_NAMES', ['Water', 'Sanitation']))
-        #people_served = projects.filter( #filter finds largest "people affected" value in benchmarks for Water and Sanitation categories
-        #    benchmarks__name__name=get_setting('AFFECTED_BENCHMARKNAME', 'people affected'),
-        #    benchmarks__category__name__in=get_setting('AFFECTED_CATEGORY_NAMES', ['Water', 'Sanitation'])
-        #).annotate( #annotate the greatest of the people affected values into max_value
-        #    max_value=Max('benchmarks__value')
-        #).aggregate( #sum max_value for all projects
-        #    Sum('max_value')
-        #)['max_value__sum'] # aggregate returns a dict        
         #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
         

@@ -17,20 +17,6 @@ def funding_bar(project):
     '''
     return {'p': project}
 
-@register.inclusion_tag('inclusion_tags/category_icons.html', takes_context=True)
-def category_icons(context, project):
-    '''
-    show icons for the categories the project entails
-    '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
-
-@register.inclusion_tag('inclusion_tags/category_icons_org.html', takes_context=True)
-def category_icons_org(context, organisation):
-    '''
-    show icons for the categories the project entails
-    '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'o': organisation}
-
 @register.inclusion_tag('inclusion_tags/submit_button.html')
 def submit_button(caption, css_class):
     '''
