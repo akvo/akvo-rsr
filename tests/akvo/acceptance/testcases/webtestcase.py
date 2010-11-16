@@ -33,23 +33,23 @@ class AkvoWebTestCase(SeleniumTestCase):
 
     def open_partners_page(self):
         self.site_navigator.open_partners_page()
-        self.verify_location_and_cms_page_title(partners_page(), "Strategic partners")
+        self.verify_location_and_cms_page_title(partners_page(), "Akvo strategic partners")
 
     def open_akvopedia_page(self):
         self.site_navigator.open_akvopedia_page()
-        self.verify_location_and_page_title(akvopedia_page(), "Akvopedia")
+        self.verify_location_and_page_title(akvopedia_page(), "Main Page - Akvopedia")
 
     def open_about_page(self):
         self.site_navigator.open_about_page()
-        self.verify_location_and_cms_page_title(about_page(), "How you can help")
+        self.verify_location_and_cms_page_title(about_page(), "About us")
 
     def open_blog_page(self):
         self.site_navigator.open_blog_page()
         self.verify_location_and_page_title(blog_page(), "Akvo blog")
 
     def verify_location_and_cms_page_title(self, expected_location, expected_title_prefix):
-        self.verify_location_and_page_title(expected_location, "%s | Akvo - the open source for water and sanitation" % expected_title_prefix)
+        self.verify_location_and_page_title(expected_location, "%s | Akvo - See it happen" % expected_title_prefix)
 
     def verify_location_and_page_title(self, expected_location, expected_title):
         self.assert_location_contains(expected_location)
-        self.assert_title_is(expected_title)
+        self.assert_title_starts_with(expected_title)

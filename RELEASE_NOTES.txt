@@ -1,10 +1,211 @@
-RELEASE_NOTES.txt, v0.9.19
-last changed: 4 Oct 2010, bethw
+RELEASE_NOTES.txt, v1.0
 
-Akvo RSR (Really Simple Reporting) is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
+Last changed: 4 Nov 2010, tbp
 
+Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
+
+Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
+
+Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+
+Akvo RSR v 1.0.0 release notes
+-------------------------------------------
+4 Nov 2010, (Code name: One Oh) tbp
+
+This is the first major release of Akvo RSR since we publicly launched 0.9 on the 8th January 2009. This release is an overhaul of several parts of the system.
+
+Overview
+------------
+We have created a completely new design for Akvo RSR which is visually more attractive and a much better design, and we think it is easier to use and understand. This means we have created a full new set of templates for Akvo RSR. As usual, we have integrated the new template system with Mediawiki, Wordpress and Drupal.
+
+We have added the ability to add new types of projects to the system. Previously you could only add water and sanitation projects. Now we have a dynamic system where projects belong to something called focus areas, and they are associated with new categories and measure new benchmarks, all which are created dynamically from the administration function. For Akvo.org, Focus areas describe areas in which development aid tries to improve the world around us; Categories describe the type of improvements to be made and Benchmarks indicate the manner in which progress will be measured.
+
+There is a new nearly completely data and forms driven home page for the system, which means that you don’t have to modify the home page template to add new content.
+
+We made a mapping system integration for projects and organisations, where the first version uses Google Maps.
+
+New features
+------------
+
+### New design and templates
+The new Akvo RSR design touches every page, except for the administration pages. Here is an overview of some of the changes this includes:
+
+- the template system is more modular, and easier to modify and extend
+- HTML “snippets” caching is used extensively in the new templates
+- breadcrumb trails are available for each page
+- new CSS infrastructure
+- a mini-sitemap is in the footer of each page
+
+### Project pages
+
+Project pages have been re-designed to present a better overview of the project.  New features include:
+
+- picture gallery of project and update pictures
+- interactive map and latitude/longitude coordinate display
+- page view counter
+- new Latest update display
+
+### Update pages
+
+Updates now appear both all together on a listing page and each on their own individual pages, much like a tweet in Twitter has its own unique page. This gives each Update a unique URL.
+
+### Organisation pages
+
+Organisation pages have been improved with the following new features:
+
+- link to a searchable project list displaying all projects related to an organisation
+- interactive map of organisation’s location
+
+### Data and forms driven home page
+
+In an Akvo RSR system we expect RSR to drive the home page of the site. There may be a touch of megalomania in this, but it has made it significantly easier to integrate the key features of Akvo RSR to the front page. We have been dabbling with the idea of letting another CMS drive the front page, but we are not there yet. So as a compromise we have created a feature called MiniCMS, which drives some of the content on the front page, more about that below.
+
+The areas which are not powered by MiniCMS are pulling content from Akvo RSR or Wordpress. These are:
+
+- Most recent project updates: shows the latest project updates, with picture
+- Right now in Akvo.org...: shows stats from the projects in the Akvo RSR system
+- the global Google Map, showing project locations from data in Akvo RSR.
+- Project focus areas: takes Focus area content from Akvo RSR
+- Recent blog posts: displays the last two blog posts from Wordpress
+- Latest news: shows content from Wordpress marked with the category News
+
+The Right now in Akvo.org... data is self-explanatory, except perhaps for People served. This is the number of people who benefit from projects in Akvo RSR (people getting water and/or sanitation for example), and includes “People affected.” If a project has different numbers for water and sanitation benchmarks, the higher number is used (not everyone gets all services, but all get at least one). People served will also pick up the new Benchmarks data from the new Focus areas.
+
+With the multiple database support which was introduced in Django 1.2 we can now fetch the blog post data for the homepage directly from the Wordpress database, improving the performance of the home page.
+
+### Home page CMS, or MiniCMS.
+
+The MiniCMS allows you to populate the “Feature box” with a picture and HTML. It has some features like scrims and layout tools specifically for the box. The “Top right box” also takes HTML.
+
+The “Lower section height” controls the height of the Focus area accordion; how high it should be depends on how many Focus areas there are.
+
+The “Map box text” is already deprecated and will be removed in a later release.
+
+We are considering whether to add capabilities to the MiniCMS or whether to integrate with a separate CMS like Django CMS, but the jury is out on that at the moment.
+
+### Maps
+
+We have created an integration with a map system, at the moment using Google Maps. There are two global maps, one showing all projects and the other all organisations in Akvo RSR. There are also location maps for each organisation page and each project page. We are expect to do a lot more with maps in the future.
+
+We have created new location models for this, which over time will take over from the old address data fields. We anticipate doing this in the next couple of releases. We did want this to be a two-step process to speed up implementation, allowing us to reschedule some tricky testing that otherwise would need to be done.
+
+### Classification system and benchmarks
+
+Akvo RSR has been expanded to work with projects beyond the water and sanitation sector it was originally designed to serve. That gave us an opportunity to change the way you look for projects in the system. First we created a flexible classification system for projects, and then we started creating ways of searching for projects based on that classification.
+
+The classification system has three interlocking parts.
+
+- Focus areas
+- Categories
+- Benchmarks
+
+Each project belongs to something called a Focus area, which could be Water and sanitation, or Economic Development, or Healthcare, for example. Each Focus area can be associated with one or more Categories, such as Water, Training or Maintenance. Each Category has Benchmarks (aka Key Performance Indicators) associated with it , such as Number of people trained, Water systems installed or Hospitals built.
+
+Focus areas, Categories and Benchmarks can all be created in the administration user interface in Akvo RSR by a Superuser administrator, thereby enabling us to add any type of project to the system without having to do any customisation. 
+
+For a detailed technical description of the new [classification syste](http://www.akvo.org/labs/index.php?title=Akvo_RSR_project_classification_system).
+
+### Filters and sorting for listing pages
+
+Project and organisation listings now have filters which can be used to search projects or organisations. 
+
+- [Listing of all projects](http://www.akvo.org/rsr/projects/all/)
+- [Listing of all organisations](http://www.akvo.org/rsr/organisations/all/)
+
+The projects listing can filter on continent, country and organisation, through pull-down menus. You can also search for keywords in the project title and subtitle.
+
+The organisation listing can be searched for short name, long name, or keywords in either.
+
+Both lists allow sorting on a number of columns as well. The fields which can be sorted have a link on the column name;  when sorted this way the project listing displays the direction of the sort.
+
+### Page view counter
+
+A number of pages now have page view counters implemented. The counters were introduced in 0.9.18, but haven’t been displayed until now. The counters record how many visits have been made to a particular project. A display of the project page, funding details page or widget counts as a view of the project.  Individual Update pages also have a view counter and are counted separately.
+
+### Widgets available for all
+
+All widgets except for the Project list widget can now be accessed by any user. The Project list widget requires you have a Plus account. The three new widgets accessible for any users are:
+
+- Project widget with updates (202 pixels wide by 900 pixels high)
+- Project with Donation Link (202 pixels wide by 570 pixels high)
+- Small project (170 pixels wide by 312 pixels high)
+
+### Akvo at a glance
+
+The Akvo at a glance data, which was shown previously on the home page, has been replaced by the Right now in Akvo.org... . The Akvo at a glance data has been [moved to this place](http://www.akvo.org/rsr/data/overview)  This is a temporary holding page for this information and we will be extending the data view pages in the future.
+
+Minor features
+-------------------
+
+### Add project ID to Project __unicode__ method.
+
+The __unicode__ method for Project instances should show the Project's ID as well as its name so that individual projects can be easily identified from other objects' admin pages.
+[Pivotal story.](https://www.pivotaltracker.com/story/show/5632494)
+
+Bug fixes
+------------
+
+### When you sign out of Akvo RSR in Safari you still look like you are signed in
+Fixed. [Lighthouse ticket 12](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/12)
+
+### Completed projects do not show on the organisation page in Akvo RSR
+Fixed with a new project listing for organisations. [Lighthouse ticket 11](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/11)
+
+### Cancelled project widgets have text "Funding" at bottom.
+Widgets for Cancelled projects have gray text "Funding" at bottom below separator where donation box was. This doesn't really seem to serve a purpose; think we can get rid of it entirely. Fixed. [Pivotal story.](https://www.pivotaltracker.com/story/show/5425890)
+
+### Widgets for projects w/ status Archived should probably not show donation box
+Donation boxes show up on these widgets, probably don't want donations coming in to them. Cancelled project widgets also need examining.
+Fixed. [Lighthouse ticket 74](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/74)
+
+### Widget machinery pgs for Cancelled projects projects
+Go to Cancelled project page, click Get a widget (not signed in, FWIW). Some of the widgets on machinery page display Donate box, some do not; none should display it, as those widgets do not either.
+Fixed.  [Pivotal story.](https://www.pivotaltracker.com/story/show/5426105)
+
+### Using back button when selecting widget gives 500 error
+Fixed. [Lighthouse ticket 76](https://akvo.lighthouseapp.com/projects/46515/tickets/76)
+
+Known issues
+------------------
+As this is a major new release we have a number of known issues, and we’ll be working on them soon. We released when we didn’t have any more major known bugs, but there are always improvements that can be made. Some of our planned improvements are listed below. You can enter your own suggestions by starting a discussion at: [http://help.akvo.org/](http://help.akvo.org)
+
+### MiniCMS
+The new home page MiniCMS tool will have the following improvements:
+
+- Map box text isn’t used and will be removed
+- Lower section height renamed to Focus areas accordion height
+- Name field for instances in the MiniCMS (currently no way to name, although you can have more than one)
+- Help text is incomplete
+
+### Maps
+
+We are migrating the location data from the old location models to the new location models in a two-step process. This means old location data models and fields will remain in the Akvo RSR admin pages until we have finished the transition.
+
+We want to create an easy to use longitude/latitude selector for the location. For now you have to enter the decimal longitude and latitude.
+
+### Organisation page
+
+People who get, box is only showing water and sanitation Benchmarks. This needs to be extended to show generic benchmarks.
+
+### Admin page for organisation
+
+We have duplicate of fields for organisation location as we are moving from the old text fields to the new location model. The old fields will be deprecated (removed) when we are happy all data has migrated and that we have removed all references to the old fields in the templates.
+
+### Admin page for project
+
+We have duplication of fields for Benchmarks, Categories and project location, as we are moving from the old fields to new models. The old fields will be deprecated (removed) when we are happy all data has migrated and that we have removed references to the old models in the templates.
+
+### Old templates
+
+We are still in a process of removing old templates from the system. A lot has changed and there are a lot of old files which will be removed in a forthcoming release.
+
+### Wordpress posts on the home page
+
+There are some issues with certain characters in blog posts on the home page. The character set conversions do not happen as they should. We dug quite deep into this but we have to come back to it later.
+
+---
 
 Akvo RSR v 0.9.19 release notes
 -------------------------------------------
@@ -21,7 +222,7 @@ A new project status has been added, Archived. Projects set to Archived will no 
 ### Django 1.2.3
 Akvo RSR now runs on Django version 1.2.3. The security fix in 1.2.2 caused some problems with which have been remedied in this release. Additionally, to run Akvo RSR, you will want get zzgvh patch here:
 
-http://github.com/zzgvh/django/tree/1.2.1_patched
+http://github.com/zzgvh/django/tree/1.2.1_patched  
 
 which fixes Django ticket 10046. http://code.djangoproject.com/ticket/10046
 

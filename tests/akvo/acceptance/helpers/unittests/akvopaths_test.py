@@ -38,7 +38,7 @@ class AkvoPathsTest(TestCase):
 
     def test_can_get_about_page_path(self):
         """helpers.unittests.AkvoPathsTest  Can get path for About page"""
-        self.verify_path("/web/get_involved", about_page())
+        self.verify_path("/web/about", about_page())
 
     def test_can_get_blog_page_path(self):
         """helpers.unittests.AkvoPathsTest  Can get path for Blog page"""

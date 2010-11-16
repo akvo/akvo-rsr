@@ -21,7 +21,7 @@ def akvopedia_page():
     return "/wiki"
 
 def about_page():
-    return cms_path("get_involved")
+    return cms_path("about")
 
 def blog_page():
     return "/blog"
