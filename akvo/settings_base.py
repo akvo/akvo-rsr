@@ -81,9 +81,9 @@ LANGUAGE_CODE = 'en-us'
 gettext = lambda s: s
 
 LANGUAGES = (
-    ('de', gettext('German')),
+    #('de', gettext('German')),
     ('en', gettext('English')),
-    ('nl', gettext('Dutch')),
+    #('nl', gettext('Dutch')),
     #('es', gettext('Spanish')),
     #('fr', gettext('French')),
     #('sv', gettext('Swedish')),
