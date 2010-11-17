@@ -129,7 +129,7 @@ def index(request, cms_id=None):
         people_served = int(people_served / 1000) * 1000
         
         #get three featured updates
-        updates = ProjectUpdate.objects.all().exclude(photo__exact='').order_by('-time')[:3]
+        updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
 
     context_dict = {
         #'updates': updates,
