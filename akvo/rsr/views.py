@@ -124,7 +124,7 @@ def index(request, cms_id=None):
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()
 
-        people_served = projects.get_largest_value_sum(get_setting('AFFECTED_BENCHMARKNAME', 'people affected'), get_setting('AFFECTED_CATEGORY_NAMES', ['Water', 'Sanitation']))
+        people_served = projects.get_largest_value_sum(get_setting('AFFECTED_BENCHMARKNAME', 'people affected'))
         #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
         

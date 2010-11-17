@@ -1542,15 +1542,21 @@ else: #akvo-rsr
                 return -qs_column_sum(self.funding(), 'pending')
     
                 
-            def get_largest_value_sum(self, benchmarkname, cats):
-                return self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
-                    benchmarks__name__name=benchmarkname,
-                    benchmarks__category__name__in=cats
-                ).annotate( #annotate the greatest of the "benchmarkname" values into max_value
+            def get_largest_value_sum(self, benchmarkname, cats=None):
+                if cats:
+                    result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                        benchmarks__name__name=benchmarkname,
+                        benchmarks__category__name__in=cats
+                    )
+                else:
+                    result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for all categories
+                        benchmarks__name__name=benchmarkname
+                    )
+                return result.annotate( #annotate the greatest of the "benchmarkname" values into max_value
                     max_value=Max('benchmarks__value')
                 ).aggregate( #sum max_value for all projects
                     Sum('max_value')
-                )['max_value__sum'] or 0
+                )['max_value__sum'] or 0 #we want to return 0 instead of an empty QS
     
             def get_planned_water_calc(self):
                 "how many will get improved water"
