@@ -1140,7 +1140,8 @@ else: #akvo-rsr
         '''
         def image_path(instance, file_name):
             return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
-            
+        
+        label               = models.CharField(_(u'label'), max_length=50, help_text=_(u'The label is used for identification only'), )
         feature_box         = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
             '''Enter the text that will appear in the feature box of the home page. (350 characters)
             <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
@@ -1148,11 +1149,16 @@ else: #akvo-rsr
             <code>quarter, half, three_quarters and full</code><br/>
             to specify the width of the text and 
             <code>bottom and right</code><br/> if a position other than top left is desired.</p>
-            <p>The inner &lt;div&gt; should have the class<br/>
-            <code>text_bg</code><br/> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
-            The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
+            <p>
+                The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
+                The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
             </p>
-            <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; generates white text.</p>
+            <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.</p>
+            <p>
+                The following classes can be used to give text "Akvo colors":
+                <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
+            </p>
+            <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>
             '''
         ))
         feature_image       = models.ImageField(
@@ -1167,7 +1173,7 @@ else: #akvo-rsr
         active              = models.BooleanField(_(u'currently active home page'), default=False)
     
         def __unicode__(self):
-            return self.top_right_box[:50]
+            return self.label
         
         class Meta:
             verbose_name        =_(u'MiniCMS')
