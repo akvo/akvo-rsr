@@ -161,12 +161,12 @@ urlpatterns += patterns('',
 )    
         
 
-if settings.LIVE_EARTH_ENABLED:
+if getattr(settings, 'LIVE_EARTH_ENABLED', False):
     urlpatterns += patterns('',
         url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
     )
 
-if settings.WALKING_FOR_WATER_ENABLED:
+if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
     urlpatterns += patterns('',
         url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
     )

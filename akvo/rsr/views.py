@@ -9,7 +9,7 @@ from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
-from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, get_setting
+from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs
 
 from django import forms
 from django import http
@@ -118,13 +118,13 @@ def index(request, cms_id=None):
         except:
             cms = MiniCMS.objects.get(pk=1)
 
-    news_post, blog_posts = wordpress_get_lastest_posts('wordpress', get_setting('NEWS_CATEGORY_ID', 3), get_setting('INDEX_ARTICLE_COUNT', 2))
+    news_post, blog_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'INDEX_ARTICLE_COUNT', 2))
     
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()
 
-        people_served = projects.get_largest_value_sum(get_setting('AFFECTED_BENCHMARKNAME', 'people affected'))
+        people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
         #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
         
@@ -135,14 +135,8 @@ def index(request, cms_id=None):
         #'updates': updates,
         'focus_areas': focus_areas,
         'cms': cms,
-        'version': get_setting('URL_VALIDATOR_USER_AGENT', default='Django'),
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
-        #'live_earth_enabled': get_setting('LIVE_EARTH_ENABLED', default=False),
-        #'live_earth': live_earth,
-        #'le_blog_category': le_blog_category,
-        #'walking_for_water_enabled': get_setting('WALKING_FOR_WATER_ENABLED', default=False),
-        #'walking_for_water': walking_for_water,
-        #'wfw_blog_category': wfw_blog_category,
+        'version': getattr(settings, 'URL_VALIDATOR_USER_AGENT', 'Django'),
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         'site_section': 'index',
         'blog_posts': blog_posts,
         'news_post': news_post,
@@ -399,7 +393,7 @@ else:
         stats: the aggregate projects data
         page: paginator
         '''
-        org = get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID)
+        org = get_object_or_404(Organisation, pk=getattr(settings, 'LIVE_EARTH_ID', 0))
         projects = org.published_projects().funding()
         page = project_list_data(request, projects)
         active_projects = projects.status_not_cancelled().status_not_archived()
@@ -407,7 +401,7 @@ else:
             'page': page,
             'org': org,
             'active_projects': active_projects,
-            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         }
     
     @render_to('rsr/organisation/landing_pages/wfw.html')
@@ -419,7 +413,7 @@ else:
         stats: the aggregate projects data                                             
         page: paginator                                                                
         '''
-        org = get_object_or_404(Organisation, pk=settings.WALKING_FOR_WATER_ID)
+        org = get_object_or_404(Organisation, pk=getattr(settings, 'WALKING_FOR_WATER_ID', 0))
         projects = org.published_projects().funding()
         page = project_list_data(request, projects)
         active_projects = projects.status_not_cancelled().status_not_archived()
@@ -427,7 +421,7 @@ else:
             'page': page,
             'org': org,
             'active_projects': active_projects,
-            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         }
     
     # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
@@ -541,7 +535,7 @@ else:
         
         return {
             'site_section': 'projects',
-            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
             'page': page,
             'query_string': query_string,
             'request_get': request.GET,
@@ -619,7 +613,7 @@ else:
         
         return {
             'site_section': 'projects',
-            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
             'page': page,
             'query_string': query_string,
             'request_get': request.GET,
@@ -677,13 +671,13 @@ else:
         else:
             orgs = orgs.order_by('-%s' % order_by, 'name')
         
-        paginator = Paginator(orgs, get_setting('ORGANISATION_LIST_COUNT', default=20))
+        paginator = Paginator(orgs, getattr(settings, 'ORGANISATION_LIST_COUNT', 20))
         page = paginator.page(request.GET.get('page', 1))
         projs = Project.objects.published()
     
         return {
             'site_section': 'index',
-            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
             'lang': get_language(),
             'page': page,
             'projs': projs,
@@ -742,7 +736,7 @@ def partners_widget(request, org_type='all'):
         'order_by': order_by,
         'sort': sort_order,
         'mode': mode,
-        'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
     }
 
 
@@ -769,7 +763,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = settings.LOGIN_REDIRECT_URL
+                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/rsr/')
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
@@ -895,8 +889,8 @@ def activate(request, activation_key,
         context[key] = callable(value) and value() or value
     return render_to_response(template_name,
                               { 'account': account,
-                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                'support_email': settings.SUPPORT_EMAIL,
+                                'expiration_days': getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7),
+                                'support_email': getattr(settings, 'SUPPORT_EMAIL', 'gabriel@akvo.org'),
                                 },
                               context_instance=context)    
     
@@ -1442,7 +1436,7 @@ def project_list_widget(request, template='project-list', org_id=0):
             'request_get': request.GET, 
             'site': site,
             'lang': get_language(),
-            'RSR_CACHE_SECONDS': get_setting('RSR_CACHE_SECONDS', default=300),
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         },
         context_instance=RequestContext(request))
 
@@ -1458,7 +1452,7 @@ def setup_donation(request, p):
 def donate(request, p, engine, has_sponsor_banner=False):
     if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
-    if get_object_or_404(Organisation, pk=settings.LIVE_EARTH_ID) in p.sponsor_partners():
+    if get_object_or_404(Organisation, pk=getattr(settings, 'LIVE_EARTH_ID', 0)) in p.sponsor_partners():
         has_sponsor_banner = True
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
@@ -1475,7 +1469,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                 del request.session['original_http_referer']
             else:
                 invoice.http_referer = request.META.get('HTTP_REFERER', None)
-            if settings.DONATION_TEST:
+            if getattr(settings, 'DONATION_TEST', False):
                 invoice.test = True
             if engine == 'ideal':
                 invoice.bank = cd['bank']
@@ -1484,8 +1478,9 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'bank_id': invoice.bank,
                     'partnerid': invoice.gateway,
                     'description': u'Donation: Akvo Project %d' % int(p.id),
-                    'reporturl': settings.MOLLIE_REPORT_URL,
-                    'returnurl': settings.MOLLIE_RETURN_URL}
+                    'reporturl': getattr(settings, 'MOLLIE_REPORT_URL', 'http://www.akvo.org/rsr/mollie/report/'),
+                    'returnurl': getattr(settings, 'MOLLIE_RETURN_URL', 'http://www.akvo.org/rsr/donate/ideal/thanks/'),
+                }
                 try:
                     mollie_response = query_mollie(mollie_dict, 'fetch')
                     invoice.transaction_id = mollie_response['transaction_id']
@@ -1494,12 +1489,14 @@ def donate(request, p, engine, has_sponsor_banner=False):
                 except:
                     return redirect('donate_500')
                 return render_to_response('rsr/project/donate/donate_step3.html',
-                    {'invoice': invoice,
-                     'p': p,
-                     'payment_engine': engine,
-                     'mollie_order_url': order_url,
-                     'has_sponsor_banner': has_sponsor_banner,
-                     'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
+                    {
+                        'invoice': invoice,
+                        'p': p,
+                        'payment_engine': engine,
+                        'mollie_order_url': order_url,
+                        'has_sponsor_banner': has_sponsor_banner,
+                        'live_earth_enabled': getattr(settings, 'LIVE_EARTH_ENABLED', False)
+                    },
                     context_instance=RequestContext(request))
             elif engine == 'paypal':
                 invoice.save()
@@ -1508,15 +1505,19 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'currency_code': invoice.currency,
                     'business': invoice.gateway,
                     'amount': invoice.amount,
-                    'item_name': u'%s: Project %d - %s' % (settings.PAYPAL_PRODUCT_DESCRIPTION_PREFIX,
-                        int(invoice.project.id), invoice.project.name),
+                    'item_name': u'%s: Project %d - %s' % (
+                        getattr(settings, 'PAYPAL_PRODUCT_DESCRIPTION_PREFIX', 'Akvo Project Donation'),
+                        int(invoice.project.id),
+                        invoice.project.name,
+                    ),
                     'invoice': int(invoice.id),
                     'lc': invoice.locale,
-                    'notify_url': settings.PAYPAL_NOTIFY_URL,
-                    'return_url': settings.PAYPAL_RETURN_URL,
-                    'cancel_url': settings.PAYPAL_CANCEL_URL}
+                    'notify_url': getattr(settings, 'PAYPAL_NOTIFY_URL', 'http://www.akvo.org/rsr/donate/paypal/ipn/'),
+                    'return_url': getattr(settings, 'PAYPAL_RETURN_URL', 'http://www.akvo.org/rsr/donate/paypal/thanks/'),
+                    'cancel_url': getattr(settings, 'PAYPAL_CANCEL_URL', 'http://www.akvo.org/'),
+                }
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
-                if settings.PAYPAL_TEST:
+                if getattr(settings, 'PAYPAL_TEST', False):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
@@ -1537,8 +1538,9 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                'payment_engine': engine,
                                'p': p,
                                'has_sponsor_banner': has_sponsor_banner,
-                               'live_earth_enabled': settings.LIVE_EARTH_ENABLED}, 
-                              context_instance=RequestContext(request))
+                               'live_earth_enabled': getattr(settings, 'LIVE_EARTH_ENABLED', False)
+                            }, 
+                            context_instance=RequestContext(request))
 
 def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(Invoice, pk=invoice_id)
