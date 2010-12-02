@@ -6,6 +6,7 @@
 akvo/data
 akvo/datadir
 akvo/datadir.zip
+akvo/datadir.tgz
 akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/mollie_banklist.xml
