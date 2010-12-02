@@ -223,7 +223,7 @@ def project_list(request, slug='all', org_id=None):
     
     # TODO: fix DWS, they don't need funding()
     if org_id:
-        org = Organisation.objects.get(pk=org_id)
+        org = get_object_or_404(Organisation, pk=org_id)
         projects = org.published_projects().funding()
     elif slug:
         focus_area = get_object_or_404(FocusArea, slug=slug)
@@ -378,7 +378,7 @@ else:
         #for use in akvo at a glance
         projs = Project.objects.published().funding()
         # get all projects the org is asociated with
-        o = Organisation.objects.get(pk=org_id)
+        o = get_object_or_404(Organisation, pk=org_id)
         projects = o.published_projects().funding()
         showcases = projects.order_by('?')[:3]
         page = project_list_data(request, projects)
@@ -554,7 +554,7 @@ else:
         '''    
     
         # get all projects the org is asociated with
-        o = Organisation.objects.get(pk=org_id)
+        o = get_object_or_404(Organisation, pk=org_id)
         projects = o.published_projects().status_not_archived().funding()
         
         # Get projects either by using the query or all
