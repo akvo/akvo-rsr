@@ -820,8 +820,8 @@ else:
         )
         #list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
         #                'city', 'project_plan_summary', 'show_current_image', 'is_published',)
-        list_display = ('id', 'name', 'status', 'project_plan_summary', 'show_current_image', 'is_published',)
-        list_filter = ('currency',)
+        list_display = ('id', 'name', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+        list_filter = ('currency', 'status', )
         
         #form = ProjectAdminModelForm
         form = ProjectAdminForm

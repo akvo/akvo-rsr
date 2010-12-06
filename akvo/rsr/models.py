@@ -1642,10 +1642,23 @@ else: #akvo-rsr
         def __unicode__(self):
             return u'Project %d: %s' % (self.id,self.name)
             
-        #def project_type(self):
-        #    pass
-        #project_type.allow_tags = True
+        def updates_desc(self):
+            """
+            return ProjectUpdates for self, newest first
+            """
+            return self.project_updates.all().order_by('-time')
         
+        def latest_update(self):
+            updates = self.updates_desc()
+            if updates:
+                update_info = "%s<br/>%s<br/><br/>" % (updates[0].time, updates[0].user.email)
+            else:
+                update_info = ""
+            return "%s%s" % (update_info, "<br/>".join([partner.name for partner in self.support_partners()]))
+            
+        latest_update.allow_tags = True
+        #latest_update.admin_order_field = 'project_updates__time'
+                
         def show_status(self):
             "Show the current project status"
             return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
