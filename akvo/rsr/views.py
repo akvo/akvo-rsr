@@ -1289,13 +1289,12 @@ def getwidget(request, project_id):
             account_level = request.user.get_profile().organisation.organisationaccount.account_level
         except:
             account_level = 'free'
-        p = get_object_or_404(Project.objects, pk=project_id)
-        orgs = p.all_partners()
-        return render_to_response(
-            'rsr/project/get-a-widget/machinery_step1.html', {
-                'project': p, 
-                'p': p, #compatibility with new_look
+        project = get_object_or_404(Project.objects, pk=project_id)
+        orgs = project.all_partners()
+        return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {
+                'project': project,
                 'account_level': account_level, 'organisations': orgs,
+                'site_section': 'projects',
             }, context_instance=RequestContext(request)
         )
     else:
@@ -1308,15 +1307,14 @@ def getwidget(request, project_id):
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
         else:
             o = None
-        p = get_object_or_404(Project, pk=project_id)
+        project = get_object_or_404(Project, pk=project_id)
         return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {
-            'project': p, 
-            'p': p, #compatibility with new_look
+            'project': project,
             'organisation':o, 
             'widget_choice': widget_choice, 
             'widget_type': widget_type, 
             'widget_site': widget_site,
-            'site_section': 'areas',
+            'site_section': 'projects',
         }, context_instance=RequestContext(request))
 
 def fundingbarimg(request):
