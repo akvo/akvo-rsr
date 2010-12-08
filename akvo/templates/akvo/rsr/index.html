@@ -36,13 +36,12 @@
 		<div class="span-10">
 			<h1>{% trans 'Most recent project updates' %}</h1>
 		</div>
-		<div class="span-2 last" style="margin-top:10px;">
+		<div class="span-2 last text_right" style="margin-top:10px;">
 			<a class="small" href="{% url akvo_feeds 'all-updates' %}">
 				{% trans 'RSS' %} <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" 
 						alt="RSS"  style="margin-left:5px; margin-right:0">
     		</a>
 		</div>
-
 		<div class="span-12 last">
 			{% for update in updates %}
 				<div class="span-4{% if forloop.last %} last{% endif %}">
@@ -71,8 +70,7 @@
 			{% endfor %}
 		</div>
 		
-		{% comment %}
-		<div class="span-12">
+		<div class="span-12 last">
 			<div class="span-10" style="margin-top:15px;">
 				<h1>{% trans 'Recent blog posts' %}</h1>
 			</div>
@@ -82,13 +80,8 @@
 							alt="RSS"  style="margin-left:5px; margin-right:0">
 	    		</a>
 			</div>
-		</div>	
-		{% endcomment %}
-		
-		
-		
-		{% comment %}
-		<div class="span-12">
+		</div>
+		<div class="span-12 last">
 			<div class="white_box" style="background-color:#fff;">
         		{% for blog_post in blog_posts %}
           			<div class="space20">
@@ -115,15 +108,68 @@
         		<div class="clear"></div>
       		</div>
 		</div>
-		{% endcomment %}
-		
-		
 	</div>
 	<div class="span-6 last">
 		<div id="index_right_top" class="white_box" >
 			<div class="space20">
         		{{cms.top_right_box|apply_markup:"markdown"}}
       		</div>
+		</div>
+		
+		<div id="index_right_now_box">
+			<h1 class="text_center">{% trans 'Right now in Akvo.org...' %}</h1>
+			
+      		<div class="span-3 border" style="margin-bottom:20px">
+        		<div style="padding-left: 20px;">
+          			<h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
+          			<p class="small">
+						<a class="right_now_blue" href={% url project_list %}>{% trans 'Projects' %}</a>
+					</p>
+          			<h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
+          			<p class="small">
+						<a class="right_now_blue" href={% url rsr_org_list %}>{% trans 'Project partners' %}</a>
+					</p>
+        		</div>
+			</div>
+			<div class="span-3 last" style="margin-bottom:20px">
+        		<div style="padding-left: 20px;">
+          			<h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
+          			<p class="small lt_grey">{% trans 'People served' %}</p>
+          			<h1 class="white last" style="line-height: 1em">&euro; {{projects_total_total_budget}}M</h1>
+          			<p class="small lt_grey last">{% trans 'In project budgets' %}</p>
+        		</div>
+      		</div>
+      		<a href="{% url global_project_map %}">
+        		{% google_global_project_map 'static' 315 190 1 %}
+      		</a>
+      		<div style="padding: .5em .5em .7em .5em;">
+        		<a class="right small right_now_blue" href="{% url global_project_map %}">
+					{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span>
+				</a>
+				<div class="clear"></div>
+			</div> 
+		</div>
+		<div style="margin-bottom: .4em;">
+      		<h1 class="top_of_box">{% trans 'Project focus areas' %}</h1>
+      		<a class="small" style="margin-left: 2em;" href="/web/focus-areas">
+				See all <span class="link_triangle">&#x25B6;</span>
+			</a>
+    	</div>
+    	<div id="index-accordion" style="height: {{cms.lower_height|add:-69}}px;">
+			<div id="accordion">
+				{% for focus_area in focus_areas %}
+        			<h3><a href="#">{{focus_area.name}}</a></h3>
+        			<div>
+          				<img src="{% thumbnail focus_area.image 275x206 sharpen %}" alt="{{focus_area}}"/>
+            			{{focus_area.description|smart_truncate:120|apply_markup:"markdown"}}
+            			<div class="h1_companion">
+              				<a style="color: #1877B8;" 
+								href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">{% trans 'Browse projects / read more' %} <span class="link_triangle">&#x25B6;</span>
+							</a>
+            			</div>
+        			</div>
+        		{% endfor %}
+			</div>              
 		</div>
 	</div>
 </div>
@@ -133,6 +179,84 @@
 
 {% comment %}
 <div class="container">
+	
+
+	<div class="span-6 last">
+		<div class="white_box" 
+			style="height: 361px; background:url({{MEDIA_URL}}akvo/img/earth-300x78.png) no-repeat bottom;">
+			<div id="top_right_box" class="space20">
+        		{{cms.top_right_box|apply_markup:"markdown"}}
+      		</div>
+		</div> 
+	</div>
+
+	<div class="span-6 gutter-top last">
+    	<div class="right_now_box">
+      		<div style="padding: 20px 20px 0px 20px;">
+        		<h1 class="right_now_green">{% trans 'Right now in Akvo.org...' %}</h1>
+        		<div class="clear"></div>
+      		</div>
+      		<div class="span-3 border" style="margin-bottom:20px">
+        		<div style="padding-left: 20px;">
+          			<h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
+          			<p class="small">
+						<a class="right_now_blue" href={% url project_list %}>{% trans 'Projects' %}</a>
+					</p>
+          			<h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
+          			<p class="small">
+						<a class="right_now_blue" href={% url rsr_org_list %}>{% trans 'Project partners' %}</a>
+					</p>
+        		</div>
+			</div>
+			<div class="span-3 last" style="margin-bottom:20px">
+        		<div style="padding-left: 20px;">
+          			<h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
+          			<p class="small lt_grey">{% trans 'People served' %}</p>
+          			<h1 class="white last" style="line-height: 1em">&euro; {{projects_total_total_budget}}M</h1>
+          			<p class="small lt_grey last">{% trans 'In project budgets' %}</p>
+        		</div>
+      		</div>
+      		<a href="{% url global_project_map %}">
+        		{% google_global_project_map 'static' 315 190 1 %}
+      		</a>
+      		<div style="padding: .5em .5em .7em .5em;">
+        		<a class="right small right_now_blue" href="{% url global_project_map %}">
+					{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span>
+				</a>
+				<div class="clear"></div>
+			</div> 
+		</div> 
+	</div>
+
+	<div class="span-6 gutter-top last">
+    	<div style="margin-bottom: .4em;">
+      		<h1 class="top_of_box">{% trans 'Project focus areas' %}</h1>
+      		<a class="small" style="margin-left: 2em;" href="/web/focus-areas">
+				See all <span class="link_triangle">&#x25B6;</span>
+			</a>
+    	</div>
+    	<div id="index-accordion" style="height: {{cms.lower_height|add:-69}}px;">
+			<div id="accordion">
+				{% for focus_area in focus_areas %}
+        			<h3><a href="#">{{focus_area.name}}</a></h3>
+        			<div>
+          				<img src="{% thumbnail focus_area.image 275x206 sharpen %}" alt="{{focus_area}}"/>
+            			{{focus_area.description|smart_truncate:120|apply_markup:"markdown"}}
+            			<div class="h1_companion">
+              				<a style="color: #1877B8;" 
+								href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">{% trans 'Browse projects / read more' %} <span class="link_triangle">&#x25B6;</span>
+							</a>
+            			</div>
+        			</div>
+        		{% endfor %}
+			</div>              
+		</div>          
+	</div>
+</div>
+{% endcomment %}
+
+
+{% comment %}
 	<div class="span-12">
 		<div class="span-12">
 			<div id="feature_box" class="white_box">
@@ -220,80 +344,9 @@
       		</div>
 		</div>
 	</div>
-     
-	<div class="span-6 last">
-		<div class="white_box" 
-			style="height: 361px; background:url({{MEDIA_URL}}akvo/img/earth-300x78.png) no-repeat bottom;">
-			<div id="top_right_box" class="space20">
-        		{{cms.top_right_box|apply_markup:"markdown"}}
-      		</div>
-		</div> 
-	</div>
-
-	<div class="span-6 gutter-top last">
-    	<div class="right_now_box">
-      		<div style="padding: 20px 20px 0px 20px;">
-        		<h1 class="right_now_green">{% trans 'Right now in Akvo.org...' %}</h1>
-        		<div class="clear"></div>
-      		</div>
-      		<div class="span-3 border" style="margin-bottom:20px">
-        		<div style="padding-left: 20px;">
-          			<h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
-          			<p class="small">
-						<a class="right_now_blue" href={% url project_list %}>{% trans 'Projects' %}</a>
-					</p>
-          			<h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
-          			<p class="small">
-						<a class="right_now_blue" href={% url rsr_org_list %}>{% trans 'Project partners' %}</a>
-					</p>
-        		</div>
-			</div>
-			<div class="span-3 last" style="margin-bottom:20px">
-        		<div style="padding-left: 20px;">
-          			<h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
-          			<p class="small lt_grey">{% trans 'People served' %}</p>
-          			<h1 class="white last" style="line-height: 1em">&euro; {{projects_total_total_budget}}M</h1>
-          			<p class="small lt_grey last">{% trans 'In project budgets' %}</p>
-        		</div>
-      		</div>
-      		<a href="{% url global_project_map %}">
-        		{% google_global_project_map 'static' 315 190 1 %}
-      		</a>
-      		<div style="padding: .5em .5em .7em .5em;">
-        		<a class="right small right_now_blue" href="{% url global_project_map %}">
-					{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span>
-				</a>
-				<div class="clear"></div>
-			</div> 
-		</div> 
-	</div>
-
-	<div class="span-6 gutter-top last">
-    	<div style="margin-bottom: .4em;">
-      		<h1 class="top_of_box">{% trans 'Project focus areas' %}</h1>
-      		<a class="small" style="margin-left: 2em;" href="/web/focus-areas">
-				See all <span class="link_triangle">&#x25B6;</span>
-			</a>
-    	</div>
-    	<div id="index-accordion" style="height: {{cms.lower_height|add:-69}}px;">
-			<div id="accordion">
-				{% for focus_area in focus_areas %}
-        			<h3><a href="#">{{focus_area.name}}</a></h3>
-        			<div>
-          				<img src="{% thumbnail focus_area.image 275x206 sharpen %}" alt="{{focus_area}}"/>
-            			{{focus_area.description|smart_truncate:120|apply_markup:"markdown"}}
-            			<div class="h1_companion">
-              				<a style="color: #1877B8;" 
-								href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">{% trans 'Browse projects / read more' %} <span class="link_triangle">&#x25B6;</span>
-							</a>
-            			</div>
-        			</div>
-        		{% endfor %}
-			</div>              
-		</div>          
-	</div>
-</div>
 {% endcomment %}
+
+
 
 {% endblock maincontent %}
 
