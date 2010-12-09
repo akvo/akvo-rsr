@@ -26,6 +26,7 @@ from django.contrib.sites.models import Site
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
 from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -1649,14 +1650,27 @@ else: #akvo-rsr
             return self.project_updates.all().order_by('-time')
         
         def latest_update(self):
+            """
+            for use in the admin
+            lists data useful when looking for projects that haven't been updated in a while (or not at all)
+            note: it would have been useful to make this column sortable via the admin_order_field attribute, but this results in
+            multiple rows shown for the project in the admin change list view and there's no easy way to distinct() them
+            TODO: probably this can be solved by customizing ModelAdmin.queryset
+            """
             updates = self.updates_desc()
             if updates:
-                update_info = "%s<br/>%s<br/><br/>" % (updates[0].time, updates[0].user.email)
+                update = updates[0]
+                # date of update shown as link poiting to the update page
+                update_info = '<a href="%s">%s</a><br/><a href="mailto:%s">%s</a><br/><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time, update.user.email, update.user.email)
             else:
-                update_info = ""
-            return "%s%s" % (update_info, "<br/>".join([partner.name for partner in self.support_partners()]))
+                update_info = "No update yet<br/><br/>"
+            # links to the project's support partners
+            update_info = "%sSP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.support_partners()]))
+            # links to the project's field partners
+            return "%s<br/>FP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.field_partners()]))
             
         latest_update.allow_tags = True
+        #no go, results in duplicate projects entries in the admin change list
         #latest_update.admin_order_field = 'project_updates__time'
                 
         def show_status(self):
