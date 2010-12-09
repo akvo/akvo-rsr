@@ -59,7 +59,7 @@
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
 					<script type="text/javascript">
 						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="{% url project_widget 'project-narrow' p.id %}" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_widget 'project-narrow' project.id %}" width="170" height="840" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div class="machinery_widget_choice_right">
@@ -81,7 +81,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-narrow-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -152,7 +152,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-narrow-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -223,7 +223,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-short-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -294,7 +294,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-banner-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -367,7 +367,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-leader-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -438,7 +438,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="feature-side-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -509,7 +509,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-updates-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -580,7 +580,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-contribute-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -651,7 +651,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-small-specific-project">
-								{% trans 'Use the' %} {{p.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
