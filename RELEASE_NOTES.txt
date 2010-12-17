@@ -10,6 +10,33 @@ Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akv
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
 
+
+Akvo RSR v 1.0.1 release notes
+-------------------------------------------
+16 Dec 2010, (Code name: Indigo) bw
+
+New Features
+------------
+### Markdown is now available for adding formatting to text used in the MiniCMS text boxes and Focus area description fields.
+
+Bug Fixes
+---------
+### People served calculation
+The "People Served" calculation on the Akvo home page now counts only the largest "people affected" benchmark from any category for each project. For any given project, it is likely that the people affected in different categories have some overlap, so calculations for numbers affected should take only the larger number. Currently people affected numbers come only from the Water and Sanitation categories.
+
+### MiniCMS
+The following improvements have been made to the MiniCMS.
+
+- Map box has been removed.
+- Lower section height renamed to Focus areas accordion height.
+- Name field for instances of the MiniCMS has been added.
+- Help text has been added regarding HTML tags that can be used in MiniCMS fields.
+
+### Removed legacy data fields for Location, Category and Benchmark
+Content of the previous data fields were imported into new models in the 1.0.0 release; the old fields have now been removed.
+
+
+
 Akvo RSR v 1.0.0 release notes
 -------------------------------------------
 4 Nov 2010, (Code name: One Oh) tbp
