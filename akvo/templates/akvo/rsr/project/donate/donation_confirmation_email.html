@@ -24,13 +24,13 @@
 			{% trans 'Your gift will help' %}:<br>
 			{% trans 'Contribution' %}:<br>
 			{% trans 'Akvo reference' %}: <br>
-			{% ifequal invoice.engine "paypal" %}
+			{% if invoice.engine = "paypal" %}
 		    {% trans 'PayPal reference' %}: <br>
-			{% endifequal %}
-			{% ifequal invoice.engine "ideal" %}
+			{% endif %}
+			{% if invoice.engine = "ideal" %}
 			{% trans 'Bank' %}: <br>
 			{% trans 'iDEAL reference' %}:
-			{% endifequal %}
+			{% endif %}
 		</p>
 	</div>
 	<div style="float:left; background-color:; margin-left:10px; font-weight: bold">
@@ -41,13 +41,13 @@
 			<a href="{{ project_url }}">{{ invoice.project.name|safe }}</a><br>
 			{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
 			{{ invoice.id }}<br>
-			{% ifequal invoice.engine "paypal" %}
+			{% if invoice.engine = "paypal" %}
 		    {{ invoice.ipn }}<br>
-			{% endifequal %}
-			{% ifequal invoice.engine "ideal" %}
+			{% endif %}
+			{% if invoice.engine = "ideal" %}
 			{{ invoice.get_bank_display }} <br>
 			{{ invoice.transaction_id }}
-			{% endifequal %}
+			{% endif %}
 			
 		</p>
 	</div>
@@ -58,12 +58,12 @@
 	</p>
 
 	<ul>
-		{% ifequal invoice.project.currency 'EUR' %}
+		{% if invoice.project.currency = 'EUR' %}
 	    <li>{% trans 'The Netherlands (Nederland)' %}</li>
-		{% endifequal %}
-		{% ifequal invoice.project.currency 'USD' %}
+		{% endif %}
+		{% if invoice.project.currency = 'USD' %}
 	    <li>{% trans 'United States of America' %}</li>
-		{% endifequal %}
+		{% endif %}
 	</ul>
 	
 	<p>

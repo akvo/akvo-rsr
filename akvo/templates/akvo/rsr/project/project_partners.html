@@ -26,11 +26,11 @@
 		<div class="clear"></div>
 		<div class="space20">	
 			{% if project.fieldpartner_set.count %}
-				{% ifequal project.fieldpartner_set.count 1 %}
+				{% if project.fieldpartner_set.count = 1 %}
 		            <h3>{% trans 'Field partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Field partners' %}</h3>
-		        {% endifequal %}
+		        {% endif %}
 				{% for fp in project.fieldpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">							
@@ -52,11 +52,11 @@
 			
 			
 			{% if project.supportpartner_set.count %}
-				{% ifequal project.supportpartner_set.count 1 %}
+				{% if project.supportpartner_set.count = 1 %}
 		            <h3>{% trans 'Support partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Support partners' %}</h3>
-		        {% endifequal %}
+		        {% endif %}
 				{% for sp in project.supportpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
@@ -77,11 +77,11 @@
 			{% endif %}
 			
 			{% if project.sponsorpartner_set.count %}
-				{% ifequal project.sponsorpartner_set.count 1 %}
+				{% if project.sponsorpartner_set.count = 1 %}
 		            <h3>{% trans 'Sponsor partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Sponsor partners' %}</h3>
-		        {% endifequal %}
+		        {% endif %}
 				{% for sponsor in project.sponsorpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">						
 						<div style="float:left; width:100px;">
@@ -102,11 +102,11 @@
 			{% endif %}
 			
 			{% if project.fundingpartner_set.count %}
-				{% ifequal project.fundingpartner_set.count 1 %}
+				{% if project.fundingpartner_set.count = 1 %}
 		            <h3>{% trans 'Funding partner' %}</h3>
 		        {% else %}
 		            <h3>{% trans 'Funding partners' %}</h3>
-		        {% endifequal %}
+		        {% endif %}
 				{% for funder in project.fundingpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">

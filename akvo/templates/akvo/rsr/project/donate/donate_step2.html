@@ -91,7 +91,7 @@
 			<div class="clear"></div>
 		</div>
 		<div style="float:left; width:513px; margin-left:20px;">
-			{% ifequal payment_engine 'paypal' %}
+			{% if payment_engine = 'paypal' %}
 			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:485px; margin-bottom:20px; padding:10px">
 				<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
 					<img src="{{MEDIA_URL}}akvo/img/donate/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
@@ -101,12 +101,12 @@
 					{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one." %}
 				</p>
 				<p class="small">
-				    {% ifequal p.currency 'EUR' %}
+				    {% if p.currency = 'EUR' %}
 					{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
-					{% endifequal %}
-					{% ifequal p.currency 'USD' %}
+					{% endif %}
+					{% if p.currency = 'USD' %}
 					{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
-					{% endifequal %}
+					{% endif %}
 				</p>
 
 			</div>
@@ -116,17 +116,17 @@
 				</p>
 				<ul class="small" >
 					<li>
-					    {% ifequal p.currency 'EUR' %}
+					    {% if p.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
-					    {% endifequal %}
-					    {% ifequal p.currency 'USD' %}
+					    {% endif %}
+					    {% if p.currency = 'USD' %}
 					        {% trans 'United States of America' %}
-					    {% endifequal %}
+					    {% endif %}
 					</li>
 				</ul>
 			</div>
-			{% endifequal %}
-			{% ifequal payment_engine 'ideal' %}
+			{% endif %}
+			{% if payment_engine = 'ideal' %}
 			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:485px; margin-bottom:20px; padding:10px;">
 				<div style="float:right; width:130px; text-align:center;">
 					<img src="{{MEDIA_URL}}akvo/img/donate/ideal-small.png" width="130" height="121" alt="Ideal" /><br />
@@ -139,12 +139,12 @@
 					{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
 				</p>
 				<p class="small">
-					{% ifequal p.currency 'EUR' %}
+					{% if p.currency = 'EUR' %}
 					{% trans 'Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you donate &euro;100, &euro;98.82 Euros will go towards the selected project.' %}
-					{% endifequal %}
-					{% ifequal p.currency 'USD' %}
+					{% endif %}
+					{% if p.currency = 'USD' %}
 					{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
-					{% endifequal %}
+					{% endif %}
 				</p>
 			</div>
 			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:485px; padding:10px;">
@@ -153,16 +153,16 @@
 				</p>
 				<ul class="small">
 					<li style="margin-left:30px;">
-					    {% ifequal p.currency 'EUR' %}
+					    {% if p.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
-					    {% endifequal %}
-					    {% ifequal p.currency 'USD' %}
+					    {% endif %}
+					    {% if p.currency = 'USD' %}
 					        {% trans 'United States of America' %}
-					    {% endifequal %}
+					    {% endif %}
 					</li>
 				</ul>
 			</div>
-			{% endifequal %}
+			{% endif %}
 		</div>
 		<div class="clear"></div>
 		<hr style="margin-top:15px;"/>
@@ -216,11 +216,11 @@
 				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="grey">{% trans 'Confirm email' %}:</p>
 				</div>
-				{% ifequal payment_engine 'ideal' %}
+				{% if payment_engine = 'ideal' %}
 				<div class="fieldWrapper" style="">	
 					<p class="grey">{% trans 'Select your bank' %}:</p>
 				</div>
-				{% endifequal %}
+				{% endif %}
 				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="grey"> &nbsp;</p>
 				</div>
@@ -229,9 +229,9 @@
 				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
 				<p style="font-weight:bold; margin-bottom:4px">{{ donate_form.email }}</p>
 				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
-				{% ifequal payment_engine 'ideal' %}
+				{% if payment_engine = 'ideal' %}
 				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
-				{% endifequal %}
+				{% endif %}
 				<p class="small" style="font-weight:normal; margin-bottom:18px;">
 					{{ donate_form.is_anonymous }} {% trans 'Keep donation' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a>.
 				</p>

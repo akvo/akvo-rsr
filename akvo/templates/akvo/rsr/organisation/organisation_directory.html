@@ -3,58 +3,58 @@
 {% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 
 {% block title %}  
-		{% ifequal org_type 'all' %}
+		{% if org_type = 'all' %}
 			{% trans 'Organisations' %}
 		{% else %}
-			{% ifequal org_type 'funding' %}{% trans 'Funding partners' %}{% endifequal %}
-			{% ifequal org_type 'support' %}{% trans 'Support partners' %}{% endifequal %}
-			{% ifequal org_type 'field' %}{% trans 'Field partners' %}{% endifequal %}
-			{% ifequal org_type 'sponsor' %}{% trans 'Sponsor partners' %}{% endifequal %}
-		{% endifequal %}
+			{% if org_type = 'funding' %}{% trans 'Funding partners' %}{% endif %}
+			{% if org_type = 'support' %}{% trans 'Support partners' %}{% endif %}
+			{% if org_type = 'field' %}{% trans 'Field partners' %}{% endif %}
+			{% if org_type = 'sponsor' %}{% trans 'Sponsor partners' %}{% endif %}
+		{% endif %}
 {% endblock %}
 
 {% block breadcrum_items %}
 {{block.super}}
 
-{% ifequal org_type 'all' %}
+{% if org_type = 'all' %}
 	<li id="last_breadcrum_item">{% trans 'Organisations' %}</li>
 {% else %}
 	<li><a href="{% url rsr_org_list%}"><span>{% trans 'Organisations' %}</span></a></li>
-	{% ifequal org_type 'funding' %}
+	{% if org_type = 'funding' %}
 		<li id="last_breadcrum_item">{% trans 'Funding partners' %}</li>
-	{% endifequal %}
-	{% ifequal org_type 'support' %}
+	{% endif %}
+	{% if org_type = 'support' %}
 		<li id="last_breadcrum_item">{% trans 'Support partners' %}</li>
-	{% endifequal %}
-	{% ifequal org_type 'field' %}
+	{% endif %}
+	{% if org_type = 'field' %}
 		<li id="last_breadcrum_item">{% trans 'Field partners' %}</li>
-	{% endifequal %}
-	{% ifequal org_type 'sponsor' %}
+	{% endif %}
+	{% if org_type = 'sponsor' %}
 		<li id="last_breadcrum_item">{% trans 'Sponsor partners' %}</li>
-	{% endifequal %}
-{% endifequal %}
+	{% endif %}
+{% endif %}
 
 
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
 <h1>
-{% ifequal org_type 'all' %}
+{% if org_type = 'all' %}
 	{% trans 'Organisations' %}
 {% else %}
-	{% ifequal org_type 'funding' %}
+	{% if org_type = 'funding' %}
 		{% trans 'Funding partners' %}
-	{% endifequal %}
-	{% ifequal org_type 'support' %}
+	{% endif %}
+	{% if org_type = 'support' %}
 		{% trans 'Support partners' %}
-	{% endifequal %}
-	{% ifequal org_type 'field' %}
+	{% endif %}
+	{% if org_type = 'field' %}
 		{% trans 'Field partners' %}
-	{% endifequal %}
-	{% ifequal org_type 'sponsor' %}
+	{% endif %}
+	{% if org_type = 'sponsor' %}
 		{% trans 'Sponsor partners' %}
-	{% endifequal %}
-{% endifequal %}
+	{% endif %}
+{% endif %}
 </h1>
 
 <form action="." method="get" accept-charset="utf-8">
@@ -74,7 +74,7 @@
 		<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
 			<div style="float:right;">
 				<p style="margin-bottom:0;">
-					{% ifequal page.number 1 %}
+					{% if page.number = 1 %}
 	                	{% trans 'First' %} |
 	                {% else %}
 						{% if org_type = 'all' %}
@@ -82,8 +82,8 @@
 						{% else %}
 							<a href="{% url rsr_org_list_filtered org_type %}
 						{% endif %}
-							{% addparam "page" 1 %}">{% trans 'First' %}</a> |
-	                {% endifequal %}
+							{% addparam 'page' 1 %}">{% trans 'First' %}</a> |
+	                {% endif %}
 	                {% if page.has_previous %}
 						{% if org_type = 'all' %}
 							<a href="{% url rsr_org_list %}
@@ -100,11 +100,11 @@
 						{% else %}
 							<a href="{% url rsr_org_list_filtered org_type %}
 						{% endif %}
-						{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+						{% addparam 'page' page.next_page_number %}">{% trans 'Next' %}</a> |
 	                {% else %}
 	                {% trans 'Next' %} |
 	                {% endif %}
-	                {% ifequal page.number page.paginator.num_pages %}
+	                {% if page.number = page.paginator.num_pages %}
 	                {% trans 'Last' %}
 	                {% else %}
 						{% if org_type = 'all' %}
@@ -113,7 +113,7 @@
 							<a href="{% url rsr_org_list_filtered org_type %}
 						{% endif %}
 						{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
-	                {% endifequal %}
+	                {% endif %}
 				</p>
 			</div>
 			<p style="margin-bottom:0;">
@@ -227,7 +227,7 @@
 		<div style="background-color:#E5E5E9; padding:15px; border-top:1px solid #979AA5;">
 			<div style="float:right;">
 				<p style="margin-bottom:0;">
-					{% ifequal page.number 1 %}
+					{% if page.number = 1 %}
 	                	{% trans 'First' %} |
 	                {% else %}
 						{% if org_type = 'all' %}
@@ -236,7 +236,7 @@
 							<a href="{% url rsr_org_list_filtered org_type %}
 						{% endif %}
 						{% addparam "page" 1 %}">{% trans 'First' %}</a> |
-	                {% endifequal %}
+	                {% endif %}
 	                {% if page.has_previous %}
 						{% if org_type = 'all' %}
 							<a href="{% url rsr_org_list %}
@@ -257,7 +257,7 @@
 	                {% else %}
 	                	{% trans 'Next' %} |
 	                {% endif %}
-	                {% ifequal page.number page.paginator.num_pages %}
+	                {% if page.number = page.paginator.num_pages %}
 	                	{% trans 'Last' %}
 	                {% else %}
 						{% if org_type = 'all' %}
@@ -266,7 +266,7 @@
 							<a href="{% url rsr_org_list_filtered org_type %}
 						{% endif %}
 						{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
-	                {% endifequal %}
+	                {% endif %}
 				</p>
 			</div>
 			<p style="margin-bottom:0;">

@@ -12,7 +12,7 @@
 <h1>{% trans 'Customise your widget' %}</h1>
 
 <p>
-	{% ifequal widget_choice 'specific-project'  %}
+	{% if widget_choice = 'specific-project'  %}
 		<span class="grey">
 			{% trans 'This widget will show the project' %}
 		</span><br />
@@ -22,7 +22,7 @@
 			{% trans 'This widget will show projects from the following organisation' %}
 		</span><br />
 		<span style="font-weight:bold;">{{organisation.name}}</span>
-	{% endifequal %}
+	{% endif %}
 </p>
 <a id="preview_position"></a>
 <hr />

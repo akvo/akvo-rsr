@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags rsr_filters generic_content thumbnail cache counter_tags humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail cache counter_tags humanize %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -69,12 +69,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{{project.country}}, {{project.city}}
 					</p>
 				</div>
-				{% comment %}
-				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
-					{{project.country}}, {{project.city}}
-				</p>
-				{% endcomment %}
 				<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">
 				
 					{% trans 'Powered by' %} <a href="http://{{ request.META.HTTP_HOST }}">Akvo</a>. {% trans 'Ref' %}: {{project.id}}

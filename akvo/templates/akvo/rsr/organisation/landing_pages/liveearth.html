@@ -181,13 +181,13 @@
 		<div style="background-color:#E5E5E9; padding:15px; border-bottom:1px solid #979AA5;">
 			<div style="float:right;">
 				<p style="margin-bottom:0;">
-					{% ifequal page.number 1 %}
+					{% if page.number = 1 %}
 						{% trans 'First' %}
 					{% else %}
 						<a href="{% url live_earth_landing_page %}{% addparam "page" 1 %}#list">
 							{% trans 'First' %}
 						</a>
-					{% endifequal %} |
+					{% endif %} |
 					{% if page.has_previous %}
 							<a href="{% url live_earth_landing_page %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> 
 					{% else %}
@@ -198,11 +198,11 @@
 					{% else %}
 						{% trans 'Next' %}
 					{% endif %} |
-					{% ifequal page.number page.paginator.num_pages %}
+					{% if page.number = page.paginator.num_pages %}
 						{% trans 'Last' %}
 					{% else %}
 							<a href="{% url live_earth_landing_page %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
-					{% endifequal %}
+					{% endif %}
 				</p>
 			</div>
 			<p style="margin-bottom:0;">
@@ -289,13 +289,13 @@
 		<div style="background-color:#E5E5E9; padding:15px; border-top:1px solid #979AA5;">
 			<div style="float:right;">
 				<p style="margin-bottom:0;">
-					{% ifequal page.number 1 %}
+					{% if page.number = 1 %}
 						{% trans 'First' %}
 					{% else %}
 						<a href="{% url live_earth_landing_page %}{% addparam "page" 1 %}#list">
 							{% trans 'First' %}
 						</a>
-					{% endifequal %} |
+					{% endif %} |
 					{% if page.has_previous %}
 							<a href="{% url live_earth_landing_page %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> 
 					{% else %}
@@ -306,11 +306,11 @@
 					{% else %}
 						{% trans 'Next' %}
 					{% endif %} |
-					{% ifequal page.number page.paginator.num_pages %}
+					{% if page.number = page.paginator.num_pages %}
 						{% trans 'Last' %}
 					{% else %}
 							<a href="{% url live_earth_landing_page %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
-					{% endifequal %}
+					{% endif %}
 				</p>
 			</div>
 			<p style="margin-bottom:0;">

@@ -98,7 +98,7 @@
 							<option value="all">{% trans 'All continents' %}</option>
 							{% for continent in continents %}
 							<option value="{{continent.0}}"
-								{% ifequal continent.0 selected_continent %} SELECTED {% endifequal %}>
+								{% if continent.0 = selected_continent %} SELECTED {% endif %}>
 								{{continent.1}}
 							</option>
 							{% endfor %}
@@ -109,7 +109,7 @@
 							{% if selected_continent == 'all' %}	
 								{% for country in countries %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}
@@ -117,7 +117,7 @@
 							{% if selected_continent == 1 %}
 								{% for country in countries_in_africa %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}
@@ -125,7 +125,7 @@
 							{% if selected_continent == 2 %}
 								{% for country in countries_in_asia %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}
@@ -133,7 +133,7 @@
 							{% if selected_continent == 3 %}
 								{% for country in countries_in_australia %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}
@@ -141,7 +141,7 @@
 							{% if selected_continent == 4 %}
 								{% for country in countries_in_europe %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}
@@ -149,7 +149,7 @@
 							{% if selected_continent == 5 %}
 								{% for country in countries_in_north_america %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}
@@ -157,7 +157,7 @@
 							{% if selected_continent == 6 %}
 								{% for country in countries_in_south_america %}
 								<option value="{{country.id}}"
-									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{% if country.id = selected_country %} SELECTED {% endif %}>
 									{{country.country_name}}
 								</option>
 								{% endfor %}

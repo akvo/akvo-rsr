@@ -55,7 +55,7 @@ INSTALLED_APPS = (
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
-    'template_utils', #see http://code.google.com/p/django-template-utils/
+    #'template_utils', #see http://code.google.com/p/django-template-utils/
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
     #'akvo.status',

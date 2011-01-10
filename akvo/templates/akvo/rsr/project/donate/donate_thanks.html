@@ -87,7 +87,7 @@
 				</p>
 			</div>
 			<div class="clear" style="padding-bottom:5px;"></div>
-			{% ifequal invoice.engine 'ideal'  %}
+			{% if invoice.engine = 'ideal'  %}
 			<div class="donate_details_left" style="width:200px;">
 				<p>
 					{% trans 'Your bank' %}:
@@ -99,7 +99,7 @@
 				</p>
 			</div>
 			<div class="clear" style="padding-bottom:5px;"></div>
-			{% endifequal %}
+			{% endif %}
 		</div>
 		<div style="float:right; width:47%">
 			<div style="border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; padding:10px; margin-top:20px;">
@@ -108,12 +108,12 @@
 				</p>
 				<ul class="grey small" style="margin-top:15px; list-style-type: disc; margin-bottom:0;">
 					<li style="margin-left:30px;">
-					    {% ifequal invoice.project.currency 'EUR' %}
+					    {% if invoice.project.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
-					    {% endifequal %}
-					    {% ifequal invoice.project.currency 'USD' %}
+					    {% endif %}
+					    {% if invoice.project.currency = 'USD' %}
 					        {% trans 'United States of America' %}
-					    {% endifequal %}
+					    {% endif %}
 					</li>
 				</ul>
 			</div>

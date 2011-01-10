@@ -27,14 +27,14 @@
 		<div id="header_container" class="container">
 			<ul id="main_nav">
 				<li>
-					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+					<a id="main_nav_left" href="/" class="{% if site_section = 'index' %}active{% endif %} {% if not site_section %}active{% endif %} ">
 						<span>
 							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
 						</span>
 					</a>
 				</li>
 				<li>
-					<a href="{% url project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+					<a href="{% url project_list %}" class="{% if site_section = 'projects' %}active{% endif %}">
 						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>
@@ -44,7 +44,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
+					<a href="/web/partners" class="{% if site_section = 'partners' %}active{% endif %}">
 						<span>{% trans 'Partners' %}</span>
 					</a>
 				</li>

@@ -30,13 +30,13 @@
 		<div class="clear"></div>
 		<div class="space20">
 			{% if u.photo %}
-				{% ifequal u.photo_location 'B' %}
+				{% if u.photo_location = 'B' %}
                 	{% update_thumb u 400 300 %}
-            	{% endifequal %}
+            	{% endif %}
                 {% if u.text %}{{u.text|linebreaks}}{% endif %}
-				{% ifequal u.photo_location 'E' %}
+				{% if u.photo_location = 'E' %}
 	                {% update_thumb u 400 300 %}
-	            {% endifequal %}			
+	            {% endif %}			
 			{% else %}
 				{% if u.text %}
 					{{u.text|linebreaks}}
