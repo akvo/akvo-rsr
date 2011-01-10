@@ -1,5 +1,6 @@
 
 {% load i18n rsr_filters humanize %}
+{% load url from future %}
 
 <div class="round" style="border:1px solid #65BBCE; background-color:#FBFAF6; padding:5px 0;">
 	{% if project.funding_still_needed|round = 0 %}
@@ -38,7 +39,7 @@
 		{% if project.status != 'L' and project.status != 'R' %}
 		<br />
 		<div style="text-align:center; padding-bottom:10px;">
-			<a class="orange awesome" href="{% url project_donate project.id %}">{% trans 'Donate' %}</a>
+			<a class="orange awesome" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>
 		</div>
 		{% endif %}
 		

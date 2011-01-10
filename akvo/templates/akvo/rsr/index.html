@@ -2,6 +2,7 @@
 
 {% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
 {% load oembed_tags markup_tags google_maps %}
+{% load url from future %}
 
 {% block inline_styles %}
 #feature_box {
@@ -16,7 +17,7 @@
 {% if preview %}
   <div id="preview_cover"></div>
   <div id="preview_alert">
-    <h1 style="color: yellow;">{% trans 'Preview!' %}</h1><a href="{% url admin:rsr_minicms_change cms.pk %}">{% trans 'Return to admin' %}</a>
+    <h1 style="color: yellow;">{% trans 'Preview!' %}</h1><a href="{% url 'admin:rsr_minicms_change' cms.pk %}">{% trans 'Return to admin' %}</a>
   </div>
 {% endif %}
 
@@ -40,7 +41,7 @@
     <div class='column span-12 gutter-top'>
       <div style="margin-bottom: .4em;">
         <h1 class="top_of_box">{% trans 'Most recent project updates' %}</h1>
-        <a class="small top_of_box" style="margin-left: 2em;" href="{% url akvo_feeds 'all-updates' %}">
+        <a class="small top_of_box" style="margin-left: 2em;" href="{% url 'akvo_feeds' 'all-updates' %}">
           RSS
           <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
         </a>
@@ -52,13 +53,13 @@
 					{% if update.photo %}
             {% thumbnail update.photo 203x152 crop sharpen upscale as update_photo %}
             {% if update_photo %}
-              <a href="{% url project_update update.project.id update.id %}">
+              <a href="{% url 'project_update' update.project.id update.id %}">
                 <img src="{{update_photo}}" style="margin:0;"{% if update.photo_caption %} title="{{update.photo_caption}}"{% endif %}/>
               </a>
             {% endif %}
           {% endif %}
           <div class="space10">
-            <a href="{% url project_update update.project.id update.id %}">
+            <a href="{% url 'project_update' update.project.id update.id %}">
               <h2 class="link_blue">{{update.title|smart_truncate:40}}</h2>
             </a>
             <p class="small grey last">
@@ -124,9 +125,9 @@
       <div class='column span-3 border' style="margin-bottom:20px">
         <div style="padding-left: 20px;">
           <h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
-          <p class="small"><a class="right_now_blue" href={% url project_list %}>{% trans 'Projects' %}</a></p>
+          <p class="small"><a class="right_now_blue" href={% url 'project_list' %}>{% trans 'Projects' %}</a></p>
           <h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
-          <p class="small"><a class="right_now_blue" href={% url rsr_org_list %}>{% trans 'Project partners' %}</a></p>
+          <p class="small"><a class="right_now_blue" href={% url 'rsr_org_list' %}>{% trans 'Project partners' %}</a></p>
           <!--<h1 class="white last" style="line-height: 1em">000</h1>
           <p class="small lt_grey last">{% trans 'Countries' %}</p>-->
         </div>
@@ -139,11 +140,11 @@
           <p class="small lt_grey last">{% trans 'In project budgets' %}</p>
         </div>
       </div>
-      <a href="{% url global_project_map %}">
+      <a href="{% url 'global_project_map' %}">
         {% google_global_project_map 'static' 315 190 1 %}
       </a>
       <div style="padding: .5em .5em .7em .5em;">
-        <a class="right small right_now_blue" href="{% url global_project_map %}">{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span></a>
+        <a class="right small right_now_blue" href="{% url 'global_project_map' %}">{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span></a>
         <div class="clear"></div>
       </div> 
     </div> 

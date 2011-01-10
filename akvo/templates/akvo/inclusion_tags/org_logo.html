@@ -1,4 +1,6 @@
 {% load i18n thumbnail %}
+{% load url from future %}
+
 {% thumbnail org.logo wxh upscale sharpen as org_logo %}{% if org_logo %}{# all on one line to work in js #}
 
 <div style="width: {{width}}px; height:{{height}}px; text-align: center; vertical-align: middle; {{style}}">

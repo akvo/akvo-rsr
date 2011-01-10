@@ -1,5 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load url from future %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -10,7 +11,7 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+				<a href="{% url 'project_main' p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Project updates' %}</h2>
 		</div>
@@ -37,7 +38,7 @@
 						
 						<div style="float:left; width:116px; height: 100px; margin: 0 10px;">
 							{% if u.photo %}
-								<a href="{% url project_update p.id u.id %}">
+								<a href="{% url 'project_update' p.id u.id %}">
 									<img src="{% thumbnail u.photo 116x100 crop autocrop upscale sharpen %}" />
 								</a>
 							{% endif %}
@@ -48,7 +49,7 @@
 						<div style="float:left; width:300px;">
 							<p style="margin:0;">
 								{% if u.title %}
-									<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />	
+									<a href="{% url 'project_update' p.id u.id %}">{{u.title|capfirst}}</a><br />	
 								{% endif %}
 								{% if u.text %}
 									<span class="grey small">{{u.text|smart_truncate:150}}</span>

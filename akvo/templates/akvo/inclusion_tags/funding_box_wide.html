@@ -4,6 +4,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load i18n rsr_filters rsr_tags humanize %}
+{% load url from future %}
 
 <div class="fundingwrap">
 	<div class="fundingboxwide-header"> </div>
@@ -19,13 +20,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			</div>
 		{% else %}
 			<div style="float:left; width:154px;">
-				{% project_budget p %}
+				{% project_budget project %}
 			</div>
 			<div style="float:left; width:105px; border-left:1px solid #BCDAE0; padding-top:5px;";>
 				{% if project.status != 'L' and project.status != 'R' %}
-					{% individual_donate_button p %}
+					{% individual_donate_button project %}
 					<br />
-					{% institutions_sponsor p %}
+					{% institutions_sponsor project %}
 				{% endif %}
 			</div>
 		{% endif %}

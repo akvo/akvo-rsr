@@ -1,6 +1,7 @@
 {% extends "rsr/project/donate/donate_base.html" %}
 
 {% load i18n rsr_tags thumbnail %}
+{% load url from future %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -12,7 +13,7 @@
 
 {% if live_earth_enabled %}
 	{% if has_sponsor_banner %}
-	<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
+	<a href="{% url 'live_earth_landing_page' %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
 	{% endif %}
 {% endif %}
 
@@ -60,7 +61,7 @@
 				<p>{% trans 'Project name' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
+				<p><a href="{% url 'project_main' p.id %}">{{ p.name }}</a></p>
 			</div>
 			<div class="clear"></div>
 			
@@ -79,7 +80,7 @@
 				<p>{{ p.id }}</p>
 				{% if p.current_image %}
 					<div style="margin-top:5px;">
-						<a href="{% url akvo.rsr.views.projectmain p.id %}">
+						<a href="{% url 'project_main' p.id %}">
                             <img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />
 						</a>
 					</div>
@@ -271,7 +272,7 @@
 		<div style="margin-left:300px; padding-top:20px;">
 			<p style="margin-bottom:20px;" class="grey">{% trans 'You will be able to review and confirm your donation on the next page.' %}</p>
 			<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
-				<a class="small" href="{% url akvo.rsr.views.projectmain p.id %}">{% trans 'Cancel' %}</a>
+				<a class="small" href="{% url 'project_main' p.id %}">{% trans 'Cancel' %}</a>
 			</div>
 			<a class="aqua awesome" href="javascript:document.donate_form.submit();"><span>{% trans 'Next...' %}</span></a>
 		</div>

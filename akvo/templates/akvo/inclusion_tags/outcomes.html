@@ -1,4 +1,6 @@
 {% load i18n comparison %}
+{% load url from future %}
+
 <ul class="small grey">
 	{% if p.water_systems %}
         <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>

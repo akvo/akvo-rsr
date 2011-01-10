@@ -1,6 +1,7 @@
 {% extends "rsr/project/donate/donate_base.html" %}
 
 {% load i18n rsr_tags thumbnail %}
+{% load url from future %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -125,7 +126,7 @@
 			<p>{% trans 'Project name' %}:</p>
 		</div>
 		<div class="donate_details_right">
-			<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
+			<p><a href="{% url 'project_main' p.id %}">{{ p.name }}</a></p>
 		</div>
 		<div class="clear" style="padding-bottom:5px;"></div>
 		
@@ -144,7 +145,7 @@
 			<p>{{ p.id }}</p>
 			{% if p.current_image %}
 				<div style="margin-top:5px;">
-					<a href="{% url akvo.rsr.views.projectmain p.id %}">
+					<a href="{% url 'project_main' p.id %}">
 						<img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />			    			
 					</a>
 				</div>
@@ -172,7 +173,7 @@
 		<div class="clear" style="padding-bottom:40px;"></div>
 	
 		<div style="width:500px; margin-left:auto; margin-right:auto; text-align:center;">
-			<a href="{% url akvo.rsr.views.projectmain invoice.project.id %}">{% trans 'Return to Project' %}</a>
+			<a href="{% url 'project_main' invoice.project.id %}">{% trans 'Return to Project' %}</a>
 		
 		</div>
 	</div>

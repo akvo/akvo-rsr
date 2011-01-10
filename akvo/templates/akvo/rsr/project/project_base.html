@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
 
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load url from future %}
 
 {% block title %}{{project.name}}{% endblock title %}
 
@@ -10,7 +11,7 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
 
 {% comment %}
 <div style="float:right; margin-right:10px;">
@@ -36,12 +37,12 @@
 
 {% if live_earth_enabled %}
 	{% if not has_sponsor_banner %}
-	<a href="{% url live_earth_landing_page %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
+	<a href="{% url 'live_earth_landing_page' %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
 	{% endif %}
 {% endif %}
 
 <div class="two_column_left">
-	<a href="{% url project_main project.id %}"><h1 style="margin-bottom:5px;">{{project.name}}</h1></a>
+	<a href="{% url 'project_main' project.id %}"><h1 style="margin-bottom:5px;">{{project.name}}</h1></a>
 	<div style="float:right; width:100px; text-align:right;">
 		<a href="/rsr/rss/updates/{{project.id}}/">
 			<img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
@@ -73,7 +74,7 @@
 					{% endcomment %}
 				</div>
 				<p class="small space0" style="padding-top:10px;">
-					<a style="color:#FDF47A;" href="{% url project_funding project.id %}">
+					<a style="color:#FDF47A;" href="{% url 'project_funding' project.id %}">
 						{% trans 'See funding details' %} &#x25B6;
 					</a>
 				</p>
@@ -94,7 +95,7 @@
 					<h2>{% trans 'Latest updates' %}</h2>
 				</div>
 				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-					<a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25B6;</a>
+					<a class="small" href="{% url 'project_updates' project.id %}">{% trans 'See all' %} &#x25B6;</a>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -111,19 +112,19 @@
 						{% if update.photo %}					
 							<div style="float:left; width:175px;">
 								<p class="small last" style="padding:5px 5px 0 5px;">
-                  <b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
+                  <b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b>
 									<br/>{{update.text|smart_truncate:50}}
 								</p>
 							</div>
 							<div style="float:right; width:116px; height: 100px; text-align:right;">
-                <a href="{% url project_update project.id update.id %}">
+                <a href="{% url 'project_update' project.id update.id %}">
                   <img src="{% thumbnail update.photo 116x100 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
                 </a>
 							</div>
 							<div class="clear"></div>
 						{% else %}
 							<p class="small" style="padding:5px; margin-bottom:5px;">
-								<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b><br />
+								<b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b><br />
 								{{update.text|smart_truncate:150}}
 							</p>
 						{% endif %}
@@ -138,7 +139,7 @@
 		<div class="white_box">
 			<div class="space20">
 				<div style="width:45%; float:left; padding-top:10px;">
-					<a class="aqua awesome" href="{% url project_get_widget project.id %}">{% trans 'Get a widget' %}</a>
+					<a class="aqua awesome" href="{% url 'project_get_widget' project.id %}">{% trans 'Get a widget' %}</a>
 				</div>
 				<div style="width:45%; float:right;">
 					<p style="margin:0;" class="tiny grey">
@@ -151,11 +152,11 @@
 					
 				<p class="small grey">
 					{% if can_add_update %}
-						<a href="{% url akvo.rsr.views.updateform project.id %}">{% trans 'Add update' %}</a> {% trans 'to this project.' %}<br />	
+						<a href="{% url 'project_add_update' project.id %}">{% trans 'Add update' %}</a> {% trans 'to this project.' %}<br />	
 					{% else %}
-						<a href="{% url akvo.rsr.views.login %}?next={{request.path}}">{% trans 'Sign in' %}</a>  {% trans 'to add update' %}<br />
+						<a href="{% url 'signin' %}?next={{request.path}}">{% trans 'Sign in' %}</a>  {% trans 'to add update' %}<br />
 					{% endif %}			
-					<a href="{% url project_main project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
+					<a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
 					<a href="/rsr/rss/updates/{{project.id}}/">{% trans 'Subscribe' %}</a> {% trans 'to the RSS feed of this project ' %}
 				</p>
 			</div>
@@ -168,20 +169,20 @@
 				<h2>{% trans 'Project partners' %}</h2>
 			</div>
 			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_partners project.id %}">{% trans 'See details' %} &#x25B6;</a>
+				<a class="small" href="{% url 'project_partners' project.id %}">{% trans 'See details' %} &#x25B6;</a>
 			</div>
 			<div class="clear"></div>
 			<div class="white_box">
 				<div class="space10">
 					{% for partner in project.all_partners %}
 						<div style="float:left; width:100px;">
-							<a href="{% url org_detail partner.id %}">
+							<a href="{% url 'org_detail' partner.id %}">
 								{% org_logo partner 90 60 'margin:0;' %}
 							</a>
 						</div>
 						<div style="float:left; width:170px;">
 							<p class="small grey" style="margin:0; padding:=;">
-								<a href="{% url org_detail partner.id %}">{{partner.name}}</a><br />
+								<a href="{% url 'org_detail' partner.id %}">{{partner.name}}</a><br />
                 {% if partner.primary_location.city %}
                   {{partner.primary_location.city}},
                 {% endif %}
@@ -204,17 +205,17 @@
 				<h2>{% trans 'Comments' %}</h2>
 			</div>
 			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_comments project.id %}">{% trans 'See all' %} &#x25B6;</a>
+				<a class="small" href="{% url 'project_comments' project.id %}">{% trans 'See all' %} &#x25B6;</a>
 			</div>
 			<div class="clear"></div>
 			<div class="white_box">
 				<div class="space10">
 					{% if not comments %}
-					<a class="small" href="{% url project_comments project.id %}">
+					<a class="small" href="{% url 'project_comments' project.id %}">
 						{% trans 'Add first comment' %}  &#x25B6;
 					</a>
 					{% else %}
-						<a class="small" href="{% url project_comments project.id %}">
+						<a class="small" href="{% url 'project_comments' project.id %}">
 							{% trans 'Add comment' %}  &#x25B6;
 						</a>
 						<hr style="margin-top:10px; margin-bottom:5px;"/>

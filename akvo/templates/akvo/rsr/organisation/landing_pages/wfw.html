@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
 
 {% load i18n rsr_filters rsr_tags thumbnail humanize google_maps addparam counter_tags %}
+{% load url from future %}
 
 {% block title %}{{org.name}}{% endblock title %}
 
@@ -32,7 +33,7 @@
 	<div class="two_column_right_inner" >
 		<div class="white_box">
 			<div class="space20">
-				<h3><a href="{% url project_list_for_org org.id %}">
+				<h3><a href="{% url 'project_list_for_org' org.id %}">
 					{% trans 'Projects in Akvo' %}
 				</a></h3>
 				<table class="org_statistics_table bottom_grey_border">
@@ -183,24 +184,24 @@
 					{% if page.number = 1 %}
 						{% trans 'First' %}
 					{% else %}
-						<a href="{% url wfw_landing_page %}{% addparam "page" 1 %}#list">
+						<a href="{% url 'wfw_landing_page' %}{% addparam "page" 1 %}#list">
 							{% trans 'First' %}
 						</a>
 					{% endif %} |
 					{% if page.has_previous %}
-							<a href="{% url wfw_landing_page %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> 
+							<a href="{% url 'wfw_landing_page' %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> 
 					{% else %}
 					{% trans 'Previous' %}
 					{% endif %} |
 					{% if page.has_next %}
-							<a href="{% url wfw_landing_page %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+							<a href="{% url 'wfw_landing_page' %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
 					{% else %}
 						{% trans 'Next' %}
 					{% endif %} |
 					{% if page.number = page.paginator.num_pages %}
 						{% trans 'Last' %}
 					{% else %}
-							<a href="{% url wfw_landing_page %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+							<a href="{% url 'wfw_landing_page' %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 					{% endif %}
 				</p>
 			</div>
@@ -241,7 +242,7 @@
 				{% endif %}">
 					<div style="float: left; width:130px;">
 						<div class="space10">
-							<a href="{% url akvo.rsr.views.projectmain p.id %}">
+							<a href="{% url 'project_main' p.id %}">
 					            {% project_thumb p 100 75 'float:left; margin-right: 10px;' %}
 					        </a>
 							<span style="display:none;">{% counter p %}</span>
@@ -250,7 +251,7 @@
 					<div style="float:left; width:270px;">
 						<div class="space10">
 							<p style="margin-bottom:0;">
-								<a href="{% url akvo.rsr.views.projectmain p.id %}">{{p.name}}</a><br />
+								<a href="{% url 'project_main' p.id %}">{{p.name}}</a><br />
 								{% comment %}
 								{{p.subtitle}}<br />
 								{{p.country}}
@@ -276,7 +277,7 @@
 						<div class="space10">
 							<p style="margin-bottom:0;">
 								{% for partner in p.all_partners %}
-									<a href="{% url org_detail partner.id %}">{{partner.name}}</a>{% if not forloop.last %},<br />{% endif %}
+									<a href="{% url 'org_detail' partner.id %}">{{partner.name}}</a>{% if not forloop.last %},<br />{% endif %}
 								{% endfor %}
 							</p>
 						</div>
@@ -291,24 +292,24 @@
 					{% if page.number = 1 %}
 						{% trans 'First' %}
 					{% else %}
-						<a href="{% url wfw_landing_page %}{% addparam "page" 1 %}#list">
+						<a href="{% url 'wfw_landing_page' %}{% addparam "page" 1 %}#list">
 							{% trans 'First' %}
 						</a>
 					{% endif %} |
 					{% if page.has_previous %}
-							<a href="{% url wfw_landing_page %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> 
+							<a href="{% url 'wfw_landing_page' %}{% addparam "page" page.previous_page_number %}#list">{% trans 'Previous' %}</a> 
 					{% else %}
 					{% trans 'Previous' %}
 					{% endif %} |
 					{% if page.has_next %}
-							<a href="{% url wfw_landing_page %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
+							<a href="{% url 'wfw_landing_page' %}{% addparam "page" page.next_page_number %}#list">{% trans 'Next' %}</a>
 					{% else %}
 						{% trans 'Next' %}
 					{% endif %} |
 					{% if page.number = page.paginator.num_pages %}
 						{% trans 'Last' %}
 					{% else %}
-							<a href="{% url wfw_landing_page %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
+							<a href="{% url 'wfw_landing_page' %}{% addparam "page" page.paginator.num_pages %}#list">{% trans 'Last' %}</a>
 					{% endif %}
 				</p>
 			</div>

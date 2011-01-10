@@ -1,6 +1,7 @@
 {% extends 'rsr/base.html' %}
 
 {% load i18n google_maps %}
+{% load url from future %}
 
 {% block title %}
 {% trans 'Map of all projects' %}
@@ -14,9 +15,9 @@
 {% block maincontent %}
 	<div class="right">
 		<p class="small" style="margin:0; padding:0; padding-top:0px;">
-			<a href="{% url rsr_org_list %}">{% trans 'List of all organisations' %} &#x25B6;</a> <br />
-            <a href="{% url project_list %}">{% trans 'List of all projects' %} &#x25B6;</a> <br />
-            <a href="{% url global_organisation_map %}">{% trans 'Map of all organisations' %} &#x25B6;</a>
+			<a href="{% url 'rsr_org_list' %}">{% trans 'List of all organisations' %} &#x25B6;</a> <br />
+            <a href="{% url 'project_list' %}">{% trans 'List of all projects' %} &#x25B6;</a> <br />
+            <a href="{% url 'global_organisation_map' %}">{% trans 'Map of all organisations' %} &#x25B6;</a>
 		</p>		
 	</div>
     <h1>

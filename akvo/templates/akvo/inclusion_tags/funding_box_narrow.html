@@ -4,6 +4,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endcomment %}
 
 {% load i18n rsr_filters humanize %}
+{% load url from future %}
 
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
@@ -42,7 +43,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% if project.status != 'L' and project.status != 'R' %}
 				<div id="donate44" style="margin: 10px; border-bottom:1px solid #A1A0AD; padding-bottom:7px;">
 					<p class="grey" style="text-align:center; line-height:1.0em; margin-bottom:5px;">{% trans 'Individuals' %}</p>
-					<a href="{% url project_donate project_id=project.id %}" class="donate_button" onclick="this.blur();" style="margin:0 auto;"><span>Donate</span></a>
+					<a href="{% url 'project_donate' project_id=project.id %}" class="donate_button" onclick="this.blur();" style="margin:0 auto;"><span>Donate</span></a>
 				</div>
 				<div style="margin:10px; text-align:center; margin-bottom:5px;">
 					<p class="grey" style="line-height:1.0em; margin-bottom:0;">{% trans 'Institutions' %}:

@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
 
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load url from future %}
 
 {% block title %}  
 		{% if org_type = 'all' %}
@@ -19,7 +20,7 @@
 {% if org_type = 'all' %}
 	<li id="last_breadcrum_item">{% trans 'Organisations' %}</li>
 {% else %}
-	<li><a href="{% url rsr_org_list%}"><span>{% trans 'Organisations' %}</span></a></li>
+	<li><a href="{% url 'rsr_org_list' %}"><span>{% trans 'Organisations' %}</span></a></li>
 	{% if org_type = 'funding' %}
 		<li id="last_breadcrum_item">{% trans 'Funding partners' %}</li>
 	{% endif %}
@@ -78,17 +79,17 @@
 	                	{% trans 'First' %} |
 	                {% else %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 							{% addparam 'page' 1 %}">{% trans 'First' %}</a> |
 	                {% endif %}
 	                {% if page.has_previous %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 						{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
 	                {% else %}
@@ -96,9 +97,9 @@
 	                {% endif %}
 	                {% if page.has_next %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 						{% addparam 'page' page.next_page_number %}">{% trans 'Next' %}</a> |
 	                {% else %}
@@ -108,9 +109,9 @@
 	                {% trans 'Last' %}
 	                {% else %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 						{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
 	                {% endif %}
@@ -125,9 +126,9 @@
 				<div style="border-right:1px solid #979AA5;">
 					<p style="padding:15px 0; margin:0;">
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 							{% if request_get.order_by == 'name' %}
 								{% if request_get.sort == 'asc' %}
@@ -155,9 +156,9 @@
 				<div style="border-right:1px solid #979AA5;">
 					<p style="padding:15px 0; margin:0;">
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 							{% if request_get.order_by == 'country__country_name' %}
 								{% if request_get.sort == 'asc' %}
@@ -185,7 +186,7 @@
 				<div style="float: left; width:540px;">
 					<div class="space10">
 						<p style="margin:0;">
-							<a href="{% url akvo.rsr.views.orgdetail o.id %}">
+							<a href="{% url 'org_detail' o.id %}">
                 {% org_logo o 100 75 'float: left; margin-right: 10px;' %}
 								{% comment %}
 									<img src="{% thumbnail o.logo 100x75 autocrop,upscale,sharpen %}" alt="" />
@@ -193,7 +194,7 @@
 								{% endcomment %}
 							</a>
 							<span class="small" style="font-size:1em;">
-								<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+								<a href="{% url 'org_detail' o.id %}">{{o.name}}</a>
 							</span><br />
 							<span class="grey small" style="">{{o.long_name}}</span>
 						</p>
@@ -216,7 +217,7 @@
 				<div style="float: left; width:100px;">
 					<div class="space10">
 						<p class="small">
-						<a href="{% url project_list_for_org o.id %}">{{o.published_projects.count}}</a>
+						<a href="{% url 'project_list_for_org' o.id %}">{{o.published_projects.count}}</a>
 						</p>
 					</div>
 				</div>
@@ -231,17 +232,17 @@
 	                	{% trans 'First' %} |
 	                {% else %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 						{% addparam "page" 1 %}">{% trans 'First' %}</a> |
 	                {% endif %}
 	                {% if page.has_previous %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 	                	{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
 	                {% else %}
@@ -249,11 +250,11 @@
 	                {% endif %}
 	                {% if page.has_next %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
-						{% addparam "page" page.next_page_number %}">{% trans 'Next' %}</a> |
+						{% addparam 'page' page.next_page_number %}">{% trans 'Next' %}</a> |
 	                {% else %}
 	                	{% trans 'Next' %} |
 	                {% endif %}
@@ -261,9 +262,9 @@
 	                	{% trans 'Last' %}
 	                {% else %}
 						{% if org_type = 'all' %}
-							<a href="{% url rsr_org_list %}
+							<a href="{% url 'rsr_org_list' %}
 						{% else %}
-							<a href="{% url rsr_org_list_filtered org_type %}
+							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
 						{% addparam "page" page.paginator.num_pages %}">{% trans 'Last' %}</a>
 	                {% endif %}

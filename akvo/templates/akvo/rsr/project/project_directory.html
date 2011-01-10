@@ -2,6 +2,7 @@
 
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache %}
 {% load markup_tags humanize sorting_tags pagination_tags %}
+{% load url from future %}
 
 {% block title %}
   {% if org %}
@@ -18,7 +19,7 @@
 
 {% block breadcrum_items %}
 	{{block.super}}
-	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
 	{% if org %}
 		{% if request.GET.q %}
 			<li id="last_breadcrum_item">
@@ -231,7 +232,7 @@
             <tr>
               <td>
                 <div class="space10">
-                  <a href="{% url project_main project.id %}">
+                  <a href="{% url 'project_main' project.id %}">
                     {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
                     <p class="link_blue strong" style="margin-bottom:0">
                         {{project.name}}
@@ -252,14 +253,14 @@
               <td>
                 <p class="td-text">
                   {% for partner in project.all_partners %}
-                    <a href="{% url org_detail partner.id %}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                    <a href="{% url 'org_detail' partner.id %}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
                   {% endfor %}
                 </p>
               </td>
               <td>
                 <p class="td-text">
                     {% if project.latest_update %}
-                      <a href="{% url project_updates project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
+                      <a href="{% url 'project_updates' project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
                     {% else %}
                       {% trans 'Not yet' %}
                     {% endif %}
@@ -268,7 +269,7 @@
               <td>
                 <p class="td-text">
                     {% for area in project.focus_areas %}
-                        <a href="{% url focus_area area.slug %}">{{area.name}}</a><br/>
+                        <a href="{% url 'focus_area' area.slug %}">{{area.name}}</a><br/>
                     {% endfor %}
                 </p>
               </td>
@@ -300,7 +301,7 @@
 						{% else %}
 							{% if not project.status == 'L' and not project.status == 'R' %}
 								<div style="text-align:center; padding-top:5px; padding-bottom:5px;">
-									<a class="orange awesome small" href="{% url project_donate project.id %}">{% trans 'Donate' %}</a>
+									<a class="orange awesome small" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>
 								</div>
 							{% endif %}
 						{% endif %}
@@ -387,7 +388,7 @@ function replaceQueryString(url, param, value) {
 	/*
 	jQ('#organisation').change(function() {
 				
-		url = "{% url project_list %}" + jQ(this).val();		
+		url = "{% url 'project_list' %}" + jQ(this).val();		
 		query_string = window.location.search.substring(1);		
 		
 		if (query_string) {	
