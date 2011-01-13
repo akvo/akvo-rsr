@@ -1,6 +1,6 @@
 RELEASE_NOTES.txt, v1.0
 
-Last changed: 4 Nov 2010, tbp
+Last changed: 17 Dec 2010, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
