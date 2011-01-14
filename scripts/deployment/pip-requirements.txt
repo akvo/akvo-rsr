@@ -1,5 +1,5 @@
 # Django
-Django==1.2.3
+Django==1.2.4
 
 # Django Apps
 django-counter
