@@ -1,6 +1,6 @@
 RELEASE_NOTES.txt, v1.0
 
-Last changed: 4 Nov 2010, tbp
+Last changed: 14 Jan 2011, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -13,7 +13,8 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR v 1.0.1 release notes
 -------------------------------------------
-16 Dec 2010, (Code name: Indigo) bw
+14 Jan 2011, (Code name: Indigo) bw
+Note: The original 16 Dec 2010 release notes have been edited to better document changes made in 1.0.1.
 
 New Features
 ------------
@@ -25,15 +26,23 @@ Bug Fixes
 The "People Served" calculation on the Akvo home page now counts only the largest "people affected" benchmark from any category for each project. For any given project, it is likely that the people affected in different categories have some overlap, so calculations for numbers affected should take only the larger number. Currently people affected numbers come only from the Water and Sanitation categories.
 
 ### MiniCMS
-The following improvements have been made to the MiniCMS.
+The following fixes have been made to the MiniCMS.
 
 - Map box has been removed.
 - Lower section height renamed to Focus areas accordion height.
-- Name field for instances of the MiniCMS has been added.
 - Help text has been added regarding HTML tags that can be used in MiniCMS fields.
 
-### Removed legacy data fields for Location, Category and Benchmark
+Other Changes
+-------------
+### Load time of organisation listing page decreased.
+The data calculations for the columns Requested and Still needed were having a severe impact on its load time, so have been removed. The page loads much faster now.
+
+### Removed legacy data fields for Location, Category and Benchmark.
 Content of the previous data fields were imported into new models in the 1.0.0 release; the old fields have now been removed.
+
+### MiniCMS
+The following improvements have been made to the MiniCMS.
+- Name field for instances of the MiniCMS has been added.
 
 
 
