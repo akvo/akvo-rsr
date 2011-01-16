@@ -46,7 +46,6 @@ The following improvements have been made to the MiniCMS.
 
 
 
-
 Akvo RSR v 1.0.0 release notes
 -------------------------------------------
 4 Nov 2010, (Code name: One Oh) tbp
