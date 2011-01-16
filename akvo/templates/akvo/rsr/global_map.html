@@ -77,8 +77,8 @@
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" />' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
 					'<div id="project_location"><p class="small">' +
-					'{{project.country.get_continent_display}}<br />' +
-					'{{project.country}}, {{project.city}} </p></div>'
+					'{{project.primary_location.country.get_continent_display}}<br />' +
+					'{{project.primary_location.country}}, {{project.primary_location.city}} </p></div>'
 	                '</div>';
 	
 	            var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({

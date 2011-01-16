@@ -182,8 +182,8 @@
 						<div style="float:left; width:170px;">
 							<p class="small grey" style="margin:0; padding:=;">
 								<a href="{% url org_detail partner.id %}">{{partner.name}}</a><br />
-                {% if partner.primary_location.city %}
-                  {{partner.primary_location.city}},
+                {% if partner.primary_location.primary_location.city %}
+                  {{partner.primary_location.primary_location.city}},
                 {% endif %}
                 {{partner.primary_location.country}}
 							</p>

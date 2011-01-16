@@ -43,7 +43,7 @@
           {% if o.primary_location.address_1 %}{{o.primary_location.address_1}}<br />{% endif %}
           {% if o.primary_location.address_2 %}{{o.primary_location.address_2}}<br />{% endif %}
           {% if o.primary_location.postcode %}{{o.primary_location.postcode}}<br />{% endif %}
-          {% if o.primary_location.city %}{{o.primary_location.city}}<br />{% endif %}
+          {% if o.primary_location.primary_location.city %}{{o.primary_location.primary_location.city}}<br />{% endif %}
           {% if o.primary_location.state %}{{o.primary_location.state}}<br />{% endif %}
           {% if o.primary_location.country %}{{o.primary_location.country}}{% endif %}
 				</p>
