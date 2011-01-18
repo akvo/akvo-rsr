@@ -186,7 +186,7 @@ a.staff_picks_link {
       margin-top:15px;
     }
 
-#index_right_now_box h1 {
+#index_right_now_box > h1 {
     color: #5DFF51;
     padding:20px 20px 0 20px;
     }
