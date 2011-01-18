@@ -158,7 +158,6 @@ a.staff_picks_link {
     display: inline;
     }
 
-
 #index_right_top {
     background:url(../../img/earth-300x78.png) no-repeat bottom;
     height: 361px;
@@ -184,7 +183,7 @@ a.staff_picks_link {
       border-bottom-right-radius: 2px 2px;
       border-top-left-radius: 2px 2px;
       border-top-right-radius: 2px 2px;
-      padding-top:20px;
+      margin-top:15px;
     }
 
 #index_right_now_box h1 {
