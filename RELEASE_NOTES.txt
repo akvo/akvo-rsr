@@ -1,6 +1,6 @@
 RELEASE_NOTES.txt, v1.0
 
-Last changed: 14 Jan 2011, bw
+Last changed: 18 Jan 2011, ogl
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -10,6 +10,26 @@ Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akv
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
 
+
+Akvo RSR v1.0.2 release notes
+-----------------------------
+18 Jan 2011 (Code name: Hailstorm) ogl
+
+Bug fixes
+---------
+### Widgets now display all location information as expected (esp. continent and country details).
+[https://akvo.lighthouseapp.com/projects/46515/tickets/146]
+
+### The Akvo home page will now display as expected in Internet Explorer 6.
+[https://akvo.lighthouseapp.com/projects/46515/tickets/129]
+
+### The Get-a-Widget page now has the Projects menu tab selected.
+[https://akvo.lighthouseapp.com/projects/46515/tickets/128]
+
+### The All Updates page for a particular project now displays titles for all updates in the list even if some information was missing when a particular update was submitted.
+[http://akvo.lighthouseapp.com/projects/46515/tickets/142]
+
+---
 
 Akvo RSR v 1.0.1 release notes
 -------------------------------------------
