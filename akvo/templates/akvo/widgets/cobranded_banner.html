@@ -81,8 +81,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				<div style="float:left; width:140px; margin-right:-140px; padding-left:10px;">
 						<div style="height:57px; overflow:hidden; margin-bottom:7px;">
 							<p class="smallFont grey" style="font-size:0.9em;">{% trans 'Location' %}</p>
-							<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.country.get_continent_display}}</span><br />
-								  {{project.city}}, {{project.state}}, {{project.country}}
+							<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+								  {{project.primary_location.city}}, {{project.primary_location.state}}, {{project.primary_location.country}}
 							</p>
 						</div>
 						<p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>

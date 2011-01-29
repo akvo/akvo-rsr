@@ -78,8 +78,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         </div>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 		<div id="project_location">
-			<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
-				{{project.country}}, {{project.city}}
+			<p class="smallFont"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+				{{project.primary_location.country}}, {{project.primary_location.city}}
 			</p>
 		</div>
 		<div style="width:70px; float:left;" class="topmargin">

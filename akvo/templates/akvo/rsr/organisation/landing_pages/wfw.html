@@ -252,17 +252,13 @@
 						<div class="space10">
 							<p style="margin-bottom:0;">
 								<a href="{% url 'project_main' p.id %}">{{p.name}}</a><br />
-								{% comment %}
-								{{p.subtitle}}<br />
-								{{p.country}}
-								{% endcomment %}
 							</p>
 						</div>
 					</div>
 					<div style="float:left; width:170px;">
 						<div class="space10">
 							<p style="margin-bottom:0;">
-								{{p.country}}
+								{{p.primary_location.country}}
 							</p>
 						</div>
 					</div>

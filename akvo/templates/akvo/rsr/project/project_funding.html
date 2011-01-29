@@ -129,13 +129,13 @@
                 {% with funder.funding_organisation as f_org %}
                   {% with  funder.funding_organisation.primary_location as f_org_loc %}
                     {{f_org}}</a><br />
-                    {% if f_org_loc.city %}
-                      {{f_org_loc.city}},
+                    {% if f_org_loc.primary_location.city %}
+                      {{f_org_loc.primary_location.city}},
                     {% endif %}
-                    {% if f_org_loc.state %}
-                      {{f_org_loc.state}}, 
+                    {% if f_org_loc.primary_location.state %}
+                      {{f_org_loc.primary_location.state}}, 
                     {% endif %}
-                    {{f_org_loc.country}}
+                    {{f_org_loc.primary_location.country}}
                   {% endwith %}
                 {% endwith %}
 						</p>
