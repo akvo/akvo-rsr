@@ -4,12 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS, Country
-from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
+from akvo.rsr.models import MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS, Country
+from akvo.rsr.models import UserProfile, Invoice, SmsReporter
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
-from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs
+from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, state_equals
 
 from django import forms
 from django import http
@@ -41,6 +41,8 @@ from decimal import Decimal
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
+from workflows.utils import get_workflow_for_object,  set_workflow_for_object, get_workflow
+from notification.models import Notice
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
@@ -1074,72 +1076,166 @@ def updateform(request, project_id):
         'updates': Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
         }, RequestContext(request))
 
-def mms_update(request):
-    '''
-    Create a project update from incoming MMS
-    Returns a simple "OK" to the gateway
-    '''
-    # see if message already has been recieved for some reason, if so ignore
-    try:
-        # if we find an mms already, do nuthin...
-        mms = MoMmsRaw.objects.get(mmsid__exact=request.GET.get('mmsid'))
-    except:
-        try:
-            raw = {}
-            request.encoding = 'iso-8859-1'
-            # loop over all query variables and put them in a dict to use as data for MoSmsRaw object creation
-            for f in MoMmsRaw._meta.fields:
-                if f.name == 'sender': #can't have a field named "from", python keyword...
-                    raw[f.name] = request.GET.get('from')
-                else:
-                    raw[f.name] = request.GET.get(f.name)
-            raw['saved_at'] = datetime.now() #our own time stamp
-            mms = MoMmsRaw.objects.create(**raw)
-            for i in range(int(mms.filecount)): #BUG: mms.filecount SHOULD be an int already, but gets fetched as unicode! sql schema says the field is an integer field...
-                fileraw = {}
-                for f in MoMmsFile._meta.fields:
-                    if f.name != 'mms':
-                        fileraw[f.name] = request.GET.get('%s[%d]' % (f.name, i))
-                fileraw['mms'] = mms
-                mmsfile = MoMmsFile.objects.create(**fileraw)
-            # find the user owning the phone number. If found create an update
-            try:
-                u = UserProfile.objects.get(phone_number__exact=mms.sender)
-                success = u.create_mms_update(mms)
-            except:
-                pass #no user with a matching mobile phone number...
-        except:
-            pass #TODO: logging!
-    return HttpResponse("OK") #return OK under all conditions
+class MobileProjectForm(forms.Form):
+    project         = forms.ChoiceField(required=False, widget=forms.Select())
 
-def sms_update(request):
+    def __init__(self, *args, **kwargs):
+        profile = kwargs.pop('profile', None)
+        forms.Form.__init__(self, *args, **kwargs)
+        if profile:
+            self.fields['project'].choices = ((u'', u'---------'),) + tuple([(p.id, "%s - %s" % (unicode(p.pk), p.name)) for p in profile.my_unreported_projects()])
+
+    def clean(self):
+        """
+        
+        """
+        cd = self.cleaned_data
+        return self.cleaned_data            
+            
+class MobileNumberForm(forms.Form):
+    phone_number    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'15',}))
+
+    def clean(self):
+        """
+        
+        """
+        cd = self.cleaned_data
+        if not 'phone_number' in cd:
+            raise forms.ValidationError(_(u'Field phone_number missing from MobileForm.'))        
+        if cd['phone_number']:
+            try:
+                UserProfile.objects.get(phone_number=cd['phone_number'])
+                raise forms.ValidationError(_(u'The phone number %s is already registered for updating. Please check the number entered.' % cd['phone_number']))
+            except:
+                pass
+        else:
+            pass # disable updating for this user
+        return self.cleaned_data            
+
+@login_required()
+def myakvo_mobile_number(request):
     '''
-    Create a project update from incoming SMS
-    Returns a simple "OK" to the gateway
+    Add (or change) mobile phone number for SMS reporting
     '''
-    # see if message already has been recieved for some reason, if so ignore
-    try:
-        mo = MoSmsRaw.objects.get(incsmsid__exact=request.GET.get('incsmsid'))
-    except:
-        try:
-            raw = {}
-            request.encoding = 'iso-8859-1'
-            # loop over all query variables and put them in a dict to use as data for MoSmsRaw object creation
-            for f in MoSmsRaw._meta.fields:
-                raw[f.name] = request.GET.get(f.name)
-            raw['saved_at'] = datetime.now()
-            mo = MoSmsRaw.objects.create(**raw)
-            # find the user owning the phone number. If found create an update
-            u = UserProfile.objects.get(phone_number__exact=request.GET.get("sender"))
-            if u:
-                #sms_data = {
-                #    'time':  datetime.fromtimestamp(float(request["delivered"])),
-                #    'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
-                #}
-                success = u.create_sms_update(mo)
-        except:
-            pass #TODO: logging!
-    return HttpResponse("OK") #return OK under all conditions
+    profile = request.user.get_profile()
+    if request.method == 'POST':
+        form = MobileNumberForm(request.POST, request.FILES)
+        if form.is_valid():
+            # workflow for mobile Akvo
+            if 'phone_number' in form.changed_data:
+                if form.cleaned_data['phone_number']: # phone number added or changed
+                    profile.init_sms_update_workflow(form.cleaned_data['phone_number'])
+                else: # phone number removed
+                    profile.disable_sms_update_workflow()
+                    #obj.reset_reporting = True
+            return HttpResponseRedirect(reverse('myakvo_mobile'))
+    else:
+        form = MobileNumberForm({'phone_number': profile.phone_number},)
+    return render_to_response('rsr/myakvo/mobile_number.html', {'form': form, }, RequestContext(request))
+
+@login_required()
+def myakvo_mobile(request):
+    '''
+    Handle the selection of projects for SMS reporting
+    '''
+    profile = request.user.get_profile()
+    reporters = profile.my_reporters()
+    form_data = {'phone_number': profile.phone_number}
+    notices = Notice.objects.notices_for(request.user, on_site=True)
+    
+    if request.method == 'POST':
+        form = MobileProjectForm(request.POST, request.FILES, profile=profile)
+        if form.is_valid():
+            project = Project.objects.get(pk=form.cleaned_data['project'])
+            profile.create_reporter(project)
+            reporters = profile.my_reporters()
+            return HttpResponseRedirect('./')
+    else:
+        form = MobileProjectForm(form_data,profile=profile)
+    return render_to_response(
+        'rsr/myakvo/mobile.html', {
+            'profile': profile,
+            'form': form,
+            'reporters': reporters,
+            'sms_updating_enabled': state_equals(profile, [profile.STATE_UPDATES_ENABLED, profile.STATE_PHONE_NUMBER_VALIDATED]),
+            'notices': notices,
+        }, RequestContext(request))
+
+@login_required()
+def myakvo_cancel_reporter(request, reporter_id):
+    '''
+    '''
+    profile = request.user.get_profile()
+    reporter = SmsReporter.objects.get(id=reporter_id)
+    profile.destroy_reporter(reporter)
+    return HttpResponseRedirect(reverse('myakvo_mobile'))
+
+#def mms_update(request):
+#    '''
+#    Create a project update from incoming MMS
+#    Returns a simple "OK" to the gateway
+#    '''
+#    # see if message already has been recieved for some reason, if so ignore
+#    try:
+#        # if we find an mms already, do nuthin...
+#        mms = MoMmsRaw.objects.get(mmsid__exact=request.GET.get('mmsid'))
+#    except:
+#        try:
+#            raw = {}
+#            request.encoding = 'iso-8859-1'
+#            # loop over all query variables and put them in a dict to use as data for MoSmsRaw object creation
+#            for f in MoMmsRaw._meta.fields:
+#                if f.name == 'sender': #can't have a field named "from", python keyword...
+#                    raw[f.name] = request.GET.get('from')
+#                else:
+#                    raw[f.name] = request.GET.get(f.name)
+#            raw['saved_at'] = datetime.now() #our own time stamp
+#            mms = MoMmsRaw.objects.create(**raw)
+#            for i in range(int(mms.filecount)): #BUG: mms.filecount SHOULD be an int already, but gets fetched as unicode! sql schema says the field is an integer field...
+#                fileraw = {}
+#                for f in MoMmsFile._meta.fields:
+#                    if f.name != 'mms':
+#                        fileraw[f.name] = request.GET.get('%s[%d]' % (f.name, i))
+#                fileraw['mms'] = mms
+#                mmsfile = MoMmsFile.objects.create(**fileraw)
+#            # find the user owning the phone number. If found create an update
+#            try:
+#                u = UserProfile.objects.get(phone_number__exact=mms.sender)
+#                success = u.create_mms_update(mms)
+#            except:
+#                pass #no user with a matching mobile phone number...
+#        except:
+#            pass #TODO: logging!
+#    return HttpResponse("OK") #return OK under all conditions
+#
+#def sms_update(request):
+#    '''
+#    Create a project update from incoming SMS
+#    Returns a simple "OK" to the gateway
+#    '''
+#    # see if message already has been recieved for some reason, if so ignore
+#    try:
+#        mo = MoSmsRaw.objects.get(incsmsid__exact=request.GET.get('incsmsid'))
+#    except:
+#        try:
+#            raw = {}
+#            request.encoding = 'iso-8859-1'
+#            # loop over all query variables and put them in a dict to use as data for MoSmsRaw object creation
+#            for f in MoSmsRaw._meta.fields:
+#                raw[f.name] = request.GET.get(f.name)
+#            raw['saved_at'] = datetime.now()
+#            mo = MoSmsRaw.objects.create(**raw)
+#            # find the user owning the phone number. If found create an update
+#            u = UserProfile.objects.get(phone_number__exact=request.GET.get("sender"))
+#            if u:
+#                #sms_data = {
+#                #    'time':  datetime.fromtimestamp(float(request["delivered"])),
+#                #    'text':  request["text"],#.decode("latin-1"), #incoming latin-1, decode to unicode
+#                #}
+#                success = u.create_sms_update(mo)
+#        except:
+#            pass #TODO: logging!
+#    return HttpResponse("OK") #return OK under all conditions
 
 class CommentForm(ModelForm):
 

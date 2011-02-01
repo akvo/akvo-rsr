@@ -1,0 +1,52 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n generic_content addparam rsr_tags thumbnail %}
+
+{% block title %}
+	{% trans 'MyAkvo - New phone number' %}
+{% endblock title %}
+
+{% block style %}
+	{{block.super}}
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
+	<meta http-equiv="pragma" content="no-cache"/>
+	<meta http-equiv="cache-control" content="no-cache"/>
+{% endblock style%}
+
+{% block breadcrumbs %}
+	{{block.super}} &raquo; {% trans 'MyAkvo - New phone number' %}
+{% endblock breadcrumbs %}
+
+
+{% block content %}
+
+	<form method="post" name="number_change_form">
+    {% csrf_token %}
+    <h1>{% trans 'Enter your mobile phone number' %}</h1>
+
+    {{form.phone_number}}
+    <p class="small grey">{% trans 'Mobile phone number' %}.</p>
+
+    <p class="small grey">{% trans 'The number should be entered as numbers only, starting with your country code. Example: 46707277477' %}</p>
+
+		<div style="text-align:center; padding-bottom:20px;">
+			<div style="float:left;">
+				<a href="{% url myakvo_mobile %}" class="small">{% trans 'Cancel' %}</a>
+			</div>
+			<a class="aqua awesome" href="javascript:document.number_change_form.submit();">
+				{% trans 'Change' %}
+			</a>
+		</div>
+
+	</form>
+	
+</div> <!-- #outer_leftwing -->
+{% endblock content %}
+
+
+

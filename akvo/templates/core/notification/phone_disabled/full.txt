@@ -1,0 +1,9 @@
+{% load i18n %}
+{% blocktrans with project.pk as project_pk and project.name as project_name %}Your mobile phone, {{phone_number}} has been disabled for creating SMS updates to Akvo projects.
+
+If you want to enable updating again please login to Akvo and re-enter your phone number.
+
+
+The Akvo team
+
+{% endblocktrans %}

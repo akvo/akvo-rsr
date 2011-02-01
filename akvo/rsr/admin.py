@@ -1051,9 +1051,72 @@ else:
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
+class SmsReporterInline(admin.TabularInline):
+    model = get_model('rsr', 'smsreporter')
+    extra = 1
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """
+        Hook for specifying the form Field instance for a given database Field
+        instance.
+
+        If kwargs are given, they're passed to the form Field's constructor.
+        Added by GvH:
+        Overridden to implement limits to project list select for org users.
+        """
+        request = kwargs.pop("request", None)
+        
+        # Added by GvH
+        # Limit the choices of the project db_field to projects linked to user's org
+        # if we have an org user
+        if db_field.attname == 'project_id':
+            opts = self.opts
+            user = request.user
+            if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+                db_field.rel.limit_choices_to = {'pk__in': user.get_profile().organisation.all_projects()}
+            
+        # If the field specifies choices, we don't need to look for special
+        # admin widgets - we just need to use a select widget of some kind.
+        if db_field.choices:
+            return self.formfield_for_choice_field(db_field, request, **kwargs)
+
+        # ForeignKey or ManyToManyFields
+        if isinstance(db_field, (models.ForeignKey, models.ManyToManyField)):
+            # Combine the field kwargs with any options for formfield_overrides.
+            # Make sure the passed in **kwargs override anything in
+            # formfield_overrides because **kwargs is more specific, and should
+            # always win.
+            if db_field.__class__ in self.formfield_overrides:
+                kwargs = dict(self.formfield_overrides[db_field.__class__], **kwargs)
+
+            # Get the correct formfield.
+            if isinstance(db_field, models.ForeignKey):
+                formfield = self.formfield_for_foreignkey(db_field, request, **kwargs)
+            elif isinstance(db_field, models.ManyToManyField):
+                formfield = self.formfield_for_manytomany(db_field, request, **kwargs)
+
+            # For non-raw_id fields, wrap the widget with a wrapper that adds
+            # extra HTML -- the "add other" interface -- to the end of the
+            # rendered output. formfield can be None if it came from a
+            # OneToOneField with parent_link=True or a M2M intermediary.
+            if formfield and db_field.name not in self.raw_id_fields:
+                formfield.widget = widgets.RelatedFieldWidgetWrapper(formfield.widget, db_field.rel, self.admin_site)
+
+            return formfield
+
+        # If we've got overrides for the formfield defined, use 'em. **kwargs
+        # passed to formfield_for_dbfield override the defaults.
+        for klass in db_field.__class__.mro():
+            if klass in self.formfield_overrides:
+                kwargs = dict(self.formfield_overrides[klass], **kwargs)
+                return db_field.formfield(**kwargs)
+
+        # For any other type of field, just call its formfield() method.
+        return db_field.formfield(**kwargs)
+
 class UserProfileAdminForm(forms.ModelForm):
     """
-    This form dispalys two extra fields that show if the ser belongs to the groups
+    This form dispalys two extra fields that show if the user belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
     class Meta:
@@ -1077,11 +1140,12 @@ class UserProfileAdminForm(forms.ModelForm):
 
 class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
     list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
-    search_fields = ('user_name', 'organisation',)
+    search_fields = ('user', 'organisation',)
     list_filter  = ('organisation', )
     ordering = ('user__username',)
+    inlines = [SmsReporterInline,]
     form = UserProfileAdminForm
-        
+    
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(UserProfileAdmin, self).get_actions(request)
@@ -1097,7 +1161,7 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
             # hide sms-related stuff
             self.exclude =  ('phone_number', 'project', )
             # user and org are only shown as text, not select widget
-            self.readonly_fk = ('user', 'organisation',)
+            self.readonly_fk = ('user', 'organisation', 'validation', )
         # this is needed to remove some kind of caching on exclude and readonly_fk,
         # resulting in the above fields being hidden/changed from superusers after
         # a vanilla user has accessed the form!
@@ -1105,6 +1169,9 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
             self.exclude =  None
             self.readonly_fk = ()
         form = super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and obj.validation != obj.VALIDATED:
+            self.inlines = []
+            self.inline_instances = []        
         return form
 
     def queryset(self, request):
@@ -1143,25 +1210,22 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
                 return True
         return False
 
-    def save_form(self, request, form, change):
+    def save_model(self, request, obj, form, change):
         """
-        Given a ModelForm return an unsaved instance. ``change`` is True if
-        the object is being changed, and False if it's being added.
-        
-        Act upon the checkboxes that fake admin settings for the partner users.
+        override of django.contrib.admin.options.save_model        
         """
-        userprofile = form.save(commit=False) #returns a user profile
+        # Act upon the checkboxes that fake admin settings for the partner users.
         is_active = form.cleaned_data['is_active']
         is_admin =  form.cleaned_data['is_org_admin']
         is_editor = form.cleaned_data['is_org_editor']
-        userprofile.set_is_active(is_active) #master switch
-        userprofile.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
-        userprofile.set_is_org_editor(is_editor) #can edit projects
-        if not (userprofile.user.is_superuser or userprofile.get_is_rsr_admin()):
-            userprofile.set_is_staff(is_admin or is_editor) #implicitly needed to log in to admin
-        return form.save(commit=False)
+        obj.set_is_active(is_active) #master switch
+        obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
+        obj.set_is_org_editor(is_editor) #can edit projects
+        obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
+        obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
+
 
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display    = ('project', 'user', 'comment', 'time', )    
@@ -1227,22 +1291,22 @@ else: #akvo-rsr
             
     admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
     
-    class MoMmsFileInline(admin.TabularInline):
-        model = get_model('rsr', 'mommsfile')
-        extra = 1
-    
-    
-    class MoMmsRawAdmin(admin.ModelAdmin):
-        inlines = [MoMmsFileInline,]    
-        list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
-    
-    admin.site.register(get_model('rsr', 'mommsraw'), MoMmsRawAdmin)
-
-
-    class MoSmsRawAdmin(admin.ModelAdmin):
-        list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
-    
-    admin.site.register(get_model('rsr', 'mosmsraw'), MoSmsRawAdmin)
+    #class MoMmsFileInline(admin.TabularInline):
+    #    model = get_model('rsr', 'mommsfile')
+    #    extra = 1
+    #
+    #
+    #class MoMmsRawAdmin(admin.ModelAdmin):
+    #    inlines = [MoMmsFileInline,]    
+    #    list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
+    #
+    #admin.site.register(get_model('rsr', 'mommsraw'), MoMmsRawAdmin)
+    #
+    #
+    #class MoSmsRawAdmin(admin.ModelAdmin):
+    #    list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
+    #
+    #admin.site.register(get_model('rsr', 'mosmsraw'), MoSmsRawAdmin)
 
     # PayPal    
     class InvoiceAdmin(admin.ModelAdmin):
