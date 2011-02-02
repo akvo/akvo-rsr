@@ -3,21 +3,71 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags google_maps %}
+{% load i18n rsr_tags google_maps counter_tags cache humanize %}
+
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
 	<meta charset="UTF-8" />
-	{% asset_bundle 'akvo_style' %}  
-	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
-	{% block head %}{% endblock head %}
 	<title>{{org}}</title>
+	
+	{% comment %}
+	{% block style %}
+		{% asset_bundle 'widget_project_list' %}
+	{% endblock style %}
+		
+	{% endcomment %}
+	
+	{% comment %}
+	{% asset_bundle 'akvo_style' %}
+	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">	
+	{% endcomment %}
+	
+	<style type="text/css" media="screen">
+		body { margin:0;}
+		#footer {
+			width: {{width}}px;
+			max-width: {{width}}px;
+			background-color: #{{bgcolor}};
+			color: #{{textcolor}};
+		}
+		#footer img {
+			margin-top:3px;
+			margin-right:3px;
+		}
+	</style>
+	<base target="_top" />
 </head>
 <body>
-	<div id="akvo_widget_project_map_{{org.id}}">
-		{% google_organisation_projects_map org 'dynamic' 600 400 2 %}
-	</div>	
+	{% google_organisation_projects_map org 'dynamic' width height 2 %}	
+	
+	<div id="footer" style="text-align:right;">
+		<a href="http://akvo.org">
+			<img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+		</a>
+	</div>
+	
+	{% comment %}
+	{% block footer %}
+		{% block  footer_counter %}
+		<div style="float:left; padding-top:6px; display:none;">
+			<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
+				<span style="display:none;">{% counter org %}</span>
+	        	{% cache 10 org.view_count %}
+	        		{{ org.view_count|intcomma }} {% trans 'views' %}
+	        	{% endcache %}
+			</span>
+		</div>
+		{% endblock footer_counter %}
+		<div class="float:right;">
+			<a href="http://akvo.org">
+				<img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+			</a>
+		</div>
+		<div class="clear"></div>
+		
+	{% endblock footer %}
+	</div>
+	{% endcomment %}
 </body>
 </html>
-
-

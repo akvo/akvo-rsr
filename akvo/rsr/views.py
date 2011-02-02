@@ -1441,7 +1441,18 @@ def project_list_widget(request, template='project-list', org_id=0):
 
 @render_to('widgets/project_map.html')
 def project_map_widget(request, org_id):
-    return { 'org': get_object_or_404(Organisation, pk=org_id), }
+    bgcolor = request.GET.get('bgcolor', 'B50000')
+    height = request.GET.get('height', '350')
+    textcolor = request.GET.get('textcolor', 'FFFFFF')
+    width = request.GET.get('width', '600')
+    
+    return { 
+        'org': get_object_or_404(Organisation, pk=org_id), 
+        'height': height,
+        'width': width,
+        'bgcolor': bgcolor,
+        'textcolor': textcolor,
+        }
         
         
 @fetch_project
