@@ -31,7 +31,7 @@ from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
@@ -1661,9 +1661,14 @@ else: #akvo-rsr
             if updates:
                 update = updates[0]
                 # date of update shown as link poiting to the update page
-                update_info = '<a href="%s">%s</a><br/><a href="mailto:%s">%s</a><br/><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time, update.user.email, update.user.email)
+                update_info = '<a href="%s">%s</a><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time,)
+                # if we have an email of the user doing the update, add that as a mailto link
+                if update.user.email:
+                    update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
+                else:
+                    update_info  = '%s<br/>' % update_info
             else:
-                update_info = "No update yet<br/><br/>"
+                update_info = "%s<br/><br/>" % (ugettext(u'No update yet'),)
             # links to the project's support partners
             update_info = "%sSP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.support_partners()]))
             # links to the project's field partners
