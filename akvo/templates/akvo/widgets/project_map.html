@@ -1,0 +1,23 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n rsr_tags google_maps %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	{% asset_bundle 'akvo_style' %}  
+	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+	{% block head %}{% endblock head %}
+	<title>{{org}}</title>
+</head>
+<body>
+	<div id="akvo_widget_project_map_{{org.id}}">
+		{% google_organisation_projects_map org 'dynamic' 600 400 2 %}
+	</div>	
+</body>
+</html>
+
+

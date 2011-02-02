@@ -1438,6 +1438,12 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
+
+@render_to('widgets/project_map.html')
+def project_map_widget(request, org_id):
+    return { 'org': get_object_or_404(Organisation, pk=org_id), }
+        
+        
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
