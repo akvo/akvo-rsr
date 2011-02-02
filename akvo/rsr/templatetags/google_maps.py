@@ -13,8 +13,10 @@ from akvo.rsr.models import Project, Organisation
 register = template.Library()
 
 
-_PROJECT_MARKER_ICON = getattr('GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
-_ORGANISATION_MARKER_ICON = getattr('GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
+_PROJECT_MARKER_ICON = getattr(settings,
+                               'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
+_ORGANISATION_MARKER_ICON = getattr(settings,
+                                    'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
 
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
