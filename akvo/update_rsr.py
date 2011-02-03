@@ -133,6 +133,20 @@ def create_primary_pvw_project_locations():
                 primary=True)
             print 'Successfully created location object for project id: %d' % p.id
 
+def create_primary_pvw_organisation_locations():
+    Org =get_model('rsr', 'organisation')
+    content_type = ContentType.objects.get_for_model(Org)
+    orgs = Org.objects.all()
+    for org in orgs:
+        if not org.primary_location:
+            get_model('rsr', 'location').objects.create(
+                latitude=0, longitude=0, city=org.city, state=org.state,
+                country = org.country, address_1 = org.address_1,
+                address_2 = org.address_2, postcode = org.postcode,
+                content_type = content_type, object_id = org.id, primary=True
+            )
+            print 'Successfully created location object for organisation id: %d' % org.id
+
 def create_primary_organisation_locations(): # Akvo RSR only!
     import csv
     content_type = ContentType.objects.get_for_model(get_model('rsr', 'organisation'))
@@ -155,5 +169,4 @@ def create_primary_organisation_locations(): # Akvo RSR only!
 
 
 if __name__ == '__main__':
-    create_primary_project_locations()
-    create_primary_organisation_locations()
+    create_primary_pvw_organisation_locations()

@@ -72,8 +72,10 @@ class OrganisationAdminForm(forms.ModelForm):
 class OrganisationAdmin(admin.ModelAdmin):
     if settings.PVW_RSR:
         fieldsets = (
-            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
+            #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
             (_(u'About the organisation'), {'fields': ('description', )}),
         )    
     else:
@@ -332,9 +334,12 @@ class SponsorPartnerInline(admin.TabularInline):
 
 
 class BudgetItemAdminInLine(admin.TabularInline):
-    model = get_model('rsr', 'budgetitem')
-    extra = len(model.ITEM_CHOICES)
-    max_num = len(model.ITEM_CHOICES)
+    if not settings.PVW_RSR:        
+        model = get_model('rsr', 'budgetitem')
+        extra = len(model.ITEM_CHOICES)
+        max_num = len(model.ITEM_CHOICES)
+    else:
+        pass
 
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
 

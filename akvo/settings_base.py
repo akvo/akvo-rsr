@@ -118,7 +118,7 @@ MIDDLEWARE_CLASSES = (
 # PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
 # Is this the pvw-rsr?
-PVW_RSR = False
+PVW_RSR = True
 
 ROOT_URLCONF = 'akvo.urls'
 
