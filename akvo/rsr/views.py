@@ -1303,7 +1303,7 @@ def getwidget(request, project_id):
         widget_site = request.POST['widget-site']
         if widget_choice == 'random-from-org':
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
-        elif widget_choice == 'project-list':
+        elif widget_choice == 'project-list' or widget_choice == 'project-map':
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
         else:
             o = None

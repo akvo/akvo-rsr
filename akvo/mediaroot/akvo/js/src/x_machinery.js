@@ -11,6 +11,7 @@ function getHeight(widget_type)
 		case 'project-small':       return 312; break;
 		case 'project-updates': 	return 900; break;
 		case 'project-list': 		return 730; break;
+		case 'project-map': 		return 380; break;
 		case 'project-narrow': 		return 840; break;
 		case 'cobranded-narrow':    return 911; break;
 		case 'cobranded-short':     return 627; break;
@@ -29,6 +30,7 @@ function getWidth(widget_type)
 		case 'project-small':       return 170; break;
 		case 'project-updates': 	return 202; break;
 		case 'project-list': 		return 745; break;
+		case 'project-map': 		return 600; break;
 		case 'project-narrow': 		return 170; break;
 		case 'cobranded-narrow': 	return 170; break;
 		case 'cobranded-short': 	return 170; break;
@@ -111,9 +113,9 @@ function preview_widget()
 	if (akvo_widget_choice == 'random-from-org') {
 	    var akvo_url = 'http://' + location.host + '/rsr/widget/one-from-organisation/' + akvo_widget_organisation + '/?widget=' + akvo_widget_type;
 	    var widget_url = akvo_url + '&bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;
-	} else if (akvo_widget_choice == 'project-list') {
+	} else if (akvo_widget_choice == 'project-list' || akvo_widget_choice == 'project-map') {
 	    var akvo_url ='http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/organisation/' + akvo_widget_organisation + '/'
-	    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;	    
+	    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;	  
 	} else {
 	    var akvo_url = 'http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/project/' + akvo_project_id + '/';
 	    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;
