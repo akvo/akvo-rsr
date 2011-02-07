@@ -1441,21 +1441,28 @@ def project_list_widget(request, template='project-list', org_id=0):
 @render_to('widgets/project_map.html')
 def project_map_widget(request, org_id):
     bgcolor = request.GET.get('bgcolor', 'B50000')
-    height = request.GET.get('height', '350')
+    height = request.GET.get('height', '300')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     width = request.GET.get('width', '600')
+    zoom = request.GET.get('zoom', '1')
+    state = request.GET.get('state', 'static')
+
+    if state != 'dynamic':
+        state = 'static'
     
     try:
         map_height = int(height)-24 # Since we have a bottom bar of 24px
     except ValueError, e:
-        map_height = 326 # 326px = default height(350px) - bottom bar(24px)
+        map_height = 276 # 326px = default height(350px) - bottom bar(24px)
     
     return { 
         'bgcolor': bgcolor,
         'height': map_height,
         'org': get_object_or_404(Organisation, pk=org_id), 
         'textcolor': textcolor,
-        'width': width,        
+        'width': width,
+        'zoom': zoom,
+        'state': state,
         }
 
         

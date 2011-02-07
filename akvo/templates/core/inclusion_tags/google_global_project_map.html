@@ -3,12 +3,16 @@
 {% if projects %}
 
 <style type="text/css" media="screen">
+	body {
+		font-size:100%; /* IE6 & 7 */
+	}
 	.mapInfoWindow {
 		min-height:150px;
 	}
 	.mapInfoWindow h4 {
 		color:#BE0903;
 		padding:5px 5px;
+		margin:0;
 	}
 
 	div.bubble_header {
@@ -22,16 +26,10 @@
 	}
 </style>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>	
 	<script type="text/javascript" charset="utf-8">
-
-        var jQ = jQuery.noConflict();
-
-	    function loadGlobalMap() {
-
-	        var center = new google.maps.LatLng(0,0);
+		function loadGlobalMap() {
+	    	var center = new google.maps.LatLng(0,0);
 
 	        {% for project in projects %}
                 var project_{{ project.id }}_url = "{% url project_main project_id=project.id %}";
@@ -76,15 +74,13 @@
 
                 {% if map_type != 'static' %}
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
-					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
-	                '<h4><a href="' + project_{{ project.id }}_url + '">' +
-                    '{{ project.name|smart_truncate:35}}</a></h4>' +
+	                '<a href="' + project_{{ project.id }}_url + '">' +
+                    '{{ project.name|smart_truncate:35}}</a><br>' +
                     '<a href="' + project_{{ project.id }}_url + '">' +
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
-					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
-					'<div id="project_location"><p class="small">' +
-					'{{project.primary_location.country.get_continent_display}}<br />' +
-					'{{project.primary_location.country}}, {{project.primary_location.city}} </p></div>'
+					'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
+					'{{project.primary_location.country.get_continent_display}}, ' +
+					'{{project.primary_location.country}}, {{project.primary_location.city}}</p>'
 	                '</div>';
 	
 	            var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({
@@ -96,12 +92,15 @@
                 {% endif %}
 	        {% endfor %}
 
+			setCSS()
 	    }
-
-        jQ(document).ready(function() {
-            loadGlobalMap();
-        });
-
+		
+		function setCSS() {
+			document.getElementById('map_canvas').style['font-size'] = '14px';
+			document.getElementById('map_canvas').style['font-family'] = 'Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;';			
+		}
+		window.onload = loadGlobalMap;
+		
 	</script>
 
 {% if width == 0 and height == 0 %}

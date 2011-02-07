@@ -11,7 +11,7 @@ function getHeight(widget_type)
 		case 'project-small':       return 312; break;
 		case 'project-updates': 	return 900; break;
 		case 'project-list': 		return 730; break;
-		case 'project-map': 		return 380; break;
+		case 'project-map': 		return 300; break;
 		case 'project-narrow': 		return 840; break;
 		case 'cobranded-narrow':    return 911; break;
 		case 'cobranded-short':     return 627; break;
@@ -116,6 +116,9 @@ function preview_widget()
 	} else if (akvo_widget_choice == 'project-list' || akvo_widget_choice == 'project-map') {
 	    var akvo_url ='http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/organisation/' + akvo_widget_organisation + '/'
 	    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;	  
+	    if (akvo_widget_choice == 'project-list' || akvo_widget_choice == 'project-map') {
+            widget_url += '&height=300&width=600';
+        }
 	} else {
 	    var akvo_url = 'http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/project/' + akvo_project_id + '/';
 	    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;

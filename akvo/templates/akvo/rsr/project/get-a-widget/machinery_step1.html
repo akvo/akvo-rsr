@@ -756,19 +756,13 @@
 				<h3>{% trans 'Project map widget' %}</h3>
 				<p class="grey small">
 					{% trans 'Shows a map of projects from your organisation. Users who click on this widget will go to Akvo.org.' %}
-				</p>
+				</p>	
 				<div class="machinery_widget_choice_left" style="float:none;">
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
-
-
-					<iframe src="{% url project_map_widget_for_org organisations.0.id %}?height=300&width=870" height="300" width="870">
-						
-					{% comment %}
-					
 					<script type="text/javascript">
-						document.write('<iframe src="{% url project_map_widget_for_org organisations.0.id %}" width="600" height="380" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url project_map_widget_for_org organisations.0.id %}?height=300&width=600" height="300" width="600" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
-					{% endcomment %}
+					{# <iframe src="{% url project_map_widget_for_org organisations.0.id %}?height=300&width=870" height="300" width="870"> #}
 				</div>
 
 				<div class="machinery_widget_choice_right" style="width:370px; float:none; margin-left:285px; margin-top:40px;">
