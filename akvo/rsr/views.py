@@ -236,7 +236,7 @@ def project_list(request, slug='all', org_id=None):
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
         project_query = get_query(query_string, ['name', 'subtitle','locations__country__country_name','locations__city','locations__state',])
-        projects = projects.filter(project_query)
+        projects = projects.filter(project_query).distinct()
     
     projects = projects.extra(
         select={
