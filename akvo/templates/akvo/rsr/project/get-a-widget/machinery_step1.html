@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags addparam %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -759,9 +759,16 @@
 				</p>
 				<div class="machinery_widget_choice_left" style="float:none;">
 					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+
+
+					<iframe src="{% url project_map_widget_for_org organisations.0.id %}?height=300&width=870" height="300" width="870">
+						
+					{% comment %}
+					
 					<script type="text/javascript">
 						document.write('<iframe src="{% url project_map_widget_for_org organisations.0.id %}" width="600" height="380" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
+					{% endcomment %}
 				</div>
 
 				<div class="machinery_widget_choice_right" style="width:370px; float:none; margin-left:285px; margin-top:40px;">

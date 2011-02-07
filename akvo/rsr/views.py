@@ -1438,7 +1438,6 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
-
 @render_to('widgets/project_map.html')
 def project_map_widget(request, org_id):
     bgcolor = request.GET.get('bgcolor', 'B50000')
@@ -1446,14 +1445,19 @@ def project_map_widget(request, org_id):
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     width = request.GET.get('width', '600')
     
+    try:
+        map_height = int(height)-24 # Since we have a bottom bar of 24px
+    except ValueError, e:
+        map_height = 326 # 326px = default height(350px) - bottom bar(24px)
+    
     return { 
-        'org': get_object_or_404(Organisation, pk=org_id), 
-        'height': height,
-        'width': width,
         'bgcolor': bgcolor,
+        'height': map_height,
+        'org': get_object_or_404(Organisation, pk=org_id), 
         'textcolor': textcolor,
+        'width': width,        
         }
-        
+
         
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
