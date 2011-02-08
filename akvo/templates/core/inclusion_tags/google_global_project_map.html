@@ -1,11 +1,10 @@
 {% load i18n thumbnail rsr_filters %}
 
 {% if projects %}
+{% comment %}
 
 <style type="text/css" media="screen">
-	body {
-		font-size:100%; /* IE6 & 7 */
-	}
+		
 	.mapInfoWindow {
 		min-height:150px;
 	}
@@ -25,6 +24,7 @@
 		color:#fff;
 	}
 </style>
+{% endcomment %}
 
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>	
 	<script type="text/javascript" charset="utf-8">
@@ -96,8 +96,22 @@
 	    }
 		
 		function setCSS() {
-			document.getElementById('map_canvas').style['font-size'] = '14px';
-			document.getElementById('map_canvas').style['font-family'] = 'Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;';			
+			
+			var css = '#map_canvas {font-size: 14px; font-family:Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;}';
+			css += '.mapInfoWindow { min-height:150px;}';
+			css += '.mapInfoWindow h4 { color:#BE0903; padding:5px 5px; margin:0;}';
+			css += 'div.bubble_header { background-color:#BE0903; padding-top:8px; padding-bottom:4px; padding-left:5px;}';
+			css += 'div.bubble_header h3 { color:#fff;}';
+			
+			var head = document.getElementsByTagName('head')[0],
+			    style = document.createElement('style'),
+			    rules = document.createTextNode(css);
+
+			style.type = 'text/css';
+			if(style.styleSheet)
+			    style.styleSheet.cssText = rules.nodeValue;
+			else style.appendChild(rules);
+			head.appendChild(style);			
 		}
 		window.onload = loadGlobalMap;
 		
