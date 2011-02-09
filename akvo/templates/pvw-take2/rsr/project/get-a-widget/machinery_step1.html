@@ -157,11 +157,29 @@
 	
 {% endblock maincontent %}
 
-{% block jquery_ready %}
+{% block jq_ready %}
+alert('what?');
 
-jQ("#project-updates-random-from-org").click(function() { jQ('#project-updates-organisations').removeAttr("disabled"); });
-jQ("#project-updates-specific-project").click(function() { jQ('#project-updates-organisations').attr("disabled", true); });
-jQ("#project-small-random-from-org").click(function() { jQ('#project-small-organisations').removeAttr("disabled"); });
-jQ("#project-small-specific-project").click(function() { jQ('#project-small-organisations').attr("disabled", true); });
+jQ("#project-updates-specific-project").attr('checked', true);
+jQ("#project-updates-random-from-org").attr('checked', false);
+jQ("#project-small-specific-project").attr('checked', true);
+jQ("#project-small-random-from-org").attr('checked', false);
 
-{% endblock jquery_ready %}	
+
+jQ("#project-updates-random-from-org").click(function() { 
+	jQ('#project-updates-organisations').removeAttr("disabled"); 
+});
+
+jQ("#project-updates-specific-project").click(function() { 
+	jQ('#project-updates-organisations').attr("disabled", true); 
+});	
+
+jQ("#project-small-random-from-org").click(function() { 
+	jQ('#project-small-organisations').removeAttr("disabled"); 
+});
+
+jQ("#project-small-specific-project").click(function() { 
+	jQ('#project-small-organisations').attr("disabled", true); 
+});
+
+{% endblock jq_ready %}	
