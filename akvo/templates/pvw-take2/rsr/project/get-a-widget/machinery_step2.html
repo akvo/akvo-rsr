@@ -372,7 +372,7 @@
 </script>
 {% endblock js %}
 
-{% block jquery_ready %}
+{% block jq_ready %}
 jQ("#backgroundcolor_pulldown").change(function() { 
 	if (document.getElementById('backgroundcolor_pulldown').value == 'x') {
 		jQ('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");			
@@ -398,5 +398,5 @@ jQ(function(){
 
 preview_widget(jQ);
 
-{% endblock jquery_ready %}	
+{% block jq_ready %}
 
