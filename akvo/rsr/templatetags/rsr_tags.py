@@ -45,8 +45,6 @@ def funding_project(context, project):
     '''
     return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}    
     
-    
-
 @register.inclusion_tag('inclusion_tags/funding_box_march.html', takes_context=True)
 def funding_box_march(context, project):
     '''

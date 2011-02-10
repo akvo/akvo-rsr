@@ -30,7 +30,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <body>
 	{% google_organisation_projects_map org state width height zoom %}
 	<div id="footer">
-		<div style="float:left; padding-top:3px;">
+		<div style="float:left; padding-top:3px; display:none;">
 			<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
 			<span style="display:none">{% counter org %}</span>
 	        	{% cache 10 org.view_count %}
