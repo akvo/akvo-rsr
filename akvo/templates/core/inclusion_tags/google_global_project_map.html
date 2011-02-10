@@ -56,7 +56,7 @@
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
 					'{{project.primary_location.country.get_continent_display}}, ' +
-					'{{project.primary_location.country}}, {{project.primary_location.city}}</p>'
+					'{{project.primary_location.country}}, {{project.primary_location.city}}</p>' +
 	                '</div>';
 	
 	            var project_{{ project.id }}_infowindow = new google.maps.InfoWindow({
@@ -68,7 +68,7 @@
                 {% endif %}
 	        {% endfor %}
 
-			setCSS()
+			setCSS();
 	    }
 		
 		function setCSS() {
@@ -81,9 +81,11 @@
 			    rules = document.createTextNode(css);
 
 			style.type = 'text/css';
-			if(style.styleSheet)
+			if(style.styleSheet){
 			    style.styleSheet.cssText = rules.nodeValue;
-			else style.appendChild(rules);
+			} else { 
+				style.appendChild(rules);
+			}
 			head.appendChild(style);			
 		}
 		window.onload = loadGlobalMap;
