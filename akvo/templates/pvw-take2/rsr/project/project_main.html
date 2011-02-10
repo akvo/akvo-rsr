@@ -162,32 +162,23 @@
         </div><!-- End tab_updates -->
         
         <div id="tab_goals" class="tab">
-          <div class="space20">
-			<div class="space10" style="width: 170px; float:right; padding-top: 1.35em; margin-bottom: 0;">
-              <ul style=" margin-bottom: 0.7em;">
-                {% if project.goal_1 %}
-                  <li>{{project.goal_1}}</li>
-                {% endif %}
-                {% if project.goal_2 %}
-                  <li>{{project.goal_2}}</li>
-                {% endif %}
-                {% if project.goal_3 %}
-                  <li>{{project.goal_3}}</li>
-                {% endif %}
-                {% if project.goal_4 %}
-                  <li>{{project.goal_4}}</li>
-                {% endif %}
-                {% if project.goal_5 %}
-                  <li>{{project.goal_5}}</li>
-                {% endif %}
-              </ul>
-            </div>
-            <h5>{% trans 'Goals' %}</h5>
-            <p>
-  				{{project.goals_overview|capfirst|linebreaks}}
-            </p>
-			<div class="clear"></div>
-          </div>
+        	<div class="space20">
+				{% if project.goal_1 or project.goal_2 or project.goal_3 or project.goal_4 or project.goal_5%}					
+					<div style="width:200px; float:right; margin-left:20px;">
+						<h5 style="margin-bottom:12px;">{% trans 'Deliverables' %}</h5>
+						<ul style="margin-bottom:0.7em;">
+			                {% if project.goal_1 %}<li>{{project.goal_1}}</li>{% endif %}
+			                {% if project.goal_2 %}<li>{{project.goal_2}}</li>{% endif %}
+			                {% if project.goal_3 %}<li>{{project.goal_3}}</li>{% endif %}
+			                {% if project.goal_4 %}<li>{{project.goal_4}}</li>{% endif %}
+			                {% if project.goal_5 %}<li>{{project.goal_5}}</li>{% endif %}
+			             </ul>
+					</div>
+				{% endif %}
+				<h5>{% trans 'Goals' %}</h5>
+				{{project.goals_overview|capfirst|linebreaks}}
+				<div class="clear"></div>
+			</div>
         </div><!-- End tab_goals -->
         
         {% if project.current_status_detail or project.project_plan_detail %}
@@ -195,11 +186,11 @@
             <div class="space20">
               {% if project.current_status_detail %}
                 <h5>{% trans 'Details of current status' %}</h5>
-                <p>{{project.current_status_detail|capfirst|linebreaks}}</p>
+				{{project.current_status_detail|capfirst|linebreaks}}
               {% endif %}
               {% if project.project_plan_detail %}
                 <h5>{% trans 'Details of project plan' %}</h5>
-                <p>{{project.project_plan_detail|capfirst|linebreaks}}</p>
+                <p>{{project.project_plan_detail|capfirst|linebreaks}}
               {% endif %}
             </div>
           </div>
