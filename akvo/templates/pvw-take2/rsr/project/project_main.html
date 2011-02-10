@@ -31,29 +31,30 @@
             <p class="lt_grey">{{project.subtitle}}</p>
           </div>
         </div>
-        <div class='column span-8' style="width: 548px;">          
-          <div style="border-right: 1px solid #DDDDDD;">
-            <div class="space20" style="margin-top: 0;">
-              {% thumbnail project.current_image 403x301 upscale autocrop sharpen as project_image %}
-              <!-- remove comment when js loading of images is added
-                <noscript>
-              -->
-                <iframe width="403" height="301" name="project_images" src="{{project_image.absolute_url}}" style="float:left;"></iframe>
-              <!-- remove comment when js loading of images is added
-                </noscript>
-              -->
-              <div class="thumbs_scroller">
-                <div class="thumbs">
-                  {% gallery_thumb project.current_image 403 301 %}  
-                  {% for update in updates_with_images %}
-                    {% gallery_thumb update.photo 403 301 %}  
-                  {% endfor %}  
-                </div>
-              </div>
-              <div class="clear"></div>
-              {{ project.project_plan_summary|capfirst|linebreaks }}
-            </div>
-          </div>
+        <div class='column span-8' style="width: 548px;">
+			<div style="border-right: 1px solid #DDDDDD;">
+				<div class="space20" style="margin-top:0;">
+					<div style="float:left;">
+						{% thumbnail project.current_image 403x301 upscale autocrop sharpen as project_image %}
+						<div style="min-height:301px;">
+							<img id="gallery_image" src="{{project_image.absolute_url}}" />
+						</div>
+						<div style="width:400px; max-widht:400px">
+							<p id="gallery_image_caption" class="small grey">{{project.current_image_caption}}</p>
+						</div>
+					</div>
+					<div class="thumbs_scroller">
+						<div class="thumbs">
+							{% gallery_thumb project.current_image 403 301 project.current_image_caption %}  
+							{% for update in updates_with_images %}
+								{% gallery_thumb update.photo 403 301 update.photo_caption %} 
+							{% endfor %}  
+						</div>
+					</div>
+					<div class="clear"></div>
+					{{ project.project_plan_summary|capfirst|linebreaks }}
+				</div>
+			</div>
         </div>
         <div class='column span-3 last' style="width: 173px; margin-right: 0px;">
           {% if project.beneficiaries %}
@@ -263,3 +264,13 @@
         
   </div>
 {% endblock project_main %}
+
+{% block jq_ready %}
+	{{block.super}}
+	jQ('.gallery_links').click(function(e) {
+		e.preventDefault();
+		jQ('#gallery_image').attr("src", jQ(this).attr('href'));
+		jQ('#gallery_image_caption').text(jQ(this).attr('title'));
+	});
+{% endblock jq_ready %}
+

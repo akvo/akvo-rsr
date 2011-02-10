@@ -1183,8 +1183,8 @@ div.thumbs_scroller {
   margin: 0;
   width: 60px; /* FF needs this to not generate a horiz scrollbar */
   /* When image support is turned off */
-  color: #fff;
-  background: #FFF;  
+  /*color: #fff;
+  background: #FFF;  */
 }
 .thumbs a:hover {
   border-color: #b8b8bf;
