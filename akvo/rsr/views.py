@@ -1317,7 +1317,7 @@ def getwidget(request, project_id):
         widget_site = request.POST['widget-site']
         if widget_choice == 'random-from-org':
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
-        elif widget_choice == 'project-list':
+        elif widget_choice == 'project-list' or widget_choice == 'project-map':
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
         else:
             o = None
@@ -1452,6 +1452,34 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
+@render_to('widgets/project_map.html')
+def project_map_widget(request, org_id):
+    bgcolor = request.GET.get('bgcolor', 'B50000')
+    height = request.GET.get('height', '300')
+    textcolor = request.GET.get('textcolor', 'FFFFFF')
+    width = request.GET.get('width', '600')
+    zoom = request.GET.get('zoom', '1')
+    state = request.GET.get('state', 'static')
+
+    if state != 'dynamic':
+        state = 'static'
+    
+    try:
+        map_height = int(height)-24 # Since we have a bottom bar of 24px
+    except ValueError, e:
+        map_height = 276 # 326px = default height(350px) - bottom bar(24px)
+    
+    return { 
+        'bgcolor': bgcolor,
+        'height': map_height,
+        'org': get_object_or_404(Organisation, pk=org_id), 
+        'textcolor': textcolor,
+        'width': width,
+        'zoom': zoom,
+        'state': state,
+        }
+
+        
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):

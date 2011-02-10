@@ -21,7 +21,7 @@
 		<span class="grey">
 			{% trans 'This widget will show projects from the following organisation' %}
 		</span><br />
-		<span style="font-weight:bold;">{{organisation.name}}</span>
+		<span style="font-weight:bold;">{{organisation.name}} ({{organisation.id}})</span>
 	{% endifequal %}
 </p>
 <a id="preview_position"></a>
@@ -141,6 +141,38 @@
 			</div>				
 			<div class="clear"></div>
 			
+			{% if widget_type == 'project-map' %}
+				<p style="font-weight:bold;">{% trans 'C: Set height of the widget' %}</p>
+				<div style="margin-left:50px; margin-top:6px; margin-bottom:15px;">
+					<input type="text" name="widget_height" value="300" id="widget_height" size="10" /> pixels.<br />
+				</div>
+				
+				<p style="font-weight:bold;">{% trans 'D: Set width of the widget' %}</p>
+				<div style="margin-left:50px; margin-top:6px;">
+					<input type="text" name="widget_width" value="600" id="widget_width" size="10" /> pixels.<br />
+				</div>
+				
+				{% comment %}
+				<div style="margin-left:50px; margin-top:6px;">
+					<div style="float:left; width:100px; padding-top:10px;">
+						<p>Height:</p>
+					</div>
+					<div style="float:left; width:250px">
+						<input type="text" name="widget_height" value="300" id="widget_height" size="10" /> pixels.<br />
+					</div>
+					<div class="clear"></div>
+					<div style="float:left; width:100px; padding-top:10px">
+						<p>Width:</p>
+					</div>
+					<div style="float:left; width:250px; ">
+						<input type="text" name="widget_width" value="600" id="widget_width" size="10" /> pixels.<br />
+
+					</div>
+					<div class="clear"></div>
+				</div>
+				{% endcomment %}
+			{% endif %}
+			
 			<div style="text-align:center;">
 				<span class="small" style="margin-right:50px;">
 					<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
@@ -151,7 +183,11 @@
 			</div>
 			
 		<hr style="margin-top:20px"/>
-		<p style="font-weight:bold;">{% trans 'C: Review your widget' %}</p>
+		{% if widget_type == 'project-map' %}
+			<p style="font-weight:bold;">{% trans 'D: Review your widget' %}</p>
+		{% else %}
+			<p style="font-weight:bold;">{% trans 'C: Review your widget' %}</p>
+		{% endif %}
 		<div id="akvo_widget_container" style="margin:0; padding:0; margin-left:40px; margin-top:40px;"> </div>
 		</div>
 	</div>

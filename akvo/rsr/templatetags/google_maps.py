@@ -12,9 +12,6 @@ from akvo.rsr.models import Project, Organisation
 
 register = template.Library()
 
-#_PROJECT_MARKER_ICON = getattr('GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
-#_ORGANISATION_MARKER_ICON = getattr('GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
-
 try:
     _PROJECT_MARKER_ICON = settings.GOOGLE_MAPS_PROJECT_MARKER_ICON
 except AttributeError, e:
@@ -67,8 +64,7 @@ def google_global_organisation_map(map_type, width, height, zoom):
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
 def google_organisation_projects_map(org, map_type, width, height, zoom):
-    projects = org.published_projects()
-    projects = projects.status_not_cancelled().status_not_complete()
+    projects = org.active_projects()
     marker_icon = _PROJECT_MARKER_ICON
     template_context = dict(map_type=map_type,
                             marker_icon=marker_icon,
