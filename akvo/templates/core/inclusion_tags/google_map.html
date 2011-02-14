@@ -5,9 +5,9 @@
     var googleMap = {
         canvas: document.getElementById('map_canvas'),
         options: {
-            zoom: {{ zoom }},
-            center: new google.maps.LatLng({{ object.location.latitude }},
-                                           {{ object.location.longitude }}),
+            zoom: {{zoom}},
+            center: new google.maps.LatLng({{object.location.latitude}},
+                                           {{object.location.longitude}}),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             scrollwheel: false,
             streetViewControl: false
@@ -16,7 +16,7 @@
             var map = new google.maps.Map(this.canvas, this.options);
             var marker = new google.maps.Marker({
                 {% if marker_icon %}
-                    icon: '{{ marker_icon }}',
+                    icon: '{{marker_icon}}',
                 {% endif %}
                 map: map,
                 position: this.options.center,
@@ -26,4 +26,3 @@
     };
     window.onload = googleMap.load();
 </script>
-
