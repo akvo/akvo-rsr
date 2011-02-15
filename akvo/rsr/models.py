@@ -2313,6 +2313,8 @@ class Invoice(models.Model):
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
+    campaign_code = models.CharField(_('Campaign code'),
+                                     blank=True, max_length=15)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
     ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
