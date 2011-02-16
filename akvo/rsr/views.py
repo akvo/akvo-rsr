@@ -224,21 +224,32 @@ def project_list(request, slug='all', org_id=None):
     '''
     
     # TODO: fix DWS, they don't need funding()
-    if org_id:
-        org = get_object_or_404(Organisation, pk=org_id)
-        projects = org.published_projects().funding()
-    elif slug:
-        focus_area = get_object_or_404(FocusArea, slug=slug)
-        if slug == 'all':
-            projects = Project.objects.published().funding()
-        else:
-            projects = Project.objects.published().filter(categories__focus_area=focus_area).funding().distinct()
+    if settings.PVW_RSR:
+        if org_id:
+            org = get_object_or_404(Organisation, pk=org_id)
+            projects = org.published_projects()
+        elif slug:
+            focus_area = get_object_or_404(FocusArea, slug=slug)
+            if slug == 'all':
+                projects = Project.objects.published()
+            else:
+                projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
+    else:
+        if org_id:
+            org = get_object_or_404(Organisation, pk=org_id)
+            projects = org.published_projects().funding()
+        elif slug:
+            focus_area = get_object_or_404(FocusArea, slug=slug)
+            if slug == 'all':
+                projects = Project.objects.published().funding()
+            else:
+                projects = Project.objects.published().filter(categories__focus_area=focus_area).funding().distinct()
     
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
         project_query = get_query(query_string, ['name', 'subtitle','locations__country__country_name','locations__city','locations__state',])
-        projects = projects.filter(project_query)
+        projects = projects.filter(project_query).distinct()
     
     projects = projects.extra(
         select={
@@ -250,7 +261,7 @@ def project_list(request, slug='all', org_id=None):
     # Organisations dropdown
     organisations = Organisation.objects.all()
     
-    # Contient dropdown
+    # Continent dropdown
     continents = []
     for continent in CONTINENTS:
         continents.append(continent)
@@ -661,7 +672,7 @@ else:
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
             org_query = get_query(query_string, ['name', 'long_name','locations__country__country_name','locations__city','locations__state','contact_person','contact_email',])
-            orgs = orgs.filter(org_query)
+            orgs = orgs.filter(org_query).distinct()
         
         # Sort query
         order_by = request.GET.get('order_by', 'name')
@@ -1317,8 +1328,11 @@ def projectmain(request, project_id):
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
     #slider_width        = (len(updates_with_images) + 1) * 115    
     comments            = project.projectcomment_set.all().order_by('-time')[:3]
-    # comprehensions are fun! here we use it to get the categories that don't contain only 0 value benchmarks
-    benchmarks          = project.benchmarks.filter(category__in=[category for category in project.categories.all() if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']])
+    if settings.PVW_RSR:
+        benchmarks      = None
+    else:
+        # comprehensions are fun! here we use it to get the categories that don't contain only 0 value benchmarks
+        benchmarks      = project.benchmarks.filter(category__in=[category for category in project.categories.all() if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']])
     
     # a little model meta data magic
     opts = project._meta

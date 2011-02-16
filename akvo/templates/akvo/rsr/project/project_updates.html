@@ -44,11 +44,15 @@
 							&nbsp;
 						</div>
 						
-						{% if u.text %}
+						{% if u.title or u.text %}
 						<div style="float:left; width:300px;">
 							<p style="margin:0;">
-								<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />
-								<span class="grey small">{{u.text|smart_truncate:150}}</span>
+								{% if u.title %}
+									<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />	
+								{% endif %}
+								{% if u.text %}
+									<span class="grey small">{{u.text|smart_truncate:150}}</span>
+								{% endif %}
 							</p>
 						</div>
 						{% else %}

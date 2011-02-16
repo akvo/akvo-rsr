@@ -118,8 +118,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     </a>
 				</td>
 				<td class="tableRow locationCell">
-					<p style="margin-top:3px;"><span class="capz">{{project.country.get_continent_display}}</span><br />
-						{{project.country}}, {{project.city}}
+					<p style="margin-top:3px;"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+						{{project.primary_location.country}}, {{project.primary_location.city}}
 					</p>
 					<p class="miniFont lightgrey">
 						{% trans 'Akvo Ref' %}: {{project.id}}

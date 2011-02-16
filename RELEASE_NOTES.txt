@@ -1,6 +1,6 @@
 RELEASE_NOTES.txt, v1.0
 
-Last changed: 4 Nov 2010, tbp
+Last changed: 9 Feb 2011, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +8,80 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 1.0.3 release notes
+------------------------------
+9 Feb 2011, (Code name: Primrose) bw
+
+New Features
+------------
+### A "Latest update" column has added to the Administrator Project Listing page. This column shows:
+
+- The date of the most recent update as a link back to that update on the public project page.
+- The email address of the user who made the update, as a send-to link.
+- A list of support and funding partners for the project, by partnership type, with names as links to the organisation's public page.
+
+### A "By status" filter has been added to the Administrator Project listing page. The filter allows administrators to view only projects with particular status settings, for example, only projects with the status "Needs funding."
+
+Bug fixes
+---------
+### Certain searches on the organisation listing page returned duplicate entries. This has been fixed.
+[https://akvo.lighthouseapp.com/projects/46515/tickets/139]
+
+---
+
+Akvo RSR v1.0.2 release notes
+-----------------------------
+18 Jan 2011 (Code name: Hailstorm) ogl
+
+Bug fixes
+---------
+### Widgets now display all location information as expected (esp. continent and country details).
+[https://akvo.lighthouseapp.com/projects/46515/tickets/146]
+
+### The Akvo home page will now display as expected in Internet Explorer 6.
+[https://akvo.lighthouseapp.com/projects/46515/tickets/129]
+
+### The Get-a-Widget page now has the Projects menu tab selected.
+[https://akvo.lighthouseapp.com/projects/46515/tickets/128]
+
+### The All Updates page for a particular project now displays titles for all updates in the list even if some information was missing when a particular update was submitted.
+[http://akvo.lighthouseapp.com/projects/46515/tickets/142]
+
+---
+
+Akvo RSR v 1.0.1 release notes
+-------------------------------------------
+14 Jan 2011, (Code name: Indigo) bw
+Note: The original 16 Dec 2010 release notes have been edited to better document changes made in 1.0.1.
+
+New Features
+------------
+### Markdown is now available for adding formatting to text used in the MiniCMS text boxes and Focus area description fields.
+
+Bug Fixes
+---------
+### People served calculation
+The "People Served" calculation on the Akvo home page now counts only the largest "people affected" benchmark from any category for each project. For any given project, it is likely that the people affected in different categories have some overlap, so calculations for numbers affected should take only the larger number. Currently people affected numbers come only from the Water and Sanitation categories.
+
+### MiniCMS
+The following fixes have been made to the MiniCMS.
+
+- Map box has been removed.
+- Lower section height renamed to Focus areas accordion height.
+- Help text has been added regarding HTML tags that can be used in MiniCMS fields.
+
+Other Changes
+-------------
+### Load time of organisation listing page decreased.
+The data calculations for the columns Requested and Still needed were having a severe impact on its load time, so have been removed. The page loads much faster now.
+
+### Removed legacy data fields for Location, Category and Benchmark.
+Content of the previous data fields were imported into new models in the 1.0.0 release; the old fields have now been removed.
+
+### MiniCMS
+The following improvements have been made to the MiniCMS.
+- Name field for instances of the MiniCMS has been added.
 
 
 Akvo RSR v 1.0.0 release notes
@@ -40,7 +114,7 @@ The new Akvo RSR design touches every page, except for the administration pages.
 
 ### Project pages
 
-Project pages have been re-designed to present a better overview of the project.  New features include:
+Project pages have been re-designed to present a better overview of the project. New features include:
 
 - picture gallery of project and update pictures
 - interactive map and latitude/longitude coordinate display
@@ -103,13 +177,13 @@ The classification system has three interlocking parts.
 
 Each project belongs to something called a Focus area, which could be Water and sanitation, or Economic Development, or Healthcare, for example. Each Focus area can be associated with one or more Categories, such as Water, Training or Maintenance. Each Category has Benchmarks (aka Key Performance Indicators) associated with it , such as Number of people trained, Water systems installed or Hospitals built.
 
-Focus areas, Categories and Benchmarks can all be created in the administration user interface in Akvo RSR by a Superuser administrator, thereby enabling us to add any type of project to the system without having to do any customisation. 
+Focus areas, Categories and Benchmarks can all be created in the administration user interface in Akvo RSR by a Superuser administrator, thereby enabling us to add any type of project to the system without having to do any customisation.
 
 For a detailed technical description of the new [classification syste](http://www.akvo.org/labs/index.php?title=Akvo_RSR_project_classification_system).
 
 ### Filters and sorting for listing pages
 
-Project and organisation listings now have filters which can be used to search projects or organisations. 
+Project and organisation listings now have filters which can be used to search projects or organisations.
 
 - [Listing of all projects](http://www.akvo.org/rsr/projects/all/)
 - [Listing of all organisations](http://www.akvo.org/rsr/organisations/all/)
@@ -118,11 +192,11 @@ The projects listing can filter on continent, country and organisation, through 
 
 The organisation listing can be searched for short name, long name, or keywords in either.
 
-Both lists allow sorting on a number of columns as well. The fields which can be sorted have a link on the column name;  when sorted this way the project listing displays the direction of the sort.
+Both lists allow sorting on a number of columns as well. The fields which can be sorted have a link on the column name; when sorted this way the project listing displays the direction of the sort.
 
 ### Page view counter
 
-A number of pages now have page view counters implemented. The counters were introduced in 0.9.18, but haven’t been displayed until now. The counters record how many visits have been made to a particular project. A display of the project page, funding details page or widget counts as a view of the project.  Individual Update pages also have a view counter and are counted separately.
+A number of pages now have page view counters implemented. The counters were introduced in 0.9.18, but haven’t been displayed until now. The counters record how many visits have been made to a particular project. A display of the project page, funding details page or widget counts as a view of the project. Individual Update pages also have a view counter and are counted separately.
 
 ### Widgets available for all
 
@@ -134,7 +208,7 @@ All widgets except for the Project list widget can now be accessed by any user. 
 
 ### Akvo at a glance
 
-The Akvo at a glance data, which was shown previously on the home page, has been replaced by the Right now in Akvo.org... . The Akvo at a glance data has been [moved to this place](http://www.akvo.org/rsr/data/overview)  This is a temporary holding page for this information and we will be extending the data view pages in the future.
+The Akvo at a glance data, which was shown previously on the home page, has been replaced by the Right now in Akvo.org... . The Akvo at a glance data has been [moved to this place](http://www.akvo.org/rsr/data/overview) This is a temporary holding page for this information and we will be extending the data view pages in the future.
 
 Minor features
 -------------------
@@ -162,7 +236,7 @@ Fixed. [Lighthouse ticket 74](https://akvo.lighthouseapp.com/projects/46515-akvo
 
 ### Widget machinery pgs for Cancelled projects projects
 Go to Cancelled project page, click Get a widget (not signed in, FWIW). Some of the widgets on machinery page display Donate box, some do not; none should display it, as those widgets do not either.
-Fixed.  [Pivotal story.](https://www.pivotaltracker.com/story/show/5426105)
+Fixed. [Pivotal story.](https://www.pivotaltracker.com/story/show/5426105)
 
 ### Using back button when selecting widget gives 500 error
 Fixed. [Lighthouse ticket 76](https://akvo.lighthouseapp.com/projects/46515/tickets/76)
@@ -211,7 +285,7 @@ Akvo RSR v 0.9.19 release notes
 -------------------------------------------
 4 Oct 2010, (Code name: Magic) bethw
 
-This release adds a new project status to Akvo RSR, fixes a bug in the donations process and includes a point release update of the Django framework. 
+This release adds a new project status to Akvo RSR, fixes a bug in the donations process and includes a point release update of the Django framework.
 
 New features
 ------------
@@ -222,7 +296,7 @@ A new project status has been added, Archived. Projects set to Archived will no 
 ### Django 1.2.3
 Akvo RSR now runs on Django version 1.2.3. The security fix in 1.2.2 caused some problems with which have been remedied in this release. Additionally, to run Akvo RSR, you will want get zzgvh patch here:
 
-http://github.com/zzgvh/django/tree/1.2.1_patched  
+http://github.com/zzgvh/django/tree/1.2.1_patched
 
 which fixes Django ticket 10046. http://code.djangoproject.com/ticket/10046
 
@@ -264,13 +338,13 @@ Akvo RSR v 0.9.17 release notes
 -------------------------------------------
 11 May 2010, (Code name: Bolero) bw
 
-This release implements a new feature on the Akvo home page whereby selected updates appear as Staff picks. Ongoing work with Walking for Water is also now highlighted on the home page. 
+This release implements a new feature on the Akvo home page whereby selected updates appear as Staff picks. Ongoing work with Walking for Water is also now highlighted on the home page.
 
 New features
 ------------
 
 ### New Staff picks-featured updates on the Akvo home page
-The home page now displays 3 of the most recent updates with images. These updates are selected from a pool of updates Akvo has chosen to feature. 
+The home page now displays 3 of the most recent updates with images. These updates are selected from a pool of updates Akvo has chosen to feature.
 
 ### Walking for Water box now on home page.
 Links in this box now provide entry to latest blog entries and projects connected to Walking for Water.
@@ -296,7 +370,7 @@ This is primarily an initial release of page fragment caching and an Akvo RSR AP
 
 We also implemented caching for the Akvo blog. While not directly affecting Akvo RSR, this does significantly improve performance of the Akvo home page, which fetches RSS feeds from the Akvo blog.
 
-New features 
+New features
 ------------
 
 ### Caching
@@ -331,7 +405,7 @@ The way we handle URLs for Post forms changed. This meant the old URL for a comm
 
 Some Internet Explorer users had the Donate button greyed out (inaccessible) due to incorrect loading order of the Javascript guaring against duplicate donations. We disabled the Javascript, as we have protection against double donations through the "stale invoice" feature.
 
-###  Project comments broken
+### Project comments broken
 Project comments couldn't be made. The form's action URL has become invalid after a change in urls.py.
 
 ---
@@ -340,7 +414,7 @@ Akvo RSR v 0.9.15 release notes
 -------------------------------------------
 5 March 2010, (Code name: Avonmouth) tbp
 
-Adding one more custom sponsor portal page. The first one was introduced in 0.9.12, this one is for Walking for Water. 
+Adding one more custom sponsor portal page. The first one was introduced in 0.9.12, this one is for Walking for Water.
 
 New features
 ------------
@@ -362,7 +436,7 @@ Akvo RSR v 0.9.14 release notes
 
 This release introduces support for donations via the iDEAL payment system for users in the Netherlands as well as a number of architectural changes.
 
-New features 
+New features
 ------------
 
 ### iDEAL payment system
@@ -371,17 +445,17 @@ The donation subsystem has been extended to support donations via the Dutch iDEA
 ### Code namespace changes
 Providing an additional payment system resulted in a fair number of architectural changes behind the scenes.
 
-### Move to virtual Python environment 
-Akvo RSR is now installed into and run from a Python virtual environment (or "virtualenv") separate from the system Python installation. This is achieved using the tools [pip](http://pypi.python.org/pypi/pip/) and [virtualenv](http://pypi.python.org/pypi/virtualenv/). The advantages of this pip/virtualenv setup are increased deployment flexibility and standardisation of software requirements for each release. 
+### Move to virtual Python environment
+Akvo RSR is now installed into and run from a Python virtual environment (or "virtualenv") separate from the system Python installation. This is achieved using the tools [pip](http://pypi.python.org/pypi/pip/) and [virtualenv](http://pypi.python.org/pypi/virtualenv/). The advantages of this pip/virtualenv setup are increased deployment flexibility and standardisation of software requirements for each release.
 
-### "All updates" RSS Feed 
+### "All updates" RSS Feed
 An RSS feed for updates from all Akvo projects has been set up at http://www.akvo.org/rsr/rss/all-updates. Further RSS features are in the works.
 
 ### Image thumbnails refactor.
 Further refinements have been made to the way RSR handles the various image types (project, update, organisation logos, maps), creating appropriately-sized thumbnails, and cases where images do not exist.
 
-### HTTP Referrer 
-Support for capturing HTTP referrer information has been added to parts of RSR for use in future planned RSR reporting tools. 
+### HTTP Referrer
+Support for capturing HTTP referrer information has been added to parts of RSR for use in future planned RSR reporting tools.
 
 ### Admin help text
 Further improvements to help text in the RSR Administration tools for organisations.
@@ -570,7 +644,7 @@ The currency display ripples through the whole system including displaying multi
 Read more about the [Akvo RSR support for multiple currencies](http://www.akvo.org/labs/index.php?title=Akvo_RSR_support_for_multiple_currencies).
 
 ### Added column in the admin view "Project PayPal gateway configurations" to display settings
-This PayPal account a particular projects donations are linked to is important to know, without having to go into every project to see it. This is the one way money  gets transferred through your system from donors to PayPal accounts, so you need to be able to see what they are set as.
+This PayPal account a particular projects donations are linked to is important to know, without having to go into every project to see it. This is the one way money gets transferred through your system from donors to PayPal accounts, so you need to be able to see what they are set as.
 
 ### Adding prototype sponsor features
 In 0.9.7 we added a new type of partner, a sponsor partner. We are testing some new features for the sponsor partner type with this release. We are expecting these features to be fleshed out in one form or another with subsequent releases. These features are only applicable to one specific sponsor for now:
@@ -964,15 +1038,16 @@ We have changed how funders contributions are displayed in the Organisation acti
 Highlights of bugs fixed
 ------------------------
 
-296702    Remove MDG count terminology Medium Fix Released
-274658    Photos in Project Update have no default placement, so do not show up. Medium Fix Released
-269400    Portlet: "Organisation activities" shows easy to miss-understand Funding pledged Medium Fix Released
-269402    Organisation description box do not use line breaks. Medium Fix Released
-274099    Partner types (example: funding partner) should be link to the URL which lists them Low Fix Released
-279243    Actual number in Akvo at a glance portlet gives ugly linebreak Wishlist Fix Released
-292932    Describe in user interface that user names are case-sensitive. Wishlist Fix Released
+296702 Remove MDG count terminology Medium Fix Released
+274658 Photos in Project Update have no default placement, so do not show up. Medium Fix Released
+269400 Portlet: "Organisation activities" shows easy to miss-understand Funding pledged Medium Fix Released
+269402 Organisation description box do not use line breaks. Medium Fix Released
+274099 Partner types (example: funding partner) should be link to the URL which lists them Low Fix Released
+279243 Actual number in Akvo at a glance portlet gives ugly linebreak Wishlist Fix Released
+292932 Describe in user interface that user names are case-sensitive. Wishlist Fix Released
 
 A detailed list (including in process development bugs) can be found at: http://snurl.com/9lqvk
 
 
 ====END OF RELEASE NOTES====
+
