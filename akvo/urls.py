@@ -143,6 +143,7 @@ urlpatterns += patterns('',
 	
 	url(r'^rsr/widget/project-list/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/project-list/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget_for_org', ),
+	url(r'^rsr/widget/project-map/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_map_widget', name='project_map_widget_for_org', ),
 	
     # django_counter
     (r'^rsr/counter/', include('django_counter.urls')),
