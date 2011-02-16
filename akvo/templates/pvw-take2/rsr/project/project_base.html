@@ -4,102 +4,107 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-  <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
 
 <div class='container'>
-  
-  {% block project_main %}
-    <div class='column span-11'>
-      <h1>Project main area</h1>
-    </div>
-  {% endblock project_main %}
-  
-  <div class='column span-3 last'>
-    <div class='column span-3 last'>
-      <div id="project_status">
-        <div style="padding: 7px 7px 15px 7px;">
-          <h1 class="h0" style="color: #9FFFFE;">{% trans 'Project status' %}</h1>
-          {{project.show_status_large}}
-        </div>
-        {% if project.start_date or project.end_date %}
-          <hr/>
-          <div style="padding: 0 7px 7px 7px;">
-            <p style="line-height:1.2em; color: white;">{% trans 'Time line' %}</p>
-            {% if project.start_date %}
-            <p class="tiny white">
-              Start date: {{project.start_date|date:"d-M-Y"}}
-            </p>
-            {% endif %}
-            {% if project.end_date %}
-            <p class="tiny white">
-              End date: {{project.end_date|date:"d-M-Y"}}
-            </p>
-            {% endif %}
-          </div>
-        {% endif %}
-        {% if project.total_budget or project.pvw_budget %}
-          <hr/>
-          <div style="padding: 0 7px 0 7px;">
-            <p style="line-height:1.2em; color: white;">{% trans 'Budget' %}</p>
-            {% if project.total_budget %}
-              <p class="tiny white">
-                € {{project.total_budget|intcomma}}<br/>
-                <span class="nano" style="color: #C2C0CE;">
-                  {% trans 'Total budget' %}
-                </span>
-              </p>
-            {% endif %}
-            {% if project.pvw_budget %}
-              <p class="tiny white">
-                € {{project.pvw_budget|intcomma}}<br/>
-                <span class="nano" style="color: #C2C0CE;">
-                  {% trans 'Contributed by Partners for Water' %}
-                </span>
-              </p>
-            {% endif %}
-          </div>
-        {% endif %}
-      </div> 
-    </div>
-    <div class='column span-3 last'>
-      <div class="white_box gutter-top" style="background-color:#fff;">
-        <div class="space15">
-          <h1>Page tools</h1>
-          <a class="awesome aqua small append-bottom" href="{% url get_widget project.id %}">{% trans 'Get a widget' %}</a>
-          <p class="tiny"><a href="{{project.get_absolute_url}}">{% trans 'Permalink for this page' %}</a></p>
-        </div> 
-      </div> 
-    </div>
-    <div class='column span-3 last'>
-      <div class="white_box gutter-top" style="background-color:#fff;">
-        <div class="space15">
-          <h1>{% trans 'Project partners' %}</h1>
-        </div>
-        {% for org in project.all_partners.distinct %}
-          <div style="margin: 0 8px;">
-            <hr/>
-          </div>
-          <div class="space15">
-            <a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
-              {% org_logo org 162 120 %}
-            </a>
-            <br/>
-            <a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">
-              {{org.name}}
-            </a>
-            <p class="tiny lt_grey">
-              {{org.city}}, {{org.country}}<br/>
-              {{org.get_organisation_type_display}}
-            </p>
-          </div>
-        {% endfor %}        
-      </div> 
-    </div>
-  </div>
-
+	{% block project_main %}
+		<div class='column span-11'><h1>Project main area</h1></div>
+	{% endblock project_main %}
+	
+	<div class='column span-3 last'>
+		<div class='column span-3 last'>
+			<div id="project_status">
+				<div style="padding: 7px 7px 15px 7px;">
+					<h1 class="h0" style="color: #9FFFFE;">{% trans 'Project status' %}</h1>
+						{{project.show_status_large}}
+				</div>
+        		{% if project.start_date or project.end_date %}
+          			<hr />
+          			<div style="padding: 0 7px 7px 7px;">
+            			<p style="line-height:1.2em; color: white;">{% trans 'Time line' %}</p>
+            			{% if project.start_date %}
+            				<p class="tiny white">{% trans 'Start date' %}: {{project.start_date|date:"d-M-Y"}}</p>
+            			{% endif %}
+            			{% if project.end_date %}
+            				<p class="tiny white">{% trans 'End date' %}: {{project.end_date|date:"d-M-Y"}}</p>
+            			{% endif %}
+          			</div>
+        		{% endif %}
+        		{% if project.total_budget or project.pvw_budget %}
+          			<hr />
+          			<div style="padding: 0 7px 0 7px;">
+            			<p style="line-height:1.2em; color: white;">{% trans 'Budget' %}</p>
+            			{% if project.total_budget %}
+              				<p class="tiny white">&euro; {{project.total_budget|intcomma}}<br/>
+                				<span class="nano" style="color: #C2C0CE;">{% trans 'Total budget' %}</span>
+              				</p>
+            			{% endif %}
+            			{% if project.pvw_budget %}
+              				<p class="tiny white">&euro; {{project.pvw_budget|intcomma}}<br/>
+                				<span class="nano" style="color: #C2C0CE;">{% trans 'Contributed by Partners for Water' %}</span>
+              				</p>
+            			{% endif %}
+          			</div>
+        		{% endif %}
+      		</div> 
+    	</div>
+    	<div class='column span-3 last'>
+      		<div class="white_box gutter-top" style="background-color:#fff;">
+        		<div class="space15">
+          			<h1>{% trans 'Page tools' %}</h1>
+          			<a class="awesome aqua small append-bottom" href="{% url get_widget project.id %}">{% trans 'Get a widget' %}</a>
+          			<p class="tiny"><a href="{{project.get_absolute_url}}">{% trans 'Permalink for this page' %}</a></p>
+        		</div> 
+      		</div> 
+    	</div>
+	
+		<div class='column span-3 last'>
+      		<div class="white_box gutter-top" style="background-color:#fff;">
+        		<div class="space15"><h1>{% trans 'Lead partner' %}</h1></div>		
+				{% for org in project.lead_partners.distinct %}
+					<div style="margin: 0 8px;"><hr /></div>
+	          		<div class="space15">
+	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
+	              			{% org_logo org 162 120 %}
+	            		</a>
+	            		<br/>
+	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">{{org.name}}</a>
+	            		<p class="tiny lt_grey">
+							{% if org.city and org.country %}
+								{{org.city}}, {{org.country}}<br/>
+								{% endif %}
+	              			{{org.get_organisation_type_display}}
+	            		</p>
+	          		</div>
+				{% endfor %}
+	  		</div>
+		</div>
+	
+		<div class='column span-3 last'>
+      		<div class="white_box gutter-top" style="background-color:#fff;">
+        		<div class="space15"><h1>{% trans 'Project partners' %}</h1></div>		
+				{% for org in project.other_partners.distinct %}
+					<div style="margin: 0 8px;"><hr /></div>
+	          		<div class="space15">
+	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
+	              			{% org_logo org 162 120 %}
+	            		</a>
+	            		<br/>
+	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">{{org.name}}</a>
+	            		<p class="tiny lt_grey">
+							{% if org.city and org.country %}
+								{{org.city}}, {{org.country}}<br/>
+							{% endif %}
+	              			{{org.get_organisation_type_display}}
+	            		</p>
+	          		</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 </div> 
 
 {% endblock maincontent %}
