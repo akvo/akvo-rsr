@@ -63,7 +63,8 @@
         </div>
       {% endif %}
     {% endif %}
-    <div class='column span-14 last'>
+
+	<div class='column span-14 last'>
       <h1>{% trans 'Our projects' %}
         <span class="lt_grey">
           {% blocktrans count projects.count as projects_count %}
@@ -73,6 +74,126 @@
           {% endblocktrans %}
         </span>
       </h1>
+	</div>
+	{# -------- #}
+	<div class='column span-14 last'>
+		
+		<form action="." method="get" accept-charset="utf-8" name="filter_form">
+			<div id="project_search" class="span-18">
+				<div class="round" style="border: 1px solid #ccc;">
+					<div class="space15">
+						<input id="q" name="q" 
+							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
+							value="{{ query_string|escape }}">
+
+						<select name="continent" id="continent" size="1" style="margin-left:40px;width:120px; margin-top:4px;">
+							<option value="all">{% trans 'All continents' %}</option>
+							{% for continent in continents %}
+							<option value="{{continent.0}}"
+								{% ifequal continent.0 selected_continent %} SELECTED {% endifequal %}>
+								{{continent.1}}
+							</option>
+							{% endfor %}
+						</select>
+						&nbsp;
+						<select name="country" id="country" size="1" style="width:120px; margin-left:10px; margin-top:4px;">
+							<option id="all_country" value="all">{% trans 'All countries' %}</option>
+							{% if selected_continent == 'all' %}	
+								{% for country in countries %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+							{% if selected_continent == 1 %}
+								{% for country in countries_in_africa %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+							{% if selected_continent == 2 %}
+								{% for country in countries_in_asia %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+							{% if selected_continent == 3 %}
+								{% for country in countries_in_australia %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+							{% if selected_continent == 4 %}
+								{% for country in countries_in_europe %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+							{% if selected_continent == 5 %}
+								{% for country in countries_in_north_america %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+							{% if selected_continent == 6 %}
+								{% for country in countries_in_south_america %}
+								<option value="{{country.id}}"
+									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
+									{{country.country_name}}
+								</option>
+								{% endfor %}
+							{% endif %}
+
+						</select>
+					
+						<select name="organisation" id="organisation" size="1" style="margin-left:40px;width:150px; margin-top:4px;">
+							<option value="all">{% trans 'All partners' %}</option>
+							{% for organisation in organisations  %}
+								<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select>
+						<a id="filterButton" class="blue awesome" style="float:right;"
+							href="javascript:document.filter_form.submit();">
+							<span>{% trans 'Filter' %}</span>
+						</a>
+						{% comment %}
+						<a id="filterButton" class="blue awesome" style="float:right;"
+							href="javascript:document.filter_form.submit();" onclick="this.blur();">
+							<span>{% trans 'Filter' %}</span>
+						</a>
+						{% endcomment %}
+						<input type="submit" value="Filter" 
+							style="display:none;">
+						{% comment %}
+						<input type="submit" value="Filter" 
+							style="display:inline; margin-left:15px; margin-top:20px;">
+						{% endcomment %}
+
+						<div id="q_help" style="padding-left:25px; margin-top:10px;">
+							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">
+								{% trans 'Filter on project name or subtitle' %}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	
+	{# -------- #}
+	 <div class='column span-14 last'>
       {% autosort projects %}
       {% autopaginate projects 10 %}
       <div class="white_box">
@@ -165,21 +286,89 @@
 
 {% endblock maincontent %}
 
-{% block js %}
-
-{{ block.super }}
-
-{% if debug %}
-  <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
-{% else %}
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-{% endif %}
-
-{% endblock js %}
 
 {% block jq_ready %}
+	{{block.super}}
+	
+	jQ('#organisation').val({{org.id}});
 
-  jQ('#project_tabs').tabs();
-  {{block.super}}
+	jQ('#continent').change(function() {
+
+		function Country(countryName, countryId) {
+			this.countryName = countryName;
+			this.countryId = countryId;
+			this.getName = function () { return this.countryName; }
+			this.getId = function () { return this.countryId; }
+		}
+
+		function add_countires(countries) {
+			jQ('#country >option').remove();
+			jQ('#country').append('<option value="all">{% trans 'All countries' %}</option>');
+			for (var i=0; i < countries.length; i++) {				
+				jQ('#country').append('<option value="' + countries[i].getId() + '">' 
+					+ countries[i].getName() + '</option>');
+			};
+		}
+
+		var all_countries = [];
+		{% for country in countries %}
+			all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var countries_in_africa = [];
+		{% for country in countries_in_africa %}
+			countries_in_africa[countries_in_africa.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var countries_in_asia = [];
+		{% for country in countries_in_asia %}
+			countries_in_asia[countries_in_asia.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var countries_in_australia = [];
+		{% for country in countries_in_australia %}
+			countries_in_australia[countries_in_australia.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var countries_in_europe = [];
+		{% for country in countries_in_europe %}
+			countries_in_europe[countries_in_europe.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var countries_in_north_america = [];
+		{% for country in countries_in_north_america %}
+			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var countries_in_south_america = [];
+		{% for country in countries_in_south_america %}
+			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
+		{% endfor %}
+
+		var selected_continent = jQ('#continent').val();		
+		
+		if (selected_continent == 1 ) {		
+			add_countires(countries_in_africa);
+		} 
+		else if (selected_continent == 2 ) {		
+			add_countires(countries_in_asia);
+		}
+		else if (selected_continent == 3) {
+			add_countires(countries_in_australia);
+		}
+		else if (selected_continent == 4) {
+			add_countires(countries_in_europe);
+		}
+		else if (selected_continent == 5) {
+			add_countires(countries_in_north_america);
+		}
+		else if (selected_continent == 6) {
+			add_countires(countries_in_south_america);
+		}
+		else {
+			add_countires(all_countries);	
+		}
+
+	});
 
 {% endblock jq_ready %}

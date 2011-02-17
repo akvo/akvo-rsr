@@ -101,6 +101,44 @@ def get_random_from_qs(qs, count):
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
+# http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
+import re
+from django.db.models import Q
+def normalize_query(query_string,
+                    findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                    normspace=re.compile(r'\s{2,}').sub):
+    ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
+        and grouping quoted words together.
+        Example:
+        
+        >>> normalize_query('  some random  words "with   quotes  " and   spaces')
+        ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
+    
+    '''
+    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
+
+def get_query(query_string, search_fields):
+    ''' Returns a query, that is a combination of Q objects. That combination
+        aims to search keywords within a model by testing the given search fields.
+    '''
+    query = None # Query to search for every search term
+    terms = normalize_query(query_string)
+    for term in terms:
+        or_query = None # Query to search for a given term in each field
+        for field_name in search_fields:
+            q = Q(**{"%s__icontains" % field_name: term})
+            if or_query is None:
+                or_query = q
+            else:
+                or_query = or_query | q
+        if query is None:
+            query = or_query
+        else:
+            query = query & or_query
+        
+    return query
+
+
 @render_to('rsr/index.html')
 def index(request, cms_id=None):
     '''
@@ -435,75 +473,6 @@ else:
             'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         }
     
-    # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
-    import re
-    from django.db.models import Q
-    def normalize_query(query_string,
-                        findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
-                        normspace=re.compile(r'\s{2,}').sub):
-        ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
-            and grouping quoted words together.
-            Example:
-            
-            >>> normalize_query('  some random  words "with   quotes  " and   spaces')
-            ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
-        
-        '''
-        return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
-    
-    def get_query(query_string, search_fields):
-        ''' Returns a query, that is a combination of Q objects. That combination
-            aims to search keywords within a model by testing the given search fields.
-        '''
-        query = None # Query to search for every search term
-        terms = normalize_query(query_string)
-        for term in terms:
-            or_query = None # Query to search for a given term in each field
-            for field_name in search_fields:
-                q = Q(**{"%s__icontains" % field_name: term})
-                if or_query is None:
-                    or_query = q
-                else:
-                    or_query = or_query | q
-            if query is None:
-                query = or_query
-            else:
-                query = query & or_query
-            
-        '''
-        Initial try for continent filtering, this is obsolete, since the new_look_maps branch introduces the Location model.
-        for term in terms:
-            or_query = None # Query to search for a given term in each field
-            if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
-                if term == 'Africa' or term == 'africa':
-                    q = Q(**{"country__continent__exact":1})
-                elif term == 'Asia' or term == 'asia':
-                    q = Q(**{"country__continent__exact":2})
-                elif 'Australia' or 'australia' in term:
-                    q = Q(**{"country__continent__exact":3})
-                elif 'Europe' or 'europe' in term:
-                    q = Q(**{"country__continent__exact":4})
-                elif 'North America' or 'north america' or 'North america' or 'north America' in term:
-                    q = Q(**{"country__continent__exact":5})
-                elif 'South America' or 'south america' or 'South america' or 'south America' in term:
-                    q = Q(**{"country__continent__exact":6})
-                if query is None:
-                    query = q
-                else:
-                    query = query & q
-            else:            
-                for field_name in search_fields:
-                    q = Q(**{"%s__icontains" % field_name: term})
-                    if or_query is None:
-                        or_query = q
-                    else:
-                        or_query = or_query | q
-                if query is None:
-                    query = or_query
-                else:
-                    query = query & or_query
-        '''
-        return query
         
     @render_to('rsr/project/project_directory.html')
     def projectlist(request):
