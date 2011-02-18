@@ -3,139 +3,134 @@
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 
 {% block title %}
-  - {% trans 'Projects' %}
-  - {% trans 'Project participants' %}
+	- {% trans 'Projects' %}
+	- {% trans 'Project participants' %}
 {% endblock title %}
 
 {% block breadcrum_items %}
-  {{block.super}}
-    <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-    <li id="last_breadcrum_item">{% trans 'Project participants' %}</li>
+	{{block.super}}
+	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li id="last_breadcrum_item">{% trans 'Project participants' %}</li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
 
 <div class='container'>
+	<div class='column span-14'>
+		<h1 class="h0">{% trans 'Project participants' %}</h1>
+		<div class='column span-14 last'>
+      		<img width="240" height="180" 
+				style="float: left; margin: 0 20px 20px 0;" 
+				src="{{MEDIA_URL}}pvw-take2/img/meisje-drinkt-water-240x180.jpg" alt="{{focus_area}}" />
+      		<p>
+        		{% trans 'This is a list of organisations who participate in the projects listed in the <a href="/rsr/projects/all/">project database</a>.' %}
+      		</p>
+    	</div>    
+    	<div class='column span-14 last'>
+      		<h1>{% trans 'Our organisations' %}
+        		<span class="lt_grey">
+					{% if query %} 
+						{% blocktrans count orgs.count as orgs_count %}
+            				({{orgs_count}} result - filtered by &quot;{{query}}&quot;)
+          				{% plural %}
+            				({{orgs_count}} results - filtered by &quot;{{query}}&quot;)
+          				{% endblocktrans %}
+					{% else %}
+						{% blocktrans count orgs.count as orgs_count %}
+	            			({{orgs_count}} result)
+	          			{% plural %}
+	            			({{orgs_count}} results)
+	          			{% endblocktrans %}
+          			{% endif %}	
+        		</span>
+      		</h1>
 
-  <div class='column span-14'>
+			<form action="." method="get" accept-charset="utf-8">
+				<div id="project_search" class="span-18">
+					<div class="round" style="border: 1px solid #ccc;">
+						<div class="space15">
+							<input id="q" name="q" placeholder="Filter with keywords" type="search" 
+								style="margin-left:20px;margin-top:7px;width:400px;display:inline;" 
+								value="{{ query_string|escape }}" autofocus>			
+							<input type="submit" value="Filter" style="display:inline; margin-left:15px; margin-top:23px">
+						</div>
+					</div>
+				</div>
+			</form>
 
-    <h1 class="h0">{% trans 'Project participants' %}</h1>
-    <div class='column span-14 last'>
-      <img width="240" height="180" style="float: left; margin: 0 20px 20px 0;" src="{{MEDIA_URL}}pvw-take2/img/meisje-drinkt-water-240x180.jpg" alt="{{focus_area}}"/>
-      <p>
-        {% trans 'This is a list of organisations who participate in the projects listed in the <a href="/rsr/projects/all/">project database</a>.' %}
-      </p>
-    </div>    
-
-    <div class='column span-14 last'>
-      <h1>{% trans 'Our organisations' %}
-        <span class="lt_grey">
-          {% blocktrans count orgs.count as orgs_count %}
-            ({{orgs_count}} result)
-          {% plural %}
-            ({{orgs_count}} results)
-          {% endblocktrans %}
-        </span>
-      </h1>
-
-      {% autosort orgs %}
-      {% autopaginate orgs 20 %}
-      <div class="white_box">
-        {% paginate %}
-        <table id="projects">
-          <colgroup class="org_name_col"></colgroup>
-          <colgroup span="5" class="colgroup"></colgroup>
-          <tr>
-            <th style="padding: 10px;">
-              {% anchor name Name %}
-            </th>
-            <th>{% anchor organisation_type Type %}</th>
-            <th>{% anchor country Country %}</th>
-            <th>
-               {% anchor country__continent Continent %}
-            </th>
-            <th>
-                <p class="small">{% trans 'Project roles' %}</p>
-            </th>
-            <th style="border-right: 0;">
-                <p class="small">{% trans 'Total projects' %}</p>
-            </th>
-          </tr>
-          {% for org in orgs %}
-            <tr>
-              <td>
-                <div class="space10">
-                  <a href="{% url org_detail org.pk %}">
-                    {% org_logo org 100 75 'float:left; margin: 0 10px 10px 0;' %}
-                    <p class="nano-lede strong link_blue">
-                        {{org.name}}
-                    </p> 
-                  </a>
-                  <p class="tiny-lede grey">
-                    {{org.long_name}}
-                  </p> 
-                </div>
-              </td>
-              <td>
-                <p class="td-text">{{org.get_organisation_type_display}}</p>
-              </td>
-              <td>
-                <p class="td-text">{{org.country}}</p>
-              </td>
-              <td>
-                <p class="td-text">{{org.country.get_continent_display}}</p>
-              </td>
-              <td>
-                <p class="td-text">
-                  {% for role in org.partner_types %}
-                    {{role}}<br />
-                  {% endfor %}
-                </p>
-              </td>
-              <td>
-                <p class="td-text">
-                  {% if org.published_projects.count %}
-                    <a href="{% url project_list_for_org org.pk %}">
-                      {{org.published_projects.count}}
-                      {% blocktrans count org.published_projects.count as projects_count %}
-                        project
-                      {% plural %}
-                        projects
-                      {% endblocktrans %}
-                      <br/>
-                      {% trans 'See list' %} <span class="link_triangle">&#x25B6;</span>
-                    </a>
-                  {% else %}
-                    {% trans 'No projects' %}
-                  {% endif %}
-                </p>
-              </td>
-            </tr>
-          {% endfor %}
-        </table>
-        {% paginate %}
-      </div>
-    </div>
-  </div>
-
+      		{% autosort orgs %}
+      		{% autopaginate orgs 20 %}
+      		<div class="white_box">
+				{% paginate %}
+        		<table id="projects">
+          			<colgroup class="org_name_col"></colgroup>
+          			<colgroup span="5" class="colgroup"></colgroup>
+          			<tr>
+            			<th style="padding: 10px;">{% anchor name Name %}</th>
+            			<th>{% anchor organisation_type Type %}</th>
+            			<th>{% anchor country Country %}</th>
+            			<th>{% anchor country__continent Continent %}</th>
+            			<th><p class="small">{% trans 'Project roles' %}</p></th>
+            			<th style="border-right: 0;"><p class="small">{% trans 'Total projects' %}</p></th>
+          			</tr>
+          			{% for org in orgs %}
+            			<tr>
+	              			<td>
+	                			<div class="space10">
+	                  				<a href="{% url org_detail org.pk %}">
+	                    				{% org_logo org 100 75 'float:left; margin: 0 10px 10px 0;' %}
+	                    				<p class="nano-lede strong link_blue">{{org.name}}</p> 
+	                  				</a>
+	                  				<p class="tiny-lede grey">{{org.long_name}}</p> 
+	                			</div>
+	              			</td>
+	              			<td>
+	                			<p class="td-text">{{org.get_organisation_type_display}}</p>
+	              			</td>
+	              			<td>
+	                			<p class="td-text">{{org.country}}</p>
+	              			</td>
+	              			<td>
+	                			<p class="td-text">{{org.country.get_continent_display}}</p>
+	              			</td>
+	              			<td>
+	                			<p class="td-text">
+	                  				{% for role in org.partner_types %}
+	                    				{{role}}<br />
+	                  				{% endfor %}
+	                			</p>
+	              			</td>
+	              			<td>
+	                			<p class="td-text">
+	                  				{% if org.published_projects.count %}
+	                    				<a href="{% url project_list_for_org org.pk %}">
+	                      					{{org.published_projects.count}}
+	                      					{% blocktrans count org.published_projects.count as projects_count %}
+	                        					project
+	                      					{% plural %}
+	                        					projects 
+											{% endblocktrans %}
+											<br/>
+	                      					{% trans 'See list' %} <span class="link_triangle">&#x25B6;</span>
+	                    				</a>
+	                  				{% else %}
+	                    				{% trans 'No projects' %}
+	                  				{% endif %}
+	                			</p>
+	              			</td>
+	            		</tr>
+          			{% endfor %}
+        		</table>
+				{% paginate %}
+      		</div>
+    	</div>
+ 	</div>
 </div> 
 
 {% endblock maincontent %}
 
-{% block js %}
-
-{{ block.super }}
-
-{% if debug %}
-  <script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui.min.js"></script>
-{% else %}
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-{% endif %}
-
-{% endblock js %}
-
 {% block jq_ready %}
-
-  {{block.super}}
-
+	{{block.super}}
+	var query = '{{query}}';
+	if (query) { jQ('#q').val(query); }
 {% endblock jq_ready %}
