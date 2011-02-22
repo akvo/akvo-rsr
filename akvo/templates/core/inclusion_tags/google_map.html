@@ -20,9 +20,9 @@
                 {% endif %}
                 map: map,
                 position: this.options.center,
-                clickable: false,
-            })
+                clickable: false
+            });
         }
     };
-    window.onload = googleMap.load();
+	window.onload = function (){googleMap.load()};
 </script>

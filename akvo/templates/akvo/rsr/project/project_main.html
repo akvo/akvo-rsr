@@ -6,6 +6,13 @@
 <style type="text/css">
 	div#gallery_box_slider {width:{{slider_width}}px;}
 </style>
+
+<!--[if lte IE 7]> 
+<style type="text/css" media="screen">
+	.galleria-info-text{background-color:#fff};
+</style>
+<![endif]-->
+
 {% endblock head %}
 
 {% block breadcrum_items %}
@@ -19,25 +26,22 @@
 		<div class="space20">
 			<div class="counter_badge" style="margin-top:0; margin-right:0;">
 				<span style="display:none;">{% counter p %}</span>
-				{% cache 10 project_view_count p.id %}
-					{{ p.view_count|intcomma }}
-				{% endcache %}
+				{% cache 10 project_view_count p.id %}{{ p.view_count|intcomma }}{% endcache %}
 				<br />
 				<span>{% trans 'views' %}</span>
 			</div>
 			<h2 class="black">{% trans 'Description' %}</h2>
 			{{p.project_plan_summary|linebreaks}}
 			<div style="float:left; width:338px; margin-left: -10px;">
-				<div id="galleria" style="width:338px; height: 350px;"></div>
+				<div id="galleria" style="width:338px; height:350px;"></div>
 			</div>
-        
 			<div style="float:left; width:30px;">&nbsp;</div>
 			<div style="float:left; width:262px;">
 				
-        {% if benchmarks %}
-          <h2 class="black">{% trans 'Who will benefit?' %}</h2>
-          {% include "rsr/inc_target_benchmarks.html" %}
-        {% endif %}
+        		{% if benchmarks %}
+          			<h2 class="black">{% trans 'Who will benefit?' %}</h2>
+          			{% include "rsr/inc_target_benchmarks.html" %}
+        		{% endif %}
 
 				<h2 class="black">{% trans 'Location' %}</h2>
 				<p class="grey">
@@ -175,43 +179,36 @@
 {% endblock project_left_column%}
 
 {% block js %}
-{{ block.super }}
-	<script type="text/javascript" src="{{MEDIA_URL}}core/galleria/galleria.js"></script>
+	{{ block.super }}
+	{#<script src="{{MEDIA_URL}}core/galleria/galleria.js"></script>#}
+	{#<script src="{{MEDIA_URL}}akvo/js/src/galleria.1.2.1.js"></script>#}
+	{% asset_bundle 'akvo_script' %}
 
-{% if debug %}
-	<script type="text/javascript" src="{{MEDIA_URL}}core/js/jquery-ui.min.js"></script>
-{% else %}
-	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-{% endif %}
-
-<script type="text/javascript">
-
-var galleria_data = [
-    {
-        image: '{% thumbnail p.current_image 400x300 autocrop sharpen %}',
-        title: '{{p.current_image_caption}}',
-        description: '&nbsp;'
-    },
-    {% for update_with_image in updates_with_images %}
-      {
-        image: '{% thumbnail update_with_image.photo 400x300 autocrop sharpen %}',
-        title: '{{update_with_image.photo_caption}}',
-        description: '{% if update_with_image.photo_credit %}{% trans "Photo credit:" %} {{update_with_image.photo_credit}}{% else %}&nbsp;{% endif %}'
-      }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-
-</script>
-
+	<script type="text/javascript">
+		var galleria_data = [
+		    {
+		        image: '{% thumbnail p.current_image 400x300 autocrop sharpen %}',
+		        title: '{{p.current_image_caption}}',
+		        description: '&nbsp;'
+		    }{% if updates_with_images %},
+				{% for update_with_image in updates_with_images %}
+			      {
+			        image: '{% thumbnail update_with_image.photo 400x300 autocrop sharpen %}',
+			        title: '{{update_with_image.photo_caption}}',
+			        description: '{% if update_with_image.photo_credit %}{% trans "Photo credit:" %} {{update_with_image.photo_credit}}{% else %}&nbsp;{% endif %}'
+			      }{% if not forloop.last %},{% endif %}
+			    {% endfor %}
+			{% endif%}
+		];
+	</script>
 {% endblock js %}
 
 {% block jq_ready %}
 	jQ('#project_tabs').tabs();
 	{{block.super}}
-		
-  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white/galleria.classic.js');
-  $('#galleria').galleria({data_source: galleria_data, image_crop: 'height'});
-  
+	
+	Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white/galleria.classic.js');
+	$('#galleria').galleria({data_source: galleria_data, image_crop: 'height'});
 {% endblock jq_ready %}
 
 
