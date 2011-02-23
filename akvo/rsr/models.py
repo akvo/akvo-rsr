@@ -101,8 +101,8 @@ class LongitudeField(models.FloatField):
 class Location(models.Model):
     latitude = LatitudeField(_('latitude'), default=0)
     longitude = LongitudeField(_('longitude'), default=0)
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
+    city = models.CharField(_('city'), blank=True, max_length=255)
+    state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)
     address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
     address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
