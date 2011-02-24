@@ -222,16 +222,22 @@
 				</div>
 				{% endifequal %}
 				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="grey">{% trans 'Coupon code' %}:</p>
+				</div>
+				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="grey"> &nbsp;</p>
 				</div>
 			</div>
 			<div style="float:left; width:218px;">
 				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
 				<p style="font-weight:bold; margin-bottom:4px">{{ donate_form.email }}</p>
-				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
 				{% ifequal payment_engine 'ideal' %}
-				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
+				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
+				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.bank }}</p>
+				{% else %}
+				<p style="font-weight:bold; margin-bottom:6px;">{{ donate_form.email2 }}</p>
 				{% endifequal %}
+				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.campaign_code }}</p>
 				<p class="small" style="font-weight:normal; margin-bottom:18px;">
 					{{ donate_form.is_anonymous }} {% trans 'Keep donation' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a>.
 				</p>

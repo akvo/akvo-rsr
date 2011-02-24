@@ -202,10 +202,18 @@
 				<div class="fieldWrapper">	
 					<p class="grey">{% trans 'Your email' %}:</p>
 				</div>
+				{% if invoice.campaign_code %}
+					<div class="fieldWrapper">	
+						<p class="grey">{% trans 'Campaign code' %}:</p>
+					</div>
+				{% endif %}
 			</div>
 			<div style="float:left; width:218px;">
 				<p style="font-weight:bold; margin-bottom:32px; margin-top:7px;">{{ invoice.get_name }}</p>
-				<p style="font-weight:bold; margin-bottom:4px">{{ invoice.get_email }}</p>
+				<p style="font-weight:bold; margin-bottom:32px">{{ invoice.get_email }}</p>
+				{% if invoice.campaign_code %}
+					<p style="font-weight:bold; margin-bottom:4px">{{ invoice.campaign_code }}</p>
+				{% endif %}
 			</div>
 		</div>
 		<div style="float:right; width:485px; padding:10px;">
