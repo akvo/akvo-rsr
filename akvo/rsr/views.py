@@ -1447,6 +1447,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
             invoice.engine = engine
             invoice.name = cd['name']
             invoice.email = cd['email']
+            invoice.campaign_code = cd['campaign_code']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
