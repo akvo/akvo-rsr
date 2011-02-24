@@ -180,8 +180,6 @@
 
 {% block js %}
 	{{ block.super }}
-	{#<script src="{{MEDIA_URL}}core/galleria/galleria.js"></script>#}
-	{#<script src="{{MEDIA_URL}}akvo/js/src/galleria.1.2.1.js"></script>#}
 	{% asset_bundle 'akvo_script' %}
 
 	<script type="text/javascript">

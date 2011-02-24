@@ -195,32 +195,7 @@ def project_list(request, slug='all', org_id=None):
             
     except KeyError, e:
         pass
-    
-    
-    '''
-    try:
-        selected_organisation = request.GET.get('organisation', 'all')
-    except Exception, e:
-        selected_organisation = 'all'
-
-    if selected_organisation != 'all':
-        query_string = ''
-        if request.GET:
-            get_dict = request.GET.copy()
-            del get_dict['organisation']
-            try:
-                del get_dict['page']
-            except Exception, e:
-                pass
-            query_string = '?%s' % get_dict.urlencode()          
-        return HttpResponseRedirect('/rsr/projects/%s/%s' % (selected_organisation, query_string))
-    else:
-        if org_id != None:
-            return HttpResponseRedirect('/rsr/projects/%s/' % org_id)
-        else:
-            return HttpResponseRedirect('/rsr/projects/all/')
-    '''
-    
+       
     # TODO: fix DWS, they don't need funding()
     if settings.PVW_RSR:
         if org_id:
@@ -318,38 +293,6 @@ def project_list(request, slug='all', org_id=None):
         'countries_in_north_america': countries_in_north_america,
         'countries_in_south_america': countries_in_south_america,
         }
-
-
-
-# @render_to('rsr/project/project_directory.html')
-# def project_list(request, slug='all', org_id=None):
-#     '''
-#     List of  projects in RSR
-#     filtered on either a focus area or an organisation
-#     Context:
-#     projs: list of all projects
-#     page: paginator
-#     o: organisation
-#     '''
-#     org = None
-#     focus_area = None
-#     if org_id:
-#         org = Organisation.objects.get(pk=org_id)
-#         projects = org.published_projects().funding()
-#     elif slug:
-#         focus_area = get_object_or_404(FocusArea, slug=slug)
-#         if slug == 'all':
-#             projects = Project.objects.published()
-#         else:
-#             projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
-#     # extra columns to be able to sort on latest updates
-#     projects = projects.extra(
-#         select={
-#             'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
-#             'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
-#         }
-#     )
-#     return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
 
 
 def old_project_list(request):
