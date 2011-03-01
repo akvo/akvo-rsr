@@ -44,7 +44,9 @@ Bug fixes
 
 ### Javascript bug in IE7
 
-- A bug in the image gallery code on the project main page resulted in a rendering issue on Internet Explorer 7.
+- A bug in the image gallery code on the project main page resulted in a
+  rendering issue on Internet Explorer 7. This was resolved by the addition of
+  custom CSS rules for IE7.
 
 Akvo RSR v 1.0.3 release notes
 ------------------------------
