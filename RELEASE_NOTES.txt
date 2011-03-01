@@ -20,6 +20,9 @@ New Features
 
 ### Update to Django 1.2.5
 
+- For more information on the DJango 1.2.5 release, visit:
+  http://docs.djangoproject.com/en/dev/releases/1.2.5/
+
 ### New map widget
 
 - A new widget showing a Google Map of all of an organisation's projects is now
