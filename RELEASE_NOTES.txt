@@ -22,7 +22,9 @@ New Features
 
 ### New map widget
 
-- A new widget showing a Google Map of all of an organisation's projects is now available.
+- A new widget showing a Google Map of all of an organisation's projects is now
+  available. You must be logged into a Plus Account in order to use this
+  feature.
 
 ### Admin location changes
 
