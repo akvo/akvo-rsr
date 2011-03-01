@@ -1,6 +1,6 @@
 RELEASE_NOTES.txt, v1.0
 
-Last changed: 9 Feb 2011, bw
+Last changed: 28 Feb 2011, pb
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -9,9 +9,53 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR v 1.0.4 release notes
+------------------------------
+28 Feb 2011, (Code name: Crossbow) pb
+
+Akvo RSR v 1.0.4 also contains all of the features and bug fixes from v 1.0.3. See below for more details.
+
+New Features
+------------
+
+### Update to Django 1.2.5
+
+### New map widget
+
+- A new widget showing a Google Map of all of an organisation's projects is now available.
+
+### Admin location changes
+
+- City, State and Country fields in a project or organisation's Location data are now optional. Only Latitude and Longitude coordinates are required.
+
+### "Campaign code"
+
+- An optional "Campaign code" field has been added to the donation system.
+
+### Donation product description changed
+
+- The product description has been modified to show an identical string for both PayPal and iDEAL donations. The string is "Akvo-<Project ID>-<Project Name>".
+  Note that the Mollie/iDEAL API will always truncate this string at 29 characters. PayPal is unaffected by this limitation.
+
+Bug fixes
+---------
+
+### Javascript bug in IE7
+
+- A bug in the image gallery code on the project main page resulted in a rendering issue on Internet Explorer 7.
+
 Akvo RSR v 1.0.3 release notes
 ------------------------------
 9 Feb 2011, (Code name: Primrose) bw
+
+** INTERNAL RELEASE ONLY **
+
+Akvo RSR v 1.0.3 was not released publicly. The following bugs were discovered which prevented release:
+
+- A regression in the maps-handling code meant that location markers were no longer being displayed.
+- The RSR database was not being initialised properly because of an incorrectly configured setting.
+
+These have been addressed in release 1.0.4. See above.
 
 New Features
 ------------
