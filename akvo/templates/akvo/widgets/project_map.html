@@ -1,0 +1,47 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load cache counter_tags google_maps humanize i18n rsr_tags %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+	<meta charset="UTF-8" />
+	<title>{{org}}</title>
+	
+	<style type="text/css" media="screen">
+		body { margin:0; font-family: arial; font-size:14px;}
+		#footer {
+			width: {{width}}px;
+			max-width: {{width}}px;
+			background-color: #{{bgcolor}};
+			color: #{{textcolor}};
+			text-align:right;
+			max-height:24px;
+			overflow:hidden;
+		}
+		#footer img { margin-top:3px; margin-right:3px;}
+		#footer a img { border:none;}
+	</style>
+	<base target="_top" />
+</head>
+<body>
+	{% google_organisation_projects_map org state width height zoom %}
+	<div id="footer">
+		<div style="float:left; padding-top:3px; display:none;">
+			<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
+			<span style="display:none">{% counter org %}</span>
+	        	{% cache 10 org.view_count %}
+	        		{{ org.view_count|intcomma }} {% trans 'views' %}
+	        	{% endcache %}
+			</span>
+		</div>
+		<a href="http://akvo.org">
+			<img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+		</a>
+	</div>
+</body>
+</html>
+

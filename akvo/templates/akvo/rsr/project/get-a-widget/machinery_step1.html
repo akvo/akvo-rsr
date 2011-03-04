@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 
-{% load i18n rsr_tags %}
+{% load i18n rsr_tags addparam %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -748,6 +748,65 @@
 		</div>
 	</div>
 	<!-- project list widget stop -_________________________________________________________- -->
+	
+	<!-- project map widget start -________________________________________________________- -->
+	<div class="white_box" style="margin-top:40px;">
+		<div class="space20">
+			<form name="projectMapForm" action="." method="post">{% csrf_token %}
+				<h3>{% trans 'Project map widget' %}</h3>
+				<p class="grey small">
+					{% trans 'Shows a map of projects from your organisation. Users who click on this widget will go to Akvo.org.' %}
+				</p>	
+				<div class="machinery_widget_choice_left" style="float:none;">
+					<p class="small grey" style="margin-bottom:4px;">{% trans 'Sample' %}</p>
+					<script type="text/javascript">
+						document.write('<iframe src="{% url project_map_widget_for_org organisations.0.id %}?height=300&width=600" height="300" width="600" frameborder="0" allowTransparency="true"> </iframe>');
+					</script>
+					{# <iframe src="{% url project_map_widget_for_org organisations.0.id %}?height=300&width=870" height="300" width="870"> #}
+				</div>
+
+				<div class="machinery_widget_choice_right" style="width:370px; float:none; margin-left:285px; margin-top:40px;">
+					<h3>{% trans 'Settings' %}</h3>
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<p style="font-weight:bold; margin-bottom:0;">
+						{% trans 'Enter the web address where you will embed this widget' %}
+					</p>
+					<p style="small">
+						<input type="text" name="widget-site" value="" size=45 style="margin-top:7px; margin-right:20px;" placeholder="{% trans 'Example' %}: www.akvo.org" /> 
+						<span class="machinery_address_placeholder small"></span>
+					</p>
+
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:20px;" />
+					<input type="hidden" name="widget-type" value="project-map" />
+					<input type="hidden" name="widget-choice" value="project-map" /> 
+					<p>
+						{% trans 'Display a project map from this organisation:' %}
+						<select name="widget-organisations" id="project-map-organisations" 
+							size="1" style="margin-top:5px;">
+							{% for organisation in organisations  %}
+							<option value="{{organisation.id}}">{{organisation.name}}</option>
+							{% endfor %}
+						</select>
+					</p>
+				
+					<hr style="margin-left:0; margin-right:auto; margin-bottom:30px; margin-top:10px" />
+
+					<div style="float:left; height:24px; padding-top:5px; padding-right:30px;">
+						<p style="margin:0; padding:0;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						</p>
+					</div>
+					<a class="aqua awesome" 
+						href="javascript:document.projectMapForm.submit();" onclick="this.blur();">
+						<span>{% trans 'Select and Proceed...' %}</span>
+					</a>
+
+				</div>
+				<div class="clear"></div>
+			</form>
+		</div>
+	</div>
+	<!-- project map widget stop -_________________________________________________________- -->
 	{% endif %}
 	<br /><br /><br /><br />
 </div>

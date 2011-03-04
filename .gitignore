@@ -3,6 +3,8 @@
 *.kpf
 *.mo
 *.pyc
+*.komodoproject
+*.komodotools
 akvo/data
 akvo/datadir
 akvo/datadir.zip

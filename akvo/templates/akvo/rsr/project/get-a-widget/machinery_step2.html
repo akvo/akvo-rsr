@@ -1,208 +1,265 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-
 {% load i18n rsr_tags %}
 
+{% block head %}
+	<!--[if IE 7]>
+		<style type="text/css" media="screen">
+			#akvo_widget_container {
+				{% if widget_type == 'feature-side' %}
+					min-height:840px;
+					height:840px;	
+				{% endif %}
+				{% if widget_type == 'project-contribute' %}
+					min-height:570px;
+					height:570px;	
+				{% endif %}
+				{% if widget_type == 'project-small' %}
+					min-height:312px;
+					height:312px;	
+				{% endif %}
+				{% if widget_type == 'project-updates' %}
+					min-height:900px;
+					height:900px;	
+				{% endif %}
+				{% if widget_type == 'project-list' %}
+					min-height:730px;
+					height:730px;	
+				{% endif %}
+				{% if widget_type == 'project-map' %}
+					min-height:300px;
+					height:300px;	
+				{% endif %}
+				{% if widget_type == 'project-narrow' %}
+					min-height:840px;
+					height:840px;	
+				{% endif %}
+				{% if widget_type == 'cobranded-narrow' %}
+					min-height:911px;
+					height:911px;	
+				{% endif %}
+				{% if widget_type == 'cobranded-short' %}
+					min-height:627px;
+					height:627px;	
+				{% endif %}
+				{% if widget_type == 'cobranded-banner' %}
+					min-height:234px;
+					height:234px;	
+				{% endif %}
+				{% if widget_type == 'cobranded-leader' %}
+					min-height:207px;
+					height:207px;	
+				{% endif %}
+			}
+		</style>
+	<![endif]-->
+{% endblock head %}
+
 {% block breadcrum_items %}
-{{block.super}}
-<li id="last_breadcrum_item">{% trans 'Get a widget - step 2' %}</li>
+	{{block.super}}
+	<li id="last_breadcrum_item">{% trans 'Get a widget - step 2' %}</li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
-
-<h1>{% trans 'Customise your widget' %}</h1>
-
-<p>
-	{% ifequal widget_choice 'specific-project'  %}
-		<span class="grey">
-			{% trans 'This widget will show the project' %}
-		</span><br />
-		<span style="font-weight:bold;">{{project.name}}</span>
-	{% else %}
-		<span class="grey">
-			{% trans 'This widget will show projects from the following organisation' %}
-		</span><br />
-		<span style="font-weight:bold;">{{organisation.name}}</span>
-	{% endifequal %}
-</p>
-<a id="preview_position"></a>
-<hr />
-<div class="prepend-1">
-	<div style="width:45%; float:left;">
-		<h3 style="padding-top:40px;">{% trans 'Step 2: Select colours for your widget and preview' %}</h3>
-	</div>
-	<div class="clear"></div>
-	
-	<div class="white_box">
-		<div class="space20">
-			<div>
-				<div id="warning_color">
-					<p>{% trans 'A color you entered is not recognized. Please change and try again.' %}</p>
+	<h1>{% trans 'Customise your widget' %}</h1>
+	<p>
+		{% ifequal widget_choice 'specific-project'  %}
+			<span class="grey">{% trans 'This widget will show the project' %}</span><br />
+			<span style="font-weight:bold;">{{project.name}}</span>
+		{% else %}
+			<span class="grey">{% trans 'This widget will show projects from the following organisation' %}</span><br />
+			<span style="font-weight:bold;">{{organisation.name}} ({{organisation.id}})</span>
+		{% endifequal %}
+	</p>
+	<a id="preview_position"></a>
+	<hr />
+	<div class="prepend-1">
+		<div style="width:45%; float:left;">
+			<h3 style="padding-top:40px;">{% trans 'Step 2: Select colours for your widget and preview' %}</h3>
+		</div>
+		<div class="clear"></div>
+		
+		<div class="white_box">
+			<div class="space20">
+				<div>
+					<div id="warning_color">
+						<p>{% trans 'A color you entered is not recognized. Please change and try again.' %}</p>
+					</div>
+					<p style="font-weight:bold;">{% trans 'A: Top and bottom coloured bars' %}</p>
+					<div class="clear"></div>
 				</div>
-				<p style="font-weight:bold;">{% trans 'A: Top and bottom coloured bars' %}</p>
+				<div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
+					<p>
+						<select name="backgroundcolor_pulldown" id="backgroundcolor_pulldown" size="1">
+							<option value="B50000">{% trans 'Akvo Red' %} (#B50000)</option>
+							<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
+							<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
+							<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
+							<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
+							<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
+							<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
+							<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
+							<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
+							<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
+							<option value="008080">{% trans 'Teal' %} (#008080)</option>
+							<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
+							<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
+							<option value="696969">{% trans 'DimGray' %} (#696969)</option>
+							<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
+							<option value="000000">{% trans 'Black' %} (#000000)</option>
+							<option value="x">{% trans 'Other...' %}</option>
+						</select><br />
+						<span class="grey" style="display:block; margin-left:4px; padding-top:7px;">
+						{% trans 'Select colour' %}
+						</span>
+					</p>
+				</div>
+				<div style="float:left; width:600px;">
+					<div id="backgroundcolor_other_section" style="float:left; width:100%; display:none;">
+						<div style="float:left; width:200px;">
+							<p style="margin:0; padding:0;">
+								<input type="text" name="bgcolor" value="B50000" id="backgroundcolor_text" size="10" /><br />
+								<span class="grey">{% trans 'Enter a hex number' %}.</span>
+							</p>
+						</div>
+						<div style="float:left; width:400px; padding-top:10px;">
+							<p class="small grey">
+								{% trans 'View a list of' %} 
+								<a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">
+									{% trans 'standard colours' %}
+								</a> 
+								({% trans 'external link, new window' %}).
+							</p>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>				
 				<div class="clear"></div>
-			</div>
 			
-			<div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
-				<p>
-					<select name="backgroundcolor_pulldown" id="backgroundcolor_pulldown" size="1">
-						<option value="B50000">{% trans 'Akvo Red' %} (#B50000)</option>
-						<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
-						<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
-						<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
-						<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
-						<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
-						<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
-						<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
-						<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
-						<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
-						<option value="008080">{% trans 'Teal' %} (#008080)</option>
-						<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
-						<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
-						<option value="696969">{% trans 'DimGray' %} (#696969)</option>
-						<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
-						<option value="000000">{% trans 'Black' %} (#000000)</option>
-						<option value="x">{% trans 'Other...' %}</option>
-					</select><br />
-					<span class="grey" style="display:block; margin-left:4px; padding-top:7px;">
-					{% trans 'Select colour' %}
-					</span>
-				</p>
-			</div>
-			<div style="float:left; width:600px;">
-				<div id="backgroundcolor_other_section" 
-					style="float:left; width:100%; display:none;">
-					<div style="float:left; width:200px;">
-						<p style="margin:0; padding:0;">
-							<input type="text" name="bgcolor" value="B50000" id="backgroundcolor_text" size="10" /><br />
-							<span class="grey">{% trans 'Enter a hex number' %}.</span>
-						</p>
-					</div>
-					<div style="float:left; width:400px; padding-top:10px;">
-						<p class="small grey">
-							{% trans 'View a list of' %} 
-							<a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">
-								{% trans 'standard colours' %}
-							</a> 
-							({% trans 'external link, new window' %}).
-						</p>
-					</div>
-					<div class="clear"></div>
+				<p style="font-weight:bold;">{% trans 'B: Widget title on top bar' %}</p>
+				<div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
+					<p>
+						<select name="textcolor_pulldown" id="textcolor_pulldown" size="1">
+							<option value="FFFFFF">{% trans 'White' %} (#FFFFFF)</option>
+							<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
+							<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
+							<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
+							<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
+							<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
+							<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
+							<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
+							<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
+							<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
+							<option value="008080">{% trans 'Teal' %} (#008080)</option>
+							<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
+							<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
+							<option value="696969">{% trans 'DimGray' %} (#696969)</option>
+							<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
+							<option value="000000">{% trans 'Black' %} (#000000)</option>
+							<option value="x">{% trans 'Other...' %}</option>
+						</select><br />
+						<span class="grey" style="display:block; margin-left:4px; padding-top:7px;">
+						{% trans 'Select colour' %}
+						</span>
+					</p>
 				</div>
-			</div>				
-			<div class="clear"></div>
-			
-			<p style="font-weight:bold;">{% trans 'B: Widget title on top bar' %}</p>
-			<div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
-				<p>
-					<select name="textcolor_pulldown" id="textcolor_pulldown" size="1">
-						<option value="FFFFFF">{% trans 'White' %} (#FFFFFF)</option>
-						<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
-						<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
-						<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
-						<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
-						<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
-						<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
-						<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
-						<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
-						<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
-						<option value="008080">{% trans 'Teal' %} (#008080)</option>
-						<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
-						<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
-						<option value="696969">{% trans 'DimGray' %} (#696969)</option>
-						<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
-						<option value="000000">{% trans 'Black' %} (#000000)</option>
-						<option value="x">{% trans 'Other...' %}</option>
-					</select><br />
-					<span class="grey" style="display:block; margin-left:4px; padding-top:7px;">
-					{% trans 'Select colour' %}
+				<div style="float:left; width:600px;">
+					<div id="textcolor_other_section" style="float:left; width:100%; display:none;">
+						<div style="float:left; width:200px;">
+							<p style="margin:0; padding:0;">
+								<input type="text" name="textcolor" value="ffffff" id="textcolor_text" size="10" /><br />
+								<span class="grey">{% trans 'Enter a hex number' %}.</span>
+							</p>
+						</div>
+						<div style="float:left; width:400px; padding-top:10px;">
+							<p class="small grey">
+								{% trans 'View a list of' %} 
+								<a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">
+									{% trans 'standard colours' %}
+								</a> 
+								({% trans 'external link, new window' %}).
+							</p>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>				
+				<div class="clear"></div>					
+				
+				{% if widget_type == 'project-map' %}
+					<p style="font-weight:bold;">{% trans 'C: Set height of the widget' %}</p>
+					<div style="margin-left:50px; margin-top:6px; margin-bottom:15px;">
+						<input type="text" name="widget_height" value="300" id="widget_height" size="10" /> pixels.<br />
+					</div>
+					<p style="font-weight:bold;">{% trans 'D: Set width of the widget' %}</p>
+					<div style="margin-left:50px; margin-top:6px;">
+						<input type="text" name="widget_width" value="600" id="widget_width" size="10" /> pixels.<br />
+					</div>
+				{% endif %}
+
+				
+				<div style="text-align:center;">
+					<span class="small" style="margin-right:50px;">
+						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
 					</span>
-				</p>
-			</div>
-			<div style="float:left; width:600px;">
-				<div id="textcolor_other_section" 
-					style="float:left; width:100%; display:none;">
-					<div style="float:left; width:200px;">
-						<p style="margin:0; padding:0;">
-							<input type="text" name="textcolor" value="ffffff" id="textcolor_text" size="10" /><br />
-							<span class="grey">{% trans 'Enter a hex number' %}.</span>
-						</p>
-					</div>
-					<div style="float:left; width:400px; padding-top:10px;">
-						<p class="small grey">
-							{% trans 'View a list of' %} 
-							<a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">
-								{% trans 'standard colours' %}
-							</a> 
-							({% trans 'external link, new window' %}).
-						</p>
-					</div>
-					<div class="clear"></div>
+					<a id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();">
+						<span>{% trans 'Preview' %}</span>
+					</a>
 				</div>
-			</div>				
-			<div class="clear"></div>
+
 			
-			<div style="text-align:center;">
-				<span class="small" style="margin-right:50px;">
-					<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
-				</span>
-				<a id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();">
-					<span>{% trans 'Preview' %}</span>
-				</a>
+				<hr style="margin-top:20px"/>
+				{% if widget_type == 'project-map' %}
+					<p style="font-weight:bold;">{% trans 'D: Review your widget' %}</p>
+				{% else %}
+					<p style="font-weight:bold;">{% trans 'C: Review your widget' %}</p>
+				{% endif %}
+				<div id="akvo_widget_container" style="margin:0; padding:0; margin-left:40px; margin-top:40px;"></div>
 			</div>
-			
-		<hr style="margin-top:20px"/>
-		<p style="font-weight:bold;">{% trans 'C: Review your widget' %}</p>
-		<div id="akvo_widget_container" style="margin:0; padding:0; margin-left:40px; margin-top:40px;"> </div>
 		</div>
 	</div>
-</div>
 
-<div class="prepend-1" style="margin-top:40px;">
-	<h3>{% trans 'Step 3: Copy the HTML code below for use on your web site' %}</h3>
+	<div class="prepend-1 span-17" style="margin-top:40px;">
+		<h3>{% trans 'Step 3: Copy the HTML code below for use on your web site' %}</h3>
+		<div class="white_box">
+			<div class="space20">
+				<p class="grey small">
+					{% trans 'You may repeat the steps above until you are satisﬁed with the appearance of your widget.' %}
+				</p>
+				<div style="width:100%; text-align:center; margin-top:20px; margin-bottom:40px;">
+					<textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="60" id="code"> </textarea>
+				</div>
+			
+				<div style="text-align:center;">
+					<span class="small" style="margin-right:50px;">
+						<a href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
+					</span>
+					<a class="aqua awesome" href="{% url akvo.rsr.views.projectmain project.id %}">
+						<span>{% trans 'Done' %}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 	
-	<div class="white_box">
-		<div class="space20">
-			<p class="grey small">
-				{% trans 'You may repeat the steps above until you are satisﬁed with the appearance of your widget.' %}
-			</p>
-			<div style="width:100%; text-align:center; margin-top:20px; margin-bottom:40px;">
-				<textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="60" id="code"> </textarea>
-			</div>
-			
-			<div style="text-align:center;">
-				<span class="small" style="margin-right:50px;">
-					<a href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
-				</span>
-				<a class="aqua awesome" href="{% url akvo.rsr.views.projectmain project.id %}">
-					<span>{% trans 'Done' %}</span>
-				</a>
-			</div>
-			
-		</div>
-	</div>
-</div>
-
-
 {% endblock maincontent %}
 
 {% block js %}
-{{block.super}}
+	{{block.super}}
 
-{% asset_bundle 'akvo_machinery_js' %}
+	{% asset_bundle 'akvo_machinery_js' %}
+	
+	<script type="text/javascript">
+		var akvo_project_id = {{project.id}};
+		var akvo_widget_type = '{{widget_type}}';
+		var akvo_widget_choice = '{{widget_choice}}';
+		var akvo_widget_organisation = '{{organisation.id}}';
+		var akvo_widget_site = '{{widget_site}}';
 
-<script type="text/javascript">
-	var akvo_project_id = {{project.id}};
-	var akvo_widget_type = '{{widget_type}}';
-	var akvo_widget_choice = '{{widget_choice}}';
-	var akvo_widget_organisation = '{{organisation.id}}';
-	var akvo_widget_site = '{{widget_site}}';
-
-	var error0 = "{% trans 'Please review message below' %}";
-	var error1 = "{% trans 'A: Hex color values should be 3 or 6 characters' %}";
-	var error2 = "{% trans 'A: Not a valid hex number' %}";
-	var error3 = "{% trans 'B: Hex color values should be 3 or 6 characters' %}";
-	var error4 = "{% trans 'B: Not a valid hex number' %}";
-</script>
+		var error0 = "{% trans 'Please review message below' %}";
+		var error1 = "{% trans 'A: Hex color values should be 3 or 6 characters' %}";
+		var error2 = "{% trans 'A: Not a valid hex number' %}";
+		var error3 = "{% trans 'B: Hex color values should be 3 or 6 characters' %}";
+		var error4 = "{% trans 'B: Not a valid hex number' %}";
+	</script>
 
 {% endblock js%}
 
