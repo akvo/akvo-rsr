@@ -170,6 +170,11 @@ if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
     urlpatterns += patterns('',
         url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
     )
+
+if getattr(settings, 'RABOBANK_ENABLED', False):
+    urlpatterns += patterns('',
+        url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
+    )
     
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
