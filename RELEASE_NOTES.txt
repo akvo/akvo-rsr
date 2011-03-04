@@ -41,6 +41,12 @@ New Features
 - The product description has been modified to show an identical string for both PayPal and iDEAL donations. The string is "Akvo-<Project ID>-<Project Name>".
   Note that the Mollie/iDEAL API will always truncate this string at 29 characters. PayPal is unaffected by this limitation.
 
+### Presentation of project and organisation information in large maps
+
+- The information bubbles which appear when you click on a location marker in
+  the global project and organisation maps have been updated to display the
+  information in a much smaller space. This reduces screen clutter.
+
 Bug fixes
 ---------
 
