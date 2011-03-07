@@ -23,6 +23,14 @@ ASSET_BUNDLES = {
             'jquery-ui-1.8.5.custom.css',
             ],
     },
+    'akvo_script': {
+        'type': 'js',
+        'path': 'akvo/js/',
+        'compress': True,
+        'files': [
+            'galleria.1.1.95.js',
+        ],
+    },
     'akvo_ie6_style': {
         'type': 'css',
         'path': 'akvo/css/',
