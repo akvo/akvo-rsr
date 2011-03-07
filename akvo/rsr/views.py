@@ -377,6 +377,35 @@ else:
             'active_projects': active_projects,
             'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         }
+
+    @render_to('rsr/organisation/landing_pages/rabobank.html')
+    def rabobank(request):
+        '''
+        List of all projects associated with Rabobank 
+        Context:
+        projects: list of all projects
+        stats: the aggregate projects data
+        page: paginator
+        '''
+        org = get_object_or_404(Organisation, pk=getattr(settings, 'RABOBANK_ID', 0))
+        projects = org.published_projects().funding()
+        delivered_business_people = projects.status_complete().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business'))
+        upcoming_business_people = projects.active().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business')) - delivered_business_people
+        # round to nearest whole 1000
+        # people_served = int(people_served / 1000) * 1000
+        page = project_list_data(request, projects)
+        active_projects = projects.status_not_cancelled().status_not_archived()
+        return {
+            'page': page,
+            'org': org,
+            'upcoming_business_people': upcoming_business_people,
+            'delivered_business_people': delivered_business_people,
+            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
+            'active_projects': active_projects,
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+        }
+
+
     
     # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
     import re
