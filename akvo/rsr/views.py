@@ -233,7 +233,7 @@ def project_list(request, slug='all', org_id=None):
             
     except KeyError, e:
         pass
-    
+
     # TODO: fix DWS, they don't need funding()
     if settings.PVW_RSR:
         if org_id:
@@ -1418,12 +1418,14 @@ def donate(request, p, engine, has_sponsor_banner=False):
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
+            description = u'Akvo-%d-%s' % (p.id, p.name)
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
             invoice.name = cd['name']
             invoice.email = cd['email']
+            invoice.campaign_code = cd['campaign_code']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
@@ -1438,7 +1440,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'amount': invoice.amount * 100,
                     'bank_id': invoice.bank,
                     'partnerid': invoice.gateway,
-                    'description': u'Donation: Akvo Project %d' % int(p.id),
+                    'description': description,
                     'reporturl': getattr(settings, 'MOLLIE_REPORT_URL', 'http://www.akvo.org/rsr/mollie/report/'),
                     'returnurl': getattr(settings, 'MOLLIE_RETURN_URL', 'http://www.akvo.org/rsr/donate/ideal/thanks/'),
                 }
@@ -1466,11 +1468,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'currency_code': invoice.currency,
                     'business': invoice.gateway,
                     'amount': invoice.amount,
-                    'item_name': u'%s: Project %d - %s' % (
-                        getattr(settings, 'PAYPAL_PRODUCT_DESCRIPTION_PREFIX', 'Akvo Project Donation'),
-                        int(invoice.project.id),
-                        invoice.project.name,
-                    ),
+                    'item_name': description,
                     'invoice': int(invoice.id),
                     'lc': invoice.locale,
                     'notify_url': getattr(settings, 'PAYPAL_NOTIFY_URL', 'http://www.akvo.org/rsr/donate/paypal/ipn/'),
