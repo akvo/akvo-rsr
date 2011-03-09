@@ -134,7 +134,10 @@
 					</div>
 				</div>				
 				<div class="clear"></div>
-			
+				
+				
+				<div {% if widget_type == 'project-map' %} style="display:none;"{% endif %}>
+					
 				<p style="font-weight:bold;">{% trans 'B: Widget title on top bar' %}</p>
 				<div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
 					<p>
@@ -183,19 +186,27 @@
 					</div>
 				</div>				
 				<div class="clear"></div>					
+				</div>
 				
 				{% if widget_type == 'project-map' %}
-					<p style="font-weight:bold;">{% trans 'C: Set height of the widget' %}</p>
+					<p style="font-weight:bold;">{% trans 'B: Set height of the widget' %}</p>
 					<div style="margin-left:50px; margin-top:6px; margin-bottom:15px;">
 						<input type="text" name="widget_height" value="300" id="widget_height" size="10" /> pixels.<br />
 					</div>
 					<p style="font-weight:bold;">{% trans 'D: Set width of the widget' %}</p>
-					<div style="margin-left:50px; margin-top:6px;">
+					<div style="margin-left:50px; margin-top:6px; margin-bottom:15px;">
 						<input type="text" name="widget_width" value="600" id="widget_width" size="10" /> pixels.<br />
 					</div>
+					
+					<p style="font-weight:bold;">{% trans 'C: Map state' %}</p>
+					<div style="margin-left:50px; margin-top:6px;">
+						<input id="dynamic" name="map_state" type="radio" value="dynamic" checked="checked"> 
+						<label for="dynamic" style="display:inline;">Dynamic</label><br />
+						<input id="static" name="map_state" type="radio" value="static"> 
+						<label for="static" style="display:inline;">Static</label><br />
+					</div>	
 				{% endif %}
 
-				
 				<div style="text-align:center;">
 					<span class="small" style="margin-right:50px;">
 						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
