@@ -7,7 +7,7 @@
 .galleria-container {
     position: relative;
     overflow: hidden;
-    background: #fff;
+    background: #000;
 }
 .galleria-container img {
     -moz-user-select: none;
@@ -48,7 +48,7 @@
     bottom: 10px;
     left: 10px;
     text-align: right;
-    color: #000;
+    color: #fff;
     font: normal 11px/1 arial,sans-serif;
     z-index: 2;
 }
@@ -79,7 +79,7 @@
 .galleria-info-title {
     font: bold 12px/1.1 arial,sans-serif;
     margin: 0;
-    color: #fefefe;
+    color: #fff;
 	margin-bottom: 7px;
 }
 .galleria-info-description {
