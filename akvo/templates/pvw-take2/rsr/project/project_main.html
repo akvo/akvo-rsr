@@ -266,7 +266,12 @@
 {% endblock project_main %}
 
 {% block jq_ready %}
+ 	jQ('#project_tabs').tabs();
+	{% if not updates %}
+		jQ('#project_tabs').tabs('select',1);
+	{% endif %}	
 	{{block.super}}
+	
 	jQ('.gallery_links').click(function(e) {
 		e.preventDefault();
 		jQ('#gallery_image').attr("src", jQ(this).attr('href'));
