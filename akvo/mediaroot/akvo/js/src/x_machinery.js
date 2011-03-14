@@ -121,11 +121,12 @@ function preview_widget()
 	
 	var widget_height = '';
 	var widget_width = '';
+	var map_widget_state = '';
 	if (akvo_widget_choice == 'project-map') {
 	    widget_height = jQ('#widget_height').val();
 	    widget_width = jQ('#widget_width').val();
+	    map_widget_state = jQ('input:radio[name=map_state]:checked').val();
 	}
-	
 
 	// Create the iframe variables
 	var akvo_widget_height = getHeight(akvo_widget_type);
@@ -135,16 +136,19 @@ function preview_widget()
     var widget_url = '';
 	if (akvo_widget_choice == 'random-from-org') {
 	    akvo_url = 'http://' + location.host + '/rsr/widget/one-from-organisation/' + akvo_widget_organisation + '/?widget=' + akvo_widget_type;
-	    widget_url = akvo_url + '&bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;
+	    widget_url = akvo_url + '&bgcolor=' + bgcolor + '&textcolor=' + txtcolor;
 	} else if (akvo_widget_choice == 'project-list' || akvo_widget_choice == 'project-map') {
 	    akvo_url ='http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/organisation/' + akvo_widget_organisation + '/';
-	    widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;	  
+	    widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor;
 	    if (akvo_widget_choice == 'project-map') {
-            widget_url += '&height='+ widget_height + '&width=' + widget_width;
+            widget_url += '&height='+ widget_height + '&width=' + widget_width + '&state=' + map_widget_state;
         }
 	} else {
 	    akvo_url = 'http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/project/' + akvo_project_id + '/';
-	    widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;
+	    widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor;
+	}
+	if (!(akvo_widget_site == '' || akvo_widget_site == 'Example: www.akvo.org')) {
+	    widget_url += '&site=' + akvo_widget_site;
 	}
     
     
