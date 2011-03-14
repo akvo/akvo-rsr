@@ -180,7 +180,6 @@
 
 {% block js %}
 	{{ block.super }}
-	{#{% asset_bundle 'akvo_script' %}#}
 	
 	<script src="{{MEDIA_URL}}core/galleria/galleria_1.2.2.js"></script>
 	<script>
@@ -189,7 +188,7 @@
 				description: '&nbsp;',
 				image: '{% thumbnail p.current_image 400x300 autocrop sharpen %}',
 				thumb: '{% thumbnail p.current_image 64x48 autocrop sharpen %}',
-				title: '{{p.current_image_caption}}',
+				title: '{{p.current_image_caption}}'
 		    }{% if updates_with_images %},
 				{% for update_with_image in updates_with_images %}
 					{
@@ -202,40 +201,13 @@
 			{% endif%}			
 		];
 	</script>
-	
-	{% comment %}
-		
-
-	<script type="text/javascript">
-		var galleria_data = [
-		    {
-		        image: '{% thumbnail p.current_image 400x300 autocrop sharpen %}',
-		        title: '{{p.current_image_caption}}',
-		        description: '&nbsp;'
-		    }{% if updates_with_images %},
-				{% for update_with_image in updates_with_images %}
-			      {
-			        image: '{% thumbnail update_with_image.photo 400x300 autocrop sharpen %}',
-			        title: '{{update_with_image.photo_caption}}',
-			        description: '{% if update_with_image.photo_credit %}{% trans "Photo credit:" %} {{update_with_image.photo_credit}}{% else %}&nbsp;{% endif %}'
-			      }{% if not forloop.last %},{% endif %}
-			    {% endfor %}
-			{% endif%}
-		];
-	</script>
-	{% endcomment %}
 {% endblock js %}
 
 {% block jq_ready %}
 	jQ('#project_tabs').tabs();
 	{{block.super}}
 	Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
-	$('#galleria').galleria({data_source: galleria_data});
-	
-	{% comment %}
-		Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white/galleria.classic.js');
-		$('#galleria').galleria({data_source: galleria_data, image_crop: 'height'});
-	{% endcomment %}
+	$('#galleria').galleria({data_source: galleria_data});	
 {% endblock jq_ready %}
 
 
