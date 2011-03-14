@@ -143,6 +143,7 @@ urlpatterns += patterns('',
 	
 	url(r'^rsr/widget/project-list/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/project-list/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget_for_org', ),
+	url(r'^rsr/widget/project-map/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_map_widget', name='project_map_widget_for_org', ),
 	
     # django_counter
     (r'^rsr/counter/', include('django_counter.urls')),
@@ -169,6 +170,11 @@ if getattr(settings, 'LIVE_EARTH_ENABLED', False):
 if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
     urlpatterns += patterns('',
         url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
+    )
+
+if getattr(settings, 'RABOBANK_ENABLED', False):
+    urlpatterns += patterns('',
+        url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
     )
     
 handler500 = 'akvo.rsr.views.server_error'

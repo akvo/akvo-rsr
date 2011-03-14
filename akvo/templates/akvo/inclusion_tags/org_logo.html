@@ -1,9 +1,1 @@
-{% load i18n thumbnail %}
-{% thumbnail org.logo wxh upscale sharpen as org_logo %}{% if org_logo %}{# all on one line to work in js #}
-
-<div style="width: {{width}}px; height:{{height}}px; text-align: center; vertical-align: middle; {{style}}">
-	<img src="{{org_logo}}" alt="{% trans 'Logo of' %} {{org.name}}" style="{{img_style}}" />
-</div>
-{% else %}
-<div style="width: {{width}}px; height:{{height}}px; background: #F6F6F6; text-align: center; {{style}}">{% trans 'Logo missing' %}</div>
-{% endif %}
+{#JS need a one-liner#}{% load i18n thumbnail %}{% thumbnail org.logo wxh upscale sharpen as org_logo %}{% if org_logo %}<div style="width: {{width}}px; height:{{height}}px; text-align: center; vertical-align: middle; {{style}}"><img src="{{org_logo}}" alt="{% trans 'Logo of' %} {{org.name}}" style="{{img_style}}" /></div>{% else %}<div style="width: {{width}}px; height:{{height}}px; background: #F6F6F6; text-align: center; {{style}}">{% trans 'Logo missing'%}</div>{% endif %}

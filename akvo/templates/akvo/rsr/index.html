@@ -102,7 +102,7 @@
         		{% endfor %}
         		<div class="h1_companion" style="margin: 20px; margin-top: 0;">
           			<a href="/blog">
-						{% trans 'Read earlier blog posts' %} <span class="link_triangle">&#x25B6;</span>
+						{% trans 'Read earlier blog posts' %} <span class="link_triangle">&#x25BA;</span>
 					</a>
         		</div>          
         		<div class="clear"></div>
@@ -144,7 +144,7 @@
       		</a>
       		<div style="padding: .5em .5em .7em .5em;">
         		<a class="right small right_now_blue" href="{% url global_project_map %}">
-					{% trans 'Global project map' %} <span class="link_triangle">&#x25B6;</span>
+					{% trans 'Global project map' %} <span class="link_triangle">&#x25BA;</span>
 				</a>
 				<div class="clear"></div>
 			</div> 
@@ -152,7 +152,7 @@
 		<div style="margin-bottom: .4em; margin-top:15px;">
       		<h1 class="top_of_box">{% trans 'Project focus areas' %}</h1>
       		<a class="small" style="margin-left: 2em;" href="/web/focus-areas">
-				See all <span class="link_triangle">&#x25B6;</span>
+				See all <span class="link_triangle">&#x25BA;</span>
 			</a>
     	</div>
     	<div id="index-accordion" style="height: {{cms.lower_height|add:-69}}px;">
@@ -164,7 +164,7 @@
             			{{focus_area.description|smart_truncate:120|apply_markup:"markdown"}}
             			<div class="h1_companion">
               				<a style="color: #1877B8;" 
-								href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">{% trans 'Browse projects / read more' %} <span class="link_triangle">&#x25B6;</span>
+								href="{% if focus_area.link_to %}{{focus_area.link_to}}{% else %}{{ focus_area.get_absolute_url }}{% endif %}">{% trans 'Browse projects / read more' %} <span class="link_triangle">&#x25BA;</span>
 							</a>
             			</div>
         			</div>
@@ -174,14 +174,6 @@
 	</div>
 </div>
 {% endblock maincontent %}
-
-{% block js %}
-	{{ block.super }}
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
-	<script>
-		!window.jQuery && document.write('<script src="{{MEDIA_URL}}akvo/js/src/jquery-ui-1.8.5.custom.min.js"><\/script>')
-	</script>
-{% endblock js %}
 
 {% block jq_ready %}
 	{{ block.super }}

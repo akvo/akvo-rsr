@@ -11,25 +11,6 @@
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-
-{% comment %}
-<div style="float:right; margin-right:10px;">
-	<span style="display:none;">{% counter p %}</span>
-	<p style="margin:0; color:#999; margin-top:5px;" class="small">
-	{% cache 10 project.view_count %}
-		{{ project.view_count|intcomma }} {% trans 'views' %}
-	{% endcache %}
-	</p>
-</div>
-{% endcomment %}
-
-{% comment %}
-<span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; "><span style="display:none;">{% counter p %}</span>
-	{% cache 10 project.view_count %}
-		{{ project.view_count|intcomma }} {% trans 'views' %}
-	{% endcache %}
-</span>
-{% endcomment %}
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
@@ -74,7 +55,7 @@
 				</div>
 				<p class="small space0" style="padding-top:10px;">
 					<a style="color:#FDF47A;" href="{% url project_funding project.id %}">
-						{% trans 'See funding details' %} &#x25B6;
+						{% trans 'See funding details' %} &#x25BA;
 					</a>
 				</p>
 			</div>
@@ -94,7 +75,7 @@
 					<h2>{% trans 'Latest updates' %}</h2>
 				</div>
 				<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-					<a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25B6;</a>
+					<a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} &#x25BA;</a>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -168,7 +149,7 @@
 				<h2>{% trans 'Project partners' %}</h2>
 			</div>
 			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_partners project.id %}">{% trans 'See details' %} &#x25B6;</a>
+				<a class="small" href="{% url project_partners project.id %}">{% trans 'See details' %} &#x25BA;</a>
 			</div>
 			<div class="clear"></div>
 			<div class="white_box">
@@ -204,18 +185,18 @@
 				<h2>{% trans 'Comments' %}</h2>
 			</div>
 			<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-				<a class="small" href="{% url project_comments project.id %}">{% trans 'See all' %} &#x25B6;</a>
+				<a class="small" href="{% url project_comments project.id %}">{% trans 'See all' %} &#x25BA;</a>
 			</div>
 			<div class="clear"></div>
 			<div class="white_box">
 				<div class="space10">
 					{% if not comments %}
 					<a class="small" href="{% url project_comments project.id %}">
-						{% trans 'Add first comment' %}  &#x25B6;
+						{% trans 'Add first comment' %}  &#x25BA;
 					</a>
 					{% else %}
 						<a class="small" href="{% url project_comments project.id %}">
-							{% trans 'Add comment' %}  &#x25B6;
+							{% trans 'Add comment' %}  &#x25BA;
 						</a>
 						<hr style="margin-top:10px; margin-bottom:5px;"/>
 						{% for c in comments %}
@@ -237,7 +218,7 @@
 	{% endif %}
 		
 	<div class="two_column_right_inner">
-		<p class="grey tiny" class="text_right">{% trans 'Akvo Ref' %}: {{project.id}}</p>
+		<p class="grey tiny text_right">{% trans 'Akvo Ref' %}: {{project.id}}</p>
 	</div>
 </div>
 {% endblock maincontent %}

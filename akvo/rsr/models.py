@@ -100,10 +100,16 @@ class LongitudeField(models.FloatField):
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0)
-    longitude = LongitudeField(_('longitude'), default=0)
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
+    latitude = LatitudeField(_('latitude'), default=0,
+        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+                  'target="_blank">iTouchMap.com</a> '
+                  'to get the decimal coordinates of your project')
+    longitude = LongitudeField(_('longitude'), default=0,
+        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+                  'target="_blank">iTouchMap.com</a> '
+                  'to get the decimal coordinates of your project')
+    city = models.CharField(_('city'), blank=True, max_length=255)
+    state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)
     address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
     address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
@@ -2345,6 +2351,8 @@ class Invoice(models.Model):
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
+    campaign_code = models.CharField(_('Campaign code'),
+                                     blank=True, max_length=15)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
     ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)

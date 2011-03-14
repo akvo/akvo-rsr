@@ -216,7 +216,7 @@ class InvoiceForm(forms.ModelForm):
         
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'name', 'email', 'is_anonymous')
+        fields = ('amount', 'name', 'email', 'campaign_code', 'is_anonymous')
 
     def clean(self):
         cd = self.cleaned_data
