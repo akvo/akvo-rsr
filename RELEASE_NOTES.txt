@@ -22,12 +22,15 @@ Bug Fixes
 ---------
 ### Fixed broken arrows in Internet Explorer 7 on XP
 In Internet Explorer 7 on Windows XP arrows used in the interface was not rendered correctly. Those arrows have now been changed to an unicode character that is supported in a clean Windows XP installation.
+[Lighthouse ticket 170](https://akvo.lighthouseapp.com/projects/46515/tickets/170)
 
 ### Updated automatic Thank you email
 When someone donated to a project that belonged to the Focus Area Health they received a Thank you email that is dedicated to Water & Sanitation. This is now changed to a more appropriate wording.
+[Lighthouse ticket 144](https://akvo.lighthouseapp.com/projects/46515/tickets/144)
 
 ### Photos do not appear at first project page view in IE7
 In Internet Explorer 7 the mini gallery of project photos on the project page would not be displayed at first request, only after a refresh. Project photos does now appear at first request.
+[Lighthouse ticket 180](https://akvo.lighthouseapp.com/projects/46515/tickets/180)
 
 ---
 
