@@ -117,6 +117,17 @@
 	</div>
 
 	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+	{% if debug %}<script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.min.js"></script>{% else %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+	{% endif %}
+	
+	<script type="text/javascript">
+		!window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.5.1.min.js"><\/script>');
+	</script>
+	
+	
+	{% comment %}
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script>
 		!window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.4.2.min.js"><\/script>')
@@ -125,6 +136,7 @@
 	<script>
 		!window.jQuery && document.write('<script src="{{MEDIA_URL}}pvw-take2/js/jquery-ui-1.8.4.custom.min.js"><\/script>')
 	</script>
+	{% endcomment %}
 	
 	{% block js %}{% endblock js %}
 	
