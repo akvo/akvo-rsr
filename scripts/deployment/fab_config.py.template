@@ -6,13 +6,13 @@ from __future__ import with_statement
 from fabric.api import *
 
 
-env.hosts = ["test.akvo.org:2270"]
+env.hosts = ["server.akvo.org:port"]
 
 
 def load_config():
     print "\n>> Loading deployment config for %s" % env.hosts
     env.repo_checkout_root  = "/var/git"
-    env.rsr_branch          = "develop"
+    env.rsr_branch          = "develop" # or "v1.0.6", "master", etc.
     env.rsr_snapshots_dir   = "%s/snapshots" % env.repo_checkout_root
     env.rsr_snapshot_file   = "%s/rsr_%s.zip" % (env.rsr_snapshots_dir, env.rsr_branch)
     env.rsr_zipball_path    = "http://nodeload.github.com/akvo/akvo-rsr/zipball/%s" % env.rsr_branch

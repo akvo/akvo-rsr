@@ -12,10 +12,10 @@ akvo/datadir.tgz
 akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/mollie_banklist.xml
-akvo/settings.py
 akvo/rebuild_db.py
+akvo/settings.py
 akvo/testing.py
+scripts/deployment/fab_config.py
 scripts/deployment/static_project_structure.py
 tests/akvo/acceptance/test_settings.py
 tests/pvw/acceptance/test_settings.py
-akvo-rsr.komodoproject
