@@ -6,7 +6,7 @@ from __future__ import with_statement
 from fabric.api import *
 
 
-env.hosts = ["server.akvo.org:port"]
+env.hosts = ["server.akvo.org:ssh_port"]
 
 
 def load_config():
