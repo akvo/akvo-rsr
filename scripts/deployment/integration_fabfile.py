@@ -44,6 +44,7 @@ def clean_virtualenv_directory():
 
 def rebuild_virtualenv():
     clean_virtualenv_directory()
+    print "\n>> Rebuilding RSR virtualenv at %s" % env.rsr_virtualenv_path
     sudo("virtualenv %s" % env.rsr_virtualenv_path)
     sudo("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
 
