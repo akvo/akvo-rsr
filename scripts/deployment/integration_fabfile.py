@@ -7,7 +7,7 @@ from fabric.api import *
 from fabric.context_managers import cd
 from fabric.contrib import files
 
-from fab_config_develop import load_config
+from fab_config import load_config
 
 
 def ensure_path_exists(path):
