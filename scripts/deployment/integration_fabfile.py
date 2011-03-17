@@ -12,12 +12,14 @@ from fab_config_develop import load_config
 
 def ensure_path_exists(path):
     if not files.exists(path):
+        print ">> Creating path: %s" % path
         sudo("mkdir %s" % path)
         sudo("chmod 775 %s" % path)
 
 def ensure_required_paths_exist():
     ensure_path_exists(env.repo_checkout_root)
     ensure_path_exists(env.rsr_snapshots_dir)
+    ensure_path_exists(env.virtualenvs_root)
 
 def clean_deployment_directories():
     if files.exists(env.rsr_snapshot_file):
@@ -35,8 +37,15 @@ def download_and_unpack_rsr_archive():
     sudo("unzip -q %s -d %s -x */.gitignore" % (env.rsr_snapshot_file, env.repo_checkout_root))
     sudo("mv %s/akvo-akvo-rsr-* %s/akvo-rsr_develop" % (env.repo_checkout_root, env.repo_checkout_root))
 
+def clean_virtualenv_directory():
+    if files.exists(env.rsr_virtualenv_path):
+        print "\n>> Deleting previous RSR virtualenv directory"
+        sudo("rm -r %s" % env.rsr_virtualenv_path)
+
 def rebuild_virtualenv():
-    print "not implemented: rebuild_virtualenv()"
+    clean_virtualenv_directory()
+    sudo("virtualenv %s" % env.rsr_virtualenv_path)
+    sudo("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
 
 def deploy_rsr():
     print "\n>> Starting RSR deployment"
