@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0.5
+RELEASE_NOTES.txt, v1.0.6
 
-Last changed: 9 Mar 2011, tbp
+Last changed: 15 Mar 2011, kad
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +8,31 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 1.0.6 release notes
+-------------------------------------------
+15 Mar 2011, (Code name: Sextant) kad
+
+New Features
+------------
+### A new setting to the map widget at the get a widget page
+At the get a widget page one can now set the map widget to either static or dynamic. In dynamic mode zoom and bubble interaction is enabled.
+
+Bug Fixes
+---------
+### Fixed broken arrows in Internet Explorer 7 on XP
+In Internet Explorer 7 on Windows XP arrows used in the interface was not rendered correctly. Those arrows have now been changed to an unicode character that is supported in a clean Windows XP installation.
+[Lighthouse ticket 170](https://akvo.lighthouseapp.com/projects/46515/tickets/170)
+
+### Updated automatic Thank you email
+When someone donated to a project that belonged to the Focus Area Health they received a Thank you email that is dedicated to Water & Sanitation. This is now changed to a more appropriate wording.
+[Lighthouse ticket 144](https://akvo.lighthouseapp.com/projects/46515/tickets/144)
+
+### Photos do not appear at first project page view in IE7
+In Internet Explorer 7 the mini gallery of project photos on the project page would not be displayed at first request, only after a refresh. Project photos does now appear at first request.
+[Lighthouse ticket 180](https://akvo.lighthouseapp.com/projects/46515/tickets/180)
+
+---
 
 Akvo RSR v 1.0.5 release notes
 ------------------------------
