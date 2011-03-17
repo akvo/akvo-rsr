@@ -10,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
 from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
-from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 from paypal.standard.ipn.views import ipn as paypal_ipn

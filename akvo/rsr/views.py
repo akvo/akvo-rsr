@@ -1114,11 +1114,13 @@ class MobileNumberForm(forms.Form):
         if not 'phone_number' in cd:
             raise forms.ValidationError(_(u'Field phone_number missing from MobileForm.'))        
         if cd['phone_number']:
-            try:
-                UserProfile.objects.get(phone_number=cd['phone_number'])
-                raise forms.ValidationError(_(u'The phone number %s is already registered for updating. Please check the number entered.' % cd['phone_number']))
-            except:
-                pass
+            if self.has_changed():
+                try:
+                    UserProfile.objects.get(phone_number=cd['phone_number'])
+                except:
+                    pass
+                else:
+                    raise forms.ValidationError(_(u'The phone number %s is already registered for updating. Please check the number entered.' % cd['phone_number']))
         else:
             pass # disable updating for this user
         return self.cleaned_data            
@@ -1130,7 +1132,7 @@ def myakvo_mobile_number(request):
     '''
     profile = request.user.get_profile()
     if request.method == 'POST':
-        form = MobileNumberForm(request.POST, request.FILES)
+        form = MobileNumberForm(request.POST, request.FILES, initial={'phone_number': profile.phone_number})
         if form.is_valid():
             # workflow for mobile Akvo
             if 'phone_number' in form.changed_data:
@@ -1138,10 +1140,12 @@ def myakvo_mobile_number(request):
                     profile.init_sms_update_workflow(form.cleaned_data['phone_number'])
                 else: # phone number removed
                     profile.disable_sms_update_workflow()
-                    #obj.reset_reporting = True
+                #always save change to phone number
+                profile.phone_number = form.cleaned_data['phone_number']
+                profile.save()
             return HttpResponseRedirect(reverse('myakvo_mobile'))
     else:
-        form = MobileNumberForm({'phone_number': profile.phone_number},)
+        form = MobileNumberForm(initial={'phone_number': profile.phone_number},)
     return render_to_response('rsr/myakvo/mobile_number.html', {'form': form, }, RequestContext(request))
 
 @login_required()
@@ -1150,7 +1154,6 @@ def myakvo_mobile(request):
     Handle the selection of projects for SMS reporting
     '''
     profile = request.user.get_profile()
-    reporters = profile.my_reporters()
     form_data = {'phone_number': profile.phone_number}
     notices = Notice.objects.notices_for(request.user, on_site=True)
     
@@ -1159,15 +1162,13 @@ def myakvo_mobile(request):
         if form.is_valid():
             project = Project.objects.get(pk=form.cleaned_data['project'])
             profile.create_reporter(project)
-            reporters = profile.my_reporters()
             return HttpResponseRedirect('./')
     else:
-        form = MobileProjectForm(form_data,profile=profile)
+        form = MobileProjectForm(form_data, profile=profile)
     return render_to_response(
         'rsr/myakvo/mobile.html', {
             'profile': profile,
             'form': form,
-            'reporters': reporters,
             'sms_updating_enabled': state_equals(profile, [profile.STATE_UPDATES_ENABLED, profile.STATE_PHONE_NUMBER_VALIDATED]),
             'notices': notices,
         }, RequestContext(request))
