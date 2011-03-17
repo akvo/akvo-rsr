@@ -42,11 +42,14 @@ def clean_virtualenv_directory():
         print "\n>> Deleting previous RSR virtualenv directory"
         sudo("rm -r %s" % env.rsr_virtualenv_path)
 
+def with_virtualenv(command):
+    sudo("source %s/bin/activate && %s" % (env.rsr_virtualenv_path, command))
+
 def rebuild_virtualenv():
     clean_virtualenv_directory()
     print "\n>> Rebuilding RSR virtualenv at %s" % env.rsr_virtualenv_path
     sudo("virtualenv %s" % env.rsr_virtualenv_path)
-    sudo("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
+    with_virtualenv("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
 
 def deploy_rsr():
     print "\n>> Starting RSR deployment"
