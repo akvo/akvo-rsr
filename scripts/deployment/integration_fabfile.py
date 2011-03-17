@@ -32,7 +32,7 @@ def clean_deployment_directories():
 def download_and_unpack_rsr_archive():
     clean_deployment_directories()
     print "\n>> Fetching akvo-rsr archive for %s branch from Github" % env.rsr_branch
-    sudo("wget -nv -O %s %s" % (env.rsr_snapshot_file, env.rsr_zipball_path))
+    sudo("wget -nv -O %s %s" % (env.rsr_snapshot_file, env.rsr_archive_path))
     print "\n>> Unpacking akvo-rsr archive in %s" % env.repo_checkout_root
     sudo("unzip -q %s -d %s -x */.gitignore" % (env.rsr_snapshot_file, env.repo_checkout_root))
     sudo("mv %s/akvo-akvo-rsr-* %s/akvo-rsr_develop" % (env.repo_checkout_root, env.repo_checkout_root))
