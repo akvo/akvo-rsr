@@ -1014,7 +1014,8 @@ class UpdateForm(ModelForm):
     photo_location  = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
     photo_caption   = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
     photo_credit    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
-    
+    video           = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'site':'25', 'maxlength':'50'}))
+
     class Meta:
         model = ProjectUpdate
         exclude = ('time', 'project', 'user', )
