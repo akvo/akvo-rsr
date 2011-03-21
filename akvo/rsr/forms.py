@@ -20,8 +20,8 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
+from registration.models import RegistrationProfile
 
 from mollie.ideal.utils import get_mollie_banklist
 
