@@ -25,7 +25,7 @@ from registration.forms import RegistrationFormUniqueEmail
 
 from mollie.ideal.utils import get_mollie_banklist
 
-from akvo.rsr.models import UserProfile, Organisation, Project, ProjectUpdate
+from akvo.rsr.models import UserProfile, Organisation, Project
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -272,5 +272,5 @@ class ProjectUpdateForm(forms.ModelForm):
     video = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'site':'25', 'maxlength':'50'}))
 
     class Meta:
-        model = ProjectUpdate
+        model = get_model('rsr', 'projectupdate')
         exclude = ('time', 'project', 'user', )
