@@ -8,14 +8,14 @@
 	<title>Dutch Water Sector{% block title %}{% endblock %}</title>
 
 
-	{% asset_bundle 'pvw_style' %}
+	{% asset_bundle 'dws_style' %}
 	<!--[if IE 6]>
-		{% asset_bundle 'pvw_ie6_style' %}
+		{% asset_bundle 'dws_ie6_style' %}
 	<![endif]-->
 	
   {% block style %}{% endblock style %}
 	
-	<link rel="shortcut icon" href="{{MEDIA_URL}}pvw-take2/img/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="{{MEDIA_URL}}dws/img/favicon.ico" type="image/x-icon">
 	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
 	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
 	
@@ -27,7 +27,7 @@
 		<ul id="main_nav">
 			<li>
 				<a id="main_nav_left" href="{% url index %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
-					<img src="{{MEDIA_URL}}pvw-take2/img/mainnav/dws_logo.png" width="222" height="41" 
+					<img src="{{MEDIA_URL}}dws/img/mainnav/dws_logo.png" width="222" height="41" 
 						alt="Dutch Water Sector" style="margin:0;padding:0;">
 				</a>
 			</li>
@@ -109,9 +109,9 @@
       {% endif %}
 			<a href="/web/contact_us" style="margin-left:30px;">Contact us</a>
       {% if site_section != 'index' %}
-        <img src="{{MEDIA_URL}}pvw-take2/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
+        <img src="{{MEDIA_URL}}dws/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
       {% else %}
-        <a href="http://www.akvo.org/"><img src="{{MEDIA_URL}}pvw-take2/img/Akvo-badge-grey.png" alt="Akvo.org"  style="float: right; margin-top: -7px;"></a>
+        <a href="http://www.akvo.org/"><img src="{{MEDIA_URL}}dws/img/Akvo-badge-grey.png" alt="Akvo.org"  style="float: right; margin-top: -7px;"></a>
       {% endif %}
 		</p>
 	</div>
