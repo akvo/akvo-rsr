@@ -1,0 +1,402 @@
+{% extends "rsr/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {{project.name}} {% trans 'widgets' %}{% endblock %}
+
+{% block breadcrum_items %}
+{{block.super}}
+  <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{{project.get_absolute_url}}"><span>{{project.name}}</span></a></li>
+  <li id="last_breadcrum_item">{% trans 'Get a widget - step 2' %}</li>
+{% endblock breadcrum_items %}
+
+
+{% block maincontent %}
+
+<div class="span-14">
+	<div class="span-14">
+		<h1>{% trans 'Get a widget' %} (2/2)</h1>
+	</div>
+	<div class="span-8 first">
+		<p class="grey small">
+			{% trans 'The following steps will produce a snippet of widget code you can copy and paste into your own web site&#x27;s code' %}
+		</p>
+	</div>
+	<div class="span-6 last">
+		<noscript>
+			<div id="machinery_step2_warning_main" style="float:right; width:380px; margin-right:25px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
+				<p>
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
+					{% trans 'We are sorry, but you must have Javascript enabled in your browser to proceed. ' %}
+				</p>
+			</div>
+		</noscript>
+	</div>
+	<hr />
+	<div class="push-1 span-13 first last">
+		<h2>{% trans 'Step 2: Select colours for your widget and preview' %}</h2>
+		<a id="preview_position"></a>
+		<p class="grey small">
+			{% trans 'This widget will show the project' %} {{ project.name }}
+		</p>
+		<div class="frame">
+			<div class="space20">
+				<form>
+					<div id="warning_color" style="float:right; margin-top:10px; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; display: none;">
+						<p>
+							{% trans 'A color you entered is not recognized. Please change and try again.' %}
+						</p>
+					</div>
+					<p class="bold">{% trans 'A: Top and bottom coloured bars' %}</p>
+					<div style="float:left; margin-left:50px; width:200px;">
+						<p class="small grey">
+						<select name="backgroundcolor_pulldown" id="backgroundcolor_pulldown" size="1">
+							<option value="B50000">{% trans 'Akvo Red' %} (#B50000)</option>
+							<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
+							<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
+							<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
+							<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
+							<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
+							<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
+							<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
+							<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
+							<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
+							<option value="008080">{% trans 'Teal' %} (#008080)</option>
+							<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
+							<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
+							<option value="696969">{% trans 'DimGray' %} (#696969)</option>
+							<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
+							<option value="000000">{% trans 'Black' %} (#000000)</option>
+							<option value="x">{% trans 'Other...' %}</option>
+						</select><br />
+						{% trans 'Select colour' %}
+						</p>
+					</div>
+					<div style="float:left; width:500px;">
+						<div id="backgroundcolor_other_section" style="margin:0; padding:0; float:left; width:100%; display:none">
+							<div style="width:350px; float:right; padding-top:4px;">
+								<p class="small">
+								{% trans 'View a list of' %} <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" 
+								target="_new">{% trans 'standard colours' %}</a> ({% trans 'external link, new window' %}).
+								</p>
+							</div>
+							<p class="grey tiny" style="margin:0; padding:0;">
+								<!--<span id="backgroundcolor_warning" style="color:red;"></span><br />-->
+								<input type="text" name="bgcolor" value="B50000" id="backgroundcolor_text" size="10" /><br />
+								{% trans 'Enter a hex number' %}.
+							</p>
+						</div>
+					</div>
+					<div style="clear:both; padding-bottom:20px;"> </div>
+					
+					<p class="bold">{% trans 'B: Widget title on top bar' %}</p>
+					<div style="float:left; margin-left:50px; width:200px;">
+						<p class="small grey">
+							<select name="textcolor_pulldown" id="textcolor_pulldown" size="1" >
+								<option value="FFFFFF">{% trans 'White' %} (#FFFFFF)</option>
+								<option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
+								<option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
+								<option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
+								<option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
+								<option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
+								<option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
+								<option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
+								<option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
+								<option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
+								<option value="008080">{% trans 'Teal' %} (#008080)</option>
+								<option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
+								<option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
+								<option value="696969">{% trans 'DimGray' %} (#696969)</option>
+								<option value="708090">{% trans 'SlateGray' %} (#708090)</option>
+								<option value="000000">{% trans 'Black' %} (#000000)</option>
+								<option value="x">{% trans 'Other...' %}</option>
+							</select><br />
+							{% trans 'Select colour' %}
+						</p>
+					</div>
+					<div style="float:left; width:500px;">
+						<div id="textcolor_other_section" style="margin:0; padding:0; float:left; width:100%; display:none">
+							<div style="width:350px; float:right; padding-top:4px;">
+								<p class="small">
+								{% trans 'View a list of' %} <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" 
+								target="_new">{% trans 'standard colours' %}</a> ({% trans 'external link, new window' %}).
+								</p>
+							</div>
+							<p class="grey tiny" style="margin:0; padding:0;">
+								<!--<span id="backgroundcolor_warning" style="color:red;"></span><br />-->
+								<input type="text" name="textcolor" value="ffffff" id="textcolor_text" size="10" /><br />
+								{% trans 'Enter a hex number' %}.
+							</p>
+						</div>
+					</div>
+					<div style="clear:both; padding-bottom:20px;"> </div>
+					<div style="width:200px; text-align:center; margin-left:auto; margin-right:auto">
+						<a style="margin-right:10px;" class="grey awesome" href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
+						{% comment %}
+						<a style="margin-left:10px;" id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();">{% trans 'Preview' %}</a>
+						{% endcomment %}
+						<a style="margin-left:10px;" id="preview" class="aqua awesome" onclick="preview_widget();">{% trans 'Preview' %}</a>
+						
+						
+						{% comment %}
+						<a id="preview" class="march_button" href="javascript:this.blur();" onclick="preview_widget();"><span>{% trans 'Preview' %}</span></a>
+						{% endcomment %}
+					</div>
+					<hr style="margin-top:20px;"/>
+					<h3>{% trans 'Review your widget' %}</h3>
+
+					<p class="machinerygrey">
+						{% ifequal widget_type 'feature-side' %}
+							{% trans 'How your widget will appear (202 pixels wide by 840 pixels high).' %}
+						{% endifequal %}
+						{% ifequal widget_type 'project-contribute' %}
+							{% trans 'How your widget will appear (202 pixels wide by 570 pixels high).' %}
+						{% endifequal %}
+						{% ifequal widget_type 'project-updates' %}
+							{% trans 'How your widget will appear (202 pixels wide by 900 pixels high).' %}
+						{% endifequal %}
+						{% ifequal widget_type 'project-list' %}
+							{% trans 'How your widget will appear (745 pixels wide by 730 pixels high).' %}
+						{% endifequal %}
+					</p>
+					{% comment %} #akvo_widget_container is an anchor for the widget! {% endcomment %}
+					<div id="akvo_widget_container" style="margin:0; padding:0; margin-left:40px; margin-top:40px;"> </div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<div class="push-1 span-13 first last">
+		<h2>{% trans 'Step 3: get your code' %}</h2>
+		<a id="preview_position"></a>
+		<p class="grey small">
+			{% trans 'This widget will show the project' %} {{ project.name }}
+		</p>
+		<div class="frame">
+			<div class="space20">
+				<p class="grey">
+					{% trans 'You may repeat the steps above until you are satisﬁed with the appearance of your widget.' %}
+				</p>
+				<div style="width:100%; text-align:center; margin-top:20px; margin-bottom:40px;">
+					<textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="50" id="code"> </textarea>
+				</div>
+				<div style="text-align:center;">
+					<a style="margin-right:10px;"class="grey awesome" href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
+					<a style="margin-left:10px;"class="aqua awesome" href="{% url project_main project.id %}">{% trans 'Done' %}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+{% endblock maincontent %}
+
+{% block js %}
+{{block.super}}
+<script type="text/javascript">
+	var akvo_project_id = {{project.id}};
+	var akvo_widget_type = '{{widget_type}}';
+	var akvo_widget_choice = '{{widget_choice}}';
+	var akvo_widget_organisation = '{{organisation.id}}';
+	var akvo_widget_site = '{{widget_site}}';
+
+	var error0 = "{% trans 'Please review message below' %}";
+	var error1 = "{% trans 'A: Hex color values should be 3 or 6 characters' %}";
+	var error2 = "{% trans 'A: Not a valid hex number' %}";
+	var error3 = "{% trans 'B: Hex color values should be 3 or 6 characters' %}";
+	var error4 = "{% trans 'B: Not a valid hex number' %}";
+	
+	function getHeight(widget_type) 
+	{	
+		switch(widget_type) 
+		{
+			case 'feature-side': 		return 840; break; 
+			case 'project-contribute':  return 570; break; 
+			case 'project-small':       return 312; break; 
+			case 'project-updates': 	return 900; break; 
+			case 'project-list': 		return 730; break;
+			case 'project-narrow': 		return 840; break; 
+			case 'cobranded-narrow':    return 911; break;
+			case 'cobranded-short':     return 627; break;
+			case 'cobranded-banner':    return 234; break;
+			case 'cobranded-leader':    return 207; break;
+
+			default: 					return 840;
+		}	
+	}
+
+	function getWidth(widget_type)
+	{	
+		switch(widget_type) 
+		{
+			case 'feature-side': 		return 202; break; 
+			case 'project-contribute': 	return 202; break; 
+			case 'project-small':       return 170; break;
+			case 'project-updates': 	return 202; break; 
+			case 'project-list': 		return 745; break; 
+			case 'project-narrow': 		return 170; break; 
+			case 'cobranded-narrow': 	return 170; break; 
+			case 'cobranded-short': 	return 170; break; 
+			case 'cobranded-banner':    return 468; break;
+			case 'cobranded-leader':    return 728; break;
+			default: 					return 202;
+		}	
+	}
+	
+	function hex_validator(hexcolor) 
+	{ 
+		var strPattern = /^([0-9a-f]{1,2}){3}$/i;
+		return strPattern.test(hexcolor);
+	}
+	
+	// Tries to render the widget as well as generate the copy code
+	function preview_widget()
+	{
+		$jq = jQuery.noConflict();
+		// Remove old error messages	
+		var warning_color = document.getElementById('warning_color');
+		if (warning_color.hasChildNodes()) { warning_color.innerHTML = '';}
+
+		$jq('#machinery_step2_warning_main').animate({ opacity: "hide" }, "fast"); 
+		$jq('#warning_color').animate({ opacity: "hide" }, "fast"); 
+
+
+		// Error checking begins	
+		var colorsValidate=true;
+
+		// Backgroundcolor
+		if (document.getElementById('backgroundcolor_pulldown').value == 'x') {
+			var bgcolor = document.getElementById('backgroundcolor_text').value;
+		} else {
+			var bgcolor = document.getElementById('backgroundcolor_pulldown').value;
+		}
+
+		if (!(bgcolor.length == 3 || bgcolor.length == 6))
+		{ 
+			$jq('#warning_color').animate({ opacity: "show" },"slow");
+			$jq('#warning_color').append(error1 + ".<br />");
+
+			colorsValidate=false;
+		}
+		else if (!hex_validator(bgcolor))
+		{
+			$jq('#warning_color').animate({ opacity: "show" }, "slow").append(error2 + ".<br />");
+			colorsValidate=false;
+		}
+
+		// Titlecolor
+		if (document.getElementById('textcolor_pulldown').value == 'x') {
+			var txtcolor = document.getElementById('textcolor_text').value;
+		} else {
+			var txtcolor = document.getElementById('textcolor_pulldown').value;
+		}	
+
+		if (!(txtcolor.length == 3 || txtcolor.length == 6))
+		{ 
+			$jq('#warning_color').animate({ opacity: "show" },"slow");
+			$jq('#warning_color').append(error3 + ".<br />");
+
+			colorsValidate=false;
+		}
+		else if (!hex_validator(txtcolor))
+		{
+			$jq('#warning_color').animate({ opacity: "show" }, "slow").append(error4 +".<br />");
+			colorsValidate=false;
+		}
+
+		// Main warning
+		var akvo_widget_container = document.getElementById('akvo_widget_container');
+		var codefield = document.getElementById('code');
+
+		if(!colorsValidate) {
+			// Change the texts.
+			var machinery_step2_warning_main_message_p = document.getElementById('machinery_step2_warning_main_message'); 
+			if (machinery_step2_warning_main_message_p && machinery_step2_warning_main_message_p.hasChildNodes() ) { 
+				machinery_step2_warning_main_message_p.innerHTML = '';
+			}
+
+			$jq('machinery_step2_warning_main_message').append(error0);
+			$jq('#machinery_step2_warning_main').animate({ opacity: "show" }, "slow");
+
+			//alert('remove widget and copy code');
+			if (akvo_widget_container.hasChildNodes()) { 
+				akvo_widget_container.innerHTML = '';
+			}
+			codefield.value="";
+			return;
+		}
+
+		// Create the iframe variables
+		var akvo_widget_height = getHeight(akvo_widget_type);
+		var akvo_widget_width = getWidth(akvo_widget_type);
+
+		if (akvo_widget_choice == 'random-from-org') {
+		    var akvo_url = 'http://' + location.host + '/rsr/widget/one-from-organisation/' + akvo_widget_organisation + '/?widget=' + akvo_widget_type;
+		    var widget_url = akvo_url + '&bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;
+		} else if (akvo_widget_choice == 'project-list') {
+		    var akvo_url ='http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/organisation/' + akvo_widget_organisation + '/'
+		    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;	    
+		} else {
+		    var akvo_url = 'http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/project/' + akvo_project_id + '/';
+		    var widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor + '&site=' + akvo_widget_site;
+		}
+
+		// If the iframe exists update otherwise create the iframe and add it to our anchor div.
+		var akvo_widget = document.getElementById('jswidget');
+
+		if(akvo_widget) 
+		{
+			akvo_widget.src = widget_url;
+		} 
+		else 
+		{
+			ifrm = document.createElement("IFRAME");
+			ifrm.setAttribute("src", widget_url);
+			ifrm.height = akvo_widget_height;
+			ifrm.width = akvo_widget_width;
+			ifrm.frameBorder = 0;
+			ifrm.setAttribute("allowTransparency","true");
+			ifrm.setAttribute("id","jswidget");
+			document.getElementById('akvo_widget_container').appendChild(ifrm);
+		}
+
+		// Update the widget code snippet
+		// Show code only if valid!!!!
+		var codesnippet = '<iframe src="' + widget_url + '" '; 
+		codesnippet += 'height="' + akvo_widget_height + '" width="' + akvo_widget_width + '" frameborder="0" allowTransparency="true"> </iframe>';
+		codefield.value = codesnippet;
+	}
+	
+	
+	
+</script>
+{% endblock js %}
+
+{% block jq_ready %}
+jQ("#backgroundcolor_pulldown").change(function() { 
+	if (document.getElementById('backgroundcolor_pulldown').value == 'x') {
+		jQ('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");			
+	} else {
+		jQ('#backgroundcolor_other_section').animate({ opacity: "hide" }, "slow");
+	}
+});
+
+jQ("#textcolor_pulldown").change(function() { 		
+	if (document.getElementById('textcolor_pulldown').value == 'x') {
+		jQ('#textcolor_other_section').animate({ opacity: "show" }, "slow");			
+	} else {
+		jQ('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
+	}		
+});
+
+jQ(function(){
+ jQ('#preview').click(function(){
+  jQ('html, body').animate({ scrollTop: jQ('#preview_position').offset().top }, 1000);
+   return false;
+ });
+});
+
+preview_widget(jQ);
+
+{% endblock jq_ready %}
+

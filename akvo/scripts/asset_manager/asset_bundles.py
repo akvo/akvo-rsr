@@ -43,9 +43,9 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': ['x_machinery.js', 'x_modernizr.js','x_utilities.js'],
     },
-    'pvw_style': {
+    'dws_style': {
         'type': 'css',
-        'path': 'pvw-take2/css/',
+        'path': 'dws/css/',
         'compress': False,
         'files': [
             'reset.css',
@@ -64,9 +64,9 @@ ASSET_BUNDLES = {
             'jquery-ui-1.8.4.custom.css',
             ],
     },
-    'pvw_ie6_style': {
+    'dws_ie6_style': {
         'type': 'css',
-        'path': 'pvw-take2/css/',
+        'path': 'dws/css/',
         'compress': False,
         'files': ['ie6.css',],
     },    
