@@ -175,7 +175,12 @@
 	            {% endblocktrans %}
 			</div>
 			<div style="float:left;">
-				{{ donate_form.amount }}<br />
+				<p style="font-weight:bold; margin-bottom:18px;">
+					{{ donate_form.amount }}<br />
+					<span style="font-weight:normal;" class="small grey">
+						{% trans 'Whole numbers without decimals or commas.' %}
+					</span>
+				</p>
 			</div>
 			<div class="clear"></div>
 		</div>
