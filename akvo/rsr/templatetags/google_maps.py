@@ -12,11 +12,15 @@ from akvo.rsr.models import Project, Organisation
 
 register = template.Library()
 
-
-_PROJECT_MARKER_ICON = getattr(settings,
-                               'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
-_ORGANISATION_MARKER_ICON = getattr(settings,
-                                    'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
+try:
+    _PROJECT_MARKER_ICON = settings.GOOGLE_MAPS_PROJECT_MARKER_ICON
+except AttributeError, e:
+    _PROJECT_MARKER_ICON = ''
+    
+try:
+    _ORGANISATION_MARKER_ICON = settings.GOOGLE_MAPS_ORGANISATION_MARKER_ICON
+except AttributeError, e:
+    _ORGANISATION_MARKER_ICON = ''
 
 
 @register.inclusion_tag('inclusion_tags/google_map.html')
