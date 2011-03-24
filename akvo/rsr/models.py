@@ -1183,8 +1183,8 @@ else: #akvo-rsr
             return self.label
         
         class Meta:
-            verbose_name        =_(u'MiniCMS')
-            verbose_name_plural =_(u'MiniCMS')
+            verbose_name = _('MiniCMS')
+            verbose_name_plural = _('MiniCMS')
     
     
     class Project(models.Model):
@@ -2219,12 +2219,12 @@ class ProjectUpdate(models.Model):
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
     if not settings.PVW_RSR:
-        featured        = models.BooleanField(_(u'featured'), )
+        featured        = models.BooleanField(_('featured'), )
     
     class Meta:
         get_latest_by = "time"
-        verbose_name        = _(u'project update')
-        verbose_name_plural = _(u'project updates')
+        verbose_name        = _('project update')
+        verbose_name_plural = _('project updates')
 
     def img(self):
         try:
