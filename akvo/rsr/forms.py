@@ -213,10 +213,11 @@ class InvoiceForm(forms.ModelForm):
                 widget=forms.Select(choices=get_mollie_banklist()))
 
     amount = forms.IntegerField(min_value=2)
+    is_public = forms.BooleanField(default=True)
         
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'name', 'email', 'campaign_code', 'is_anonymous')
+        fields = ('amount', 'name', 'email', 'campaign_code', 'is_public')
 
     def clean(self):
         cd = self.cleaned_data
