@@ -1455,6 +1455,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
             invoice.name = cd['name']
             invoice.email = cd['email']
             invoice.campaign_code = cd['campaign_code']
+            invoice.is_anonymous = not cd['is_public']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
@@ -1520,7 +1521,9 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = InvoiceForm(project=p, engine=engine, initial={'is_public':True})
+        donate_form = InvoiceForm(project=p,
+                                  engine=engine,
+                                  initial=dict(is_public=True))
     return render_to_response('rsr/project/donate/donate_step2.html',
                               {'donate_form': donate_form,
                                'payment_engine': engine,

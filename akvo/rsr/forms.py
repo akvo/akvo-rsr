@@ -234,7 +234,6 @@ class InvoiceForm(forms.ModelForm):
 
     def clean(self):
         cd = self.cleaned_data
-        cd['is_anonymous'] = not cd['is_public']
         funding_needed = self.project.funding_still_needed()
         if 'amount' in cd:
             if cd['amount'] > funding_needed:
