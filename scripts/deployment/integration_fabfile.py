@@ -41,6 +41,9 @@ def clean_virtualenv_directory():
     if files.exists(env.rsr_virtualenv_path):
         print "\n>> Deleting previous RSR virtualenv directory"
         sudo("rm -r %s" % env.rsr_virtualenv_path)
+    if files.exists(env.pip_install_log_file)
+        print ">> Deleting pip install log file"
+        sudo("rm %s" % env.pip_install_log_file)
 
 def with_virtualenv(command):
     sudo("source %s/bin/activate && %s" % (env.rsr_virtualenv_path, command))
