@@ -213,7 +213,7 @@ class InvoiceForm(forms.ModelForm):
                 widget=forms.Select(choices=get_mollie_banklist()))
 
     amount = forms.IntegerField(min_value=2)
-    is_public = forms.BooleanField(default=True)
+    is_public = forms.BooleanField(required=False)
         
     class Meta:
         model = get_model('rsr', 'invoice')
