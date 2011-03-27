@@ -19,7 +19,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import F, Max, Sum
 from django.db.models.query import QuerySet
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, m2m_changed
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
@@ -43,8 +43,9 @@ from registration.models import RegistrationProfile, RegistrationManager
 from registration.signals import user_activated
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from workflows.models import State, Transition
-from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
+from workflows import WorkflowBase
+#from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
+from permissions import PermissionBase
 from permissions.models import Role
 from permissions.utils import get_roles, add_local_role
 
@@ -1990,19 +1991,16 @@ class UserProfileManager(models.Manager):
             #state = get_state(profile)
             #if state:
             if state_equals(profile, profile.STATE_PHONE_NUMBER_ADDED):
-            #if state == State.objects.get(name__iexact=profile.STATE_PHONE_NUMBER_ADDED):
                 logger.debug("%s: state is %s." % (who_am_i(), profile.STATE_PHONE_NUMBER_ADDED))
                 # look for validation code
                 if profile.validation == mo_sms.message.upper():
                     profile.confirm_validation(mo_sms)
                 else:
                     logger.error('Error in UserProfileManager.process_sms: "%s" is not the correct validation code expected "%s". Locals:\n %s\n\n' % (mo_sms.message, profile.validation, locals()))
-            elif state_equals(profile, profile.STATE_PHONE_NUMBER_VALIDATED):
-            #elif state == State.objects.get(name__iexact=profile.STATE_PHONE_NUMBER_VALIDATED):
-                # we shouldn't be here...phone ok, but no project selected :(
-                logger.error('Error in UserProfileManager.process_sms: workflow in state "%s" meaning phone is validated, but no project has been selected. Locals:\n %s\n\n' % (profile.STATE_PHONE_NUMBER_VALIDATED, locals()))
+            #elif state_equals(profile, profile.STATE_PHONE_NUMBER_VALIDATED):
+            #    # we shouldn't be here...phone ok, but no project selected :(
+            #    logger.error('Error in UserProfileManager.process_sms: workflow in state "%s" meaning phone is validated, but no project has been selected. Locals:\n %s\n\n' % (profile.STATE_PHONE_NUMBER_VALIDATED, locals()))
             elif state_equals(profile, profile.STATE_UPDATES_ENABLED):
-            #elif state == State.objects.get(name__iexact=profile.STATE_UPDATES_ENABLED):
                 logger.debug("%s: state is %s." % (who_am_i(), profile.STATE_UPDATES_ENABLED))
                 # time to make an SMS update!
                 try:
@@ -2011,11 +2009,11 @@ class UserProfileManager(models.Manager):
                 except Exception, e:
                     logger.error("Error in UserProfileManager.process_sms: %s. Locals:\n %s\n\n" % (e.message, locals()))
             else:
-                logger.error('Error in UserProfileManager.process_sms: workflow in unknown state. Locals:\n %s\n\n' % (locals()))
+                logger.error('Error in UserProfileManager.process_sms: workflow disabled or in an unknown state. Locals:\n %s\n\n' % (locals()))
         except Exception, e:
             logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
             
-class UserProfile(models.Model):
+class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
@@ -2028,17 +2026,21 @@ class UserProfile(models.Model):
 
     # "constants" for use with SMS updating workflow    
     VALIDATED                               = 'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED    
-    WORKFLOW_SMS_UPDATE                     = 'SMS update'
+    WORKFLOW_SMS_UPDATE                     = 'SMS update' #Name of workflow for SMS updating
     STATE_PHONE_NUMBER_ADDED                = 'Phone number added' #Phone number has been added to the profile
-    STATE_PHONE_NUMBER_VALIDATED            = 'Phone number validated' #The phone has been validated with a validation code SMS
-    STATE_PHONE_DISABLED                    = 'Phone disabed' #The phone is disabled, preventing the processing of incoming SMSs
+    #STATE_PHONE_NUMBER_VALIDATED            = 'Phone number validated' #The phone has been validated with a validation code SMS
     STATE_UPDATES_ENABLED                   = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
+    STATE_PHONE_DISABLED                    = 'Phone disabed' #The phone is disabled, preventing the processing of incoming SMSs
+    TRANSITION_ADD_PHONE_NUMBER             = 'Add phone number'
     TRANSITION_VALIDATE_PHONE_NUMBER        = 'Validate phone number'
     TRANSITION_ENABLE_UPDATING              = 'Enable updating'
     TRANSITION_DISABLE_UPDATING             = 'Disable updating'    
     GROUP_SMS_UPDATER                       = u'SMS updater'
+    GROUP_SMS_ADMIN                         = u'SMS manager'
     ROLE_SMS_UPDATER                        = u'SMS updater'
-    PERMISSION_CAN_ADD_SMS_UPDATES          = 'can_add_sms_updates'
+    ROLE_SMS_MANAGER                        = u'SMS manager'
+    PERMISSION_ADD_SMS_UPDATES              = 'add_sms_updates'
+    PERMISSION_MANAGE_SMS_UPDATES           = 'manage_sms_updates'
     GATEWAY_42IT                            = '42it'
     
     class Meta:
@@ -2135,9 +2137,6 @@ class UserProfile(models.Model):
         return self.my_projects().exclude(pk__in=[r.project.pk for r in self.reporters.exclude(project=None)])
         logger.debug("Exiting: %s()" % who_am_i())
 
-    def my_reporters(self):
-        return SmsReporter.objects.filter(userprofile=self)
-
     def create_reporter(self, project=None):
         """
         Create a new SMSReporter object with a gateway number that is currently not in use
@@ -2190,22 +2189,22 @@ class UserProfile(models.Model):
         Disable SMS reporting for one or all projects linked to a userprofile
         """
         logger.debug("Entering: %s()" % who_am_i())
-        if reporter:
+        if reporter and reporter.project:
             reporters = [reporter]
         else:
-            reporters = self.reporters.all()
+            reporters = self.reporters.exclude(project=None) #exclude reporter that's not set up with a project
         for sms_reporter in reporters:
             try:
                 sms_reporter.reporting_cancelled()
                 logger.info('SMS updating cancelled for project: %s Locals:\n %s\n\n' % (sms_reporter.project, locals(), ))
             except Exception, e:
                 logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-        if self.validation == self.VALIDATED and self.reporters.count() < 1:
-            try:
-                user = self.user
-                do_transition(self, self.TRANSITION_VALIDATE_PHONE_NUMBER, user)
-            except Exception, e:
-                logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), user))
+        #if self.validation == self.VALIDATED and self.reporters.count() < 1:
+        #    try:
+        #        user = self.user
+        #        do_transition(self, self.TRANSITION_VALIDATE_PHONE_NUMBER, user)
+        #    except Exception, e:
+        #        logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), user))
         logger.debug("Exiting: %s()" % who_am_i())
 
     def disable_all_reporters(self):
@@ -2223,12 +2222,10 @@ class UserProfile(models.Model):
         logger.debug("Exiting: %s()" % who_am_i())
 
     def disable_sms_update_workflow(self):
-        import pdb
-        pdb.set_trace()
         logger.debug("Entering: %s()" % who_am_i())
         user = self.user
         try:
-            trans_ok = do_transition(self, self.TRANSITION_DISABLE_UPDATING, user)
+            trans_ok = self.do_transition(self.TRANSITION_DISABLE_UPDATING, user)
             if not trans_ok:
                 logger.error('Error in UserProfileManager.disable_sms_update_workflow: Locals:\n %s\n\n' % (locals(),))
                 return
@@ -2237,18 +2234,18 @@ class UserProfile(models.Model):
             logger.info('SMS updating disabled for user %s' % user.username)
         except Exception, e:
             logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-        logger.debug("Entering: %s()" % who_am_i())
+        logger.debug("Exiting: %s()" % who_am_i())
 
     def confirm_validation(self, mo_sms):
         logger.debug("Entering: %s()" % who_am_i())
         try:
             logger.debug("Trying to find a reporter with number %s for user %s." % (mo_sms.receiver, self.user))
             reporter = self.reporters.get(gw_number=GatewayNumber.objects.get(number=mo_sms.receiver))
-            if do_transition(self, self.TRANSITION_VALIDATE_PHONE_NUMBER, self.user):
+            if self.do_transition(self.TRANSITION_ENABLE_UPDATING, self.user):
                 reporter.phone_confirmation()
                 self.validation = self.VALIDATED
                 self.save()
-                logger.info("%s: transition to %s for user %s." % (who_am_i(), self.TRANSITION_VALIDATE_PHONE_NUMBER, self.user))
+                logger.info("%s: transition to %s for user %s." % (who_am_i(), self.TRANSITION_ENABLE_UPDATING, self.user))
             else:
                 logger.error('Error in UserProfile  Manager.process_sms: Not allowed to do transition %s for user %s. Locals:\n %s\n\n' % (self.TRANSITION_VALIDATE_PHONE_NUMBER, self.user, locals()))
             self.enable_reporting()
@@ -2260,21 +2257,20 @@ class UserProfile(models.Model):
         """
         Check for correct state and send email and SMS notifying the user about the enabled project
         If reporters=None we try to enable all reporters
-        
         """
         logger.debug("Entering: %s()" % who_am_i())        
-        if reporter:
+        if reporter and reporter.project:
             reporters = [reporter]
         else:
             reporters = self.reporters.exclude(project=None)
-        if state_equals(self, [self.STATE_UPDATES_ENABLED, self.STATE_PHONE_NUMBER_VALIDATED]):
+        #if state_equals(self, [self.STATE_UPDATES_ENABLED, self.STATE_PHONE_NUMBER_VALIDATED]):
+        if state_equals(self, self.STATE_UPDATES_ENABLED):
             for sms_reporter in reporters:
-                if state_equals(self, self.STATE_PHONE_NUMBER_VALIDATED):
-                    try:
-                        user = self.user
-                        do_transition(self, self.TRANSITION_ENABLE_UPDATING, user)
-                    except Exception, e:
-                        logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(),))
+                #if state_equals(self, self.STATE_PHONE_NUMBER_VALIDATED):
+                #    try:
+                #        enabled = self.do_transition(self.TRANSITION_ENABLE_UPDATING, self.user)
+                #    except Exception, e:
+                #        logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(),))
                 try:
                     sms_reporter.reporting_enabled()
                     logger.info('Project enabled for updating: %s Locals:\n %s\n\n' % (sms_reporter.project.pk, locals(), ))
@@ -2287,53 +2283,67 @@ class UserProfile(models.Model):
     def enable_all_reporters(self):
         self.enable_reporting()
 
-    def reset_workflow(self):
+    def init_sms_update_workflow(self):
         '''
-        Set state to STATE_PHONE_NUMBER_ADDED
-        Notify allprojects that updating is disabled
-        Add ROLE_SMS_UPDATER to self if not already present
+        Check that workflow exists ie the DB is setup correctly
+        Disable reporters if we have any
+        (Re)set state to STATE_PHONE_DISABLED
         '''
         logger.debug("Entering: %s()" % who_am_i())
-        user = self.user
-        roles = get_roles(user, obj=None)
-        sms_updater = Role.objects.get(name=self.ROLE_SMS_UPDATER)
-        if not sms_updater in roles:
-            add_local_role(self, user, sms_updater)
-        set_initial_state(self)
-        self.disable_all_reporters()
+        workflow = self.get_workflow()
+        #in case of DB config bork:
+        if not workflow:
+            logger.error('Error in %s. Workflow not defined for %s. Locals: %s' % (who_am_i(), self.user.username, locals()))
+            return
+        #set up current UserProfile with the workflow
+        #this creates the WorkflowObjectRelation, sets initial State and
+        #assigns permissions for the state (ObjectPermission)
+        self.set_workflow(workflow)
+        if state_equals(self, self.STATE_UPDATES_ENABLED):
+            self.disable_all_reporters()
+        self.set_initial_state() #Phone disabled
         logger.debug("Exiting: %s()" % who_am_i())
-        # TODO: permissions. Right now everyone gets the correct Role without checking :-p
     
-    def init_sms_update_workflow(self, phone_number):
+    def add_phone_number(self, phone_number):
         """
-        Add/change phone number
-        Set validation code to profile
-        Check for workflow, bail if none is present (DB config error)
-        (Re)set workflow to initial state
+        Set up workflow
+        Transit to STATE_PHONE_NUMBER_ADDED
+        Save phone number and generated validation code
         Get or create a Reporter
         Send a validation request
         """
         logger.debug("Entering: %s()" % who_am_i())
         user = self.user
-        workflow = get_workflow(self)
-        if not workflow:
-            logger.error('Error in %s. Workflow not defined for %s. Locals: %s' % (who_am_i(), user.username, locals()))
-            return
-        self.reset_workflow()
-        self.validation = User.objects.make_random_password(length=6).upper()
-        self.phone_number = phone_number
-        self.save()
-        # set up the user to access the sms update workflow
-        #TODO: check that user has permissions to aquire the role
-        # Setup for phone validation
-        # TODO: gateway selection!
-        #gw_number = Gateway.objects.get(name=self.GATEWAY_42IT).gatewaynumber_set.all()[0]
-        # Setup an initial SmsReporter for handling of registration SMSs so no project assigned to reporter yet.
-        reporter = self.find_reporter()
-        reporter.create_validation_request()
-        logger.info('UserProfile.setup_sms_update_workflow(): successfully set up workflow "%s" for user %s' % (self.WORKFLOW_SMS_UPDATE, user.username, ))
+        self.init_sms_update_workflow()
+        #get workflow from model relation
+        #check that we're allowed to do SMS updates
+        if self.do_transition(self.TRANSITION_ADD_PHONE_NUMBER, user):
+            self.validation = User.objects.make_random_password(length=6).upper()
+            self.phone_number = phone_number
+            self.save()
+            # TODO: gateway selection!
+            #gw_number = Gateway.objects.get(name=self.GATEWAY_42IT).gatewaynumber_set.all()[0]
+            # Setup an initial SmsReporter for handling of registration SMSs so no project assigned to reporter yet.
+            reporter = self.find_reporter()
+            reporter.create_validation_request()
+            logger.info('UserProfile.%s(): successfully set up workflow "%s" for user %s' % (who_am_i(), self.WORKFLOW_SMS_UPDATE, user.username, ))
+        else:
+            logger.info('UserProfile.%s(): user %s not allowed to set up workflow "%s"' % (who_am_i(), user.username, self.WORKFLOW_SMS_UPDATE, ))
         logger.debug("Exiting: %s()" % who_am_i())
 
+    def has_permission(self, user, permission, roles=[]):
+        """Grant SMS manager role if we're doing this for ourselves
+        """
+        #TODO: check that we have SMS updater role, if not we shouldn't get SMS manager role either :-p
+        if self == user.get_profile():
+            roles.append(Role.objects.get(name=self.ROLE_SMS_MANAGER))
+        return super(UserProfile, self).has_permission(user, permission, roles)
+
+    def has_perm_add_sms_updates(self):
+        """used in myakvo navigation template to determin what links to show
+        """
+        return super(UserProfile, self).has_permission(self.user, 'add_sms_updates', [])
+    
     #def phone_number_changed(self, phone_number):
     #    logger.debug("Entering: %s()" % who_am_i())
     #    #sanity check, if number are the same we shouldn't do anything
@@ -2706,6 +2716,8 @@ post_save.connect(act_on_log_entry, sender=LogEntry)
 pre_save.connect(change_name_of_file_on_change, sender=Organisation)
 pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
+
+#m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)
 
 if settings.PVW_RSR:
     post_save.connect(change_name_of_file_on_create, sender=Image)

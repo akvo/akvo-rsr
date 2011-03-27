@@ -953,28 +953,37 @@ def password_change(request, template_name='registration/password_change_form.ht
 password_change = login_required(password_change)
 
 @login_required
-def update_user_profile(request,
-                        success_url='/rsr/accounts/update/complete/',
-                        form_class=RSR_ProfileUpdateForm,
-                        template_name='registration/update_form.html',
-                        extra_context=None
-                       ):
+def update_user_profile(
+    request,
+    success_url='/rsr/accounts/update/complete/',
+    form_class=RSR_ProfileUpdateForm,
+    template_name='registration/update_form.html',
+    extra_context=None
+):
+    user = request.user
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
-            updated_user = form.update(request.user)
+            updated_user = form.update(user)
             return HttpResponseRedirect(success_url)
     else:
         form = form_class(initial={
-            'first_name':request.user.first_name,
-            'last_name':request.user.last_name,
+            'first_name':user.first_name,
+            'last_name':user.last_name,
         })
     if extra_context is None:
         extra_context = {}
     context = RequestContext(request)
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
-    return render_to_response(template_name, {'form': form}, context_instance=context)
+    return render_to_response(
+        template_name,
+        {
+            'form': form,
+            'profile': user.get_profile()
+        },
+        context_instance=context
+    )
 
 @render_to('rsr/project/project_updates.html')
 def projectupdates(request, project_id):
@@ -1137,7 +1146,7 @@ def myakvo_mobile_number(request):
             # workflow for mobile Akvo
             if 'phone_number' in form.changed_data:
                 if form.cleaned_data['phone_number']: # phone number added or changed
-                    profile.init_sms_update_workflow(form.cleaned_data['phone_number'])
+                    profile.add_phone_number(form.cleaned_data['phone_number'])
                 else: # phone number removed
                     profile.disable_sms_update_workflow()
                 #always save change to phone number
@@ -1169,7 +1178,7 @@ def myakvo_mobile(request):
         'rsr/myakvo/mobile.html', {
             'profile': profile,
             'form': form,
-            'sms_updating_enabled': state_equals(profile, [profile.STATE_UPDATES_ENABLED, profile.STATE_PHONE_NUMBER_VALIDATED]),
+            'sms_updating_enabled': state_equals(profile, profile.STATE_UPDATES_ENABLED),
             'notices': notices,
         }, RequestContext(request))
 

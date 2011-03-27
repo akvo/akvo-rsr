@@ -3,7 +3,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n %}
+{% load i18n permissions_tags %}
 
 <div class="boxbody" style="padding-bottom: 20px;">
     {% url myakvo as url_myakvo %}
@@ -21,28 +21,30 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             class="active" style="font-weight:bold;"
         {% endifequal %}
     >{% trans 'Password' %}</a>
-    |
-    {% url myakvo_mobile as url_myakvo_mobile %}
-    <a
-        href="{{ url_myakvo_mobile }}"
-        {% ifequal request.path url_myakvo_mobile %}
-            class="active" style="font-weight:bold;"
-        {% endifequal %}
-    >{% trans 'Mobile' %}</a>
-    |
-    {% url notification_notices as url_notification_notices %}
-    <a
-        href="{{ url_notification_notices }}"
-        {% ifequal request.path url_notification_notices %}
-            class="active" style="font-weight:bold;"
-        {% endifequal %}
-    >{% trans 'Notices' %}</a>
-    |
-    {% url notification_notice_settings as url_notification_notice_settings %}
-    <a
-        href="{{ url_notification_notice_settings }}"
-        {% ifequal request.path url_notification_notice_settings %}
-            class="active" style="font-weight:bold;"
-        {% endifequal %}
-    >{% trans 'Notice settings' %}</a>
+    {% if profile.has_perm_add_sms_updates %}
+        |
+        {% url myakvo_mobile as url_myakvo_mobile %}
+        <a
+            href="{{ url_myakvo_mobile }}"
+            {% ifequal request.path url_myakvo_mobile %}
+                class="active" style="font-weight:bold;"
+            {% endifequal %}
+        >{% trans 'Mobile' %}</a>
+        |
+        {% url notification_notices as url_notification_notices %}
+        <a
+            href="{{ url_notification_notices }}"
+            {% ifequal request.path url_notification_notices %}
+                class="active" style="font-weight:bold;"
+            {% endifequal %}
+        >{% trans 'Notices' %}</a>
+        |
+        {% url notification_notice_settings as url_notification_notice_settings %}
+        <a
+            href="{{ url_notification_notice_settings }}"
+            {% ifequal request.path url_notification_notice_settings %}
+                class="active" style="font-weight:bold;"
+            {% endifequal %}
+        >{% trans 'Notice settings' %}</a>
+    {% endif %}
 </div>
