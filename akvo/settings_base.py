@@ -247,12 +247,12 @@ LOGGING = {
         #    'propagate': False,
         #},
         'django.request': {
-            'handlers': ['request_to_file', 'request_to_console',],
+            'handlers': ['request_to_file', ], #'request_to_console',],
             'level': 'DEBUG',
             'propagate': False,
         },
         'akvo.rsr': {
-            'handlers': ['console', 'file',],
+            'handlers': ['file', ], #'console', ],
             'level': 'DEBUG',
             'propagate': False,
         },
