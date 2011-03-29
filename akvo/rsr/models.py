@@ -2036,7 +2036,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     TRANSITION_ENABLE_UPDATING              = 'Enable updating'
     TRANSITION_DISABLE_UPDATING             = 'Disable updating'    
     GROUP_SMS_UPDATER                       = u'SMS updater'
-    GROUP_SMS_ADMIN                         = u'SMS manager'
+    GROUP_SMS_MANAGER                       = u'SMS manager'
     ROLE_SMS_UPDATER                        = u'SMS updater'
     ROLE_SMS_MANAGER                        = u'SMS manager'
     PERMISSION_ADD_SMS_UPDATES              = 'add_sms_updates'
