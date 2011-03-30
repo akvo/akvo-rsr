@@ -190,7 +190,6 @@
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />				
 
 				{% if donate_form.non_field_errors %}
-					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Amount' %}:</p>
 					{{ donate_form.non_field_errors }}
 				{% endif %}
 					
@@ -252,9 +251,10 @@
 		<div style="float:right; width:445px; padding:10px;">
 			{% if donate_form.name.errors or donate_form.email.errors or donate_form.email2.errors or donate_form.bank.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
-
-				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
-
+				
+				{% if not donate_form.non_field_errors and not donate_form.amount.errors %}
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
+				{% endif %}
 				{% if donate_form.name.errors %}
 					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Name' %}:</p>
 					{{ donate_form.name.errors }}
