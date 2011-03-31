@@ -6,13 +6,12 @@
 	<script>
 		function loadGlobalMap() {
 	    	var center = new google.maps.LatLng(0,0);
-				
+			var zoom = {{ zoom }};
 	        {% for project in projects %}
                 var project_{{ project.id }}_url = "{% url project_main project_id=project.id %}";
 	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
 	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
 	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
-                var zoom = {{ zoom }};
 	        {% endfor %}			
 
 	        var mapCanvas = document.getElementById('map_canvas');
@@ -30,8 +29,7 @@
 	        };
 
             var markerIcon = "{{ marker_icon }}";
-            var smallIcon = new google.maps.MarkerImage(markerIcon,
-                null, null, null, new google.maps.Size(10.5,17));
+            var smallIcon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
             var normalIcon = new google.maps.MarkerImage(markerIcon);
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
