@@ -139,9 +139,11 @@
           			<p class="small lt_grey last">{% trans 'In project budgets' %}</p>
         		</div>
       		</div>
-      		<a href="{% url global_project_map %}">
-        		{% google_global_project_map 'static' 315 190 1 %}
-      		</a>
+			<div class="span-6 first last">
+				<a href="{% url global_project_map %}">
+					{% google_global_project_map 'static' 315 190 1 %}
+	      		</a>
+			</div>
       		<div style="padding: .5em .5em .7em .5em;">
         		<a class="right small right_now_blue" href="{% url global_project_map %}">
 					{% trans 'Global project map' %} <span class="link_triangle">&#x25BA;</span>
