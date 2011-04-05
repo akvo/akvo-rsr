@@ -53,6 +53,7 @@ def rebuild_virtualenv():
     print "\n>> Rebuilding RSR virtualenv at %s" % env.rsr_virtualenv_path
     sudo("virtualenv %s" % env.rsr_virtualenv_path)
     with_virtualenv("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
+    with_virtualenv("pip -E %s freeze" % env.rsr_virtualenv_path)
 
 def install_akvo_modpython():
     sudo("cp -p %s %s" % (env.mod_python_template_file, env.mod_python_destination_path))
