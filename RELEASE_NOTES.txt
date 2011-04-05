@@ -15,7 +15,7 @@ Akvo RSR v 1.0.7 release notes
 
 Overview
 ------------
-### The Dutch Water Sector site and Akvo RSR code have been updated to run on the same codebase. Different configurations and views allow the sites to operate in their own incarnations when deployed. Akvo-specific changes are listed first, and DWS changes follow below.
+The Dutch Water Sector site and Akvo RSR code have been updated to run on the same codebase. Different configurations and views allow the sites to operate in their own incarnations when deployed. Akvo-specific changes are listed first, and DWS changes follow below.
 
 Akvo changes and fixes
 ---------
@@ -53,6 +53,9 @@ A separate box now distinguishes lead partner(s) from other partners on a projec
 
 ### If there are no updates, then Goals tab should be selected on the main project page.
 When updates have been made to a project, the project page displays the Updates tab; if there are no updates yet, the Goals tab is displayed instead.
+
+### Original deprecated locations fields in Admin have been removed.
+These out-of-date fields were still showing up in Admin, though public site uses new Locations model fields. To avoid confusion for users entering project data, they have been removed.
 
 ### Template and media file names have now been renamed from "pvw_take2" to "dws." 
 References to filenames have been updated to new name as well.
