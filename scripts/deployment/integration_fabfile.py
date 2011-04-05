@@ -51,7 +51,7 @@ def with_virtualenv(command):
 def rebuild_virtualenv():
     clean_virtualenv_directory()
     print "\n>> Rebuilding RSR virtualenv at %s" % env.rsr_virtualenv_path
-    sudo("virtualenv %s" % env.rsr_virtualenv_path)
+    sudo("virtualenv --no-site-packages %s" % env.rsr_virtualenv_path)
     with_virtualenv("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
     with_virtualenv("pip -E %s freeze" % env.rsr_virtualenv_path)
 
