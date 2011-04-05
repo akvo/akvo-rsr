@@ -22,9 +22,9 @@
 {% endif %}
 
 <div class="container">
-	<div class="span-12">
+	<div class="span-12" style="background-color:cyan;">
 		<div id="index_feature_box" class="white_box">
-			{{cms.feature_box|apply_markup:"markdown"}}
+			{{cms.feature_box|safe}}
 			<div class="clear"></div>
 		</div>
 		<div id="index_new_box" class="white_box gutter-top">
