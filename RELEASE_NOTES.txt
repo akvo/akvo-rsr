@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0.6
+RELEASE_NOTES.txt, v1.0.7
 
-Last changed: 15 Mar 2011, kad
+Last changed: 5 April 2011, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +8,39 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 1.0.7 release notes
+-------------------------------------------
+5 April 2011, (Code name: Lustre) bw
+
+New Features
+------------
+### A new setting to the map widget at the get a widget page
+At the get a widget page one can now set the map widget to either static or dynamic. In dynamic mode zoom and bubble interaction is enabled.
+
+Bug Fixes
+---------
+### Help text and links on donations pages have been fixed, expanded and/or clarified.
+This includes tagging optional fields (campaign code), specifying format for amounts, correcting links to privacy and donation policy/ Terms and Conditions information, and adding a link to information for institutional donors.
+[Lighthouse ticket 94](https://akvo.lighthouseapp.com/projects/46515/tickets/94)
+[Lighthouse ticket 135](https://akvo.lighthouseapp.com/projects/46515/tickets/135)
+[Lighthouse ticket 189](https://akvo.lighthouseapp.com/projects/46515/tickets/189)
+[Lighthouse ticket 192](https://akvo.lighthouseapp.com/projects/46515/tickets/192)
+
+### Presentation of the option to donate anonymously has been changed.
+For usability reasons this was changed to present a pre-checked box "List name next to donation."  
+[Lighthouse ticket 8](https://akvo.lighthouseapp.com/projects/46515/tickets/8)
+
+### Error messages for mismatching email addresses on donation pages were incorrect. 
+When the email address and confirmation email address text did not match, the error message returned was correct, but labelled as being for the Amount field instead of the email address field.
+
+### Presentation of information in balloon pins of global organisation map changed to match that of global project map. 
+Clicking the pinned location balloons on the organisation map presented individual organisation info under a large red "Organisation" header. The display now matches that of the projects' pins on global project map.
+
+### Global map on home page is dislocated under Firefox 4 
+The global map was not being rendered in the proper place under Firefox 4.
+
+---
 
 Akvo RSR v 1.0.6 release notes
 -------------------------------------------
