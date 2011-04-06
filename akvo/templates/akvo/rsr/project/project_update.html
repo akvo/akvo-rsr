@@ -1,6 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters
-rsr_tags thumbnail counter_tags oembed_tags %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -43,6 +42,11 @@ rsr_tags thumbnail counter_tags oembed_tags %}
 					{{u.text|linebreaks}}
 				{% endif %}
             {% endif %}			
+            {% if u.video %}
+                {% oembed 324x240 %}
+                    {{ u.video }}
+                {% endoembed %}
+            {% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>

@@ -1,6 +1,6 @@
 {% extends "rsr/base.html" %}
 
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %} 
 
 {% block title %}{{project.name}}{% endblock title %}
 
@@ -108,6 +108,11 @@
 								{{update.text|smart_truncate:150}}
 							</p>
 						{% endif %}
+                        {% if update.video %}
+                            {% oembed 160x120 %}
+                                {{ update.video }}
+                            {% endoembed %}
+                        {% endif %}
 					</div>
 				</div>
 			{% endfor %}
