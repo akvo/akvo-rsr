@@ -283,15 +283,6 @@ def focus_area(context, focusarea, projects_link=True):
         'projects_link' : projects_link,
     }
 
-
-@register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
-def page_styles(context,):
-    '''
-    '''
-    return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'debug': settings.DEBUG,
-    }
-
 # http://www.nitinh.com/2010/02/django-template-tag-to-protect-the-e-mail-address/
 class EncryptEmail(template.Node): 
     def __init__(self, context_var): 

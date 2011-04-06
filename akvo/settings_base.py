@@ -118,7 +118,7 @@ MIDDLEWARE_CLASSES = (
 # PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
 # Is this the pvw-rsr?
-PVW_RSR = False
+PVW_RSR = False 
 
 ROOT_URLCONF = 'akvo.urls'
 
@@ -149,12 +149,11 @@ TEMPLATE_LOADERS = (
 
 import os.path
 if PVW_RSR:
-    TEMPLATE_LEAF_DIR = 'pvw'
+    TEMPLATE_LEAF_DIR = 'dws'
 else:
     TEMPLATE_LEAF_DIR = 'akvo'
     
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates/%s-take2' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
 )
