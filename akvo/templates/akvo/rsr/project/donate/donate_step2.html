@@ -175,7 +175,12 @@
 	            {% endblocktrans %}
 			</div>
 			<div style="float:left;">
-				{{ donate_form.amount }}<br />
+				<p style="font-weight:bold; margin-bottom:18px;">
+					{{ donate_form.amount }}<br />
+					<span style="font-weight:normal;" class="small grey">
+						{% trans 'Whole numbers without decimals or commas.' %}
+					</span>
+				</p>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -185,7 +190,6 @@
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />				
 
 				{% if donate_form.non_field_errors %}
-					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Amount' %}:</p>
 					{{ donate_form.non_field_errors }}
 				{% endif %}
 					
@@ -199,7 +203,7 @@
 		<div class="clear" style="padding-bottom:40px;"></div>
 		
 		
-		<div style="float:left; width:400px;">
+		<div style="float:left; width:440px;">
 			<h3>{% trans 'Provide your full name and email address' %}</h3>
 			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<div class="fieldWrapper" style="margin-bottom:32px; margin-top:7px;">	
@@ -238,16 +242,19 @@
 					<span style="font-weight:normal;" class="small grey">{% trans 'Optional' %}</span>
 				</p>
 				<p class="small" style="font-weight:normal; margin-bottom:18px;">
-					{{ donate_form.is_anonymous }} {% trans 'Keep donation' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a>.
+					{{ donate_form.is_public }}
+					{% trans 'List name next to donation' %}<br />
+					<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a>
 				</p>
 			</div>
 		</div>
-		<div style="float:right; width:485px; padding:10px;">
+		<div style="float:right; width:445px; padding:10px;">
 			{% if donate_form.name.errors or donate_form.email.errors or donate_form.email2.errors or donate_form.bank.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
-
-				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
-
+				
+				{% if not donate_form.non_field_errors and not donate_form.amount.errors %}
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
+				{% endif %}
 				{% if donate_form.name.errors %}
 					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Name' %}:</p>
 					{{ donate_form.name.errors }}

@@ -75,17 +75,16 @@
 	            });
 
                 {% if map_type != 'static' %}
-	            var organisation_{{ organisation.id }}_info = '<div class="mapInfoWindow">' +
-					'<div class="bubble_header"><h3>{% trans 'Organisation' %}</h3></div>' +
-	                '<h4><a href="' + organisation_{{ organisation.id }}_url + '">' +
-                    '{{ organisation.name|smart_truncate:35}}</a></h4>' +
-                    '<a href="' + organisation_{{ organisation.id }}_url + '">' +
-	                '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
-					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
-					'<div id="organisation_location"><p class="small">' +
-					'{{organisation.primary_location.country.get_continent_display}}<br />' +
-					'{{organisation.primary_location.country}}, {{organisation.primary_location.city}} </p></div>'
-	                '</div>';
+					var organisation_{{ organisation.id }}_info = '<div class="mapInfoWindow">' +
+		                '<a href="' + organisation_{{ organisation.id }}_url + '">' +
+	                    '{{ organisation.name|smart_truncate:35}}</a><br>' +
+	                    '<a href="' + organisation_{{ organisation.id }}_url + '">' +
+		                '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
+						'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
+						'{{organisation.primary_location.country.get_continent_display}}<br />' +
+						'{{organisation.primary_location.country}}' +
+						'{% if organisation.primary_location.city and organisation.primary_location.country %},{% endif %} {{organisation.primary_location.city}}</p></div>' +
+		                '</div>';
 	
 	            var organisation_{{ organisation.id }}_infowindow = new google.maps.InfoWindow({
 	                content: organisation_{{ organisation.id }}_info
