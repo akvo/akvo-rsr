@@ -43,7 +43,9 @@
 						<a href="{% url complete_donation project_id=p.id,engine='paypal' %}">
 						<img src="{{MEDIA_URL}}akvo/img/donate/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" /></a>						
 					</div>
-					<p class="small">{% trans 'For all countries, Akvo offers the PayPal Secure PaymentTM system for donations.' %}</p>
+					<p class="small">
+						{% trans 'Akvo offers the Paypal Secure Payment&trade; system for donations in 24 currencies from 190 countries, whether or not you have a PayPal account.' %}
+					</p>
 					<div style="text-align:center;">
 						<a style="float:none;" class="aqua awesome" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
 					</div>
@@ -57,7 +59,7 @@
 				<div class="round" style="border: 1px solid #ccc; border-bottom: 2px solid #ccc;">
 					<div class="space20">
 						<h3>{% trans 'For Dutch users only' %}</h3>
-						<div style="text-align:center; height:150px;">
+						<div style="text-align:center; height:168px;">
 							<a href="{% url complete_donation project_id=p.id,engine='ideal' %}">
 							<img src="{{MEDIA_URL}}akvo/img/donate/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" /></a>
 						</div>
@@ -71,6 +73,11 @@
 		</div>
 	{% endifequal %}
 	<div class="clear"></div>	
+	<p style="margin-left:20px; margin-top:20px;">
+		{% trans 'Do you represent an institution or company interested in funding or sponsoring this project?' %}<br />
+		<br />
+		{% trans 'Become an' %} <a href="/web/how_to_fund_a_project">{% trans 'Akvo funding partner' %}</a>!
+	</p>
 	<div style="height:40px">&nbsp;</div>
 </div>
 
