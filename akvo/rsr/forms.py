@@ -25,7 +25,8 @@ from registration.models import RegistrationProfile
 
 from mollie.ideal.utils import get_mollie_banklist
 
-from akvo.rsr.models import UserProfile, Organisation, Project
+from akvo.rsr.models import UserProfile, Organisation, Project, \
+                            PHOTO_LOCATIONS
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
