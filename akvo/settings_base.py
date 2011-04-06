@@ -186,7 +186,7 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
         'verbose_request': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s %(status_code)s %(request)s'
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s %(request)s'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'

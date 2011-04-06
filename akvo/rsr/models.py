@@ -2030,7 +2030,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     STATE_PHONE_NUMBER_ADDED                = 'Phone number added' #Phone number has been added to the profile
     #STATE_PHONE_NUMBER_VALIDATED            = 'Phone number validated' #The phone has been validated with a validation code SMS
     STATE_UPDATES_ENABLED                   = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
-    STATE_PHONE_DISABLED                    = 'Phone disabed' #The phone is disabled, preventing the processing of incoming SMSs
+    STATE_PHONE_DISABLED                    = 'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
     TRANSITION_ADD_PHONE_NUMBER             = 'Add phone number'
     TRANSITION_VALIDATE_PHONE_NUMBER        = 'Validate phone number'
     TRANSITION_ENABLE_UPDATING              = 'Enable updating'
@@ -2221,13 +2221,24 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             reporter.delete()
         logger.debug("Exiting: %s()" % who_am_i())
 
-    def disable_sms_update_workflow(self):
+    def disable_sms_update_workflow(self, admin_user=None):
         logger.debug("Entering: %s()" % who_am_i())
+        # this profile's user
         user = self.user
+        # user calling disable_sms_update_workflow
+        admin_user = admin_user or user
         try:
-            trans_ok = self.do_transition(self.TRANSITION_DISABLE_UPDATING, user)
+            if (
+                self.state_equals(UserProfile.STATE_PHONE_DISABLED) or
+                Role.objects.get(name=self.ROLE_SMS_UPDATER) not in self.get_roles(user)
+            ):
+                logger.debug("Exiting: %s()" % who_am_i())
+                return
+            else:
+                trans_ok = self.do_transition(self.TRANSITION_DISABLE_UPDATING, admin_user)
             if not trans_ok:
                 logger.error('Error in UserProfileManager.disable_sms_update_workflow: Locals:\n %s\n\n' % (locals(),))
+                logger.debug("Exiting: %s()" % who_am_i())
                 return
             send_now([user], 'phone_disabled', extra_context={'phone_number':self.phone_number}, on_site=True)
             self.disable_all_reporters()
@@ -2264,7 +2275,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         else:
             reporters = self.reporters.exclude(project=None)
         #if state_equals(self, [self.STATE_UPDATES_ENABLED, self.STATE_PHONE_NUMBER_VALIDATED]):
-        if state_equals(self, self.STATE_UPDATES_ENABLED):
+        if self.state_equals(self.STATE_UPDATES_ENABLED):
             for sms_reporter in reporters:
                 #if state_equals(self, self.STATE_PHONE_NUMBER_VALIDATED):
                 #    try:
@@ -2335,14 +2346,17 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """Grant SMS manager role if we're doing this for ourselves
         """
         #TODO: check that we have SMS updater role, if not we shouldn't get SMS manager role either :-p
-        if self == user.get_profile():
+        if self == user.get_profile() and Role.objects.get(name=self.ROLE_SMS_UPDATER) in self.get_roles(user):
             roles.append(Role.objects.get(name=self.ROLE_SMS_MANAGER))
         return super(UserProfile, self).has_permission(user, permission, roles)
 
     def has_perm_add_sms_updates(self):
         """used in myakvo navigation template to determin what links to show
         """
-        return super(UserProfile, self).has_permission(self.user, 'add_sms_updates', [])
+        return (
+            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or 
+            self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
+        )
     
     #def phone_number_changed(self, phone_number):
     #    logger.debug("Entering: %s()" % who_am_i())

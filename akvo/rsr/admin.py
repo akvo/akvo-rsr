@@ -20,6 +20,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
+from permissions.models import Role
+
 from forms import ReadonlyFKAdminField
 
 from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
@@ -1104,6 +1106,7 @@ class UserProfileAdminForm(forms.ModelForm):
     is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
+    is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
     
     def __init__(self, *args, **kwargs):
         initial_data = {}
@@ -1112,11 +1115,12 @@ class UserProfileAdminForm(forms.ModelForm):
             initial_data['is_active']       = instance.get_is_active()
             initial_data['is_org_admin']    = instance.get_is_org_admin()
             initial_data['is_org_editor']   = instance.get_is_org_editor()
+            initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
             kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
+    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date', 'has_perm_add_sms_updates',)
     search_fields = ('user', 'organisation',)
     list_filter  = ('organisation',)
     ordering = ('user__username',)
@@ -1138,13 +1142,13 @@ class UserProfileAdmin(admin.ModelAdmin):
             # hide sms-related stuff
             self.exclude =  ('phone_number', 'validation',)
             # user and org are only shown as text, not select widget
-            self.readonly_fields = ('user', 'organisation',)
+            #self.readonly_fields = ('user', 'organisation',)
         # this is needed to remove some kind of caching on exclude and readonly_fk,
         # resulting in the above fields being hidden/changed from superusers after
         # a vanilla user has accessed the form!
         else:
             self.exclude =  None
-            self.readonly_fields = ()
+            #self.readonly_fields = ()
         form = super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
         if not request.user.is_superuser and obj.validation != obj.VALIDATED:
             self.inlines = []
@@ -1152,6 +1156,19 @@ class UserProfileAdmin(admin.ModelAdmin):
         #else:
         #    self.inlines = [SmsReporterInline,]
         return form
+
+    def get_readonly_fields(self, request, obj):
+        if not request.user.is_superuser:
+            # only superusers are allowed to add/remove sms updaters in beta phase
+            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
+            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
+            # user and org are only shown as text, not select widget
+            return ['user', 'organisation',]            
+        else:
+            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
+            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
+            return []
+        
 
     def queryset(self, request):
         """
@@ -1194,13 +1211,23 @@ class UserProfileAdmin(admin.ModelAdmin):
         override of django.contrib.admin.options.save_model        
         """
         # Act upon the checkboxes that fake admin settings for the partner users.
-        is_active = form.cleaned_data['is_active']
-        is_admin =  form.cleaned_data['is_org_admin']
-        is_editor = form.cleaned_data['is_org_editor']
+        is_active       = form.cleaned_data['is_active']
+        is_admin        = form.cleaned_data['is_org_admin']
+        is_editor       = form.cleaned_data['is_org_editor']
+        is_sms_updater  = form.cleaned_data['is_sms_updater']
         obj.set_is_active(is_active) #master switch
         obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
         obj.set_is_org_editor(is_editor) #can edit projects
         obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
+        import pdb
+        pdb.set_trace()
+        # TODO: fix "real" permissions, currently only superusers can change sms updter status
+        if is_sms_updater:
+            obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+            obj.init_sms_update_workflow()
+        else:
+            obj.disable_sms_update_workflow(request.user)
+            obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
         obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
