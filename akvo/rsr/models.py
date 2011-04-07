@@ -1330,6 +1330,7 @@ else: #akvo-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
     
