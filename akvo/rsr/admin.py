@@ -1219,8 +1219,6 @@ class UserProfileAdmin(admin.ModelAdmin):
         obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
         obj.set_is_org_editor(is_editor) #can edit projects
         obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
-        import pdb
-        pdb.set_trace()
         # TODO: fix "real" permissions, currently only superusers can change sms updter status
         if is_sms_updater:
             obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
