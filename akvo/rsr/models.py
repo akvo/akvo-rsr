@@ -209,9 +209,9 @@ class Organisation(models.Model):
     def primary_location(self):
         '''Returns an organisations's primary location'''
         qs = self.locations.filter(primary=True)
+        qs = qs.exclude(latitude=0, longitude=0)
         if qs:
-            pl = qs[0]
-            location = pl if pl.latitude or pl.longitude else None
+            location = qs[0]
             return location
         return
 
@@ -660,9 +660,9 @@ if settings.PVW_RSR: #pvw-rsr
         @property
         def primary_location(self):
             qs = self.locations.filter(primary=True)
+            qs.exclude(latitude=0, longitude=0)
             if qs:
-                pl = qs[0]
-                location = pl if pl.latitude or pl.longitude else None
+                location = qs[0]
                 return location
             return
 
@@ -1079,9 +1079,9 @@ if settings.PVW_RSR: #pvw-rsr
         def primary_location(self):
             "Returns a project's primary location"
             qs = self.locations.filter(primary=True)
+            qs.exclude(latitude=0, longitude=0)
             if qs:
-                pl = qs[0]
-                location = pl if pl.latitude or pl.longitude else None
+                location = qs[0]
                 return location
             return
     
@@ -1308,9 +1308,9 @@ else: #akvo-rsr
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
             qs = self.locations.filter(primary=True)
+            qs.exclude(latitude=0, longitude=0)
             if qs:
-                pl = qs[0]
-                location = pl if pl.latitude or pl.longitude else None
+                location = qs[0]
                 return location
             return
     
