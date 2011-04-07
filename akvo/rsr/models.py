@@ -660,7 +660,7 @@ if settings.PVW_RSR: #pvw-rsr
         @property
         def primary_location(self):
             qs = self.locations.filter(primary=True)
-            qs.exclude(latitude=0, longitude=0)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
                 return location
@@ -1079,7 +1079,7 @@ if settings.PVW_RSR: #pvw-rsr
         def primary_location(self):
             "Returns a project's primary location"
             qs = self.locations.filter(primary=True)
-            qs.exclude(latitude=0, longitude=0)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
                 return location
@@ -1308,7 +1308,7 @@ else: #akvo-rsr
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
             qs = self.locations.filter(primary=True)
-            qs.exclude(latitude=0, longitude=0)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
                 return location
