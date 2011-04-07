@@ -26,11 +26,12 @@ from django.contrib.sites.models import Site
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
 from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
@@ -99,10 +100,16 @@ class LongitudeField(models.FloatField):
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0)
-    longitude = LongitudeField(_('longitude'), default=0)
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
+    latitude = LatitudeField(_('latitude'), default=0,
+        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+                  'target="_blank">iTouchMap.com</a> '
+                  'to get the decimal coordinates of your project')
+    longitude = LongitudeField(_('longitude'), default=0,
+        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+                  'target="_blank">iTouchMap.com</a> '
+                  'to get the decimal coordinates of your project')
+    city = models.CharField(_('city'), blank=True, max_length=255)
+    state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)
     address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
     address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
@@ -1642,10 +1649,41 @@ else: #akvo-rsr
         def __unicode__(self):
             return u'Project %d: %s' % (self.id,self.name)
             
-        #def project_type(self):
-        #    pass
-        #project_type.allow_tags = True
+        def updates_desc(self):
+            """
+            return ProjectUpdates for self, newest first
+            """
+            return self.project_updates.all().order_by('-time')
         
+        def latest_update(self):
+            """
+            for use in the admin
+            lists data useful when looking for projects that haven't been updated in a while (or not at all)
+            note: it would have been useful to make this column sortable via the admin_order_field attribute, but this results in
+            multiple rows shown for the project in the admin change list view and there's no easy way to distinct() them
+            TODO: probably this can be solved by customizing ModelAdmin.queryset
+            """
+            updates = self.updates_desc()
+            if updates:
+                update = updates[0]
+                # date of update shown as link poiting to the update page
+                update_info = '<a href="%s">%s</a><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time,)
+                # if we have an email of the user doing the update, add that as a mailto link
+                if update.user.email:
+                    update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
+                else:
+                    update_info  = '%s<br/>' % update_info
+            else:
+                update_info = "%s<br/><br/>" % (ugettext(u'No update yet'),)
+            # links to the project's support partners
+            update_info = "%sSP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.support_partners()]))
+            # links to the project's field partners
+            return "%s<br/>FP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.field_partners()]))
+            
+        latest_update.allow_tags = True
+        #no go, results in duplicate projects entries in the admin change list
+        #latest_update.admin_order_field = 'project_updates__time'
+                
         def show_status(self):
             "Show the current project status"
             return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
@@ -2313,6 +2351,8 @@ class Invoice(models.Model):
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
+    campaign_code = models.CharField(_('Campaign code'),
+                                     blank=True, max_length=15)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
     ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)

@@ -2,6 +2,7 @@
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 {% load url from future %}
 
+
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="{% url 'project_updates' p.id %}"><span>{% trans 'Project updates' %}</span></a></li>

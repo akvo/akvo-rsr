@@ -1,7 +1,7 @@
 {% extends "rsr/base.html" %}
-
 {% load i18n rsr_filters rsr_tags thumbnail humanize google_maps %}
 {% load url from future %}
+
 
 {% block title %}{{o.name}}{% endblock title %}
 
@@ -93,7 +93,7 @@
 			<h2>{% trans 'Projects in Akvo' %}</h2>
 		</div>
 		<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-			<a class="small" href="{% url 'project_list_for_org' o.id %}">{% trans 'See all' %} &#x25B6;</a>
+			<a class="small" href="{% url 'project_list_for_org' o.id %}">{% trans 'See all' %} &#x25BA;</a>
 		</div>
 		<div class="clear"></div>
 		<div class="white_box">

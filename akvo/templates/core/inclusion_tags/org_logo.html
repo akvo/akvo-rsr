@@ -1,6 +1,7 @@
 {% load i18n thumbnail %}
-{% thumbnail org.logo wxh upscale sharpen as org_logo %}{% if org_logo %}{# all on one line to work in js #}
 
+
+{% thumbnail org.logo wxh upscale sharpen as org_logo %}{% if org_logo %}{# all on one line to work in js #}
 <div style="width: {{width}}px; height:{{height}}px; text-align: center; vertical-align: middle; {{div_style}}">
 	<img src="{{org_logo}}" alt="{% trans 'Logo of' %} {{org.name}}" style="{{img_style}}" />
 </div>

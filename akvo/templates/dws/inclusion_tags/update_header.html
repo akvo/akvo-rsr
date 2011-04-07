@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load url from future %}
+
+
+<div class="space20">
+  {% if can_add_update %}
+    <div style="float: right;">
+      <a href="{% url 'project_add_update' project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
+    </div>
+  {% endif %}
+  <div style="float: left;">
+    <h1 class="h0"><a href="{{project.get_absolute_url}}" class="h0_link">{{project.name}}</a></h1> 
+  </div>
+  <div class="clear"></div>
+
+  <div class="h1_companion">
+    <a href="/rsr/rss/updates/{{project.pk}}/">
+      RSS
+      <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+    </a>
+  </div>
+  <p class="lt_grey">{{project.subtitle}}</p>
+</div>
+<div style="margin: 0 10px;">
+  <hr/>
+</div>

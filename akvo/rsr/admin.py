@@ -72,8 +72,10 @@ class OrganisationAdminForm(forms.ModelForm):
 class OrganisationAdmin(admin.ModelAdmin):
     if settings.PVW_RSR:
         fieldsets = (
-            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
+            #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
+            (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
             (_(u'About the organisation'), {'fields': ('description', )}),
         )    
     else:
@@ -332,9 +334,12 @@ class SponsorPartnerInline(admin.TabularInline):
 
 
 class BudgetItemAdminInLine(admin.TabularInline):
-    model = get_model('rsr', 'budgetitem')
-    extra = len(model.ITEM_CHOICES)
-    max_num = len(model.ITEM_CHOICES)
+    if not settings.PVW_RSR:        
+        model = get_model('rsr', 'budgetitem')
+        extra = len(model.ITEM_CHOICES)
+        max_num = len(model.ITEM_CHOICES)
+    else:
+        pass
 
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
 
@@ -451,10 +456,10 @@ if settings.PVW_RSR:
             #            ('category_training', 'category_education', 'category_product_development'), 'category_other',), 
             #}),
             
-            (_(u'Location'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
-                'fields': ('city', 'state', 'country',)
-            }),
+            #(_(u'Location'), {
+            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
+            #    'fields': ('city', 'state', 'country',)
+            #}),
             #
 #            (_(u'Location extra'), {
 #                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example latitude and longitude coordinates, or a map image.</p>'),
@@ -820,8 +825,8 @@ else:
         )
         #list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
         #                'city', 'project_plan_summary', 'show_current_image', 'is_published',)
-        list_display = ('id', 'name', 'status', 'project_plan_summary', 'show_current_image', 'is_published',)
-        list_filter = ('currency',)
+        list_display = ('id', 'name', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+        list_filter = ('currency', 'status', )
         
         #form = ProjectAdminModelForm
         form = ProjectAdminForm

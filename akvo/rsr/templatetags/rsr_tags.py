@@ -1,11 +1,10 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-import os
 
 from django import template
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+#from django.utils.translation import ugettext_lazy as _
 
 register = template.Library()
 
@@ -259,7 +258,7 @@ def comments(context, comments, project):
         'p'                 : project,
     }
 
-from django.conf import settings
+#from django.conf import settings
 from django.contrib.sites.models import Site
 @register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
 def focus_area(context, focusarea, projects_link=True):
@@ -281,15 +280,6 @@ def focus_area(context, focusarea, projects_link=True):
         'inner_div'     : FOCUS_AREA_DATA[focusarea][INNER_DIV],
         'more_link'     : FOCUS_AREA_DATA[focusarea][MORE_URL],
         'projects_link' : projects_link,
-    }
-
-
-@register.inclusion_tag('inclusion_tags/styles.html', takes_context=True)
-def page_styles(context,):
-    '''
-    '''
-    return {
-        'MEDIA_URL' : context['MEDIA_URL'], 'debug': settings.DEBUG,
     }
 
 # http://www.nitinh.com/2010/02/django-template-tag-to-protect-the-e-mail-address/
@@ -339,10 +329,10 @@ class WidthRatioTruncNode(WidthRatioNode):
             value = self.val_expr.resolve(context)
             maxvalue = self.max_expr.resolve(context)
             max_width = int(self.max_width.resolve(context))
-        except VariableDoesNotExist:
+        except template.VariableDoesNotExist:
             return ''
         except ValueError:
-            raise TemplateSyntaxError("widthratio final argument must be an number")
+            raise template.TemplateSyntaxError("widthratio final argument must be an number")
         try:
             value = float(value)
             maxvalue = float(maxvalue)
@@ -367,7 +357,7 @@ def widthratio_trunc(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 4:
-        raise TemplateSyntaxError("widthratio takes three arguments")
+        raise template.TemplateSyntaxError("widthratio takes three arguments")
     tag, this_value_expr, max_value_expr, max_width = bits
 
     return WidthRatioTruncNode(

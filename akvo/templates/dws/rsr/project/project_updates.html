@@ -1,0 +1,79 @@
+{% extends "rsr/project/project_base.html" %}
+{% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
+{% load url from future %}
+
+
+{% block title %}
+  - {{project.name}}
+  - {% trans 'Project updates' %}
+{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+  <li><a href="{% url 'project_main' project.pk %}"><span>{{project.name}}</span></a></li>
+  <li id="last_breadcrum_item">{% trans 'Project updates' %}</li>
+{% endblock breadcrum_items %}
+
+
+{% block project_main %}  
+  <div class='column span-11'>
+    
+    <div class='column span-11 last'>
+      <div class="white_box" style="background-color:#fff;">
+        <div class='column span-11 last' style="width: 760px;">
+
+          {% include "inclusion_tags/update_header.html" %}
+
+          <div class="space20">
+            <div class="h1_companion">
+              <a class="" href="{{project.get_absolute_url}}">{% trans 'Back to project' %}</a>
+            </div>
+            <h3 class="append-bottom">{% trans 'Project updates' %}</h3>
+          </div>
+
+          {% for update in updates %}
+            <div class="update_frame" style="padding: 20px;">
+              <div class="column span-2">
+                <span class="tiny lt_grey">
+                  {{update.time|date:"Y-m-d H:i" }}<br/>
+                  {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}
+                      by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}
+                  {% endblocktrans %}                
+                </span>
+              </div>
+  
+              {% if update.photo %}
+                <div class="column span-2">
+                  <a href="{% url 'project_update' update.project.id update.id %}">
+                    <img width="120" height="120" src="{% thumbnail update.photo 120x120 crop sharpen %}" alt="{{update.photo_caption}}"/>
+                  </a>
+                </div>
+                <div class="column span-7 last" style="width: 436px; position: relative; height: 120px;">
+              {% else %}
+                <div class="column span-9 last" style="width: 578px; position: relative; height: 120px;">
+              {% endif %}
+                  <h4><a href="{% url 'project_update' update.project.id update.id %}">{{update.title}}</a></h4>
+                  <p>
+                    {{update.text|safe|smart_truncate:200}}
+                  </p>
+                  <div style="right:0; bottom: 0; position: absolute; display: block;">
+                    <p class="nano-lede" style="margin: 0;"><a href="{% url 'project_update' update.project.id update.id %}">{% trans 'Read full update' %} <span class="link_triangle">&#x25BA;</span></a></p>
+                  </div>
+                </div>
+                <div class="clear"></div>
+              </div>
+            {% if not forloop.last %}
+              <div style="margin: 0 10px;">
+                <hr style="margin:0;"/>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+        </div>
+        <div class="clear"></div>
+
+      </div>
+    </div>
+        
+  </div>
+{% endblock project_main %}

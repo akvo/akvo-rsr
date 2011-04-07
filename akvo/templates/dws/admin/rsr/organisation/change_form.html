@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+
+{% block pretitle %}
+    {{ block.super }}
+    <div style="width:75%">
+    <h2>{% trans 'Adding and Editing Organisations.' %}</h2>
+    <p>{% trans 'Describe your organisation to the online community of users. Who are you? What do you do, and what do you as an organisation hope to accomplish? Since your audience may include people unfamiliar with the sector or with your sphere of operation, a bit of explanation in plain language (no acronyms) might be helpful. Details will help viewers get a sense of who you are.' %}</p>
+
+    <p>{% trans 'Use the <em>View on site</em> button to see the public view of your organisation page.' %}</p>    
+    
+    </div>
+{% endblock %}
