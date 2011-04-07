@@ -206,12 +206,14 @@ class Organisation(models.Model):
         return '/rsr/organisation/%d/' % self.id
 
     @property
-    def primary_location(self, location=None):
+    def primary_location(self):
         '''Returns an organisations's primary location'''
         qs = self.locations.filter(primary=True)
         if qs:
-            location = qs[0]
-        return location
+            pl = qs[0]
+            location = pl if pl.latitude or pl.longitude else None
+            return location
+        return
 
     
     class QuerySet(QuerySet):
@@ -656,11 +658,13 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             qs = self.locations.filter(primary=True)
             if qs:
-                location = qs[0]
-            return location
+                pl = qs[0]
+                location = pl if pl.latitude or pl.longitude else None
+                return location
+            return
 
 
         class QuerySet(QuerySet):
@@ -1072,12 +1076,14 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
                 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             "Returns a project's primary location"
             qs = self.locations.filter(primary=True)
             if qs:
-                location = qs[0]
-            return location
+                pl = qs[0]
+                location = pl if pl.latitude or pl.longitude else None
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1303,8 +1309,10 @@ else: #akvo-rsr
             '''Returns a project's primary location'''
             qs = self.locations.filter(primary=True)
             if qs:
-                location = qs[0]
-            return location
+                pl = qs[0]
+                location = pl if pl.latitude or pl.longitude else None
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
