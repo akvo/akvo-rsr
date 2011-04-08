@@ -15,6 +15,7 @@ akvo/mollie_banklist.xml
 akvo/rebuild_db.py
 akvo/settings.py
 akvo/testing.py
+scripts/deployment/data_retrieval_config.py
 scripts/deployment/fab_config.py
 scripts/deployment/static_project_structure.py
 tests/akvo/acceptance/test_settings.py
