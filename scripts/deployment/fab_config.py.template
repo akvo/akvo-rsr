@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fabric.api import *
+from fabric.api import env
 
 
 def load_config():
