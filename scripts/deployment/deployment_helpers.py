@@ -5,7 +5,8 @@ from __future__ import with_statement
 
 import os, sys
 
-from fabric.api import cd, env, run, sudo
+from fabric.api import env, run, sudo
+from fabric.context_managers import cd
 from fabric.contrib import files
 
 
