@@ -16,11 +16,14 @@ def ensure_required_paths_exist():
     exit_if_path_does_not_exist(env.db_dump_path)
 
 def fetch_data_from_live_database():
+    print ">> Fetching data from live database"
     with cd(env.live_akvo_app_path):
-        with_virtualenv("python %s -d %s dump" % (env.db_dump_path, env.rsr_data_dump_path))
+        run("pwd")
+        with_virtualenv("python db_dump.py -d %s dump" % env.rsr_data_dump_path)
+    compress_directory(env.rsr_data_dump_path)
+    delete_directory(env.rsr_data_dump_path, ">> Deleting archived directory: %s" % env.rsr_data_dump_path)
 
 def fetch_live_data():
-    print ">> Fetching data from live database"
     load_data_retrieval_config()
     ensure_required_paths_exist()
     fetch_data_from_live_database()
