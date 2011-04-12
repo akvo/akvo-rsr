@@ -168,9 +168,3 @@ TIME_ZONE = 'Europe/Stockholm'
 # to load the internationalization machinery.
 USE_I18N = True
 USE_L10N = True
-
-# Google Maps
-GOOGLE_MAPS_PROJECT_MARKER_ICON = os.path.join(MEDIA_URL,
-                                               'core/img/blueMarker.png')
-GOOGLE_MAPS_ORGANISATION_MARKER_ICON = os.path.join(MEDIA_URL,
-                                                    'core/img/redMarker.png')

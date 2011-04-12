@@ -2227,6 +2227,10 @@ class ProjectUpdate(models.Model):
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     video           = models.URLField(_('video URL'), blank=True)
+    video_caption   = models.CharField(_('video caption'), blank=True,
+                                       max_length=75)
+    video_credit    = models.CharField(_('video credit'), blank=True,
+                                       max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
     if not settings.PVW_RSR:
