@@ -89,6 +89,43 @@
 				<div class="green_fold"></div>
 				<div class="two_column_right_inner" style="background-color:#fff;">
 					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
+						{% if update.video %}
+							<div style="float:left; width:175px;">
+								<p class="small last" style="padding:5px 5px 0 5px;">
+	                  				<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
+									<br/>{{update.text|smart_truncate:50}}
+								</p>
+							</div>
+							<div style="float:right; width:116px; height: 100px; text-align:right;">
+								{% oembed 116x100 %}
+	                                {{ update.video }}
+	                            {% endoembed %}
+							</div>
+							<div class="clear"></div>
+						{% else %}
+							{% if update.photo %}
+								<div style="float:left; width:175px;">
+									<p class="small last" style="padding:5px 5px 0 5px;">
+		                  				<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
+										<br/>{{update.text|smart_truncate:50}}
+									</p>
+								</div>
+								<div style="float:right; width:116px; height: 100px; text-align:right;">
+		                			<a href="{% url project_update project.id update.id %}">
+		                  				<img src="{% thumbnail update.photo 116x100 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
+		                			</a>
+								</div>
+								<div class="clear"></div>
+							{% else %}
+								<p class="small" style="padding:5px; margin-bottom:5px;">
+									<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b><br />
+									{{update.text|smart_truncate:150}}
+								</p>
+							{% endif %}
+                        {% endif %}
+
+
+						{% comment %}
 						{% if update.photo %}					
 							<div style="float:left; width:175px;">
 								<p class="small last" style="padding:5px 5px 0 5px;">
@@ -113,6 +150,7 @@
                                 {{ update.video }}
                             {% endoembed %}
                         {% endif %}
+						{% endcomment %}
 					</div>
 				</div>
 			{% endfor %}
