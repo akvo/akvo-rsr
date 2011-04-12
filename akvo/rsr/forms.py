@@ -6,6 +6,8 @@
 Forms and validation code for user registration and updating.
 
 """
+import re
+
 from django import forms
 #TODO fix for django 1.0
 #from django import oldforms
@@ -284,7 +286,8 @@ class ProjectUpdateForm(forms.ModelForm):
     photo_location = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
     photo_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
-    video = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'site':'25', 'maxlength':'50'}))
+    video = forms.CharField(required=False, widget=forms.TextInput(
+        attrs=dict(class='input', size=50, maxlength=255)))
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
