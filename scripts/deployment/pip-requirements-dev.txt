@@ -8,7 +8,6 @@ django-paypal
 django-piston
 django-rosetta
 sorl-thumbnail==3.2.5
-template_utils
 
 # Django apps from VCS web services
 -e git+git://github.com/directeur/django-sorting.git#egg=django_sorting
