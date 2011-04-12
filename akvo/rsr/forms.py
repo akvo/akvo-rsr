@@ -298,10 +298,11 @@ class ProjectUpdateForm(forms.ModelForm):
 
     def clean(self):
         if 'video' in self.cleaned_data:
+            url = self.cleaned_data['video']
             scheme, netloc, path, query, fragment = uselparse(url)
-            if not (path.endswith('.blip.tv')
-                    or path.endswith('.vimeo.com')
-                    or path.endswith('.youtube.com'):
-                raise ValidationError(_('Invalid video provider. '
-                    'Currently only Blip.TV, Vimeo and YouTube are supported.')
+            if (not path.endswith('.blip.tv')
+                or not path.endswith('.vimeo.com')
+                or not path.endswith('.youtube.com'):
+                raise ValidationError(_('Invalid video URL: %s. Currently '
+                    'only Blip.TV, Vimeo and YouTube are supported.') % url)
         return self.cleaned_data
