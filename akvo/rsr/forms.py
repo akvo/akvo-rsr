@@ -7,7 +7,7 @@ Forms and validation code for user registration and updating.
 
 """
 import re
-from urllib import urlparse
+from urlparse import urlparse
 
 from django import forms
 #TODO fix for django 1.0
