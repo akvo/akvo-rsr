@@ -7,6 +7,7 @@ Forms and validation code for user registration and updating.
 
 """
 import re
+from urllib import urlparse
 
 from django import forms
 #TODO fix for django 1.0
@@ -294,3 +295,13 @@ class ProjectUpdateForm(forms.ModelForm):
     class Meta:
         model = get_model('rsr', 'projectupdate')
         exclude = ('time', 'project', 'user', )
+
+    def clean(self):
+        if 'video' in self.cleaned_data:
+            scheme, netloc, path, query, fragment = uselparse(url)
+            if not (path.endswith('.blip.tv')
+                    or path.endswith('.vimeo.com')
+                    or path.endswith('.youtube.com'):
+                raise ValidationError(_('Invalid video provider. '
+                    'Currently only Blip.TV, Vimeo and YouTube are supported.')
+        return self.cleaned_data
