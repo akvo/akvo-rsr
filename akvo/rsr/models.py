@@ -206,12 +206,14 @@ class Organisation(models.Model):
         return '/rsr/organisation/%d/' % self.id
 
     @property
-    def primary_location(self, location=None):
+    def primary_location(self):
         '''Returns an organisations's primary location'''
         qs = self.locations.filter(primary=True)
+        qs = qs.exclude(latitude=0, longitude=0)
         if qs:
             location = qs[0]
-        return location
+            return location
+        return
 
     
     class QuerySet(QuerySet):
@@ -219,6 +221,7 @@ class Organisation(models.Model):
             content_type = ContentType.objects.get_for_model(Organisation)
             locations = Location.objects.filter(content_type=content_type,
                 primary=True)
+            locations = locations.exclude(latitude=0, longitude=0)
             project_ids = [location.object_id for location in locations]
             return self.filter(id__in=project_ids)
 
@@ -656,11 +659,13 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
 
 
         class QuerySet(QuerySet):
@@ -668,6 +673,7 @@ if settings.PVW_RSR: #pvw-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
 
@@ -1072,12 +1078,14 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
                 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             "Returns a project's primary location"
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1302,9 +1310,11 @@ else: #akvo-rsr
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1320,6 +1330,7 @@ else: #akvo-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
     

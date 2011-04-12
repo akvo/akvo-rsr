@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0.6
+RELEASE_NOTES.txt, v1.0.7
 
-Last changed: 15 Mar 2011, kad
+Last changed: 5 April 2011, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +8,85 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 1.0.7 release notes
+-------------------------------------------
+5 April 2011, (Code name: Lustre) bw
+
+** INTERNAL RELEASE ONLY ** 
+
+Overview
+------------
+The Dutch Water Sector site and Akvo RSR code have been updated to run on the same codebase. Different configurations and views allow the sites to operate in their own incarnations when deployed. Akvo-specific changes are listed first, and DWS changes follow below.
+
+Akvo changes and fixes
+---------
+### Help text and links on donations pages have been fixed, expanded and/or clarified.
+This includes tagging optional fields (campaign code), specifying format for amounts, correcting links to privacy and donation policy/ Terms and Conditions information, and adding a link to information for institutional donors.  
+[Lighthouse RSR ticket 94](https://akvo.lighthouseapp.com/projects/46515/tickets/94)
+[Lighthouse RSR ticket 135](https://akvo.lighthouseapp.com/projects/46515/tickets/135)
+[Lighthouse RSR ticket 189](https://akvo.lighthouseapp.com/projects/46515/tickets/189)
+[Lighthouse RSR ticket 192](https://akvo.lighthouseapp.com/projects/46515/tickets/192)
+
+### Presentation of the option to donate anonymously has been changed.
+For usability reasons this was changed to present a pre-checked box "List name next to donation."  
+[Lighthouse RSR ticket 8](https://akvo.lighthouseapp.com/projects/46515/tickets/8)
+
+### Error messages for mismatching email addresses on donation pages were incorrect. 
+When the email address and confirmation email address text did not match, the error message returned was correct, but labelled as being for the Amount field instead of the email address field.
+
+### Presentation of information in balloon pins of global organisation map changed to match that of global project map. 
+Clicking the pinned location balloons on the organisation map presented individual organisation info under a large red "Organisation" header. The display now matches that of the projects' pins on global project map.
+
+### Global map on home page is dislocated under Firefox 4. 
+The global map was not being rendered in the proper place under Firefox 4.  
+[Lighthouse website ticket 15](https://akvo.lighthouseapp.com/projects/49157/tickets/15)
+
+DWS changes and fixes
+---------
+### Organisation and project search capability.
+This has now been added on the organisation and project list pages respectively.
+
+### "Deliverables" heading now appears when there is a list of deliverables.
+When a project does not have any deliverables, the header does not appear.
+
+### Project images on the main project page should display a caption.
+If a caption has been written for the image, it will now be displayed.
+
+### The lead partner on a project needs to be more obvious on the project page.
+A separate box now distinguishes lead partner(s) from other partners on a project.
+
+### If there are no updates, then Goals tab should be selected on the main project page.
+When updates have been made to a project, the project page displays the Updates tab; if there are no updates yet, the Goals tab is displayed instead.
+
+### Original deprecated locations fields in Admin have been removed.
+These out-of-date fields were still showing up in Admin, though public site uses new Locations model fields. To avoid confusion for users entering project data, they have been removed.
+
+### Template and media file names have now been renamed from "pvw_take2" to "dws." 
+References to filenames have been updated to new name as well.
+
+### Toolbar display issues in Internet Explorer.
+The orange Holland logo to the left of the Dutch Water Sector name is in certain circumstances mis-positioned. It has been verified to appear correctly in both Internet Explorer 7 and 8 in a Windows 7 environment, and Internet Explorer 6 and 7 in an XP environment.
+
+### Global map code now works as in Akvo RSR.
+Maps have all the same capabilities as they do in Akvo RSR.
+
+### The embedded video on the DWS home page was displaying as a broken link img in IE.
+IE was not playing object elements; the video was switched to use Youtube-style iframes.
+
+### "Akvo" appearing in multiple places on the registration/sign up pages. 
+These have been removed.
+
+### An iframe on the project page was causing trouble for users.
+The iframe was removed from the project page.
+
+### Get random widget was broken, and has now been fixed.
+The organisation selection menu was greyed out at all times for the random project widget.
+
+### All update photos were appearing at the top of the update, regardless of setting.
+Update photos set to display at the end of the update are now behaving properly.
+
+---
 
 Akvo RSR v 1.0.6 release notes
 -------------------------------------------
