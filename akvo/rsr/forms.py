@@ -287,7 +287,7 @@ class ProjectUpdateForm(forms.ModelForm):
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
     photo_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
     video = forms.CharField(required=False, widget=forms.TextInput(
-        attrs=dict(class='input', size=50, maxlength=255)))
+        attrs={'class':'input', 'size':50, 'maxlength':255}))
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
