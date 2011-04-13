@@ -2226,7 +2226,8 @@ class ProjectUpdate(models.Model):
     photo_location  = models.CharField(_('photo location'), max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
-    video           = models.URLField(_('video URL'), blank=True)
+    video           = models.URLField(_('video URL'), blank=True,
+                                      verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
                                        max_length=75)
     video_credit    = models.CharField(_('video credit'), blank=True,
