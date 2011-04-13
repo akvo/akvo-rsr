@@ -1,12 +1,12 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-import os
 
 from django import template
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.sites.models import Site
+from django.template.defaulttags import WidthRatioNode
+from akvo.scripts.asset_manager import map, asset_bundles
 register = template.Library()
 
 
@@ -111,7 +111,7 @@ def update_thumb(context, update, width, height, style=''):
         'wxh'       : '%sx%s' % (width, height,),
         'div_style' : style,
     }
-    
+
 @register.inclusion_tag('inclusion_tags/gallery_thumb.html', takes_context=True)
 def gallery_thumb(context, image, width, height, caption='', style=''):
     '''
@@ -126,7 +126,7 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
         'style'     : style,
     }
     
-from akvo.scripts.asset_manager import map, asset_bundles
+
 @register.inclusion_tag('inclusion_tags/asset_bundle.html', takes_context=True)
 def asset_bundle(context, bundle):
     '''
@@ -173,8 +173,6 @@ def asset_bundle(context, bundle):
         'include': include,
     }
 
-from django.conf import settings
-from django.contrib.sites.models import Site
 @register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
 def focus_area(context, focusarea, projects_link=True):
     '''
@@ -236,7 +234,7 @@ def encrypt_email(parser, token):
     
 register.tag('encrypt_email', encrypt_email)
 
-from django.template.defaulttags import WidthRatioNode
+
 
 class WidthRatioTruncNode(WidthRatioNode):
     def render(self, context):
@@ -244,10 +242,10 @@ class WidthRatioTruncNode(WidthRatioNode):
             value = self.val_expr.resolve(context)
             maxvalue = self.max_expr.resolve(context)
             max_width = int(self.max_width.resolve(context))
-        except VariableDoesNotExist:
+        except template.VariableDoesNotExist:
             return ''
         except ValueError:
-            raise TemplateSyntaxError("widthratio final argument must be an number")
+            raise template.TemplateSyntaxError("widthratio final argument must be an number")
         try:
             value = float(value)
             maxvalue = float(maxvalue)
@@ -272,7 +270,7 @@ def widthratio_trunc(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 4:
-        raise TemplateSyntaxError("widthratio takes three arguments")
+        raise template.TemplateSyntaxError("widthratio takes three arguments")
     tag, this_value_expr, max_value_expr, max_width = bits
 
     return WidthRatioTruncNode(
