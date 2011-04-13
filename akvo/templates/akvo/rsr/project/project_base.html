@@ -90,18 +90,14 @@
 				<div class="two_column_right_inner" style="background-color:#fff;">
 					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
 						{% if update.video %}
-							<div style="float:left; width:175px;">
-								<p class="small last" style="padding:5px 5px 0 5px;">
-	                  				<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
-									<br/>{{update.text|smart_truncate:50}}
-								</p>
-							</div>
-							<div style="float:right; width:116px; height: 100px; text-align:right;">
-								{% oembed 116x100 %}
+							<p class="small last" style="padding:5px 5px 0 5px;">
+                  				<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
+							</p>
+							<div style="width:240px; margin-left:auto; margin-right:auto;">
+								{% oembed 240x180 %}
 	                                {{ update.video }}
 	                            {% endoembed %}
 							</div>
-							<div class="clear"></div>
 						{% else %}
 							{% if update.photo %}
 								<div style="float:left; width:175px;">
