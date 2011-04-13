@@ -48,6 +48,14 @@
 					{% oembed 400x300 %}
 	                    {{ u.video }}
 	                {% endoembed %}
+					<p class="small lightx1">
+				        {% if update.video_caption %}
+				            {{update.video_caption}}
+				        {% endif %}
+				        {% if update.video_credit %}
+				            {% trans 'Video credit' %}: {{update.video_credit}}
+				        {% endif %}
+				    </p>
 				</div>
             {% endif %}
 			<hr style="margin-bottom:5px;" />
