@@ -44,9 +44,11 @@
 				{% endif %}
             {% endif %}			
             {% if u.video %}
-                {% oembed 400x300 %}
-                    {{ u.video }}
-                {% endoembed %}
+				<div style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:40px;">
+					{% oembed 400x300 %}
+	                    {{ u.video }}
+	                {% endoembed %}
+				</div>
             {% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
