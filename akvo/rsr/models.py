@@ -175,10 +175,12 @@ class Organisation(models.Model):
                                     thumbnail={'size': (360,270)},
                                     help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
                                 )
-    #city                        = models.CharField(_('city'), max_length=25)
-    #state                       = models.CharField(_('state'), max_length=15)
-    #country                     = models.ForeignKey(Country)
+    #city = models.CharField(_('city'), max_length=25)
+    #state = models.CharField(_('state'), max_length=15)
+    #country = models.ForeignKey(Country)
+
     url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
+
     #map                         = models.ImageField(
     #                                _('map'),
     #                                blank=True,
