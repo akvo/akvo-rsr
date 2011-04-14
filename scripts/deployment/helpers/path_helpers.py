@@ -6,15 +6,16 @@
 
 import sys
 
-from fabric.api import run, sudo
+from fabric.api import env, run, sudo
 from fabric.contrib import files
+
+from helpers.permissions_helpers import set_akvo_group_permissions_on_path
 
 
 def ensure_path_exists_with_akvo_group_permissions(path):
     if not files.exists(path):
         _ensure_path_exists_with(path, sudo)
-        sudo("chown -R root:www-edit %s" % path)
-        sudo("chmod -R g+rws %s" % path)
+        set_akvo_group_permissions_on_path(path)
 
 def ensure_path_exists(path):
     _ensure_path_exists_with(path, run)
