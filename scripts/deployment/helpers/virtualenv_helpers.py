@@ -6,6 +6,8 @@
 
 from fabric.api import env, run, sudo
 
+from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
+
 
 def rebuild_virtualenv(pip_requirements_file, pip_install_log_file):
     _clean_virtualenv_directory()
