@@ -15,6 +15,9 @@ def ensure_user_is_member_of_group(group_name):
         print "\n>> User [%s] should be a member of group [%s]" % (env.user, group_name)
         sys.exit(1)
 
-def set_akvo_group_permissions_on_path(path):
+def set_akvo_ownership_on_path(path):
     sudo("chown -R root:%s %s" % (env.akvo_permissions_group, path))
+
+def set_akvo_group_permissions_on_path(path):
+    set_akvo_ownership_on_path(path)
     sudo("chmod -R g+rws %s" % path)
