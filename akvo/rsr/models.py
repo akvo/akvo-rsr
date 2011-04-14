@@ -580,9 +580,11 @@ if settings.PVW_RSR: #pvw-rsr
         #map = models.ImageField(_('map'),
         #                        blank=True,
         #                        upload_to=image_path,
-        #                        help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
+        #                        help_text=_('The map image should be roughly
+        #                        square and no larger than 240x240 pixels
+        #                        (approx. 100-200kb in size).'))
         # <-- DEPRECATED LOCATION FIELDS
-                                    )
+
         #Project categories
         #category_water              = models.BooleanField(_('water'))
         #category_sanitation         = models.BooleanField(_('sanitation'))
