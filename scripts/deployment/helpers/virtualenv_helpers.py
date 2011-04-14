@@ -4,7 +4,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fabric.api import env, run, sudo
+from fabric.api import env, run
 
 from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
 
@@ -12,9 +12,9 @@ from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_su
 def rebuild_virtualenv(pip_requirements_file, pip_install_log_file):
     _clean_virtualenv_directory()
     print "\n>> Rebuilding virtualenv at %s" % env.virtualenv_path
-    sudo("virtualenv --no-site-packages %s" % env.virtualenv_path)
+    run("virtualenv --no-site-packages %s" % env.virtualenv_path)
     with_virtualenv("pip install -q -M -U -E %s -r %s --log=%s" % (env.virtualenv_path, pip_requirements_file, pip_install_log_file))
-    with_virtualenv("pip -E %s freeze" % env.virtualenv_path)
+    run("pip -E %s freeze" % env.virtualenv_path)
 
 def _clean_virtualenv_directory():
     delete_directory_with_sudo(env.virtualenv_path, "\n>> Deleting previous virtualenv directory")
