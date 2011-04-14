@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 
 # python 2.5 compatibilty
 from __future__ import with_statement
 
-from fabric.api import *
+from fabric.api import env, run
 from fabric.context_managers import cd
 from fabric.contrib import files
 
 from data_retrieval_config import load_data_retrieval_config
-from deployment_helpers import *
+from helpers.file_helpers import compress_directory, delete_directory
+from helpers.path_helpers import ensure_path_exists_with_sudo, exit_if_path_does_not_exist
+from helpers.virtualenv_helpers import with_virtualenv
+
 
 def ensure_required_paths_exist():
     ensure_path_exists_with_sudo(env.data_dumps_root)
