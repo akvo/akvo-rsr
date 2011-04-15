@@ -4,31 +4,32 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import os
+
 from fabric.api import env
 
 
 def load_config():
     print "\n>> Loading deployment config for %s" % env.hosts
 
-    RSR_UNPACKED_ARCHIVE_MASK       = "akvo-akvo-rsr-*"
+    UNPACKED_RSR_ARCHIVE_MASK       = "akvo-akvo-rsr-*"
 
     env.repo_checkout_root          = "/var/git"
     env.virtualenvs_root            = "/var/virtualenvs"
     env.rsr_branch                  = "develop" # or "v1.0.6", "master", etc.
     env.akvo_permissions_group      = "www-edit"
 
-    env.rsr_snapshots_dir           = "%s/snapshots" % env.repo_checkout_root
-    env.rsr_snapshot_file           = "%s/rsr_%s.zip" % (env.rsr_snapshots_dir, env.rsr_branch)
+    env.rsr_snapshots_dir           = os.path.join(env.repo_checkout_root, "snapshots")
     env.rsr_archive_url             = "http://nodeload.github.com/akvo/akvo-rsr/zipball/%s" % env.rsr_branch
-    env.rsr_unpacked_archive_match  = "%s/%s" % (env.repo_checkout_root, RSR_UNPACKED_ARCHIVE_MASK)
+    env.rsr_unpacked_archive_match  = os.path.join(env.repo_checkout_root, UNPACKED_RSR_ARCHIVE_MASK)
 
     env.rsr_src_dir_name            = "akvo-rsr_%s" % env.rsr_branch
-    env.rsr_src_root                = "%s/%s" % (env.repo_checkout_root, env.rsr_src_dir_name)
+    env.rsr_src_root                = os.path.join(env.repo_checkout_root, env.rsr_src_dir_name)
 
     env.virtualenv_name             = "rsr_%s" % env.rsr_branch
-    env.virtualenv_path             = "%s/%s" % (env.virtualenvs_root, env.virtualenv_name)
-    env.pip_requirements_file       = "%s/scripts/deployment/pip-requirements.txt" % env.rsr_src_root
-    env.pip_install_log_file        = "%s/pip_install_%s.log" % (env.virtualenvs_root, env.virtualenv_name)
+    env.virtualenv_path             = os.path.join(env.virtualenvs_root, env.virtualenv_name)
+    env.pip_requirements_file       = os.path.join(env.rsr_src_root, "scripts/deployment/pip-requirements.txt")
+    env.pip_install_log_file        = os.path.join(env.virtualenvs_root, "pip_install_%s.log" % env.virtualenv_name)
 
-    env.mod_python_template_file    = "%s/scripts/deployment/akvo_modpython.py.template" % env.rsr_src_root
-    env.mod_python_destination_path = "%s/bin/akvo_modpython.py" % (env.virtualenv_path)
+    env.mod_python_template_file    = os.path.join(env.rsr_src_root, "scripts/deployment/akvo_modpython.py.template")
+    env.mod_python_destination_path = os.path.join(env.virtualenv_path, "bin/akvo_modpython.py")

@@ -4,12 +4,20 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+# python 2.5 compatibilty
+from __future__ import with_statement
+
+import os
+
 from fabric.api import env, run
+from fabric.context_managers import cd
 
 from fab_config import load_config
+
 from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
 from helpers.path_helpers import ensure_path_exists, ensure_path_exists_with_akvo_group_permissions
 from helpers.permissions_helpers import ensure_user_is_member_of_group, set_akvo_ownership_on_path
+from helpers.url_helpers import file_name_at_url, url_file_exists_at_path
 from helpers.virtualenv_helpers import rebuild_virtualenv
 
 
@@ -25,17 +33,27 @@ def ensure_required_paths_exist():
     ensure_path_exists_with_akvo_group_permissions(env.virtualenvs_root)
 
 def clean_deployment_directories():
-    delete_file_with_sudo(env.rsr_snapshot_file, "\n>> Deleting previous snapshot file")
     delete_directory_with_sudo(env.rsr_src_root, "\n>> Deleting previous deployment directory")
+
+def download_rsr_archive():
+    if not url_file_exists_at_path(env.rsr_archive_url, env.rsr_snapshots_dir):
+        print "\n>> Fetching akvo-rsr archive for the [%s] branch from Github" % env.rsr_branch
+        run("wget -nv -P %s %s" % (env.rsr_snapshots_dir, env.rsr_archive_url))
+    else:
+        archive_file_name = file_name_at_url(env.rsr_archive_url)
+        print "\n>> Latest archive already exists at: %s" % os.path.join(env.rsr_snapshots_dir, archive_file_name)
+
+def unpack_rsr_archive():
+    print "\n>> Unpacking akvo-rsr archive in %s" % env.repo_checkout_root
+    with cd(env.rsr_snapshots_dir):
+        run("unzip -q %s -d %s -x */.gitignore" % (file_name_at_url(env.rsr_archive_url), env.repo_checkout_root))
+    run("mv %s %s" % (env.rsr_unpacked_archive_match, env.rsr_src_root))
+    set_akvo_ownership_on_path(env.rsr_src_root)
 
 def download_and_unpack_rsr_archive():
     clean_deployment_directories()
-    print "\n>> Fetching akvo-rsr archive for %s branch from Github" % env.rsr_branch
-    run("wget -nv -O %s %s" % (env.rsr_snapshot_file, env.rsr_archive_url))
-    print "\n>> Unpacking akvo-rsr archive in %s" % env.repo_checkout_root
-    run("unzip -q %s -d %s -x */.gitignore" % (env.rsr_snapshot_file, env.repo_checkout_root))
-    run("mv %s %s" % (env.rsr_unpacked_archive_match, env.rsr_src_root))
-    set_akvo_ownership_on_path(env.rsr_src_root)
+    download_rsr_archive()
+    unpack_rsr_archive()
 
 def install_akvo_modpython():
     run("cp -p %s %s" % (env.mod_python_template_file, env.mod_python_destination_path))
