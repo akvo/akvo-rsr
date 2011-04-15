@@ -12,7 +12,7 @@ import os
 from fabric.api import env, run
 from fabric.context_managers import cd
 
-from fab_config import load_config
+from deployer_config import load_deployment_config
 
 from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
 from helpers.path_helpers import ensure_path_exists, ensure_path_exists_with_akvo_group_permissions
@@ -60,7 +60,7 @@ def install_akvo_modpython():
 
 def deploy_rsr():
     print "\n>> Starting RSR deployment"
-    load_config()
+    load_deployment_config()
     ensure_required_paths_exist()
     download_and_unpack_rsr_archive()
     rebuild_virtualenv(env.pip_requirements_file, env.pip_install_log_file)

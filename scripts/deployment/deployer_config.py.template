@@ -9,7 +9,7 @@ import os
 from fabric.api import env
 
 
-def load_config():
+def load_deployment_config():
     print "\n>> Loading deployment config for %s" % env.hosts
 
     UNPACKED_RSR_ARCHIVE_MASK       = "akvo-akvo-rsr-*"
