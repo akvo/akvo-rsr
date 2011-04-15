@@ -1,67 +1,49 @@
 # -*- coding: utf-8 -*-
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-# python 2.5 compatibilty
-from __future__ import with_statement
 
-from fabric.api import *
-from fabric.context_managers import cd
-from fabric.contrib import files
+from fabric.api import env, run
 
 from fab_config import load_config
+from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
+from helpers.path_helpers import ensure_path_exists, ensure_path_exists_with_akvo_group_permissions
+from helpers.permissions_helpers import ensure_user_is_member_of_group, set_akvo_ownership_on_path
+from helpers.virtualenv_helpers import rebuild_virtualenv
 
 
-def ensure_path_exists(path):
-    if not files.exists(path):
-        print ">> Creating path: %s" % path
-        sudo("mkdir %s" % path)
-        sudo("chmod 775 %s" % path)
+def ensure_user_is_member_of_akvo_permissions_group():
+    print "\n>> Checking that user [%s] is a member of group [%s]" % (env.user,
+        env.akvo_permissions_group) + " (required later for setting directory permissions)"
+    ensure_user_is_member_of_group(env.akvo_permissions_group)
 
 def ensure_required_paths_exist():
-    ensure_path_exists(env.repo_checkout_root)
+    ensure_user_is_member_of_akvo_permissions_group()
+    ensure_path_exists_with_akvo_group_permissions(env.repo_checkout_root)
     ensure_path_exists(env.rsr_snapshots_dir)
-    ensure_path_exists(env.virtualenvs_root)
+    ensure_path_exists_with_akvo_group_permissions(env.virtualenvs_root)
 
 def clean_deployment_directories():
-    if files.exists(env.rsr_snapshot_file):
-        print "\n>> Deleting previous snapshot file"
-        sudo("rm %s" % env.rsr_snapshot_file)
-    if files.exists(env.rsr_src_root):
-        print "\n>> Deleting previous deployment directory"
-        sudo("rm -r %s" % env.rsr_src_root)
+    delete_file_with_sudo(env.rsr_snapshot_file, "\n>> Deleting previous snapshot file")
+    delete_directory_with_sudo(env.rsr_src_root, "\n>> Deleting previous deployment directory")
 
 def download_and_unpack_rsr_archive():
     clean_deployment_directories()
     print "\n>> Fetching akvo-rsr archive for %s branch from Github" % env.rsr_branch
-    sudo("wget -nv -O %s %s" % (env.rsr_snapshot_file, env.rsr_archive_url))
+    run("wget -nv -O %s %s" % (env.rsr_snapshot_file, env.rsr_archive_url))
     print "\n>> Unpacking akvo-rsr archive in %s" % env.repo_checkout_root
-    sudo("unzip -q %s -d %s -x */.gitignore" % (env.rsr_snapshot_file, env.repo_checkout_root))
-    sudo("mv %s %s" % (env.rsr_unpacked_archive_match, env.rsr_src_root))
-
-def clean_virtualenv_directory():
-    if files.exists(env.rsr_virtualenv_path):
-        print "\n>> Deleting previous RSR virtualenv directory"
-        sudo("rm -r %s" % env.rsr_virtualenv_path)
-    if files.exists(env.pip_install_log_file):
-        print ">> Deleting pip install log file"
-        sudo("rm %s" % env.pip_install_log_file)
-
-def with_virtualenv(command):
-    sudo("source %s/bin/activate && %s" % (env.rsr_virtualenv_path, command))
-
-def rebuild_virtualenv():
-    clean_virtualenv_directory()
-    print "\n>> Rebuilding RSR virtualenv at %s" % env.rsr_virtualenv_path
-    sudo("virtualenv --no-site-packages %s" % env.rsr_virtualenv_path)
-    with_virtualenv("pip install -q -M -U -E %s -r %s --log=%s" % (env.rsr_virtualenv_path, env.pip_requirements_file, env.pip_install_log_file))
-    with_virtualenv("pip -E %s freeze" % env.rsr_virtualenv_path)
+    run("unzip -q %s -d %s -x */.gitignore" % (env.rsr_snapshot_file, env.repo_checkout_root))
+    run("mv %s %s" % (env.rsr_unpacked_archive_match, env.rsr_src_root))
+    set_akvo_ownership_on_path(env.rsr_src_root)
 
 def install_akvo_modpython():
-    sudo("cp -p %s %s" % (env.mod_python_template_file, env.mod_python_destination_path))
+    run("cp -p %s %s" % (env.mod_python_template_file, env.mod_python_destination_path))
 
 def deploy_rsr():
     print "\n>> Starting RSR deployment"
     load_config()
     ensure_required_paths_exist()
     download_and_unpack_rsr_archive()
-    rebuild_virtualenv()
+    rebuild_virtualenv(env.pip_requirements_file, env.pip_install_log_file)
     install_akvo_modpython()
