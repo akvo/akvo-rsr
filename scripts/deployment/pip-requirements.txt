@@ -23,6 +23,7 @@ FeedParser
 Markdown
 MySQL-python
 PIL
+gunicorn
 httplib2
 lxml
 python-memcached
