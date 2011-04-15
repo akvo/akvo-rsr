@@ -175,10 +175,12 @@ class Organisation(models.Model):
                                     thumbnail={'size': (360,270)},
                                     help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
                                 )
-    #city                        = models.CharField(_('city'), max_length=25)
-    #state                       = models.CharField(_('state'), max_length=15)
-    #country                     = models.ForeignKey(Country)
+    #city = models.CharField(_('city'), max_length=25)
+    #state = models.CharField(_('state'), max_length=15)
+    #country = models.ForeignKey(Country)
+
     url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
+
     #map                         = models.ImageField(
     #                                _('map'),
     #                                blank=True,
@@ -206,12 +208,14 @@ class Organisation(models.Model):
         return '/rsr/organisation/%d/' % self.id
 
     @property
-    def primary_location(self, location=None):
+    def primary_location(self):
         '''Returns an organisations's primary location'''
         qs = self.locations.filter(primary=True)
+        qs = qs.exclude(latitude=0, longitude=0)
         if qs:
             location = qs[0]
-        return location
+            return location
+        return
 
     
     class QuerySet(QuerySet):
@@ -219,6 +223,7 @@ class Organisation(models.Model):
             content_type = ContentType.objects.get_for_model(Organisation)
             locations = Location.objects.filter(content_type=content_type,
                 primary=True)
+            locations = locations.exclude(latitude=0, longitude=0)
             project_ids = [location.object_id for location in locations]
             return self.filter(id__in=project_ids)
 
@@ -567,15 +572,19 @@ if settings.PVW_RSR: #pvw-rsr
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
         status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
         categories                  = models.ManyToManyField(Category, related_name='projects',)
-        city                        = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        state                       = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        map                         = models.ImageField(
-                                        _('map'),
-                                        blank=True,
-                                        upload_to=image_path,
-                                        help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
-                                    )
+
+        # DEPRECATED LOCATION FIELDS -->
+        #city = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
+        #state = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
+        #country = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
+        #map = models.ImageField(_('map'),
+        #                        blank=True,
+        #                        upload_to=image_path,
+        #                        help_text=_('The map image should be roughly
+        #                        square and no larger than 240x240 pixels
+        #                        (approx. 100-200kb in size).'))
+        # <-- DEPRECATED LOCATION FIELDS
+
         #Project categories
         #category_water              = models.BooleanField(_('water'))
         #category_sanitation         = models.BooleanField(_('sanitation'))
@@ -656,11 +665,13 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
 
 
         class QuerySet(QuerySet):
@@ -668,6 +679,7 @@ if settings.PVW_RSR: #pvw-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
 
@@ -1072,12 +1084,14 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
                 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             "Returns a project's primary location"
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1302,9 +1316,11 @@ else: #akvo-rsr
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1320,6 +1336,7 @@ else: #akvo-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
     
