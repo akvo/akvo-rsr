@@ -4,10 +4,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import sys
-
 from fabric.api import env, run, sudo
 from fabric.contrib import files
+from fabric.utils import abort
 
 from helpers.permissions_helpers import set_akvo_group_permissions_on_path
 
@@ -31,8 +30,7 @@ def _ensure_path_exists_with(path, run_command):
 
 def exit_if_path_does_not_exist(path):
     if not files.exists(path):
-        print "\n>> Expected path does not exist: %s" % path
-        sys.exit(1)
+        abort("\n>> Expected path does not exist: %s" % path)
 
 def path_without_trailing_separator(path):
     if path[-1] == '/':

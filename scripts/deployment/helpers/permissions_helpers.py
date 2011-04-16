@@ -4,16 +4,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import sys
-
 from fabric.api import env, run, sudo
+from fabric.utils import abort
 
 
 def ensure_user_is_member_of_group(group_name):
     group_membership = run("groups")
     if group_membership.find(group_name) == -1:
-        print "\n>> User [%s] should be a member of group [%s]" % (env.user, group_name)
-        sys.exit(1)
+        abort("\n>> User [%s] should be a member of group [%s]" % (env.user, group_name))
 
 def set_akvo_ownership_on_path(path):
     sudo("chown -R root:%s %s" % (env.akvo_permissions_group, path))
