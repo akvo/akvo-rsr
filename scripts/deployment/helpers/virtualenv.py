@@ -6,8 +6,12 @@
 
 from fabric.api import env, run
 
-from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
+from helpers.files import delete_directory_with_sudo, delete_file_with_sudo
 
+
+def _clean_virtualenv_directory():
+    delete_directory_with_sudo(env.virtualenv_path, "\n>> Deleting previous virtualenv directory")
+    delete_file_with_sudo(env.pip_install_log_file, ">> Deleting previous pip install log file")
 
 def rebuild_virtualenv(pip_requirements_file, pip_install_log_file):
     _clean_virtualenv_directory()
@@ -15,10 +19,6 @@ def rebuild_virtualenv(pip_requirements_file, pip_install_log_file):
     run("virtualenv --no-site-packages %s" % env.virtualenv_path)
     with_virtualenv("pip install -q -M -U -E %s -r %s --log=%s" % (env.virtualenv_path, pip_requirements_file, pip_install_log_file))
     run("pip -E %s freeze" % env.virtualenv_path)
-
-def _clean_virtualenv_directory():
-    delete_directory_with_sudo(env.virtualenv_path, "\n>> Deleting previous virtualenv directory")
-    delete_file_with_sudo(env.pip_install_log_file, ">> Deleting previous pip install log file")
 
 def with_virtualenv(command):
     run("source %s/bin/activate && %s" % (env.virtualenv_path, command))

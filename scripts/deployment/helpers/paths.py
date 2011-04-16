@@ -8,7 +8,7 @@ from fabric.api import env, run, sudo
 from fabric.contrib import files
 from fabric.utils import abort
 
-from helpers.permissions_helpers import set_akvo_group_permissions_on_path
+from helpers.permissions import set_akvo_group_permissions_on_path
 
 
 def ensure_path_exists_with_akvo_group_permissions(path):

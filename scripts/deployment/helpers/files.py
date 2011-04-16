@@ -13,7 +13,7 @@ from fabric.api import run, sudo
 from fabric.context_managers import cd
 from fabric.contrib import files
 
-from helpers.path_helpers import path_without_trailing_separator
+from helpers.paths import path_without_trailing_separator
 
 
 def compress_directory(full_path):

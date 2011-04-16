@@ -14,11 +14,11 @@ from fabric.context_managers import cd
 
 from deployer_config import load_deployment_config
 
-from helpers.file_helpers import delete_directory_with_sudo, delete_file_with_sudo
-from helpers.path_helpers import ensure_path_exists, ensure_path_exists_with_akvo_group_permissions
-from helpers.permissions_helpers import ensure_user_is_member_of_group, set_akvo_ownership_on_path
-from helpers.url_helpers import file_name_at_url, url_file_exists_at_path
-from helpers.virtualenv_helpers import rebuild_virtualenv
+from helpers.files import delete_directory_with_sudo, delete_file_with_sudo
+from helpers.paths import ensure_path_exists, ensure_path_exists_with_akvo_group_permissions
+from helpers.permissions import ensure_user_is_member_of_group, set_akvo_ownership_on_path
+from helpers.urls import file_name_at_url, url_file_exists_at_path
+from helpers.virtualenv import rebuild_virtualenv
 
 
 def ensure_user_is_member_of_akvo_permissions_group():

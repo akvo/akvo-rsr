@@ -12,9 +12,9 @@ from fabric.context_managers import cd
 from fabric.contrib import files
 
 from data_retrieval_config import load_data_retrieval_config
-from helpers.file_helpers import compress_directory, delete_directory
-from helpers.path_helpers import ensure_path_exists_with_sudo, exit_if_path_does_not_exist
-from helpers.virtualenv_helpers import with_virtualenv
+from helpers.files import compress_directory, delete_directory
+from helpers.paths import ensure_path_exists_with_sudo, exit_if_path_does_not_exist
+from helpers.virtualenv import with_virtualenv
 
 
 def ensure_required_paths_exist():
