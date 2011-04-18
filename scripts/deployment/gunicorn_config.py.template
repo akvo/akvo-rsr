@@ -1,0 +1,13 @@
+import os
+
+
+def _get_workers():
+    if not hasattr(os, 'sysconf'):
+        raise RuntimeError('No sysconf detected. '
+                           'Could not determine number of CPU cores.')
+    cpus = os.sysconf('SC_NPROCESSORS_ONLN')
+    return (cpus * 2) + 1
+
+
+bind = '127.0.0.1:8000'
+workers = _get_workers()
