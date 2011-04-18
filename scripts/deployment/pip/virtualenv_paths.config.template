@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# paths for installed virtualenv and virtualenvwrapper on Mac OS X
+export WORKON_HOME=/var/virtualenvs
+source /Library/Frameworks/Python.framework/Versions/2.6/bin/virtualenvwrapper.sh

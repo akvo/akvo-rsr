@@ -1,0 +1,6 @@
+# NB: build with envintel to ensure later modules can build correctly (e.g. Fabric)
+# see the readme.txt file for details
+
+# common compilation dependencies
+pycrypto
+paramiko

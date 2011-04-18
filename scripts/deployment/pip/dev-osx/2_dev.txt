@@ -1,0 +1,17 @@
+# Build with envintel since env64 will break Fabric - see the readme.txt file for details
+
+# deployment modules
+Fabric
+supervisor
+
+# modules used for testing
+lxml
+nose
+selenium
+
+# optional dev modules
+# Paver
+# Pyccuracy
+# flexmock
+# selenium==1.0.1
+# windmill
