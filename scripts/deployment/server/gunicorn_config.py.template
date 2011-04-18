@@ -1,0 +1,20 @@
+import os
+
+
+def _get_workers():
+    '''Determine the number of CPU cores the system has
+    and return the recommended `(2 * cores) + 1` formula.
+
+    Place this file in the `static` directory and pass its location
+    to `gunicorn` with the `-c` config switch.
+
+    '''
+    if not hasattr(os, 'sysconf'):
+        raise RuntimeError('No sysconf detected. '
+                           'Could not determine number of CPU cores.')
+    cpu_cores = os.sysconf('SC_NPROCESSORS_ONLN')
+    return (2 * cpu_cores) + 1
+
+
+bind = '127.0.0.1:8000'
+workers = _get_workers()
