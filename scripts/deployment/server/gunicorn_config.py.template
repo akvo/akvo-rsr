@@ -3,7 +3,11 @@ import os
 
 def _get_workers():
     '''Determine the number of CPU cores the system has
-    and return the recommended `(2 * cores) + 1`.
+    and return the recommended `(2 * cores) + 1` formula.
+
+    Place this file in the `static` directory and pass its location
+    to `gunicorn` with the `-c` config switch.
+
     '''
     if not hasattr(os, 'sysconf'):
         raise RuntimeError('No sysconf detected. '

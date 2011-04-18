@@ -1,3 +1,7 @@
+; Runs gunicorn_django from the installed python virtualenv
+; The gunicorn_config.py configuration is optional but recommended
+; See scripts/deployment/server/gunicorn_config.py.template for an example
+
 [program:gunicorn]
 command=/var/virtualenvs/rsr/bin/gunicorn_django -c /var/git/static/gunicorn_config.py
 directory=/var/git/static/akvo
