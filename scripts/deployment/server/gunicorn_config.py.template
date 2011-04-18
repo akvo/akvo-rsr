@@ -2,6 +2,9 @@ import os
 
 
 def _get_workers():
+    '''Determine the number of CPU cores the system has
+    and return the recommended `(2 * cores) + 1`.
+    '''
     if not hasattr(os, 'sysconf'):
         raise RuntimeError('No sysconf detected. '
                            'Could not determine number of CPU cores.')

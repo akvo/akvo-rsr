@@ -1,0 +1,7 @@
+[program:gunicorn]
+command=/var/virtualenvs/rsr/bin/gunicorn_django -c /var/git/static/gunicorn_config.py
+directory=/var/git/static/akvo
+user=nobody
+autostart=true
+autorestart=true
+redirect_stderr=true

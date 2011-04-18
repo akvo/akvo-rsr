@@ -1,3 +1,5 @@
+# TODO: maintenance mode
+
 worker_processes 1;
 
 user www-data www-data;
@@ -14,9 +16,13 @@ http {
     sendfile on;
 
     upstream akvo-rsr {
-        # Conncet to local gunicorn instance(s)
+        # Conncet to local RSR gunicorn instance
         server 127.0.0.1:8000 fail_timeout=0;
     }
+
+    # Compression
+    gzip on;
+    gzip_comp_level 6;
 
     server {
         listen 80 default;
@@ -25,10 +31,10 @@ http {
 
         keepalive_timeout 5;
 
-        # Location of static files
+        # Static files
         root /var/www/akvo/mediaroot;
 
-        # RSR configuration
+        # RSR
         location /rsr {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header Host $http_host;
@@ -40,7 +46,7 @@ http {
             }
         }
        
-        # Drupal configuration
+        # Drupal
         location /web {
         }
     }
