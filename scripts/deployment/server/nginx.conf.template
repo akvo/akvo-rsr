@@ -1,5 +1,3 @@
-# TODO: maintenance mode
-
 worker_processes 1;
 
 user www-data www-data;
@@ -23,7 +21,7 @@ http {
     # Compression
     # text/html files are gzipped by default if gzip is on
     gzip on;
-    gzip_buggers 16 8k;
+    gzip_buffers 16 8k;
     gzip_comp_level 2;
     gzip_disable "msie6";
     gzip_proxied any;
@@ -52,6 +50,7 @@ http {
         location /rsr/media {
             root /var/www/akvo/mediaroot;
         }
+
         # RSR
         location / {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
