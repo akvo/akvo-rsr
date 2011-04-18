@@ -212,11 +212,25 @@ class InvoiceForm(forms.ModelForm):
             self.fields['bank'] = forms.CharField(max_length=4, 
                 widget=forms.Select(choices=get_mollie_banklist()))
 
+    """HACK:
+
+    Ideally the name and email fields in the Invoice model
+    should be required. They are not because of the original (legacy)
+    design of the Invoice model.
+
+    The fields below *override* the model to ensure data consistency.
+
+    """
     amount = forms.IntegerField(min_value=2)
+    name = forms.CharField()
+    email = forms.EmailField()
+    email2 = forms.EmailField()
+    is_public = forms.BooleanField(required=False)
         
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'name', 'email', 'is_anonymous')
+        fields = ('amount', 'name', 'email', 'email2',
+                  'campaign_code', 'is_public')
 
     def clean(self):
         cd = self.cleaned_data

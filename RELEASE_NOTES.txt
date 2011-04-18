@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0
+RELEASE_NOTES.txt, v1.0.7
 
-Last changed: 9 Feb 2011, bw
+Last changed: 5 April 2011, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -9,24 +9,199 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR v 1.0.7 release notes
+-------------------------------------------
+5 April 2011, (Code name: Lustre) bw
+
+** INTERNAL RELEASE ONLY ** 
+
+Overview
+------------
+The Dutch Water Sector site and Akvo RSR code have been updated to run on the same codebase. Different configurations and views allow the sites to operate in their own incarnations when deployed. Akvo-specific changes are listed first, and DWS changes follow below.
+
+Akvo changes and fixes
+---------
+### Help text and links on donations pages have been fixed, expanded and/or clarified.
+This includes tagging optional fields (campaign code), specifying format for amounts, correcting links to privacy and donation policy/ Terms and Conditions information, and adding a link to information for institutional donors.  
+[Lighthouse RSR ticket 94](https://akvo.lighthouseapp.com/projects/46515/tickets/94)
+[Lighthouse RSR ticket 135](https://akvo.lighthouseapp.com/projects/46515/tickets/135)
+[Lighthouse RSR ticket 189](https://akvo.lighthouseapp.com/projects/46515/tickets/189)
+[Lighthouse RSR ticket 192](https://akvo.lighthouseapp.com/projects/46515/tickets/192)
+
+### Presentation of the option to donate anonymously has been changed.
+For usability reasons this was changed to present a pre-checked box "List name next to donation."  
+[Lighthouse RSR ticket 8](https://akvo.lighthouseapp.com/projects/46515/tickets/8)
+
+### Error messages for mismatching email addresses on donation pages were incorrect. 
+When the email address and confirmation email address text did not match, the error message returned was correct, but labelled as being for the Amount field instead of the email address field.
+
+### Presentation of information in balloon pins of global organisation map changed to match that of global project map. 
+Clicking the pinned location balloons on the organisation map presented individual organisation info under a large red "Organisation" header. The display now matches that of the projects' pins on global project map.
+
+### Global map on home page is dislocated under Firefox 4. 
+The global map was not being rendered in the proper place under Firefox 4.  
+[Lighthouse website ticket 15](https://akvo.lighthouseapp.com/projects/49157/tickets/15)
+
+DWS changes and fixes
+---------
+### Organisation and project search capability.
+This has now been added on the organisation and project list pages respectively.
+
+### "Deliverables" heading now appears when there is a list of deliverables.
+When a project does not have any deliverables, the header does not appear.
+
+### Project images on the main project page should display a caption.
+If a caption has been written for the image, it will now be displayed.
+
+### The lead partner on a project needs to be more obvious on the project page.
+A separate box now distinguishes lead partner(s) from other partners on a project.
+
+### If there are no updates, then Goals tab should be selected on the main project page.
+When updates have been made to a project, the project page displays the Updates tab; if there are no updates yet, the Goals tab is displayed instead.
+
+### Original deprecated locations fields in Admin have been removed.
+These out-of-date fields were still showing up in Admin, though public site uses new Locations model fields. To avoid confusion for users entering project data, they have been removed.
+
+### Template and media file names have now been renamed from "pvw_take2" to "dws." 
+References to filenames have been updated to new name as well.
+
+### Toolbar display issues in Internet Explorer.
+The orange Holland logo to the left of the Dutch Water Sector name is in certain circumstances mis-positioned. It has been verified to appear correctly in both Internet Explorer 7 and 8 in a Windows 7 environment, and Internet Explorer 6 and 7 in an XP environment.
+
+### Global map code now works as in Akvo RSR.
+Maps have all the same capabilities as they do in Akvo RSR.
+
+### The embedded video on the DWS home page was displaying as a broken link img in IE.
+IE was not playing object elements; the video was switched to use Youtube-style iframes.
+
+### "Akvo" appearing in multiple places on the registration/sign up pages. 
+These have been removed.
+
+### An iframe on the project page was causing trouble for users.
+The iframe was removed from the project page.
+
+### Get random widget was broken, and has now been fixed.
+The organisation selection menu was greyed out at all times for the random project widget.
+
+### All update photos were appearing at the top of the update, regardless of setting.
+Update photos set to display at the end of the update are now behaving properly.
+
+---
+
+Akvo RSR v 1.0.6 release notes
+-------------------------------------------
+15 Mar 2011, (Code name: Sextant) kad
+
+New Features
+------------
+### A new setting to the map widget at the get a widget page
+At the get a widget page one can now set the map widget to either static or dynamic. In dynamic mode zoom and bubble interaction is enabled.
+
+Bug Fixes
+---------
+### Fixed broken arrows in Internet Explorer 7 on XP
+In Internet Explorer 7 on Windows XP arrows used in the interface was not rendered correctly. Those arrows have now been changed to an unicode character that is supported in a clean Windows XP installation.
+[Lighthouse ticket 170](https://akvo.lighthouseapp.com/projects/46515/tickets/170)
+
+### Updated automatic Thank you email
+When someone donated to a project that belonged to the Focus Area Health they received a Thank you email that is dedicated to Water & Sanitation. This is now changed to a more appropriate wording.
+[Lighthouse ticket 144](https://akvo.lighthouseapp.com/projects/46515/tickets/144)
+
+### Photos do not appear at first project page view in IE7
+In Internet Explorer 7 the mini gallery of project photos on the project page would not be displayed at first request, only after a refresh. Project photos does now appear at first request.
+[Lighthouse ticket 180](https://akvo.lighthouseapp.com/projects/46515/tickets/180)
+
+---
+
+Akvo RSR v 1.0.5 release notes
+------------------------------
+9 Mar 2011, (Code name: Encore) tbp
+
+New features
+------------
+
+### Landing page for Rabobank
+
+A landing page for the Rabobank microfinance projects. (This is most likely the last landing page we do. We are going to focus on the generic solution to this via a new feature codenamed Subsites.)
+
+### Other changes
+
+Modified the formatting of the release notes for release 1.0.1-1.0.4 to be more like the previous notes.
+
+---
+
+Akvo RSR v 1.0.4 release notes
+------------------------------
+28 Feb 2011, (Code name: Crossbow) pb
+
+Akvo RSR v 1.0.4 also contains all of the features and bug fixes from v 1.0.3. See below for more details.
+
+New Features
+------------
+
+### Update to Django 1.2.5
+
+More information on the [Django 1.2.5 release](http://docs.djangoproject.com/en/dev/releases/1.2.5/).
+
+### New map widget
+
+A new widget showing a Google Map of all of an organisation's projects is now available. You must be logged into a Plus Account in order to use this feature.
+
+### Admin location changes
+
+City, State and Country fields in a project or organisation's Location data are now optional. Only Latitude and Longitude coordinates are required.
+
+### "Campaign code"
+
+An optional "Campaign code" field has been added to the donation system.
+
+### Donation product description changed
+
+The product description has been modified to show an identical string for both PayPal and iDEAL donations. The string is "Akvo-<Project ID>-<Project Name>".  Note that the Mollie/iDEAL API will always truncate this string at 29 characters. PayPal is unaffected by this limitation.
+
+### Presentation of project and organisation information in large maps
+
+The information bubbles which appear when you click on a location marker in the global project and organisation maps have been updated to display the information in a much smaller space. This reduces screen clutter.
+
+Bug fixes
+---------
+
+### Javascript bug in IE7
+
+A bug in the image gallery code on the project main page resulted in a rendering issue on Internet Explorer 7. This was resolved by the addition of custom CSS rules for IE7.
+
+---
+
 Akvo RSR v 1.0.3 release notes
 ------------------------------
 9 Feb 2011, (Code name: Primrose) bw
 
+** INTERNAL RELEASE ONLY **
+
+Akvo RSR v 1.0.3 was not released publicly. The following bugs were discovered which prevented release:
+
+- A regression in the maps-handling code meant that location markers were no longer being displayed.
+- The RSR database was not being initialised properly because of an incorrectly configured setting.
+
+These have been addressed in release 1.0.4. See above.
+
 New Features
 ------------
-### A "Latest update" column has added to the Administrator Project Listing page. This column shows:
+### Admin: Latest update column
+A "Latest update" column has added to the Administrator Project Listing page. This column shows:
 
 - The date of the most recent update as a link back to that update on the public project page.
 - The email address of the user who made the update, as a send-to link.
 - A list of support and funding partners for the project, by partnership type, with names as links to the organisation's public page.
 
-### A "By status" filter has been added to the Administrator Project listing page. The filter allows administrators to view only projects with particular status settings, for example, only projects with the status "Needs funding."
+### Admin: By status filter
+A "By status" filter has been added to the Administrator Project listing page. The filter allows administrators to view only projects with particular status settings, for example, only projects with the status "Needs funding."
 
 Bug fixes
 ---------
-### Certain searches on the organisation listing page returned duplicate entries. This has been fixed.
-[https://akvo.lighthouseapp.com/projects/46515/tickets/139]
+### Duplicate search results
+Certain searches on the organisation listing page returned duplicate entries. This has been fixed.
+[Lighthouse ticket](https://akvo.lighthouseapp.com/projects/46515/tickets/139)
 
 ---
 
@@ -36,17 +211,21 @@ Akvo RSR v1.0.2 release notes
 
 Bug fixes
 ---------
-### Widgets now display all location information as expected (esp. continent and country details).
-[https://akvo.lighthouseapp.com/projects/46515/tickets/146]
+### Widget location bug
+Widgets now display all location information as expected (esp. continent and country details).
+[Lighthouse ticket](https://akvo.lighthouseapp.com/projects/46515/tickets/146)
 
-### The Akvo home page will now display as expected in Internet Explorer 6.
-[https://akvo.lighthouseapp.com/projects/46515/tickets/129]
+### Home page IE6 bug
+The Akvo home page will now display as expected in Internet Explorer 6.
+[Lighthouse ticket](https://akvo.lighthouseapp.com/projects/46515/tickets/129)
 
-### The Get-a-Widget page now has the Projects menu tab selected.
-[https://akvo.lighthouseapp.com/projects/46515/tickets/128]
+### Get a Widget page display bug
+The Get-a-Widget page now has the Projects menu tab selected.
+[Lighthouse ticket](https://akvo.lighthouseapp.com/projects/46515/tickets/128)
 
-### The All Updates page for a particular project now displays titles for all updates in the list even if some information was missing when a particular update was submitted.
-[http://akvo.lighthouseapp.com/projects/46515/tickets/142]
+### All updates page bug
+The All Updates page for a particular project now displays titles for all updates in the list even if some information was missing when a particular update was submitted.
+[Lighthouse ticket](http://akvo.lighthouseapp.com/projects/46515/tickets/142)
 
 ---
 
@@ -83,6 +262,7 @@ Content of the previous data fields were imported into new models in the 1.0.0 r
 The following improvements have been made to the MiniCMS.
 - Name field for instances of the MiniCMS has been added.
 
+---
 
 Akvo RSR v 1.0.0 release notes
 -------------------------------------------

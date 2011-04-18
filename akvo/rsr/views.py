@@ -103,6 +103,44 @@ def get_random_from_qs(qs, count):
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
+# http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
+import re
+from django.db.models import Q
+def normalize_query(query_string,
+                    findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                    normspace=re.compile(r'\s{2,}').sub):
+    ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
+        and grouping quoted words together.
+        Example:
+        
+        >>> normalize_query('  some random  words "with   quotes  " and   spaces')
+        ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
+    
+    '''
+    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
+
+def get_query(query_string, search_fields):
+    ''' Returns a query, that is a combination of Q objects. That combination
+        aims to search keywords within a model by testing the given search fields.
+    '''
+    query = None # Query to search for every search term
+    terms = normalize_query(query_string)
+    for term in terms:
+        or_query = None # Query to search for a given term in each field
+        for field_name in search_fields:
+            q = Q(**{"%s__icontains" % field_name: term})
+            if or_query is None:
+                or_query = q
+            else:
+                or_query = or_query | q
+        if query is None:
+            query = or_query
+        else:
+            query = query & or_query
+        
+    return query
+
+
 @render_to('rsr/index.html')
 def index(request, cms_id=None):
     '''
@@ -197,32 +235,7 @@ def project_list(request, slug='all', org_id=None):
             
     except KeyError, e:
         pass
-    
-    
-    '''
-    try:
-        selected_organisation = request.GET.get('organisation', 'all')
-    except Exception, e:
-        selected_organisation = 'all'
 
-    if selected_organisation != 'all':
-        query_string = ''
-        if request.GET:
-            get_dict = request.GET.copy()
-            del get_dict['organisation']
-            try:
-                del get_dict['page']
-            except Exception, e:
-                pass
-            query_string = '?%s' % get_dict.urlencode()          
-        return HttpResponseRedirect('/rsr/projects/%s/%s' % (selected_organisation, query_string))
-    else:
-        if org_id != None:
-            return HttpResponseRedirect('/rsr/projects/%s/' % org_id)
-        else:
-            return HttpResponseRedirect('/rsr/projects/all/')
-    '''
-    
     # TODO: fix DWS, they don't need funding()
     if settings.PVW_RSR:
         if org_id:
@@ -322,38 +335,6 @@ def project_list(request, slug='all', org_id=None):
         }
 
 
-
-# @render_to('rsr/project/project_directory.html')
-# def project_list(request, slug='all', org_id=None):
-#     '''
-#     List of  projects in RSR
-#     filtered on either a focus area or an organisation
-#     Context:
-#     projs: list of all projects
-#     page: paginator
-#     o: organisation
-#     '''
-#     org = None
-#     focus_area = None
-#     if org_id:
-#         org = Organisation.objects.get(pk=org_id)
-#         projects = org.published_projects().funding()
-#     elif slug:
-#         focus_area = get_object_or_404(FocusArea, slug=slug)
-#         if slug == 'all':
-#             projects = Project.objects.published()
-#         else:
-#             projects = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
-#     # extra columns to be able to sort on latest updates
-#     projects = projects.extra(
-#         select={
-#             'latest_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id',
-#             'update_id': 'SELECT id FROM rsr_projectupdate WHERE project_id = rsr_project.id AND time = (SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id)',
-#         }
-#     )
-#     return {'projects': projects, 'site_section': 'projects', 'focus_area': focus_area, 'org': org}
-
-
 def old_project_list(request):
     return HttpResponsePermanentRedirect(reverse('project_list'))
 
@@ -370,10 +351,19 @@ if settings.PVW_RSR:
         '''
         '''
         orgs = Organisation.objects.all()
-    
+        
+        # Simple filter on the Organisation model
+        query_string = ''
+        found_entries = None
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+            org_query = get_query(query_string, ['name', 'long_name','locations__country__country_name','locations__city','locations__state','contact_person','contact_email',])
+            orgs = orgs.filter(org_query).distinct()
+        
         return {
             'site_section': 'directory',
             'orgs': orgs,
+            'query': query_string,
         }
 
 else:
@@ -436,76 +426,36 @@ else:
             'active_projects': active_projects,
             'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         }
+
+    @render_to('rsr/organisation/landing_pages/rabobank.html')
+    def rabobank(request):
+        '''
+        List of all projects associated with Rabobank 
+        Context:
+        projects: list of all projects
+        stats: the aggregate projects data
+        page: paginator
+        '''
+        org = get_object_or_404(Organisation, pk=getattr(settings, 'RABOBANK_ID', 0))
+        projects = org.published_projects().funding()
+        delivered_business_people = projects.status_complete().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business'))
+        upcoming_business_people = projects.active().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business')) - delivered_business_people
+        # round to nearest whole 1000
+        # people_served = int(people_served / 1000) * 1000
+        page = project_list_data(request, projects)
+        active_projects = projects.status_not_cancelled().status_not_archived()
+        return {
+            'page': page,
+            'org': org,
+            'upcoming_business_people': upcoming_business_people,
+            'delivered_business_people': delivered_business_people,
+            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
+            'active_projects': active_projects,
+            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+        }
+
+
     
-    # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
-    import re
-    from django.db.models import Q
-    def normalize_query(query_string,
-                        findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
-                        normspace=re.compile(r'\s{2,}').sub):
-        ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
-            and grouping quoted words together.
-            Example:
-            
-            >>> normalize_query('  some random  words "with   quotes  " and   spaces')
-            ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
-        
-        '''
-        return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
-    
-    def get_query(query_string, search_fields):
-        ''' Returns a query, that is a combination of Q objects. That combination
-            aims to search keywords within a model by testing the given search fields.
-        '''
-        query = None # Query to search for every search term
-        terms = normalize_query(query_string)
-        for term in terms:
-            or_query = None # Query to search for a given term in each field
-            for field_name in search_fields:
-                q = Q(**{"%s__icontains" % field_name: term})
-                if or_query is None:
-                    or_query = q
-                else:
-                    or_query = or_query | q
-            if query is None:
-                query = or_query
-            else:
-                query = query & or_query
-            
-        '''
-        Initial try for continent filtering, this is obsolete, since the new_look_maps branch introduces the Location model.
-        for term in terms:
-            or_query = None # Query to search for a given term in each field
-            if 'Africa' or 'africa' or 'Asia' or 'asia' or 'Australia' or 'australia' or 'Europe' or 'europe' or 'North America' or 'north america' or 'North america' or 'north America' or 'South America' or 'south america' or 'South america' or 'south America' in term:
-                if term == 'Africa' or term == 'africa':
-                    q = Q(**{"country__continent__exact":1})
-                elif term == 'Asia' or term == 'asia':
-                    q = Q(**{"country__continent__exact":2})
-                elif 'Australia' or 'australia' in term:
-                    q = Q(**{"country__continent__exact":3})
-                elif 'Europe' or 'europe' in term:
-                    q = Q(**{"country__continent__exact":4})
-                elif 'North America' or 'north america' or 'North america' or 'north America' in term:
-                    q = Q(**{"country__continent__exact":5})
-                elif 'South America' or 'south america' or 'South america' or 'south America' in term:
-                    q = Q(**{"country__continent__exact":6})
-                if query is None:
-                    query = q
-                else:
-                    query = query & q
-            else:            
-                for field_name in search_fields:
-                    q = Q(**{"%s__icontains" % field_name: term})
-                    if or_query is None:
-                        or_query = q
-                    else:
-                        or_query = or_query | q
-                if query is None:
-                    query = or_query
-                else:
-                    query = query & or_query
-        '''
-        return query
         
     @render_to('rsr/project/project_directory.html')
     def projectlist(request):
@@ -1423,7 +1373,7 @@ def getwidget(request, project_id):
         widget_site = request.POST['widget-site']
         if widget_choice == 'random-from-org':
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
-        elif widget_choice == 'project-list':
+        elif widget_choice == 'project-list' or widget_choice == 'project-map':
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
         else:
             o = None
@@ -1558,6 +1508,34 @@ def project_list_widget(request, template='project-list', org_id=0):
         },
         context_instance=RequestContext(request))
 
+@render_to('widgets/project_map.html')
+def project_map_widget(request, org_id):
+    bgcolor = request.GET.get('bgcolor', 'B50000')
+    height = request.GET.get('height', '300')
+    textcolor = request.GET.get('textcolor', 'FFFFFF')
+    width = request.GET.get('width', '600')
+    zoom = request.GET.get('zoom', '1')
+    state = request.GET.get('state', 'static')
+
+    if state != 'dynamic':
+        state = 'static'
+    
+    try:
+        map_height = int(height)-24 # Since we have a bottom bar of 24px
+    except ValueError, e:
+        map_height = 276 # 326px = default height(350px) - bottom bar(24px)
+    
+    return { 
+        'bgcolor': bgcolor,
+        'height': map_height,
+        'org': get_object_or_404(Organisation, pk=org_id), 
+        'textcolor': textcolor,
+        'width': width,
+        'zoom': zoom,
+        'state': state,
+        }
+
+        
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
@@ -1575,12 +1553,15 @@ def donate(request, p, engine, has_sponsor_banner=False):
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
+            description = u'Akvo-%d-%s' % (p.id, p.name)
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
             invoice.name = cd['name']
             invoice.email = cd['email']
+            invoice.campaign_code = cd['campaign_code']
+            invoice.is_anonymous = not cd['is_public']
             original_http_referer = request.session.get('original_http_referer', None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
@@ -1595,7 +1576,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'amount': invoice.amount * 100,
                     'bank_id': invoice.bank,
                     'partnerid': invoice.gateway,
-                    'description': u'Donation: Akvo Project %d' % int(p.id),
+                    'description': description,
                     'reporturl': getattr(settings, 'MOLLIE_REPORT_URL', 'http://www.akvo.org/rsr/mollie/report/'),
                     'returnurl': getattr(settings, 'MOLLIE_RETURN_URL', 'http://www.akvo.org/rsr/donate/ideal/thanks/'),
                 }
@@ -1623,11 +1604,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                     'currency_code': invoice.currency,
                     'business': invoice.gateway,
                     'amount': invoice.amount,
-                    'item_name': u'%s: Project %d - %s' % (
-                        getattr(settings, 'PAYPAL_PRODUCT_DESCRIPTION_PREFIX', 'Akvo Project Donation'),
-                        int(invoice.project.id),
-                        invoice.project.name,
-                    ),
+                    'item_name': description,
                     'invoice': int(invoice.id),
                     'lc': invoice.locale,
                     'notify_url': getattr(settings, 'PAYPAL_NOTIFY_URL', 'http://www.akvo.org/rsr/donate/paypal/ipn/'),
@@ -1650,8 +1627,10 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
     else:
-        donate_form = InvoiceForm(project=p, engine=engine)
-    return render_to_response('rsr/project/donate/donate_step2.html', 
+        donate_form = InvoiceForm(project=p,
+                                  engine=engine,
+                                  initial=dict(is_public=True))
+    return render_to_response('rsr/project/donate/donate_step2.html',
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'p': p,

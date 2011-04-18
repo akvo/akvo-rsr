@@ -4,7 +4,7 @@ Akvo RSR is covered by the GNU Affero General Public License, see more details i
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 {% endcomment %}
 
-{% load i18n rsr_tags rsr_filters generic_content thumbnail cache humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail cache humanize %}
 
 {% block title %}project@{{block.super}}{% endblock title %}
 
@@ -175,30 +175,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		
 		</div>
 		</div>
-		
-		{% comment %}
-			<p class="smallFont grey">{% trans 'Presented by' %}</p>
-			{% for funder in project.fundingpartner_set.all %}
-				fundingpartner: {{funder.funding_organisation.name}}<br />
-			{% endfor %}
-			{% for funder in project.fieldpartner_set.all %}
-				fieldpartners: {{funder}}<br />
-			{% endfor %}
-			{% for funder in project.supportpartner_set.all %}
-				supportpartners: {{funder}}<br />
-			{% endfor %}		
-			{% for funder in project.sponsorpartner_set.all %}
-				sponsorpartners: {{funder}}<br />
-			{% endfor %}		
-		{% endcomment %}
-		
-		
-		
-		{% comment %}
-		<div id="name" style="clear:both; height:1px; overflow:hidden;"> </div>
-		<p class="miniFont lightgrey right" style="padding-right:9px;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
-		<div id="name" style="clear:both; height:7px; overflow:hidden;"> </div>
-		{% endcomment %}
+	
 </div>
 {% endblock content %}
 
@@ -215,8 +192,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	var index = 1;
 	
-	function Partner (orgName,logo,partnerType,url) 
-	{
+	function Partner(orgName,logo,partnerType,url) {
 		this.orgName = orgName;
 		this.logo = logo;
 		this.partnerType = partnerType;
@@ -229,30 +205,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	
 	var partners = [];
 	
-	{% for sponsor in project.sponsorpartner_set.all %} 
-		
-        
-	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
-											'{% org_logo sponsor.sponsor_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
-											'sponsor', 
-											'{% url org_detail sponsor.sponsor_organisation.id %}');											
+	{% for sponsor in project.sponsorpartner_set.all %}	
+		partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
+												'{% org_logo sponsor.sponsor_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
+												'sponsor', 
+												'{% url org_detail sponsor.sponsor_organisation.id %}');											
 	{% endfor %}
 	
 	{% for funder in project.fundingpartner_set.all %}
-	
-	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
-											'{% org_logo funder.funding_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
-											'funding',
-											'{% url org_detail funder.funding_organisation.id %}');
+		partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
+												'{% org_logo funder.funding_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
+												'funding',
+												'{% url org_detail funder.funding_organisation.id %}');
 	{% endfor %}
 	
 	{% for supporter in project.supportpartner_set.all %}
-	
-
-	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
-											'{% org_logo supporter.support_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
-											'support',
-											'{% url org_detail supporter.support_organisation.id %}');
+		partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
+												'{% org_logo supporter.support_organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
+												'support',
+												'{% url org_detail supporter.support_organisation.id %}');
 	{% endfor %}
 
 	{% for operator in project.fieldpartner_set.all %}
@@ -262,25 +233,20 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 											'{% url org_detail operator.field_organisation.id %}');
 	{% endfor %}
 	
-	
-	
-	
-	function switchPartner(){
+	function switchPartner() {
 		index == (partners.length-1) ? index = 0 : index++;
 		animatePartnerSwitch();
 	}
 	
-	function animatePartnerSwitch() 
-	{
+	function animatePartnerSwitch(){
 		// If no or one partner bail since there is nothing to animate
-		if(partners.length <=1){
+		if (partners.length <=1) {
 			return;
 		}
 			
 		var newHTML = '';
 		
-		switch(partners[index].getType())
-		{
+		switch(partners[index].getType()) {
 			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>'; break;
 			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by' %}</p>'; break;
 			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by' %}</p>'; break;
@@ -290,7 +256,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		newHTML += '<a href="' + partners[index].getUrl() + '">';
 		newHTML += partners[index].getLogo() + '</a><br><a class="smallFont" href="' + partners[index].getUrl() + '">';
 		newHTML += partners[index].getName() +'</a>';
-		
 		
 		jQ("#partnerspace")
 			.animate({opacity: 1.0},7000) // Display time

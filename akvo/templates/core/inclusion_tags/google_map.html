@@ -1,53 +1,28 @@
 {% load i18n %}
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-
-<script charset="utf-8">
-
-    var jQ = jQuery.noConflict();
-
-    function loadGoogleMap() {
-
-        var latitude = {{ object.primary_location.latitude }};
-        var longitude = {{ object.primary_location.longitude }};
-        var zoom = {{ zoom }};
-
-        var mapData = {
-            coordinates: new google.maps.LatLng(latitude, longitude),
+<div id="map_canvas" style="width:{{width}}px;height:{{height}}px;"></div>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+    var googleMap = {
+        canvas: document.getElementById('map_canvas'),
+        options: {
+            zoom: {{zoom}},
+            center: new google.maps.LatLng({{object.primary_location.latitude}},
+                                           {{object.primary_location.longitude}}),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-        };
-
-        var mapOptions = {
-            zoom: zoom,
-            center: mapData.coordinates,
-            mapTypeId: mapData.mapTypeId,
             scrollwheel: false,
             streetViewControl: false
-        };
-
-        var mapCanvas = document.getElementById('map_canvas');
-
-        var map = new google.maps.Map(mapCanvas, mapOptions);
-
-        var marker = new google.maps.Marker({
-            {% if marker_icon %}
-                icon: '{{ marker_icon }}',
-            {% endif %}
-            map: map,
-            position: mapData.coordinates,
-            clickable: false,
-            // title: '{{ object.title }}'
-        });
-
-    }
-
-    jQ(document).ready(
-        function() {
-            loadGoogleMap();
+        },
+        load: function() {
+            var map = new google.maps.Map(this.canvas, this.options);
+            var marker = new google.maps.Marker({
+                {% if marker_icon %}
+                    icon: '{{marker_icon}}',
+                {% endif %}
+                map: map,
+                position: this.options.center,
+                clickable: false
+            });
         }
-    );
-
+    };
+	window.onload = function (){googleMap.load()};
 </script>
-
-<div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>

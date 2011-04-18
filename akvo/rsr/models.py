@@ -121,10 +121,16 @@ class LongitudeField(models.FloatField):
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0)
-    longitude = LongitudeField(_('longitude'), default=0)
-    city = models.CharField(_('city'), max_length=255)
-    state = models.CharField(_('state'), max_length=255)
+    latitude = LatitudeField(_('latitude'), default=0,
+        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+                  'target="_blank">iTouchMap.com</a> '
+                  'to get the decimal coordinates of your project')
+    longitude = LongitudeField(_('longitude'), default=0,
+        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+                  'target="_blank">iTouchMap.com</a> '
+                  'to get the decimal coordinates of your project')
+    city = models.CharField(_('city'), blank=True, max_length=255)
+    state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)
     address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
     address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
@@ -221,12 +227,14 @@ class Organisation(models.Model):
         return '/rsr/organisation/%d/' % self.id
 
     @property
-    def primary_location(self, location=None):
+    def primary_location(self):
         '''Returns an organisations's primary location'''
         qs = self.locations.filter(primary=True)
+        qs = qs.exclude(latitude=0, longitude=0)
         if qs:
             location = qs[0]
-        return location
+            return location
+        return
 
     
     class QuerySet(QuerySet):
@@ -234,6 +242,7 @@ class Organisation(models.Model):
             content_type = ContentType.objects.get_for_model(Organisation)
             locations = Location.objects.filter(content_type=content_type,
                 primary=True)
+            locations = locations.exclude(latitude=0, longitude=0)
             project_ids = [location.object_id for location in locations]
             return self.filter(id__in=project_ids)
 
@@ -671,11 +680,13 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
 
 
         class QuerySet(QuerySet):
@@ -683,6 +694,7 @@ if settings.PVW_RSR: #pvw-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
 
@@ -1087,12 +1099,14 @@ if settings.PVW_RSR: #pvw-rsr
             return counter.count or 0
                 
         @property
-        def primary_location(self, location=None):
+        def primary_location(self):
             "Returns a project's primary location"
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1317,9 +1331,11 @@ else: #akvo-rsr
         def primary_location(self, location=None):
             '''Returns a project's primary location'''
             qs = self.locations.filter(primary=True)
+            qs = qs.exclude(latitude=0, longitude=0)
             if qs:
                 location = qs[0]
-            return location
+                return location
+            return
     
         def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
             try:
@@ -1335,6 +1351,7 @@ else: #akvo-rsr
                 content_type = ContentType.objects.get_for_model(Project)
                 locations = Location.objects.filter(content_type=content_type,
                     primary=True)
+                locations = locations.exclude(latitude=0, longitude=0)
                 project_ids = [location.object_id for location in locations]
                 return self.filter(id__in=project_ids)
     
@@ -2637,6 +2654,8 @@ class Invoice(models.Model):
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
+    campaign_code = models.CharField(_('Campaign code'),
+                                     blank=True, max_length=15)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
     ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)

@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
     'akvo.gateway',
-    'template_utils', #see http://code.google.com/p/django-template-utils/
+    'template_utils',
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
     #'akvo.status',
@@ -122,7 +122,7 @@ MIDDLEWARE_CLASSES = (
 # PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
 # Is this the pvw-rsr?
-PVW_RSR = False
+PVW_RSR = False 
 
 ROOT_URLCONF = 'akvo.urls'
 
@@ -153,12 +153,11 @@ TEMPLATE_LOADERS = (
 
 import os.path
 if PVW_RSR:
-    TEMPLATE_LEAF_DIR = 'pvw'
+    TEMPLATE_LEAF_DIR = 'dws'
 else:
     TEMPLATE_LEAF_DIR = 'akvo'
     
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates/%s-take2' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/%s' % TEMPLATE_LEAF_DIR).replace('\\','/'),
     os.path.join(os.path.dirname(__file__), 'templates/core').replace('\\','/'),
 )

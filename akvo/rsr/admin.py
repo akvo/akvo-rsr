@@ -458,10 +458,10 @@ if settings.PVW_RSR:
             #            ('category_training', 'category_education', 'category_product_development'), 'category_other',), 
             #}),
             
-            (_(u'Location'), {
-                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
-                'fields': ('city', 'state', 'country',)
-            }),
+            #(_(u'Location'), {
+            #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
+            #    'fields': ('city', 'state', 'country',)
+            #}),
             #
 #            (_(u'Location extra'), {
 #                'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example latitude and longitude coordinates, or a map image.</p>'),

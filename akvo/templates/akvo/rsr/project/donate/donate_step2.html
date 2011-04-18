@@ -98,14 +98,14 @@
 				</div>
 				<p class="small">{% trans 'Akvo.org uses the PayPal Secure Payment&trade; system for donations.' %}</p>
 				<p class="small">
-					{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one." %}
+					{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one. And PayPal handles the currency conversion for you." %}
 				</p>
 				<p class="small">
 				    {% ifequal p.currency 'EUR' %}
-					{% trans 'PayPal charges up to 3.9%+35 Euro cents of your donation in transaction fees. So if you donate 100 Euros, at least 95.75 Euros will go towards the selected project.' %}
+						{% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 35 Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the selected project.' %}
 					{% endifequal %}
 					{% ifequal p.currency 'USD' %}
-					{% trans 'PayPal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+							{% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 30 Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to the selected project.' %}					
 					{% endifequal %}
 				</p>
 
@@ -168,19 +168,19 @@
 		<hr style="margin-top:15px;"/>
 
 		<div style="float:left; width:400px;">
-			{% blocktrans with p.get_currency_display|safe as currency %}
-			<h3>Amount you wish to donate (in {{currency}})</h3>
-            {% endblocktrans %}
+			<h3>{% trans 'Donation details' %}</h3>
 			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
-				<p class="grey">{% trans 'Amount' %}:</p>
+				{% blocktrans with p.get_currency_display|safe as currency %}
+				<p class="grey">Amount in {{currency}}:</p>
+	            {% endblocktrans %}
 			</div>
 			<div style="float:left;">
-				{{ donate_form.amount }}<br />
-				<span class="grey tiny">
-                {% blocktrans with p.get_currency_display|safe as currency %}
-				Only whole {{currency}} amounts please
-                {% endblocktrans %}
-				</span>
+				<p style="font-weight:bold; margin-bottom:18px;">
+					{{ donate_form.amount }}<br />
+					<span style="font-weight:normal;" class="small grey">
+						{% trans 'Whole numbers without decimals or commas.' %}
+					</span>
+				</p>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -190,7 +190,6 @@
 				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />				
 
 				{% if donate_form.non_field_errors %}
-					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Amount' %}:</p>
 					{{ donate_form.non_field_errors }}
 				{% endif %}
 					
@@ -204,8 +203,8 @@
 		<div class="clear" style="padding-bottom:40px;"></div>
 		
 		
-		<div style="float:left; width:400px;">
-			<h3>{% trans 'Provide your full name and email address below.' %}</h3>
+		<div style="float:left; width:440px;">
+			<h3>{% trans 'Provide your full name and email address' %}</h3>
 			<div style="float:left; width:170px; text-align:right; padding-right:10px;">
 				<div class="fieldWrapper" style="margin-bottom:32px; margin-top:7px;">	
 					<p class="grey">{% trans 'Your name' %}:</p>
@@ -222,27 +221,40 @@
 				</div>
 				{% endifequal %}
 				<div class="fieldWrapper" style="margin-bottom:20px">
+					<p class="grey">{% trans 'Campaign code' %}:
+					</p>
+				</div>
+				<div class="fieldWrapper" style="margin-bottom:20px">
 					<p class="grey"> &nbsp;</p>
 				</div>
 			</div>
 			<div style="float:left; width:218px;">
 				<p style="font-weight:bold; margin-bottom:15px;">{{ donate_form.name }}</p>
 				<p style="font-weight:bold; margin-bottom:4px">{{ donate_form.email }}</p>
-				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
 				{% ifequal payment_engine 'ideal' %}
-				<p style="font-weight:bold; margin-bottom:18px;">{{ donate_form.bank }}</p>
+				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.email2 }}</p>
+				<p style="font-weight:bold; margin-bottom:12px;">{{ donate_form.bank }}</p>
+				{% else %}
+				<p style="font-weight:bold; margin-bottom:6px;">{{ donate_form.email2 }}</p>
 				{% endifequal %}
+				<p style="font-weight:bold; margin-bottom:18px;">
+					{{ donate_form.campaign_code }}<br />
+					<span style="font-weight:normal;" class="small grey">{% trans 'Optional' %}</span>
+				</p>
 				<p class="small" style="font-weight:normal; margin-bottom:18px;">
-					{{ donate_form.is_anonymous }} {% trans 'Keep donation' %} <a href="http://www.akvo.org/web/privacy_policy">{% trans 'anonymous' %}</a>.
+					{{ donate_form.is_public }}
+					{% trans 'List name next to donation' %}<br />
+					<a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a>
 				</p>
 			</div>
 		</div>
-		<div style="float:right; width:485px; padding:10px;">
+		<div style="float:right; width:445px; padding:10px;">
 			{% if donate_form.name.errors or donate_form.email.errors or donate_form.email2.errors or donate_form.bank.errors %}
 			<div id="paypal_warning_name" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px; margin-top:0px;">
-
-				<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
-
+				
+				{% if not donate_form.non_field_errors and not donate_form.amount.errors %}
+					<span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br /><br />
+				{% endif %}
 				{% if donate_form.name.errors %}
 					<p style="margin-bottom:5px; color:#FF0000;">{% trans 'Name' %}:</p>
 					{{ donate_form.name.errors }}
@@ -279,3 +291,8 @@
 	</div>
 </div>
 {% endblock maincontent %}
+
+{% block jq_ready %}
+	{{block.super}}
+	jQ('#id_amount').focus();
+{% endblock jq_ready %}
