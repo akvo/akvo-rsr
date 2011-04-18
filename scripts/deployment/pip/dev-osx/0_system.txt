@@ -1,5 +1,0 @@
-# Build with either env64 or envintel - see the readme.txt file for details
-
-# system modules
-virtualenv
-virtualenvwrapper

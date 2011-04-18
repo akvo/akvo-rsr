@@ -1,7 +1,7 @@
 # Django
 Django==1.2.5
 
-# Django Apps
+# Django apps
 django-counter
 django-markup
 django-paypal
@@ -16,15 +16,20 @@ sorl-thumbnail==3.2.5
 -e git+git://github.com/worldcompany/djangoembed.git#egg=oembed
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
 
-# Other Python Modules
-BeautifulSoup
-Cython
-FeedParser
-Markdown
-MySQL-python
-PIL
-gunicorn
+# General requirements
 httplib2
 lxml
-python-memcached
 simplejson
+
+# RSR requirements
+BeautifulSoup
+FeedParser
+Markdown
+PIL
+python-memcached
+
+# Database requirements
+MySQL-python
+
+# App container
+gunicorn

@@ -28,7 +28,7 @@ def load_deployment_config():
 
     env.virtualenv_name             = "rsr_%s" % env.rsr_branch
     env.virtualenv_path             = os.path.join(env.virtualenvs_root, env.virtualenv_name)
-    env.pip_requirements_file       = os.path.join(env.rsr_src_root, "scripts/deployment/pip-requirements.txt")
+    env.pip_requirements_file       = os.path.join(env.rsr_src_root, "scripts/deployment/pip/requirements/1_rsr.txt")
     env.pip_install_log_file        = os.path.join(env.virtualenvs_root, "pip_install_%s.log" % env.virtualenv_name)
 
     env.mod_python_template_file    = os.path.join(env.rsr_src_root, "scripts/deployment/akvo_modpython.py.template")

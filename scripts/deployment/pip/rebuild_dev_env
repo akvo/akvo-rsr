@@ -29,11 +29,11 @@ printf ">> MACOSX_DEPLOYMENT_TARGET = %s\n" $MACOSX_DEPLOYMENT_TARGET
 printf "\n>> Virtualenv should be empty (i.e. wsgiref only)\n"
 pip freeze
 
-printf "\n>> Installing prerequisite modules\n"
-pip install -M -U -r dev-osx/1_prerequisites.txt
+printf "\n>> Installing RSR modules\n"
+pip install -M -U -r requirements/1_rsr.txt
 
-printf "\n>> Installing dev and testing modules\n"
-pip install -M -U -r dev-osx/2_dev.txt
+printf "\n>> Installing further dev and testing modules\n"
+pip install -M -U -r requirements/2_dev.txt
 
 printf "\n>> Installed modules:\n"
 pip freeze
