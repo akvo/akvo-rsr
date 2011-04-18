@@ -12,7 +12,7 @@ import os
 from fabric.api import env, run
 from fabric.context_managers import cd
 
-from deployer_config import load_deployment_config
+from fabfiles.deployer_config import load_deployment_config
 
 from helpers.files import delete_directory_with_sudo, delete_file_with_sudo
 from helpers.paths import ensure_path_exists, ensure_path_exists_with_akvo_group_permissions
