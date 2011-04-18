@@ -21,8 +21,20 @@ http {
     }
 
     # Compression
+    # text/html files are gzipped by default if gzip is on
     gzip on;
+    gzip_buggers 16 8k;
     gzip_comp_level 6;
+    gzip_disable "msie6";
+    gzip_proxied any;
+    gzip_types text/css
+               text/javascript
+               text/plain
+               text/xml
+               application/atom+xml
+               application/x-javascript
+               application/xml
+               application/xml+rss;
 
     server {
         listen 80 default;
