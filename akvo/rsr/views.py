@@ -1114,6 +1114,15 @@ def myakvo_mobile(request):
             'notices': notices,
         }, RequestContext(request))
 
+@login_required()
+def myakvo_cancel_reporter(request, reporter_id):
+    '''
+    '''
+    profile = request.user.get_profile()
+    reporter = SmsReporter.objects.get(id=reporter_id)
+    profile.destroy_reporter(reporter)
+    return HttpResponseRedirect(reverse('myakvo_mobile'))
+    
 class CommentForm(ModelForm):
 
     comment = forms.CharField(widget=forms.Textarea(attrs={
