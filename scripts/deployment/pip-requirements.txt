@@ -29,7 +29,7 @@ feedparser==4.1
 httplib2==0.6.0
 lxml==2.3beta1
 Markdown==2.0.3
-MySQL-python
+MySQL-python==1.2.3
 PIL==1.1.7
 python-memcached==1.45
 simplejson==2.1.2
