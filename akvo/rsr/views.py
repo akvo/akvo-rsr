@@ -6,7 +6,7 @@
 
 from akvo.rsr.models import MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, MoSmsRaw, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS, Country
 from akvo.rsr.models import UserProfile, MoMmsRaw, MoMmsFile, Invoice
-from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm, ProjectUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 from akvo.rsr.decorators import fetch_project
 
 from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs
@@ -978,24 +978,6 @@ def projectcomments(request, project_id):
     form        = CommentForm()
     return {'p': p, 'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
 
-class UpdateForm(ModelForm):
-
-    js_snippet = "return taCount(this,'myCounter')"
-    js_snippet = mark_safe(js_snippet)    
-    title           = forms.CharField(
-                        widget=forms.TextInput(
-                            attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
-                      ))
-    text            = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
-    #status          = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
-    photo           = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
-    photo_location  = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
-    photo_caption   = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
-    photo_credit    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
-    
-    class Meta:
-        model = ProjectUpdate
-        exclude = ('time', 'project', 'user', )
 
 @login_required()
 def updateform(request, project_id):
@@ -1014,7 +996,7 @@ def updateform(request, project_id):
         
     if request.method == 'POST':
 
-        form = UpdateForm(request.POST, request.FILES, )
+        form = ProjectUpdateForm(request.POST, request.FILES)
         if form.is_valid():
             update = form.save(commit=False)
             update.project = p
@@ -1025,7 +1007,7 @@ def updateform(request, project_id):
             latest = ProjectUpdate.objects.all().order_by('-time')[0]
             return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
     else:
-        form = UpdateForm()
+        form = ProjectUpdateForm()
         
     return render_to_response('rsr/project/update_form.html', {
         'form': form, 

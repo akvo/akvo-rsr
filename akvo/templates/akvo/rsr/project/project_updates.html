@@ -1,5 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -29,37 +30,55 @@
 			{% if not updates %}
 				<p>{% trans 'No updates yet.' %}</p>
 			{% else %}
-				{% for u in updates %}
+				{% for update in updates %}
 					<div class="grey_hover" style="padding:10px; {% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %}">
 						<div style="float:left; width:100px;">
-							<span class="grey small" style="padding-right:5px;">{{u.time|date:"d-M-Y"}}</span>
+							<span class="grey small" style="padding-right:5px;">{{update.time|date:"d-M-Y"}}</span>
 						</div>
 						
-						<div style="float:left; width:116px; height: 100px; margin: 0 10px;">
-							{% if u.photo %}
-								<a href="{% url project_update p.id u.id %}">
-									<img src="{% thumbnail u.photo 116x100 crop autocrop upscale sharpen %}" />
-								</a>
-							{% endif %}
-							&nbsp;
-						</div>
+						{% comment %}
+							{% if update.video %}
+								<p class="small last" style="padding:5px 5px 0 5px;">
+	                  				<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
+								</p>
+								<div style="width:290px; margin-left:auto; margin-right:auto; overflow:hidden;">
+									{% oembed 290x217 %}{{ update.video }}{% endoembed %}
+								</div>
+							{% else %}
+						{% endcomment %}
 						
-						{% if u.title or u.text %}
-						<div style="float:left; width:300px;">
-							<p style="margin:0;">
-								{% if u.title %}
-									<a href="{% url project_update p.id u.id %}">{{u.title|capfirst}}</a><br />	
+						<div style="float:left; width:240px; margin: 0 10px;">
+							{% if update.video %}
+								<div style="width:240px; margin-left:auto; margin-right:auto;">
+									{% oembed 240x180 %}{{ update.video }}{% endoembed %}
+								</div>
+							{% else %}
+								{% if update.photo %}
+									<a href="{% url project_update p.id update.id %}">
+										<img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
+									</a>
+								{% else %}
+									&nbsp;
 								{% endif %}
-								{% if u.text %}
-									<span class="grey small">{{u.text|smart_truncate:150}}</span>
+							{% endif %}
+						</div>
+						
+						{% if update.title or update.text %}
+						<div style="float:left; width:240px;">
+							<p style="margin:0;">
+								{% if update.title %}
+									<a href="{% url project_update p.id update.id %}">{{update.title|capfirst}}</a><br />	
+								{% endif %}
+								{% if update.text %}
+									<span class="grey small">{{update.text|smart_truncate:150}}</span>
 								{% endif %}
 							</p>
 						</div>
 						{% else %}
 						<p class="small grey">
 							<span class="grey small">
-								{% if u.photo_caption %}
-									{{u.photo_caption}}<br />									
+								{% if update.photo_caption %}
+									{{update.photo_caption}}<br />									
 								{% endif %}
 							</span>
 						{% endif %}
