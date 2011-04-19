@@ -1,0 +1,48 @@
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load humanize i18n pagination_tags rsr_tags %}
+{#% load timezone_filters %#}
+
+{% autopaginate notices %}
+
+{% if notices %}
+
+    <p><a href="{% url notification_mark_all_seen %}">{% trans "Mark all unseen notices seen" %}</a></p>
+
+    {# TODO: get timezone support working with regroup #}
+    {% regroup notices by added.date as notices_by_date %}                    
+    <table border="0" cellspacing="0" cellpadding="0"> 
+        <tr class="bold hr">
+            <td style="padding-bottom:10px; width: 150px;">{% trans 'When/what' %}</td>
+            <td>{% trans 'Message' %}</td>
+        </tr>
+        {% for date in notices_by_date %}
+            <tr>
+                <td><h2 class="notice_date">{{ date.grouper|capfirst }}</h2></td>
+                <td></td>
+            </tr>
+            {% for notice in date.list %}
+            <tr>
+                {% if notice.is_unseen %}
+                    <td class="notice_type_unseen">
+                {% else %}
+                    <td class="notice_type">
+                {% endif %}
+                {{ notice.added|time:"H.i" }}:<br/>{% trans notice.notice_type.display %}</td>
+
+                {% if notice.is_unseen %}
+                    <td class="notice_message_unseen">
+                {% else %}
+                    <td class="notice_message">
+                {% endif %}{{ notice.message|safe }}</td>                            
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>{% trans "No notices." %}</p>
+{% endif %}

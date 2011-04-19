@@ -9,8 +9,14 @@
 <li id="last_breadcrum_item">{% trans 'Update your Akvo RSR account information' %}</li>
 {% endblock breadcrum_items %}
 
+{% block pre_content %}
+  {% include "rsr/myakvo/navigation.html" %}
+{% endblock pre_content %}
+
 {% block content %}
-	<form method="post" action="" name="account_change_form">{% csrf_token %}
+  
+	<form method="post" action="" name="account_change_form">
+    {% csrf_token %}
 		{% if form.errors %}
 	    <div class="error" style="margin-right: 70px;">
 			<p class="c1">{% trans 'A problem occurred' %}</p>
@@ -46,7 +52,6 @@
             {% endif %}
         </div>
         {% endif %}
-		<div style="width:500px;">
 			<h3>{% trans 'Change your name:' %}</h3>
 			{{ form.first_name }}
             <p class="small grey">{% trans 'Your first (given) name' %}.</p>
@@ -55,7 +60,6 @@
             <p class="small grey">{% trans 'Your last (family) name' %}.</p>
 			
 			<p class="small grey">{% trans 'Your first and last name will be displayed when you post comments or updates to Akvo.' %}</p>
-		</div>
 		<div class="clear"></div>
 		<hr />
 		

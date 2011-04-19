@@ -1,0 +1,2 @@
+{% load i18n %}
+{% blocktrans %}Please reply to this message with the validation code you have received to the email address you gave us when you set up your account.{% endblocktrans %}
