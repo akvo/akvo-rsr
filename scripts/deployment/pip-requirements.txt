@@ -21,7 +21,6 @@ django-pagination==1.0.7
 -e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
 -e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
 
-
 # Other Python Modules
 BeautifulSoup==3.2.0
 Cython==0.13

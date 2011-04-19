@@ -174,9 +174,7 @@ TIME_ZONE = 'Europe/Stockholm'
 USE_I18N = True
 USE_L10N = True
 
-
 # Logging
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

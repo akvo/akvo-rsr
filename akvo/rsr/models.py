@@ -196,10 +196,12 @@ class Organisation(models.Model):
                                     thumbnail={'size': (360,270)},
                                     help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
                                 )
-    #city                        = models.CharField(_('city'), max_length=25)
-    #state                       = models.CharField(_('state'), max_length=15)
-    #country                     = models.ForeignKey(Country)
+    #city = models.CharField(_('city'), max_length=25)
+    #state = models.CharField(_('state'), max_length=15)
+    #country = models.ForeignKey(Country)
+
     url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
+
     #map                         = models.ImageField(
     #                                _('map'),
     #                                blank=True,
@@ -591,15 +593,19 @@ if settings.PVW_RSR: #pvw-rsr
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
         status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
         categories                  = models.ManyToManyField(Category, related_name='projects',)
-        city                        = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        state                       = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        map                         = models.ImageField(
-                                        _('map'),
-                                        blank=True,
-                                        upload_to=image_path,
-                                        help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
-                                    )
+
+        # DEPRECATED LOCATION FIELDS -->
+        #city = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
+        #state = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
+        #country = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
+        #map = models.ImageField(_('map'),
+        #                        blank=True,
+        #                        upload_to=image_path,
+        #                        help_text=_('The map image should be roughly
+        #                        square and no larger than 240x240 pixels
+        #                        (approx. 100-200kb in size).'))
+        # <-- DEPRECATED LOCATION FIELDS
+
         #Project categories
         #category_water              = models.BooleanField(_('water'))
         #category_sanitation         = models.BooleanField(_('sanitation'))
@@ -1212,8 +1218,8 @@ else: #akvo-rsr
             return self.label
         
         class Meta:
-            verbose_name        =_(u'MiniCMS')
-            verbose_name_plural =_(u'MiniCMS')
+            verbose_name = _('MiniCMS')
+            verbose_name_plural = _('MiniCMS')
     
     
     class Project(models.Model):
@@ -2520,15 +2526,22 @@ class ProjectUpdate(models.Model):
     photo_location  = models.CharField(_('photo location'), max_length=1, choices=PHOTO_LOCATIONS, default='B')
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
+    video           = models.URLField(_('video URL'), blank=True,
+                                      help_text=u'XXX placeholder help text',
+                                      verify_exists=False)
+    video_caption   = models.CharField(_('video caption'), blank=True,
+                                       max_length=75)
+    video_credit    = models.CharField(_('video credit'), blank=True,
+                                       max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
     if not settings.PVW_RSR:
-        featured        = models.BooleanField(_(u'featured'), )
+        featured        = models.BooleanField(_('featured'), )
     
     class Meta:
         get_latest_by = "time"
-        verbose_name        = _(u'project update')
-        verbose_name_plural = _(u'project updates')
+        verbose_name        = _('project update')
+        verbose_name_plural = _('project updates')
 
     def img(self):
         try:

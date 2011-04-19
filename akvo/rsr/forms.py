@@ -6,13 +6,16 @@
 Forms and validation code for user registration and updating.
 
 """
+#import re
+from urlparse import urlsplit
+
 from django import forms
 #TODO fix for django 1.0
 #from django import oldforms
 #from django.core import validators
 #from django.core.validators import alnum_re
 from django.conf import settings
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.contrib.sites.models import Site
 from django.db.models import get_model
@@ -20,12 +23,12 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail
+from registration.models import RegistrationProfile
 
 from mollie.ideal.utils import get_mollie_banklist
 
-from akvo.rsr.models import (UserProfile, Organisation, Project,)
+from akvo.rsr.models import UserProfile, Organisation, PHOTO_LOCATIONS
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -268,3 +271,38 @@ class ReadonlyFKAdminField(object):
                 if field_name in form.base_fields:
                     form.base_fields[field_name].widget = ReadonlyFKWidget(self.admin_site, getattr(obj, field_name, ''))
         return form
+
+
+class ProjectUpdateForm(forms.ModelForm):
+    """Form representing a ProjectUpdate."""
+    js_snippet = "return taCount(this,'myCounter')"
+    js_snippet = mark_safe(js_snippet)    
+    title = forms.CharField(widget=forms.TextInput(
+        attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+                      ))
+    text = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
+    #status = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
+    photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
+    photo_location = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
+    photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
+    photo_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
+    video = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class':'input', 'size':'50', 'maxlength':'255'}))
+    video_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75'}))
+    video_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25'}))
+
+    class Meta:
+        model = get_model('rsr', 'projectupdate')
+        exclude = ('time', 'project', 'user', )
+
+    def clean_video(self):
+        data = self.cleaned_data['video']
+        scheme, netloc, path, query, fragment = urlsplit(data)
+        netloc = netloc.lower()
+        valid_url = (netloc.endswith('.blip.tv') or
+                     netloc == 'vimeo.com' or 
+                     netloc == 'www.youtube.com')
+        if not valid_url:
+            raise forms.ValidationError(_('Invalid video URL. Currently '
+                'Blip.TV, Vimeo and YouTube are supported.'))
+        return data
