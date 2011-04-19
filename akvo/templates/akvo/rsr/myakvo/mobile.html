@@ -71,6 +71,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     </tr>
                 {% endif %}
             {% endfor %}
+            {% if form.fields.project.choices %}
             <tr>
                 <td class="lightx2" style="font-weight: bold; vertical-align: middle;">
                     Add a project
@@ -82,6 +83,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
                     <input type="submit" value="Add">
                 </td>
             </tr>
+            {% endif %}
         {% endif %}
     </table>                    
 

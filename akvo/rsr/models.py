@@ -2150,9 +2150,14 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """
         Projects I may do SMS updates for that aren't linked through an SmsReporter yet, filtering out reporters that have no project set
         """
-        logger.debug("Entering: %s()" % who_am_i())
         return self.my_projects().exclude(pk__in=[r.project.pk for r in self.reporters.exclude(project=None)])
-        logger.debug("Exiting: %s()" % who_am_i())
+
+    def available_gateway_numbers(self):
+        # TODO: user selectable gateways
+        gw = Gateway.objects.get(name=self.GATEWAY_42IT)
+        # find all "free" numbers
+        numbers = GatewayNumber.objects.filter(gateway=gw).exclude(number__in=[r.gw_number.number for r in self.reporters.all()])
+        return numbers
 
     def create_reporter(self, project=None):
         """
@@ -2170,10 +2175,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             logger.debug("Exiting: %s()" % who_am_i())
             return reporter
         except:
-            # TODO: user selectable gateways
-            gw = Gateway.objects.get(name=self.GATEWAY_42IT)
-            # find all "free" numbers
-            numbers = GatewayNumber.objects.filter(gateway=gw).exclude(number__in=[r.gw_number.number for r in self.reporters.all()])
+            numbers = self.available_gateway_numbers()
             if numbers:
                 new_number = numbers[0]
                 reporter = SmsReporter.objects.create(userprofile=self, project=project, gw_number=new_number)

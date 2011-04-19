@@ -132,14 +132,16 @@ urlpatterns += patterns('',
     url(r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'}, name='registration_update_complete' ),
     (r'^rsr/accounts/', include('registration.urls')),
     
-    (r'^rsr/notices/', include('notification.urls')),
     
-    (r'^rsr/gateway/', include('akvo.gateway.urls')),
-    
+    # MyAkvo
     url(r'^rsr/myakvo/mobile/$', 'akvo.rsr.views.myakvo_mobile', name='myakvo_mobile'),
     url(r'^rsr/myakvo/mobile/number/$', 'akvo.rsr.views.myakvo_mobile_number', name='myakvo_mobile_number'),
     url(r'^rsr/myakvo/mobile/cancel-reporter/(?P<reporter_id>\d+)/$', 'akvo.rsr.views.myakvo_cancel_reporter', name='myakvo_cancel_reporter'),
     url(r'^rsr/myakvo/$', 'akvo.rsr.views.update_user_profile', name='myakvo'),
+
+    (r'^rsr/notices/', include('notification.urls')),
+    
+    (r'^rsr/gateway/', include('akvo.gateway.urls')),
     
 
     # Widgets

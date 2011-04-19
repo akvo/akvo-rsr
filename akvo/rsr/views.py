@@ -1052,14 +1052,13 @@ class MobileProjectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         profile = kwargs.pop('profile', None)
         forms.Form.__init__(self, *args, **kwargs)
-        if profile:
+        if profile and profile.available_gateway_numbers():
             self.fields['project'].choices = ((u'', u'---------'),) + tuple([(p.id, "%s - %s" % (unicode(p.pk), p.name)) for p in profile.my_unreported_projects()])
 
     def clean(self):
         """
         
         """
-        cd = self.cleaned_data
         return self.cleaned_data            
             
 class MobileNumberForm(forms.Form):

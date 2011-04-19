@@ -21,7 +21,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             class="active" style="font-weight:bold;"
         {% endifequal %}
     >{% trans 'Password' %}</a>
-    {% if profile.has_perm_add_sms_updates %}
+
+    {% if request.user.get_profile.has_perm_add_sms_updates %}
         |
         {% url myakvo_mobile as url_myakvo_mobile %}
         <a
