@@ -1,0 +1,37 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load humanize i18n pagination_tags rsr_tags %}
+{#% load timezone_filters %#}
+
+{% block title %}{{block.super}} - {% trans 'Notices' %}{% endblock %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Notices' %}</li>
+{% endblock breadcrum_items %}
+
+{% block pre_content %}
+  {% include "rsr/myakvo/navigation.html" %}
+{% endblock pre_content %}
+
+{% block content %}
+
+    {% include "rsr/myakvo/navigation.html" %}
+    
+    <h1>{% trans "All notices (paginated)" %}</h1>
+    
+    <div>
+
+    {% include "notification/notices_list.html" %}
+
+    </div>
+    
+    {% paginate %}
+    
+{% endblock content %}
+

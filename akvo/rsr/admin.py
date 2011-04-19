@@ -20,6 +20,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
+from permissions.models import Role
+
 from forms import ReadonlyFKAdminField
 
 from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
@@ -1056,37 +1058,75 @@ else:
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
+class SmsReporterInline(admin.TabularInline):
+    model = get_model('rsr', 'smsreporter')
+    extra = 1
+
+    def get_readonly_fields(self, request, obj):
+        """ Only allow viewing of gateway number and project for non-superusers
+        """
+        opts = self.opts
+        user = request.user
+        if not user.is_superuser:
+            self.readonly_fields = ('gw_number', 'project',)            
+        else:
+            self.readonly_fields = ()            
+        return super(SmsReporterInline, self).get_readonly_fields(request, obj)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """
+        Hook for specifying the form Field instance for a given database Field
+        instance.
+
+        If kwargs are given, they're passed to the form Field's constructor.
+        
+        Added by GvH:
+        Use hook to implement limits to project list select for org users.
+        """
+        request = kwargs.get("request", None)
+        
+        # Limit the choices of the project db_field to projects linked to user's org
+        # if we have an org user
+        if db_field.attname == 'project_id':
+            opts = self.opts
+            user = request.user
+            if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+                db_field.rel.limit_choices_to = {'pk__in': user.get_profile().organisation.all_projects()}
+            
+        return super(SmsReporterInline, self).formfield_for_dbfield(db_field, **kwargs)
+
 class UserProfileAdminForm(forms.ModelForm):
     """
-    This form dispalys two extra fields that show if the ser belongs to the groups
+    This form dispalys two extra fields that show if the user belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
     class Meta:
         model = get_model('rsr', 'userprofile')
 
-    #user            = ReadOnlyField(label=_(u'Username'))
     is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
+    is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
     
     def __init__(self, *args, **kwargs):
-        #request is needed to populate is_org_admin and is_org_editor
         initial_data = {}
         instance = kwargs.get('instance', None)
         if instance:
             initial_data['is_active']       = instance.get_is_active()
             initial_data['is_org_admin']    = instance.get_is_org_admin()
             initial_data['is_org_editor']   = instance.get_is_org_editor()
+            initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
             kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
-class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
-    search_fields = ('user_name', 'organisation',)
-    list_filter  = ('organisation', )
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date', 'has_perm_add_sms_updates',)
+    search_fields = ('user', 'organisation',)
+    list_filter  = ('organisation',)
     ordering = ('user__username',)
+    inlines = [SmsReporterInline,]
     form = UserProfileAdminForm
-        
+    
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(UserProfileAdmin, self).get_actions(request)
@@ -1100,17 +1140,35 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
         # non-superusers don't get to see it all
         if not request.user.is_superuser:
             # hide sms-related stuff
-            self.exclude =  ('phone_number', 'project', )
+            self.exclude =  ('phone_number', 'validation',)
             # user and org are only shown as text, not select widget
-            self.readonly_fk = ('user', 'organisation',)
+            #self.readonly_fields = ('user', 'organisation',)
         # this is needed to remove some kind of caching on exclude and readonly_fk,
         # resulting in the above fields being hidden/changed from superusers after
         # a vanilla user has accessed the form!
         else:
             self.exclude =  None
-            self.readonly_fk = ()
+            #self.readonly_fields = ()
         form = super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and obj.validation != obj.VALIDATED:
+            self.inlines = []
+            self.inline_instances = []
+        #else:
+        #    self.inlines = [SmsReporterInline,]
         return form
+
+    def get_readonly_fields(self, request, obj):
+        if not request.user.is_superuser:
+            # only superusers are allowed to add/remove sms updaters in beta phase
+            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
+            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
+            # user and org are only shown as text, not select widget
+            return ['user', 'organisation',]            
+        else:
+            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
+            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
+            return []
+        
 
     def queryset(self, request):
         """
@@ -1134,7 +1192,7 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
         
-        get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
+        get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
         "own" projects, organisation and user profiles
         """
         opts = self.opts
@@ -1148,25 +1206,30 @@ class UserProfileAdmin(ReadonlyFKAdminField, admin.ModelAdmin):
                 return True
         return False
 
-    def save_form(self, request, form, change):
+    def save_model(self, request, obj, form, change):
         """
-        Given a ModelForm return an unsaved instance. ``change`` is True if
-        the object is being changed, and False if it's being added.
-        
-        Act upon the checkboxes that fake admin settings for the partner users.
+        override of django.contrib.admin.options.save_model        
         """
-        userprofile = form.save(commit=False) #returns a user profile
-        is_active = form.cleaned_data['is_active']
-        is_admin =  form.cleaned_data['is_org_admin']
-        is_editor = form.cleaned_data['is_org_editor']
-        userprofile.set_is_active(is_active) #master switch
-        userprofile.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
-        userprofile.set_is_org_editor(is_editor) #can edit projects
-        if not (userprofile.user.is_superuser or userprofile.get_is_rsr_admin()):
-            userprofile.set_is_staff(is_admin or is_editor) #implicitly needed to log in to admin
-        return form.save(commit=False)
+        # Act upon the checkboxes that fake admin settings for the partner users.
+        is_active       = form.cleaned_data['is_active']
+        is_admin        = form.cleaned_data['is_org_admin']
+        is_editor       = form.cleaned_data['is_org_editor']
+        is_sms_updater  = form.cleaned_data['is_sms_updater']
+        obj.set_is_active(is_active) #master switch
+        obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
+        obj.set_is_org_editor(is_editor) #can edit projects
+        obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
+        # TODO: fix "real" permissions, currently only superusers can change sms updter status
+        if is_sms_updater:
+            obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+            obj.init_sms_update_workflow()
+        else:
+            obj.disable_sms_update_workflow(request.user)
+            obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+        obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
+
 
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display    = ('project', 'user', 'comment', 'time', )    
@@ -1232,22 +1295,22 @@ else: #akvo-rsr
             
     admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
     
-    class MoMmsFileInline(admin.TabularInline):
-        model = get_model('rsr', 'mommsfile')
-        extra = 1
-    
-    
-    class MoMmsRawAdmin(admin.ModelAdmin):
-        inlines = [MoMmsFileInline,]    
-        list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
-    
-    admin.site.register(get_model('rsr', 'mommsraw'), MoMmsRawAdmin)
-
-
-    class MoSmsRawAdmin(admin.ModelAdmin):
-        list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
-    
-    admin.site.register(get_model('rsr', 'mosmsraw'), MoSmsRawAdmin)
+    #class MoMmsFileInline(admin.TabularInline):
+    #    model = get_model('rsr', 'mommsfile')
+    #    extra = 1
+    #
+    #
+    #class MoMmsRawAdmin(admin.ModelAdmin):
+    #    inlines = [MoMmsFileInline,]    
+    #    list_display = ('subject', 'sender', 'to', 'time', 'mmsid', 'filecount',)
+    #
+    #admin.site.register(get_model('rsr', 'mommsraw'), MoMmsRawAdmin)
+    #
+    #
+    #class MoSmsRawAdmin(admin.ModelAdmin):
+    #    list_display = ('text', 'sender', 'to', 'delivered', 'incsmsid', )
+    #
+    #admin.site.register(get_model('rsr', 'mosmsraw'), MoSmsRawAdmin)
 
     # PayPal    
     class InvoiceAdmin(admin.ModelAdmin):

@@ -1,0 +1,18 @@
+{% load i18n %}
+{% blocktrans %}Your mobile number, {{phone_number}}, has been added to your user profile. This will let you send updates to your projects via SMS.
+
+To ensure that all works as it should we ask that you validate the phone by sending the following code:
+
+{{validation}}
+
+An SMS from Akvo RSR has been sent to you. Please reply to the SMS with the validation code only.
+If the SMS didn't reach you for some reason you sent the validation code to:
+
+{{gw_number}}
+
+Then all you have to do is log in to Akvo and select the project(s) you want to enable SMS updates for.
+
+
+The Akvo team
+
+{% endblocktrans %}

@@ -10,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
 from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
-from akvo.rsr.models import create_rsr_profile
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
@@ -118,7 +117,7 @@ urlpatterns += patterns('',
     url(r'^rsr/accounts/register1/$', 'akvo.rsr.views.register1', name='register1'),
     url(r'^rsr/accounts/register2/$', 'akvo.rsr.views.register2', name='register2'),
     url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='registration_activate', ),
-    url(r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', name='registration_update', ),
+    #url(r'^rsr/accounts/update/$', 'akvo.rsr.views.update_user_profile', name='registration_update', ),
     url(r'^rsr/accounts/password/change/$', 'akvo.rsr.views.password_change', name='password_change'),
     url(r'^rsr/accounts/password/reset/$',
         auth_views.password_reset,
@@ -132,15 +131,27 @@ urlpatterns += patterns('',
         name='auth_password_reset_confirm'),
     url(r'^rsr/accounts/update/complete/$', direct_to_template, {'template': 'registration/update_complete.html'}, name='registration_update_complete' ),
     (r'^rsr/accounts/', include('registration.urls')),
-	
-	# Widgets
+    
+    
+    # MyAkvo
+    url(r'^rsr/myakvo/mobile/$', 'akvo.rsr.views.myakvo_mobile', name='myakvo_mobile'),
+    url(r'^rsr/myakvo/mobile/number/$', 'akvo.rsr.views.myakvo_mobile_number', name='myakvo_mobile_number'),
+    url(r'^rsr/myakvo/mobile/cancel-reporter/(?P<reporter_id>\d+)/$', 'akvo.rsr.views.myakvo_cancel_reporter', name='myakvo_cancel_reporter'),
+    url(r'^rsr/myakvo/$', 'akvo.rsr.views.update_user_profile', name='myakvo'),
+
+    (r'^rsr/notices/', include('notification.urls')),
+    
+    (r'^rsr/gateway/', include('akvo.gateway.urls')),
+    
+
+    # Widgets
     url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
     url(r'^rsr/widget/all-organisations/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
-	url(r'^rsr/widget/one-from-organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.select_project_widget', name='select_project_widget', ),
-	url(r'^rsr/widget/(?P<template>[\w-]+)/project/(?P<project_id>\d+)/$','akvo.rsr.views.project_widget', name='project_widget', ),
-	url(r'^rsr/widget/(?P<template>[\w-]+)/$','akvo.rsr.views.project_widget', name='project_widget_default', ),
-	
-	
+    url(r'^rsr/widget/one-from-organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.select_project_widget', name='select_project_widget', ),
+    url(r'^rsr/widget/(?P<template>[\w-]+)/project/(?P<project_id>\d+)/$','akvo.rsr.views.project_widget', name='project_widget', ),
+    url(r'^rsr/widget/(?P<template>[\w-]+)/$','akvo.rsr.views.project_widget', name='project_widget_default', ),
+
+
 	url(r'^rsr/widget/project-list/all/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget', ),
 	url(r'^rsr/widget/project-list/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_list_widget', name='project_list_widget_for_org', ),
 	url(r'^rsr/widget/project-map/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.project_map_widget', name='project_map_widget_for_org', ),
@@ -154,8 +165,8 @@ urlpatterns += patterns('',
     url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
     
     # Phone
-    (r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
-    (r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
+    #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
+    #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
 
     #django-piston
     (r'^rsr/api/', include('akvo.api.urls')),
