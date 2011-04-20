@@ -7,13 +7,13 @@ django-markup==0.3
 django-pagination==1.0.7
 django-paypal==0.1.2
 django-piston==0.2.2
-django-rosetta==0.5.6
+django-rosetta==0.6.0
 django-sorting==0.1
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
 -e git+git://github.com/worldcompany/djangoembed.git@bb577a52fc45#egg=djangoembed
--e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3#egg=django_registration-tip
+-e hg+http://bitbucket.org/ubernostrum/django-registration/@58eef8330b0f#egg=django_registration-tip
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
@@ -24,13 +24,13 @@ sorl-thumbnail==3.2.5
 # General requirements
 httplib2==0.6.0
 lxml==2.3
-simplejson==2.1.2
+simplejson==2.1.5
 
 # RSR requirements
 BeautifulSoup==3.2.0
 Markdown==2.0.3
 PIL==1.1.7
-python-memcached==1.45
+python-memcached==1.47
 template-utils==0.4p2
 
 # Database requirements
