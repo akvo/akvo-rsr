@@ -35,7 +35,6 @@ from django.views.decorators.http import require_GET, require_POST
 
 from datetime import datetime
 import time
-import feedparser
 from registration.models import RegistrationProfile
 import random
 from decimal import Decimal
