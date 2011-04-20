@@ -28,7 +28,6 @@ simplejson==2.1.2
 
 # RSR requirements
 BeautifulSoup==3.2.0
-feedparser==4.1
 Markdown==2.0.3
 PIL==1.1.7
 python-memcached==1.45
