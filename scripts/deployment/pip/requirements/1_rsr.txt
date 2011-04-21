@@ -12,7 +12,7 @@ django-sorting==0.1
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
--e git+git://github.com/worldcompany/djangoembed.git@bb577a52fc45#egg=djangoembed
+-e git://github.com/worldcompany/djangoembed.git@736d64dfe529d94e0433#egg=djangoembed
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@58eef8330b0f#egg=django_registration-tip
 
 # Akvonaut apps
