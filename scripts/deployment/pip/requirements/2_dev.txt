@@ -1,11 +1,15 @@
 # Build with envintel since env64 will break Fabric - see readme_for_osx_dev.txt for details
 
+# Requirements for building Fabric
+paramiko==1.7.6
+pycrypto==2.3
+
 # Deployment modules
-Fabric
+Fabric==1.0.1
 
 # Modules used for app testing
-nose
-selenium
+nose==1.0.0
+selenium==2.0b4dev
 
 # optional dev modules
 # Paver
