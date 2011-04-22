@@ -57,3 +57,6 @@ Notes:
               virtualenv==1.6
               virtualenvwrapper==2.7.1
               wsgiref==0.1.2
+
+4)  For an alternative basic Python environment setup (distribute, pip, virtualenv + virtualenvwrapper) that installs modules in a
+    local user directory (i.e. without having to use sudo) instead of in system Python, see http://stackoverflow.com/questions/4324558
