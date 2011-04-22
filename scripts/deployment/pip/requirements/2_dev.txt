@@ -1,4 +1,4 @@
-# Build with envintel since env64 will break Fabric - see readme_for_osx_dev.txt for details
+# Build with envintel configuration since env64 will break Fabric - see setup/dev/dev_env_setup_for_osx.txt for details
 
 # Requirements for building Fabric
 paramiko==1.7.6
