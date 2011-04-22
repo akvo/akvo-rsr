@@ -1,6 +1,9 @@
 # Build with either env64 or envintel - see readme_for_osx_dev.txt for details
 
+# Requirements for building supervisor
+meld3==0.6.7
+
 # System modules -- these would normally be installed outside a virtualenv
-virtualenv
-virtualenvwrapper
-supervisor
+virtualenv==1.6
+virtualenvwrapper==2.7.1
+supervisor==3.0a10
