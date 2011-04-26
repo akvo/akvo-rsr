@@ -51,7 +51,7 @@ from permissions.utils import get_roles, add_local_role
 
 from akvo.settings import MEDIA_ROOT
 
-from gateway.models import GatewayNumber, Gateway, MoSms
+from akvo.gateway.models import GatewayNumber, Gateway, MoSms
 
 from utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
