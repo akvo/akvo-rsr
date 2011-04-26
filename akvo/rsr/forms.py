@@ -296,8 +296,8 @@ class ProjectUpdateForm(forms.ModelForm):
         exclude = ('time', 'project', 'user', )
 
     def clean_video(self):
-        if self.video:
-            data = self.cleaned_data['video']
+        data = self.cleaned_data['video']
+        if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
             valid_url = (netloc.endswith('.blip.tv') or
