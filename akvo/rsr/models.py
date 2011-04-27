@@ -2382,6 +2382,9 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or 
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
+    has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
+    has_perm_add_sms_updates.short_description = 'may create SMS project updates'
+        
     
     #def phone_number_changed(self, phone_number):
     #    logger.debug("Entering: %s()" % who_am_i())
