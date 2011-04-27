@@ -53,6 +53,7 @@
 							    <img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
 						  	  </a>
                               <br>
+                            {% endif %}
 							{% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
 									{% oembed 240x180 %}{{ update.video }}{% endoembed %}
