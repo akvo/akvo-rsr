@@ -2,28 +2,32 @@
 Django==1.3
 
 # Django Apps
-django-counter
-django-markup
-django-paypal
-django-piston
-django-rosetta
+django-counter==0.1.6
+django-markup==0.3
+django-paypal==0.1.2
+django-piston==0.2.2
+django-rosetta==0.5.6
 sorl-thumbnail==3.2.5
 
+
 # Django apps from VCS web services
--e git+git://github.com/directeur/django-sorting.git#egg=django_sorting
--e git+git://github.com/ericflo/django-pagination.git#egg=pagination
 -e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie
--e git+git://github.com/worldcompany/djangoembed.git#egg=oembed
 -e git+git://github.com/zzgvh/django-notification.git#egg=notification
--e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
+-e git+git://github.com/zzgvh/django-permissions.git#egg=permissions
+-e git+git://github.com/zzgvh/django-workflows.git#egg=workflows
+-e git://github.com/ericflo/django-pagination.git@47e7ec874cd7dddda5ed13ffb6993a64dced2537#egg=django_pagination-1.0.7-py2.6-dev
+-e git://github.com/directeur/django-sorting.git@209f6639cbce196bdc10aced1959935d254257ff#egg=django_sorting-0.1-py2.6-dev
+-e git://github.com/worldcompany/djangoembed.git@bb577a52fc455231adc58f35e21ba65f7fc3217e#egg=djangoembed-0.1.1-py2.6-dev
+-e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3d09d342b000f4ff634296f90df49#egg=django_registration-tip
+
 
 # Other Python Modules
-BeautifulSoup
-Cython
-FeedParser
-PIL
-httplib2
-lxml
-Markdown
-python-memcached
-simplejson
+BeautifulSoup==3.2.0
+Cython==0.13
+feedparser==4.1
+PIL==1.1.7
+httplib2==0.6.0
+lxml==2.3beta1
+Markdown==2.0.3
+python-memcached==1.45
+simplejson==2.1.2

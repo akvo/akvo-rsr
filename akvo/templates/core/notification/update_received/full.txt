@@ -1,0 +1,8 @@
+{% load i18n %}
+{% blocktrans with project.pk as project_pk and project.name as project_name and update.text as update_text and update.get_absolute_url as update_url %}
+Akvo has received an update from your phone to project {{project_pk}} - {{project_name}}, with the text "{{update_text}}".
+
+You can see the update here: http://{{domain}}{{update_url}}
+
+The Akvo team
+{% endblocktrans %}

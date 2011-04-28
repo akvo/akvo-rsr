@@ -1,0 +1,2 @@
+{% load i18n %}
+{% blocktrans %}Your mobile number {{phone_number}} has been added to your profile{% endblocktrans %}

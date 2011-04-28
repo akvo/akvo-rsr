@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
 {% load url from future %}
 
 
@@ -44,6 +44,21 @@
 					{{u.text|linebreaks}}
 				{% endif %}
             {% endif %}			
+            {% if u.video %}
+				<div style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:40px;">
+					{% oembed 400x300 %}
+	                    {{ u.video }}
+	                {% endoembed %}
+					<p class="small lightx1">
+				        {% if update.video_caption %}
+				            {{update.video_caption}}
+				        {% endif %}
+				        {% if update.video_credit %}
+				            {% trans 'Video credit' %}: {{update.video_credit}}
+				        {% endif %}
+				    </p>
+				</div>
+            {% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>

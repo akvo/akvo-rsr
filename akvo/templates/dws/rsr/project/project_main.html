@@ -66,9 +66,17 @@
           {% if project.primary_location %}
             {% google_map project 173 173 3 %}
             <p class="small prepend-top">
-              {{project.primary_location.country.get_continent_display}}, {{project.primary_location.country}}<br>
-              {{project.primary_location.state}}, {{project.primary_location.city}}<br>
-              {{project.primary_location.latitude}}, {{project.primary_location.longitude}}
+				{% if project.primary_location.country.get_continent_display or project.primary_location.country %}
+					{{project.primary_location.country.get_continent_display}}, {{project.primary_location.country}}
+				{% endif %}
+				{% if project.primary_location.state or project.primary_location.city %}
+					<br>
+					{{project.primary_location.state}}{% if project.primary_location.city %}, {{project.primary_location.city}}{% endif %}
+				{% endif %}
+				{% if project.primary_location.latitude or project.primary_location.longitude %}
+					<br>
+					{{project.primary_location.latitude}}{% if project.primary_location.longitude %}, {{project.primary_location.longitude}}{% endif %}
+				{% endif %}
             </p>
           {% else %}
               <p class="small red">{% trans 'No map available' %}</p>

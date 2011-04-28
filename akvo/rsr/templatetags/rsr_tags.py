@@ -4,24 +4,11 @@
 
 from django import template
 from django.conf import settings
-#from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.sites.models import Site
+from django.template.defaulttags import WidthRatioNode
+from akvo.scripts.asset_manager import map, asset_bundles
 register = template.Library()
 
-@register.inclusion_tag('inclusion_tags/funding_bar.html')
-def funding_bar(project):
-    '''
-    crete the bar graphic showing the total amount of money the project needs
-    and how much is currently pledged
-    '''
-    return {'p': project}
-
-@register.inclusion_tag('inclusion_tags/submit_button.html')
-def submit_button(caption, css_class):
-    '''
-    form submit and cancel buttons, with caption for the submit button
-    '''
-    return {'caption': caption, 'css_class': css_class}
 
 @register.inclusion_tag('inclusion_tags/funding_box.html', takes_context=True)
 def funding_box(context, project):
@@ -42,21 +29,7 @@ def funding_project(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}    
-    
-@register.inclusion_tag('inclusion_tags/funding_box_march.html', takes_context=True)
-def funding_box_march(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
-
-@register.inclusion_tag('inclusion_tags/funding_box_march_directory.html', takes_context=True)
-def funding_box_march_directory(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
 
 @register.inclusion_tag('inclusion_tags/funding_box_narrow.html', takes_context=True)
 def funding_box_narrow(context, project):
@@ -125,19 +98,6 @@ def org_logo(context, org, width, height, style=''):
         'wxh'       : '%sx%s' % (width, height,),
         'style'     : style,
     }
-    
-@register.inclusion_tag('inclusion_tags/map_thumb.html', takes_context=True)
-def map_thumb(context, object, width, height, style=''):
-    '''
-    '''
-    return {
-        'MEDIA_URL' : context['MEDIA_URL'],
-        'object'    : object,
-        'width'     : width,
-        'height'    : height,
-        'wxh'       : '%sx%s' % (width, height,),
-        'div_style' : style,
-    }
 
 @register.inclusion_tag('inclusion_tags/update_thumb.html', takes_context=True)
 def update_thumb(context, update, width, height, style=''):
@@ -151,7 +111,7 @@ def update_thumb(context, update, width, height, style=''):
         'wxh'       : '%sx%s' % (width, height,),
         'div_style' : style,
     }
-    
+
 @register.inclusion_tag('inclusion_tags/gallery_thumb.html', takes_context=True)
 def gallery_thumb(context, image, width, height, caption='', style=''):
     '''
@@ -166,7 +126,7 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
         'style'     : style,
     }
     
-from akvo.scripts.asset_manager import map, asset_bundles
+
 @register.inclusion_tag('inclusion_tags/asset_bundle.html', takes_context=True)
 def asset_bundle(context, bundle):
     '''
@@ -213,53 +173,6 @@ def asset_bundle(context, bundle):
         'include': include,
     }
 
-@register.inclusion_tag('inclusion_tags/project_list_pagination.html', takes_context=True)
-def project_list_pagination(context, page, org=None):
-    '''
-    '''
-    return {
-        'request'   : context['request'],
-        'page'      : page,
-        'org'       : org,
-        'focusarea' : context['focusarea'],
-    }
-
-@register.inclusion_tag('inclusion_tags/organisation_list_pagination.html', takes_context=True)
-def organisation_list_pagination(context, page):
-    '''
-    '''
-    return {
-        'request'   : context['request'],
-        'org_type'  : context['org_type'],
-        'page'      : page,
-    }
-
-@register.inclusion_tag('inclusion_tags/updates.html', takes_context=True)
-def updates(context, updates, width=480, height=360, show_permalinks=False):
-    '''
-    show_permalinks also controls if the update text is truncated
-    '''
-    return {
-        'MEDIA_URL'         : context['MEDIA_URL'],
-        'request'           : context['request'],
-        'updates'           : updates,
-        'width'             : width,
-        'height'            : height,
-        'show_permalinks'   : show_permalinks,
-    }
-
-@register.inclusion_tag('inclusion_tags/comments.html', takes_context=True)
-def comments(context, comments, project):
-    '''
-    '''
-    return {
-        'MEDIA_URL'         : context['MEDIA_URL'],
-        'comments'          : comments,
-        'p'                 : project,
-    }
-
-#from django.conf import settings
-from django.contrib.sites.models import Site
 @register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
 def focus_area(context, focusarea, projects_link=True):
     '''
@@ -321,7 +234,7 @@ def encrypt_email(parser, token):
     
 register.tag('encrypt_email', encrypt_email)
 
-from django.template.defaulttags import WidthRatioNode
+
 
 class WidthRatioTruncNode(WidthRatioNode):
     def render(self, context):
