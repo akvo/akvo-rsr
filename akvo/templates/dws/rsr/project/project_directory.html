@@ -1,7 +1,8 @@
 {% extends "rsr/base.html" %}
-
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache %}
 {% load markup_tags humanize sorting_tags pagination_tags %}
+{% load url from future %}
+
 
 {% block title %}
   {% if org %}
@@ -19,12 +20,12 @@
 {% block breadcrum_items %}
   {% if org %}
     {{block.super}}
-      <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+      <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
       <li id="last_breadcrum_item">{% trans 'Project listing for' %} {{org.name}}</li>
   {% else %}
     {% if focus_area.slug != 'all' %}
       {{block.super}}
-        <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+        <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
         <li id="last_breadcrum_item">{{focus_area.name}}</li>
     {% else %}
       {{block.super}}
@@ -231,7 +232,7 @@
             <tr>
               <td>
                 <div class="space10">
-                  <a href="{% url project_main project.id %}">
+                  <a href="{% url 'project_main' project.id %}">
                     {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
                     <p class="nano-lede strong link_blue">
                         {{project.name}}
@@ -254,7 +255,7 @@
               <td>
                 <p class="td-text">
                     {% if project.latest_update %}
-                      <a href="{% url project_updates project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
+                      <a href="{% url 'project_updates' project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
                     {% else %}
                       {% trans 'Not yet' %}
                     {% endif %}
@@ -263,7 +264,7 @@
               <td>
                 <p class="td-text">
                   {% for partner in project.project_partners.all %}
-                    <a href="{% url org_detail partner.partner.id %}">{{partner.partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                    <a href="{% url 'org_detail' partner.partner.id %}">{{partner.partner}}</a>{% if not forloop.last %}<br />{% endif %}
                   {% endfor %}
                 </p>
               </td>

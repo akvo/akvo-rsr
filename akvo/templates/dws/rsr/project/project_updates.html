@@ -1,6 +1,7 @@
 {% extends "rsr/project/project_base.html" %}
-
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
+{% load url from future %}
+
 
 {% block title %}
   - {{project.name}}
@@ -9,7 +10,7 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-  <li><a href="{% url project_main project.pk %}"><span>{{project.name}}</span></a></li>
+  <li><a href="{% url 'project_main' project.pk %}"><span>{{project.name}}</span></a></li>
   <li id="last_breadcrum_item">{% trans 'Project updates' %}</li>
 {% endblock breadcrum_items %}
 
@@ -43,7 +44,7 @@
   
               {% if update.photo %}
                 <div class="column span-2">
-                  <a href="{% url project_update update.project.id update.id %}">
+                  <a href="{% url 'project_update' update.project.id update.id %}">
                     <img width="120" height="120" src="{% thumbnail update.photo 120x120 crop sharpen %}" alt="{{update.photo_caption}}"/>
                   </a>
                 </div>
@@ -51,12 +52,12 @@
               {% else %}
                 <div class="column span-9 last" style="width: 578px; position: relative; height: 120px;">
               {% endif %}
-                  <h4><a href="{% url project_update update.project.id update.id %}">{{update.title}}</a></h4>
+                  <h4><a href="{% url 'project_update' update.project.id update.id %}">{{update.title}}</a></h4>
                   <p>
                     {{update.text|safe|smart_truncate:200}}
                   </p>
                   <div style="right:0; bottom: 0; position: absolute; display: block;">
-                    <p class="nano-lede" style="margin: 0;"><a href="{% url project_update update.project.id update.id %}">{% trans 'Read full update' %} <span class="link_triangle">&#x25BA;</span></a></p>
+                    <p class="nano-lede" style="margin: 0;"><a href="{% url 'project_update' update.project.id update.id %}">{% trans 'Read full update' %} <span class="link_triangle">&#x25BA;</span></a></p>
                   </div>
                 </div>
                 <div class="clear"></div>

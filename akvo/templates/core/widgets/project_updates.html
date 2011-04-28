@@ -1,10 +1,7 @@
 {% extends "widgets/base_widget.html" %}
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
-
 {% load i18n rsr_tags rsr_filters thumbnail cache humanize %}
+{% load url from future %}
+
 
 {% block title %}updates@{{block.super}}{% endblock title %}
 
@@ -62,16 +59,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 {% endblock header %}
 
 {% block content %}<div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:35}}</a></h2>
 		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:60}}</p>
         <div class="photo_frame">
-            <a href="{% url akvo.rsr.views.projectmain project.id %}">
+            <a href="{% url 'project_main' project.id %}">
                 {% project_thumb project 190 142 %}
             </a>
         </div>
 		<p id="project_plan_summary">
 			{{project.project_plan_summary|safe|smart_truncate:120}}
-			<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+			<a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
@@ -96,7 +93,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		{% with project.project_updates.latest as latest_update %}
 			{% if latest_update %}
 				<p class="smallFont">
-					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a>
+					<a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a>
 					{% trans 'Via' %}
 					{% ifequal latest_update.update_method "W"  %}
 						{% trans 'Web' %}
@@ -108,17 +105,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% trans 'SMS' %}
 					{% endifequal %}
 				</p>
-				<h2 id="project_title" style="margin-top:margin-top:10px !important;"><a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{{latest_update.title|smart_truncate:35}}</a></h2>
+				<h2 id="project_title" style="margin-top:margin-top:10px !important;"><a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{{latest_update.title|smart_truncate:35}}</a></h2>
 				{% if latest_update.photo %}
 					<div class="photo_frame">
-						<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">
+						<a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">
 			    			<img src="{% thumbnail latest_update.photo 190x142 autocrop,upscale,sharpen %}" alt="{{latest_update.photo_caption}}" width="190px" height="142px"/>
 						</a>
 					</div>
 			    {% endif %}
 				<p class="smallFont" style="margin-top:3px;">
 					{{latest_update.text|smart_truncate:120}}					
-					<a href="{% url akvo.rsr.views.projectupdates project.id %}#{{latest_update.id}}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
+					<a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
 				</p>
 			{% else %}
 				<p class="smallFont">{% trans 'Not yet' %}</p>

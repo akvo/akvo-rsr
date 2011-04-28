@@ -1,5 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load url from future %}
 
 
 {% block breadcrum_items %}
@@ -11,7 +12,7 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_main p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+				<a href="{% url 'project_main' p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Project updates' %}</h2>
 		</div>
@@ -35,18 +36,7 @@
 						<div style="float:left; width:100px;">
 							<span class="grey small" style="padding-right:5px;">{{update.time|date:"d-M-Y"}}</span>
 						</div>
-						
-						{% comment %}
-							{% if update.video %}
-								<p class="small last" style="padding:5px 5px 0 5px;">
-	                  				<b><a href="{% url project_update project.id update.id %}">{{update.title}}</a></b>
-								</p>
-								<div style="width:290px; margin-left:auto; margin-right:auto; overflow:hidden;">
-									{% oembed 290x217 %}{{ update.video }}{% endoembed %}
-								</div>
-							{% else %}
-						{% endcomment %}
-						
+											
 						<div style="float:left; width:240px; margin: 0 10px;">
 							{% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
@@ -54,7 +44,7 @@
 								</div>
 							{% else %}
 								{% if update.photo %}
-									<a href="{% url project_update p.id update.id %}">
+									<a href="{% url 'project_update' p.id update.id %}">
 										<img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
 									</a>
 								{% else %}
@@ -67,7 +57,7 @@
 						<div style="float:left; width:240px;">
 							<p style="margin:0;">
 								{% if update.title %}
-									<a href="{% url project_update p.id update.id %}">{{update.title|capfirst}}</a><br />	
+									<a href="{% url 'project_update' p.id update.id %}">{{update.title|capfirst}}</a><br />	
 								{% endif %}
 								{% if update.text %}
 									<span class="grey small">{{update.text|smart_truncate:150}}</span>

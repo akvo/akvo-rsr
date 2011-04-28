@@ -1,6 +1,8 @@
 {% extends "rsr/project/project_base.html" %}
+{% load url from future %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url project_main project.id %}"><span>{{project.name}}</span></a></li>
+<li><a href="{% url 'project_main' project.id %}"><span>{{project.name}}</span></a></li>
 {% endblock breadcrum_items %}

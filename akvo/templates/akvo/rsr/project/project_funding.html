@@ -1,5 +1,7 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load url from future %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -10,7 +12,7 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_main project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+				<a href="{% url 'project_main' project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
 			<p class="grey small">
@@ -118,13 +120,13 @@
 			{% for funder in project.fundingpartner_set.all %}
 				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
 					<div style="float:left; width:140px;">
-						<a href="{% url org_detail funder.funding_organisation.id %}">
+						<a href="{% url 'org_detail' funder.funding_organisation.id %}">
 		                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
 		                </a>							
 					</div>
 					<div style="float:left; width:250px; margin-left:20px;">
 						<p class="small">
-							<a href="{% url org_detail funder.funding_organisation.id %}">
+							<a href="{% url 'org_detail' funder.funding_organisation.id %}">
                 {% with funder.funding_organisation as f_org %}
                   {% with  funder.funding_organisation.primary_location as f_org_loc %}
                     {{f_org}}</a><br />

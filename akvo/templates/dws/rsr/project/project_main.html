@@ -1,6 +1,7 @@
 {% extends "rsr/project/project_base.html" %}
-
 {% load i18n rsr_tags webdesign thumbnail counter_tags google_maps cache humanize %}
+{% load url from future %}
+
 
 {% block title %}
   - {{project.name}}
@@ -127,7 +128,7 @@
           <div class="space15">
             {% if can_add_update %}
               <div style="float: right;">
-                <a href="{% url project_add_update project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
+                <a href="{% url 'project_add_update' project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
               </div>
             {% endif %}
             <div class="clear"></div>
@@ -164,7 +165,7 @@
                   {{update.text|linebreaks}}
                   <hr/>
               {% endfor %}
-              <a class="small" href="{% url project_updates project.id %}">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
+              <a class="small" href="{% url 'project_updates' project.id %}">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
             {% endif %}
             </div>
           </div>

@@ -1,9 +1,11 @@
 {% load i18n %}
+{% load url from future %}
+
 
 <div class="space20">
   {% if can_add_update %}
     <div style="float: right;">
-      <a href="{% url project_add_update project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
+      <a href="{% url 'project_add_update' project.pk %}" class="awesome aqua small">{% trans 'Add update' %}</a>
     </div>
   {% endif %}
   <div style="float: left;">

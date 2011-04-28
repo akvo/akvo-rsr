@@ -1,11 +1,10 @@
 {% extends "admin/change_form.html" %}
-
 {% load admin_modify i18n %}
+{% load url from future %}
+
 
 {% block after_related_objects %}
-
   {% if change %}
-    <a href="{% url index_preview object_id %}">{% trans 'Preview home page' %}</a>
+    	<a href="{% url 'index_preview' object_id %}">{% trans 'Preview home page' %}</a>
   {% endif %}
-
 {% endblock %}

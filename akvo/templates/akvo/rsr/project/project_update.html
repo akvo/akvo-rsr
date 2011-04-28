@@ -1,10 +1,11 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load url from future %}
 
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url project_updates p.id %}"><span>{% trans 'Project updates' %}</span></a></li>
+<li><a href="{% url 'project_updates' p.id %}"><span>{% trans 'Project updates' %}</span></a></li>
 <li id="last_breadcrum_item">{{u.title|capfirst}}</li>
 {% endblock breadcrum_items %}
 
@@ -12,7 +13,7 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_updates p.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
+				<a href="{% url 'project_updates' p.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{{u.title|capfirst}}</h2>
 			<p class="grey small">
@@ -31,13 +32,13 @@
 		<div class="clear"></div>
 		<div class="space20">
 			{% if u.photo %}
-				{% ifequal u.photo_location 'B' %}
+				{% if u.photo_location = 'B' %}
                 	{% update_thumb u 400 300 %}
-            	{% endifequal %}
+            	{% endif %}
                 {% if u.text %}{{u.text|linebreaks}}{% endif %}
-				{% ifequal u.photo_location 'E' %}
+				{% if u.photo_location = 'E' %}
 	                {% update_thumb u 400 300 %}
-	            {% endifequal %}			
+	            {% endif %}			
 			{% else %}
 				{% if u.text %}
 					{{u.text|linebreaks}}
