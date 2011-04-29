@@ -56,7 +56,8 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3 style="margin-bottom:15px;">{% trans 'Photo' %} <span class="grey small">({% trans 'optional' %})</span></h3>
+			  <h1 style="margin-bottom:15px;">{% trans 'Add a photo' %}<span class="small grey">({% trans 'optional' %})</span></h1>
+				<p>{% trans 'Upload photo file' %}</p>
 				{{form.photo}}
 			</div>
 			<div class="clear"></div>
@@ -124,7 +125,8 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3>{% trans 'Video URL' %}</h3>
+			  <h1 style="margin-bottom:15px;">{% trans 'Embed a video' %}<span class="small grey">({% trans 'optional' %})</span></h1>
+				<p>{% trans 'URL' %}</p>
 				{{form.video}}
 			</div>
 			<div class="clear"></div>
@@ -136,7 +138,7 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3>{% trans 'Video caption' %}</h3>
+				<h3>{% trans 'Caption' %}</h3>
 				{{form.video_caption}}
 			</div>
 			<div class="clear"></div>

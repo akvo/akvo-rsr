@@ -115,14 +115,13 @@ def update_thumb(context, update, width, height, style=''):
 
 @register.inclusion_tag('inclusion_tags/update_video.html',
                         takes_context=True)
-def update_video(context, update, width, height, style=''):
+def update_video(context, update, width, height):
     template_context = dict(
         MEDIA_URL=context['MEDIA_URL'],
         update=update,
         width=width,
         height=height,
-        wxh='%sx%s' % (width, height),
-        div_style=style
+        wxh='%sx%s' % (width, height)
     )
     return template_context
 
