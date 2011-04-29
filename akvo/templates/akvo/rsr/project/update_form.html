@@ -21,7 +21,6 @@
 				<h1>{% trans 'Add update' %}</h1>
 			</div>
 			<div class="clear"></div>
-			
 			{% if form.title.errors %}
 				<div class="error">
 					<p>{{ form.title.errors.as_text }}</p>
@@ -35,8 +34,6 @@
 				</p>
 			</div>
 			<div class="clear"></div>
-			{# <hr /> #}
-
 			{% if form.text.errors %}
 				<div class="error">
 					<p>{{ form.text.errors.as_text }}</p>
@@ -48,7 +45,9 @@
 			</div>
 			<div class="clear"></div>
 			<br />
+			<br />
 			<hr />
+			<br />
 			{% if form.photo.errors %}
 				<div class="error">
 					<p><b>{% trans 'A problem occurred' %}:</b></p>
@@ -59,12 +58,9 @@
 			  <h2 style="margin-bottom:20px;">{% trans 'Add a photo' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
 				<h4 style="margin-bottom:20px;">{% trans 'Upload photo file' %}</h4>
 				{{form.photo}}
-				<br />
 			</div>
 			<div class="clear"></div>
 			<br />
-			{# <hr /> #}
-
 			{% if form.photo_location.errors %}
 				<div class="error">
 					<p><b>{% trans 'A problem occurred' %}:</b></p>
@@ -95,8 +91,9 @@
 				<p class="small grey">25 {% trans 'characters' %}</p>
 			</div>
 			<div class="clear"></div>
-			{# ---- #}
+			<br />
 			<hr />
+			<br />
 			{% if form.video.errors %}
 				<div class="error">
 					<p>{{ form.video.errors.as_text }}</p>
@@ -110,7 +107,6 @@
 			</div>
 			<div class="clear"></div>
 			<br />
-			{# <hr /> #}
 			{% if form.video_caption.errors %}
 				<div class="error">
 					<p>{{ form.video_caption.errors.as_text }}</p>
@@ -123,7 +119,6 @@
 			</div>
 			<div class="clear"></div>
 			<br />
-			{# <hr /> #}
 			{% if form.video_credit.errors %}
 				<div class="error">
 					<p>{{ form.video_credit.errors.as_text }}</p>
@@ -136,8 +131,8 @@
 			</div>
 			<div class="clear"></div>
 			<br />
-			
 			<hr />
+			<br />
 			<div style="width:500px;">
 				<h2 style="margin-bottom:15px;">Text placement</h2>
 				<h4 style="margin-bottom:20px;">If you added a photo and/or video...</h4>
@@ -161,8 +156,7 @@
 			</div>
 			<div class="clear"></div>
 			<br />		
-				
-			<hr />
+		  <hr />
 			<div style="text-align:center; padding-bottom:20px;">
 				<div style="float:left;">
 					<a href="{% url project_main p.id %}" class="small">{% trans 'Cancel' %}</a>
