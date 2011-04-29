@@ -30,20 +30,21 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-			{% if u.photo %}
+			{% if u.photo or u.video %}
 				{% ifequal u.photo_location 'B' %}
                 	{% update_thumb u 400 300 %}
+                    {% update_video u 400 300 %}
             	{% endifequal %}
                 {% if u.text %}{{u.text|linebreaks}}{% endif %}
 				{% ifequal u.photo_location 'E' %}
 	                {% update_thumb u 400 300 %}
+                    {% update_video u 400 300 %}
 	            {% endifequal %}			
 			{% else %}
 				{% if u.text %}
 					{{u.text|linebreaks}}
 				{% endif %}
             {% endif %}			
-			{% update_video u 400 300 %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>
