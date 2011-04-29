@@ -71,29 +71,6 @@
 					<p>{{ form.photo_location.errors.as_text }}</p>
 				</div>
 			{% endif %}				
-			<div style="width:500px;">
-				<h4 style="margin-bottom:20px;">{% trans 'Photo placement' %}</h4>
-				<ol class="form_list">
-					<li>
-						<input type="radio" id="id_photo_location_0" 
-							name="photo_location" value="B" 
-							checked="checked" /> 
-						<label for="id_photo_location_0">
-							{% trans 'Above update text' %}
-						</label>
-					</li>
-					<li>
-						<input type="radio" id="id_photo_location_1" 
-							name="photo_location" value="E" /> 
-						<label for="id_photo_location_1">
-							{% trans 'Below update text' %}
-						</label>
-					</li>
-				</ol>
-				<br />
-			</div>
-			<div class="clear"></div>	
-			{# <hr /> #}
 			{% if form.photo_caption.errors %}
 				<div class="error">
 					<p>{{ form.photo_caption.errors.as_text }}</p>
@@ -159,7 +136,31 @@
 			</div>
 			<div class="clear"></div>
 			<br />
-				
+			
+			<hr />
+			<div style="width:500px;">
+				<h2 style="margin-bottom:15px;">Text placement</h2>
+				<h4 style="margin-bottom:20px;">If you added a photo and/or video...</h4>
+				<ol class="form_list">
+					<li>
+						<input type="radio" id="id_photo_location_0" 
+							name="photo_location" value="B" 
+							checked="checked" /> 
+						<label for="id_photo_location_0">
+							{% trans 'Keep text above photo/video' %}
+						</label>
+					</li>
+					<li>
+						<input type="radio" id="id_photo_location_1" 
+							name="photo_location" value="E" /> 
+						<label for="id_photo_location_1">
+							{% trans 'Keep text below photo/video' %}
+						</label>
+					</li>
+				</ol>
+			</div>
+			<div class="clear"></div>
+			<br />		
 				
 			<hr />
 			<div style="text-align:center; padding-bottom:20px;">
