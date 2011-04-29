@@ -56,13 +56,13 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-			  <h1 style="margin-bottom:15px;">{% trans 'Add a photo' %}<span class="small grey"> ({% trans 'optional' %})</span></h1>
-				<p>{% trans 'Upload photo file' %}</p>
+			  <h2 style="margin-bottom:15px;">{% trans 'Add a photo' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
+				<h4>{% trans 'Upload photo file' %}</h4>
 				{{form.photo}}
 			</div>
 			<div class="clear"></div>
 			<br />
-			<hr />
+			{# <hr /> #}
 
 			{% if form.photo_location.errors %}
 				<div class="error">
@@ -71,7 +71,7 @@
 				</div>
 			{% endif %}				
 			<div style="width:500px;">
-				<h3 style="margin-bottom:20px;">{% trans 'Photo location' %}</h3>
+				<h4 style="margin-bottom:20px;">{% trans 'Photo location' %}</h4>
 				<ol class="form_list">
 					<li>
 						<input type="radio" id="id_photo_location_0" 
@@ -92,26 +92,26 @@
 				<br />
 			</div>
 			<div class="clear"></div>	
-			<hr />
+			{# <hr /> #}
 			{% if form.photo_caption.errors %}
 				<div class="error">
 					<p>{{ form.photo_caption.errors.as_text }}</p>
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3>{% trans 'Photo caption' %}</h3>
+				<h4>{% trans 'Photo caption' %}</h4>
 				{{form.photo_caption}}
 			</div>
 			<div class="clear"></div>
 			<br />
-			<hr />
+			{# <hr /> #}
 			{% if form.photo_credit.errors %}
 				<div class="error">
 					<p>{{ form.photo_credit.errors.as_text }}</p>
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3>{% trans 'Photo credit' %} <span class="small grey">({% trans 'optional' %})</span></h3>
+				<h4>{% trans 'Photo credit' %} <span class="small grey">({% trans 'optional' %})</span></h4>
 				{{form.photo_credit}}
 				<p class="small grey">25 {% trans 'characters max' %}</p>
 			</div>
@@ -125,32 +125,32 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-			  <h1 style="margin-bottom:15px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h1>
-				<p>{% trans 'URL' %}</p>
+			  <h2 style="margin-bottom:15px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
+				<h4>{% trans 'URL' %}</h4>
 				{{form.video}}
 			</div>
 			<div class="clear"></div>
 			<br />
-			<hr />
+			{# <hr /> #}
 			{% if form.video_caption.errors %}
 				<div class="error">
 					<p>{{ form.video_caption.errors.as_text }}</p>
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3>{% trans 'Caption' %}</h3>
+				<h4>{% trans 'Caption' %}</h4>
 				{{form.video_caption}}
 			</div>
 			<div class="clear"></div>
 			<br />
-			<hr />
+			{# <hr /> #}
 			{% if form.video_credit.errors %}
 				<div class="error">
 					<p>{{ form.video_credit.errors.as_text }}</p>
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-				<h3>{% trans 'Video credit' %} <span class="small grey">({% trans 'optional' %})</span></h3>
+				<h4>{% trans 'Video credit' %} <span class="small grey">({% trans 'optional' %})</span></h4>
 				{{form.video_credit}}
 				<p class="small grey">25 {% trans 'characters max' %}</p>
 			</div>
