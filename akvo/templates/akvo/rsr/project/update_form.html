@@ -56,9 +56,10 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-			  <h2 style="margin-bottom:15px;">{% trans 'Add a photo' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
+			  <h2 style="margin-bottom:20px;">{% trans 'Add a photo' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
 				<h4>{% trans 'Upload photo file' %}</h4>
 				{{form.photo}}
+				<br>
 			</div>
 			<div class="clear"></div>
 			<br />
@@ -117,7 +118,6 @@
 				<p class="small grey">25 {% trans 'characters' %}</p>
 			</div>
 			<div class="clear"></div>
-			<br />
 			{# ---- #}
 			<hr />
 			{% if form.video.errors %}
@@ -126,7 +126,7 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-			  <h2 style="margin-bottom:15px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
+			  <h2 style="margin-bottom:20px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
 				<h4>{% trans 'URL' %}</h4>
 				{{form.video}}
 				<p class="small grey">{% trans 'Supported providers' %}: Blip, Vimeo, YouTube.</p>
