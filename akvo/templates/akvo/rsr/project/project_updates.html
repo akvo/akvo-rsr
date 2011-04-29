@@ -56,7 +56,9 @@
                             {% endif %}
 							{% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
+                                <a href="{% url project_update p.id update.id %}">
 									{% oembed 240x180 %}{{ update.video }}{% endoembed %}
+                                </a>
 								</div>
 							{% endif %}
 							{% if not update.photo and not update.video %}
