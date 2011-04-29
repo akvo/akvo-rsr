@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0.7
+RELEASE_NOTES.txt, v1.0.8
 
-Last changed: 5 April 2011, bw
+Last changed: 29 April 2011, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +8,26 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 1.0.8 release notes
+-------------------------------------------
+29 April 2011, (Code name: Blockbuster) bw
+
+Overview
+------------
+The release adds the ability to embed video in updates made via the web. The first generation SMS code is also included, with access restricted to certain users for testing purposes. 
+
+New features
+------------
+
+### Ability to embed videos in updates
+
+When creating an update one may now embed a video as well as add text and a photo. URLs from Youtube, Blip and Vimeo are currently accepted.
+
+### SMS update, alpha for testing ONLY
+First steps toward the ability for users to send text updates from a particular mobile phone to a particular project. There are no user-visible changes at this point in time.
+
+---
 
 Akvo RSR v 1.0.7 release notes
 -------------------------------------------
