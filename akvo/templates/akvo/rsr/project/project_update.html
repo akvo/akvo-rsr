@@ -30,7 +30,10 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-		      {# video #}
+		{% if u.text and u.photo_location == 'B' %}
+		  {{ u.text|linebreaks }}
+		 {% endif %}
+		
 		{% if u.video %}
       <div style="margin: 10px 10px 5px 20px;">
     {% oembed 400x300 %}
@@ -46,21 +49,13 @@
     {% endif %}
 </p>
 {% endif %}
-{# end video #}
+
 			{% if u.photo %}
-				{% ifequal u.photo_location 'B' %}
             {% update_thumb u 400 300 %}
-        {% endifequal %}
-            {% if u.text %}{{u.text|linebreaks}}{% endif %}
-				{% ifequal u.photo_location 'E' %}
-	           {% update_thumb u 400 300 %}
-	      {% endifequal %}			
-			{% else %}
-				{% if u.text %}
+      {% endif %}	
+				{% if u.text and u.photo_location == 'E' %}
 					{{u.text|linebreaks}}
-				{% endif %}
-      {% endif %}
-      
+				{% endif %}    
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>
