@@ -1,0 +1,118 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% comment %}
+Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+{% endcomment %}
+
+{% load i18n generic_content addparam rsr_tags thumbnail pagination_tags %}
+
+{% block title %}
+	{% trans 'MyAkvo - Mobile' %}
+{% endblock title %}
+
+{% block style %}
+	{{block.super}}
+  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/march.css" media="screen" />
+	<meta http-equiv="pragma" content="no-cache"/>
+	<meta http-equiv="cache-control" content="no-cache"/>
+{% endblock style%}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'MyAkvo - Mobile' %}</li>
+{% endblock breadcrum_items %}
+
+
+{% block pre_content %}
+  {% include "rsr/myakvo/navigation.html" %}
+{% endblock pre_content %}
+
+{% block content %}
+
+<div id="outer_leftwing">
+	<form method="post">
+    {% csrf_token %}
+        
+    <h1>{% trans 'Use Akvo RSR with text messaging' %}</h1>
+    
+    <p>{% trans 'Send updates from your mobile phone to projects in Akvo' %}</p>
+
+    <table border="0" cellspacing="0" cellpadding="0"> 
+        <tr>
+            <td class="lightx2" style="font-weight: bold; vertical-align: middle;">
+                {% trans 'Mobile phone number' %}
+            </td>
+            <td style="vertical-align: middle;">
+                {{profile.phone_number}}
+                {% if profile.phone_number %}
+                    {% ifnotequal profile.validation profile.VALIDATED %}
+                        {% trans "(Needs validation)" %}
+                    {% endifnotequal %}
+                    <a style="" href="{% url myakvo_mobile_number %}">{% trans "Change mobile phone number" %}</a>
+                {% else %}
+                    <a style="" href="{% url myakvo_mobile_number %}">{% trans "Add mobile phone number" %}</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% if sms_updating_enabled %}
+            {% for reporter in profile.reporters.all %}
+                {% if reporter.project %}
+                    <tr style="background:{% cycle "#F3F3F3" "#FFFFFF" %};">
+                        <td class="lightx2" style="font-weight: bold; vertical-align: middle;">
+                            Project to update
+                        </td>
+                        <td style="vertical-align: middle;">{{reporter.project.pk}} - {{reporter.project.name}} <a href="{% url myakvo_cancel_reporter reporter.id %}">Stop updating</a></td>
+                    </tr>
+                    <tr style="background:{% cycle "#F3F3F3" "#FFFFFF" %};">
+                        <td class="lightx2" style="font-weight: bold; vertical-align: middle;">
+                            Number for project</td>
+                        <td style="vertical-align: middle;">{{reporter.gw_number}}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% if form.fields.project.choices %}
+            <tr>
+                <td class="lightx2" style="font-weight: bold; vertical-align: middle;">
+                    Add a project
+                </td>
+                <td style="vertical-align: middle;">{{form.project}}</td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Add">
+                </td>
+            </tr>
+            {% endif %}
+        {% endif %}
+    </table>                    
+
+	</form>
+	
+
+  <h1>{% trans "Your latest notices" %}</h1>
+
+  {% include "notification/notices_list.html" %}
+
+  <a style="padding-bottom: 20px;" href="{% url notification_notices %}">{% trans 'All notices' %}</a>
+
+</div>
+
+<div id="outer_rightwing">
+    <div>
+        <div class="boxhead">
+            <h1>{% trans "Akvo mobile reporting" %}</h1>
+        </div> <!-- .boxhead -->
+
+        <div class="boxbody" style="padding-left:20px;">
+            <p>{% trans 'To enable updating from your mobile phone follow these steps:' %}</p>
+            <p>{% trans '1. Enter you mobile phone number. Your number will be listed on this page as needing validation.' %}</p>
+            <p>{% trans 'An email will be sent to you with a code. This email and others regarding SMS updating can be seen here too as Notices.' %}</p>
+            <p>{% trans 'An SMS will be sent to your phone. Reply to this phone number with the code from your email.' %}</p>
+            <p>{% trans '2. When your phone has been validated, return here to select a project to send updates to from your phone.' %}</p>
+            <p>{% trans 'You will be sent an SMS with the phone number you can send updates to for the selected project.' %}</p>
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}

@@ -3,6 +3,13 @@
 
 # utility functions for RSR
 
+import inspect
+import random
+import logging
+logger = logging.getLogger('akvo.rsr')
+
+from workflows.models import State
+from workflows.utils import get_state
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -10,11 +17,17 @@ from django.core.mail import send_mail, EmailMessage
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.template import loader, Context
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, get_language, activate
 
 from BeautifulSoup import BeautifulSoup
 
-import random
+from notification.models import (
+    Notice, NoticeType, get_notification_language, should_send,
+    LanguageStoreNotAvailable, get_formatted_messages
+)
+
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
 GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
@@ -197,10 +210,124 @@ def get_random_from_qs(qs, count):
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
-def get_setting(setting, default=None):
-    try:
-        return getattr(settings, setting)
-    except:
-        return default
+def who_am_i():
+    "introspecting function returning the name of the function where who_am_i is called"
+    return inspect.stack()[1][3]
+
+def who_is_parent():
+    """
+    introspecting function returning the name of the caller of the function
+    where who_is_parent is called
+    """
+    return inspect.stack()[2][3]
 
 
+def send_now(users, label, extra_context=None, on_site=True, sender=None):
+    """
+    GvH: Modified version of notification.models.send_now
+    
+    Creates a new notice.
+
+    This is intended to be how other apps create new notices.
+
+    notification.send(user, 'friends_invite_sent', {
+        'spam': 'eggs',
+        'foo': 'bar',
+    )
+    
+    You can pass in on_site=False to prevent the notice emitted from being
+    displayed on the site.
+    """
+    logger.debug("Entering: %s()" % who_am_i())
+    if extra_context is None:
+        extra_context = {}
+    
+    notice_type = NoticeType.objects.get(label=label)
+
+    protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
+    current_site = Site.objects.get_current()
+    
+    notices_url = u"%s://%s%s" % (
+        protocol,
+        unicode(current_site),
+        reverse("notification_notices"),
+    )
+
+    current_language = get_language()
+
+    formats = (
+        'short.txt',
+        'full.txt',
+        'sms.txt',
+        'notice.html',
+        'full.html',
+    ) # TODO make formats configurable
+
+    for user in users:
+        recipients = []
+        # get user language for user from language store defined in
+        # NOTIFICATION_LANGUAGE_MODULE setting
+        try:
+            language = get_notification_language(user)
+        except LanguageStoreNotAvailable:
+            language = None
+
+        if language is not None:
+            # activate the user's language
+            activate(language)
+
+        # update context with user specific translations
+        context = Context({
+            "recipient": user,
+            "sender": sender,
+            "notice": ugettext(notice_type.display),
+            "notices_url": notices_url,
+            "current_site": current_site,
+        })
+        context.update(extra_context)
+
+        # get prerendered format messages
+        messages = get_formatted_messages(formats, label, context)
+
+        # Strip newlines from subject
+        subject = ''.join(render_to_string('notification/email_subject.txt', {
+            'message': messages['short.txt'],
+        }, context).splitlines())
+
+        body = render_to_string('notification/email_body.txt', {
+            'message': messages['full.txt'],
+        }, context)
+
+        notice = Notice.objects.create(recipient=user, message=messages['notice.html'],
+            notice_type=notice_type, on_site=on_site, sender=sender)
+        if user.is_active:
+            if should_send(user, notice_type, "email") and user.email: # Email
+                recipients.append(user.email)
+            logger.info("Sending email notification of type %s to %s" % (notice_type, recipients, ))
+            # don't send anything in debug/develop mode
+            if not getattr(settings, 'SMS_DEBUG', False):
+                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients)
+            
+            if should_send(user, notice_type, "sms") and user.get_profile().phone_number: # SMS
+                # strip newlines
+                sms = ''.join(render_to_string('notification/email_subject.txt', {
+                    'message': messages['sms.txt'],
+                }, context).splitlines())
+                #extra_context['gw_number'] holds a GatewayNumber object
+                logger.info("Sending SMS notification of type %s to %s, mobile phone number: %s." % (notice_type, user, extra_context['phone_number'], ))
+                # don't send anything in debug/develop mode
+                if not getattr(settings, 'SMS_DEBUG', False):
+                    extra_context['gw_number'].send_sms(extra_context['phone_number'], sms)
+
+
+    # reset environment to original language
+    activate(current_language)
+    logger.debug("Exiting: %s()" % who_am_i())
+
+
+# workflow helpers
+
+def state_equals(obj, state):
+    if type(state) != type([]):
+        state = [state] 
+    return get_state(obj) in State.objects.filter(name__in=state)

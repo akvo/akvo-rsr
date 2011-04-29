@@ -1,5 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache generic_content humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -29,19 +30,32 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
+		{% if u.text and u.photo_location == 'B' %}
+		  {{ u.text|linebreaks }}
+		 {% endif %}
+		
+		{% if u.video %}
+      <div style="margin: 10px 10px 5px 20px;">
+    {% oembed 400x300 %}
+        {{ u.video }}
+    {% endoembed %}
+    </div>
+<p class="small lightx1">
+    {% if u.video_caption %}
+        {{ u.video_caption }}
+    {% endif %}
+    {% if u.video_credit %}
+        {% trans 'Video credit' %}: {{ u.video_credit }}
+    {% endif %}
+</p>
+{% endif %}
+
 			{% if u.photo %}
-				{% ifequal u.photo_location 'B' %}
-                	{% update_thumb u 400 300 %}
-            	{% endifequal %}
-                {% if u.text %}{{u.text|linebreaks}}{% endif %}
-				{% ifequal u.photo_location 'E' %}
-	                {% update_thumb u 400 300 %}
-	            {% endifequal %}			
-			{% else %}
-				{% if u.text %}
+            {% update_thumb u 400 300 %}
+      {% endif %}	
+				{% if u.text and u.photo_location == 'E' %}
 					{{u.text|linebreaks}}
-				{% endif %}
-            {% endif %}			
+				{% endif %}    
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>
