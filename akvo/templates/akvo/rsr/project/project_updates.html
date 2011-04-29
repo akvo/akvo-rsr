@@ -48,18 +48,21 @@
 						{% endcomment %}
 						
 						<div style="float:left; width:240px; margin: 0 10px;">
+							{% if update.photo %}
+							  <a href="{% url project_update p.id update.id %}">
+							    <img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
+						  	  </a>
+                              <br>
+                            {% endif %}
 							{% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
+                                <a href="{% url project_update p.id update.id %}">
 									{% oembed 240x180 %}{{ update.video }}{% endoembed %}
+                                </a>
 								</div>
-							{% else %}
-								{% if update.photo %}
-									<a href="{% url project_update p.id update.id %}">
-										<img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
-									</a>
-								{% else %}
-									&nbsp;
-								{% endif %}
+							{% endif %}
+							{% if not update.photo and not update.video %}
+						      &nbsp;
 							{% endif %}
 						</div>
 						
