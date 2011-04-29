@@ -112,6 +112,21 @@ def update_thumb(context, update, width, height, style=''):
         'div_style' : style,
     }
 
+
+@register.inclusion_tag('inclusion_tags/update_video.html',
+                        takes_context=True)
+def update_video(context, update, width, height, style=''):
+    template_context = dict(
+        MEDIA_URL=context['MEDIA_URL'],
+        update=update,
+        width=width,
+        height=height,
+        wxh='%sx%s' % (width, height),
+        div_style=style
+    )
+    return template_context
+
+
 @register.inclusion_tag('inclusion_tags/gallery_thumb.html', takes_context=True)
 def gallery_thumb(context, image, width, height, caption='', style=''):
     '''
