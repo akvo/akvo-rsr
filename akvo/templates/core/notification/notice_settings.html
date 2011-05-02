@@ -1,14 +1,7 @@
 {% extends "rsr/base_sheet.html" %}
+{% load humanize i18n pagination_tags rsr_tags %}
+{% load url from future %}
 
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
-
-{% load humanize i18n %}
-{% load pagination_tags %}
-{#% load timezone_filters %#}
-{% load rsr_tags %}
 
 {% block title %}{{block.super}} - {% trans 'Notification settings' %}{% endblock %}
 
@@ -29,7 +22,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div class="notice_settings">
     <h2>{% trans "Settings" %}</h2>
     
-    {% url acct_email as email_url %}
+    {% url 'acct_email' as email_url %}
     {% if user.email %}
         <p>
             {% trans "Your email address:" %} {{ user.email }}<br />

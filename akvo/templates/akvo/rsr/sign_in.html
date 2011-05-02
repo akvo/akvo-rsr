@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
-
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load url from future %}
+
 
 {% block title %} {{block.super}} - {% trans 'Sign in' %}{% endblock %}
 
@@ -51,7 +52,7 @@
 				</div>
 				<div style="float:left; width:465px; padding-top:20px; margin-left:70px;">
 					<h3>{% trans "I don&#x27;t have an account" %}</h3>
-					{% url register1 as register1_url %}
+					{% url 'register1' as register1_url %}
 					<p>
 						{% blocktrans %}
 							By <a href='{{ register1_url }}'>registering</a> with Akvo, you&#x27;ll be able to:
@@ -67,7 +68,7 @@
 				<div class="clear"></div>
 				<br /><br />
 				<p>
-					<a href="{% url rsr_password_reset %}">{% trans 'I forgot my username and/or password' %}</a>
+					<a href="{% url 'rsr_password_reset' %}">{% trans 'I forgot my username and/or password' %}</a>
 				</p>
 			</div>
 		</div>

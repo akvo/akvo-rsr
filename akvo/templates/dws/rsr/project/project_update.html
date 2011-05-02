@@ -1,6 +1,7 @@
 {% extends "rsr/project/project_base.html" %}
-
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
+{% load url from future %}
+
 
 {% block title %}
   - {{project.name}}
@@ -11,7 +12,7 @@
 {% block breadcrum_items %}
 {{block.super}}
   <li><a href="{{project.get_absolute_url}}"><span>{{project.name}}</span></a></li>
-  <li><a href="{% url project_updates project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
+  <li><a href="{% url 'project_updates' project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
   <li id="last_breadcrum_item">{{update.title}}</li>
 {% endblock breadcrum_items %}
 
@@ -24,7 +25,7 @@
           {% include "inclusion_tags/update_header.html" %}
           <div class="space20">
             <div class="h1_companion">
-              <a class="" href="{% url project_updates project.id %}">{% trans 'Back to updates for project' %}</a>
+              <a class="" href="{% url 'project_updates' project.id %}">{% trans 'Back to updates for project' %}</a>
             </div>
             <h3 class="append-bottom">{% trans 'Project update:' %} {{update.title}}</h3>
             <p>

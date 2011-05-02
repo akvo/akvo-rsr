@@ -1,4 +1,7 @@
 {% load i18n rsr_tags webdesign %}
+{% load url from future %}
+
+
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -27,14 +30,14 @@
 		<div id="header_container" class="container">
 			<ul id="main_nav">
 				<li>
-					<a id="main_nav_left" href="/" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+					<a id="main_nav_left" href="/" class="{% if site_section = 'index' %}active{% endif %} {% if not site_section %}active{% endif %} ">
 						<span>
 							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
 						</span>
 					</a>
 				</li>
 				<li>
-					<a href="{% url project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+					<a href="{% url 'project_list' %}" class="{% if site_section = 'projects' %}active{% endif %}">
 						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>
@@ -44,7 +47,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="/web/partners" class="{% ifequal site_section 'partners' %}active{% endifequal %}">
+					<a href="/web/partners" class="{% if site_section = 'partners' %}active{% endif %}">
 						<span>{% trans 'Partners' %}</span>
 					</a>
 				</li>
@@ -63,15 +66,6 @@
 						<span>{% trans 'Blog' %}</span>
 					</a>
 				</li>
-				{% comment %}
-				<li>
-					<span id="main_nav_language">
-						<form action="." method="get" accept-charset="utf-8" style="display:none;">
-							  <input name="q" placeholder="Search akvo.org" type="search" style="margin-left:20px;margin-top:7px;width:205px;">
-						</form>
-					</span>
-				</li>
-				{% endcomment %}
 				<li>
 					<span id="main_nav_language">
 						<span class="small" style="margin-left:20px; margin-top:9px; display:block; ">
@@ -80,31 +74,24 @@
 						</span>
 					</span>
 				</li>
-				{% comment %}
-					{% if not user.username %}
-						<li style="float:right; border-right: 0; border-left: 1px solid #fff;"><a href="{% url akvo.rsr.views.register1 %}">{% trans 'Register' %}</a></li>
-					{% else %}
-						<li style="float:right; border-left: 1px solid #fff;"><a href="{% url registration_update %}">{% trans 'My account' %}</a></li>
-					{% endif %}
-				{% endcomment %}
 				<li>
 					{% if not user.username %}
-						<a href="{% url akvo.rsr.views.register1 %}">
+						<a href="{% url 'register1' %}">
 							<span>{% trans 'Register' %}</span>
 						</a>
 					{% else %}
-						<a href="{% url myakvo %}">
+						<a href="{% url 'myakvo' %}">
 							<span>{% trans 'My Akvo' %}</span>
 						</a>
 					{% endif %}
 				</li>
 				<li>
 					{% if not user.username %}
-						<a id="main_nav_account" href="{% url signin %}?next={{request.path}}">
+						<a id="main_nav_account" href="{% url 'signin' %}?next={{request.path}}">
 							<span>{% trans 'Sign in' %}</span>
 						</a>
 					{% else %}
-						<a id="main_nav_account" href="{% url akvo.rsr.views.signout %}" title="{{user.username}}">
+						<a id="main_nav_account" href="{% url 'signout' %}" title="{{user.username}}">
 							<span>{% trans 'Sign out' %}</span>
 							{# <span>{% trans 'Account' %}</span> #}
 						</a>
@@ -177,7 +164,7 @@
 					<h3>{% trans 'Partners' %}</h3>
 					<p class="small">
 						<a href="/web/partners">{% trans 'Strategic' %}</a><br />
-						<a href="{% url rsr_org_list %}">{% trans 'Project' %}</a><br />
+						<a href="{% url 'rsr_org_list' %}">{% trans 'Project' %}</a><br />
 						<a href="/web/commercial_partners">{% trans 'Commercial' %}</a><br />
 						<a href="/web/knowledge_institute_partners">{% trans 'Knowledge institutes' %}</a><br />
 						<a href="/web/akvo_investors">{% trans 'Akvo investors' %}</a><br />

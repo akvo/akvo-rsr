@@ -1,11 +1,13 @@
 {% extends "rsr/base.html" %}
 {% load i18n %}
+{% load url from future %}
+
 
 {% block title %}{{ block.super }} - {{project.name}} {% trans 'widgets' %}{% endblock %}
 
 {% block breadcrum_items %}
 {{block.super}}
-  <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{% url 'project_list %}"><span>{% trans 'Projects' %}</span></a></li>
   <li><a href="{{project.get_absolute_url}}"><span>{{project.name}}</span></a></li>
   <li id="last_breadcrum_item">{% trans 'Get a widget - step 1' %}</li>
 {% endblock breadcrum_items %}
@@ -52,7 +54,7 @@
 				<div style="float:left; width:205px;">
 					<script type="text/javascript">
 						// think about refactor this to a general method in machinery.js
-						document.write('<iframe src="{% url project_widget 'project-updates' project.pk %}" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
+						document.write('<iframe src="{% url 'project_widget' 'project-updates' project.pk %}" width="202" height="900" frameborder="0" allowTransparency="true"> </iframe>');
 					</script>
 				</div>
 				<div style="float:right; width:580px;">
@@ -87,7 +89,7 @@
 					<hr />
 										
 					<a class="grey awesome" style="margin-right:10px;"
-						href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						href="{% url 'project_main' project.id %}">{% trans 'Cancel' %}</a>
 					<a class="aqua awesome" href="javascript:document.projectUpdatesForm.submit();" 
 						onclick="this.blur();" style="margin-left:10px;">{% trans 'Select and Proceed...' %}</a>
 				</div>
@@ -107,7 +109,7 @@
 					<script type="text/javascript">
 						// think about refactor this to a general method in machinery.js
 
-						document.write('<iframe src="{% url project_widget 'project-small' project.pk %}" width="170" height="312" frameborder="0" allowTransparency="yes"> </iframe>');
+						document.write('<iframe src="{% url 'project_widget' 'project-small' project.pk %}" width="170" height="312" frameborder="0" allowTransparency="yes"> </iframe>');
 							
 					</script>
 				</div>
@@ -143,7 +145,7 @@
 					<hr />
 										
 					<a class="grey awesome" style="margin-right:10px;"
-						href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						href="{% url 'project_main' project.id %}">{% trans 'Cancel' %}</a>
 					<a class="aqua awesome" href="javascript:document.projectSmallForm.submit();" 
 						onclick="this.blur();" style="margin-left:10px;">{% trans 'Select and Proceed...' %}</a>
 				</div>

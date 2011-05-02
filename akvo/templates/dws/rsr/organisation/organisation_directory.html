@@ -1,6 +1,7 @@
 {% extends "rsr/base.html" %}
-
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
+{% load url from future %}
+
 
 {% block title %}
 	- {% trans 'Projects' %}
@@ -9,7 +10,7 @@
 
 {% block breadcrum_items %}
 	{{block.super}}
-	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
 	<li id="last_breadcrum_item">{% trans 'Project participants' %}</li>
 {% endblock breadcrum_items %}
 
@@ -77,7 +78,7 @@
             			<tr>
 	              			<td>
 	                			<div class="space10">
-	                  				<a href="{% url org_detail org.pk %}">
+	                  				<a href="{% url 'org_detail' org.pk %}">
 	                    				{% org_logo org 100 75 'float:left; margin: 0 10px 10px 0;' %}
 	                    				<p class="nano-lede strong link_blue">{{org.name}}</p> 
 	                  				</a>
@@ -103,7 +104,7 @@
 	              			<td>
 	                			<p class="td-text">
 	                  				{% if org.published_projects.count %}
-	                    				<a href="{% url project_list_for_org org.pk %}">
+	                    				<a href="{% url 'project_list_for_org' org.pk %}">
 	                      					{{org.published_projects.count}}
 	                      					{% blocktrans count org.published_projects.count as projects_count %}
 	                        					project

@@ -1,4 +1,6 @@
 {% load i18n thumbnail rsr_filters %}
+{% load url from future %}
+
 
 {% if organisations %}
 
@@ -34,7 +36,7 @@
 	        var center = new google.maps.LatLng(0,0);
 
 	        {% for organisation in organisations %}
-                var organisation_{{ organisation.id }}_url = "{% url org_detail org_id=organisation.id %}";
+                var organisation_{{ organisation.id }}_url = "{% url 'org_detail' org_id=organisation.id %}";
 	            var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude }};
 	            var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude }};
 	            var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);

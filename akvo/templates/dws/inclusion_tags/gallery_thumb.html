@@ -1,11 +1,10 @@
 {% load i18n thumbnail %}
 
-{% thumbnail image wxh autocrop sharpen as photo %}
 
+{% thumbnail image wxh autocrop sharpen as photo %}
 <a class="gallery_links"
    href="{{ photo }}"
    title="{{ caption }}"
-   target="project_images"
->
-    <img src="{% thumbnail image 60x60 crop sharpen %}" {% if style %}style="{{style}}" {% endif %}/>
+   target="project_images">
+		<img src="{% thumbnail image 60x60 crop sharpen %}" {% if style %}style="{{style}}" {% endif %}/>
 </a>

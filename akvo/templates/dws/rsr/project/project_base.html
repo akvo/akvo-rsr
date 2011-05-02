@@ -1,10 +1,11 @@
 {% extends "rsr/base.html" %}
-
 {% load i18n rsr_tags webdesign thumbnail counter_tags google_maps cache humanize %}
+{% load url from future %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
-	<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
@@ -55,7 +56,7 @@
       		<div class="white_box gutter-top" style="background-color:#fff;">
         		<div class="space15">
           			<h1>{% trans 'Page tools' %}</h1>
-          			<a class="awesome aqua small append-bottom" href="{% url get_widget project.id %}">{% trans 'Get a widget' %}</a>
+          			<a class="awesome aqua small append-bottom" href="{% url 'get_widget' project.id %}">{% trans 'Get a widget' %}</a>
           			<p class="tiny"><a href="{{project.get_absolute_url}}">{% trans 'Permalink for this page' %}</a></p>
         		</div> 
       		</div> 
@@ -67,11 +68,11 @@
 				{% for org in project.lead_partners.distinct %}
 					<div style="margin: 0 8px;"><hr /></div>
 	          		<div class="space15">
-	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
+	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" style="padding: 0;">
 	              			{% org_logo org 162 120 %}
 	            		</a>
 	            		<br/>
-	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">{{org.name}}</a>
+	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" class="tiny">{{org.name}}</a>
 	            		<p class="tiny lt_grey">
 							{% if org.city and org.country %}
 								{{org.city}}, {{org.country}}<br/>
@@ -89,11 +90,11 @@
 				{% for org in project.other_partners.distinct %}
 					<div style="margin: 0 8px;"><hr /></div>
 	          		<div class="space15">
-	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" style="padding: 0;">
+	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" style="padding: 0;">
 	              			{% org_logo org 162 120 %}
 	            		</a>
 	            		<br/>
-	            		<a title="{{org.name}}" href="{% url org_detail org.id %}" class="tiny">{{org.name}}</a>
+	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" class="tiny">{{org.name}}</a>
 	            		<p class="tiny lt_grey">
 							{% if org.city and org.country %}
 								{{org.city}}, {{org.country}}<br/>

@@ -1,11 +1,12 @@
 {% extends "rsr/base.html" %}
-
 {% load i18n %}
+{% load url from future %}
+
 
 {% block title %}{% trans 'Donate to' %} {{p.name}}{% endblock title %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-<li><a href="{% url project_main p.id %}"><span>{{p.name}}</span></a></li>
+<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+<li><a href="{% url 'project_main' p.id %}"><span>{{p.name}}</span></a></li>
 {% endblock breadcrum_items %}

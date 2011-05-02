@@ -1,4 +1,7 @@
 {% load i18n rsr_tags webdesign %}
+{% load url from future %}
+
+
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -26,7 +29,7 @@
 	<div id="header_container" class="container">
 		<ul id="main_nav">
 			<li>
-				<a id="main_nav_left" href="{% url index %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+				<a id="main_nav_left" href="{% url 'index' %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
 					<img src="{{MEDIA_URL}}dws/img/mainnav/dws_logo.png" width="222" height="41" 
 						alt="Dutch Water Sector" style="margin:0;padding:0;">
 				</a>
@@ -37,7 +40,7 @@
         </a>
       </li>
 			<li>
-				<a href="{% url project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+				<a href="{% url 'project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 					<span>{% trans 'Projects' %}</span>
 				</a>
 			</li>
@@ -75,7 +78,7 @@
 				<div id="breadcrum_back">
 					<ul id="breadcrum">
 						{% block breadcrum_items %}
-						<li><a href="/"><span>Home</span></a></li>
+						<li><a href="/"><span>{% trans 'Home' %}</span></a></li>
 						{% endblock breadcrum_items %}
 					</ul>
 					<div class="clear"></div>
@@ -92,22 +95,22 @@
 		<div id="footer_bar">&nbsp;</div>
 		
 		<p class="small grey">
-			Site under <a href="/web/open_license">open licence</a>
-			&nbsp;|&nbsp; <a href="/web/terms_of_use">Terms of use</a>
-      &nbsp;|&nbsp; <a href="/web/privacy_policy">Privacy policy</a>
-      &nbsp;|&nbsp; <a href="/web/credits">Credits</a> 
+			{% trans 'Site under' %} <a href="/web/open_license">{% trans 'open licence' %}</a>
+			&nbsp;|&nbsp; <a href="/web/terms_of_use">{% trans 'Terms of use' %}</a>
+      &nbsp;|&nbsp; <a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a>
+      &nbsp;|&nbsp; <a href="/web/credits">{% trans 'Credits' %}</a> 
       {% if site_section != 'index' %}
-        &nbsp;|&nbsp; <a href="/web/admin">Admin</a>
+        &nbsp;|&nbsp; <a href="/web/admin">{% trans 'Admin' %}</a>
         {% if not user.username %}
-          &nbsp;|&nbsp; <a href="{% url register1 %}">{% trans 'Register' %}</a>
+          &nbsp;|&nbsp; <a href="{% url 'register1' %}">{% trans 'Register' %}</a>
         {% endif %}
         {% if not user.username %}      
-          &nbsp;|&nbsp; <a href="{% url signin %}?next={{request.path}}">{% trans 'Sign in' %}</a>
+          &nbsp;|&nbsp; <a href="{% url 'signin' %}?next={{request.path}}">{% trans 'Sign in' %}</a>
         {% else %}
-          &nbsp;|&nbsp; <a href="{% url signout %}?next={{request.path}}">{% trans 'Sign out' %}</a>
+          &nbsp;|&nbsp; <a href="{% url 'signout' %}?next={{request.path}}">{% trans 'Sign out' %}</a>
         {% endif %}
       {% endif %}
-			<a href="/web/contact_us" style="margin-left:30px;">Contact us</a>
+			<a href="/web/contact_us" style="margin-left:30px;">{% trans 'Contact us' %}</a>
       {% if site_section != 'index' %}
         <img src="{{MEDIA_URL}}dws/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
       {% else %}

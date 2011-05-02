@@ -1,6 +1,7 @@
 {% extends "rsr/base_sheet.html" %}
-
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load url from future %}
+
 
 {% block title %}
   - {{project.name}}
@@ -10,9 +11,9 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
   <li><a href="{{ project.get_absolute_url }}"><span>{{project.name}}</span></a></li>
-  <li><a href="{% url project_updates project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
+  <li><a href="{% url 'project_updates' project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
   <li id="last_breadcrum_item">Add update</li>
 {% endblock breadcrum_items %}
 
