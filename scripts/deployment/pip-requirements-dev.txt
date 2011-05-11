@@ -23,11 +23,10 @@ sorl-thumbnail==3.2.5
 
 # Other Python Modules
 BeautifulSoup==3.2.0
-Cython==0.13
 feedparser==4.1
 PIL==1.1.7
 httplib2==0.6.0
 lxml==2.3beta1
 Markdown==2.0.3
 python-memcached==1.45
-simplejson==2.1.2
+simplejson==2.1.6
