@@ -50,11 +50,6 @@
 									{% oembed 240x180 %}{{ update.video }}{% endoembed %}
                                 </a>
 								</div>
-<<<<<<< HEAD
-							{% endif %}
-							{% if not update.photo and not update.video %}
-						      &nbsp;
-=======
 							{% else %}
 								{% if update.photo %}
 									<a href="{% url 'project_update' p.id update.id %}">
@@ -63,7 +58,6 @@
 								{% else %}
 									&nbsp;
 								{% endif %}
->>>>>>> 55673b3398a7b12b34106a0e34dc7bf1caecc353
 							{% endif %}
 						</div>
 						

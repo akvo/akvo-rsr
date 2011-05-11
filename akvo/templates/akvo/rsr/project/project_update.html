@@ -50,25 +50,17 @@
     {% endif %}
 </p>
 {% endif %}
-
-			{% if u.photo %}
-<<<<<<< HEAD
-            {% update_thumb u 400 300 %}
-      {% endif %}	
-				{% if u.text and u.photo_location == 'E' %}
-=======
-				{% if u.photo_location = 'B' %}
-                	{% update_thumb u 400 300 %}
-            	{% endif %}
-                {% if u.text %}{{u.text|linebreaks}}{% endif %}
-				{% if u.photo_location = 'E' %}
-	                {% update_thumb u 400 300 %}
-	            {% endif %}			
-			{% else %}
-				{% if u.text %}
->>>>>>> 55673b3398a7b12b34106a0e34dc7bf1caecc353
-					{{u.text|linebreaks}}
-				{% endif %}    
+	{% if u.photo %}
+		{% if u.photo_location = 'B' %}
+			{% update_thumb u 400 300 %}
+		{% endif %}
+		{% if u.text %}{{u.text|linebreaks}}{% endif %}
+		{% if u.photo_location = 'E' %}{% update_thumb u 400 300 %}{% endif %}			
+	{% else %}
+		{% if u.text %}
+			{{u.text|linebreaks}}
+		{% endif %}
+	{% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>

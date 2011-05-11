@@ -126,7 +126,7 @@
 			<p>{% trans 'Project name' %}:</p>
 		</div>
 		<div class="donate_details_right">
-			<p><a href="{% url 'project_main' p.id %}">{{ p.name }}</a></p>
+			<p><a href="{% url 'project_main' project.id %}">{{ project.name }}</a></p>
 		</div>
 		<div class="clear" style="padding-bottom:5px;"></div>
 		
@@ -134,7 +134,7 @@
 			<p>{% trans 'Location' %}:</p>
 		</div>
 		<div class="donate_details_right">
-			<p>{{ p.primary_location.country.get_continent_display }} / {{p.primary_location.country}}, {{p.primary_location.city}}</p>
+			<p>{{ project.primary_location.country.get_continent_display }} / {{project.primary_location.country}}, {{project.primary_location.city}}</p>
 		</div>
 		<div class="clear" style="padding-bottom:5px;"></div>
 		
@@ -142,11 +142,11 @@
 			<p>{% trans 'Akvo ref' %}:</p>
 		</div>
 		<div class="donate_details_right">
-			<p>{{ p.id }}</p>
-			{% if p.current_image %}
+			<p>{{ project.id }}</p>
+			{% if project.current_image %}
 				<div style="margin-top:5px;">
-					<a href="{% url 'project_main' p.id %}">
-						<img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />			    			
+					<a href="{% url 'project_main' project.id %}">
+						<img src="{% thumbnail project.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />			    			
 					</a>
 				</div>
 		    {% endif %}

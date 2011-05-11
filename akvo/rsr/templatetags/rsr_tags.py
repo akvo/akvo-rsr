@@ -29,7 +29,7 @@ def funding_project(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/funding_box_narrow.html', takes_context=True)
 def funding_box_narrow(context, project):

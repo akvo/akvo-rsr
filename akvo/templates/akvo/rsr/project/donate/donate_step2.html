@@ -17,7 +17,7 @@
 	{% endif %}
 {% endif %}
 
-<h1>{% trans 'Donate to' %} {{p.name}}</h1>
+<h1>{% trans 'Donate to' %} {{project.name}}</h1>
 <div class="white_box">
 	<div>
 		<div id="donate_step_box">
@@ -61,7 +61,7 @@
 				<p>{% trans 'Project name' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p><a href="{% url 'project_main' p.id %}">{{ p.name }}</a></p>
+				<p><a href="{% url 'project_main' project.id %}">{{ project.name }}</a></p>
 			</div>
 			<div class="clear"></div>
 			
@@ -69,7 +69,7 @@
 				<p>{% trans 'Location' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p>{{ p.primary_location.country.get_continent_display }} / {{p.primary_location.country}}, {{p.primary_location.city}}</p>
+				<p>{{ project.primary_location.country.get_continent_display }} / {{project.primary_location.country}}, {{project.primary_location.city}}</p>
 			</div>
 			<div class="clear"></div>
 			
@@ -77,16 +77,16 @@
 				<p>{% trans 'Akvo ref' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p>{{ p.id }}</p>
-				{% if p.current_image %}
+				<p>{{ project.id }}</p>
+				{% if project.current_image %}
 					<div style="margin-top:5px;">
-						<a href="{% url 'project_main' p.id %}">
-                            <img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />
+						<a href="{% url 'project_main' project.id %}">
+                            <img src="{% thumbnail project.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
 						</a>
 					</div>
 			    {% endif %}
 				<div style="width:172px;">
-					{% funding_table p %}
+					{% funding_table project %}
 				</div>
 			</div>
 			<div class="clear"></div>
@@ -102,10 +102,10 @@
 					{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one. And PayPal handles the currency conversion for you." %}
 				</p>
 				<p class="small">
-				    {% ifequal p.currency 'EUR' %}
+				    {% ifequal project.currency 'EUR' %}
 						{% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 35 Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the selected project.' %}
 					{% endifequal %}
-					{% ifequal p.currency 'USD' %}
+					{% ifequal project.currency 'USD' %}
 							{% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 30 Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to the selected project.' %}					
 					{% endifequal %}
 				</p>
@@ -117,10 +117,10 @@
 				</p>
 				<ul class="small" >
 					<li>
-					    {% if p.currency = 'EUR' %}
+					    {% if project.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
 					    {% endif %}
-					    {% if p.currency = 'USD' %}
+					    {% if project.currency = 'USD' %}
 					        {% trans 'United States of America' %}
 					    {% endif %}
 					</li>
@@ -140,10 +140,10 @@
 					{% trans 'Akvo.org partners with Mollie.nl to provide iDEAL.' %}
 				</p>
 				<p class="small">
-					{% if p.currency = 'EUR' %}
+					{% if project.currency = 'EUR' %}
 					{% trans 'Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you donate &euro;100, &euro;98.82 Euros will go towards the selected project.' %}
 					{% endif %}
-					{% if p.currency = 'USD' %}
+					{% if project.currency = 'USD' %}
 					{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
 					{% endif %}
 				</p>
@@ -154,10 +154,10 @@
 				</p>
 				<ul class="small">
 					<li style="margin-left:30px;">
-					    {% if p.currency = 'EUR' %}
+					    {% if project.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
 					    {% endif %}
-					    {% if p.currency = 'USD' %}
+					    {% if project.currency = 'USD' %}
 					        {% trans 'United States of America' %}
 					    {% endif %}
 					</li>
@@ -171,7 +171,7 @@
 		<div style="float:left; width:400px;">
 			<h3>{% trans 'Donation details' %}</h3>
 			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
-				{% blocktrans with p.get_currency_display|safe as currency %}
+				{% blocktrans with project.get_currency_display|safe as currency %}
 				<p class="grey">Amount in {{currency}}:</p>
 	            {% endblocktrans %}
 			</div>
@@ -284,7 +284,7 @@
 		<div style="margin-left:300px; padding-top:20px;">
 			<p style="margin-bottom:20px;" class="grey">{% trans 'You will be able to review and confirm your donation on the next page.' %}</p>
 			<div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
-				<a class="small" href="{% url 'project_main' p.id %}">{% trans 'Cancel' %}</a>
+				<a class="small" href="{% url 'project_main' project.id %}">{% trans 'Cancel' %}</a>
 			</div>
 			<a class="aqua awesome" href="javascript:document.donate_form.submit();"><span>{% trans 'Next...' %}</span></a>
 		</div>
