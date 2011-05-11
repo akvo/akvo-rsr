@@ -26,8 +26,8 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div class="space20">
 			<div class="counter_badge" style="margin-top:0; margin-right:0;">
-				<span style="display:none;">{% counter p %}</span>
-				{% cache 10 project_view_count p.id %}{{ p.view_count|intcomma }}{% endcache %}
+				<span style="display:none;">{% counter project %}</span>
+				{% cache 10 project_view_count project.id %}{{ project.view_count|intcomma }}{% endcache %}
 				<br />
 				<span>{% trans 'views' %}</span>
 			</div>
@@ -54,7 +54,7 @@
 				</p>
 				{# Google Map #}
 	            {% if p.primary_location %}
-	                {% google_map p 260 180 3 %}
+	                {% google_map project 260 180 3 %}
 	            {% else %}
 	                <p style="color: red;">{% trans 'No map available' %}</p>
 	            {% endif %}

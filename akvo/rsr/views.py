@@ -948,11 +948,10 @@ def projectupdates(request, project_id):
     comments    = project.projectcomment_set.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
-        'project': project, 
-        'p': project, #compatibility with new_look
-        'updates': updates, 
-        'can_add_update':can_add_update, 
-        'hide_latest_updates': True, 
+        'project': project,
+        'updates': updates,
+        'can_add_update':can_add_update,
+        'hide_latest_updates': True,
         'comments': comments,
         'site_section': 'project',
         }
@@ -966,10 +965,8 @@ def projectupdate(request, project_id, update_id):
     can_add_update = project.connected_to_user(request.user)
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
-        'project'               : project, 
-        'p'                     : project, #compatibility with new_look
-        'update'                : update, 
-        'u'                     : update,  #compatibility with new_look
+        'project'               : project,
+        'update'                : update,
         'can_add_update'        : can_add_update, 
         'hide_latest_updates'   : True,
         'site_section'          : 'projects', 
@@ -987,7 +984,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
+    return {'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
 
 
 @login_required()

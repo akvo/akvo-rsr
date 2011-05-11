@@ -12,15 +12,15 @@
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url 'project_main' p.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+				<a href="{% url 'project_main' project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
 			</span>
 			<h2 style="padding-top:20px;">{% trans 'Project updates' %}</h2>
 		</div>
 		{% comment %}
 		<div class="counter_badge">
-			<span style="display:none;">{% counter p %}</span>
-			{% cache 10 p.view_count %}
-				{{ p.view_count|intcomma }}
+			<span style="display:none;">{% counter project %}</span>
+			{% cache 10 project.view_count %}
+				{{ project.view_count|intcomma }}
 			{% endcache %}
 			<br />
 			<span>{% trans 'views' %}</span>
@@ -38,21 +38,15 @@
 						</div>
 											
 						<div style="float:left; width:240px; margin: 0 10px;">
-							{% if update.photo %}
-							  <a href="{% url 'project_update' p.id update.id %}">
-							    <img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
-						  	  </a>
-                              <br>
-                            {% endif %}
 							{% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
-                                <a href="{% url 'project_update' p.id update.id %}">
+                                <a href="{% url 'project_update' project.id update.id %}">
 									{% oembed 240x180 %}{{ update.video }}{% endoembed %}
                                 </a>
 								</div>
 							{% else %}
 								{% if update.photo %}
-									<a href="{% url 'project_update' p.id update.id %}">
+									<a href="{% url 'project_update' project.id update.id %}">
 										<img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
 									</a>
 								{% else %}
@@ -65,7 +59,7 @@
 						<div style="float:left; width:240px;">
 							<p style="margin:0;">
 								{% if update.title %}
-									<a href="{% url 'project_update' p.id update.id %}">{{update.title|capfirst}}</a><br />	
+									<a href="{% url 'project_update' project.id update.id %}">{{update.title|capfirst}}</a><br />	
 								{% endif %}
 								{% if update.text %}
 									<span class="grey small">{{update.text|smart_truncate:150}}</span>
