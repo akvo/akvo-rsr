@@ -1,7 +1,7 @@
 {% load i18n thumbnail %}
 
-{% thumbnail update.photo wxh autocrop sharpen as update_image %}
 
+{% thumbnail update.photo wxh autocrop sharpen as update_image %}
 {% if update_image %}
     <div style="width: {{width}}px; height:{{update_image.height}}px; text-align: center;">
         <img

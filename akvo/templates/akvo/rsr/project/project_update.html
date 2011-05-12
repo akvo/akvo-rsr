@@ -1,63 +1,66 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load url from future %}
 
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url project_updates p.id %}"><span>{% trans 'Project updates' %}</span></a></li>
-<li id="last_breadcrum_item">{{u.title|capfirst}}</li>
+<li><a href="{% url 'project_updates' project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
+<li id="last_breadcrum_item">{{update.title|capfirst}}</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_updates p.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
+				<a href="{% url 'project_updates' project.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
-			<h2 style="padding-top:20px;">{{u.title|capfirst}}</h2>
+			<h2 style="padding-top:20px;">{{update.title|capfirst}}</h2>
 			<p class="grey small">
-				{{u.time|date:"d-M-Y"}},
-				{% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+				{{update.time|date:"d-M-Y"}},
+				{% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 			</p>
 		</div>
 		<div class="counter_badge">
-			<span style="display:none;">{% counter u %}</span>
-			{% cache 10 project_update_view_count p.id u.id %}
-				{{ u.view_count|intcomma }}
+			<span style="display:none;">{% counter update %}</span>
+			{% cache 10 project_update_view_count project.id update.id %}
+				{{ update.view_count|intcomma }}
 			{% endcache %}
 			<br />
 			<span>{% trans 'views' %}</span>
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-			{% if u.photo %}
-				{% ifequal u.photo_location 'B' %}
-                	{% update_thumb u 400 300 %}
-            	{% endifequal %}
-                {% if u.text %}{{u.text|linebreaks}}{% endif %}
-				{% ifequal u.photo_location 'E' %}
-	                {% update_thumb u 400 300 %}
-	            {% endifequal %}			
-			{% else %}
-				{% if u.text %}
-					{{u.text|linebreaks}}
-				{% endif %}
-            {% endif %}			
-            {% if u.video %}
-				<div style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:40px;">
-					{% oembed 400x300 %}
-	                    {{ u.video }}
-	                {% endoembed %}
-					<p class="small lightx1">
-				        {% if update.video_caption %}
-				            {{update.video_caption}}
-				        {% endif %}
-				        {% if update.video_credit %}
-				            {% trans 'Video credit' %}: {{update.video_credit}}
-				        {% endif %}
-				    </p>
-				</div>
-            {% endif %}
+		{% if update.text and update.photo_location == 'B' %}
+		  {{ update.text|linebreaks }}
+		 {% endif %}
+		
+		{% if update.video %}
+      <div style="margin: 10px 10px 5px 20px;">
+    {% oembed 400x300 %}
+        {{ update.video }}
+    {% endoembed %}
+    </div>
+<p class="small lightx1">
+    {% if update.video_caption %}
+        {{ update.video_caption }}
+    {% endif %}
+    {% if update.video_credit %}
+        {% trans 'Video credit' %}: {{ update.video_credit }}
+    {% endif %}
+</p>
+{% endif %}
+	{% if update.photo %}
+		{% if update.photo_location = 'B' %}
+			{% update_thumb update 400 300 %}
+		{% endif %}
+		{% if update.text %}{{update.text|linebreaks}}{% endif %}
+		{% if update.photo_location = 'E' %}{% update_thumb update 400 300 %}{% endif %}
+	{% else %}
+		{% if update.text %}
+			{{update.text|linebreaks}}
+		{% endif %}
+	{% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>

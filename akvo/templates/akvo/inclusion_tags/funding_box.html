@@ -1,18 +1,15 @@
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
-
 {% load i18n rsr_filters humanize %}
+{% load url from future %}
+
 
 <div class="fundingwrap">
 <div class="fundingbox-header"> </div>
 	<div class="fundingbox-content">
-	{% ifequal p.funding_still_needed|round 0 %}
+	{% if project.funding_still_needed|round = 0 %}
 		<div class="fundingbox-funded">	
 			<div class="fullyfunded-text">
 				<p style="">
-				{% trans 'Raised' %}:&nbsp;{{p.get_currency_display|safe}}&nbsp;{{p.funding_total_given|round|intcomma}}
+				{% trans 'Raised' %}:&nbsp;{{project.get_currency_display|safe}}&nbsp;{{project.funding_total_given|round|intcomma}}
 				</p>
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -23,29 +20,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		<table class="fundingbox-table" cellspacing="0">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
-				<td>{{p.get_currency_display|safe}} {{p.funding_total_given|round|intcomma}}</td>
+				<td>{{project.get_currency_display|safe}} {{project.funding_total_given|round|intcomma}}</td>
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
-				<td>{{p.get_currency_display|safe}} {{p.funding_still_needed|round|intcomma}}</td>
+				<td>{{project.get_currency_display|safe}} {{project.funding_still_needed|round|intcomma}}</td>
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
-			{% if p.budget_total %}
-				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio p.funding_total_given p.budget_total 100 %}%"> </div>
+			{% if project.budget_total %}
+				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
 			{% endif %}
 		</div>
 		<table class="fundingbox-table">
 			<tr>
 				<th>{% trans 'Total budget' %}:</th>
-				<td>{{p.get_currency_display|safe}} {{p.budget_total|round|intcomma}}</td>
+				<td>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</td>
 			</tr>					
 		</table>
-		{% if p.status != 'L' and p.status != 'R' %}
+		{% if project.status != 'L' and project.status != 'R' %}
 		<div id="donate_individual">
 			<p class="grey" style="line-height:1.0em;">
 				{% trans 'Individuals' %}<br />
-			<a href="{% url project_donate project_id=p.id %}" class="donate_button" onclick="this.blur();"><span>{% trans 'Donate' %}</span></a>
+			<a href="{% url 'project_donate' project.id %}" class="donate_button" onclick="this.blur();"><span>{% trans 'Donate' %}</span></a>
 			</p>
 		</div>
 		<div id="donate_institutions">
@@ -56,7 +53,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 		</div>
 		<div id="name" style="clear: both;"></div>
 		{% endif %}
-	{% endifequal %}
+	{% endif %}
 	</div>
 	<div class="fundingbox-footer"> </div>
 </div>

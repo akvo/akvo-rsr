@@ -1,0 +1,15 @@
+{% load i18n oembed_tags %}
+
+<div style="margin: 10px 10px 5px 20px;">
+    {% oembed %}
+        {{ update.video }}
+    {% endoembed %}
+</div>
+<p class="small lightx1">
+    {% if update.video_caption %}
+        {{ update.video_caption }}
+    {% endif %}
+    {% if update.video_credit %}
+        {% trans 'Video credit' %}: {{ update.video_credit }}
+    {% endif %}
+</p>

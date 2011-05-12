@@ -948,11 +948,10 @@ def projectupdates(request, project_id):
     comments    = project.projectcomment_set.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
-        'project': project, 
-        'p': project, #compatibility with new_look
-        'updates': updates, 
-        'can_add_update':can_add_update, 
-        'hide_latest_updates': True, 
+        'project': project,
+        'updates': updates,
+        'can_add_update':can_add_update,
+        'hide_latest_updates': True,
         'comments': comments,
         'site_section': 'project',
         }
@@ -966,10 +965,8 @@ def projectupdate(request, project_id, update_id):
     can_add_update = project.connected_to_user(request.user)
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
-        'project'               : project, 
-        'p'                     : project, #compatibility with new_look
-        'update'                : update, 
-        'u'                     : update,  #compatibility with new_look
+        'project'               : project,
+        'update'                : update,
         'can_add_update'        : can_add_update, 
         'hide_latest_updates'   : True,
         'site_section'          : 'projects', 
@@ -987,7 +984,7 @@ def projectcomments(request, project_id):
     p           = get_object_or_404(Project, pk=project_id)
     comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
     form        = CommentForm()
-    return {'p': p, 'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
+    return {'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
 
 
 @login_required()
@@ -1113,6 +1110,15 @@ def myakvo_mobile(request):
             'notices': notices,
         }, RequestContext(request))
 
+@login_required()
+def myakvo_cancel_reporter(request, reporter_id):
+    '''
+    '''
+    profile = request.user.get_profile()
+    reporter = SmsReporter.objects.get(id=reporter_id)
+    profile.destroy_reporter(reporter)
+    return HttpResponseRedirect(reverse('myakvo_mobile'))
+    
 class CommentForm(ModelForm):
 
     comment = forms.CharField(widget=forms.Textarea(attrs={
@@ -1447,7 +1453,7 @@ def setup_donation(request, p):
     if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
     request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
-    return {'p': p}
+    return {'project': p}
 
 @fetch_project
 def donate(request, p, engine, has_sponsor_banner=False):
@@ -1495,7 +1501,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                 return render_to_response('rsr/project/donate/donate_step3.html',
                     {
                         'invoice': invoice,
-                        'p': p,
+                        'project': p,
                         'payment_engine': engine,
                         'mollie_order_url': order_url,
                         'has_sponsor_banner': has_sponsor_banner,
@@ -1527,7 +1533,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'payment_engine': engine,
                                        'pp_form': pp_form, 
                                        'pp_button': pp_button,
-                                       'p': p,
+                                       'project': p,
                                        'has_sponsor_banner': has_sponsor_banner,
                                        'live_earth_enabled': settings.LIVE_EARTH_ENABLED},
                                       context_instance=RequestContext(request))
@@ -1538,7 +1544,7 @@ def donate(request, p, engine, has_sponsor_banner=False):
     return render_to_response('rsr/project/donate/donate_step2.html',
                               {'donate_form': donate_form,
                                'payment_engine': engine,
-                               'p': p,
+                               'project': p,
                                'has_sponsor_banner': has_sponsor_banner,
                                'live_earth_enabled': getattr(settings, 'LIVE_EARTH_ENABLED', False)
                             }, 
@@ -1584,7 +1590,7 @@ def paypal_thanks(request):
         invoice = Invoice.objects.get(pk=invoice_id)
         return render_to_response('rsr/project/donate/donate_thanks.html',
                                   {'invoice': invoice,
-                                   'p': invoice.project,
+                                   'project': invoice.project,
                                    'user': invoice.user},
                                   context_instance=RequestContext(request))
     return redirect('/')
@@ -1595,7 +1601,7 @@ def mollie_thanks(request):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return {'invoice': invoice, 'p': invoice.project, 'user': invoice.user}
+        return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
     return redirect('/')
 
 @render_to('rsr/global_map.html')

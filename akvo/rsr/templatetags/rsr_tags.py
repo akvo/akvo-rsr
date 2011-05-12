@@ -15,35 +15,35 @@ def funding_box(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/funding_table.html', takes_context=True)
 def funding_table(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/funding_project.html', takes_context=True)
 def funding_project(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}    
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/funding_box_narrow.html', takes_context=True)
 def funding_box_narrow(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/funding_box_narrow2.html', takes_context=True)
 def funding_box_narrow2(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/individual_donate_button.html', takes_context=True)
 def individual_donate_button(context, project):
@@ -64,14 +64,14 @@ def project_budget(context, project):
     '''
 	show the individual doante button. CSS definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 @register.inclusion_tag('inclusion_tags/funding_box_wide.html', takes_context=True)
 def funding_box_wide(context, project):
     '''
 	show the funding box used in the widgets. Css definition in widget_global.css   
     '''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'p': project}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
     
 @register.inclusion_tag('inclusion_tags/project_thumb.html', takes_context=True)
 def project_thumb(context, project, width, height, style='',):
@@ -111,6 +111,20 @@ def update_thumb(context, update, width, height, style=''):
         'wxh'       : '%sx%s' % (width, height,),
         'div_style' : style,
     }
+
+
+@register.inclusion_tag('inclusion_tags/update_video.html',
+                        takes_context=True)
+def update_video(context, update, width, height):
+    template_context = dict(
+        MEDIA_URL=context['MEDIA_URL'],
+        update=update,
+        width=width,
+        height=height,
+        wxh='%sx%s' % (width, height)
+    )
+    return template_context
+
 
 @register.inclusion_tag('inclusion_tags/gallery_thumb.html', takes_context=True)
 def gallery_thumb(context, image, width, height, caption='', style=''):

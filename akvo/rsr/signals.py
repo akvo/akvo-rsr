@@ -10,13 +10,16 @@ logger = logging.getLogger('akvo.rsr')
 import os
 from datetime import datetime
 
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from utils import send_donation_confirmation_emails, who_am_i
+from utils import send_donation_confirmation_emails, who_am_i, rsr_send_mail_to_users
+from utils import (
+    GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
+)
 
 import models
 

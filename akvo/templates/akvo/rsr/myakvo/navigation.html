@@ -1,12 +1,9 @@
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
-
 {% load i18n permissions_tags %}
+{% load url from future %}
+
 
 <div class="boxbody" style="padding-bottom: 20px;">
-    {% url myakvo as url_myakvo %}
+    {% url 'myakvo' as url_myakvo %}
     <a
         href="{{ url_myakvo }}"
         {% ifequal request.path url_myakvo %}
@@ -14,7 +11,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
         {% endifequal %}
     >{% trans 'My Akvo' %}</a>
     |    
-    {% url password_change as url_rsr_password_change %}
+    {% url 'password_change' as url_rsr_password_change %}
     <a
         href="{{ url_rsr_password_change }}"
         {% ifequal request.path url_rsr_password_change %}
@@ -24,7 +21,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
     {% if request.user.get_profile.has_perm_add_sms_updates %}
         |
-        {% url myakvo_mobile as url_myakvo_mobile %}
+        {% url 'myakvo_mobile' as url_myakvo_mobile %}
         <a
             href="{{ url_myakvo_mobile }}"
             {% ifequal request.path url_myakvo_mobile %}
@@ -32,7 +29,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             {% endifequal %}
         >{% trans 'Mobile' %}</a>
         |
-        {% url notification_notices as url_notification_notices %}
+        {% url 'notification_notices' as url_notification_notices %}
         <a
             href="{{ url_notification_notices }}"
             {% ifequal request.path url_notification_notices %}
@@ -40,7 +37,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
             {% endifequal %}
         >{% trans 'Notices' %}</a>
         |
-        {% url notification_notice_settings as url_notification_notice_settings %}
+        {% url 'notification_notice_settings' as url_notification_notice_settings %}
         <a
             href="{{ url_notification_notice_settings }}"
             {% ifequal request.path url_notification_notice_settings %}

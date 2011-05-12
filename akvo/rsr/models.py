@@ -51,7 +51,7 @@ from permissions.utils import get_roles, add_local_role
 
 from akvo.settings import MEDIA_ROOT
 
-from gateway.models import GatewayNumber, Gateway, MoSms
+from akvo.gateway.models import GatewayNumber, Gateway, MoSms
 
 from utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
@@ -2016,7 +2016,7 @@ class UserProfileManager(models.Manager):
             if state_equals(profile, profile.STATE_PHONE_NUMBER_ADDED):
                 logger.debug("%s: state is %s." % (who_am_i(), profile.STATE_PHONE_NUMBER_ADDED))
                 # look for validation code
-                if profile.validation == mo_sms.message.upper():
+                if profile.validation == mo_sms.message.strip().upper():
                     profile.confirm_validation(mo_sms)
                 else:
                     logger.error('Error in UserProfileManager.process_sms: "%s" is not the correct validation code expected "%s". Locals:\n %s\n\n' % (mo_sms.message, profile.validation, locals()))
@@ -2162,7 +2162,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         # TODO: user selectable gateways
         gw = Gateway.objects.get(name=self.GATEWAY_42IT)
         # find all "free" numbers
-        numbers = GatewayNumber.objects.filter(gateway=gw).exclude(number__in=[r.gw_number.number for r in self.reporters.all()])
+        numbers = GatewayNumber.objects.filter(gateway=gw).exclude(number__in=[r.gw_number.number for r in self.reporters.exclude(project=None)])
         return numbers
 
     def create_reporter(self, project=None):
@@ -2201,7 +2201,6 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """
         logger.debug("Entering: %s()" % who_am_i())
         reporters = self.reporters.all()
-        print "reporters:", reporters
         if reporters:
             logger.debug("Exiting: %s()" % who_am_i())
             return reporters[0]
@@ -2313,7 +2312,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
                 except Exception, e:
                     logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
         else:
-            logger.error('UserProfile.enable_reporting() called with bad State: %s Locals:\n %s\n\n' % (get_state(self), locals(), ))
+            logger.error('UserProfile.enable_reporting() called with bad State: %s Locals:\n %s\n\n' % (self.get_state(), locals(), ))
         logger.debug("Exiting: %s()" % who_am_i())
 
     def enable_all_reporters(self):
@@ -2382,6 +2381,9 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or 
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
+    has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
+    has_perm_add_sms_updates.short_description = 'may create SMS project updates'
+        
     
     #def phone_number_changed(self, phone_number):
     #    logger.debug("Entering: %s()" % who_am_i())

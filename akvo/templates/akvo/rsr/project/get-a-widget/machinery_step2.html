@@ -1,5 +1,7 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load i18n rsr_tags %}
+{% load url from future %}
+
 
 {% block head %}
 	<!--[if IE 7]>
@@ -60,6 +62,7 @@
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
+
 	<h1>{% trans 'Customise your widget' %}</h1>
 	<p>
 		{% ifequal widget_choice 'specific-project'  %}
@@ -209,7 +212,7 @@
 
 				<div style="text-align:center;">
 					<span class="small" style="margin-right:50px;">
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'Cancel' %}</a>
+						<a href="{% url 'project_main' project.id %}">{% trans 'Cancel' %}</a>
 					</span>
 					<a id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();">
 						<span>{% trans 'Preview' %}</span>
@@ -241,9 +244,9 @@
 			
 				<div style="text-align:center;">
 					<span class="small" style="margin-right:50px;">
-						<a href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
+						<a href="{% url 'project_get_widget' project.id %}">{% trans 'Back' %}</a>
 					</span>
-					<a class="aqua awesome" href="{% url akvo.rsr.views.projectmain project.id %}">
+					<a class="aqua awesome" href="{% url 'project_main' project.id %}">
 						<span>{% trans 'Done' %}</span>
 					</a>
 				</div>

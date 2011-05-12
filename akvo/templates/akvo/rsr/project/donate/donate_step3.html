@@ -1,22 +1,22 @@
 {% extends "rsr/project/donate/donate_base.html" %}
-
 {% load i18n rsr_tags thumbnail %}
+{% load url from future %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
 <li id="last_breadcrum_item">{% trans 'Confirm Donation' %}</li>
 {% endblock breadcrum_items %}
 
-
 {% block maincontent %}
 
 {% if live_earth_enabled %}
 	{% if has_sponsor_banner %}
-	<a href="{% url akvo.rsr.views.liveearth %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
+	<a href="{% url 'live_earth_landing_page' %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
 	{% endif %}
 {% endif %}
 
-<h1>Donate to {{p.name}}</h1>
+<h1>Donate to {{project.name}}</h1>
 <div class="white_box">
 	<div>
 		<div id="donate_step_box">
@@ -59,7 +59,7 @@
 				<p>{% trans 'Project name' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p><a href="{% url akvo.rsr.views.projectmain p.id %}">{{ p.name }}</a></p>
+				<p><a href="{% url 'project_main' project.id %}">{{ project.name }}</a></p>
 			</div>
 			<div class="clear"></div>
 			
@@ -67,7 +67,7 @@
 				<p>{% trans 'Location' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p>{{ p.primary_location.country.get_continent_display }} / {{p.primary_location.country}}, {{p.primary_location.city}}</p>
+				<p>{{ project.primary_location.country.get_continent_display }} / {{project.primary_location.country}}, {{project.primary_location.city}}</p>
 			</div>
 			<div class="clear"></div>
 			
@@ -75,22 +75,22 @@
 				<p>{% trans 'Akvo ref' %}:</p>
 			</div>
 			<div class="donate_details_right">
-				<p>{{ p.id }}</p>
-				{% if p.current_image %}
+				<p>{{ project.id }}</p>
+				{% if project.current_image %}
 					<div style="margin-top:5px;">
-						<a href="{% url akvo.rsr.views.projectmain p.id %}">
-                            <img src="{% thumbnail p.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{p.current_image_caption}}" />
+						<a href="{% url 'project_main' project.id %}">
+                            <img src="{% thumbnail project.current_image 172x125 autocrop,upscale,sharpen %}" alt="{{project.current_image_caption}}" />
 						</a>
 					</div>
 			    {% endif %}
 				<div style="width:172px;">
-					{% funding_table p %}
+					{% funding_table project %}
 				</div>
 			</div>
 			<div class="clear"></div>
 		</div>
 		<div style="float:left; width:513px; margin-left:20px;">
-			{% ifequal payment_engine 'paypal' %}
+			{% if payment_engine = 'paypal' %}
 			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:485px; margin-bottom:20px; padding:10px">
 				<div style="float:right; width:223px; margin-left:10px" class="clearfix" >
 					<img src="{{MEDIA_URL}}akvo/img/donate/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" />
@@ -100,10 +100,10 @@
 					{% trans "With PayPal you may make donations via your country&#x27;s accepted credit or debit cards, or through a PayPal account if you have one. And PayPal handles the currency conversion for you." %}
 				</p>
 				<p class="small">
-					{% ifequal p.currency 'EUR' %}
+					{% ifequal project.currency 'EUR' %}
 						{% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 35 Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the selected project.' %}				
 					{% endifequal %}
-					{% ifequal p.currency 'USD' %}
+					{% ifequal project.currency 'USD' %}
 							{% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 30 Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to the selected project.' %}					
 					{% endifequal %}
 				</p>
@@ -114,17 +114,17 @@
 				</p>
 				<ul class="small" >
 					<li>
-					    {% ifequal p.currency 'EUR' %}
+					    {% if project.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
-					    {% endifequal %}
-					    {% ifequal p.currency 'USD' %}
+					    {% endif %}
+					    {% if project.currency = 'USD' %}
 					        {% trans 'United States of America' %}
-					    {% endifequal %}
+					    {% endif %}
 					</li>
 				</ul>
 			</div>
-			{% endifequal %}
-			{% ifequal payment_engine 'ideal' %}
+			{% endif %}
+			{% if payment_engine = 'ideal' %}
 			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:485px; margin-bottom:20px; padding:10px;">
 				<div style="float:right; width:130px; text-align:center;">
 					<img src="{{MEDIA_URL}}akvo/img/donate/ideal-small.png" width="130" height="121" alt="Ideal" /><br />
@@ -138,12 +138,12 @@
 				</p>
 
 				<p class="small">
-					{% ifequal p.currency 'EUR' %}
+					{% if project.currency = 'EUR' %}
 					{% trans 'Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you donate &euro;100, &euro;98.82 Euros will go towards the selected project.' %}
-					{% endifequal %}
-					{% ifequal p.currency 'USD' %}
+					{% endif %}
+					{% if project.currency = 'USD' %}
 					{% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
-					{% endifequal %}
+					{% endif %}
 				</p>
 			</div>
 			<div style="float:right; border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; width:485px; padding:10px;">
@@ -152,22 +152,22 @@
 				</p>
 				<ul class="small">
 					<li style="margin-left:30px;">
-					    {% ifequal p.currency 'EUR' %}
+					    {% if project.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
-					    {% endifequal %}
-					    {% ifequal p.currency 'USD' %}
+					    {% endif %}
+					    {% if project.currency = 'USD' %}
 					        {% trans 'United States of America' %}
-					    {% endifequal %}
+					    {% endif %}
 					</li>
 				</ul>
 			</div>
-			{% endifequal %}
+			{% endif %}
 		</div>
 		<div class="clear"></div>
 		<hr style="margin-top:15px;"/>
 
 		<div style="float:left; width:400px;">
-			{% blocktrans with p.get_currency_display|safe as currency %}
+			{% blocktrans with project.get_currency_display|safe as currency %}
 			<h3>Amount you wish to donate (in {{currency}})</h3>
             {% endblocktrans %}
 			<div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
@@ -175,7 +175,7 @@
 			</div>
 			<div style="float:left;">
 				<p style="color:#008C00; font-size:1.3em; font-weight:bold; margin-top:3px;">
-					{{p.get_currency_display|safe}}{{invoice.amount}}
+					{{project.get_currency_display|safe}}{{invoice.amount}}
 				</p>
 			</div>
 			<div class="clear"></div>
@@ -255,20 +255,20 @@
 				{% trans 'for the donation.' %}
 			</p>
 			<div style="float:left; width:250px;">
-					<a class="small" href="{% url void_invoice invoice_id=invoice.id,action='cancel' %}">
+					<a class="small" href="{% url 'void_invoice' invoice_id=invoice.id action='cancel' %}">
 						{% trans 'Cancel' %}
 					</a>
-					<a class="red awesome" style="margin-left:20px;" href="{% url void_invoice invoice_id=invoice.id,action='back' %}">
+					<a class="red awesome" style="margin-left:20px;" href="{% url 'void_invoice' invoice_id=invoice.id action='back' %}">
 						<span>{% trans 'Back' %}</span>
 					</a>
 
 			</div>
 			<div style="float:right; width:150px; text-align:right; margin-right:60px;">
-				{% ifequal payment_engine 'ideal' %}
+				{% if payment_engine = 'ideal' %}
 		            <a class="aqua awesome" href="{{mollie_order_url}}"><span>Donate</span></a>
 		        {% else %}
 		            {{ pp_button }}
-		        {% endifequal %}
+		        {% endif %}
 			</div>
 			<div class="clear"></div>
 		</div>

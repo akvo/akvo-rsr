@@ -1,8 +1,11 @@
 {% extends "rsr/base.html" %}
 {% load i18n %}
+{% load url from future %}
+
+
 {% block content %}
 <h1>{% trans 'Error 500' %}</h1>
 <p>
-	Sorry, something went wrong. Wanna see our our <a href="{% url index %}">front page</a> instead?  
+	Sorry, something went wrong. Wanna see our our <a href="{% url 'index' %}">front page</a> instead?  
 </p>
 {% endblock content %}
