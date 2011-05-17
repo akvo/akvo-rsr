@@ -8,6 +8,7 @@ django-paypal==0.1.2
 django-piston==0.2.2
 django-rosetta==0.5.6
 sorl-thumbnail==3.2.5
+djangoembed==0.1.1
 
 
 # Django apps from VCS web services

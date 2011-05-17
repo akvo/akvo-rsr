@@ -2575,15 +2575,16 @@ class ProjectUpdate(models.Model):
         if self.video_oembed:
             soup = BeautifulSoup(self.video_oembed)
             if soup.find('object') is not None:
-                video_object = soup.find('object')
-                embed_object = video_object.find('embed')
+                object = soup.find('object')
+                embed_object = object.find('embed')
                 embed_object['width'] = unicode(width)
                 embed_object['height'] = unicode(height)
             elif soup.find('iframe') is not None:
-                video_object = soup.find('iframe')
-            video_object['width'] = unicode(width)
-            video_object['height'] = unicode(height)
-            return mark_safe(unicode(video_object))
+                object = soup.find('iframe')
+            object['width'] = unicode(width)
+            object['height'] = unicode(height)
+            markup = mark_safe(unicode(object))
+            return markup
         return
             
     @models.permalink
@@ -2595,10 +2596,10 @@ class ProjectUpdate(models.Model):
 
     def save(self):
         if self.video:
-            data = get_oembed_json(self.video)
-            if data is not None:
-                self.video_thumbnail = data.thumbnail_url
-                self.video_oembed = data.html
+            embedly_data = get_oembed_json(self.video)
+            if embedly_data is not None:
+                self.video_oembed = embedly_data.html
+                self.video_thumbnail = embedly_data.thumbnail_url
         super(ProjectUpdate, self).save()
 
 

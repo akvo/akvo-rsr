@@ -17,6 +17,9 @@ from paypal.standard.ipn.views import ipn as paypal_ipn
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
 admin.autodiscover()
+# The next two lines enable djangoembed in the admin
+import oembed
+oembed.autodiscover()
 
 feeds = {
     'updates': ProjectUpdates,

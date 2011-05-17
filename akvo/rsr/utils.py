@@ -8,7 +8,20 @@ import random
 import logging
 logger = logging.getLogger('akvo.rsr')
 
-import embedly
+import sys
+
+# embedly imports json directly  - 
+# the following ensures support for Python 2.5 as well
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        from django.utils import simplejson as json
+    sys.modules['json'] = json
+from embedly import Embedly
+
 from workflows.models import State
 from workflows.utils import get_state
 
@@ -335,10 +348,10 @@ def state_equals(obj, state):
 
 
 # OEmbed helpers
-def get_oembed_json(url, data=None):
+def get_oembed_json(url, json_data=None):
     try:
-        client = embedly.Embedly()
-        data = client.oembed(url)
+        embedly_api_client = Embedly()
+        data = embedly_api_client.oembed(url)
     except:
         pass
-    return data
+    return json_data

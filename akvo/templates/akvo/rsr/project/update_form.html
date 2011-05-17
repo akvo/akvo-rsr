@@ -1,12 +1,11 @@
 {% extends "rsr/base_sheet.html" %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail %}
-{% load url from future %}
 
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
-<li><a href="{% url 'project_main' p.id %}"><span>{{p.name}}</span></a></li>
+<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+<li><a href="{% url project_main p.id %}"><span>{{p.name}}</span></a></li>
 <li id="last_breadcrum_item">Add update</li>
 {% endblock breadcrum_items %}
 
@@ -162,7 +161,7 @@
 		  <hr />
 			<div style="text-align:center; padding-bottom:20px;">
 				<div style="float:left;">
-					<a href="{% url 'project_main' p.id %}" class="small">{% trans 'Cancel' %}</a>
+					<a href="{% url project_main p.id %}" class="small">{% trans 'Cancel' %}</a>
 				</div>
 				<a class="aqua awesome" href="javascript:document.add_update_form.submit();">
 					{% trans 'Add update' %}
