@@ -335,9 +335,11 @@ def state_equals(obj, state):
 
 
 # OEmbed helpers
+oohembed_endpoint = 'http://oohembed.com/oohembed/'
 oembed_consumer = oembed.Consumer([
-    ('http://vimeo.com/*', 'http://www.vimeo.com/api/oembed.%(format)s'),
-    ('http://youtube.com/watch*', 'http://www.youtube.com/oembed'),
+    ('http://blip.tv/file/*', oohembed_endpoint),
+    ('http://vimeo.com/*', oohembed_endpoint),
+    ('http://youtube.com/watch*', oohembed_endpoint)
 ])
 
 def get_oembed_json(url, data=None):

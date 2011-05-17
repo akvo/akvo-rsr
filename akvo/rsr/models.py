@@ -2593,8 +2593,9 @@ class ProjectUpdate(models.Model):
     def save(self):
         if self.video:
             data = get_oembed_json(self.video)
-            self.video_thumbnail = data['thumbnail_url']
-            self.video_oembed = data['html']
+            if data is not None:
+                self.video_thumbnail = data['thumbnail_url']
+                self.video_oembed = data['html']
         super(ProjectUpdate, self).save()
 
 

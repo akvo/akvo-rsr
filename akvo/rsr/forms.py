@@ -302,7 +302,7 @@ class ProjectUpdateForm(forms.ModelForm):
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc.endswith('blip.tv') or
+            valid_url = (netloc == 'blip.tv' or
                          netloc == 'vimeo.com' or 
                          netloc == 'www.youtube.com')
             if not valid_url:
