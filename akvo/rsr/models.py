@@ -2532,7 +2532,7 @@ class ProjectUpdate(models.Model):
                                       help_text=u'XXX placeholder help text',
                                       verify_exists=False)
     video_oembed    = models.TextField(_('vide OEmbed object'), blank=True)
-    video_thumbnail = models.CharField(_('video thumbnail URL'), blank=True,
+    video_thumbnail = models.URLField(_('video thumbnail URL'), blank=True,
                                        verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
                                        max_length=75)
