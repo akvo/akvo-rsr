@@ -335,7 +335,7 @@ def state_equals(obj, state):
 
 
 # OEmbed helpers
-oembed_consumer = Consumer([
+oembed_consumer = oembed.Consumer([
     ('http://vimeo.com/*', 'http://www.vimeo.com/api/oembed.%(format)s'),
     ('http://youtube.com/watch*', 'http://www.youtube.com/oembed'),
 ])
