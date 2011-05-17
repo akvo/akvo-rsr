@@ -2576,6 +2576,9 @@ class ProjectUpdate(models.Model):
             soup = BeautifulSoup(self.video_oembed)
             if soup.find('object') is not None:
                 video_object = soup.find('object')
+                embed_object = video_object.find('embed')
+                embed_object['width'] = unicode(width)
+                embed_object['height'] = unicode(height)
             elif soup.find('iframe') is not None:
                 video_object = soup.find('iframe')
             video_object['width'] = unicode(width)
@@ -2594,8 +2597,8 @@ class ProjectUpdate(models.Model):
         if self.video:
             data = get_oembed_json(self.video)
             if data is not None:
-                self.video_thumbnail = data['thumbnail_url']
-                self.video_oembed = data['html']
+                self.video_thumbnail = data.thumbnail_url
+                self.video_oembed = data.html
         super(ProjectUpdate, self).save()
 
 

@@ -13,6 +13,7 @@ sorl-thumbnail==3.2.5
 django-sorting==0.1
 django-pagination==1.0.7
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3#egg=django_registration-tip
+-e git://github.com/embedly/embedly-python.git#egg=embedly
 
 # Akvonauts repos
 -e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie 
@@ -31,4 +32,3 @@ python-memcached==1.45
 simplejson==2.1.6
 template-utils==0.4p2
 wsgiref==0.1.2
-OEmbed==0.1.1

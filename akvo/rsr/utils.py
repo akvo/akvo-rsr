@@ -8,7 +8,7 @@ import random
 import logging
 logger = logging.getLogger('akvo.rsr')
 
-import oembed
+import embedly
 from workflows.models import State
 from workflows.utils import get_state
 
@@ -335,16 +335,10 @@ def state_equals(obj, state):
 
 
 # OEmbed helpers
-oohembed_endpoint = 'http://oohembed.com/oohembed/'
-oembed_consumer = oembed.Consumer([
-    ('http://blip.tv/file/*', oohembed_endpoint),
-    ('http://vimeo.com/*', oohembed_endpoint),
-    ('http://youtube.com/watch*', oohembed_endpoint)
-])
-
 def get_oembed_json(url, data=None):
     try:
-        data = oembed_consumer.lookup(url)
+        client = embedly.Embedly()
+        data = client.oembed(url)
     except:
         pass
     return data
