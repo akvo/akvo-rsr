@@ -8,6 +8,7 @@ import random
 import logging
 logger = logging.getLogger('akvo.rsr')
 
+import oembed
 from workflows.models import State
 from workflows.utils import get_state
 
@@ -331,3 +332,17 @@ def state_equals(obj, state):
     if type(state) != type([]):
         state = [state] 
     return get_state(obj) in State.objects.filter(name__in=state)
+
+
+# OEmbed helpers
+oembed_consumer = Consumer([
+    ('http://vimeo.com/*', 'http://www.vimeo.com/api/oembed.%(format)s'),
+    ('http://youtube.com/watch*', 'http://www.youtube.com/oembed'),
+])
+
+def get_oembed_json(url, data=None):
+    try:
+        data = oembed_consumer.lookup(url)
+    except:
+        pass
+    return data

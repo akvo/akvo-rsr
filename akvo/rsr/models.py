@@ -2531,6 +2531,9 @@ class ProjectUpdate(models.Model):
     video           = models.URLField(_('video URL'), blank=True,
                                       help_text=u'XXX placeholder help text',
                                       verify_exists=False)
+    video_oembed    = models.TextField(_('vide OEmbed object'), blank=True)
+    video_thumbnail = models.CharField(_('video thumbnail URL'), blank=True,
+                                       verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
                                        max_length=75)
     video_credit    = models.CharField(_('video credit'), blank=True,
