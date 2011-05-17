@@ -67,7 +67,7 @@ INSTALLED_APPS = (
     'mollie.ideal',
     'django_sorting',
     'pagination',
-    'oembed',
+    #'oembed',
     'django_markup',
     'notification',
     'permissions',

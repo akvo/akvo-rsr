@@ -12,7 +12,6 @@ sorl-thumbnail==3.2.5
 # Django apps from VCS web services
 django-sorting==0.1
 django-pagination==1.0.7
--e git+git://github.com/worldcompany/djangoembed.git@bb577a52fc45#egg=djangoembed
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3#egg=django_registration-tip
 
 # Akvonauts repos
@@ -32,3 +31,4 @@ python-memcached==1.45
 simplejson==2.1.6
 template-utils==0.4p2
 wsgiref==0.1.2
+OEmbed==0.1.1
