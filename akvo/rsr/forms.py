@@ -304,16 +304,8 @@ class ProjectUpdateForm(forms.ModelForm):
             netloc = netloc.lower()
             valid_url = (netloc.endswith('blip.tv') or
                          netloc == 'vimeo.com' or 
-                         netloc == 'www.youtube.com' and path == 'watch')
+                         netloc == 'www.youtube.com')
             if not valid_url:
                 raise forms.ValidationError(_('Invalid video URL. Currently '
                     'Blip.TV, Vimeo and YouTube are supported.'))
         return data
-
-    def save(self):
-        url = self.cleaned_data['video']
-        if url:
-            data = get_oembed_json(url)
-            self.video_thumbnail = data['video_thumbnail']
-            self.video_oembed = data['html']
-        super(ProjectUpdateForm, self).save()

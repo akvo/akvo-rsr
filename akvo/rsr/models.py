@@ -14,6 +14,8 @@ from decimal import Decimal
 import logging
 logger = logging.getLogger('akvo.rsr')
 
+from BeautifulSoup import BeautifulSoup
+
 from django import forms
 from django.conf import settings
 from django.db import models
@@ -63,7 +65,7 @@ from utils import (
 )
 from utils import (
     groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
-    who_am_i, send_now, state_equals
+    who_am_i, send_now, state_equals, get_oembed_json
 )
 from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -2531,7 +2533,7 @@ class ProjectUpdate(models.Model):
     video           = models.URLField(_('video URL'), blank=True,
                                       help_text=u'XXX placeholder help text',
                                       verify_exists=False)
-    video_oembed    = models.TextField(_('vide OEmbed object'), blank=True)
+    video_oembed    = models.TextField(_('video OEmbed object'), blank=True)
     video_thumbnail = models.URLField(_('video thumbnail URL'), blank=True,
                                        verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
@@ -2565,12 +2567,35 @@ class ProjectUpdate(models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
+    @property
+    def media_location(self):
+        return self.photo_location
+
+    def get_embedded_video(self, width=400, height=300):
+        if self.video_oembed:
+            soup = BeautifulSoup(self.video_oembed)
+            if soup.find('object') is not None:
+                video_object = soup.find('object')
+            elif soup.find('iframe') is not None:
+                video_object = soup.find('iframe')
+            video_object['width'] = unicode(width)
+            video_object['height'] = unicode(height)
+            return mark_safe(unicode(video_object))
+        return
+            
     @models.permalink
     def get_absolute_url(self):
         return ('project_update', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
         return u'Project update for %s' % self.project.name
+
+    def save(self):
+        if self.video:
+            data = get_oembed_json(self.video)
+            self.video_thumbnail = data['thumbnail_url']
+            self.video_oembed = data['html']
+        super(ProjectUpdate, self).save()
 
 
 class ProjectComment(models.Model):

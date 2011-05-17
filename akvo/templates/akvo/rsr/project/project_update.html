@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 {% load url from future %}
 
 
@@ -35,12 +35,10 @@
 		  {{ update.text|linebreaks }}
 		 {% endif %}
 		
-		{% if update.video %}
-      <div style="margin: 10px 10px 5px 20px;">
-    {% oembed 400x300 %}
-        {{ update.video }}
-    {% endoembed %}
-    </div>
+		{% if update.video_oembed %}
+        <div style="margin: 10px 10px 5px 20px;">
+            {{ update.get_embedded_video }}
+        </div>
 <p class="small lightx1">
     {% if update.video_caption %}
         {{ update.video_caption }}
