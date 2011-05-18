@@ -22,7 +22,7 @@
 			</p>
 		</div>
 		<div class="counter_badge">
-			<span style="display:none;">{% counter u %}</span>
+			<span style="display:none;">{% counter update %}</span>
 			{% cache 10 project_update_view_count project.id update.id %}
 				{{ update.view_count|intcomma }}
 			{% endcache %}
