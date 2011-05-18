@@ -964,6 +964,7 @@ def projectupdate(request, project_id, update_id):
     update      = get_object_or_404(ProjectUpdate, pk=update_id)
     can_add_update = project.connected_to_user(request.user)
     comments = project.projectcomment_set.all().order_by('-time')[:3]
+    edit_timeout   = settings.PROJECT_UPDATE_TIMEOUT
     return {
         'project'               : project,
         'update'                : update,
@@ -971,6 +972,7 @@ def projectupdate(request, project_id, update_id):
         'hide_latest_updates'   : True,
         'site_section'          : 'projects', 
         'comments'              : comments,
+        'edit_timeout'          : edit_timeout
         }
 
 @render_to('rsr/project/project_comments.html')
