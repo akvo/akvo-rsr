@@ -31,7 +31,7 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-		  {% if update.media_location == 'E' %}
+		  {% if update.text_location == 'B' %}
 		    {{ update.text|linebreaks }}
 		  {% endif %}	
 		  {% if update.video %}
@@ -52,7 +52,7 @@
 			{% if update.photo %}
         {% update_thumb update 400 300 %}
       {% endif %}   	
-		  {% if update.media_location == 'B' %}
+		  {% if update.text_location == 'E' %}
 		    {{ update.text|linebreaks }}
 		  {% endif %}
 			<hr style="margin-bottom:5px;" />

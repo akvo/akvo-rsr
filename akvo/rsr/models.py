@@ -2571,6 +2571,14 @@ class ProjectUpdate(models.Model):
     def media_location(self):
         return self.photo_location
 
+    @property
+    def text_location(self):
+        if self.photo_location == 'B':
+            location = 'E'
+        else:
+            location = 'B'
+        return location
+
     def get_embedded_video(self, width=400, height=300):
         if self.video_oembed:
             soup = BeautifulSoup(self.video_oembed)
