@@ -1012,7 +1012,7 @@ def updateform(request, project_id,
     if not can_add_update:
         return HttpResponseRedirect('/rsr/error/access_denied/')
     if request.method == 'POST':
-        form = form_class(request.POST, request.FILES)
+        form = form_class(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             update = form.save(commit=False)
             update.project = p
@@ -1021,6 +1021,7 @@ def updateform(request, project_id,
             update.update_method = 'W'
             update.save()
             latest = ProjectUpdate.objects.all().order_by('-time')[0]
+            #return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
             return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
     else:
         form = ProjectUpdateForm(instance=instance)
