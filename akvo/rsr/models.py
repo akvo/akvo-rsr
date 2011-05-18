@@ -2543,7 +2543,8 @@ class ProjectUpdate(models.Model):
                                        max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'))
-    time_last_updated = models.DateTimeField(_('time last updated', auto_now=True)
+    time_last_updated = models.DateTimeField(_('time last updated',
+                                             auto_now=True))
     if not settings.PVW_RSR:
         featured        = models.BooleanField(_('featured'), )
     
