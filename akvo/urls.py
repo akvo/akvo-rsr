@@ -97,7 +97,7 @@ urlpatterns += patterns('',
     # Project
     url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
-    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.updateform', name='project_edit_update'),
+    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$', 'akvo.rsr.views.updateform', name='project_edit_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', name='project_add_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
     
