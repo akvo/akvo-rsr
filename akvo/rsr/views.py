@@ -33,7 +33,7 @@ from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 from registration.models import RegistrationProfile
 import random
@@ -999,9 +999,13 @@ def updateform(request, project_id):
     '''
     p = get_object_or_404(Project, pk=project_id)
     can_add_update = p.connected_to_user(request.user)
+
+    edit_timeout = timedelta(seconds=settings.PROJECT_UPDATE_TIMEOUT)
+    edit_window = datetime.now() - edit_timeout 
+    edit_window_expired = edit_window > edit_timeout
     
     # check that the current user is allowed to edit
-    if not can_add_update:
+    if not can_add_update or edit_window_expired:
         return HttpResponseRedirect('/rsr/error/access_denied/')
         
     if request.method == 'POST':
@@ -1025,6 +1029,8 @@ def updateform(request, project_id):
         'p': p, #compatibility with new_look
         'can_add_update': can_add_update,
         'updates': Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
+        'edit_window': edit_window,
+        'edit_window_expired': edit_window_expired
         }, RequestContext(request))
 
 class MobileProjectForm(forms.Form):
