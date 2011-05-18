@@ -6,11 +6,18 @@
 {{block.super}}
 <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
 <li><a href="{% url project_main p.id %}"><span>{{p.name}}</span></a></li>
-<li id="last_breadcrum_item">Add update</li>
+<li id="last_breadcrum_item">
+  {% if edit_mode %}
+    Edit update
+  {% else %}
+    Add update
+  {% endif %}
+</li>
 {% endblock breadcrum_items %}
 
 {% block content %}
-	<form enctype="multipart/form-data" method="post" action="" name="add_update_form">{% csrf_token %}
+	<form enctype="multipart/form-data" method="post" action="" name="add_update_form">
+	  {% csrf_token %}
 		<div class="space20">
 			{% if form.non_field_errors %}
 	        	<div class="error">
@@ -18,7 +25,13 @@
 	        	</div>
 	        {% endif %}
 			<div style="width:500px;">
-				<h1>{% trans 'Add update' %}</h1>
+				<h1>
+				  {% if edit_mode %}
+				    {% trans 'Edit update' %}
+				  {% else %}
+				    {% trans 'Add update' %}
+				  {% endif %}
+				</h1>
 			</div>
 			<div class="clear"></div>
 			{% if form.title.errors %}
@@ -55,8 +68,21 @@
 				</div>
 			{% endif %}
 			<div style="width:500px;">
-			  <h2 style="margin-bottom:20px;">{% trans 'Add a photo' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
-				<h4 style="margin-bottom:20px;">{% trans 'Upload photo file' %}</h4>
+			  <h2 style="margin-bottom:20px;">
+			    {% if edit_mode %}
+			      {% trans 'Edit photo' %}
+			    {% else %}
+			      {% trans 'Add a photo' %}
+			    {% endif %}
+			    <span class="small grey"> ({% trans 'optional' %})</span>
+			  </h2>
+				<h4 style="margin-bottom:20px;">
+				  {% if edit_mode %}
+				    {% trans 'Upload new photo file' %}
+				  {% else %}
+				    {% trans 'Upload photo file' %}
+				  {% endif %}
+				</h4>
 				{{form.photo}}
 			</div>
 			<div class="clear"></div>
@@ -102,7 +128,13 @@
 			{% endif %}
 			<div style="width:500px;">
 			  <h2 style="margin-bottom:20px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
-				<h4>{% trans 'Paste video URL' %}</h4>
+				<h4>
+				  {% if edit_mode %}
+				    {% trans 'Edit video URL' %}
+				  {% else %}
+				    {% trans 'Paste video URL' %}
+				  {% endif %}
+				</h4>
 				{{form.video}}
 				<p class="small grey">{% trans 'Supported providers' %}: Blip, Vimeo, YouTube.</p>
 			</div>
@@ -115,7 +147,7 @@
 			{% endif %}
 			<div style="width:500px;">
 				<h4>{% trans 'Video caption' %}</h4>
-				{{form.video_caption}}
+				{{ form.video_caption }}
 				<p class="small grey">75 {% trans 'characters' %}</p>
 			</div>
 			<div class="clear"></div>
@@ -164,7 +196,11 @@
 					<a href="{% url project_main p.id %}" class="small">{% trans 'Cancel' %}</a>
 				</div>
 				<a class="aqua awesome" href="javascript:document.add_update_form.submit();">
-					{% trans 'Add update' %}
+				  {% if edit_mode %}
+				    {% trans 'Save edits' %}
+				  {% else %}
+					  {% trans 'Add update' %}
+					{% endif %}
 				</a>
 			</div>
 		</div>

@@ -990,27 +990,29 @@ def projectcomments(request, project_id):
 
 
 @login_required()
-def updateform(request, project_id):
+def updateform(request, project_id,
+               form_class=ProjectUpdateForm,
+               instance=None,
+               update_id=None):
+    '''Form for creating or editing a project update
+
+    :p: project
+    :form: the update form
+    :update_id: the ID of the update being edited, if any
     '''
-    Form for creating a project update
-    Context:
-    p: project
-    form: the update form
-    '''
+    if update_id is not None:
+        instance = get_object_or_404(ProjectUpdate, id=update_id)
     p = get_object_or_404(Project, pk=project_id)
     can_add_update = p.connected_to_user(request.user)
-
-    edit_timeout = timedelta(seconds=settings.PROJECT_UPDATE_TIMEOUT)
-    edit_window = datetime.now() - edit_timeout 
-    edit_window_expired = edit_window > edit_timeout
-    
+    #edit_timeout = timedelta(seconds=settings.PROJECT_UPDATE_TIMEOUT)
+    #edit_window = datetime.now() - edit_timeout 
+    #edit_window_expired = edit_window > edit_timeout
     # check that the current user is allowed to edit
-    if not can_add_update or edit_window_expired:
+    # or that the time window for editing the update hasn't expired
+    if not can_add_update:
         return HttpResponseRedirect('/rsr/error/access_denied/')
-        
     if request.method == 'POST':
-
-        form = ProjectUpdateForm(request.POST, request.FILES)
+        form = form_class(request.POST, request.FILES)
         if form.is_valid():
             update = form.save(commit=False)
             update.project = p
@@ -1021,17 +1023,15 @@ def updateform(request, project_id):
             latest = ProjectUpdate.objects.all().order_by('-time')[0]
             return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
     else:
-        form = ProjectUpdateForm()
-        
-    return render_to_response('rsr/project/update_form.html', {
-        'form': form, 
-        'project': p, 
-        'p': p, #compatibility with new_look
-        'can_add_update': can_add_update,
-        'updates': Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
-        'edit_window': edit_window,
-        'edit_window_expired': edit_window_expired
-        }, RequestContext(request))
+        form = ProjectUpdateForm(instance=instance)
+    return render_to_response('rsr/project/update_form.html',
+        dict(form=form,
+             project=p,
+             p=p,
+             can_add_update=can_add_update,
+             updates=Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
+             edit_mode=update_id),
+        RequestContext(request))
 
 class MobileProjectForm(forms.Form):
     project         = forms.ChoiceField(required=False, widget=forms.Select())
