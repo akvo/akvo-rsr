@@ -2600,6 +2600,7 @@ class ProjectUpdate(models.Model):
     def __unicode__(self):
         return u'Project update for %s' % self.project.name
 
+    """
     def save(self):
         if self.video:
             embedly_data = get_oembed_json(self.video)
@@ -2607,6 +2608,7 @@ class ProjectUpdate(models.Model):
                 self.video_oembed = embedly_data.html
                 self.video_thumbnail = embedly_data.thumbnail_url
         super(ProjectUpdate, self).save()
+    """
 
 
 class ProjectComment(models.Model):
