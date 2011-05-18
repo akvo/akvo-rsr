@@ -38,10 +38,12 @@
 						</div>
 											
 						<div style="float:left; width:240px; margin: 0 10px;">
-                        {% if update.video_thumbnail %}
+                        {% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
                                 <a href="{% url 'project_update' project.id update.id %}">
-									<img src="{{ update.video_thumbnail }}" alt="{{ update.video_title }}" width=240px>
+                                    {% oembed 240x180 %}
+                                      {{ update.video }}
+                                    {% endoembed %}
                                 </a>
 								</div>
 							{% else %}
