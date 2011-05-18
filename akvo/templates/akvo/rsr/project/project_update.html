@@ -50,7 +50,7 @@
         </p>
       {% endif %}
 			{% if update.photo %}
-        {% update_thumb u 400 300 %}
+        {% update_thumb update 400 300 %}
       {% endif %}   	
 		  {% if update.media_location == 'B' %}
 		    {{ update.text|linebreaks }}
