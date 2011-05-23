@@ -2,29 +2,24 @@
 
 cd "`dirname $0`"
 
-# check whether virtualenv_name parameter exists
+# exit if virtualenv_name parameter is missing
 if [ -z "$1" ]; then
-    echo "Usage: rebuild_dev_env <virtualenv_name>"
+    echo "Usage: rebuild_osx_dev_env <virtualenv_name>"
+    exit -1
+fi
+
+# exit if virtualenv_paths.config file does not exist
+if [ ! -e virtualenv_paths.config ]; then
+    echo "Expected virtualenv_paths.config file not found -- use the virtualenv_paths.config.template file as a basis"
     exit -1
 fi
 
 VIRTUALENV_NAME=$1
 
-export ARCHFLAGS="-arch x86_64 -arch i386"
-export CFLAGS="$ARCHFLAGS"
-export CXXFLAGS="$ARCHFLAGS"
-export LDFLAGS="$ARCHFLAGS"
-export CC=/usr/bin/gcc-4.2
-export MACOSX_DEPLOYMENT_TARGET=10.6
-
+source osx_build_flags_env_intel.config
 source virtualenv_paths.config
 
 workon $VIRTUALENV_NAME
-
-echo ">> Environment variables for compilation:"
-printf ">> ARCHFLAGS                = %s\n" "$ARCHFLAGS"
-printf ">> CC                       = %s\n" $CC
-printf ">> MACOSX_DEPLOYMENT_TARGET = %s\n" $MACOSX_DEPLOYMENT_TARGET
 
 printf "\n>> Virtualenv should be empty (i.e. wsgiref only)\n"
 pip freeze
