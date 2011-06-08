@@ -2540,7 +2540,7 @@ class ProjectUpdate(models.Model):
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'), auto_now_add=True)
     time_last_updated = models.DateTimeField(_('time last updated',
-                                             auto_now=True))
+                                             default=datetime.now))
                     
     if not settings.PVW_RSR:
         featured        = models.BooleanField(_('featured'))
@@ -2609,6 +2609,7 @@ class ProjectUpdate(models.Model):
         return u'Project update for %s' % self.project.name
 
     """
+    # Doing this in the frontend with jQuery embedly plugin
     def save(self):
         if self.video:
             embedly_data = get_oembed_json(self.video)
