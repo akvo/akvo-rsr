@@ -1,0 +1,18 @@
+{% load i18n %}
+
+{% if update.video %}
+    <div id="embeddedVideoThumbnail" style="width: {{ width }}px; height:{{ height }}px; text-align: center;">
+        <a href="{{ update.video }}"></a>
+    </div>
+    <script src="{{ MEDIA_URL}}core/js/jquery.embedly.min.js"></script>
+    <script>
+        var jQ = jQuery.noConflict();
+        var width, height = {{ width }}, {{ height }}
+        jQ(document).ready(function() {
+            jQ('#embeddedVideoThumbnail a').embedly({
+                maxWidth: width,
+                maxHeight: height
+            });
+        });
+    </script>
+{% endif %}

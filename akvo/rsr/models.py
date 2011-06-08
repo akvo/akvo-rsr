@@ -2530,14 +2530,14 @@ class ProjectUpdate(models.Model):
     video           = models.URLField(_('video URL'), blank=True,
                                       help_text=u'XXX placeholder help text',
                                       verify_exists=False)
-    video_oembed    = models.TextField(_('video OEmbed object'), blank=True)
-    video_thumbnail = models.URLField(_('video thumbnail URL'), blank=True,
-                                       verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
                                        max_length=75)
     video_credit    = models.CharField(_('video credit'), blank=True,
                                        max_length=25)
-    update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
+    update_method   = models.CharField(_('update method'), blank=True,
+                                       max_length=1,
+                                       choices=UPDATE_METHODS,
+                                       default='W')
     time            = models.DateTimeField(_('time'), auto_now_add=True)
     time_last_updated = models.DateTimeField(_('time last updated',
                                              default=datetime.now))
@@ -2546,7 +2546,7 @@ class ProjectUpdate(models.Model):
         featured        = models.BooleanField(_('featured'))
     
     class Meta:
-        get_latest_by = "time"
+        get_latest_by       = "time"
         verbose_name        = _('project update')
         verbose_name_plural = _('project updates')
 
@@ -2561,11 +2561,11 @@ class ProjectUpdate(models.Model):
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
 
-    def edit_window_expired(self):
+    def edit_window_has_expired(self):
         "Determine whether or not update timeout window has expired."
         now = datetime.now()
-        edit_timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
-        timeout = timedelta(minutes=edit_timeout)
+        window = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
+        timeout = timedelta(minutes=window)
         last_updated = now - self.time_last_updated
         return last_updated > timeout
 
@@ -2607,17 +2607,6 @@ class ProjectUpdate(models.Model):
 
     def __unicode__(self):
         return u'Project update for %s' % self.project.name
-
-    """
-    # Doing this in the frontend with jQuery embedly plugin
-    def save(self):
-        if self.video:
-            embedly_data = get_oembed_json(self.video)
-            if embedly_data is not None:
-                self.video_oembed = embedly_data.html
-                self.video_thumbnail = embedly_data.thumbnail_url
-        super(ProjectUpdate, self).save()
-    """
 
 
 class ProjectComment(models.Model):

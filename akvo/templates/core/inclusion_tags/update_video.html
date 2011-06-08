@@ -16,11 +16,12 @@
             </p>
         {% endif %}
     </div>
-    <script src="{{ MEDIA_URL}}js/jquery.embedly.min.js"></script>
+    <script src="{{ MEDIA_URL}}core/js/jquery.embedly.min.js"></script>
     <script>
-        var url, width, height = {{ update.video }}, {{ width }}, {{ height }}
-        $(function() {
-            $('#embeddedVideo a').embedly({
+        var jQ = jQuery.noConflict();
+        var width, height = {{ width }}, {{ height }}
+        jQ(document).ready(function() {
+            jQ('#embeddedVideo a').embedly({
                 maxWidth: width,
                 maxHeight: height
             });
