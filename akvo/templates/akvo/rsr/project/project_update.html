@@ -1,12 +1,12 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
 {% load url from future %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
 
 
 {% block breadcrum_items %}
-{{block.super}}
+{{ block.super }}
 <li><a href="{% url 'project_updates' project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
-<li id="last_breadcrum_item">{{update.title|capfirst}}</li>
+<li id="last_breadcrum_item">{{ update.title|capfirst }}</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
@@ -15,9 +15,9 @@
 			<span class="small">
 				<a href="{% url 'project_updates' project.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
-			<h2 style="padding-top:20px;">{{update.title|capfirst}}</h2>
+			<h2 style="padding-top:20px;">{{ update.title|capfirst }}</h2>
 			<p class="grey small">
-				{{update.time|date:"d-M-Y"}},
+				{{ update.time|date:"d-M-Y" }},
 				{% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 			</p>
 		</div>
@@ -31,36 +31,30 @@
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-		{% if update.text and update.photo_location == 'B' %}
-		  {{ update.text|linebreaks }}
-		 {% endif %}
-		
-		{% if update.video %}
-      <div style="margin: 10px 10px 5px 20px;">
-    {% oembed 400x300 %}
-        {{ update.video }}
-    {% endoembed %}
-    </div>
-<p class="small lightx1">
-    {% if update.video_caption %}
-        {{ update.video_caption }}
-    {% endif %}
-    {% if update.video_credit %}
-        {% trans 'Video credit' %}: {{ update.video_credit }}
-    {% endif %}
-</p>
-{% endif %}
-	{% if update.photo %}
-		{% if update.photo_location = 'B' %}
-			{% update_thumb update 400 300 %}
-		{% endif %}
-		{% if update.text %}{{update.text|linebreaks}}{% endif %}
-		{% if update.photo_location = 'E' %}{% update_thumb update 400 300 %}{% endif %}
-	{% else %}
-		{% if update.text %}
-			{{update.text|linebreaks}}
-		{% endif %}
-	{% endif %}
+		  {% if update.text_location == 'B' %}
+		    {{ update.text|linebreaks }}
+		  {% endif %}	
+		  {% if update.video %}
+        <div style="margin: 10px 10px 5px 20px;">
+          {% oembed 400x300 %}
+            {{ update.video }}
+          {% endoembed %}
+        </div>
+        <p class="small lightx1">
+          {% if update.video_caption %}
+            {{ update.video_caption }}
+          {% endif %}
+          {% if update.video_credit %}
+            {% trans 'Video credit' %}: {{ update.video_credit }}
+          {% endif %}
+        </p>
+      {% endif %}
+			{% if update.photo %}
+        {% update_thumb update 400 300 %}
+      {% endif %}   	
+		  {% if update.text_location == 'E' %}
+		    {{ update.text|linebreaks }}
+		  {% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>

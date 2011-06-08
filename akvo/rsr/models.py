@@ -4,15 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import urllib2
-import string
-import re
-import os
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 import logging
 logger = logging.getLogger('akvo.rsr')
+
+from BeautifulSoup import BeautifulSoup
 
 from django import forms
 from django.conf import settings
@@ -63,7 +61,7 @@ from utils import (
 )
 from utils import (
     groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
-    who_am_i, send_now, state_equals
+    who_am_i, send_now, state_equals, get_oembed_json
 )
 from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -2525,31 +2523,37 @@ class ProjectUpdate(models.Model):
                         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
                         help_text = 'The image should have 4:3 height:width ratio for best displaying result',
                     )
-    photo_location  = models.CharField(_('photo location'), max_length=1, choices=PHOTO_LOCATIONS, default='B')
+    photo_location  = models.CharField(_('photo location'), max_length=1,
+                                       choices=PHOTO_LOCATIONS)
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
     video           = models.URLField(_('video URL'), blank=True,
                                       help_text=u'XXX placeholder help text',
                                       verify_exists=False)
+    video_oembed    = models.TextField(_('video OEmbed object'), blank=True)
+    video_thumbnail = models.URLField(_('video thumbnail URL'), blank=True,
+                                       verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
                                        max_length=75)
     video_credit    = models.CharField(_('video credit'), blank=True,
                                        max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time            = models.DateTimeField(_('time'))
+    time            = models.DateTimeField(_('time'), auto_now_add=True)
+    time_last_updated = models.DateTimeField(_('time last updated',
+                                             default=datetime.now))
+                    
     if not settings.PVW_RSR:
-        featured        = models.BooleanField(_('featured'), )
+        featured        = models.BooleanField(_('featured'))
     
     class Meta:
         get_latest_by = "time"
         verbose_name        = _('project update')
         verbose_name_plural = _('project updates')
 
-    def img(self):
-        try:
-            return self.photo.thumbnail_tag
-        except:
-            return ''
+    def img(self, value=''):
+        if self.photo:
+            value = self.photo.thumbnail_tag
+        return value
     img.allow_tags = True
 
     def get_is_featured(self):
@@ -2557,17 +2561,63 @@ class ProjectUpdate(models.Model):
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
 
+    def edit_window_expired(self):
+        "Determine whether or not update timeout window has expired."
+        now = datetime.now()
+        edit_timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
+        timeout = timedelta(minutes=edit_timeout)
+        last_updated = now - self.time_last_updated
+        return last_updated > timeout
+
     @property
     def view_count(self):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
+    @property
+    def media_location(self):
+        return self.photo_location
+
+    @property
+    def text_location(self, location='B'):
+        if self.media_location == 'B':
+            location = 'E'
+        return location
+
+    def get_embedded_video(self, width=400, height=300):
+        if self.video_oembed:
+            soup = BeautifulSoup(self.video_oembed)
+            if soup.find('object') is not None:
+                object = soup.find('object')
+                embed_object = object.find('embed')
+                embed_object['width'] = unicode(width)
+                embed_object['height'] = unicode(height)
+            elif soup.find('iframe') is not None:
+                object = soup.find('iframe')
+            else:
+                return
+            object['width'] = unicode(width)
+            object['height'] = unicode(height)
+            return mark_safe(unicode(object))
+        return
+            
     @models.permalink
     def get_absolute_url(self):
         return ('project_update', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
         return u'Project update for %s' % self.project.name
+
+    """
+    # Doing this in the frontend with jQuery embedly plugin
+    def save(self):
+        if self.video:
+            embedly_data = get_oembed_json(self.video)
+            if embedly_data is not None:
+                self.video_oembed = embedly_data.html
+                self.video_thumbnail = embedly_data.thumbnail_url
+        super(ProjectUpdate, self).save()
+    """
 
 
 class ProjectComment(models.Model):

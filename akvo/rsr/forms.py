@@ -29,6 +29,7 @@ from registration.models import RegistrationProfile
 from mollie.ideal.utils import get_mollie_banklist
 
 from akvo.rsr.models import UserProfile, Organisation, PHOTO_LOCATIONS
+from akvo.rsr.utils import get_oembed_json
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -275,6 +276,10 @@ class ReadonlyFKAdminField(object):
 
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
+    MEDIA_LOCATIONS = (
+        ('B', _('At the beginning of the update.')),
+        ('E', _('At the end of the update.'))
+    )
     js_snippet = "return taCount(this,'myCounter')"
     js_snippet = mark_safe(js_snippet)    
     title = forms.CharField(widget=forms.TextInput(
@@ -293,16 +298,17 @@ class ProjectUpdateForm(forms.ModelForm):
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
-        exclude = ('time', 'project', 'user', )
+        exclude = ('time', 'project', 'user', 'video_thumbnail',
+                   'video_oembed', 'time_last_updated')
 
     def clean_video(self):
         data = self.cleaned_data['video']
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc.endswith('blip.tv') or
+            valid_url = (netloc == 'blip.tv' or
                          netloc == 'vimeo.com' or 
-                         netloc == 'www.youtube.com')
+                         netloc == 'www.youtube.com' and path='/watch')
             if not valid_url:
                 raise forms.ValidationError(_('Invalid video URL. Currently '
                     'Blip.TV, Vimeo and YouTube are supported.'))
