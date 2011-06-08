@@ -120,8 +120,19 @@ def update_video(context, update, width, height):
         MEDIA_URL=context['MEDIA_URL'],
         update=update,
         width=width,
-        height=height,
-        wxh='%sx%s' % (width, height)
+        height=height
+    )
+    return template_context
+
+
+@register.inclusion_tag('inclusion_tags/update_video_thumbnail.html',
+                        takes_context=True)
+def update_video_thumbnail(context, update, width, height):
+    template_context = dict(
+        MEDIA_URL=context['MEDIA_URL'],
+        update=update,
+        width=width,
+        height=height
     )
     return template_context
 
