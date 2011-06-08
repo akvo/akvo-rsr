@@ -1,10 +1,10 @@
-{% load i18n thumbnail %}
-
+{% load i18n %}
 
 {% if update.video %}
     <div id="embeddedVideo" style="width: {{ width }}px; height:{{ height }}px; text-align: center;">
+        <a href="{{ update.video }}"></a>
     </div>
-    <div style="width: {{width}}px;">
+    <div style="width: {{ width }}px;">
         {% if update.video_credit %}
             <p class="small grey" style="float: right;">
                 {% trans 'Video credit' %}: {{ update.video_credit }}
@@ -16,16 +16,14 @@
             </p>
         {% endif %}
     </div>
+    <script src="{{ MEDIA_URL}}js/jquery.embedly.min.js"></script>
+    <script>
+        var url, width, height = {{ update.video }}, {{ width }}, {{ height }}
+        $(function() {
+            $('#embeddedVideo a').embedly({
+                maxWidth: width,
+                maxHeight: height
+            });
+        });
+    </script>
 {% endif %}
-
-<script src="{{ MEDIA_URL}}js/jquery.embedly.min.js"></script>
-<script>
-    $(function() {
-        $('#embeddedVideo').embedly(
-            {{ update.video }}, {
-                maxWidth: {{ width }},
-                maxHeight: {{ height }}
-            }
-        );
-    });
-</script>
