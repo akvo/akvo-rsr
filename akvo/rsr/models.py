@@ -4,10 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import urllib2
-import string
-import re
-import os
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
@@ -2542,29 +2538,36 @@ class ProjectUpdate(models.Model):
     video_credit    = models.CharField(_('video credit'), blank=True,
                                        max_length=25)
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time            = models.DateTimeField(_('time'))
+    time            = models.DateTimeField(_('time'), auto_now_add=True)
     time_last_updated = models.DateTimeField(_('time last updated',
-                                             blank=True, null=True, 
                                              auto_now=True))
+                    
     if not settings.PVW_RSR:
-        featured        = models.BooleanField(_('featured'), )
+        featured        = models.BooleanField(_('featured'))
     
     class Meta:
         get_latest_by = "time"
         verbose_name        = _('project update')
         verbose_name_plural = _('project updates')
 
-    def img(self):
-        try:
-            return self.photo.thumbnail_tag
-        except:
-            return ''
+    def img(self, value=''):
+        if self.photo:
+            value = self.photo.thumbnail_tag
+        return value
     img.allow_tags = True
 
     def get_is_featured(self):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
+
+    def edit_window_expired(self):
+        "Determine whether or not update timeout window has expired."
+        now = datetime.now()
+        edit_timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
+        timeout = timedelta(minutes=edit_timeout)
+        last_updated = now - self.time_last_updated
+        return last_updated > timeout
 
     @property
     def view_count(self):
@@ -2591,10 +2594,11 @@ class ProjectUpdate(models.Model):
                 embed_object['height'] = unicode(height)
             elif soup.find('iframe') is not None:
                 object = soup.find('iframe')
+            else:
+                return
             object['width'] = unicode(width)
             object['height'] = unicode(height)
-            markup = mark_safe(unicode(object))
-            return markup
+            return mark_safe(unicode(object))
         return
             
     @models.permalink

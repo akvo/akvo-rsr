@@ -33,7 +33,7 @@ from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
 from registration.models import RegistrationProfile
 import random
@@ -992,31 +992,31 @@ def projectcomments(request, project_id):
 @login_required()
 def updateform(request, project_id,
                form_class=ProjectUpdateForm,
-               instance=None,
-               update_id=None):
+               update_id=None,
+               update_instance=None):
     '''Form for creating or editing a project update
 
     :p: project
     :form: the update form
     :update_id: the ID of the update being edited, if any
     '''
-    if update_id is not None:
-        instance = get_object_or_404(ProjectUpdate, id=update_id)
     p = get_object_or_404(Project, pk=project_id)
     can_add_update = p.connected_to_user(request.user)
-    #edit_timeout = timedelta(seconds=settings.PROJECT_UPDATE_TIMEOUT)
-    #edit_window = datetime.now() - edit_timeout 
-    #edit_window_expired = edit_window > edit_timeout
-    # check that the current user is allowed to edit
-    # or that the time window for editing the update hasn't expired
+    can_edit_update = False
+    if update_id is not None:
+        update_instance = get_object_or_404(ProjectUpdate, id=update_id)
+        can_edit_update = (request.user == update_instance.user and
+                           can_add_update and
+                           not update_instance.edit_window_expired)
+        if not can_edit_update:
+            return redirect('access_denied')
     if not can_add_update:
-        return HttpResponseRedirect('/rsr/error/access_denied/')
+        return redirect('access_denied')
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             update = form.save(commit=False)
             update.project = p
-            update.time = datetime.now()
             update.user = request.user
             update.update_method = 'W'
             update.save()
@@ -1030,8 +1030,10 @@ def updateform(request, project_id,
              project=p,
              p=p,
              can_add_update=can_add_update,
+             can_edit_update=can_edit_update,
              updates=Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3],
-             edit_mode=update_id),
+             update=update_instance,
+             edit_mode=update_instance),
         RequestContext(request))
 
 class MobileProjectForm(forms.Form):

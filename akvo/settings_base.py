@@ -256,4 +256,4 @@ LOGGING = {
     },
 }
 
-PROJECT_UPDATE_TIMEOUT = 30 * 60  # 30 minutes
+PROJECT_UPDATE_TIMEOUT = 30  # minutes

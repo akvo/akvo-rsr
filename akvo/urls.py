@@ -161,7 +161,10 @@ urlpatterns += patterns('',
     (r'^rsr/counter/', include('django_counter.urls')),
         
 
-    (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
+    url(r'^rsr/error/access_denied/$',
+        direct_to_template,
+        {'template': 'rsr/error_access_denied.html'},
+        name='access_denied'),
     
     url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
     
