@@ -168,5 +168,12 @@ def create_primary_organisation_locations(): # Akvo RSR only!
                     print 'Error creating location object for organisation id: %d' % int(org_id)
 
 
+def populate_project_update_time_last_updated():
+    updates = get_model('rsr', 'projectupdate').objects.all()
+    for update in updates:
+        update.save()
+        print 'Project Update %d last updated timestamp set.'
+
+
 if __name__ == '__main__':
-    create_primary_pvw_organisation_locations()
+    populate_project_update_time_last_updated()
