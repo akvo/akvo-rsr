@@ -2542,7 +2542,7 @@ class ProjectUpdate(models.Model):
     # should be set to blank=False/null=False post 1.0.9 release
     time_last_updated = models.DateTimeField(_('time last updated',
                                              blank=True, null=True,
-                                             default=datetime.now))
+                                             auto_now=True))
                     
     if not settings.PVW_RSR:
         featured        = models.BooleanField(_('featured'))

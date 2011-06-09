@@ -171,6 +171,7 @@ def create_primary_organisation_locations(): # Akvo RSR only!
 def populate_project_update_time_last_updated():
     updates = get_model('rsr', 'projectupdate').objects.all()
     for update in updates:
+        update.time_last_updated = update.time
         update.save()
         print 'Project Update %d last updated timestamp set.'
 
