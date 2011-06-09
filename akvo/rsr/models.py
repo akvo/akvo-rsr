@@ -2541,7 +2541,6 @@ class ProjectUpdate(models.Model):
     time            = models.DateTimeField(_('time'), auto_now_add=True)
     # should be set to blank=False/null=False post 1.0.9 release
     time_last_updated = models.DateTimeField(_('time last updated',
-                                             blank=True, null=True,
                                              auto_now=True))
                     
     if not settings.PVW_RSR:
