@@ -11,7 +11,6 @@ import logging
 logger = logging.getLogger('akvo.rsr')
 
 from BeautifulSoup import BeautifulSoup
-import pytz
 
 from django import forms
 from django.conf import settings
@@ -62,7 +61,7 @@ from utils import (
 )
 from utils import (
     groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
-    who_am_i, send_now, state_equals, get_oembed_json
+    who_am_i, send_now, state_equals, get_oembed_json, to_gmt
 )
 from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -2590,13 +2589,11 @@ class ProjectUpdate(models.Model):
 
     @property
     def time_gmt(self):
-        gmt = pytz.timezone('GMT')
-        return self.time.replace(tzinfo=gmt).astimezone(gmt)
+        return to_gmt(self.time)
 
     @property
     def time_last_updated_gmt(self):
-        gmt = pytz.timezone('GMT')
-        return self.time_last_updated(tzinfo=gmt).astimezone(gmt)
+        return to_gmt(self.time_last_updated)
 
     @property
     def view_count(self):

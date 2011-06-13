@@ -22,6 +22,8 @@ except ImportError:
     sys.modules['json'] = json
 from embedly import Embedly
 
+import pytz
+
 from workflows.models import State
 from workflows.utils import get_state
 
@@ -355,3 +357,9 @@ def get_oembed_json(url, json_data=None):
     except:
         pass
     return json_data
+
+
+# convert naive datetime to GMT format
+def to_gmt(dt):
+    gmt = pytz.timezone('GMT')
+    return dt.replace(tzinfo=gmt).astimezone(gmt)
