@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 {% load url from future %}
 
 
@@ -42,9 +42,7 @@
                         {% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
                                 <a href="{% url 'project_update' project.id update.id %}">
-                                    {% oembed 240x180 %}
-                                      {{ update.video }}
-                                    {% endoembed %}
+                                    {% update_video update 240 180 %}
                                 </a>
 								</div>
 							{% else %}

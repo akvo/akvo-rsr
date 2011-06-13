@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 
 
 {% block breadcrum_items %}
@@ -63,9 +63,7 @@
 		  {% endif %}	
 		  {% if update.video %}
         <div style="margin: 10px 10px 5px 20px;">
-          {% oembed 400x300 %}
-            {{ update.video }}
-          {% endoembed %}
+          {% update_video update 400 300 %}
         </div>
         <p class="small lightx1">
           {% if update.video_caption %}

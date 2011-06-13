@@ -117,7 +117,7 @@ def update_thumb(context, update, width, height, style=''):
                         takes_context=True)
 def update_video(context, update, width, height):
     template_context = dict(
-        MEDIA_URL=context['MEDIA_URL'],
+        media_url=context['MEDIA_URL'],
         update=update,
         width=width,
         height=height
@@ -129,7 +129,7 @@ def update_video(context, update, width, height):
                         takes_context=True)
 def update_video_thumbnail(context, update, width, height):
     template_context = dict(
-        MEDIA_URL=context['MEDIA_URL'],
+        media_url=context['MEDIA_URL'],
         update=update,
         width=width,
         height=height
