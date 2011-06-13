@@ -2531,7 +2531,7 @@ class ProjectUpdate(models.Model):
     video_caption   = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
     video_credit    = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time            = models.DateTimeField(_('time'), auto_now_add=True)
+    time = models.DateTimeField(_('time'), auto_now_add=True)
     time_last_updated = models.DateTimeField(_('time last updated', auto_now=True)) 
     
     if not settings.PVW_RSR:
