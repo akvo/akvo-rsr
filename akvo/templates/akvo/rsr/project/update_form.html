@@ -28,6 +28,7 @@
 				<h1>
 				  {% if edit_mode %}
 				    {% trans 'Edit update' %}
+				    <p class="red">{{ update.get_edit_help_text }}</p>
 				  {% else %}
 				    {% trans 'Add update' %}
 				  {% endif %}

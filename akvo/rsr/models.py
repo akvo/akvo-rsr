@@ -2563,12 +2563,30 @@ class ProjectUpdate(models.Model):
     get_is_featured.short_description = 'update is featured'
 
     def edit_window_has_expired(self):
-        "Determine whether or not update timeout window has expired."
+        """Determine whether or not update timeout window has expired.
+        The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
+        defaults to 30 minutes.
+        """
         now = datetime.now()
         window = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
         timeout = timedelta(minutes=window)
         last_updated = now - self.time_last_updated
         return last_updated > timeout
+
+    def get_edit_help_text(self, editable_until=None):
+        timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
+        window_delta = timedelta(minutes=timeout)
+        elapsed_delta = self.time_last_updated - self.time
+        remaining_delta = window_delta - elapsed_delta
+        if remaining_delta <= window_delta:
+            editable_until =  self.time + remaining_delta
+        if editable_until is not None:
+            help_text = _('You posted this update at %s. You have until %s '
+                'to save your edits.' % (self.time.strftime('%H:%M %Z'),
+                editable_until.strftime('%H:%M %Z')))
+        else:
+            help_text = _('This update is no longer editable.')
+        return help_text
 
     @property
     def view_count(self):
