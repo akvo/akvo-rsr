@@ -2569,30 +2569,34 @@ class ProjectUpdate(models.Model):
         defaults to 30 minutes.
         """
         now = datetime.now()
-        window = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
-        timeout = timedelta(minutes=window)
         last_updated = now - self.time_last_updated
-        return last_updated > timeout
+        return last_updated > self.edit_timeout
 
-    def get_edit_help_text(self, date_format='%H:%M %Z', edit_window=None):
-        gmt = pytz.timezone('GMT')
-        time = self.time.replace(tzinfo=gmt).astimezone(gmt)
-        time_last_updated = self.time_last_updated.replace(tzinfo=gmt).astimezone(gmt)
+    @property
+    def expires_at(self, expiry_time=''):
+        if self.edit_time_remaining <= self.edit_timeout:
+            expiry_time = self.time_gmt + self.edit_time_remaining
+        return expiry_time
+
+    @property
+    def edit_timeout(self):
         timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
-        window_delta = timedelta(minutes=timeout)
-        elapsed_delta = time_last_updated - time
-        remaining_delta = window_delta - elapsed_delta
-        if remaining_delta <= window_delta:
-            edit_window = self.time + remaining_delta
-            edit_window = edit_window.replace(tzinfo=gmt).astimezone(gmt)
-        if edit_window is not None:
-            help_text = _('You posted this update at %s. You have until %s '
-                          'to save your edits.' % (
-                              time.strftime(date_format),
-                              edit_window.strftime(date_format)))
-        else:
-            help_text = _('This update can no longer be edited.')
-        return mark_safe(help_text)
+        return timedelta(minutes=timeout)
+
+    @property
+    def edit_time_remaining(self):
+        elapsed = self.time_last_updated - self.time
+        return self.edit_timeout - elapsed
+
+    @property
+    def time_gmt(self):
+        gmt = pytz.timezone('GMT')
+        return self.time.replace(tzinfo=gmt).astimezone(gmt)
+
+    @property
+    def time_last_updated_gmt(self):
+        gmt = pytz.timezone('GMT')
+        return self.time_last_updated(tzinfo=gmt).astimezone(gmt)
 
     @property
     def view_count(self):
