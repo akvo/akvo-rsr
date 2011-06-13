@@ -2514,7 +2514,7 @@ class ProjectUpdate(models.Model):
 
     project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
     user            = models.ForeignKey(User, verbose_name=_('user'))
-    title           = models.CharField(_('title'), max_length=50)
+    title           = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
     text            = models.TextField(_('text'), blank=True)
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = ImageWithThumbnailsField(
@@ -2525,22 +2525,15 @@ class ProjectUpdate(models.Model):
                     )
     photo_location  = models.CharField(_('photo location'), max_length=1,
                                        choices=PHOTO_LOCATIONS)
-    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
-    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
-    video           = models.URLField(_('video URL'), blank=True, help_text=u'Supported providers: Blip, Vimeo, YouTube', verify_exists=False)
-    video_caption   = models.CharField(_('video caption'), blank=True,
-                                       max_length=75)
-    video_credit    = models.CharField(_('video credit'), blank=True,
-                                       max_length=25)
-    update_method   = models.CharField(_('update method'), blank=True,
-                                       max_length=1,
-                                       choices=UPDATE_METHODS,
-                                       default='W')
+    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    video           = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video_caption   = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    video_credit    = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time            = models.DateTimeField(_('time'), auto_now_add=True)
-    # should be set to blank=False/null=False post 1.0.9 release
-    time_last_updated = models.DateTimeField(_('time last updated',
-                                             auto_now=True))
-                    
+    time_last_updated = models.DateTimeField(_('time last updated', auto_now=True)) 
+    
     if not settings.PVW_RSR:
         featured        = models.BooleanField(_('featured'))
     
