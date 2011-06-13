@@ -32,3 +32,4 @@ lxml==2.3beta1
 Markdown==2.0.3
 python-memcached==1.45
 simplejson==2.1.6
+pytz

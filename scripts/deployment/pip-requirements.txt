@@ -34,3 +34,4 @@ python-memcached==1.45
 simplejson==2.1.6
 template-utils==0.4p2
 wsgiref==0.1.2
+pytz
