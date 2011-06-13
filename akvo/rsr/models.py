@@ -61,7 +61,7 @@ from utils import (
 )
 from utils import (
     groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
-    who_am_i, send_now, state_equals, get_oembed_json, to_gmt
+    who_am_i, send_now, state_equals, to_gmt
 )
 from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
