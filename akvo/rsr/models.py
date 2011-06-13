@@ -2527,9 +2527,7 @@ class ProjectUpdate(models.Model):
                                        choices=PHOTO_LOCATIONS)
     photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
     photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
-    video           = models.URLField(_('video URL'), blank=True,
-                                      help_text=u'XXX placeholder help text',
-                                      verify_exists=False)
+    video           = models.URLField(_('video URL'), blank=True, help_text=u'Supported providers: Blip, Vimeo, YouTube', verify_exists=False)
     video_caption   = models.CharField(_('video caption'), blank=True,
                                        max_length=75)
     video_credit    = models.CharField(_('video credit'), blank=True,
