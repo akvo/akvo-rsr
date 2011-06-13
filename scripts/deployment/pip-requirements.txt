@@ -15,7 +15,6 @@ South==0.7.3
 django-sorting==0.1
 django-pagination==1.0.7
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3#egg=django_registration-tip
--e git://github.com/embedly/embedly-python.git#egg=embedly
 
 # Akvonauts repos
 -e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie 

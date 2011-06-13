@@ -13,7 +13,6 @@ South==0.7.3
 
 
 # Django apps from VCS web services
--e git://github.com/embedly/embedly-python.git#egg=embedly
 -e git+git://github.com/peeb/django-mollie-ideal.git#egg=mollie
 -e git+git://github.com/zzgvh/django-notification.git#egg=notification
 -e git+git://github.com/zzgvh/django-permissions.git#egg=permissions
