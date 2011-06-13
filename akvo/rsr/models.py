@@ -2610,23 +2610,6 @@ class ProjectUpdate(models.Model):
             location = 'E'
         return location
 
-    def get_embedded_video(self, width=400, height=300):
-        if self.video_oembed:
-            soup = BeautifulSoup(self.video_oembed)
-            if soup.find('object') is not None:
-                object = soup.find('object')
-                embed_object = object.find('embed')
-                embed_object['width'] = unicode(width)
-                embed_object['height'] = unicode(height)
-            elif soup.find('iframe') is not None:
-                object = soup.find('iframe')
-            else:
-                return
-            object['width'] = unicode(width)
-            object['height'] = unicode(height)
-            return mark_safe(unicode(object))
-        return
-            
     @models.permalink
     def get_absolute_url(self):
         return ('project_update', (), {'project_id': self.project.pk, 'update_id': self.pk})
