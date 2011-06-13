@@ -963,12 +963,15 @@ def projectupdate(request, project_id, update_id):
     project     = get_object_or_404(Project, pk=project_id)
     update      = get_object_or_404(ProjectUpdate, pk=update_id)
     can_add_update = project.connected_to_user(request.user)
+    can_edit_update = (update.user == request.user and can_add_update and
+                       not update.edit_window_has_expired())
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     edit_timeout   = settings.PROJECT_UPDATE_TIMEOUT
     return {
         'project'               : project,
         'update'                : update,
         'can_add_update'        : can_add_update, 
+        'can_edit_update'       : can_edit_update,
         'hide_latest_updates'   : True,
         'site_section'          : 'projects', 
         'comments'              : comments,

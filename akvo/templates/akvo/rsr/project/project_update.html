@@ -15,7 +15,7 @@
 			<span class="small">
 				<a href="{% url 'project_updates' project.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
-			{% if not update.edit_window_has_expired %}
+			{% if can_edit_update %}
 	  		<style>
   			  div.notice {
             width:470px;
@@ -36,7 +36,7 @@
   			</style>
   			<div class="notice">
       	  <div class="noticebutton">
-      		  <a class="aqua awesome" href="{% url 'project_edit_update' project_id=project.id update_id=update.id %}">{% trans Edit update %}</a>
+      		  <a class="aqua awesome" href="{% url 'project_edit_update' project_id=project.id update_id=update.id %}">{% trans 'Edit update' %}</a>
       		</div>
       		<p class="nano-lede">Find a typo?  :)</p>
       		<p class="nano-lede">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
