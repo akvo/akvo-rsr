@@ -11,6 +11,7 @@ import logging
 logger = logging.getLogger('akvo.rsr')
 
 from BeautifulSoup import BeautifulSoup
+import pytz
 
 from django import forms
 from django.conf import settings
@@ -2573,20 +2574,25 @@ class ProjectUpdate(models.Model):
         last_updated = now - self.time_last_updated
         return last_updated > timeout
 
-    def get_edit_help_text(self, editable_until=None):
+    def get_edit_help_text(self, date_format='%H:%M %Z', edit_window=None):
+        gmt = pytz.timezone('GMT')
+        time = self.time.replace(tzinfo=gmt).astimezone(gmt)
+        time_last_updated = self.time_last_updated.replace(tzinfo=gmt).astimezone(gmt)
         timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
         window_delta = timedelta(minutes=timeout)
-        elapsed_delta = self.time_last_updated - self.time
+        elapsed_delta = time_last_updated - time
         remaining_delta = window_delta - elapsed_delta
         if remaining_delta <= window_delta:
-            editable_until =  self.time + remaining_delta
-        if editable_until is not None:
+            edit_window = self.time + remaining_delta
+            edit_window = edit_window.replace(tzinfo=gmt).astimezone(gmt)
+        if edit_window is not None:
             help_text = _('You posted this update at %s. You have until %s '
-                'to save your edits.' % (self.time.strftime('%H:%M %Z'),
-                editable_until.strftime('%H:%M %Z')))
+                          'to save your edits.' % (
+                              time.strftime(date_format),
+                              edit_window.strftime(date_format)))
         else:
-            help_text = _('This update is no longer editable.')
-        return help_text
+            help_text = _('This update can no longer be edited.')
+        return mark_safe(help_text)
 
     @property
     def view_count(self):
