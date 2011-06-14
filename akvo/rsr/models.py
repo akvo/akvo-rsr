@@ -2533,7 +2533,7 @@ class ProjectUpdate(models.Model):
     video_credit    = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time = models.DateTimeField(_('time'), auto_now_add=True)
-    time_last_updated = models.DateTimeField(_('time last updated', auto_now=True)) 
+    time_last_updated = models.DateTimeField(_('time last updated'))
     
     if not settings.PVW_RSR:
         featured        = models.BooleanField(_('featured'))
@@ -2569,26 +2569,24 @@ class ProjectUpdate(models.Model):
         The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
         defaults to 30 minutes.
         """
-        now = datetime.now()
-        last_updated = now - self.time_last_updated
-        return last_updated > self.edit_timeout
+        return (datetime.now() - self.time_last_updated) > self.edit_timeout
 
     @property
     def expires_at(self, expiry_time=None):
         if not self.edit_window_has_expired():
             if self.edit_time_remaining < self.edit_timeout:
-                expiry_time = self.time_gmt + self.edit_time_remaining
+                expiry_time = self.time + self.edit_time_remaining
+                expiry_time = to_gmt(expiry_time)
         return expiry_time
 
     @property
     def edit_timeout(self):
-        timeout = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
-        return timedelta(minutes=timeout)
+        timeout_minutes = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
+        return timedelta(minutes=timeout_minutes)
 
     @property
     def edit_time_remaining(self):
-        elapsed = self.time_last_updated - self.time
-        return self.edit_timeout - elapsed
+        return self.edit_timeout - (self.time_last_updated - self.time)
 
     @property
     def time_gmt(self):
