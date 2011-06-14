@@ -2572,7 +2572,7 @@ class ProjectUpdate(models.Model):
 
     @property
     def expires_at(self, expiry_time=''):
-        if self.edit_time_remaining <= self.edit_timeout:
+        if self.edit_time_remaining < self.edit_timeout:
             expiry_time = self.time_gmt + self.edit_time_remaining
         return expiry_time
 
