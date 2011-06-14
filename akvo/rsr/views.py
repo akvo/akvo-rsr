@@ -1023,7 +1023,6 @@ def updateform(request, project_id,
             update.project = p
             update.user = request.user
             update.update_method = 'W'
-            update.time_last_updated = datetime.now()
             update.save()
             latest = ProjectUpdate.objects.all().order_by('-time')[0]
             return redirect('project_update', project_id=latest.project.id, update_id=latest.id)
