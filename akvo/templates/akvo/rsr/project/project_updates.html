@@ -42,7 +42,7 @@
                         {% if update.video %}
 								<div style="width:240px; margin-left:auto; margin-right:auto;">
                                 <a href="{% url 'project_update' project.id update.id %}">
-                                    <img src="{{ update.get_video_thumbnail_url }}" width="240px" />
+                                    <img style="background: url({{ update.get_video_thumbnail_url }}); width: 240px;" src="{{ MEDIA_URL }}core/img/play_button.png" width="100px" />
                                 </a>
 								</div>
 							{% else %}
