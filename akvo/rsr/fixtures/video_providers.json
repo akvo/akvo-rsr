@@ -1,0 +1,50 @@
+[
+  {
+    "pk": 1, 
+    "model": "oembed.storedprovider", 
+    "fields": {
+      "regex": "http://\\S*.youtube.com/watch\\S*", 
+      "wildcard_regex": "http://www.youtube.com/watch*", 
+      "provides": false, 
+      "active": true, 
+      "endpoint_url": "http://www.youtube.com/oembed", 
+      "resource_type": "video"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "oembed.storedprovider", 
+    "fields": {
+      "regex": "http://vimeo.com/\\S*", 
+      "wildcard_regex": "http://vimeo.com/*", 
+      "provides": false, 
+      "active": true, 
+      "endpoint_url": "http://vimeo.com/api/oembed.json", 
+      "resource_type": "video"
+    }
+  },   
+  {
+    "pk": 3, 
+    "model": "oembed.storedprovider", 
+    "fields": {
+      "regex": "http://\\S*blip.tv/file/\\S*", 
+      "wildcard_regex": "http://*.blip.tv/file/*", 
+      "provides": false, 
+      "active": false, 
+      "endpoint_url": "http://api.embed.ly/v1/api/oembed", 
+      "resource_type": "video"
+    }
+  },
+  {
+     "pk": 4, 
+     "model": "oembed.storedprovider", 
+     "fields": {
+       "regex": "http://\\blip.tv/\\S*/\\S*", 
+       "wildcard_regex": "http://blip.tv/*/*", 
+       "provides": false, 
+       "active": false, 
+       "endpoint_url": "http://api.embed.ly/v1/api/oembed", 
+       "resource_type": "video"
+     }
+   }
+]
