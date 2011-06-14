@@ -16,12 +16,14 @@
             </p>
         {% endif %}
     </div>
-    <script src="{{ MEDIA_URL}}core/js/jquery.embedly.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="{{ media_url }}core/js/jquery.embedly.min.js"></script>
     <script>
         var jQ = jQuery.noConflict();
-        var width, height = {{ width }}, {{ height }}
+        var targetElement = jQ('#embeddedVideo a');
+        var width, height = {{ width }}, {{ height }};
         jQ(document).ready(function() {
-            jQ('#embeddedVideo a').embedly({
+            targetElement.embedly({
                 maxWidth: width,
                 maxHeight: height
             });
@@ -29,5 +31,3 @@
     </script>
 {% endif %}
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="{{ media_url }}core/js/jquery.embedly.min.js"></script>

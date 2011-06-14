@@ -11,6 +11,7 @@ import logging
 logger = logging.getLogger('akvo.rsr')
 
 from BeautifulSoup import BeautifulSoup
+import oembed
 
 from django import forms
 from django.conf import settings
@@ -2552,6 +2553,13 @@ class ProjectUpdate(models.Model):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
+    
+    def get_video_thumbnail(self, url=''):
+        if self.video:
+            oembed_resource = oembed.site.embed(self.video)
+            data = oembed_resource.get_data()
+            url = data.get('thumbnail_url', '')
+        return url
 
     def edit_window_has_expired(self):
         """Determine whether or not update timeout window has expired.
