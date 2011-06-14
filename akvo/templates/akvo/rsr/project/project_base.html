@@ -10,26 +10,25 @@
 {% endblock head %}
 
 {% block breadcrum_items %}
-{{block.super}}
-
-<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+  {{block.super}}
+  <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
 
 {% comment %}
 <div style="float:right; margin-right:10px;">
-	<span style="display:none;">{% counter project %}</span>
-	<p style="margin:0; color:#999; margin-top:5px;" class="small">
-	{% cache 10 project.view_count %}
-		{{ project.view_count|intcomma }} {% trans 'views' %}
-	{% endcache %}
-	</p>
+  <span style="display:none;">{% counter project %}</span>
+  <p style="margin:0; color:#999; margin-top:5px;" class="small">
+    {% cache 10 project.view_count %}
+      {{ project.view_count|intcomma }} {% trans 'views' %}
+    {% endcache %}
+  </p>
 </div>
 {% endcomment %}
 
 {% comment %}
 <span style="color:#999; font-size:10px; font-weight:normal; margin-left:20px; "><span style="display:none;">{% counter project %}</span>
-	{% cache 10 project.view_count %}
-		{{ project.view_count|intcomma }} {% trans 'views' %}
-	{% endcache %}
+  {% cache 10 project.view_count %}
+      {{ project.view_count|intcomma }} {% trans 'views' %}
+  {% endcache %}
 </span>
 {% endcomment %}
 {% endblock breadcrum_items %}
@@ -37,9 +36,9 @@
 {% block maincontent %}
 
 {% if live_earth_enabled %}
-	{% if not has_sponsor_banner %}
-	<a href="{% url 'live_earth_landing_page' %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
-	{% endif %}
+  {% if not has_sponsor_banner %}
+  <a href="{% url 'live_earth_landing_page' %}"><img src="{{MEDIA_URL}}akvo/img/le/lerfw-banner.png" alt="{% trans 'This project is presented by DOW LIVE EARTH RUN FOR WATER' %}" style="margin-bottom:20px;" /></a>
+  {% endif %}
 {% endif %}
 
 <div class="two_column_left">
