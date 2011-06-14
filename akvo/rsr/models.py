@@ -2556,9 +2556,12 @@ class ProjectUpdate(models.Model):
     
     def get_video_thumbnail_url(self, url=''):
         if self.video:
-            oembed_resource = oembed.site.embed(self.video)
-            data = oembed_resource.get_data()
-            url = data.get('thumbnail_url', '')
+            try:
+                oembed_resource = oembed.site.embed(self.video)
+                data = oembed_resource.get_data()
+                url = data.get('thumbnail_url', '')
+            except:
+                pass
         return url
 
     def edit_window_has_expired(self):
