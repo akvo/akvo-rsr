@@ -2554,7 +2554,7 @@ class ProjectUpdate(models.Model):
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
     
-    def get_video_thumbnail(self, url=''):
+    def get_video_thumbnail_url(self, url=''):
         if self.video:
             oembed_resource = oembed.site.embed(self.video)
             data = oembed_resource.get_data()
