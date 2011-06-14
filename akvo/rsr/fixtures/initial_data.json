@@ -207,7 +207,7 @@
        "regex": "http://\\blip.tv/\\S*/\\S*", 
        "wildcard_regex": "http://blip.tv/*/*", 
        "provides": false, 
-       "active": false, 
+       "active": true, 
        "endpoint_url": "http://api.embed.ly/v1/api/oembed", 
        "resource_type": "video"
      }
