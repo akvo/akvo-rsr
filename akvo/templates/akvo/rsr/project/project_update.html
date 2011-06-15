@@ -15,6 +15,33 @@
 			<span class="small">
 				<a href="{% url 'project_updates' project.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
+			{% if can_edit_update %}
+	  		<style>
+  			  div.notice {
+            width:470px;
+           	margin: 15px;
+           	margin-left: 20px;
+           	background-color:#FFFFE0; 
+           	border:3px outset #EEE8AA; 
+           	color:yellow;
+            padding: 10px;
+
+          }
+          .noticebutton {
+        	  float: right;
+        	  width: 100px;
+        	  margin-top: 30px;
+        	  margin-left: 20px;
+          }
+  			</style>
+  			<div class="notice">
+      	  <div class="noticebutton">
+      		  <a class="aqua awesome" href="{% url 'project_edit_update' project_id=project.id update_id=update.id %}">{% trans 'Edit update' %}</a>
+      		</div>
+      		<p class="nano-lede">Find a typo?  :)</p>
+      		<p class="nano-lede">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
+      	</div>
+    	{% endif %}
 			<h2 style="padding-top:20px;">{{ update.title|capfirst }}</h2>
 			<p class="grey small">
 				{{ update.time|date:"d-M-Y" }},
@@ -35,13 +62,14 @@
 		    {{ update.text|linebreaks }}
 		  {% endif %}	
 		  {% if update.video %}
-        <div style="margin: 10px 10px 5px 20px;">
+        <div style="margin: 10px 10px 30px 20px;">
           {% oembed 400x300 %}
             {{ update.video }}
           {% endoembed %}
         </div>
-        <p class="small lightx1">
-          {% if update.video_caption %}
+	{% if update.video_caption or update.video_credit %}
+	<p class="small lightx1">
+		  {% if update.video_caption %}
             {{ update.video_caption }}
           {% endif %}
           {% if update.video_credit %}
@@ -49,7 +77,9 @@
           {% endif %}
         </p>
       {% endif %}
+      {% endif %}
 			{% if update.photo %}
+
         {% update_thumb update 400 300 %}
       {% endif %}   	
 		  {% if update.text_location == 'E' %}

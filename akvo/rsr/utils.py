@@ -20,7 +20,8 @@ except ImportError:
     except ImportError:
         from django.utils import simplejson as json
     sys.modules['json'] = json
-from embedly import Embedly
+
+import pytz
 
 from workflows.models import State
 from workflows.utils import get_state
@@ -347,11 +348,7 @@ def state_equals(obj, state):
     return get_state(obj) in State.objects.filter(name__in=state)
 
 
-# OEmbed helpers
-def get_oembed_json(url, json_data=None):
-    try:
-        embedly_api_client = Embedly()
-        data = embedly_api_client.oembed(url)
-    except:
-        pass
-    return json_data
+# convert naive datetime to GMT format
+def to_gmt(dt):
+    gmt = pytz.timezone('GMT')
+    return dt.replace(tzinfo=gmt).astimezone(gmt)

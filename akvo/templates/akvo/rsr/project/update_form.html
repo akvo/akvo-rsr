@@ -32,6 +32,9 @@
 				    {% trans 'Add update' %}
 				  {% endif %}
 				</h1>
+				{% if edit_mode %}
+				  <p class="red">You posted this update at {{ update.time_gmt|date:"H:i T"}}. You have until {{ update.expires_at|date:"H:i T" }} to save your edits.</p>
+				{% endif %}
 			</div>
 			<div class="clear"></div>
 			{% if form.title.errors %}

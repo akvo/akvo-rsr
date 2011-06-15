@@ -199,5 +199,17 @@
       "gateway": 1, 
       "number": "46731233400"
     }
-  }
+  },
+  {
+     "pk": 63,
+     "model": "oembed.storedprovider", 
+     "fields": {
+       "regex": "http://\\blip.tv/\\S*/\\S*", 
+       "wildcard_regex": "http://blip.tv/*/*", 
+       "provides": false, 
+       "active": true, 
+       "endpoint_url": "http://api.embed.ly/v1/api/oembed", 
+       "resource_type": "video"
+     }
+   }
 ]
