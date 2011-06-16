@@ -994,31 +994,33 @@ def projectcomments(request, project_id):
 
 @login_required()
 def updateform(request, project_id,
+               edit_mode=False,
                form_class=ProjectUpdateForm,
-               update_id=None,
-               update_instance=None):
+               update_id=None):
     '''Form for creating or editing a project update
 
     :project: project
     :form: the update form
     :update_id: the ID of the update being edited, if any
     '''
+    update = None
     project = get_object_or_404(Project, id=project_id)
     updates = Project.objects.get(id=project_id).project_updates.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     can_edit_update = False
     if update_id is not None:
-        update_instance = get_object_or_404(ProjectUpdate, id=update_id)
+        edit_mode = True
+        update = get_object_or_404(ProjectUpdate, id=update_id)
         can_edit_update = (can_add_update and
-                           request.user == update_instance.user and
-                           not update_instance.edit_window_has_expired())
+                           request.user == update.user and
+                           not update.edit_window_has_expired())
         if not can_edit_update:
             return redirect('access_denied')  # need specific error redirect here
     if not can_add_update:
         return redirect('access_denied')
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES,
-                          instance=update_instance)
+                          instance=update)
         if form.is_valid():
             update = form.save(commit=False)
             update.project = project
@@ -1031,15 +1033,15 @@ def updateform(request, project_id,
                             project_id=update.project.id,
                             update_id=update.id)
     else:
-        form = form_class(instance=update_instance)
+        form = form_class(instance=update)
     return render_to_response('rsr/project/update_form.html',
         dict(form=form,
              project=project,
              can_add_update=can_add_update,
              can_edit_update=can_edit_update,
              updates=updates,
-             update=update_instance,
-             edit_mode=update_instance),
+             update=update,
+             edit_mode=edit_mode),
         RequestContext(request))
 
 
