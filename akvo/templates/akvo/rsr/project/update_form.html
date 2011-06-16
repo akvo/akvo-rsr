@@ -5,7 +5,7 @@
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
-<li><a href="{% url project_main p.id %}"><span>{{p.name}}</span></a></li>
+<li><a href="{% url project_main project.id %}"><span>{{project.name}}</span></a></li>
 <li id="last_breadcrum_item">
   {% if edit_mode %}
     Edit update
@@ -196,7 +196,7 @@
 		  <hr />
 			<div style="text-align:center; padding-bottom:20px;">
 				<div style="float:left;">
-					<a href="{% url project_main p.id %}" class="small">{% trans 'Cancel' %}</a>
+					<a href="{% url project_main project.id %}" class="small">{% trans 'Cancel' %}</a>
 				</div>
 				<a class="aqua awesome" href="javascript:document.add_update_form.submit();">
 				  {% if edit_mode %}
