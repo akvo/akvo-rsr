@@ -2582,7 +2582,7 @@ class ProjectUpdate(models.Model):
 
     @property
     def edit_time_remaining(self):
-        return self.edit_timeout - (self.time_last_updated - self.time)
+        return self.edit_timeout - self.time
 
     @property
     def time_gmt(self):
