@@ -8,19 +8,24 @@ from django.core.management import setup_environ
 import settings
 setup_environ(settings)
 
+from django.db import connection, transaction
 from django.db.models import get_model
 
 
 
 def populate_project_update_time_last_updated():
-    # set time_last_updated field to NULL
+    cursor = connection.cursor()
+    cursor.execute('ALTER TABLE `rsr_projectupdate` '
+                   'MODIFY COLUMN `time_last_update` datetime NULL')
+    print 'Set time_last_updated field to NULL.'
     updates = get_model('rsr', 'projectupdate').objects.all()
     for update in updates:
         update.time_last_updated = update.time
         update.save()
         print 'Project Update %d last updated timestamp set.' % update.id
-    # set time_last_updated field to NOT NULL
-    print 'Success!'
+    cursor.execute('ALTER TABLE `rsr+projectupdate` '
+                   'MODIFY_COLUMN `time_last_updated` datetime NUL NULL')
+    print 'Reset time_last_updated field to NOT NULL.\nSuccess!'
 
 
 if __name__ == '__main__':
