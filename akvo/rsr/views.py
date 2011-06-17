@@ -1020,7 +1020,12 @@ def updateform(request, project_id,
 
         if update.edit_window_has_expired():
             return render_to_response('rsr/project/update_form_timeout.html', 
-                dict(project=project, update=update), RequestContext(request))
+                dict(
+                    project=project, 
+                    update=update,
+                    site_section='projects',
+                    ), 
+                RequestContext(request))
 
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES,
@@ -1040,7 +1045,8 @@ def updateform(request, project_id,
         dict(form=form,
              project=project,
              update=update,
-             edit_mode=edit_mode),
+             edit_mode=edit_mode,
+             site_section='projects'),
         RequestContext(request))
 
 
