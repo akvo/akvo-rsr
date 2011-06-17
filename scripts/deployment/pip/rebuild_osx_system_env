@@ -41,6 +41,8 @@ function link_easy_install
     cd /usr/local/bin
     sudo ln -s "$PY_BIN_PATH/$VERSIONED_EASY_INSTALL" $VERSIONED_EASY_INSTALL
     sudo ln -s $VERSIONED_EASY_INSTALL easy_install
+    printf ">> Resulting easy_install links:\n"
+    ls -la /usr/local/bin/easy*
 }
 
 function install_pip_package
