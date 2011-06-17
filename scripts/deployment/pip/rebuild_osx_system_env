@@ -18,6 +18,8 @@ function ensure_temp_dir_exists
     if [ ! -d "$PYTHON_TEMP_DIR" ]; then
         printf "\n>> Creating temp directory: %s\n" "$PYTHON_TEMP_DIR"
         mkdir -p "$PYTHON_TEMP_DIR"
+    else
+        printf "\n>> Using existing temp directory: %s\n" "$PYTHON_TEMP_DIR"
     fi
 }
 
@@ -26,7 +28,7 @@ function install_distribute_package
     # See installation notes at http://pypi.python.org/pypi/distribute#distribute-setup-py
     printf "\n>> Installing distribute package\n"
     cd "$PYTHON_TEMP_DIR"
-    curl -O http://python-distribute.org/distribute_setup.py
+    curl -L -O http://python-distribute.org/distribute_setup.py
     sudo python distribute_setup.py
 }
 
@@ -46,7 +48,7 @@ function install_pip_package
     # See installation notes at http://www.pip-installer.org/en/latest/installing.html
     printf "\n>> Installing pip package\n"
     cd "$PYTHON_TEMP_DIR"
-    curl -O https://github.com/pypa/pip/raw/master/contrib/get-pip.py
+    curl -L -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
     sudo python get-pip.py
 }
 
