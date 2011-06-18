@@ -2569,7 +2569,7 @@ class ProjectUpdate(models.Model):
         The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
         defaults to 30 minutes.
         """
-        return (datetime.now() - self.time_last_updated) > self.edit_timeout
+        return (datetime.now() - self.time) > self.edit_timeout
 
     @property
     def expires_at(self):
@@ -2582,7 +2582,7 @@ class ProjectUpdate(models.Model):
 
     @property
     def edit_time_remaining(self):
-        return self.edit_timeout - (self.time_last_updated - self.time)
+        return self.edit_timeout - self.time
 
     @property
     def time_gmt(self):

@@ -204,7 +204,7 @@
      "pk": 63,
      "model": "oembed.storedprovider", 
      "fields": {
-       "regex": "http://\\blip.tv/\\S*/\\S*", 
+       "regex": "http://blip.tv/\\S*/\\S*", 
        "wildcard_regex": "http://blip.tv/*/*", 
        "provides": false, 
        "active": true, 
