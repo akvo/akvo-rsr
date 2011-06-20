@@ -196,7 +196,11 @@
     <hr />
     <div style="text-align:center; padding-bottom:20px;">
       <div style="float:left;">
-        <a href="{% url project_main project.id %}" class="small">{% trans 'Cancel' %}</a>
+        {% if edit_mode %}
+          <a href="{% url project_update project_id=project.id update_id=update.id %}" class="small">{% trans 'Cancel' %}</a>
+        {% else %}
+          <a href="{% url project_main project.id %}" class="small">{% trans 'Cancel' %}</a>
+        {% endif %}
       </div>
       <a class="aqua awesome" href="javascript:document.add_update_form.submit();">
         {% if edit_mode %}
