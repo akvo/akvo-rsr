@@ -172,18 +172,20 @@
     <div style="width:500px;">
       <h2 style="margin-bottom:15px;">Text placement</h2>
       <h4 style="margin-bottom:20px;">If you added a photo and/or video...</h4>
+      {# form.photo_location #}
       <ol class="form_list">
         <li>
           <input type="radio" id="id_photo_location_0" 
-            name="photo_location" value="E" 
-            checked="checked" /> 
+            name="photo_location" value="E" {% if update.photo_location == 'E' or not update %} 
+            checked="checked"{% endif %} /> 
           <label for="id_photo_location_0">
             {% trans 'Keep text above photo/video' %}
           </label>
         </li>
         <li>
           <input type="radio" id="id_photo_location_1" 
-            name="photo_location" value="B" /> 
+            name="photo_location" value="B" {% if update.photo_location == 'B'%} 
+            checked="checked"{% endif %}/> 
           <label for="id_photo_location_1">
             {% trans 'Keep text below photo/video' %}
           </label>
