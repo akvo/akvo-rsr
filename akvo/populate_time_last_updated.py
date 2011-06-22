@@ -35,7 +35,7 @@ def populate_project_update_time_last_updated():
 
 def set_not_null():
     print 'Resetting time_last_updated field to NOT NULL...'
-    cursor.execute('ALTER TABLE `rsr+projectupdate` '
+    cursor.execute('ALTER TABLE `rsr_projectupdate` '
                    'MODIFY COLUMN `time_last_updated` datetime NOT NULL')
 
 
