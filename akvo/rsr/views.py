@@ -1014,7 +1014,7 @@ def updateform(request, project_id,
     if update_id is not None:
         edit_mode = True
         update = get_object_or_404(ProjectUpdate, id=update_id)
-        
+
         if not (user_is_authorized and request.user == update.user):
             return redirect('access_denied')
 
