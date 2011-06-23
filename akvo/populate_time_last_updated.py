@@ -19,6 +19,14 @@ datadir = os.path.join(os.path.dirname(__file__), 'datadir')
 db_cursor = connection.cursor()
 
 
+def prepare_datadir():
+    bad_data_file = os.path.join(datadir,
+                                 'workflows_workflowpermissionrelation.py')
+    if os.path.exists(bad_data_file):
+        print 'Removing workflows_workflowpermissionrelation.py file...'
+        os.remove(bad_data_file)
+
+
 def set_null():
     print 'Setting time_last_updated field to NULL...'
     db_cursor.execute('ALTER TABLE `rsr_projectupdate` '
@@ -45,6 +53,7 @@ def main():
     if not os.path.exists(datadir) or not os.path.isdir(datadir):
         print 'Could not find "datadir" directory. Cannot proceed.'
         return
+    prepare_datadir()
     set_null()
     db_dump_load()
     populate_project_update_time_last_updated()
