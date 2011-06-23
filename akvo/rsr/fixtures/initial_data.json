@@ -211,5 +211,17 @@
        "endpoint_url": "http://api.embed.ly/v1/api/oembed", 
        "resource_type": "video"
      }
+   },
+  {
+     "pk": 64,
+     "model": "oembed.storedprovider", 
+     "fields": {
+       "regex": "http://youtube.be/\\S*", 
+       "wildcard_regex": "http://youtu.be/*", 
+       "provides": false, 
+       "active": true, 
+       "endpoint_url": "http://www.youtube.com/oembed",
+       "resource_type": "video"
+     }
    }
 ]
