@@ -15,6 +15,7 @@ from django.db import connection
 from django.db.models import get_model
 
 
+datadir = os.path.join(os.path.dirname(__file__), 'datadir')
 db_cursor = connection.cursor()
 
 
@@ -40,9 +41,16 @@ def set_not_null():
                       'MODIFY COLUMN `time_last_updated` datetime NOT NULL')
 
 
-if __name__ == '__main__':
+def main():
+    if not os.path.exists(datadir) or not os.path.isdir(datadir):
+        print 'Could not find "datadir" directory. Cannot proceed.'
+        return
     set_null()
     db_dump_load()
     populate_project_update_time_last_updated()
     set_not_null()
     print 'All done!'
+
+
+if __name__ == '__main__':
+    main()
