@@ -7,7 +7,7 @@ Forms and validation code for user registration and updating.
 
 """
 #import re
-from urlparse import urlsplit
+from urlparse import urlsplit, urlunsplit
 
 from django import forms
 #TODO fix for django 1.0
@@ -311,4 +311,8 @@ class ProjectUpdateForm(forms.ModelForm):
             if not valid_url:
                 raise forms.ValidationError(_('Invalid video URL. Currently '
                     'Blip.TV, Vimeo and YouTube are supported.'))
+            if netloc == 'youtu.be':
+                netloc = 'www.youtube.com'
+                path = '/watch?v=%s' % path.lstrip('/')
+                data = urlunsplit((scheme, netloc, path, query, fragment))
         return data
