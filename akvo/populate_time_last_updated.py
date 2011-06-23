@@ -5,6 +5,7 @@
 # and setting all orgs to free account if they have none
 
 import os
+import subprocess
 
 from django.core.management import setup_environ
 import settings
@@ -14,17 +15,17 @@ from django.db import connection
 from django.db.models import get_model
 
 
-cursor = connection.cursor()
+db_cursor = connection.cursor()
 
 
 def set_null():
     print 'Setting time_last_updated field to NULL...'
-    cursor.execute('ALTER TABLE `rsr_projectupdate` '
-                   'MODIFY COLUMN `time_last_updated` datetime NULL')
+    db_cursor.execute('ALTER TABLE `rsr_projectupdate` '
+                      'MODIFY COLUMN `time_last_updated` datetime NULL')
 
 def db_dump_load():
     print 'Loading data into database...'
-    os.system('python db_dump.py load')
+    subprocess.call(['python', 'db_dump.py', 'load'])
 
 def populate_project_update_time_last_updated():
     updates = get_model('rsr', 'projectupdate').objects.all()
@@ -35,8 +36,8 @@ def populate_project_update_time_last_updated():
 
 def set_not_null():
     print 'Resetting time_last_updated field to NOT NULL...'
-    cursor.execute('ALTER TABLE `rsr_projectupdate` '
-                   'MODIFY COLUMN `time_last_updated` datetime NOT NULL')
+    db_cursor.execute('ALTER TABLE `rsr_projectupdate` '
+                      'MODIFY COLUMN `time_last_updated` datetime NOT NULL')
 
 
 if __name__ == '__main__':
