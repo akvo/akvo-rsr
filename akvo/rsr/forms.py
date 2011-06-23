@@ -306,7 +306,8 @@ class ProjectUpdateForm(forms.ModelForm):
             netloc = netloc.lower()
             valid_url = (netloc == 'blip.tv' or
                          netloc == 'vimeo.com' or 
-                         netloc == 'www.youtube.com' and path == '/watch')
+                         netloc == 'www.youtube.com' and path == '/watch' or
+                         netloc == 'youtu.be')
             if not valid_url:
                 raise forms.ValidationError(_('Invalid video URL. Currently '
                     'Blip.TV, Vimeo and YouTube are supported.'))
