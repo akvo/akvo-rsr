@@ -32,6 +32,7 @@ To ensure compatibility with future releases of Django, RSR's templates now use 
 
 More information about the new template syntax can be found [here](https://docs.djangoproject.com/en/dev/releases/1.3/#changes-to-url-and-ssi).
 
+---
 
 Akvo RSR v 1.0.8 release notes
 -------------------------------------------
