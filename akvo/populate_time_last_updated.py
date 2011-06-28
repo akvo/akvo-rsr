@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#to be run in the akvo rsr root folder. setting up all projects as published, if they have no status
-# and setting all orgs to free account if they have none
-
 import os
 import subprocess
 
