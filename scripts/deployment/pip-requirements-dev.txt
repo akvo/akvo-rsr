@@ -8,6 +8,8 @@ django-paypal==0.1.2
 django-piston==0.2.2
 django-rosetta==0.5.6
 sorl-thumbnail==3.2.5
+djangoembed==0.1.1
+South==0.7.3
 
 
 # Django apps from VCS web services
@@ -17,17 +19,16 @@ sorl-thumbnail==3.2.5
 -e git+git://github.com/zzgvh/django-workflows.git#egg=workflows
 -e git://github.com/ericflo/django-pagination.git@47e7ec874cd7dddda5ed13ffb6993a64dced2537#egg=django_pagination-1.0.7-py2.6-dev
 -e git://github.com/directeur/django-sorting.git@209f6639cbce196bdc10aced1959935d254257ff#egg=django_sorting-0.1-py2.6-dev
--e git://github.com/worldcompany/djangoembed.git@bb577a52fc455231adc58f35e21ba65f7fc3217e#egg=djangoembed-0.1.1-py2.6-dev
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3d09d342b000f4ff634296f90df49#egg=django_registration-tip
 
 
 # Other Python Modules
 BeautifulSoup==3.2.0
-Cython==0.13
 feedparser==4.1
 PIL==1.1.7
 httplib2==0.6.0
 lxml==2.3beta1
 Markdown==2.0.3
 python-memcached==1.45
-simplejson==2.1.2
+simplejson==2.1.6
+pytz

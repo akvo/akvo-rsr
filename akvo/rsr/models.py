@@ -4,15 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import urllib2
-import string
-import re
-import os
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 import logging
 logger = logging.getLogger('akvo.rsr')
+
+from BeautifulSoup import BeautifulSoup
+import oembed
 
 from django import forms
 from django.conf import settings
@@ -63,7 +62,7 @@ from utils import (
 )
 from utils import (
     groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
-    who_am_i, send_now, state_equals
+    who_am_i, send_now, state_equals, to_gmt
 )
 from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -2516,7 +2515,7 @@ class ProjectUpdate(models.Model):
 
     project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
     user            = models.ForeignKey(User, verbose_name=_('user'))
-    title           = models.CharField(_('title'), max_length=50)
+    title           = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
     text            = models.TextField(_('text'), blank=True)
     #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo           = ImageWithThumbnailsField(
@@ -2525,42 +2524,88 @@ class ProjectUpdate(models.Model):
                         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
                         help_text = 'The image should have 4:3 height:width ratio for best displaying result',
                     )
-    photo_location  = models.CharField(_('photo location'), max_length=1, choices=PHOTO_LOCATIONS, default='B')
-    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75)
-    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25)
-    video           = models.URLField(_('video URL'), blank=True,
-                                      help_text=u'XXX placeholder help text',
-                                      verify_exists=False)
-    video_caption   = models.CharField(_('video caption'), blank=True,
-                                       max_length=75)
-    video_credit    = models.CharField(_('video credit'), blank=True,
-                                       max_length=25)
+    photo_location  = models.CharField(_('photo location'), max_length=1,
+                                       choices=PHOTO_LOCATIONS)
+    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    video           = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video_caption   = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    video_credit    = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
     update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time            = models.DateTimeField(_('time'))
+    time = models.DateTimeField(_('time'), auto_now_add=True)
+    time_last_updated = models.DateTimeField(_('time last updated'), auto_now=True)
+    
     if not settings.PVW_RSR:
-        featured        = models.BooleanField(_('featured'), )
+        featured        = models.BooleanField(_('featured'))
     
     class Meta:
-        get_latest_by = "time"
+        get_latest_by       = "time"
         verbose_name        = _('project update')
         verbose_name_plural = _('project updates')
 
-    def img(self):
-        try:
-            return self.photo.thumbnail_tag
-        except:
-            return ''
+    def img(self, value=''):
+        if self.photo:
+            value = self.photo.thumbnail_tag
+        return value
     img.allow_tags = True
 
     def get_is_featured(self):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
+    
+    def get_video_thumbnail_url(self, url=''):
+        if self.video:
+            try:
+                oembed_resource = oembed.site.embed(self.video)
+                data = oembed_resource.get_data()
+                url = data.get('thumbnail_url', '')
+            except:
+                pass
+        return url
+
+    def edit_window_has_expired(self):
+        """Determine whether or not update timeout window has expired.
+        The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
+        defaults to 30 minutes.
+        """
+        return (datetime.now() - self.time) > self.edit_timeout
+
+    @property
+    def expires_at(self):
+        return to_gmt(self.time + self.edit_timeout)
+
+    @property
+    def edit_timeout(self):
+        timeout_minutes = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
+        return timedelta(minutes=timeout_minutes)
+
+    @property
+    def edit_time_remaining(self):
+        return self.edit_timeout - self.time
+
+    @property
+    def time_gmt(self):
+        return to_gmt(self.time)
+
+    @property
+    def time_last_updated_gmt(self):
+        return to_gmt(self.time_last_updated)
 
     @property
     def view_count(self):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
+
+    @property
+    def media_location(self):
+        return self.photo_location
+
+    @property
+    def text_location(self, location='B'):
+        if self.media_location == 'B':
+            location = 'E'
+        return location
 
     @models.permalink
     def get_absolute_url(self):
