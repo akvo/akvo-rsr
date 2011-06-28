@@ -1,52 +1,21 @@
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
-
-{# Snippet producing the benchmarks for a project. Context: p the project #}
-{# Used in project_main.html and project_details.html #}
-
 {% load i18n %}
+{% load url from future %}
 
-<ul class="simplelist">
+
+{% if benchmarks %}
   {% for benchmark in benchmarks %}
     {% ifchanged %}
-      </ul>
-      <h3>Category: {{benchmark.category.name}}</h3>
+      {% if not forloop.first %}
+        </ul>
+      {% endif %}
+      <h3>{% trans "Category:" %} {{benchmark.category.name}}</h3>
       <ul class="simplelist">
     {% endifchanged %}
-      {% if benchmark.value %}
-        <li>{{benchmark.value}} {{benchmark.name}}</li>
-      {% endif %}
-  {% endfor %}
+    {% if benchmark.value %}
+      <li>{{benchmark.value}} {{benchmark.name}}</li>
+    {% endif %}
+    {% if forloop.last %}
       </ul>
-
-  {% comment %}
-    {% if p.water_systems %}
-        <li>{{ p.water_systems }} {% trans 'functioning water systems' %}</li>
     {% endif %}
-    {% if p.sanitation_systems %}
-        <li>{{ p.sanitation_systems }} {% trans 'functioning sanitation systems' %}</li>
-    {% endif %}
-    {% if p.hygiene_facilities %}
-        <li>{{ p.hygiene_facilities }} {% trans 'functioning hygiene facilities' %}</li>
-    {% endif %}
-    {% if p.improved_water %}
-        <li>{{ p.improved_water }} {% trans 'persons with access to improved water' %}
-        {% if p.improved_water_years %}
-            {% blocktrans with p.improved_water_years as improved_water_years %}for {{improved_water_years}} years{% endblocktrans %}
-        {% endif %}
-        </li>
-    {% endif %}
-    {% if p.improved_sanitation %}
-        <li>{{ p.improved_sanitation }} {% trans 'persons with access to improved sanitation' %}
-        {% if p.improved_sanitation_years %}
-            {% blocktrans with p.improved_sanitation_years as improved_sanitation_years %}for {{improved_sanitation_years}} years{% endblocktrans %}
-        {% endif %}
-        </li>
-    {% endif %}
-    {% if p.trainees %}
-        <li>{{ p.trainees }} {% trans 'persons who receive training / education per year' %}</li>
-    {% endif %}
-  {% endcomment %}
-</ul>
+  {% endfor %}
+{% endif %}

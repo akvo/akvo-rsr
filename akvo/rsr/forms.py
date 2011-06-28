@@ -7,7 +7,7 @@ Forms and validation code for user registration and updating.
 
 """
 #import re
-from urlparse import urlsplit
+from urlparse import urlsplit, urlunsplit
 
 from django import forms
 #TODO fix for django 1.0
@@ -275,6 +275,10 @@ class ReadonlyFKAdminField(object):
 
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
+    MEDIA_LOCATIONS = (
+        ('B', _('At the beginning of the update.')),
+        ('E', _('At the end of the update.'))
+    )
     js_snippet = "return taCount(this,'myCounter')"
     js_snippet = mark_safe(js_snippet)    
     title = forms.CharField(widget=forms.TextInput(
@@ -293,17 +297,22 @@ class ProjectUpdateForm(forms.ModelForm):
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
-        exclude = ('time', 'project', 'user', )
+        exclude = ('time', 'project', 'user', 'time_last_updated')
 
     def clean_video(self):
         data = self.cleaned_data['video']
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc.endswith('blip.tv') or
+            valid_url = (netloc == 'blip.tv' or
                          netloc == 'vimeo.com' or 
-                         netloc == 'www.youtube.com')
+                         netloc == 'www.youtube.com' and path == '/watch' or
+                         netloc == 'youtu.be')
             if not valid_url:
                 raise forms.ValidationError(_('Invalid video URL. Currently '
                     'Blip.TV, Vimeo and YouTube are supported.'))
+            if netloc == 'youtu.be':
+                netloc = 'www.youtube.com'
+                path = '/watch?v=%s' % path.lstrip('/')
+                data = urlunsplit((scheme, netloc, path, query, fragment))
         return data

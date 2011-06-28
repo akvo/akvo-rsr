@@ -1,61 +1,90 @@
 {% extends "rsr/project/project_subpage_base.html" %}
+{% load url from future %}
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
 
 
 {% block breadcrum_items %}
-{{block.super}}
-<li><a href="{% url project_updates p.id %}"><span>{% trans 'Project updates' %}</span></a></li>
-<li id="last_breadcrum_item">{{u.title|capfirst}}</li>
+{{ block.super }}
+<li><a href="{% url 'project_updates' project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
+<li id="last_breadcrum_item">{{ update.title|capfirst }}</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
 	<div class="white_box" style="background-color:#fff;">
 		<div style="float:left; margin-left:20px; margin-top:10px">
 			<span class="small">
-				<a href="{% url project_updates p.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
+				<a href="{% url 'project_updates' project.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
 			</span>
-			<h2 style="padding-top:20px;">{{u.title|capfirst}}</h2>
+			{% if can_edit_update %}
+	  		<style>
+  			  div.notice {
+            width:470px;
+           	margin: 15px;
+           	margin-left: 20px;
+           	background-color:#FFFFE0; 
+           	border:3px outset #EEE8AA; 
+           	color:yellow;
+            padding: 10px;
+
+          }
+          .noticebutton {
+        	  float: right;
+        	  width: 100px;
+        	  margin-top: 30px;
+        	  margin-left: 20px;
+          }
+  			</style>
+  			<div class="notice">
+      	  <div class="noticebutton">
+      		  <a class="aqua awesome" href="{% url 'project_edit_update' project_id=project.id update_id=update.id %}">{% trans 'Edit update' %}</a>
+      		</div>
+      		<p class="nano-lede">Find a typo?  :)</p>
+      		<p class="nano-lede">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
+      	</div>
+    	{% endif %}
+			<h2 style="padding-top:20px;">{{ update.title|capfirst }}</h2>
 			<p class="grey small">
-				{{u.time|date:"d-M-Y"}},
-				{% blocktrans with u.user.get_full_name as user_name and u.user.userprofile.organisation.name as user_org and u.user.userprofile.organisation.get_absolute_url as org_url and u.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+				{{ update.time|date:"d-M-Y" }},
+				{% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
 			</p>
 		</div>
 		<div class="counter_badge">
-			<span style="display:none;">{% counter u %}</span>
-			{% cache 10 project_update_view_count p.id u.id %}
-				{{ u.view_count|intcomma }}
+			<span style="display:none;">{% counter update %}</span>
+			{% cache 10 project_update_view_count project.id update.id %}
+				{{ update.view_count|intcomma }}
 			{% endcache %}
 			<br />
 			<span>{% trans 'views' %}</span>
 		</div>
 		<div class="clear"></div>
 		<div class="space20">
-		{% if u.text and u.photo_location == 'B' %}
-		  {{ u.text|linebreaks }}
-		 {% endif %}
-		
-		{% if u.video %}
-      <div style="margin: 10px 10px 5px 20px;">
-    {% oembed 400x300 %}
-        {{ u.video }}
-    {% endoembed %}
-    </div>
-<p class="small lightx1">
-    {% if u.video_caption %}
-        {{ u.video_caption }}
-    {% endif %}
-    {% if u.video_credit %}
-        {% trans 'Video credit' %}: {{ u.video_credit }}
-    {% endif %}
-</p>
-{% endif %}
+		  {% if update.text_location == 'B' %}
+		    {{ update.text|linebreaks }}
+		  {% endif %}	
+		  {% if update.video %}
+        <div style="margin: 10px 10px 30px 20px;">
+          {% oembed 400x300 %}
+            {{ update.video }}
+          {% endoembed %}
+        </div>
+	{% if update.video_caption or update.video_credit %}
+	<p class="small lightx1">
+		  {% if update.video_caption %}
+            {{ update.video_caption }}
+          {% endif %}
+          {% if update.video_credit %}
+            {% trans 'Video credit' %}: {{ update.video_credit }}
+          {% endif %}
+        </p>
+      {% endif %}
+      {% endif %}
+			{% if update.photo %}
 
-			{% if u.photo %}
-            {% update_thumb u 400 300 %}
-      {% endif %}	
-				{% if u.text and u.photo_location == 'E' %}
-					{{u.text|linebreaks}}
-				{% endif %}    
+        {% update_thumb update 400 300 %}
+      {% endif %}   	
+		  {% if update.text_location == 'E' %}
+		    {{ update.text|linebreaks }}
+		  {% endif %}
 			<hr style="margin-bottom:5px;" />
 			<div class="text_right">
 				<a class="small" href=".">{% trans 'Permalink' %}</a>

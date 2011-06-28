@@ -1,4 +1,7 @@
 {% load i18n rsr_filters thumbnail rsr_tags addparam %}
+{% load url from future %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -164,36 +167,36 @@
 	<table class="project_table" style="width:710px; max-width:710px;">
 		<thead>
 			<tr>
-				<th id="partnerColumnHeader" class="{% ifequal order_by 'name' %}active{% endifequal %}">
-					<div class="padder {% ifequal mode 'name_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'name_asc'  %}selectedColumnHeaderAsc{% endifequal %}">
-						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
-						{% ifequal order_by 'name'  %} class="selected"	{% endifequal %} target="_self">
+				<th id="partnerColumnHeader" class="{% if order_by = 'name' %}active{% endif %}">
+					<div class="padder {% if mode = 'name_desc' %}selectedColumnHeaderDesc{% endif %}{% if mode = 'name_asc'  %}selectedColumnHeaderAsc{% endif %}">
+						<a href="{% url 'rsr_partners_widget' %}{% addparam "order_by" "name" "prev" order_by "sort" sort %}" 
+						{% if order_by = 'name'  %} class="selected" {% endif %} target="_self">
 						{% trans 'Project Partners' %}
 						</a>
 						<span style="color:#888;">({{orgs.count}})</span>
 					</div>
 				</th>
-				<th id="typeColumnHeader" class="{% ifequal order_by 'organisation_type' %}active{% endifequal %}">
-					<div class="padder {% ifequal mode 'organisation_type_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'organisation_type_asc' %}selectedColumnHeaderAsc{% endifequal %}">
-						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
-						{% ifequal order_by 'organisation_type'  %} class="selected" {% endifequal %} target="_self">
+				<th id="typeColumnHeader" class="{% if order_by = 'organisation_type' %}active{% endif %}">
+					<div class="padder {% if mode = 'organisation_type_desc' %}selectedColumnHeaderDesc{% endif %}{% if mode = 'organisation_type_asc' %}selectedColumnHeaderAsc{% endif %}">
+						<a href="{% url 'rsr_partners_widget' %}{% addparam "order_by" "organisation_type" "prev" order_by "sort" sort%}"
+						{% if order_by = 'organisation_type'  %} class="selected" {% endif %} target="_self">
 							{% trans 'Type' %}
 						</a>
 					</div>
 				</th>
 			
-				<th id="continentColumnHeader" class="{% ifequal order_by 'country__continent' %}active{% endifequal %}">
-					<div class="padder {% ifequal mode 'country__continent_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode 'country__continent_asc' %}selectedColumnHeaderAsc{% endifequal %}">
-						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
-						{% ifequal order_by 'country__continent' %} class="selected" {% endifequal %} target="_self">
+				<th id="continentColumnHeader" class="{% if order_by = 'country__continent' %}active{% endif %}">
+					<div class="padder {% if mode = 'country__continent_desc' %}selectedColumnHeaderDesc{% endif %}{% if mode = 'country__continent_asc' %}selectedColumnHeaderAsc{% endif %}">
+						<a href="{% url 'rsr_partners_widget' %}{% addparam "order_by" "country__continent" "prev" order_by "sort" sort%}"
+						{% if order_by = 'country__continent' %} class="selected" {% endif %} target="_self">
 						{% trans 'Continent' %}
 						</a>
 					</div>
 				</th>
-				<th id="countryColumnHeader" class="{% ifequal order_by 'country' %}active{% endifequal %}">
-					<div class="padder {% ifequal mode 'country_desc' %}selectedColumnHeaderDesc{% endifequal %}{% ifequal mode   'country_asc' %}selectedColumnHeaderAsc{% endifequal %}">
-						<a href="{% url akvo.rsr.views.partners_widget%}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
-						{% ifequal order_by 'country' %} class="selected" {% endifequal %} target="_self">
+				<th id="countryColumnHeader" class="{% if order_by = 'country' %}active{% endif %}">
+					<div class="padder {% if mode = 'country_desc' %}selectedColumnHeaderDesc{% endif %}{% if mode = 'country_asc' %}selectedColumnHeaderAsc{% endif %}">
+						<a href="{% url 'rsr_partners_widget' %}{% addparam "order_by" "country" "prev" order_by "sort" sort%}"
+						{% if order_by = 'country' %} class="selected" {% endif %} target="_self">
 						{% trans 'Country' %}</a>
 					</div>
 				</th>
@@ -213,10 +216,10 @@
 			<tr>
 				<td class="partnerColumnCell">
 					<div class="padder">
-				            <a href="{% url akvo.rsr.views.orgdetail o.id %}">
+				            <a href="{% url 'org_detail' o.id %}">
                                 {% org_logo o 100 75 'float:left; margin-right: 10px;' %}
 				            </a>
-						<a href="{% url akvo.rsr.views.orgdetail o.id %}">{{o.name}}</a>
+						<a href="{% url 'org_detail' o.id %}">{{o.name}}</a>
 						<div class="grey small">{{o.long_name}}</div>
 						<div style="clear: left;">
 						{% category_icons_org o %}
@@ -240,7 +243,7 @@
 				</td>				
 				<td class="totalColumnCell">
 					<div class="padder">
-						<a href="{% url akvo.rsr.views.filteredprojectlist o.id %}#list">{{o.published_projects.count}}</a>
+						<a href="{% url 'rsr_org_list_filtered' o.id %}#list">{{o.published_projects.count}}</a>
 					</div>
 				</td>
 			</tr>

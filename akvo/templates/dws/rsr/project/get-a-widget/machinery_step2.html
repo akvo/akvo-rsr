@@ -1,11 +1,13 @@
 {% extends "rsr/base.html" %}
 {% load i18n %}
+{% load url from future %}
+
 
 {% block title %}{{ block.super }} - {{project.name}} {% trans 'widgets' %}{% endblock %}
 
 {% block breadcrum_items %}
 {{block.super}}
-  <li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
   <li><a href="{{project.get_absolute_url}}"><span>{{project.name}}</span></a></li>
   <li id="last_breadcrum_item">{% trans 'Get a widget - step 2' %}</li>
 {% endblock breadcrum_items %}
@@ -131,7 +133,7 @@
 					</div>
 					<div style="clear:both; padding-bottom:20px;"> </div>
 					<div style="width:200px; text-align:center; margin-left:auto; margin-right:auto">
-						<a style="margin-right:10px;" class="grey awesome" href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
+						<a style="margin-right:10px;" class="grey awesome" href="{% url 'get_widget' project.id %}">{% trans 'Back' %}</a>
 						{% comment %}
 						<a style="margin-left:10px;" id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();">{% trans 'Preview' %}</a>
 						{% endcomment %}
@@ -181,8 +183,8 @@
 					<textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="50" id="code"> </textarea>
 				</div>
 				<div style="text-align:center;">
-					<a style="margin-right:10px;"class="grey awesome" href="{% url akvo.rsr.views.getwidget project.id %}">{% trans 'Back' %}</a>
-					<a style="margin-left:10px;"class="aqua awesome" href="{% url project_main project.id %}">{% trans 'Done' %}</a>
+					<a style="margin-right:10px;"class="grey awesome" href="{% url 'get_widget' project.id %}">{% trans 'Back' %}</a>
+					<a style="margin-left:10px;"class="aqua awesome" href="{% url 'project_main' project.id %}">{% trans 'Done' %}</a>
 				</div>
 			</div>
 		</div>

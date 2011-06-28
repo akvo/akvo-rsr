@@ -1,6 +1,7 @@
 {% extends "rsr/project/donate/donate_base.html" %}
-
 {% load i18n %}
+{% load url from future %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -8,7 +9,7 @@
 {% endblock breadcrum_items %}
 
 {% block maincontent %}
-<h1>Donate to {{p.name}}</h1>
+<h1>Donate to {{project.name}}</h1>
 <div class="white_box">
 	<div>
 		<div id="donate_step_box">
@@ -40,38 +41,38 @@
 				<div class="space20">
 					<h3>{% trans 'For all users' %}</h3>
 					<div style="text-align:center; height:150px;">
-						<a href="{% url complete_donation project_id=p.id,engine='paypal' %}">
+						<a href="{% url 'complete_donation' project_id=project.id engine='paypal' %}">
 						<img src="{{MEDIA_URL}}akvo/img/donate/horizontal_solution_PPeCheck.gif" width="230" height="65" alt="PayPal" style="margin-top:30px;" /></a>						
 					</div>
 					<p class="small">
 						{% trans 'Akvo offers the Paypal Secure Payment&trade; system for donations in 24 currencies from 190 countries, whether or not you have a PayPal account.' %}
 					</p>
 					<div style="text-align:center;">
-						<a style="float:none;" class="aqua awesome" href="{% url complete_donation project_id=p.id,engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
+						<a style="float:none;" class="aqua awesome" href="{% url 'complete_donation' project_id=project.id engine='paypal' %}"><span>{% trans 'Use PayPal' %}</span></a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	{% ifequal p.currency 'EUR' %}
+	{% if project.currency = 'EUR' %}
 		<div style="width:475px; float:left;">
 			<div class="space20" class="text_left">
 				<div class="round" style="border: 1px solid #ccc; border-bottom: 2px solid #ccc;">
 					<div class="space20">
 						<h3>{% trans 'For Dutch users only' %}</h3>
 						<div style="text-align:center; height:168px;">
-							<a href="{% url complete_donation project_id=p.id,engine='ideal' %}">
+							<a href="{% url 'complete_donation' project_id=project.id engine='ideal' %}">
 							<img src="{{MEDIA_URL}}akvo/img/donate/ideal-small.png" width="130" height="121" alt="Ideal" style="margin-top:20px;" /></a>
 						</div>
 						<p class="small">{% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}</p>
 						<div style="text-align:center;">
-							<a style="float:none;" class="aqua awesome" href="{% url complete_donation project_id=p.id,engine='ideal' %}"><span>{% trans 'Use iDeal' %}</span></a>
+							<a style="float:none;" class="aqua awesome" href="{% url 'complete_donation' project_id=project.id engine='ideal' %}"><span>{% trans 'Use iDeal' %}</span></a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	{% endifequal %}
+	{% endif %}
 	<div class="clear"></div>	
 	<p style="margin-left:20px; margin-top:20px;">
 		{% trans 'Do you represent an institution or company interested in funding or sponsoring this project?' %}<br />

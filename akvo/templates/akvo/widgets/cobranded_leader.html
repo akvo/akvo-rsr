@@ -1,10 +1,6 @@
-{% comment %}
-Akvo RSR is covered by the GNU Affero General Public License, see more details in the license.txt file located at the root folder of the Akvo RSR module. 
-For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-{% endcomment %}
-
-
 {% load i18n rsr_tags rsr_filters thumbnail cache counter_tags humanize %}
+{% load url from future %}
+
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -52,7 +48,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 <div id="container" style="background-color:#fff;">
 	<div id="header">
 		<div style="float:right; margin-right:4px; margin-top:2px;">
-			<a href="{% url akvo.rsr.views.index %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
+			<a href="{% url 'index' %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
 		</div>
 		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
 		<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:20px; display:none;">
@@ -78,17 +74,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
 		<div style="padding-left:10px;">
-			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url akvo.rsr.views.projectmain project.id %}">{{project.name|smart_truncate:30}}</a></h2>
+			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:30}}</a></h2>
 			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:40}}</p>
 			<div style="float:left; width:125px;">
-                <a href="{% url akvo.rsr.views.projectmain project.id %}">
+                <a href="{% url 'project_main' project.id %}">
                     {% project_thumb project 120 90 %}
                 </a>
 			</div>
 			<div style="float:left; width:140px; margin-right:-140px;">
 					<p id="project_plan_summary" style="margin-left:10px; font-size:0.9em; height:70px;" >
 						{{project.project_plan_summary|safe|smart_truncate:80}}
-						<a href="{% url akvo.rsr.views.projectmain project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+						<a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 					</p>
 					<p class="miniFont lightgrey" style="margin-top:4px; margin-left:10px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
 			</div>			
@@ -97,7 +93,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	</div>
 	<div id="right" style="float:left; width:280px; margin-left: -280px;">	
 		<div class="inner" style="margin-top:3px;">
-			{% funding_box_wide project %}	
+			{% funding_box_wide project %}
 		</div>
 	</div>
 	<div id="footer2">
@@ -106,7 +102,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 			{% if project.sponsorpartner_set.all %}
 				{% for sponsor in project.sponsorpartner_set.all %}
 					{% if forloop.first %}
-						<p class="grey">{% trans 'Presented by' %} <a href="{% url org_detail sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
+						<p class="grey">{% trans 'Presented by' %} <a href="{% url 'org_detail' sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a>
 						</p>
 					{% endif%}
 				{% endfor %}
@@ -114,7 +110,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 				{% if project.fundingpartner_set.all %}
 					{% for funder in project.fundingpartner_set.all %}
 						{% if forloop.first %}
-						<p class="grey">{% trans 'Underwritten by' %} <a href="{% url org_detail funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
+						<p class="grey">{% trans 'Underwritten by' %} <a href="{% url 'org_detail' funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a>
 						</p>
 						{% endif%}
 					{% endfor %}
@@ -122,7 +118,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 					{% if project.supportpartner_set.all %}
 						{% for supporter in project.supportpartner_set.all %}
 							{% if forloop.first %}
-							<p class="grey">{% trans 'Supported by' %} <a href="{% url org_detail supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
+							<p class="grey">{% trans 'Supported by' %} <a href="{% url 'org_detail' supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a>
 							</p>							
 							{% endif%}
 						{% endfor %}
@@ -130,7 +126,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 						{% if project.fieldpartner_set.all %}
 						{% for operator in project.fieldpartner_set.all %}
 							{% if forloop.first %}
-							<p class="grey">{% trans 'Implemented by' %} <a href="{% url org_detail operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a>
+							<p class="grey">{% trans 'Implemented by' %} <a href="{% url 'org_detail' operator.field_organisation.id %}">{{supporter.support_organisation.name}}</a>
 							</p>							
 							{% endif%}
 						{% endfor %}
@@ -171,28 +167,28 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
 											'',
 											'sponsor',
-											'{% url org_detail sponsor.sponsor_organisation.id %}');
+											'{% url 'org_detail' sponsor.sponsor_organisation.id %}');
 	{% endfor %}
 
 	{% for funder in project.fundingpartner_set.all %}
 	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
 											'',
 											'funding',
-											'{% url org_detail funder.funding_organisation.id %}');
+											'{% url 'org_detail' funder.funding_organisation.id %}');
 	{% endfor %}
 
 	{% for supporter in project.supportpartner_set.all %}
 	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
 											'',
 											'support',
-											'{% url org_detail supporter.support_organisation.id %}');
+											'{% url 'org_detail' supporter.support_organisation.id %}');
 	{% endfor %}
 
 	{% for operator in project.fieldpartner_set.all %}
 	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
 											'',
 											'field',
-											'{% url org_detail operator.field_organisation.id %}');
+											'{% url 'org_detail' operator.field_organisation.id %}');
 	{% endfor %}
 
 

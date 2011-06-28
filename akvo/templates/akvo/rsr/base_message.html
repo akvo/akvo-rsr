@@ -1,23 +1,24 @@
 {% extends "rsr/base.html" %}
-
 {% load i18n %}
+{% load url from future %}
+
 
 {% block maincontent %}
-	<div class="span-18">
-		<div class="white_box">
-			<div class="space20" style="min-height:250px;">
-				<h1>
-					{% block message_head %}
-					Message title
-					{% endblock message_head %}
-				</h1>
-				{% block message_body %}
-					Message body copy
-				{% endblock message_body %}
-				<p>
-					{% trans 'Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.' %}
-				</p>
-			</div>
-		</div>
-	</div>
+  <div class="span-18">
+    <div class="white_box">
+      <div class="space20" style="min-height:250px;">
+        <h1>
+          {% block message_head %}
+            Message title
+          {% endblock message_head %}
+        </h1>
+        {% block message_body %}
+          Message body copy
+        {% endblock message_body %}
+        <p>
+          {% trans 'Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.' %}
+        </p>
+      </div>
+    </div>
+  </div>
 {% endblock maincontent %}

@@ -1,8 +1,11 @@
 {% extends "rsr/base.html" %}
 {% load i18n %}
+{% load url from future %}
+
+
 {% block content %}
 <h1>{% trans 'Page not found (error 404)' %}</h1>
 <p>
-	Sorry, the page you are trying to view is not here. What about our <a href="{% url index %}">front page</a> instead?  
+	Sorry, the page you are trying to view is not here. What about our <a href="{% url 'index' %}">front page</a> instead?  
 </p>
 {% endblock content %}

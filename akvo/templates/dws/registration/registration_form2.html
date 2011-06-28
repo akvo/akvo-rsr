@@ -1,6 +1,7 @@
 {% extends "rsr/base_sheet.html" %}
-
 {% load i18n %}
+{% load url from future %}
+
 
 {% block title %}{% trans 'Register with DWS RSR - Step 1 of 2' %}{% endblock title %}
 
@@ -104,7 +105,7 @@
 	<hr />
 	<div style="text-align:center; padding-bottom:20px;">
 		<div style="float:left;">
-			<a href="{% url akvo.rsr.views.index %}" class="small">{% trans 'Cancel' %}</a>
+			<a href="{% url 'index' %}" class="small">{% trans 'Cancel' %}</a>
 		</div>
 		<a class="aqua awesome" href="javascript:document.registrationForm.submit();">
 			{% trans 'Submit' %}
