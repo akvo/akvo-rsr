@@ -1278,12 +1278,13 @@ def projectfunding(request, project_id):
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return { 
+        'can_add_update': project.connected_to_user(request.user),
+        'comments': comments,
+        'hide_funding_link': True,
         'project': project, 
         'public_donations': public_donations, 
         'site_section': 'projects', 
         'updates': updates,
-        'comments': comments,
-        'can_add_update': project.connected_to_user(request.user),
     }
 
 def getwidget(request, project_id):
