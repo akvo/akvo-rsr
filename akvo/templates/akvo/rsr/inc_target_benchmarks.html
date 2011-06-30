@@ -4,7 +4,7 @@
 
 {% if benchmarks %}
   {% for benchmark in benchmarks %}
-    {% ifchanged %}
+    {% ifchanged benchmark.category.name %}
       {% if not forloop.first %}
         </ul>
       {% endif %}
