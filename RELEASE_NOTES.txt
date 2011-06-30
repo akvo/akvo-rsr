@@ -26,6 +26,8 @@ Several improvemenets have been made to video embedding in project updates. Shor
 
 Shortly after the release of RSR 1.0.8, Blip.TV made several backwards-incompatible changes to their API meaning that supporting blip.tv video URLs was no longer possible. This situation has now been rectified and RSR 1.0.9 handles both old-style and new-style blip.tv video URLs. Users should, however, only use the new-style URLs in project updates.
 
+In addition to displaying full embedded Flash videos, this release also handles displaying static thumbnail images of video objects. This results in faster page loads for pages displaying multiple videos.
+
 ### Templates updates to new Django syntax
 
 To ensure compatibility with future releases of Django, RSR's templates now use the new-style template syntax released with version 1.3 of Django. This change is, however, not visible to users of the site.
