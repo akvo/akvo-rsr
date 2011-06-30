@@ -1227,9 +1227,14 @@ def projectmain(request, project_id):
     if settings.PVW_RSR:
         benchmarks      = None
     else:
-        # comprehensions are fun! here we use it to get the categories that don't contain only 0 value benchmarks
-        benchmarks      = project.benchmarks.filter(category__in=[category for category in project.categories.all() if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']])
-    
+        # comprehensions are fun! here we use it to get the categories that 
+        # don't contain only 0 value benchmarks
+        benchmarks = project.benchmarks.filter(
+            category__in=[category for category in project.categories.all()
+                if project.benchmarks.filter(category=category) \
+                    .aggregate(Sum('value'))['value__sum']
+            ])
+
     # a little model meta data magic
     opts = project._meta
     if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
