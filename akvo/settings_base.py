@@ -255,3 +255,5 @@ LOGGING = {
         },
     },
 }
+
+PROJECT_UPDATE_TIMEOUT = 30  # minutes

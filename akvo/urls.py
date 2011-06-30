@@ -13,12 +13,12 @@ from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
-import oembed
 
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
 admin.autodiscover()
-# djangoembed
+# The next two lines enable djangoembed in the admin
+import oembed
 oembed.autodiscover()
 
 feeds = {
@@ -97,6 +97,7 @@ urlpatterns += patterns('',
     # Project
     url(r'^rsr/project/(?P<project_id>\d+)/$', 'akvo.rsr.views.projectmain', name='project_main'),
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
+    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$', 'akvo.rsr.views.updateform', name='project_edit_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', name='project_add_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
     
@@ -160,7 +161,10 @@ urlpatterns += patterns('',
     (r'^rsr/counter/', include('django_counter.urls')),
         
 
-    (r'^rsr/error/access_denied/$', direct_to_template, {'template': 'rsr/error_access_denied.html'}),
+    url(r'^rsr/error/access_denied/$',
+        direct_to_template,
+        {'template': 'rsr/error_access_denied.html'},
+        name='access_denied'),
     
     url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
     

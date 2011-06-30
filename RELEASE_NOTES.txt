@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0.8
+RELEASE_NOTES.txt, v1.0.9
 
-Last changed: 29 April 2011, bw
+Last changed: 28 June 2011, pb
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +8,33 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 1.0.9 release notes
+-------------------------------------------
+28 June 2011, (Code name: Quadrant) pb
+
+New features
+------------
+
+### Ability to edit project updates
+
+The release adds the ability to edit project updates. Up until now, once a project update had been created it could no longer be edited in any way. Now the user who created a project update may also now edit it for up to 30 minutes after its original creation time.
+
+### Improved handling of embedded videos
+
+Several improvemenets have been made to video embedding in project updates. Short-form YouTube URLs are now supported so a user can now enter both youtube.com and youtu.be URLs.
+
+Shortly after the release of RSR 1.0.8, Blip.TV made several backwards-incompatible changes to their API meaning that supporting blip.tv video URLs was no longer possible. This situation has now been rectified and RSR 1.0.9 handles both old-style and new-style blip.tv video URLs. Users should, however, only use the new-style URLs in project updates.
+
+In addition to displaying full embedded Flash videos, this release also handles displaying static thumbnail images of video objects. This results in faster page loads for pages displaying multiple videos.
+
+### Templates updates to new Django syntax
+
+To ensure compatibility with future releases of Django, RSR's templates now use the new-style template syntax released with version 1.3 of Django. This change is, however, not visible to users of the site.
+
+More information about the new template syntax can be found [here](https://docs.djangoproject.com/en/dev/releases/1.3/#changes-to-url-and-ssi).
+
+---
 
 Akvo RSR v 1.0.8 release notes
 -------------------------------------------

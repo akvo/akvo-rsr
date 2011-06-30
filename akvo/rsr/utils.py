@@ -8,6 +8,21 @@ import random
 import logging
 logger = logging.getLogger('akvo.rsr')
 
+import sys
+
+# embedly imports json directly  - 
+# the following ensures support for Python 2.5 as well
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        from django.utils import simplejson as json
+    sys.modules['json'] = json
+
+import pytz
+
 from workflows.models import State
 from workflows.utils import get_state
 
@@ -331,3 +346,9 @@ def state_equals(obj, state):
     if type(state) != type([]):
         state = [state] 
     return get_state(obj) in State.objects.filter(name__in=state)
+
+
+# convert naive datetime to GMT format
+def to_gmt(dt):
+    gmt = pytz.timezone('GMT')
+    return dt.replace(tzinfo=gmt).astimezone(gmt)
