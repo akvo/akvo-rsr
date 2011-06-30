@@ -1,5 +1,8 @@
 # Build with either env64 or envintel - see setup/dev/dev_env_setup_for_osx.txt for details
 
+# Requirements for installing packages from Mercurial repositories
+mercurial==1.8.4
+
 # Requirements for building supervisor
 meld3==0.6.7
 
