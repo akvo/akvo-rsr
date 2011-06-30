@@ -73,11 +73,11 @@ function install_system_packages
     pip freeze
 
     printf "\n>> Installing/upgrading system packages: (with 64-bit architecture)\n"
-    pip install -M -U -r requirements/0_system.txt
+    pip install -M -r requirements/0_system.txt
 
     printf "\n>> Installing/upgrading deployment packages: (with universal 32-bit & 64-bit architecture)\n"
     source osx_build_flags_env_intel.config
-    pip install -M -U -r requirements/1_deployment.txt
+    pip install -M -r requirements/1_deployment.txt
 
     printf "\n>> Installed system packages:\n"
     pip freeze

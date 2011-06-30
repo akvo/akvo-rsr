@@ -25,10 +25,10 @@ printf "\n>> Virtualenv should be empty (i.e. wsgiref only)\n"
 pip freeze
 
 printf "\n>> Installing RSR modules\n"
-pip install -M -U -r requirements/2_rsr.txt
+pip install -M -r requirements/2_rsr.txt
 
 printf "\n>> Installing further dev and testing modules\n"
-pip install -M -U -r requirements/3_testing.txt
+pip install -M -r requirements/3_testing.txt
 
 printf "\n>> Installed modules:\n"
 pip freeze
