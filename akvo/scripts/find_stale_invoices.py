@@ -1,19 +1,23 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 from syslog import syslog
 
 from django.core.management import setup_environ
 
-full_path = os.path.abspath(os.path.dirname(sys.argv[0]))
-akvo_path = os.path.split(full_path)[0]
+script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
+base_rsr_path = os.path.split(script_path)[0]
+base_akvo_path = os.path.split(base_rsr_path)[0]
 
-sys.path.append(akvo_path)
+sys.path.append(base_rsr_path)
+sys.path.append(base_akvo_path)
 
 import settings
 setup_environ(settings)
 
-from rsr.models import Invoice
+from akvo.rsr.models import Invoice
+
 
 def update_invoices():
     """Identify invoices which have had a status of 1 (Pending)
@@ -35,9 +39,8 @@ def update_invoices():
             invoice.status = 4
             invoice.save()
             current_status = invoice.get_status_display().lower()
-            message = 'Invoice %s status changed (%s -> %s).' % (invoice.id, 
-                                                                 original_status, 
-                                                                 current_status)
+            message = 'Invoice %s status changed (%s -> %s).' % (
+                invoice.id, original_status, current_status)
             sys.stdout.write(message + '\n')
             syslog(log_message_prefix + message)
     else:
