@@ -124,7 +124,7 @@
 						{% if not last_update %}
 							<span style="color:#000;">{% trans 'Not yet' %}</span>
 						{% else %}
-							<a href="{% url 'project_updates. project.id %}#{{project.project_updates.latest.id}}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
+							<a href="{% url 'project_updates' project.id %}#{{project.project_updates.latest.id}}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
 						{% endif %}
 					{% endwith %}
 					</p>
