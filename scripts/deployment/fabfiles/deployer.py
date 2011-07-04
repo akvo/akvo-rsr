@@ -55,13 +55,9 @@ def download_and_unpack_rsr_archive():
     download_rsr_archive()
     unpack_rsr_archive()
 
-def install_akvo_modpython():
-    run("cp -p %s %s" % (env.mod_python_template_file, env.mod_python_destination_path))
-
 def deploy_rsr():
     print "\n>> Starting RSR deployment"
     load_deployment_config()
     ensure_required_paths_exist()
     download_and_unpack_rsr_archive()
     rebuild_virtualenv(env.pip_requirements_file, env.pip_install_log_file)
-    install_akvo_modpython()
