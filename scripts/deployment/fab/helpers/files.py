@@ -24,28 +24,19 @@ class FilesHelper():
         with fabric.context_managers.cd(working_dir):
             fabric.api.run("tar -cjf %s.tar.bz2 %s" % (dir_to_archive, dir_to_archive))
 
-    def delete_file(self, file_path, deletion_message=None):
-        self._delete_file(file_path, deletion_message, fabric.api.run)
+    def delete_file(self, file_path):
+        self._delete_file_or_directory(file_path, "file", fabric.api.run)
 
-    def delete_file_with_sudo(self, file_path, deletion_message=None):
-        self._delete_file(file_path, deletion_message, fabric.api.sudo)
+    def delete_file_with_sudo(self, file_path):
+        self._delete_file_or_directory(file_path, "file", fabric.api.sudo)
 
-    def _delete_file(self, file_path, deletion_message, run_command):
-        self._delete_file_or_directory(file_path, deletion_message, "file", run_command)
+    def delete_directory(self, dir_path):
+        self._delete_file_or_directory(dir_path, "directory", fabric.api.run)
 
-    def delete_directory(self, dir_path, deletion_message=None):
-        self._delete_directory(dir_path, deletion_message, fabric.api.run)
+    def delete_directory_with_sudo(self, dir_path):
+        self._delete_file_or_directory(dir_path, "directory", fabric.api.sudo)
 
-    def delete_directory_with_sudo(self, dir_path, deletion_message=None):
-        self._delete_directory(dir_path, deletion_message, fabric.api.sudo)
-
-    def _delete_directory(self, dir_path, deletion_message, run_command):
-        self._delete_file_or_directory(dir_path, deletion_message, "directory", run_command)
-
-    def _delete_file_or_directory(self, at_path, deletion_message, file_or_dir, run_command):
+    def _delete_file_or_directory(self, at_path, file_or_dir, run_command):
         if files.exists(at_path):
-            if (deletion_message):
-                print deletion_message
-            else:
-                print ">> Deleting %s: %s" % (file_or_dir, at_path)
+            print ">> Deleting %s: %s" % (file_or_dir, at_path)
             run_command("rm -r %s" % at_path)
