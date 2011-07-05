@@ -17,6 +17,8 @@ class PermissionsHelper():
         group_membership = fabric.api.run("groups")
         if group_membership.find(group_name) == -1:
             fabric.utils.abort("\n>> User [%s] should be a member of group [%s]" % (self.env.user, group_name))
+        else:
+            print ">> User [%s] is a member of expected group [%s]" % (self.env.user, group_name)
 
     def set_akvo_group_permissions_on_path(self, path):
         self.set_akvo_ownership_on_path(path)
