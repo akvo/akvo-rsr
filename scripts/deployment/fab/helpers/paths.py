@@ -40,6 +40,3 @@ class PathsHelper():
     def exit_if_path_does_not_exist(self, path):
         if not files.exists(path):
             fabric.utils.abort("\n>> Expected path does not exist: %s" % path)
-
-    def path_without_trailing_separator(self, path):
-        return path.strip("/")
