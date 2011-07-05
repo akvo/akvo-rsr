@@ -18,11 +18,11 @@ class DeployRSRCode(fabric.tasks.Task):
 
     def __init__(self, environment):
         self.env = environment
-        fab.config.deployer_config.DeployerConfig(self.env).load_config()
         self.permissions = fab.helpers.permissions.PermissionsHelper(self.env)
 
     def run(self):
-        print "\n>> Deploying RSR codebase"
+        print "\n>> Starting RSR codebase deployment"
+        fab.config.deployer_config.DeployerConfig(self.env).load_config()
         self.ensure_required_paths_exist()
 
     def ensure_required_paths_exist(self):
