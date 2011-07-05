@@ -16,12 +16,12 @@ akvo/rebuild_db.py
 akvo/settings/
 akvo/settings.py
 akvo/testing.py
-scripts/deployment/rebuild_local_env.config
+scripts/deployment/fab/config/deployer_config.py
 scripts/deployment/fabfiles/data_retrieval_config.py
-scripts/deployment/fabfiles/deployer_config.py
 scripts/deployment/pip/build
 scripts/deployment/pip/osx_system.config
 scripts/deployment/pip/virtualenv_paths.config
+scripts/deployment/rebuild_local_env.config
 scripts/deployment/static_project_structure.py
 tests/akvo/acceptance/test_settings.py
 tests/pvw/acceptance/test_settings.py

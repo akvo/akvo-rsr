@@ -26,7 +26,7 @@ elif len(sys.argv) == 4:
     PASSWORD = sys.argv[3]
 
 def deploy_rsr(hosts, username, password):
-    subprocess.call(["fab","-f", "fabfiles/deployer.py", "-H", hosts, "-u", username, "-p", password, "deploy_rsr"])
+    subprocess.call(["fab","-f", "fab/tasks/deploy_rsr_code.py", "-H", hosts, "-u", username, "-p", password, "deploy_rsr_code"])
 
 
 if __name__ == "__main__":
