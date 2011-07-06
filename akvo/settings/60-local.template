@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+"""
+    Akvo RSR is covered by the GNU Affero General Public License.
+    See more details in the license.txt file located at the root folder of the
+    Akvo RSR module. For additional details on the GNU license please
+    see < http://www.gnu.org/licenses/agpl.html >.
+"""
+
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'V\xf2;\xc4\xe4\xaf\xba\x88X\xe1\xd1\x06\xc9\x16\xa0\x0\x00C\x13'
+
+PVW_RSR = False
+
+TEST_RUNNER = 'test_runner.run_tests'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+if PVW_RSR:
+    MEDIA_ROOT = '/.../static/akvo/mediaroot/'
+    MEDIA_URL = 'http://akvo.dev/media/'
+    LIVE_EARTH_ENABLED = False
+    WALKING_FOR_WATER_ENABLED = False
+    SITE_ID = 13
+    DATABASES = {
+        'default': {
+            'NAME': '/.../dws-rsr.sqlite3',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'USER': '',
+            'PASSWORD': '',
+            'HOST':'',
+        },
+        'wordpress': {
+            'NAME': 'akvo-wp',
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+        }
+    }
+
+else:
+    MEDIA_ROOT = '/.../static/akvo/mediaroot/'
+    MEDIA_URL = 'http://akvo.dev/media/'
+    LIVE_EARTH_ENABLED = True
+    WALKING_FOR_WATER_ENABLED = True
+    SITE_ID = 8
+    
+    DATABASES = {
+        'default': {
+            'NAME': 'akvo-rsr',
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': '',
+            'PASSWORD': '',
+            'HOST':'localhost',
+        },
+        'wordpress': {
+            'NAME': 'akvo-wp',
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+        }
+    }

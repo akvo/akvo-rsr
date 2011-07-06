@@ -16,7 +16,8 @@ akvo/settings.py
 akvo/rebuild_db.py
 akvo/testing.py
 akvo/akvo.log
-akvo/settings/
+akvo/settings/5*.conf
+akvo/settings/6*.conf
 scripts/deployment/static_project_structure.py
 tests/akvo/acceptance/test_settings.py
 tests/pvw/acceptance/test_settings.py
