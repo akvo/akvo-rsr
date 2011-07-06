@@ -2,10 +2,10 @@
 
 # Modules used for app testing
 nose==1.0.0
-selenium==2.0rc2
+mox==0.5.3
+selenium==2.0rc3
 
 # optional dev modules
-# flexmock
 # lettuce==0.1.27
 # selenium==1.0.1
 # windmill
