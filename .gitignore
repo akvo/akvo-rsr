@@ -12,7 +12,6 @@ akvo/datadir.tgz
 akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/mollie_banklist.xml
-akvo/settings.py
 akvo/rebuild_db.py
 akvo/testing.py
 akvo/akvo.log
