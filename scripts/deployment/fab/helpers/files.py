@@ -14,7 +14,7 @@ import fabric.context_managers
 import fabric.contrib.files as files
 
 
-class FilesHelper():
+class FilesHelper(object):
 
     def compress_directory(self, full_path):
         stripped_path = full_path.strip("/")
