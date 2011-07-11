@@ -19,6 +19,12 @@ class TestSuiteLoader(object):
         return nose.loader.TestLoader().loadTestsFromTestCase(test_case)
 
 
+class TestMode(object):
+
+    NORMAL = 'normal'
+    CONTINUOUS_INTEGRATION = 'ci'
+
+
 class TestRunner(object):
 
     def __init__(self, test_mode):
@@ -27,7 +33,7 @@ class TestRunner(object):
     def run_test_suite(self, suite):
         test_runner = nose.core.TextTestRunner(verbosity=2)
 
-        if self.test_mode == 'ci':
+        if self.test_mode == TestMode.CONTINUOUS_INTEGRATION:
             import teamcity.unittestpy
             test_runner = teamcity.unittestpy.TeamcityTestRunner()
 
