@@ -10,7 +10,7 @@ import nose
 class TestSuiteLoader(object):
 
     def create_suite_from_classes(self, test_class_list):
-        return create_suite_from_list(map(lambda test_class: load_tests_from(test_class), test_class_list))
+        return self.create_suite_from_list(map(lambda test_class: self.load_tests_from(test_class), test_class_list))
 
     def create_suite_from_list(self, test_suite_list):
         return nose.suite.LazySuite(test_suite_list)
