@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from pip.helpers.system import command_exists_on_path, library_exists, library_file, header_path_exists
+from verifiers.helpers.system import command_exists_on_path, library_exists, library_file, header_path_exists
 
 
 class DependencyVerifier:
@@ -32,8 +34,8 @@ class DependencyVerifier:
 
 class BaseDependency:
 
-    # def __init__(self):
-    #     self.condition_met = False
+    def __init__(self):
+        self.condition_met = False
 
     def check_dependency_and_display_verification_message(self, dependency_name, missing_items_list):
         if not self.condition_met:
