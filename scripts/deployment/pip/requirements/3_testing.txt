@@ -1,9 +1,12 @@
 # Build with env64 or envintel - see setup/dev/dev_env_setup_for_osx.txt for details
 
+# Requirements for building selenium
+rdflib==3.1.0
+
 # Modules used for app testing
 nose==1.0.0
 mox==0.5.3
-selenium==2.0rc3
+selenium==2.0.1
 
 # optional dev modules
 # lettuce==0.1.27
