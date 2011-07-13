@@ -19,8 +19,7 @@ akvo/testing.py
 scripts/deployment/fab/config/deployer_config.py
 scripts/deployment/fab/tests/test_settings.py
 scripts/deployment/fabfiles/data_retrieval_config.py
-scripts/deployment/pip/build
-scripts/deployment/pip/osx_system.config
+scripts/deployment/builders/osx/config/osx_system.config
 scripts/deployment/pip/virtualenv_paths.config
 scripts/deployment/rebuild_local_env.config
 scripts/deployment/static_project_structure.py
