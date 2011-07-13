@@ -8,4 +8,4 @@ paramiko==1.7.7.1
 pycrypto==2.3
 
 # Deployment modules
-Fabric==1.1.1
+Fabric==1.2.0
