@@ -1,4 +1,4 @@
-# Build with envintel configuration since env64 will break Fabric - see setup/dev/dev_env_setup_for_osx.txt for details
+# Build with either env64 or envintel - see setup/dev/dev_env_setup_for_osx.txt for details
 
 # Package installation requirements
 distribute==0.6.19
