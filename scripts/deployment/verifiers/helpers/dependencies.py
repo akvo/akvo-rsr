@@ -43,7 +43,7 @@ class BaseDependency:
         self.display_verification_message_for(dependency_name)
 
     def display_verification_message_for(self, dependency_name):
-        print "%s (%s)" % (dependency_name, "yes" if self.condition_met else "no")
+        print "%s (%s)" % (dependency_name, "found" if self.condition_met else "missing")
 
 
 class CommandDependency(BaseDependency):
