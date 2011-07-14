@@ -1,6 +1,0 @@
-#!/bin/bash
-
-SUDO_PASSWORD=your_local_user_password
-RSR_BRANCH=develop
-VIRTUALENV_NAME=rsr_$RSR_BRANCH
-RSR_VIRTUALENV_PATH="/var/virtualenvs/$VIRTUALENV_NAME"

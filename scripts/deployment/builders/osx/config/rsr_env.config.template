@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source config/python_system.config
+
+SUDO_PASSWORD=your_local_user_password
+RSR_BRANCH=develop
+
+VIRTUALENV_NAME=rsr_$RSR_BRANCH
+RSR_VIRTUALENV_PATH="$VIRTUALENVS_HOME/$VIRTUALENV_NAME"
+
+source config/virtualenv_paths.config

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cd "`dirname $0`"
+OSX_DIR="$(cd `dirname $0` && pwd)"
+CONFIG_DIR="$OSX_DIR/config"
+PIP_REQUIREMENTS_DIR="$(cd "$OSX_DIR/../../pip/requirements" && pwd)"
 
 # exit if virtualenv_name parameter is missing
 if [ -z "$1" ]; then
@@ -8,30 +10,39 @@ if [ -z "$1" ]; then
     exit -1
 fi
 
-# exit if virtualenv_paths.config file does not exist
-if [ ! -e virtualenv_paths.config ]; then
-    echo "Expected virtualenv_paths.config file not found -- use the virtualenv_paths.config.template file as a basis"
+cd "$OSX_DIR"
+
+# exit if python_system.config file does not exist
+if [ ! -e $CONFIG_DIR/python_system.config ]; then
+    printf "\n>> Expected $CONFIG_DIR/python_system.config file not found -- copy the python_system.config.template file and edit as necessary\n"
+    exit -1
+fi
+
+# exit if rsr_env.config file does not exist
+if [ ! -e $CONFIG_DIR/rsr_env.config ]; then
+    printf "\n>> Expected $CONFIG_DIR/rsr_env.config file not found -- copy the rsr_env.config.template file and edit as necessary\n"
     exit -1
 fi
 
 VIRTUALENV_NAME=$1
 
-source osx_build_flags_env_intel.config
-source virtualenv_paths.config
+source $CONFIG_DIR/rsr_env.config
+source $CONFIG_DIR/osx_build_flags_env_intel.config
 
 function install_rsr_and_infrastructure_packages
 {
+    cd "$OSX_DIR"
     printf "\n>> Fresh virtualenv should only contain the distribute and wsgiref packages:\n"
     pip freeze
 
     printf "\n>> Installing deployment packages:\n"
-    pip install -M -r requirements/1_deployment.txt
+    pip install -M -r $PIP_REQUIREMENTS_DIR/1_deployment.txt
 
     printf "\n>> Installing RSR packages:\n"
-    pip install -M -r requirements/2_rsr.txt
+    pip install -M -r $PIP_REQUIREMENTS_DIR/2_rsr.txt
 
     printf "\n>> Installing testing packages:\n"
-    pip install -M -r requirements/3_testing.txt
+    pip install -M -r $PIP_REQUIREMENTS_DIR/3_testing.txt
 
     printf "\n>> Packages installed in the $VIRTUALENV_NAME virtualenv:\n"
     pip freeze
