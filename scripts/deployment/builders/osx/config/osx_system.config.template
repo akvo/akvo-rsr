@@ -1,7 +1,0 @@
-#!/bin/bash
-
-PY_VERSION=2.5
-PY_BIN_PATH="/Library/Frameworks/Python.framework/Versions/$PY_VERSION/bin"
-PYTHON_TEMP_DIR="/var/tmp/python"
-
-printf ">> Using Python %s at: %s\n\n" $PY_VERSION "$PY_BIN_PATH"

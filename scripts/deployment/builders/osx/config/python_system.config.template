@@ -1,0 +1,9 @@
+#!/bin/bash
+
+PY_VERSION=2.5
+PY_BIN_PATH="/Library/Frameworks/Python.framework/Versions/$PY_VERSION/bin"
+
+VIRTUALENVS_HOME="/var/virtualenvs"
+PACKAGE_DOWNLOAD_DIR="/var/tmp/python/packages"
+
+printf ">> Using Python $PY_VERSION at: $PY_BIN_PATH\n\n"
