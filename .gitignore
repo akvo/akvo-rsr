@@ -5,6 +5,7 @@
 *.kpf
 *.mo
 *.pyc
+*.templatec
 akvo/akvo.log
 akvo/data
 akvo/datadir
