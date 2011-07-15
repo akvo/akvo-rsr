@@ -5,22 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.helpers.runner import FabricRunner
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.files import FilesHelper
+from fab.helpers.runner import FabricRunner
 
 
 class VirtualEnv(object):
 
-    def __init__(self, virtualenv_path):
-        self.__init__(ExecutionFeedback(), FabricRunner(), FilesHelper(), virtualenv_path)
-
-    # init method for testing with mock dependencies
-    def __init__(self, execution_feedback, fabric_runner, files_helper, virtualenv_path):
+    def __init__(self, virtualenv_path, execution_feedback = ExecutionFeedback(), fabric_runner = FabricRunner(), files_helper = FilesHelper()):
+        self.virtualenv_path = virtualenv_path
         self.feedback = execution_feedback
         self.fabric = fabric_runner
         self.files = files_helper
-        self.virtualenv_path = virtualenv_path
 
     def create_empty_virtualenv(self, pip_install_log_file):
         self.feedback.comment("\n>> Deleting previous virtualenv directory and pip install log file")
