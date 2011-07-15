@@ -24,7 +24,7 @@ class VirtualEnv(object):
         self.files.delete_file_with_sudo(pip_install_log_file)
 
         self.feedback.comment("\n>> Creating new virtualenv at %s" % self.virtualenv_path)
-        self.fabric.run("virtualenv --no-site-packages %s" % self.virtualenv_path)
+        self.fabric.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
         self.list_installed_virtualenv_packages()
 
     def install_packages(self, pip_requirements_file, pip_install_log_file):

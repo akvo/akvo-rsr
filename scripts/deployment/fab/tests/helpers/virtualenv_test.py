@@ -48,7 +48,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         """fab.tests.helpers.VirtualEnvTest  Can create empty virtualenv"""
 
         pip_log_file = "/some/log/path/pip.log"
-        expected_virtualenv_creation_command = "virtualenv --no-site-packages %s" % self.expected_virtualenv_path
+        expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
 
         self.mock_feedback.comment(mox.IsA(str)).MultipleTimes()
         self.mock_files_helper.delete_directory_with_sudo(self.expected_virtualenv_path)
