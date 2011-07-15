@@ -5,15 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox, os, unittest
+import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CONFIG_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'deployer.py.template'))
-imp.load_source('deployer_config', CONFIG_TEMPLATE_PATH)
-
-from deployer_config import DeployerConfig
-
+from fab.config.deployer import DeployerConfig
 from fab.helpers.virtualenv import VirtualEnv
 from fab.tasks.virtualenv import RebuildRSRVirtualEnv
 
