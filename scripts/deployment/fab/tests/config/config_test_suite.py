@@ -5,18 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os
-
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.config_test_suite import config_suite
-from fab.tests.helpers.helpers_test_suite import helpers_suite
+from fab.tests.config.deployer_config_test import DeployerConfigTest
 
 
-def unit_test_suites():
-    return TestSuiteLoader().create_suite_from_list([config_suite(), helpers_suite()])
+def config_suite():
+    return TestSuiteLoader().create_suite_from_classes([DeployerConfigTest])
 
 if __name__ == "__main__":
-    print "Test suite root: %s\n" % os.path.realpath(os.path.dirname(__file__))
     from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(unit_test_suites())
+    TestRunner(TEST_MODE).run_test_suite(config_suite())
