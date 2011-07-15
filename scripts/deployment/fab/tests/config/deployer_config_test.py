@@ -6,7 +6,6 @@
 
 
 import imp, os, unittest
-import nose.tools as tools
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
