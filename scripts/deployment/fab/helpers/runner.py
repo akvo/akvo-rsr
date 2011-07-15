@@ -6,6 +6,7 @@
 
 
 import fabric.api
+import fabric.utils
 
 
 class FabricRunner(object):
@@ -15,3 +16,6 @@ class FabricRunner(object):
 
     def sudo(self, command):
         return fabric.api.sudo(command)
+
+    def abort(self, message):
+        fabric.utils.abort(message)
