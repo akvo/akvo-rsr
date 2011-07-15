@@ -11,10 +11,11 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.config.config_test_suite import config_suite
 from fab.tests.helpers.helpers_test_suite import helpers_suite
+from fab.tests.tasks.tasks_test_suite import tasks_suite
 
 
 def unit_test_suites():
-    return TestSuiteLoader().create_suite_from_list([config_suite(), helpers_suite()])
+    return TestSuiteLoader().create_suite_from_list([config_suite(), helpers_suite(), tasks_suite()])
 
 if __name__ == "__main__":
     print "Test suite root: %s\n" % os.path.realpath(os.path.dirname(__file__))
