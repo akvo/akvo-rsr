@@ -6,9 +6,11 @@
 
 
 import fabric.api
+import fabric.contrib.files
 
 
 class FabricRunner(object):
+    """FabricRunner encapsulates any calls made to a remote host"""
 
     def run(self, command):
         return fabric.api.run(command)
@@ -16,3 +18,5 @@ class FabricRunner(object):
     def sudo(self, command):
         return fabric.api.sudo(command)
 
+    def path_exists(self, path):
+        return fabric.contrib.files.exists(path)
