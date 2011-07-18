@@ -23,6 +23,11 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
 
         self.rebuild_virtualenv_task = RebuildRSRVirtualEnv(self.mock_deployer_config, self.mock_virtualenv)
 
+    def test_has_expected_task_name(self):
+        """fab.tests.tasks.RebuildRSRVirtualEnvTest  Has expected task name"""
+
+        self.assertEqual("rebuild_rsr_virtualenv", RebuildRSRVirtualEnv.name)
+
     def test_can_rebuild_rsr_virtualenv(self):
         """fab.tests.tasks.RebuildRSRVirtualEnvTest  Can rebuild an RSR virtualenv"""
 
