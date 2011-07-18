@@ -41,7 +41,7 @@ class PermissionsTest(mox.MoxTestBase):
         groups_for_joe = "joesoap accounts everyone writers"
         self.mock_fabric_runner.run(Permissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
         user_not_in_group_message = "\n>> User [joesoap] should be a member of group [editors]"
-        self.mock_fabric_runner.abort(user_not_in_group_message).AndRaise(SystemExit(user_not_in_group_message))
+        self.mock_feedback.abort(user_not_in_group_message).AndRaise(SystemExit(user_not_in_group_message))
         self.mox.ReplayAll()
 
         try:

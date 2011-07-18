@@ -5,7 +5,13 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.utils
+
+
 class ExecutionFeedback(object):
 
     def comment(self, message):
         print message
+
+    def abort(self, message):
+        fabric.utils.abort(message) # also raises SystemExit(message)
