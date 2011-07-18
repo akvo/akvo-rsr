@@ -5,17 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.files import FilesHelper
-from fab.helpers.runner import FabricRunner
-
-
 class VirtualEnv(object):
 
-    def __init__(self, virtualenv_path, execution_feedback = ExecutionFeedback(), fabric_runner = FabricRunner(), files_helper = FilesHelper()):
+    def __init__(self, virtualenv_path, execution_feedback, deployment_host, files_helper):
         self.virtualenv_path = virtualenv_path
         self.feedback = execution_feedback
-        self.fabric = fabric_runner
+        self.deployment_host = deployment_host
         self.files = files_helper
 
     def create_empty_virtualenv(self, pip_install_log_file):
@@ -24,7 +19,7 @@ class VirtualEnv(object):
         self.files.delete_file_with_sudo(pip_install_log_file)
 
         self.feedback.comment("\n>> Creating new virtualenv at %s" % self.virtualenv_path)
-        self.fabric.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
+        self.deployment_host.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
         self.list_installed_virtualenv_packages()
 
     def install_packages(self, pip_requirements_file, pip_install_log_file):
@@ -33,7 +28,7 @@ class VirtualEnv(object):
         self.list_installed_virtualenv_packages()
 
     def list_installed_virtualenv_packages(self):
-        self.fabric.run("pip freeze -E %s" % self.virtualenv_path)
+        self.deployment_host.run("pip freeze -E %s" % self.virtualenv_path)
 
     def with_virtualenv(self, command):
-        self.fabric.run("source %s/bin/activate && %s" % (self.virtualenv_path, command))
+        self.deployment_host.run("source %s/bin/activate && %s" % (self.virtualenv_path, command))

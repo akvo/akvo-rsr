@@ -10,26 +10,26 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
+from fab.helpers.hosts import RemoteHost
 from fab.helpers.path import Path
 from fab.helpers.permissions import Permissions
-from fab.helpers.runner import FabricRunner
 
 
 class PathTest(mox.MoxTestBase):
 
     def setUp(self):
         super(PathTest, self).setUp()
-        self.mock_fabric_runner = self.mox.CreateMock(FabricRunner)
+        self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
         self.mock_permissions = self.mox.CreateMock(Permissions)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.path = Path(self.mock_fabric_runner, self.mock_permissions, self.mock_feedback)
+        self.path = Path(self.mock_deployment_host, self.mock_permissions, self.mock_feedback)
 
     def test_can_exit_if_path_does_not_exist(self):
         """fab.tests.helpers.PathTest  Can exit if path does not exist"""
 
         non_existent_path = "/some/nonexistent/path"
-        self.mock_fabric_runner.path_exists(non_existent_path).AndReturn(False)
+        self.mock_deployment_host.path_exists(non_existent_path).AndReturn(False)
         path_does_not_exist_message = "\n>> Expected path does not exist: /some/nonexistent/path"
         self.mock_feedback.abort(path_does_not_exist_message).AndRaise(SystemExit(path_does_not_exist_message))
         self.mox.ReplayAll()
@@ -44,7 +44,7 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Does not exit if path exists"""
 
         valid_path = "/usr/bin"
-        self.mock_fabric_runner.path_exists(valid_path).AndReturn(True)
+        self.mock_deployment_host.path_exists(valid_path).AndReturn(True)
         self.mox.ReplayAll()
 
         self.path.exit_if_path_does_not_exist(valid_path)
@@ -53,7 +53,7 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Can ensure path exists"""
 
         existing_path = "/var"
-        self.mock_fabric_runner.path_exists(existing_path).AndReturn(True)
+        self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
         self.mock_feedback.comment(">> Found expected path: /var")
         self.mox.ReplayAll()
 
@@ -63,10 +63,10 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Can ensure a missing path is created"""
 
         new_path = "/var/tmp/foo"
-        self.mock_fabric_runner.path_exists(new_path).AndReturn(False)
+        self.mock_deployment_host.path_exists(new_path).AndReturn(False)
         self.mock_feedback.comment(">> Creating path: %s" % new_path)
-        self.mock_fabric_runner.run("mkdir %s" % new_path)
-        self.mock_fabric_runner.run("chmod 755 %s" % new_path)
+        self.mock_deployment_host.run("mkdir %s" % new_path)
+        self.mock_deployment_host.run("chmod 755 %s" % new_path)
         self.mox.ReplayAll()
 
         self.path.ensure_path_exists(new_path)
@@ -75,7 +75,7 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Can ensure path exists with sudo"""
 
         existing_path = "/var"
-        self.mock_fabric_runner.path_exists(existing_path).AndReturn(True)
+        self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
         self.mock_feedback.comment(">> Found expected path: /var")
         self.mox.ReplayAll()
 
@@ -85,10 +85,10 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Can ensure a missing path is created with sudo"""
 
         new_path = "/var/tmp/foo"
-        self.mock_fabric_runner.path_exists(new_path).AndReturn(False)
+        self.mock_deployment_host.path_exists(new_path).AndReturn(False)
         self.mock_feedback.comment(">> Creating path: %s" % new_path)
-        self.mock_fabric_runner.sudo("mkdir %s" % new_path)
-        self.mock_fabric_runner.sudo("chmod 755 %s" % new_path)
+        self.mock_deployment_host.sudo("mkdir %s" % new_path)
+        self.mock_deployment_host.sudo("chmod 755 %s" % new_path)
         self.mox.ReplayAll()
 
         self.path.ensure_path_exists_with_sudo(new_path)
@@ -97,7 +97,7 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Can ensure path exists with Akvo group permissions"""
 
         existing_path = "/var/tmp/akvo"
-        self.mock_fabric_runner.path_exists(existing_path).AndReturn(True)
+        self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
         self.mock_feedback.comment(">> Found expected path: %s" % existing_path)
         self.mox.ReplayAll()
 
@@ -107,10 +107,10 @@ class PathTest(mox.MoxTestBase):
         """fab.tests.helpers.PathTest  Can ensure a missing path is created with Akvo group permissions"""
 
         new_path = "/var/tmp/foo"
-        self.mock_fabric_runner.path_exists(new_path).MultipleTimes().AndReturn(False)
+        self.mock_deployment_host.path_exists(new_path).MultipleTimes().AndReturn(False)
         self.mock_feedback.comment(">> Creating path: %s" % new_path)
-        self.mock_fabric_runner.sudo("mkdir %s" % new_path)
-        self.mock_fabric_runner.sudo("chmod 755 %s" % new_path)
+        self.mock_deployment_host.sudo("mkdir %s" % new_path)
+        self.mock_deployment_host.sudo("chmod 755 %s" % new_path)
         self.mock_permissions.set_akvo_group_permissions_on_path(new_path)
         self.mox.ReplayAll()
 
