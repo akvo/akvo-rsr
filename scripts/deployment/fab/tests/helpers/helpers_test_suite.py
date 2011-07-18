@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.helpers.permissions_test import PermissionsTest
 from fab.tests.helpers.virtualenv_test import VirtualEnvTest
 
 
 def helpers_suite():
-    return TestSuiteLoader().create_suite_from_classes([VirtualEnvTest])
+    return TestSuiteLoader().create_suite_from_classes([PermissionsTest, VirtualEnvTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
