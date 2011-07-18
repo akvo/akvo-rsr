@@ -9,13 +9,13 @@ class Permissions(object):
 
     GROUPS_COMMAND = "groups"
 
-    def __init__(self, deployer_config, fabric_runner, feedback):
+    def __init__(self, deployer_config, deployment_host, feedback):
         self.config = deployer_config
-        self.fabric = fabric_runner
+        self.deployment_host = deployment_host
         self.feedback = feedback
 
     def ensure_user_is_member_of_group(self, user_id, group_name):
-        group_membership = self.fabric.run(Permissions.GROUPS_COMMAND)
+        group_membership = self.deployment_host.run(Permissions.GROUPS_COMMAND)
         if group_membership.find(group_name) == -1:
             self.feedback.abort("\n>> User [%s] should be a member of group [%s]" % (user_id, group_name))
         else:
@@ -23,7 +23,7 @@ class Permissions(object):
 
     def set_akvo_group_permissions_on_path(self, path):
         self.set_akvo_ownership_on_path(path)
-        self.fabric.sudo("chmod -R g+rws %s" % path)
+        self.deployment_host.sudo("chmod -R g+rws %s" % path)
 
     def set_akvo_ownership_on_path(self, path):
-        self.fabric.sudo("chown -R root:%s %s" % (self.config.akvo_permissions_group, path))
+        self.deployment_host.sudo("chown -R root:%s %s" % (self.config.akvo_permissions_group, path))
