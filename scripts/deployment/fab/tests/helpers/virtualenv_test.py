@@ -10,7 +10,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.files import FilesHelper
+from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import RemoteHost
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -22,9 +22,9 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.expected_virtualenv_path = "/some/env/path"
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
-        self.mock_files_helper = self.mox.CreateMock(FilesHelper)
+        self.mock_file_system = self.mox.CreateMock(FileSystem)
 
-        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_feedback, self.mock_deployment_host, self.mock_files_helper)
+        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_feedback, self.mock_deployment_host, self.mock_file_system)
 
     def test_can_call_command_within_virtualenv(self):
         """fab.tests.helpers.VirtualEnvTest  Can call command from within virtualenv"""
@@ -51,8 +51,8 @@ class VirtualEnvTest(mox.MoxTestBase):
         expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
 
         self.mock_feedback.comment(mox.IsA(str)).MultipleTimes()
-        self.mock_files_helper.delete_directory_with_sudo(self.expected_virtualenv_path)
-        self.mock_files_helper.delete_file_with_sudo(pip_log_file)
+        self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
+        self.mock_file_system.delete_file_with_sudo(pip_log_file)
         self.mock_deployment_host.run(expected_virtualenv_creation_command)
         self.mock_deployment_host.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()

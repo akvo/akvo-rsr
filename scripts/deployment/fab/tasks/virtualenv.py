@@ -12,7 +12,7 @@ import fabric.tasks
 
 from fab.config.deployer import DeployerConfig
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.files import FilesHelper
+from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import RemoteHost
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -36,6 +36,8 @@ class RebuildRSRVirtualEnv(fabric.tasks.Task):
 
 
 config = DeployerConfig(fabric.api.env.hosts)
-virtualenv = VirtualEnv(config.rsr_env_path, ExecutionFeedback(), RemoteHost(), FilesHelper())
+feedback = ExecutionFeedback()
+remote_host = RemoteHost()
+virtualenv = VirtualEnv(config.rsr_env_path, feedback, remote_host, FileSystem(remote_host, feedback))
 
 instance = RebuildRSRVirtualEnv(config, virtualenv)
