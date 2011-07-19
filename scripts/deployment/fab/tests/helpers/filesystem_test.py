@@ -24,7 +24,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system = FileSystem(self.mock_deployment_host, self.mock_feedback)
 
     def test_can_compress_directory(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Can compress a specified directory"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Can compress a specified directory"""
 
         dir_to_compress = "/var/some/archive_dir"
         self._set_expected_compression_path_and_compressed_file_name(dir_to_compress, "archive_dir")
@@ -32,7 +32,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.compress_directory(dir_to_compress)
 
     def test_can_compress_directory_with_trailing_path_separator(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Can compress a specified directory even with a trailing path separator"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Can compress a specified directory even with a trailing path separator"""
 
         dir_to_compress = "/var/some/archive_dir/"
         self._set_expected_compression_path_and_compressed_file_name(dir_to_compress.rstrip("/"), "archive_dir")
@@ -45,7 +45,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
     def test_can_delete_an_existing_file(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Can delete an existing file"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Can delete an existing file"""
 
         unwanted_file = "/var/tmp/unwanted_file.txt"
         self._set_expectations_for_deleting("file", unwanted_file, self.mock_deployment_host.run)
@@ -53,7 +53,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file(unwanted_file)
 
     def test_can_delete_an_existing_file_with_sudo(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Can delete an existing file with sudo"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Can delete an existing file with sudo"""
 
         unwanted_file = "/var/tmp/unwanted_file.txt"
         self._set_expectations_for_deleting("file", unwanted_file, self.mock_deployment_host.sudo)
@@ -61,7 +61,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file_with_sudo(unwanted_file)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_file(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Do nothing on attempt to delete a nonexistent file"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Do nothing on attempt to delete a nonexistent file"""
 
         nonexistent_file = "/var/tmp/wibble.txt"
         self.mock_deployment_host.path_exists(nonexistent_file).AndReturn(False)
@@ -70,7 +70,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file(nonexistent_file)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_file_with_sudo(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Do nothing on attempt to delete a nonexistent file with sudo"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Do nothing on attempt to delete a nonexistent file with sudo"""
 
         nonexistent_file = "/var/tmp/wibble.txt"
         self.mock_deployment_host.path_exists(nonexistent_file).AndReturn(False)
@@ -79,7 +79,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file_with_sudo(nonexistent_file)
 
     def test_can_delete_an_existing_directory(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Can delete an existing directory"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Can delete an existing directory"""
 
         unwanted_dir = "/var/tmp/unwanted_dir"
         self._set_expectations_for_deleting("directory", unwanted_dir, self.mock_deployment_host.run)
@@ -87,7 +87,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_directory(unwanted_dir)
 
     def test_can_delete_an_existing_directory_with_sudo(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Can delete an existing directory with sudo"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Can delete an existing directory with sudo"""
 
         unwanted_dir = "/var/tmp/unwanted_dir"
         self._set_expectations_for_deleting("directory", unwanted_dir, self.mock_deployment_host.sudo)
@@ -95,7 +95,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_directory_with_sudo(unwanted_dir)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_directory(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Do nothing on attempt to delete a nonexistent directory"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Do nothing on attempt to delete a nonexistent directory"""
 
         nonexistent_dir = "/var/tmp/wibble_dir"
         self.mock_deployment_host.path_exists(nonexistent_dir).AndReturn(False)
@@ -104,7 +104,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_directory(nonexistent_dir)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_directory_with_sudo(self):
-        """fab.tests.helpers.filesystem.FileSystemTest  Do nothing on attempt to delete a nonexistent directory with sudo"""
+        """fab.tests.helpers.filesystem.filesystem_test.FileSystemTest  Do nothing on attempt to delete a nonexistent directory with sudo"""
 
         nonexistent_dir = "/var/tmp/wibble_dir"
         self.mock_deployment_host.path_exists(nonexistent_dir).AndReturn(False)
