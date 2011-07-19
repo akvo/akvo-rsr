@@ -10,7 +10,7 @@ import fabric.contrib.files
 
 
 class RemoteHost(object):
-    """RemoteDeploymentHost encapsulates any calls made to a remote host"""
+    """RemoteHost encapsulates any calls made to a remote host"""
 
     def run(self, command):
         return fabric.api.run(command)
