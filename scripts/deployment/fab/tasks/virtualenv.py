@@ -29,10 +29,9 @@ class RebuildRSRVirtualEnv(fabric.tasks.Task):
         self.virtualenv = virtualenv
 
     def run(self):
-        install_log_file = self.config.pip_install_log_file
-        self.virtualenv.create_empty_virtualenv(install_log_file)
+        self.virtualenv.create_empty_virtualenv(self.config.pip_install_log_file)
         rsr_requirements_path = os.path.join(self.config.pip_requirements_home, RebuildRSRVirtualEnv.RSR_REQUIREMENTS_FILE)
-        self.virtualenv.install_packages(rsr_requirements_path, install_log_file)
+        self.virtualenv.install_packages(rsr_requirements_path, self.config.pip_install_log_file)
 
 
 def create_task_instance():
