@@ -11,8 +11,7 @@ import os
 class DeployerConfig(object):
 
     def __init__(self, deployment_hosts, current_user):
-        # comma-separated list of hosts for deployment
-        self.deployment_hosts = deployment_hosts
+        self.deployment_hosts = deployment_hosts # list of hosts for deployment, e.g. host1:port1,host2:port2
         self.user = current_user
 
         # code repository settings
