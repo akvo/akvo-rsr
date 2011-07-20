@@ -10,9 +10,10 @@ import os
 
 class DeployerConfig(object):
 
-    def __init__(self, deployment_hosts):
+    def __init__(self, deployment_hosts, current_user):
         # comma-separated list of hosts for deployment
         self.deployment_hosts = deployment_hosts
+        self.user = current_user
 
         # code repository settings
         self.rsr_branch                 = "develop" # or "v1.0.6", "master", etc.

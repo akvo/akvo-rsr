@@ -20,12 +20,15 @@ class DeployerConfigTest(unittest.TestCase):
     def setUp(self):
         super(DeployerConfigTest, self).setUp()
         self.expected_hosts = "somehost:port1,anotherhost:port2"
-        self.deployer_config = DeployerConfig(self.expected_hosts)
+        self.expected_user = "joesoap"
+
+        self.deployer_config = DeployerConfig(self.expected_hosts, self.expected_user)
 
     def test_deployment_hosts_are_set_on_initialisation(self):
-        """fab.tests.config.deployer_config_test.DeployerConfigTest  Deployment hosts are set on initialisation"""
+        """fab.tests.config.deployer_config_test.DeployerConfigTest  Deployment hosts and user are set on initialisation"""
 
         self.assertEqual(self.expected_hosts, self.deployer_config.deployment_hosts)
+        self.assertEqual(self.expected_user, self.deployer_config.user)
 
     def test_has_rsr_branch(self):
         """fab.tests.config.deployer_config_test.DeployerConfigTest  Has RSR branch setting"""

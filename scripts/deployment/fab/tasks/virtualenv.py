@@ -35,7 +35,7 @@ class RebuildRSRVirtualEnv(fabric.tasks.Task):
 
 
 def create_task_instance():
-    config = DeployerConfig(fabric.api.env.hosts)
+    config = DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
     feedback = ExecutionFeedback()
     remote_host = RemoteHost()
     virtualenv = VirtualEnv(config.rsr_env_path, remote_host, FileSystem(remote_host, feedback), feedback)
