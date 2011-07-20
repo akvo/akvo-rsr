@@ -14,9 +14,10 @@ Add the following exports and aliases to your Mac OS X ~/.profile or other shell
   alias sitepack26="cd /Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages"
   alias sitepack27="cd /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages"
 
+
 Notes:
 ------
-a)  The exports above can be used for building Python modules within a virtualenv with the Intel Mac OS X 10.6 compile tools.
+a)  The exports above can be used for building Python modules manually within a virtualenv with the Intel Mac OS X 10.6 compile tools.
 
 b)  The env aliases can be used for installing system Python modules manually with pip for intel 32-bit, 64-bit or intel/fat builds
     (both 32-bit & 64-bit) with the latest Mac OS X 10.6 SDK, e.g.
@@ -25,13 +26,14 @@ b)  The env aliases can be used for installing system Python modules manually wi
 
 c)  The sitepack aliases are useful to verify where packages are installed if you have multiple Python frameworks installed
 
+d)  For an alternative basic Python environment setup (distribute, pip, virtualenv + virtualenvwrapper) that installs modules in a
+    local user directory (i.e. without having to use sudo) instead of in system Python, see http://stackoverflow.com/questions/4324558
+
 
 Akvo dev environment setup
 --------------------------
 1)  Install a recent 2.6 or 2.7 Mac OS X Python build from http://python.org/download/releases
     - this will add /Library/Frameworks/Python.framework/Versions/2.6/bin or similar to your env PATH
 
-2)  Run scripts/deployment/pip/rebuild_osx_virtualenv.sh to install or update the required Python packages
-
-3)  For an alternative basic Python environment setup (distribute, pip, virtualenv + virtualenvwrapper) that installs modules in a
-    local user directory (i.e. without having to use sudo) instead of in system Python, see http://stackoverflow.com/questions/4324558
+2)  Run scripts/deployment/builders/rebuild_osx_dev_env.sh to install or update the required system Python packages and
+    create a new RSR virtualenv instance or update an existing instance.
