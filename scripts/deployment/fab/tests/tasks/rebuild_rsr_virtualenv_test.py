@@ -18,10 +18,10 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RebuildRSRVirtualEnvTest, self).setUp()
-        self.mock_deployer_config = self.mox.CreateMock(DeployerConfig)
+        self.mock_config = self.mox.CreateMock(DeployerConfig)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.rebuild_virtualenv_task = RebuildRSRVirtualEnv(self.mock_deployer_config, self.mock_virtualenv)
+        self.rebuild_virtualenv_task = RebuildRSRVirtualEnv(self.mock_config, self.mock_virtualenv)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.rebuild_rsr_virtualenv_test.RebuildRSRVirtualEnvTest  Has expected task name"""
@@ -34,9 +34,9 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
         pip_log_file = "/some/log/path/pip.log"
         pip_requirements_home = "/path/to/pip/requirements"
         rsr_requirements_path = os.path.join(pip_requirements_home, RebuildRSRVirtualEnv.RSR_REQUIREMENTS_FILE)
+        self.mock_config.pip_install_log_file = pip_log_file
+        self.mock_config.pip_requirements_home = pip_requirements_home
 
-        self.mock_deployer_config.pip_install_log_file = pip_log_file
-        self.mock_deployer_config.pip_requirements_home = pip_requirements_home
         self.mock_virtualenv.create_empty_virtualenv(pip_log_file)
         self.mock_virtualenv.install_packages(rsr_requirements_path, pip_log_file)
         self.mox.ReplayAll()
