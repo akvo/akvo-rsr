@@ -25,10 +25,14 @@ elif len(sys.argv) == 4:
     USERNAME = sys.argv[2]
     PASSWORD = sys.argv[3]
 
-def deploy_rsr(hosts, username, password):
-    subprocess.call(["fab","-f", "fab/tasks/codedeployment.py", "-H", hosts, "-u", username, "-p", password, "deploy_rsr_code"])
+def run_fab_task(fully_qualified_task):
+    subprocess.call(["fab", "-f", "fab/fabfile.py", fully_qualified_task,
+                     "-H", DEPLOYMENT_HOSTS, "-u", USERNAME, "-p", PASSWORD])
 
+def deploy_rsr():
+    run_fab_task("fab.tasks.codedeployment.deploy_rsr_code")
+    run_fab_task("fab.tasks.virtualenv.rebuild_rsr_virtualenv")
 
 if __name__ == "__main__":
     os.chdir(DEPLOYMENT_SCRIPTS_PATH)
-    deploy_rsr(DEPLOYMENT_HOSTS, USERNAME, PASSWORD)
+    deploy_rsr()
