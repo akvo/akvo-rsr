@@ -11,7 +11,7 @@ DEPLOYMENT_SCRIPTS_PATH = os.path.realpath(os.path.dirname(__file__))
 
 def display_usage_and_exit():
     print "Usage: deploy_rsr <deployment_hosts> <host_username> <host_password>"
-    print "Specify a comma-separated list of deployment hosts and a username and password for the hosts"
+    print "Specify a comma-separated list of deployment hosts (e.g. host1:port1,host2:port2) and a username and password for the hosts"
     sys.exit(1)
 
 if len(sys.argv) > 4:
@@ -26,7 +26,7 @@ elif len(sys.argv) == 4:
     PASSWORD = sys.argv[3]
 
 def deploy_rsr(hosts, username, password):
-    subprocess.call(["fab","-f", "fab/tasks/deploy_rsr_code.py", "-H", hosts, "-u", username, "-p", password, "deploy_rsr_code"])
+    subprocess.call(["fab","-f", "fab/tasks/codedeployment.py", "-H", hosts, "-u", username, "-p", password, "deploy_rsr_code"])
 
 
 if __name__ == "__main__":
