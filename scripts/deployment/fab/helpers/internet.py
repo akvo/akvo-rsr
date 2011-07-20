@@ -21,4 +21,4 @@ class Internet(object):
 
     def _redirected_url(self, initial_url):
         # we use geturl() to get the final URL and file name after any redirects
-        return urllib2.urlopen(url).geturl()
+        return urllib2.urlopen(initial_url).geturl()
