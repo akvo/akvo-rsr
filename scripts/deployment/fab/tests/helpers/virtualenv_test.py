@@ -24,7 +24,8 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_deployment_host, self.mock_file_system, self.mock_feedback)
+        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_deployment_host,
+                                     self.mock_file_system, self.mock_feedback)
 
     def test_can_call_command_within_virtualenv(self):
         """fab.tests.helpers.virtualenv_test.VirtualEnvTest  Can call command from within virtualenv"""
