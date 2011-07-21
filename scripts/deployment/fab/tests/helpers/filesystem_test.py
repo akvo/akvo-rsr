@@ -40,7 +40,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.compress_directory(dir_to_compress)
 
     def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, compressed_file_name):
-        self.mock_feedback.comment(">> Compressing %s" % dir_to_compress)
+        self.mock_feedback.comment(mox.StrContains("Compressing %s" % dir_to_compress))
         self.mock_deployment_host.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
         self.mox.ReplayAll()
 
@@ -114,7 +114,7 @@ class FileSystemTest(mox.MoxTestBase):
 
     def _set_expectations_for_deleting(self, file_or_dir, unwanted_file_or_dir_path, expected_run_command):
         self.mock_deployment_host.path_exists(unwanted_file_or_dir_path).AndReturn(True)
-        self.mock_feedback.comment(">> Deleting %s: %s" % (file_or_dir, unwanted_file_or_dir_path))
+        self.mock_feedback.comment(mox.StrContains("Deleting %s: %s" % (file_or_dir, unwanted_file_or_dir_path)))
         expected_run_command("rm -r %s" % unwanted_file_or_dir_path)
         self.mox.ReplayAll()
 

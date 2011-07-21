@@ -44,10 +44,10 @@ class DeployRSRCodeTest(mox.MoxTestBase):
         self.mock_config.repo_archives_dir = "/var/repo/archives"
         self.mock_config.virtualenvs_home = "/var/virtualenvs"
 
-        self.mock_feedback.comment("\n>> Starting RSR codebase deployment")
-        self.mock_feedback.comment(mox.StrContains("\n>> Checking group membership for user [joesoap]"))
+        self.mock_feedback.comment(mox.StrContains("Starting RSR codebase deployment"))
+        self.mock_feedback.comment(mox.StrContains("Checking group membership for user [joesoap]"))
         self.mock_permissions.ensure_user_is_member_of_group("joesoap", "some-akvo-group")
-        self.mock_feedback.comment("\n>> Ensuring expected paths exist")
+        self.mock_feedback.comment(mox.StrContains("Ensuring expected paths exist"))
         self.mock_path.ensure_path_exists_with_akvo_group_permissions("/var/repo")
         self.mock_path.ensure_path_exists("/var/repo/archives")
         self.mock_path.ensure_path_exists_with_akvo_group_permissions("/var/virtualenvs")

@@ -30,7 +30,7 @@ class PermissionsTest(mox.MoxTestBase):
 
         groups_for_joe = "joesoap accounts everyone editors"
         self.mock_deployment_host.run(Permissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
-        self.mock_feedback.comment(">> User [joesoap] is a member of expected group [editors]")
+        self.mock_feedback.comment(mox.StrContains("User [joesoap] is a member of expected group [editors]"))
         self.mox.ReplayAll()
 
         self.permissions.ensure_user_is_member_of_group("joesoap", "editors")
@@ -40,8 +40,8 @@ class PermissionsTest(mox.MoxTestBase):
 
         groups_for_joe = "joesoap accounts everyone writers"
         self.mock_deployment_host.run(Permissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
-        user_not_in_group_message = "\n>> User [joesoap] should be a member of group [editors]"
-        self.mock_feedback.abort(user_not_in_group_message).AndRaise(SystemExit(user_not_in_group_message))
+        expected_user_not_in_group_message = mox.StrContains("User [joesoap] should be a member of group [editors]")
+        self.mock_feedback.abort(expected_user_not_in_group_message).AndRaise(SystemExit(expected_user_not_in_group_message))
         self.mox.ReplayAll()
 
         try:

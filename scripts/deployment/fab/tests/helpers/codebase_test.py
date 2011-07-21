@@ -38,7 +38,7 @@ class CodebaseTest(mox.MoxTestBase):
         deployment_root_dir = "/var/some/path/akvo-rsr_root"
         self.mock_config.rsr_deployment_root = deployment_root_dir
 
-        self.mock_feedback.comment("\n>> Clearing previous deployment directories")
+        self.mock_feedback.comment(mox.StrContains("Clearing previous deployment directories"))
         self.mock_file_system.delete_directory_with_sudo(deployment_root_dir)
         self.mox.ReplayAll()
 
@@ -49,9 +49,9 @@ class CodebaseTest(mox.MoxTestBase):
 
         self._set_expected_deployment_configuration()
 
-        self.mock_feedback.comment("\n\n>> Downloading RSR archive file")
+        self.mock_feedback.comment(mox.StrContains("Downloading RSR archive file"))
         self.mock_internet.file_from_url_exists_in_directory(self.rsr_archive_url, self.archives_dir_on_host).AndReturn(False)
-        self.mock_feedback.comment(">> Fetching akvo-rsr archive for the [%s] branch from Github" % self.rsr_branch)
+        self.mock_feedback.comment(mox.StrContains("Fetching akvo-rsr archive for the [%s] branch from Github" % self.rsr_branch))
         self.mock_deployment_host.run("wget -nv -P %s %s" % (self.archives_dir_on_host, self.rsr_archive_url))
         self.mox.ReplayAll()
 
@@ -62,11 +62,11 @@ class CodebaseTest(mox.MoxTestBase):
 
         self._set_expected_deployment_configuration()
 
-        self.mock_feedback.comment("\n\n>> Downloading RSR archive file")
+        self.mock_feedback.comment(mox.StrContains("Downloading RSR archive file"))
         self.mock_internet.file_from_url_exists_in_directory(self.rsr_archive_url, self.archives_dir_on_host).AndReturn(True)
         self.mock_internet.file_name_at_url(self.rsr_archive_url).AndReturn(self.archive_file_name)
         existing_archive_file = os.path.join(self.archives_dir_on_host, self.archive_file_name)
-        self.mock_feedback.comment(">> Latest archive already exists at: %s" % existing_archive_file)
+        self.mock_feedback.comment(mox.StrContains("Latest archive already exists at: %s" % existing_archive_file))
         self.mox.ReplayAll()
 
         self.codebase._download_rsr_archive()
@@ -76,7 +76,7 @@ class CodebaseTest(mox.MoxTestBase):
 
         self._set_expected_deployment_configuration()
 
-        self.mock_feedback.comment("\n>> Unpacking RSR archive in %s" % self.rsr_deployment_root)
+        self.mock_feedback.comment(mox.StrContains("Unpacking RSR archive in %s" % self.rsr_deployment_root))
         self.mock_internet.file_name_at_url(self.rsr_archive_url).AndReturn(self.archive_file_name)
         self.mock_deployment_host.run("unzip -q %s -d %s -x */.gitignore" % (self.archive_file_name, self.repo_checkout_root))
         self.mock_deployment_host.run("mv %s %s" % (self.unpacked_archive_match, self.rsr_deployment_root))

@@ -30,8 +30,8 @@ class PathTest(mox.MoxTestBase):
 
         non_existent_path = "/some/nonexistent/path"
         self.mock_deployment_host.path_exists(non_existent_path).AndReturn(False)
-        path_does_not_exist_message = "\n>> Expected path does not exist: /some/nonexistent/path"
-        self.mock_feedback.abort(path_does_not_exist_message).AndRaise(SystemExit(path_does_not_exist_message))
+        expected_missing_path_message = mox.StrContains("Expected path does not exist: /some/nonexistent/path")
+        self.mock_feedback.abort(expected_missing_path_message).AndRaise(SystemExit(expected_missing_path_message))
         self.mox.ReplayAll()
 
         try:
@@ -54,7 +54,7 @@ class PathTest(mox.MoxTestBase):
 
         existing_path = "/var"
         self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
-        self.mock_feedback.comment(">> Found expected path: /var")
+        self.mock_feedback.comment(mox.StrContains("Found expected path: /var"))
         self.mox.ReplayAll()
 
         self.path.ensure_path_exists(existing_path)
@@ -64,7 +64,7 @@ class PathTest(mox.MoxTestBase):
 
         new_path = "/var/tmp/foo"
         self.mock_deployment_host.path_exists(new_path).AndReturn(False)
-        self.mock_feedback.comment(">> Creating path: %s" % new_path)
+        self.mock_feedback.comment(mox.StrContains("Creating path: %s" % new_path))
         self.mock_deployment_host.run("mkdir %s" % new_path)
         self.mock_deployment_host.run("chmod 755 %s" % new_path)
         self.mox.ReplayAll()
@@ -76,7 +76,7 @@ class PathTest(mox.MoxTestBase):
 
         existing_path = "/var"
         self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
-        self.mock_feedback.comment(">> Found expected path: /var")
+        self.mock_feedback.comment(mox.StrContains("Found expected path: /var"))
         self.mox.ReplayAll()
 
         self.path.ensure_path_exists_with_sudo(existing_path)
@@ -86,7 +86,7 @@ class PathTest(mox.MoxTestBase):
 
         new_path = "/var/tmp/foo"
         self.mock_deployment_host.path_exists(new_path).AndReturn(False)
-        self.mock_feedback.comment(">> Creating path: %s" % new_path)
+        self.mock_feedback.comment(mox.StrContains("Creating path: %s" % new_path))
         self.mock_deployment_host.sudo("mkdir %s" % new_path)
         self.mock_deployment_host.sudo("chmod 755 %s" % new_path)
         self.mox.ReplayAll()
@@ -98,7 +98,7 @@ class PathTest(mox.MoxTestBase):
 
         existing_path = "/var/tmp/akvo"
         self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
-        self.mock_feedback.comment(">> Found expected path: %s" % existing_path)
+        self.mock_feedback.comment(mox.StrContains("Found expected path: %s" % existing_path))
         self.mox.ReplayAll()
 
         self.path.ensure_path_exists_with_akvo_group_permissions(existing_path)
@@ -108,7 +108,7 @@ class PathTest(mox.MoxTestBase):
 
         new_path = "/var/tmp/foo"
         self.mock_deployment_host.path_exists(new_path).MultipleTimes().AndReturn(False)
-        self.mock_feedback.comment(">> Creating path: %s" % new_path)
+        self.mock_feedback.comment(mox.StrContains("Creating path: %s" % new_path))
         self.mock_deployment_host.sudo("mkdir %s" % new_path)
         self.mock_deployment_host.sudo("chmod 755 %s" % new_path)
         self.mock_permissions.set_akvo_group_permissions_on_path(new_path)
