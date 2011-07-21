@@ -51,9 +51,10 @@ class VirtualEnvTest(mox.MoxTestBase):
         pip_log_file = "/some/log/path/pip.log"
         expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
 
-        self.mock_feedback.comment(mox.IsA(str)).MultipleTimes()
+        self.mock_feedback.comment(mox.StrContains("Deleting previous virtualenv directory and pip install log file"))
         self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
         self.mock_file_system.delete_file_with_sudo(pip_log_file)
+        self.mock_feedback.comment(mox.StrContains("Creating new virtualenv at %s" % self.expected_virtualenv_path))
         self.mock_deployment_host.run(expected_virtualenv_creation_command)
         self.mock_deployment_host.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()
@@ -69,7 +70,7 @@ class VirtualEnvTest(mox.MoxTestBase):
                                                                                    pip_requirements_file,
                                                                                    pip_log_file)
 
-        self.mock_feedback.comment(mox.IsA(str))
+        self.mock_feedback.comment(mox.StrContains("Installing packages in virtualenv at %s" % self.expected_virtualenv_path))
         self.mock_deployment_host.run(self.expected_call_within_virtualenv(expected_pip_install_command))
         self.mock_deployment_host.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()
