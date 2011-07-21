@@ -24,7 +24,7 @@ class VirtualEnv(object):
 
     def install_packages(self, pip_requirements_file, pip_install_log_file):
         self.feedback.comment("\n>> Installing packages in virtualenv at %s" % self.virtualenv_path)
-        self.with_virtualenv("pip install -q -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
+        self.with_virtualenv("pip install -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
         self.list_installed_virtualenv_packages()
 
     def list_installed_virtualenv_packages(self):

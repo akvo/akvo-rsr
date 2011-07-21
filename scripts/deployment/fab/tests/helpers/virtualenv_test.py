@@ -65,7 +65,7 @@ class VirtualEnvTest(mox.MoxTestBase):
 
         pip_requirements_file = "/some/path/to/pip_requirements.txt"
         pip_log_file = "/some/log/path/pip.log"
-        expected_pip_install_command = "pip install -q -M -E %s -r %s --log=%s" % (self.expected_virtualenv_path,
+        expected_pip_install_command = "pip install -M -E %s -r %s --log=%s" % (self.expected_virtualenv_path,
                                                                                    pip_requirements_file,
                                                                                    pip_log_file)
 
