@@ -33,7 +33,7 @@ class CodebaseTest(mox.MoxTestBase):
                                  self.mock_internet, self.mock_permissions, self.mock_feedback)
 
     def test_can_clean_deployment_directories(self):
-        """fab.tests.helpers.codebase_test.CodebaseTest  Can clean deployment directories"""
+        """fab.tests.helpers.codebase_test  Can clean deployment directories"""
 
         deployment_root_dir = "/var/some/path/akvo-rsr_root"
         self.mock_config.rsr_deployment_root = deployment_root_dir
@@ -45,7 +45,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.codebase._clean_deployment_directories()
 
     def test_can_download_rsr_code_archive_to_deployment_host(self):
-        """fab.tests.helpers.codebase_test.CodebaseTest  Can download RSR code archive to deployment host"""
+        """fab.tests.helpers.codebase_test  Can download RSR code archive to deployment host"""
 
         self._set_expected_deployment_configuration()
 
@@ -58,7 +58,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.codebase._download_rsr_archive()
 
     def test_does_not_download_rsr_code_archive_if_available_on_deployment_host(self):
-        """fab.tests.helpers.codebase_test.CodebaseTest  Does not download RSR code archive if already available on deployment host"""
+        """fab.tests.helpers.codebase_test  Does not download RSR code archive if already available on deployment host"""
 
         self._set_expected_deployment_configuration()
 
@@ -72,7 +72,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.codebase._download_rsr_archive()
 
     def test_can_unpack_rsr_code_archive_on_host(self):
-        """fab.tests.helpers.codebase_test.CodebaseTest  Can unpack RSR code archive on host"""
+        """fab.tests.helpers.codebase_test  Can unpack RSR code archive on host"""
 
         self._set_expected_deployment_configuration()
 

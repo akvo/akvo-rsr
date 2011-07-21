@@ -31,12 +31,12 @@ class DeployRSRCodeTest(mox.MoxTestBase):
                                                   self.mock_path, self.mock_feedback)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.deploy_rsr_code_test.DeployRSRCodeTest  Has expected task name"""
+        """fab.tests.tasks.deploy_rsr_code_test  Has expected task name"""
 
         self.assertEqual("deploy_rsr_code", DeployRSRCode.name)
 
     def test_can_deploy_rsr_code(self):
-        """fab.tests.tasks.deploy_rsr_code_test.DeployRSRCodeTest  Can deploy RSR code"""
+        """fab.tests.tasks.deploy_rsr_code_test  Can deploy RSR code"""
 
         self.mock_config.user = "joesoap"
         self.mock_config.akvo_permissions_group = "some-akvo-group"

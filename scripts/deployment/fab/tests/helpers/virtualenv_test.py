@@ -28,7 +28,7 @@ class VirtualEnvTest(mox.MoxTestBase):
                                      self.mock_file_system, self.mock_feedback)
 
     def test_can_call_command_within_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test.VirtualEnvTest  Can call command from within virtualenv"""
+        """fab.tests.helpers.virtualenv_test  Can call command from within virtualenv"""
 
         virtualenv_command = "command text"
 
@@ -38,7 +38,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.with_virtualenv(virtualenv_command)
 
     def test_can_list_installed_virtualenv_packages(self):
-        """fab.tests.helpers.virtualenv_test.VirtualEnvTest  Can list installed virtualenv packages"""
+        """fab.tests.helpers.virtualenv_test  Can list installed virtualenv packages"""
 
         self.mock_deployment_host.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()
@@ -46,7 +46,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.list_installed_virtualenv_packages()
 
     def test_can_create_empty_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test.VirtualEnvTest  Can create empty virtualenv"""
+        """fab.tests.helpers.virtualenv_test  Can create empty virtualenv"""
 
         pip_log_file = "/some/log/path/pip.log"
         expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
@@ -62,7 +62,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.create_empty_virtualenv(pip_log_file)
 
     def test_can_install_packages_from_given_pip_requirements(self):
-        """fab.tests.helpers.virtualenv_test.VirtualEnvTest  Can install packages from given pip requirements"""
+        """fab.tests.helpers.virtualenv_test  Can install packages from given pip requirements"""
 
         pip_requirements_file = "/some/path/to/pip_requirements.txt"
         pip_log_file = "/some/log/path/pip.log"

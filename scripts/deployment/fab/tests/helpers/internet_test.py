@@ -33,7 +33,7 @@ class InternetTest(mox.MoxTestBase):
         self.internet = StubbedInternet(self.mock_deployment_host)
 
     def test_can_get_file_name_at_specified_url(self):
-        """fab.tests.helpers.internet_test.InternetTest  Can get file name at a specified URL"""
+        """fab.tests.helpers.internet_test  Can get file name at a specified URL"""
 
         url_without_redirection = "http://some.server.org/initial/page.html"
         self.internet.redirected_url = url_without_redirection
@@ -41,7 +41,7 @@ class InternetTest(mox.MoxTestBase):
         self.assertEqual("page.html", self.internet.file_name_at_url(url_without_redirection))
 
     def test_can_get_file_name_at_specified_redirecting_url(self):
-        """fab.tests.helpers.internet_test.InternetTest  Can get file name at a specified redirecting URL"""
+        """fab.tests.helpers.internet_test  Can get file name at a specified redirecting URL"""
 
         url_with_redirection = "http://some.server.org/initial/page.html"
         self.internet.redirected_url = "http://some.server.org/redirected/final_page"
@@ -49,7 +49,7 @@ class InternetTest(mox.MoxTestBase):
         self.assertEqual("final_page", self.internet.file_name_at_url(url_with_redirection))
 
     def test_can_check_whether_file_from_url_exists_at_specified_host_path(self):
-        """fab.tests.helpers.internet_test.InternetTest  Can check whether a file from a URL exists at a specified host path"""
+        """fab.tests.helpers.internet_test  Can check whether a file from a URL exists at a specified host path"""
 
         archive_info_url = "http://some.server.org/archive/info/download_archive108.html"
         self.internet.redirected_url = "http://some.server.org/archives/archive108.zip"
