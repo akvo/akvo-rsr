@@ -24,6 +24,9 @@ class StubbedExecutionFeedback(ExecutionFeedback):
     def _abort(self, formatted_message):
         self.actual_formatted_message = formatted_message
 
+    def _warn(self, formatted_message):
+        self.actual_formatted_message = formatted_message
+
 
 class ExecutionFeedbackTest(unittest.TestCase):
 
@@ -47,7 +50,14 @@ class ExecutionFeedbackTest(unittest.TestCase):
 
         self.feedback.abort("Deployment failed!")
 
-        self.assertEqual(">> Deployment failed!", self.feedback.actual_formatted_message)
+        self.assertEqual("## Deployment failed!", self.feedback.actual_formatted_message)
+
+    def test_warn_method_displays_formatted_message(self):
+        """fab.tests.helpers.execution_feedback_test  Warn method displays formatted message"""
+
+        self.feedback.warn("Slight problem occurred")
+
+        self.assertEqual("## Slight problem occurred", self.feedback.actual_formatted_message)
 
 
 def suite():
