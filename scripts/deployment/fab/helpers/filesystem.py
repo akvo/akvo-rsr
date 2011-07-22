@@ -21,7 +21,7 @@ class FileSystem(object):
 
     def compress_directory(self, full_path_to_compress):
         stripped_path = full_path_to_compress.rstrip("/")
-        self.feedback.comment(">> Compressing %s" % stripped_path)
+        self.feedback.comment("Compressing %s" % stripped_path)
         parent_dir = os.path.dirname(stripped_path)
         compressed_file_name = os.path.basename(stripped_path)
         with fabric.context_managers.cd(parent_dir):
@@ -41,5 +41,5 @@ class FileSystem(object):
 
     def _delete_file_or_directory(self, at_path, file_or_dir, run_command):
         if self.deployment_host.path_exists(at_path):
-            self.feedback.comment(">> Deleting %s: %s" % (file_or_dir, at_path))
+            self.feedback.comment("Deleting %s: %s" % (file_or_dir, at_path))
             run_command("rm -r %s" % at_path)

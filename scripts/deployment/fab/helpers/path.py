@@ -14,7 +14,7 @@ class Path(object):
 
     def ensure_path_exists_with_akvo_group_permissions(self, path):
         if self.deployment_host.path_exists(path):
-            self.feedback.comment(">> Found expected path: %s" % path)
+            self.feedback.comment("Found expected path: %s" % path)
         else:
             self._ensure_path_exists_with(path, self.deployment_host.sudo)
             self.permissions.set_akvo_group_permissions_on_path(path)
@@ -27,12 +27,12 @@ class Path(object):
 
     def _ensure_path_exists_with(self, path, run_command):
         if self.deployment_host.path_exists(path):
-            self.feedback.comment(">> Found expected path: %s" % path)
+            self.feedback.comment("Found expected path: %s" % path)
         else:
-            self.feedback.comment(">> Creating path: %s" % path)
+            self.feedback.comment("Creating path: %s" % path)
             run_command("mkdir %s" % path)
             run_command("chmod 755 %s" % path)
 
     def exit_if_path_does_not_exist(self, path):
         if not self.deployment_host.path_exists(path):
-            self.feedback.abort("\n>> Expected path does not exist: %s" % path)
+            self.feedback.abort("Expected path does not exist: %s" % path)

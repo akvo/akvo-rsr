@@ -11,7 +11,16 @@ import fabric.utils
 class ExecutionFeedback(object):
 
     def comment(self, message):
-        print message
+        self._puts(self._add_prefix_to(message), True, '\n', False)
+
+    def _puts(self, formatted_message, display_host_prefix, line_ending, flush_output):
+        fabric.utils.puts(formatted_message, display_host_prefix, line_ending, flush_output)
 
     def abort(self, message):
-        fabric.utils.abort(message) # also raises SystemExit(message)
+        self._abort(self._add_prefix_to(message))
+
+    def _abort(self, formatted_message):
+        fabric.utils.abort(formatted_message) # calls sys.exit(1) and raises SystemExit(formatted_message)
+
+    def _add_prefix_to(self, message):
+        return ">> %s" % message

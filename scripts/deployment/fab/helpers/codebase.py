@@ -29,23 +29,23 @@ class Codebase(object):
         self._unpack_rsr_archive()
 
     def _clean_deployment_directories(self):
-        self.feedback.comment("\n>> Clearing previous deployment directories")
+        self.feedback.comment("Clearing previous deployment directories")
         self.file_system.delete_directory_with_sudo(self.config.rsr_deployment_root)
 
     def _download_rsr_archive(self):
-        self.feedback.comment("\n\n>> Downloading RSR archive file")
+        self.feedback.comment("Downloading RSR archive file")
         rsr_archive_url = self.config.rsr_archive_url
         archives_dir = self.config.repo_archives_dir
         if not self.internet.file_from_url_exists_in_directory(rsr_archive_url, archives_dir):
-            self.feedback.comment(">> Fetching akvo-rsr archive for the [%s] branch from Github" % self.config.rsr_branch)
+            self.feedback.comment("Fetching akvo-rsr archive for the [%s] branch from Github" % self.config.rsr_branch)
             self.deployment_host.run("wget -nv -P %s %s" % (archives_dir, rsr_archive_url))
         else:
             archive_file_name = self.internet.file_name_at_url(rsr_archive_url)
-            self.feedback.comment(">> Latest archive already exists at: %s" % os.path.join(archives_dir, archive_file_name))
+            self.feedback.comment("Latest archive already exists at: %s" % os.path.join(archives_dir, archive_file_name))
 
     def _unpack_rsr_archive(self):
         rsr_deployment_root = self.config.rsr_deployment_root
-        self.feedback.comment("\n>> Unpacking RSR archive in %s" % rsr_deployment_root)
+        self.feedback.comment("Unpacking RSR archive in %s" % rsr_deployment_root)
         with fabric.context_managers.cd(self.config.repo_archives_dir):
             archive_file_name = self.internet.file_name_at_url(self.config.rsr_archive_url)
             self.deployment_host.run("unzip -q %s -d %s -x */.gitignore" % (archive_file_name, self.config.repo_checkout_root))
