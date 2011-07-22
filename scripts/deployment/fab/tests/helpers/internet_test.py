@@ -14,10 +14,7 @@ from fab.helpers.internet import Internet
 
 
 class StubbedInternet(Internet):
-    # Stubbed implementation of the Internet class so that we don't need
-    # actual internet access for the tests to run.
-
-    redirected_url = None
+    """Stubbed implementation of the Internet class so that we don't need actual internet access for the tests to run."""
 
     def _redirected_url(self, initial_url):
         # stub the actual network call for getting a redirected URL
