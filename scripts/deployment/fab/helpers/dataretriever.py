@@ -13,9 +13,9 @@ import fabric.context_managers
 
 class DataRetriever(object):
 
-    def __init__(self, data_retriever_config, remote_host, virtualenv, path_helper, file_system, execution_feedback):
+    def __init__(self, data_retriever_config, database_host, virtualenv, path_helper, file_system, execution_feedback):
         self.config = data_retriever_config
-        self.data_server = remote_host
+        self.database_host = database_host
         self.virtualenv = virtualenv
         self.path = path_helper
         self.file_system = file_system
@@ -26,7 +26,7 @@ class DataRetriever(object):
         self.feedback.comment("Fetching data from database")
         rsr_data_dump_path = self.config.rsr_data_dump_path
         with fabric.context_managers.cd(self.config.akvo_rsr_app_path):
-            self.data_server.run("pwd")
+            self.database_host.run("pwd")
             self.virtualenv.run_within_virtualenv("python db_dump.py -d %s dump" % rsr_data_dump_path)
         self.file_system.compress_directory(rsr_data_dump_path)
         self.file_system.delete_directory(rsr_data_dump_path)
