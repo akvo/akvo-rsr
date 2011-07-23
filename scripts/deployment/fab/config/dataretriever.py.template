@@ -8,7 +8,7 @@
 import datetime, os
 
 
-class DataRetrievalConfig(object):
+class DataRetrieverConfig(object):
 
     # Note: these settings are defined from the perspective of data retrieval from an RSR database host
     #       rather than sending files or data to a deployment host

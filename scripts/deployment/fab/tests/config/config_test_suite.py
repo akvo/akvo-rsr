@@ -7,12 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.data_retrieval_config_test import DataRetrievalConfigTest
+from fab.tests.config.data_retriever_config_test import DataRetrieverConfigTest
 from fab.tests.config.deployer_config_test import DeployerConfigTest
 
 
 def config_suite():
-    return TestSuiteLoader().create_suite_from_classes([DataRetrievalConfigTest, DeployerConfigTest])
+    return TestSuiteLoader().create_suite_from_classes([DataRetrieverConfigTest, DeployerConfigTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

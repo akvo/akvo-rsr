@@ -11,10 +11,10 @@ from __future__ import with_statement
 import fabric.context_managers
 
 
-class DataRetrieval(object):
+class DataRetriever(object):
 
-    def __init__(self, data_retrieval_config, remote_host, virtualenv, path_helper, file_system, execution_feedback):
-        self.config = data_retrieval_config
+    def __init__(self, data_retriever_config, remote_host, virtualenv, path_helper, file_system, execution_feedback):
+        self.config = data_retriever_config
         self.data_server = remote_host
         self.virtualenv = virtualenv
         self.path = path_helper
