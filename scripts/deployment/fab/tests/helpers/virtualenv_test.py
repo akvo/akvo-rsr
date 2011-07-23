@@ -27,15 +27,15 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_deployment_host,
                                      self.mock_file_system, self.mock_feedback)
 
-    def test_can_call_command_within_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Can call command from within virtualenv"""
+    def test_can_run_command_within_virtualenv(self):
+        """fab.tests.helpers.virtualenv_test  Can run command from within virtualenv"""
 
         virtualenv_command = "command text"
 
         self.mock_deployment_host.run(self.expected_call_within_virtualenv(virtualenv_command))
         self.mox.ReplayAll()
 
-        self.virtualenv.with_virtualenv(virtualenv_command)
+        self.virtualenv.run_within_virtualenv(virtualenv_command)
 
     def test_can_list_installed_virtualenv_packages(self):
         """fab.tests.helpers.virtualenv_test  Can list installed virtualenv packages"""

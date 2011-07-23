@@ -24,11 +24,11 @@ class VirtualEnv(object):
 
     def install_packages(self, pip_requirements_file, pip_install_log_file):
         self.feedback.comment("Installing packages in virtualenv at %s" % self.virtualenv_path)
-        self.with_virtualenv("pip install -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
+        self.run_within_virtualenv("pip install -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
         self.list_installed_virtualenv_packages()
 
     def list_installed_virtualenv_packages(self):
         self.deployment_host.run("pip freeze -E %s" % self.virtualenv_path)
 
-    def with_virtualenv(self, command):
+    def run_within_virtualenv(self, command):
         self.deployment_host.run("source %s/bin/activate && %s" % (self.virtualenv_path, command))
