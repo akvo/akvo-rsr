@@ -33,6 +33,10 @@ class Path(object):
             run_command("mkdir %s" % path)
             run_command("chmod 755 %s" % path)
 
+    def exit_if_file_does_not_exist(self, path):
+        if not self.deployment_host.file_exists(path):
+            self.feedback.abort("Expected file does not exist: %s" % path)
+
     def exit_if_path_does_not_exist(self, path):
         if not self.deployment_host.path_exists(path):
             self.feedback.abort("Expected path does not exist: %s" % path)

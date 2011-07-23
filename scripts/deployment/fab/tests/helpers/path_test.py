@@ -25,12 +25,36 @@ class PathTest(mox.MoxTestBase):
 
         self.path = Path(self.mock_deployment_host, self.mock_permissions, self.mock_feedback)
 
+    def test_can_exit_if_file_does_not_exist(self):
+        """fab.tests.helpers.path_test  Can exit if file does not exist"""
+
+        non_existent_file = "/some/path/nonexistent_file.txt"
+        self.mock_deployment_host.file_exists(non_existent_file).AndReturn(False)
+        expected_missing_file_message = mox.StrContains("Expected file does not exist: %s" % non_existent_file)
+        self.mock_feedback.abort(expected_missing_file_message).AndRaise(SystemExit(expected_missing_file_message))
+        self.mox.ReplayAll()
+
+        try:
+            self.path.exit_if_file_does_not_exist(non_existent_file)
+            self.fail("Should have raised a SystemExit exception for a nonexistent file")
+        except SystemExit:
+            pass # expected
+
+    def test_does_not_exit_if_file_exists(self):
+        """fab.tests.helpers.path_test  Does not exit if file exists"""
+
+        valid_file_path = "/usr/bin/man"
+        self.mock_deployment_host.file_exists(valid_file_path).AndReturn(True)
+        self.mox.ReplayAll()
+
+        self.path.exit_if_file_does_not_exist(valid_file_path)
+
     def test_can_exit_if_path_does_not_exist(self):
         """fab.tests.helpers.path_test  Can exit if path does not exist"""
 
         non_existent_path = "/some/nonexistent/path"
         self.mock_deployment_host.path_exists(non_existent_path).AndReturn(False)
-        expected_missing_path_message = mox.StrContains("Expected path does not exist: /some/nonexistent/path")
+        expected_missing_path_message = mox.StrContains("Expected path does not exist: %s" % non_existent_path)
         self.mock_feedback.abort(expected_missing_path_message).AndRaise(SystemExit(expected_missing_path_message))
         self.mox.ReplayAll()
 
