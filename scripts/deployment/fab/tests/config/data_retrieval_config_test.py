@@ -17,11 +17,11 @@ from data_retrieval_config import DataRetrievalConfig
 
 class StubbedDataRetrievalConfig(DataRetrievalConfig):
 
-    def __init__(self, data_server, utc_datetime_now):
+    def __init__(self, database_host, utc_datetime_now):
         # we set the stubbed datetime before calling the parent class's initialiser otherwise
         # the stubbed value won't be available in the overridden _utc_datetime_now() method
         self.stubbed_utc_datetime_now = utc_datetime_now
-        super(StubbedDataRetrievalConfig, self).__init__(data_server)
+        super(StubbedDataRetrievalConfig, self).__init__(database_host)
 
     def _utc_datetime_now(self):
         # the utcnow() generation is stubbed to ensure we get repeatable test results
@@ -32,17 +32,17 @@ class DataRetrievalConfigTest(unittest.TestCase):
 
     def setUp(self):
         super(DataRetrievalConfigTest, self).setUp()
-        self.expected_data_server = "data_server.org:port1"
+        self.expected_database_host = "database.host.org:port1"
         self.expected_utc_datetime_now = datetime.datetime.utcnow()
         self.expected_akvo_rsr_app_path = "/var/lib/django/1.0.9_gitclone/akvo"
         self.expected_data_dumps_home = "/var/tmp/data_dumps"
 
-        self.config = StubbedDataRetrievalConfig(self.expected_data_server, self.expected_utc_datetime_now)
+        self.config = StubbedDataRetrievalConfig(self.expected_database_host, self.expected_utc_datetime_now)
 
-    def test_data_server_is_set_on_initialisation(self):
-        """fab.tests.config.data_retrieval_config_test  Data server is set on initialisation"""
+    def test_database_host_is_set_on_initialisation(self):
+        """fab.tests.config.data_retrieval_config_test  Database host is set on initialisation"""
 
-        self.assertEqual(self.expected_data_server, self.config.data_server)
+        self.assertEqual(self.expected_database_host, self.config.database_host)
 
     def test_has_expected_akvo_rsr_app_path(self):
         """fab.tests.config.data_retrieval_config_test  Has expected Akvo RSR app path"""

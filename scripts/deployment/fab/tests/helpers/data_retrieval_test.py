@@ -23,13 +23,13 @@ class DataRetrievalTest(mox.MoxTestBase):
     def setUp(self):
         super(DataRetrievalTest, self).setUp()
         self.mock_config = self.mox.CreateMock(DataRetrievalConfig)
-        self.mock_data_server = self.mox.CreateMock(RemoteHost)
+        self.mock_database_host = self.mox.CreateMock(RemoteHost)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_path = self.mox.CreateMock(Path)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.data_retrieval = DataRetrieval(self.mock_config, self.mock_data_server, self.mock_virtualenv,
+        self.data_retrieval = DataRetrieval(self.mock_config, self.mock_database_host, self.mock_virtualenv,
                                             self.mock_path, self.mock_file_system, self.mock_feedback)
 
     def test_can_fetch_data_from_database(self):
@@ -50,7 +50,7 @@ class DataRetrievalTest(mox.MoxTestBase):
         self.mock_path.exit_if_path_does_not_exist(rsr_virtualenv_path)
         self.mock_path.exit_if_file_does_not_exist(db_dump_script_path)
         self.mock_feedback.comment(mox.StrContains("Fetching data from database"))
-        self.mock_data_server.run("pwd")
+        self.mock_database_host.run("pwd")
         self.mock_virtualenv.run_within_virtualenv("python db_dump.py -d %s dump" % rsr_data_dump_path)
         self.mock_file_system.compress_directory(rsr_data_dump_path)
         self.mock_file_system.delete_directory(rsr_data_dump_path)

@@ -10,11 +10,11 @@ import datetime, os
 
 class DataRetrievalConfig(object):
 
-    # Note: these settings are defined from the perspective of data retrieval from an RSR data server
+    # Note: these settings are defined from the perspective of data retrieval from an RSR database host
     #       rather than sending files or data to a deployment host
 
-    def __init__(self, data_server):
-        self.data_server = data_server # e.g. server1:port1
+    def __init__(self, database_host):
+        self.database_host = database_host # e.g. database_host1:port1
 
         # the deployed RSR instance from which to retrieve data
         rsr_version                 = "1.0.9"
