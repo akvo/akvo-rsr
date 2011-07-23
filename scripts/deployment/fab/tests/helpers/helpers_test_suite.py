@@ -10,7 +10,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.tests.helpers.codebase_test import CodebaseTest
 from fab.tests.helpers.data_retrieval_test import DataRetrievalTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
-from fab.tests.helpers.filesystem_test import FileSystemTest
+from fab.tests.helpers.file_system_test import FileSystemTest
 from fab.tests.helpers.internet_test import InternetTest
 from fab.tests.helpers.path_test import PathTest
 from fab.tests.helpers.permissions_test import PermissionsTest

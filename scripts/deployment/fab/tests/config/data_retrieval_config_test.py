@@ -9,7 +9,7 @@ import datetime, imp, os, unittest
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CONFIG_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'data_retrieval.py.template'))
+CONFIG_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'dataretrieval.py.template'))
 imp.load_source('data_retrieval_config', CONFIG_TEMPLATE_PATH)
 
 from data_retrieval_config import DataRetrievalConfig

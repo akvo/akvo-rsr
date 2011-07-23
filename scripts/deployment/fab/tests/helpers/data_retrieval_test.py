@@ -9,8 +9,8 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.data_retrieval import DataRetrievalConfig
-from fab.helpers.data_retrieval import DataRetrieval
+from fab.config.dataretrieval import DataRetrievalConfig
+from fab.helpers.dataretrieval import DataRetrieval
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import RemoteHost
