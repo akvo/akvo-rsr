@@ -22,95 +22,95 @@ class DeployerConfigTest(unittest.TestCase):
         self.expected_hosts = "somehost:port1,anotherhost:port2"
         self.expected_user = "joesoap"
 
-        self.deployer_config = DeployerConfig(self.expected_hosts, self.expected_user)
+        self.config = DeployerConfig(self.expected_hosts, self.expected_user)
 
     def test_deployment_hosts_are_set_on_initialisation(self):
         """fab.tests.config.deployer_config_test  Deployment hosts and user are set on initialisation"""
 
-        self.assertEqual(self.expected_hosts, self.deployer_config.deployment_hosts)
-        self.assertEqual(self.expected_user, self.deployer_config.user)
+        self.assertEqual(self.expected_hosts, self.config.deployment_hosts)
+        self.assertEqual(self.expected_user, self.config.user)
 
     def test_has_rsr_branch(self):
         """fab.tests.config.deployer_config_test  Has RSR branch setting"""
 
-        self.assertTrue(len(self.deployer_config.rsr_branch) > 0, "Expected some value for rsr_branch setting")
+        self.assertTrue(len(self.config.rsr_branch) > 0, "Expected some value for rsr_branch setting")
 
     def test_has_expected_rsr_archive_url(self):
         """fab.tests.config.deployer_config_test  Has expected RSR archive URL"""
 
         archive_url_root = "http://nodeload.github.com/akvo/akvo-rsr/zipball"
-        expected_archive_url = os.path.join(archive_url_root, self.deployer_config.rsr_branch)
+        expected_archive_url = os.path.join(archive_url_root, self.config.rsr_branch)
 
-        self.assertEqual(expected_archive_url, self.deployer_config.rsr_archive_url)
+        self.assertEqual(expected_archive_url, self.config.rsr_archive_url)
 
     def test_has_repo_checkout_root(self):
         """fab.tests.config.deployer_config_test  Has repository checkout root setting"""
 
-        self.assertTrue(len(self.deployer_config.repo_checkout_root) > 0, "Expected some value for repo_checkout_root setting")
+        self.assertTrue(len(self.config.repo_checkout_root) > 0, "Expected some value for repo_checkout_root setting")
 
     def test_has_expected_repo_archives_dir(self):
         """fab.tests.config.deployer_config_test  Has expected repository archives directory"""
 
-        expected_repo_archives_dir = os.path.join(self.deployer_config.repo_checkout_root, "archives")
+        expected_repo_archives_dir = os.path.join(self.config.repo_checkout_root, "archives")
 
-        self.assertEqual(expected_repo_archives_dir, self.deployer_config.repo_archives_dir)
+        self.assertEqual(expected_repo_archives_dir, self.config.repo_archives_dir)
 
     def test_has_expected_unpacked_rsr_archive_match(self):
         """fab.tests.config.deployer_config_test  Has expected match for an unpacked RSR archive"""
 
         unpacked_rsr_archive_mask = "akvo-akvo-rsr-*"
-        expected_archive_match = os.path.join(self.deployer_config.repo_checkout_root, unpacked_rsr_archive_mask)
+        expected_archive_match = os.path.join(self.config.repo_checkout_root, unpacked_rsr_archive_mask)
 
-        self.assertEqual(expected_archive_match, self.deployer_config.unpacked_rsr_archive_match)
+        self.assertEqual(expected_archive_match, self.config.unpacked_rsr_archive_match)
 
     def test_has_expected_rsr_deployment_dir_name(self):
         """fab.tests.config.deployer_config_test  Has expected RSR deployment directory name"""
 
-        self.assertEqual("akvo-rsr_%s" % self.deployer_config.rsr_branch, self.deployer_config.rsr_deployment_dir_name)
+        self.assertEqual("akvo-rsr_%s" % self.config.rsr_branch, self.config.rsr_deployment_dir_name)
 
     def test_has_expected_rsr_deployment_root(self):
         """fab.tests.config.deployer_config_test  Has expected RSR deployment root"""
 
-        expected_rsr_deployment_root = os.path.join(self.deployer_config.repo_checkout_root, self.deployer_config.rsr_deployment_dir_name)
+        expected_rsr_deployment_root = os.path.join(self.config.repo_checkout_root, self.config.rsr_deployment_dir_name)
 
-        self.assertEqual(expected_rsr_deployment_root, self.deployer_config.rsr_deployment_root)
+        self.assertEqual(expected_rsr_deployment_root, self.config.rsr_deployment_root)
 
     def test_has_expected_akvo_permissions_group_setting(self):
         """fab.tests.config.deployer_config_test  Has expected Akvo permissions group setting"""
 
-        self.assertEqual("www-edit", self.deployer_config.akvo_permissions_group)
+        self.assertEqual("www-edit", self.config.akvo_permissions_group)
 
     def test_has_virtualenvs_home_setting(self):
         """fab.tests.config.deployer_config_test  Has virtualenvs home setting"""
 
-        self.assertTrue(len(self.deployer_config.virtualenvs_home) > 0, "Expected some value for virtualenvs_home setting")
+        self.assertTrue(len(self.config.virtualenvs_home) > 0, "Expected some value for virtualenvs_home setting")
 
     def test_has_expected_rsr_env_name(self):
         """fab.tests.config.deployer_config_test  Has expected RSR virtualenv name"""
 
-        self.assertEqual("rsr_%s" % self.deployer_config.rsr_branch, self.deployer_config.rsr_env_name)
+        self.assertEqual("rsr_%s" % self.config.rsr_branch, self.config.rsr_env_name)
 
     def test_has_expected_rsr_env_path(self):
         """fab.tests.config.deployer_config_test  Has expected RSR virtualenv path"""
 
-        expected_rsr_env_path = os.path.join(self.deployer_config.virtualenvs_home, self.deployer_config.rsr_env_name)
+        expected_rsr_env_path = os.path.join(self.config.virtualenvs_home, self.config.rsr_env_name)
 
-        self.assertEqual(expected_rsr_env_path, self.deployer_config.rsr_env_path)
+        self.assertEqual(expected_rsr_env_path, self.config.rsr_env_path)
 
     def test_has_expected_pip_install_log_file_path(self):
         """fab.tests.config.deployer_config_test  Has expected pip install log file path"""
 
-        pip_file_name = "pip_install_%s.log" % self.deployer_config.rsr_env_name
-        expected_pip_log_file_path = os.path.join(self.deployer_config.virtualenvs_home, pip_file_name)
+        pip_file_name = "pip_install_%s.log" % self.config.rsr_env_name
+        expected_pip_log_file_path = os.path.join(self.config.virtualenvs_home, pip_file_name)
 
-        self.assertEqual(expected_pip_log_file_path, self.deployer_config.pip_install_log_file)
+        self.assertEqual(expected_pip_log_file_path, self.config.pip_install_log_file)
 
     def test_has_expected_pip_requirements_home(self):
         """fab.tests.config.deployer_config_test  Has expected pip requirements home"""
 
-        expected_pip_requirements_home = os.path.join(self.deployer_config.rsr_deployment_root, "scripts/deployment/pip/requirements")
+        expected_pip_requirements_home = os.path.join(self.config.rsr_deployment_root, "scripts/deployment/pip/requirements")
 
-        self.assertEqual(expected_pip_requirements_home, self.deployer_config.pip_requirements_home)
+        self.assertEqual(expected_pip_requirements_home, self.config.pip_requirements_home)
 
 
 def suite():
