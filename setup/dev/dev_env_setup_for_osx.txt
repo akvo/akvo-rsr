@@ -19,7 +19,7 @@ Notes:
 ------
 a)  The exports above can be used for building Python modules manually within a virtualenv with the Intel Mac OS X 10.6 compile tools.
 
-b)  The env aliases can be used for installing system Python modules manually with pip for intel 32-bit, 64-bit or intel/fat builds
+b)  The env aliases can be used for installing system Python modules manually with pip for intel 32-bit, 64-bit or universal builds
     (both 32-bit & 64-bit) with the latest Mac OS X 10.6 SDK, e.g.
 
         env64 pip install -M -r your-pip-requirements.txt
@@ -30,10 +30,7 @@ d)  For an alternative basic Python environment setup (distribute, pip, virtuale
     local user directory (i.e. without having to use sudo) instead of in system Python, see http://stackoverflow.com/questions/4324558
 
 
-Akvo dev environment setup
---------------------------
-1)  Install a recent 2.6 or 2.7 Mac OS X Python build from http://python.org/download/releases
-    - this will add /Library/Frameworks/Python.framework/Versions/2.6/bin or similar to your env PATH
-
-2)  Run scripts/deployment/builders/rebuild_osx_dev_env.sh to install or update the required system Python packages and
+Configure your Python packages and RSR virtualenv
+-------------------------------------------------
+1)  Run scripts/deployment/builders/rebuild_osx_dev_env.sh to install or update the required system Python packages and
     create a new RSR virtualenv instance or update an existing instance.
