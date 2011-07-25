@@ -26,7 +26,18 @@ Setup local dev repositories
         Support branches? [support/] 
         Version tag prefix? [] v
 
-4)  To use this repository with Github for Mac:
+4)  After git flow initialisation, you'll be in the develop branch.  To start development, create a new
+    feature branch with:
+        git flow feature start shiny_new_feature
+    This will create a new branch off the develop branch called: feature/shiny_new_feature
+
+    You can now start coding in your feature branch and, when ready, push the finished work to
+    the develop branch with:
+        git flow feature finish shiny_new_feature
+
+    More details about how git flow uses branches here: http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow
+
+5)  To use this repository with Github for Mac:
     a)  If you're using Github for Mac for the first time, follow the prompts to set your Github details
         and to locate any existing git repositories on your file system.
     b)  If you've already been using the Github app, go to:
