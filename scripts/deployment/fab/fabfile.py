@@ -7,4 +7,5 @@
 # Use "fab --list" to display the list of available tasks
 
 import fab.tasks.codedeployment
+import fab.tasks.dataretriever
 import fab.tasks.virtualenv

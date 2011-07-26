@@ -24,12 +24,12 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
         self.rebuild_virtualenv_task = RebuildRSRVirtualEnv(self.mock_config, self.mock_virtualenv)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test.RebuildRSRVirtualEnvTest  Has expected task name"""
+        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Has expected task name"""
 
         self.assertEqual("rebuild_rsr_virtualenv", RebuildRSRVirtualEnv.name)
 
     def test_can_rebuild_rsr_virtualenv(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test.RebuildRSRVirtualEnvTest  Can rebuild an RSR virtualenv"""
+        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can rebuild an RSR virtualenv"""
 
         pip_log_file = "/some/log/path/pip.log"
         pip_requirements_home = "/path/to/pip/requirements"

@@ -7,28 +7,28 @@
 
 class VirtualEnv(object):
 
-    def __init__(self, virtualenv_path, deployment_host, file_system, execution_feedback):
+    def __init__(self, virtualenv_path, virtualenv_host, file_system, execution_feedback):
         self.virtualenv_path = virtualenv_path
-        self.deployment_host = deployment_host
+        self.virtualenv_host = virtualenv_host
         self.file_system = file_system
         self.feedback = execution_feedback
 
     def create_empty_virtualenv(self, pip_install_log_file):
-        self.feedback.comment("\n>> Deleting previous virtualenv directory and pip install log file")
+        self.feedback.comment("Deleting previous virtualenv directory and pip install log file")
         self.file_system.delete_directory_with_sudo(self.virtualenv_path)
         self.file_system.delete_file_with_sudo(pip_install_log_file)
 
-        self.feedback.comment("\n>> Creating new virtualenv at %s" % self.virtualenv_path)
-        self.deployment_host.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
+        self.feedback.comment("Creating new virtualenv at %s" % self.virtualenv_path)
+        self.virtualenv_host.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
         self.list_installed_virtualenv_packages()
 
     def install_packages(self, pip_requirements_file, pip_install_log_file):
-        self.feedback.comment("\n>> Installing packages in virtualenv at %s" % self.virtualenv_path)
-        self.with_virtualenv("pip install -q -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
+        self.feedback.comment("Installing packages in virtualenv at %s" % self.virtualenv_path)
+        self.run_within_virtualenv("pip install -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
         self.list_installed_virtualenv_packages()
 
     def list_installed_virtualenv_packages(self):
-        self.deployment_host.run("pip freeze -E %s" % self.virtualenv_path)
+        self.virtualenv_host.run("pip freeze -E %s" % self.virtualenv_path)
 
-    def with_virtualenv(self, command):
-        self.deployment_host.run("source %s/bin/activate && %s" % (self.virtualenv_path, command))
+    def run_within_virtualenv(self, command):
+        self.virtualenv_host.run("source %s/bin/activate && %s" % (self.virtualenv_path, command))

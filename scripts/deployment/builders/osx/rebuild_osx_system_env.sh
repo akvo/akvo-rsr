@@ -71,7 +71,7 @@ function install_pip_package
     # See installation notes at http://www.pip-installer.org/en/latest/installing.html
     cd "$OSX_DIR"
     source $CONFIG_DIR/osx_build_flags_env_64.config
-    GET_PIP_URL=https://raw.github.com/pypa/pip/1.0.1/contrib/get-pip.py
+    GET_PIP_URL=https://raw.github.com/pypa/pip/1.0.2/contrib/get-pip.py
     printf "\n>> Installing pip package from $GET_PIP_URL (with 64-bit architecture)\n"
     cd "$PACKAGE_DOWNLOAD_DIR"
     curl -L -O $GET_PIP_URL

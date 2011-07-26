@@ -18,5 +18,8 @@ class RemoteHost(object):
     def sudo(self, command):
         return fabric.api.sudo(command)
 
+    def file_exists(self, path):
+        return self.path_exists(path)
+
     def path_exists(self, path):
         return fabric.contrib.files.exists(path)

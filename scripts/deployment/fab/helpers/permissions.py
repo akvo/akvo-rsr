@@ -17,9 +17,9 @@ class Permissions(object):
     def ensure_user_is_member_of_group(self, user_id, group_name):
         group_membership = self.deployment_host.run(Permissions.GROUPS_COMMAND)
         if group_membership.find(group_name) == -1:
-            self.feedback.abort("\n>> User [%s] should be a member of group [%s]" % (user_id, group_name))
+            self.feedback.abort("User [%s] should be a member of group [%s]" % (user_id, group_name))
         else:
-            self.feedback.comment(">> User [%s] is a member of expected group [%s]" % (user_id, group_name))
+            self.feedback.comment("User [%s] is a member of expected group [%s]" % (user_id, group_name))
 
     def set_akvo_group_permissions_on_path(self, path):
         self.set_akvo_ownership_on_path(path)

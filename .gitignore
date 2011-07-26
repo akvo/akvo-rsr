@@ -17,9 +17,10 @@ akvo/rebuild_db.py
 akvo/settings/
 akvo/settings.py
 akvo/testing.py
+scripts/deployment/deploy_rsr_config.py
+scripts/deployment/fab/config/dataretriever.py
 scripts/deployment/fab/config/deployer.py
 scripts/deployment/fab/tests/test_settings.py
-scripts/deployment/fabfiles/data_retrieval_config.py
 scripts/deployment/builders/osx/config/python_system.config
 scripts/deployment/builders/osx/config/rsr_env.config
 scripts/deployment/static_project_structure.py

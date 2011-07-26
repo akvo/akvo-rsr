@@ -31,19 +31,19 @@ class DeployRSRCode(fabric.tasks.Task):
         self.feedback = execution_feedback
 
     def run(self):
-        self.feedback.comment("\n>> Starting RSR codebase deployment")
+        self.feedback.comment("Starting RSR codebase deployment")
         self.ensure_required_paths_exist()
         self.codebase.download_and_unpack_rsr_archive()
 
     def ensure_required_paths_exist(self):
         self.ensure_user_is_member_of_akvo_permissions_group()
-        self.feedback.comment("\n>> Ensuring expected paths exist")
+        self.feedback.comment("Ensuring expected paths exist")
         self.paths.ensure_path_exists_with_akvo_group_permissions(self.config.repo_checkout_root)
         self.paths.ensure_path_exists(self.config.repo_archives_dir)
         self.paths.ensure_path_exists_with_akvo_group_permissions(self.config.virtualenvs_home)
 
     def ensure_user_is_member_of_akvo_permissions_group(self):
-        self.feedback.comment("\n>> Checking group membership for user [%s]" % self.config.user + " (required for setting directory permissions later on)")
+        self.feedback.comment("Checking group membership for user [%s]" % self.config.user + " (required for setting directory permissions later on)")
         self.permissions.ensure_user_is_member_of_group(self.config.user, self.config.akvo_permissions_group)
 
 

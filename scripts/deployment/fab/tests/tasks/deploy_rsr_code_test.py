@@ -31,12 +31,12 @@ class DeployRSRCodeTest(mox.MoxTestBase):
                                                   self.mock_path, self.mock_feedback)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.deploy_rsr_code_test.DeployRSRCodeTest  Has expected task name"""
+        """fab.tests.tasks.deploy_rsr_code_test  Has expected task name"""
 
         self.assertEqual("deploy_rsr_code", DeployRSRCode.name)
 
     def test_can_deploy_rsr_code(self):
-        """fab.tests.tasks.deploy_rsr_code_test.DeployRSRCodeTest  Can deploy RSR code"""
+        """fab.tests.tasks.deploy_rsr_code_test  Can deploy RSR code"""
 
         self.mock_config.user = "joesoap"
         self.mock_config.akvo_permissions_group = "some-akvo-group"
@@ -44,10 +44,10 @@ class DeployRSRCodeTest(mox.MoxTestBase):
         self.mock_config.repo_archives_dir = "/var/repo/archives"
         self.mock_config.virtualenvs_home = "/var/virtualenvs"
 
-        self.mock_feedback.comment("\n>> Starting RSR codebase deployment")
-        self.mock_feedback.comment(mox.StrContains("\n>> Checking group membership for user [joesoap]"))
+        self.mock_feedback.comment(mox.StrContains("Starting RSR codebase deployment"))
+        self.mock_feedback.comment(mox.StrContains("Checking group membership for user [joesoap]"))
         self.mock_permissions.ensure_user_is_member_of_group("joesoap", "some-akvo-group")
-        self.mock_feedback.comment("\n>> Ensuring expected paths exist")
+        self.mock_feedback.comment(mox.StrContains("Ensuring expected paths exist"))
         self.mock_path.ensure_path_exists_with_akvo_group_permissions("/var/repo")
         self.mock_path.ensure_path_exists("/var/repo/archives")
         self.mock_path.ensure_path_exists_with_akvo_group_permissions("/var/virtualenvs")
