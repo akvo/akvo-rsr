@@ -4,35 +4,53 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 import os, subprocess, sys
 
-DEPLOYMENT_SCRIPTS_PATH = os.path.realpath(os.path.dirname(__file__))
 
-
-def display_usage_and_exit():
-    print "Usage: deploy_rsr <deployment_hosts> <host_username> <host_password>"
-    print "Specify a comma-separated list of deployment hosts (e.g. host1:port1,host2:port2) and a username and password for the hosts"
+if not os.path.exists("deploy_rsr_config.py"):
+    print ">> Expected configuration file deploy_rsr_config.py not found"
+    print ">> Copy the deploy_rsr_config.py.template file and edit as necessary"
     sys.exit(1)
 
-if len(sys.argv) > 4:
-    print ">> Unexpected list of parameters: %s" % (sys.argv[1:])
-    display_usage_and_exit()
-elif len(sys.argv) >= 1 and len(sys.argv) < 4:
-    print ">> Required parameters: <deployment_hosts> <host_username> <host_password>"
-    display_usage_and_exit()
-elif len(sys.argv) == 4:
-    DEPLOYMENT_HOSTS = sys.argv[1]
-    USERNAME = sys.argv[2]
-    PASSWORD = sys.argv[3]
 
-def run_fab_task(fully_qualified_task):
-    subprocess.call(["fab", "-f", "fab/fabfile.py", fully_qualified_task,
-                     "-H", DEPLOYMENT_HOSTS, "-u", USERNAME, "-p", PASSWORD])
+from deploy_rsr_config import LIVE_DATABASE_HOST, DEPLOYMENT_HOST, USERNAME, PASSWORD
+
+
+FABRIC_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), 'fab'))
+
+
+def deployment_host_contains(expected_host):
+    return DEPLOYMENT_HOST.lower().find(expected_host.lower()) != -1
+
+def attempting_to_deploy_to_live_server():
+    return deployment_host_contains("www.akvo.org") or (deployment_host_contains("akvo.org") and not deployment_host_contains(".akvo.org"))
+
+def verify_configuration():
+    if LIVE_DATABASE_HOST == DEPLOYMENT_HOST:
+        print ">> Cannot deploy to the same host as the database host: %s" % DEPLOYMENT_HOST
+        sys.exit(1)
+    elif attempting_to_deploy_to_live_server():
+        print ">> Deployment to live server not yet supported: %s" % DEPLOYMENT_HOST
+        sys.exit(1)
+    else:
+        print ">> Fetching data from: %s" % LIVE_DATABASE_HOST
+        print ">> Deploying RSR to:   %s\n" % DEPLOYMENT_HOST
+
+def run_fab_task(fully_qualified_task, host):
+    exit_code = subprocess.call(["fab", "-f", "fabfile.py", fully_qualified_task, "-H", host, "-u", USERNAME, "-p", PASSWORD])
+
+    if exit_code > 0:
+        print "\n>> Deployment failed due to errors above.\n"
+        sys.exit(1)
 
 def deploy_rsr():
-    run_fab_task("fab.tasks.codedeployment.deploy_rsr_code")
-    run_fab_task("fab.tasks.virtualenv.rebuild_rsr_virtualenv")
+    os.chdir(FABRIC_SCRIPTS_HOME)
+    run_fab_task("fab.tasks.dataretriever.fetch_rsr_data", LIVE_DATABASE_HOST)
+    run_fab_task("fab.tasks.codedeployment.deploy_rsr_code", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.virtualenv.rebuild_rsr_virtualenv", DEPLOYMENT_HOST)
+
 
 if __name__ == "__main__":
-    os.chdir(DEPLOYMENT_SCRIPTS_PATH)
+    verify_configuration()
     deploy_rsr()
