@@ -8,23 +8,25 @@
 from verifiers.helpers.dependencies import CommandDependency, DependencyVerifier, HeaderDirectoryDependency, HeaderFileDependency
 
 
-def ensure_expected_system_components_are_installed():
-    # perhaps load these dependency assertions from a YAML file in future
-    verifier = DependencyVerifier()
-    verifier.add(CommandDependency("mysql_config", "MySQL", "MySQL-python"))
-    verifier.add(HeaderFileDependency("libiconv", "iconv.h", "lxml"))
-    verifier.add(HeaderDirectoryDependency("libxml2", "lxml"))
-    verifier.add(HeaderDirectoryDependency("libxslt", "lxml"))
-    verifier.add(HeaderFileDependency("libjpeg", "jpeglib.h", "PIL"))
+class SystemPackageVerifier(object):
 
-    print ">> Verifying expected system components for building Python modules:"
-    verifier.verify_all()
-    if verifier.not_all_dependencies_met():
-        print "\n>> Not all expected dependencies were met:"
-        verifier.display_dependency_warnings()
-        print
-        raise Exception("Missing dependencies for building required Python modules: %s" % verifier.missing_dependencies())
+    def ensure_expected_system_components_are_installed(self):
+        # perhaps load these dependency assertions from a YAML file in future
+        verifier = DependencyVerifier()
+        verifier.add(CommandDependency("mysql_config", "MySQL", "MySQL-python"))
+        verifier.add(HeaderFileDependency("libiconv", "iconv.h", "lxml"))
+        verifier.add(HeaderDirectoryDependency("libxml2", "lxml"))
+        verifier.add(HeaderDirectoryDependency("libxslt", "lxml"))
+        verifier.add(HeaderFileDependency("libjpeg", "jpeglib.h", "PIL"))
+
+        print ">> Verifying expected system components for building Python modules:"
+        verifier.verify_all()
+        if verifier.not_all_dependencies_met():
+            print "\n>> Not all expected dependencies were met:"
+            verifier.display_dependency_warnings()
+            print
+            raise Exception("Missing dependencies for building required Python modules: %s" % verifier.missing_dependencies())
 
 
 if __name__ == "__main__":
-    ensure_expected_system_components_are_installed()
+    SystemPackageVerifier().ensure_expected_system_components_are_installed()
