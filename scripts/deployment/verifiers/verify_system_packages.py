@@ -18,6 +18,7 @@ class SystemPackageVerifier(object):
         verifier.add(HeaderDirectoryDependency("libxml2", "lxml"))
         verifier.add(HeaderDirectoryDependency("libxslt", "lxml"))
         verifier.add(HeaderFileDependency("libjpeg", "jpeglib.h", "PIL"))
+        verifier.add(HeaderFileDependency("zlib", "zlib.h", "PIL"))
 
         print ">> Verifying expected system components for building Python modules:"
         verifier.verify_all()
