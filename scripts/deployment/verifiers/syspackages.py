@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from verifiers.helpers.dependencies import CommandDependency, DependencyVerifier, HeaderDirectoryDependency, HeaderFileDependency
+from verifiers.helpers.dependencies import CommandDependency, DependencyVerifier, HeaderDirectoryDependency, HeaderFileDependency, LibraryDependency
 
 
 class SystemPackageVerifier(object):
@@ -15,6 +15,7 @@ class SystemPackageVerifier(object):
         verifier = DependencyVerifier()
         verifier.add(CommandDependency("mysql_config", "MySQL", "MySQL-python"))
         verifier.add(HeaderFileDependency("gmp", "gmp.h", "pycrypto"))
+        verifier.add(LibraryDependency("libgmp", "pycrypto"))
         verifier.add(HeaderFileDependency("libiconv", "iconv.h", "lxml"))
         verifier.add(HeaderDirectoryDependency("libxml2", "lxml"))
         verifier.add(HeaderDirectoryDependency("libxslt", "lxml"))
