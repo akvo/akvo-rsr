@@ -2,11 +2,22 @@
 
 OSX_DIR="$(cd `dirname $0` && pwd)"
 CONFIG_DIR="$OSX_DIR/config"
-PIP_REQUIREMENTS_DIR="$(cd "$OSX_DIR/../../pip/requirements" && pwd)"
 
 # exit if virtualenv_name parameter is missing
 if [ -z "$1" ]; then
     echo "Usage: rebuild_osx_dev_env <virtualenv_name>"
+    exit -1
+fi
+
+DEPLOYMENT_SCRIPTS_DIR="$(cd "$OSX_DIR/../.." && pwd)"
+PIP_REQUIREMENTS_DIR="$DEPLOYMENT_SCRIPTS_DIR/pip/requirements"
+VERIFIERS_DIR="$DEPLOYMENT_SCRIPTS_DIR/verifiers"
+
+"$VERIFIERS_DIR/verify_system_packages.py"
+
+# exit if any errors occurred while verifying the system packages
+if [ $? -ne 0 ]; then
+    printf "\n>> Unable to build virtualenv packages until system package dependencies have been resolved\n"
     exit -1
 fi
 
