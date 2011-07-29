@@ -14,19 +14,28 @@ fi
 
 cd "$OSX_DIR"
 
-# exit if rsr_env.config file does not exist
-if [ ! -e "$CONFIG_DIR/rsr_env.config" ]; then
-    printf ">> Expected $CONFIG_DIR/rsr_env.config file not found\n"
-    printf ">> Copy the rsr_env.config.template file and edit as necessary\n"
-    exit -1
-fi
+function exit_if_expected_config_file_is_missing
+{
+    # Function parameters:
+    #   $1: expected config file
 
-source $CONFIG_DIR/rsr_env.config
+    if [ ! -e "$CONFIG_DIR/$1" ]; then
+        printf ">> Expected $CONFIG_DIR/$1 file not found\n"
+        printf ">> Copy the $1.template file and edit as necessary\n"
+        exit -1
+    fi
+}
+
+exit_if_expected_config_file_is_missing "user.config"
+exit_if_expected_config_file_is_missing "rsr_env.config"
+
+source $CONFIG_DIR/user.config
 
 echo $SUDO_PASSWORD | sudo -S "$OSX_DIR/rebuild_osx_system_env.sh"
 
 # continue if no errors occurred while rebuilding the system packages
 if [ $? -eq 0 ]; then
+    source $CONFIG_DIR/rsr_env.config
     printf "\n>> Creating virtualenv at $RSR_VIRTUALENV_PATH\n"
     virtualenv --no-site-packages --distribute "$RSR_VIRTUALENV_PATH"
 
