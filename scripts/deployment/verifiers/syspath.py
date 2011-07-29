@@ -18,6 +18,14 @@ class SysPathVerifier(object):
 
     def exit_if_dir_not_on_syspath(self, expected_dir):
         if expected_dir not in sys.path:
-            print ">> The %s directory should be on the system path" % DEPLOYMENT_SCRIPTS_HOME
-            print ">> Add the missing path to your PYTHONPATH environment variable"
-            sys.exit(1)
+            self.display_python_path_instructions_and_exit()
+        else:
+            try:
+                import verifiers.syspath
+            except ImportError:
+                self.display_python_path_instructions_and_exit()
+
+    def display_python_path_instructions_and_exit(self):
+        print ">> The [%s] directory should be on the system path" % DEPLOYMENT_SCRIPTS_HOME
+        print ">> Add the missing path to your PYTHONPATH environment variable to run this script"
+        sys.exit(1)
