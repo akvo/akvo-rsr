@@ -7,8 +7,7 @@
 
 import imp, os, sys
 
-SYSPATH_VERIFIER_MODULE = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'verifiers', 'syspath.py'))
-imp.load_source("syspath", SYSPATH_VERIFIER_MODULE)
+imp.load_source("syspath", os.path.join(os.path.dirname(__file__), '../verifiers/syspath.py'))
 
 from syspath import SysPathVerifier
 
