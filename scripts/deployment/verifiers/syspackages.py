@@ -14,6 +14,7 @@ class SystemPackageVerifier(object):
         # perhaps load these dependency assertions from a YAML file in future
         verifier = DependencyVerifier()
         verifier.add(CommandDependency("mysql_config", "MySQL", "MySQL-python"))
+        verifier.add(HeaderFileDependency("gmp", "gmp.h", "pycrypto"))
         verifier.add(HeaderFileDependency("libiconv", "iconv.h", "lxml"))
         verifier.add(HeaderDirectoryDependency("libxml2", "lxml"))
         verifier.add(HeaderDirectoryDependency("libxslt", "lxml"))
