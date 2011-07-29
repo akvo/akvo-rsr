@@ -7,6 +7,7 @@ PY_PACKAGES_BIN_PATH="$PY_BIN_PATH" # this might be /usr/local/share/python when
 VIRTUALENVS_HOME="/var/virtualenvs"
 PACKAGE_DOWNLOAD_DIR="/var/tmp/python/packages"
 
-printf "\n>> Using Python $PY_VERSION at: $PY_BIN_PATH\n>> "
+printf "\n>> Using Python $PY_VERSION at:                $PY_BIN_PATH\n"
+printf ">> Using Python packages installed at: $PY_PACKAGES_BIN_PATH\n>> "
 $PY_BIN_PATH/python --version
-printf ">> Using Python packages installed at: $PY_PACKAGES_BIN_PATH\n"
+printf "\n"

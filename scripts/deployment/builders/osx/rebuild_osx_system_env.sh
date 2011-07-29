@@ -62,7 +62,7 @@ function link_easy_install
     cd /usr/local/bin
     ln -s "$PY_BIN_PATH/$VERSIONED_EASY_INSTALL" $VERSIONED_EASY_INSTALL
     ln -s $VERSIONED_EASY_INSTALL easy_install
-    printf ">> Resulting easy_install links:\n"
+    printf "\n>> Resulting easy_install links:\n"
     ls -la /usr/local/bin/easy*
 }
 
