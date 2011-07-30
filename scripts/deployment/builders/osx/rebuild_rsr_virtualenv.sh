@@ -3,12 +3,6 @@
 OSX_DIR="$(cd `dirname $0` && pwd)"
 CONFIG_DIR="$OSX_DIR/config"
 
-# exit if virtualenv_name parameter is missing
-if [ -z "$1" ]; then
-    echo "Usage: rebuild_osx_dev_env <virtualenv_name>"
-    exit -1
-fi
-
 DEPLOYMENT_SCRIPTS_DIR="$(cd "$OSX_DIR/../.." && pwd)"
 PIP_REQUIREMENTS_DIR="$DEPLOYMENT_SCRIPTS_DIR/pip/requirements"
 VERIFIERS_DIR="$DEPLOYMENT_SCRIPTS_DIR/verifiers"
@@ -24,11 +18,18 @@ fi
 source "$OSX_DIR/ensure_osx_config_files_exist.sh"
 
 source "$CONFIG_DIR/rsr_env.config"
+source "$CONFIG_DIR/osx_build_flags_env_64.config"
 
+function ensure_rsr_virtualenv_exists
+{
+    if [ ! -d "$RSR_VIRTUALENV_PATH" ]; then
+        printf "\n>> Creating RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
+        virtualenv --no-site-packages --distribute "$RSR_VIRTUALENV_PATH"
+    else
+        printf "\n>> Updating existing RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
+    fi
+}
 
-VIRTUALENV_NAME=$1
-
-source $CONFIG_DIR/osx_build_flags_env_intel.config
 function install_packages_with_pip
 {
     # Function parameters:
@@ -56,6 +57,8 @@ function install_rsr_and_infrastructure_packages
 
 function install_rsr_packages_within_virtualenv
 {
+    ensure_rsr_virtualenv_exists
+
     printf "\n>> Working on virtualenv: $VIRTUALENV_NAME\n"
     workon $VIRTUALENV_NAME
 
