@@ -21,39 +21,34 @@ if [ $? -ne 0 ]; then
     exit -1
 fi
 
-cd "$OSX_DIR"
+source "$OSX_DIR/ensure_osx_config_files_exist.sh"
 
-# exit if python_system.config file does not exist
-if [ ! -e $CONFIG_DIR/python_system.config ]; then
-    printf "\n>> Expected $CONFIG_DIR/python_system.config file not found -- copy the python_system.config.template file and edit as necessary\n"
-    exit -1
-fi
+source "$CONFIG_DIR/rsr_env.config"
 
-# exit if rsr_env.config file does not exist
-if [ ! -e $CONFIG_DIR/rsr_env.config ]; then
-    printf "\n>> Expected $CONFIG_DIR/rsr_env.config file not found -- copy the rsr_env.config.template file and edit as necessary\n"
-    exit -1
-fi
 
 VIRTUALENV_NAME=$1
 
-source $CONFIG_DIR/rsr_env.config
 source $CONFIG_DIR/osx_build_flags_env_intel.config
+function install_packages_with_pip
+{
+    # Function parameters:
+    #   $1: pip requirements file name
+    #   $2: requirements description
+
+    source "$CONFIG_DIR/osx_build_flags_env_64.config"
+    cd "$PACKAGE_DOWNLOAD_DIR"
+    printf "\n>> Installing/upgrading $2 packages: (with 64-bit architecture)\n"
+    pip install -M -r "$PIP_REQUIREMENTS_DIR/$1"
+}
 
 function install_rsr_and_infrastructure_packages
 {
-    cd "$OSX_DIR"
     printf "\n>> Fresh virtualenv should only contain the distribute and wsgiref packages:\n"
     pip freeze
 
-    printf "\n>> Installing deployment packages:\n"
-    pip install -M -r $PIP_REQUIREMENTS_DIR/1_deployment.txt
-
-    printf "\n>> Installing RSR packages:\n"
-    pip install -M -r $PIP_REQUIREMENTS_DIR/2_rsr.txt
-
-    printf "\n>> Installing testing packages:\n"
-    pip install -M -r $PIP_REQUIREMENTS_DIR/3_testing.txt
+    install_packages_with_pip "1_deployment.txt" "deployment"
+    install_packages_with_pip "2_rsr.txt" "RSR"
+    install_packages_with_pip "3_testing.txt" "testing"
 
     printf "\n>> Packages installed in the $VIRTUALENV_NAME virtualenv:\n"
     pip freeze

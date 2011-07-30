@@ -13,15 +13,9 @@ if [ $CURRENT_USER != "root" ]; then
     exit -1
 fi
 
-cd "$OSX_DIR"
+source "$OSX_DIR/ensure_osx_config_files_exist.sh"
 
-# exit if python_system.config file does not exist
-if [ ! -e $CONFIG_DIR/python_system.config ]; then
-    printf "\n>> Expected $CONFIG_DIR/python_system.config file not found -- copy the python_system.config.template file and edit as necessary\n"
-    exit -1
-fi
-
-source $CONFIG_DIR/python_system.config
+source "$CONFIG_DIR/python_system.config"
 
 PY_PATH="$PY_BIN_PATH/python"
 
@@ -44,11 +38,10 @@ function ensure_package_download_dir_exists
 function install_distribute_package
 {
     # See installation notes at http://pypi.python.org/pypi/distribute#distribute-setup-py
-    cd "$OSX_DIR"
-    source $CONFIG_DIR/osx_build_flags_env_64.config
+    source "$CONFIG_DIR/osx_build_flags_env_64.config"
+    cd "$PACKAGE_DOWNLOAD_DIR"
     DISTRIBUTE_SETUP_URL=http://python-distribute.org/distribute_setup.py
     printf "\n>> Installing distribute package from $DISTRIBUTE_SETUP_URL (with 64-bit architecture)\n\n"
-    cd "$PACKAGE_DOWNLOAD_DIR"
     curl -L -O $DISTRIBUTE_SETUP_URL
     $PY_PATH distribute_setup.py
 }
@@ -69,28 +62,33 @@ function link_easy_install
 function install_pip_package
 {
     # See installation notes at http://www.pip-installer.org/en/latest/installing.html
-    cd "$OSX_DIR"
-    source $CONFIG_DIR/osx_build_flags_env_64.config
+    source "$CONFIG_DIR/osx_build_flags_env_64.config"
+    cd "$PACKAGE_DOWNLOAD_DIR"
     GET_PIP_URL=https://raw.github.com/pypa/pip/1.0.2/contrib/get-pip.py
     printf "\n>> Installing pip package from $GET_PIP_URL (with 64-bit architecture)\n"
-    cd "$PACKAGE_DOWNLOAD_DIR"
     curl -L -O $GET_PIP_URL
     $PY_PATH get-pip.py
 }
 
+function install_packages_with_pip
+{
+    # Function parameters:
+    #   $1: pip requirements file name
+    #   $2: requirements description
+
+    source "$CONFIG_DIR/osx_build_flags_env_64.config"
+    cd "$PACKAGE_DOWNLOAD_DIR"
+    printf "\n>> Installing/upgrading $2 packages: (with 64-bit architecture)\n"
+    pip install -M -r "$PIP_REQUIREMENTS_DIR/$1"
+}
+
 function install_system_packages
 {
-    cd "$OSX_DIR"
     printf "\n>> Current system packages:\n"
     pip freeze
 
-    source $CONFIG_DIR/osx_build_flags_env_64.config
-    printf "\n>> Installing/upgrading system packages: (with 64-bit architecture)\n"
-    pip install -M -r $PIP_REQUIREMENTS_DIR/0_system.txt
-
-    source $CONFIG_DIR/osx_build_flags_env_64.config
-    printf "\n>> Installing/upgrading deployment packages: (with 64-bit architecture)\n"
-    pip install -M -r $PIP_REQUIREMENTS_DIR/1_deployment.txt
+    install_packages_with_pip "0_system.txt" "system"
+    install_packages_with_pip "1_deployment.txt" "deployment"
 
     printf "\n>> Installed system packages:\n"
     pip freeze
