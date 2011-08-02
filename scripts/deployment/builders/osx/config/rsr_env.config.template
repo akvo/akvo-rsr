@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source config/python_system.config
+source "$CONFIG_DIR/python_system.config"
 
 RSR_BRANCH="develop"
 VIRTUALENV_NAME="rsr_$RSR_BRANCH"
 RSR_VIRTUALENV_PATH="$VIRTUALENVS_HOME/$VIRTUALENV_NAME"
 
-source config/virtualenv_paths.config
+source "$CONFIG_DIR/virtualenv_paths.config"
