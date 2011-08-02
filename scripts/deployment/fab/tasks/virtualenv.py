@@ -10,8 +10,8 @@ import os
 import fabric.api
 import fabric.tasks
 
-from fab.config.deployer import DeployerConfig
-from fab.helpers.hosts import DeploymentHost
+import fab.config.deployer
+import fab.helpers.hosts
 
 
 class RebuildRSRVirtualEnv(fabric.tasks.Task):
@@ -32,8 +32,8 @@ class RebuildRSRVirtualEnv(fabric.tasks.Task):
 
 
 def create_task_instance():
-    config = DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
-    deployment_host = DeploymentHost.create_instance(config.rsr_env_path)
+    config = fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
+    deployment_host = fab.helpers.hosts.DeploymentHost.create_instance(config.rsr_env_path)
 
     return RebuildRSRVirtualEnv(config, deployment_host)
 
