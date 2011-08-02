@@ -10,6 +10,7 @@ import fabric.contrib.files
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
+from fab.helpers.virtualenv import VirtualEnv
 
 
 class RemoteHost(object):
@@ -30,16 +31,18 @@ class RemoteHost(object):
 
 class DeploymentHost(RemoteHost):
 
-    def __init__(self, file_system):
+    def __init__(self, file_system, virtualenv):
         self.file_system = file_system
+        self.virtualenv = virtualenv
 
     @staticmethod
-    def create_instance():
+    def create_instance(virtualenv_path):
         deployment_host = RemoteHost()
         feedback = ExecutionFeedback()
         file_system = FileSystem(deployment_host, feedback)
+        virtualenv = VirtualEnv(virtualenv_path, deployment_host, file_system, feedback)
 
-        return DeploymentHost(file_system)
+        return DeploymentHost(file_system, virtualenv)
 
     def compress_directory(self, full_path_to_compress):
         self.file_system.compress_directory(full_path_to_compress)
@@ -55,3 +58,15 @@ class DeploymentHost(RemoteHost):
 
     def delete_directory_with_sudo(self, dir_path):
         self.file_system.delete_directory_with_sudo(dir_path)
+
+    def create_empty_virtualenv(self, pip_install_log_file):
+        self.virtualenv.create_empty_virtualenv(pip_install_log_file)
+
+    def install_virtualenv_packages(self, pip_requirements_file, pip_install_log_file):
+        self.virtualenv.install_packages(pip_requirements_file, pip_install_log_file)
+
+    def list_installed_virtualenv_packages(self):
+        self.virtualenv.list_installed_virtualenv_packages()
+
+    def run_within_virtualenv(self, command):
+        self.virtualenv.run_within_virtualenv(command)
