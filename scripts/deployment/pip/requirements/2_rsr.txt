@@ -39,5 +39,5 @@ MySQL-python==1.2.3
 South==0.7.3
 
 # App container
-gunicorn==0.12.1
+gunicorn==0.12.2
 wsgiref==0.1.2
