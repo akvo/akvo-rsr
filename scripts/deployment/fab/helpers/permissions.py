@@ -9,8 +9,8 @@ class Permissions(object):
 
     GROUPS_COMMAND = "groups"
 
-    def __init__(self, deployer_config, deployment_host, feedback):
-        self.config = deployer_config
+    def __init__(self, akvo_permissions_group, deployment_host, feedback):
+        self.akvo_permissions_group = akvo_permissions_group
         self.deployment_host = deployment_host
         self.feedback = feedback
 
@@ -26,4 +26,4 @@ class Permissions(object):
         self.deployment_host.sudo("chmod -R g+rws %s" % path)
 
     def set_akvo_ownership_on_path(self, path):
-        self.deployment_host.sudo("chown -R root:%s %s" % (self.config.akvo_permissions_group, path))
+        self.deployment_host.sudo("chown -R root:%s %s" % (self.akvo_permissions_group, path))

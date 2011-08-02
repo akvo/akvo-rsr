@@ -9,7 +9,6 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.deployer import DeployerConfig
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.hosts import RemoteHost
 from fab.helpers.permissions import Permissions
@@ -19,11 +18,11 @@ class PermissionsTest(mox.MoxTestBase):
 
     def setUp(self):
         super(PermissionsTest, self).setUp()
-        self.mock_config = self.mox.CreateMock(DeployerConfig)
+        self.expected_akvo_permissions_group = "some-akvo-group"
         self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.permissions = Permissions(self.mock_config, self.mock_deployment_host, self.mock_feedback)
+        self.permissions = Permissions(self.expected_akvo_permissions_group, self.mock_deployment_host, self.mock_feedback)
 
     def test_can_ensure_user_is_member_of_specified_group(self):
         """fab.tests.helpers.permissions_test  Can ensure user is a member of the specified system group"""
@@ -53,8 +52,7 @@ class PermissionsTest(mox.MoxTestBase):
     def test_can_set_akvo_ownership_on_specified_path(self):
         """fab.tests.helpers.permissions_test  Can set Akvo permission group ownership on specified path"""
 
-        self.mock_config.akvo_permissions_group = "some-akvo-group"
-        self.mock_deployment_host.sudo("chown -R root:some-akvo-group /some/path")
+        self.mock_deployment_host.sudo("chown -R root:%s /some/path" % self.expected_akvo_permissions_group)
         self.mox.ReplayAll()
 
         self.permissions.set_akvo_ownership_on_path("/some/path")
@@ -62,8 +60,7 @@ class PermissionsTest(mox.MoxTestBase):
     def test_can_set_akvo_group_permissions_on_specified_path(self):
         """fab.tests.helpers.permissions_test  Can set Akvo group permissions on specified path"""
 
-        self.mock_config.akvo_permissions_group = "some-akvo-group"
-        self.mock_deployment_host.sudo("chown -R root:some-akvo-group /some/path")
+        self.mock_deployment_host.sudo("chown -R root:%s /some/path" % self.expected_akvo_permissions_group)
         self.mock_deployment_host.sudo("chmod -R g+rws /some/path")
         self.mox.ReplayAll()
 
