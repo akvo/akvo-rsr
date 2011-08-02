@@ -17,7 +17,7 @@ def _header_exists_in(include_dir, header_path):
     return os.path.exists(os.path.join(include_dir, header_path))
 
 def library_exists(library_name):
-    return library_exists_in('/usr/lib', library_name) or library_exists_in('/usr/local/lib', library_name)
+    return _library_exists_in('/usr/lib', library_name) or _library_exists_in('/usr/local/lib', library_name)
 
 def _library_exists_in(lib_dir, library_name):
     return os.path.exists(os.path.join(lib_dir, library_file(library_name)))
