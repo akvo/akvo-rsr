@@ -24,8 +24,9 @@ class SystemPackageVerifier(object):
 
         print ">> Verifying expected system components for building Python modules:"
         verifier.verify_all()
+        print
         if verifier.not_all_dependencies_met():
-            print "\n>> Not all expected dependencies were met:"
+            print ">> Not all expected dependencies were met:"
             verifier.display_dependency_warnings()
             print
             raise Exception("Missing dependencies for building required Python modules: %s" % verifier.missing_dependencies())
