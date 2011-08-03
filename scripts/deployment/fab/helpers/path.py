@@ -15,7 +15,7 @@ class Path(object):
         if self.deployment_host.path_exists(path):
             self.feedback.comment("Found expected path: %s" % path)
         else:
-            self._ensure_path_exists_with(path, self.deployment_host.sudo)
+            self.ensure_path_exists_with_sudo(path)
             self.deployment_host.set_web_group_permissions_on_path(path)
 
     def ensure_path_exists(self, path):

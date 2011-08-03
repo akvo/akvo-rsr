@@ -11,6 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DeploymentHost
+from fab.helpers.path import Path
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -21,9 +22,10 @@ class DeploymentHostTest(mox.MoxTestBase):
         super(DeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
+        self.mock_path = self.mox.CreateMock(Path)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_virtualenv)
+        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_path, self.mock_virtualenv)
 
     def test_can_create_a_deploymenthost_instance(self):
         """fab.tests.helpers.deployment_host_test  Can create a DeploymentHost instance"""
@@ -103,6 +105,30 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.deployment_host.set_web_group_ownership_on_path("/some/path")
+
+    def test_can_ensure_path_exists(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure path exists"""
+
+        self.mock_path.ensure_path_exists("/some/path")
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_path_exists("/some/path")
+
+    def test_can_ensure_path_exists_with_sudo(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure path exists with sudo"""
+
+        self.mock_path.ensure_path_exists_with_sudo("/some/path")
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_path_exists_with_sudo("/some/path")
+
+    def test_can_ensure_path_exists_with_web_group_permissions(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure path exists with web user group permissions"""
+
+        self.mock_path.ensure_path_exists_with_web_group_permissions("/some/path")
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_path_exists_with_web_group_permissions("/some/path")
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.helpers.deployment_host_test  Can create empty virtualenv"""
