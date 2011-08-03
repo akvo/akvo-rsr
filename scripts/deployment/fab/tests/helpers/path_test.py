@@ -23,11 +23,11 @@ class PathTest(mox.MoxTestBase):
 
         self.path = Path(self.mock_deployment_host, self.mock_feedback)
 
-    def test_can_exit_if_file_does_not_exist(self):
-        """fab.tests.helpers.path_test  Can exit if file does not exist"""
+    def test_will_exit_if_file_does_not_exist(self):
+        """fab.tests.helpers.path_test  Will exit if file does not exist"""
 
         non_existent_file = "/some/path/nonexistent_file.txt"
-        self.mock_deployment_host.file_exists(non_existent_file).AndReturn(False)
+        self.mock_deployment_host.path_exists(non_existent_file).AndReturn(False)
         expected_missing_file_message = mox.StrContains("Expected file does not exist: %s" % non_existent_file)
         self.mock_feedback.abort(expected_missing_file_message).AndRaise(SystemExit(expected_missing_file_message))
         self.mox.ReplayAll()
@@ -38,17 +38,18 @@ class PathTest(mox.MoxTestBase):
         except SystemExit:
             pass # expected
 
-    def test_does_not_exit_if_file_exists(self):
-        """fab.tests.helpers.path_test  Does not exit if file exists"""
+    def test_will_confirm_existing_path_and_does_not_exit_if_file_exists(self):
+        """fab.tests.helpers.path_test  Will confirm existing file and does not exit if file exists"""
 
         valid_file_path = "/usr/bin/man"
-        self.mock_deployment_host.file_exists(valid_file_path).AndReturn(True)
+        self.mock_deployment_host.path_exists(valid_file_path).AndReturn(True)
+        self.mock_feedback.comment("Found expected file: %s" % valid_file_path)
         self.mox.ReplayAll()
 
         self.path.exit_if_file_does_not_exist(valid_file_path)
 
-    def test_can_exit_if_path_does_not_exist(self):
-        """fab.tests.helpers.path_test  Can exit if path does not exist"""
+    def test_will_exit_if_path_does_not_exist(self):
+        """fab.tests.helpers.path_test  Will exit if path does not exist"""
 
         non_existent_path = "/some/nonexistent/path"
         self.mock_deployment_host.path_exists(non_existent_path).AndReturn(False)
@@ -62,11 +63,12 @@ class PathTest(mox.MoxTestBase):
         except SystemExit:
             pass # expected
 
-    def test_does_not_exit_if_path_exists(self):
-        """fab.tests.helpers.path_test  Does not exit if path exists"""
+    def test_will_confirm_existing_path_and_does_not_exit_if_path_exists(self):
+        """fab.tests.helpers.path_test  Will confirm existing path and does not exit if path exists"""
 
         valid_path = "/usr/bin"
         self.mock_deployment_host.path_exists(valid_path).AndReturn(True)
+        self.mock_feedback.comment("Found expected path: %s" % valid_path)
         self.mox.ReplayAll()
 
         self.path.exit_if_path_does_not_exist(valid_path)
