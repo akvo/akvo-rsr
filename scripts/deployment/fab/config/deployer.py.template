@@ -29,8 +29,6 @@ class DeployerConfig(object):
         self.rsr_deployment_dir_name    = "akvo-rsr_%s" % self.rsr_branch
         self.rsr_deployment_root        = os.path.join(self.repo_checkout_root, self.rsr_deployment_dir_name)
 
-        self.akvo_permissions_group     = "www-edit"
-
         # virtualenv settings
         self.virtualenvs_home           = "/var/virtualenvs"
         self.rsr_env_name               = "rsr_%s" % self.rsr_branch

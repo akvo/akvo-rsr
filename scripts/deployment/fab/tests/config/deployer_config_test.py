@@ -75,11 +75,6 @@ class DeployerConfigTest(unittest.TestCase):
 
         self.assertEqual(expected_rsr_deployment_root, self.config.rsr_deployment_root)
 
-    def test_has_expected_akvo_permissions_group_setting(self):
-        """fab.tests.config.deployer_config_test  Has expected Akvo permissions group setting"""
-
-        self.assertEqual("www-edit", self.config.akvo_permissions_group)
-
     def test_has_virtualenvs_home_setting(self):
         """fab.tests.config.deployer_config_test  Has virtualenvs home setting"""
 
