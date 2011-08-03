@@ -12,12 +12,12 @@ class Path(object):
         self.permissions = permissions_helper
         self.feedback = feedback
 
-    def ensure_path_exists_with_akvo_group_permissions(self, path):
+    def ensure_path_exists_with_web_group_permissions(self, path):
         if self.deployment_host.path_exists(path):
             self.feedback.comment("Found expected path: %s" % path)
         else:
             self._ensure_path_exists_with(path, self.deployment_host.sudo)
-            self.permissions.set_akvo_group_permissions_on_path(path)
+            self.permissions.set_web_group_permissions_on_path(path)
 
     def ensure_path_exists(self, path):
         self._ensure_path_exists_with(path, self.deployment_host.run)

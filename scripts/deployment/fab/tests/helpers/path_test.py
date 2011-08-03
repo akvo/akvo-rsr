@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.hosts import RemoteHost
 from fab.helpers.path import Path
-from fab.helpers.permissions import Permissions
+from fab.helpers.permissions import AkvoPermissions
 
 
 class PathTest(mox.MoxTestBase):
@@ -20,7 +20,7 @@ class PathTest(mox.MoxTestBase):
     def setUp(self):
         super(PathTest, self).setUp()
         self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
-        self.mock_permissions = self.mox.CreateMock(Permissions)
+        self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.path = Path(self.mock_deployment_host, self.mock_permissions, self.mock_feedback)
@@ -117,28 +117,28 @@ class PathTest(mox.MoxTestBase):
 
         self.path.ensure_path_exists_with_sudo(new_path)
 
-    def test_can_ensure_path_exists_with_akvo_group_permissions(self):
-        """fab.tests.helpers.path_test  Can ensure path exists with Akvo group permissions"""
+    def test_can_ensure_path_exists_with_web_group_permissions(self):
+        """fab.tests.helpers.path_test  Can ensure path exists with web group permissions"""
 
         existing_path = "/var/tmp/akvo"
         self.mock_deployment_host.path_exists(existing_path).AndReturn(True)
         self.mock_feedback.comment(mox.StrContains("Found expected path: %s" % existing_path))
         self.mox.ReplayAll()
 
-        self.path.ensure_path_exists_with_akvo_group_permissions(existing_path)
+        self.path.ensure_path_exists_with_web_group_permissions(existing_path)
 
-    def test_can_ensure_a_missing_path_is_created_with_akvo_group_permissions(self):
-        """fab.tests.helpers.path_test  Can ensure a missing path is created with Akvo group permissions"""
+    def test_can_ensure_a_missing_path_is_created_with_web_group_permissions(self):
+        """fab.tests.helpers.path_test  Can ensure a missing path is created with web group permissions"""
 
         new_path = "/var/tmp/foo"
         self.mock_deployment_host.path_exists(new_path).MultipleTimes().AndReturn(False)
         self.mock_feedback.comment(mox.StrContains("Creating path: %s" % new_path))
         self.mock_deployment_host.sudo("mkdir %s" % new_path)
         self.mock_deployment_host.sudo("chmod 755 %s" % new_path)
-        self.mock_permissions.set_akvo_group_permissions_on_path(new_path)
+        self.mock_permissions.set_web_group_permissions_on_path(new_path)
         self.mox.ReplayAll()
 
-        self.path.ensure_path_exists_with_akvo_group_permissions(new_path)
+        self.path.ensure_path_exists_with_web_group_permissions(new_path)
 
 
 def suite():
