@@ -50,4 +50,4 @@ class Codebase(object):
             archive_file_name = self.internet.file_name_at_url(self.config.rsr_archive_url)
             self.deployment_host.run("unzip -q %s -d %s -x */.gitignore" % (archive_file_name, self.config.repo_checkout_root))
         self.deployment_host.run("mv %s %s" % (self.config.unpacked_rsr_archive_match, rsr_deployment_root))
-        self.permissions.set_akvo_ownership_on_path(rsr_deployment_root)
+        self.permissions.set_web_group_ownership_on_path(rsr_deployment_root)

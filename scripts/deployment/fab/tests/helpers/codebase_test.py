@@ -15,7 +15,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import RemoteHost
 from fab.helpers.internet import Internet
-from fab.helpers.permissions import Permissions
+from fab.helpers.permissions import AkvoPermissions
 
 
 class CodebaseTest(mox.MoxTestBase):
@@ -26,7 +26,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_internet = self.mox.CreateMock(Internet)
-        self.mock_permissions = self.mox.CreateMock(Permissions)
+        self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.codebase = Codebase(self.mock_config, self.mock_deployment_host, self.mock_file_system,
@@ -80,7 +80,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.mock_internet.file_name_at_url(self.rsr_archive_url).AndReturn(self.archive_file_name)
         self.mock_deployment_host.run("unzip -q %s -d %s -x */.gitignore" % (self.archive_file_name, self.repo_checkout_root))
         self.mock_deployment_host.run("mv %s %s" % (self.unpacked_archive_match, self.rsr_deployment_root))
-        self.mock_permissions.set_akvo_ownership_on_path(self.rsr_deployment_root)
+        self.mock_permissions.set_web_group_ownership_on_path(self.rsr_deployment_root)
         self.mox.ReplayAll()
 
         self.codebase._unpack_rsr_archive()
