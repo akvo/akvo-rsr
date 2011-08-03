@@ -10,20 +10,18 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.hosts import RemoteHost
+from fab.helpers.hosts import DeploymentHost
 from fab.helpers.path import Path
-from fab.helpers.permissions import AkvoPermissions
 
 
 class PathTest(mox.MoxTestBase):
 
     def setUp(self):
         super(PathTest, self).setUp()
-        self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
-        self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
+        self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.path = Path(self.mock_deployment_host, self.mock_permissions, self.mock_feedback)
+        self.path = Path(self.mock_deployment_host, self.mock_feedback)
 
     def test_can_exit_if_file_does_not_exist(self):
         """fab.tests.helpers.path_test  Can exit if file does not exist"""
@@ -135,7 +133,7 @@ class PathTest(mox.MoxTestBase):
         self.mock_feedback.comment(mox.StrContains("Creating path: %s" % new_path))
         self.mock_deployment_host.sudo("mkdir %s" % new_path)
         self.mock_deployment_host.sudo("chmod 755 %s" % new_path)
-        self.mock_permissions.set_web_group_permissions_on_path(new_path)
+        self.mock_deployment_host.set_web_group_permissions_on_path(new_path)
         self.mox.ReplayAll()
 
         self.path.ensure_path_exists_with_web_group_permissions(new_path)
