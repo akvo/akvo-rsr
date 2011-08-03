@@ -10,6 +10,7 @@ import fabric.contrib.files
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
+from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
 
@@ -31,8 +32,9 @@ class RemoteHost(object):
 
 class DeploymentHost(RemoteHost):
 
-    def __init__(self, file_system, virtualenv):
+    def __init__(self, file_system, permissions, virtualenv):
         self.file_system = file_system
+        self.permissions = permissions
         self.virtualenv = virtualenv
 
     @staticmethod
@@ -40,9 +42,10 @@ class DeploymentHost(RemoteHost):
         deployment_host = RemoteHost()
         feedback = ExecutionFeedback()
         file_system = FileSystem(deployment_host, feedback)
+        permissions = AkvoPermissions(deployment_host, feedback)
         virtualenv = VirtualEnv(virtualenv_path, deployment_host, file_system, feedback)
 
-        return DeploymentHost(file_system, virtualenv)
+        return DeploymentHost(file_system, permissions, virtualenv)
 
     def compress_directory(self, full_path_to_compress):
         self.file_system.compress_directory(full_path_to_compress)
@@ -58,6 +61,15 @@ class DeploymentHost(RemoteHost):
 
     def delete_directory_with_sudo(self, dir_path):
         self.file_system.delete_directory_with_sudo(dir_path)
+
+    def ensure_user_is_member_of_web_group(self, user_id):
+        self.permissions.ensure_user_is_member_of_web_group(user_id)
+
+    def set_web_group_permissions_on_path(self, path):
+        self.permissions.set_web_group_permissions_on_path(path)
+
+    def set_web_group_ownership_on_path(self, path):
+        self.permissions.set_web_group_ownership_on_path(path)
 
     def create_empty_virtualenv(self, pip_install_log_file):
         self.virtualenv.create_empty_virtualenv(pip_install_log_file)

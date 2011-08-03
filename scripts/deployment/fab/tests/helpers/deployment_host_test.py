@@ -11,6 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DeploymentHost
+from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
 
@@ -19,9 +20,10 @@ class DeploymentHostTest(mox.MoxTestBase):
     def setUp(self):
         super(DeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_virtualenv)
+        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_virtualenv)
 
     def test_can_create_a_deploymenthost_instance(self):
         """fab.tests.helpers.deployment_host_test  Can create a DeploymentHost instance"""
@@ -77,6 +79,30 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.deployment_host.delete_directory_with_sudo(expected_dir_to_delete)
+
+    def test_can_ensure_user_is_member_of_web_group(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure user is a member of the web user group"""
+
+        self.mock_permissions.ensure_user_is_member_of_web_group("joesoap")
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_user_is_member_of_web_group("joesoap")
+
+    def test_can_set_web_group_permissions_on_specified_path(self):
+        """fab.tests.helpers.deployment_host_test  Can set web user group permissions on a specified path"""
+
+        self.mock_permissions.set_web_group_permissions_on_path("/some/path")
+        self.mox.ReplayAll()
+
+        self.deployment_host.set_web_group_permissions_on_path("/some/path")
+
+    def test_can_set_web_group_ownership_on_specified_path(self):
+        """fab.tests.helpers.deployment_host_test  Can set web user group ownership on a specified path"""
+
+        self.mock_permissions.set_web_group_ownership_on_path("/some/path")
+        self.mox.ReplayAll()
+
+        self.deployment_host.set_web_group_ownership_on_path("/some/path")
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.helpers.deployment_host_test  Can create empty virtualenv"""
