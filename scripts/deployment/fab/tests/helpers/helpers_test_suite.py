@@ -14,14 +14,14 @@ from fab.tests.helpers.deployment_host_test import DeploymentHostTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
 from fab.tests.helpers.file_system_test import FileSystemTest
 from fab.tests.helpers.internet_test import InternetTest
-from fab.tests.helpers.path_test import PathTest
+from fab.tests.helpers.path_test import PathValidatorTest
 from fab.tests.helpers.virtualenv_test import VirtualEnvTest
 
 
 def helpers_suite():
     return TestSuiteLoader().create_suite_from_classes([AkvoPermissionsTest, CodebaseTest, DataRetrieverTest,
                                                         DeploymentHostTest, ExecutionFeedbackTest, FileSystemTest,
-                                                        InternetTest, PathTest, VirtualEnvTest])
+                                                        InternetTest, PathValidatorTest, VirtualEnvTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

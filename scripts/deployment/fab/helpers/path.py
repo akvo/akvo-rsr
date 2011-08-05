@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class Path(object):
+class PathValidator(object):
 
     def __init__(self, deployment_host, feedback):
         self.deployment_host = deployment_host
@@ -32,8 +32,8 @@ class Path(object):
             run_command("mkdir %s" % path)
             run_command("chmod 755 %s" % path)
 
-    def exit_if_file_does_not_exist(self, path):
-        self._exit_if_path_does_not_exist("file", path)
+    def exit_if_file_does_not_exist(self, file_path):
+        self._exit_if_path_does_not_exist("file", file_path)
 
     def exit_if_path_does_not_exist(self, path):
         self._exit_if_path_does_not_exist("path", path)
