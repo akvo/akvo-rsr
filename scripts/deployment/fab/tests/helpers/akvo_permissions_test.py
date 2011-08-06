@@ -25,7 +25,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         self.permissions = AkvoPermissions(self.mock_remote_host)
 
     def test_can_ensure_user_is_member_of_web_group(self):
-        """fab.tests.helpers.permissions_test  Can ensure user is a member of the web user group"""
+        """fab.tests.helpers.akvo_permissions_test  Can ensure user is a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone %s" % AkvoPermissions.WEB_USER_GROUP
         self.mock_remote_host.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
@@ -34,8 +34,8 @@ class AkvoPermissionsTest(mox.MoxTestBase):
 
         self.permissions.ensure_user_is_member_of_web_group("joesoap")
 
-    def test_abort_if_user_is_not_a_member_of_web_group(self):
-        """fab.tests.helpers.permissions_test  Abort if the user is not a member of the web user group"""
+    def test_exit_if_user_is_not_a_member_of_web_group(self):
+        """fab.tests.helpers.akvo_permissions_test  Exit if the user is not a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone writers"
         self.mock_remote_host.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
@@ -49,22 +49,24 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         except SystemExit:
             pass # expected
 
-    def test_can_set_web_group_ownership_on_specified_path(self):
-        """fab.tests.helpers.permissions_test  Can set web group ownership on specified path"""
+    def test_can_set_web_group_ownership_on_specified_directory(self):
+        """fab.tests.helpers.akvo_permissions_test  Can set web group ownership on a specified directory"""
 
-        self.mock_remote_host.sudo("chown -R root:%s /some/path" % AkvoPermissions.WEB_USER_GROUP)
+        web_dir = "/var/tmp/web/apps"
+        self.mock_remote_host.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, web_dir))
         self.mox.ReplayAll()
 
-        self.permissions.set_web_group_ownership_on_path("/some/path")
+        self.permissions.set_web_group_ownership_on_directory(web_dir)
 
-    def test_can_set_web_group_permissions_on_specified_path(self):
-        """fab.tests.helpers.permissions_test  Can set web group permissions on specified path"""
+    def test_can_set_web_group_permissions_on_specified_directory(self):
+        """fab.tests.helpers.akvo_permissions_test  Can set web group permissions on a specified directory"""
 
-        self.mock_remote_host.sudo("chown -R root:%s /some/path" % AkvoPermissions.WEB_USER_GROUP)
-        self.mock_remote_host.sudo("chmod -R g+rws /some/path")
+        web_dir = "/var/tmp/web/apps"
+        self.mock_remote_host.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, web_dir))
+        self.mock_remote_host.sudo("chmod -R g+rws %s" % web_dir)
         self.mox.ReplayAll()
 
-        self.permissions.set_web_group_permissions_on_path("/some/path")
+        self.permissions.set_web_group_permissions_on_directory(web_dir)
 
 
 def suite():

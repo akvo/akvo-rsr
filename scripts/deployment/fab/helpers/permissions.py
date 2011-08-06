@@ -21,9 +21,9 @@ class AkvoPermissions(object):
         else:
             self.feedback.comment("User [%s] is a member of expected group [%s]" % (user_id, AkvoPermissions.WEB_USER_GROUP))
 
-    def set_web_group_permissions_on_path(self, path):
-        self.set_web_group_ownership_on_path(path)
-        self.remote_host.sudo("chmod -R g+rws %s" % path)
+    def set_web_group_permissions_on_directory(self, dir_path):
+        self.set_web_group_ownership_on_directory(dir_path)
+        self.remote_host.sudo("chmod -R g+rws %s" % dir_path)
 
-    def set_web_group_ownership_on_path(self, path):
-        self.remote_host.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, path))
+    def set_web_group_ownership_on_directory(self, dir_path):
+        self.remote_host.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, dir_path))
