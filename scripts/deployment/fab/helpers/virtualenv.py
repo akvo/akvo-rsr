@@ -7,11 +7,11 @@
 
 class VirtualEnv(object):
 
-    def __init__(self, virtualenv_path, virtualenv_host, file_system, execution_feedback):
+    def __init__(self, virtualenv_path, virtualenv_host, file_system):
         self.virtualenv_path = virtualenv_path
         self.virtualenv_host = virtualenv_host
         self.file_system = file_system
-        self.feedback = execution_feedback
+        self.feedback = virtualenv_host.feedback
 
     def create_empty_virtualenv(self, pip_install_log_file):
         self.feedback.comment("Deleting previous virtualenv directory and pip install log file")
