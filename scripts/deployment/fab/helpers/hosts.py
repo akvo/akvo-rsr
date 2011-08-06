@@ -21,6 +21,10 @@ class RemoteHost(object):
     def __init__(self, feedback):
         self.feedback = feedback
 
+    @staticmethod
+    def create_instance():
+        return RemoteHost(ExecutionFeedback())
+
     def run(self, command):
         return fabric.api.run(command)
 
