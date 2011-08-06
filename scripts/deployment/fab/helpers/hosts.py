@@ -16,16 +16,16 @@ from fab.helpers.virtualenv import VirtualEnv
 
 
 class RemoteHost(object):
-    """RemoteHost encapsulates any calls made to a remote host"""
+    """RemoteHost encapsulates basic command execution and path validation calls made to a remote host via Fabric"""
+
+    def __init__(self, feedback):
+        self.feedback = feedback
 
     def run(self, command):
         return fabric.api.run(command)
 
     def sudo(self, command):
         return fabric.api.sudo(command)
-
-    def file_exists(self, path):
-        return self.path_exists(path)
 
     def path_exists(self, path):
         return fabric.contrib.files.exists(path)

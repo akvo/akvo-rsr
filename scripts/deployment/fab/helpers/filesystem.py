@@ -15,9 +15,67 @@ import fabric.context_managers
 
 class FileSystem(object):
 
-    def __init__(self, remote_host, feedback):
+    def __init__(self, remote_host):
         self.remote_host = remote_host
-        self.feedback = feedback
+        self.feedback = remote_host.feedback
+
+    def file_exists(self, file_path):
+        return self.remote_host.path_exists(file_path)
+
+    def directory_exists(self, dir_path):
+        return self.remote_host.path_exists(dir_path)
+
+    def exit_if_file_does_not_exist(self, file_path):
+        self._exit_if_path_does_not_exist("file", file_path)
+
+    def exit_if_directory_does_not_exist(self, dir_path):
+        self._exit_if_path_does_not_exist("directory", dir_path)
+
+    def _exit_if_path_does_not_exist(self, path_type, path):
+        if self.remote_host.path_exists(path):
+            self.feedback.comment("Found expected %s: %s" % (path_type, path))
+        else:
+            self.feedback.abort("Expected %s does not exist: %s" % (path_type, path))
+
+    def create_directory(self, dir_path):
+        self._create_directory_with(self.remote_host.run, dir_path)
+
+    def create_directory_with_sudo(self, dir_path):
+        self._create_directory_with(self.remote_host.sudo, dir_path)
+
+    def _create_directory_with(self, run_command, dir_path):
+        self.feedback.comment("Creating directory: %s" % dir_path)
+        run_command("mkdir %s" % dir_path)
+        run_command("chmod 755 %s" % dir_path)
+
+    def ensure_directory_exists(self, dir_path):
+        self._ensure_directory_exists_with(self.remote_host.run, dir_path)
+
+    def ensure_directory_exists_with_sudo(self, dir_path):
+        self._ensure_directory_exists_with(self.remote_host.sudo, dir_path)
+
+    def _ensure_directory_exists_with(self, run_command, dir_path):
+        if self.directory_exists(dir_path):
+            self.feedback.comment("Found expected directory: %s" % dir_path)
+        else:
+            self._create_directory_with(run_command, dir_path)
+
+    def delete_file(self, file_path):
+        self._delete_at_path_with(self.remote_host.run, "file", file_path)
+
+    def delete_file_with_sudo(self, file_path):
+        self._delete_at_path_with(self.remote_host.sudo, "file", file_path)
+
+    def delete_directory(self, dir_path):
+        self._delete_at_path_with(self.remote_host.run, "directory", dir_path)
+
+    def delete_directory_with_sudo(self, dir_path):
+        self._delete_at_path_with(self.remote_host.sudo, "directory", dir_path)
+
+    def _delete_at_path_with(self, run_command, path_type, path):
+        if self.remote_host.path_exists(path):
+            self.feedback.comment("Deleting %s: %s" % (path_type, path))
+            run_command("rm -r %s" % path)
 
     def compress_directory(self, full_path_to_compress):
         stripped_path = full_path_to_compress.rstrip("/")
@@ -26,20 +84,3 @@ class FileSystem(object):
         compressed_file_name = os.path.basename(stripped_path)
         with fabric.context_managers.cd(parent_dir):
             self.remote_host.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
-
-    def delete_file(self, file_path):
-        self._delete_file_or_directory(file_path, "file", self.remote_host.run)
-
-    def delete_file_with_sudo(self, file_path):
-        self._delete_file_or_directory(file_path, "file", self.remote_host.sudo)
-
-    def delete_directory(self, dir_path):
-        self._delete_file_or_directory(dir_path, "directory", self.remote_host.run)
-
-    def delete_directory_with_sudo(self, dir_path):
-        self._delete_file_or_directory(dir_path, "directory", self.remote_host.sudo)
-
-    def _delete_file_or_directory(self, at_path, file_or_dir, run_command):
-        if self.remote_host.path_exists(at_path):
-            self.feedback.comment("Deleting %s: %s" % (file_or_dir, at_path))
-            run_command("rm -r %s" % at_path)
