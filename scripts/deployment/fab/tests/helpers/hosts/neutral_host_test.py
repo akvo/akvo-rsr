@@ -22,12 +22,12 @@ class NeutralHostTest(mox.MoxTestBase):
         self.neutral_host = NeutralHost(self.mock_file_system)
 
     def test_can_create_neutralhost_instance(self):
-        """fab.tests.helpers.neutral_host_test  Can create a NeutralHost instance"""
+        """fab.tests.helpers.hosts.neutral_host_test  Can create a NeutralHost instance"""
 
         self.assertTrue(isinstance(NeutralHost.create_instance(), NeutralHost))
 
     def test_can_check_whether_file_exists(self):
-        """fab.tests.helpers.neutral_host_test  Can check whether file exists"""
+        """fab.tests.helpers.hosts.neutral_host_test  Can check whether file exists"""
 
         existing_file = "/usr/bin/man"
         self.mock_file_system.file_exists(existing_file).AndReturn(True)
@@ -36,7 +36,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.assertTrue(self.neutral_host.file_exists(existing_file), "Expected file to exist")
 
     def test_can_check_whether_directory_exists(self):
-        """fab.tests.helpers.neutral_host_test  Can check whether directory exists"""
+        """fab.tests.helpers.hosts.neutral_host_test  Can check whether directory exists"""
 
         existing_dir = "/usr/bin"
         self.mock_file_system.directory_exists(existing_dir).AndReturn(True)
@@ -45,7 +45,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.assertTrue(self.neutral_host.directory_exists(existing_dir), "Expected directory to exist")
 
     def test_will_exit_if_file_does_not_exist(self):
-        """fab.tests.helpers.neutral_host_test  Will exit if file does not exist"""
+        """fab.tests.helpers.hosts.neutral_host_test  Will exit if file does not exist"""
 
         nonexistent_file = "/path/to/nonexistent_file.txt"
         self.mock_file_system.exit_if_file_does_not_exist(nonexistent_file)
@@ -54,7 +54,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.neutral_host.exit_if_file_does_not_exist(nonexistent_file)
 
     def test_will_exit_if_directory_does_not_exist(self):
-        """fab.tests.helpers.neutral_host_test  Will exit if directory does not exist"""
+        """fab.tests.helpers.hosts.neutral_host_test  Will exit if directory does not exist"""
 
         nonexistent_dir = "/path/to/nonexistent/dir"
         self.mock_file_system.exit_if_directory_does_not_exist(nonexistent_dir)

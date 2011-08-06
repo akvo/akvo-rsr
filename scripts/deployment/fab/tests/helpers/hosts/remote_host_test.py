@@ -15,7 +15,7 @@ from fab.helpers.hosts import RemoteHost
 class RemoteHostTest(unittest2.TestCase):
 
     def test_can_create_a_deploymenthost_instance(self):
-        """fab.tests.helpers.remote_host_test  Can create a RemoteHost instance"""
+        """fab.tests.helpers.hosts.remote_host_test  Can create a RemoteHost instance"""
 
         self.assertIsInstance(RemoteHost.create_instance(), RemoteHost)
 
