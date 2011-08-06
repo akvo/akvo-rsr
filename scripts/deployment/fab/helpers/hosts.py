@@ -57,6 +57,38 @@ class NeutralHost(object):
         self.file_system.exit_if_directory_does_not_exist(dir_path)
 
 
+class DatabaseHost(NeutralHost):
+    """DatabaseHost encapsulates common actions available when retrieving data from a database host"""
+
+    def __init__(self, file_system, virtualenv):
+        super(DatabaseHost, self).__init__(file_system)
+        self.file_system = file_system
+        self.virtualenv = virtualenv
+
+    @staticmethod
+    def create_instance(virtualenv_path):
+        remote_host = RemoteHost.create_instance()
+        file_system = FileSystem(remote_host)
+        virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
+
+        return DatabaseHost(file_system, virtualenv)
+
+    def ensure_directory_exists(self, dir_path):
+        self.file_system.ensure_directory_exists(dir_path)
+
+    def ensure_directory_exists_with_sudo(self, dir_path):
+        self.file_system.ensure_directory_exists_with_sudo(dir_path)
+
+    def delete_directory(self, dir_path):
+        self.file_system.delete_directory(dir_path)
+
+    def compress_directory(self, full_path_to_compress):
+        self.file_system.compress_directory(full_path_to_compress)
+
+    def run_within_virtualenv(self, command):
+        self.virtualenv.run_within_virtualenv(command)
+
+
 class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
