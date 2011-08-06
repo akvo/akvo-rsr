@@ -19,9 +19,8 @@ from fab.tests.helpers.hosts.hosts_test_suite import hosts_suite
 
 
 def helpers_suite():
-    helpers_suite = TestSuiteLoader().create_suite_from_classes([AkvoPermissionsTest, CodebaseTest, DataRetrieverTest,
-                                                                 ExecutionFeedbackTest, FileSystemTest, InternetTest,
-                                                                 VirtualEnvTest])
+    helpers_suite = TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, FileSystemTest, AkvoPermissionsTest,
+                                                                 VirtualEnvTest, InternetTest, CodebaseTest, DataRetrieverTest])
 
     return TestSuiteLoader().create_suite_from_list([helpers_suite, hosts_suite()])
 
