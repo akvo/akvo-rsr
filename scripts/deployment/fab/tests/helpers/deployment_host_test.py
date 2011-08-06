@@ -11,7 +11,6 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DeploymentHost
-from fab.helpers.path import Path
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -22,28 +21,93 @@ class DeploymentHostTest(mox.MoxTestBase):
         super(DeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
-        self.mock_path = self.mox.CreateMock(Path)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_path, self.mock_virtualenv)
+        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_virtualenv)
 
     def test_can_create_a_deploymenthost_instance(self):
         """fab.tests.helpers.deployment_host_test  Can create a DeploymentHost instance"""
 
-        DeploymentHost.create_instance("/some/virtualenv/path")
+        self.assertTrue(isinstance(DeploymentHost.create_instance("/some/virtualenv/path"), DeploymentHost))
 
-    def test_can_compress_directory(self):
-        """fab.tests.helpers.deployment_host_test  Can compress directory"""
+    def test_can_check_whether_file_exists(self):
+        """fab.tests.helpers.deployment_host_test  Can check whether file exists"""
 
-        expected_dir_to_compress = "/some/dir/to/compress"
-
-        self.mock_file_system.compress_directory(expected_dir_to_compress)
+        existing_file = "/usr/bin/man"
+        self.mock_file_system.file_exists(existing_file).AndReturn(True)
         self.mox.ReplayAll()
 
-        self.deployment_host.compress_directory(expected_dir_to_compress)
+        self.assertTrue(self.deployment_host.file_exists(existing_file), "Expected file to exist")
+
+    def test_can_check_whether_directory_exists(self):
+        """fab.tests.helpers.deployment_host_test  Can check whether directory exists"""
+
+        existing_dir = "/usr/bin"
+        self.mock_file_system.directory_exists(existing_dir).AndReturn(True)
+        self.mox.ReplayAll()
+
+        self.assertTrue(self.deployment_host.directory_exists(existing_dir), "Expected directory to exist")
+
+    def test_will_exit_if_file_does_not_exist(self):
+        """fab.tests.helpers.deployment_host_test  Will exit if file does not exist"""
+
+        nonexistent_file = "/path/to/nonexistent_file.txt"
+        self.mock_file_system.exit_if_file_does_not_exist(nonexistent_file)
+        self.mox.ReplayAll()
+
+        self.deployment_host.exit_if_file_does_not_exist(nonexistent_file)
+
+    def test_will_exit_if_directory_does_not_exist(self):
+        """fab.tests.helpers.deployment_host_test  Will exit if directory does not exist"""
+
+        nonexistent_dir = "/path/to/nonexistent/dir"
+        self.mock_file_system.exit_if_directory_does_not_exist(nonexistent_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.exit_if_directory_does_not_exist(nonexistent_dir)
+
+    def test_can_create_directory(self):
+        """fab.tests.helpers.deployment_host_test  Can create a directory"""
+
+        new_dir = "/var/new/dir"
+
+        self.mock_file_system.create_directory(new_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.create_directory(new_dir)
+
+    def test_can_create_directory_with_sudo(self):
+        """fab.tests.helpers.deployment_host_test  Can create a directory with sudo"""
+
+        new_dir = "/var/new/dir"
+
+        self.mock_file_system.create_directory_with_sudo(new_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.create_directory_with_sudo(new_dir)
+
+    def test_can_ensure_directory_exists(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure a directory exists"""
+
+        new_dir = "/var/new/dir"
+
+        self.mock_file_system.ensure_directory_exists(new_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_directory_exists(new_dir)
+
+    def test_can_ensure_directory_exists_with_sudo(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure a directory exists with sudo"""
+
+        new_dir = "/var/new/dir"
+
+        self.mock_file_system.ensure_directory_exists_with_sudo(new_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_directory_exists_with_sudo(new_dir)
 
     def test_can_delete_file(self):
-        """fab.tests.helpers.deployment_host_test  Can delete file"""
+        """fab.tests.helpers.deployment_host_test  Can delete a file"""
 
         expected_file_path = "/some/dir/file_to_delete.txt"
 
@@ -53,7 +117,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.deployment_host.delete_file(expected_file_path)
 
     def test_can_delete_file_with_sudo(self):
-        """fab.tests.helpers.deployment_host_test  Can delete file with sudo"""
+        """fab.tests.helpers.deployment_host_test  Can delete a file with sudo"""
 
         expected_file_path = "/some/dir/file_to_delete.txt"
 
@@ -63,7 +127,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.deployment_host.delete_file_with_sudo(expected_file_path)
 
     def test_can_delete_directory(self):
-        """fab.tests.helpers.deployment_host_test  Can delete directory"""
+        """fab.tests.helpers.deployment_host_test  Can delete a directory"""
 
         expected_dir_to_delete = "/some/dir/to/delete"
 
@@ -73,7 +137,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.deployment_host.delete_directory(expected_dir_to_delete)
 
     def test_can_delete_directory_with_sudo(self):
-        """fab.tests.helpers.deployment_host_test  Can delete directory with sudo"""
+        """fab.tests.helpers.deployment_host_test  Can delete a directory with sudo"""
 
         expected_dir_to_delete = "/some/dir/to/delete"
 
@@ -81,6 +145,16 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.deployment_host.delete_directory_with_sudo(expected_dir_to_delete)
+
+    def test_can_compress_directory(self):
+        """fab.tests.helpers.deployment_host_test  Can compress a directory"""
+
+        expected_dir_to_compress = "/some/dir/to/compress"
+
+        self.mock_file_system.compress_directory(expected_dir_to_compress)
+        self.mox.ReplayAll()
+
+        self.deployment_host.compress_directory(expected_dir_to_compress)
 
     def test_can_ensure_user_is_member_of_web_group(self):
         """fab.tests.helpers.deployment_host_test  Can ensure user is a member of the web user group"""
@@ -90,45 +164,31 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.ensure_user_is_member_of_web_group("joesoap")
 
-    def test_can_set_web_group_permissions_on_specified_path(self):
-        """fab.tests.helpers.deployment_host_test  Can set web user group permissions on a specified path"""
+    def test_can_set_web_group_permissions_on_specified_directory(self):
+        """fab.tests.helpers.deployment_host_test  Can set web user group permissions on a specified directory"""
 
-        self.mock_permissions.set_web_group_permissions_on_path("/some/path")
+        self.mock_permissions.set_web_group_permissions_on_directory("/some/web/dir")
         self.mox.ReplayAll()
 
-        self.deployment_host.set_web_group_permissions_on_path("/some/path")
+        self.deployment_host.set_web_group_permissions_on_directory("/some/web/dir")
 
-    def test_can_set_web_group_ownership_on_specified_path(self):
-        """fab.tests.helpers.deployment_host_test  Can set web user group ownership on a specified path"""
+    def test_can_set_web_group_ownership_on_specified_directory(self):
+        """fab.tests.helpers.deployment_host_test  Can set web user group ownership on a specified directory"""
 
-        self.mock_permissions.set_web_group_ownership_on_path("/some/path")
+        self.mock_permissions.set_web_group_ownership_on_directory("/some/web/dir")
         self.mox.ReplayAll()
 
-        self.deployment_host.set_web_group_ownership_on_path("/some/path")
+        self.deployment_host.set_web_group_ownership_on_directory("/some/web/dir")
 
-    def test_can_ensure_path_exists(self):
-        """fab.tests.helpers.deployment_host_test  Can ensure path exists"""
+    def test_can_ensure_directory_exists_with_web_group_permissions(self):
+        """fab.tests.helpers.deployment_host_test  Can ensure directory exists with web user group permissions"""
 
-        self.mock_path.ensure_path_exists("/some/path")
+        web_dir = "/some/web/dir"
+        self.mock_file_system.ensure_directory_exists_with_sudo(web_dir)
+        self.mock_permissions.set_web_group_permissions_on_directory(web_dir)
         self.mox.ReplayAll()
 
-        self.deployment_host.ensure_path_exists("/some/path")
-
-    def test_can_ensure_path_exists_with_sudo(self):
-        """fab.tests.helpers.deployment_host_test  Can ensure path exists with sudo"""
-
-        self.mock_path.ensure_path_exists_with_sudo("/some/path")
-        self.mox.ReplayAll()
-
-        self.deployment_host.ensure_path_exists_with_sudo("/some/path")
-
-    def test_can_ensure_path_exists_with_web_group_permissions(self):
-        """fab.tests.helpers.deployment_host_test  Can ensure path exists with web user group permissions"""
-
-        self.mock_path.ensure_path_exists_with_web_group_permissions("/some/path")
-        self.mox.ReplayAll()
-
-        self.deployment_host.ensure_path_exists_with_web_group_permissions("/some/path")
+        self.deployment_host.ensure_directory_exists_with_web_group_permissions(web_dir)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.helpers.deployment_host_test  Can create empty virtualenv"""

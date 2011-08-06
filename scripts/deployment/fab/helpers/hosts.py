@@ -10,7 +10,6 @@ import fabric.contrib.files
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
-from fab.helpers.path import Path
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -35,27 +34,46 @@ class RemoteHost(object):
         return fabric.contrib.files.exists(path)
 
 
-class DeploymentHost(RemoteHost):
+class DeploymentHost(object):
+    """DeploymentHost encapsulates common actions available during a deployment"""
 
-    def __init__(self, file_system, permissions, path_helper, virtualenv):
+    def __init__(self, file_system, permissions, virtualenv):
         self.file_system = file_system
         self.permissions = permissions
-        self.path_helper = path_helper
         self.virtualenv = virtualenv
 
     @staticmethod
     def create_instance(virtualenv_path):
-        deployment_host = RemoteHost()
-        feedback = ExecutionFeedback()
-        file_system = FileSystem(deployment_host, feedback)
-        permissions = AkvoPermissions(deployment_host, feedback)
-        path = Path(deployment_host, feedback)
-        virtualenv = VirtualEnv(virtualenv_path, deployment_host, file_system, feedback)
+        remote_host = RemoteHost.create_instance()
+        file_system = FileSystem(remote_host)
+        permissions = AkvoPermissions(remote_host)
+        virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
 
-        return DeploymentHost(file_system, permissions, path, virtualenv)
+        return DeploymentHost(file_system, permissions, virtualenv)
 
-    def compress_directory(self, full_path_to_compress):
-        self.file_system.compress_directory(full_path_to_compress)
+    def file_exists(self, file_path):
+        return self.file_system.file_exists(file_path)
+
+    def directory_exists(self, dir_path):
+        return self.file_system.directory_exists(dir_path)
+
+    def exit_if_file_does_not_exist(self, file_path):
+        self.file_system.exit_if_file_does_not_exist(file_path)
+
+    def exit_if_directory_does_not_exist(self, dir_path):
+        self.file_system.exit_if_directory_does_not_exist(dir_path)
+
+    def create_directory(self, dir_path):
+        self.file_system.create_directory(dir_path)
+
+    def create_directory_with_sudo(self, dir_path):
+        self.file_system.create_directory_with_sudo(dir_path)
+
+    def ensure_directory_exists(self, dir_path):
+        self.file_system.ensure_directory_exists(dir_path)
+
+    def ensure_directory_exists_with_sudo(self, dir_path):
+        self.file_system.ensure_directory_exists_with_sudo(dir_path)
 
     def delete_file(self, file_path):
         self.file_system.delete_file(file_path)
@@ -69,23 +87,21 @@ class DeploymentHost(RemoteHost):
     def delete_directory_with_sudo(self, dir_path):
         self.file_system.delete_directory_with_sudo(dir_path)
 
+    def compress_directory(self, full_path_to_compress):
+        self.file_system.compress_directory(full_path_to_compress)
+
     def ensure_user_is_member_of_web_group(self, user_id):
         self.permissions.ensure_user_is_member_of_web_group(user_id)
 
-    def set_web_group_permissions_on_path(self, path):
-        self.permissions.set_web_group_permissions_on_path(path)
+    def set_web_group_permissions_on_directory(self, dir_path):
+        self.permissions.set_web_group_permissions_on_directory(dir_path)
 
-    def set_web_group_ownership_on_path(self, path):
-        self.permissions.set_web_group_ownership_on_path(path)
+    def set_web_group_ownership_on_directory(self, dir_path):
+        self.permissions.set_web_group_ownership_on_directory(dir_path)
 
-    def ensure_path_exists(self, path):
-        self.path_helper.ensure_path_exists(path)
-
-    def ensure_path_exists_with_sudo(self, path):
-        self.path_helper.ensure_path_exists_with_sudo(path)
-
-    def ensure_path_exists_with_web_group_permissions(self, path):
-        self.path_helper.ensure_path_exists_with_web_group_permissions(path)
+    def ensure_directory_exists_with_web_group_permissions(self, dir_path):
+        self.ensure_directory_exists_with_sudo(dir_path)
+        self.set_web_group_permissions_on_directory(dir_path)
 
     def create_empty_virtualenv(self, pip_install_log_file):
         self.virtualenv.create_empty_virtualenv(pip_install_log_file)
@@ -98,3 +114,4 @@ class DeploymentHost(RemoteHost):
 
     def run_within_virtualenv(self, command):
         self.virtualenv.run_within_virtualenv(command)
+
