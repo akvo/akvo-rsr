@@ -34,10 +34,34 @@ class RemoteHost(object):
         return fabric.contrib.files.exists(path)
 
 
-class DeploymentHost(object):
+class NeutralHost(object):
+    """NeutralHost encapsulates read-only and other neutral actions that won't change the host"""
+
+    def __init__(self, file_system):
+        self.file_system = file_system
+
+    @staticmethod
+    def create_instance():
+        return NeutralHost(FileSystem(RemoteHost.create_instance()))
+
+    def file_exists(self, file_path):
+        return self.file_system.file_exists(file_path)
+
+    def directory_exists(self, dir_path):
+        return self.file_system.directory_exists(dir_path)
+
+    def exit_if_file_does_not_exist(self, file_path):
+        self.file_system.exit_if_file_does_not_exist(file_path)
+
+    def exit_if_directory_does_not_exist(self, dir_path):
+        self.file_system.exit_if_directory_does_not_exist(dir_path)
+
+
+class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
     def __init__(self, file_system, permissions, virtualenv):
+        super(DeploymentHost, self).__init__(file_system)
         self.file_system = file_system
         self.permissions = permissions
         self.virtualenv = virtualenv
@@ -114,4 +138,3 @@ class DeploymentHost(object):
 
     def run_within_virtualenv(self, command):
         self.virtualenv.run_within_virtualenv(command)
-

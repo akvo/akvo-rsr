@@ -30,42 +30,6 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.assertTrue(isinstance(DeploymentHost.create_instance("/some/virtualenv/path"), DeploymentHost))
 
-    def test_can_check_whether_file_exists(self):
-        """fab.tests.helpers.deployment_host_test  Can check whether file exists"""
-
-        existing_file = "/usr/bin/man"
-        self.mock_file_system.file_exists(existing_file).AndReturn(True)
-        self.mox.ReplayAll()
-
-        self.assertTrue(self.deployment_host.file_exists(existing_file), "Expected file to exist")
-
-    def test_can_check_whether_directory_exists(self):
-        """fab.tests.helpers.deployment_host_test  Can check whether directory exists"""
-
-        existing_dir = "/usr/bin"
-        self.mock_file_system.directory_exists(existing_dir).AndReturn(True)
-        self.mox.ReplayAll()
-
-        self.assertTrue(self.deployment_host.directory_exists(existing_dir), "Expected directory to exist")
-
-    def test_will_exit_if_file_does_not_exist(self):
-        """fab.tests.helpers.deployment_host_test  Will exit if file does not exist"""
-
-        nonexistent_file = "/path/to/nonexistent_file.txt"
-        self.mock_file_system.exit_if_file_does_not_exist(nonexistent_file)
-        self.mox.ReplayAll()
-
-        self.deployment_host.exit_if_file_does_not_exist(nonexistent_file)
-
-    def test_will_exit_if_directory_does_not_exist(self):
-        """fab.tests.helpers.deployment_host_test  Will exit if directory does not exist"""
-
-        nonexistent_dir = "/path/to/nonexistent/dir"
-        self.mock_file_system.exit_if_directory_does_not_exist(nonexistent_dir)
-        self.mox.ReplayAll()
-
-        self.deployment_host.exit_if_directory_does_not_exist(nonexistent_dir)
-
     def test_can_create_directory(self):
         """fab.tests.helpers.deployment_host_test  Can create a directory"""
 

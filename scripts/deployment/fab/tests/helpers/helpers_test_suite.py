@@ -14,6 +14,7 @@ from fab.tests.helpers.deployment_host_test import DeploymentHostTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
 from fab.tests.helpers.file_system_test import FileSystemTest
 from fab.tests.helpers.internet_test import InternetTest
+from fab.tests.helpers.neutral_host_test import NeutralHostTest
 from fab.tests.helpers.remote_host_test import RemoteHostTest
 from fab.tests.helpers.virtualenv_test import VirtualEnvTest
 
@@ -21,7 +22,7 @@ from fab.tests.helpers.virtualenv_test import VirtualEnvTest
 def helpers_suite():
     return TestSuiteLoader().create_suite_from_classes([AkvoPermissionsTest, CodebaseTest, DataRetrieverTest,
                                                         DeploymentHostTest, ExecutionFeedbackTest, FileSystemTest,
-                                                        InternetTest, RemoteHostTest, VirtualEnvTest])
+                                                        InternetTest, NeutralHostTest, RemoteHostTest, VirtualEnvTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
