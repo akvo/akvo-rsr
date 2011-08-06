@@ -10,12 +10,12 @@ class AkvoPermissions(object):
     GROUPS_COMMAND = "groups"
     WEB_USER_GROUP = "www-edit"
 
-    def __init__(self, deployment_host, feedback):
-        self.deployment_host = deployment_host
-        self.feedback = feedback
+    def __init__(self, remote_host):
+        self.remote_host = remote_host
+        self.feedback = remote_host.feedback
 
     def ensure_user_is_member_of_web_group(self, user_id):
-        group_membership = self.deployment_host.run(AkvoPermissions.GROUPS_COMMAND)
+        group_membership = self.remote_host.run(AkvoPermissions.GROUPS_COMMAND)
         if group_membership.find(AkvoPermissions.WEB_USER_GROUP) == -1:
             self.feedback.abort("User [%s] should be a member of group [%s]" % (user_id, AkvoPermissions.WEB_USER_GROUP))
         else:
@@ -23,7 +23,7 @@ class AkvoPermissions(object):
 
     def set_web_group_permissions_on_path(self, path):
         self.set_web_group_ownership_on_path(path)
-        self.deployment_host.sudo("chmod -R g+rws %s" % path)
+        self.remote_host.sudo("chmod -R g+rws %s" % path)
 
     def set_web_group_ownership_on_path(self, path):
-        self.deployment_host.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, path))
+        self.remote_host.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, path))
