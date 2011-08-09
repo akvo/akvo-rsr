@@ -9,7 +9,6 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-#from fab.config.dataretriever import DataRetrieverConfig
 from fab.helpers.dataretriever import DataRetriever
 from fab.tasks.dataretriever import FetchRSRData
 
