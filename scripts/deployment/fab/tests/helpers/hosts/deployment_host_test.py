@@ -11,6 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DeploymentHost
+from fab.helpers.hosts import RemoteHost
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -19,11 +20,13 @@ class DeploymentHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DeploymentHostTest, self).setUp()
+        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_virtualenv)
+        self.mock_remote_host.feedback = None # not actually used for the purposes of this test
+        self.deployment_host = DeploymentHost(self.mock_remote_host, self.mock_file_system, self.mock_permissions, self.mock_virtualenv)
 
     def test_can_create_a_deploymenthost_instance(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can create a DeploymentHost instance"""

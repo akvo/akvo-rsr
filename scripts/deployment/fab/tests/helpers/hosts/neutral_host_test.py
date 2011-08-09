@@ -11,15 +11,18 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import NeutralHost
+from fab.helpers.hosts import RemoteHost
 
 
 class NeutralHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(NeutralHostTest, self).setUp()
+        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
 
-        self.neutral_host = NeutralHost(self.mock_file_system)
+        self.mock_remote_host.feedback = None # not actually used for the purposes of this test
+        self.neutral_host = NeutralHost(self.mock_remote_host, self.mock_file_system)
 
     def test_can_create_neutralhost_instance(self):
         """fab.tests.helpers.hosts.neutral_host_test  Can create a NeutralHost instance"""

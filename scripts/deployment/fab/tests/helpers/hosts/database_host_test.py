@@ -11,6 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DatabaseHost
+from fab.helpers.hosts import RemoteHost
 from fab.helpers.virtualenv import VirtualEnv
 
 
@@ -18,10 +19,12 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
+        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.database_host = DatabaseHost(self.mock_file_system, self.mock_virtualenv)
+        self.mock_remote_host.feedback = None # not actually used for the purposes of this test
+        self.database_host = DatabaseHost(self.mock_remote_host, self.mock_file_system, self.mock_virtualenv)
 
     def test_can_create_databasehost_instance(self):
         """fab.tests.helpers.hosts.database_host_test  Can create a DatabaseHost instance"""

@@ -37,12 +37,15 @@ class RemoteHost(object):
 class NeutralHost(object):
     """NeutralHost encapsulates read-only and other neutral actions that won't change the host"""
 
-    def __init__(self, file_system):
+    def __init__(self, remote_host, file_system):
         self.file_system = file_system
+        self.feedback = remote_host.feedback
 
     @staticmethod
     def create_instance():
-        return NeutralHost(FileSystem(RemoteHost.create_instance()))
+        remote_host = RemoteHost.create_instance()
+
+        return NeutralHost(remote_host, FileSystem(remote_host))
 
     def file_exists(self, file_path):
         return self.file_system.file_exists(file_path)
@@ -60,8 +63,8 @@ class NeutralHost(object):
 class DatabaseHost(NeutralHost):
     """DatabaseHost encapsulates common actions available when retrieving data from a database host"""
 
-    def __init__(self, file_system, virtualenv):
-        super(DatabaseHost, self).__init__(file_system)
+    def __init__(self, remote_host, file_system, virtualenv):
+        super(DatabaseHost, self).__init__(remote_host, file_system)
         self.file_system = file_system
         self.virtualenv = virtualenv
 
@@ -71,7 +74,7 @@ class DatabaseHost(NeutralHost):
         file_system = FileSystem(remote_host)
         virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
 
-        return DatabaseHost(file_system, virtualenv)
+        return DatabaseHost(remote_host, file_system, virtualenv)
 
     def ensure_directory_exists(self, dir_path):
         self.file_system.ensure_directory_exists(dir_path)
@@ -92,8 +95,8 @@ class DatabaseHost(NeutralHost):
 class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
-    def __init__(self, file_system, permissions, virtualenv):
-        super(DeploymentHost, self).__init__(file_system)
+    def __init__(self, remote_host, file_system, permissions, virtualenv):
+        super(DeploymentHost, self).__init__(remote_host, file_system)
         self.file_system = file_system
         self.permissions = permissions
         self.virtualenv = virtualenv
@@ -105,7 +108,7 @@ class DeploymentHost(NeutralHost):
         permissions = AkvoPermissions(remote_host)
         virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
 
-        return DeploymentHost(file_system, permissions, virtualenv)
+        return DeploymentHost(remote_host, file_system, permissions, virtualenv)
 
     def file_exists(self, file_path):
         return self.file_system.file_exists(file_path)
