@@ -13,9 +13,6 @@ class Internet(object):
     def __init__(self, remote_host):
         self.remote_host = remote_host
 
-    def file_at_url_exists_in_directory(self, file_url, dir_path):
-        return self.remote_host.path_exists(os.path.join(dir_path, self.file_name_at_url(file_url)))
-
     def file_name_at_url(self, url):
         return self._redirected_url(url).split('/')[-1]
 

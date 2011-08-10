@@ -45,16 +45,6 @@ class InternetTest(mox.MoxTestBase):
 
         self.assertEqual("final_page", self.internet.file_name_at_url(url_with_redirection))
 
-    def test_can_check_whether_file_at_url_exists_at_specified_host_path(self):
-        """fab.tests.helpers.internet_test  Can check whether a file at a URL exists at a specified host path"""
-
-        archive_info_url = "http://some.server.org/archive/info/download_archive108.html"
-        self.internet.redirected_url = "http://some.server.org/archives/archive108.zip"
-        self.mock_remote_host.path_exists("/var/host/archives/archive108.zip").AndReturn(True)
-        self.mox.ReplayAll()
-
-        self.assertTrue(self.internet.file_at_url_exists_in_directory(archive_info_url, "/var/host/archives"))
-
     def test_can_fetch_file_at_url(self):
         """fab.tests.helpers.internet_test  Can fetch the file at a specified URL"""
 

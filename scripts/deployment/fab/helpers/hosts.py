@@ -10,6 +10,7 @@ import fabric.contrib.files
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
+from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -95,10 +96,11 @@ class DatabaseHost(NeutralHost):
 class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
-    def __init__(self, remote_host, file_system, permissions, virtualenv):
+    def __init__(self, remote_host, file_system, permissions, internet_helper, virtualenv):
         super(DeploymentHost, self).__init__(remote_host, file_system)
         self.file_system = file_system
         self.permissions = permissions
+        self.internet = internet_helper
         self.virtualenv = virtualenv
 
     @staticmethod
@@ -108,7 +110,7 @@ class DeploymentHost(NeutralHost):
         permissions = AkvoPermissions(remote_host)
         virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
 
-        return DeploymentHost(remote_host, file_system, permissions, virtualenv)
+        return DeploymentHost(remote_host, file_system, permissions, Internet(remote_host), virtualenv)
 
     def file_exists(self, file_path):
         return self.file_system.file_exists(file_path)
@@ -170,6 +172,12 @@ class DeploymentHost(NeutralHost):
     def ensure_directory_exists_with_web_group_permissions(self, dir_path):
         self.ensure_directory_exists_with_sudo(dir_path)
         self.set_web_group_permissions_on_directory(dir_path)
+
+    def file_name_at_url(self, url):
+        return self.internet.file_name_at_url(url)
+
+    def fetch_file_at_url(self, file_url, download_directory):
+        self.internet.fetch_file_at_url(file_url, download_directory)
 
     def create_empty_virtualenv(self, pip_install_log_file):
         self.virtualenv.create_empty_virtualenv(pip_install_log_file)

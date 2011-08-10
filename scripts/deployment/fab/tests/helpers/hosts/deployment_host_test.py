@@ -12,6 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DeploymentHost
 from fab.helpers.hosts import RemoteHost
+from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
 
@@ -23,10 +24,12 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mock_remote_host = self.mox.CreateMock(RemoteHost)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
+        self.mock_internet = self.mox.CreateMock(Internet)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
         self.mock_remote_host.feedback = None # not actually used for the purposes of this test
-        self.deployment_host = DeploymentHost(self.mock_remote_host, self.mock_file_system, self.mock_permissions, self.mock_virtualenv)
+        self.deployment_host = DeploymentHost(self.mock_remote_host, self.mock_file_system, self.mock_permissions,
+                                              self.mock_internet, self.mock_virtualenv)
 
     def test_can_create_a_deploymenthost_instance(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can create a DeploymentHost instance"""
@@ -189,6 +192,25 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(web_dir)
+
+    def test_can_get_file_name_at_specified_url(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can get the file name at a specified URL"""
+
+        archives_url = "http://some.server.org/archives/dev"
+        self.mock_internet.file_name_at_url(archives_url).AndReturn("code_archive.zip")
+        self.mox.ReplayAll()
+
+        self.assertEqual("code_archive.zip", self.deployment_host.file_name_at_url(archives_url))
+
+    def test_can_fetch_file_at_specified_url(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can fetch the file at a specified URL"""
+
+        file_url = "http://some.server.org/archives/file.zip"
+        download_dir = "/var/tmp/code/archives"
+        self.mock_internet.fetch_file_at_url(file_url, download_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.fetch_file_at_url(file_url, download_dir)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can create empty virtualenv"""
