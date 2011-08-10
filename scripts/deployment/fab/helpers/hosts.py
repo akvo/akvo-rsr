@@ -160,8 +160,8 @@ class DeploymentHost(NeutralHost):
     def decompress_code_archive(self, archive_file_name, destination_dir):
         self.file_system.decompress_code_archive(archive_file_name, destination_dir)
 
-    def ensure_user_is_member_of_web_group(self, user_id):
-        self.permissions.ensure_user_is_member_of_web_group(user_id)
+    def exit_if_user_is_not_member_of_web_group(self, user_id):
+        self.permissions.exit_if_user_is_not_member_of_web_group(user_id)
 
     def set_web_group_permissions_on_directory(self, dir_path):
         self.permissions.set_web_group_permissions_on_directory(dir_path)

@@ -24,27 +24,27 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         self.mock_remote_host.feedback = self.mock_feedback
         self.permissions = AkvoPermissions(self.mock_remote_host)
 
-    def test_can_ensure_user_is_member_of_web_group(self):
-        """fab.tests.helpers.akvo_permissions_test  Can ensure user is a member of the web user group"""
+    def test_will_confirm_group_membership_if_user_is_member_of_web_group(self):
+        """fab.tests.helpers.akvo_permissions_test  Will confirm group membership if user is a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone %s" % AkvoPermissions.WEB_USER_GROUP
         self.mock_remote_host.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
-        self.mock_feedback.comment(mox.StrContains("User [joesoap] is a member of expected group [%s]" % AkvoPermissions.WEB_USER_GROUP))
+        self.mock_feedback.comment("User [joesoap] is a member of expected group [%s]" % AkvoPermissions.WEB_USER_GROUP)
         self.mox.ReplayAll()
 
-        self.permissions.ensure_user_is_member_of_web_group("joesoap")
+        self.permissions.exit_if_user_is_not_member_of_web_group("joesoap")
 
     def test_exit_if_user_is_not_a_member_of_web_group(self):
         """fab.tests.helpers.akvo_permissions_test  Exit if the user is not a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone writers"
         self.mock_remote_host.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
-        expected_user_not_in_group_message = mox.StrContains("User [joesoap] should be a member of group [%s]" % AkvoPermissions.WEB_USER_GROUP)
+        expected_user_not_in_group_message = "User [joesoap] should be a member of group [%s]" % AkvoPermissions.WEB_USER_GROUP
         self.mock_feedback.abort(expected_user_not_in_group_message).AndRaise(SystemExit(expected_user_not_in_group_message))
         self.mox.ReplayAll()
 
         try:
-            self.permissions.ensure_user_is_member_of_web_group("joesoap")
+            self.permissions.exit_if_user_is_not_member_of_web_group("joesoap")
             self.fail("Should have raised a SystemExit exception if member is not in expected system group")
         except SystemExit:
             pass # expected

@@ -159,13 +159,13 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.decompress_code_archive(code_archive_file, destination_dir)
 
-    def test_can_ensure_user_is_member_of_web_group(self):
-        """fab.tests.helpers.hosts.deployment_host_test  Can ensure user is a member of the web user group"""
+    def test_will_exit_if_user_is_not_member_of_web_group(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Will exit if user is not a member of the web user group"""
 
-        self.mock_permissions.ensure_user_is_member_of_web_group("joesoap")
+        self.mock_permissions.exit_if_user_is_not_member_of_web_group("joesoap")
         self.mox.ReplayAll()
 
-        self.deployment_host.ensure_user_is_member_of_web_group("joesoap")
+        self.deployment_host.exit_if_user_is_not_member_of_web_group("joesoap")
 
     def test_can_set_web_group_permissions_on_specified_directory(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can set web user group permissions on a specified directory"""
