@@ -10,11 +10,11 @@ import os, urllib2
 
 class Internet(object):
 
-    def __init__(self, deployment_host):
-        self.deployment_host = deployment_host
+    def __init__(self, remote_host):
+        self.remote_host = remote_host
 
-    def file_from_url_exists_in_directory(self, url, dir_path):
-        return self.deployment_host.path_exists(os.path.join(dir_path, self.file_name_at_url(url)))
+    def file_at_url_exists_in_directory(self, file_url, dir_path):
+        return self.remote_host.path_exists(os.path.join(dir_path, self.file_name_at_url(file_url)))
 
     def file_name_at_url(self, url):
         return self._redirected_url(url).split('/')[-1]
@@ -22,3 +22,6 @@ class Internet(object):
     def _redirected_url(self, initial_url):
         # we use geturl() to get the final URL and file name after any redirects
         return urllib2.urlopen(initial_url).geturl()
+
+    def fetch_file_at_url(self, file_url, download_directory):
+        self.remote_host.run("wget -nv -P %s %s" % (download_directory, file_url))

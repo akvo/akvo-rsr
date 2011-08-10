@@ -25,9 +25,9 @@ class InternetTest(mox.MoxTestBase):
 
     def setUp(self):
         super(InternetTest, self).setUp()
-        self.mock_deployment_host = self.mox.CreateMock(RemoteHost)
+        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
 
-        self.internet = StubbedInternet(self.mock_deployment_host)
+        self.internet = StubbedInternet(self.mock_remote_host)
 
     def test_can_get_file_name_at_specified_url(self):
         """fab.tests.helpers.internet_test  Can get file name at a specified URL"""
@@ -45,15 +45,25 @@ class InternetTest(mox.MoxTestBase):
 
         self.assertEqual("final_page", self.internet.file_name_at_url(url_with_redirection))
 
-    def test_can_check_whether_file_from_url_exists_at_specified_host_path(self):
-        """fab.tests.helpers.internet_test  Can check whether a file from a URL exists at a specified host path"""
+    def test_can_check_whether_file_at_url_exists_at_specified_host_path(self):
+        """fab.tests.helpers.internet_test  Can check whether a file at a URL exists at a specified host path"""
 
         archive_info_url = "http://some.server.org/archive/info/download_archive108.html"
         self.internet.redirected_url = "http://some.server.org/archives/archive108.zip"
-        self.mock_deployment_host.path_exists("/var/host/archives/archive108.zip").AndReturn(True)
+        self.mock_remote_host.path_exists("/var/host/archives/archive108.zip").AndReturn(True)
         self.mox.ReplayAll()
 
-        self.assertTrue(self.internet.file_from_url_exists_in_directory(archive_info_url, "/var/host/archives"))
+        self.assertTrue(self.internet.file_at_url_exists_in_directory(archive_info_url, "/var/host/archives"))
+
+    def test_can_fetch_file_at_url(self):
+        """fab.tests.helpers.internet_test  Can fetch the file at a specified URL"""
+
+        file_url = "http://some.server.org/file.zip"
+        download_dir = "/var/tmp/archives"
+        self.mock_remote_host.run("wget -nv -P %s %s" % (download_dir, file_url))
+        self.mox.ReplayAll()
+
+        self.internet.fetch_file_at_url(file_url, download_dir)
 
 
 def suite():
