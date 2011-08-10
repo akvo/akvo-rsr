@@ -123,6 +123,17 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.compress_directory(expected_dir_to_compress)
 
+    def test_can_decompress_code_archive(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can decompress a code archive"""
+
+        code_archive_file = "rsr_v1.0.10.zip"
+        destination_dir = "/some/destination/dir"
+
+        self.mock_file_system.decompress_code_archive(code_archive_file, destination_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.decompress_code_archive(code_archive_file, destination_dir)
+
     def test_can_ensure_user_is_member_of_web_group(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can ensure user is a member of the web user group"""
 

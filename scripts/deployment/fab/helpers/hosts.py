@@ -149,6 +149,9 @@ class DeploymentHost(NeutralHost):
     def compress_directory(self, full_path_to_compress):
         self.file_system.compress_directory(full_path_to_compress)
 
+    def decompress_code_archive(self, archive_file_name, destination_dir):
+        self.file_system.decompress_code_archive(archive_file_name, destination_dir)
+
     def ensure_user_is_member_of_web_group(self, user_id):
         self.permissions.ensure_user_is_member_of_web_group(user_id)
 

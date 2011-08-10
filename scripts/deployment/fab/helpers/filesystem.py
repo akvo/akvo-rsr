@@ -15,6 +15,8 @@ import fabric.context_managers
 
 class FileSystem(object):
 
+    CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
+
     def __init__(self, remote_host):
         self.remote_host = remote_host
         self.feedback = remote_host.feedback
@@ -84,3 +86,6 @@ class FileSystem(object):
         compressed_file_name = os.path.basename(stripped_path)
         with fabric.context_managers.cd(parent_dir):
             self.remote_host.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
+
+    def decompress_code_archive(self, archive_file_name, destination_dir):
+        self.remote_host.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))

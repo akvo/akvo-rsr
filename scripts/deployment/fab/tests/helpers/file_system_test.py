@@ -253,6 +253,16 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_remote_host.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
         self.mox.ReplayAll()
 
+    def test_can_decompress_code_archive(self):
+        """fab.tests.helpers.file_system_test  Can decompress a code archive"""
+
+        archive_file = "rsr_v1.0.10.zip"
+        destination_dir = "/var/tmp/unpack"
+        self.mock_remote_host.run("unzip -q %s -d %s -x %s" % (archive_file, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
+        self.mox.ReplayAll()
+
+        self.file_system.decompress_code_archive(archive_file, destination_dir)
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(FileSystemTest)
