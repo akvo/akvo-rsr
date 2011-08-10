@@ -1120,10 +1120,10 @@ class UserProfileAdminForm(forms.ModelForm):
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
-    search_fields = ('user', 'organisation',)
+    list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
+    search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
     list_filter  = ('organisation',)
-    ordering = ('user__username',)
+    ordering = ("user__username",)
     inlines = [SmsReporterInline,]
     form = UserProfileAdminForm
     
