@@ -73,6 +73,28 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.ensure_directory_exists_with_sudo(new_dir)
 
+    def test_can_rename_file(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can rename a file"""
+
+        original_file = "/var/tmp/original/file.txt"
+        new_file = "/var/tmp/something/else.txt"
+
+        self.mock_file_system.rename_file(original_file, new_file)
+        self.mox.ReplayAll()
+
+        self.deployment_host.rename_file(original_file, new_file)
+
+    def test_can_rename_directory(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can rename a directory"""
+
+        original_dir = "/var/tmp/original"
+        new_dir = "/var/tmp/something/else"
+
+        self.mock_file_system.rename_directory(original_dir, new_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.rename_directory(original_dir, new_dir)
+
     def test_can_delete_file(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can delete a file"""
 

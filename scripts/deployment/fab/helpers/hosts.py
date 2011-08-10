@@ -134,6 +134,12 @@ class DeploymentHost(NeutralHost):
     def ensure_directory_exists_with_sudo(self, dir_path):
         self.file_system.ensure_directory_exists_with_sudo(dir_path)
 
+    def rename_file(self, original_file, new_file):
+        self.file_system.rename_file(original_file, new_file)
+
+    def rename_directory(self, original_dir, new_dir):
+        self.file_system.rename_directory(original_dir, new_dir)
+
     def delete_file(self, file_path):
         self.file_system.delete_file(file_path)
 

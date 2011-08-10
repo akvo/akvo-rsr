@@ -62,6 +62,15 @@ class FileSystem(object):
         else:
             self._create_directory_with(run_command, dir_path)
 
+    def rename_file(self, original_file, new_file):
+        self._rename_path(original_file, new_file)
+
+    def rename_directory(self, original_dir, new_dir):
+        self._rename_path(original_dir, new_dir)
+
+    def _rename_path(self, original_path, new_path):
+        self.remote_host.run("mv %s %s" % (original_path, new_path))
+
     def delete_file(self, file_path):
         self._delete_at_path_with(self.remote_host.run, "file", file_path)
 

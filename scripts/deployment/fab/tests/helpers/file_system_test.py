@@ -158,6 +158,26 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.file_system.ensure_directory_exists_with_sudo(new_dir)
 
+    def test_can_rename_file(self):
+        """fab.tests.helpers.file_system_test  Can rename a file"""
+
+        original_file = "/var/tmp/original/file.txt"
+        new_file = "/var/tmp/something/else.txt"
+        self.mock_remote_host.run("mv %s %s" % (original_file, new_file))
+        self.mox.ReplayAll()
+
+        self.file_system.rename_file(original_file, new_file)
+
+    def test_can_rename_directory(self):
+        """fab.tests.helpers.file_system_test  Can rename a directory"""
+
+        original_dir = "/var/tmp/original"
+        new_dir = "/var/tmp/something/else"
+        self.mock_remote_host.run("mv %s %s" % (original_dir, new_dir))
+        self.mox.ReplayAll()
+
+        self.file_system.rename_directory(original_dir, new_dir)
+
     def test_can_delete_an_existing_file(self):
         """fab.tests.helpers.file_system_test  Can delete an existing file"""
 
