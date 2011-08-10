@@ -15,39 +15,39 @@ import fabric.context_managers
 
 class Codebase(object):
 
-    def __init__(self, deployment_config, deployment_host, file_system, internet_helper, permissions, execution_feedback):
+    RSR_ARCHIVE_URL_ROOT        = "http://nodeload.github.com/akvo/akvo-rsr/zipball"
+    UNPACKED_RSR_ARCHIVE_MASK   = "akvo-akvo-rsr-*"
+
+    def __init__(self, deployment_config, deployment_host):
         self.config = deployment_config
         self.deployment_host = deployment_host
-        self.file_system = file_system
-        self.internet = internet_helper
-        self.permissions = permissions
-        self.feedback = execution_feedback
+        self.feedback = deployment_host.feedback
+
+        self.rsr_archive_url = os.path.join(Codebase.RSR_ARCHIVE_URL_ROOT, self.config.rsr_branch)
 
     def download_and_unpack_rsr_archive(self):
+        archive_file_name = self.deployment_host.file_name_at_url(self.rsr_archive_url)
+        archive_file_on_host = os.path.join(self.config.repo_archives_dir, archive_file_name)
+
         self._clean_deployment_directories()
-        self._download_rsr_archive()
-        self._unpack_rsr_archive()
+        self._download_rsr_archive(self.rsr_archive_url, archive_file_on_host)
+        self._unpack_rsr_archive(archive_file_on_host)
 
     def _clean_deployment_directories(self):
         self.feedback.comment("Clearing previous deployment directories")
-        self.file_system.delete_directory_with_sudo(self.config.rsr_deployment_root)
+        self.deployment_host.delete_directory_with_sudo(self.config.rsr_deployment_root)
 
-    def _download_rsr_archive(self):
+    def _download_rsr_archive(self, rsr_archive_url, archive_file_on_host):
         self.feedback.comment("Downloading RSR archive file")
-        rsr_archive_url = self.config.rsr_archive_url
-        archives_dir = self.config.repo_archives_dir
-        if not self.internet.file_from_url_exists_in_directory(rsr_archive_url, archives_dir):
-            self.feedback.comment("Fetching akvo-rsr archive for the [%s] branch from Github" % self.config.rsr_branch)
-            self.deployment_host.run("wget -nv -P %s %s" % (archives_dir, rsr_archive_url))
+        if self.deployment_host.file_exists(archive_file_on_host):
+            self.feedback.comment("Latest archive already exists at: %s" % archive_file_on_host)
         else:
-            archive_file_name = self.internet.file_name_at_url(rsr_archive_url)
-            self.feedback.comment("Latest archive already exists at: %s" % os.path.join(archives_dir, archive_file_name))
+            self.feedback.comment("Fetching RSR archive from the [%s] branch on Github" % self.config.rsr_branch)
+            self.deployment_host.fetch_file_at_url(rsr_archive_url, self.config.repo_archives_dir)
 
-    def _unpack_rsr_archive(self):
-        rsr_deployment_root = self.config.rsr_deployment_root
-        self.feedback.comment("Unpacking RSR archive in %s" % rsr_deployment_root)
-        with fabric.context_managers.cd(self.config.repo_archives_dir):
-            archive_file_name = self.internet.file_name_at_url(self.config.rsr_archive_url)
-            self.deployment_host.run("unzip -q %s -d %s -x */.gitignore" % (archive_file_name, self.config.repo_checkout_root))
-        self.deployment_host.run("mv %s %s" % (self.config.unpacked_rsr_archive_match, rsr_deployment_root))
-        self.permissions.set_web_group_ownership_on_path(rsr_deployment_root)
+    def _unpack_rsr_archive(self, archive_file_on_host):
+        self.feedback.comment("Unpacking RSR archive in %s" % self.config.rsr_deployment_root)
+        with fabric.context_managers.cd(self.config.repo_checkout_root):
+            self.deployment_host.decompress_code_archive(archive_file_on_host, self.config.repo_checkout_root)
+            self.deployment_host.rename_directory(Codebase.UNPACKED_RSR_ARCHIVE_MASK, self.config.rsr_deployment_dir_name)
+            self.deployment_host.set_web_group_ownership_on_directory(self.config.rsr_deployment_dir_name)

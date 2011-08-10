@@ -35,14 +35,6 @@ class DeployerConfigTest(unittest.TestCase):
 
         self.assertTrue(len(self.config.rsr_branch) > 0, "Expected some value for rsr_branch setting")
 
-    def test_has_expected_rsr_archive_url(self):
-        """fab.tests.config.deployer_config_test  Has expected RSR archive URL"""
-
-        archive_url_root = "http://nodeload.github.com/akvo/akvo-rsr/zipball"
-        expected_archive_url = os.path.join(archive_url_root, self.config.rsr_branch)
-
-        self.assertEqual(expected_archive_url, self.config.rsr_archive_url)
-
     def test_has_repo_checkout_root(self):
         """fab.tests.config.deployer_config_test  Has repository checkout root setting"""
 
@@ -54,14 +46,6 @@ class DeployerConfigTest(unittest.TestCase):
         expected_repo_archives_dir = os.path.join(self.config.repo_checkout_root, "archives")
 
         self.assertEqual(expected_repo_archives_dir, self.config.repo_archives_dir)
-
-    def test_has_expected_unpacked_rsr_archive_match(self):
-        """fab.tests.config.deployer_config_test  Has expected match for an unpacked RSR archive"""
-
-        unpacked_rsr_archive_mask = "akvo-akvo-rsr-*"
-        expected_archive_match = os.path.join(self.config.repo_checkout_root, unpacked_rsr_archive_mask)
-
-        self.assertEqual(expected_archive_match, self.config.unpacked_rsr_archive_match)
 
     def test_has_expected_rsr_deployment_dir_name(self):
         """fab.tests.config.deployer_config_test  Has expected RSR deployment directory name"""
