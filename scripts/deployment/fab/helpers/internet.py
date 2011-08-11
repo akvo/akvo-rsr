@@ -12,6 +12,7 @@ class Internet(object):
 
     def __init__(self, remote_host):
         self.remote_host = remote_host
+        self.feedback = remote_host.feedback
 
     def file_name_at_url(self, url):
         return self._redirected_url(url).split('/')[-1]
@@ -20,5 +21,19 @@ class Internet(object):
         # we use geturl() to get the final URL and file name after any redirects
         return urllib2.urlopen(initial_url).geturl()
 
-    def fetch_file_at_url(self, file_url, download_directory):
-        self.remote_host.run("wget -nv -P %s %s" % (download_directory, file_url))
+    def file_name_from_url_headers(self, url):
+        response_info = self._http_response_info_for(url)
+        content_disposition_header = "Content-Disposition"
+
+        if content_disposition_header.lower() in response_info.keys():
+            return response_info.getheader(content_disposition_header).split("=")[1]
+        else:
+            self.feedback.abort("%s header not available for parsing file name" % content_disposition_header)
+
+    def _http_response_info_for(self, url):
+        return urllib2.urlopen(url).info()
+
+    def download_file_at_url_as(self, downloaded_file_path, file_url):
+        # When we have a more recent version of wget on our servers we can enable parsing the download
+        # file name from the HTTP response headers with the --content-disposition option
+        self.remote_host.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))

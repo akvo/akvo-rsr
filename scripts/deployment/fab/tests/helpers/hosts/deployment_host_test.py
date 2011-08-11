@@ -215,15 +215,25 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.assertEqual("code_archive.zip", self.deployment_host.file_name_at_url(archives_url))
 
-    def test_can_fetch_file_at_specified_url(self):
-        """fab.tests.helpers.hosts.deployment_host_test  Can fetch the file at a specified URL"""
+    def test_can_get_file_name_from_url_headers(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can get a file name from the URL headers"""
 
-        file_url = "http://some.server.org/archives/file.zip"
-        download_dir = "/var/tmp/code/archives"
-        self.mock_internet.fetch_file_at_url(file_url, download_dir)
+        file_url = "http://some.server.org/archives/latest"
+        expected_file_name = "rsr_1.0.10.zip"
+        self.mock_internet.file_name_from_url_headers(file_url).AndReturn(expected_file_name)
         self.mox.ReplayAll()
 
-        self.deployment_host.fetch_file_at_url(file_url, download_dir)
+        self.assertEqual(expected_file_name, self.deployment_host.file_name_from_url_headers(file_url))
+
+    def test_can_download_file_at_url_and_save_it_at_specified_file_path(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can download the file at a URL and save it at the specified file path"""
+
+        file_url = "http://some.server.org/archives/latest"
+        downloaded_file_path = "/var/tmp/code/archives/rsr_1.0.10.zip"
+        self.mock_internet.download_file_at_url_as(downloaded_file_path, file_url)
+        self.mox.ReplayAll()
+
+        self.deployment_host.download_file_at_url_as(downloaded_file_path, file_url)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can create empty virtualenv"""

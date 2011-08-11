@@ -180,8 +180,11 @@ class DeploymentHost(NeutralHost):
     def file_name_at_url(self, url):
         return self.internet.file_name_at_url(url)
 
-    def fetch_file_at_url(self, file_url, download_directory):
-        self.internet.fetch_file_at_url(file_url, download_directory)
+    def file_name_from_url_headers(self, url):
+        return self.internet.file_name_from_url_headers(url)
+
+    def download_file_at_url_as(self, downloaded_file_path, file_url):
+        self.internet.download_file_at_url_as(downloaded_file_path, file_url)
 
     def create_empty_virtualenv(self, pip_install_log_file):
         self.virtualenv.create_empty_virtualenv(pip_install_log_file)
