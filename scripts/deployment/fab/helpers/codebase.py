@@ -26,7 +26,7 @@ class Codebase(object):
         self.rsr_archive_url = os.path.join(Codebase.RSR_ARCHIVE_URL_ROOT, self.config.rsr_branch)
 
     def download_and_unpack_rsr_archive(self):
-        archive_file_name = self.deployment_host.file_name_at_url(self.rsr_archive_url)
+        archive_file_name = self.deployment_host.file_name_from_url_headers(self.rsr_archive_url)
         archive_file_on_host = os.path.join(self.config.repo_archives_dir, archive_file_name)
 
         self._clean_deployment_directories()
@@ -43,7 +43,7 @@ class Codebase(object):
             self.feedback.comment("Latest archive already exists at: %s" % archive_file_on_host)
         else:
             self.feedback.comment("Fetching RSR archive from the [%s] branch on Github" % self.config.rsr_branch)
-            self.deployment_host.fetch_file_at_url(rsr_archive_url, self.config.repo_archives_dir)
+            self.deployment_host.download_file_at_url_as(archive_file_on_host, rsr_archive_url)
 
     def _unpack_rsr_archive(self, archive_file_on_host):
         self.feedback.comment("Unpacking RSR archive in %s" % self.config.rsr_deployment_root)

@@ -52,13 +52,11 @@ class CodebaseTest(mox.MoxTestBase):
 
         rsr_archive_url = "http://some.server.org/archives"
         archive_file_on_host = "/var/git/archives/rsr_v1.0.9.zip"
-        repo_archives_dir = "/var/git/archives"
-        self.mock_config.repo_archives_dir = repo_archives_dir
 
         self.mock_feedback.comment("Downloading RSR archive file")
         self.mock_deployment_host.file_exists(archive_file_on_host).AndReturn(False)
         self.mock_feedback.comment("Fetching RSR archive from the [dev_branch] branch on Github")
-        self.mock_deployment_host.fetch_file_at_url(rsr_archive_url, repo_archives_dir)
+        self.mock_deployment_host.download_file_at_url_as(archive_file_on_host, rsr_archive_url)
         self.mox.ReplayAll()
 
         self.codebase._download_rsr_archive(rsr_archive_url, archive_file_on_host)
