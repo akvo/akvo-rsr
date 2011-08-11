@@ -34,6 +34,11 @@ class DeployRSRCodeTest(mox.MoxTestBase):
 
         self.assertEqual("deploy_rsr_code", DeployRSRCode.name)
 
+    def test_can_create_task_instance(self):
+        """fab.tests.tasks.deploy_rsr_code_test  Can create task instance"""
+
+        self.assertTrue(isinstance(DeployRSRCode.create_task_instance(), DeployRSRCode))
+
     def test_can_deploy_rsr_code(self):
         """fab.tests.tasks.deploy_rsr_code_test  Can deploy RSR code"""
 

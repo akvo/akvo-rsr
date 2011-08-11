@@ -21,15 +21,15 @@ class FetchRSRData(fabric.tasks.Task):
     def __init__(self, data_retriever):
         self.data_retriever = data_retriever
 
+    @staticmethod
+    def create_task_instance():
+        retriever_config = fab.config.dataretriever.DataRetrieverConfig(fabric.api.env.hosts)
+        database_host = fab.helpers.hosts.DatabaseHost.create_instance(retriever_config.rsr_virtualenv_path)
+
+        return FetchRSRData(fab.helpers.dataretriever.DataRetriever(retriever_config, database_host))
+
     def run(self):
         self.data_retriever.fetch_data_from_database()
 
 
-def create_task_instance():
-    retriever_config = fab.config.dataretriever.DataRetrieverConfig(fabric.api.env.hosts)
-    database_host = fab.helpers.hosts.DatabaseHost.create_instance(retriever_config.rsr_virtualenv_path)
-
-    return FetchRSRData(fab.helpers.dataretriever.DataRetriever(retriever_config, database_host))
-
-
-instance = create_task_instance()
+instance = FetchRSRData.create_task_instance()

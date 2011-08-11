@@ -24,6 +24,14 @@ class DeployRSRCode(fabric.tasks.Task):
         self.codebase = codebase
         self.feedback = deployment_host.feedback
 
+    @staticmethod
+    def create_task_instance():
+        deployer_config = fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
+        deployment_host = fab.helpers.hosts.DeploymentHost.create_instance(deployer_config.rsr_env_path)
+        codebase = fab.helpers.codebase.Codebase(deployer_config, deployment_host)
+
+        return DeployRSRCode(deployer_config, deployment_host, codebase)
+
     def run(self):
         self.feedback.comment("Starting RSR codebase deployment")
         self.ensure_required_paths_exist()
@@ -36,12 +44,4 @@ class DeployRSRCode(fabric.tasks.Task):
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(self.config.virtualenvs_home)
 
 
-def create_task_instance():
-    deployer_config = fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
-    deployment_host = fab.helpers.hosts.DeploymentHost.create_instance(deployer_config.rsr_env_path)
-    codebase = fab.helpers.codebase.Codebase(deployer_config, deployment_host)
-
-    return DeployRSRCode(deployer_config, deployment_host, codebase)
-
-
-instance = create_task_instance()
+instance = DeployRSRCode.create_task_instance()
