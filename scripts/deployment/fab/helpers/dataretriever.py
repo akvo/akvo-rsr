@@ -13,25 +13,20 @@ import fabric.context_managers
 
 class DataRetriever(object):
 
-    def __init__(self, data_retriever_config, database_host, virtualenv, path_helper, file_system, execution_feedback):
+    def __init__(self, data_retriever_config, database_host):
         self.config = data_retriever_config
         self.database_host = database_host
-        self.virtualenv = virtualenv
-        self.path = path_helper
-        self.file_system = file_system
-        self.feedback = execution_feedback
+        self.feedback = database_host.feedback
 
     def fetch_data_from_database(self):
         self.ensure_required_paths_exist()
-        self.feedback.comment("Fetching data from database")
         rsr_data_dump_path = self.config.rsr_data_dump_path
-        with fabric.context_managers.cd(self.config.akvo_rsr_app_path):
-            self.database_host.run("pwd")
-            self.virtualenv.run_within_virtualenv("python db_dump.py -d %s dump" % rsr_data_dump_path)
-        self.file_system.compress_directory(rsr_data_dump_path)
-        self.file_system.delete_directory(rsr_data_dump_path)
+        self.feedback.comment("Fetching data from database at %s" % self.config.akvo_rsr_app_path)
+        self.database_host.run_within_virtualenv("python %s -d %s dump" % (self.config.db_dump_script_path, rsr_data_dump_path))
+        self.database_host.compress_directory(rsr_data_dump_path)
+        self.database_host.delete_directory(rsr_data_dump_path)
 
     def ensure_required_paths_exist(self):
-        self.path.ensure_path_exists_with_sudo(self.config.data_dumps_home)
-        self.path.exit_if_path_does_not_exist(self.config.rsr_virtualenv_path)
-        self.path.exit_if_file_does_not_exist(self.config.db_dump_script_path)
+        self.database_host.ensure_directory_exists_with_sudo(self.config.data_dumps_home)
+        self.database_host.exit_if_directory_does_not_exist(self.config.rsr_virtualenv_path)
+        self.database_host.exit_if_file_does_not_exist(self.config.db_dump_script_path)

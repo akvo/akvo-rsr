@@ -9,7 +9,6 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-#from fab.config.dataretriever import DataRetrieverConfig
 from fab.helpers.dataretriever import DataRetriever
 from fab.tasks.dataretriever import FetchRSRData
 
@@ -26,6 +25,11 @@ class FetchRSRDataTest(mox.MoxTestBase):
         """fab.tests.tasks.fetch_rsr_data_test  Has expected task name"""
 
         self.assertEqual("fetch_rsr_data", FetchRSRData.name)
+
+    def test_can_create_task_instance(self):
+        """fab.tests.tasks.fetch_rsr_data_test  Can create task instance"""
+
+        self.assertTrue(isinstance(FetchRSRData.create_task_instance(), FetchRSRData))
 
     def test_can_(self):
         """fab.tests.tasks.fetch_rsr_data_test  Can fetch RSR data from database server"""

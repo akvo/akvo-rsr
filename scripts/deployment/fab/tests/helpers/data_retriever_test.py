@@ -12,10 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.dataretriever import DataRetrieverConfig
 from fab.helpers.dataretriever import DataRetriever
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
-from fab.helpers.hosts import RemoteHost
-from fab.helpers.path import Path
-from fab.helpers.virtualenv import VirtualEnv
+from fab.helpers.hosts import DatabaseHost
 
 
 class DataRetrieverTest(mox.MoxTestBase):
@@ -23,14 +20,11 @@ class DataRetrieverTest(mox.MoxTestBase):
     def setUp(self):
         super(DataRetrieverTest, self).setUp()
         self.mock_config = self.mox.CreateMock(DataRetrieverConfig)
-        self.mock_database_host = self.mox.CreateMock(RemoteHost)
-        self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
-        self.mock_path = self.mox.CreateMock(Path)
-        self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_database_host = self.mox.CreateMock(DatabaseHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.data_retriever = DataRetriever(self.mock_config, self.mock_database_host, self.mock_virtualenv,
-                                            self.mock_path, self.mock_file_system, self.mock_feedback)
+        self.mock_database_host.feedback = self.mock_feedback
+        self.data_retriever = DataRetriever(self.mock_config, self.mock_database_host)
 
     def test_can_fetch_data_from_database(self):
         """fab.tests.helpers.data_retriever_test  Can fetch data from database"""
@@ -46,14 +40,13 @@ class DataRetrieverTest(mox.MoxTestBase):
         self.mock_config.db_dump_script_path = db_dump_script_path
         self.mock_config.rsr_data_dump_path = rsr_data_dump_path
 
-        self.mock_path.ensure_path_exists_with_sudo(data_dumps_home)
-        self.mock_path.exit_if_path_does_not_exist(rsr_virtualenv_path)
-        self.mock_path.exit_if_file_does_not_exist(db_dump_script_path)
+        self.mock_database_host.ensure_directory_exists_with_sudo(data_dumps_home)
+        self.mock_database_host.exit_if_directory_does_not_exist(rsr_virtualenv_path)
+        self.mock_database_host.exit_if_file_does_not_exist(db_dump_script_path)
         self.mock_feedback.comment(mox.StrContains("Fetching data from database"))
-        self.mock_database_host.run("pwd")
-        self.mock_virtualenv.run_within_virtualenv("python db_dump.py -d %s dump" % rsr_data_dump_path)
-        self.mock_file_system.compress_directory(rsr_data_dump_path)
-        self.mock_file_system.delete_directory(rsr_data_dump_path)
+        self.mock_database_host.run_within_virtualenv("python %s -d %s dump" % (db_dump_script_path, rsr_data_dump_path))
+        self.mock_database_host.compress_directory(rsr_data_dump_path)
+        self.mock_database_host.delete_directory(rsr_data_dump_path)
         self.mox.ReplayAll()
 
         self.data_retriever.fetch_data_from_database()
