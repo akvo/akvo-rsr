@@ -9,6 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.hosts import DeploymentHost
 from fab.helpers.hosts import RemoteHost
@@ -26,8 +27,9 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_internet = self.mox.CreateMock(Internet)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
+        self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_remote_host.feedback = None # not actually used for the purposes of this test
+        self.mock_remote_host.feedback = self.mock_feedback
         self.deployment_host = DeploymentHost(self.mock_remote_host, self.mock_file_system, self.mock_permissions,
                                               self.mock_internet, self.mock_virtualenv)
 
@@ -187,8 +189,19 @@ class DeploymentHostTest(mox.MoxTestBase):
         """fab.tests.helpers.hosts.deployment_host_test  Can ensure directory exists with web user group permissions"""
 
         web_dir = "/some/web/dir"
+        self.mock_file_system.directory_exists(web_dir).AndReturn(False)
         self.mock_file_system.ensure_directory_exists_with_sudo(web_dir)
         self.mock_permissions.set_web_group_permissions_on_directory(web_dir)
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_directory_exists_with_web_group_permissions(web_dir)
+
+    def test_will_confirm_existing_directory_when_ensuring_directory_exists_with_web_group_permissions(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Will confirm existing directory when ensuring directory exists with web user group permissions"""
+
+        web_dir = "/some/web/dir"
+        self.mock_file_system.directory_exists(web_dir).AndReturn(True)
+        self.mock_feedback.comment("Found expected directory: %s" % web_dir)
         self.mox.ReplayAll()
 
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(web_dir)

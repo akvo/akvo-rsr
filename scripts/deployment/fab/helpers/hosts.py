@@ -170,8 +170,12 @@ class DeploymentHost(NeutralHost):
         self.permissions.set_web_group_ownership_on_directory(dir_path)
 
     def ensure_directory_exists_with_web_group_permissions(self, dir_path):
-        self.ensure_directory_exists_with_sudo(dir_path)
-        self.set_web_group_permissions_on_directory(dir_path)
+        if self.directory_exists(dir_path):
+            self.feedback.comment("Found expected directory: %s" % dir_path)
+            # TODO: check the file mode and set web group permissions as necessary
+        else:
+            self.ensure_directory_exists_with_sudo(dir_path)
+            self.set_web_group_permissions_on_directory(dir_path)
 
     def file_name_at_url(self, url):
         return self.internet.file_name_at_url(url)
