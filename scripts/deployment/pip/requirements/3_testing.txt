@@ -7,7 +7,7 @@ rdflib==3.1.0
 unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
-selenium==2.3.0
+selenium==2.4.0
 
 # optional dev modules
 # lettuce==0.1.27
