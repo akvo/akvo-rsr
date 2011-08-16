@@ -31,6 +31,9 @@ class RemoteHost(object):
     def sudo(self, command):
         return fabric.api.sudo(command)
 
+    def get(self, remote_path, local_path=None):
+        return fabric.api.get(remote_path, local_path)
+
     def path_exists(self, path):
         return fabric.contrib.files.exists(path)
 
@@ -91,6 +94,9 @@ class DatabaseHost(NeutralHost):
 
     def compress_directory(self, full_path_to_compress):
         self.file_system.compress_directory(full_path_to_compress)
+
+    def download_file_to_local_directory(self, remote_file_path, local_dir):
+        self.file_system.download_file(remote_file_path, local_dir)
 
     def run_within_virtualenv(self, command):
         self.virtualenv.run_within_virtualenv(command)

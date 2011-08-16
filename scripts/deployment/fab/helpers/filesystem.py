@@ -91,6 +91,9 @@ class FileSystem(object):
             self.feedback.comment("Deleting %s: %s" % (path_type, path))
             run_command("rm -r %s" % path)
 
+    def download_file(self, remote_file_path, local_dir):
+        self.remote_host.get(remote_file_path, local_dir)
+
     def compress_directory(self, full_path_to_compress):
         stripped_path = full_path_to_compress.rstrip("/")
         self.feedback.comment("Compressing %s" % stripped_path)

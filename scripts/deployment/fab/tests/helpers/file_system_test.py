@@ -261,6 +261,16 @@ class FileSystemTest(mox.MoxTestBase):
         expected_run_command("rm -r %s" % unwanted_file_or_dir_path)
         self.mox.ReplayAll()
 
+    def test_can_download_file(self):
+        """fab.tests.helpers.file_system_test  Can download a file"""
+
+        remote_file_path = "/var/some/dir/file.zip"
+        local_directory = "/var/tmp/archives"
+        self.mock_remote_host.get(remote_file_path, local_directory)
+        self.mox.ReplayAll()
+
+        self.file_system.download_file(remote_file_path, local_directory)
+
     def test_can_compress_directory(self):
         """fab.tests.helpers.file_system_test  Can compress a specified directory"""
 

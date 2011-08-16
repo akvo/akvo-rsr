@@ -71,6 +71,17 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         self.database_host.compress_directory(expected_dir_to_compress)
 
+    def test_can_download_file_to_local_directory(self):
+        """fab.tests.helpers.hosts.database_host_test  Can download remote file to a local directory"""
+
+        remote_file_path = "/some/dir/file.zip"
+        local_dir = "/var/tmp"
+
+        self.mock_file_system.download_file(remote_file_path, local_dir)
+        self.mox.ReplayAll()
+
+        self.database_host.download_file_to_local_directory(remote_file_path, local_dir)
+
     def test_can_run_command_within_virtualenv(self):
         """fab.tests.helpers.hosts.database_host_test  Can run command within virtualenv"""
 
