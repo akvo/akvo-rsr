@@ -51,6 +51,16 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         self.database_host.ensure_directory_exists_with_sudo(new_dir)
 
+    def test_can_make_file_writable_for_all_users(self):
+        """fab.tests.helpers.hosts.database_host_test  Can make a file writable for all users"""
+
+        expected_file_path = "/some/dir/file.txt"
+
+        self.mock_file_system.make_file_writable_for_all_users(expected_file_path)
+        self.mox.ReplayAll()
+
+        self.database_host.make_file_writable_for_all_users(expected_file_path)
+
     def test_can_delete_directory(self):
         """fab.tests.helpers.hosts.database_host_test  Can delete a directory"""
 

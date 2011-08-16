@@ -71,6 +71,9 @@ class FileSystem(object):
     def _rename_path(self, original_path, new_path):
         self.remote_host.run("mv %s %s" % (original_path, new_path))
 
+    def make_file_writable_for_all_users(self, file_path):
+        self.remote_host.sudo("chmod a+w %s" % file_path)
+
     def delete_file(self, file_path):
         self._delete_at_path_with(self.remote_host.run, "file", file_path)
 

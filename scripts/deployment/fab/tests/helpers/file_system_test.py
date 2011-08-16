@@ -178,6 +178,15 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.file_system.rename_directory(original_dir, new_dir)
 
+    def test_can_make_file_writable_for_all_users(self):
+        """fab.tests.helpers.file_system_test  Can make file writable for all users"""
+
+        file_path = "/var/tmp/file_to_change.txt"
+        self.mock_remote_host.sudo("chmod a+w %s" % file_path)
+        self.mox.ReplayAll()
+
+        self.file_system.make_file_writable_for_all_users(file_path)
+
     def test_can_delete_an_existing_file(self):
         """fab.tests.helpers.file_system_test  Can delete an existing file"""
 

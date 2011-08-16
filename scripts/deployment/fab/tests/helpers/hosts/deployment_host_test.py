@@ -100,6 +100,16 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.rename_directory(original_dir, new_dir)
 
+    def test_can_make_file_writable_for_all_users(self):
+        """fab.tests.helpers.hosts.deployment_host_test  Can make a file writable for all users"""
+
+        expected_file_path = "/some/dir/file.txt"
+
+        self.mock_file_system.make_file_writable_for_all_users(expected_file_path)
+        self.mox.ReplayAll()
+
+        self.deployment_host.make_file_writable_for_all_users(expected_file_path)
+
     def test_can_delete_file(self):
         """fab.tests.helpers.hosts.deployment_host_test  Can delete a file"""
 
