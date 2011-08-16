@@ -22,7 +22,7 @@ class SystemPackageVerifier(object):
         verifier.add(HeaderFileDependency("libjpeg", "jpeglib.h", "PIL"))
         verifier.add(HeaderFileDependency("zlib", "zlib.h", "PIL"))
 
-        print ">> Verifying expected system components for building Python modules:"
+        print "\n>> Verifying expected system components for building Python modules:"
         verifier.verify_all()
         print
         if verifier.not_all_dependencies_met():
