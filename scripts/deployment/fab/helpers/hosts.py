@@ -60,6 +60,9 @@ class NeutralHost(object):
     def exit_if_directory_does_not_exist(self, dir_path):
         self.file_system.exit_if_directory_does_not_exist(dir_path)
 
+    def make_file_writable_for_all_users(self, file_path):
+        self.file_system.make_file_writable_for_all_users(file_path)
+
 
 class DatabaseHost(NeutralHost):
     """DatabaseHost encapsulates common actions available when retrieving data from a database host"""
@@ -82,9 +85,6 @@ class DatabaseHost(NeutralHost):
 
     def ensure_directory_exists_with_sudo(self, dir_path):
         self.file_system.ensure_directory_exists_with_sudo(dir_path)
-
-    def make_file_writable_for_all_users(self, file_path):
-        self.file_system.make_file_writable_for_all_users(file_path)
 
     def delete_directory(self, dir_path):
         self.file_system.delete_directory(dir_path)
@@ -144,9 +144,6 @@ class DeploymentHost(NeutralHost):
 
     def rename_directory(self, original_dir, new_dir):
         self.file_system.rename_directory(original_dir, new_dir)
-
-    def make_file_writable_for_all_users(self, file_path):
-        self.file_system.make_file_writable_for_all_users(file_path)
 
     def delete_file(self, file_path):
         self.file_system.delete_file(file_path)

@@ -65,6 +65,16 @@ class NeutralHostTest(mox.MoxTestBase):
 
         self.neutral_host.exit_if_directory_does_not_exist(nonexistent_dir)
 
+    def test_can_make_file_writable_for_all_users(self):
+        """fab.tests.helpers.hosts.neutral_host_test  Can make a file writable for all users"""
+
+        expected_file_path = "/some/dir/file.txt"
+
+        self.mock_file_system.make_file_writable_for_all_users(expected_file_path)
+        self.mox.ReplayAll()
+
+        self.neutral_host.make_file_writable_for_all_users(expected_file_path)
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(NeutralHostTest)
