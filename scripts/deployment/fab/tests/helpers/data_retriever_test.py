@@ -52,6 +52,7 @@ class DataRetrieverTest(mox.MoxTestBase):
         self.mock_database_host.run_within_virtualenv("python %s -d %s dump" % (db_dump_script_path, rsr_data_dump_path))
         self.mock_database_host.compress_directory(rsr_data_dump_path)
         self.mock_database_host.delete_directory(rsr_data_dump_path)
+        self.mock_database_host.download_file_to_local_directory("%s.*" % rsr_data_dump_path, data_dumps_home)
         self.mox.ReplayAll()
 
         self.data_retriever.fetch_data_from_database()

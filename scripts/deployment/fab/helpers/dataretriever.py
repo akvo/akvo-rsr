@@ -26,6 +26,7 @@ class DataRetriever(object):
         self.database_host.run_within_virtualenv("python %s -d %s dump" % (self.config.db_dump_script_path, rsr_data_dump_path))
         self.database_host.compress_directory(rsr_data_dump_path)
         self.database_host.delete_directory(rsr_data_dump_path)
+        self.database_host.download_file_to_local_directory("%s.*" % rsr_data_dump_path, self.config.data_dumps_home)
 
     def ensure_required_paths_exist(self):
         self.database_host.ensure_directory_exists_with_sudo(self.config.data_dumps_home)
