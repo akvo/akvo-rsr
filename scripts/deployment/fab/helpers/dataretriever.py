@@ -20,6 +20,7 @@ class DataRetriever(object):
 
     def fetch_data_from_database(self):
         self.ensure_required_paths_exist()
+        self.ensure_rsr_log_file_is_writable()
         rsr_data_dump_path = self.config.rsr_data_dump_path
         self.feedback.comment("Fetching data from database at %s" % self.config.akvo_rsr_app_path)
         self.database_host.run_within_virtualenv("python %s -d %s dump" % (self.config.db_dump_script_path, rsr_data_dump_path))
@@ -30,3 +31,7 @@ class DataRetriever(object):
         self.database_host.ensure_directory_exists_with_sudo(self.config.data_dumps_home)
         self.database_host.exit_if_directory_does_not_exist(self.config.rsr_virtualenv_path)
         self.database_host.exit_if_file_does_not_exist(self.config.db_dump_script_path)
+
+    def ensure_rsr_log_file_is_writable(self):
+        self.feedback.comment("Ensuring RSR log file is writable")
+        self.database_host.make_file_writable_for_all_users(self.config.rsr_log_file_path)
