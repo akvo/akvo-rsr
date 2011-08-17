@@ -13,14 +13,16 @@ from fab.tests.helpers.data_retriever_test import DataRetrieverTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
 from fab.tests.helpers.file_system_test import FileSystemTest
 from fab.tests.helpers.internet_test import InternetTest
+from fab.tests.helpers.remote_file_system_test import RemoteFileSystemTest
 from fab.tests.helpers.virtualenv_test import VirtualEnvTest
 
 from fab.tests.helpers.hosts.hosts_test_suite import hosts_suite
 
 
 def helpers_suite():
-    helpers_suite = TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, FileSystemTest, AkvoPermissionsTest,
-                                                                 VirtualEnvTest, InternetTest, CodebaseTest, DataRetrieverTest])
+    helpers_suite = TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, FileSystemTest, RemoteFileSystemTest,
+                                                                 AkvoPermissionsTest, VirtualEnvTest, InternetTest, CodebaseTest,
+                                                                 DataRetrieverTest])
 
     return TestSuiteLoader().create_suite_from_list([helpers_suite, hosts_suite()])
 
