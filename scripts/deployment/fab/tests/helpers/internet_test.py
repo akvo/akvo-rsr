@@ -10,8 +10,8 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.hosts import RemoteHost
 from fab.helpers.internet import Internet
+from fab.host.controller import RemoteHostController
 
 
 class StubbedInternet(Internet):
@@ -41,12 +41,12 @@ class InternetTest(mox.MoxTestBase):
 
     def setUp(self):
         super(InternetTest, self).setUp()
-        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_remote_host.feedback = self.mock_feedback
+        self.mock_host_controller.feedback = self.mock_feedback
 
-        self.internet = StubbedInternet(self.mock_remote_host)
+        self.internet = StubbedInternet(self.mock_host_controller)
 
     def test_can_get_file_name_at_specified_url(self):
         """fab.tests.helpers.internet_test  Can get file name at a specified URL"""
@@ -104,7 +104,7 @@ class InternetTest(mox.MoxTestBase):
 
         file_url = "http://some.server.org/file.zip"
         downloaded_file_path = "/var/tmp/archives/rsr_archive.zip"
-        self.mock_remote_host.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))
+        self.mock_host_controller.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))
         self.mox.ReplayAll()
 
         self.internet.download_file_at_url_as(downloaded_file_path, file_url)
