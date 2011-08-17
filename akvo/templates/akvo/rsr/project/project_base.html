@@ -6,7 +6,7 @@
 {% block title %}{{project.name}}{% endblock title %}
 
 {% block head %}
-<link rel="alternate" type="application/rss+xml" title="Updates to {{project.name}}" href="/rsr/rss/updates/{{project.id}}/">
+  <link rel="alternate" type="application/rss+xml" title="Updates to {{project.name}}" id="gallery" href="{%  url 'rss_project_updates' project.id %}">
 {% endblock head %}
 
 {% block breadcrum_items %}
@@ -46,7 +46,7 @@
     <h1 style="margin-bottom:5px;">{{project.name}}</h1>
   </a>
   <div style="float:right; width:100px; text-align:right;">
-    <a href="/rsr/rss/updates/{{project.id}}/">
+    <a href="{%  url 'rss_project_updates' project.id %}">
       <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
     </a>
   </div>

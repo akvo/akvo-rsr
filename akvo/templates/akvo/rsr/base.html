@@ -22,7 +22,10 @@
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
 	<link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
 	<link rel="alternate" type="application/rss+xml" title="Project updates" href="/rsr/rss/all-updates" />
-	{% block head %}{% endblock head %}
+	{% block head %}
+    {# this link is overridden in organisation.html and project_base.html#}
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'Project updates for all Akvo RSR projects' %}" id="gallery" href="{%  url 'rss_all_updates' %}">
+	{% endblock head %}
 	
 </head>
 <body>

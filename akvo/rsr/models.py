@@ -224,8 +224,9 @@ class Organisation(models.Model):
     objects     = QuerySetManager()
     projects    = ProjectsQuerySetManager()
 
+    @models.permalink
     def get_absolute_url(self):
-        return '/rsr/organisation/%d/' % self.id
+        return ('org_detail', (), {'org_id': self.pk})
 
     @property
     def primary_location(self):
@@ -2513,27 +2514,26 @@ class ProjectUpdate(models.Model):
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
 
-    project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
-    user            = models.ForeignKey(User, verbose_name=_('user'))
-    title           = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
-    text            = models.TextField(_('text'), blank=True)
-    #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
-    photo           = ImageWithThumbnailsField(
-                        blank=True,
-                        upload_to=image_path,
-                        thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-                        help_text = 'The image should have 4:3 height:width ratio for best displaying result',
-                    )
-    photo_location  = models.CharField(_('photo location'), max_length=1,
+    project             = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
+    user                = models.ForeignKey(User, verbose_name=_('user'))
+    title               = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
+    text                = models.TextField(_('text'), blank=True)
+    photo               = ImageWithThumbnailsField(
+                            blank=True,
+                            upload_to=image_path,
+                            thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+                            help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+                        )
+    photo_location      = models.CharField(_('photo location'), max_length=1,
                                        choices=PHOTO_LOCATIONS)
-    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    video           = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
-    video_caption   = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    video_credit    = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time = models.DateTimeField(_('time'), auto_now_add=True)
-    time_last_updated = models.DateTimeField(_('time last updated'), auto_now=True)
+    photo_caption       = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    photo_credit        = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    video               = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video_caption       = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    video_credit        = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    update_method       = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
+    time                = models.DateTimeField(_('time'), auto_now_add=True)
+    time_last_updated   = models.DateTimeField(_('time last updated'), auto_now=True)
     
     if not settings.PVW_RSR:
         featured        = models.BooleanField(_('featured'))
@@ -2544,9 +2544,10 @@ class ProjectUpdate(models.Model):
         verbose_name_plural = _('project updates')
 
     def img(self, value=''):
-        if self.photo:
-            value = self.photo.thumbnail_tag
-        return value
+        try:
+            return self.photo.thumbnail_tag
+        except:
+            return value
     img.allow_tags = True
 
     def get_is_featured(self):

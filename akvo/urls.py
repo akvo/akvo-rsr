@@ -9,7 +9,7 @@ from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
-from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
+from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
@@ -166,8 +166,12 @@ urlpatterns += patterns('',
         {'template': 'rsr/error_access_denied.html'},
         name='access_denied'),
     
-    url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
-    
+    #url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
+
+    url(r'^rsr/rss/updates/(?P<project_id>\d+)/$', ProjectUpdates(), name="rss_project_updates"),
+    url(r'^rsr/rss/org-updates/(?P<org_id>\d+)/$', OrganisationUpdates(), name="rss_org_updates"),
+    url(r'^rsr/rss/all-updates/$', AllProjectUpdates(), name="rss_all_updates"),
+
     # Phone
     #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
