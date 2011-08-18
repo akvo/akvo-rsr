@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -19,7 +20,18 @@ class NeutralHostTest(mox.MoxTestBase):
         super(NeutralHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
 
-        self.neutral_host = NeutralHost(self.mock_file_system, None) # we don't have any calls on the feedback parameter
+        # the feedback dependency doesn't have any calls in this test so we pass None
+        self.neutral_host = NeutralHost(self.mock_file_system, None)
+
+    def test_can_change_directory(self):
+        """fab.tests.host.neutral_host_test  Can change directory"""
+
+        dir_path = "/var/tmp/foo"
+        changed_context = fabric.api.cd(dir_path)
+        self.mock_file_system.cd(dir_path).AndReturn(changed_context)
+        self.mox.ReplayAll()
+
+        self.assertIs(changed_context, self.neutral_host.cd(dir_path))
 
     def test_can_check_whether_file_exists(self):
         """fab.tests.host.neutral_host_test  Can check whether file exists"""

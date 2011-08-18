@@ -29,10 +29,11 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.helpers.file_system_test  Can change directory"""
 
         dir_path = "/var/tmp/foo"
-        self.mock_host_controller.cd(dir_path).AndReturn(fabric.api.cd(dir_path))
+        changed_context = fabric.api.cd(dir_path)
+        self.mock_host_controller.cd(dir_path).AndReturn(changed_context)
         self.mox.ReplayAll()
 
-        self.file_system.cd(dir_path)
+        self.assertIs(changed_context, self.file_system.cd(dir_path))
 
     def test_can_verify_file_existence(self):
         """fab.tests.helpers.file_system_test  Can verify file existence"""

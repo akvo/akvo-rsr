@@ -12,6 +12,9 @@ class NeutralHost(object):
         self.file_system = file_system
         self.feedback = feedback
 
+    def cd(self, dir_path):
+        return self.file_system.cd(dir_path)
+
     def file_exists(self, file_path):
         return self.file_system.file_exists(file_path)
 
