@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -12,7 +13,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.deployer import DeployerConfig
 from fab.helpers.codebase import Codebase
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.hosts import DeploymentHost
+from fab.host.deployment import DeploymentHost
 
 
 class CodebaseTest(mox.MoxTestBase):
@@ -86,6 +87,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.mock_config.rsr_deployment_root = rsr_deployment_root
 
         self.mock_feedback.comment("Unpacking RSR archive in %s" % rsr_deployment_root)
+        self.mock_deployment_host.cd(repo_checkout_root).AndReturn(fabric.api.cd(repo_checkout_root))
         self.mock_deployment_host.decompress_code_archive(archive_file_on_host, repo_checkout_root)
         self.mock_deployment_host.rename_directory(Codebase.UNPACKED_RSR_ARCHIVE_MASK, rsr_deployment_dir_name)
         self.mock_deployment_host.set_web_group_ownership_on_directory(rsr_deployment_dir_name)

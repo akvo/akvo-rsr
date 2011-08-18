@@ -10,8 +10,6 @@ from __future__ import with_statement
 
 import os
 
-import fabric.context_managers
-
 
 class Codebase(object):
 
@@ -47,7 +45,7 @@ class Codebase(object):
 
     def _unpack_rsr_archive(self, archive_file_on_host):
         self.feedback.comment("Unpacking RSR archive in %s" % self.config.rsr_deployment_root)
-        with fabric.context_managers.cd(self.config.repo_checkout_root):
+        with self.deployment_host.cd(self.config.repo_checkout_root):
             self.deployment_host.decompress_code_archive(archive_file_on_host, self.config.repo_checkout_root)
             self.deployment_host.rename_directory(Codebase.UNPACKED_RSR_ARCHIVE_MASK, self.config.rsr_deployment_dir_name)
             self.deployment_host.set_web_group_ownership_on_directory(self.config.rsr_deployment_dir_name)
