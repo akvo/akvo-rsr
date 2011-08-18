@@ -20,6 +20,9 @@ class FileSystem(object):
         self.host_controller = host_controller
         self.feedback = self.host_controller.feedback
 
+    def cd(self, dir_path):
+        return self.host_controller.cd(dir_path)
+
     def file_exists(self, file_path):
         return self.host_controller.path_exists(file_path)
 

@@ -25,6 +25,15 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_host_controller.feedback = self.mock_feedback
         self.file_system = FileSystem(self.mock_host_controller)
 
+    def test_can_change_directory(self):
+        """fab.tests.helpers.file_system_test  Can change directory"""
+
+        dir_path = "/var/tmp/foo"
+        self.mock_host_controller.cd(dir_path).AndReturn(fabric.api.cd(dir_path))
+        self.mox.ReplayAll()
+
+        self.file_system.cd(dir_path)
+
     def test_can_verify_file_existence(self):
         """fab.tests.helpers.file_system_test  Can verify file existence"""
 
