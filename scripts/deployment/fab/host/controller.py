@@ -29,6 +29,9 @@ class RemoteHostController(object):
     def sudo(self, command):
         return fabric.api.sudo(command)
 
+    def cd(self, path):
+        return fabric.api.cd(path)
+
     def get(self, remote_path, local_path=None):
         return fabric.api.get(remote_path, local_path)
 
@@ -51,6 +54,12 @@ class LocalHostController(object):
 
     def sudo(self, command):
         return self.run("sudo %s" % command)
+
+    def cd(self, path):
+        return fabric.api.lcd(path)
+
+    def get(self, remote_path, local_path=None):
+        raise Exception("Unsupported operation")
 
     def path_exists(self, path):
         return os.path.exists(path)
