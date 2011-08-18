@@ -9,30 +9,28 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.helpers.filesystem import FileSystem
-from fab.helpers.hosts import DatabaseHost
-from fab.helpers.hosts import RemoteHost
+from fab.helpers.filesystem import RemoteFileSystem
 from fab.helpers.virtualenv import VirtualEnv
+from fab.host.database import DatabaseHost
 
 
 class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
-        self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_file_system = self.mox.CreateMock(RemoteFileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
-        self.mock_remote_host.feedback = None # not actually used for the purposes of this test
-        self.database_host = DatabaseHost(self.mock_remote_host, self.mock_file_system, self.mock_virtualenv)
+        # the feedback dependency doesn't have any calls in this test so we pass None
+        self.database_host = DatabaseHost(self.mock_file_system, self.mock_virtualenv, None)
 
     def test_can_create_databasehost_instance(self):
-        """fab.tests.helpers.hosts.database_host_test  Can create a DatabaseHost instance"""
+        """fab.tests.host.database_host_test  Can create a DatabaseHost instance"""
 
         self.assertTrue(isinstance(DatabaseHost.create_instance("/some/virtualenv/path"), DatabaseHost))
 
     def test_can_ensure_directory_exists(self):
-        """fab.tests.helpers.hosts.database_host_test  Can ensure a directory exists"""
+        """fab.tests.host.database_host_test  Can ensure a directory exists"""
 
         new_dir = "/var/new/dir"
 
@@ -42,7 +40,7 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.database_host.ensure_directory_exists(new_dir)
 
     def test_can_ensure_directory_exists_with_sudo(self):
-        """fab.tests.helpers.hosts.database_host_test  Can ensure a directory exists with sudo"""
+        """fab.tests.host.database_host_test  Can ensure a directory exists with sudo"""
 
         new_dir = "/var/new/dir"
 
@@ -52,7 +50,7 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.database_host.ensure_directory_exists_with_sudo(new_dir)
 
     def test_can_delete_directory(self):
-        """fab.tests.helpers.hosts.database_host_test  Can delete a directory"""
+        """fab.tests.host.database_host_test  Can delete a directory"""
 
         expected_dir_to_delete = "/some/dir/to/delete"
 
@@ -62,7 +60,7 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.database_host.delete_directory(expected_dir_to_delete)
 
     def test_can_compress_directory(self):
-        """fab.tests.helpers.hosts.database_host_test  Can compress a directory"""
+        """fab.tests.host.database_host_test  Can compress a directory"""
 
         expected_dir_to_compress = "/some/dir/to/compress"
 
@@ -72,7 +70,7 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.database_host.compress_directory(expected_dir_to_compress)
 
     def test_can_download_file_to_local_directory(self):
-        """fab.tests.helpers.hosts.database_host_test  Can download remote file to a local directory"""
+        """fab.tests.host.database_host_test  Can download remote file to a local directory"""
 
         remote_file_path = "/some/dir/file.zip"
         local_dir = "/var/tmp"
@@ -83,7 +81,7 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.database_host.download_file_to_local_directory(remote_file_path, local_dir)
 
     def test_can_run_command_within_virtualenv(self):
-        """fab.tests.helpers.hosts.database_host_test  Can run command within virtualenv"""
+        """fab.tests.host.database_host_test  Can run command within virtualenv"""
 
         self.mock_virtualenv.run_within_virtualenv("some command")
         self.mox.ReplayAll()

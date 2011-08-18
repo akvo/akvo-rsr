@@ -7,13 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.helpers.hosts.database_host_test import DatabaseHostTest
 from fab.tests.helpers.hosts.deployment_host_test import DeploymentHostTest
 from fab.tests.helpers.hosts.remote_host_test import RemoteHostTest
 
 
 def hosts_suite():
-    return TestSuiteLoader().create_suite_from_classes([RemoteHostTest, DatabaseHostTest, DeploymentHostTest])
+    return TestSuiteLoader().create_suite_from_classes([RemoteHostTest, DeploymentHostTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
