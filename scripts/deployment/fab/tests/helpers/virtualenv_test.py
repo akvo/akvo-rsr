@@ -11,8 +11,8 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
-from fab.helpers.hosts import RemoteHost
 from fab.helpers.virtualenv import VirtualEnv
+from fab.host.controller import RemoteHostController
 
 
 class VirtualEnvTest(mox.MoxTestBase):
@@ -20,19 +20,19 @@ class VirtualEnvTest(mox.MoxTestBase):
     def setUp(self):
         super(VirtualEnvTest, self).setUp()
         self.expected_virtualenv_path = "/some/env/path"
-        self.mock_virtualenv_host = self.mox.CreateMock(RemoteHost)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_virtualenv_host.feedback = self.mock_feedback
-        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_virtualenv_host, self.mock_file_system)
+        self.mock_host_controller.feedback = self.mock_feedback
+        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_host_controller, self.mock_file_system)
 
     def test_can_run_command_within_virtualenv(self):
         """fab.tests.helpers.virtualenv_test  Can run command from within virtualenv"""
 
         virtualenv_command = "command text"
 
-        self.mock_virtualenv_host.run(self.expected_call_within_virtualenv(virtualenv_command))
+        self.mock_host_controller.run(self.expected_call_within_virtualenv(virtualenv_command))
         self.mox.ReplayAll()
 
         self.virtualenv.run_within_virtualenv(virtualenv_command)
@@ -40,7 +40,7 @@ class VirtualEnvTest(mox.MoxTestBase):
     def test_can_list_installed_virtualenv_packages(self):
         """fab.tests.helpers.virtualenv_test  Can list installed virtualenv packages"""
 
-        self.mock_virtualenv_host.run(self.expected_pip_freeze_call())
+        self.mock_host_controller.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()
 
         self.virtualenv.list_installed_virtualenv_packages()
@@ -55,8 +55,8 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
         self.mock_file_system.delete_file_with_sudo(pip_log_file)
         self.mock_feedback.comment(mox.StrContains("Creating new virtualenv at %s" % self.expected_virtualenv_path))
-        self.mock_virtualenv_host.run(expected_virtualenv_creation_command)
-        self.mock_virtualenv_host.run(self.expected_pip_freeze_call())
+        self.mock_host_controller.run(expected_virtualenv_creation_command)
+        self.mock_host_controller.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()
 
         self.virtualenv.create_empty_virtualenv(pip_log_file)
@@ -71,8 +71,8 @@ class VirtualEnvTest(mox.MoxTestBase):
                                                                                    pip_log_file)
 
         self.mock_feedback.comment(mox.StrContains("Installing packages in virtualenv at %s" % self.expected_virtualenv_path))
-        self.mock_virtualenv_host.run(self.expected_call_within_virtualenv(expected_pip_install_command))
-        self.mock_virtualenv_host.run(self.expected_pip_freeze_call())
+        self.mock_host_controller.run(self.expected_call_within_virtualenv(expected_pip_install_command))
+        self.mock_host_controller.run(self.expected_pip_freeze_call())
         self.mox.ReplayAll()
 
         self.virtualenv.install_packages(pip_requirements_file, pip_log_file)
