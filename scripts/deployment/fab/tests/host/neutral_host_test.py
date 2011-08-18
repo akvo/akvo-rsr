@@ -10,27 +10,19 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.filesystem import FileSystem
-from fab.helpers.hosts import NeutralHost
-from fab.helpers.hosts import RemoteHost
+from fab.host.neutral import NeutralHost
 
 
 class NeutralHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(NeutralHostTest, self).setUp()
-        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
 
-        self.mock_remote_host.feedback = None # not actually used for the purposes of this test
-        self.neutral_host = NeutralHost(self.mock_remote_host, self.mock_file_system)
-
-    def test_can_create_neutralhost_instance(self):
-        """fab.tests.helpers.hosts.neutral_host_test  Can create a NeutralHost instance"""
-
-        self.assertTrue(isinstance(NeutralHost.create_instance(), NeutralHost))
+        self.neutral_host = NeutralHost(self.mock_file_system, None) # we don't have any calls on the feedback parameter
 
     def test_can_check_whether_file_exists(self):
-        """fab.tests.helpers.hosts.neutral_host_test  Can check whether file exists"""
+        """fab.tests.host.neutral_host_test  Can check whether file exists"""
 
         existing_file = "/usr/bin/man"
         self.mock_file_system.file_exists(existing_file).AndReturn(True)
@@ -39,7 +31,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.assertTrue(self.neutral_host.file_exists(existing_file), "Expected file to exist")
 
     def test_can_check_whether_directory_exists(self):
-        """fab.tests.helpers.hosts.neutral_host_test  Can check whether directory exists"""
+        """fab.tests.host.neutral_host_test  Can check whether directory exists"""
 
         existing_dir = "/usr/bin"
         self.mock_file_system.directory_exists(existing_dir).AndReturn(True)
@@ -48,7 +40,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.assertTrue(self.neutral_host.directory_exists(existing_dir), "Expected directory to exist")
 
     def test_will_exit_if_file_does_not_exist(self):
-        """fab.tests.helpers.hosts.neutral_host_test  Will exit if file does not exist"""
+        """fab.tests.host.neutral_host_test  Will exit if file does not exist"""
 
         nonexistent_file = "/path/to/nonexistent_file.txt"
         self.mock_file_system.exit_if_file_does_not_exist(nonexistent_file)
@@ -57,7 +49,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.neutral_host.exit_if_file_does_not_exist(nonexistent_file)
 
     def test_will_exit_if_directory_does_not_exist(self):
-        """fab.tests.helpers.hosts.neutral_host_test  Will exit if directory does not exist"""
+        """fab.tests.host.neutral_host_test  Will exit if directory does not exist"""
 
         nonexistent_dir = "/path/to/nonexistent/dir"
         self.mock_file_system.exit_if_directory_does_not_exist(nonexistent_dir)
@@ -66,7 +58,7 @@ class NeutralHostTest(mox.MoxTestBase):
         self.neutral_host.exit_if_directory_does_not_exist(nonexistent_dir)
 
     def test_can_make_file_writable_for_all_users(self):
-        """fab.tests.helpers.hosts.neutral_host_test  Can make a file writable for all users"""
+        """fab.tests.host.neutral_host_test  Can make a file writable for all users"""
 
         expected_file_path = "/some/dir/file.txt"
 

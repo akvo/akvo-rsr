@@ -9,9 +9,13 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.host.controller.host_controller_test_suite import host_controller_suite
 
+from fab.tests.host.neutral_host_test import NeutralHostTest
+
 
 def host_suite():
-    return TestSuiteLoader().create_suite_from_list([host_controller_suite()])
+    host_suite = TestSuiteLoader().create_suite_from_classes([NeutralHostTest])
+
+    return TestSuiteLoader().create_suite_from_list([host_controller_suite(), host_suite])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
