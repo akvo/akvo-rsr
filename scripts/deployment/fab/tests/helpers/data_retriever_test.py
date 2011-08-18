@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.dataretriever import DataRetrieverConfig
 from fab.helpers.dataretriever import DataRetriever
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.hosts import DatabaseHost
+from fab.host.database import DatabaseHost
 
 
 class DataRetrieverTest(mox.MoxTestBase):

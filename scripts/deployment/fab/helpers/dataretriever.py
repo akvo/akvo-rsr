@@ -5,12 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-# python 2.5 compatibilty
-from __future__ import with_statement
-
-import fabric.context_managers
-
-
 class DataRetriever(object):
 
     def __init__(self, data_retriever_config, database_host):
