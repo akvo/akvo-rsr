@@ -7,16 +7,15 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.host.controller.host_controller_test_suite import host_controller_suite
-
 from fab.tests.host.database_host_test import DatabaseHostTest
+from fab.tests.host.local_host_controller_test import LocalHostControllerTest
 from fab.tests.host.neutral_host_test import NeutralHostTest
+from fab.tests.host.remote_host_controller_test import RemoteHostControllerTest
 
 
 def host_suite():
-    host_suite = TestSuiteLoader().create_suite_from_classes([NeutralHostTest, DatabaseHostTest])
-
-    return TestSuiteLoader().create_suite_from_list([host_controller_suite(), host_suite])
+    return TestSuiteLoader().create_suite_from_classes([LocalHostControllerTest, RemoteHostControllerTest,
+                                                        NeutralHostTest, DatabaseHostTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
