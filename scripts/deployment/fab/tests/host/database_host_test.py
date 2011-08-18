@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.helpers.filesystem import RemoteFileSystem
+from fab.helpers.filesystem import FileSystem
 from fab.helpers.virtualenv import VirtualEnv
 from fab.host.database import DatabaseHost
 
@@ -18,7 +18,7 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.mock_file_system = self.mox.CreateMock(RemoteFileSystem)
+        self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
 
         # the feedback dependency doesn't have any calls in this test so we pass None

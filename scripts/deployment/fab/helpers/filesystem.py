@@ -10,11 +10,11 @@ from __future__ import with_statement
 
 import os
 
-import fabric.context_managers
-
 
 class FileSystem(object):
     """FileSystem encapsulates file system actions that are common to both local and remote hosts"""
+
+    CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
 
     def __init__(self, host_controller):
         self.host_controller = host_controller
@@ -90,22 +90,16 @@ class FileSystem(object):
             self.feedback.comment("Deleting %s: %s" % (path_type, path))
             run_command("rm -r %s" % path)
 
-
-class RemoteFileSystem(FileSystem):
-    """RemoteFileSystem extends FileSystem with additional commands for remote hosts"""
-
-    CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
-
-    def download_file(self, remote_file_path, local_dir):
-        self.host_controller.get(remote_file_path, local_dir)
+    def decompress_code_archive(self, archive_file_name, destination_dir):
+        self.host_controller.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
 
     def compress_directory(self, full_path_to_compress):
         stripped_path = full_path_to_compress.rstrip("/")
         self.feedback.comment("Compressing %s" % stripped_path)
         parent_dir = os.path.dirname(stripped_path)
         compressed_file_name = os.path.basename(stripped_path)
-        with fabric.context_managers.cd(parent_dir):
+        with self.host_controller.cd(parent_dir):
             self.host_controller.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
 
-    def decompress_code_archive(self, archive_file_name, destination_dir):
-        self.host_controller.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, RemoteFileSystem.CODE_ARCHIVE_EXCLUSIONS))
+    def download_file(self, host_file_path, local_dir):
+        self.host_controller.get(host_file_path, local_dir)

@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.helpers.filesystem import RemoteFileSystem
+from fab.helpers.filesystem import FileSystem
 from fab.helpers.virtualenv import VirtualEnv
 from fab.host.controller import RemoteHostController
 from fab.host.neutral import NeutralHost
@@ -22,7 +22,7 @@ class DatabaseHost(NeutralHost):
     @staticmethod
     def create_instance(virtualenv_path):
         host_controller = RemoteHostController.create_instance()
-        file_system = RemoteFileSystem(host_controller)
+        file_system = FileSystem(host_controller)
         virtualenv = VirtualEnv(virtualenv_path, host_controller, file_system)
 
         return DatabaseHost(file_system, virtualenv, host_controller.feedback)

@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -260,6 +261,48 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_feedback.comment(mox.StrContains("Deleting %s: %s" % (file_or_dir, unwanted_file_or_dir_path)))
         expected_run_command("rm -r %s" % unwanted_file_or_dir_path)
         self.mox.ReplayAll()
+
+    def test_can_decompress_code_archive(self):
+        """fab.tests.helpers.file_system_test  Can decompress a code archive"""
+
+        archive_file = "rsr_v1.0.10.zip"
+        destination_dir = "/var/tmp/unpack"
+        self.mock_host_controller.run("unzip -q %s -d %s -x %s" % (archive_file, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
+        self.mox.ReplayAll()
+
+        self.file_system.decompress_code_archive(archive_file, destination_dir)
+
+    def test_can_compress_directory(self):
+        """fab.tests.helpers.file_system_test  Can compress a specified directory"""
+
+        dir_to_compress = "/var/archives/data_4423"
+        self._set_expected_compression_path_and_compressed_file_name(dir_to_compress, "data_4423")
+
+        self.file_system.compress_directory(dir_to_compress)
+
+    def test_can_compress_directory_with_trailing_path_separator(self):
+        """fab.tests.helpers.file_system_test  Can compress a specified directory even with a trailing path separator"""
+
+        dir_to_compress = "/var/archives/data_4423/"
+        self._set_expected_compression_path_and_compressed_file_name(dir_to_compress.rstrip("/"), "data_4423")
+
+        self.file_system.compress_directory(dir_to_compress)
+
+    def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, compressed_file_name):
+        self.mock_feedback.comment("Compressing %s" % dir_to_compress)
+        self.mock_host_controller.cd("/var/archives").AndReturn(fabric.api.cd("/var/archives"))
+        self.mock_host_controller.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
+        self.mox.ReplayAll()
+
+    def test_can_download_file(self):
+        """fab.tests.helpers.file_system_test  Can download a file"""
+
+        host_file_path = "/var/some/dir/file.zip"
+        local_directory = "/var/tmp/archives"
+        self.mock_host_controller.get(host_file_path, local_directory)
+        self.mox.ReplayAll()
+
+        self.file_system.download_file(host_file_path, local_directory)
 
 
 def suite():
