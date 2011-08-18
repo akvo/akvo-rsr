@@ -59,7 +59,7 @@ class LocalHostController(object):
         return fabric.api.lcd(path)
 
     def get(self, remote_path, local_path=None):
-        raise Exception("Unsupported operation")
+        raise Exception("Unsupported operation: %s.get()" % LocalHostController.__name__)
 
     def path_exists(self, path):
         return os.path.exists(path)
