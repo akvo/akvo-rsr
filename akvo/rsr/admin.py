@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib import auth
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
+from django.contrib.sites.admin import SiteAdmin
 from django.contrib.contenttypes import generic
 from django.db import models, transaction
 from django.db.models import get_model
@@ -1365,3 +1366,7 @@ else: #akvo-rsr
         list_filter = ('paypal_gateway', 'mollie_gateway')
     
     admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
+
+
+# Add extra fields to SiteAdmin
+SiteAdmin.list_display += ('partner_domain', 'enabled')
