@@ -13,7 +13,7 @@ django-sorting==0.1
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
--e hg+http://bitbucket.org/ubernostrum/django-registration/@d36a38202ee3#egg=django_registration-tip
+-e hg+http://bitbucket.org/ubernostrum/django-registration/@fad7080fe769#egg=django_registration-tip
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
