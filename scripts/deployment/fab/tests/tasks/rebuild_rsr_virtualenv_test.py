@@ -31,7 +31,7 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can create task instance"""
 
-        self.assertTrue(isinstance(RebuildRSRVirtualEnv.create_task_instance(), RebuildRSRVirtualEnv))
+        self.assertIsInstance(RebuildRSRVirtualEnv.create_task_instance(), RebuildRSRVirtualEnv)
 
     def test_can_rebuild_rsr_virtualenv(self):
         """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can rebuild an RSR virtualenv"""

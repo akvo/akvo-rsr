@@ -36,7 +36,7 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         host = self._create_deploymenthost_instance_with(RemoteHostController)
 
-        self.assertTrue(isinstance(host, DeploymentHost))
+        self.assertIsInstance(host, DeploymentHost)
 
 
     def test_can_create_a_local_deploymenthost_instance(self):
@@ -44,7 +44,7 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         host = self._create_deploymenthost_instance_with(LocalHostController)
 
-        self.assertTrue(isinstance(host, DeploymentHost))
+        self.assertIsInstance(host, DeploymentHost)
 
     def _create_deploymenthost_instance_with(self, host_controller_class):
         mock_host_controller = self.mox.CreateMock(host_controller_class)

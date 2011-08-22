@@ -27,7 +27,7 @@ class DatabaseHostTest(mox.MoxTestBase):
     def test_can_create_databasehost_instance(self):
         """fab.tests.host.database_host_test  Can create a DatabaseHost instance"""
 
-        self.assertTrue(isinstance(DatabaseHost.create_instance("/some/virtualenv/path"), DatabaseHost))
+        self.assertIsInstance(DatabaseHost.create_instance("/some/virtualenv/path"), DatabaseHost)
 
     def test_can_ensure_directory_exists(self):
         """fab.tests.host.database_host_test  Can ensure a directory exists"""
