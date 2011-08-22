@@ -354,7 +354,7 @@ def to_gmt(dt):
     return dt.replace(tzinfo=gmt).astimezone(gmt)
 
 
-# https://bitbucket.org/wkornewald/djangotoolbox
+# See https://bitbucket.org/wkornewald/djangotoolbox
 def make_tls_property(default=None):
     """Creates a class-wide instance property with a thread-specific value."""
     class TLSProperty(object):
