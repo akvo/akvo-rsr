@@ -2793,9 +2793,9 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 
 # Monkey patch django.contrib.sites.models.Site
-models.PositiveIntegerField().add_to_class(Site, 'organisation_id')
-models.CharField(max_length=100).add_to_class(Site, 'partner_domain')
-models.BooleanField().add_to_class(Site, 'enabled')
+models.ForeignKey(Organisation).contribute_to_class(Site, 'organisation')
+models.CharField(max_length=100).contribute_to_class(Site, 'partner_domain')
+models.BooleanField().contribute_to_class(Site, 'enabled')
 
 
 # signals!
