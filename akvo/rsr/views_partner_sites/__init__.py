@@ -7,6 +7,8 @@
 """
 from __future__ import absolute_import
 from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
+from ..models import Organisation
 
 class PartnerSitesBaseView(TemplateView):
     """BaseView used only to add the org to the context according to
@@ -15,10 +17,8 @@ class PartnerSitesBaseView(TemplateView):
     def get_context_data(self, **kwargs):
         """Add the current organisation to the context"""
         context = super(PartnerSitesBaseView, self).get_context_data(**kwargs)
-        #org = get_object_or_404(Organisation,
-            #pk=self.request.partnersite['org_id'])
-        #self.organisation = org
-        #context['organisation'] = self.organisation
+        context['organisation'] = get_object_or_404(Organisation,
+            pk=self.request.organisation_id)
         return context
 
 
