@@ -10,7 +10,7 @@ import fabric.tasks
 
 import fab.config.dataretriever
 import fab.helpers.dataretriever
-import fab.helpers.hosts
+import fab.host.database
 
 
 class FetchRSRData(fabric.tasks.Task):
@@ -24,7 +24,7 @@ class FetchRSRData(fabric.tasks.Task):
     @staticmethod
     def create_task_instance():
         retriever_config = fab.config.dataretriever.DataRetrieverConfig(fabric.api.env.hosts)
-        database_host = fab.helpers.hosts.DatabaseHost.create_instance(retriever_config.rsr_virtualenv_path)
+        database_host = fab.host.database.DatabaseHost.create_instance(retriever_config.rsr_virtualenv_path)
 
         return FetchRSRData(fab.helpers.dataretriever.DataRetriever(retriever_config, database_host))
 
