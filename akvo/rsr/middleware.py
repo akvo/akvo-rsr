@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
+
 """
     Akvo RSR is covered by the GNU Affero General Public License.
     See more details in the license.txt file located at the root folder of the
     Akvo RSR module. For additional details on the GNU license please
     see < http://www.gnu.org/licenses/agpl.html >.
 """
-from __future__ import absolute_import
 
-from django.conf.settings import RESERVED_HOSTNAMES
+from django.conf import settings
 from django.contrib.sites.models import Site
+
+from akvo.rsr.utils import make_tls_property()
+
+
+SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
 class PartnerSitesRouterMiddleware(object):
@@ -27,8 +32,8 @@ class PartnerSitesRouterMiddleware(object):
             if num_parts >= 3:
                 hostname = parts[-3]
                 if not hostname == 'www':
-                    if ((num_parts == 3 and not hostname in RESERVED_HOSTNAMES) or
-                        (num_parts >=4 and hostname in RESERVED_HOSTNAMES)):
+                    if ((num_parts == 3 and not hostname in settings.RESERVED_HOSTNAMES) or
+                        (num_parts >=4 and hostname in settings.RESERVED_HOSTNAMES)):
                         try:
                             partner_site = Site.objects.get(domain=domain)
                         except:
@@ -39,6 +44,6 @@ class PartnerSitesRouterMiddleware(object):
             except:
                 pass
         if partner_site is not None and partner_site.enabled:
-            request.partner_id = partner_site.organisation.id
+            SITE_ID.value = partner_site.id
             request.urlconf = 'akvo.urls_partner_sites'
         return
