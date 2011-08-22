@@ -11,7 +11,7 @@ import fabric.api
 import fabric.tasks
 
 import fab.config.deployer
-import fab.helpers.hosts
+import fab.host.deployment
 
 
 class RebuildRSRVirtualEnv(fabric.tasks.Task):
@@ -21,20 +21,23 @@ class RebuildRSRVirtualEnv(fabric.tasks.Task):
 
     RSR_REQUIREMENTS_FILE = "2_rsr.txt"
 
-    def __init__(self, deployer_config, deployment_host):
-        self.config = deployer_config
-        self.deployment_host = deployment_host
+    def __init__(self, deployment_config):
+        self.config = deployment_config
 
     @staticmethod
     def create_task_instance():
-        config = fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
-        deployment_host = fab.helpers.hosts.DeploymentHost.create_instance(config.rsr_env_path)
+        return RebuildRSRVirtualEnv(fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user))
 
-        return RebuildRSRVirtualEnv(config, deployment_host)
+    def configure_deployment_host_using(self, host_controller_mode):
+        host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
+        self.deployment_host = fab.host.deployment.DeploymentHost.create_instance(self.config.rsr_env_path, host_controller)
 
-    def run(self):
-        self.deployment_host.create_empty_virtualenv(self.config.pip_install_log_file)
+    def run(self, host_controller_mode):
+        self.configure_deployment_host_using(host_controller_mode)
+
         rsr_requirements_path = os.path.join(self.config.pip_requirements_home, RebuildRSRVirtualEnv.RSR_REQUIREMENTS_FILE)
+
+        self.deployment_host.create_empty_virtualenv(self.config.pip_install_log_file)
         self.deployment_host.install_virtualenv_packages(rsr_requirements_path, self.config.pip_install_log_file)
 
 
