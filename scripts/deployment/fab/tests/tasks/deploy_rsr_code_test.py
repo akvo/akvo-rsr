@@ -12,8 +12,15 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.deployer import DeployerConfig
 from fab.helpers.codebase import Codebase
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.hosts import DeploymentHost
+from fab.host.controller import HostControllerMode
+from fab.host.deployment import DeploymentHost
 from fab.tasks.codedeployment import DeployRSRCode
+
+
+class StubbedDeployRSRCode(DeployRSRCode):
+
+    def initialise_codebase_using(self, host_controller_mode):
+        pass
 
 
 class DeployRSRCodeTest(mox.MoxTestBase):
@@ -21,13 +28,12 @@ class DeployRSRCodeTest(mox.MoxTestBase):
     def setUp(self):
         super(DeployRSRCodeTest, self).setUp()
         self.mock_config = self.mox.CreateMock(DeployerConfig)
-        self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
         self.mock_codebase = self.mox.CreateMock(Codebase)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_deployment_host.feedback = self.mock_feedback
-
-        self.deploy_rsr_code_task = DeployRSRCode(self.mock_config, self.mock_deployment_host, self.mock_codebase)
+        self.deploy_rsr_code_task = StubbedDeployRSRCode(self.mock_config)
+        self.deploy_rsr_code_task.codebase = self.mock_codebase
+        self.deploy_rsr_code_task.feedback = self.mock_feedback
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.deploy_rsr_code_test  Has expected task name"""
@@ -37,29 +43,36 @@ class DeployRSRCodeTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.deploy_rsr_code_test  Can create task instance"""
 
-        self.assertTrue(isinstance(DeployRSRCode.create_task_instance(), DeployRSRCode))
+        self.assertIsInstance(DeployRSRCode.create_task_instance(), DeployRSRCode)
+
+    def test_can_initialise_codebase_member_using_local_hostcontrollermode(self):
+        """fab.tests.tasks.deploy_rsr_code_test  Can initialise Codebase member using local HostControllerMode"""
+
+        deploy_rsr_code_task = DeployRSRCode.create_task_instance()
+        deploy_rsr_code_task.initialise_codebase_using(HostControllerMode.LOCAL)
+
+        self.assertIsInstance(deploy_rsr_code_task.codebase, Codebase)
+        self.assertIsInstance(deploy_rsr_code_task.feedback, ExecutionFeedback)
+
+    def test_can_initialise_codebase_member_using_remote_hostcontrollermode(self):
+        """fab.tests.tasks.deploy_rsr_code_test  Can initialise Codebase member using remote HostControllerMode"""
+
+        deploy_rsr_code_task = DeployRSRCode.create_task_instance()
+        deploy_rsr_code_task.initialise_codebase_using(HostControllerMode.REMOTE)
+
+        self.assertIsInstance(deploy_rsr_code_task.codebase, Codebase)
+        self.assertIsInstance(deploy_rsr_code_task.feedback, ExecutionFeedback)
 
     def test_can_deploy_rsr_code(self):
         """fab.tests.tasks.deploy_rsr_code_test  Can deploy RSR code"""
 
-        user_id = "joesoap"
-        repo_checkout_root = "/var/repo"
-        repo_archives_dir = "/var/repo/archives"
-        virtualenvs_home = "/var/virtualenvs"
-        self.mock_config.user = user_id
-        self.mock_config.repo_checkout_root = repo_checkout_root
-        self.mock_config.repo_archives_dir = repo_archives_dir
-        self.mock_config.virtualenvs_home = virtualenvs_home
-
         self.mock_feedback.comment("Starting RSR codebase deployment")
-        self.mock_deployment_host.exit_if_user_is_not_member_of_web_group(user_id)
-        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(repo_checkout_root)
-        self.mock_deployment_host.ensure_directory_exists(repo_archives_dir)
-        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(virtualenvs_home)
+        self.mock_codebase.ensure_required_directories_exist()
+        self.mock_codebase.clean_deployment_directories()
         self.mock_codebase.download_and_unpack_rsr_archive()
         self.mox.ReplayAll()
 
-        self.deploy_rsr_code_task.run()
+        self.deploy_rsr_code_task.run(HostControllerMode.REMOTE)
 
 
 def suite():
