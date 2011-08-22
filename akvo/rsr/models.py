@@ -51,6 +51,7 @@ from permissions.utils import get_roles, add_local_role
 from akvo.settings import MEDIA_ROOT
 
 from akvo.gateway.models import GatewayNumber, Gateway, MoSms
+from akvo.fields import NullCharField
 
 from utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
@@ -2795,8 +2796,8 @@ payment_was_flagged.connect(process_paypal_ipn)
 # Monkey patch django.contrib.sites.models.Site to support Partner Sites
 if not settings.PVW_RSR:
     models.ForeignKey(Organisation, blank=True, null=True).contribute_to_class(Site, 'organisation')
-    models.CharField(max_length=100, unique=True, blank=True).contribute_to_class(Site, 'partner_domain')
-    models.CharField(max_length=50, unique=True, blank=True).contribute_to_class(Site, 'development_domain')
+    NullCharField(max_length=100, unique=True, blank=True, null=True).contribute_to_class(Site, 'partner_domain')
+    NullCharField(max_length=50, unique=True, blank=True, null=True).contribute_to_class(Site, 'development_domain')
     models.BooleanField().contribute_to_class(Site, 'is_partner_site')
     models.BooleanField().contribute_to_class(Site, 'enabled')
 
