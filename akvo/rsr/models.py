@@ -51,21 +51,21 @@ from permissions.utils import get_roles, add_local_role
 from akvo.settings import MEDIA_ROOT
 
 from akvo.gateway.models import GatewayNumber, Gateway, MoSms
-from akvo.fields import NullCharField
 
-from utils import (
+from akvo.rsr.fields import NullCharField
+from akvo.rsr.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
 )
-from utils import (
+from akvo.rsr.utils import (
     PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
-from utils import (
+from akvo.rsr.utils import (
     groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
     who_am_i, send_now, state_equals, to_gmt
 )
-from signals import (
+from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, set_active_cms,
