@@ -10,7 +10,7 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
 
-from akvo.rsr.utils import make_tls_property()
+from akvo.rsr.utils import make_tls_property
 
 
 SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
