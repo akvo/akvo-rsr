@@ -1,5 +1,8 @@
 # Build with either env64 or envintel - see setup/dev/dev_env_setup_for_osx.txt for details
 
+# Package installation requirements
+distribute==0.6.21
+
 # Requirements for building Fabric
 paramiko==1.7.7.1
 pycrypto==2.3
