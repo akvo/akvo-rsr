@@ -36,8 +36,28 @@ class CodebaseTest(mox.MoxTestBase):
 
         self.assertEqual(os.path.join(Codebase.RSR_ARCHIVE_URL_ROOT, "dev_branch"), self.codebase.rsr_archive_url)
 
-    def test_can_clean_deployment_directories(self):
-        """fab.tests.helpers.codebase_test  Can clean deployment directories"""
+    def test_will_ensure_required_directories_exist(self):
+        """fab.tests.helpers.codebase_test  Will ensure required directories exist"""
+
+        user_id = "joesoap"
+        repo_checkout_root = "/var/repo"
+        repo_archives_dir = "/var/repo/archives"
+        virtualenvs_home = "/var/virtualenvs"
+        self.mock_config.user = user_id
+        self.mock_config.repo_checkout_root = repo_checkout_root
+        self.mock_config.repo_archives_dir = repo_archives_dir
+        self.mock_config.virtualenvs_home = virtualenvs_home
+
+        self.mock_deployment_host.exit_if_user_is_not_member_of_web_group(user_id)
+        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(repo_checkout_root)
+        self.mock_deployment_host.ensure_directory_exists(repo_archives_dir)
+        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(virtualenvs_home)
+        self.mox.ReplayAll()
+
+        self.codebase.ensure_required_directories_exist()
+
+    def test_will_clean_deployment_directories(self):
+        """fab.tests.helpers.codebase_test  Will clean deployment directories"""
 
         deployment_root_dir = "/var/some/path/akvo-rsr_root"
         self.mock_config.rsr_deployment_root = deployment_root_dir
@@ -46,7 +66,7 @@ class CodebaseTest(mox.MoxTestBase):
         self.mock_deployment_host.delete_directory_with_sudo(deployment_root_dir)
         self.mox.ReplayAll()
 
-        self.codebase._clean_deployment_directories()
+        self.codebase.clean_deployment_directories()
 
     def test_can_download_rsr_code_archive_to_deployment_host(self):
         """fab.tests.helpers.codebase_test  Can download RSR code archive to deployment host"""
