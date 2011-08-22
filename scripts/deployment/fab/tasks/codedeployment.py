@@ -10,7 +10,8 @@ import fabric.tasks
 
 import fab.config.deployer
 import fab.helpers.codebase
-import fab.helpers.hosts
+import fab.host.controller
+import fab.host.deployment
 
 
 class DeployRSRCode(fabric.tasks.Task):
@@ -18,30 +19,27 @@ class DeployRSRCode(fabric.tasks.Task):
 
     name = "deploy_rsr_code"
 
-    def __init__(self, deployment_config, deployment_host, codebase):
+    def __init__(self, deployment_config):
         self.config = deployment_config
-        self.deployment_host = deployment_host
-        self.codebase = codebase
-        self.feedback = deployment_host.feedback
 
     @staticmethod
     def create_task_instance():
-        deployer_config = fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user)
-        deployment_host = fab.helpers.hosts.DeploymentHost.create_instance(deployer_config.rsr_env_path)
-        codebase = fab.helpers.codebase.Codebase(deployer_config, deployment_host)
+        return DeployRSRCode(fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user))
 
-        return DeployRSRCode(deployer_config, deployment_host, codebase)
+    def initialise_codebase_using(self, host_controller_mode):
+        host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
+        deployment_host = fab.host.deployment.DeploymentHost.create_instance(self.config.rsr_env_path, host_controller)
 
-    def run(self):
+        self.codebase = fab.helpers.codebase.Codebase(self.config, deployment_host)
+        self.feedback = deployment_host.feedback
+
+    def run(self, host_controller_mode):
+        self.initialise_codebase_using(host_controller_mode)
+
         self.feedback.comment("Starting RSR codebase deployment")
-        self.ensure_required_paths_exist()
+        self.codebase.ensure_required_directories_exist()
+        self.codebase.clean_deployment_directories()
         self.codebase.download_and_unpack_rsr_archive()
-
-    def ensure_required_paths_exist(self):
-        self.deployment_host.exit_if_user_is_not_member_of_web_group(self.config.user)
-        self.deployment_host.ensure_directory_exists_with_web_group_permissions(self.config.repo_checkout_root)
-        self.deployment_host.ensure_directory_exists(self.config.repo_archives_dir)
-        self.deployment_host.ensure_directory_exists_with_web_group_permissions(self.config.virtualenvs_home)
 
 
 instance = DeployRSRCode.create_task_instance()

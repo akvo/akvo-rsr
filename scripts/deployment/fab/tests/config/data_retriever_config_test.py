@@ -52,14 +52,17 @@ class DataRetrieverConfigTest(unittest.TestCase):
     def test_has_expected_db_dump_script_path(self):
         """fab.tests.config.data_retriever_config_test  Has expected db_dump.py script path"""
 
-        expected_db_dump_script_path = os.path.join(self.expected_akvo_rsr_app_path, "db_dump.py")
-        self.assertEqual(expected_db_dump_script_path, self.config.db_dump_script_path)
+        self.assertEqual(os.path.join(self.expected_akvo_rsr_app_path, "db_dump.py"), self.config.db_dump_script_path)
+
+    def test_has_expected_rsr_log_file_path(self):
+        """fab.tests.config.data_retriever_config_test  Has expected RSR log file path"""
+
+        self.assertEqual(os.path.join(self.expected_akvo_rsr_app_path, "akvo.log"), self.config.rsr_log_file_path)
 
     def test_has_expected_rsr_virtualenv_path(self):
         """fab.tests.config.data_retriever_config_test  Has expected RSR virtualenv path"""
 
-        expected_rsr_virtualenv_path = "/var/virtualenvs/rsr_1.0.9"
-        self.assertEqual(expected_rsr_virtualenv_path, self.config.rsr_virtualenv_path)
+        self.assertEqual("/var/virtualenvs/rsr_1.0.9", self.config.rsr_virtualenv_path)
 
     def test_has_expected_data_dumps_home(self):
         """fab.tests.config.data_retriever_config_test  Has expected data dumps home"""

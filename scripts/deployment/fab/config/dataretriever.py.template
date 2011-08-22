@@ -22,6 +22,7 @@ class DataRetrieverConfig(object):
         deployed_rsr_dir_name       = "%s_gitclone" % rsr_version
         self.akvo_rsr_app_path      = os.path.join(django_apps_home, deployed_rsr_dir_name, 'akvo')
         self.db_dump_script_path    = os.path.join(self.akvo_rsr_app_path, 'db_dump.py')
+        self.rsr_log_file_path      = os.path.join(self.akvo_rsr_app_path, 'akvo.log')
 
         # virtualenv settings
         virtualenvs_home            = "/var/virtualenvs"

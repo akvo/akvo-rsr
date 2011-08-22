@@ -5,124 +5,30 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fabric.api
-import fabric.contrib.files
-
-from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
 from fab.helpers.virtualenv import VirtualEnv
-
-
-class RemoteHost(object):
-    """RemoteHost encapsulates basic command execution and path validation calls made to a remote host via Fabric"""
-
-    def __init__(self, feedback):
-        self.feedback = feedback
-
-    @staticmethod
-    def create_instance():
-        return RemoteHost(ExecutionFeedback())
-
-    def run(self, command):
-        return fabric.api.run(command)
-
-    def sudo(self, command):
-        return fabric.api.sudo(command)
-
-    def path_exists(self, path):
-        return fabric.contrib.files.exists(path)
-
-
-class NeutralHost(object):
-    """NeutralHost encapsulates read-only and other neutral actions that won't change the host"""
-
-    def __init__(self, remote_host, file_system):
-        self.file_system = file_system
-        self.feedback = remote_host.feedback
-
-    @staticmethod
-    def create_instance():
-        remote_host = RemoteHost.create_instance()
-
-        return NeutralHost(remote_host, FileSystem(remote_host))
-
-    def file_exists(self, file_path):
-        return self.file_system.file_exists(file_path)
-
-    def directory_exists(self, dir_path):
-        return self.file_system.directory_exists(dir_path)
-
-    def exit_if_file_does_not_exist(self, file_path):
-        self.file_system.exit_if_file_does_not_exist(file_path)
-
-    def exit_if_directory_does_not_exist(self, dir_path):
-        self.file_system.exit_if_directory_does_not_exist(dir_path)
-
-
-class DatabaseHost(NeutralHost):
-    """DatabaseHost encapsulates common actions available when retrieving data from a database host"""
-
-    def __init__(self, remote_host, file_system, virtualenv):
-        super(DatabaseHost, self).__init__(remote_host, file_system)
-        self.file_system = file_system
-        self.virtualenv = virtualenv
-
-    @staticmethod
-    def create_instance(virtualenv_path):
-        remote_host = RemoteHost.create_instance()
-        file_system = FileSystem(remote_host)
-        virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
-
-        return DatabaseHost(remote_host, file_system, virtualenv)
-
-    def ensure_directory_exists(self, dir_path):
-        self.file_system.ensure_directory_exists(dir_path)
-
-    def ensure_directory_exists_with_sudo(self, dir_path):
-        self.file_system.ensure_directory_exists_with_sudo(dir_path)
-
-    def delete_directory(self, dir_path):
-        self.file_system.delete_directory(dir_path)
-
-    def compress_directory(self, full_path_to_compress):
-        self.file_system.compress_directory(full_path_to_compress)
-
-    def run_within_virtualenv(self, command):
-        self.virtualenv.run_within_virtualenv(command)
+from fab.host.neutral import NeutralHost
 
 
 class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
-    def __init__(self, remote_host, file_system, permissions, internet_helper, virtualenv):
-        super(DeploymentHost, self).__init__(remote_host, file_system)
+    def __init__(self, file_system, permissions, internet_helper, virtualenv, feedback):
+        super(DeploymentHost, self).__init__(file_system, feedback)
         self.file_system = file_system
         self.permissions = permissions
         self.internet = internet_helper
         self.virtualenv = virtualenv
 
     @staticmethod
-    def create_instance(virtualenv_path):
-        remote_host = RemoteHost.create_instance()
-        file_system = FileSystem(remote_host)
-        permissions = AkvoPermissions(remote_host)
-        virtualenv = VirtualEnv(virtualenv_path, remote_host, file_system)
+    def create_instance(virtualenv_path, host_controller):
+        file_system = FileSystem(host_controller)
+        permissions = AkvoPermissions(host_controller)
+        virtualenv = VirtualEnv(virtualenv_path, host_controller, file_system)
 
-        return DeploymentHost(remote_host, file_system, permissions, Internet(remote_host), virtualenv)
-
-    def file_exists(self, file_path):
-        return self.file_system.file_exists(file_path)
-
-    def directory_exists(self, dir_path):
-        return self.file_system.directory_exists(dir_path)
-
-    def exit_if_file_does_not_exist(self, file_path):
-        self.file_system.exit_if_file_does_not_exist(file_path)
-
-    def exit_if_directory_does_not_exist(self, dir_path):
-        self.file_system.exit_if_directory_does_not_exist(dir_path)
+        return DeploymentHost(file_system, permissions, Internet(host_controller), virtualenv, host_controller.feedback)
 
     def create_directory(self, dir_path):
         self.file_system.create_directory(dir_path)
