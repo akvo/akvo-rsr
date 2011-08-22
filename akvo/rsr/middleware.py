@@ -35,7 +35,7 @@ class PartnerSitesRouterMiddleware(object):
                 partner_site = Site.objects.get(partner_domain=domain)
             except:
                 pass
-        if partner_site is not None:
+        if partner_site is not None and partner_site.enabled:
             request.partner_id = partner_site.organisation.id
             request.urlconf = 'akvo.urls_partnersites'
         return
