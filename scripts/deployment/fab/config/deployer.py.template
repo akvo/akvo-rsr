@@ -16,6 +16,7 @@ class DeployerConfig(object):
 
         # code repository settings
         self.rsr_branch                 = "develop" # or "v1.0.6", "master", etc.
+                                                    # NB: for feature branches use "feature_name" instead of "feature/feature_name"
 
         # code deployment settings
         self.repo_checkout_root         = "/var/git"
