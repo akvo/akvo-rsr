@@ -30,7 +30,8 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 site = Site.objects.get(domain=domain)
             except:
-                raise Http404
+                site = Site.objects.get(domain='www.akvo.org')
+                request.host = site.domain
         else:  # probably a partner-nominated domain
             try:
                 site = Site.objects.get(partner_domain=domain)
