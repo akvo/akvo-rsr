@@ -63,3 +63,29 @@ class LocalHostController(object):
 
     def path_exists(self, path):
         return os.path.exists(path)
+
+
+class HostControllerMode(object):
+
+    LOCAL = 'local'
+    REMOTE = 'remote'
+
+    allowed_modes = [LOCAL, REMOTE]
+
+    @staticmethod
+    def parse(mode_key):
+        mode = mode_key.lower()
+        if mode not in HostControllerMode.allowed_modes:
+            raise Exception("Unknown host controller mode: %s" % mode)
+
+        return mode
+
+
+class HostController(object):
+
+    classes = { HostControllerMode.LOCAL: LocalHostController,
+                HostControllerMode.REMOTE: RemoteHostController }
+
+    @staticmethod
+    def create_from(controller_mode_text):
+        return HostController.classes[HostControllerMode.parse(controller_mode_text)].create_instance()

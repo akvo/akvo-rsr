@@ -9,13 +9,16 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.host.database_host_test import DatabaseHostTest
 from fab.tests.host.deployment_host_test import DeploymentHostTest
+from fab.tests.host.host_controller_mode_test import HostControllerModeTest
+from fab.tests.host.host_controller_test import HostControllerTest
 from fab.tests.host.local_host_controller_test import LocalHostControllerTest
 from fab.tests.host.neutral_host_test import NeutralHostTest
 from fab.tests.host.remote_host_controller_test import RemoteHostControllerTest
 
 
 def host_suite():
-    return TestSuiteLoader().create_suite_from_classes([LocalHostControllerTest, RemoteHostControllerTest,
+    return TestSuiteLoader().create_suite_from_classes([HostControllerModeTest, HostControllerTest,
+                                                        LocalHostControllerTest, RemoteHostControllerTest,
                                                         NeutralHostTest, DatabaseHostTest, DeploymentHostTest])
 
 if __name__ == "__main__":
