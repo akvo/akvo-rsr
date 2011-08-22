@@ -2792,7 +2792,7 @@ def process_paypal_ipn(sender, **kwargs):
 payment_was_flagged.connect(process_paypal_ipn)
 
 
-# Monkey patch django.contrib.sites.models.Site
+# Monkey patch django.contrib.sites.models.Site to support Partner Sites
 if not settings.PVW_RSR:
     models.ForeignKey(Organisation, blank=True, null=True).contribute_to_class(Site, 'organisation')
     models.CharField(max_length=100, unique=True, blank=True).contribute_to_class(Site, 'partner_domain')
