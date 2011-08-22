@@ -6,7 +6,7 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
-
+from django.views.generic import TemplateView
 
 class PartnerSitesBaseView(TemplateView):
     """BaseView used only to add the org to the context according to
@@ -15,16 +15,16 @@ class PartnerSitesBaseView(TemplateView):
     def get_context_data(self, **kwargs):
         """Add the current organisation to the context"""
         context = super(PartnerSitesBaseView, self).get_context_data(**kwargs)
-        org = get_object_or_404(Organisation,
-            pk=self.request.partnersite['org_id'])
-        self.organisation = org
-        context['organisation'] = self.organisation
+        #org = get_object_or_404(Organisation,
+            #pk=self.request.partnersite['org_id'])
+        #self.organisation = org
+        #context['organisation'] = self.organisation
         return context
 
 
 class HomeView(PartnerSitesBaseView):
     """Presents the first page in the partner sites hierarchy"""
-    template_name = "partnersites/home.html"
+    template_name = "partner_sites/home.html"
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
