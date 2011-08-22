@@ -9,8 +9,11 @@
 	<title></title>
 </head>
 <body>
-  <h1>{{organisation}}</h1>
-  <p>
-    Our <a href="{% url 'project_list' %}">projects</a>
+<h1>{{organisation}}'s project list</h1>
+  <ul>
+    {% for project in project_list %}
+      <li><a href="{% url 'project_main' project.id %}">{{project.name}}</a></li>
+    {% endfor %}
+  </ul>
 </body>
 </html>
