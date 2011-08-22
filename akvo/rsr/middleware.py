@@ -9,6 +9,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.http import Http404
 
 from akvo.rsr.utils import make_tls_property
 
@@ -17,34 +18,27 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
 class PartnerSitesRouterMiddleware(object):
-    def process_request(self, request, partner_site=None):
+    def process_request(self, request, site=None):
         domain = request.get_host().split(':')[0]
         parts = domain.split('.')
-        num_parts = len(parts)
         if domain.endswith('.dev'):  # local development domain
-            hostname = parts[-2]
-            if not hostname == 'akvo':
-                try:
-                    partner_site = Site.objects.get(development_domain=domain)
-                except:
-                    pass
+            try:
+                site = Site.objects.get(development_domain=domain)
+            except:
+                raise Http404
         elif domain.endswith('.akvo.org'):  # akvo development/production domain
-            if num_parts >= 3:
-                hostname = parts[-3]
-                if not hostname == 'www':
-                    if ((num_parts == 3 and not hostname in settings.RESERVED_HOSTNAMES) or
-                        (num_parts >=4 and hostname in settings.RESERVED_HOSTNAMES)):
-                        try:
-                            partner_site = Site.objects.get(domain=domain)
-                        except:
-                            pass
+            try:
+                site = Site.objects.get(domain=domain)
+            except:
+                raise Http404
         else:  # probably a partner-nominated domain
             try:
-                partner_site = Site.objects.get(partner_domain=domain)
+                site = Site.objects.get(partner_domain=domain)
             except:
-                pass
-        if partner_site is not None and partner_site.enabled:
-            SITE_ID.value = partner_site.id
-            request.organisation_id = partner_site.organisation.id
-            request.urlconf = 'akvo.urls_partner_sites'
+                raise Http404
+        if site is not None and site.enabled:
+            SITE_ID.value = site.id
+            if site.is_partner_site:
+                request.organisation_id = site.organisation.id
+                request.urlconf = 'akvo.urls_partner_sites'
         return
