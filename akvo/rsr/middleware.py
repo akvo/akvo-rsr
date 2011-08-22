@@ -37,5 +37,5 @@ class PartnerSitesRouterMiddleware(object):
                 pass
         if partner_site is not None and partner_site.enabled:
             request.partner_id = partner_site.organisation.id
-            request.urlconf = 'akvo.urls_partnersites'
+            request.urlconf = 'akvo.urls_partner_sites'
         return

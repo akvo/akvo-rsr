@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+
+"""Akvo RSR is covered by the GNU Affero General Public License.
+See more details in the license.txt file located at the root folder of the
+Akvo RSR module. For additional details on the GNU license please
+see < http://www.gnu.org/licenses/agpl.html >.
+
+"""
+
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.core.cache import cache
+
+
+class PartnerSiteMiddleware(object):
+    """Handle the dispatch between a normal request and a request
+    via a subdomain.
+    Subdomain requests need to be massaged.
+
+    Thanks Dylan Verheul for the inspiration
+    http://blog.dyve.net/django-subdomains-and-postgresql-schemas
+    
+    """
+    def process_request(self, request):
+        """First the request is decided to be an subsite request or not.
+        If it's a subsite request we need to handle that by getting the
+        matching organisation and hook the correct url scheme to the request.
+        We also try and cache the subdomain -> organistion lookup. Cache is
+        invalidated in the Subsite model save() & delete().
+        
+        parse_subdomain() should be rewritten to support not only subdomains but
+        other hosts and also take in to the consideration development and 
+        testing:
+        
+        akvo.org
+        www.akvo.org
+        a4a.akvo.org
+        a4a.test.akvo.org
+        a4a.gabriel.akvo.org
+
+        projects.a4a.org
+       
+        """
+        domain = request.get_host().split(':')[0]
+        subdomain = SubSiteMiddleware.get_subdomain(domain)
+        if not subdomain:
+            return None
+        #if host == 'akvo.dev' or host == 'www.akvo.dev':
+        #    return None
+        subdomain_cache_key = 'subdomain_%s' % domain
+        org_id = cache.get(subdomain_cache_key)
+        if org_id is None:
+            subsite_obj = SubSite.objects.get_or_404(domain=domain)
+            if not subsite_obj.enabled:
+                return None
+            org_id = subsite_obj.object_id
+            cache.set(subdomain_cache_key, org_id, 3600)
+        request.subsite = dict(org_id=org_id)
+        request.urlconf = 'akvo.urls_subdomains'
+        return None
+    
+    @staticmethod
+    def get_subdomain(domain):
+        """Determine the subdomain.
+
+        Valid:
+
+            x.akvo.org where x is NOT in RESERVED_AKVO_SUBDOMAINS
+            x.partner_domain.org|com|...
+
+            x.y.akvo.org where y is in RESERVED_AKVO_SUBDOMAINS (required for testing and development)
+
+        Invalid:
+            
+            www.akvo.org
+            x.www.akvo.org
+            x.akvo.org where x is in RESERVED_AKVO_SUBDOMAINS
+
+        """
+        if domain.endswith('.akvo.org'):
+            return None
+        if parts[-2] == 'akvo' and parts[-1] == 'org':
+            if len(parts) >= 3:
+                if parts[-3] == 'www':
+                    return None
+                elif parts[-3] 
+        else:
+            if len(parts) > 2:
+                subdomain = '.'.join(parts[:-2])
+                if subdomain == 'akvo.org':
+                    parts = subdomain.split('.')
+                    if len(parts) > 1:
+        return unicode(subdomain)
