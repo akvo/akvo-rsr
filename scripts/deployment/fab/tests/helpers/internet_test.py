@@ -93,11 +93,8 @@ class InternetTest(mox.MoxTestBase):
         self.mock_feedback.abort(header_not_available_message).AndRaise(SystemExit(header_not_available_message))
         self.mox.ReplayAll()
 
-        try:
+        with self.assertRaises(SystemExit):
             self.internet.file_name_from_url_headers(file_url)
-            self.fail("Should have raised a SystemExit exception if the file name could not be read from the HTTP response headers")
-        except SystemExit: # expected
-            pass
 
     def test_can_download_file_at_url_and_save_it_with_specified_file_name(self):
         """fab.tests.helpers.internet_test  Can download the file at a URL and save it with a specified file name"""

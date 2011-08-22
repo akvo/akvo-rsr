@@ -62,11 +62,8 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_feedback.abort(expected_missing_file_message).AndRaise(SystemExit(expected_missing_file_message))
         self.mox.ReplayAll()
 
-        try:
+        with self.assertRaises(SystemExit):
             self.file_system.exit_if_file_does_not_exist(nonexistent_file)
-            self.fail("Should have raised a SystemExit exception for a nonexistent file")
-        except SystemExit:
-            pass # expected
 
     def test_will_confirm_file_existence_and_not_exit_if_file_exists(self):
         """fab.tests.helpers.file_system_test  Will confirm file existence and not exit if file exists"""
@@ -87,11 +84,8 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_feedback.abort(expected_missing_dir_message).AndRaise(SystemExit(expected_missing_dir_message))
         self.mox.ReplayAll()
 
-        try:
+        with self.assertRaises(SystemExit):
             self.file_system.exit_if_directory_does_not_exist(nonexistent_dir)
-            self.fail("Should have raised a SystemExit exception for a nonexistent directory")
-        except SystemExit:
-            pass # expected
 
     def test_will_confirm_directory_existence_and_not_exit_if_directory_exists(self):
         """fab.tests.helpers.file_system_test  Will confirm directory existence and not exit if directory exists"""

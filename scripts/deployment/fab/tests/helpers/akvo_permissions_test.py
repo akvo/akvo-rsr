@@ -43,11 +43,8 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         self.mock_feedback.abort(expected_user_not_in_group_message).AndRaise(SystemExit(expected_user_not_in_group_message))
         self.mox.ReplayAll()
 
-        try:
+        with self.assertRaises(SystemExit):
             self.permissions.exit_if_user_is_not_member_of_web_group("joesoap")
-            self.fail("Should have raised a SystemExit exception if member is not in expected system group")
-        except SystemExit:
-            pass # expected
 
     def test_can_set_web_group_ownership_on_specified_directory(self):
         """fab.tests.helpers.akvo_permissions_test  Can set web group ownership on a specified directory"""
