@@ -10,9 +10,8 @@ from django.views.generic import TemplateView, ListView
 from django.shortcuts import get_object_or_404
 from ..models import Organisation, Project
 
+
 class BaseView(TemplateView):
-    """BaseView used only to add the org to the context according to
-    the partnersite org_id"""
 
     def get_context_data(self, **kwargs):
         """Add the current organisation to the context"""
@@ -20,6 +19,7 @@ class BaseView(TemplateView):
         context['organisation'] = get_object_or_404(Organisation,
             pk=self.request.organisation_id)
         return context
+
 
 class BaseProjectListView(ListView):
     context_object_name = 'project_list'
@@ -38,12 +38,12 @@ class BaseProjectListView(ListView):
 
 
 class HomeView(BaseView):
-    """Presents the first page in the partner sites hierarchy"""
     template_name = "partner_sites/home.html"
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         return context
+
 
 class ProjectListView(BaseProjectListView):
     """List projects..."""
@@ -57,5 +57,6 @@ class ProjectView(BaseView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectView, self).get_context_data(**kwargs)
-        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['project'] = \
+            get_object_or_404(Project, pk=self.kwargs['project_id'])
         return context

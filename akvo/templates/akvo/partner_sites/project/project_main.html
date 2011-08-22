@@ -1,14 +1,8 @@
+{% extends "partner_sites/base.html" %}
 {% load i18n rsr_tags webdesign %}
 {% load url from future %}
 
 
-<!DOCTYPE html>
-<html lang="{{ request.LANGUAGE_CODE }}">
-<head>
-	<meta charset="UTF-8" />
-	<title></title>
-</head>
-<body>
+{% block content %}
   <h1>{{project}}</h1>
-</body>
-</html>
+{% endblock content %}
