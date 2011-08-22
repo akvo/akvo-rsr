@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class CharNullField(models.CharField):
+class NullCharField(models.CharField):
     description = "CharField that stores NULL but returns an empty string"
     def to_python(self, value):
         if isinstance(value, models.CharField):
