@@ -1369,4 +1369,4 @@ else: #akvo-rsr
 
 
 # Add extra fields to SiteAdmin
-SiteAdmin.list_display += ('partner_domain', 'enabled')
+SiteAdmin.list_filter += ('is_partner_site', 'enabled')
