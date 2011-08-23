@@ -19,8 +19,8 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, site=None):
+        request.organisation_id = None
         domain = request.get_host().split(':')[0]
-        parts = domain.split('.')
         if domain.endswith('.dev'):  # local development domain
             try:
                 site = Site.objects.get(development_domain=domain)
