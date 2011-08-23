@@ -6,7 +6,7 @@
 {% block content %}
   <h1>{{organisation}}'s project list</h1>
   <ul>
-    {% for project in project_list %}
+    {% for project in project_list.select_related %}
       <li><a href="{% url 'project_main' project.id %}">{{project.name}}</a></li>
     {% endfor %}
   </ul>

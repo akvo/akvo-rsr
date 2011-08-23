@@ -3,8 +3,8 @@
 {% load url from future %}
 
 {% block content %}
-  <h1>{{organisation}}</h1>
-  <p>
-    Our <a href="{% url 'project_list' %}">projects</a>
-  </p>
+  <div class="sixteen columns">
+    <h1>{{organisation}}</h1>
+    <p>Our <a href="{% url 'project_list' %}">projects</a></p>
+  </div>
 {% endblock content %}
