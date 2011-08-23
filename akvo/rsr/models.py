@@ -25,7 +25,6 @@ from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
@@ -52,7 +51,7 @@ from akvo.settings import MEDIA_ROOT
 
 from akvo.gateway.models import GatewayNumber, Gateway, MoSms
 
-from akvo.rsr.fields import NullCharField
+from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField
 from akvo.rsr.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
@@ -107,18 +106,6 @@ class Country(models.Model):
         verbose_name_plural = _('countries')
         ordering = ['country_name']
 
-
-class LatitudeField(models.FloatField):
-    description = _('Latitude coordinate.')
-    def __init__(self, *args, **kwargs):
-        super(LatitudeField, self).__init__(*args, **kwargs)
-        self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
-
-class LongitudeField(models.FloatField):
-    description = _('Longitude coordinate.')
-    def __init__(self, *args, **kwargs):
-        super(LongitudeField, self).__init__(*args, **kwargs)
-        self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
     latitude = LatitudeField(_('latitude'), default=0,
