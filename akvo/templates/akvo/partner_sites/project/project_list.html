@@ -2,12 +2,24 @@
 {% load i18n rsr_tags webdesign %}
 {% load url from future %}
 
-
 {% block content %}
-  <h1>{{organisation}}'s project list</h1>
-  <ul>
-    {% for project in project_list.select_related %}
-      <li><a href="{% url 'project_main' project.id %}">{{project.name}}</a></li>
-    {% endfor %}
-  </ul>
+  <div class="sixteen columns">
+    <h1>{{organisation}}'s project list</h1>
+    <ul>
+      {% for project in project_list.select_related %}
+        {% comment %}
+        <li><a href="{% url 'project_main' project.id %}">{{project.name}}</a></li>
+        {% endcomment %}
+        <li>
+        <a href="{% url 'project_main' project.id %}">
+          {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
+          <p class="link_blue strong" style="margin-bottom:0">
+            {{project.name}}
+          </p> 
+        </a>
+        <br class="clear">
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock content %}

@@ -16,13 +16,30 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  {% asset_bundle 'partner_sites_style' %}  
- 
+  {% asset_bundle 'partner_sites_style' %}
 
 </head>
 <body>
   <div class="container">
+    <div class="sixteen columns row" style="background-color:#F5F6F7;">
+      <p style="margin:10px">
+        <a href="{{organisation.url}}"><- back to {{organisation}}</a> |
+        <a href="{% url 'home' %}">project page</a> |
+        <a href="{% url 'project_list' %}">project list</a>
+        
+      </p>
+    </div>
     {% block content %}{% endblock content %}
+    <div class="sixteen columns" style="background-color:#F5F6F7;">
+      {% if sql_queries %}
+        <h2 style="margin:10px;">{{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}</h2>
+        <p style="font-size:12px; color:#888; margin:10px;">
+          {% for query in sql_queries  %}
+            {{query}}<br /><br />
+          {% endfor %}
+        </p>
+      {% endif %}
+    </div>
   </div>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
   <script src="{{MEDIA_URL}}partner_sites/js/tabs.js"></script>

@@ -3,8 +3,22 @@
 {% load url from future %}
 
 {% block content %}
-  <div class="sixteen columns">
+  <div class="twelve columns row">
     <h1>{{organisation}}</h1>
-    <p>Our <a href="{% url 'project_list' %}">projects</a></p>
+    <ul class="square add-bottom">
+      <li>link to <a href="{% url 'project_list' %}">project list</a></li>
+      <li>Three latest updates</li>
+      <li>Some stats</li>
+    </ul>
+    <h2>Latest updates</h2>
+    <ul class="square add-bottom">
+      {% for update in latest_updates  %}
+        <li>{{update}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="four columns row" style="background-color:#d9dfe5">
+    <p>Just a sidebar</p>
+    {% lorem 2 p %}
   </div>
 {% endblock content %}

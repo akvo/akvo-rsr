@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 from django.views.generic import TemplateView, ListView
 from django.shortcuts import get_object_or_404
-from ..models import Organisation, Project
+from ..models import Organisation, Project, ProjectUpdate
 
 
 class BaseView(TemplateView):
@@ -42,6 +42,12 @@ class HomeView(BaseView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
+
+        #get three latest updates
+        latest_updates = ProjectUpdate.objects.exclude(photo__exact=''). \
+            order_by('-time')[:3]
+        context['latest_updates'] = latest_updates
+
         return context
 
 

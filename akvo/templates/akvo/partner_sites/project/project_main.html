@@ -1,8 +1,16 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign %}
+{% load i18n rsr_tags webdesign thumbnail %}
 {% load url from future %}
 
 
 {% block content %}
-  <h1>{{project}}</h1>
+  <div class="twelve columns">
+    <h1>{{project}}</h1>
+    {{project.project_plan_summary|linebreaks}}
+    <img src="{% thumbnail p.current_image 400x300 autocrop sharpen %}" />
+  </div>
+  <div class="four columns row" style="background-color:#d9dfe5">
+    <p>Just a sidebar</p>
+    {% lorem 1 p %}
+  </div>
 {% endblock content %}
