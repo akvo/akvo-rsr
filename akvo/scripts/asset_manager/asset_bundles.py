@@ -69,7 +69,18 @@ ASSET_BUNDLES = {
         'path': 'dws/css/',
         'compress': False,
         'files': ['ie6.css',],
-    },    
+    },
+    'partner_sites_style': {
+        'type': 'css',
+        'path': 'partner_sites/css/',
+        'compress': True,
+        'files': [
+            'base.css',
+            'skeleton.css',
+            'layout.css',
+            'style.css',
+            ],
+    }, 
     'widget_cobranded_banner': {
         'type': 'css',
         'path': 'widgets/cobranded_banner/css/',
