@@ -4,7 +4,6 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.contrib import admin
-from django.contrib import auth
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
 from django.contrib.sites.admin import SiteAdmin
@@ -12,10 +11,10 @@ from django.contrib.contenttypes import generic
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
-from django.forms.models import modelform_factory
 from django.forms.util import ErrorList
+from django.http import Http404
 from django.utils.encoding import force_unicode
-from django.utils.functional import curry
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
 
@@ -23,11 +22,7 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from permissions.models import Role
 
-from forms import ReadonlyFKAdminField
-
-from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
-from utils import get_rsr_limited_change_permission
-from utils import groups_from_user
+from akvo.rsr.utils import get_rsr_limited_change_permission
 
 
 NON_FIELD_ERRORS = '__all__'
@@ -1066,7 +1061,7 @@ class SmsReporterInline(admin.TabularInline):
     def get_readonly_fields(self, request, obj):
         """ Only allow viewing of gateway number and project for non-superusers
         """
-        opts = self.opts
+        #opts = self.opts
         user = request.user
         if not user.is_superuser:
             self.readonly_fields = ('gw_number', 'project',)            
