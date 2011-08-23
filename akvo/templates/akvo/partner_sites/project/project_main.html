@@ -2,9 +2,7 @@
 {% load i18n rsr_tags webdesign %}
 {% load url from future %}
 
+
 {% block content %}
-  <h1>{{organisation}}</h1>
-  <p>
-    Our <a href="{% url 'project_list' %}">projects</a>
-  </p>
+  <h1>{{project}}</h1>
 {% endblock content %}

@@ -1,0 +1,13 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n rsr_tags webdesign %}
+{% load url from future %}
+
+
+{% block content %}
+  <h1>{{organisation}}'s project list</h1>
+  <ul>
+    {% for project in project_list %}
+      <li><a href="{% url 'project_main' project.id %}">{{project.name}}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock content %}
