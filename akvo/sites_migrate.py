@@ -6,21 +6,19 @@ setup_environ(settings)
 from django.contrib.sites.models import Site
 
 
-def enable_existing_sites():
-    sites = Site.objects.all()
-    for site in sites:
-        site.enabled = True
-        site.save()
-    print 'Existing sites migrated.\n'
-
-def create_local_development_site():
-    site = Site.objects.get(name='localhost:8000')
-    site.name = 'Local development (vanilla RSR)'
-    site.domain = site.development_domain = 'akvo.dev'
-    site.enabled = True
+def main():
+    existing_sites = Site.objects.all()
+    for existing_site in existing_sites:
+        existing_site.delete()
+        print 'Removed existing sites.'
+    site = Site(domain='www.akvo.org', name='Akvo RSR',
+                development_domain='akvo.dev',
+                enabled=True)
     site.save()
-    print 'Local development site created.\n'
+    print 'Created new default site.\n' \
+          'If developing locally, please ensure that an alias ' \
+          'for akvo.dev is defined in your /etc/hosts file.'
+
 
 if __name__ == '__main__':
-    enable_existing_sites()
-    create_local_development_site()
+    main()
