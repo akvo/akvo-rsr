@@ -3,6 +3,13 @@
 {% load url from future %}
 
 
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="/"><span>Projects</span></a></li>
+  <li><a href="{% url 'project_list' %}"><span>Projects list</span></a></li>
+  <li id="last_breadcrum_item">{{project.name}}</li>
+{% endblock breadcrum_items %}
+
 {% block content %}
   <div class="twelve columns">
     <h1>{{project}}</h1>

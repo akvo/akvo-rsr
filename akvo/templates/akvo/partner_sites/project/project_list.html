@@ -2,6 +2,13 @@
 {% load i18n rsr_tags webdesign %}
 {% load url from future %}
 
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="/"><span>Projects</span></a></li>
+  <li id="last_breadcrum_item">Project list</li>
+{% endblock breadcrum_items %}
+
+
 {% block content %}
   <div class="sixteen columns">
     <h1>{{organisation}}'s project list</h1>

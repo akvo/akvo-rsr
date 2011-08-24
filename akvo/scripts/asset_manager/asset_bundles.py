@@ -78,6 +78,7 @@ ASSET_BUNDLES = {
             'base.css',
             'skeleton.css',
             'layout.css',
+            'typography.css',
             'style.css',
             ],
     }, 

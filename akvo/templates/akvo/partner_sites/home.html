@@ -2,6 +2,11 @@
 {% load i18n google_maps rsr_tags webdesign %}
 {% load url from future %}
 
+{% block breadcrum_items %}
+  {{block.super}}
+  <li id="last_breadcrum_item">Projects</li>
+{% endblock breadcrum_items %}
+
 {% block content %}
   <div class="twelve columns row">
     <h1>{{organisation}}</h1>
