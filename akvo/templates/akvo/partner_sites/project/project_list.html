@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign %}
+{% load i18n rsr_tags webdesign thumbnail %}
 {% load url from future %}
 
 {% block breadcrum_items %}
@@ -12,12 +12,66 @@
 {% block content %}
   <div class="sixteen columns">
     <h1>{{organisation}}'s project list</h1>
-    <ul>
+    <form id="filter"> 
+      <fieldset> 
+        <legend>Filter by type</legend> 
+        <label><input type="radio" name="type" value="all" checked="checked">All</label> 
+        <label><input type="radio" name="type" value="H">Needs funding</label> 
+        <label><input type="radio" name="type" value="A">Active</label> 
+        <label><input type="radio" name="type" value="C">Complete</label> 
+        <label><input type="radio" name="type" value="L">Cancelled</label> 
+        <label><input type="radio" name="type" value="R">Archived</label> 
+      </fieldset>
+      <fieldset> 
+        <legend>Sort by</legend> 
+        <label><input type="radio" name="sort" value="size" checked="checked">Age</label> 
+        <label><input type="radio" name="sort" value="name">Name</label>			
+      </fieldset> 
+    </form>
+    <ul id="applications" class="image-grid">
       {% for project in project_list.select_related %}
+        <li data-id="id-{{forloop.counter}}" data-type="{{project.status}}" style="float:left">
+          <div style="width:100px;">
+            <img src="{% thumbnail project.current_image 100x75 autocrop,upscale,sharpen %}" alt="{{project.id}}" /><br />
+            <strong>{{project.name}}</strong>
+            <span data-type="size" style="display:none;">{{project.id}}</span>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    {% comment %}
+    <ul id="applications" class="image-grid">
+      <li data-id="id-1" data-type="util"> 
+        <img src="http://razorjack.net/quicksand/content/images/activity-monitor.png" width="128" height="128" alt="" />
+        <br />
+        <strong>Activity Monitor</strong> 
+        <span data-type="size">348 KB</span> 
+      </li> 
+        <li data-id="id-2" data-type="app"> 
+        <img src="http://razorjack.net/quicksand/content/images/address-book.png" width="128" height="128" alt="" />
+        <br />
+        <strong>Address Book</strong> 
+        <span data-type="size">1904 KB</span> 
+      </li>
+      </li> 
+        <li data-id="id-3" data-type="app"> 
+        <img src="http://razorjack.net/quicksand/content/images/front-row.png" width="128" height="128" alt="" /> 
+        <br />
+        <strong>Front rowAddress Book</strong> 
+        <span data-type="size">100 KB</span> 
+      </li>
+      {% endcomment %}
+      {% comment %}
+      {% for project in project_list.select_related %}
+        <li data-id="id-{{forloop.counter}}" data-type="{% cycle 'util' 'app' %}">
+            <a href="{% url 'project_main' project.id %}">
+          {% project_thumb project 100 75 'float:left; margin: 10px 10px 10px 10px;' %}
+        </a>
+        </li>
+        {% endcomment %}
         {% comment %}
         <li><a href="{% url 'project_main' project.id %}">{{project.name}}</a></li>
-        {% endcomment %}
-        <li>
+        <li data-type=" {% cycle 'util' 'app' %}">
         <a href="{% url 'project_main' project.id %}">
           {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
           <p class="link_blue strong" style="margin-bottom:0">
@@ -25,8 +79,85 @@
           </p> 
         </a>
         <br class="clear">
-      </li>
       {% endfor %}
+      </li>
+       {% endcomment %}
     </ul>
   </div>
 {% endblock content %}
+
+{% block js %}
+<script type="text/javascript"> 
+          // Custom sorting plugin
+          (function($) {
+          	$.fn.sorted = function(customOptions) {
+          		var options = {
+          			reversed: false,
+          			by: function(a) { return a.text(); }
+          		};
+          		$.extend(options, customOptions);
+          		$data = $(this);
+          		arr = $data.get();
+          		arr.sort(function(a, b) {
+          		   	var valA = options.by($(a));
+          		   	var valB = options.by($(b));
+          			if (options.reversed) {
+          				return (valA < valB) ? 1 : (valA > valB) ? -1 : 0;				
+          			} else {		
+          				return (valA < valB) ? -1 : (valA > valB) ? 1 : 0;	
+          			}
+          		});
+          		return $(arr);
+          	};
+          })(jQuery);
+      
+          // DOMContentLoaded
+          $(function() {
+          
+            // bind radiobuttons in the form
+          	var $filterType = $('#filter input[name="type"]');
+          	var $filterSort = $('#filter input[name="sort"]');
+        	
+          	// get the first collection
+          	var $applications = $('#applications');
+        	
+          	// clone applications to get a second collection
+          	var $data = $applications.clone();
+ 
+            // attempt to call Quicksand on every form change
+          	$filterType.add($filterSort).change(function(e) {
+          		if ($($filterType+':checked').val() == 'all') {
+          			var $filteredData = $data.find('li');
+          		} else {
+          			var $filteredData = $data.find('li[data-type=' + $($filterType+":checked").val() + ']');
+          		}
+            
+              // if sorted by size
+          		if ($('#filter input[name="sort"]:checked').val() == "size") {
+          			var $sortedData = $filteredData.sorted({
+          				by: function(v) {
+          					return parseFloat($(v).find('span[data-type=size]').text());
+          				}
+          			});
+          		} else {
+          		// if sorted by name
+          			var $sortedData = $filteredData.sorted({
+          				by: function(v) {
+          					return $(v).find('strong').text().toLowerCase();
+          				}
+          			});
+          		}   
+        		
+          		// finally, call quicksand
+          	  $applications.quicksand($sortedData, {
+          	    duration: 800,
+          	    easing: 'easeInOutQuad'
+          	  });
+ 
+          	});
+          
+          });
+        </script>
+
+
+{% endblock js %}
