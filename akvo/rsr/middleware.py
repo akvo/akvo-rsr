@@ -9,7 +9,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 from djangotoolbox.utils import make_tls_property
 
@@ -18,22 +18,33 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
 class PartnerSitesRouterMiddleware(object):
-    def process_request(self, request, site=None):
-        request.organisation_id = None
+    def process_request(self, request, organisation_id=None, site=None):
         domain = request.get_host().split(':')[0]
-        if domain.endswith('.dev'):  # local development domain
-            site = get_object_or_404(Site, development_domain=domain)
-        elif domain.endswith('.akvo.org'):  # akvo development/production domain
+        if domain.endswith('.dev') or domain == 'localhost':  # local domain
             try:
                 site = Site.objects.get(domain=domain)
             except:
-                site = Site.objects.get(domain='www.akvo.org')
-                request.host = site.domain
+                try:
+                    site = Site.objects.get(domain='akvo.dev')
+                except:
+                    raise Http404
+        elif domain.endswith('.akvo.org'):  # Akvo domain
+            try:
+                site = Site.objects.get(domain=domain)
+            except:
+                try:
+                    site = Site.objects.get(domain='www.akvo.org')
+                except:
+                    raise Http404
         else:  # probably a partner-nominated domain
-            site = get_object_or_404(Site, partner_domain=domain)
+            try:
+                site = Site.objects.get(partner_domain=domain)
+            except:
+                raise Http404
         if site is not None and site.enabled:
             SITE_ID.value = site.id
-            if site.is_partner_site:
-                request.organisation_id = site.organisation.id
+            if site.organisation is not None:
+                organisation_id = site.organisation.id
                 request.urlconf = 'akvo.urls_partner_sites'
+        request.organisation_id = organisation_id
         return

@@ -2784,9 +2784,7 @@ payment_was_flagged.connect(process_paypal_ipn)
 if not settings.PVW_RSR:
     models.ForeignKey(Organisation, blank=True, null=True).contribute_to_class(Site, 'organisation')
     NullCharField(max_length=100, unique=True, blank=True, null=True).contribute_to_class(Site, 'partner_domain')
-    NullCharField(max_length=50, unique=True, blank=True, null=True).contribute_to_class(Site, 'development_domain')
-    models.BooleanField().contribute_to_class(Site, 'is_partner_site')
-    models.BooleanField().contribute_to_class(Site, 'enabled')
+    models.BooleanField(default=True).contribute_to_class(Site, 'enabled')
 
 
 # signals!
