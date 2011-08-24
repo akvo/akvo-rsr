@@ -1,0 +1,63 @@
+a { 
+    color:#2B80AF;
+    cursor:pointer;
+    text-decoration:none;
+    }
+    
+a:visited { color:#2B80AF; }
+a:hover { color:#0FA0CB; text-decoration: underline; }
+
+
+
+#breadcrum_back {
+    background-color: #EFF3F5;
+    border: 1px solid #D6D7DD;
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px; 
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+ul#breadcrum {
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li {
+    list-style: none;
+    display: inline;
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li a {
+    display: block;
+    float: left;
+    margin: 0; 
+    padding: 0;
+    }
+    
+ul#breadcrum li a span {
+    background: transparent url('../../../akvo/img/breadcrum.png') no-repeat right;
+    display: block;
+    height: 23px;
+    margin: 0;
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-left: 12px;
+    font-size: 12px;
+    }
+
+#last_breadcrum_item {
+    display: block;
+    color: #3D414B;
+    height: 23px;
+    margin: 0; 
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 20px;
+    padding-left: 12px !important;
+    font-size: 12px;
+    }
+

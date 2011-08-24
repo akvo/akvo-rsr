@@ -21,11 +21,24 @@
 </head>
 <body>
   <div class="container">
-    <div class="sixteen columns row" style="background-color:#F5F6F7;">
+    <div class="sixteen columns row" style="padding-top:20px;">
+      {# org_logo organisation 100 75 'margin-bottom: 1.5em;' #}
       <p style="margin:10px">
-        <a href="{{organisation.url}}"><- back to {{organisation}}</a> |
-        <a href="{% url 'home' %}">projects home</a> |
+        {#<a href="{{organisation.url}}"><- back to {{organisation}}</a><br /> #}
+        {% block breadcrum %}
+          <div id="breadcrum_back">
+            <ul id="breadcrum">
+              {% block breadcrum_items %}
+                <li><a href="{{organisation.url}}"><span>{{organisation}}</span></a></li>
+              {% endblock breadcrum_items %}
+            </ul>
+            <div class="clear"></div>
+          </div>
+        {% endblock breadcrum %}
+        {% comment %}
+        <a href="{% url 'home' %}">home</a> |
         <a href="{% url 'project_list' %}">project list</a>
+        {% endcomment %}
         
       </p>
     </div>
