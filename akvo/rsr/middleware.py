@@ -9,7 +9,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 from djangotoolbox.utils import make_tls_property
 
@@ -22,10 +22,7 @@ class PartnerSitesRouterMiddleware(object):
         request.organisation_id = None
         domain = request.get_host().split(':')[0]
         if domain.endswith('.dev'):  # local development domain
-            try:
-                site = Site.objects.get(development_domain=domain)
-            except:
-                raise Http404
+            site = get_object_or_404(Site, development_domain=domain)
         elif domain.endswith('.akvo.org'):  # akvo development/production domain
             try:
                 site = Site.objects.get(domain=domain)
@@ -33,10 +30,7 @@ class PartnerSitesRouterMiddleware(object):
                 site = Site.objects.get(domain='www.akvo.org')
                 request.host = site.domain
         else:  # probably a partner-nominated domain
-            try:
-                site = Site.objects.get(partner_domain=domain)
-            except:
-                raise Http404
+            site = get_object_or_404(Site, partner_domain=domain)
         if site is not None and site.enabled:
             SITE_ID.value = site.id
             if site.is_partner_site:
