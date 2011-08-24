@@ -7,13 +7,6 @@
   <li><a href="/"><span>Projects</span></a></li>
   <li id="last_breadcrum_item">Project list</li>
 {% endblock breadcrum_items %}
-{% comment %}
-  
-{% block breadcrum_items %}
-	{{block.super}}
-	<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
-{% endblock breadcrum_items %}
-{% endcomment %}
 
 
 {% block content %}
