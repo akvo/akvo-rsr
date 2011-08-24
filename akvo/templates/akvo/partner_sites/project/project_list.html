@@ -32,7 +32,9 @@
       {% for project in project_list.select_related %}
         <li data-id="id-{{forloop.counter}}" data-type="{{project.status}}" style="float:left">
           <div style="width:100px;">
-            <img src="{% thumbnail project.current_image 100x75 autocrop,upscale,sharpen %}" alt="{{project.id}}" /><br />
+            <a href="{% url 'project_main' project.id %}">
+              <img src="{% thumbnail project.current_image 100x75 autocrop,upscale,sharpen %}" alt="{{project.id}}" /><br />
+            </a>
             <strong>{{project.name}}</strong>
             <span data-type="size" style="display:none;">{{project.id}}</span>
           </div>
