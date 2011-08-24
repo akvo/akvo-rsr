@@ -2782,7 +2782,6 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 # Monkey patch django.contrib.sites.models.Site to support Partner Sites
 if not settings.PVW_RSR:
-    models.CharField(max_length=50, unique=True).contribute_to_class(Site, 'development_domain')
     models.ForeignKey(Organisation, blank=True, null=True).contribute_to_class(Site, 'organisation')
     NullCharField(max_length=100, unique=True, blank=True, null=True).contribute_to_class(Site, 'partner_domain')
     models.BooleanField(default=True).contribute_to_class(Site, 'enabled')

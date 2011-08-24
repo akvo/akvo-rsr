@@ -20,15 +20,15 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, organisation_id=None, site=None):
         domain = request.get_host().split(':')[0]
-        if domain.endswith('.dev'):  # local development domain
+        if domain.endswith('.dev') or domain == 'localhost':  # local domain
             try:
-                site = Site.objects.get(development_domain=domain)
+                site = Site.objects.get(domain=domain)
             except:
                 try:
-                    site = Site.objects.get(development_name='akvo.dev')
+                    site = Site.objects.get(domain='akvo.dev')
                 except:
                     raise Http404
-        elif domain.endswith('.akvo.org'):  # akvo development/production domain
+        elif domain.endswith('.akvo.org'):  # Akvo domain
             try:
                 site = Site.objects.get(domain=domain)
             except:
