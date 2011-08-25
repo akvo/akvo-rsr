@@ -2782,8 +2782,10 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 # Monkey patch django.contrib.sites.models.Site to support Partner Sites
 if not settings.PVW_RSR:
-    models.ForeignKey(Organisation, blank=True, null=True).contribute_to_class(Site, 'organisation')
-    NullCharField(max_length=100, unique=True, blank=True, null=True).contribute_to_class(Site, 'partner_domain')
+    models.ForeignKey(Organisation, blank=True, null=True,
+                      help_text=_('If this site is a partner site, select the associated partner organisation. If no organisation is selected, a regular instance of Akvo RSR will be served.')).contribute_to_class(Site, 'organisation')
+    NullCharField(max_length=100, unique=True, blank=True, null=True,
+                  help_text=_('Enter the partner-nominated domain name e.g. "projects.connect4change.nl".')).contribute_to_class(Site, 'partner_domain')
     models.BooleanField(default=True).contribute_to_class(Site, 'enabled')
 
 
