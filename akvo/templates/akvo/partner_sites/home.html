@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n google_maps rsr_tags webdesign %}
+{% load i18n google_maps rsr_tags webdesign thumbnail %}
 {% load url from future %}
 
 {% block breadcrum_items %}
@@ -9,21 +9,21 @@
 
 {% block content %}
   <div class="twelve columns row">
-    <h1>{{organisation}}</h1>
-    {% google_organisation_projects_map organisation 'dynamic' 470 300 2 %}
-    <br />
-    <h2>Ideas</h2>
-    <ul class="square add-bottom">
-      <li>link to <a href="{% url 'project_list' %}">project list</a></li>
-      <li>Three latest updates</li>
-      <li>Some stats</li>
-    </ul>
-    <h2>Latest updates</h2>
+    <h1>What&#x27;s happening now</h1>
     <ul class="square add-bottom">
       {% for update in latest_updates  %}
-        <li>{{update}}</li>
+        <li>
+          <img src="{% thumbnail update.photo 100x75 autocrop,upscale,sharpen %}" alt="{{update.id}}" />
+          {{update}}
+        </li>
       {% endfor %}
     </ul>
+    <h1>What have happended before</h1>
+    <p>
+      Stats: how many projects and how many people.
+    </p>
+    <h1>Where does this happen</h1>
+    {% google_organisation_projects_map organisation 'dynamic' 470 300 1 %}
   </div>
   <div class="four columns row" style="background-color:#d9dfe5">
     <p>Just a sidebar</p>

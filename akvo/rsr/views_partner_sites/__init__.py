@@ -28,7 +28,7 @@ class BaseProjectListView(ListView):
         self.organisation = get_object_or_404(Organisation,
             pk=self.request.organisation_id)
 
-        projects =  self.organisation.published_projects().funding()
+        projects = self.organisation.published_projects().funding()
         return projects.order_by('id')
 
     def get_context_data(self, **kwargs):

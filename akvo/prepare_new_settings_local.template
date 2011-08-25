@@ -16,6 +16,8 @@ if {% if PVW_RSR %}not {% endif %}PVW_RSR:
     LIVE_EARTH_ENABLED = {{LIVE_EARTH_ENABLED}}
     WALKING_FOR_WATER_ENABLED = {{WALKING_FOR_WATER_ENABLED}}
     SITE_ID = {{SITE_ID}}
+    MEDIA_ROOT = {{MEDIA_ROOT}}
+    MEDIA_URL = {{MEDIA_URL}}
     DATABASES = {
         'default': {
             'NAME': '{{DB_NAME}}',
@@ -39,7 +41,8 @@ else:
     LIVE_EARTH_ENABLED = False
     WALKING_FOR_WATER_ENABLED = False
     SITE_ID = 1
-    
+    #MEDIA_URL = 
+    #MEDIA_ROOT = 
     DATABASES = {
         'default': {
             'NAME': 'dws-rsr',
