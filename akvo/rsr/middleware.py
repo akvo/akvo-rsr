@@ -21,6 +21,8 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, organisation_id=None, site=None):
         domain = request.get_host().split(':')[0]
         if domain.endswith('.dev') or domain == 'localhost':  # local domain
+            if domain == 'localhost':
+                domain = 'akvo.dev'
             try:
                 site = Site.objects.get(domain=domain)
             except:
