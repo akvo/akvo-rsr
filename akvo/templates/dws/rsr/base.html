@@ -40,7 +40,7 @@
         </a>
       </li>
 			<li>
-				<a href="{% url 'project_list %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+				<a href="{% url 'project_list' %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
 					<span>{% trans 'Projects' %}</span>
 				</a>
 			</li>
@@ -74,7 +74,7 @@
 		<div style="height:17px;">&nbsp;</div>
 		
 		{% block breadcrum  %}
-			<div class="span-14" style="margin-bottom:20px;">
+			<div class="span-12" style="margin-bottom:20px;">
 				<div id="breadcrum_back">
 					<ul id="breadcrum">
 						{% block breadcrum_items %}

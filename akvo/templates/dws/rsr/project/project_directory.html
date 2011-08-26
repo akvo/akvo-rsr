@@ -271,7 +271,7 @@
               <td>
                 <p class="td-text">
                     {% for area in project.focus_areas %}
-                        <a href="{% url focus_area area.slug %}">{{area.name}}</a><br/>
+                        <a href="{% url 'focus_area' area.slug %}">{{area.name}}</a><br/>
                     {% endfor %}
                 </p>
               </td>

@@ -313,7 +313,7 @@ def project_list(request, slug='all', org_id=None):
     countries_in_south_america = []
     countries_in_south_america = Country.objects.all().filter(continent__exact=6)
     
-    
+
     return {
         'projects': projects, 
         'site_section': 'projects', 
@@ -366,6 +366,8 @@ if settings.PVW_RSR:
             'query': query_string,
         }
 
+    def liveearth(request):
+        pass
 else:
         
     @render_to('rsr/project_directory.html')
