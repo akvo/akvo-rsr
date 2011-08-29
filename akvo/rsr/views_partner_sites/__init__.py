@@ -45,10 +45,10 @@ class BaseListView(ListView):
         return context
 
     def get_queryset(self):
-        self.organisation = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
-        projects = self.organisation.published_projects().funding()
-        return projects.order_by('id')
+        return get_object_or_404(Organisation,
+                                 pk=self.request.organisation_id) \
+                                    .published_projects().funding() \
+                                    .order_by('id')
 
 
 class HomeView(BaseListView):
@@ -84,6 +84,7 @@ class UpdateDirectoryView(ListView):
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         updates = project.project_updates.all().order_by('-time')
         return updates
+
 
 class UpdateView(BaseProjectView):
     """Extend the project view with the current update"""
