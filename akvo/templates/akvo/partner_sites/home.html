@@ -18,15 +18,14 @@
         </li>
       {% endfor %}
     </ul>
-    <h1>What have happended before</h1>
+    <h1>Where does this happen</h1>
+    {# google_organisation_projects_map organisation 'dynamic' 470 300 1 #}
+  </div>
+  <div class="four columns row" style="background-color:#d9dfe5">
+    <h2>What have happended before</h2>
     <p>
       Stats: how many projects and how many people.
     </p>
-    <h1>Where does this happen</h1>
-    {% google_organisation_projects_map organisation 'dynamic' 470 300 1 %}
-  </div>
-  <div class="four columns row" style="background-color:#d9dfe5">
-    <p>Just a sidebar</p>
-    {% lorem 2 p %}
+    {% lorem 1 p %}
   </div>
 {% endblock content %}

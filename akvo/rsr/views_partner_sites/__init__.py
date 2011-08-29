@@ -53,6 +53,10 @@ class HomeView(BaseView):
         return context
 
 
+class MapView(BaseView):
+    template_name = "partner_sites/map.html"
+
+
 class ProjectListView(BaseProjectListView):
     """List projects..."""
     template_name = 'partner_sites/project/project_list.html'

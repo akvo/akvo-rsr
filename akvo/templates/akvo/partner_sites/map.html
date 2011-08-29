@@ -1,0 +1,17 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n google_maps rsr_tags webdesign thumbnail %}
+{% load url from future %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="/"><span>Projects</span></a></li>
+  <li id="last_breadcrum_item">Project map</li>
+{% endblock breadcrum_items %}
+
+
+{% block content %}
+  <div class="sixteen columns">
+    <h1>{{organisation}}'s project map</h1>
+    {% google_organisation_projects_map organisation 'dynamic' 470 300 1 %}
+  </div>
+{% endblock content %}
