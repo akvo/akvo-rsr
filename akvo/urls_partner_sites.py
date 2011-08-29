@@ -12,10 +12,10 @@ from akvo.rsr import views_partner_sites as views
 urlpatterns = patterns('',
     url(r'^$',
         views.HomeView.as_view(), name='home'),
-    url(r'^projects/$',
+    url(r'^directory/$',
         views.ProjectListView.as_view(), name='project_list'),
     url(r'^map/$',
         views.MapView.as_view(), name='project_map'),
-    url(r'^projects/(?P<project_id>\d+)/$',
+    url(r'^(?P<project_id>\d+)/$',
         views.ProjectView.as_view(), name='project_main'),
 )

@@ -39,7 +39,7 @@ class BaseProjectListView(ListView):
         return context
 
 
-class HomeView(BaseView):
+class HomeView(BaseProjectListView):
     template_name = "partner_sites/home.html"
 
     def get_context_data(self, **kwargs):
@@ -47,7 +47,7 @@ class HomeView(BaseView):
 
         #get three latest updates
         latest_updates = ProjectUpdate.objects.exclude(photo__exact=''). \
-            order_by('-time')[:3]
+            order_by('-time')[:2]
         context['latest_updates'] = latest_updates
 
         return context
@@ -59,7 +59,7 @@ class MapView(BaseView):
 
 class ProjectListView(BaseProjectListView):
     """List projects..."""
-    template_name = 'partner_sites/project/project_list.html'
+    template_name = 'partner_sites/directory.html'
 
 
 class ProjectView(BaseView):

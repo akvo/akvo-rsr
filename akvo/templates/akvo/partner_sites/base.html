@@ -17,23 +17,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   {% asset_bundle 'partner_sites_style' %}
-
 </head>
 <body>
-  <div class="container">
-    <div class="sixteen columns row" style="padding-top:20px;">
-      <a href="{% url 'home' %}">Projects Home</a> | 
-      <a href="{% url 'project_list' %}">Project List</a> | 
-      <a href="{% url 'project_map' %}">Project map</a> |
-      <a href="{{organisation.url}}">Go to {{organisation}}</a>
+  <div id="top_bar">
+    <div class="container">
+      <div class="sixteen columns row" style="padding-top:20px;">
+        <a href="{% url 'home' %}">Projects Home</a> | 
+        <a href="{% url 'project_list' %}">Directory</a> | 
+        <a href="{% url 'project_map' %}">Map</a> |
+        <a href="{{organisation.url}}">Go to {{organisation}} &rarr;</a>
+      </div>
     </div>
+  </div>
+  <div class="container">
     <div class="sixteen columns row">
       <p style="margin:10px">
         {% block breadcrum %}
           <div id="breadcrum_back">
             <ul id="breadcrum">
               {% block breadcrum_items %}
-                <li><a href="{{organisation.url}}"><span>{{organisation}}</span></a></li>
+                <li><a href="{{ organisation.url }}"><span>{{organisation}}</span></a></li>
               {% endblock breadcrum_items %}
             </ul>
             <div class="clear"></div>

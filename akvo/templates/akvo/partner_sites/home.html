@@ -4,28 +4,158 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li id="last_breadcrum_item">Projects</li>
+  <li id="last_breadcrum_item">Project home</li>
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <div class="twelve columns row">
+  <div class="sixteen columns row">
     <h1>What&#x27;s happening now</h1>
-    <ul class="square add-bottom">
-      {% for update in latest_updates  %}
-        <li>
-          <img src="{% thumbnail update.photo 100x75 autocrop,upscale,sharpen %}" alt="{{update.id}}" />
-          {{update}}
+  </div>  
+  <div class="six columns row" style="background-color:#F5F6F7">
+    <h2>{{latest_updates.0.title}}</h2>
+    <img src="{% thumbnail latest_updates.0.photo 100x75 autocrop,upscale,sharpen %}" />
+    <br />
+    <p>
+        {% blocktrans with latest_updates.0.user.get_full_name as user_name and latest_updates.0.get_update_method_display as update_meth and latest_updates.0.time|date:"Y-m-d" as update_time %}
+        By {{user_name}} via {{update_meth}} on {{update_time}}
+        {% endblocktrans %}
+        <br/>{{latest_updates.1.project.primary_location.country}}
+    </p>
+  </div>
+  <div class="six columns row" style="background-color:#F5F6F7">
+      <h2>{{latest_updates.1.title}}</h2>
+    <img src="{% thumbnail latest_updates.1.photo 100x75 autocrop,upscale,sharpen %}" alt="" />
+    <br />
+    <p>
+        {% blocktrans with latest_updates.1.user.get_full_name as user_name and latest_updates.1.get_update_method_display as update_meth and latest_updates.1.time|date:"Y-m-d" as update_time %}
+        By {{user_name}} via {{update_meth}} on {{update_time}}
+        {% endblocktrans %}
+        <br/>{{latest_updates.1.project.primary_location.country}}
+    </p>
+  </div>
+  <div class="four columns row" style="background-color:#d9dfe5">
+    <h2>People who get</h2>
+    <p>
+      Water...<br />
+      Sanitation...
+    </p>
+    <h2>Number of projects</h2>
+    <p>
+      Active: x<br />
+      Needs funding: X<br />
+      Complete: x<br />
+      Cancelled: x<br />
+      Total projects: x
+    </p>
+  </div>
+  <div class="sixteen columns">
+    <h1>Projects</h1>
+    <form id="filter"> 
+      <fieldset> 
+        <legend>Filter by type</legend> 
+        <label><input type="radio" name="type" value="all" checked="checked">All</label> 
+        <label><input type="radio" name="type" value="H">Needs funding</label> 
+        <label><input type="radio" name="type" value="A">Active</label> 
+        <label><input type="radio" name="type" value="C">Complete</label> 
+        <label><input type="radio" name="type" value="L">Cancelled</label> 
+        <label><input type="radio" name="type" value="R">Archived</label> 
+      </fieldset>
+      <fieldset> 
+        <legend>Sort by</legend> 
+        <label><input type="radio" name="sort" value="size" checked="checked">Age</label> 
+        <label><input type="radio" name="sort" value="name">Name</label>			
+      </fieldset> 
+    </form>
+    <ul id="applications" class="image-grid">
+      {% for project in project_list.select_related %}
+        <li data-id="id-{{forloop.counter}}" data-type="{{project.status}}" style="float:left">
+          <div style="width:100px;">
+            <a href="{% url 'project_main' project.id %}">
+              <img src="{% thumbnail project.current_image 100x75 autocrop,upscale,sharpen %}" alt="{{project.id}}" /><br />
+            </a>
+            <strong><a href="{% url 'project_main' project.id %}">{{project.name}}</a></strong>
+            <span data-type="size" style="display:none;">{{project.id}}</span>
+          </div>
         </li>
       {% endfor %}
     </ul>
-    <h1>Where does this happen</h1>
-    {# google_organisation_projects_map organisation 'dynamic' 470 300 1 #}
-  </div>
-  <div class="four columns row" style="background-color:#d9dfe5">
-    <h2>What have happended before</h2>
-    <p>
-      Stats: how many projects and how many people.
-    </p>
-    {% lorem 1 p %}
   </div>
 {% endblock content %}
+
+
+{% block js %}
+<script type="text/javascript"> 
+          // Custom sorting plugin
+          (function($) {
+          	$.fn.sorted = function(customOptions) {
+          		var options = {
+          			reversed: false,
+          			by: function(a) { return a.text(); }
+          		};
+          		$.extend(options, customOptions);
+          		$data = $(this);
+          		arr = $data.get();
+          		arr.sort(function(a, b) {
+          		   	var valA = options.by($(a));
+          		   	var valB = options.by($(b));
+          			if (options.reversed) {
+          				return (valA < valB) ? 1 : (valA > valB) ? -1 : 0;				
+          			} else {		
+          				return (valA < valB) ? -1 : (valA > valB) ? 1 : 0;	
+          			}
+          		});
+          		return $(arr);
+          	};
+          })(jQuery);
+      
+          // DOMContentLoaded
+          $(function() {
+          
+            // bind radiobuttons in the form
+          	var $filterType = $('#filter input[name="type"]');
+          	var $filterSort = $('#filter input[name="sort"]');
+        	
+          	// get the first collection
+          	var $applications = $('#applications');
+        	
+          	// clone applications to get a second collection
+          	var $data = $applications.clone();
+ 
+            // attempt to call Quicksand on every form change
+          	$filterType.add($filterSort).change(function(e) {
+          		if ($($filterType+':checked').val() == 'all') {
+          			var $filteredData = $data.find('li');
+          		} else {
+          			var $filteredData = $data.find('li[data-type=' + $($filterType+":checked").val() + ']');
+          		}
+            
+              // if sorted by size
+          		if ($('#filter input[name="sort"]:checked').val() == "size") {
+          			var $sortedData = $filteredData.sorted({
+          				by: function(v) {
+          					return parseFloat($(v).find('span[data-type=size]').text());
+          				}
+          			});
+          		} else {
+          		// if sorted by name
+          			var $sortedData = $filteredData.sorted({
+          				by: function(v) {
+          					return $(v).find('strong').text().toLowerCase();
+          				}
+          			});
+          		}   
+        		
+          		// finally, call quicksand
+          	  $applications.quicksand($sortedData, {
+          	    duration: 800,
+          	    easing: 'easeInOutQuad'
+          	  });
+ 
+          	});
+          
+          });
+        </script>
+
+
+{% endblock js %}
+
