@@ -25,4 +25,6 @@ urlpatterns = patterns('',
                  name='project_funding'),
     url(r'^(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView
         .as_view(), name='update_directory'),
+    url(r'^(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$', views.UpdateView
+        .as_view(), name='update_main'),
     )

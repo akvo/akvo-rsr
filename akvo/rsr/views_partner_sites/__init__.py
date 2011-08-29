@@ -63,6 +63,7 @@ class HomeView(BaseListView):
         context['latest_updates'] = latest_updates
         return context
 
+
 class UpdateDirectoryView(ListView):
     """View that adds latest updates to the partner sites home pages. The
     updates are available as "latest_updates" in the template"""
@@ -83,3 +84,13 @@ class UpdateDirectoryView(ListView):
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         updates = project.project_updates.all().order_by('-time')
         return updates
+
+class UpdateView(BaseProjectView):
+    """Extend the project view with the current update"""
+    template_name = "partner_sites/project/update_main.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        context['update'] = get_object_or_404(ProjectUpdate,
+                                              id=self.kwargs['update_id'])
+        return context

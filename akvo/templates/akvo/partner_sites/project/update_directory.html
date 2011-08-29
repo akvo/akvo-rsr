@@ -8,15 +8,12 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <div class="twelve columns">
-    <h1>Update directory</h1>
+  <div class="sixten columns">
+    <h1>Progress updates</h1>
     <ul>
       {% for update in update_list  %}
-        <li>{{update.title}}<br />{{update.text}}</li>
+        <li><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</li>
       {% endfor %}
     </ul>
-  </div>
-  <div class="four columns row" style="background-color:#d9dfe5">
-    <p>Just a sidebar</p>
   </div>
 {% endblock content %}
