@@ -6,21 +6,17 @@
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>Projects home</span></a></li>
-  <li id="last_breadcrum_item">{{project.name}}</li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project.name}}</span></a></li>
 {% endblock breadcrum_items %}
 
 {% block content %}
   <div class="twelve columns">
-    <h1>{{project}} - {{organisation}}</h1>
+    <h1>{{project}}</h1>
     {{project.project_plan_summary|linebreaks}}
     <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
-    <br />
   </div>
   <div class="four columns row" style="background-color:#d9dfe5">
     <p>Just a sidebar</p>
-    <h3>Subpages</h3>
-    <ul>
-      <li><a href="{% url 'project_funding' project.id %}">funding</a></li>
-    </ul>
+    {% lorem 1 p %}
   </div>
 {% endblock content %}

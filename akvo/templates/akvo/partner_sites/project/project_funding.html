@@ -1,0 +1,20 @@
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail %}
+{% load url from future %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li id="last_breadcrum_item">Funding</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+  <div class="twelve columns">
+    <h1>Funding</h1>
+    <p>
+      What happens...
+    </p>
+  </div>
+  <div class="four columns row" style="background-color:#d9dfe5">
+    <p>Just a sidebar</p>
+  </div>
+{% endblock content %}
