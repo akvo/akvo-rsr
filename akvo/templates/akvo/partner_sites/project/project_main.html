@@ -20,7 +20,8 @@
     <p>Just a sidebar</p>
     <h3>Subpages</h3>
     <ul>
-      <li><a href="{% url 'project_funding' project.id %}">funding</a></li>
+      <li><a href="{% url 'project_funding' project.id %}">Funding</a></li>
+      <li><a href="{% url 'update_directory' project.id %}">Updates</a></li>
     </ul>
   </div>
 {% endblock content %}

@@ -23,4 +23,6 @@ urlpatterns = patterns('',
     url(r'^(?P<project_id>\d+)/funding/$', views.BaseProjectView \
         .as_view(template_name="partner_sites/project/project_funding.html"),
                  name='project_funding'),
-)
+    url(r'^(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView
+        .as_view(), name='update_directory'),
+    )

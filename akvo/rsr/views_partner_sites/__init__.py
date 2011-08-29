@@ -12,7 +12,7 @@ from ..models import Organisation, Project, ProjectUpdate
 
 
 class BaseView(TemplateView):
-    """Base view that adds current organisation to the template context or 
+    """Base view that adds current organisation to the template context or
     throws a 404."""
 
     def get_context_data(self, **kwargs):
@@ -38,21 +38,21 @@ class BaseListView(ListView):
     variable project_list"""
     context_object_name = 'project_list'
 
-    def get_queryset(self):
-        self.organisation = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
-        projects = self.organisation.published_projects().funding()
-        return projects.order_by('id')
-
     def get_context_data(self, **kwargs):
         context = super(BaseListView, self).get_context_data(**kwargs)
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         return context
 
+    def get_queryset(self):
+        self.organisation = \
+            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        projects = self.organisation.published_projects().funding()
+        return projects.order_by('id')
+
 
 class HomeView(BaseListView):
-    """View that adds latest updates to the partner sites home pages. The 
+    """View that adds latest updates to the partner sites home pages. The
     updates are available as "latest_updates" in the template"""
     template_name = "partner_sites/home.html"
 
@@ -62,3 +62,24 @@ class HomeView(BaseListView):
             .order_by('-time')[:2]
         context['latest_updates'] = latest_updates
         return context
+
+class UpdateDirectoryView(ListView):
+    """View that adds latest updates to the partner sites home pages. The
+    updates are available as "latest_updates" in the template"""
+    template_name = "partner_sites/project/update_directory.html"
+    context_object_name = 'update_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateDirectoryView, self).get_context_data(**kwargs)
+        context['organisation'] = \
+            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['project'] = project
+        context['can_add_update'] = \
+            project.connected_to_user(self.request.user)
+        return context
+
+    def get_queryset(self):
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        updates = project.project_updates.all().order_by('-time')
+        return updates

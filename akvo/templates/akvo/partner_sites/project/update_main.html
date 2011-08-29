@@ -4,17 +4,13 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li id="last_breadcrum_item">Updates</li>
+  <li id="last_breadcrum_item">Update</li>
 {% endblock breadcrum_items %}
 
 {% block content %}
   <div class="twelve columns">
-    <h1>Update directory</h1>
-    <ul>
-      {% for update in update_list  %}
-        <li>{{update.title}}<br />{{update.text}}</li>
-      {% endfor %}
-    </ul>
+    <h1>Update</h1>
+    <p>The update</p>
   </div>
   <div class="four columns row" style="background-color:#d9dfe5">
     <p>Just a sidebar</p>
