@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+{% load i18n webdesign rsr_filters rsr_tags thumbnail counter_tags cache humanize %}
 {% load oembed_tags markup_tags google_maps %}
 {% load url from future %}
 
@@ -17,6 +17,7 @@
 
 <div class='container'>
 
+  {# news box #}
   <div class='column span-8'>
     <div class="gradient_box" style="height: 468px;">
       News
@@ -24,9 +25,28 @@
   </div>
 
   <div class='column span-4 last'>
+    {# video box #}
     <div class="gradient_box" style="height: 368px;">
-      Let's work...
+      <div class="space15 center">
+        <h1 class="black">{% trans "let's work together" %}</h1>
+        <p class="nano-lede lt_grey">{% trans "A world of expertise at your fingertips" %}</p>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15 center">
+        <a href="http://www.youtube.com/user/NLWaterPartnership" class="small_link red">
+          {% trans "See our latest videos on" %}
+          <img src="{{MEDIA_URL}}dws/img/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
+        </a>
+        <div style="margin-top: 10px;">
+          <a href="http://www.youtube.com/watch?v={{cms.video_url}}">
+            <img alt="{% trans "Watch on YouTube" %}" width="282" height="212" src="http://i1.ytimg.com/vi/{{cms.video_url}}/default.jpg" />
+          </a>
+        </div>
+      </div>
+
     </div>
+
+    {# newsletter signup box #}
     <div class="gradient_box gutter-top" style="height: 80px;">
       Sign up!
     </div>
@@ -35,36 +55,202 @@
 </div>
 
 <div class='container gutter-top'>
-
+  {#  first column #}
   <div class='column span-4'>
+    {# features box #}
     <div class="white_box" style="height: 478px;">
-      Features
+      <div class="space15">
+        <div style="float: left;">
+          <h1>{% trans 'Features' %}</h1>
+        </div>
+        <div class="h1_companion">
+          <a class="" href="/news/?feed=rss2">
+            RSS
+            <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+          </a>
+        </div>
+      </div>
     </div>
+
+    {# focus area accordion box #}
     <div class="white_box gutter-top" style="height: 478px;">
       Focus areas
     </div>
   </div>
 
+  {# second column #}
   <div class='column span-4'>
-    <div class="white_box" style="height: 400px;">
-      Projects map
+
+    {# global map box #}
+    <div class="white_box" style="background-color:#fff; min-height: 400px;">
+      <div id="map_box" class="space15">
+        <div style="float: left;">
+          <h1 class="box-heading">{% trans 'Projects worldwide' %}</h1>
+        </div>
+        <div class="h1_companion">
+          <a href="{% url 'project_list' %}">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+      </div>
+      <a href="{% url 'global_project_map' %}">
+        {% google_global_project_map 'static' 312 200 0 %}
+        {# google_static_global_project_map 292 219 0 'blue' 'small' #}
+      </a>
+      <div class="space15">
+        {{cms.map_box|apply_markup:"markdown"}}
+        <div class="h1_companion">
+          <a href="{% url 'global_project_map' %}">{% trans 'View large map' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>
     </div>
+
+    {# project focus box #}
     <div class="white_box gutter-top" style="height: 250px;">
-      Project focus
+      <div class="space15">
+        <h1 class="box-heading">{% trans 'Projects focus' %}</h1>
+        <p class="nano-lede lt_grey">{% trans "Learn about Dutch participation in this project:" %}</p>
+        <p><a class="strong" href="{% url 'project_main' showcase.pk %}">{{ showcase.name }}</a></p>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        <h1 class="h0" style="font-family:'Georgia',serif;">{{ showcase.primary_location.country }}</h1>
+        <p><a href="{% url 'project_list' %}?country={{ showcase.primary_location.country.pk }}">{% trans "See Dutch projects in this country" %} <span class="link_triangle">&#x25BA;</span></a></p>
+      </div>
     </div>
+
   </div>
 
+  {# third column #}
   <div class='column span-4 last'>
-    <div class="gradient_box" style="height: 400px;">
-      Find experts
+
+    {# dutchwatersector.org box #}
+    <div class="gradient_box">
+      <div class="space15">
+        <h1 class="box-heading">{% trans 'Find Dutch water experts' %}</h1>
+        <div style="text-align: center;">
+          <img src="{{MEDIA_URL}}dws/img/dws.org.logo.png" />
+        </div>
+        <p class="nano-lede lt_grey top-margin">{% trans "A directory of all Dutch water organisations and companies. Find a partner here!" %}</p>
+        <div class="left strong" style="font-size:0.875em; width: 131px; margin: 8px 0;">
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=01">
+              {% trans "Waste water" %}
+              <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=02">
+              {% trans "Drinking water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=03">
+              {% trans "Ground water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=04">
+              {% trans "Surface water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=05">
+              {% trans "Process water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=06">
+              {% trans "Sewage" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+        </div>
+        <div class="left strong" style="font-size:0.875em; width: 151px;  margin: 8px 0;">
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=08">
+              {% trans "Consultancy and engineering" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=09">
+              {% trans "Information technology" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=10">
+              {% trans "Organisations" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=11">
+              {% trans "Personnel and training" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=20">
+              {% trans "Business information" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=21">
+              {% trans "Infrastructure" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15 strong">
+        <p class="h1_companion  ">
+          <a href="http://dutchwatersector.org/waterdirectory/" target="_blank">
+            {% trans "Go to directory" %}
+             <span class="link_triangle">&#x25BA;</span>
+          </a>
+        </p>
+        <div class="clear"></div>
+      </div>
     </div>
+
+    {# expert focus box #}
     <div class="white_box gutter-top" style="height: 250px;">
-      Expert focus
+      <div class="space15">
+        <h1 class="box-heading">{% trans 'Expert focus' %}</h1>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        {% org_logo focus_org 120 90 'margin-left: 82px' %}
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        <h5>
+          {{ focus_org }}
+          {% if focus_org.long_name and not focus_org.name == focus_org.long_name %}
+            - {{ focus_org.long_name }}
+          {% endif %}
+        </h5>
+        <div class="h1_companion">
+          <a href="{% url 'org_detail' focus_org.pk %}">
+            {% trans 'Read more about' %} {{ focus_org }}
+            <span class="link_triangle">&#x25BA;</span>
+          </a>
+        </div>
+      </div>
     </div>
+
   </div>
 
 </div>
 
+{# slogan box #}
 <div class='container gutter-top'>
   <div class='column span-12 last'>
     <div class="white_box" style="height: 100px;">

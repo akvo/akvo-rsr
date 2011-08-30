@@ -75,7 +75,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     if settings.PVW_RSR:
         fieldsets = (
             #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'focus_org', )}),
             #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
             (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
             (_(u'About the organisation'), {'fields': ('description', )}),
@@ -1106,7 +1106,8 @@ class UserProfileAdminForm(forms.ModelForm):
     is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-    is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
+    if not settings.PVW_RSR:
+        is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
     
     def __init__(self, *args, **kwargs):
         initial_data = {}
@@ -1115,16 +1116,21 @@ class UserProfileAdminForm(forms.ModelForm):
             initial_data['is_active']       = instance.get_is_active()
             initial_data['is_org_admin']    = instance.get_is_org_admin()
             initial_data['is_org_editor']   = instance.get_is_org_editor()
-            initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
+            if not settings.PVW_RSR:
+                initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
             kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
+    if settings.PVW_RSR:
+        list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
+    else:
+        list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
     search_fields = ('user', 'organisation',)
     list_filter  = ('organisation',)
     ordering = ('user__username',)
-    inlines = [SmsReporterInline,]
+    if not settings.PVW_RSR:
+        inlines = [SmsReporterInline,]
     form = UserProfileAdminForm
     
     def get_actions(self, request):
@@ -1134,7 +1140,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
             del actions['delete_selected']
         return actions
-    
+
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def get_form(self, request, obj=None, **kwargs):
         # non-superusers don't get to see it all
@@ -1160,15 +1166,17 @@ class UserProfileAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj):
         if not request.user.is_superuser:
             # only superusers are allowed to add/remove sms updaters in beta phase
-            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
-            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
+            if not settings.PVW_RSR:
+                self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
+                self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
             # user and org are only shown as text, not select widget
-            return ['user', 'organisation',]            
+            return ['user', 'organisation',]
         else:
-            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
-            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
+            if not settings.PVW_RSR:
+                self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
+                self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
             return []
-        
+
 
     def queryset(self, request):
         """
@@ -1188,10 +1196,10 @@ class UserProfileAdmin(admin.ModelAdmin):
         """
         Returns True if the given request has permission to change the given
         Django model instance.
-        
+
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-        
+
         get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
         "own" projects, organisation and user profiles
         """
@@ -1208,24 +1216,26 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """
-        override of django.contrib.admin.options.save_model        
+        override of django.contrib.admin.options.save_model
         """
         # Act upon the checkboxes that fake admin settings for the partner users.
         is_active       = form.cleaned_data['is_active']
         is_admin        = form.cleaned_data['is_org_admin']
         is_editor       = form.cleaned_data['is_org_editor']
-        is_sms_updater  = form.cleaned_data['is_sms_updater']
+        if not settings.PVW_RSR:
+            is_sms_updater  = form.cleaned_data['is_sms_updater']
         obj.set_is_active(is_active) #master switch
         obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
         obj.set_is_org_editor(is_editor) #can edit projects
         obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
         # TODO: fix "real" permissions, currently only superusers can change sms updter status
-        if is_sms_updater:
-            obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
-            obj.init_sms_update_workflow()
-        else:
-            obj.disable_sms_update_workflow(request.user)
-            obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+        if not settings.PVW_RSR:
+            if is_sms_updater:
+                obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+                obj.init_sms_update_workflow()
+            else:
+                obj.disable_sms_update_workflow(request.user)
+                obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
         obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)

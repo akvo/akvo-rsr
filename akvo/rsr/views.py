@@ -190,6 +190,19 @@ def index(request, cms_id=None):
             'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
             'updates': updates,
         })
+    else:
+        try:
+            showcase = Project.objects.get(showcase=True)
+        except:
+            showcase = Project.objects.published()[0]
+        try:
+            focus_org = Organisation.objects.get(focus_org=True)
+        except:
+            focus_org = None
+        context_dict.update({
+            'showcase'  : showcase,
+            'focus_org' : focus_org,
+        })
     return context_dict
 
 def oldindex(request):

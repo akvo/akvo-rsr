@@ -1,7 +1,6 @@
 {% load i18n rsr_tags webdesign %}
 {% load url from future %}
 
-
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -28,39 +27,40 @@
 <body>
 	<div id="header_container" class="container">
 		<ul id="main_nav">
-			<li>
-				<a id="main_nav_left" href="{% url 'index' %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
-					<img src="{{MEDIA_URL}}dws/img/mainnav/dws_logo.png" width="222" height="41" 
-						alt="Dutch Water Sector" style="margin:0;padding:0;">
-				</a>
-			</li>
+      <li>
+        <a id="main_nav_left" href="{% url 'index' %}" class="{% ifequal site_section 'index' %}active{% endifequal %} {% if not site_section %}active{% endif %} ">
+          <img src="{{MEDIA_URL}}dws/img/mainnav/dws_logo.png" width="222" height="41"
+            alt="Dutch Water Sector" style="margin:0;padding:0;">
+        </a>
+      </li>
+      <li><a href="/news"><span>{% trans 'News' %}</span></a></li>
+      <li>
+        <a href="{% url 'project_list' %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
+          <span>{% trans 'Projects' %}</span>
+        </a>
+      </li>
+      <li>
+        <a href="/web/directory" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
+          <span>{% trans 'Directory' %}</span>
+        </a>
+      </li>
+      <li><a href="/news"><span>{% trans 'Features' %}</span></a></li>
+      <li>
+        <a href="/web/education">
+          <span>{% trans 'Education' %}</span>
+        </a>
+      </li>
 			<li>
         <a href="/web/focus-areas" class="{% ifequal site_section 'areas' %}active{% endifequal %}">
           <span>{% trans 'Focus Areas' %}</span>
         </a>
       </li>
 			<li>
-				<a href="{% url 'project_list' %}" class="{% ifequal site_section 'projects' %}active{% endifequal %}">
-					<span>{% trans 'Projects' %}</span>
-				</a>
-			</li>
-			<li>
 				<a href="/web/netherlands">
 					<span>{% trans 'Netherlands' %}</span>
 				</a>
 			</li>
-			<li>
-				<a href="/web/education">
-					<span>{% trans 'Education' %}</span>
-				</a>
-			</li>
-			<li>
-				<a href="/web/directory" class="{% ifequal site_section 'directory' %}active{% endifequal %}">
-					<span>{% trans 'Directory' %}</span>
-				</a>
-			</li>
-			<li><a href="/news"><span>{% trans 'News' %}</span></a></li>
-			<li><a href="/web/about"><span>{% trans 'About' %}</span></a></li>
+			<li><a href="/web/about"><span>{% trans 'About us' %}</span></a></li>
 			<li>
 				<span id="main_nav_language">
 						&nbsp;
@@ -72,7 +72,7 @@
 	<div id="main_container" class="container">
 
 		<div style="height:17px;">&nbsp;</div>
-		
+
 		{% block breadcrum  %}
 			<div class="span-12" style="margin-bottom:20px;">
 				<div id="breadcrum_back">

@@ -5,10 +5,12 @@
 .space15 { margin:15px; }
 .space20 { margin:20px; }
 
-.top-margin { margin-top: 19px; }
+.top-margin { margin-top: 18px; }
 
 .green      { color:#4D8722; }
-.red        { color:#A5000F; }
+.red        { color:#E60113; }
+.red:hover  { color:#A5000F; }
+.red:visited { color:#E60113; }
 .blue       { color:#3A8CB9; }
 .yellow     { color:#FEC344; }
 .grey       { color:#7D818E; }
@@ -70,4 +72,7 @@
 .grey_hover:hover {
     background-color:#F1F5F9;
     }
-    
+
+.center {
+    text-align: center;
+}
