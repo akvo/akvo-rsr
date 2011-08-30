@@ -7,6 +7,7 @@
 """
 from __future__ import absolute_import
 from django.views.generic import TemplateView, ListView
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from ..models import Organisation, Project, ProjectUpdate
 
@@ -23,13 +24,18 @@ class BaseView(TemplateView):
 
 
 class BaseProjectView(BaseView):
-    """View that extends BaseView with current project or throws a 404."""
+    """View that extends BaseView with current project or throws a 404. We
+    also verify that the project is related to the current organisation"""
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         context['project'] = \
             get_object_or_404(Project, pk=self.kwargs['project_id'])
+        if context['project'] not in context['organisation'] \
+            .published_projects():
+                raise Http404
         return context
+
 
 class BaseListView(ListView):
     """List view that are extended with the current organisation and the
@@ -81,7 +87,7 @@ class UpdateDirectoryView(ListView):
 
     def get_queryset(self):
         return get_object_or_404(Project, pk=self.kwargs['project_id']) \
-            .project_updates.all().order_by('-time') 
+            .project_updates.all().order_by('-time')
 
 
 class UpdateView(BaseProjectView):

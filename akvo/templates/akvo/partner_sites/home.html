@@ -11,6 +11,9 @@
   <div class="sixteen columns row">
     <h1>What&#x27;s happening now</h1>
   </div>  
+  {% comment %}
+    
+  {% endcomment %}
   <div class="six columns row" style="background-color:#F5F6F7">
     <h2><a href="{% url 'update_main' latest_updates.0.project.id latest_updates.0.id %}">{{latest_updates.0.title}}</a></h2>
     <a href="{% url 'update_main' latest_updates.0.project.id latest_updates.0.id %}">
