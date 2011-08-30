@@ -74,6 +74,16 @@ ul#breadcrum li a span {
     font-size: 12px;
     }
 
+/* image grid controlls */
+ul.image-grid-controlls {
+    list-style:none;
+    clear:both;
+    }
+    
+ul.image-grid-controlls li {
+    float:left;
+    }
+    
 /* Image grid */
 .image-grid {
   margin: -20px 0 0 -40px;

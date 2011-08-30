@@ -55,23 +55,24 @@
   </div>
   <div class="sixteen columns">
     <h1>Projects</h1>
-    <form id="filter"> 
-      <fieldset> 
-        <legend>Filter by type</legend> 
-        <label><input type="radio" name="type" value="all" checked="checked">All</label> 
-        <label><input type="radio" name="type" value="H">Needs funding</label> 
-        <label><input type="radio" name="type" value="A">Active</label> 
-        <label><input type="radio" name="type" value="C">Complete</label> 
-        <label><input type="radio" name="type" value="L">Cancelled</label> 
-        <label><input type="radio" name="type" value="R">Archived</label> 
-      </fieldset>
-      <fieldset> 
-        <legend>Sort by</legend> 
-        <label><input type="radio" name="sort" value="size" checked="checked">Age</label> 
-        <label><input type="radio" name="sort" value="name">Name</label>			
-      </fieldset> 
+    <form id="filter">
+      <ul class="image-grid-controlls">
+        <li><strong>Filter by type:</strong></li>
+        <li><input type="radio" name="type" value="all" checked="checked">All</li> 
+        <li><input type="radio" name="type" value="H">Needs funding</li>
+        <li><input type="radio" name="type" value="A">Active</li> 
+        <li><input type="radio" name="type" value="C">Complete</li> 
+        <li><input type="radio" name="type" value="L">Cancelled</li> 
+        <li><input type="radio" name="type" value="R">Archived</li> 
+      </ul>
+       <ul class="image-grid-controlls">
+        <li><strong>Sort py:</strong></li>
+        <li><input type="radio" name="sort" value="size" checked="checked">Age</li> 
+        <li><input type="radio" name="sort" value="name">Name</li>
+      </ul>
+      <div class="clear"></div>
     </form>
-    <ul id="applications" class="image-grid">
+    <ul id="projects" class="image-grid" style="margin-top:20px">
       {% for project in project_list.select_related %}
         <li data-id="id-{{forloop.counter}}" data-type="{{project.status}}" style="float:left">
           <div style="width:100px;">
@@ -121,10 +122,10 @@
           	var $filterSort = $('#filter input[name="sort"]');
         	
           	// get the first collection
-          	var $applications = $('#applications');
+          	var $projects = $('#projects');
         	
-          	// clone applications to get a second collection
-          	var $data = $applications.clone();
+          	// clone projects to get a second collection
+          	var $data = $projects.clone();
  
             // attempt to call Quicksand on every form change
           	$filterType.add($filterSort).change(function(e) {
@@ -151,7 +152,7 @@
           		}   
         		
           		// finally, call quicksand
-          	  $applications.quicksand($sortedData, {
+          	  $projects.quicksand($sortedData, {
           	    duration: 800,
           	    easing: 'easeInOutQuad'
           	  });
