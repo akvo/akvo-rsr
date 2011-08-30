@@ -12,8 +12,10 @@
     <h1>What&#x27;s happening now</h1>
   </div>  
   <div class="six columns row" style="background-color:#F5F6F7">
-    <h2>{{latest_updates.0.title}}</h2>
-    <img src="{% thumbnail latest_updates.0.photo 100x75 autocrop,upscale,sharpen %}" />
+    <h2><a href="{% url 'update_main' latest_updates.0.project.id latest_updates.0.id %}">{{latest_updates.0.title}}</a></h2>
+    <a href="{% url 'update_main' latest_updates.0.project.id latest_updates.0.id %}">
+      <img src="{% thumbnail latest_updates.0.photo 100x75 autocrop,upscale,sharpen %}" />
+    </a>
     <br />
     <p>
         {% blocktrans with latest_updates.0.user.get_full_name as user_name and latest_updates.0.get_update_method_display as update_meth and latest_updates.0.time|date:"Y-m-d" as update_time %}
@@ -23,8 +25,14 @@
     </p>
   </div>
   <div class="six columns row" style="background-color:#F5F6F7">
-      <h2>{{latest_updates.1.title}}</h2>
-    <img src="{% thumbnail latest_updates.1.photo 100x75 autocrop,upscale,sharpen %}" alt="" />
+      <h2>
+        <a href="{% url 'update_main' latest_updates.1.project.id latest_updates.1.id %}">
+          {{latest_updates.1.title}}
+        </a>
+      </h2>
+    <a href="{% url 'update_main' latest_updates.1.project.id latest_updates.1.id %}">
+      <img src="{% thumbnail latest_updates.1.photo 100x75 autocrop,upscale,sharpen %}" alt="" />
+    </a>
     <br />
     <p>
         {% blocktrans with latest_updates.1.user.get_full_name as user_name and latest_updates.1.get_update_method_display as update_meth and latest_updates.1.time|date:"Y-m-d" as update_time %}
