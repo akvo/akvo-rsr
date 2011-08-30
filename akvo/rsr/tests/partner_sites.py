@@ -53,7 +53,6 @@ class PartnerSitesRouterMiddlewareTestCase(unittest.TestCase):
                 domain='partner.akvo.org',
                 organisation_id=272,
                 partner_domain='projects.a4a.org',
-                is_partner_site=True,
                 enabled=True)
             s.save()
 

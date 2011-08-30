@@ -31,7 +31,6 @@ class BaseProjectView(BaseView):
             get_object_or_404(Project, pk=self.kwargs['project_id'])
         return context
 
-
 class BaseListView(ListView):
     """List view that are extended with the current organisation and the
     proejcts connected to the organisation available in the template context
@@ -81,9 +80,8 @@ class UpdateDirectoryView(ListView):
         return context
 
     def get_queryset(self):
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        updates = project.project_updates.all().order_by('-time')
-        return updates
+        return get_object_or_404(Project, pk=self.kwargs['project_id']) \
+            .project_updates.all().order_by('-time') 
 
 
 class UpdateView(BaseProjectView):
