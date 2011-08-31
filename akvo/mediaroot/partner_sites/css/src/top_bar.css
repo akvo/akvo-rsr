@@ -1,0 +1,10 @@
+
+#top_bar {
+    background-color:#2299CC;
+    color:#ccc;
+    margin-bottom: 10px;
+    }
+#top_bar a, #top_bar a:visited {
+    color:#fff;
+    font-weight: bold;
+    }

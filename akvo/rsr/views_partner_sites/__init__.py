@@ -6,67 +6,10 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
-from django.views.generic import TemplateView, ListView
-from django.http import Http404
+from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from ..models import Organisation, Project, ProjectUpdate
-
-
-class BaseView(TemplateView):
-    """Base view that adds current organisation to the template context or
-    throws a 404."""
-
-    def get_context_data(self, **kwargs):
-        context = super(BaseView, self).get_context_data(**kwargs)
-        context['organisation'] = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
-        return context
-
-
-class BaseProjectView(BaseView):
-    """View that extends BaseView with current project or throws a 404. We
-    also verify that the project is related to the current organisation"""
-
-    def get_context_data(self, **kwargs):
-        context = super(BaseProjectView, self).get_context_data(**kwargs)
-        context['project'] = \
-            get_object_or_404(Project, pk=self.kwargs['project_id'])
-        if context['project'] not in context['organisation'] \
-            .published_projects():
-                raise Http404
-        return context
-
-
-class BaseListView(ListView):
-    """List view that are extended with the current organisation and the
-    proejcts connected to the organisation available in the template context
-    variable project_list"""
-    context_object_name = 'project_list'
-
-    def get_context_data(self, **kwargs):
-        context = super(BaseListView, self).get_context_data(**kwargs)
-        context['organisation'] = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
-        return context
-
-    def get_queryset(self):
-        return get_object_or_404(Organisation,
-                                 pk=self.request.organisation_id) \
-                                    .published_projects().funding() \
-                                    .order_by('id')
-
-
-class HomeView(BaseListView):
-    """View that adds latest updates to the partner sites home pages. The
-    updates are available as "latest_updates" in the template"""
-    template_name = "partner_sites/home.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        latest_updates = ProjectUpdate.objects.exclude(photo__exact='') \
-            .order_by('-time')[:2]
-        context['latest_updates'] = latest_updates
-        return context
+from .base import BaseListView, BaseProjectView, BaseView 
 
 
 class UpdateDirectoryView(ListView):

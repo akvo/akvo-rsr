@@ -52,4 +52,5 @@ class PartnerSitesRouterMiddleware(object):
                 organisation_id = site.organisation.id
                 request.urlconf = 'akvo.urls_partner_sites'
         request.organisation_id = organisation_id
+        self.organisation_id = organisation_id
         return

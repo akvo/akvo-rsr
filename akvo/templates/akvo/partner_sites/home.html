@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n google_maps rsr_tags webdesign thumbnail %}
+{% load i18n google_maps rsr_tags webdesign thumbnail sorting_tags pagination_tags rsr_filters humanize %}
 {% load url from future %}
 
 {% block breadcrum_items %}
@@ -8,171 +8,113 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <div class="sixteen columns row">
-    <h1>What&#x27;s happening now</h1>
-  </div>  
-  {% comment %}
-    
-  {% endcomment %}
-  <div class="six columns row" style="background-color:#F5F6F7">
-    <h2><a href="{% url 'update_main' latest_updates.0.project.id latest_updates.0.id %}">{{latest_updates.0.title}}</a></h2>
-    <a href="{% url 'update_main' latest_updates.0.project.id latest_updates.0.id %}">
-      <img src="{% thumbnail latest_updates.0.photo 100x75 autocrop,upscale,sharpen %}" />
-    </a>
-    <br />
-    <p>
-        {% blocktrans with latest_updates.0.user.get_full_name as user_name and latest_updates.0.get_update_method_display as update_meth and latest_updates.0.time|date:"Y-m-d" as update_time %}
-        By {{user_name}} via {{update_meth}} on {{update_time}}
-        {% endblocktrans %}
-        <br/>{{latest_updates.1.project.primary_location.country}}
-    </p>
-  </div>
-  <div class="six columns row" style="background-color:#F5F6F7">
-      <h2>
-        <a href="{% url 'update_main' latest_updates.1.project.id latest_updates.1.id %}">
-          {{latest_updates.1.title}}
-        </a>
-      </h2>
-    <a href="{% url 'update_main' latest_updates.1.project.id latest_updates.1.id %}">
-      <img src="{% thumbnail latest_updates.1.photo 100x75 autocrop,upscale,sharpen %}" alt="" />
-    </a>
-    <br />
-    <p>
-        {% blocktrans with latest_updates.1.user.get_full_name as user_name and latest_updates.1.get_update_method_display as update_meth and latest_updates.1.time|date:"Y-m-d" as update_time %}
-        By {{user_name}} via {{update_meth}} on {{update_time}}
-        {% endblocktrans %}
-        <br/>{{latest_updates.1.project.primary_location.country}}
-    </p>
-  </div>
-  <div class="four columns row" style="background-color:#d9dfe5">
-    <h2>People who get</h2>
-    <p>
-      Water...<br />
-      Sanitation...
-    </p>
-    <h2>Number of projects</h2>
-    <p>
-      Active: x<br />
-      Needs funding: X<br />
-      Complete: x<br />
-      Cancelled: x<br />
-      Total projects: x
-    </p>
-    <h2>Funding</h2>
-    <p>
-      Pledged: ...<br />
-      Still needed: ...
-    </p>
-  </div>
   <div class="sixteen columns">
     <h1>Projects</h1>
-    <form id="filter">
-      <ul class="image-grid-controlls">
-        <li><strong>Filter by type:</strong></li>
-        <li><input type="radio" name="type" value="all" checked="checked">All</li> 
-        <li><input type="radio" name="type" value="H">Needs funding</li>
-        <li><input type="radio" name="type" value="A">Active</li> 
-        <li><input type="radio" name="type" value="C">Complete</li> 
-        <li><input type="radio" name="type" value="L">Cancelled</li> 
-        <li><input type="radio" name="type" value="R">Archived</li> 
-      </ul>
-       <ul class="image-grid-controlls">
-        <li><strong>Sort py:</strong></li>
-        <li><input type="radio" name="sort" value="size" checked="checked">Age</li> 
-        <li><input type="radio" name="sort" value="name">Name</li>
-      </ul>
-      <div class="clear"></div>
-    </form>
-    <ul id="projects" class="image-grid" style="margin-top:20px">
-      {% for project in project_list.select_related %}
-        <li data-id="id-{{forloop.counter}}" data-type="{{project.status}}" style="float:left">
-          <div style="width:100px;">
-            <a href="{% url 'project_main' project.id %}">
-              <img src="{% thumbnail project.current_image 100x75 autocrop,upscale,sharpen %}" alt="{{project.id}}" /><br />
-            </a>
-            <strong><a href="{% url 'project_main' project.id %}">{{project.name}}</a></strong>
-            <span data-type="size" style="display:none;">{{project.id}}</span>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+    
   </div>
+  <div class="sixteen columns">
+    {% autosort project_list %}
+    {% autopaginate project_list 10 %}
+    {% paginate %}
+    <table id="projects">
+      <colgroup class="name_col"></colgroup>
+      <colgroup span="6" class="colgroup"></colgroup>
+        <tr>
+            <th>
+              {% anchor name Name %}
+            </th>
+            <th>{% anchor locations__country Location %}</th>
+            <th>
+              {% anchor status Status %}
+            </th>
+            <th>
+                <span class="small">Partners</span>
+            </th>
+            <th>
+              {% anchor latest_update 'Updated' %}
+            </th>
+            <th style="border-right: 0;">
+                {% anchor funds_needed Funding %}
+            </th>
+          </tr>
+          {% for project in project_list %}
+            <tr>
+              <td>
+                <div class="space10">
+                  <a href="{% url 'project_main' project.id %}">
+                    {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
+                    <p class="link_blue strong" style="margin-bottom:0">
+                        {{project.name}}
+                    </p> 
+                  </a>
+                  <p class="tiny grey">
+                    {{project.project_plan_summary|capfirst|smart_truncate:100}}
+                  </p> 
+                </div>
+              </td>
+              <td>
+                <p class="td-text">{{project.primary_location.country}}</p>
+                <p class="td-text">{{project.primary_location.country.get_continent_display}}</p>
+              </td>
+              <td>
+                <p class="td-text green">{{project.show_status}}</p>
+              </td>
+              <td>
+                <p class="td-text">
+                  {% for partner in project.all_partners %}
+                    <a href="#">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                  {% endfor %}
+                </p>
+              </td>
+              <td>
+                <p class="td-text">
+                    {% if project.latest_update %}
+                      <a href="{% url 'project_updates' project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
+                    {% else %}
+                      {% trans 'Not yet' %}
+                    {% endif %}
+                </p>
+              </td>
+               <td>
+                <p class="td-text">
+					{# --- funding start --- #}
+					<div style="text-align:center;">
+						<p class="small" style="margin:0;">
+							{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}
+						</p>
+					</div>
+					<div class="fundingbox-progress-bar" style="height:5px;">
+						{% if project.budget_total %}
+						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}%"> 
+						</div>
+						{% endif %}
+					</div>
+					<div style="text-align:center;">
+						<p class="tiny grey" style="margin:0;">
+              {# |add:1 truncates so we get truc(funding_total_given+1) #}
+							{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %} %
+						</p>
+					</div>
+					<div style="text-align:center;">
+						{% if project.funding_still_needed|round == 0 %}
+							<p class="green" style="font-weight:bold;">
+								{% trans 'Fully funded' %}
+							</p>
+						{% else %}
+							{% if not project.status == 'L' and not project.status == 'R' %}
+								<div style="text-align:center; padding-top:5px; padding-bottom:5px;">
+                  Donate
+									{#<a class="orange awesome small" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>#}
+								</div>
+							{% endif %}
+						{% endif %}
+					</div>
+					{# --- funding stop --- #}
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+        {% paginate %}
+  </div>
+  
 {% endblock content %}
-
-
-{% block js %}
-<script type="text/javascript"> 
-          // Custom sorting plugin
-          (function($) {
-          	$.fn.sorted = function(customOptions) {
-          		var options = {
-          			reversed: false,
-          			by: function(a) { return a.text(); }
-          		};
-          		$.extend(options, customOptions);
-          		$data = $(this);
-          		arr = $data.get();
-          		arr.sort(function(a, b) {
-          		   	var valA = options.by($(a));
-          		   	var valB = options.by($(b));
-          			if (options.reversed) {
-          				return (valA < valB) ? 1 : (valA > valB) ? -1 : 0;				
-          			} else {		
-          				return (valA < valB) ? -1 : (valA > valB) ? 1 : 0;	
-          			}
-          		});
-          		return $(arr);
-          	};
-          })(jQuery);
-      
-          // DOMContentLoaded
-          $(function() {
-          
-            // bind radiobuttons in the form
-          	var $filterType = $('#filter input[name="type"]');
-          	var $filterSort = $('#filter input[name="sort"]');
-        	
-          	// get the first collection
-          	var $projects = $('#projects');
-        	
-          	// clone projects to get a second collection
-          	var $data = $projects.clone();
- 
-            // attempt to call Quicksand on every form change
-          	$filterType.add($filterSort).change(function(e) {
-          		if ($($filterType+':checked').val() == 'all') {
-          			var $filteredData = $data.find('li');
-          		} else {
-          			var $filteredData = $data.find('li[data-type=' + $($filterType+":checked").val() + ']');
-          		}
-            
-              // if sorted by size
-          		if ($('#filter input[name="sort"]:checked').val() == "size") {
-          			var $sortedData = $filteredData.sorted({
-          				by: function(v) {
-          					return parseFloat($(v).find('span[data-type=size]').text());
-          				}
-          			});
-          		} else {
-          		// if sorted by name
-          			var $sortedData = $filteredData.sorted({
-          				by: function(v) {
-          					return $(v).find('strong').text().toLowerCase();
-          				}
-          			});
-          		}   
-        		
-          		// finally, call quicksand
-          	  $projects.quicksand($sortedData, {
-          	    duration: 800,
-          	    easing: 'easeInOutQuad'
-          	  });
- 
-          	});
-          
-          });
-        </script>
-
-
-{% endblock js %}
-

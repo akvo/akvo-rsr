@@ -10,7 +10,8 @@ from akvo.rsr import views_partner_sites as views
 
 
 urlpatterns = patterns('',
-    url(r'^$', views.HomeView.as_view(), name='home'),
+    url(r'^$', views.BaseListView \
+        .as_view(template_name='partner_sites/home.html'), name='home'),
     url(r'^directory/$', views.BaseListView \
         .as_view(template_name='partner_sites/directory.html'),
                  name='project_list'),

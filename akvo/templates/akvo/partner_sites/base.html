@@ -65,13 +65,11 @@
       </p> 
     </div>
   </div>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/sizzle/1.4.4/sizzle.min.js"></script>
-  <script src="{{MEDIA_URL}}partner_sites/js/src/jquery.quicksand.js"></script>
-  <script src="http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js"></script>
-
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.6.2.min.js"><\/script>');
+  </script>
   {% block js %}{% endblock js %}
-
   <script type="text/javascript">
     var $ = jQ = jQuery.noConflict();
     jQ(document).ready(function(){
