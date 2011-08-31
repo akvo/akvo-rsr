@@ -38,9 +38,12 @@
           <img src="{{MEDIA_URL}}dws/img/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
         </a>
         <div style="margin-top: 10px;">
-          <a href="http://www.youtube.com/watch?v={{cms.video_url}}">
-            <img alt="{% trans "Watch on YouTube" %}" width="282" height="212" src="http://i1.ytimg.com/vi/{{cms.video_url}}/default.jpg" />
-          </a>
+        {% comment %}{# alternative with thumbnail and link to YT channel page #}
+            <a href="http://www.youtube.com/watch?v={{cms.video_url}}">
+              <img alt="{% trans "Watch on YouTube" %}" width="282" height="212" src="http://i1.ytimg.com/vi/{{cms.video_url}}/default.jpg" />
+            </a>
+        {% endcomment %}
+          <iframe title="{% trans 'YouTube video player' %}" width="282" height="212" src="{{cms.video_url}}" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
 
@@ -73,8 +76,30 @@
     </div>
 
     {# focus area accordion box #}
-    <div class="white_box gutter-top" style="height: 478px;">
-      Focus areas
+    <div class="white_box gutter-top" style="background-color:#fff;">
+      <div class="space15">
+        <div style="float: left;">
+          <h1 class="space0">{% trans 'Focus areas' %}</h1>
+        </div>
+        <div class="h1_companion">
+          <a href="/web/focus-areas">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div id="index-accordion" style="height: 500px;">
+      <div id="accordion">
+        {% for focus_area in focus_areas %}
+        <h3><a href="#">{{focus_area.name}}</a></h3>
+        <div>
+          <img width="220" height="165" src="{% thumbnail focus_area.image 220x165 sharpen %}" alt="{{focus_area}}"/>
+          <p class="nano-lede" style="font-size: 0.9375em;">
+            {{focus_area.description|smart_truncate:80}}
+            <a style="color: #1877B8;" href="/web/{{focus_area.slug}}">{% trans 'Read more' %} <span class="link_triangle">&#x25BA;</span></a>
+          </p>
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 

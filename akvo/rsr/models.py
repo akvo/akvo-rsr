@@ -574,7 +574,9 @@ if settings.PVW_RSR: #pvw-rsr
             
         top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
         map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
-        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The ID of the video to be shown on the home page. <br/>   Example: if the URL to the video is http://www.youtube.com/watch?v=Cn2mDS-WNJs then Cn2mDS-WNJs is entered in the field. '))
+#        alternative video_url to use whith thumbed vid
+#        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The ID of the video to be shown on the home page. <br/>   Example: if the URL to the video is http://www.youtube.com/watch?v=Cn2mDS-WNJs then Cn2mDS-WNJs is entered in the field. '))
+        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The URL to the video to be shown on the home page.'))
         tagline_box          = models.TextField(_(_(u'tagline box text'), ), max_length=100, help_text=_('Enter the text that will appear in the on-line box at the bottom of the home page. (100 characters).'))
         active              = models.BooleanField(_(u'currently active home page'), default=False)
     
