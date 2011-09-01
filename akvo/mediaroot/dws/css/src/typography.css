@@ -217,7 +217,7 @@ h1.box-heading {margin-bottom: 15px;}
 .hide { display:none; }
 .grey { color:#888; }
 .red { color:#E60113; }
-
+.serif { font-family: 'Georgia', serif; }
 
 /*------------------------------------------------------------------ 
 [8. Text sizes] 

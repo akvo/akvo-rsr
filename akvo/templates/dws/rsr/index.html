@@ -6,6 +6,12 @@
 
 {% block breadcrum  %}{% endblock breadcrum  %}
 
+{% block inline_styles %}
+#index_news_box {
+	background: transparent url({{ news_post.0.image }}) no-repeat;
+}
+{% endblock inline_styles %}
+
 {% block maincontent %}
 
 {% if preview %}
@@ -19,8 +25,25 @@
 
   {# news box #}
   <div class='column span-8'>
-    <div class="gradient_box" style="height: 468px;">
-      News
+    <div id="index_news_box">
+      <div class="full">
+        <div class="text_bg">
+          <p>{% trans 'Latest news from the Dutch Water Sector' %}</p>
+          <h1 class="serif">{{ news_post.0.title }}</h1>
+        </div>
+      </div>
+      <div class="full bottom">
+        <div class="text_bg">
+          <p>
+            {{ news_post.0.text|truncatewords_html:12}}
+            <a class="yellow">{% trans 'Read more' %}</a>
+          </p>
+          <p class="yellow last" style="text-align: right;">
+            <a class="yellow">{% trans 'More news headlines' %}</a>
+          </p>
+        </div>
+      </div>
+      <div class="clear"></div>
     </div>
   </div>
 

@@ -53,3 +53,65 @@ div#tagline_box p {
 .hr_margin {
     margin: 0 8px;
 }
+
+/* Wordpress news box styling */
+#index_news_box {
+    height: 484px;
+    position:relative;
+    border: 0;
+}
+
+#index_news_box .left {
+    position: absolute;
+    left: 0;
+}
+
+#index_news_box .right {
+    position: absolute;
+    right: 0;
+}
+
+#index_news_box .bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+#index_news_box .half {
+    width: 322px;
+}
+
+#index_news_box .quarter {
+    width: 161px;
+}
+
+#index_news_box .three_quarters {
+    width: 484px;
+}
+
+#index_news_box .full {
+    width: 645px;
+}
+
+#index_news_box .text_bg {
+    background: transparent url(../../img/backgrd_lt_grey.png) repeat;
+    padding: 20px;
+}
+
+#index_news_box h1 {
+    font-size: 1.875em;
+    margin: 0;
+}
+
+#index_news_box p, #index_news_box h1, #index_news_box h3, #index_news_box h5 {
+    color: white;
+}
+
+#index_news_box p {
+    font-size: 0.8125em;
+    margin-bottom: .5em;
+}
+
+#index_news_box p.last {
+    margin: 0;
+    padding: 0;
+}
