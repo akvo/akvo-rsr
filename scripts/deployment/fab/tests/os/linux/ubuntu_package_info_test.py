@@ -28,7 +28,7 @@ class UbuntuPackageInfoTest(unittest2.TestCase):
         self.assertEqual("g++", self.package_info.name)
         self.assertEqual("4:4.2.3-1ubuntu6", self.package_info.version)
         self.assertEqual("installed", self.package_info.state)
-        self.assertEqual("g++ (4:4.2.3-1ubuntu6)", self.package_info.name_and_version)
+        self.assertEqual("g++ (4:4.2.3-1ubuntu6)", self.package_info.name_and_installed_version)
 
     def test_can_parse_package_version_with_colons(self):
         """fab.tests.os.linux.ubuntu_package_info_test  Can parse package version with colons"""
@@ -45,6 +45,20 @@ class UbuntuPackageInfoTest(unittest2.TestCase):
 
         self.assertFalse(UbuntuPackageInfo.from_text(self._not_installed_package_info_partial()).is_installed(),
                          "Should recognise a package that is not installed")
+
+    def test_name_and_installed_version_member_should_display_version_if_package_is_installed(self):
+        """fab.tests.os.linux.ubuntu_package_info_test  The name_and_installed_version member should display version if package is installed"""
+
+        self.assertTrue(self.package_info.is_installed(), "Package state should be 'installed'")
+        self.assertEqual("g++ (4:4.2.3-1ubuntu6)", self.package_info.name_and_installed_version)
+
+    def test_name_and_installed_version_member_should_display_none_if_package_is_not_installed(self):
+        """fab.tests.os.linux.ubuntu_package_info_test  The name_and_installed_version member should display state if package is not installed"""
+
+        not_installed_package_info = UbuntuPackageInfo.from_text(self._not_installed_package_info_partial())
+
+        self.assertFalse(not_installed_package_info.is_installed(), "Package state should be 'not installed'")
+        self.assertEqual("g++ (not installed)", not_installed_package_info.name_and_installed_version)
 
     def _installed_package_info_full(self):
         return "\r\n".join(["Package: g++",

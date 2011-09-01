@@ -12,7 +12,11 @@ class UbuntuPackageInfo(object):
         self.version = version
         self.state = state
 
-        self.name_and_version = "%s (%s)" % (self.name, self.version)
+        self.set_name_and_installed_version()
+
+    def set_name_and_installed_version(self):
+        installed_version = self.version if self.is_installed() else self.state
+        self.name_and_installed_version = "%s (%s)" % (self.name, installed_version)
 
     def is_installed(self):
         return self.state == "installed"
