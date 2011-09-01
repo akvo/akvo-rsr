@@ -9,7 +9,15 @@ from __future__ import absolute_import
 from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from ..models import Organisation, Project, ProjectUpdate
-from .base import BaseListView, BaseProjectView, BaseView 
+from .base import BaseListView, BaseProjectView, BaseView
+
+__all__ = [
+    'BaseListView',
+    'BaseProjectView',
+    'BaseView',
+    'UpdateDirectoryView',
+    'UpdateView'
+    ]
 
 
 class UpdateDirectoryView(ListView):

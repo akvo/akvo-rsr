@@ -12,6 +12,13 @@ from django.shortcuts import get_object_or_404
 from ..models import Organisation, Project
 
 
+__all__ = [
+    'BaseListView',
+    'BaseProjectView',
+    'BaseView',
+    ]
+
+
 class BaseView(TemplateView):
     """Base view that adds current organisation to the template context or
     throws a 404."""
@@ -52,5 +59,5 @@ class BaseProjectView(BaseView):
             get_object_or_404(Project, pk=self.kwargs['project_id'])
         if context['project'] not in context['organisation'] \
             .published_projects():
-                raise Http404
+            raise Http404
         return context

@@ -1,51 +1,38 @@
-{% load i18n rsr_tags webdesign %}
+{% load i18n rsr_tags webdesign rsr_tags %}
 {% load url from future %}
 
 
-<!DOCTYPE html>
-<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="{{request.LANGUAGE_CODE}}"> <!--<![endif]-->
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8">
   <title>{{organisation}}</title>
-  <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
   {% asset_bundle 'partner_sites_style' %}
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+  <script type="text/javascript">
+    !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
+  </script>
 </head>
-<body>
-  <div id="top_bar">
-    <div class="container">
-      <div class="sixteen columns row" style="padding-top:20px;">
-        <a href="{% url 'home' %}">Projects Home</a> | 
-        <a href="{% url 'project_list' %}">Directory</a> | 
-        <a href="{% url 'project_map' %}">Map</a> |
-        <a href="{{organisation.url}}">Go to {{organisation}} &rarr;</a>
-      </div>
-    </div>
-  </div>
+<body style="margin-top:20px">
   <div class="container">
-    <div class="sixteen columns row">
-      <p style="margin:10px">
-        {% block breadcrum %}
-          <div id="breadcrum_back">
-            <ul id="breadcrum">
-              {% block breadcrum_items %}
-                <li><a href="{{ organisation.url }}"><span>{{organisation}}</span></a></li>
-              {% endblock breadcrum_items %}
-            </ul>
-            <div class="clear"></div>
-          </div>
-        {% endblock breadcrum %}
-      </p>
-    </div>
+      {% block breadcrum %}
+        <div id="breadcrum_back">
+          <ul id="breadcrum">
+            {% block breadcrum_items %}
+              <li><a href="{{ organisation.url }}"><span>{{organisation}}</span></a></li>
+            {% endblock breadcrum_items %}
+          </ul>
+          <div class="clear"></div>
+        </div>
+      {% endblock breadcrum %}
     {% block content %}{% endblock content %}
-    <div class="sixteen columns" style="background-color:#F5F6F7;">
+    <div style="background-color:#F5F6F7;">
       {% if sql_queries %}
         <h2 style="margin:10px;">{{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}</h2>
         <p style="font-size:12px; color:#888; margin:10px;">
@@ -55,17 +42,16 @@
         </p>
       {% endif %}
     </div>
-    <div class="sixteen columns" style="background-color:#F5F6F7; margin-top:20px">
+    <div style="background-color:#F5F6F7; margin-top:20px">
       <p style="padding:10px;">
         <a href="{{organisation.url}}">{{organisation}}</a> | 
         <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a> |
         footer content |
         how present should Akvo be?
-        
       </p> 
     </div>
   </div>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
   <script type="text/javascript">
     !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.6.2.min.js"><\/script>');
   </script>
@@ -73,8 +59,14 @@
   <script type="text/javascript">
     var $ = jQ = jQuery.noConflict();
     jQ(document).ready(function(){
-      {% block jq_ready %}{% endblock jq_ready %}
-    });	
+      {% block jq_ready %}
+      
+      {% endblock jq_ready %}
+    });
   </script>
+  <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+    <script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
+  <![endif]-->
 </body>
 </html>
