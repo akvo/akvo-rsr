@@ -155,7 +155,11 @@ def send_donation_confirmation_emails(invoice_id):
     msg.send()
     
 
-def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2):
+def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
+    """get a number of blog posts from wordpress
+    category_id is the numerical ID of the category to filter on
+    limit is the number of posts
+    """
     from django.db import connections
     try:
         cursor = connections[connection].cursor()
@@ -166,36 +170,36 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         site_url = 'http://akvo.org/blog'
     
     try:
-        cursor.execute("""
-            SELECT * FROM posts, term_relationships
-                WHERE post_status != 'draft'
-                    AND post_status != 'auto-draft'
-                    AND post_type = 'post'
-                    AND term_taxonomy_id = %d
-                    and ID = object_id
-                ORDER By post_date DESC LIMIT %d
-            """ % (new_section_id, limit)
-        )
+        if category_id:
+            cursor.execute("""
+                SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users, term_relationships
+                    WHERE post_status != 'draft'
+                        AND post_status != 'auto-draft'
+                        AND post_type = 'post'
+                        AND term_taxonomy_id = %d
+                        and posts.ID = object_id
+                        AND posts.post_author = users.ID
+                    ORDER By post_date DESC LIMIT %d
+                """ % (category_id, limit)
+            )
+        else:
+            cursor.execute("""
+                SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users
+                    WHERE post_status != 'draft'
+                        AND post_status != 'auto-draft'
+                        AND post_type = 'post'
+                        AND posts.post_author = users.ID
+                    ORDER By post_date DESC LIMIT %d
+                """ % limit
+            )
         rows = cursor.fetchall()
-        
-        news_post = {'title': rows[0][5], 'url': '%s/?p=%s' % (site_url, rows[0][0],)}
-    
-        cursor.execute("""
-            SELECT * FROM posts, users
-                WHERE post_status != 'draft'
-                    AND post_status != 'auto-draft'
-                    AND post_type = 'post'
-                    AND posts.post_author = users.ID
-                ORDER By post_date DESC LIMIT %d
-            """ % limit
-        )
-        rows = cursor.fetchall()
+
     except:
         return None, None
 
     posts = []
     for post in rows:
-        post_content_soup = BeautifulSoup(post[4])
+        post_content_soup = BeautifulSoup(post[2])
 
         # Find first image in post
         try:
@@ -215,9 +219,9 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         for text in post_p:
             p = '%s%s' % (p, text)
         
-        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[33]})
+        posts.append({ 'title': post[1], 'image': post_img, 'text': p, 'date': post[3], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[4]})
 
-    return news_post, posts
+    return posts
 
 def get_random_from_qs(qs, count):
     "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"

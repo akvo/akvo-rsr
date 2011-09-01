@@ -158,8 +158,9 @@ def index(request, cms_id=None):
         except:
             cms = MiniCMS.objects.get(pk=1)
 
-    news_post, blog_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'INDEX_ARTICLE_COUNT', 2))
-    
+    news_post = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), 1)[0]
+    blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'INDEX_ARTICLE_COUNT', 2))
+
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()

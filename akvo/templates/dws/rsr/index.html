@@ -8,7 +8,7 @@
 
 {% block inline_styles %}
 #index_news_box {
-	background: transparent url({{ news_post.0.image }}) no-repeat;
+	background: transparent url({{ news_post.image }}) no-repeat;
 }
 {% endblock inline_styles %}
 
@@ -29,13 +29,13 @@
       <div class="full">
         <div class="text_bg">
           <p>{% trans 'Latest news from the Dutch Water Sector' %}</p>
-          <h1 class="serif">{{ news_post.0.title }}</h1>
+          <h1 class="serif">{{ news_post.title }}</h1>
         </div>
       </div>
       <div class="full bottom">
         <div class="text_bg">
           <p>
-            {{ news_post.0.text|truncatewords_html:12}}
+            {{ news_post.text|truncatewords_html:12}}
             <a class="yellow">{% trans 'Read more' %}</a>
           </p>
           <p class="yellow last" style="text-align: right;">
