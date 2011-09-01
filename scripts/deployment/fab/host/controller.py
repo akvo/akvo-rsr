@@ -23,6 +23,9 @@ class RemoteHostController(object):
     def create_instance():
         return RemoteHostController(ExecutionFeedback())
 
+    def path_exists(self, path):
+        return fabric.contrib.files.exists(path)
+
     def run(self, command):
         return fabric.api.run(command)
 
@@ -35,9 +38,6 @@ class RemoteHostController(object):
     def get(self, remote_path, local_path=None):
         return fabric.api.get(remote_path, local_path)
 
-    def path_exists(self, path):
-        return fabric.contrib.files.exists(path)
-
 
 class LocalHostController(object):
     """LocalHostController encapsulates basic command execution and path validation calls made to a local host via Fabric"""
@@ -48,6 +48,9 @@ class LocalHostController(object):
     @staticmethod
     def create_instance():
         return LocalHostController(ExecutionFeedback())
+
+    def path_exists(self, path):
+        return os.path.exists(path)
 
     def run(self, command):
         return fabric.api.local(command)
@@ -60,9 +63,6 @@ class LocalHostController(object):
 
     def get(self, remote_path, local_path=None):
         raise Exception("Unsupported operation: %s.get()" % LocalHostController.__name__)
-
-    def path_exists(self, path):
-        return os.path.exists(path)
 
 
 class HostControllerMode(object):
