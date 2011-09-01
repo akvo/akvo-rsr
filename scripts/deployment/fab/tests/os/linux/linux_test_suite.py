@@ -8,10 +8,11 @@
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.os.linux.ubuntu_package_info_test import UbuntuPackageInfoTest
+from fab.tests.os.linux.ubuntu_package_inspector_test import UbuntuPackageInspectorTest
 
 
 def linux_suite():
-    return TestSuiteLoader().create_suite_from_classes([UbuntuPackageInfoTest])
+    return TestSuiteLoader().create_suite_from_classes([UbuntuPackageInspectorTest, UbuntuPackageInfoTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
