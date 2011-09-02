@@ -195,7 +195,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         rows = cursor.fetchall()
 
     except:
-        return None, None
+        return None
 
     posts = []
     for post in rows:

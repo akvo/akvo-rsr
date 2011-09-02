@@ -160,6 +160,7 @@ def index(request, cms_id=None):
 
     news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 3), getattr(settings, 'FEATURE_ARTICLE_COUNT', 3))
     blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
+    news_image = ''
 
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
@@ -171,10 +172,9 @@ def index(request, cms_id=None):
         
         #get three featured updates
         updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
-    else:
-        news_image = ''
+    elif news_posts:
         for post in news_posts:
-            if post['image']:
+            if post.get('image', None):
                 news_image = post['image']
                 break
 
