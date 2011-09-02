@@ -55,7 +55,7 @@ INSTALLED_APPS = (
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
-    'akvo.gateway',
+    #'akvo.gateway',
     #'template_utils',
 
     #'template_utils', #see http://code.google.com/p/django-template-utils/
@@ -122,6 +122,11 @@ MIDDLEWARE_CLASSES = (
 
 # Is this the pvw-rsr?
 PVW_RSR = True
+
+# DWS blog settings for home page
+FEATURE_CATEGORY_ID     = 3
+FEATURE_ARTICLE_COUNT   = 3
+NEWS_ARTICLE_COUNT      = 3
 
 ROOT_URLCONF = 'akvo.urls'
 

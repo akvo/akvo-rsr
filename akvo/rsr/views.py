@@ -158,8 +158,8 @@ def index(request, cms_id=None):
         except:
             cms = MiniCMS.objects.get(pk=1)
 
-    news_post = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), 1)[0]
-    blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'INDEX_ARTICLE_COUNT', 2))
+    news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 3), getattr(settings, 'FEATURE_ARTICLE_COUNT', 3))
+    blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
 
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
@@ -171,6 +171,12 @@ def index(request, cms_id=None):
         
         #get three featured updates
         updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
+    else:
+        news_image = ''
+        for post in news_posts:
+            if post['image']:
+                news_image = post['image']
+                break
 
     context_dict = {
         #'updates': updates,
@@ -180,7 +186,7 @@ def index(request, cms_id=None):
         'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         'site_section': 'index',
         'blog_posts': blog_posts,
-        'news_post': news_post,
+        'news_posts': news_posts,
         'preview':  preview,
     }
     if not settings.PVW_RSR: #extra stuff for akvo home page
@@ -203,6 +209,7 @@ def index(request, cms_id=None):
         context_dict.update({
             'showcase'  : showcase,
             'focus_org' : focus_org,
+            'news_image': news_image
         })
     return context_dict
 

@@ -26,21 +26,40 @@
   {# news box #}
   <div class='column span-8'>
     <div id="index_news_box">
-      <div class="full">
+      <img src="{{ news_image }}" width="646" height="484" />
+      {% comment %}
+      {# alternative layout with one news item}
+      <div class="full top">
         <div class="text_bg">
           <p>{% trans 'Latest news from the Dutch Water Sector' %}</p>
-          <h1 class="serif">{{ news_post.title }}</h1>
+          <h1 class="serif">{{ news_posts.0.title }}</h1>
         </div>
       </div>
       <div class="full bottom">
         <div class="text_bg">
           <p>
-            {{ news_post.text|truncatewords_html:12}}
+            {{ news_posts.0.text|truncatewords_html:12}}
             <a class="yellow">{% trans 'Read more' %}</a>
           </p>
           <p class="yellow last" style="text-align: right;">
             <a class="yellow">{% trans 'More news headlines' %}</a>
           </p>
+        </div>
+      </div>
+      {% endcomment %}
+      <div class="full bottom">
+        <div class="text_bg">
+          {% for post in news_posts %}
+            {% if not forloop.first %}
+              <hr/>
+            {% endif %}
+            <div>
+              <span style="margin-right: 1em; color: #B5B9C7; font-size: 0.875em;">
+                {% trans 'FEATURE'%}
+              </span>
+              <a href="{{ post.url }}" class="serif">{{ post.title }}</a>
+            </div>
+          {% endfor %}
         </div>
       </div>
       <div class="clear"></div>
@@ -49,7 +68,7 @@
 
   <div class='column span-4 last'>
     {# video box #}
-    <div class="gradient_box" style="height: 368px;">
+    <div class="gradient_box" style="min-height: 368px;">
       <div class="space15 center">
         <h1 class="black">{% trans "let's work together" %}</h1>
         <p class="nano-lede lt_grey">{% trans "A world of expertise at your fingertips" %}</p>
@@ -69,7 +88,12 @@
           <iframe title="{% trans 'YouTube video player' %}" width="282" height="212" src="{{cms.video_url}}" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
-
+      <div class="space15 center">
+        <div class="h1_companion" style="margin: 0;">
+          <a href="http://www.youtube.com/user/NLWaterPartnership">{% trans 'Go to our YouTube channel' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+      <div class="clear"></div>
+      </div>
     </div>
 
     {# newsletter signup box #}
@@ -84,10 +108,10 @@
   {#  first column #}
   <div class='column span-4'>
     {# features box #}
-    <div class="white_box" style="height: 478px;">
+    <div class="white_box">
       <div class="space15">
         <div style="float: left;">
-          <h1>{% trans 'Features' %}</h1>
+          <h1 class="last">{% trans 'More headlines' %}</h1>
         </div>
         <div class="h1_companion">
           <a class="" href="/news/?feed=rss2">
@@ -95,7 +119,34 @@
             <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
           </a>
         </div>
+        <div class="clear"></div>
       </div>
+      {% for post in blog_posts %}
+        {% if forloop.first %}
+          <div class="space15" style="margin-top: 0;">
+        {% else %}
+          <div class="hr_margin"><hr/></div>
+          <div class="space15">
+        {% endif %}
+          {% if post.image %}
+          <a class="strong" href="{{ post.url}}">
+            <img src="{{ post.image }}" width="100" height="75" alt="{{ post.title }}" class="right" style="margin: 0 0 8px 8px;">
+          </a>
+          {% endif %}
+          <div class="left" style="width: {% if post.image %}174{% else %}282{% endif %}px; ">
+            <p><a class="strong" href="{{ post.url}}">{{ post.title }}</a></p>
+            <p class="nano-lede lt_grey">{{ post.date|date:"D, j F Y" }}</p>
+          </div>
+          <p class="">{{ post.text|truncatewords_html:25|safe }}</p>
+        </div>
+      {% endfor %}
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        <div class="h1_companion" style="margin: 0;">
+          <a href="/news">{% trans 'View earlier articles' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>      
     </div>
 
     {# focus area accordion box #}
@@ -130,7 +181,7 @@
   <div class='column span-4'>
 
     {# global map box #}
-    <div class="white_box" style="background-color:#fff; min-height: 400px;">
+    <div class="white_box" style="background-color:#fff;">
       <div id="map_box" class="space15">
         <div style="float: left;">
           <h1 class="box-heading">{% trans 'Projects worldwide' %}</h1>
@@ -258,7 +309,7 @@
       </div>
       <div class="hr_margin"><hr/></div>
       <div class="space15 strong">
-        <p class="h1_companion  ">
+        <p class="h1_companion" style="margin: 0;">
           <a href="http://dutchwatersector.org/waterdirectory/" target="_blank">
             {% trans "Go to directory" %}
              <span class="link_triangle">&#x25BA;</span>
@@ -269,13 +320,9 @@
     </div>
 
     {# expert focus box #}
-    <div class="white_box gutter-top" style="height: 250px;">
+    <div class="white_box gutter-top">
       <div class="space15">
         <h1 class="box-heading">{% trans 'Expert focus' %}</h1>
-      </div>
-      <div class="hr_margin"><hr/></div>
-      <div class="space15">
-        {% org_logo focus_org 120 90 'margin-left: 82px' %}
       </div>
       <div class="hr_margin"><hr/></div>
       <div class="space15">
@@ -285,12 +332,16 @@
             - {{ focus_org.long_name }}
           {% endif %}
         </h5>
+        {% org_logo focus_org 120 90 'margin-left: 82px' %}
+      </div>
+      <div class="space15">
         <div class="h1_companion">
           <a href="{% url 'org_detail' focus_org.pk %}">
             {% trans 'Read more about' %} {{ focus_org }}
             <span class="link_triangle">&#x25BA;</span>
           </a>
         </div>
+        <div class="clear"></div>
       </div>
     </div>
 
