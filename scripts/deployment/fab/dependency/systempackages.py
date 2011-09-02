@@ -24,10 +24,14 @@ class SystemPackageDependencyCollection(object):
     def add(self, system_package_dependency):
         self.dependencies.append(system_package_dependency)
 
-    def find_unmet_dependencies(self, unmet_dependencies):
+    def find_unmet_dependencies(self):
+        unmet_dependencies = []
+
         for dependency in self.dependencies:
             if not dependency.is_met(self.package_inspector, self.feedback):
                 unmet_dependencies.append(dependency.package_name)
+
+        return unmet_dependencies
 
 
 class SystemPackageDependency(object):

@@ -70,10 +70,7 @@ class SystemPackageDependencyCollectionTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        unmet_dependencies = []
-        dependency_collection.find_unmet_dependencies(unmet_dependencies)
-
-        self.assertEqual(["package1", "package3"], unmet_dependencies)
+        self.assertEqual(["package1", "package3"], dependency_collection.find_unmet_dependencies())
 
     def _create_met_package_dependency(self, package_name):
         return self._create_package_dependency(package_name, True)
