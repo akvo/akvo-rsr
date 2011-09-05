@@ -1,10 +1,6 @@
 
 /* .container and .clear from Blueprint http://code.google.com/p/blueprintcss/ */
 
-.container {
-    width: 975px;
-    margin: 0 auto;
-    }
 
 div.two_col_left {
     float:left;
@@ -53,3 +49,9 @@ a {
 
 a:visited { color:#2B80AF; }
 a:hover { color:#0FA0CB; text-decoration: underline; }
+
+.pagination {
+    background-color: #D2E99E;
+    text-align: right;
+    padding: 10px;
+}

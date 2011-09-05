@@ -76,21 +76,11 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': [
             'base.css',
-            #'skeleton.css',
-            #'layout.css',
+            'scaffold.css',
             'typography.css',
             'style.css',
-            #'top_bar.css',
             'breadcrum.css',
             ],
-    },
-    'partner_sites_js': {
-        'type': 'js',
-        'path': 'partner_sites/js/',
-        'compress': True,
-        'files': [
-            'tabs.js'
-        ],
     },
     'widget_cobranded_banner': {
         'type': 'css',

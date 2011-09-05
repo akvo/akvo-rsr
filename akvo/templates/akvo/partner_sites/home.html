@@ -9,26 +9,21 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <h1>Project listing for {{organisation}}</h1>
-  <div class=" two_col_left">
+  <div style="background-color:#fff">
+    <h1>Project listing for {{organisation}}</h1>
+    <div style="width:470px; float:right;">
+      {% google_organisation_projects_map organisation 'static' 470 250 1 %}
+    </div>
     <a href="{{ organisation.url }}">
       {% org_logo organisation 150 120 'margin-bottom:10px' %}
     </a>
+    <div class="clear"></div>
   </div>
-  <div class=" two_col_right">
-    <div style="float:right">
-      {% google_organisation_projects_map organisation 'static' 470 250 1 %}
-    </div>
-  </div>
-  <div class="clear"></div>
-  {# -------------------------------------------- #}
-  <div style="margin-top:20px">
+  <div style="margin-top:20px; background-color:#fff">
     {% autosort project_list %}
-    <div style="background-color:#E5E5E9; padding:20px; text-align:right;">
       {% autopaginate project_list 10 %}
       {% paginate %}
-    </div>
-    <table id="projects" style="margin-bottom:0">
+    <table id="projects" style="margin-bottom:0; width:100%">
       <tr>
         <th>{% anchor name Name %}</th>
         <th>{% anchor locations__country Location %}</th>

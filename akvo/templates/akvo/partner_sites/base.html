@@ -13,25 +13,48 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   {% asset_bundle 'partner_sites_style' %}
+
+  <style type="text/css" media="screen">
+    {% if organisation.id == 43  %}
+      body {
+        background-color:#B7D4F1;
+      }
+      .container {
+        padding: 20px 10px;
+        width: 900px;
+      }
+    {% endif %}
+    {% if organisation.id == 272 %}
+      body {
+        background:#fcfcfc;
+        font-family: Verdana, Arial, Tahoma,Century gothic,  sans-serif;
+        font-size:12px;
+      }
+      .container {
+        width: 1000px;
+      }
+    {% endif %}
+
+  </style>
   
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">
     !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
   </script>
 </head>
-<body style="margin-top:20px">
+<body>
+  
   <div class="container">
-      {% block breadcrum %}
-        <div id="breadcrum_back">
-          <ul id="breadcrum">
-            {% block breadcrum_items %}
-              <li><a href="{{ organisation.url }}"><span>{{organisation}}</span></a></li>
-            {% endblock breadcrum_items %}
-          </ul>
-          <div class="clear"></div>
-        </div>
-      {% endblock breadcrum %}
+    <div id="breadcrum_back" class="clearfix">
+    <ul id="breadcrum">
+      {% block breadcrum_items %}
+        <li><a href="{{ organisation.url }}"><span>{{organisation}}</span></a></li>
+      {% endblock breadcrum_items %}
+    </ul>
+  </div>
     {% block content %}{% endblock content %}
+  </div>
+  <div class="container">  
     <div style="background-color:#F5F6F7;">
       {% if sql_queries %}
         <h2 style="margin:10px;">{{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}</h2>
@@ -59,9 +82,7 @@
   <script type="text/javascript">
     var $ = jQ = jQuery.noConflict();
     jQ(document).ready(function(){
-      {% block jq_ready %}
-      
-      {% endblock jq_ready %}
+      {% block jq_ready %}{% endblock jq_ready %}
     });
   </script>
   <!--[if lt IE 7 ]>
