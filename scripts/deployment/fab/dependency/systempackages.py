@@ -56,12 +56,12 @@ class SystemPackageDependency(object):
         package = package_inspector.info_for(self.package_name)
         if package.is_installed():
             if package.version >= self.minimum_package_version:
-                feedback.comment("Found expected system package: %s" % package.name_and_installed_version)
+                feedback.comment("Found package: %s" % package.name_and_installed_version)
                 dependency_is_met = True
             else:
-                feedback.warn("Found %s system package but version is outdated: %s (expected minimum %s)" % (package.name,
+                feedback.warn("Found [%s] package but version is outdated: %s (expected minimum %s)" % (package.name,
                                     package.version, self.minimum_package_version))
         else:
-            feedback.warn("Missing system package: %s" % package.name)
+            feedback.warn("Missing package: %s" % package.name)
 
         return dependency_is_met

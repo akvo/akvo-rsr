@@ -76,12 +76,12 @@ class SystemPackageDependencyTest(mox.MoxTestBase):
 
     def _set_installed_package_expectations(self, installed_version):
         self._set_installed_package_info(installed_version)
-        self.mock_feedback.comment("Found expected system package: package1 (%s)" % installed_version)
+        self.mock_feedback.comment("Found package: package1 (%s)" % installed_version)
         self.mox.ReplayAll()
 
     def _set_outdated_package_expectations(self, installed_version):
         self._set_installed_package_info(installed_version)
-        self.mock_feedback.warn("Found package1 system package but version is outdated: %s (expected minimum 1:1.2)" % installed_version)
+        self.mock_feedback.warn("Found [package1] package but version is outdated: %s (expected minimum 1:1.2)" % installed_version)
         self.mox.ReplayAll()
 
     def _set_installed_package_info(self, installed_version):
@@ -100,7 +100,7 @@ class SystemPackageDependencyTest(mox.MoxTestBase):
 
         self.mock_package_inspector.info_for("package1").AndReturn(self.mock_package_info)
         self.mock_package_info.is_installed().AndReturn(False)
-        self.mock_feedback.warn("Missing system package: package1")
+        self.mock_feedback.warn("Missing package: package1")
         self.mox.ReplayAll()
 
         self.assertFalse(self.system_package_dependency.is_met(self.mock_package_inspector, self.mock_feedback),
