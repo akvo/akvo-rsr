@@ -14,6 +14,14 @@ class UbuntuPackageInfo(object):
 
         self._set_name_and_installed_version()
 
+    def __eq__(self, package_info):
+        return (self.name == package_info.name and
+                self.version == package_info.version and
+                self.state == package_info.state)
+
+    def __ne__(self, package_info):
+        return not self.__eq__(package_info)
+
     def _set_name_and_installed_version(self):
         installed_version = self.version if self.is_installed() else self.state
         self.name_and_installed_version = "%s (%s)" % (self.name, installed_version)

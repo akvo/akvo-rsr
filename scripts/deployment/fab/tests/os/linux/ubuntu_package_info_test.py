@@ -22,6 +22,24 @@ class UbuntuPackageInfoTest(unittest2.TestCase):
 
         self.assertIsInstance(self.package_info, UbuntuPackageInfo)
 
+    def test_can_determine_equality_between_package_info_instances(self):
+        """fab.tests.os.linux.ubuntu_package_info_test  Can determine equality between package info instances"""
+
+        package_info1a = UbuntuPackageInfo('package1', '1:1.1', 'installed')
+        package_info1b = UbuntuPackageInfo('package1', '1:1.1', 'installed')
+
+        self.assertEqual(package_info1a, package_info1a, "Same instance should be equal to itself")
+        self.assertNotEqual(UbuntuPackageInfo('package1', '1:1.1', 'installed'),
+                            UbuntuPackageInfo('package2', '1:1.1', 'installed'),
+                            "Instances should not be equal when package names differ")
+        self.assertNotEqual(UbuntuPackageInfo('package1', '1:1.1', 'installed'),
+                            UbuntuPackageInfo('package1', '1:2.1', 'installed'),
+                            "Instances should not be equal when package versions differ")
+        self.assertNotEqual(UbuntuPackageInfo('package1', '1:1.1', 'installed'),
+                            UbuntuPackageInfo('package1', '1:1.1', 'not installed'),
+                            "Instances should not be equal when package installation states differ")
+        self.assertEqual(package_info1a, package_info1b, "Different instances with same package name, version and state should be equal")
+
     def test_has_expected_package_info_members(self):
         """fab.tests.os.linux.ubuntu_package_info_test  Has expected package info members"""
 
