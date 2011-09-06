@@ -13,11 +13,20 @@ import fabric.contrib.files
 from fab.helpers.feedback import ExecutionFeedback
 
 
-class RemoteHostController(object):
-    """RemoteHostController encapsulates basic command execution and path validation calls made to a remote host via Fabric"""
+class HostControllerBase(object):
 
     def __init__(self, feedback):
         self.feedback = feedback
+
+    def hide_output(self):
+        return fabric.api.hide('stdout')
+
+    def hide_command_and_output(self):
+        return fabric.api.hide('running', 'stdout')
+
+
+class RemoteHostController(HostControllerBase):
+    """RemoteHostController encapsulates basic command execution and path validation calls made to a remote host via Fabric"""
 
     @staticmethod
     def create_instance():
@@ -35,21 +44,12 @@ class RemoteHostController(object):
     def cd(self, path):
         return fabric.api.cd(path)
 
-    def hide_output(self):
-        return fabric.api.hide('stdout')
-
-    def hide_command_and_output(self):
-        return fabric.api.hide('running', 'stdout')
-
     def get(self, remote_path, local_path=None):
         return fabric.api.get(remote_path, local_path)
 
 
-class LocalHostController(object):
+class LocalHostController(HostControllerBase):
     """LocalHostController encapsulates basic command execution and path validation calls made to a local host via Fabric"""
-
-    def __init__(self, feedback):
-        self.feedback = feedback
 
     @staticmethod
     def create_instance():
@@ -66,12 +66,6 @@ class LocalHostController(object):
 
     def cd(self, path):
         return fabric.api.lcd(path)
-
-    def hide_output(self):
-        return fabric.api.hide('stdout')
-
-    def hide_command_and_output(self):
-        return fabric.api.hide('running', 'stdout')
 
     def get(self, remote_path, local_path=None):
         raise Exception("Unsupported operation: %s.get()" % LocalHostController.__name__)
