@@ -33,7 +33,7 @@ class UbuntuPackageInspectorTest(mox.MoxTestBase):
                                          "Priority: optional",
                                          "Section: devel"])
 
-        self.mock_host_controller.hide_output().AndReturn(fabric.api.hide('stdout'))
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('stdout'))
         self.mock_host_controller.run("aptitude show linux-libc-dev").AndReturn(package_info_text)
         self.mox.ReplayAll()
 

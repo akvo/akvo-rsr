@@ -14,5 +14,5 @@ class UbuntuPackageInspector(object):
         self.host_controller = host_controller
 
     def info_for(self, package_name):
-        with self.host_controller.hide_output():
+        with self.host_controller.hide_command_and_output():
             return UbuntuPackageInfo.from_text(self.host_controller.run("aptitude show %s" % package_name))
