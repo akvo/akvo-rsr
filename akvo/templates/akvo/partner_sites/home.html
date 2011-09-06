@@ -5,7 +5,7 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li id="last_breadcrum_item">{% trans "Projects" %}</li>
+  <li class="last_breadcrum_item">{% trans "Projects" %}</li>
 {% endblock breadcrum_items %}
 
 {% block content %}
@@ -17,6 +17,12 @@
     <a href="{{ organisation.url }}">
       {% org_logo organisation 150 120 'margin-bottom:10px' %}
     </a>
+    <p>
+      {% lorem 1p random %}
+    </p>
+    <p class="tiny">
+      {% lorem 1p random %}
+    </p>
     <div class="clear"></div>
   </div>
   <div style="margin-top:20px; background-color:#fff">
@@ -25,12 +31,12 @@
       {% paginate %}
     <table id="projects" style="margin-bottom:0; width:100%">
       <tr>
-        <th>{% anchor name Name %}</th>
-        <th>{% anchor locations__country Location %}</th>
-        <th>{% anchor status Status %}</th>
-        <th><span class="small">Partners</span></th>
-        <th>{% anchor latest_update 'Updated' %}</th>
-        <th>{% anchor funds_needed Funding %}</th>
+        <th class="normal">{% anchor name Name %}</th>
+        <th class="normal">{% anchor locations__country Location %}</th>
+        <th class="normal">{% anchor status Status %}</th>
+        <th class="normal"><span class="small">Partners</span></th>
+        <th class="normal">{% anchor latest_update 'Updated' %}</th>
+        <th class="normal">{% anchor funds_needed Funding %}</th>
       </tr>
       {% for project in project_list %}
         <tr>
@@ -38,7 +44,7 @@
             <div class="space10">
               <a href="{% url 'project_main' project.id %}">
                 {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
-                <p class="link_blue strong" style="margin-bottom:0">
+                <p class="small" style="margin-bottom:0">
                   {{project.name}}
                 </p> 
               </a>
@@ -48,21 +54,21 @@
             </div>
           </td>
           <td> {# Location column #}
-            <p class="td-text">{{project.primary_location.country}}</p>
-            <p class="td-text">{{project.primary_location.country.get_continent_display}}</p>
+            <p class="small">{{project.primary_location.country}}</p>
+            <p class="small">{{project.primary_location.country.get_continent_display}}</p>
           </td>
           <td> {# Status column #}
-            <p class="td-text green">{{project.show_status}}</p>
+            <p class="small green">{{project.show_status}}</p>
           </td>
           <td> {# Partner column #}
-            <p class="td-text">
+            <p class="small">
               {% for partner in project.all_partners %}
                 <a href="#">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
               {% endfor %}
             </p>
           </td>
           <td> {# Updates column #}
-            <p class="td-text">
+            <p class="small">
               {% if project.latest_update %}
                 <a href="{% url 'project_updates' project.id %}#{{project.update_id}}">
                   {{project.latest_update|string_to_date|date:"d M Y"}}
@@ -92,13 +98,13 @@
             </div>
             <div style="text-align:center;">
               {% if project.funding_still_needed|round == 0 %}
-                <p class="green" style="font-weight:bold;">
+                <p class="small" style="font-weight:bold;">
                   {% trans 'Fully funded' %}
                 </p>
               {% else %}
                 {% if not project.status == 'L' and not project.status == 'R' %}
                   <div style="text-align:center; padding-top:5px; padding-bottom:5px;">
-                    Donate!!!
+                    <p class="small">Donate!!!</p>
                     {#<a class="orange awesome small" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>#}
                   </div>
                 {% endif %}
@@ -108,8 +114,6 @@
         </tr>
       {% endfor %}
     </table>
-    <div style="background-color:#E5E5E9; padding:20px; text-align:right;">
-      {% paginate %}
-    </div>
+    {% paginate %}
   </div>
 {% endblock content %}

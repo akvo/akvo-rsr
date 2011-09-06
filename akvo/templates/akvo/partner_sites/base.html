@@ -19,6 +19,7 @@
       body {
         background-color:#B7D4F1;
       }
+      p { font-size:16px;}
       .container {
         padding: 20px 10px;
         width: 900px;
@@ -45,8 +46,8 @@
 <body>
   
   <div class="container">
-    <div id="breadcrum_back" class="clearfix">
-    <ul id="breadcrum">
+    <div class="breadcrum_back clearfix">
+    <ul class="breadcrum">
       {% block breadcrum_items %}
         <li><a href="{{ organisation.url }}"><span>{{organisation}}</span></a></li>
       {% endblock breadcrum_items %}

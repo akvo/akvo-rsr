@@ -1,0 +1,169 @@
+
+@import "defaults";
+
+/*------------------------------------------------------------------ 
+[Table of contents] 
+
+1. Basic
+2. Lists 
+3. Tags 		
+4. Forms
+5. Tables
+6. Margins & paddings
+7. Nice to have classes
+8. Text sizes
+-------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------ 
+[1. Basic] 
+*/
+body {
+    font-size:100%; /* IE6 & 7 */
+    font-family: @font-family;
+    }
+    
+a { 
+    color:@link-color;
+    cursor:pointer;
+    text-decoration:none;
+    }
+    
+a:visited { color:@link-color; }
+a:hover { color:@link-hover-color; text-decoration: underline; }
+
+p {
+    color:@text-color;
+    line-height:1.4em; 
+    margin-bottom:1.5em;
+    }
+
+h1 { .h; .h-size; .h-color;}
+h2 { .h; .h-size(1.125em); .h-color;}
+h3 { .h; .h-size(1em); .h-color(#000);}
+
+
+/*------------------------------------------------------------------ 
+[2. Lists] 
+*/
+
+ul, ol { 
+    color:#333;
+    line-height:1.7em;
+    margin-bottom:0.5em; 
+    margin-bottom:1.5em;   
+    margin-top:-0.5em;    
+    }
+ul ul, ol ol {font-size:1em; margin-top:0;}
+ul li { margin-left:1em;}
+ul { list-style-position: outside; list-style-type: disc; margin-left: 0.5em; }
+ul ul { list-style-type: square; }
+ul ul ul { list-style-type: circle; }
+ol { list-style-position: inside; list-style-type: decimal; margin-left: 0.5em;}
+ol li {  margin-left:1em; }
+dt { font-weight: bold; margin-top: .8em; margin-bottom: .4em; }
+
+
+/*------------------------------------------------------------------ 
+[3. Tags] 
+*/
+strong, th, thead td {font-weight: bold;}
+cite, em, dfn { font-style: italic; }
+code, kbd, samp, pre, tt, var { font-family: monaco, "Lucida Console", courier, monospace; }
+code {
+    background-color:#092125;
+    border:1px solid #9F9F9F;
+    color:#98F39F;
+    display:block;
+    margin-bottom:14px;
+    margin-top:14px;
+    padding:6px 13px;
+    }
+del { text-decoration: line-through; color: #666; }
+ins, dfn { border-bottom: 1px solid #ccc; }
+
+blockquote { 
+    border-top:1px solid #ccc; 
+    border-bottom:1px solid #ccc; 
+    color:#666; 
+    padding:0 1em; 
+    margin:1.6em 0;
+    }
+blockquote :first-child { margin: .8em 0; }
+blockquote :first-child:before { content: "\201C"; }
+blockquote :first-child:after { content: "\201D"; }
+
+
+/*------------------------------------------------------------------ 
+[4. Forms] 
+*/
+fieldset { 
+    border:1px solid #ccc; 
+    padding:0 1em 1em 1em;  /* padding-top is margin-top for fieldsets in Opera */
+    margin:1.6em 0; 
+    }
+legend { font-weight:bold;}
+label { font-weight:bold; display:block; margin-top:5px;}
+
+input[type='text'], input[type='password'], textarea {
+    border:1px solid #ccc; background: #fff;
+    margin:0.5em 1px;
+    padding:3px;
+    }
+
+input[type="submit"], input[type="button"] {
+    display: block;
+    margin-bottom:20px;
+    margin-top:0;
+    padding-top:0;
+    }
+
+textarea { border: 1px solid #ccc;}
+
+.focusField {
+    background-color:#e5fff3;
+    color:#000;
+    }
+
+/*------------------------------------------------------------------ 
+[5. Tables] 
+*/
+table { border-top:1px solid #ccc;  border-left:1px solid #ccc;}
+th, td { border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:.8em; }
+
+
+/*------------------------------------------------------------------ 
+[6. Margins & paddings] 
+*/
+hr, p, dl, pre, blockquote, address, table, form { margin-bottom: 1.5em; }
+caption { padding-bottom: .8em; } /* padding instead of margin for IE */
+legend { padding-left: .8em; padding-right: .8em; }
+select { padding: .1em .2em 0 .2em; }
+option { padding: 0 .4em; }
+a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
+
+
+/*------------------------------------------------------------------ 
+[7. Nice to have classes] 
+*/
+.hide { display:none; }
+.grey { color:#888; }
+.red { color:#E60113; }
+.black { color: #333; }
+.serif { font-family: 'Georgia', serif; }
+
+
+/*------------------------------------------------------------------ 
+[8. Text sizes] 
+*/
+.lede {
+    color: #888;
+    line-height:1.2em;
+    margin-bottom:1.3em
+}
+
+.large {font-size:1.125em;}
+ul, ol, p, .normal {font-size:0.875em;}
+.small {font-size: 0.8125em;}
+.tiny {font-size: 0.6875em;}
+

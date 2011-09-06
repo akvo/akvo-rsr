@@ -75,10 +75,10 @@ ASSET_BUNDLES = {
         'path': 'partner_sites/css/',
         'compress': True,
         'files': [
+            'foundation.css',
             'base.css',
             'scaffold.css',
             'typography.css',
-            'style.css',
             'breadcrum.css',
             ],
     },

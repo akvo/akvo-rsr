@@ -1,0 +1,30 @@
+
+
+@font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+
+@link-color: #2B80AF;
+@link-hover-color: #0FA0CB;
+@text-color: #333;
+
+.h() {
+    font-weight: normal;
+    line-height:1.2em;
+    margin-bottom: 0.5em;
+}
+.h-size(@size:1.625em) {font-size: @size;}
+.h-color(@color:#2097F7) {color: @color;}
+
+.wrap(@width:975px) { width: @width; }
+
+.border-radius(@radius:2px){
+    -khtml-border-radius: @radius;
+    -moz-border-radius: @radius; 
+    -webkit-border-radius: @radius;
+    border-radius: @radius;
+}
+    
+.tight(@margin:0, @padding:0) {
+    margin:@margin;
+    padding:@padding;
+}
+
