@@ -35,8 +35,8 @@ class RemoteHostController(object):
     def cd(self, path):
         return fabric.api.cd(path)
 
-    def hide(self, *groups):
-        return fabric.api.hide(groups)
+    def hide_output(self):
+        return fabric.api.hide('stdout')
 
     def get(self, remote_path, local_path=None):
         return fabric.api.get(remote_path, local_path)
@@ -64,8 +64,8 @@ class LocalHostController(object):
     def cd(self, path):
         return fabric.api.lcd(path)
 
-    def hide(self, *groups):
-        return fabric.api.hide(groups)
+    def hide_output(self):
+        return fabric.api.hide('stdout')
 
     def get(self, remote_path, local_path=None):
         raise Exception("Unsupported operation: %s.get()" % LocalHostController.__name__)

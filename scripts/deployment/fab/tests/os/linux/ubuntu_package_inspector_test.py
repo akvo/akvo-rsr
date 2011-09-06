@@ -26,7 +26,7 @@ class UbuntuPackageInspectorTest(mox.MoxTestBase):
         """fab.tests.os.linux.ubuntu_package_inspector_test  Can get package info for a specified package"""
 
         expected_package_info = "some\r\nlibc6\r\npackage info"
-        self.mock_host_controller.hide('stdout').AndReturn(fabric.api.hide('stdout'))
+        self.mock_host_controller.hide_output().AndReturn(fabric.api.hide('stdout'))
         self.mock_host_controller.run("aptitude show libc6").AndReturn(expected_package_info)
         self.mox.ReplayAll()
 
