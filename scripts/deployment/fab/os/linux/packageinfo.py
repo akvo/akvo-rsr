@@ -44,7 +44,7 @@ class UbuntuPackageInfoParser(object):
                                  package_info_dictionary['State'])
 
     def _create_package_info_dictionary(self, package_info_text):
-        package_info_lines = package_info_text.split("\r\n")[:4] # we only need the first 4 info lines
+        package_info_lines = package_info_text.split("\r\n")[:5] # we only need the first 5 info lines
         package_info_dictionary = {}
 
         for info_line in package_info_lines:

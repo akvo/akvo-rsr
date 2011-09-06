@@ -43,10 +43,23 @@ class UbuntuPackageInfoTest(unittest2.TestCase):
     def test_has_expected_package_info_members(self):
         """fab.tests.os.linux.ubuntu_package_info_test  Has expected package info members"""
 
-        self.assertEqual("g++", self.package_info.name)
-        self.assertEqual("4:4.2.3-1ubuntu6", self.package_info.version)
-        self.assertEqual("installed", self.package_info.state)
-        self.assertEqual("g++ (4:4.2.3-1ubuntu6)", self.package_info.name_and_installed_version)
+        self._verify_expected_package_info_details(self.package_info, "g++", "4:4.2.3-1ubuntu6", "installed", "g++ (4:4.2.3-1ubuntu6)")
+        self.assertEqual(UbuntuPackageInfo("g++", "4:4.2.3-1ubuntu6", "installed"), self.package_info)
+
+    def test_can_parse_info_for_essential_packages(self):
+        """fab.tests.os.linux.ubuntu_package_info_test  Can parse info for essential packages"""
+
+        essential_package_info = UbuntuPackageInfo.from_text(self._essential_package_info_partial())
+
+        self._verify_expected_package_info_details(essential_package_info, "base-files", "4.0.1ubuntu5", "installed", "base-files (4.0.1ubuntu5)")
+        self.assertEqual(UbuntuPackageInfo("base-files", "4.0.1ubuntu5", "installed"), essential_package_info)
+
+    def _verify_expected_package_info_details(self, package_info, expected_package_name, expected_package_version,
+                                              expected_package_state, expected_name_and_installed_version):
+        self.assertEqual(expected_package_name, package_info.name)
+        self.assertEqual(expected_package_version, package_info.version)
+        self.assertEqual(expected_package_state, package_info.state)
+        self.assertEqual(expected_name_and_installed_version, package_info.name_and_installed_version)
 
     def test_can_parse_package_version_with_colons(self):
         """fab.tests.os.linux.ubuntu_package_info_test  Can parse package version with colons"""
@@ -79,28 +92,40 @@ class UbuntuPackageInfoTest(unittest2.TestCase):
         self.assertEqual("g++ (not installed)", not_installed_package_info.name_and_installed_version)
 
     def _installed_package_info_full(self):
-        return "\r\n".join(["Package: g++",
-                            "State: installed",
-                            "Automatically installed: no",
-                            "Version: 4:4.2.3-1ubuntu6",
-                            "Priority: optional",
-                            "Section: devel",
-                            "Maintainer: Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>",
-                            "Uncompressed Size: 41.0k",
-                            "Depends: cpp (>= 4:4.2.3-1ubuntu6), g++-4.2 (>= 4.2.3-1), gcc (>= 4:4.2.3-1ubuntu6), gcc-4.2 (>= 4.2.3-1)",
-                            "Suggests: g++-multilib",
-                            "Provides: c++-compiler",
-                            "Description: The GNU C++ compiler",
-                            " This is the GNU C++ compiler, a fairly portable optimizing compiler for C++. ",
-                            " ",
-                            " This is a dependency package providing the default GNU C++ compiler."])
+        return self._formatted_info(["Package: g++",
+                                     "State: installed",
+                                     "Automatically installed: no",
+                                     "Version: 4:4.2.3-1ubuntu6",
+                                     "Priority: optional",
+                                     "Section: devel",
+                                     "Maintainer: Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>",
+                                     "Uncompressed Size: 41.0k",
+                                     "Depends: cpp (>= 4:4.2.3-1ubuntu6), g++-4.2 (>= 4.2.3-1), gcc (>= 4:4.2.3-1ubuntu6), gcc-4.2 (>= 4.2.3-1)",
+                                     "Suggests: g++-multilib",
+                                     "Provides: c++-compiler",
+                                     "Description: The GNU C++ compiler",
+                                     " This is the GNU C++ compiler, a fairly portable optimizing compiler for C++. ",
+                                     " ",
+                                     " This is a dependency package providing the default GNU C++ compiler."])
 
     def _not_installed_package_info_partial(self):
-        return "\r\n".join(["Package: g++",
-                            "State: not installed",
-                            "Automatically installed: no",
-                            "Version: 4:4.2.3-1ubuntu6",
-                            "Priority: optional"])
+        return self._formatted_info(["Package: g++",
+                                     "State: not installed",
+                                     "Automatically installed: no",
+                                     "Version: 4:4.2.3-1ubuntu6",
+                                     "Priority: optional"])
+
+    def _essential_package_info_partial(self): # essential packages have an additional 'Essential' package info line
+        return self._formatted_info(["Package: base-files",
+                                     "Essential: yes",
+                                     "State: installed",
+                                     "Automatically installed: yes",
+                                     "Version: 4.0.1ubuntu5",
+                                     "Priority: required",
+                                     "Section: base"])
+
+    def _formatted_info(self, package_info_lines):
+        return "\r\n".join(package_info_lines)
 
 
 def suite():
