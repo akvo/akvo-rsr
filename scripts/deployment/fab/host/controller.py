@@ -38,6 +38,9 @@ class RemoteHostController(object):
     def hide_output(self):
         return fabric.api.hide('stdout')
 
+    def hide_command_and_output(self):
+        return fabric.api.hide('running', 'stdout')
+
     def get(self, remote_path, local_path=None):
         return fabric.api.get(remote_path, local_path)
 
@@ -66,6 +69,9 @@ class LocalHostController(object):
 
     def hide_output(self):
         return fabric.api.hide('stdout')
+
+    def hide_command_and_output(self):
+        return fabric.api.hide('running', 'stdout')
 
     def get(self, remote_path, local_path=None):
         raise Exception("Unsupported operation: %s.get()" % LocalHostController.__name__)
