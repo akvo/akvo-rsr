@@ -31,13 +31,13 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_internet,
                                               self.mock_virtualenv, self.mock_feedback)
+
     def test_can_create_a_remote_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a remote DeploymentHost instance"""
 
         host = self._create_deploymenthost_instance_with(RemoteHostController)
 
         self.assertIsInstance(host, DeploymentHost)
-
 
     def test_can_create_a_local_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a local DeploymentHost instance"""
