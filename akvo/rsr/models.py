@@ -2782,8 +2782,8 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
-    url_base = NullCharField(_('URL Base'), max_length=50, unique=True, blank=True, null=True,
-                             help_text=_('Entering "aqua4all" results in your partner site being accessible at "http://akvoapp.org/aqua4all/".'))
+    url_base = models.CharField(_('URL Base'), max_length=50, unique=True,
+                                help_text=_('Entering "aqua4all" results in your partner site being accessible at "http://akvoapp.org/aqua4all/".'))
     cname = NullCharField(_('CNAME'), max_length=100, unique=True, blank=True, null=True,
                           help_text=_('For example "projects.aqua4all.nl".'))
     custom_return_url = models.CharField(_('Return URL'), max_length=255, blank=True,
