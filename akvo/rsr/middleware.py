@@ -23,27 +23,25 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, organisation_id=None, partner_site=None, site=None):
         if settings.PVW_RSR:
             return
+        if site is None:
+            site = Site.objects.get(id=1)
         domain = request.get_host().split(':')[0]
-        local_domains = ('akvo.dev', 'localhost', '127.0.0.1')
-        if domain in local_domains:  # local development
-            if domain in local_domains:
-                site = Site.objects.get(domain='akvo.org')
-        elif domain.endswith('akvoapp.org') or domain == 'akvoapp.dev':  # Partner Site instance
+        if domain.endswith('akvoapp.org') or domain == 'akvoapp.dev':  # Partner Site instance
             try:
                 url_base = request.path.split('/')[1]
                 if url_base:
                     partner_site = PartnerSite.objects.get(url_base=url_base)
-                    site = Site.objects.get(domain='akvoapp.org')
+                    site = Site.objects.get(id=2)
             except:
-                site = Site.objects.get(domain='akvo.org')
+                pass
         elif domain.endswith('akvo.org'):  # Regular Akvo instance
             site = Site.objects.get(domain='akvo.org')
         else:  # probably a partner-nominated domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
-                site = Site.objects.get(domain='akvoapp.org')
+                site = Site.objects.get(id=2)
             except:
-                raise Http404
+                pass
         if partner_site is not None:
             organisation_id = partner_site.organisation.id
             request.urlconf = 'akvo.urls_partner_sites'
