@@ -29,7 +29,6 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.template import loader, Context
-from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
