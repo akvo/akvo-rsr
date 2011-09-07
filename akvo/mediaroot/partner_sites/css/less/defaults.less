@@ -9,7 +9,7 @@
 .h() {
     font-weight: normal;
     line-height:1.2em;
-    margin-bottom: 0.5em;
+    margin: 0 0 0.5em 0;
 }
 .h-size(@size:1.625em) {font-size: @size;}
 .h-color(@color:#2097F7) {color: @color;}
@@ -28,3 +28,28 @@
     padding:@padding;
 }
 
+.gradient_top_bottom(@from: #0AB9FD, @to: #0094Fb){
+    
+    background: @from * @to / 2; /* for non-css3 browsers */
+    
+    /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0AB9FD), to(#0094Fb));
+  
+    /* Safari 5.1, Chrome 10+ */
+/*    background: -webkit-linear-gradient(top, #0AB9FD, #0094Fb);*/
+  
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, #0AB9FD, #0094Fb);
+  
+    /* IE 10 */
+    background: -ms-linear-gradient(top, #0AB9FD, #0094Fb);
+  
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #0AB9FD, #0094Fb);
+}
+
+.border(@color: #96D7F9, @width:2px){
+    border-style:solid;
+    border-color:@color;
+    border-width:@width;
+}
