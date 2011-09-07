@@ -14,9 +14,11 @@
     <div style="width:470px; float:right;">
       {% google_organisation_projects_map organisation 'static' 470 250 1 %}
     </div>
+    {% comment %}
     <a href="{{ organisation.url }}">
       {% org_logo organisation 150 120 'margin-bottom:10px' %}
     </a>
+    {% endcomment %}
     <p>
       {% lorem 1p random %}
     </p>

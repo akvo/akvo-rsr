@@ -6,22 +6,31 @@
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>Projects</span></a></li>
-  <li id="last_breadcrum_item">{{project.name}}</li>
+  <li class="last_breadcrum_item">{{project.name}}</li>
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <div class="span-13">
-    <h1>{{project}} - {{organisation}}</h1>
-    {{project.project_plan_summary|linebreaks}}
-    <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
-    <br />
-  </div>
-  <div class="span-5 last" style="background-color:#d9dfe5">
-    <p>Just a sidebar</p>
-    <h3>Subpages</h3>
-    <ul>
-      <li><a href="{% url 'project_funding' project.id %}">Funding</a></li>
-      <li><a href="{% url 'update_directory' project.id %}">Updates</a></li>
-    </ul>
+  <div class="clearfix">
+    <article>
+       <h1>{{project}} - {{organisation}}</h1>
+      <section class="whitebox">
+        {{project.project_plan_summary|linebreaks}}
+        <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
+      </section>
+    </article>
+    <aside>
+      <div class="money_blue_background" style="height:180px; padding:10px">
+        {{project.show_status_large}}<br />
+      </div>
+      <div class="whitebox" style="height:40px; margin-top:10px">
+        <p>Update 1</p>
+      </div>
+      <div class="whitebox" style="height:40px; margin-top:10px">
+        <p>Update 2</p>
+      </div>
+      <div class="whitebox" style="height:40px; margin-top:10px">
+        <p>Update 3</p>
+      </div>
+    </aside>
   </div>
 {% endblock content %}
