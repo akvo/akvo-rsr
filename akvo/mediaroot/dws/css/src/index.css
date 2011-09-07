@@ -28,9 +28,20 @@ div#top_right_box h3 {
     line-height:1.2em;
     margin-bottom:0.75em;
 }
+#tagline_box {
+    width: 846;
+    background:#FE7A2C;
+    color: white;
+    border: 1px solid #7D818E;
+}
 
 div#tagline_box p {
-    padding-top: 12px;
+    color: white;
+    font-size: 1em;
+    margin:  1.5em 0 1.5em 2.5em;
+    font-family: Arvo, Georgia, serif;
+    font-weight: bold;
+    font-style: italic;
 }
 
 #preview_cover {
@@ -132,3 +143,4 @@ div#tagline_box p {
     border-bottom: 1px dashed #B5B9C7;
     display:block;
 }
+

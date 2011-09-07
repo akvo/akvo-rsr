@@ -100,21 +100,8 @@
 		
 		<p class="small grey">
 			{% trans 'Site under' %} <a href="/web/open_license">{% trans 'open licence' %}</a>
-			&nbsp;|&nbsp; <a href="/web/terms_of_use">{% trans 'Terms of use' %}</a>
-      &nbsp;|&nbsp; <a href="/web/privacy_policy">{% trans 'Privacy policy' %}</a>
-      &nbsp;|&nbsp; <a href="/web/credits">{% trans 'Credits' %}</a> 
-      {% if site_section != 'index' %}
-        &nbsp;|&nbsp; <a href="/web/admin">{% trans 'Admin' %}</a>
-        {% if not user.username %}
-          &nbsp;|&nbsp; <a href="{% url 'register1' %}">{% trans 'Register' %}</a>
-        {% endif %}
-        {% if not user.username %}      
-          &nbsp;|&nbsp; <a href="{% url 'signin' %}?next={{request.path}}">{% trans 'Sign in' %}</a>
-        {% else %}
-          &nbsp;|&nbsp; <a href="{% url 'signout' %}?next={{request.path}}">{% trans 'Sign out' %}</a>
-        {% endif %}
-      {% endif %}
-			<a href="/web/contact_us" style="margin-left:30px;">{% trans 'Contact us' %}</a>
+			&nbsp;|&nbsp; <a href="/web/disclaimer">{% trans 'Disclaimer' %}</a>
+			&nbsp;|&nbsp; <a href="/web/contact_us">{% trans 'Contact us' %}</a>
       {% if site_section != 'index' %}
         <img src="{{MEDIA_URL}}dws/img/holland_logo_oranje_74x25.gif" style="float: right; margin-top: -6px;"/>
       {% else %}

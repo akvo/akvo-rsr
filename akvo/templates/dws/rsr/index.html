@@ -12,6 +12,10 @@
 }
 {% endblock inline_styles %}
 
+{% block head %}
+<link href='http://fonts.googleapis.com/css?family=Arvo:400,400italic' rel='stylesheet' type='text/css'>
+{% endblock head %}
+
 {% block maincontent %}
 
 {% if preview %}
@@ -70,14 +74,14 @@
     {# video box #}
     <div class="gradient_box" style="min-height: 368px;">
       <div class="space15 center">
-        <h1 class="black">{% trans "let's work together" %}</h1>
+        <img src="{{MEDIA_URL}}dws/img/index/lets-work-together.png" style="width: 270px;"/>
         <p class="nano-lede lt_grey">{% trans "A world of expertise at your fingertips" %}</p>
       </div>
       <div class="hr_margin"><hr/></div>
       <div class="space15 center">
         <a href="http://www.youtube.com/user/NLWaterPartnership" class="small_link red">
           {% trans "See our latest videos on" %}
-          <img src="{{MEDIA_URL}}dws/img/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
+          <img src="{{MEDIA_URL}}dws/img/index/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
         </a>
         <div style="margin-top: 10px;">
         {% comment %}{# alternative with thumbnail and link to YT channel page #}
@@ -88,18 +92,20 @@
           <iframe title="{% trans 'YouTube video player' %}" width="282" height="212" src="{{cms.video_url}}" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
+      {% comment %}{# removed for now because of height constraints #}
       <div class="space15 center">
         <div class="h1_companion" style="margin: 0;">
           <a href="http://www.youtube.com/user/NLWaterPartnership">{% trans 'Go to our YouTube channel' %} <span class="link_triangle">&#x25BA;</span></a>
         </div>
       <div class="clear"></div>
       </div>
+      {%  endcomment %}
     </div>
 
     {# newsletter signup box #}
     <div class="gradient_box gutter-top" style="height: 66px;">
       <div style=" margin: 0 15px;">
-        <img src="{{MEDIA_URL}}dws/img/dws_book_cover_small.png" alt="Dutch Water Sector" style="float: left; margin-top: 14px;"/>
+        <img src="{{MEDIA_URL}}dws/img/index/dws_book_cover_small.png" alt="Dutch Water Sector" style="float: left; margin-top: 14px;"/>
         <p class="nano-lede lt_grey left" style="width: 170px; margin:  16px 0 0 10px;">{%  trans 'Sign up for our free monthly newsletter via email' %}</p>
         <a class="orange small awesome right" href="#" style="color: black; margin-top: 21px;">{% trans 'Register' %}</a>
       </div>
@@ -231,7 +237,7 @@
       <div class="space15">
         <h1 class="box-heading">{% trans 'Find Dutch water experts' %}</h1>
         <div style="text-align: center;">
-          <img src="{{MEDIA_URL}}dws/img/dws.org.logo.png" />
+          <img src="{{MEDIA_URL}}dws/img/index/dws.org.logo.png" />
         </div>
         <p class="nano-lede lt_grey top-margin">{% trans "A directory of all Dutch water organisations and companies. Find a partner here!" %}</p>
         <div class="left strong" style="font-size:0.875em; width: 131px; margin: 8px 0;">
@@ -353,12 +359,16 @@
 
 </div>
 
-{# slogan box #}
+{# tagline box #}
 <div class='container gutter-top'>
-  <div class='column span-12 last'>
-    <div class="white_box" style="height: 100px;">
-      Slogan
+  <div class='column span-10'>
+    <div id="tagline_box">
+      {{cms.tagline_box|apply_markup:"markdown"}}
+      <div class="clear"></div>
     </div>
+  </div>
+  <div class='column span-2 last'>
+    <img style="padding-top: 0.8em" src="{{MEDIA_URL}}dws/img/index/holland_logo_oranje_130x44.gif">
   </div>
 </div>
 
