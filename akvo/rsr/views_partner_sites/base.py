@@ -40,6 +40,7 @@ class BaseListView(ListView):
         context = super(BaseListView, self).get_context_data(**kwargs)
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context['return_url'] = self.request.partner_site.return_url
         return context
 
     def get_queryset(self):
