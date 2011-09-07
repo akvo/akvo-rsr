@@ -26,17 +26,15 @@ class PartnerSitesRouterMiddleware(object):
         if site is None:
             site = Site.objects.get(id=1)
         domain = request.get_host().split(':')[0]
-        if domain.endswith('akvoapp.org') or domain == 'akvoapp.dev':  # Partner Site instance
+        if domain.endswith('akvoapp.org') or domain == 'akvoapp.dev':  # Partner site instance
             try:
                 url_base = request.path.split('/')[1]
                 if url_base:
                     partner_site = PartnerSite.objects.get(url_base=url_base)
                     site = Site.objects.get(id=2)
             except:
-                pass
-        elif domain.endswith('akvo.org'):  # Regular Akvo instance
-            site = Site.objects.get(domain='akvo.org')
-        else:  # probably a partner-nominated domain
+                raise Http404
+        else:  # Partner site instance on partner-nominated domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
                 site = Site.objects.get(id=2)
