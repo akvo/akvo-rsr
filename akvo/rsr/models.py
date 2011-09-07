@@ -2792,7 +2792,7 @@ class PartnerSite(models.Model):
     #custom_logo = models.FileField(_('Partner logo'), blank=True,
     #                               help_text=_('Upload a high-resolution banner logo.\n' \
     #                                           'This setting is optional but recommended.'))
-    enabled = models.BooleanField(_('enabled'))
+    enabled = models.BooleanField(_('enabled'), default=True)
 
     def __unicode__(self):
         return u'Partner site for %s' % self.organisation.name
