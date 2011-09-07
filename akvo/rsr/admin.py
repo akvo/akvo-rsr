@@ -1362,6 +1362,4 @@ else: #akvo-rsr
     
     admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
-
-# Add extra fields to SiteAdmin
-SiteAdmin.list_filter += ('enabled',)
+admin.site.register(get_model('rsr', 'partnersite'))

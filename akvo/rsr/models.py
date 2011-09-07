@@ -2780,13 +2780,38 @@ def process_paypal_ipn(sender, **kwargs):
 payment_was_flagged.connect(process_paypal_ipn)
 
 
-# Monkey patch django.contrib.sites.models.Site to support Partner Sites
-if not settings.PVW_RSR:
-    models.ForeignKey(Organisation, blank=True, null=True,
-                      help_text=_('If this site is a partner site, select the associated partner organisation. If no organisation is selected, a regular instance of Akvo RSR will be served.')).contribute_to_class(Site, 'organisation')
-    NullCharField(max_length=100, unique=True, blank=True, null=True,
-                  help_text=_('Enter the partner-nominated domain name e.g. "projects.connect4change.nl".')).contribute_to_class(Site, 'partner_domain')
-    models.BooleanField(default=True).contribute_to_class(Site, 'enabled')
+class PartnerSite(models.Model):
+    organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
+    url_base = NullCharField(_('URL Base'), max_length=50, unique=True, blank=True, null=True,
+                             help_text=_('Entering "aqua4all" results in your partner site being accessible at "http://akvoapp.org/aqua4all/".'))
+    cname = NullCharField(_('CNAME'), max_length=100, unique=True, blank=True, null=True,
+                          help_text=_('For example "projects.aqua4all.nl".'))
+    custom_return_url = models.CharField(_('Return URL'), max_length=255, blank=True,
+                                         help_text=_('The URL on your own site to return users to. Enter a full URL (starting with "http://").\n' \
+                                                     'This setting is optional but recommended.'))
+    #custom_logo = models.FileField(_('Partner logo'), blank=True,
+    #                               help_text=_('Upload a high-resolution banner logo.\n' \
+    #                                           'This setting is optional but recommended.'))
+    enabled = models.BooleanField(_('enabled'))
+
+    def __unicode__(self):
+        return u'Partner site for %s' % self.organisation.name
+
+    @property
+    def logo(self):
+        if self.custom_logo:
+            return self.custom_logo
+        if self.organisation.logo:
+            return self.organisation.logo
+        return
+
+    @property
+    def return_url(self):
+        if self.custom_return_url:
+            return self.custom_return_url
+        if self.organisation.url:
+            return self.organisation.url
+        return
 
 
 # signals!

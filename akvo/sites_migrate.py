@@ -11,12 +11,12 @@ def main():
     for existing_site in existing_sites:
         existing_site.delete()
         print 'Removed legacy site %s.' % existing_site.domain
-    production_site = Site(domain='www.akvo.org', name='Akvo RSR (production)')
-    production_site.save()
-    print 'Created default production site.'
-    local_site = Site(domain='akvo.dev', name='Akvo RSR (local)')
-    local_site.save()
-    print 'Created default local development site.'
+    default_site = Site(id=1, domain='akvo.org', name='Akvo RSR')
+    default_site.save()
+    print 'Created default site.'
+    partner_site = Site(id=2, domain='akvoapp.org', name='Akvo Partner Site')
+    partner_site.save()
+    print 'Created partner site.'
 
 
 if __name__ == '__main__':
