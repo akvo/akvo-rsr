@@ -53,15 +53,20 @@ class SystemPackageDependency(object):
 
     def is_met(self, package_inspector, feedback):
         dependency_is_met = False
-        package = package_inspector.info_for(self.package_name)
-        if package.is_installed():
-            if package.version >= self.minimum_package_version:
-                feedback.comment("Found package: %s" % package.name_and_installed_version)
-                dependency_is_met = True
+
+        try:
+            package = package_inspector.info_for(self.package_name)
+
+            if package.is_installed():
+                if package.version >= self.minimum_package_version:
+                    feedback.comment("Found package: %s" % package.name_and_installed_version)
+                    dependency_is_met = True
+                else:
+                    feedback.warn("Found [%s] package but version is outdated: %s (expected minimum %s)" % (package.name,
+                                        package.version, self.minimum_package_version))
             else:
-                feedback.warn("Found [%s] package but version is outdated: %s (expected minimum %s)" % (package.name,
-                                    package.version, self.minimum_package_version))
-        else:
-            feedback.warn("Missing package: %s" % package.name)
+                feedback.warn("Package not installed: %s" % package.name)
+        except SystemExit:
+            feedback.warn("Unknown package: %s" % self.package_name)
 
         return dependency_is_met

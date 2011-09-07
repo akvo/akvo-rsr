@@ -100,11 +100,23 @@ class SystemPackageDependencyTest(mox.MoxTestBase):
 
         self.mock_package_inspector.info_for("package1").AndReturn(self.mock_package_info)
         self.mock_package_info.is_installed().AndReturn(False)
-        self.mock_feedback.warn("Missing package: package1")
+        self.mock_feedback.warn("Package not installed: package1")
         self.mox.ReplayAll()
 
         self.assertFalse(self.system_package_dependency.is_met(self.mock_package_inspector, self.mock_feedback),
                          "System package dependency should not be met if package is not installed")
+
+    def test_dependency_is_not_met_if_package_is_unknown(self):
+        """fab.tests.dependency.system_package_dependency_test  Dependency is not met if the package is unknown"""
+
+        system_package_dependency = SystemPackageDependency("nonexistent_package", self.minimum_package_version)
+
+        self.mock_package_inspector.info_for("nonexistent_package").AndRaise(SystemExit)
+        self.mock_feedback.warn("Unknown package: nonexistent_package")
+        self.mox.ReplayAll()
+
+        self.assertFalse(system_package_dependency.is_met(self.mock_package_inspector, self.mock_feedback),
+                         "System package dependency should not be met if package is unknown")
 
 
 def suite():
