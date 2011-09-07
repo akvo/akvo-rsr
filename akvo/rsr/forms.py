@@ -19,6 +19,7 @@ from django.conf import settings
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.contrib.sites.models import Site
 from django.db.models import get_model
+from django.template.defaultfilters import slugify
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -316,3 +317,13 @@ class ProjectUpdateForm(forms.ModelForm):
                 path = '/watch?v=%s' % path.lstrip('/')
                 data = urlunsplit((scheme, netloc, path, query, fragment))
         return data
+
+class PartnerSiteAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'partnersite')
+
+    def clean_url_base(self):
+        url_base = slugify(self.cleaned_data['url_base'])
+        if url_base == 'www':
+            raise forms.ValidationError(_('www is a reserved hostname. Please choose another hostname.'))
+        return url_base

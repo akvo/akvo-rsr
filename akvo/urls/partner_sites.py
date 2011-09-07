@@ -10,22 +10,22 @@ from akvo.rsr import views_partner_sites as views
 
 
 urlpatterns = patterns('',
-    url(r'$', views.BaseListView \
+    url(r'^$', views.BaseListView \
         .as_view(template_name='partner_sites/home.html'), name='home'),
-    url(r'directory/$', views.BaseListView \
+    url(r'^directory/$', views.BaseListView \
         .as_view(template_name='partner_sites/directory.html'),
                  name='project_list'),
-    url(r'map/$', views.BaseView \
+    url(r'^map/$', views.BaseView \
         .as_view(template_name='partner_sites/map.html'),
                  name='project_map'),
-    url(r'(?P<project_id>\d+)/$', views.BaseProjectView \
+    url(r'^project/(?P<project_id>\d+)/$', views.BaseProjectView \
         .as_view(template_name="partner_sites/project/project_main.html"),
                  name='project_main'),
-    url(r'(?P<project_id>\d+)/funding/$', views.BaseProjectView \
+    url(r'^project/(?P<project_id>\d+)/funding/$', views.BaseProjectView \
         .as_view(template_name="partner_sites/project/project_funding.html"),
                  name='project_funding'),
-    url(r'(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView
+    url(r'^project/(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView
         .as_view(), name='update_directory'),
-    url(r'(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$', views.UpdateView
+    url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$', views.UpdateView
         .as_view(), name='update_main'),
-    )
+)

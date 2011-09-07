@@ -22,6 +22,7 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from permissions.models import Role
 
+from akvo.rsr.forms import PartnerSiteAdminForm
 from akvo.rsr.utils import get_rsr_limited_change_permission
 
 
@@ -1362,4 +1363,8 @@ else: #akvo-rsr
     
     admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
-admin.site.register(get_model('rsr', 'partnersite'))
+
+class PartnerSiteAdmin(admin.ModelAdmin):
+    form = PartnerSiteAdminForm
+
+admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)

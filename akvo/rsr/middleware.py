@@ -20,30 +20,34 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
 class PartnerSitesRouterMiddleware(object):
-    def process_request(self, request, organisation_id=None, partner_site=None, site=None):
+    def process_request(self, request, organisation_id=None, partner_site=None):
         if settings.PVW_RSR:
             return
-        if site is None:
-            site = Site.objects.get(id=1)
         domain = request.get_host().split(':')[0]
-        if domain.endswith('akvoapp.org') or domain == 'akvoapp.dev':  # Partner site instance
+        domain_parts = domain.split('.')
+        local_domains = ('localhost', '127.0.0.1', 'akvo.dev')
+        if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
+            site = Site.objects.get(id=1)
+        elif domain.endswith('akvoapp.org') or domain.endswith('akvoapp.dev'):  # Partner site instance
+            site = Site.objects.get(id=2)
+            if len(domain_parts) == 3:
+                url_base = domain_parts[-3]
+            elif len(domain_parts) >= 4:
+                url_base = domain_parts[-4]
             try:
-                url_base = request.path.split('/')[1]
-                if url_base:
-                    partner_site = PartnerSite.objects.get(url_base=url_base)
-                    site = Site.objects.get(id=2)
+                partner_site = PartnerSite.objects.get(url_base=url_base)
             except:
-                raise Http404
+                pass
         else:  # Partner site instance on partner-nominated domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
                 site = Site.objects.get(id=2)
             except:
-                pass
+                raise Http404
         if partner_site is not None:
             organisation_id = partner_site.organisation.id
-            request.urlconf = 'akvo.urls_partner_sites'
+            request.partner_site = partner_site
+            request.organisation_id = organisation_id
+            request.urlconf = 'akvo.urls.partner_sites'
         SITE_ID.value = site.id
-        request.partner_site = partner_site
-        request.organisation_id = organisation_id
         return
