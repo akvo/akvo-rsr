@@ -6,7 +6,6 @@
 
 
 from fab.dependency.systempackages import SystemPackageDependencyCollection
-from fab.dependency.verifier.collectionverifier import DependencyCollectionVerifier
 from fab.dependency.verifier.packageverifier import SystemPackageVerifier
 from fab.host.controller import RemoteHostController
 from fab.os.linux.packageinspector import UbuntuPackageInspector
@@ -22,10 +21,9 @@ class LinuxHost(object):
     @staticmethod
     def create_instance():
         host_controller = RemoteHostController.create_instance()
-        package_inspector = UbuntuPackageInspector(host_controller)
-        system_package_verifier = SystemPackageVerifier(DependencyCollectionVerifier(), host_controller.feedback)
+        system_package_verifier = SystemPackageVerifier.create_instance(host_controller.feedback)
 
-        return LinuxHost(package_inspector, system_package_verifier, host_controller.feedback)
+        return LinuxHost(UbuntuPackageInspector(host_controller), system_package_verifier, host_controller.feedback)
 
     def exit_if_system_package_dependencies_not_met(self, package_specifications):
         dependency_collection = SystemPackageDependencyCollection(package_specifications, self.package_inspector, self.feedback)

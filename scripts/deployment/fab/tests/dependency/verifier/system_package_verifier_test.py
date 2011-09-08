@@ -25,6 +25,11 @@ class SystemPackageVerifierTest(mox.MoxTestBase):
 
         self.system_package_verifier = SystemPackageVerifier(self.mock_dependency_verifier, self.mock_feedback)
 
+    def test_can_create_systempackageverifier_instance(self):
+        """fab.tests.dependency.verifier.system_package_verifier_test  Can create a SystemPackageVerifier instance"""
+
+        self.assertIsInstance(SystemPackageVerifier.create_instance(self.mock_feedback), SystemPackageVerifier)
+
     def test_will_exit_if_package_dependencies_have_not_been_met(self):
         """fab.tests.dependency.verifier.system_package_verifier_test  Will exit if package dependencies have not been met"""
 

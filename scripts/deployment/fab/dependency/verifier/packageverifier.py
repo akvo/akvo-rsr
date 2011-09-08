@@ -5,11 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from fab.dependency.verifier.collectionverifier import DependencyCollectionVerifier
+
+
 class SystemPackageVerifier(object):
 
     def __init__(self, dependency_verifier, feedback):
         self.dependency_verifier = dependency_verifier
         self.feedback = feedback
+
+    @staticmethod
+    def create_instance(feedback):
+        return SystemPackageVerifier(DependencyCollectionVerifier(), feedback)
 
     def exit_if_package_dependencies_not_met(self, dependency_collection):
         self.feedback.comment("Verifying expected system packages")
