@@ -110,7 +110,7 @@ div#tagline_box p {
 
 #index_news_box .text_bg {
     background: transparent url(../../img/backgrd_lt_grey.png) repeat;
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
 }
 
 #index_news_box h1 {
@@ -118,9 +118,13 @@ div#tagline_box p {
     margin: 0;
 }
 
-#index_news_box a, #index_news_box a:hover , #index_news_box a:visited {
+#index_news_box a, #index_news_box a:visited  {
+    color: #FFD28B;
     font-size: 1.25em;
-    color: #FFDE98;
+}
+
+#index_news_box a:hover {
+    color: #FFC261;
 }
 
 #index_news_box p {

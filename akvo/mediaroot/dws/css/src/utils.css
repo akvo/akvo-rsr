@@ -13,6 +13,7 @@
 .red:visited { color:#E60113; }
 .blue       { color:#3A8CB9; }
 .yellow     { color:#FEC344; }
+.yellow:hover { color:#FEE144; }
 .grey       { color:#7D818E; }
 .black      { color:#000; }
 .white      { color:#fff; }

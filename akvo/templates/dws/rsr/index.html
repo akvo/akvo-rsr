@@ -58,12 +58,15 @@
               <hr/>
             {% endif %}
             <div>
-              <span style="margin-right: 1em; color: #B5B9C7; font-size: 0.875em;">
+              <!--<span style="margin-right: 1em; color: #B5B9C7; font-size: 0.875em;">
                 {% trans 'FEATURE'%}
-              </span>
+              </span>-->
               <a href="{{ post.url }}" class="serif">{{ post.title }}</a>
             </div>
           {% endfor %}
+          <p class="yellow last" style="text-align: right;">
+            <a class="yellow" style="font-size:0.8125em;">{% trans 'More news headlines' %}</a>
+          </p>
         </div>
       </div>
       <div class="clear"></div>
