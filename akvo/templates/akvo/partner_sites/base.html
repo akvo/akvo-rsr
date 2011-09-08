@@ -15,7 +15,7 @@
   {% asset_bundle 'partner_sites_style' %}
 
   <style type="text/css" media="screen">
-    {% if organisation.id == 43  %}
+    {% if organisation.id == 43 %} {# Aqua4All#}
       body {
         background-color:#B7D4F1;
       }
@@ -23,24 +23,30 @@
       .container {
         background-color:#fff;
         padding: 20px 10px;
-        width: 900px;
       }
-      article {max-width:620px}
       h1, h2 {color: #000}
     {% endif %}
-    {% if organisation.id == 272 %}
+    {% if organisation.id == 106 %} {# Impulsis #}
+      body {
+        background: #FDF0D4;
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        color: #0055A5;
+      }
+      a, a:link, a:visited {color: #F68026;}
+      p {color: #004F99; font-size:13px;}
+      .small {font-size:10px}
+      h1, h2 {color: #0055A5}
+    {% endif %}
+    {% if organisation.id == 272 %} {# Connect4change #}
       body {
         background:#ECEEF0;
         font-family: Verdana, Arial, Tahoma,Century gothic,  sans-serif;
       }
-      p { font-size:12px;}
+      p {font-size:12px;}
       .small {font-size:10px}
-      .container {
-        width: 1000px;
-      }
-      article {max-width:720px}
       h1, h2 {color: #BC620E}
     {% endif %}
+  </style>
   </style>
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">

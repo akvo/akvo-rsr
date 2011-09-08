@@ -9,25 +9,17 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <div style="background-color:#fff">
-    <h1>Project listing for {{organisation}}</h1>
-    <div style="width:470px; float:right;">
-      {% google_organisation_projects_map organisation 'static' 470 250 1 %}
-    </div>
-    {% comment %}
-    <a href="{{ organisation.url }}">
-      {% org_logo organisation 150 120 'margin-bottom:10px' %}
-    </a>
-    {% endcomment %}
-    <p>
-      {% lorem 1p random %}
-    </p>
-    <p class="tiny">
-      {% lorem 1p random %}
-    </p>
-    <div class="clear"></div>
+  <div class="two_col_left whitebox fixed_height_250px">
+    <div class="pad20">
+      <h2>{{organisation}}</h2>
+      {{organisation.description|smart_truncate:300|linebreaks|safe}}
+    </div>      
   </div>
-  <div style="margin-top:20px; background-color:#fff">
+  <div class="two_col_right whitebox">
+    {% google_organisation_projects_map organisation 'dynamic' 470 250 1 %}
+  </div>
+  <div class="clear"></div>
+  <div class="marg_top40 white_back">
     {% autosort project_list %}
       {% autopaginate project_list 10 %}
       {% paginate %}
