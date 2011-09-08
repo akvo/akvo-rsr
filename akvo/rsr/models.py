@@ -2782,7 +2782,7 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
-    hostname = models.CharField(_('URL Base'), max_length=50, unique=True,
+    hostname = models.CharField(_('Hostname'), max_length=50, unique=True,
                                 help_text=_('Entering "aqua4all" results in your partner site being accessible at "http://aqua4all.akvoapp.org/".'))
     cname = NullCharField(_('CNAME'), max_length=100, unique=True, blank=True, null=True,
                           help_text=_('For example "projects.aqua4all.nl".'))
