@@ -24,11 +24,15 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, hostname='', partner_site=None):
         if settings.PVW_RSR:
             return
-        domain, port = request.get_host().split(':')
+        host = request.get_host().split(':')
+        domain = host[0]
+        if len(host) == 2:
+            port = host[1]
         domain_parts = domain.split('.')
         local_domains = ('localhost', '127.0.0.1', 'akvo.dev')
         if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
             site = Site.objects.get(id=1)
+            request.urlconf = 'akvo.urls.rsr'
         elif domain == 'akvoapp.org' or domain == 'akvoapp.dev':  # Partner sites marketing instance
             site = Site.objects.get(id=2)
             request.urlconf = 'akvo.urls.partner_sites_marketing'
