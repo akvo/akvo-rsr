@@ -32,7 +32,9 @@ class PartnerSitesRouterMiddleware(object):
         domain_parts = domain.split('.')
         local_domains = ('localhost', '127.0.0.1', 'akvo.dev')
         if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
-            if domain in local_domains:
+            if domain.endswith('akvo.org'):
+                domain_name = domain
+            elif domain in local_domains:
                 domain_name = 'akvo.dev'
             site = Site.objects.get(id=1)
             request.urlconf = 'akvo.urls.rsr'
