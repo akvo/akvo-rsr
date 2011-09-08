@@ -5,9 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os
-
-import fabric.api
 import fabric.tasks
 
 import fab.config.linux.systempackages
