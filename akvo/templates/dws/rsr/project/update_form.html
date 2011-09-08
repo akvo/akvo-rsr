@@ -2,6 +2,12 @@
 {% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail %}
 {% load url from future %}
 
+{% block style %}
+  {% asset_bundle 'dws_style14' %}
+  <!--[if IE 6]>
+    {% asset_bundle 'dws_ie6_style' %}
+  <![endif]-->
+{% endblock style %}
 
 {% block title %}
   - {{project.name}}
