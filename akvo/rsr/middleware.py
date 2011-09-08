@@ -55,9 +55,9 @@ class PartnerSitesRouterMiddleware(object):
                     if port is not None:
                         host = u'%s:%d' % (host, int(port))
                     if host.startswith('akvoapp.org'):
-                        redirect_url = u'http://www.akvoapp.org/' % host
+                        redirect_url = u'http://www.%s/' % host
                     elif host.startswith('akvoapp.dev'):
-                        redirect_url = u'http://%s' % host
+                        redirect_url = u'http://%s/' % host
                     return redirect(redirect_url)
         else:  # Partner site instance on partner-nominated domain
             try:
