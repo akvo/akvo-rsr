@@ -2,20 +2,33 @@
 {% load i18n rsr_tags rsr_filters google_maps webdesign thumbnail counter_tags cache humanize sorting_tags pagination_tags %}
 {% load url from future %}
 
+{% block style %}
+  {% asset_bundle 'dws_style14' %}
+  <!--[if IE 6]>
+    {% asset_bundle 'dws_ie6_style' %}
+  <![endif]-->
+{% endblock style %}
 
 {% block title %}
-  - {% trans 'Projects' %}
-  - {% trans 'Project participants' %}
+  - {% trans 'Project participant' %}
   - {{org.name}}
 {% endblock title %}
 
-{% block breadcrum_items %}
-  {{block.super}}
-  <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
-  <li><a href="{% url 'rsr_org_list' %}"><span>{% trans 'Project participants' %}</span></a></li>
-  <li id="last_breadcrum_item">{{org.name}}</li>
-{% endblock breadcrum_items %}
-
+{% block breadcrum  %}
+  <div class="span-14" style="margin-bottom:20px;">
+    <div id="breadcrum_back">
+      <ul id="breadcrum">
+        {% block breadcrum_items %}
+        <li><a href="/"><span>{% trans 'Home' %}</span></a></li>
+          <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+          <li><a href="{% url 'rsr_org_list' %}"><span>{% trans 'Project participants' %}</span></a></li>
+          <li id="last_breadcrum_item">{{org.name}}</li>
+        {% endblock breadcrum_items %}
+      </ul>
+      <div class="clear"></div>
+    </div>
+  </div>
+{% endblock breadcrum %}
 
 {% block maincontent %}
 

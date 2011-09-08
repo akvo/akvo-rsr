@@ -9,13 +9,12 @@
 	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
 	<title>Dutch Water Sector{% block title %}{% endblock %}</title>
 
-
-	{% asset_bundle 'dws_style' %}
-	<!--[if IE 6]>
-		{% asset_bundle 'dws_ie6_style' %}
-	<![endif]-->
-	
-  {% block style %}{% endblock style %}
+  {% block style %}
+    {% asset_bundle 'dws_style' %}
+    <!--[if IE 6]>
+      {% asset_bundle 'dws_ie6_style' %}
+    <![endif]-->
+  {% endblock style %}
 
   <style type="text/css" media="screen">
   	{% block inline_styles %}{% endblock inline_styles %}
