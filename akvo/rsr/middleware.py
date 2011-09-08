@@ -21,7 +21,7 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
 class PartnerSitesRouterMiddleware(object):
-    def process_request(self, request, hostname='', partner_site=None):
+    def process_request(self, request, hostname='', port=None, partner_site=None):
         if settings.PVW_RSR:
             return
         host = request.get_host().split(':')
@@ -52,7 +52,7 @@ class PartnerSitesRouterMiddleware(object):
                             request.urlconf = 'akvo.urls.partner_sites'
                 except:
                     host = u'.'.join(domain_parts[-2:])
-                    if port:
+                    if port is not None:
                         host = u'%s:%d' % (host, int(port))
                     redirect_url = u'http://%s/' % host
                     return redirect(redirect_url)
