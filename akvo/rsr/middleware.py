@@ -33,10 +33,10 @@ class PartnerSitesRouterMiddleware(object):
         if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
             site = Site.objects.get(id=1)
             request.urlconf = 'akvo.urls.rsr'
-        elif domain == 'akvoapp.org' or domain == 'akvoapp.dev':  # Partner sites marketing instance
+        elif domain == 'www.akvoapp.org' or domain == 'akvoapp.dev':  # Partner sites marketing instance
             site = Site.objects.get(id=2)
             request.urlconf = 'akvo.urls.partner_sites_marketing'
-        elif domain.endswith('.akvoapp.org') or domain.endswith('.akvoapp.dev'):  # Partner site instance
+        elif (domain.endswith('.akvoapp.org') and not domain == 'www.akvoapp.org') or domain.endswith('.akvoapp.dev'):  # Partner site instance
             site = Site.objects.get(id=2)
             if len(domain_parts) == 3:
                 hostname = domain_parts[-3]
@@ -54,7 +54,10 @@ class PartnerSitesRouterMiddleware(object):
                     host = u'.'.join(domain_parts[-2:])
                     if port is not None:
                         host = u'%s:%d' % (host, int(port))
-                    redirect_url = u'http://%s/' % host
+                    if host.startswith('akvoapp.org'):
+                        redirect_url = u'http://www.akvoapp.org/' % host
+                    elif host.startswith('akvoapp.dev'):
+                        redirect_url = u'http://%s' % host
                     return redirect(redirect_url)
         else:  # Partner site instance on partner-nominated domain
             try:
