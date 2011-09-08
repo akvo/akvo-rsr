@@ -36,18 +36,18 @@ class PartnerSitesRouterMiddleware(object):
                 hostname = domain_parts[-4]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
+                if partner_site is not None:
+                    if partner_site.enabled:
+                        request.partner_site = partner_site
+                        request.organisation_id = partner_site.organisation.id
+                        request.urlconf = 'akvo.urls.partner_sites'
             except:
-                pass
+                request.urlconf = 'akvo.urls.partner_sites_marketing'
         else:  # Partner site instance on partner-nominated domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
                 site = Site.objects.get(id=2)
             except:
                 raise Http404
-        if partner_site is not None:
-            organisation_id = partner_site.organisation.id
-            request.partner_site = partner_site
-            request.organisation_id = organisation_id
-            request.urlconf = 'akvo.urls.partner_sites'
         SITE_ID.value = site.id
         return
