@@ -49,7 +49,7 @@ def deploy_rsr():
     run_fab_task("fab.tasks.dataretriever.fetch_rsr_data", LIVE_DATABASE_HOST)
     run_fab_task("fab.tasks.verify.linux.systempackages.verify_system_packages", DEPLOYMENT_HOST)
     run_fab_task("fab.tasks.codedeployment.deploy_rsr_code:host_controller_mode=remote", DEPLOYMENT_HOST)
-    run_fab_task("fab.tasks.virtualenv.rebuild_rsr_virtualenv:host_controller_mode=remote", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.virtualenv.rebuild.rsrenv.rebuild_rsr_virtualenv:host_controller_mode=remote", DEPLOYMENT_HOST)
 
 
 if __name__ == "__main__":
