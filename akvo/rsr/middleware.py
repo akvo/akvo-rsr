@@ -31,11 +31,11 @@ class PartnerSitesRouterMiddleware(object):
         elif domain.endswith('akvoapp.org') or domain.endswith('akvoapp.dev'):  # Partner site instance
             site = Site.objects.get(id=2)
             if len(domain_parts) == 3:
-                url_base = domain_parts[-3]
+                hostname = domain_parts[-3]
             elif len(domain_parts) >= 4:
-                url_base = domain_parts[-4]
+                hostname = domain_parts[-4]
             try:
-                partner_site = PartnerSite.objects.get(url_base=url_base)
+                partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
         else:  # Partner site instance on partner-nominated domain
