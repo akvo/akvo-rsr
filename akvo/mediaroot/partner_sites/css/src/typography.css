@@ -19,14 +19,12 @@ body {
 
   font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
 }
-a {
+a, a:link, a:visited {
   color: #2b80af;
   cursor: pointer;
   text-decoration: none;
 }
-a:visited {
-  color: #2b80af;
-}
+/*a:visited { color:@link-color; }*/
 a:hover {
   color: #0fa0cb;
   text-decoration: underline;
@@ -188,14 +186,14 @@ textarea {
 [5. Tables] 
 */
 table {
-  border-top: 1px solid #ccc;
-  border-left: 1px solid #ccc;
+  border: 1px solid #ccc;
 }
 th, td {
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ccc;
   padding: .8em;
 }
+td {border-color:#eee;}
 /*------------------------------------------------------------------ 
 [6. Margins & paddings] 
 */

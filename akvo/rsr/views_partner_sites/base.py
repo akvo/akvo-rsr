@@ -6,9 +6,10 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
-from django.views.generic import TemplateView, ListView
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView, ListView
 from ..models import Organisation, Project
 
 
@@ -28,6 +29,9 @@ class BaseView(TemplateView):
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
+        if settings.DEBUG:
+            from django.db import connection
+            context['queries'] = connection.queries
         return context
 
 
@@ -42,6 +46,9 @@ class BaseListView(ListView):
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
+        if settings.DEBUG:
+            from django.db import connection
+            context['queries'] = connection.queries
         return context
 
     def get_queryset(self):

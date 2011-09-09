@@ -13,6 +13,7 @@ body {
   background-color: #E5E5E9;
   text-align: right;
   padding: 10px;
+  font-size: 0.8125em;
 }
 article {
   float: left;
@@ -30,7 +31,7 @@ aside {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
-  background: #00ffff;
+  background: #0ab9fd;
   /* for non-css3 browsers */
 
   /* Safari 4-5, Chrome 1-9 */
@@ -83,4 +84,31 @@ aside {
 }
 .white_back {
   background-color: #ffffff;
+}
+th {
+  background: #eff3f5;
+  /* for non-css3 browsers */
+
+  /* Safari 4-5, Chrome 1-9 */
+
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eff3f5), to(#eaecef));
+  /* Safari 5.1, Chrome 10+ */
+
+  background: -webkit-linear-gradient(top, #eff3f5, #eaecef);
+  /* Firefox 3.6+ */
+
+  background: -moz-linear-gradient(top, #eff3f5, #eaecef);
+  /* IE 10 */
+
+  background: -ms-linear-gradient(top, #eff3f5, #eaecef);
+  /* Opera 11.10+ */
+
+  background: -o-linear-gradient(top, #eff3f5, #eaecef);
+}
+footer {
+  background-color: #eee;
+  margin-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-top: 2px solid #888;
 }

@@ -38,9 +38,9 @@
             <div class="space10">
               <a href="{% url 'project_main' project.id %}">
                 {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
-                <p class="small" style="margin-bottom:0">
+              </a>
+              <a href="{% url 'project_main' project.id %}" class="small" style="margin-bottom:0">
                   {{project.name}}
-                </p> 
               </a>
               <p class="tiny grey">
                 {{project.project_plan_summary|capfirst|smart_truncate:100}}
