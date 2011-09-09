@@ -185,15 +185,32 @@ textarea {
 /*------------------------------------------------------------------ 
 [5. Tables] 
 */
+/*
+table {border-top:1px solid #ccc;  border-left:1px solid #ccc;}
+th, td {border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:0.8em;}
+*/
 table {
   border: 1px solid #ccc;
 }
-th, td {
-  border-bottom: 1px solid #ddd;
+th {
   border-right: 1px solid #ccc;
-  padding: .8em;
+  border-bottom: 1px solid #ccc;
 }
-td {border-color:#eee;}
+td {
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+td, th {
+  padding: 10px;
+}
+.no_right_border {
+  border-right: none;
+}
+.no_bottom_border {
+  border-bottom: none;
+}
+/*.no_right_border {border-right:none;}*/
+/*th, td {border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:0.8em;}*/
 /*------------------------------------------------------------------ 
 [6. Margins & paddings] 
 */
@@ -233,7 +250,7 @@ a {
   display: none;
 }
 .grey {
-  color: #888;
+  color: #7E8197;
 }
 .red {
   color: #E60113;

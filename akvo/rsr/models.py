@@ -681,6 +681,10 @@ if settings.PVW_RSR: #pvw-rsr
                 return location
             return
 
+        @property
+        def title(self):
+            return self.name
+
 
         class QuerySet(QuerySet):
             def has_primary_location(self):
@@ -2530,6 +2534,9 @@ class ProjectUpdate(models.Model):
         get_latest_by       = "time"
         verbose_name        = _('project update')
         verbose_name_plural = _('project updates')
+ 
+    def __unicode__(self):
+        return self.title
 
     def img(self, value=''):
         if self.photo:

@@ -32,8 +32,6 @@ class UpdateDirectoryView(ListView):
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         context['project'] = project
-        context['can_add_update'] = \
-            project.connected_to_user(self.request.user)
         return context
 
     def get_queryset(self):

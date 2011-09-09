@@ -60,7 +60,8 @@ class BaseListView(ListView):
 
 class BaseProjectView(BaseView):
     """View that extends BaseView with current project or throws a 404. We
-    also verify that the project is related to the current organisation"""
+    also verify that the project is related to the current organisation, if not 
+    we throw a 404."""
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
@@ -69,4 +70,7 @@ class BaseProjectView(BaseView):
         if context['project'] not in context['organisation'] \
             .published_projects():
             raise Http404
+        context['latest_updates'] = context['project'].project_updates.all() \
+                            .order_by('-time')[:3]
+
         return context

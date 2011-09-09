@@ -5,18 +5,38 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'home' %}"><span>Projects home</span></a></li>
-  <li><a href="{% url 'project_main' project.id %}"><span>{{project.name}}</span></a></li>
+  <li><a href="{% url 'home' %}"><span>Projects</span></a></li>
 {% endblock breadcrum_items %}
 
 {% block content %}
-  <div class="twelve columns">
-    <h1>{{project}}</h1>
-    {{project.project_plan_summary|linebreaks}}
-    <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
-  </div>
-  <div class="four columns row" style="background-color:#d9dfe5">
-    <p>Just a sidebar</p>
-    {% lorem 1 p %}
+  <div class="clearfix">
+    <article>
+      <h1 style="margin-bottom:4px">{{project}}</h1>
+       <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
+      {% block project_content %}{% endblock project_content %}
+      </article>
+    <aside>
+      {% block project_aside_funding %}
+        <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
+          {{project.show_status_large}}<br />
+        </div>
+      {% endblock project_aside_funding %}
+      {% block project_aside_updates %}
+        <h2>{% trans "Project updates" %}</h2>
+        {% if latest_updates %}
+          {% for update in latest_updates  %}
+            <div class="whitebox" style="height:40px; margin-top:20px">
+              <a href="{% url 'update_main' project.id update.id %}">
+                {{update.title}}
+              </a>
+            </div>
+          {% endfor %}
+        {% else %} 
+            <div class="whitebox pad20" style="height:40px; margin-top:10px">
+              <p>No updates</p>
+            </div>
+        {% endif %}
+      {% endblock project_aside_updates %}
+    </aside>
   </div>
 {% endblock content %}

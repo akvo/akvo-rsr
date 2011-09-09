@@ -34,7 +34,7 @@
       </tr>
       {% for project in project_list %}
         <tr>
-          <td> {# Name column #}
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Name column #}
             <div class="space10">
               <a href="{% url 'project_main' project.id %}">
                 {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
@@ -47,21 +47,21 @@
               </p> 
             </div>
           </td>
-          <td> {# Location column #}
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Location column #}
             <p class="small">{{project.primary_location.country}}</p>
             <p class="small">{{project.primary_location.country.get_continent_display}}</p>
           </td>
-          <td> {# Status column #}
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Status column #}
             <p class="small green">{{project.show_status}}</p>
           </td>
-          <td> {# Partner column #}
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Partner column #}
             <p class="small">
               {% for partner in project.all_partners %}
                 <a href="#">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
               {% endfor %}
             </p>
           </td>
-          <td> {# Updates column #}
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Updates column #}
             <p class="small">
               {% if project.latest_update %}
                 <a href="{% url 'project_updates' project.id %}#{{project.update_id}}">
@@ -72,7 +72,7 @@
               {% endif %}
             </p>
           </td>
-          <td> {# Funding column #}
+          <td class="no_right_border {% if forloop.last %}no_bottom_border{% endif %}"> {# Funding column #}
             <div style="text-align:center;">
               <p class="small" style="margin:0;">
                 {{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}

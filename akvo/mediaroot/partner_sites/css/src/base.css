@@ -49,6 +49,7 @@ aside {
   /* Opera 11.10+ */
 
   background: -o-linear-gradient(top, #0ab9fd, #0094fb);
+  margin-bottom: 20px;
 }
 .status_large {
   -khtml-border-radius: 13px;

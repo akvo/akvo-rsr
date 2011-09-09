@@ -1,36 +1,37 @@
-{% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail %}
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags cache humanize google_maps %}
 {% load url from future %}
 
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'home' %}"><span>Projects</span></a></li>
   <li class="last_breadcrum_item">{{project.name}}</li>
 {% endblock breadcrum_items %}
 
-{% block content %}
-  <div class="clearfix">
-    <article>
-       <h1>{{project}} - {{organisation}}</h1>
-      <section class="whitebox">
-        {{project.project_plan_summary|linebreaks}}
-        <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
-      </section>
-    </article>
-    <aside>
-      <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
-        {{project.show_status_large}}<br />
+
+{% block project_content %}
+  <section class="whitebox pad20">
+    {% comment %}
+    <div class="counter_badge" style="margin-top:0; margin-right:0;">
+      <span style="display:none;">{% counter project %}</span>
+        {% cache 10 project_view_count project.id %}
+          {{ project.view_count|intcomma }}<br />
+        {% endcache %}
+        <span>{% trans 'views' %}</span>
       </div>
-      <div class="whitebox" style="height:40px; margin-top:10px">
-        <p>Update 1</p>
-      </div>
-      <div class="whitebox" style="height:40px; margin-top:10px">
-        <p>Update 2</p>
-      </div>
-      <div class="whitebox" style="height:40px; margin-top:10px">
-        <p>Update 3</p>
-      </div>
-    </aside>
-  </div>
-{% endblock content %}
+    {% endcomment %}
+    <h2>{% trans "Description" %}</h2>
+    {{project.project_plan_summary|linebreaks}}
+    <hr />
+    <h2>Current image</h2>
+    <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
+    <hr />
+    <h2>Map</h2>
+    {% if project.primary_location %}
+      {% google_map project 260 180 3 %}
+    {% else %}
+      <p style="color: red;">{% trans 'No map available' %}</p>
+    {% endif %}
+    <hr />
+  </section>    
+{% endblock project_content %}
