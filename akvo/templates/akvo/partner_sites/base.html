@@ -85,7 +85,7 @@
     </footer>
     <div style="background-color:#F5F6F7;">
       {% if queries %}
-        <h2 style="margin:10px;">{{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}</h2>
+        <h2 style="margin:10px;">{{ queries|length }} Quer{{ queries|pluralize:"y,ies" }}</h2>
         <p style="font-size:12px; color:#888; margin:10px;">
           {% for query in queries %}
             {{query}}<br /><br />
