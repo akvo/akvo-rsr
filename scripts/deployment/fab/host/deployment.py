@@ -17,7 +17,6 @@ class DeploymentHost(NeutralHost):
 
     def __init__(self, file_system, permissions, internet_helper, virtualenv, feedback):
         super(DeploymentHost, self).__init__(file_system, feedback)
-        self.file_system = file_system
         self.permissions = permissions
         self.internet = internet_helper
         self.virtualenv = virtualenv
