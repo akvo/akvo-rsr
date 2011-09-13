@@ -71,6 +71,8 @@ from signals import (
     act_on_log_entry, user_activated_callback
 )
 
+from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
+
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
 #http://simonwillison.net/2008/May/1/orm/
@@ -84,27 +86,34 @@ class QuerySetManager(models.Manager):
         except AttributeError:
             return getattr(self.get_query_set(), attr, *args)
             
-CONTINENTS = (
-    (1, _('Africa')),
-    (2, _('Asia')),
-    (3, _('Australia')),
-    (4, _('Europe')),
-    (5, _('North America')),
-    (6, _('South America')),
+OLD_CONTINENTS = (
+    ("1", _('Africa')),
+    ("2", _('Asia')),
+    ("3", _('Australia')),
+    ("4", _('Europe')),
+    ("5", _('North America')),
+    ("6", _('South America')),
 )
 
 class Country(models.Model):
     
-    country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
-    continent                   = models.IntegerField(_(u'continent'), choices=CONTINENTS)
+    name            = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
+    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
+    continent       = models.CharField(_(u'continent name'), max_length=20, null=True, db_index=True,)
+    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
+
+#    name            = models.CharField(_(u'country name'), max_length=50, unique=True,)
+#    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    continent       = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
+#    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
     def __unicode__(self):
-        return self.country_name
+        return self.name
 
     class Meta:
         verbose_name = _('country')
         verbose_name_plural = _('countries')
-        ordering = ['country_name']
+        ordering = ['name']
 
 
 class LatitudeField(models.FloatField):
