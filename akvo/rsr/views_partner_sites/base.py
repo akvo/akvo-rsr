@@ -29,6 +29,7 @@ class BaseView(TemplateView):
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
+        # Queries should be removed for production
         if settings.DEBUG:
             from django.db import connection
             context['queries'] = connection.queries
@@ -52,16 +53,26 @@ class BaseListView(ListView):
         return context
 
     def get_queryset(self):
-        return get_object_or_404(Organisation,
-                                 pk=self.request.organisation_id) \
-                                    .published_projects().funding() \
-                                    .order_by('id')
+        projects = get_object_or_404(Organisation,
+                                     pk=self.request.organisation_id) \
+                                        .published_projects() \
+                                        .funding() \
+                                        .order_by('-id')
+        return projects.extra(select={
+            'latest_update': """SELECT MAX(time) FROM rsr_projectupdate
+                             WHERE project_id = rsr_project.id""",
+            'update_id': """SELECT id FROM rsr_projectupdate
+                         WHERE project_id = rsr_project.id AND
+                         time = (SELECT MAX(time)
+                         FROM rsr_projectupdate
+                         WHERE project_id = rsr_project.id)""",
+            })
 
 
 class BaseProjectView(BaseView):
     """View that extends BaseView with current project or throws a 404. We
-    also verify that the project is related to the current organisation, if not 
-    we throw a 404."""
+    also verify that the project is related to the current organisation,
+    if not we throw a 404."""
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
@@ -72,5 +83,4 @@ class BaseProjectView(BaseView):
             raise Http404
         context['latest_updates'] = context['project'].project_updates.all() \
                             .order_by('-time')[:3]
-
         return context

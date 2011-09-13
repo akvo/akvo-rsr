@@ -7,6 +7,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 from django.conf.urls.defaults import patterns, url
 from akvo.rsr import views_partner_sites as views
+from django_counter.urls import urlpatterns as counter_urls
 
 
 urlpatterns = patterns('',
@@ -16,18 +17,19 @@ urlpatterns = patterns('',
         .as_view(template_name="partner_sites/project/project_main.html"),
                  name='project_main'),
     url(r'^(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView
-        .as_view(), name='update_directory'),
+        .as_view(), name='update_list'),
+    url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
+        views.UpdateView.as_view(), name='update_main'),
     url(r'^directory/$', views.BaseListView \
         .as_view(template_name='partner_sites/directory.html'),
                  name='project_list'),
-    url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$', views.UpdateView
-        .as_view(), name='update_main'),
 
-
-    # url(r'^map/$', views.BaseView \
-    #         .as_view(template_name='partner_sites/map.html'),
-    #                  name='project_map'),
-    #     url(r'^project/(?P<project_id>\d+)/funding/$', views.BaseProjectView \
-    #         .as_view(template_name="partner_sites/project/project_funding.html"),
-    #                  name='project_funding'),
+# url(r'^map/$', views.BaseView \
+#         .as_view(template_name='partner_sites/map.html'),
+#                  name='project_map'),
+#     url(r'^project/(?P<project_id>\d+)/funding/$', views.BaseProjectView \
+#      .as_view(template_name="partner_sites/project/project_funding.html"),
+#                  name='project_funding'),
 )
+
+urlpatterns += counter_urls

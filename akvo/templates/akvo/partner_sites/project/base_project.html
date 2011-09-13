@@ -1,7 +1,12 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters %}
 {% load url from future %}
 
+
+{% block breadcrum_right %}
+  {{block.super}}
+  | <a href="#">Project updates</a>
+{% endblock breadcrum_right %}
 
 {% block breadcrum_items %}
   {{block.super}}
@@ -11,7 +16,9 @@
 {% block content %}
   <div class="clearfix">
     <article>
-      <h1 style="margin-bottom:4px">{{project}}</h1>
+      <h1 style="margin-bottom:4px">
+        <a href="{% url 'project_main' project.id %}">{{project}}</a>
+      </h1>
        <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
       {% block project_content %}{% endblock project_content %}
       </article>
@@ -19,24 +26,50 @@
       {% block project_aside_funding %}
         <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
           {{project.show_status_large}}<br />
+          <div style="background-color:#fff; padding:20px; margin-top:20px;">
+            <h3>Funding</h3>
+            <div class="fundingbox-progress-bar">
+              {% if project.budget_total %}
+                <div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
+              {% endif %}
+            </div>
+            {% if project.funding_still_needed|round != 0 and not project.status == 'L' and not project.status == 'R' %}
+              <div style="text-align:center; margin-top:20px;">
+                <a href="http://akvo.org/rsr/project/{{project.id}}/donate/">
+                  {% trans "Donate" %}
+                </a>
+              </div>
+            {% endif %}
+          </div>
         </div>
       {% endblock project_aside_funding %}
       {% block project_aside_updates %}
-        <h2>{% trans "Project updates" %}</h2>
+        <h2><a href="{% url 'update_list' project.id %}">
+          {% trans "Project updates" %}
+        </a></h2>
         {% if latest_updates %}
           {% for update in latest_updates  %}
-            <div class="whitebox" style="height:40px; margin-top:20px">
+            <div class="whitebox" style="margin-top:20px; padding:5px">
+              <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
               <a href="{% url 'update_main' project.id update.id %}">
                 {{update.title}}
               </a>
             </div>
           {% endfor %}
         {% else %} 
-            <div class="whitebox pad20" style="height:40px; margin-top:10px">
+            <div class="whitebox pad20" style="margin-top:20px">
               <p>No updates</p>
             </div>
         {% endif %}
       {% endblock project_aside_updates %}
+      {% block project_aside_partners %}
+        <h2 style="margin-top:20px;"><a href="#">Partners</a></h2>
+        {% for partner in project.all_partners %}
+          <div class="whitebox" style="margin-top:20px; padding:5px">
+            {{partner}}{% if not loop.last %}<br />{% endif %}
+          </div>
+        {% endfor %}
+      {% endblock project_aside_partners %}
     </aside>
   </div>
 {% endblock content %}

@@ -11,7 +11,6 @@
 
 {% block project_content %}
   <section class="whitebox pad20">
-    {% comment %}
     <div class="counter_badge" style="margin-top:0; margin-right:0;">
       <span style="display:none;">{% counter project %}</span>
         {% cache 10 project_view_count project.id %}
@@ -19,12 +18,11 @@
         {% endcache %}
         <span>{% trans 'views' %}</span>
       </div>
-    {% endcomment %}
     <h2>{% trans "Description" %}</h2>
     {{project.project_plan_summary|linebreaks}}
     <hr />
     <h2>Current image</h2>
-    <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
+    <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" alt="" />
     <hr />
     <h2>Map</h2>
     {% if project.primary_location %}

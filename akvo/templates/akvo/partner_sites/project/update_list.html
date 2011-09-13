@@ -5,7 +5,7 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'project_main' project.id %}"><span>{{project.title}}</span></a></li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
   <li class="last_breadcrum_item">{% trans "Updates" %}</li>
 {% endblock breadcrum_items %}
 

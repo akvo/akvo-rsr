@@ -23,15 +23,15 @@ __all__ = [
 class UpdateDirectoryView(ListView):
     """View that adds latest updates to the partner sites home pages. The
     updates are available as "latest_updates" in the template"""
-    template_name = "partner_sites/project/update_directory.html"
+    template_name = "partner_sites/project/update_list.html"
     context_object_name = 'update_list'
 
     def get_context_data(self, **kwargs):
         context = super(UpdateDirectoryView, self).get_context_data(**kwargs)
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        context['project'] = project
+        context['project'] = get_object_or_404(Project, \
+                                               pk=self.kwargs['project_id'])
         return context
 
     def get_queryset(self):
