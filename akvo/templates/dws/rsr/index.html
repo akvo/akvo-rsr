@@ -30,7 +30,7 @@
   {# news box #}
   <div class='column span-8'>
     <div id="index_news_box">
-      <img src="{{ news_image }}" width="646" height="484" />
+      <img src="{{ news_image }}" width="646" height="484" alt="{{ news_title }}"/>
       {% comment %}
       {# alternative layout with one news item}
       <div class="full top">
@@ -65,7 +65,7 @@
             </div>
           {% endfor %}
           <p class="yellow last" style="text-align: right;">
-            <a class="yellow" style="font-size:0.8125em;">{% trans 'More news headlines' %}</a>
+            <a href="#" class="yellow" style="font-size:0.8125em;">{% trans 'More news headlines' %}</a>
           </p>
         </div>
       </div>
@@ -77,7 +77,7 @@
     {# video box #}
     <div class="gradient_box" style="min-height: 368px;">
       <div class="space15 center">
-        <img src="{{MEDIA_URL}}dws/img/index/lets-work-together.png" style="width: 270px;"/>
+        <img src="{{MEDIA_URL}}dws/img/index/lets-work-together.png" style="width: 270px;" alt="Let's work together"/>
         <p class="nano-lede lt_grey">{% trans "A world of expertise at your fingertips" %}</p>
       </div>
       <div class="hr_margin"><hr/></div>
@@ -92,7 +92,7 @@
               <img alt="{% trans "Watch on YouTube" %}" width="282" height="212" src="http://i1.ytimg.com/vi/{{cms.video_url}}/default.jpg" />
             </a>
         {% endcomment %}
-          <iframe title="{% trans 'YouTube video player' %}" width="282" height="212" src="{{cms.video_url}}" frameborder="0" allowfullscreen></iframe>
+          <iframe title="{% trans 'YouTube video player' %}" width="282" height="212" src="{{cms.video_url}}"></iframe>
         </div>
       </div>
       {% comment %}{# removed for now because of height constraints #}
@@ -197,11 +197,12 @@
     <div class="white_box" style="background-color:#fff;">
       <div id="map_box" class="space15">
         <div style="float: left;">
-          <h1 class="box-heading">{% trans 'Projects worldwide' %}</h1>
+          <h1 class="box-heading" style="margin-bottom: 0;">{% trans 'Projects worldwide' %}</h1>
         </div>
         <div class="h1_companion">
           <a href="{% url 'project_list' %}">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
         </div>
+        <div class="clear"></div>
       </div>
       <a href="{% url 'global_project_map' %}">
         {% google_global_project_map 'static' 312 200 0 %}
@@ -240,42 +241,42 @@
       <div class="space15">
         <h1 class="box-heading">{% trans 'Find Dutch water experts' %}</h1>
         <div style="text-align: center;">
-          <img src="{{MEDIA_URL}}dws/img/index/dws.org.logo.png" />
+          <img src="{{MEDIA_URL}}dws/img/index/dws.org.logo.png" alt="dutchwatersector.org"/>
         </div>
         <p class="nano-lede lt_grey top-margin">{% trans "A directory of all Dutch water organisations and companies. Find a partner here!" %}</p>
         <div class="left strong" style="font-size:0.875em; width: 131px; margin: 8px 0;">
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=01">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=01">
               {% trans "Waste water" %}
               <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=02">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=02">
               {% trans "Drinking water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=03">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=03">
               {% trans "Ground water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=04">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=04">
               {% trans "Surface water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=05">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=05">
               {% trans "Process water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=06">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=06">
               {% trans "Sewage" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
@@ -283,37 +284,37 @@
         </div>
         <div class="left strong" style="font-size:0.875em; width: 151px;  margin: 8px 0;">
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=08">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=08">
               {% trans "Consultancy and engineering" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=09">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=09">
               {% trans "Information technology" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=10">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=10">
               {% trans "Organisations" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=11">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=11">
               {% trans "Personnel and training" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=20">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=20">
               {% trans "Business information" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&form_registers[]=21">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=21">
               {% trans "Infrastructure" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
@@ -371,7 +372,7 @@
     </div>
   </div>
   <div class='column span-2 last'>
-    <img style="padding-top: 0.8em" src="{{MEDIA_URL}}dws/img/index/holland_logo_oranje_130x44.gif">
+    <img style="padding-top: 0.8em" src="{{MEDIA_URL}}dws/img/index/holland_logo_oranje_130x44.gif" alt="{% trans 'Tulips' %}">
   </div>
 </div>
 

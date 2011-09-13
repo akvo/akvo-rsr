@@ -161,6 +161,7 @@ def index(request, cms_id=None):
     news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 3), getattr(settings, 'FEATURE_ARTICLE_COUNT', 3))
     blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
     news_image = ''
+    news_title = ''
 
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
@@ -176,6 +177,7 @@ def index(request, cms_id=None):
         for post in news_posts:
             if post.get('image', None):
                 news_image = post['image']
+                news_title = post['title']
                 break
 
     context_dict = {
@@ -209,7 +211,8 @@ def index(request, cms_id=None):
         context_dict.update({
             'showcase'  : showcase,
             'focus_org' : focus_org,
-            'news_image': news_image
+            'news_image': news_image,
+            'news_title': news_title,
         })
     return context_dict
 

@@ -1,10 +1,11 @@
 {% load i18n rsr_tags webdesign %}
 {% load url from future %}
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
-	<meta charset="UTF-8" />
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<meta name="description" content="{% trans 'Dutch Water Sector' %}" />
 	<meta name="keywords" content="{% trans 'The Dutch water sector, dutchwatersector' %}" />
 	<title>Dutch Water Sector{% block title %}{% endblock %}</title>
