@@ -120,9 +120,11 @@ div#tagline_box p {
 
 #index_news_box a, #index_news_box a:visited  {
     font-size: 1.25em;
+    color:#FF0;
 }
 
 #index_news_box a:hover {
+    color:#FF0;
 }
 
 #index_news_box p {

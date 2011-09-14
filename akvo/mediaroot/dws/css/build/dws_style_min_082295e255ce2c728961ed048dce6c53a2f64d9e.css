@@ -351,8 +351,8 @@ hr.space {
 .red:hover  { color:#A5000F; }
 .red:visited { color:#E60113; }
 .blue       { color:#3A8CB9; }
-.yellow     { color:#FEC344; }
-.yellow:hover { color:#FEE144; }
+.yellow     { color:#FF0; }
+.yellow:hover { color:#FF0; }
 .grey       { color:#7D818E; }
 .black      { color:#000; }
 .white      { color:#fff; }
@@ -363,6 +363,8 @@ hr.space {
 .link_blue  { color: #1877B8; }
 .link_blue:hover  { color: #1E95E6; }
 .orange     { color: #E35D18; }
+.orange:hover  { color:#E35D18; }
+.orange:visited { color:#E35D18; }
 
 /* Bare left and right are used in Akvo template. */
 .right {float:right;}
@@ -1080,12 +1082,10 @@ div#tagline_box p {
 }
 
 #index_news_box a, #index_news_box a:visited  {
-    color: #FFD28B;
     font-size: 1.25em;
 }
 
 #index_news_box a:hover {
-    color: #FFC261;
 }
 
 #index_news_box p {
@@ -1109,7 +1109,9 @@ div#tagline_box p {
     display:block;
 }
 
-
+#dws_org_link {
+    color: #7D818E;
+}
 
 /*---------------------------------------------------------------------------
  Contents from: project_main.css
@@ -1152,7 +1154,7 @@ table#projects {
   border-bottom: 1px solid #b8b8bf;
   margin: 0;
   font-size: 100%; 
-  width: 973px;
+  width: 976px;
 }
 
 #projects th {
