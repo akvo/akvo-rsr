@@ -26,7 +26,7 @@ class ConfigValuesTest(unittest2.TestCase):
     def test_sharedconfigvalues_has_repository_branch(self):
         """fab.tests.config.config_values_test  SharedConfigValues has repository branch"""
 
-        self.assertTrue(len(SharedConfigValues().repo_branch) > 0, "Expected repository branch")
+        self.assertTrue(len(SharedConfigValues().repository_branch) > 0, "Expected repository branch")
 
     def test_pythonconfigvalues_has_pip_version(self):
         """fab.tests.config.config_values_test  PythonConfigValues has pip version"""

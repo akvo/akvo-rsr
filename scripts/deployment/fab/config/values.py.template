@@ -8,7 +8,7 @@
 class SharedConfigValues(object):
 
     def __init__(self):
-        self.repo_branch = "develop" # e.g. "feature/sms", "master", etc.
+        self.repository_branch = "develop" # e.g. "feature/sms", "master", etc.
 
 
 class PythonConfigValues(object):
