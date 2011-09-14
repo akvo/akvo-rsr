@@ -33,6 +33,10 @@ class Internet(object):
     def _http_response_info_for(self, url):
         return urllib2.urlopen(url).info()
 
+    def download_file_to_directory(self, download_dir, file_url):
+        with self.host_controller.cd(download_dir):
+            self.host_controller.run("wget -nv %s" % file_url)
+
     def download_file_at_url_as(self, downloaded_file_path, file_url):
         # When we have a more recent version of wget on our servers we can enable parsing the download
         # file name from the HTTP response headers with the --content-disposition option
