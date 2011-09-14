@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+
+class SharedConfigValues(object):
+
+    def __init__(self):
+        self.repo_branch = "develop" # e.g. "feature/sms", "master", etc.
+
+
+class PythonConfigValues(object):
+
+    def __init__(self):
+        self.pip_version                    = "1.0.2"
+        self.python_package_download_dir    = "/var/tmp/python/packages"
+
+
+class DeploymentHostConfigValues(object):
+
+    def __init__(self):
+        self.repo_checkout_root = "/var/git"
+        self.virtualenvs_home   = "/var/virtualenvs"
