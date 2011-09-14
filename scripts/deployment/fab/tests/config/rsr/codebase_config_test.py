@@ -24,16 +24,13 @@ class CodebaseConfigTest(unittest2.TestCase):
         """fab.tests.config.rsr.codebase_config_test  Has repository branch"""
 
         self.assertEqual("feature/sms", RSRCodebaseConfig("feature/sms").repo_branch)
+        self.assertEqual("develop", RSRCodebaseConfig("develop").repo_branch)
 
-    def test_can_set_repository_branch_name_when_branch_includes_branch_type(self):
-        """fab.tests.config.rsr.codebase_config_test  Can set repository branch name when branch includes branch type"""
+    def test_has_repository_branch_without_branch_type(self):
+        """fab.tests.config.rsr.codebase_config_test  Has repository branch without branch type"""
 
-        self.assertEqual("sms", RSRCodebaseConfig("feature/sms").repo_branch_name)
-
-    def test_can_set_repository_branch_name_when_branch_does_not_include_branch_type(self):
-        """fab.tests.config.rsr.codebase_config_test  Can set repository branch name when branch does not include branch type"""
-
-        self.assertEqual("develop", RSRCodebaseConfig("develop").repo_branch_name)
+        self.assertEqual("sms", RSRCodebaseConfig("feature/sms").repo_branch_without_type)
+        self.assertEqual("develop", RSRCodebaseConfig("develop").repo_branch_without_type)
 
     def test_has_pip_requirements_path(self):
         """fab.tests.config.rsr.codebase_config_test  Has pip requirements path"""
