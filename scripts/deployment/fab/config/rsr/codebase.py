@@ -10,9 +10,7 @@ import os
 
 class RSRCodebaseConfig(object):
 
-    RSR_FILES_BASE_URL          = "https://raw.github.com/akvo/akvo-rsr"
     PIP_REQUIREMENTS_PATH       = "scripts/deployment/pip/requirements"
-
     SYSTEM_REQUIREMENTS_FILE    = "0_system.txt"
     RSR_REQUIREMENTS_FILE       = "2_rsr.txt"
 
@@ -20,7 +18,6 @@ class RSRCodebaseConfig(object):
         self.repo_branch        = repo_branch
         self.repo_branch_name   = self._repository_branch_without_type()
 
-        self._set_repository_paths()
         self._set_pip_requirements_paths()
 
     def _repository_branch_without_type(self):
@@ -35,10 +32,9 @@ class RSRCodebaseConfig(object):
     def _repository_branch_name_only(self):
         return self.repo_branch.split("/")[-1]
 
-    def _set_repository_paths(self):
-        self.rsr_code_branch_url = os.path.join(self.RSR_FILES_BASE_URL, self.repo_branch)
-
     def _set_pip_requirements_paths(self):
-        pip_requirements_base_url           = os.path.join(self.rsr_code_branch_url, self.PIP_REQUIREMENTS_PATH)
+        rsr_files_base_url          = "https://raw.github.com/akvo/akvo-rsr"
+        pip_requirements_base_url   = os.path.join(rsr_files_base_url, self.repo_branch, self.PIP_REQUIREMENTS_PATH)
+
         self.system_requirements_file_url   = os.path.join(pip_requirements_base_url, self.SYSTEM_REQUIREMENTS_FILE)
         self.rsr_requirements_file_url      = os.path.join(pip_requirements_base_url, self.RSR_REQUIREMENTS_FILE)
