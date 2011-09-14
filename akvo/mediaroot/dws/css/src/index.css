@@ -119,12 +119,10 @@ div#tagline_box p {
 }
 
 #index_news_box a, #index_news_box a:visited  {
-    color: #FFD28B;
     font-size: 1.25em;
 }
 
 #index_news_box a:hover {
-    color: #FFC261;
 }
 
 #index_news_box p {
@@ -148,3 +146,6 @@ div#tagline_box p {
     display:block;
 }
 
+#dws_org_link {
+    color: #7D818E;
+}

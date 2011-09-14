@@ -12,8 +12,8 @@
 .red:hover  { color:#A5000F; }
 .red:visited { color:#E60113; }
 .blue       { color:#3A8CB9; }
-.yellow     { color:#FEC344; }
-.yellow:hover { color:#FEE144; }
+.yellow     { color:#FF0; }
+.yellow:hover { color:#FF0; }
 .grey       { color:#7D818E; }
 .black      { color:#000; }
 .white      { color:#fff; }
@@ -24,6 +24,8 @@
 .link_blue  { color: #1877B8; }
 .link_blue:hover  { color: #1E95E6; }
 .orange     { color: #E35D18; }
+.orange:hover  { color:#E35D18; }
+.orange:visited { color:#E35D18; }
 
 /* Bare left and right are used in Akvo template. */
 .right {float:right;}

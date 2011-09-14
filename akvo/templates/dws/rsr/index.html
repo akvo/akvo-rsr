@@ -82,7 +82,7 @@
       </div>
       <div class="hr_margin"><hr/></div>
       <div class="space15 center">
-        <a href="http://www.youtube.com/user/NLWaterPartnership" class="small_link red">
+        <a href="http://www.youtube.com/user/NLWaterPartnership" class="small_link orange">
           {% trans "See our latest videos on" %}
           <img src="{{MEDIA_URL}}dws/img/index/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
         </a>
@@ -227,7 +227,7 @@
       <div class="hr_margin"><hr/></div>
       <div class="space15">
         <a href="{% url 'project_list' %}?country={{ showcase.primary_location.country.pk }}"><img class="left" style="margin: -8px 8px 0 0;" src="{{MEDIA_URL}}core/img/flags_128/{{ showcase.primary_location.country.iso_code }}.png" width="96" height="96" alt="Flag of {{ showcase.primary_location.country }}"/></a>
-        <h1 class="last" style="font-family:'Georgia',serif;">{{ showcase.primary_location.country }}</h1>
+        <h3 class="last" style="font-family:'Georgia',serif;">{{ showcase.primary_location.country }}</h3>
         <p><a href="{% url 'project_list' %}?country={{ showcase.primary_location.country.pk }}">{% blocktrans with country_name=showcase.primary_location.country.name %}See Dutch projects in {{ country_name}}{% endblocktrans %} <span class="link_triangle">&#x25BA;</span></a></p>
       </div>
       <div class="clear"></div>
@@ -246,7 +246,7 @@
           <img src="{{MEDIA_URL}}dws/img/index/dws.org.logo.png" alt="dutchwatersector.org"/>
         </div>
         <p class="nano-lede lt_grey top-margin">{% trans "A directory of all Dutch water organisations and companies. Find a partner here!" %}</p>
-        <div class="left strong" style="font-size:0.875em; width: 131px; margin: 8px 0;">
+        <div class="left" style="font-size:0.875em; width: 131px; margin: 8px 0;">
           <p>
             <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=01">
               {% trans "Waste water" %}
@@ -284,7 +284,7 @@
             </a>
           </p>
         </div>
-        <div class="left strong" style="font-size:0.875em; width: 151px;  margin: 8px 0;">
+        <div class="left" style="font-size:0.875em; width: 151px;  margin: 8px 0;">
           <p>
             <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=08">
               {% trans "Consultancy and engineering" %}
@@ -324,10 +324,11 @@
         </div>
       </div>
       <div class="hr_margin"><hr/></div>
-      <div class="space15 strong">
+      <div class="space15">
         <p class="h1_companion" style="margin: 0;">
           <a href="http://dutchwatersector.org/waterdirectory/" target="_blank">
             {% trans "Go to directory" %}
+            <span id="dws_org_link">{% trans "(External link)" %}</span>
              <span class="link_triangle">&#x25BA;</span>
           </a>
         </p>
