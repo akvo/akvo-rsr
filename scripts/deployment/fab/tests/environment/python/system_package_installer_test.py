@@ -12,6 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.environment.python.systempackageinstaller import PackageInstallationPaths, SystemPythonPackageInstaller
 from fab.helpers.feedback import ExecutionFeedback
+from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.host.controller import RemoteHostController
 
@@ -21,6 +22,7 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
     def setUp(self):
         super(SystemPythonPackageInstallerTest, self).setUp()
         self.mock_installation_paths = self.mox.CreateMock(PackageInstallationPaths)
+        self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_internet = self.mox.CreateMock(Internet)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
@@ -29,7 +31,8 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
         self.mock_installation_paths.package_download_dir = self.package_download_dir
         self.mock_host_controller.feedback = self.mock_feedback
 
-        self.package_installer = SystemPythonPackageInstaller(self.mock_installation_paths, self.mock_internet, self.mock_host_controller)
+        self.package_installer = SystemPythonPackageInstaller(self.mock_installation_paths, self.mock_file_system,
+                                                              self.mock_internet, self.mock_host_controller)
 
     def test_can_create_systempythonpackageinstaller_instance(self):
         """fab.tests.environment.python.system_package_installer_test  Can create SystemPythonPackageInstaller instance"""
@@ -46,6 +49,8 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
         self.mock_installation_paths.distribute_setup_url = distribute_setup_url
         self.mock_installation_paths.pip_setup_url = pip_setup_url
 
+        self.mock_file_system.delete_directory_with_sudo(self.package_download_dir)
+        self.mock_file_system.ensure_directory_exists(self.package_download_dir)
         self._set_expectations_to_download_and_install_package("distribute", distribute_setup_url)
         self._set_expectations_to_download_and_install_package("pip", pip_setup_url)
         self.mox.ReplayAll()
@@ -58,8 +63,8 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
         self.mock_host_controller.cd(self.package_download_dir).AndReturn(fabric.api.cd(self.package_download_dir))
         self.mock_host_controller.sudo("python %s" % self._file_from_url(setup_script_url))
 
-    def test_can_install_package_tools(self):
-        """fab.tests.environment.python.system_package_installer_test  Can install package tools"""
+    def test_can_install_system_packages(self):
+        """fab.tests.environment.python.system_package_installer_test  Can install system packages"""
 
         system_requirements_file_url = "http://repo.server/system_requirements.txt"
         self.mock_installation_paths.system_requirements_file_url = system_requirements_file_url

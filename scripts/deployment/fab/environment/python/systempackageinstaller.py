@@ -10,6 +10,7 @@ import os
 from fab.config.environment.python.packagetools import PackageInstallationToolsConfig
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.values import SharedConfigValues, PythonConfigValues
+from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 
 
@@ -24,8 +25,9 @@ class PackageInstallationPaths(object):
 
 class SystemPythonPackageInstaller(object):
 
-    def __init__(self, installation_paths, internet_helper, host_controller):
+    def __init__(self, installation_paths, file_system, internet_helper, host_controller):
         self.paths = installation_paths
+        self.file_system = file_system
         self.internet = internet_helper
         self.host_controller = host_controller
         self.feedback = host_controller.feedback
@@ -37,11 +39,16 @@ class SystemPythonPackageInstaller(object):
                                                       PackageInstallationToolsConfig(python_config_values.pip_version),
                                                       RSRCodebaseConfig(SharedConfigValues().repository_branch))
 
-        return SystemPythonPackageInstaller(installation_paths, Internet(host_controller), host_controller)
+        return SystemPythonPackageInstaller(installation_paths, FileSystem(host_controller), Internet(host_controller), host_controller)
 
     def install_package_tools(self):
+        self._clear_package_download_directory()
         self._download_and_install_package("distribute", self.paths.distribute_setup_url)
         self._download_and_install_package("pip", self.paths.pip_setup_url)
+
+    def _clear_package_download_directory(self):
+        self.file_system.delete_directory_with_sudo(self.paths.package_download_dir)
+        self.file_system.ensure_directory_exists(self.paths.package_download_dir)
 
     def _download_and_install_package(self, package_name, setup_script_url):
         self.feedback.comment("Installing %s package from %s" % (package_name, setup_script_url))
