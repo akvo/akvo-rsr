@@ -543,7 +543,7 @@ if settings.PVW_RSR:
                 ),
             }),        
         )
-        list_display = ('id', 'name', 'project_plan_summary', 'is_published')
+        list_display = ('id', 'name', 'project_plan_summary', 'showcase', 'is_published')
         #list_filter = ('currency',)
         
         #form = ProjectAdminModelForm
