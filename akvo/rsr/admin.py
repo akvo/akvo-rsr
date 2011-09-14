@@ -265,10 +265,10 @@ class LinkInline(admin.TabularInline):
 
 def partner_clean(obj, field_name='partner'):
     """
-    this function firgures out if a given user's organisation is a partner in some function
+    this function figures out if a given user's organisation is a partner in some function
     associated with the current project. This is to avoid the situation where a user
     who is a partner admin creates a project without the own org as a partner
-    resulting in a project that can't be edited by that usur or anyone else form the org.
+    resulting in a project that can't be edited by that user or anyone else form the org.
     params:
         obj: a formset for one of the partner types
         field_name: the filed name of the foreign key field that points to the org
@@ -276,7 +276,6 @@ def partner_clean(obj, field_name='partner'):
     #from dbgp.client import brk
     #brk(host="localhost", port=9000)
     user_profile = obj.request.user.get_profile()
-    # if the user is a partner org we try to avoid foot shooting
     if user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
         my_org = user_profile.organisation
         found = False
@@ -525,7 +524,12 @@ if settings.PVW_RSR:
             }),
             (_(u'Project meta info'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Set the Currency to be used in budget and on funding calculations. Use the Notes and comments field to communicate with other members of your organisation or partners with access to your projects in the Admin. Check the Showcase box to include this project as a featured project on the site."),
+                    _(
+                        u"""Set the Currency to be used in budget and on funding calculations.
+                        Use the Notes and comments field to communicate with other members of your organisation or
+                        partners with access to your projects in the Admin. Check the Showcase box to make it appear
+                        in the Project focus box of the home page."""
+                    ),
                 'fields': (
                     'currency',
                     'total_budget',
@@ -1181,7 +1185,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         #    self.inlines = [SmsReporterInline,]
         return form
 
-    def get_readonly_fields(self, request, obj):
+    def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
             # only superusers are allowed to add/remove sms updaters in beta phase
             if not settings.PVW_RSR:
