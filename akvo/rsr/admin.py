@@ -276,7 +276,11 @@ def partner_clean(obj, field_name='partner'):
     #from dbgp.client import brk
     #brk(host="localhost", port=9000)
     user_profile = obj.request.user.get_profile()
-    if user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
+    # superusers can do whatever they like!
+    if obj.request.user.is_superuser:
+        found = True
+    # if the user is a partner org we try to avoid foot shooting
+    elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
         my_org = user_profile.organisation
         found = False
         for i in range(0, obj.total_form_count()):
