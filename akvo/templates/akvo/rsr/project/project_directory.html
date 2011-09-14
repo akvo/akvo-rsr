@@ -111,7 +111,7 @@
 								{% for country in countries %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -119,7 +119,7 @@
 								{% for country in countries_in_africa %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -127,7 +127,7 @@
 								{% for country in countries_in_asia %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -135,7 +135,7 @@
 								{% for country in countries_in_australia %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -143,7 +143,7 @@
 								{% for country in countries_in_europe %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -151,7 +151,7 @@
 								{% for country in countries_in_north_america %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -159,7 +159,7 @@
 								{% for country in countries_in_south_america %}
 								<option value="{{country.id}}"
 									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -245,7 +245,7 @@
               </td>
               <td>
                 <p class="td-text">{{project.primary_location.country}}</p>
-                <p class="td-text">{{project.primary_location.country.get_continent_display}}</p>
+                <p class="td-text">{{project.primary_location.country.continent}}</p>
               </td>
               <td>
                 <p class="td-text green">{{project.show_status}}</p>
@@ -355,37 +355,37 @@
 
 		var all_countries = [];
 		{% for country in countries %}
-			all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
+			all_countries[all_countries.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_africa = [];
 		{% for country in countries_in_africa %}
-			countries_in_africa[countries_in_africa.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_africa[countries_in_africa.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_asia = [];
 		{% for country in countries_in_asia %}
-			countries_in_asia[countries_in_asia.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_asia[countries_in_asia.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_australia = [];
 		{% for country in countries_in_australia %}
-			countries_in_australia[countries_in_australia.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_australia[countries_in_australia.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_europe = [];
 		{% for country in countries_in_europe %}
-			countries_in_europe[countries_in_europe.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_europe[countries_in_europe.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_north_america = [];
 		{% for country in countries_in_north_america %}
-			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_south_america = [];
 		{% for country in countries_in_south_america %}
-			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var selected_continent = jQ('#continent').val();		

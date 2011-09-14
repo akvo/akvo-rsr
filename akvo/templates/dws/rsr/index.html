@@ -1,10 +1,20 @@
 {% extends "rsr/base.html" %}
-{% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+{% load i18n webdesign rsr_filters rsr_tags thumbnail counter_tags cache humanize %}
 {% load oembed_tags markup_tags google_maps %}
 {% load url from future %}
 
 
 {% block breadcrum  %}{% endblock breadcrum  %}
+
+{% block inline_styles %}
+#index_news_box {
+	background: transparent url({{ news_post.image }}) no-repeat;
+}
+{% endblock inline_styles %}
+
+{% block head %}
+<link href='http://fonts.googleapis.com/css?family=Arvo:400,400italic' rel='stylesheet' type='text/css'>
+{% endblock head %}
 
 {% block maincontent %}
 
@@ -16,147 +26,147 @@
 {% endif %}
 
 <div class='container'>
-  <div class='column span-10'>
-	<iframe title="YouTube video player" width="689" height="413" src="{{cms.video_url}}" frameborder="0" allowfullscreen></iframe>
-	{% comment %}
-    {% oembed 689x413 %}{{cms.video_url}}{% endoembed %}
-	{% endcomment %}
 
-  </div>
-    
-    <!--<div id="movie_container" style="width:689px; max-width:689px; max-height:408px height:408px; overflow:hidden;">
-      <object width="689" height="408">
-        <param name="movie" value="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1">
-        <param name="allowFullScreen" value="true">
-        <param name="allowscriptaccess" value="always">
-        <embed src="http://www.youtube.com/v/LqwtH6qYjmo&amp;hl=en_US&amp;fs=1&amp;rel=0&amp;hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="689" height="408">
-      </object>
-    </div>-->
-  
-  <div class='column span-4 last'>
-    <div class="gradient_box" style="height: 411px;">
-      <div id="top_right_box" class="space20">
-        <div style="text-align:center;">
-          <img src="{{MEDIA_URL}}dws/img/lets-work-together-logo-233x172-trans.gif" width="156" height="120"/>
+  {# news box #}
+  <div class='column span-8'>
+    <div id="index_news_box">
+      <img src="{{ news_image }}" width="646" height="484" alt="{{ news_title }}"/>
+      {% comment %}
+      {# alternative layout with one news item}
+      <div class="full top">
+        <div class="text_bg">
+          <p>{% trans 'Latest news from the Dutch Water Sector' %}</p>
+          <h1 class="serif">{{ news_posts.0.title }}</h1>
         </div>
-        {{cms.top_right_box|apply_markup:"markdown"}}
-        <!--<h3 class="prepend-top" style="font-size:0.875em;">The Dutch water sector:<br/>Your worldwide partner for water</h3>
-        <p class="nano-lede">
-          The world faces many water challenges: climate change, droughts, rising water levels, a growing world economy.
-        </p> 
-        <p class="nano-lede">
-          Based on an age-old relationship with water, the Netherlands can lead the way. We're a place where global expertise and experience come together.          
-        </p> -->
-        <div class="h1_companion">
-          <a href="/web/directory">{% trans 'Find a partner' %} <span class="link_triangle">&#x25BA;</span></a>
-        </div>          
-        <div class="clear"></div>
-        <div class="h1_companion">
-          <a href="/web/history">{% trans 'Our story' %} <span class="link_triangle">&#x25BA;</span></a>
-        </div>          
-          <div class="clear"></div>
-      </div> 
-    </div> 
-  </div>
-   
-</div> 
-
-<div class='container'>
-   
-  <div class='column last span-14'>
-    <div class="white_box gutter-top" style="background-color:#f1f1f1;">
-      <div class="space5"> 
-        <h5 style="display: inline; padding-left: 15px;">{% trans 'Latest news' %}: </h5><a href="{{news_post.url}}" class="small_link">{{news_post.title}}</a>
-      </div> 
-    </div> 
-  </div> 
-</div> 
-
-<div class='container'> 
-          
-  <div class='column span-10 gutter-top'>
-      
-    <div class='column span-5'>
-      <div class="white_box" style="background-color:#fff; min-height: 485px;">
-        <div class="space20">
-          <div style="float: left;">
-            <h1>{% trans 'Recent articles' %}</h1> 
-          </div>
-          <div class="h1_companion">
-            <a class="" href="/news/?feed=rss2">
-              RSS
-              <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
-            </a>
-          </div>
-        </div> 
-        <div class="clear"></div>
-        {% for blog_post in blog_posts %}
-          <div class="space20" style="margin-top: 0;">
-            <p><a class="strong" href="{{blog_post.url}}">{{blog_post.title}}</a></p>
-            <p class="nano-lede lt_grey">{{blog_post.date|date:"l, j F Y"}}</p> 
-            {% if blog_post.image %}
-              <div class="clear"></div>
-              <img src="{{blog_post.image}}" width="123" style="margin: 0 10px 10px 0; float: left;">
-            {% endif %}
-            <p class="nano-lede">{{blog_post.text|striptags|smart_truncate:160}}</p> 
-          </div>
-          <div style="margin: 0 8px;"><hr/></div>
-        {% endfor %}
-        <div class="h1_companion" style="margin: 20px; margin-top: 5px;">
-          <a href="/news">{% trans 'View earlier articles' %} <span class="link_triangle">&#x25BA;</span></a>
-        </div>          
-        <div class="clear"></div>
       </div>
-    </div>
-
-    <div class='column span-5 last'>
-      <div class="white_box" style="background-color:#fff; min-height: 485px;">
-        <div id="map_box" class="space20">     
-          <div style="float: left;">
-            <h1>{% trans 'Projects worldwide' %}</h1> 
-          </div>
-          <div class="h1_companion">
-            <a href="{% url 'project_list' %}">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
-          </div>
-          <div class="clear"></div>
-          {# <img src="/rsr/media/dws/img/project/storm_barrier.jpg" width="292" height="219" alt="Icon Rss"> #}
-          <a href="{% url 'global_project_map' %}">
-            {% google_global_project_map 'static' 292 219 0 %}
-            {# google_static_global_project_map 292 219 0 'blue' 'small' #}
-          </a>
-          {{cms.map_box|apply_markup:"markdown"}}
-          <!--<p class="nano-lede strong">
-            117 countries.<br/>
-            € 20 billion in project budgets.<br/>
-            178 million people's lives made better.
+      <div class="full bottom">
+        <div class="text_bg">
+          <p>
+            {{ news_posts.0.text|truncatewords_html:12}}
+            <a class="yellow">{% trans 'Read more' %}</a>
           </p>
-          <p class="nano-lede lt_grey">Feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent.</p>
-          -->
-          <div class="h1_companion">
-            <a href="{% url 'global_project_map' %}">{% trans 'View large map' %} <span class="link_triangle">&#x25BA;</span></a>
-          </div>          
-          <div class="clear"></div>
-        </div> 
-      </div> 
-    </div>
-
-    <div class='column span-10 gutter-top last'>
-      <div class="white_box">
-        <div id="tagline_box" class="space20">
-          <img style="float: right;" src="{{MEDIA_URL}}dws/img/holland_logo_oranje_130x44.gif">
-          {{cms.tagline_box|apply_markup:"markdown"}}
-          <div class="clear"></div>
+          <p class="yellow last" style="text-align: right;">
+            <a class="yellow">{% trans 'More news headlines' %}</a>
+          </p>
         </div>
       </div>
+      {% endcomment %}
+      <div class="full bottom">
+        <div class="text_bg">
+          {% for post in news_posts %}
+            {% if not forloop.first %}
+              <hr/>
+            {% endif %}
+            <div>
+              <!--<span style="margin-right: 1em; color: #B5B9C7; font-size: 0.875em;">
+                {% trans 'FEATURE'%}
+              </span>-->
+              <a href="{{ post.url }}" class="serif">{{ post.title }}</a>
+            </div>
+          {% endfor %}
+          <p class="yellow last" style="text-align: right;">
+            <a href="#" class="yellow" style="font-size:0.8125em;">{% trans 'More news headlines' %}</a>
+          </p>
+        </div>
+      </div>
+      <div class="clear"></div>
     </div>
-
   </div>
 
-  <div class='column last span-4 gutter-top'>
-    <div class="white_box" style="background-color:#fff;">
-      <div style="margin: 20px 20px 0px 20px;">     
+  <div class='column span-4 last'>
+    {# video box #}
+    <div class="gradient_box" style="min-height: 368px;">
+      <div class="space15 center">
+        <img src="{{MEDIA_URL}}dws/img/index/lets-work-together.png" style="width: 270px;" alt="Let's work together"/>
+        <p class="nano-lede lt_grey">{% trans "A world of expertise at your fingertips" %}</p>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15 center">
+        <a href="http://www.youtube.com/user/NLWaterPartnership" class="small_link red">
+          {% trans "See our latest videos on" %}
+          <img src="{{MEDIA_URL}}dws/img/index/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
+        </a>
+        <div style="margin-top: 10px;">
+        {% comment %}{# alternative with thumbnail and link to YT channel page #}
+            <a href="http://www.youtube.com/watch?v={{cms.video_url}}">
+              <img alt="{% trans "Watch on YouTube" %}" width="282" height="212" src="http://i1.ytimg.com/vi/{{cms.video_url}}/default.jpg" />
+            </a>
+        {% endcomment %}
+          <iframe title="{% trans 'YouTube video player' %}" width="282" height="212" src="{{cms.video_url}}"></iframe>
+        </div>
+      </div>
+      {% comment %}{# removed for now because of height constraints #}
+      <div class="space15 center">
+        <div class="h1_companion" style="margin: 0;">
+          <a href="http://www.youtube.com/user/NLWaterPartnership">{% trans 'Go to our YouTube channel' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+      <div class="clear"></div>
+      </div>
+      {%  endcomment %}
+    </div>
+
+    {# newsletter signup box #}
+    <div class="gradient_box gutter-top" style="height: 66px;">
+      <div style=" margin: 0 15px;">
+        <img src="{{MEDIA_URL}}dws/img/index/dws_book_cover_small.png" alt="Dutch Water Sector" style="float: left; margin-top: 14px;"/>
+        <p class="nano-lede lt_grey left" style="width: 170px; margin:  16px 0 0 10px;">{%  trans 'Sign up for our free monthly newsletter via email' %}</p>
+        <a class="orange small awesome right" href="#" style="color: black; margin-top: 21px;">{% trans 'Register' %}</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class='container gutter-top'>
+  {#  first column #}
+  <div class='column span-4'>
+    {# features box #}
+    <div class="white_box">
+      <div class="space15">
         <div style="float: left;">
-          <h1>{% trans 'Focus areas' %}</h1> 
+          <h1 class="last">{% trans 'More headlines' %}</h1>
+        </div>
+        <div class="h1_companion">
+          <a class="" href="/news/?feed=rss2">
+            RSS
+            <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="Icon Rss"  style="margin-left:5px; margin-right:0">
+          </a>
+        </div>
+        <div class="clear"></div>
+      </div>
+      {% for post in blog_posts %}
+        {% if forloop.first %}
+          <div class="space15" style="margin-top: 0;">
+        {% else %}
+          <div class="hr_margin"><hr/></div>
+          <div class="space15">
+        {% endif %}
+          {% if post.image %}
+          <a class="strong" href="{{ post.url}}">
+            <img src="{{ post.image }}" width="100" height="75" alt="{{ post.title }}" class="right" style="margin: 0 0 8px 8px;">
+          </a>
+          {% endif %}
+          <div class="left" style="width: {% if post.image %}174{% else %}282{% endif %}px; ">
+            <p><a class="strong" href="{{ post.url}}">{{ post.title }}</a></p>
+            <p class="nano-lede lt_grey">{{ post.date|date:"D, j F Y" }}</p>
+          </div>
+          <p class="">{{ post.text|truncatewords_html:25|safe }}</p>
+        </div>
+      {% endfor %}
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        <div class="h1_companion" style="margin: 0;">
+          <a href="/news">{% trans 'View earlier articles' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>      
+    </div>
+
+    {# focus area accordion box #}
+    <div class="white_box gutter-top" style="background-color:#fff;">
+      <div class="space15">
+        <div style="float: left;">
+          <h1 class="space0">{% trans 'Focus areas' %}</h1>
         </div>
         <div class="h1_companion">
           <a href="/web/focus-areas">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
@@ -176,12 +186,195 @@
           </p>
         </div>
         {% endfor %}
-      </div>              
-    </div>          
+      </div>
+    </div>
   </div>
 
+  {# second column #}
+  <div class='column span-4'>
 
-</div> 
+    {# global map box #}
+    <div class="white_box" style="background-color:#fff;">
+      <div id="map_box" class="space15">
+        <div style="float: left;">
+          <h1 class="box-heading" style="margin-bottom: 0;">{% trans 'Projects worldwide' %}</h1>
+        </div>
+        <div class="h1_companion">
+          <a href="{% url 'project_list' %}">{% trans 'See all' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <a href="{% url 'global_project_map' %}">
+        {% google_global_project_map 'static' 312 200 0 %}
+        {# google_static_global_project_map 292 219 0 'blue' 'small' #}
+      </a>
+      <div class="space15">
+        {{cms.map_box|apply_markup:"markdown"}}
+        <div class="h1_companion">
+          <a href="{% url 'global_project_map' %}">{% trans 'View large map' %} <span class="link_triangle">&#x25BA;</span></a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    {# project focus box #}
+    <div class="white_box gutter-top" style="height: 250px;">
+      <div class="space15">
+        <h1 class="box-heading">{% trans 'Projects focus' %}</h1>
+        <p class="nano-lede lt_grey">{% trans "Learn about Dutch participation in this project:" %}</p>
+        <p><a class="strong" href="{% url 'project_main' showcase.pk %}">{{ showcase.name }}</a></p>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        <h1 class="h0" style="font-family:'Georgia',serif;">{{ showcase.primary_location.country }}</h1>
+        <p><a href="{% url 'project_list' %}?country={{ showcase.primary_location.country.pk }}">{% trans "See Dutch projects in this country" %} <span class="link_triangle">&#x25BA;</span></a></p>
+      </div>
+    </div>
+
+  </div>
+
+  {# third column #}
+  <div class='column span-4 last'>
+
+    {# dutchwatersector.org box #}
+    <div class="gradient_box">
+      <div class="space15">
+        <h1 class="box-heading">{% trans 'Find Dutch water experts' %}</h1>
+        <div style="text-align: center;">
+          <img src="{{MEDIA_URL}}dws/img/index/dws.org.logo.png" alt="dutchwatersector.org"/>
+        </div>
+        <p class="nano-lede lt_grey top-margin">{% trans "A directory of all Dutch water organisations and companies. Find a partner here!" %}</p>
+        <div class="left strong" style="font-size:0.875em; width: 131px; margin: 8px 0;">
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=01">
+              {% trans "Waste water" %}
+              <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=02">
+              {% trans "Drinking water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=03">
+              {% trans "Ground water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=04">
+              {% trans "Surface water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=05">
+              {% trans "Process water" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=06">
+              {% trans "Sewage" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+        </div>
+        <div class="left strong" style="font-size:0.875em; width: 151px;  margin: 8px 0;">
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=08">
+              {% trans "Consultancy and engineering" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=09">
+              {% trans "Information technology" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=10">
+              {% trans "Organisations" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=11">
+              {% trans "Personnel and training" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=20">
+              {% trans "Business information" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+          <p>
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=21">
+              {% trans "Infrastructure" %}
+               <span class="link_triangle">&#x25BA;</span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15 strong">
+        <p class="h1_companion" style="margin: 0;">
+          <a href="http://dutchwatersector.org/waterdirectory/" target="_blank">
+            {% trans "Go to directory" %}
+             <span class="link_triangle">&#x25BA;</span>
+          </a>
+        </p>
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    {# expert focus box #}
+    <div class="white_box gutter-top">
+      <div class="space15">
+        <h1 class="box-heading">{% trans 'Expert focus' %}</h1>
+      </div>
+      <div class="hr_margin"><hr/></div>
+      <div class="space15">
+        <h5>
+          {{ focus_org }}
+          {% if focus_org.long_name and not focus_org.name == focus_org.long_name %}
+            - {{ focus_org.long_name }}
+          {% endif %}
+        </h5>
+        {% org_logo focus_org 120 90 'margin-left: 82px' %}
+      </div>
+      <div class="space15">
+        <div class="h1_companion">
+          <a href="{% url 'org_detail' focus_org.pk %}">
+            {% trans 'Read more about' %} {{ focus_org }}
+            <span class="link_triangle">&#x25BA;</span>
+          </a>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+{# tagline box #}
+<div class='container gutter-top'>
+  <div class='column span-10'>
+    <div id="tagline_box">
+      {{cms.tagline_box|apply_markup:"markdown"}}
+      <div class="clear"></div>
+    </div>
+  </div>
+  <div class='column span-2 last'>
+    <img style="padding-top: 0.8em" src="{{MEDIA_URL}}dws/img/index/holland_logo_oranje_130x44.gif" alt="{% trans 'Tulips' %}">
+  </div>
+</div>
 
 {% endblock maincontent %}
 

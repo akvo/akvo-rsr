@@ -4,11 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, CONTINENTS, Country
+from akvo.rsr.models import MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, Location, Country
 from akvo.rsr.models import UserProfile, Invoice, SmsReporter
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm, ProjectUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
 from akvo.rsr.decorators import fetch_project
+from akvo.rsr.iso3166 import CONTINENTS
 
 from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, state_equals
 
@@ -158,8 +159,11 @@ def index(request, cms_id=None):
         except:
             cms = MiniCMS.objects.get(pk=1)
 
-    news_post, blog_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'INDEX_ARTICLE_COUNT', 2))
-    
+    news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 3), getattr(settings, 'FEATURE_ARTICLE_COUNT', 3))
+    blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
+    news_image = ''
+    news_title = ''
+
     if not settings.PVW_RSR: #extra stuff for akvo home page
         projects = Project.objects.published().funding()
         orgs = Organisation.objects.all()
@@ -170,6 +174,12 @@ def index(request, cms_id=None):
         
         #get three featured updates
         updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
+    elif news_posts:
+        for post in news_posts:
+            if post.get('image', None):
+                news_image = post['image']
+                news_title = post['title']
+                break
 
     context_dict = {
         #'updates': updates,
@@ -179,7 +189,7 @@ def index(request, cms_id=None):
         'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         'site_section': 'index',
         'blog_posts': blog_posts,
-        'news_post': news_post,
+        'news_posts': news_posts,
         'preview':  preview,
     }
     if not settings.PVW_RSR: #extra stuff for akvo home page
@@ -189,6 +199,21 @@ def index(request, cms_id=None):
             'people_served': people_served,
             'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
             'updates': updates,
+        })
+    else:
+        try:
+            showcase = Project.objects.get(showcase=True)
+        except:
+            showcase = Project.objects.published()[0]
+        try:
+            focus_org = Organisation.objects.get(focus_org=True)
+        except:
+            focus_org = None
+        context_dict.update({
+            'showcase'  : showcase,
+            'focus_org' : focus_org,
+            'news_image': news_image,
+            'news_title': news_title,
         })
     return context_dict
 
@@ -261,7 +286,7 @@ def project_list(request, slug='all', org_id=None):
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-        project_query = get_query(query_string, ['name', 'subtitle','locations__country__country_name','locations__city','locations__state',])
+        project_query = get_query(query_string, ['name', 'subtitle','locations__country__name','locations__city','locations__state',])
         projects = projects.filter(project_query).distinct()
     
     projects = projects.extra(
@@ -281,39 +306,31 @@ def project_list(request, slug='all', org_id=None):
     
     selected_continent = request.GET.get('continent', 'all')
     if selected_continent != 'all':
-        projects = projects.filter(locations__country__continent=selected_continent)
-        selected_continent = int(selected_continent)
+        projects = projects.filter(locations__country__continent_code=selected_continent)
+        selected_continent = selected_continent
     
     # Country dropdown
     countries = Country.objects.all()
     
-    selected_country = request.GET.get('country', 'all')
-    if selected_country != 'all':
+    selected_country = request.GET.get('country', u'all')
+    if selected_country != u'all':
         projects = projects.filter(locations__country__exact=selected_country)
+        selected_continent = Country.objects.get(pk=selected_country).continent_code
         selected_country = int(selected_country)
-        selected_continent = Country.objects.get(id=selected_country).continent
         #selected_continent = Country.objects.filter(pk__exact=selected_country).continent
-        
-    
-    countries_in_africa = []
-    countries_in_africa = Country.objects.all().filter(continent__exact=1)
-    
-    countries_in_asia = []
-    countries_in_asia = Country.objects.all().filter(continent__exact=2)
-    
-    countries_in_australia = []
-    countries_in_australia = Country.objects.all().filter(continent__exact=3)
 
-    countries_in_europe = []
-    countries_in_europe = Country.objects.all().filter(continent__exact=4)
+    countries_in_africa = Country.objects.filter(continent_code__exact='af')
     
-    countries_in_north_america = []
-    countries_in_north_america = Country.objects.all().filter(continent__exact=5)
+    countries_in_asia = Country.objects.filter(continent_code__exact='as')
     
-    countries_in_south_america = []
-    countries_in_south_america = Country.objects.all().filter(continent__exact=6)
+    countries_in_australia = Country.objects.filter(continent_code__exact='oc')
+
+    countries_in_europe = Country.objects.filter(continent_code__exact='eu')
     
+    countries_in_north_america = Country.objects.filter(continent_code__exact='na')
     
+    countries_in_south_america = Country.objects.filter(continent_code__exact='sa')
+
     return {
         'projects': projects, 
         'site_section': 'projects', 
@@ -357,7 +374,7 @@ if settings.PVW_RSR:
         found_entries = None
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
-            org_query = get_query(query_string, ['name', 'long_name','locations__country__country_name','locations__city','locations__state','contact_person','contact_email',])
+            org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
             orgs = orgs.filter(org_query).distinct()
         
         return {
@@ -366,6 +383,8 @@ if settings.PVW_RSR:
             'query': query_string,
         }
 
+    def liveearth(request):
+        pass
 else:
         
     @render_to('rsr/project_directory.html')
@@ -473,8 +492,8 @@ else:
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
     
-            #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-            project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+            #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+            project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
             projects = projects.filter(project_query)
         
         # Add extra last_update column
@@ -552,8 +571,8 @@ else:
             elif 'South America' in query_string:
                 projects = projects.filter(country__continent='6')
             else:
-                #project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-                project_query = get_query(query_string, ['name', 'subtitle','country__country_name','city','state',])
+                #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+                project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
                 projects = projects.filter(project_query)
         
         # Add extra last_update column
@@ -621,9 +640,9 @@ else:
         found_entries = None
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
-            org_query = get_query(query_string, ['name', 'long_name','locations__country__country_name','locations__city','locations__state','contact_person','contact_email',])
+            org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
             orgs = orgs.filter(org_query).distinct()
-        
+
         # Sort query
         order_by = request.GET.get('order_by', 'name')
         last_order = request.GET.get('last_order')
@@ -1426,8 +1445,8 @@ def project_list_widget(request, template='project-list', org_id=0):
     #p = p.annotate(last_update=Max('project_updates__time'))
     p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     if order_by == 'country__continent':		
-        p = p.order_by(order_by, 'country__country_name','name')
-    #elif order_by == 'country__country_name':
+        p = p.order_by(order_by, 'country__name','name')
+    #elif order_by == 'country__name':
     #    p = p.order_by(order_by,'name')
     #elif order_by == 'status':
     #    p = p.order_by(order_by,'name')

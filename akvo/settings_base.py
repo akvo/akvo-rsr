@@ -7,7 +7,7 @@
 # is imported into settings.py.
 
 # Alphabetically ordered (more or less...)
-
+PVW_RSR = True
 # Accounts not activated in a week get purged. Used by registration app.
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -55,8 +55,10 @@ INSTALLED_APPS = (
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
-    'akvo.gateway',
-    'template_utils',
+    #'akvo.gateway',
+    #'template_utils',
+
+    #'template_utils', #see http://code.google.com/p/django-template-utils/
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
     #'akvo.status',
@@ -69,9 +71,6 @@ INSTALLED_APPS = (
     'pagination',
     'oembed',
     'django_markup',
-    'notification',
-    'permissions',
-    'workflows',    
 )
 
 #INTERNAL_IPS = (
@@ -124,6 +123,11 @@ MIDDLEWARE_CLASSES = (
 # Is this the pvw-rsr?
 PVW_RSR = True
 
+# DWS blog settings for home page
+FEATURE_CATEGORY_ID     = 3
+FEATURE_ARTICLE_COUNT   = 3
+NEWS_ARTICLE_COUNT      = 3
+
 ROOT_URLCONF = 'akvo.urls'
 
 # Make this unique, and don't share it with anybody.
@@ -175,85 +179,85 @@ USE_I18N = True
 USE_L10N = True
 
 # Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'verbose_request': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s %(request)s'
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'filters': {
-        #'special': {
-        #    '()': 'project.logging.SpecialFilter',
-        #    'foo': 'bar',
-        #},
-    },
-    'handlers': {
-        'null': {
-            'level':'DEBUG',
-            'class':'django.utils.log.NullHandler',
-        },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-        'file':{
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(os.path.dirname(__file__), 'akvo.log').replace('\\','/'),
-            'maxBytes': 1024*1024,
-            'backupCount': 4,
-            'formatter': 'verbose',
-        },
-        'request_to_console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
-            'formatter': 'verbose_request',
-        },
-        'request_to_file':{
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(os.path.dirname(__file__), 'akvo.log').replace('\\','/'),
-            'maxBytes': 1024*1024,
-            'backupCount': 4,
-            'formatter': 'verbose_request',
-        },
-        #'mail_admins': {
-        #    'level': 'ERROR',
-        #    'class': 'django.utils.log.AdminEmailHandler',
-        #    'filters': ['special']
-        #},
-    },
-    'loggers': {
-        'django': {
-            'handlers':['null'],
-            'propagate': True,
-            'level':'INFO',
-        },
-        #'django.request': {
-        #    'handlers': ['mail_admins'],
-        #    'level': 'ERROR',
-        #    'propagate': False,
-        #},
-        'django.request': {
-            'handlers': ['request_to_file', ], #'request_to_console',],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'akvo.rsr': {
-            'handlers': ['file', ], #'console', ],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': True,
+#    'formatters': {
+#        'verbose': {
+#            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+#        },
+#        'verbose_request': {
+#            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s %(request)s'
+#        },
+#        'simple': {
+#            'format': '%(levelname)s %(message)s'
+#        },
+#    },
+#    'filters': {
+#        #'special': {
+#        #    '()': 'project.logging.SpecialFilter',
+#        #    'foo': 'bar',
+#        #},
+#    },
+#    'handlers': {
+#        'null': {
+#            'level':'DEBUG',
+#            'class':'django.utils.log.NullHandler',
+#        },
+#        'console':{
+#            'level':'DEBUG',
+#            'class':'logging.StreamHandler',
+#            'formatter': 'verbose',
+#        },
+#        'file':{
+#            'level':'DEBUG',
+#            'class':'logging.handlers.RotatingFileHandler',
+#            'filename': os.path.join(os.path.dirname(__file__), 'akvo.log').replace('\\','/'),
+#            'maxBytes': 1024*1024,
+#            'backupCount': 4,
+#            'formatter': 'verbose',
+#        },
+#        'request_to_console':{
+#            'level':'DEBUG',
+#            'class':'logging.StreamHandler',
+#            'formatter': 'verbose_request',
+#        },
+#        'request_to_file':{
+#            'level':'DEBUG',
+#            'class':'logging.handlers.RotatingFileHandler',
+#            'filename': os.path.join(os.path.dirname(__file__), 'akvo.log').replace('\\','/'),
+#            'maxBytes': 1024*1024,
+#            'backupCount': 4,
+#            'formatter': 'verbose_request',
+#        },
+#        #'mail_admins': {
+#        #    'level': 'ERROR',
+#        #    'class': 'django.utils.log.AdminEmailHandler',
+#        #    'filters': ['special']
+#        #},
+#    },
+#    'loggers': {
+#        'django': {
+#            'handlers':['null'],
+#            'propagate': True,
+#            'level':'INFO',
+#        },
+#        #'django.request': {
+#        #    'handlers': ['mail_admins'],
+#        #    'level': 'ERROR',
+#        #    'propagate': False,
+#        #},
+#        'django.request': {
+#            'handlers': ['request_to_file', ], #'request_to_console',],
+#            'level': 'DEBUG',
+#            'propagate': False,
+#        },
+#        'akvo.rsr': {
+#            'handlers': ['file', ], #'console', ],
+#            'level': 'DEBUG',
+#            'propagate': False,
+#        },
+#    },
+#}
 
 PROJECT_UPDATE_TIMEOUT = 30  # minutes

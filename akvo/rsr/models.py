@@ -68,7 +68,7 @@ from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, set_active_cms,
-    act_on_log_entry, user_activated_callback
+    act_on_log_entry, user_activated_callback, set_showcase_project, set_focus_org,
 )
 
 from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
@@ -210,6 +210,8 @@ class Organisation(models.Model):
 
     url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
 
+    if settings.PVW_RSR:
+        focus_org               = models.BooleanField(_('Focus organisation'), help_text=_('The organisation selected to be highlighted in the Expert focus box of the home page.'))
     #map                         = models.ImageField(
     #                                _('map'),
     #                                blank=True,
@@ -581,6 +583,8 @@ if settings.PVW_RSR: #pvw-rsr
             
         top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
         map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
+#        alternative video_url to use whith thumbed vid
+#        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The ID of the video to be shown on the home page. <br/>   Example: if the URL to the video is http://www.youtube.com/watch?v=Cn2mDS-WNJs then Cn2mDS-WNJs is entered in the field. '))
         video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The URL to the video to be shown on the home page.'))
         tagline_box          = models.TextField(_(_(u'tagline box text'), ), max_length=100, help_text=_('Enter the text that will appear in the on-line box at the bottom of the home page. (100 characters).'))
         active              = models.BooleanField(_(u'currently active home page'), default=False)
@@ -2241,7 +2245,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def disable_all_reporters(self):
         self.disable_reporting()
-        
+
     def destroy_reporter(self, reporter=None):
         logger.debug("Entering: %s()" % who_am_i())
         if reporter:
@@ -2301,7 +2305,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         Check for correct state and send email and SMS notifying the user about the enabled project
         If reporters=None we try to enable all reporters
         """
-        logger.debug("Entering: %s()" % who_am_i())        
+        logger.debug("Entering: %s()" % who_am_i())
         if reporter and reporter.project:
             reporters = [reporter]
         else:
@@ -2346,7 +2350,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.disable_all_reporters()
         self.set_initial_state() #Phone disabled
         logger.debug("Exiting: %s()" % who_am_i())
-    
+
     def add_phone_number(self, phone_number):
         """
         Set up workflow
@@ -2386,7 +2390,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """used in myakvo navigation template to determin what links to show
         """
         return (
-            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or 
+            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
     has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
@@ -2829,3 +2833,5 @@ if settings.PVW_RSR:
     post_save.connect(change_name_of_file_on_create, sender=Category)
     pre_save.connect(change_name_of_file_on_change, sender=Category)
     post_save.connect(set_active_cms, sender=MiniCMS)
+    post_save.connect(set_showcase_project, sender=Project)
+    post_save.connect(set_focus_org, sender=Organisation)

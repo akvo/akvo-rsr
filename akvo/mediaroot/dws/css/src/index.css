@@ -28,9 +28,20 @@ div#top_right_box h3 {
     line-height:1.2em;
     margin-bottom:0.75em;
 }
+#tagline_box {
+    width: 846;
+    background:#FE7A2C;
+    color: white;
+    border: 1px solid #7D818E;
+}
 
 div#tagline_box p {
-    padding-top: 12px;
+    color: white;
+    font-size: 1em;
+    margin:  1.5em 0 1.5em 2.5em;
+    font-family: Arvo, Georgia, serif;
+    font-weight: bold;
+    font-style: italic;
 }
 
 #preview_cover {
@@ -49,3 +60,91 @@ div#tagline_box p {
     position:fixed; top:20%; left:0px; width:100%; text-align:center; vertical-align:middle;
     font-size: 500%;    
 }
+
+.hr_margin {
+    margin: 0 8px;
+}
+
+/* Wordpress news box styling */
+#index_news_box {
+    height: 484px;
+    position:relative;
+    border: 0;
+}
+
+#index_news_box .left {
+    position: absolute;
+    left: 0;
+}
+
+#index_news_box .right {
+    position: absolute;
+    right: 0;
+}
+
+#index_news_box .top {
+    position: absolute;
+    top: 0;
+}
+
+#index_news_box .bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+#index_news_box .half {
+    width: 322px;
+}
+
+#index_news_box .quarter {
+    width: 161px;
+}
+
+#index_news_box .three_quarters {
+    width: 484px;
+}
+
+#index_news_box .full {
+    width: 645px;
+}
+
+#index_news_box .text_bg {
+    background: transparent url(../../img/backgrd_lt_grey.png) repeat;
+    padding: 20px 20px 10px 20px;
+}
+
+#index_news_box h1 {
+    font-size: 1.25em;
+    margin: 0;
+}
+
+#index_news_box a, #index_news_box a:visited  {
+    color: #FFD28B;
+    font-size: 1.25em;
+}
+
+#index_news_box a:hover {
+    color: #FFC261;
+}
+
+#index_news_box p {
+    font-size: 0.8125em;
+    margin-bottom: .5em;
+}
+
+#index_news_box p.last {
+    margin: 0;
+    padding: 0;
+}
+
+#index_news_box hr {
+    margin:0.5em 0;
+    background: transparent;
+    color: transparent;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px dashed #B5B9C7;
+    display:block;
+}
+
