@@ -13,9 +13,5 @@ class PackageInstallationToolsConfig(object):
     # See the installation notes at http://www.pip-installer.org/en/latest/installing.html
 
     def __init__(self, pip_version):
-        self.distribute_setup_file  = "distribute_setup.py"
-        self.distribute_setup_url   = os.path.join("http://python-distribute.org", self.distribute_setup_file)
-
-        self.pip_setup_file         = "get-pip.py"
-        pip_setup_url_base          = os.path.join("https://raw.github.com/pypa/pip", pip_version, "contrib")
-        self.pip_setup_url          = os.path.join(pip_setup_url_base, self.pip_setup_file)
+        self.distribute_setup_url = "http://python-distribute.org/distribute_setup.py"
+        self.pip_setup_url = os.path.join("https://raw.github.com/pypa/pip", pip_version, "contrib/get-pip.py")
