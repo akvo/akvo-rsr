@@ -103,55 +103,57 @@
 								{% for country in countries %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
-							{% if selected_continent == 1 %}
+
+
+							{% if selected_continent == 'af' %}
 								{% for country in countries_in_africa %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
-							{% if selected_continent == 2 %}
+							{% if selected_continent == 'as' %}
 								{% for country in countries_in_asia %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
-							{% if selected_continent == 3 %}
+							{% if selected_continent == 'oc' %}
 								{% for country in countries_in_australia %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
-							{% if selected_continent == 4 %}
+							{% if selected_continent == 'eu' %}
 								{% for country in countries_in_europe %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
-							{% if selected_continent == 5 %}
+							{% if selected_continent == 'na' %}
 								{% for country in countries_in_north_america %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
-							{% if selected_continent == 6 %}
+							{% if selected_continent == 'sa' %}
 								{% for country in countries_in_south_america %}
 								<option value="{{country.id}}"
 									{% ifequal country.id selected_country %} SELECTED {% endifequal %}>
-									{{country.country_name}}
+									{{country.name}}
 								</option>
 								{% endfor %}
 							{% endif %}
@@ -191,8 +193,8 @@
 			</div>
 		</form>
 	</div>
-	
-	
+
+    
 	{# -------- #}
 	 <div class='column span-12 last'>
       {% autosort projects %}
@@ -211,9 +213,9 @@
                 <div class="activeTableHeaderDesc">Country</div>
               </a>
             </th>-->
-            <th>{% anchor country Country %}</th>
+            <th>{% anchor locations__country Country %}</th>
             <th>
-               {% anchor country__continent Continent %}
+               {% anchor locations__country__continent Continent %}
             </th>
             <th>
               {% anchor status Status %}
@@ -247,7 +249,7 @@
                 <p class="td-text">{{project.primary_location.country}}</p>
               </td>
               <td>
-                <p class="td-text">{{project.primary_location.country.get_continent_display}}</p>
+                <p class="td-text">{{project.primary_location.country.continent}}</p>
               </td>
               <td>
                 <p class="td-text green">{{project.show_status}}</p>
@@ -313,57 +315,57 @@
 
 		var all_countries = [];
 		{% for country in countries %}
-			all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
+			all_countries[all_countries.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_africa = [];
 		{% for country in countries_in_africa %}
-			countries_in_africa[countries_in_africa.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_africa[countries_in_africa.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_asia = [];
 		{% for country in countries_in_asia %}
-			countries_in_asia[countries_in_asia.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_asia[countries_in_asia.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_australia = [];
 		{% for country in countries_in_australia %}
-			countries_in_australia[countries_in_australia.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_australia[countries_in_australia.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_europe = [];
 		{% for country in countries_in_europe %}
-			countries_in_europe[countries_in_europe.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_europe[countries_in_europe.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_north_america = [];
 		{% for country in countries_in_north_america %}
-			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_south_america = [];
 		{% for country in countries_in_south_america %}
-			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var selected_continent = jQ('#continent').val();		
-		
-		if (selected_continent == 1 ) {		
+
+		if (selected_continent == 'af' ) {
 			add_countires(countries_in_africa);
 		} 
-		else if (selected_continent == 2 ) {		
+		else if (selected_continent == 'as' ) {
 			add_countires(countries_in_asia);
 		}
-		else if (selected_continent == 3) {
+		else if (selected_continent == 'oc') {
 			add_countires(countries_in_australia);
 		}
-		else if (selected_continent == 4) {
+		else if (selected_continent == 'eu') {
 			add_countires(countries_in_europe);
 		}
-		else if (selected_continent == 5) {
+		else if (selected_continent == 'na') {
 			add_countires(countries_in_north_america);
 		}
-		else if (selected_continent == 6) {
+		else if (selected_continent == 'sa') {
 			add_countires(countries_in_south_america);
 		}
 		else {

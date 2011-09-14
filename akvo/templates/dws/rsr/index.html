@@ -218,7 +218,7 @@
     </div>
 
     {# project focus box #}
-    <div class="white_box gutter-top" style="height: 250px;">
+    <div class="white_box gutter-top">
       <div class="space15">
         <h1 class="box-heading">{% trans 'Projects focus' %}</h1>
         <p class="nano-lede lt_grey">{% trans "Learn about Dutch participation in this project:" %}</p>
@@ -226,9 +226,11 @@
       </div>
       <div class="hr_margin"><hr/></div>
       <div class="space15">
-        <h1 class="h0" style="font-family:'Georgia',serif;">{{ showcase.primary_location.country }}</h1>
-        <p><a href="{% url 'project_list' %}?country={{ showcase.primary_location.country.pk }}">{% trans "See Dutch projects in this country" %} <span class="link_triangle">&#x25BA;</span></a></p>
+        <img class="left" style="margin: -8px 8px 0 0;" src="{{MEDIA_URL}}core/img/flags_128/{{ showcase.primary_location.country.iso_code }}.png" width="96" height="96" alt="Flag of {{ showcase.primary_location.country }}"/>
+        <h1 class="last" style="font-family:'Georgia',serif;">{{ showcase.primary_location.country }}</h1>
+        <p><a href="{% url 'project_list' %}?country={{ showcase.primary_location.country.pk }}">{% blocktrans with country_name=showcase.primary_location.country.name %}See Dutch projects in {{ country_name}}{% endblocktrans %} <span class="link_triangle">&#x25BA;</span></a></p>
       </div>
+      <div class="clear"></div>
     </div>
 
   </div>

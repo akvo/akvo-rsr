@@ -80,6 +80,21 @@ else:
         url(r'^rsr/donate/paypal/ipn/$', csrf_exempt(paypal_ipn), name='paypal_ipn'),
     )
 
+    if getattr(settings, 'LIVE_EARTH_ENABLED', False):
+        urlpatterns += patterns('',
+            url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
+        )
+
+    if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
+        urlpatterns += patterns('',
+            url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
+        )
+
+    if getattr(settings, 'RABOBANK_ENABLED', False):
+        urlpatterns += patterns('',
+            url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
+        )
+
 urlpatterns += patterns('',
 
     (r'^rsr/admin/', include(admin.site.urls)),
@@ -177,21 +192,6 @@ urlpatterns += patterns('',
 )    
         
 
-if getattr(settings, 'LIVE_EARTH_ENABLED', False):
-    urlpatterns += patterns('',
-        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
-    )
-
-if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
-    urlpatterns += patterns('',
-        url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
-    )
-
-if getattr(settings, 'RABOBANK_ENABLED', False):
-    urlpatterns += patterns('',
-        url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
-    )
-    
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',

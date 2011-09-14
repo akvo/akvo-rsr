@@ -27,6 +27,7 @@ from forms import ReadonlyFKAdminField
 from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import get_rsr_limited_change_permission
 from utils import groups_from_user
+from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
 
 
 NON_FIELD_ERRORS = '__all__'
@@ -40,8 +41,9 @@ admin.site.register(get_model('auth', 'permission'), PermissionAdmin)
 
 
 class CountryAdmin(admin.ModelAdmin):
-    list_display = (u'country_name', u'continent', )
+    list_display = (u'name', u'iso_code', u'continent', u'continent_code', )
     list_filter  = (u'continent', )
+    readonly_fields = (u'name', u'continent', u'continent_code')
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -49,8 +51,24 @@ class CountryAdmin(admin.ModelAdmin):
         opts = self.opts
         if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
             del actions['delete_selected']
-        return actions    
+        return actions
 
+    def save_model(self, request, obj, form, change):
+        if obj.iso_code:
+            iso_code = obj.iso_code
+            continent_code = COUNTRY_CONTINENTS[iso_code]
+
+            obj.name = dict(ISO_3166_COUNTRIES)[iso_code]
+            obj.continent = dict(CONTINENTS)[continent_code]
+            obj.continent_code =continent_code
+        obj.save()
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+#            return u'iso_code', u'name', u'continent', u'continent_code'
+            return u'name', u'continent', u'continent_code'
+        else:
+            return u'name', u'continent', u'continent_code'
 
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
@@ -525,7 +543,7 @@ if settings.PVW_RSR:
                 ),
             }),        
         )
-        list_display = ('id', 'name', 'project_plan_summary', 'is_published')
+        list_display = ('id', 'name', 'project_plan_summary', 'showcase', 'is_published')
         #list_filter = ('currency',)
         
         #form = ProjectAdminModelForm

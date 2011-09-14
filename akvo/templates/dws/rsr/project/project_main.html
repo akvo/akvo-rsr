@@ -73,8 +73,8 @@
           {% if project.primary_location %}
             {% google_map project 173 173 3 %}
             <p class="small prepend-top">
-				{% if project.primary_location.country.get_continent_display or project.primary_location.country %}
-					{{project.primary_location.country.get_continent_display}}, {{project.primary_location.country}}
+				{% if project.primary_location.country.continent or project.primary_location.country %}
+					{{project.primary_location.country.continent}}, {{project.primary_location.country}}
 				{% endif %}
 				{% if project.primary_location.state or project.primary_location.city %}
 					<br>
