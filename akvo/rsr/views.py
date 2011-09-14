@@ -159,8 +159,8 @@ def index(request, cms_id=None):
         except:
             cms = MiniCMS.objects.get(pk=1)
 
-    news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 3), getattr(settings, 'FEATURE_ARTICLE_COUNT', 3))
-    blog_posts = wordpress_get_lastest_posts('wordpress', limit=getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
+    news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
+    blog_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 7), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2))
     news_image = ''
     news_title = ''
 

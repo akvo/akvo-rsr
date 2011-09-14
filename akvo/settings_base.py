@@ -124,9 +124,10 @@ MIDDLEWARE_CLASSES = (
 PVW_RSR = True
 
 # DWS blog settings for home page
-FEATURE_CATEGORY_ID     = 3
-FEATURE_ARTICLE_COUNT   = 3
-NEWS_ARTICLE_COUNT      = 3
+NEWS_CATEGORY_ID        = 3 #wordpress ID of news category that's shown in top left box
+NEWS_ARTICLE_COUNT      = 3 #how many news articles to link to
+FEATURE_CATEGORY_ID     = 7 #wordpress ID of feature category
+FEATURE_ARTICLE_COUNT   = 2 #how many features to display in More headlines box
 
 ROOT_URLCONF = 'akvo.urls'
 
