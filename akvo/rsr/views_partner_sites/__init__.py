@@ -15,9 +15,21 @@ __all__ = [
     'BaseListView',
     'BaseProjectView',
     'BaseView',
+    'ProjectMainView',
     'UpdateDirectoryView',
     'UpdateView'
     ]
+
+
+class ProjectMainView(BaseProjectView):
+    """Extend the project view with the current update"""
+    template_name = "partner_sites/project/project_main.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectMainView, self).get_context_data(**kwargs)
+        context['updates_with_images'] = context['project'] \
+            .project_updates.all().exclude(photo__exact='').order_by('-time')
+        return context
 
 
 class UpdateDirectoryView(ListView):

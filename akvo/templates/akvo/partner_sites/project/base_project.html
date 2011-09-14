@@ -19,9 +19,9 @@
       <h1 style="margin-bottom:4px">
         <a href="{% url 'project_main' project.id %}">{{project}}</a>
       </h1>
-       <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
+      <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
       {% block project_content %}{% endblock project_content %}
-      </article>
+    </article>
     <aside>
       {% block project_aside_funding %}
         <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
@@ -58,7 +58,7 @@
           {% endfor %}
         {% else %} 
             <div class="whitebox pad20" style="margin-top:20px">
-              <p>No updates</p>
+              <p>{% trans "No updates" %}</p>
             </div>
         {% endif %}
       {% endblock project_aside_updates %}

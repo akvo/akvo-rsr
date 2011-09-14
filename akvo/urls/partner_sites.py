@@ -13,7 +13,7 @@ from django_counter.urls import urlpatterns as counter_urls
 urlpatterns = patterns('',
     url(r'^$', views.BaseListView \
         .as_view(template_name='partner_sites/home.html'), name='home'),
-    url(r'^(?P<project_id>\d+)/$', views.BaseProjectView \
+    url(r'^(?P<project_id>\d+)/$', views.ProjectMainView \
         .as_view(template_name="partner_sites/project/project_main.html"),
                  name='project_main'),
     url(r'^(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView

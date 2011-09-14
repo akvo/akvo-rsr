@@ -82,5 +82,5 @@ class BaseProjectView(BaseView):
             .published_projects():
             raise Http404
         context['latest_updates'] = context['project'].project_updates.all() \
-                            .order_by('-time')[:3]
+            .order_by('-time')[:3]
         return context
