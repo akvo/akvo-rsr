@@ -2803,10 +2803,10 @@ class PartnerSite(models.Model):
     custom_return_url = models.CharField(_('Return URL'), max_length=255, blank=True,
                                          help_text=_('The URL on your own site to return users to. Enter a full URL (starting with "http://"). ' \
                                                      'This setting is optional but recommended.'))
-    custom_css = models.FileField(_('Custom CSS'), blank=True, upload_to=css_path,
+    custom_css = models.FileField(_('CSS'), blank=True, upload_to=css_path,
                                      help_text=_('Uoload a custom CSS file to override the default partner sites stylesheet. ' \
                                                  'This setting is optional.'))
-    custom_logo = models.FileField(_('Partner logo'), blank=True, upload_to=logo_path,
+    custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=logo_path,
                                    help_text=_('Upload a high-resolution banner logo for your organisation. ' \
                                                'This setting is optional but recommended.'))
     enabled = models.BooleanField(_('enabled'), default=True)
