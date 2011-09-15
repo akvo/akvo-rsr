@@ -46,9 +46,9 @@ def run_fab_task(fully_qualified_task, host):
 
 def deploy_rsr():
     os.chdir(FABRIC_SCRIPTS_HOME)
-    run_fab_task("fab.tasks.dataretriever.fetch_rsr_data", LIVE_DATABASE_HOST)
     run_fab_task("fab.tasks.verify.linux.systempackages.verify_system_packages", DEPLOYMENT_HOST)
     run_fab_task("fab.tasks.environment.python.systempackages.update_system_python_packages", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.dataretriever.fetch_rsr_data", LIVE_DATABASE_HOST)
     run_fab_task("fab.tasks.codedeployment.deploy_rsr_code:host_controller_mode=remote", DEPLOYMENT_HOST)
     run_fab_task("fab.tasks.virtualenv.rebuild.rsrenv.rebuild_rsr_virtualenv:host_controller_mode=remote", DEPLOYMENT_HOST)
 
