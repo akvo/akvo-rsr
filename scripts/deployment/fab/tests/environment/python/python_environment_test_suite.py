@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.environment.python.package_installation_paths_test import PackageInstallationPathsTest
 from fab.tests.environment.python.system_package_installer_test import SystemPythonPackageInstallerTest
 
 
 def python_environment_suite():
-    return TestSuiteLoader().create_suite_from_classes([SystemPythonPackageInstallerTest])
+    return TestSuiteLoader().create_suite_from_classes([PackageInstallationPathsTest, SystemPythonPackageInstallerTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

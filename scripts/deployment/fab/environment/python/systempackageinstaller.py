@@ -9,7 +9,7 @@ import os
 
 from fab.config.environment.python.packagetools import PackageInstallationToolsConfig
 from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.values import SharedConfigValues, PythonConfigValues
+from fab.config.values import PythonConfigValues, SharedConfigValues
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 
@@ -21,6 +21,13 @@ class PackageInstallationPaths(object):
         self.distribute_setup_url = package_tools_config.distribute_setup_url
         self.pip_setup_url = package_tools_config.pip_setup_url
         self.system_requirements_url = codebase_config.system_requirements_file_url
+
+    @staticmethod
+    def create_instance():
+        python_config_values = PythonConfigValues()
+        return PackageInstallationPaths(python_config_values,
+                                        PackageInstallationToolsConfig(python_config_values.pip_version),
+                                        RSRCodebaseConfig(SharedConfigValues().repository_branch))
 
 
 class SystemPythonPackageInstaller(object):
@@ -34,12 +41,10 @@ class SystemPythonPackageInstaller(object):
 
     @staticmethod
     def create_instance(host_controller):
-        python_config_values = PythonConfigValues()
-        installation_paths = PackageInstallationPaths(python_config_values,
-                                                      PackageInstallationToolsConfig(python_config_values.pip_version),
-                                                      RSRCodebaseConfig(SharedConfigValues().repository_branch))
-
-        return SystemPythonPackageInstaller(installation_paths, FileSystem(host_controller), Internet(host_controller), host_controller)
+        return SystemPythonPackageInstaller(PackageInstallationPaths.create_instance(),
+                                            FileSystem(host_controller),
+                                            Internet(host_controller),
+                                            host_controller)
 
     def install_package_tools(self):
         self._clear_package_download_directory()

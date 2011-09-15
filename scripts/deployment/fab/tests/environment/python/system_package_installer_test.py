@@ -39,7 +39,10 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        SystemPythonPackageInstaller.create_instance(self.mock_host_controller)
+        package_installer = SystemPythonPackageInstaller.create_instance(self.mock_host_controller)
+
+        self.assertIsInstance(package_installer, SystemPythonPackageInstaller)
+        self.assertIsInstance(package_installer.feedback, ExecutionFeedback)
 
     def test_can_install_package_tools(self):
         """fab.tests.environment.python.system_package_installer_test  Can install package tools"""
