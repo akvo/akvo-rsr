@@ -76,7 +76,7 @@ class SystemPythonPackageInstaller(object):
         self.internet.download_file_to_directory(self.paths.package_download_dir, requirements_file_url)
 
         with self.host_controller.cd(self.paths.package_download_dir):
-            self.host_controller.run("pip install -M -r %s --log=pip_install.log" % self._file_from_url(requirements_file_url))
+            self.host_controller.sudo("pip install -M -r %s --log=pip_install.log" % self._file_from_url(requirements_file_url))
 
     def _file_from_url(self, file_url):
         return file_url.split('/')[-1]

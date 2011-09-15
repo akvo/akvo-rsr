@@ -87,7 +87,7 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
     def _set_expectations_to_install_packages_with_pip(self, requirements_file_url):
         self.mock_internet.download_file_to_directory(self.package_download_dir, requirements_file_url)
         self.mock_host_controller.cd(self.package_download_dir).AndReturn(fabric.api.cd(self.package_download_dir))
-        self.mock_host_controller.run("pip install -M -r %s --log=pip_install.log" % self._file_from_url(requirements_file_url))
+        self.mock_host_controller.sudo("pip install -M -r %s --log=pip_install.log" % self._file_from_url(requirements_file_url))
 
     def _file_from_url(self, file_url):
         return file_url.split('/')[-1]
