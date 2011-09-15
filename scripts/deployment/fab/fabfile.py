@@ -14,9 +14,10 @@ from syspath import SysPathVerifier
 SysPathVerifier().exit_if_deployment_scripts_home_not_on_syspath()
 
 
-# Use "fab --list" to display the list of available tasks
+# Use "fab --list" or "fab --shortlist" to display the list of available tasks
 
 import fab.tasks.codedeployment
 import fab.tasks.dataretriever
+import fab.tasks.environment.python.systempackages
 import fab.tasks.verify.linux.systempackages
 import fab.tasks.virtualenv.rebuild.rsrenv
