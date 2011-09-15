@@ -1,36 +1,74 @@
-{% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail %}
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags cache humanize google_maps %}
 {% load url from future %}
+
+
+{% block head %}
+  <style type="text/css">
+    div#gallery_box_slider {width:{{slider_width}}px;}
+  </style>
+
+  <!--[if lte IE 7]> 
+    <style type="text/css" media="screen">
+      .galleria-info-text{background-color:#fff};
+    </style>
+  <![endif]-->
+{% endblock head %}
 
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'home' %}"><span>Projects</span></a></li>
   <li class="last_breadcrum_item">{{project.name}}</li>
 {% endblock breadcrum_items %}
 
-{% block content %}
-  <div class="clearfix">
-    <article>
-       <h1>{{project}} - {{organisation}}</h1>
-      <section class="whitebox">
-        {{project.project_plan_summary|linebreaks}}
-        <img src="{% thumbnail project.current_image 400x300 autocrop sharpen %}" />
-      </section>
-    </article>
-    <aside>
-      <div class="money_blue_background" style="height:180px; padding:10px">
-        {{project.show_status_large}}<br />
-      </div>
-      <div class="whitebox" style="height:40px; margin-top:10px">
-        <p>Update 1</p>
-      </div>
-      <div class="whitebox" style="height:40px; margin-top:10px">
-        <p>Update 2</p>
-      </div>
-      <div class="whitebox" style="height:40px; margin-top:10px">
-        <p>Update 3</p>
-      </div>
-    </aside>
-  </div>
-{% endblock content %}
+
+{% block project_content %}
+  <section class="whitebox pad20">
+    {% counter_badge project %}
+    <h2>{% trans "Description" %}</h2>
+    {{project.project_plan_summary|linebreaks}}
+    <div>
+      <div id="galleria" style="width:338px; height:350px;"></div>
+    </div>
+    <hr />
+    <h2>Map</h2>
+    {% if project.primary_location %}
+      {% google_map project 260 180 3 %}
+    {% else %}
+      <p style="color: red;">{% trans 'No map available' %}</p>
+    {% endif %}
+  </section>
+{% endblock project_content %}
+
+
+{% block js %}
+  {{ block.super }}
+
+  <script src="{{MEDIA_URL}}core/galleria/galleria_1.2.2.js"></script>
+  <script>
+    var galleria_data = [
+      {
+        description: '&nbsp;',
+        image: '{% thumbnail project.current_image 400x300 autocrop sharpen %}',
+        thumb: '{% thumbnail project.current_image 64x48 autocrop sharpen %}',
+        title: '{{project.current_image_caption}}'
+      }
+      {% if updates_with_images %},
+        {% for update_with_image in updates_with_images %}
+          {
+            description: '{% if update_with_image.photo_credit %}{% trans "Photo credit:" %} {{update_with_image.photo_credit}}{% else %}&nbsp;{% endif %}',
+            image: '{% thumbnail update_with_image.photo 400x300 autocrop sharpen %}',
+            thumb: '{% thumbnail update_with_image.photo 64x48 autocrop sharpen %}',
+            title: '{{update_with_image.photo_caption}}'
+          }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      {% endif%}
+      ];
+    </script>
+{% endblock js %}
+
+{% block jq_ready %}
+  {{block.super}}
+  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
+  $('#galleria').galleria({data_source: galleria_data});	
+{% endblock jq_ready %}

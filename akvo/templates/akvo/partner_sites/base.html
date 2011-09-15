@@ -13,9 +13,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   {% asset_bundle 'partner_sites_style' %}
+  {% block head %}{% endblock head %}
 
   <style type="text/css" media="screen">
-    {% if organisation.id == 43  %}
+    {% if organisation.id == 43 %} {# Aqua4All#}
       body {
         background-color:#B7D4F1;
       }
@@ -23,25 +24,32 @@
       .container {
         background-color:#fff;
         padding: 20px 10px;
-        width: 900px;
       }
-      article {max-width:620px}
       h1, h2 {color: #000}
+      .whitebox {border:none;}
     {% endif %}
-    {% if organisation.id == 272 %}
+    {% if organisation.id == 106 %} {# Impulsis #}
+      body {
+        background: #FDF0D4;
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        color: #0055A5;
+      }
+      a, a:link, a:visited {color: #F68026;}
+      p {color: #004F99; font-size:13px;}
+      .small {font-size:10px}
+      h1, h2 {color: #0055A5}
+    {% endif %}
+    {% if organisation.id == 272 %} {# Connect4change #}
       body {
         background:#ECEEF0;
         font-family: Verdana, Arial, Tahoma,Century gothic,  sans-serif;
       }
-      p { font-size:12px;}
+      p {font-size:12px;}
       .small {font-size:10px}
-      .container {
-        width: 1000px;
-      }
-      article {max-width:720px}
       h1, h2 {color: #BC620E}
     {% endif %}
   </style>
+
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">
     !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
@@ -50,6 +58,14 @@
 <body>
   <div class="container">
     <div class="breadcrum_back clearfix">
+      <div style="float:right;">
+        <p class="normal" style="margin: 4px 10px 0 0; font-size:12px">
+          Feeds: 
+          {% block breadcrum_right %}
+            <a href="#">All projects</a>
+          {% endblock breadcrum_right %}
+        </p>
+      </div>
       <ul class="breadcrum">
         {% block breadcrum_items %}
           <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
@@ -58,24 +74,31 @@
     </div>
     {% block content %}{% endblock content %}
   </div>
-  <div class="container">  
-    <div style="background-color:#F5F6F7;">
-      {% if sql_queries %}
-        <h2 style="margin:10px;">{{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}</h2>
+  <div class="container">
+    <footer>
+      <div class="two_col_left">
+          <p class="small">
+            Contact <a href="{{organisation.url}}">{{organisation}}</a> at 
+            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>.
+          </p>
+      </div>
+      <div class="two_col_right" style="text-align:right;">
+          <p class="small">
+            Powered by <a href="http://www.akvoapp.org">Akvo</a>
+          </p>
+      </div>
+      <div class="clear"></div>
+    </footer>
+    <div style="background-color:#F5F6F7; margin-top:80px">
+      <h1>Page end - development information</h1>
+      {% if queries %}
+        <h2 style="margin:10px;">{{ queries|length }} Quer{{ queries|pluralize:"y,ies" }}</h2>
         <p style="font-size:12px; color:#888; margin:10px;">
-          {% for query in sql_queries  %}
+          {% for query in queries %}
             {{query}}<br /><br />
           {% endfor %}
         </p>
       {% endif %}
-    </div>
-    <div style="background-color:#F5F6F7; margin-top:20px">
-      <p style="padding:10px;" class="small">
-        <a href="{{organisation.url}}">{{organisation}}</a> | 
-        <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a> |
-        footer content |
-        how present should Akvo be?
-      </p> 
     </div>
   </div>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>

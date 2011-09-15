@@ -1,6 +1,11 @@
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+# -*- coding: utf-8 -*-
+"""
+    Akvo RSR is covered by the GNU Affero General Public License.
+    See more details in the license.txt file located at the root folder of the
+    Akvo RSR module. For additional details on the GNU license please
+    see < http://www.gnu.org/licenses/agpl.html >.
+"""
+from __future__ import absolute_import
 
 from django import template
 from django.conf import settings
@@ -10,73 +15,85 @@ from akvo.scripts.asset_manager import map, asset_bundles
 register = template.Library()
 
 
+@register.inclusion_tag('inclusion_tags/counter_badge.html', \
+                        takes_context=True)
+def counter_badge(context, object):
+    '''show the counter_badge'''
+    cache_key = '%s_view_count' % type(object).__name__.lower()
+    return {'MEDIA_URL': context['MEDIA_URL'], 'object': object, \
+            'cache_key': cache_key}
+
+
 @register.inclusion_tag('inclusion_tags/funding_box.html', takes_context=True)
 def funding_box(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
+    '''Show the funding box used in the widgets. Css definition in
+    widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/funding_table.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/funding_table.html', \
+                        takes_context=True)
 def funding_table(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
+    '''Show the funding box used in the widgets. Css definition in
+    widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/funding_project.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/funding_project.html', \
+                        takes_context=True)
 def funding_project(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
+    '''Show the funding box used in the widgets. Css definition in
+    widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/funding_box_narrow.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/funding_box_narrow.html', \
+                        takes_context=True)
 def funding_box_narrow(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
+    '''Show the funding box used in the widgets. Css definition in
+    widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/funding_box_narrow2.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/funding_box_narrow2.html', \
+                        takes_context=True)
 def funding_box_narrow2(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
+    '''Show the funding box used in the widgets. Css definition in
+    widget_global.css   '''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/individual_donate_button.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/individual_donate_button.html', \
+                        takes_context=True)
 def individual_donate_button(context, project):
-    '''
-	show the individual doante button. CSS definition in widget_global.css   
-    '''
+    '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/institutions_sponsor.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/institutions_sponsor.html', \
+                        takes_context=True)
 def institutions_sponsor(context, project):
-    '''
-	show the individual doante button. CSS definition in widget_global.css   
-    '''
+    '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/project_budget.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/project_budget.html', \
+                        takes_context=True)
 def project_budget(context, project):
-    '''
-	show the individual doante button. CSS definition in widget_global.css   
-    '''
+    '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
-@register.inclusion_tag('inclusion_tags/funding_box_wide.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/funding_box_wide.html', \
+                        takes_context=True)
 def funding_box_wide(context, project):
-    '''
-	show the funding box used in the widgets. Css definition in widget_global.css   
-    '''
+    '''Show the funding box used in the widgets. Css in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
-    
-@register.inclusion_tag('inclusion_tags/project_thumb.html', takes_context=True)
+
+
+@register.inclusion_tag('inclusion_tags/project_thumb.html', \
+                        takes_context=True)
 def project_thumb(context, project, width, height, style='',):
-    '''
-    '''
     return {
         'MEDIA_URL' : context['MEDIA_URL'],
         'project'   : project,
@@ -85,11 +102,10 @@ def project_thumb(context, project, width, height, style='',):
         'wxh'       : '%sx%s' % (width, height,),
         'style'     : style,
     }
-    
+
+
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
 def org_logo(context, org, width, height, style=''):
-    '''
-    '''
     return {
         'MEDIA_URL' : context['MEDIA_URL'],
         'org'       : org,
@@ -99,10 +115,10 @@ def org_logo(context, org, width, height, style=''):
         'style'     : style,
     }
 
-@register.inclusion_tag('inclusion_tags/update_thumb.html', takes_context=True)
+
+@register.inclusion_tag('inclusion_tags/update_thumb.html', \
+                        takes_context=True)
 def update_thumb(context, update, width, height, style=''):
-    '''
-    '''
     return {
         'MEDIA_URL' : context['MEDIA_URL'],
         'update'    : update,
@@ -128,11 +144,10 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
     }
     
 
-@register.inclusion_tag('inclusion_tags/asset_bundle.html', takes_context=True)
+@register.inclusion_tag('inclusion_tags/asset_bundle.html', \
+                        takes_context=True)
 def asset_bundle(context, bundle):
-    '''
-    Uses the akvo/scripts/asset_manager/map.py to retrive a resource file
-    '''
+    '''Uses akvo/scripts/asset_manager/map.py to retrive a resource file'''
     cant_get_map = False
     script_import_string = ''
     include = ''
@@ -140,7 +155,7 @@ def asset_bundle(context, bundle):
         bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
         bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
         bundle_path = map.BUNDLE_MAP['%s' % str(bundle)]['path']
-    except Exception, e:
+    except:
         print 'Got problems'
         bundle_hash = '000'
         cant_get_map = True
@@ -149,11 +164,11 @@ def asset_bundle(context, bundle):
         dev_mode = settings.ASSET_MANAGER_DEV
     except:
         dev_mode = False
-    
 
     if dev_mode or cant_get_map:
         if asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['type'] == 'css':
-            url = '%s%sbuild/%s_raw.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_type)
+            url = '%s%sbuild/%s_raw.%s' % (settings.MEDIA_URL, bundle_path, \
+                                           bundle, bundle_type)
             script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
             include = script_string
         else:
@@ -173,6 +188,7 @@ def asset_bundle(context, bundle):
     return {
         'include': include,
     }
+
 
 @register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
 def focus_area(context, focusarea, projects_link=True):

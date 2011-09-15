@@ -6,9 +6,10 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
-from django.views.generic import TemplateView, ListView
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView, ListView
 from ..models import Organisation, Project
 
 
@@ -27,6 +28,11 @@ class BaseView(TemplateView):
         context = super(BaseView, self).get_context_data(**kwargs)
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context['return_url'] = self.request.partner_site.return_url
+        # Queries should be removed for production
+        if settings.DEBUG:
+            from django.db import connection
+            context['queries'] = connection.queries
         return context
 
 
@@ -41,18 +47,32 @@ class BaseListView(ListView):
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
+        if settings.DEBUG:
+            from django.db import connection
+            context['queries'] = connection.queries
         return context
 
     def get_queryset(self):
-        return get_object_or_404(Organisation,
-                                 pk=self.request.organisation_id) \
-                                    .published_projects().funding() \
-                                    .order_by('id')
+        projects = get_object_or_404(Organisation,
+                                     pk=self.request.organisation_id) \
+                                        .published_projects() \
+                                        .funding() \
+                                        .order_by('-id')
+        return projects.extra(select={
+            'latest_update': """SELECT MAX(time) FROM rsr_projectupdate
+                             WHERE project_id = rsr_project.id""",
+            'update_id': """SELECT id FROM rsr_projectupdate
+                         WHERE project_id = rsr_project.id AND
+                         time = (SELECT MAX(time)
+                         FROM rsr_projectupdate
+                         WHERE project_id = rsr_project.id)""",
+            })
 
 
 class BaseProjectView(BaseView):
     """View that extends BaseView with current project or throws a 404. We
-    also verify that the project is related to the current organisation"""
+    also verify that the project is related to the current organisation,
+    if not we throw a 404."""
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
@@ -61,4 +81,6 @@ class BaseProjectView(BaseView):
         if context['project'] not in context['organisation'] \
             .published_projects():
             raise Http404
+        context['latest_updates'] = context['project'].project_updates.all() \
+            .order_by('-time')[:3]
         return context

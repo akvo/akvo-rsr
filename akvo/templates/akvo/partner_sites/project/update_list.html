@@ -1,0 +1,33 @@
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail %}
+{% load url from future %}
+
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  <li class="last_breadcrum_item">{% trans "Updates" %}</li>
+{% endblock breadcrum_items %}
+
+{% block project_content %}
+  <section class="whitebox pad20">
+    <h2>{% trans "Project updates" %}</h2>
+    {% if update_list %}
+      <p>
+        {% for update in update_list %}
+          <span class="grey">{{update.time|date:"d-M-Y"}}</span>
+          <a href="{% url 'update_main' project.id update.id %}">
+            {{update.title}}
+          </a>
+          <br />
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>{% trans "No updates yet." %}</p>
+    {% endif %}
+  </section>    
+{% endblock project_content %}
+
+{% block project_aside_updates %}
+  {# Overriding the aside update section #}
+{% endblock project_aside_updates %}

@@ -23,13 +23,13 @@ body {
     font-family: @font-family;
     }
     
-a { 
+a, a:link, a:visited { 
     color:@link-color;
     cursor:pointer;
     text-decoration:none;
     }
     
-a:visited { color:@link-color; }
+/*a:visited { color:@link-color; }*/
 a:hover { color:@link-hover-color; text-decoration: underline; }
 
 p {
@@ -128,9 +128,20 @@ textarea { border: 1px solid #ccc;}
 /*------------------------------------------------------------------ 
 [5. Tables] 
 */
-table { border-top:1px solid #ccc;  border-left:1px solid #ccc;}
-th, td { border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:.8em; }
+/*
+table {border-top:1px solid #ccc;  border-left:1px solid #ccc;}
+th, td {border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:0.8em;}
+*/
 
+table {border:1px solid #ccc;}
+th {border-right: 1px solid #ccc; border-bottom: 1px solid #ccc;}
+td {border-right: 1px solid #eee; border-bottom: 1px solid #eee;}
+td, th {padding: 10px}
+.no_right_border {border-right:none;}
+.no_bottom_border {border-bottom:none;}
+
+/*.no_right_border {border-right:none;}*/
+/*th, td {border-bottom:1px solid #ddd; border-right:1px solid #ccc; padding:0.8em;}*/
 
 /*------------------------------------------------------------------ 
 [6. Margins & paddings] 
@@ -147,7 +158,7 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 [7. Nice to have classes] 
 */
 .hide { display:none; }
-.grey { color:#888; }
+.grey { color:#7E8197; }
 .red { color:#E60113; }
 .black { color: #333; }
 .serif { font-family: 'Georgia', serif; }
