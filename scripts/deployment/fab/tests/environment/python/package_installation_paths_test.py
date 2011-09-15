@@ -34,7 +34,7 @@ class PackageInstallationPathsTest(unittest2.TestCase):
         self.assertEqual(installation_paths.package_download_dir, python_config_values.python_package_download_dir)
         self.assertEqual(installation_paths.distribute_setup_url, package_tools_config.distribute_setup_url)
         self.assertEqual(installation_paths.pip_setup_url, package_tools_config.pip_setup_url)
-        self.assertEqual(installation_paths.system_requirements_url, codebase_config.system_requirements_file_url)
+        self.assertEqual(installation_paths.system_requirements_file_url, codebase_config.system_requirements_file_url)
 
 
 def suite():
