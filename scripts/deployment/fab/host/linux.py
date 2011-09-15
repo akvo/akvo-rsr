@@ -7,25 +7,33 @@
 
 from fab.dependency.systempackages import SystemPackageDependencyCollection
 from fab.dependency.verifier.packageverifier import SystemPackageVerifier
+from fab.environment.python.systempackageinstaller import SystemPythonPackageInstaller
 from fab.host.controller import RemoteHostController
 from fab.os.linux.packageinspector import UbuntuPackageInspector
 
 
 class LinuxHost(object):
 
-    def __init__(self, package_inspector, system_package_verifier, feedback):
-        self.package_inspector = package_inspector
-        self.system_package_verifier = system_package_verifier
+    def __init__(self, os_package_inspector, os_package_verifier, python_package_installer, feedback):
+        self.os_package_inspector = os_package_inspector
+        self.os_package_verifier = os_package_verifier
+        self.python_package_installer = python_package_installer
         self.feedback = feedback
 
     @staticmethod
     def create_instance():
         host_controller = RemoteHostController.create_instance()
-        system_package_verifier = SystemPackageVerifier.create_instance(host_controller.feedback)
 
-        return LinuxHost(UbuntuPackageInspector(host_controller), system_package_verifier, host_controller.feedback)
+        return LinuxHost(UbuntuPackageInspector(host_controller),
+                         SystemPackageVerifier.create_instance(host_controller.feedback),
+                         SystemPythonPackageInstaller.create_instance(host_controller),
+                         host_controller.feedback)
 
-    def exit_if_system_package_dependencies_not_met(self, package_specifications):
-        dependency_collection = SystemPackageDependencyCollection(package_specifications, self.package_inspector, self.feedback)
+    def exit_if_system_package_dependencies_not_met(self, os_package_specifications):
+        dependency_collection = SystemPackageDependencyCollection(os_package_specifications, self.os_package_inspector, self.feedback)
 
-        self.system_package_verifier.exit_if_package_dependencies_not_met(dependency_collection)
+        self.os_package_verifier.exit_if_package_dependencies_not_met(dependency_collection)
+
+    def update_system_python_packages(self):
+        self.python_package_installer.install_package_tools()
+        self.python_package_installer.install_system_packages()
