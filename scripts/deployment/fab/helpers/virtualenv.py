@@ -28,7 +28,8 @@ class VirtualEnv(object):
         self.list_installed_virtualenv_packages()
 
     def list_installed_virtualenv_packages(self):
-        self.host_controller.run("pip freeze -E %s" % self.virtualenv_path)
+        self.feedback.comment("Installed packages:")
+        self.run_within_virtualenv("pip freeze")
 
     def run_within_virtualenv(self, command):
         self.host_controller.run("source %s/bin/activate && %s" % (self.virtualenv_path, command))
