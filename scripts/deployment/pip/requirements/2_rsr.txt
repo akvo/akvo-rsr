@@ -3,13 +3,13 @@ Django==1.3
 
 # Django apps
 django-counter==0.1.6
-djangoembed==0.1.1
 django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.2
 django-piston==0.2.2
 django-rosetta==0.6.2
 django-sorting==0.1
+djangoembed==0.1.1
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
