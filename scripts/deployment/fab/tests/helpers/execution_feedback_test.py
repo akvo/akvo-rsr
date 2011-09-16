@@ -43,7 +43,7 @@ class ExecutionFeedbackTest(unittest.TestCase):
         self.assertEqual(">> Deployment started", self.feedback.actual_formatted_message)
         self.assertTrue(self.feedback.actual_display_host_prefix, "Expected host prefix displaying to be enabled")
         self.assertEqual('\n', self.feedback.actual_line_ending)
-        self.assertFalse(self.feedback.actual_flush_output, "Expected output not to be flushed")
+        self.assertTrue(self.feedback.actual_flush_output, "Expected output to be flushed")
 
     def test_abort_method_displays_formatted_message(self):
         """fab.tests.helpers.execution_feedback_test  Abort method displays formatted message"""
