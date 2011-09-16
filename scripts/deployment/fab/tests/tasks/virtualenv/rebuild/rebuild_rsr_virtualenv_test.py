@@ -12,7 +12,8 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.deployer import DeployerConfig
 from fab.host.controller import HostControllerMode
 from fab.host.deployment import DeploymentHost
-from fab.tasks.virtualenv import RebuildRSRVirtualEnv
+
+from fab.tasks.virtualenv.rebuild.rsrenv import RebuildRSRVirtualEnv
 
 
 class StubbedRebuildRSRVirtualEnv(RebuildRSRVirtualEnv):
@@ -32,17 +33,17 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
         self.rebuild_virtualenv_task.deployment_host = self.mock_deployment_host
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Has expected task name"""
+        """fab.tests.tasks.virtualenv.rebuild.rebuild_rsr_virtualenv_test  Has expected task name"""
 
         self.assertEqual("rebuild_rsr_virtualenv", RebuildRSRVirtualEnv.name)
 
     def test_can_create_task_instance(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can create task instance"""
+        """fab.tests.tasks.virtualenv.rebuild.rebuild_rsr_virtualenv_test  Can create task instance"""
 
         self.assertIsInstance(RebuildRSRVirtualEnv.create_task_instance(), RebuildRSRVirtualEnv)
 
     def test_can_configure_deploymenthost_member_using_local_hostcontrollermode(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can configure DeploymentHost member using local HostControllerMode"""
+        """fab.tests.tasks.virtualenv.rebuild.rebuild_rsr_virtualenv_test  Can configure DeploymentHost member using local HostControllerMode"""
 
         rebuild_rsr_virtualenv_task = RebuildRSRVirtualEnv.create_task_instance()
         rebuild_rsr_virtualenv_task.configure_deployment_host_using(HostControllerMode.LOCAL)
@@ -50,7 +51,7 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
         self.assertIsInstance(rebuild_rsr_virtualenv_task.deployment_host, DeploymentHost)
 
     def test_can_configure_deploymenthost_member_using_remote_hostcontrollermode(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can configure DeploymentHost member using remote HostControllerMode"""
+        """fab.tests.tasks.virtualenv.rebuild.rebuild_rsr_virtualenv_test  Can configure DeploymentHost member using remote HostControllerMode"""
 
         rebuild_rsr_virtualenv_task = RebuildRSRVirtualEnv.create_task_instance()
         rebuild_rsr_virtualenv_task.configure_deployment_host_using(HostControllerMode.REMOTE)
@@ -58,7 +59,7 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
         self.assertIsInstance(rebuild_rsr_virtualenv_task.deployment_host, DeploymentHost)
 
     def test_can_rebuild_rsr_virtualenv(self):
-        """fab.tests.tasks.rebuild_rsr_virtualenv_test  Can rebuild an RSR virtualenv"""
+        """fab.tests.tasks.virtualenv.rebuild.rebuild_rsr_virtualenv_test  Can rebuild an RSR virtualenv"""
 
         pip_log_file = "/some/log/path/pip.log"
         pip_requirements_home = "/path/to/pip/requirements"

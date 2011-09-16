@@ -16,7 +16,6 @@ class DatabaseHost(NeutralHost):
 
     def __init__(self, file_system, virtualenv, feedback):
         super(DatabaseHost, self).__init__(file_system, feedback)
-        self.file_system = file_system
         self.virtualenv = virtualenv
 
     @staticmethod

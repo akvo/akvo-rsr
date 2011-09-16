@@ -32,7 +32,7 @@ class VirtualEnvTest(mox.MoxTestBase):
 
         virtualenv_command = "command text"
 
-        self.mock_host_controller.run(self.expected_call_within_virtualenv(virtualenv_command))
+        self.mock_host_controller.run(self._expected_call_within_virtualenv(virtualenv_command))
         self.mox.ReplayAll()
 
         self.virtualenv.run_within_virtualenv(virtualenv_command)
@@ -40,7 +40,7 @@ class VirtualEnvTest(mox.MoxTestBase):
     def test_can_list_installed_virtualenv_packages(self):
         """fab.tests.helpers.virtualenv_test  Can list installed virtualenv packages"""
 
-        self.mock_host_controller.run(self.expected_pip_freeze_call())
+        self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
 
         self.virtualenv.list_installed_virtualenv_packages()
@@ -51,12 +51,12 @@ class VirtualEnvTest(mox.MoxTestBase):
         pip_log_file = "/some/log/path/pip.log"
         expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
 
-        self.mock_feedback.comment(mox.StrContains("Deleting previous virtualenv directory and pip install log file"))
+        self.mock_feedback.comment("Deleting previous virtualenv directory and pip install log file")
         self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
         self.mock_file_system.delete_file_with_sudo(pip_log_file)
-        self.mock_feedback.comment(mox.StrContains("Creating new virtualenv at %s" % self.expected_virtualenv_path))
+        self.mock_feedback.comment("Creating new virtualenv at %s" % self.expected_virtualenv_path)
         self.mock_host_controller.run(expected_virtualenv_creation_command)
-        self.mock_host_controller.run(self.expected_pip_freeze_call())
+        self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
 
         self.virtualenv.create_empty_virtualenv(pip_log_file)
@@ -70,17 +70,18 @@ class VirtualEnvTest(mox.MoxTestBase):
                                                                                    pip_requirements_file,
                                                                                    pip_log_file)
 
-        self.mock_feedback.comment(mox.StrContains("Installing packages in virtualenv at %s" % self.expected_virtualenv_path))
-        self.mock_host_controller.run(self.expected_call_within_virtualenv(expected_pip_install_command))
-        self.mock_host_controller.run(self.expected_pip_freeze_call())
+        self.mock_feedback.comment("Installing packages in virtualenv at %s" % self.expected_virtualenv_path)
+        self.mock_host_controller.run(self._expected_call_within_virtualenv(expected_pip_install_command))
+        self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
 
         self.virtualenv.install_packages(pip_requirements_file, pip_log_file)
 
-    def expected_pip_freeze_call(self):
-        return "pip freeze -E %s" % self.expected_virtualenv_path
+    def _set_expectations_to_list_pip_packages(self):
+        self.mock_feedback.comment("Installed packages:")
+        self.mock_host_controller.run(self._expected_call_within_virtualenv("pip freeze"))
 
-    def expected_call_within_virtualenv(self, command):
+    def _expected_call_within_virtualenv(self, command):
         return "source %s/bin/activate && %s" % (self.expected_virtualenv_path, command)
 
 
