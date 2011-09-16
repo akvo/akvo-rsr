@@ -7,6 +7,6 @@ rdflib==3.1.0
 unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
-selenium==2.5.0
+selenium==2.6.0
 lettuce==0.1.33
 lettuce_webdriver==0.1.3
