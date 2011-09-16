@@ -23,9 +23,21 @@ class VirtualEnv(object):
         self.list_installed_virtualenv_packages()
 
     def install_packages(self, pip_requirements_file, pip_install_log_file):
+        self._install_packages_in_virtualenv(pip_requirements_file, pip_install_log_file, quietly=False)
+
+    def install_packages_quietly(self, pip_requirements_file, pip_install_log_file):
+        self._install_packages_in_virtualenv(pip_requirements_file, pip_install_log_file, quietly=True)
+
+    def _install_packages_in_virtualenv(self, pip_requirements_file, pip_install_log_file, quietly):
         self.feedback.comment("Installing packages in virtualenv at %s" % self.virtualenv_path)
-        self.run_within_virtualenv("pip install -M -E %s -r %s --log=%s" % (self.virtualenv_path, pip_requirements_file, pip_install_log_file))
+        self.run_within_virtualenv(self._pip_install_command(pip_requirements_file, pip_install_log_file, quietly))
         self.list_installed_virtualenv_packages()
+
+    def _pip_install_command(self, pip_requirements_file, pip_install_log_file, quietly):
+        quite_mode_switch = "-q " if quietly else ""
+        pip_install_command_base = "pip install %s-M -E %s" % (quite_mode_switch, self.virtualenv_path)
+
+        return "%s -r %s --log=%s" % (pip_install_command_base, pip_requirements_file, pip_install_log_file)
 
     def list_installed_virtualenv_packages(self):
         self.feedback.comment("Installed packages:")
