@@ -8,7 +8,7 @@
 from fab.dependency.verifier.collectionverifier import DependencyCollectionVerifier
 
 
-class SystemPackageVerifier(object):
+class LinuxPackageVerifier(object):
 
     def __init__(self, dependency_verifier, feedback):
         self.dependency_verifier = dependency_verifier
@@ -16,7 +16,7 @@ class SystemPackageVerifier(object):
 
     @staticmethod
     def create_instance(feedback):
-        return SystemPackageVerifier(DependencyCollectionVerifier(), feedback)
+        return LinuxPackageVerifier(DependencyCollectionVerifier(), feedback)
 
     def exit_if_package_dependencies_not_met(self, dependency_collection):
         self.feedback.comment("Verifying expected system packages")

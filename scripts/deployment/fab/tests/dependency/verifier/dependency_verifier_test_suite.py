@@ -8,11 +8,10 @@
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.dependency.verifier.dependency_collection_verifier_test import DependencyCollectionVerifierTest
-from fab.tests.dependency.verifier.system_package_verifier_test import SystemPackageVerifierTest
 
 
 def dependency_verifier_suite():
-    return TestSuiteLoader().create_suite_from_classes([DependencyCollectionVerifierTest, SystemPackageVerifierTest])
+    return TestSuiteLoader().create_suite_from_classes([DependencyCollectionVerifierTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
