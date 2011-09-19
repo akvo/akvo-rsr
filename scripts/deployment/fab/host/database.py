@@ -6,9 +6,9 @@
 
 
 from fab.environment.python.virtualenv import VirtualEnv
-from fab.helpers.filesystem import FileSystem
 from fab.host.controller import RemoteHostController
 from fab.host.neutral import NeutralHost
+from fab.os.filesystem import FileSystem
 
 
 class DatabaseHost(NeutralHost):

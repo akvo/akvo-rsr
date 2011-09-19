@@ -11,12 +11,11 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
-from fab.host.controller import LocalHostController
-from fab.host.controller import RemoteHostController
+from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.deployment import DeploymentHost
+from fab.os.filesystem import FileSystem
 
 
 class DeploymentHostTest(mox.MoxTestBase):

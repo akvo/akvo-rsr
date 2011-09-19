@@ -11,12 +11,11 @@ from fab.tests.helpers.akvo_permissions_test import AkvoPermissionsTest
 from fab.tests.helpers.codebase_test import CodebaseTest
 from fab.tests.helpers.data_retriever_test import DataRetrieverTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
-from fab.tests.helpers.file_system_test import FileSystemTest
 from fab.tests.helpers.internet_test import InternetTest
 
 
 def helpers_suite():
-    return TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, FileSystemTest, AkvoPermissionsTest,
+    return TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, AkvoPermissionsTest,
                                                         InternetTest, CodebaseTest, DataRetrieverTest])
 
 if __name__ == "__main__":

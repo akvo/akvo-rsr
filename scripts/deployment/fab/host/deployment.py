@@ -6,10 +6,10 @@
 
 
 from fab.environment.python.virtualenv import VirtualEnv
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
 from fab.host.neutral import NeutralHost
+from fab.os.filesystem import FileSystem
 
 
 class DeploymentHost(NeutralHost):

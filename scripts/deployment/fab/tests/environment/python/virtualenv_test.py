@@ -11,8 +11,8 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
 from fab.host.controller import RemoteHostController
+from fab.os.filesystem import FileSystem
 
 
 class VirtualEnvTest(mox.MoxTestBase):

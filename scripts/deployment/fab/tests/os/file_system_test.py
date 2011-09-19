@@ -11,8 +11,8 @@ import mox, os
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
 from fab.host.controller import LocalHostController
+from fab.os.filesystem import FileSystem
 
 
 class FileSystemTest(mox.MoxTestBase):
@@ -26,7 +26,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system = FileSystem(self.mock_host_controller)
 
     def test_can_change_directory(self):
-        """fab.tests.helpers.file_system_test  Can change directory"""
+        """fab.tests.os.file_system_test  Can change directory"""
 
         dir_path = "/var/tmp/foo"
         changed_context = fabric.api.cd(dir_path)
@@ -36,7 +36,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.assertIs(changed_context, self.file_system.cd(dir_path))
 
     def test_can_verify_file_existence(self):
-        """fab.tests.helpers.file_system_test  Can verify file existence"""
+        """fab.tests.os.file_system_test  Can verify file existence"""
 
         expected_file_path = "/path/to/file.txt"
         self.mock_host_controller.path_exists(expected_file_path).AndReturn(True)
@@ -45,7 +45,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.assertTrue(self.file_system.file_exists(expected_file_path), "Expected file to exist")
 
     def test_can_verify_directory_existence(self):
-        """fab.tests.helpers.file_system_test  Can verify directory existence"""
+        """fab.tests.os.file_system_test  Can verify directory existence"""
 
         expected_dir_path = "/path/to/dir"
         self.mock_host_controller.path_exists(expected_dir_path).AndReturn(True)
@@ -54,7 +54,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.assertTrue(self.file_system.directory_exists(expected_dir_path), "Expected directory to exist")
 
     def test_will_exit_if_file_does_not_exist(self):
-        """fab.tests.helpers.file_system_test  Will exit if file does not exist"""
+        """fab.tests.os.file_system_test  Will exit if file does not exist"""
 
         nonexistent_file = "/nonexistent/file.txt"
         self.mock_host_controller.path_exists(nonexistent_file).AndReturn(False)
@@ -66,7 +66,7 @@ class FileSystemTest(mox.MoxTestBase):
             self.file_system.exit_if_file_does_not_exist(nonexistent_file)
 
     def test_will_confirm_file_existence_and_not_exit_if_file_exists(self):
-        """fab.tests.helpers.file_system_test  Will confirm file existence and not exit if file exists"""
+        """fab.tests.os.file_system_test  Will confirm file existence and not exit if file exists"""
 
         common_system_file = "/usr/bin/man"
         self.mock_host_controller.path_exists(common_system_file).AndReturn(True)
@@ -76,7 +76,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.exit_if_file_does_not_exist(common_system_file)
 
     def test_will_exit_if_directory_does_not_exist(self):
-        """fab.tests.helpers.file_system_test  Will exit if directory does not exist"""
+        """fab.tests.os.file_system_test  Will exit if directory does not exist"""
 
         nonexistent_dir = "/nonexistent/path"
         self.mock_host_controller.path_exists(nonexistent_dir).AndReturn(False)
@@ -88,7 +88,7 @@ class FileSystemTest(mox.MoxTestBase):
             self.file_system.exit_if_directory_does_not_exist(nonexistent_dir)
 
     def test_will_confirm_directory_existence_and_not_exit_if_directory_exists(self):
-        """fab.tests.helpers.file_system_test  Will confirm directory existence and not exit if directory exists"""
+        """fab.tests.os.file_system_test  Will confirm directory existence and not exit if directory exists"""
 
         common_system_dir = "/usr/bin"
         self.mock_host_controller.path_exists(common_system_dir).AndReturn(True)
@@ -98,7 +98,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.exit_if_directory_does_not_exist(common_system_dir)
 
     def test_can_create_directory(self):
-        """fab.tests.helpers.file_system_test  Can create directory"""
+        """fab.tests.os.file_system_test  Can create directory"""
 
         new_dir = "/var/tmp/packages"
         self.mock_feedback.comment("Creating directory: %s" % new_dir)
@@ -109,7 +109,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.create_directory(new_dir)
 
     def test_can_create_directory_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Can create directory with sudo"""
+        """fab.tests.os.file_system_test  Can create directory with sudo"""
 
         new_dir = "/var/tmp/packages"
         self.mock_feedback.comment("Creating directory: %s" % new_dir)
@@ -120,7 +120,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.create_directory_with_sudo(new_dir)
 
     def test_will_confirm_existing_directory_when_ensuring_directory_exists(self):
-        """fab.tests.helpers.file_system_test  Will confirm existing directory when ensuring directory exists"""
+        """fab.tests.os.file_system_test  Will confirm existing directory when ensuring directory exists"""
 
         existing_dir = "/var/tmp"
         self.mock_host_controller.path_exists(existing_dir).AndReturn(True)
@@ -130,7 +130,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.ensure_directory_exists(existing_dir)
 
     def test_can_ensure_missing_directory_is_created(self):
-        """fab.tests.helpers.file_system_test  Can ensure missing directory is created"""
+        """fab.tests.os.file_system_test  Can ensure missing directory is created"""
 
         new_dir = "/var/tmp/packages"
         self.mock_host_controller.path_exists(new_dir).AndReturn(False)
@@ -142,7 +142,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.ensure_directory_exists(new_dir)
 
     def test_will_confirm_existing_directory_when_ensuring_directory_exists_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Will confirm existing directory when ensuring directory exists with sudo"""
+        """fab.tests.os.file_system_test  Will confirm existing directory when ensuring directory exists with sudo"""
 
         existing_dir = "/var/tmp"
         self.mock_host_controller.path_exists(existing_dir).AndReturn(True)
@@ -152,7 +152,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.ensure_directory_exists_with_sudo(existing_dir)
 
     def test_can_ensure_missing_directory_is_created_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Can ensure missing directory is created with sudo"""
+        """fab.tests.os.file_system_test  Can ensure missing directory is created with sudo"""
 
         new_dir = "/var/tmp/packages"
         self.mock_host_controller.path_exists(new_dir).AndReturn(False)
@@ -164,7 +164,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.ensure_directory_exists_with_sudo(new_dir)
 
     def test_can_rename_file(self):
-        """fab.tests.helpers.file_system_test  Can rename a file"""
+        """fab.tests.os.file_system_test  Can rename a file"""
 
         original_file = "/var/tmp/original/file.txt"
         new_file = "/var/tmp/something/else.txt"
@@ -174,7 +174,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.rename_file(original_file, new_file)
 
     def test_can_rename_directory(self):
-        """fab.tests.helpers.file_system_test  Can rename a directory"""
+        """fab.tests.os.file_system_test  Can rename a directory"""
 
         original_dir = "/var/tmp/original"
         new_dir = "/var/tmp/something/else"
@@ -184,7 +184,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.rename_directory(original_dir, new_dir)
 
     def test_can_make_file_writable_for_all_users(self):
-        """fab.tests.helpers.file_system_test  Can make file writable for all users"""
+        """fab.tests.os.file_system_test  Can make file writable for all users"""
 
         file_path = "/var/tmp/file_to_change.txt"
         self.mock_host_controller.sudo("chmod a+w %s" % file_path)
@@ -193,7 +193,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.make_file_writable_for_all_users(file_path)
 
     def test_can_delete_an_existing_file(self):
-        """fab.tests.helpers.file_system_test  Can delete an existing file"""
+        """fab.tests.os.file_system_test  Can delete an existing file"""
 
         unwanted_file = "/var/tmp/unwanted_file.txt"
         self._set_expectations_for_deleting("file", unwanted_file, self.mock_host_controller.run)
@@ -201,7 +201,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file(unwanted_file)
 
     def test_can_delete_an_existing_file_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Can delete an existing file with sudo"""
+        """fab.tests.os.file_system_test  Can delete an existing file with sudo"""
 
         unwanted_file = "/var/tmp/unwanted_file.txt"
         self._set_expectations_for_deleting("file", unwanted_file, self.mock_host_controller.sudo)
@@ -209,7 +209,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file_with_sudo(unwanted_file)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_file(self):
-        """fab.tests.helpers.file_system_test  Do nothing on attempt to delete a nonexistent file"""
+        """fab.tests.os.file_system_test  Do nothing on attempt to delete a nonexistent file"""
 
         nonexistent_file = "/var/tmp/wibble.txt"
         self.mock_host_controller.path_exists(nonexistent_file).AndReturn(False)
@@ -218,7 +218,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file(nonexistent_file)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_file_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Do nothing on attempt to delete a nonexistent file with sudo"""
+        """fab.tests.os.file_system_test  Do nothing on attempt to delete a nonexistent file with sudo"""
 
         nonexistent_file = "/var/tmp/wibble.txt"
         self.mock_host_controller.path_exists(nonexistent_file).AndReturn(False)
@@ -227,7 +227,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_file_with_sudo(nonexistent_file)
 
     def test_can_delete_an_existing_directory(self):
-        """fab.tests.helpers.file_system_test  Can delete an existing directory"""
+        """fab.tests.os.file_system_test  Can delete an existing directory"""
 
         unwanted_dir = "/var/tmp/unwanted_dir"
         self._set_expectations_for_deleting("directory", unwanted_dir, self.mock_host_controller.run)
@@ -235,7 +235,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_directory(unwanted_dir)
 
     def test_can_delete_an_existing_directory_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Can delete an existing directory with sudo"""
+        """fab.tests.os.file_system_test  Can delete an existing directory with sudo"""
 
         unwanted_dir = "/var/tmp/unwanted_dir"
         self._set_expectations_for_deleting("directory", unwanted_dir, self.mock_host_controller.sudo)
@@ -243,7 +243,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_directory_with_sudo(unwanted_dir)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_directory(self):
-        """fab.tests.helpers.file_system_test  Do nothing on attempt to delete a nonexistent directory"""
+        """fab.tests.os.file_system_test  Do nothing on attempt to delete a nonexistent directory"""
 
         nonexistent_dir = "/var/tmp/wibble_dir"
         self.mock_host_controller.path_exists(nonexistent_dir).AndReturn(False)
@@ -252,7 +252,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.delete_directory(nonexistent_dir)
 
     def test_do_nothing_on_attempt_to_delete_a_nonexistent_directory_with_sudo(self):
-        """fab.tests.helpers.file_system_test  Do nothing on attempt to delete a nonexistent directory with sudo"""
+        """fab.tests.os.file_system_test  Do nothing on attempt to delete a nonexistent directory with sudo"""
 
         nonexistent_dir = "/var/tmp/wibble_dir"
         self.mock_host_controller.path_exists(nonexistent_dir).AndReturn(False)
@@ -267,7 +267,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
     def test_can_decompress_code_archive(self):
-        """fab.tests.helpers.file_system_test  Can decompress a code archive"""
+        """fab.tests.os.file_system_test  Can decompress a code archive"""
 
         archive_file = "rsr_v1.0.10.zip"
         destination_dir = "/var/tmp/unpack"
@@ -277,7 +277,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.decompress_code_archive(archive_file, destination_dir)
 
     def test_can_compress_directory(self):
-        """fab.tests.helpers.file_system_test  Can compress a specified directory"""
+        """fab.tests.os.file_system_test  Can compress a specified directory"""
 
         dir_to_compress = "/var/archives/data_4423"
         self._set_expected_compression_path_and_compressed_file_name(dir_to_compress, "data_4423")
@@ -285,7 +285,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.compress_directory(dir_to_compress)
 
     def test_can_compress_directory_with_trailing_path_separator(self):
-        """fab.tests.helpers.file_system_test  Can compress a specified directory even with a trailing path separator"""
+        """fab.tests.os.file_system_test  Can compress a specified directory even with a trailing path separator"""
 
         dir_to_compress = "/var/archives/data_4423/"
         self._set_expected_compression_path_and_compressed_file_name(dir_to_compress.rstrip("/"), "data_4423")
@@ -299,7 +299,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
     def test_can_download_file(self):
-        """fab.tests.helpers.file_system_test  Can download a file"""
+        """fab.tests.os.file_system_test  Can download a file"""
 
         host_file_path = "/var/some/dir/file.zip"
         local_directory = "/var/tmp/archives"

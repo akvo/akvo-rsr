@@ -10,8 +10,8 @@ import os
 from fab.config.environment.python.packagetools import PackageInstallationToolsConfig
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.values import PythonConfigValues, SharedConfigValues
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
+from fab.os.filesystem import FileSystem
 
 
 class PackageInstallationPaths(object):

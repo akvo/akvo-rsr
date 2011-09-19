@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.os.file_system_test import suite as file_system_suite
 from fab.tests.os.linux.linux_test_suite import linux_suite
 
 
 def os_suite():
-    return TestSuiteLoader().create_suite_from_list([linux_suite()])
+    return TestSuiteLoader().create_suite_from_list([file_system_suite(), linux_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

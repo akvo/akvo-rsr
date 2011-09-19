@@ -12,9 +12,9 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.environment.python.systempackageinstaller import PackageInstallationPaths, SystemPythonPackageInstaller
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.host.controller import RemoteHostController
+from fab.os.filesystem import FileSystem
 
 
 class SystemPythonPackageInstallerTest(mox.MoxTestBase):
