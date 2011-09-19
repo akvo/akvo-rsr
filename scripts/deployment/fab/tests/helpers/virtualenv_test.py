@@ -30,6 +30,23 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.mock_host_controller.feedback = self.mock_feedback
         self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_host_controller, self.mock_file_system)
 
+    def test_can_check_for_virtualenv_existence(self):
+        """fab.tests.helpers.virtualenv_test  Can check for virtualenv existence"""
+
+        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
+        self.mox.ReplayAll()
+
+        self.assertTrue(self.virtualenv.virtualenv_exists(), "Virtualenv should exist")
+
+    def test_can_delete_existing_virtualenv(self):
+        """fab.tests.helpers.virtualenv_test  Can delete existing virtualenv"""
+
+        self.mock_feedback.comment("Deleting existing virtualenv")
+        self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
+        self.mox.ReplayAll()
+
+        self.virtualenv.delete_existing_virtualenv()
+
     def test_can_run_command_within_virtualenv(self):
         """fab.tests.helpers.virtualenv_test  Can run command from within virtualenv"""
 
@@ -51,17 +68,38 @@ class VirtualEnvTest(mox.MoxTestBase):
     def test_can_create_empty_virtualenv(self):
         """fab.tests.helpers.virtualenv_test  Can create empty virtualenv"""
 
+        self._set_expectations_to_create_empty_virtualenv()
+
+        self.virtualenv.create_empty_virtualenv(self.pip_log_file)
+
+    def test_can_ensure_virtualenv_exists_and_create_empty_virtualenv_if_none_exists(self):
+        """fab.tests.helpers.virtualenv_test  Can ensure virtualenv exists and create an empty virtualenv if none exists"""
+
+        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(False)
+        self._set_expectations_to_create_empty_virtualenv()
+
+        self.virtualenv.ensure_virtualenv_exists(self.pip_log_file)
+
+    def test_can_ensure_virtualenv_exists_and_confirm_an_existing_virtualenv(self):
+        """fab.tests.helpers.virtualenv_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
+
+        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
+        self.mock_feedback.comment("Found existing virtualenv at %s" % self.expected_virtualenv_path)
+        self._set_expectations_to_list_pip_packages()
+        self.mox.ReplayAll()
+
+        self.virtualenv.ensure_virtualenv_exists(self.pip_log_file)
+
+    def _set_expectations_to_create_empty_virtualenv(self):
         expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
 
-        self.mock_feedback.comment("Deleting previous virtualenv directory and pip install log file")
+        self.mock_feedback.comment("Deleting existing virtualenv")
         self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
         self.mock_file_system.delete_file_with_sudo(self.pip_log_file)
         self.mock_feedback.comment("Creating new virtualenv at %s" % self.expected_virtualenv_path)
         self.mock_host_controller.run(expected_virtualenv_creation_command)
         self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
-
-        self.virtualenv.create_empty_virtualenv(self.pip_log_file)
 
     def test_can_install_packages_from_given_pip_requirements(self):
         """fab.tests.helpers.virtualenv_test  Can install packages from given pip requirements"""

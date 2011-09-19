@@ -13,9 +13,22 @@ class VirtualEnv(object):
         self.file_system = file_system
         self.feedback = host_controller.feedback
 
-    def create_empty_virtualenv(self, pip_install_log_file):
-        self.feedback.comment("Deleting previous virtualenv directory and pip install log file")
+    def virtualenv_exists(self):
+        return self.file_system.directory_exists(self.virtualenv_path)
+
+    def delete_existing_virtualenv(self):
+        self.feedback.comment("Deleting existing virtualenv")
         self.file_system.delete_directory_with_sudo(self.virtualenv_path)
+
+    def ensure_virtualenv_exists(self, pip_install_log_file):
+        if not self.virtualenv_exists():
+            self.create_empty_virtualenv(pip_install_log_file)
+        else:
+            self.feedback.comment("Found existing virtualenv at %s" % self.virtualenv_path)
+            self.list_installed_virtualenv_packages()
+
+    def create_empty_virtualenv(self, pip_install_log_file):
+        self.delete_existing_virtualenv()
         self.file_system.delete_file_with_sudo(pip_install_log_file)
 
         self.feedback.comment("Creating new virtualenv at %s" % self.virtualenv_path)
