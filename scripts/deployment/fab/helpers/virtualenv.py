@@ -17,8 +17,9 @@ class VirtualEnv(object):
         return self.file_system.directory_exists(self.virtualenv_path)
 
     def delete_existing_virtualenv(self):
-        self.feedback.comment("Deleting existing virtualenv")
-        self.file_system.delete_directory_with_sudo(self.virtualenv_path)
+        if self.virtualenv_exists():
+            self.feedback.comment("Deleting existing virtualenv")
+            self.file_system.delete_directory_with_sudo(self.virtualenv_path)
 
     def ensure_virtualenv_exists(self, pip_install_log_file):
         if not self.virtualenv_exists():
@@ -28,8 +29,9 @@ class VirtualEnv(object):
             self.list_installed_virtualenv_packages()
 
     def create_empty_virtualenv(self, pip_install_log_file):
-        self.delete_existing_virtualenv()
-        self.file_system.delete_file_with_sudo(pip_install_log_file)
+        if self.virtualenv_exists():
+            self.delete_existing_virtualenv()
+            self.file_system.delete_file_with_sudo(pip_install_log_file)
 
         self.feedback.comment("Creating new virtualenv at %s" % self.virtualenv_path)
         self.host_controller.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
