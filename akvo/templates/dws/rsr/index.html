@@ -13,7 +13,15 @@
 {% endblock inline_styles %}
 
 {% block head %}
-<link href='http://fonts.googleapis.com/css?family=Arvo:400,400italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,400italic' rel='stylesheet' type='text/css'>
+  
+  <!--[if IE 7]>
+    <style type="text/css">
+      #foo p, #foo a, #foo div {
+        background: url();
+      }
+    </style>
+  <![endif]-->  
 {% endblock head %}
 
 {% block maincontent %}
@@ -30,7 +38,7 @@
   {# news box #}
   <div class='column span-8'>
     <div id="index_news_box">
-      <img src="{{ news_image }}" width="646" height="484" alt="{{ news_title }}"/>
+      <img src="{{ news_image }}" width="646" height="484" alt="{{ news_title }}" style="display: block;"/>
       {% comment %}
       {# alternative layout with one news item}
       <div class="full top">
@@ -52,19 +60,17 @@
       </div>
       {% endcomment %}
       <div class="full bottom">
-        <div class="text_bg">
+        <div id="foo" class="text_bg">
           {% for post in news_posts %}
             {% if not forloop.first %}
               <hr/>
             {% endif %}
-            <div>
               <!--<span style="margin-right: 1em; color: #B5B9C7; font-size: 0.875em;">
                 {% trans 'FEATURE'%}
               </span>-->
               <a href="{{ post.url }}" class="serif">{{ post.title }}</a>
-            </div>
           {% endfor %}
-          <p class="yellow last" style="text-align: right;">
+          <p class="yellow last" style="text-align: right;  ">
             <a href="/news" class="yellow" style="font-size:0.8125em;">{% trans 'More news headlines' %}</a>
           </p>
         </div>
@@ -82,7 +88,7 @@
       </div>
       <div class="hr_margin"><hr/></div>
       <div class="space15 center">
-        <a href="http://www.youtube.com/user/NLWaterPartnership" class="small_link orange">
+        <a href="http://www.youtube.com/user/NLWaterPartnership" target="_blank" class="small_link orange">
           {% trans "See our latest videos on" %}
           <img src="{{MEDIA_URL}}dws/img/index/youtube_24x24.png" alt="YouTube" style="vertical-align: top;"/>
         </a>
@@ -257,37 +263,37 @@
         <p class="nano-lede lt_grey top-margin">{% trans "A directory of all Dutch water organisations and companies. Find a partner here!" %}</p>
         <div class="left" style="font-size:0.875em; width: 131px; margin: 8px 0;">
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=01">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=01" target="_blank">
               {% trans "Waste water" %}
               <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=02">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=02" target="_blank">
               {% trans "Drinking water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=03">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=03" target="_blank">
               {% trans "Ground water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=04">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=04" target="_blank">
               {% trans "Surface water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=05">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=05" target="_blank">
               {% trans "Process water" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=06">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=06" target="_blank">
               {% trans "Sewage" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
@@ -295,37 +301,37 @@
         </div>
         <div class="left" style="font-size:0.875em; width: 151px;  margin: 8px 0;">
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=08">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=08" target="_blank">
               {% trans "Consultancy and engineering" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=09">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=09" target="_blank">
               {% trans "Information technology" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=10">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=10" target="_blank">
               {% trans "Organisations" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=11">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=11" target="_blank">
               {% trans "Personnel and training" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=20">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=20" target="_blank">
               {% trans "Business information" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
           </p>
           <p>
-            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=21">
+            <a href="http://dutchwatersector.org/waterdirectory/?step=process&amp;form_registers%5B%5D=21" target="_blank">
               {% trans "Infrastructure" %}
                <span class="link_triangle">&#x25BA;</span>
             </a>
