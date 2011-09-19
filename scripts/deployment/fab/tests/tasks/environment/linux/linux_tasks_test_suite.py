@@ -7,12 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.tasks.verify.linux.verify_system_packages_test import VerifySystemPackagesTest
+from fab.tests.tasks.environment.linux.verify_system_packages_test import VerifySystemPackagesTest
 
 
-def system_packages_suite():
+def linux_tasks_suite():
     return TestSuiteLoader().create_suite_from_classes([VerifySystemPackagesTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(system_packages_suite())
+    TestRunner(TEST_MODE).run_test_suite(linux_tasks_suite())

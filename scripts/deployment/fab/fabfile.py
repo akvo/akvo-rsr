@@ -18,6 +18,6 @@ SysPathVerifier().exit_if_deployment_scripts_home_not_on_syspath()
 
 import fab.tasks.codedeployment
 import fab.tasks.dataretriever
+import fab.tasks.environment.linux.systempackages
 import fab.tasks.environment.python.systempackages
-import fab.tasks.verify.linux.systempackages
 import fab.tasks.virtualenv.rebuild.rsrenv

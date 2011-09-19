@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.tasks.environment.linux.linux_tasks_test_suite import linux_tasks_suite
 from fab.tests.tasks.environment.python.python_tasks_test_suite import python_tasks_suite
 
 
 def environment_tasks_suite():
-    return TestSuiteLoader().create_suite_from_list([python_tasks_suite()])
+    return TestSuiteLoader().create_suite_from_list([linux_tasks_suite(), python_tasks_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
