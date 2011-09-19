@@ -37,7 +37,7 @@ class RebuildRSRVirtualEnv(fabric.tasks.Task):
 
         rsr_requirements_path = os.path.join(self.config.pip_requirements_home, RebuildRSRVirtualEnv.RSR_REQUIREMENTS_FILE)
 
-        self.deployment_host.create_empty_virtualenv(self.config.pip_install_log_file)
+        self.deployment_host.ensure_virtualenv_exists(self.config.pip_install_log_file)
         self.deployment_host.install_virtualenv_packages(rsr_requirements_path, self.config.pip_install_log_file)
 
 

@@ -67,7 +67,7 @@ class RebuildRSRVirtualEnvTest(mox.MoxTestBase):
         self.mock_config.pip_install_log_file = pip_log_file
         self.mock_config.pip_requirements_home = pip_requirements_home
 
-        self.mock_deployment_host.create_empty_virtualenv(pip_log_file)
+        self.mock_deployment_host.ensure_virtualenv_exists(pip_log_file)
         self.mock_deployment_host.install_virtualenv_packages(rsr_requirements_path, pip_log_file)
         self.mox.ReplayAll()
 
