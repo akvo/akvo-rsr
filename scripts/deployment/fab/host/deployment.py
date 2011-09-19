@@ -94,6 +94,9 @@ class DeploymentHost(NeutralHost):
     def create_empty_virtualenv(self, pip_install_log_file):
         self.virtualenv.create_empty_virtualenv(pip_install_log_file)
 
+    def ensure_virtualenv_exists(self, pip_install_log_file):
+        self.virtualenv.ensure_virtualenv_exists(pip_install_log_file)
+
     def install_virtualenv_packages(self, pip_requirements_file, pip_install_log_file):
         self.virtualenv.install_packages(pip_requirements_file, pip_install_log_file)
 

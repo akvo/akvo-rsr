@@ -259,6 +259,16 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.create_empty_virtualenv(expected_pip_log_file)
 
+    def test_can_ensure_virtualenv_exists(self):
+        """fab.tests.host.deployment_host_test  Can ensure virtualenv exists"""
+
+        expected_pip_log_file = "/some/log/dir/pip_log.txt"
+
+        self.mock_virtualenv.ensure_virtualenv_exists(expected_pip_log_file)
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_virtualenv_exists(expected_pip_log_file)
+
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.deployment_host_test  Can install virtualenv packages"""
 
