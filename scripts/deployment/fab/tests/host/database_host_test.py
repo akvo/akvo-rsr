@@ -9,8 +9,8 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.filesystem import FileSystem
-from fab.helpers.virtualenv import VirtualEnv
 from fab.host.database import DatabaseHost
 
 

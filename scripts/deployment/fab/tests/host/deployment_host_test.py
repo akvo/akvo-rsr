@@ -9,11 +9,11 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
-from fab.helpers.virtualenv import VirtualEnv
 from fab.host.controller import LocalHostController
 from fab.host.controller import RemoteHostController
 from fab.host.deployment import DeploymentHost

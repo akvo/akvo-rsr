@@ -5,10 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
-from fab.helpers.virtualenv import VirtualEnv
 from fab.host.neutral import NeutralHost
 
 

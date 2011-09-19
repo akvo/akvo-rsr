@@ -13,12 +13,11 @@ from fab.tests.helpers.data_retriever_test import DataRetrieverTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
 from fab.tests.helpers.file_system_test import FileSystemTest
 from fab.tests.helpers.internet_test import InternetTest
-from fab.tests.helpers.virtualenv_test import VirtualEnvTest
 
 
 def helpers_suite():
     return TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, FileSystemTest, AkvoPermissionsTest,
-                                                        VirtualEnvTest, InternetTest, CodebaseTest, DataRetrieverTest])
+                                                        InternetTest, CodebaseTest, DataRetrieverTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

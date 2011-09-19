@@ -9,9 +9,9 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.filesystem import FileSystem
-from fab.helpers.virtualenv import VirtualEnv
 from fab.host.controller import RemoteHostController
 
 
@@ -31,7 +31,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_host_controller, self.mock_file_system)
 
     def test_can_check_for_virtualenv_existence(self):
-        """fab.tests.helpers.virtualenv_test  Can check for virtualenv existence"""
+        """fab.tests.environment.python.virtualenv_test  Can check for virtualenv existence"""
 
         self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
         self.mox.ReplayAll()
@@ -39,7 +39,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.assertTrue(self.virtualenv.virtualenv_exists(), "Virtualenv should exist")
 
     def test_can_delete_existing_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Can delete existing virtualenv"""
+        """fab.tests.environment.python.virtualenv_test  Can delete existing virtualenv"""
 
         self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
         self._set_expectations_to_delete_virtualenv()
@@ -48,7 +48,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.delete_existing_virtualenv()
 
     def test_does_nothing_when_attempting_to_delete_nonexistent_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Does nothing when attempting to delete a nonexistent virtualenv"""
+        """fab.tests.environment.python.virtualenv_test  Does nothing when attempting to delete a nonexistent virtualenv"""
 
         self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(False)
         self.mox.ReplayAll()
@@ -56,7 +56,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.delete_existing_virtualenv()
 
     def test_can_run_command_within_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Can run command from within virtualenv"""
+        """fab.tests.environment.python.virtualenv_test  Can run command from within virtualenv"""
 
         virtualenv_command = "command text"
 
@@ -66,7 +66,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.run_within_virtualenv(virtualenv_command)
 
     def test_can_list_installed_virtualenv_packages(self):
-        """fab.tests.helpers.virtualenv_test  Can list installed virtualenv packages"""
+        """fab.tests.environment.python.virtualenv_test  Can list installed virtualenv packages"""
 
         self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
@@ -74,28 +74,28 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.virtualenv.list_installed_virtualenv_packages()
 
     def test_can_create_empty_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Can create empty virtualenv"""
+        """fab.tests.environment.python.virtualenv_test  Can create empty virtualenv"""
 
         self._set_expectations_to_create_empty_virtualenv(existing_virtualenv=False)
 
         self.virtualenv.create_empty_virtualenv(self.pip_log_file)
 
     def test_will_delete_existing_virtualenv_when_creating_an_empty_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Will delete existing virtualenv when creating an empty virtualenv"""
+        """fab.tests.environment.python.virtualenv_test  Will delete existing virtualenv when creating an empty virtualenv"""
 
         self._set_expectations_to_create_empty_virtualenv(existing_virtualenv=True)
 
         self.virtualenv.create_empty_virtualenv(self.pip_log_file)
 
     def test_can_ensure_virtualenv_exists_and_create_empty_virtualenv_if_none_exists(self):
-        """fab.tests.helpers.virtualenv_test  Can ensure virtualenv exists and create an empty virtualenv if none exists"""
+        """fab.tests.environment.python.virtualenv_test  Can ensure virtualenv exists and create an empty virtualenv if none exists"""
 
         self._set_expectations_to_create_empty_virtualenv(existing_virtualenv=False)
 
         self.virtualenv.ensure_virtualenv_exists(self.pip_log_file)
 
     def test_can_ensure_virtualenv_exists_and_confirm_an_existing_virtualenv(self):
-        """fab.tests.helpers.virtualenv_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
+        """fab.tests.environment.python.virtualenv_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
 
         self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
         self.mock_feedback.comment("Found existing virtualenv at %s" % self.expected_virtualenv_path)
@@ -124,14 +124,14 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
 
     def test_can_install_packages_from_given_pip_requirements(self):
-        """fab.tests.helpers.virtualenv_test  Can install packages from given pip requirements"""
+        """fab.tests.environment.python.virtualenv_test  Can install packages from given pip requirements"""
 
         self._set_expectations_to_install_packages(quietly=False)
 
         self.virtualenv.install_packages(self.pip_requirements_file, self.pip_log_file)
 
     def test_can_install_packages_quietly_from_given_pip_requirements(self):
-        """fab.tests.helpers.virtualenv_test  Can install packages quietly from given pip requirements"""
+        """fab.tests.environment.python.virtualenv_test  Can install packages quietly from given pip requirements"""
 
         self._set_expectations_to_install_packages(quietly=True)
 
