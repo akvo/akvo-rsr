@@ -23,13 +23,6 @@ urlpatterns = patterns('',
     url(r'^directory/$', views.BaseListView \
         .as_view(template_name='partner_sites/directory.html'),
                  name='project_list'),
-
-# url(r'^map/$', views.BaseView \
-#         .as_view(template_name='partner_sites/map.html'),
-#                  name='project_map'),
-#     url(r'^project/(?P<project_id>\d+)/funding/$', views.BaseProjectView \
-#      .as_view(template_name="partner_sites/project/project_funding.html"),
-#                  name='project_funding'),
 )
 
 urlpatterns += counter_urls

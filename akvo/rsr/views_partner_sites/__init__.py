@@ -8,6 +8,7 @@
 from __future__ import absolute_import
 from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum
 from ..models import Organisation, Project, ProjectUpdate
 from .base import BaseListView, BaseProjectView, BaseView
 
@@ -29,6 +30,13 @@ class ProjectMainView(BaseProjectView):
         context = super(ProjectMainView, self).get_context_data(**kwargs)
         context['updates_with_images'] = context['project'] \
             .project_updates.all().exclude(photo__exact='').order_by('-time')
+        context['benchmarks'] = context['project'].benchmarks \
+            .filter(category__in=[category for category in context['project']
+                .categories.all()
+                    if context['project'].benchmarks \
+                        .filter(category=category) \
+                            .aggregate(Sum('value'))['value__sum']
+            ])
         return context
 
 

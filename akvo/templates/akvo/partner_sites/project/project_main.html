@@ -23,27 +23,41 @@
 
 
 {% block project_content %}
-  <section class="whitebox pad20">
+  <section class="whitebox pad20 marg_bottom40">
     {% counter_badge project %}
     <h2>{% trans "Description" %}</h2>
     {{project.project_plan_summary|linebreaks}}
-    <div>
+    <div style="float:left; width:340px;">
       <div id="galleria" style="width:338px; height:350px;"></div>
     </div>
-    <hr />
-    <h2>Map</h2>
-    {% if project.primary_location %}
-      {% google_map project 260 180 3 %}
-    {% else %}
-      <p style="color: red;">{% trans 'No map available' %}</p>
-    {% endif %}
+    <div style="float:right; width:265px;">
+      {% if benchmarks %}
+        <h2 class="black">{% trans 'Who will benefit?' %}</h2>
+        {% include "rsr/inc_target_benchmarks.html" %}
+      {% endif %}
+      <h2 class="black">{% trans 'Location' %}</h2>
+      {% if project.primary_location %} 
+        <p class="grey">
+          {{ project.primary_location.country.get_continent_display }}, {{project.primary_location.country}}<br />{{project.primary_location.city}}
+          <br />
+          {{ project.primary_location.latitude }}, {{ project.primary_location.longitude }}	
+        </p>
+        {% google_map project 260 180 3 %}
+      {% else %}
+        <p style="color: red;">{% trans 'No map available' %}</p>
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+  </section>
+  <h2>{% trans "Project in depth" %}</h2>
+  <section class="whitebox pad20 marg_bottom40">
+    <p>...</p>
   </section>
 {% endblock project_content %}
 
 
 {% block js %}
   {{ block.super }}
-
   <script src="{{MEDIA_URL}}core/galleria/galleria_1.2.2.js"></script>
   <script>
     var galleria_data = [
