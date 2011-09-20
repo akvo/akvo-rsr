@@ -23,16 +23,22 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def setUp(self):
         super(RSRDeploymentConfigTest, self).setUp()
 
+        self.deployment_user = "rupaul"
         self.feature_branch = "feature/sms"
         self.expected_rsr_dir_name = "rsr_sms"
         self.deployment_host_config_values = DeploymentHostConfigValues()
 
-        self.deployment_config = RSRDeploymentConfig(self.deployment_host_config_values, RSRCodebaseConfig(self.feature_branch))
+        self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, RSRCodebaseConfig(self.feature_branch))
 
     def test_can_create_rsrdeploymentconfig_instance(self):
         """fab.tests.config.rsr.deployment_config_test  Can create RSRDeploymentConfig instance"""
 
-        self.assertIsInstance(RSRDeploymentConfig.create_instance(), RSRDeploymentConfig)
+        self.assertIsInstance(RSRDeploymentConfig.create_instance(self.deployment_user), RSRDeploymentConfig)
+
+    def test_has_deployment_user_name(self):
+        """fab.tests.config.rsr.deployment_config_test  Has deployment user name"""
+
+        self.assertEqual(self.deployment_user, self.deployment_config.deployment_user)
 
     def test_has_repository_checkout_home(self):
         """fab.tests.config.rsr.deployment_config_test  Has repository checkout home"""
