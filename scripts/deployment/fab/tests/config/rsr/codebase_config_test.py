@@ -12,10 +12,10 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.rsr.codebase import RSRCodebaseConfig
 
 
-class CodebaseConfigTest(unittest2.TestCase):
+class RSRCodebaseConfigTest(unittest2.TestCase):
 
     def setUp(self):
-        super(CodebaseConfigTest, self).setUp()
+        super(RSRCodebaseConfigTest, self).setUp()
 
         self.feature_branch = "feature/sms"
         self.codebase_config = RSRCodebaseConfig(self.feature_branch)
@@ -67,7 +67,7 @@ class CodebaseConfigTest(unittest2.TestCase):
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(CodebaseConfigTest)
+    return TestSuiteLoader().load_tests_from(RSRCodebaseConfigTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
