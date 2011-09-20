@@ -9,13 +9,13 @@ import unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.linux.systempackages import SystemPackageSpecifications
+from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 
 
 class SystemPackageSpecificationsTest(unittest2.TestCase):
 
     def test_has_expected_compilation_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected compilation package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected compilation package specifications"""
 
         expected_packages = ['linux-libc-dev', 'gcc-4.2-base', 'libgcc1', 'libc6', 'libc6-dev', 'binutils',
                              'libgomp1', 'cpp-4.2', 'cpp', 'gcc-4.2', 'gcc', 'libstdc++6', 'libstdc++6-4.2-dev',
@@ -24,14 +24,14 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.COMPILATION))
 
     def test_has_expected_core_utils_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected core utils package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected core utils package specifications"""
 
         expected_packages = ['libattr1', 'libacl1', 'libselinux1', 'coreutils']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.CORE_UTILS))
 
     def test_has_expected_package_tools_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected package tools specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package tools specifications"""
 
         expected_packages = ['libbz2-1.0', 'bzip2', 'cpio', 'lzma', 'patch', 'libdb4.6', 'libgdbm3', 'perl-base',
                              'perl-modules', 'perl', 'libtimedate-perl', 'dpkg', 'dpkg-dev', 'build-essential']
@@ -39,7 +39,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PACKAGE_TOOLS))
 
     def test_has_expected_locale_and_language_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected locale and language package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected locale and language package specifications"""
 
         expected_packages = ['liblocale-gettext-perl', 'libtext-charwidth-perl', 'libtext-iconv-perl',
                              'libtext-wrapi18n-perl', 'debconf-i18n', 'debconf', 'tzdata', 'belocs-locales-bin',
@@ -48,7 +48,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.LOCALES_AND_LANGUAGES))
 
     def test_has_expected_python_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected Python package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected Python package specifications"""
 
         expected_packages = ['zlib1g', 'libncurses5', 'libncursesw5', 'readline-common', 'libreadline5',
                              'libsqlite3-0', 'libssl0.9.8', 'mime-support', 'python2.5-minimal', 'python2.5',
@@ -57,21 +57,21 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON))
 
     def test_has_expected_database_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected database package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database package specifications"""
 
         expected_packages = ['mysql-common', 'libmysqlclient15off', 'python-support', 'python-mysqldb']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 
     def test_has_expected_python_package_dependency_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected Python package dependency package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected Python package dependency package specifications"""
 
         expected_packages = ['libxml2']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
     def test_has_expected_additional_tools_package_specifications(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected additional tools package specifications"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected additional tools package specifications"""
 
         expected_packages = ['libcomerr2', 'libidn11', 'libkeyutils1', 'libkrb53', 'libgpg-error0', 'libgcrypt11',
                              'liblzo2-2', 'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
@@ -80,7 +80,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.ADDITIONAL_TOOLS))
 
     def test_has_expected_package_specifications_in_all_packages_definition(self):
-        """fab.tests.config.linux.system_package_specifications_test  Has expected package specifications in the ALL_PACKAGES definition"""
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications in the ALL_PACKAGES definition"""
 
         expected_packages = [SystemPackageSpecifications.COMPILATION,
                              SystemPackageSpecifications.CORE_UTILS,

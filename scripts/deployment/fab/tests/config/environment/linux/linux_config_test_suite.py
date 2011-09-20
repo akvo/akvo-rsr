@@ -7,7 +7,7 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.linux.system_package_specifications_test import SystemPackageSpecificationsTest
+from fab.tests.config.environment.linux.system_package_specifications_test import SystemPackageSpecificationsTest
 
 
 def linux_config_suite():

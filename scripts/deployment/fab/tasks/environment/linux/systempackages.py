@@ -7,7 +7,7 @@
 
 import fabric.tasks
 
-import fab.config.linux.systempackages
+import fab.config.environment.linux.systempackages
 import fab.host.linux
 
 
@@ -24,7 +24,7 @@ class VerifySystemPackages(fabric.tasks.Task):
         return VerifySystemPackages(fab.host.linux.LinuxHost.create_instance())
 
     def run(self):
-        for package_specifications in fab.config.linux.systempackages.SystemPackageSpecifications.ALL_PACKAGES:
+        for package_specifications in fab.config.environment.linux.systempackages.SystemPackageSpecifications.ALL_PACKAGES:
             self.linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
 
 

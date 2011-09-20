@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.linux.systempackages import SystemPackageSpecifications
+from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 from fab.dependency.systempackages import SystemPackageDependency, SystemPackageDependencyCollection
 from fab.helpers.feedback import ExecutionFeedback
 from fab.os.linux.packageinspector import UbuntuPackageInspector
