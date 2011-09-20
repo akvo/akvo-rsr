@@ -7,12 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.tasks.virtualenv.rebuild.rebuild_rsr_virtualenv_test import RebuildRSRVirtualEnvTest
+from fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test import RebuildRSREnvTest
 
 
-def virtualenv_suite():
-    return TestSuiteLoader().create_suite_from_classes([RebuildRSRVirtualEnvTest])
+def virtualenv_tasks_suite():
+    return TestSuiteLoader().create_suite_from_classes([RebuildRSREnvTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(virtualenv_suite())
+    TestRunner(TEST_MODE).run_test_suite(virtualenv_tasks_suite())
