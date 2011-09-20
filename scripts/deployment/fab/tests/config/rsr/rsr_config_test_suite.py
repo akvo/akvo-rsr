@@ -7,11 +7,11 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.rsr.codebase_config_test import CodebaseConfigTest
+from fab.tests.config.rsr.codebase_config_test import RSRCodebaseConfigTest
 
 
 def rsr_config_suite():
-    return TestSuiteLoader().create_suite_from_classes([CodebaseConfigTest])
+    return TestSuiteLoader().create_suite_from_classes([RSRCodebaseConfigTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

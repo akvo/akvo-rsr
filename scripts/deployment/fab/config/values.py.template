@@ -21,5 +21,5 @@ class PythonConfigValues(object):
 class DeploymentHostConfigValues(object):
 
     def __init__(self):
-        self.repo_checkout_root = "/var/git"
+        self.repo_checkout_home = "/var/git"
         self.virtualenvs_home   = "/var/virtualenvs"

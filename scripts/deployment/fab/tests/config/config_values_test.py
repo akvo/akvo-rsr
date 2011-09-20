@@ -38,10 +38,10 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self.assertTrue(len(self.python_config_values.python_package_download_dir) > 0, "Expected Python package download directory")
 
-    def test_deploymenthostconfigvalues_has_repository_checkout_root(self):
-        """fab.tests.config.config_values_test  DeploymentHostConfigValues has repository checkout root"""
+    def test_deploymenthostconfigvalues_has_repository_checkout_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has repository checkout home"""
 
-        self.assertTrue(len(self.deployment_config_values.repo_checkout_root) > 0, "Expected repository checkout root")
+        self.assertTrue(len(self.deployment_config_values.repo_checkout_home) > 0, "Expected repository checkout home")
 
     def test_deploymenthostconfigvalues_has_virtualenvs_home(self):
         """fab.tests.config.config_values_test  DeploymentHostConfigValues has virtualenvs home"""
