@@ -60,6 +60,11 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(self.codebase_config.rsr_archive_url, self.deployment_config.rsr_archive_url)
 
+    def test_has_unpacked_archive_directory_mask(self):
+        """fab.tests.config.rsr.deployment_config_test  Has unpacked archive directory mask"""
+
+        self.assertEqual(RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK, self.deployment_config.unpacked_archive_dir_mask)
+
     def test_has_rsr_deployment_directory_name(self):
         """fab.tests.config.rsr.deployment_config_test  Has RSR deployment directory name"""
 

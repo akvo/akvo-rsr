@@ -18,7 +18,9 @@ class RSRDeploymentConfig(object):
 
         self.repo_checkout_home = deployment_host_config_values.repo_checkout_home
         self.repo_archives_dir  = os.path.join(self.repo_checkout_home, "archives")
-        self.rsr_archive_url    = codebase_config.rsr_archive_url
+
+        self.rsr_archive_url            = codebase_config.rsr_archive_url
+        self.unpacked_archive_dir_mask  = RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK
 
         rsr_dir_name = "rsr_%s" % codebase_config.repo_branch_without_type
 
