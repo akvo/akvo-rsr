@@ -25,10 +25,13 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.deployment_user = "rupaul"
         self.feature_branch = "feature/sms"
-        self.expected_rsr_dir_name = "rsr_sms"
-        self.deployment_host_config_values = DeploymentHostConfigValues()
 
-        self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, RSRCodebaseConfig(self.feature_branch))
+        self.deployment_host_config_values = DeploymentHostConfigValues()
+        self.codebase_config = RSRCodebaseConfig(self.feature_branch)
+
+        self.expected_rsr_dir_name = "rsr_%s" % self.codebase_config.repo_branch_without_type
+
+        self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
 
     def test_can_create_rsrdeploymentconfig_instance(self):
         """fab.tests.config.rsr.deployment_config_test  Can create RSRDeploymentConfig instance"""
@@ -51,6 +54,11 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
         expected_repo_archives_dir = os.path.join(self.deployment_host_config_values.repo_checkout_home, "archives")
 
         self.assertEqual(expected_repo_archives_dir, self.deployment_config.repo_archives_dir)
+
+    def test_has_rsr_code_archive_url(self):
+        """fab.tests.config.rsr.deployment_config_test  Has RSR code archive URL"""
+
+        self.assertEqual(self.codebase_config.rsr_archive_url, self.deployment_config.rsr_archive_url)
 
     def test_has_rsr_deployment_directory_name(self):
         """fab.tests.config.rsr.deployment_config_test  Has RSR deployment directory name"""
