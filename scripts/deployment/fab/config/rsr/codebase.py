@@ -7,6 +7,8 @@
 
 import os
 
+from fab.config.values import SharedConfigValues
+
 
 class RSRCodebaseConfig(object):
 
@@ -20,6 +22,10 @@ class RSRCodebaseConfig(object):
         self.repo_branch_without_type = self._branch_without_type()
 
         self._set_pip_requirements_paths()
+
+    @staticmethod
+    def create_instance():
+        return RSRCodebaseConfig(SharedConfigValues().repository_branch)
 
     def _branch_without_type(self):
         if self._branch_includes_type():

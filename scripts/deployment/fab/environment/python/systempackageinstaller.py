@@ -9,7 +9,7 @@ import os
 
 from fab.config.environment.python.packagetools import PackageInstallationToolsConfig
 from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.values import PythonConfigValues, SharedConfigValues
+from fab.config.values import PythonConfigValues
 from fab.helpers.internet import Internet
 from fab.os.filesystem import FileSystem
 
@@ -27,7 +27,7 @@ class PackageInstallationPaths(object):
         python_config_values = PythonConfigValues()
         return PackageInstallationPaths(python_config_values,
                                         PackageInstallationToolsConfig(python_config_values.pip_version),
-                                        RSRCodebaseConfig(SharedConfigValues().repository_branch))
+                                        RSRCodebaseConfig.create_instance())
 
 
 class SystemPythonPackageInstaller(object):
