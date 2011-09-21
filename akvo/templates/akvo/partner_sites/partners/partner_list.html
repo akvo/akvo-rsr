@@ -1,0 +1,38 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters google_maps %}
+{% load url from future %}
+
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
+  <li class="last_breadcrum_item">{% trans "Project partners" %}</li>
+{% endblock breadcrum_items %}
+
+
+{% block breadcrum_right %}{% endblock breadcrum_right %} {# Override #}
+
+
+{% block content %}
+  <div class="clearfix">
+    <article>
+      <h1>{% trans "Project partners" %}</h1>
+      <div class="pad20 whitebox">
+        <ul>
+          {% for partner in partner_list  %}
+            <li><a href="{% url 'partner_main' partner.id %}">{{partner}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </article>
+    <aside>
+      <div class="pad20 whitebox">
+        <p>
+          Map<br />
+          Number of partners<br />
+          Partners in what parts of the world?
+        </p>
+      </div>
+    </aside>
+  </div>
+{% endblock content %}

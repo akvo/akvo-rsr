@@ -51,14 +51,14 @@
           {% for update in latest_updates  %}
             <div class="whitebox" style="margin-top:20px; padding:5px">
               <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
-              <a href="{% url 'update_main' project.id update.id %}">
+              <a class="small" href="{% url 'update_main' project.id update.id %}">
                 {{update.title}}
               </a>
             </div>
           {% endfor %}
         {% else %} 
             <div class="whitebox pad20" style="margin-top:20px">
-              <p>{% trans "No updates" %}</p>
+              <p class="small">{% trans "No updates" %}</p>
             </div>
         {% endif %}
       {% endblock project_aside_updates %}
@@ -66,7 +66,9 @@
         <h2 style="margin-top:20px;"><a href="#">Partners</a></h2>
         {% for partner in project.all_partners %}
           <div class="whitebox" style="margin-top:20px; padding:5px">
-            {{partner}}{% if not loop.last %}<br />{% endif %}
+            <span class="small">
+              {{partner}}
+            </span>{% if not loop.last %}<br />{% endif %}
           </div>
         {% endfor %}
       {% endblock project_aside_partners %}

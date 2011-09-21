@@ -11,18 +11,32 @@ from django_counter.urls import urlpatterns as counter_urls
 
 
 urlpatterns = patterns('',
-    url(r'^$', views.BaseListView \
-        .as_view(template_name='partner_sites/home.html'), name='home'),
-    url(r'^(?P<project_id>\d+)/$', views.ProjectMainView \
-        .as_view(template_name="partner_sites/project/project_main.html"),
-                 name='project_main'),
-    url(r'^(?P<project_id>\d+)/updates/$', views.UpdateDirectoryView
-        .as_view(), name='update_list'),
+    # Projects
+    url(r'^$', \
+        views.BaseListView.as_view(template_name='partner_sites/home.html'),
+        name='home'),
+
+    url(r'^(?P<project_id>\d+)/$',
+        views.ProjectMainView.as_view(),
+        name='project_main'),
+
+    # Project updates
+    url(r'^(?P<project_id>\d+)/updates/$',
+        views.UpdateDirectoryView.as_view(),
+        name='update_list'),
+
     url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
-        views.UpdateView.as_view(), name='update_main'),
-    url(r'^directory/$', views.BaseListView \
-        .as_view(template_name='partner_sites/directory.html'),
-                 name='project_list'),
+        views.UpdateView.as_view(),
+        name='update_main'),
+
+    # Partners
+    url(r'^partners/$', \
+        views.PartnerDirectoryView.as_view(),
+        name='partner_list'),
+
+    url(r'^partners/(?P<partner_id>\d+)/$',
+        views.PartnerView.as_view(),
+        name='partner_main'),
 )
 
 urlpatterns += counter_urls

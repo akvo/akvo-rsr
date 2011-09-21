@@ -80,6 +80,15 @@ ASSET_BUNDLES = {
             'scaffold.css',
             'typography.css',
             'breadcrum.css',
+            'tabs.css',
+            ],
+    },
+    'partner_sites_script': {
+        'type': 'js',
+        'path': 'partner_sites/js/',
+        'compress': True,
+        'files': [
+            'galleria.js',
             ],
     },
     'widget_cobranded_banner': {

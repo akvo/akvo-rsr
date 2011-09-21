@@ -16,6 +16,7 @@ __all__ = [
     'BaseListView',
     'BaseProjectView',
     'BaseView',
+    'PartnerDirectoryView',
     'ProjectMainView',
     'UpdateDirectoryView',
     'UpdateView'
@@ -68,3 +69,29 @@ class UpdateView(BaseProjectView):
         context['update'] = get_object_or_404(ProjectUpdate,
                                               id=self.kwargs['update_id'])
         return context
+
+
+class PartnerDirectoryView(ListView):
+    template_name = 'partner_sites/partners/partner_list.html'
+    context_object_name = 'partner_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super(PartnerDirectoryView, self).get_context_data(**kwargs)
+        context['organisation'] = \
+            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        return context
+
+    def get_queryset(self):
+        return get_object_or_404(Organisation, pk=self.request.organisation_id) \
+            .partners().distinct()
+
+
+class PartnerView(BaseView):
+    template_name = 'partner_sites/partners/partner_main.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(PartnerView, self).get_context_data(**kwargs)
+        context['partner'] = \
+            get_object_or_404(Organisation, pk=self.kwargs['partner_id'])
+        return context
+
