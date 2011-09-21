@@ -53,6 +53,8 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
+                pass
+            if partner_site is None or not partner_site.enabled:
                 host = u'.'.join(domain_parts[-2:])
                 if port is not None:
                     host = u'%s:%d' % (host, port)
@@ -76,3 +78,6 @@ class PartnerSitesRouterMiddleware(object):
         DOMAIN_NAME.value = domain_name
         SITE_ID.value = site.id
         return
+
+        def redirect_to_partner_sites_marketing_site(self):
+            pass
