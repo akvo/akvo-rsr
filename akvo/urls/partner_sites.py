@@ -5,17 +5,18 @@ See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
+from __future__ import absolute_import
 from django.conf.urls.defaults import patterns, url
 from akvo.rsr import views_partner_sites as views
 from django_counter.urls import urlpatterns as counter_urls
 
 
 urlpatterns = patterns('',
-    # Projects
+    # Home
     url(r'^$', \
         views.BaseListView.as_view(template_name='partner_sites/home.html'),
         name='home'),
-
+    # Projects
     url(r'^(?P<project_id>\d+)/$',
         views.ProjectMainView.as_view(),
         name='project_main'),

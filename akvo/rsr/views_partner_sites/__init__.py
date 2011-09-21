@@ -72,9 +72,10 @@ class UpdateView(BaseProjectView):
 
 
 class PartnerDirectoryView(ListView):
+    """Represents the partner list"""
     template_name = 'partner_sites/partners/partner_list.html'
     context_object_name = 'partner_list'
-    
+
     def get_context_data(self, **kwargs):
         context = super(PartnerDirectoryView, self).get_context_data(**kwargs)
         context['organisation'] = \
@@ -82,16 +83,17 @@ class PartnerDirectoryView(ListView):
         return context
 
     def get_queryset(self):
-        return get_object_or_404(Organisation, pk=self.request.organisation_id) \
+        return get_object_or_404(Organisation,
+                                 pk=self.request.organisation_id) \
             .partners().distinct()
 
 
 class PartnerView(BaseView):
+    """Main partner view"""
     template_name = 'partner_sites/partners/partner_main.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super(PartnerView, self).get_context_data(**kwargs)
         context['partner'] = \
             get_object_or_404(Organisation, pk=self.kwargs['partner_id'])
         return context
-
