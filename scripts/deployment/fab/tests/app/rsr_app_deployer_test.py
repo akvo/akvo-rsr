@@ -10,34 +10,34 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.app.deployer import RSRAppDeployer
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.helpers.codebase import Codebase
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.deployment import DeploymentHost
 
 
-class CodebaseTest(mox.MoxTestBase):
+class RSRAppDeployerTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(CodebaseTest, self).setUp()
+        super(RSRAppDeployerTest, self).setUp()
         self.mock_config = self.mox.CreateMock(RSRDeploymentConfig)
         self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mock_deployment_host.feedback = self.mock_feedback
 
-        self.codebase = Codebase(self.mock_config, self.mock_deployment_host)
+        self.app_deployer = RSRAppDeployer(self.mock_config, self.mock_deployment_host)
 
     def test_initialiser_uses_executionfeedback_instance_from_deployment_host(self):
-        """fab.tests.helpers.codebase_test  Initialiser uses ExecutionFeedback from deployment host"""
+        """fab.tests.app.rsr_app_deployer_test  Initialiser uses ExecutionFeedback from deployment host"""
 
         self.mox.ReplayAll()
 
-        self.assertIsInstance(self.codebase, Codebase)
-        self.assertIsInstance(self.codebase.feedback, ExecutionFeedback)
+        self.assertIsInstance(self.app_deployer, RSRAppDeployer)
+        self.assertIsInstance(self.app_deployer.feedback, ExecutionFeedback)
 
     def test_can_ensure_required_directories_exist(self):
-        """fab.tests.helpers.codebase_test  Can ensure required directories exist"""
+        """fab.tests.app.rsr_app_deployer_test  Can ensure required directories exist"""
 
         deployment_user     = "rupaul"
         repo_checkout_home  = "/var/repo"
@@ -55,10 +55,10 @@ class CodebaseTest(mox.MoxTestBase):
         self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(virtualenvs_home)
         self.mox.ReplayAll()
 
-        self.codebase.ensure_required_directories_exist()
+        self.app_deployer.ensure_required_directories_exist()
 
     def test_can_clean_deployment_directories(self):
-        """fab.tests.helpers.codebase_test  Can clean deployment directories"""
+        """fab.tests.app.rsr_app_deployer_test  Can clean deployment directories"""
 
         deployment_home_dir = "/var/some/path/akvo-rsr_root"
         self.mock_config.rsr_deployment_home = deployment_home_dir
@@ -67,23 +67,23 @@ class CodebaseTest(mox.MoxTestBase):
         self.mock_deployment_host.delete_directory_with_sudo(deployment_home_dir)
         self.mox.ReplayAll()
 
-        self.codebase.clean_deployment_directories()
+        self.app_deployer.clean_deployment_directories()
 
     def test_can_download_and_unpack_rsr_code_archive_to_deployment_host(self):
-        """fab.tests.helpers.codebase_test  Can download and unpack RSR code archive to deployment host"""
+        """fab.tests.app.rsr_app_deployer_test  Can download and unpack RSR code archive to deployment host"""
 
         self._set_expectations_to_download_and_unpack_rsr_archive(archive_exists_on_host=False)
         self.mox.ReplayAll()
 
-        self.codebase.download_and_unpack_rsr_archive()
+        self.app_deployer.download_and_unpack_rsr_archive()
 
     def test_does_not_download_rsr_code_archive_if_available_on_deployment_host(self):
-        """fab.tests.helpers.codebase_test  Does not download RSR code archive if already available on deployment host"""
+        """fab.tests.app.rsr_app_deployer_test  Does not download RSR code archive if already available on deployment host"""
 
         self._set_expectations_to_download_and_unpack_rsr_archive(archive_exists_on_host=True)
         self.mox.ReplayAll()
 
-        self.codebase.download_and_unpack_rsr_archive()
+        self.app_deployer.download_and_unpack_rsr_archive()
 
     def _set_expectations_to_download_and_unpack_rsr_archive(self, archive_exists_on_host):
         rsr_archive_url         = "http://some.server.org/archives"
@@ -125,7 +125,7 @@ class CodebaseTest(mox.MoxTestBase):
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(CodebaseTest)
+    return TestSuiteLoader().load_tests_from(RSRAppDeployerTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

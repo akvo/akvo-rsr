@@ -8,7 +8,7 @@
 import os
 
 
-class Codebase(object):
+class RSRAppDeployer(object):
 
     def __init__(self, deployment_config, deployment_host):
         self.config = deployment_config
