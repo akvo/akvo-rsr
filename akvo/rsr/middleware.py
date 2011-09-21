@@ -40,7 +40,7 @@ class PartnerSitesRouterMiddleware(object):
             request.urlconf = 'akvo.urls.rsr'
         elif domain == 'www.akvoapp.org' or domain == 'akvoapp.dev':  # Partner sites marketing instance
             site = Site.objects.get(id=2)
-            domain_name = 'akvoapp.org'
+            domain_name = site.domain
             request.urlconf = 'akvo.urls.partner_sites_marketing'
         elif ((domain.endswith('.akvoapp.org') and not domain == 'www.akvoapp.org') or
               domain.endswith('.akvoapp.dev')):  # Partner site instance
@@ -78,6 +78,3 @@ class PartnerSitesRouterMiddleware(object):
         DOMAIN_NAME.value = domain_name
         SITE_ID.value = site.id
         return
-
-        def redirect_to_partner_sites_marketing_site(self):
-            pass

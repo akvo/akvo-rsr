@@ -2789,8 +2789,14 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 class PartnerSite(models.Model):
 
+    def custom_css_path(instance, filename):
+        return 'db/partner_sites/%s/custom.css' % instance.hostname
+
+    def custom_favicon_path(instance, filename):
+        return 'db/partner_sites/%s/favicon.ico' % instance.hostname
+    
     def custom_logo_path(instance, filename):
-        return 'db/partner_sites/logos/%s' % (instance.id, filename)
+        return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
 
     organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
     hostname = models.CharField(_('Hostname'), max_length=50, unique=True,
@@ -2800,13 +2806,12 @@ class PartnerSite(models.Model):
     custom_return_url = models.URLField(_('Return URL'), blank=True,
                                         help_text=_('The URL on your own site to return users to. Enter a full URL (starting with "http://"). ' \
                                                      'This setting is optional but recommended.'))
-    #custom_css_url = models.URLField(_('Custom CSS URL'), blank=True,
-    #                                 help_text=_('URL pointing to a custom CSS stylesheet to override the default Akvo partner sites CSS. ' \
-    #                                             'This URL may be on your own site or on akvo.org. Enter a full URL (starting with "http://"). ' \
-    #                                             'This setting is optional.'))
-    #custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=custom_logo_path,
-    #                               help_text=_('Upload a high-resolution banner logo for your organisation. ' \
-    #                                           'This setting is optional but recommended.'))
+    custom_css = models.FileField(_('Custom CSS'), blank=True, upload_to=custom_css_path)
+    custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=custom_logo_path,
+                                   help_text=_('Upload a high-resolution banner logo for your organisation. ' \
+                                               'This setting is optional but recommended.'))
+    custom_favicon = models.FileField(_('favicon'), blank=True, upload_to=custom_favicon_path,
+                                      help_text=_('Upload a favicon.ico file. This settings is optional but recommended.'))
     enabled = models.BooleanField(_('enabled'), default=True)
 
     def __unicode__(self):
@@ -2814,19 +2819,11 @@ class PartnerSite(models.Model):
 
     @property
     def logo(self):
-        if self.custom_logo:
-            return self.custom_logo
-        if self.organisation.logo:
-            return self.organisation.logo
-        return
+        return self.custom_logo or self.organisation.logo or None
 
     @property
     def return_url(self):
-        if self.custom_return_url:
-            return self.custom_return_url
-        if self.organisation.url:
-            return self.organisation.url
-        return
+        return self.custom_return_url or self.organisation.url or None
 
 
 # signals!
