@@ -60,8 +60,8 @@
     <div class="breadcrum_back clearfix">
       <div style="float:right;">
         <p class="normal" style="margin: 4px 10px 0 0; font-size:12px">
-          Feeds: 
           {% block breadcrum_right %}
+            Feeds: 
             <a href="#">All projects</a>
           {% endblock breadcrum_right %}
         </p>
@@ -89,10 +89,10 @@
       </div>
       <div class="clear"></div>
     </footer>
-    <div style="background-color:#F5F6F7; margin-top:80px">
-      <h1>Page end - development information</h1>
+    <div style="background-color:#111; margin-top:80px">
+      <h1 style="color:#ACCC7D;">Development information</h1>
       {% if queries %}
-        <h2 style="margin:10px;">{{ queries|length }} Quer{{ queries|pluralize:"y,ies" }}</h2>
+        <h2 style="margin:10px; color:#ACCC7D">{{ queries|length }} Quer{{ queries|pluralize:"y,ies" }}</h2>
         <p style="font-size:12px; color:#888; margin:10px;">
           {% for query in queries %}
             {{query}}<br /><br />

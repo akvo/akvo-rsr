@@ -8,6 +8,7 @@
 from __future__ import absolute_import
 from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum
 from ..models import Organisation, Project, ProjectUpdate
 from .base import BaseListView, BaseProjectView, BaseView
 
@@ -15,6 +16,7 @@ __all__ = [
     'BaseListView',
     'BaseProjectView',
     'BaseView',
+    'PartnerDirectoryView',
     'ProjectMainView',
     'UpdateDirectoryView',
     'UpdateView'
@@ -29,6 +31,13 @@ class ProjectMainView(BaseProjectView):
         context = super(ProjectMainView, self).get_context_data(**kwargs)
         context['updates_with_images'] = context['project'] \
             .project_updates.all().exclude(photo__exact='').order_by('-time')
+        context['benchmarks'] = context['project'].benchmarks \
+            .filter(category__in=[category for category in context['project']
+                .categories.all()
+                    if context['project'].benchmarks \
+                        .filter(category=category) \
+                            .aggregate(Sum('value'))['value__sum']
+            ])
         return context
 
 
@@ -60,3 +69,29 @@ class UpdateView(BaseProjectView):
         context['update'] = get_object_or_404(ProjectUpdate,
                                               id=self.kwargs['update_id'])
         return context
+
+
+class PartnerDirectoryView(ListView):
+    template_name = 'partner_sites/partners/partner_list.html'
+    context_object_name = 'partner_list'
+    
+    def get_context_data(self, **kwargs):
+        context = super(PartnerDirectoryView, self).get_context_data(**kwargs)
+        context['organisation'] = \
+            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        return context
+
+    def get_queryset(self):
+        return get_object_or_404(Organisation, pk=self.request.organisation_id) \
+            .partners().distinct()
+
+
+class PartnerView(BaseView):
+    template_name = 'partner_sites/partners/partner_main.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(PartnerView, self).get_context_data(**kwargs)
+        context['partner'] = \
+            get_object_or_404(Organisation, pk=self.kwargs['partner_id'])
+        return context
+
