@@ -2806,12 +2806,12 @@ class PartnerSite(models.Model):
     custom_return_url = models.URLField(_('Return URL'), blank=True,
                                         help_text=_('The URL on your own site to return users to. Enter a full URL (starting with "http://"). ' \
                                                      'This setting is optional but recommended.'))
-    custom_css = models.FileField(_('Custom CSS'), blank=True, upload_to=custom_css_path)
+    custom_css = models.FileField(_('Stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=custom_logo_path,
                                    help_text=_('Upload a high-resolution banner logo for your organisation. ' \
                                                'This setting is optional but recommended.'))
     custom_favicon = models.FileField(_('favicon'), blank=True, upload_to=custom_favicon_path,
-                                      help_text=_('Upload a favicon.ico file. This settings is optional but recommended.'))
+                                      help_text=_('Upload a favicon.ico file. This setting is optional but recommended.'))
     enabled = models.BooleanField(_('enabled'), default=True)
 
     def __unicode__(self):
