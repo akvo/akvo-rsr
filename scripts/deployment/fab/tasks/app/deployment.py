@@ -14,22 +14,22 @@ import fab.host.controller
 import fab.host.deployment
 
 
-class DeployRSRCode(fabric.tasks.Task):
-    """Deploys RSR codebase to a specified location"""
+class DeployRSRApp(fabric.tasks.Task):
+    """Deploys RSR app to a specified location"""
 
-    name = "deploy_rsr_code"
+    name = "deploy_rsr_app"
 
     def __init__(self, deployment_config):
         self.deployment_config = deployment_config
 
     @staticmethod
     def create_task_instance():
-        return DeployRSRCode(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(fabric.api.env.user))
+        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(fabric.api.env.user))
 
     def run(self, host_controller_mode):
         self._initialise_app_deployer_using(host_controller_mode)
 
-        self.feedback.comment("Starting RSR codebase deployment")
+        self.feedback.comment("Starting RSR app deployment")
         self.app_deployer.ensure_required_directories_exist()
         self.app_deployer.clean_deployment_directories()
         self.app_deployer.download_and_unpack_rsr_archive()
@@ -42,4 +42,4 @@ class DeployRSRCode(fabric.tasks.Task):
         self.feedback = deployment_host.feedback
 
 
-instance = DeployRSRCode.create_task_instance()
+instance = DeployRSRApp.create_task_instance()
