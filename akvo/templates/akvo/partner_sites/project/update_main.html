@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail %}
+{% load i18n rsr_tags webdesign thumbnail oembed_tags %}
 {% load url from future %}
 
 
@@ -10,12 +10,36 @@
   <li class="last_breadcrum_item">{{update.title}}</li>
 {% endblock breadcrum_items %}
 
+
 {% block project_content %}
   <section class="whitebox pad20">
+    {% counter_badge update %}
     <h2>{{update.title}}</h2>
-    <p>{{update.text}}</p>
-     {% update_thumb update 400 300 %}
-     {{ update.video }}
+
+    {% if update.text_location == 'B' %}
+      {{ update.text|linebreaks }}
+    {% endif %}	
+    {% if update.video %}
+      <div style="margin: 10px 10px 30px 20px;">
+        {% oembed 400x300 %}{{ update.video }}{% endoembed %}
+      </div>
+      {% if update.video_caption or update.video_credit %}
+        <p class="small">
+          {% if update.video_caption %}
+            {{ update.video_caption }}
+          {% endif %}
+          {% if update.video_credit %}
+            {% trans 'Video credit' %}: {{ update.video_credit }}
+          {% endif %}
+        </p>
+      {% endif %}
+    {% endif %}
+    {% if update.photo %}
+      {% update_thumb update 400 300 %}
+    {% endif %}   	
+    {% if update.text_location == 'E' %}
+      {{ update.text|linebreaks }}
+    {% endif %}
   </section>
 {% endblock project_content %}
 
