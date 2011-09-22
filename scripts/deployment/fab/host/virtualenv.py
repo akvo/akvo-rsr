@@ -6,15 +6,17 @@
 
 
 from fab.environment.python.virtualenv import VirtualEnv
-from fab.host.neutral import NeutralHost
+from fab.helpers.internet import Internet
+from fab.helpers.permissions import AkvoPermissions
+from fab.host.deployment import DeploymentHost
 from fab.os.filesystem import FileSystem
 
 
-class VirtualEnvHost(NeutralHost):
-    """VirtualEnvHost encapsulates virtualenv related actions on a given host"""
+class VirtualEnvHost(DeploymentHost):
+    """VirtualEnvHost extends DeploymentHost and encapsulates virtualenv actions on a given host"""
 
-    def __init__(self, file_system, virtualenv, feedback):
-        super(VirtualEnvHost, self).__init__(file_system, feedback)
+    def __init__(self, file_system, permissions, internet_helper, virtualenv, feedback):
+        super(VirtualEnvHost, self).__init__(file_system, permissions, internet_helper, feedback)
         self.virtualenv = virtualenv
 
     @staticmethod
@@ -22,6 +24,8 @@ class VirtualEnvHost(NeutralHost):
         file_system = FileSystem(host_controller)
 
         return VirtualEnvHost(file_system,
+                              AkvoPermissions(host_controller),
+                              Internet(host_controller),
                               VirtualEnv(virtualenv_path, host_controller, file_system),
                               host_controller.feedback)
 

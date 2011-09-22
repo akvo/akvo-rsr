@@ -22,9 +22,11 @@ class VirtualEnvHostTest(mox.MoxTestBase):
         super(VirtualEnvHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
-        self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.virtualenv_host = VirtualEnvHost(self.mock_file_system, self.mock_virtualenv, self.mock_feedback)
+        # we don't have any additional expections on the AkvoPermission, Internet and ExecutionFeedback
+        # dependencies (since those are already tested in the DeploymentHost base class) so we set these
+        # to None for now
+        self.virtualenv_host = VirtualEnvHost(self.mock_file_system, None, None, self.mock_virtualenv, None)
 
     def test_can_create_a_remote_virtualenvhost_instance(self):
         """fab.tests.host.virtualenv_host_test  Can create a remote VirtualEnvHost instance"""
@@ -42,7 +44,7 @@ class VirtualEnvHostTest(mox.MoxTestBase):
 
     def _create_virtualenvhost_instance_with(self, host_controller_class):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
-        mock_host_controller.feedback = self.mock_feedback
+        mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mox.ReplayAll()
 
