@@ -8,8 +8,8 @@
 import fabric.api
 import fabric.tasks
 
-import fab.config.deployer
-import fab.helpers.codebase
+import fab.app.deployer
+import fab.config.rsr.deployment
 import fab.host.controller
 import fab.host.deployment
 
@@ -20,26 +20,26 @@ class DeployRSRCode(fabric.tasks.Task):
     name = "deploy_rsr_code"
 
     def __init__(self, deployment_config):
-        self.config = deployment_config
+        self.deployment_config = deployment_config
 
     @staticmethod
     def create_task_instance():
-        return DeployRSRCode(fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user))
-
-    def initialise_codebase_using(self, host_controller_mode):
-        host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
-        deployment_host = fab.host.deployment.DeploymentHost.create_instance(self.config.rsr_env_path, host_controller)
-
-        self.codebase = fab.helpers.codebase.Codebase(self.config, deployment_host)
-        self.feedback = deployment_host.feedback
+        return DeployRSRCode(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(fabric.api.env.user))
 
     def run(self, host_controller_mode):
-        self.initialise_codebase_using(host_controller_mode)
+        self._initialise_app_deployer_using(host_controller_mode)
 
         self.feedback.comment("Starting RSR codebase deployment")
-        self.codebase.ensure_required_directories_exist()
-        self.codebase.clean_deployment_directories()
-        self.codebase.download_and_unpack_rsr_archive()
+        self.app_deployer.ensure_required_directories_exist()
+        self.app_deployer.clean_deployment_directories()
+        self.app_deployer.download_and_unpack_rsr_archive()
+
+    def _initialise_app_deployer_using(self, host_controller_mode):
+        host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
+        deployment_host = fab.host.deployment.DeploymentHost.create_instance(host_controller)
+
+        self.app_deployer = fab.app.deployer.RSRAppDeployer(self.deployment_config, deployment_host)
+        self.feedback = deployment_host.feedback
 
 
 instance = DeployRSRCode.create_task_instance()
