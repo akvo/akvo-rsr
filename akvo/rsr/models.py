@@ -2558,7 +2558,10 @@ class ProjectUpdate(models.Model):
 
     def img(self, value=''):
         if self.photo:
-            value = self.photo.thumbnail_tag
+            try:
+                value = self.photo.thumbnail_tag
+            except:
+                pass
         return value
     img.allow_tags = True
 

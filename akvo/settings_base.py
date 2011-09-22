@@ -128,6 +128,7 @@ NEWS_CATEGORY_ID        = 3 #wordpress ID of news category that's shown in top l
 NEWS_ARTICLE_COUNT      = 3 #how many news articles to link to
 FEATURE_CATEGORY_ID     = 7 #wordpress ID of feature category
 FEATURE_ARTICLE_COUNT   = 2 #how many features to display in More headlines box
+IMAGE_CATEGORY_ID       = 11 #wordpress ID of image category
 
 ROOT_URLCONF = 'akvo.urls'
 

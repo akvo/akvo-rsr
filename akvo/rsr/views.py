@@ -159,8 +159,19 @@ def index(request, cms_id=None):
         except:
             cms = MiniCMS.objects.get(pk=1)
 
-    news_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'NEWS_ARTICLE_COUNT', 2))
-    blog_posts = wordpress_get_lastest_posts('wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 7), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2))
+    # posts that we get the titles from and display in the top news box
+    news_posts = wordpress_get_lastest_posts(
+        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
+    )
+    # posts that we show in the more headlines box
+    blog_posts = wordpress_get_lastest_posts(
+        'wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 7), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2)
+    )
+    # from this category we draw the image to show in the news box
+    image_posts = wordpress_get_lastest_posts(
+        'wordpress', getattr(settings, 'IMAGE_CATEGORY_ID', 11), getattr(settings, 'IMAGE_CATEGORY_ID', 1)
+    )
+
     news_image = ''
     news_title = ''
 
@@ -175,7 +186,7 @@ def index(request, cms_id=None):
         #get three featured updates
         updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
     elif news_posts:
-        for post in news_posts:
+        for post in image_posts:
             if post.get('image', None):
                 news_image = post['image']
                 news_title = post['title']
