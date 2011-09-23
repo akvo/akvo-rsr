@@ -9,6 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.virtualenv import RSRVirtualEnvConfig
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
@@ -19,16 +20,18 @@ class VirtualEnvTest(mox.MoxTestBase):
 
     def setUp(self):
         super(VirtualEnvTest, self).setUp()
-        self.expected_virtualenv_path = "/some/env/path"
+        self.mock_virtualenv_config = self.mox.CreateMock(RSRVirtualEnvConfig)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
+        self.expected_virtualenv_path = "/some/env/path"
         self.pip_requirements_file = "/some/path/to/pip_requirements.txt"
-        self.pip_log_file = "/some/log/path/pip.log"
 
         self.mock_host_controller.feedback = self.mock_feedback
-        self.virtualenv = VirtualEnv(self.expected_virtualenv_path, self.mock_host_controller, self.mock_file_system)
+        self.mock_virtualenv_config.rsr_env_path = self.expected_virtualenv_path
+
+        self.virtualenv = VirtualEnv(self.mock_virtualenv_config, self.mock_host_controller, self.mock_file_system)
 
     def test_can_check_for_virtualenv_existence(self):
         """fab.tests.environment.python.virtualenv_test  Can check for virtualenv existence"""
@@ -78,21 +81,21 @@ class VirtualEnvTest(mox.MoxTestBase):
 
         self._set_expectations_to_create_empty_virtualenv(existing_virtualenv=False)
 
-        self.virtualenv.create_empty_virtualenv(self.pip_log_file)
+        self.virtualenv.create_empty_virtualenv()
 
     def test_will_delete_existing_virtualenv_when_creating_an_empty_virtualenv(self):
         """fab.tests.environment.python.virtualenv_test  Will delete existing virtualenv when creating an empty virtualenv"""
 
         self._set_expectations_to_create_empty_virtualenv(existing_virtualenv=True)
 
-        self.virtualenv.create_empty_virtualenv(self.pip_log_file)
+        self.virtualenv.create_empty_virtualenv()
 
     def test_can_ensure_virtualenv_exists_and_create_empty_virtualenv_if_none_exists(self):
         """fab.tests.environment.python.virtualenv_test  Can ensure virtualenv exists and create an empty virtualenv if none exists"""
 
         self._set_expectations_to_create_empty_virtualenv(existing_virtualenv=False)
 
-        self.virtualenv.ensure_virtualenv_exists(self.pip_log_file)
+        self.virtualenv.ensure_virtualenv_exists()
 
     def test_can_ensure_virtualenv_exists_and_confirm_an_existing_virtualenv(self):
         """fab.tests.environment.python.virtualenv_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
@@ -102,13 +105,12 @@ class VirtualEnvTest(mox.MoxTestBase):
         self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
 
-        self.virtualenv.ensure_virtualenv_exists(self.pip_log_file)
+        self.virtualenv.ensure_virtualenv_exists()
 
     def _set_expectations_to_create_empty_virtualenv(self, existing_virtualenv):
         if existing_virtualenv:
             self.mock_file_system.directory_exists(self.expected_virtualenv_path).MultipleTimes().AndReturn(True)
             self._set_expectations_to_delete_virtualenv()
-            self.mock_file_system.delete_file_with_sudo(self.pip_log_file)
         else:
             self.mock_file_system.directory_exists(self.expected_virtualenv_path).MultipleTimes().AndReturn(False)
 
@@ -128,23 +130,25 @@ class VirtualEnvTest(mox.MoxTestBase):
 
         self._set_expectations_to_install_packages(quietly=False)
 
-        self.virtualenv.install_packages(self.pip_requirements_file, self.pip_log_file)
+        self.virtualenv.install_packages(self.pip_requirements_file)
 
     def test_can_install_packages_quietly_from_given_pip_requirements(self):
         """fab.tests.environment.python.virtualenv_test  Can install packages quietly from given pip requirements"""
 
         self._set_expectations_to_install_packages(quietly=True)
 
-        self.virtualenv.install_packages_quietly(self.pip_requirements_file, self.pip_log_file)
+        self.virtualenv.install_packages_quietly(self.pip_requirements_file)
 
     def _set_expectations_to_install_packages(self, quietly):
         quiet_mode_switch = "-q " if quietly else ""
+        expected_pip_log_file_path = "/some/log/path/pip.log"
         expected_pip_install_command = "pip install %s-M -E %s -r %s --log=%s" % (quiet_mode_switch,
                                                                                   self.expected_virtualenv_path,
                                                                                   self.pip_requirements_file,
-                                                                                  self.pip_log_file)
+                                                                                  expected_pip_log_file_path)
 
         self.mock_feedback.comment("Installing packages in virtualenv at %s" % self.expected_virtualenv_path)
+        self.mock_virtualenv_config.time_stamped_pip_install_log_file_path().AndReturn(expected_pip_log_file_path)
         self.mock_host_controller.run(self._expected_call_within_virtualenv(expected_pip_install_command))
         self._set_expectations_to_list_pip_packages()
         self.mox.ReplayAll()
