@@ -77,23 +77,6 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_rsr_deployment_home, self.deployment_config.rsr_deployment_home)
 
-    def test_has_virtualenvs_home(self):
-        """fab.tests.config.rsr.deployment_config_test  Has virtualenvs home"""
-
-        self.assertEqual(self.deployment_host_config_values.virtualenvs_home, self.deployment_config.virtualenvs_home)
-
-    def test_has_rsr_virtualenv_name(self):
-        """fab.tests.config.rsr.deployment_config_test  Has RSR virtualenv name"""
-
-        self.assertEqual(self.expected_rsr_dir_name, self.deployment_config.rsr_env_name)
-
-    def test_has_rsr_virtualenv_path(self):
-        """fab.tests.config.rsr.deployment_config_test  Has RSR virtualenv path"""
-
-        expected_rsr_env_path = os.path.join(self.deployment_host_config_values.virtualenvs_home, self.expected_rsr_dir_name)
-
-        self.assertEqual(expected_rsr_env_path, self.deployment_config.rsr_env_path)
-
 
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDeploymentConfigTest)
