@@ -20,13 +20,13 @@ class RSRAppDeployerTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RSRAppDeployerTest, self).setUp()
-        self.mock_config = self.mox.CreateMock(RSRDeploymentConfig)
+        self.mock_deployment_config = self.mox.CreateMock(RSRDeploymentConfig)
         self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mock_deployment_host.feedback = self.mock_feedback
 
-        self.app_deployer = RSRAppDeployer(self.mock_config, self.mock_deployment_host)
+        self.app_deployer = RSRAppDeployer(self.mock_deployment_config, self.mock_deployment_host)
 
     def test_initialiser_uses_executionfeedback_instance_from_deployment_host(self):
         """fab.tests.app.rsr_app_deployer_test  Initialiser uses ExecutionFeedback from deployment host"""
@@ -42,17 +42,14 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         deployment_user     = "rupaul"
         repo_checkout_home  = "/var/repo"
         repo_archives_dir   = "/var/repo/archives"
-        virtualenvs_home    = "/var/virtualenvs"
 
-        self.mock_config.deployment_user    = deployment_user
-        self.mock_config.repo_checkout_home = repo_checkout_home
-        self.mock_config.repo_archives_dir  = repo_archives_dir
-        self.mock_config.virtualenvs_home   = virtualenvs_home
+        self.mock_deployment_config.deployment_user     = deployment_user
+        self.mock_deployment_config.repo_checkout_home  = repo_checkout_home
+        self.mock_deployment_config.repo_archives_dir   = repo_archives_dir
 
         self.mock_deployment_host.exit_if_user_is_not_member_of_web_group(deployment_user)
         self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(repo_checkout_home)
         self.mock_deployment_host.ensure_directory_exists(repo_archives_dir)
-        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(virtualenvs_home)
         self.mox.ReplayAll()
 
         self.app_deployer.ensure_required_directories_exist()
@@ -61,7 +58,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         """fab.tests.app.rsr_app_deployer_test  Can clean deployment directories"""
 
         deployment_home_dir = "/var/some/path/akvo-rsr_root"
-        self.mock_config.rsr_deployment_home = deployment_home_dir
+        self.mock_deployment_config.rsr_deployment_home = deployment_home_dir
 
         self.mock_feedback.comment("Clearing previous deployment directories")
         self.mock_deployment_host.delete_directory_with_sudo(deployment_home_dir)
@@ -91,8 +88,8 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         archive_file_name       = "rsr_v1.0.9.zip"
         archive_file_on_host    = os.path.join(repo_archives_dir, archive_file_name)
 
-        self.mock_config.rsr_archive_url    = rsr_archive_url
-        self.mock_config.repo_archives_dir  = repo_archives_dir
+        self.mock_deployment_config.rsr_archive_url     = rsr_archive_url
+        self.mock_deployment_config.repo_archives_dir   = repo_archives_dir
 
         self.mock_deployment_host.file_name_from_url_headers(rsr_archive_url).AndReturn(archive_file_name)
         self.mock_feedback.comment("Downloading RSR archive file")
@@ -112,10 +109,10 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         rsr_deployment_home         = os.path.join(repo_checkout_home, rsr_deployment_dir_name)
         unpacked_archive_dir_mask   = "unpacked_rsr_archive_dir-*"
 
-        self.mock_config.rsr_deployment_dir_name    = rsr_deployment_dir_name
-        self.mock_config.rsr_deployment_home        = rsr_deployment_home
-        self.mock_config.repo_checkout_home         = repo_checkout_home
-        self.mock_config.unpacked_archive_dir_mask  = unpacked_archive_dir_mask
+        self.mock_deployment_config.rsr_deployment_dir_name     = rsr_deployment_dir_name
+        self.mock_deployment_config.rsr_deployment_home         = rsr_deployment_home
+        self.mock_deployment_config.repo_checkout_home          = repo_checkout_home
+        self.mock_deployment_config.unpacked_archive_dir_mask   = unpacked_archive_dir_mask
 
         self.mock_feedback.comment("Unpacking RSR archive in %s" % rsr_deployment_home)
         self.mock_deployment_host.cd(repo_checkout_home).AndReturn(fabric.api.cd(repo_checkout_home))

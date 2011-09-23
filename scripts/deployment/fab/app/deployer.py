@@ -19,7 +19,6 @@ class RSRAppDeployer(object):
         self.deployment_host.exit_if_user_is_not_member_of_web_group(self.config.deployment_user)
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(self.config.repo_checkout_home)
         self.deployment_host.ensure_directory_exists(self.config.repo_archives_dir)
-        self.deployment_host.ensure_directory_exists_with_web_group_permissions(self.config.virtualenvs_home)
 
     def clean_deployment_directories(self):
         self.feedback.comment("Clearing previous deployment directories")
