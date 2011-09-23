@@ -20,23 +20,23 @@ class VirtualEnvHost(DeploymentHost):
         self.virtualenv = virtualenv
 
     @staticmethod
-    def create_instance(virtualenv_path, host_controller):
+    def create_instance(virtualenv_config, host_controller):
         file_system = FileSystem(host_controller)
 
         return VirtualEnvHost(file_system,
                               AkvoPermissions(host_controller),
                               Internet(host_controller),
-                              VirtualEnv(virtualenv_path, host_controller, file_system),
+                              VirtualEnv(virtualenv_config, host_controller, file_system),
                               host_controller.feedback)
 
-    def create_empty_virtualenv(self, pip_install_log_file):
-        self.virtualenv.create_empty_virtualenv(pip_install_log_file)
+    def create_empty_virtualenv(self):
+        self.virtualenv.create_empty_virtualenv()
 
-    def ensure_virtualenv_exists(self, pip_install_log_file):
-        self.virtualenv.ensure_virtualenv_exists(pip_install_log_file)
+    def ensure_virtualenv_exists(self):
+        self.virtualenv.ensure_virtualenv_exists()
 
-    def install_virtualenv_packages(self, pip_requirements_file, pip_install_log_file):
-        self.virtualenv.install_packages(pip_requirements_file, pip_install_log_file)
+    def install_virtualenv_packages(self, pip_requirements_file):
+        self.virtualenv.install_packages(pip_requirements_file)
 
     def list_installed_virtualenv_packages(self):
         self.virtualenv.list_installed_virtualenv_packages()

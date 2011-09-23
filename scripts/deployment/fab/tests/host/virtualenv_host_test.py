@@ -9,6 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.virtualenv import RSRVirtualEnvConfig
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -43,43 +44,40 @@ class VirtualEnvHostTest(mox.MoxTestBase):
         self.assertIsInstance(host_instance, VirtualEnvHost)
 
     def _create_virtualenvhost_instance_with(self, host_controller_class):
+        mock_virtualenv_config = self.mox.CreateMock(RSRVirtualEnvConfig)
+        mock_virtualenv_config.rsr_env_path = "/some/path/to/virtualenvs/rsr"
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mox.ReplayAll()
 
-        return VirtualEnvHost.create_instance("/some/virtualenv/path", mock_host_controller)
+        return VirtualEnvHost.create_instance(mock_virtualenv_config, mock_host_controller)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.host.virtualenv_host_test  Can create empty virtualenv"""
 
-        expected_pip_log_file = "/some/log/dir/pip_log.txt"
-
-        self.mock_virtualenv.create_empty_virtualenv(expected_pip_log_file)
+        self.mock_virtualenv.create_empty_virtualenv()
         self.mox.ReplayAll()
 
-        self.virtualenv_host.create_empty_virtualenv(expected_pip_log_file)
+        self.virtualenv_host.create_empty_virtualenv()
 
     def test_can_ensure_virtualenv_exists(self):
         """fab.tests.host.virtualenv_host_test  Can ensure virtualenv exists"""
 
-        expected_pip_log_file = "/some/log/dir/pip_log.txt"
-
-        self.mock_virtualenv.ensure_virtualenv_exists(expected_pip_log_file)
+        self.mock_virtualenv.ensure_virtualenv_exists()
         self.mox.ReplayAll()
 
-        self.virtualenv_host.ensure_virtualenv_exists(expected_pip_log_file)
+        self.virtualenv_host.ensure_virtualenv_exists()
 
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.virtualenv_host_test  Can install virtualenv packages"""
 
         expected_pip_requirements_file = "/some/pip/requirements.txt"
-        expected_pip_log_file = "/some/log/dir/pip_log.txt"
 
-        self.mock_virtualenv.install_packages(expected_pip_requirements_file, expected_pip_log_file)
+        self.mock_virtualenv.install_packages(expected_pip_requirements_file)
         self.mox.ReplayAll()
 
-        self.virtualenv_host.install_virtualenv_packages(expected_pip_requirements_file, expected_pip_log_file)
+        self.virtualenv_host.install_virtualenv_packages(expected_pip_requirements_file)
 
     def test_can_list_installed_virtualenv_packages(self):
         """fab.tests.host.virtualenv_host_test  Can create empty virtualenv"""
