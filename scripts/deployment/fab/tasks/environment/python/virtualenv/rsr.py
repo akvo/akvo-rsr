@@ -5,13 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os
-
-import fabric.api
 import fabric.tasks
 
-import fab.config.deployer
-import fab.host.deployment
+import fab.config.rsr.virtualenv
+import fab.host.virtualenv
 
 
 class RebuildRSREnv(fabric.tasks.Task):
@@ -19,26 +16,22 @@ class RebuildRSREnv(fabric.tasks.Task):
 
     name = "rebuild_rsr_env"
 
-    RSR_REQUIREMENTS_FILE = "2_rsr.txt"
-
-    def __init__(self, deployment_config):
-        self.config = deployment_config
+    def __init__(self, rsr_virtualenv_config):
+        self.virtualenv_config = rsr_virtualenv_config
 
     @staticmethod
     def create_task_instance():
-        return RebuildRSREnv(fab.config.deployer.DeployerConfig(fabric.api.env.hosts, fabric.api.env.user))
-
-    def configure_deployment_host_using(self, host_controller_mode):
-        host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
-        self.deployment_host = fab.host.deployment.DeploymentHost.create_instance(self.config.rsr_env_path, host_controller)
+        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvConfig.create_instance())
 
     def run(self, host_controller_mode):
-        self.configure_deployment_host_using(host_controller_mode)
+        self._configure_host_using(host_controller_mode)
 
-        rsr_requirements_path = os.path.join(self.config.pip_requirements_home, self.RSR_REQUIREMENTS_FILE)
+        self.virtualenv_host.ensure_virtualenv_exists()
+        self.virtualenv_host.install_virtualenv_packages(self.virtualenv_config.rsr_requirements_path)
 
-        self.deployment_host.ensure_virtualenv_exists(self.config.pip_install_log_file)
-        self.deployment_host.install_virtualenv_packages(rsr_requirements_path, self.config.pip_install_log_file)
+    def _configure_host_using(self, host_controller_mode):
+        host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
+        self.virtualenv_host = fab.host.virtualenv.VirtualEnvHost.create_instance(self.virtualenv_config, host_controller)
 
 
 instance = RebuildRSREnv.create_task_instance()

@@ -9,28 +9,28 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.deployer import DeployerConfig
+from fab.config.rsr.virtualenv import RSRVirtualEnvConfig
 from fab.host.controller import HostControllerMode
-from fab.host.deployment import DeploymentHost
+from fab.host.virtualenv import VirtualEnvHost
 
 from fab.tasks.environment.python.virtualenv.rsr import RebuildRSREnv
 
 
 class StubbedRebuildRSREnv(RebuildRSREnv):
 
-    def configure_deployment_host_using(self, host_controller_mode):
-        pass
+    def _configure_host_using(self, host_controller_mode):
+        pass # so that we can mock the host configuration
 
 
 class RebuildRSREnvTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RebuildRSREnvTest, self).setUp()
-        self.mock_config = self.mox.CreateMock(DeployerConfig)
-        self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
+        self.mock_virtualenv_config = self.mox.CreateMock(RSRVirtualEnvConfig)
+        self.mock_virtualenv_host = self.mox.CreateMock(VirtualEnvHost)
 
-        self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.mock_config)
-        self.rebuild_virtualenv_task.deployment_host = self.mock_deployment_host
+        self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.mock_virtualenv_config)
+        self.rebuild_virtualenv_task.virtualenv_host = self.mock_virtualenv_host
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Has expected task name"""
@@ -42,33 +42,30 @@ class RebuildRSREnvTest(mox.MoxTestBase):
 
         self.assertIsInstance(RebuildRSREnv.create_task_instance(), RebuildRSREnv)
 
-    def test_can_configure_deploymenthost_member_using_local_hostcontrollermode(self):
-        """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can configure DeploymentHost member using local HostControllerMode"""
+    def test_can_configure_host_using_local_hostcontrollermode(self):
+        """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can configure host using local HostControllerMode"""
 
-        rebuild_rsr_virtualenv_task = RebuildRSREnv.create_task_instance()
-        rebuild_rsr_virtualenv_task.configure_deployment_host_using(HostControllerMode.LOCAL)
+        self._verify_host_configuration_with(HostControllerMode.LOCAL)
 
-        self.assertIsInstance(rebuild_rsr_virtualenv_task.deployment_host, DeploymentHost)
+    def test_can_configure_host_using_remote_hostcontrollermode(self):
+        """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can configure host using remote HostControllerMode"""
 
-    def test_can_configure_deploymenthost_member_using_remote_hostcontrollermode(self):
-        """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can configure DeploymentHost member using remote HostControllerMode"""
+        self._verify_host_configuration_with(HostControllerMode.REMOTE)
 
-        rebuild_rsr_virtualenv_task = RebuildRSREnv.create_task_instance()
-        rebuild_rsr_virtualenv_task.configure_deployment_host_using(HostControllerMode.REMOTE)
+    def _verify_host_configuration_with(self, host_controller_mode):
+        rebuild_rsr_env_task = RebuildRSREnv.create_task_instance()
+        rebuild_rsr_env_task._configure_host_using(host_controller_mode)
 
-        self.assertIsInstance(rebuild_rsr_virtualenv_task.deployment_host, DeploymentHost)
+        self.assertIsInstance(rebuild_rsr_env_task.virtualenv_host, VirtualEnvHost)
 
     def test_can_rebuild_rsr_virtualenv(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can rebuild an RSR virtualenv"""
 
-        pip_log_file = "/some/log/path/pip.log"
-        pip_requirements_home = "/path/to/pip/requirements"
-        rsr_requirements_path = os.path.join(pip_requirements_home, RebuildRSREnv.RSR_REQUIREMENTS_FILE)
-        self.mock_config.pip_install_log_file = pip_log_file
-        self.mock_config.pip_requirements_home = pip_requirements_home
+        rsr_requirements_path = "/path/to/rsr_requirements.txt"
+        self.mock_virtualenv_config.rsr_requirements_path = rsr_requirements_path
 
-        self.mock_deployment_host.ensure_virtualenv_exists(pip_log_file)
-        self.mock_deployment_host.install_virtualenv_packages(rsr_requirements_path, pip_log_file)
+        self.mock_virtualenv_host.ensure_virtualenv_exists()
+        self.mock_virtualenv_host.install_virtualenv_packages(rsr_requirements_path)
         self.mox.ReplayAll()
 
         self.rebuild_virtualenv_task.run(HostControllerMode.REMOTE)
