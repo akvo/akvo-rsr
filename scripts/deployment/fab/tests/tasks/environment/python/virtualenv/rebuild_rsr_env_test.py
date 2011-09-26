@@ -11,7 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.host.controller import HostControllerMode
-from fab.host.virtualenv import VirtualEnvHost
+from fab.host.virtualenv import VirtualEnvDeploymentHost
 
 from fab.tasks.environment.python.virtualenv.rsr import RebuildRSREnv
 
@@ -27,10 +27,10 @@ class RebuildRSREnvTest(mox.MoxTestBase):
     def setUp(self):
         super(RebuildRSREnvTest, self).setUp()
         self.mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
-        self.mock_virtualenv_host = self.mox.CreateMock(VirtualEnvHost)
+        self.mock_virtualenv_deployment_host = self.mox.CreateMock(VirtualEnvDeploymentHost)
 
         self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.mock_virtualenv_installer_config)
-        self.rebuild_virtualenv_task.virtualenv_host = self.mock_virtualenv_host
+        self.rebuild_virtualenv_task.virtualenv_deployment_host = self.mock_virtualenv_deployment_host
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Has expected task name"""
@@ -56,7 +56,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         rebuild_rsr_env_task = RebuildRSREnv.create_task_instance()
         rebuild_rsr_env_task._configure_host_using(host_controller_mode)
 
-        self.assertIsInstance(rebuild_rsr_env_task.virtualenv_host, VirtualEnvHost)
+        self.assertIsInstance(rebuild_rsr_env_task.virtualenv_deployment_host, VirtualEnvDeploymentHost)
 
     def test_can_rebuild_rsr_virtualenv(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can rebuild an RSR virtualenv"""
@@ -64,8 +64,8 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         rsr_requirements_path = "/path/to/rsr_requirements.txt"
         self.mock_virtualenv_installer_config.rsr_requirements_path = rsr_requirements_path
 
-        self.mock_virtualenv_host.ensure_virtualenv_exists()
-        self.mock_virtualenv_host.install_virtualenv_packages(rsr_requirements_path)
+        self.mock_virtualenv_deployment_host.ensure_virtualenv_exists()
+        self.mock_virtualenv_deployment_host.install_virtualenv_packages(rsr_requirements_path)
         self.mox.ReplayAll()
 
         self.rebuild_virtualenv_task.run(HostControllerMode.REMOTE)

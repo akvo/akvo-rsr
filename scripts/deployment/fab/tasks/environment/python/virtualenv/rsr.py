@@ -16,8 +16,8 @@ class RebuildRSREnv(fabric.tasks.Task):
 
     name = "rebuild_rsr_env"
 
-    def __init__(self, rsr_virtualenv_config):
-        self.virtualenv_config = rsr_virtualenv_config
+    def __init__(self, virtualenv_installer_config):
+        self.virtualenv_installer_config = virtualenv_installer_config
 
     @staticmethod
     def create_task_instance():
@@ -26,12 +26,12 @@ class RebuildRSREnv(fabric.tasks.Task):
     def run(self, host_controller_mode):
         self._configure_host_using(host_controller_mode)
 
-        self.virtualenv_host.ensure_virtualenv_exists()
-        self.virtualenv_host.install_virtualenv_packages(self.virtualenv_config.rsr_requirements_path)
+        self.virtualenv_deployment_host.ensure_virtualenv_exists()
+        self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_path)
 
     def _configure_host_using(self, host_controller_mode):
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
-        self.virtualenv_host = fab.host.virtualenv.VirtualEnvHost.create_instance(self.virtualenv_config, host_controller)
+        self.virtualenv_deployment_host = fab.host.virtualenv.VirtualEnvDeploymentHost.create_instance(self.virtualenv_installer_config, host_controller)
 
 
 instance = RebuildRSREnv.create_task_instance()

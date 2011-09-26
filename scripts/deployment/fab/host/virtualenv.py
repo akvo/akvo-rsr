@@ -5,48 +5,48 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.environment.python.virtualenv import VirtualEnv
+from fab.environment.python.virtualenv import VirtualEnvInstaller
 from fab.helpers.internet import Internet
 from fab.helpers.permissions import AkvoPermissions
 from fab.host.deployment import DeploymentHost
 from fab.os.filesystem import FileSystem
 
 
-class VirtualEnvHost(DeploymentHost):
-    """VirtualEnvHost extends DeploymentHost and encapsulates virtualenv actions on a given host"""
+class VirtualEnvDeploymentHost(DeploymentHost):
+    """VirtualEnvDeploymentHost extends DeploymentHost and encapsulates virtualenv installation actions on a given host"""
 
-    def __init__(self, virtualenv_config, file_system, permissions, internet_helper, virtualenv, feedback):
-        super(VirtualEnvHost, self).__init__(file_system, permissions, internet_helper, feedback)
-        self.virtualenv_config = virtualenv_config
-        self.virtualenv = virtualenv
+    def __init__(self, virtualenvs_home, file_system, permissions, internet_helper, virtualenv_installer, feedback):
+        super(VirtualEnvDeploymentHost, self).__init__(file_system, permissions, internet_helper, feedback)
+        self.virtualenvs_home = virtualenvs_home
+        self.virtualenv_installer = virtualenv_installer
 
     @staticmethod
-    def create_instance(virtualenv_config, host_controller):
+    def create_instance(virtualenv_installer_config, host_controller):
         file_system = FileSystem(host_controller)
 
-        return VirtualEnvHost(virtualenv_config,
-                              file_system,
-                              AkvoPermissions(host_controller),
-                              Internet(host_controller),
-                              VirtualEnv(virtualenv_config, host_controller, file_system),
-                              host_controller.feedback)
+        return VirtualEnvDeploymentHost(virtualenv_installer_config.virtualenvs_home,
+                                        file_system,
+                                        AkvoPermissions(host_controller),
+                                        Internet(host_controller),
+                                        VirtualEnvInstaller(virtualenv_installer_config, host_controller, file_system),
+                                        host_controller.feedback)
 
     def create_empty_virtualenv(self):
         self._ensure_virtualenvs_home_exists()
-        self.virtualenv.create_empty_virtualenv()
+        self.virtualenv_installer.create_empty_virtualenv()
 
     def ensure_virtualenv_exists(self):
         self._ensure_virtualenvs_home_exists()
-        self.virtualenv.ensure_virtualenv_exists()
+        self.virtualenv_installer.ensure_virtualenv_exists()
 
     def _ensure_virtualenvs_home_exists(self):
-        self.ensure_directory_exists_with_web_group_permissions(self.virtualenv_config.virtualenvs_home)
+        self.ensure_directory_exists_with_web_group_permissions(self.virtualenvs_home)
 
     def install_virtualenv_packages(self, pip_requirements_file):
-        self.virtualenv.install_packages(pip_requirements_file)
+        self.virtualenv_installer.install_packages(pip_requirements_file)
 
     def list_installed_virtualenv_packages(self):
-        self.virtualenv.list_installed_virtualenv_packages()
+        self.virtualenv_installer.list_installed_virtualenv_packages()
 
     def run_within_virtualenv(self, command):
-        self.virtualenv.run_within_virtualenv(command)
+        self.virtualenv_installer.run_within_virtualenv(command)

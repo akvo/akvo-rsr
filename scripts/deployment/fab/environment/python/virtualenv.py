@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class VirtualEnv(object):
+class VirtualEnvInstaller(object):
 
-    def __init__(self, virtualenv_config, host_controller, file_system):
-        self.virtualenv_config = virtualenv_config
+    def __init__(self, virtualenv_installer_config, host_controller, file_system):
+        self.virtualenv_installer_config = virtualenv_installer_config
         self.host_controller = host_controller
         self.file_system = file_system
         self.feedback = host_controller.feedback
 
-        self.virtualenv_path = self.virtualenv_config.rsr_env_path
+        self.virtualenv_path = self.virtualenv_installer_config.rsr_env_path
 
     def virtualenv_exists(self):
         return self.file_system.directory_exists(self.virtualenv_path)
@@ -52,7 +52,7 @@ class VirtualEnv(object):
     def _pip_install_command(self, pip_requirements_file, quietly):
         quite_mode_switch = "-q " if quietly else ""
         pip_install_command_base = "pip install %s-M -E %s" % (quite_mode_switch, self.virtualenv_path)
-        pip_install_log_file = self.virtualenv_config.time_stamped_pip_install_log_file_path()
+        pip_install_log_file = self.virtualenv_installer_config.time_stamped_pip_install_log_file_path()
 
         return "%s -r %s --log=%s" % (pip_install_command_base, pip_requirements_file, pip_install_log_file)
 
