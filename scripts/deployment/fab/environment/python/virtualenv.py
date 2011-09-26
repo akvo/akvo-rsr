@@ -16,7 +16,7 @@ class VirtualEnv(object):
         self.host_controller = host_controller
         self.feedback = host_controller.feedback
 
-    def list_installed_virtualenv_packages(self):
+    def list_installed_packages(self):
         self.feedback.comment("Installed packages:")
         self.run_within_virtualenv("pip freeze")
 
@@ -54,7 +54,7 @@ class VirtualEnvInstaller(object):
             self.create_empty_virtualenv()
         else:
             self.feedback.comment("Found existing virtualenv at %s" % self.virtualenv_path)
-            self.virtualenv.list_installed_virtualenv_packages()
+            self.virtualenv.list_installed_packages()
 
     def create_empty_virtualenv(self):
         if self.virtualenv_exists():
@@ -62,7 +62,7 @@ class VirtualEnvInstaller(object):
 
         self.feedback.comment("Creating new virtualenv at %s" % self.virtualenv_path)
         self.host_controller.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
-        self.virtualenv.list_installed_virtualenv_packages()
+        self.virtualenv.list_installed_packages()
 
     def install_packages(self, pip_requirements_file):
         self._install_packages_in_virtualenv(pip_requirements_file, quietly=False)
@@ -73,7 +73,7 @@ class VirtualEnvInstaller(object):
     def _install_packages_in_virtualenv(self, pip_requirements_file, quietly):
         self.feedback.comment("Installing packages in virtualenv at %s" % self.virtualenv_path)
         self.virtualenv.run_within_virtualenv(self._pip_install_command(pip_requirements_file, quietly))
-        self.virtualenv.list_installed_virtualenv_packages()
+        self.virtualenv.list_installed_packages()
 
     def _pip_install_command(self, pip_requirements_file, quietly):
         quite_mode_switch = "-q " if quietly else ""

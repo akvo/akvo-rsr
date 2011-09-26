@@ -107,7 +107,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
         self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
         self.mock_feedback.comment("Found existing virtualenv at %s" % self.expected_virtualenv_path)
-        self.mock_virtualenv.list_installed_virtualenv_packages()
+        self.mock_virtualenv.list_installed_packages()
         self.mox.ReplayAll()
 
         self.virtualenv_installer.ensure_virtualenv_exists()
@@ -123,7 +123,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
         self.mock_feedback.comment("Creating new virtualenv at %s" % self.expected_virtualenv_path)
         self.mock_host_controller.run(expected_virtualenv_creation_command)
-        self.mock_virtualenv.list_installed_virtualenv_packages()
+        self.mock_virtualenv.list_installed_packages()
         self.mox.ReplayAll()
 
     def _set_expectations_to_delete_virtualenv(self):
@@ -155,7 +155,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mock_feedback.comment("Installing packages in virtualenv at %s" % self.expected_virtualenv_path)
         self.mock_virtualenv_installer_config.time_stamped_pip_install_log_file_path().AndReturn(expected_pip_log_file_path)
         self.mock_virtualenv.run_within_virtualenv(expected_pip_install_command)
-        self.mock_virtualenv.list_installed_virtualenv_packages()
+        self.mock_virtualenv.list_installed_packages()
         self.mox.ReplayAll()
 
 

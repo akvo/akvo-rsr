@@ -34,7 +34,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.mock_host_controller.run(self._expected_call_within_virtualenv("pip freeze"))
         self.mox.ReplayAll()
 
-        self.virtualenv.list_installed_virtualenv_packages()
+        self.virtualenv.list_installed_packages()
 
     def test_can_run_command_within_virtualenv(self):
         """fab.tests.environment.python.virtualenv_test  Can run command from within the virtualenv"""
