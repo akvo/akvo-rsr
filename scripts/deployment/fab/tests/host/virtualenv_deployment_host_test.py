@@ -89,22 +89,6 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
 
         self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_file)
 
-    def test_can_list_installed_virtualenv_packages(self):
-        """fab.tests.host.virtualenv_deployment_host_test  Can create empty virtualenv"""
-
-        self.mock_virtualenv_installer.list_installed_virtualenv_packages()
-        self.mox.ReplayAll()
-
-        self.virtualenv_deployment_host.list_installed_virtualenv_packages()
-
-    def test_can_run_command_within_virtualenv(self):
-        """fab.tests.host.virtualenv_deployment_host_test  Can run command within virtualenv"""
-
-        self.mock_virtualenv_installer.run_within_virtualenv("some command")
-        self.mox.ReplayAll()
-
-        self.virtualenv_deployment_host.run_within_virtualenv("some command")
-
 
 def suite():
     return TestSuiteLoader().load_tests_from(VirtualEnvDeploymentHostTest)

@@ -28,7 +28,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
                                         file_system,
                                         AkvoPermissions(host_controller),
                                         Internet(host_controller),
-                                        VirtualEnvInstaller(virtualenv_installer_config, host_controller, file_system),
+                                        VirtualEnvInstaller.create_instance(virtualenv_installer_config, host_controller, file_system),
                                         host_controller.feedback)
 
     def create_empty_virtualenv(self):
@@ -44,9 +44,3 @@ class VirtualEnvDeploymentHost(DeploymentHost):
 
     def install_virtualenv_packages(self, pip_requirements_file):
         self.virtualenv_installer.install_packages(pip_requirements_file)
-
-    def list_installed_virtualenv_packages(self):
-        self.virtualenv_installer.list_installed_virtualenv_packages()
-
-    def run_within_virtualenv(self, command):
-        self.virtualenv_installer.run_within_virtualenv(command)

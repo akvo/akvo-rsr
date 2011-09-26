@@ -10,9 +10,9 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
-from fab.environment.python.virtualenv import VirtualEnvInstaller
+from fab.environment.python.virtualenv import VirtualEnv, VirtualEnvInstaller
 from fab.helpers.feedback import ExecutionFeedback
-from fab.host.controller import RemoteHostController
+from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem
 
 
@@ -23,6 +23,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.expected_virtualenv_path = "/some/env/path"
@@ -31,7 +32,29 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mock_host_controller.feedback = self.mock_feedback
         self.mock_virtualenv_installer_config.rsr_env_path = self.expected_virtualenv_path
 
-        self.virtualenv_installer = VirtualEnvInstaller(self.mock_virtualenv_installer_config, self.mock_host_controller, self.mock_file_system)
+        self.virtualenv_installer = VirtualEnvInstaller(self.mock_virtualenv_installer_config, self.mock_host_controller,
+                                                        self.mock_file_system, self.mock_virtualenv)
+
+    def test_can_create_instance_for_local_host(self):
+        """fab.tests.environment.python.virtualenv_installer_test  Can create VirtualEnvInstaller instance for a local host"""
+
+        self._verify_virtualenv_installer_instance_with(LocalHostController)
+
+    def test_can_create_instance_for_remote_host(self):
+        """fab.tests.environment.python.virtualenv_installer_test  Can create VirtualEnvInstaller instance for a remote host"""
+
+        self._verify_virtualenv_installer_instance_with(RemoteHostController)
+
+    def _verify_virtualenv_installer_instance_with(self, host_controller_class):
+        mock_host_controller = self.mox.CreateMock(host_controller_class)
+        mock_host_controller.feedback = self.mock_feedback
+        self.mox.ReplayAll()
+
+        virtualenv_installer_instance = VirtualEnvInstaller.create_instance(self.mock_virtualenv_installer_config,
+                                                                            mock_host_controller,
+                                                                            self.mock_file_system)
+
+        self.assertIsInstance(virtualenv_installer_instance, VirtualEnvInstaller)
 
     def test_can_check_for_virtualenv_existence(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can check for virtualenv existence"""
@@ -57,24 +80,6 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.virtualenv_installer.delete_existing_virtualenv()
-
-    def test_can_run_command_within_virtualenv(self):
-        """fab.tests.environment.python.virtualenv_installer_test  Can run command from within virtualenv"""
-
-        virtualenv_command = "command text"
-
-        self.mock_host_controller.run(self._expected_call_within_virtualenv(virtualenv_command))
-        self.mox.ReplayAll()
-
-        self.virtualenv_installer.run_within_virtualenv(virtualenv_command)
-
-    def test_can_list_installed_virtualenv_packages(self):
-        """fab.tests.environment.python.virtualenv_installer_test  Can list installed virtualenv packages"""
-
-        self._set_expectations_to_list_pip_packages()
-        self.mox.ReplayAll()
-
-        self.virtualenv_installer.list_installed_virtualenv_packages()
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can create empty virtualenv"""
@@ -102,7 +107,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
         self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
         self.mock_feedback.comment("Found existing virtualenv at %s" % self.expected_virtualenv_path)
-        self._set_expectations_to_list_pip_packages()
+        self.mock_virtualenv.list_installed_virtualenv_packages()
         self.mox.ReplayAll()
 
         self.virtualenv_installer.ensure_virtualenv_exists()
@@ -118,7 +123,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
         self.mock_feedback.comment("Creating new virtualenv at %s" % self.expected_virtualenv_path)
         self.mock_host_controller.run(expected_virtualenv_creation_command)
-        self._set_expectations_to_list_pip_packages()
+        self.mock_virtualenv.list_installed_virtualenv_packages()
         self.mox.ReplayAll()
 
     def _set_expectations_to_delete_virtualenv(self):
@@ -149,16 +154,9 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
         self.mock_feedback.comment("Installing packages in virtualenv at %s" % self.expected_virtualenv_path)
         self.mock_virtualenv_installer_config.time_stamped_pip_install_log_file_path().AndReturn(expected_pip_log_file_path)
-        self.mock_host_controller.run(self._expected_call_within_virtualenv(expected_pip_install_command))
-        self._set_expectations_to_list_pip_packages()
+        self.mock_virtualenv.run_within_virtualenv(expected_pip_install_command)
+        self.mock_virtualenv.list_installed_virtualenv_packages()
         self.mox.ReplayAll()
-
-    def _set_expectations_to_list_pip_packages(self):
-        self.mock_feedback.comment("Installed packages:")
-        self.mock_host_controller.run(self._expected_call_within_virtualenv("pip freeze"))
-
-    def _expected_call_within_virtualenv(self, command):
-        return "source %s/bin/activate && %s" % (self.expected_virtualenv_path, command)
 
 
 def suite():
