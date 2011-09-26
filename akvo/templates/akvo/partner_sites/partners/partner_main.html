@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters google_maps %}
 {% load url from future %}
 
 
@@ -20,13 +20,85 @@
       <h1 style="margin-bottom:4px">
         {{partner}}
       </h1>
-       <div class="pad20 whitebox">
-         <p>Info about {{partner}}
-         </p>
+      <div class="pad20 whitebox">
+        <div class="content_three_col">
+          {% org_logo partner 100 75 'margin-bottom: 1.5em;' %}
+          <h3>{% trans 'Activities' %}</h3>
+          <p class="small">
+            {% if partner.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
+            {% if partner.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
+            {% if partner.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
+            {% if partner.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
+          </p>
+          <h3>{% trans 'Type' %}</h3>
+          <p class="small">{{partner.get_organisation_type_display}}</p>
+            {% if partner.url %}
+              <h3>{% trans 'Website' %}</h3>
+              <p class="small"><a href="{{partner.url}}">{{partner.url}}</a></p>
+            {% endif %}
+            {% if partner.akvopedia_entry %}
+              <h3>{% trans 'Akvopedia entry' %}</h3>
+              <p class="small">{{partner.akvopedia_entry}}</p>
+            {% endif %}
+        </div>
+        <div class="content_three_col marg_left20">
+          <h3>{% trans 'Location' %}</h3>
+          <p class="small">
+            {% if partner.primary_location.address_1 %}{{partner.primary_location.address_1}}<br />{% endif %}
+            {% if partner.primary_location.address_2 %}{{partner.primary_location.address_2}}<br />{% endif %}
+            {% if partner.primary_location.postcode %}{{partner.primary_location.postcode}}<br />{% endif %}
+            {% if partner.primary_location.city %}{{partner.primary_location.city}}<br />{% endif %}
+            {% if partner.primary_location.state %}{{partner.primary_location.state}}<br />{% endif %}
+            {% if partner.primary_location.country %}{{partner.primary_location.country}}{% endif %}
+          </p>
+          {% if partner.primary_location %}
+            {% google_map partner 195 160 6 %}
+          {% else %}
+            <p class="small" style="color: red;">{% trans 'No map available' %}</p>
+          {% endif %}
+        </div>
+        <div class="content_three_col marg_left20">
+          <h3>{% trans 'Contact' %}</h3>
+          <p class="small">
+            {{partner.contact_person}}<br />
+            <a href="mailto:{{organisation.contact_email}}">{{partner.contact_email}}</a>
+            <br /><br />
+            {% if partner.phone %}
+              <b>{% trans 'Phone' %}</b><br />
+              {{partner.phone}}
+              <br /><br />
+            {% endif %}
+            {% if partner.mobile %}
+              <b>{% trans 'Mobile' %}</b><br />
+              {{partner.mobile}}
+              <br /><br />
+            {% endif %}
+            {% if partner.fax %}
+              <b>{% trans 'Fax' %}</b><br />
+              {{partner.fax}}<br />
+              <br />
+            {% endif %}
+          </p>
+        </div>
+        <div class="clear"></div>
+        <hr />
+        <h2>{% trans 'Description' %}</h2>
+        {{partner.description|linebreaks}}
       </div>
     </article>
     <aside>
-      <p>Stats to the right</p>
+      <div class="pad20 whitebox marg_top35">
+        <h2>Projects</h2>
+        <p class="small grey">
+          Number of shared projects and their state.
+        </p>
+      </div>
+      <div class="pad20 whitebox marg_top20">
+        <h2>Funding</h2>
+        <p class="small grey">
+          Amount of money in shared projects.
+        </p>
+      </div>
     </aside>
   </div>
 {% endblock content %}
