@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.rsr.virtualenv import RSRVirtualEnvConfig
+from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -21,14 +21,14 @@ class VirtualEnvHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(VirtualEnvHostTest, self).setUp()
-        self.mock_virtualenv_config = self.mox.CreateMock(RSRVirtualEnvConfig)
+        self.mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         # we don't have any additional expections on the AkvoPermission and Internet dependencies (since
         # those are already tested in the DeploymentHost base class) so we set these to None for now
-        self.virtualenv_host = VirtualEnvHost(self.mock_virtualenv_config, self.mock_file_system,
+        self.virtualenv_host = VirtualEnvHost(self.mock_virtualenv_installer_config, self.mock_file_system,
                                               None, None, self.mock_virtualenv, self.mock_feedback)
 
     def test_can_create_a_remote_virtualenvhost_instance(self):
@@ -46,14 +46,14 @@ class VirtualEnvHostTest(mox.MoxTestBase):
         self.assertIsInstance(host_instance, VirtualEnvHost)
 
     def _create_virtualenvhost_instance_with(self, host_controller_class):
-        mock_virtualenv_config = self.mox.CreateMock(RSRVirtualEnvConfig)
-        mock_virtualenv_config.rsr_env_path = "/some/path/to/virtualenvs/rsr"
+        mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
+        mock_virtualenv_installer_config.rsr_env_path = "/some/path/to/virtualenvs/rsr"
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mox.ReplayAll()
 
-        return VirtualEnvHost.create_instance(mock_virtualenv_config, mock_host_controller)
+        return VirtualEnvHost.create_instance(mock_virtualenv_installer_config, mock_host_controller)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.host.virtualenv_host_test  Can create empty virtualenv"""
@@ -76,7 +76,7 @@ class VirtualEnvHostTest(mox.MoxTestBase):
     def _set_expectations_to_ensure_virtualenvs_home_exists(self):
         virtualenvs_home = "/var/virtualenvs"
 
-        self.mock_virtualenv_config.virtualenvs_home = virtualenvs_home
+        self.mock_virtualenv_installer_config.virtualenvs_home = virtualenvs_home
         self.mock_file_system.directory_exists(virtualenvs_home).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % virtualenvs_home)
 

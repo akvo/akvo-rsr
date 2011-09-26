@@ -13,7 +13,7 @@ from fab.config.values import DeploymentHostConfigValues
 from fab.format.timestamp import TimeStampFormatter
 
 
-class RSRVirtualEnvConfig(object):
+class RSRVirtualEnvInstallerConfig(object):
 
     def __init__(self, deployment_host_config_values, codebase_config, deployment_config, time_stamp_formatter):
         self.virtualenvs_home       = deployment_host_config_values.virtualenvs_home
@@ -28,7 +28,7 @@ class RSRVirtualEnvConfig(object):
         codebase_config = RSRCodebaseConfig.create_instance()
         deployment_config = RSRDeploymentConfig(None, deployment_host_config_values, codebase_config)
 
-        return RSRVirtualEnvConfig(deployment_host_config_values, codebase_config, deployment_config, TimeStampFormatter())
+        return RSRVirtualEnvInstallerConfig(deployment_host_config_values, codebase_config, deployment_config, TimeStampFormatter())
 
     def time_stamped_pip_install_log_file_path(self):
         pip_log_file_name = "pip_install_%s_%s.log" % (self.rsr_env_name, self.time_stamp_formatter.file_timestamp())

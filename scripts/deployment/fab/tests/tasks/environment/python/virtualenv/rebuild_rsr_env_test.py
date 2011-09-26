@@ -9,7 +9,7 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.rsr.virtualenv import RSRVirtualEnvConfig
+from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.host.controller import HostControllerMode
 from fab.host.virtualenv import VirtualEnvHost
 
@@ -26,10 +26,10 @@ class RebuildRSREnvTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RebuildRSREnvTest, self).setUp()
-        self.mock_virtualenv_config = self.mox.CreateMock(RSRVirtualEnvConfig)
+        self.mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
         self.mock_virtualenv_host = self.mox.CreateMock(VirtualEnvHost)
 
-        self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.mock_virtualenv_config)
+        self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.mock_virtualenv_installer_config)
         self.rebuild_virtualenv_task.virtualenv_host = self.mock_virtualenv_host
 
     def test_has_expected_task_name(self):
@@ -62,7 +62,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can rebuild an RSR virtualenv"""
 
         rsr_requirements_path = "/path/to/rsr_requirements.txt"
-        self.mock_virtualenv_config.rsr_requirements_path = rsr_requirements_path
+        self.mock_virtualenv_installer_config.rsr_requirements_path = rsr_requirements_path
 
         self.mock_virtualenv_host.ensure_virtualenv_exists()
         self.mock_virtualenv_host.install_virtualenv_packages(rsr_requirements_path)

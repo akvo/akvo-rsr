@@ -21,7 +21,7 @@ class RebuildRSREnv(fabric.tasks.Task):
 
     @staticmethod
     def create_task_instance():
-        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvConfig.create_instance())
+        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvInstallerConfig.create_instance())
 
     def run(self, host_controller_mode):
         self._configure_host_using(host_controller_mode)

@@ -9,11 +9,11 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.config.rsr.codebase_config_test import RSRCodebaseConfigTest
 from fab.tests.config.rsr.deployment_config_test import RSRDeploymentConfigTest
-from fab.tests.config.rsr.virtualenv_config_test import RSRVirtualEnvConfigTest
+from fab.tests.config.rsr.virtualenv_installer_config_test import RSRVirtualEnvInstallerConfigTest
 
 
 def rsr_config_suite():
-    return TestSuiteLoader().create_suite_from_classes([RSRCodebaseConfigTest, RSRDeploymentConfigTest, RSRVirtualEnvConfigTest])
+    return TestSuiteLoader().create_suite_from_classes([RSRCodebaseConfigTest, RSRDeploymentConfigTest, RSRVirtualEnvInstallerConfigTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
