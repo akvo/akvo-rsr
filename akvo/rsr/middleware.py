@@ -21,6 +21,8 @@ DOMAIN_NAME = settings.__dict__['_wrapped'].__class__.DOMAIN_NAME = make_tls_pro
 SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
+# TODO: refactor into separate methods to increase readability
+
 class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, hostname='', port=None, partner_site=None):
         if settings.PVW_RSR:
