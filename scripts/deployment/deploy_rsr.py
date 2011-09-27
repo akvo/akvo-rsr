@@ -8,10 +8,18 @@
 import os, subprocess, sys
 
 
-if not os.path.exists("deploy_rsr_config.py"):
-    print ">> Expected configuration file deploy_rsr_config.py not found"
-    print ">> Copy the deploy_rsr_config.py.template file and edit as necessary"
-    sys.exit(1)
+def exit_if_config_file_is_missing(config_file_path):
+    if not os.path.exists(config_file_path):
+        config_file_name = config_file_path.split('/')[-1]
+        print ">> Configuration file missing: %s" % config_file_path
+        print ">> Copy the %s.template file and edit as necessary" % config_file_name
+        sys.exit(1)
+    else:
+        print ">> Found expected configuration file: %s" % config_file_path
+
+exit_if_config_file_is_missing("deploy_rsr_config.py")
+exit_if_config_file_is_missing("fab/config/values.py")
+print "\r"
 
 
 from deploy_rsr_config import LIVE_DATABASE_HOST, DEPLOYMENT_HOST, USERNAME, PASSWORD
