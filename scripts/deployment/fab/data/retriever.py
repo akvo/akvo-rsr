@@ -31,11 +31,8 @@ class RSRDataRetriever(object):
 
         rsr_data_dump_path = self.config.time_stamped_rsr_data_dump_path()
 
-        self.feedback.comment("Fetching data from database at %s" % self.config.rsr_app_path)
-        self.virtualenv.run_within_virtualenv("python %s -d %s dump" % (self.config.db_dump_script_path, rsr_data_dump_path))
-        self.file_system.compress_directory(rsr_data_dump_path)
-        self.file_system.delete_directory(rsr_data_dump_path)
-        self.file_system.download_file("%s.*" % rsr_data_dump_path, self.config.data_dumps_home)
+        self._extract_latest_data(rsr_data_dump_path)
+        self._compress_and_download_data_archive(rsr_data_dump_path)
 
     def _ensure_required_paths_exist(self):
         self.file_system.ensure_directory_exists_with_sudo(self.config.data_dumps_home)
@@ -45,3 +42,12 @@ class RSRDataRetriever(object):
     def _ensure_rsr_log_file_is_writable(self):
         self.feedback.comment("Ensuring RSR log file is writable")
         self.file_system.make_file_writable_for_all_users(self.config.rsr_log_file_path)
+
+    def _extract_latest_data(self, rsr_data_dump_path):
+        self.feedback.comment("Extracting latest data from database at %s" % self.config.rsr_app_path)
+        self.virtualenv.run_within_virtualenv("python %s -d %s dump" % (self.config.db_dump_script_path, rsr_data_dump_path))
+
+    def _compress_and_download_data_archive(self, rsr_data_dump_path):
+        self.file_system.compress_directory(rsr_data_dump_path)
+        self.file_system.delete_directory(rsr_data_dump_path)
+        self.file_system.download_file("%s.*" % rsr_data_dump_path, self.config.data_dumps_home)
