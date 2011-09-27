@@ -32,7 +32,7 @@ urlpatterns = patterns('',
         name='update_list'),
 
     url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
-        views.UpdateView.as_view(),
+        views.ProjectUpdateView.as_view(),
         name='update_main'),
 
     # Partners
