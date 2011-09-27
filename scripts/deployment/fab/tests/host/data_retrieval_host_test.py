@@ -10,33 +10,33 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.data.retriever import RSRDataRetriever
-from fab.host.database import DatabaseHost
+from fab.host.dataretrieval import DataRetrievalHost
 
 
-class DatabaseHostTest(mox.MoxTestBase):
+class DataRetrievalHostTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(DatabaseHostTest, self).setUp()
+        super(DataRetrievalHostTest, self).setUp()
         self.mock_data_retriever = self.mox.CreateMock(RSRDataRetriever)
 
-        self.database_host = DatabaseHost(self.mock_data_retriever)
+        self.data_retrieval_host = DataRetrievalHost(self.mock_data_retriever)
 
     def test_can_create_instance(self):
-        """fab.tests.host.database_host_test  Can create a DatabaseHost instance"""
+        """fab.tests.host.data_retrieval_host_test  Can create a DatabaseHost instance"""
 
-        self.assertIsInstance(DatabaseHost.create_instance(), DatabaseHost)
+        self.assertIsInstance(DataRetrievalHost.create_instance(), DataRetrievalHost)
 
     def test_can_fetch_data_from_host(self):
-        """fab.tests.host.database_host_test  Can fetch data from the host"""
+        """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""
 
         self.mock_data_retriever.fetch_data_from_database()
         self.mox.ReplayAll()
 
-        self.database_host.fetch_latest_data()
+        self.data_retrieval_host.fetch_latest_data()
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(DatabaseHostTest)
+    return TestSuiteLoader().load_tests_from(DataRetrievalHostTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

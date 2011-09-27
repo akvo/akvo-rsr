@@ -7,7 +7,7 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.host.database_host_test import DatabaseHostTest
+from fab.tests.host.data_retrieval_host_test import DataRetrievalHostTest
 from fab.tests.host.deployment_host_test import DeploymentHostTest
 from fab.tests.host.host_controller_mode_test import HostControllerModeTest
 from fab.tests.host.host_controller_test import HostControllerTest
@@ -21,7 +21,7 @@ from fab.tests.host.virtualenv_deployment_host_test import VirtualEnvDeploymentH
 def host_suite():
     return TestSuiteLoader().create_suite_from_classes([HostControllerModeTest, HostControllerTest,
                                                         LocalHostControllerTest, RemoteHostControllerTest,
-                                                        LinuxHostTest, NeutralHostTest, DatabaseHostTest,
+                                                        LinuxHostTest, NeutralHostTest, DataRetrievalHostTest,
                                                         DeploymentHostTest, VirtualEnvDeploymentHostTest])
 
 if __name__ == "__main__":
