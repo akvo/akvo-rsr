@@ -20,4 +20,4 @@ import fab.tasks.app.deployment
 import fab.tasks.data.retrieval
 import fab.tasks.environment.linux.systempackages
 import fab.tasks.environment.python.systempackages
-import fab.tasks.virtualenv.rebuild.rsrenv
+import fab.tasks.environment.python.virtualenv.rsr
