@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.helpers.dataretriever import DataRetriever
+from fab.host.database import DatabaseHost
 from fab.tasks.dataretriever import FetchRSRData
 
 
@@ -17,9 +17,9 @@ class FetchRSRDataTest(mox.MoxTestBase):
 
     def setUp(self):
         super(FetchRSRDataTest, self).setUp()
-        self.mock_data_retriever = self.mox.CreateMock(DataRetriever)
+        self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-        self.fetch_rsr_data_task = FetchRSRData(self.mock_data_retriever)
+        self.fetch_rsr_data_task = FetchRSRData(self.mock_database_host)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.fetch_rsr_data_test  Has expected task name"""
@@ -31,10 +31,10 @@ class FetchRSRDataTest(mox.MoxTestBase):
 
         self.assertIsInstance(FetchRSRData.create_task_instance(), FetchRSRData)
 
-    def test_can_(self):
-        """fab.tests.tasks.fetch_rsr_data_test  Can fetch RSR data from database server"""
+    def test_can_fetch_data_from_database_host(self):
+        """fab.tests.tasks.fetch_rsr_data_test  Can fetch RSR data from the database host"""
 
-        self.mock_data_retriever.fetch_data_from_database()
+        self.mock_database_host.fetch_data_from_host()
         self.mox.ReplayAll()
 
         self.fetch_rsr_data_task.run()

@@ -5,11 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fabric.api
 import fabric.tasks
 
-import fab.config.dataretriever
-import fab.helpers.dataretriever
 import fab.host.database
 
 
@@ -18,18 +15,15 @@ class FetchRSRData(fabric.tasks.Task):
 
     name = "fetch_rsr_data"
 
-    def __init__(self, data_retriever):
-        self.data_retriever = data_retriever
+    def __init__(self, database_host):
+        self.database_host = database_host
 
     @staticmethod
     def create_task_instance():
-        retriever_config = fab.config.dataretriever.DataRetrieverConfig(fabric.api.env.hosts)
-        database_host = fab.host.database.DatabaseHost.create_instance(retriever_config.rsr_virtualenv_path)
-
-        return FetchRSRData(fab.helpers.dataretriever.DataRetriever(retriever_config, database_host))
+        return FetchRSRData(fab.host.database.DatabaseHost.create_instance())
 
     def run(self):
-        self.data_retriever.fetch_data_from_database()
+        self.database_host.fetch_data_from_host()
 
 
 instance = FetchRSRData.create_task_instance()
