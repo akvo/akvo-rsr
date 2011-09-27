@@ -10,45 +10,11 @@
 <head>
   <meta charset="utf-8">
   <title>{{organisation}}</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
 
   {% asset_bundle 'partner_sites_style' %}
+  {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+  {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
   {% block head %}{% endblock head %}
-
-  <style type="text/css" media="screen">
-    {% if organisation.id == 43 %} {# Aqua4All#}
-      body {
-        background-color:#B7D4F1;
-      }
-      p { font-size:16px;}
-      .container {
-        background-color:#fff;
-        padding: 20px 10px;
-      }
-      h1, h2 {color: #000}
-      .whitebox {border:none;}
-    {% endif %}
-    {% if organisation.id == 106 %} {# Impulsis #}
-      body {
-        background: #FDF0D4;
-        font-family: Verdana, Arial, Helvetica, sans-serif;
-        color: #0055A5;
-      }
-      a, a:link, a:visited {color: #F68026;}
-      p {color: #004F99; font-size:13px;}
-      .small {font-size:10px}
-      h1, h2 {color: #0055A5}
-    {% endif %}
-    {% if organisation.id == 272 %} {# Connect4change #}
-      body {
-        background:#ECEEF0;
-        font-family: Verdana, Arial, Tahoma,Century gothic,  sans-serif;
-      }
-      p {font-size:12px;}
-      .small {font-size:10px}
-      h1, h2 {color: #BC620E}
-    {% endif %}
-  </style>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">
@@ -58,16 +24,16 @@
 <body>
   <div class="container">
     <div class="breadcrum_back clearfix">
+      {% comment %}
       <div style="float:right;">
         <p class="normal" style="margin: 4px 10px 0 0; font-size:12px">
-          {% comment %}
           {% block breadcrum_right %}
             Feeds: 
             <a href="#">All projects</a>
           {% endblock breadcrum_right %}
-          {% endcomment %}
         </p>
       </div>
+      {% endcomment %}
       <ul class="breadcrum">
         {% block breadcrum_items %}
           <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
@@ -114,9 +80,5 @@
       {% block jq_ready %}{% endblock jq_ready %}
     });
   </script>
-  <!--[if lt IE 7 ]>
-    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
-    <script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
-  <![endif]-->
-</body>
+ </body>
 </html>

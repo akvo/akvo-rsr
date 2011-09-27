@@ -53,6 +53,8 @@ class UpdateDirectoryView(ListView):
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['project'] = get_object_or_404(Project, \
                                                pk=self.kwargs['project_id'])
+        context['favicon'] = self.request.partner_site.favicon
+        context['stylesheet'] = self.request.partner_site.stylesheet
         return context
 
     def get_queryset(self):
@@ -80,6 +82,8 @@ class PartnerDirectoryView(ListView):
         context = super(PartnerDirectoryView, self).get_context_data(**kwargs)
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context['favicon'] = self.request.partner_site.favicon
+        context['stylesheet'] = self.request.partner_site.stylesheet
         return context
 
     def get_queryset(self):

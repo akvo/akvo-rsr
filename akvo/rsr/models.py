@@ -2825,6 +2825,14 @@ class PartnerSite(models.Model):
     def return_url(self):
         return self.custom_return_url or self.organisation.url or None
 
+    @property
+    def stylesheet(self):
+        return self.custom_css or None
+
+    @property
+    def favicon(self):
+        return self.custom_favicon or None
+
 
 # signals!
 user_activated.connect(user_activated_callback)

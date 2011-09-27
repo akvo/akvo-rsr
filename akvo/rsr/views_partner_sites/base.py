@@ -29,6 +29,8 @@ class BaseView(TemplateView):
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
+        context['favicon'] = self.request.partner_site.favicon
+        context['stylesheet'] = self.request.partner_site.stylesheet
         # Queries should be removed for production
         if settings.DEBUG:
             from django.db import connection
@@ -47,6 +49,8 @@ class BaseListView(ListView):
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
+        context['favicon'] = self.request.partner_site.favicon
+        context['stylesheet'] = self.request.partner_site.stylesheet
         if settings.DEBUG:
             from django.db import connection
             context['queries'] = connection.queries
