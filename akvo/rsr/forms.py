@@ -322,8 +322,8 @@ class PartnerSiteAdminForm(forms.ModelForm):
     class Meta:
         model = get_model('rsr', 'partnersite')
 
-    def clean_url_base(self):
-        url_base = slugify(self.cleaned_data['url_base'])
-        if url_base == 'www':
+    def clean_hostname(self):
+        hostname = slugify(self.cleaned_data['hostname'])
+        if hostname == 'www':  # TODO: test for other reserved hostnames
             raise forms.ValidationError(_('www is a reserved hostname. Please choose another hostname.'))
-        return url_base
+        return hostname
