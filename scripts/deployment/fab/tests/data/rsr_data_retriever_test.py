@@ -70,6 +70,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_data_retriever_config.time_stamped_rsr_data_dump_path().AndReturn(rsr_data_dump_path)
         self.mock_feedback.comment("Extracting latest data from database at %s" % rsr_app_path)
         self.mock_virtualenv.run_within_virtualenv("python %s -d %s dump" % (db_dump_script_path, rsr_data_dump_path))
+        self.mock_file_system.delete_file(os.path.join(rsr_data_dump_path, "workflows_workflowpermissionrelation.py"))
         self.mock_file_system.compress_directory(rsr_data_dump_path)
         self.mock_file_system.delete_directory(rsr_data_dump_path)
         self.mock_file_system.download_file("%s.*" % rsr_data_dump_path, data_dumps_home)
