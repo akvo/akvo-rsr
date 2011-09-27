@@ -23,7 +23,7 @@ class FetchRSRData(fabric.tasks.Task):
         return FetchRSRData(fab.host.database.DatabaseHost.create_instance())
 
     def run(self):
-        self.database_host.fetch_data_from_host()
+        self.database_host.fetch_latest_data()
 
 
 instance = FetchRSRData.create_task_instance()

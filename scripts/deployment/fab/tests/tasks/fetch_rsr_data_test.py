@@ -34,7 +34,7 @@ class FetchRSRDataTest(mox.MoxTestBase):
     def test_can_fetch_data_from_database_host(self):
         """fab.tests.tasks.fetch_rsr_data_test  Can fetch RSR data from the database host"""
 
-        self.mock_database_host.fetch_data_from_host()
+        self.mock_database_host.fetch_latest_data()
         self.mox.ReplayAll()
 
         self.fetch_rsr_data_task.run()

@@ -32,7 +32,7 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.mock_data_retriever.fetch_data_from_database()
         self.mox.ReplayAll()
 
-        self.database_host.fetch_data_from_host()
+        self.database_host.fetch_latest_data()
 
 
 def suite():

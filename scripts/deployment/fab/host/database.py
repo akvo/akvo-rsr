@@ -19,5 +19,5 @@ class DatabaseHost(object):
     def create_instance():
         return DatabaseHost(DataRetriever.create_instance(RemoteHostController.create_instance()))
 
-    def fetch_data_from_host(self):
+    def fetch_latest_data(self):
         self.data_retriever.fetch_data_from_database()
