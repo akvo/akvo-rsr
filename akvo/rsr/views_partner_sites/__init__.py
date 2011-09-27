@@ -6,31 +6,33 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
-from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from ..models import Organisation, Project, ProjectUpdate
-from .base import BaseListView, BaseProjectView, BaseView
+from .base import BaseProjectListView, BaseProjectView, BaseView, BaseListView
 
 __all__ = [
-    'BaseListView',
-    'BaseProjectView',
-    'BaseView',
-    'PartnerDirectoryView',
+    'HomeView',
+    'PartnerListView',
+    'PartnerView',
+    'ProjectFundingView',
     'ProjectMainView',
-    'UpdateDirectoryView',
-    'UpdateView'
+    'ProjectUpdateListView',
+    'ProjectUpdateView',
     ]
 
 
+class HomeView(BaseProjectListView):
+    """View represents the home page"""
+    template_name = 'partner_sites/home.html'
+
+
 class ProjectMainView(BaseProjectView):
-    """Extend the project view with the current update"""
+    """Extend the BaseProjectView with benchmarks """
     template_name = "partner_sites/project/project_main.html"
 
     def get_context_data(self, **kwargs):
         context = super(ProjectMainView, self).get_context_data(**kwargs)
-        context['updates_with_images'] = context['project'] \
-            .project_updates.all().exclude(photo__exact='').order_by('-time')
         context['benchmarks'] = context['project'].benchmarks \
             .filter(category__in=[category for category in context['project']
                 .categories.all()
@@ -41,20 +43,21 @@ class ProjectMainView(BaseProjectView):
         return context
 
 
-class UpdateDirectoryView(ListView):
+class ProjectFundingView(BaseProjectView):
+    """View that represents the project funding page"""
+    template_name = 'partner_sites/project/project_funding.html'
+
+
+class ProjectUpdateListView(BaseListView):
     """View that adds latest updates to the partner sites home pages. The
     updates are available as "latest_updates" in the template"""
     template_name = "partner_sites/project/update_list.html"
     context_object_name = 'update_list'
 
     def get_context_data(self, **kwargs):
-        context = super(UpdateDirectoryView, self).get_context_data(**kwargs)
-        context['organisation'] = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context = super(ProjectUpdateListView, self).get_context_data(**kwargs)
         context['project'] = get_object_or_404(Project, \
                                                pk=self.kwargs['project_id'])
-        context['favicon'] = self.request.partner_site.favicon
-        context['stylesheet'] = self.request.partner_site.stylesheet
         return context
 
     def get_queryset(self):
@@ -62,28 +65,26 @@ class UpdateDirectoryView(ListView):
             .project_updates.all().order_by('-time')
 
 
-class UpdateView(BaseProjectView):
+class ProjectUpdateView(BaseProjectView):
     """Extend the project view with the current update"""
     template_name = "partner_sites/project/update_main.html"
 
     def get_context_data(self, **kwargs):
-        context = super(UpdateView, self).get_context_data(**kwargs)
+        context = super(ProjectUpdateView, self).get_context_data(**kwargs)
         context['update'] = get_object_or_404(ProjectUpdate,
                                               id=self.kwargs['update_id'])
         return context
 
 
-class PartnerDirectoryView(ListView):
+class PartnerListView(BaseListView):
     """Represents the partner list"""
     template_name = 'partner_sites/partners/partner_list.html'
     context_object_name = 'partner_list'
 
     def get_context_data(self, **kwargs):
-        context = super(PartnerDirectoryView, self).get_context_data(**kwargs)
+        context = super(PartnerListView, self).get_context_data(**kwargs)
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
-        context['favicon'] = self.request.partner_site.favicon
-        context['stylesheet'] = self.request.partner_site.stylesheet
         return context
 
     def get_queryset(self):

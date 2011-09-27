@@ -14,15 +14,17 @@ from ..models import Organisation, Project
 
 
 __all__ = [
-    'BaseListView',
+    'BaseProjectListView',
     'BaseProjectView',
+    'BaseListView',
     'BaseView',
     ]
 
 
 class BaseView(TemplateView):
     """Base view that adds current organisation to the template context or
-    throws a 404."""
+    throws a 404. Also adds the return_url, favicon and stylesheet context
+    variables."""
 
     def get_context_data(self, **kwargs):
         context = super(BaseView, self).get_context_data(**kwargs)
@@ -38,11 +40,28 @@ class BaseView(TemplateView):
         return context
 
 
+class BaseProjectView(BaseView):
+    """View that extends BaseView with current project or throws a 404. We
+    also verify that the project is related to the current organisation,
+    if not we throw a 404."""
+
+    def get_context_data(self, **kwargs):
+        context = super(BaseProjectView, self).get_context_data(**kwargs)
+        context['project'] = \
+            get_object_or_404(Project, pk=self.kwargs['project_id'])
+        if context['project'] not in context['organisation'] \
+            .published_projects():
+            raise Http404
+        context['updates_with_images'] = context['project'] \
+            .project_updates.all().exclude(photo__exact='') \
+            .order_by('-time')[:3]
+        return context
+
+
 class BaseListView(ListView):
     """List view that are extended with the current organisation and the
     proejcts connected to the organisation available in the template context
     variable project_list"""
-    context_object_name = 'project_list'
 
     def get_context_data(self, **kwargs):
         context = super(BaseListView, self).get_context_data(**kwargs)
@@ -56,6 +75,11 @@ class BaseListView(ListView):
             context['queries'] = connection.queries
         return context
 
+
+class BaseProjectListView(BaseListView):
+    """List view that extends BaseListView with a project list queryset"""
+    context_object_name = 'project_list'
+
     def get_queryset(self):
         projects = get_object_or_404(Organisation,
                                      pk=self.request.organisation_id) \
@@ -65,26 +89,9 @@ class BaseListView(ListView):
         return projects.extra(select={
             'latest_update': """SELECT MAX(time) FROM rsr_projectupdate
                              WHERE project_id = rsr_project.id""",
-            'update_id': """SELECT id FROM rsr_projectupdate
+            'latest_update_id': """SELECT id FROM rsr_projectupdate
                          WHERE project_id = rsr_project.id AND
                          time = (SELECT MAX(time)
                          FROM rsr_projectupdate
                          WHERE project_id = rsr_project.id)""",
             })
-
-
-class BaseProjectView(BaseView):
-    """View that extends BaseView with current project or throws a 404. We
-    also verify that the project is related to the current organisation,
-    if not we throw a 404."""
-
-    def get_context_data(self, **kwargs):
-        context = super(BaseProjectView, self).get_context_data(**kwargs)
-        context['project'] = \
-            get_object_or_404(Project, pk=self.kwargs['project_id'])
-        if context['project'] not in context['organisation'] \
-            .published_projects():
-            raise Http404
-        context['latest_updates'] = context['project'].project_updates.all() \
-            .order_by('-time')[:3]
-        return context

@@ -14,16 +14,21 @@ from django_counter.urls import urlpatterns as counter_urls
 urlpatterns = patterns('',
     # Home
     url(r'^$', \
-        views.BaseListView.as_view(template_name='partner_sites/home.html'),
+        views.HomeView.as_view(),
         name='home'),
+
     # Projects
     url(r'^(?P<project_id>\d+)/$',
         views.ProjectMainView.as_view(),
         name='project_main'),
 
+    url(r'^(?P<project_id>\d+)/funding/$',
+        views.ProjectFundingView.as_view(),
+        name='project_funding'),
+
     # Project updates
     url(r'^(?P<project_id>\d+)/updates/$',
-        views.UpdateDirectoryView.as_view(),
+        views.ProjectUpdateListView.as_view(),
         name='update_list'),
 
     url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
@@ -32,7 +37,7 @@ urlpatterns = patterns('',
 
     # Partners
     url(r'^partners/$', \
-        views.PartnerDirectoryView.as_view(),
+        views.PartnerListView.as_view(),
         name='partner_list'),
 
     url(r'^partners/(?P<partner_id>\d+)/$',

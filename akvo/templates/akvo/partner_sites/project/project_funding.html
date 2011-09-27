@@ -4,17 +4,19 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li id="last_breadcrum_item">Funding</li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  <li class="last_breadcrum_item">{% trans "Funding" %}</li>
 {% endblock breadcrum_items %}
 
-{% block content %}
-  <div class="twelve columns">
-    <h1>Funding</h1>
-    <p>
-      What happens...
-    </p>
-  </div>
-  <div class="four columns row" style="background-color:#d9dfe5">
-    <p>Just a sidebar</p>
-  </div>
-{% endblock content %}
+
+{% block project_content %}
+  <h1>{% trans "Funding" %}</h1>
+  <section class="whitebox pad20">
+    <p>....</p>
+  </section>
+{% endblock project_content %}
+
+
+{% block project_aside_funding %}
+  {# Overriding the aside update section #}
+{% endblock project_aside_funding %}

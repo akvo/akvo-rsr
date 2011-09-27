@@ -23,6 +23,7 @@
       {% block project_content %}{% endblock project_content %}
     </article>
     <aside>
+
       {% block project_aside_funding %}
         <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
           {{project.show_status_large}}<br />
@@ -40,16 +41,19 @@
                 </a>
               </div>
             {% endif %}
+            <p class="small">
+              <a href="{% url 'project_funding' project.id %}">{% trans "Funding details" %}</a>
+            </p>
           </div>
         </div>
       {% endblock project_aside_funding %}
-
+      
       {% block project_aside_updates %}
         <h2 class="marg_top40"><a href="{% url 'update_list' project.id %}">
           {% trans "Project updates" %}
         </a></h2>
-        {% if latest_updates %}
-          {% for update in latest_updates  %}
+        {% if updates_with_images %}
+          {% for update in updates_with_images %}
             <div class="whitebox" style="margin-top:20px; padding:5px">
               <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
               <a class="small" href="{% url 'update_main' project.id update.id %}">
@@ -63,7 +67,7 @@
             </div>
         {% endif %}
       {% endblock project_aside_updates %}
-
+      
       {% block project_aside_partners %}
         <h2 class="marg_top40"><a href="{% url 'partner_list' %}">Partners</a></h2>
         <div class="whitebox" style="margin-top:20px; padding:10px; padding-top:20px">
@@ -91,6 +95,7 @@
           {% endfor %} 
         </div>
       {% endblock project_aside_partners %}
+
     </aside>
   </div>
 {% endblock content %}
