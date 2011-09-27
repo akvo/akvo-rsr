@@ -10,7 +10,7 @@ from fab.environment.python.virtualenv import VirtualEnv
 from fab.os.filesystem import FileSystem
 
 
-class DataRetriever(object):
+class RSRDataRetriever(object):
 
     def __init__(self, data_retriever_config, file_system, virtualenv, feedback):
         self.config = data_retriever_config
@@ -23,7 +23,7 @@ class DataRetriever(object):
         data_retriever_config = RSRDataRetrieverConfig.create_instance()
         virtualenv = VirtualEnv(data_retriever_config.rsr_env_path, host_controller)
 
-        return DataRetriever(data_retriever_config, FileSystem(host_controller), virtualenv, host_controller.feedback)
+        return RSRDataRetriever(data_retriever_config, FileSystem(host_controller), virtualenv, host_controller.feedback)
 
     def fetch_data_from_database(self):
         self._ensure_required_paths_exist()

@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.helpers.dataretriever import DataRetriever
+from fab.data.retriever import RSRDataRetriever
 from fab.host.controller import RemoteHostController
 
 
@@ -17,7 +17,7 @@ class DatabaseHost(object):
 
     @staticmethod
     def create_instance():
-        return DatabaseHost(DataRetriever.create_instance(RemoteHostController.create_instance()))
+        return DatabaseHost(RSRDataRetriever.create_instance(RemoteHostController.create_instance()))
 
     def fetch_latest_data(self):
         self.data_retriever.fetch_data_from_database()

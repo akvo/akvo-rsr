@@ -9,15 +9,15 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.data.retriever import RSRDataRetriever
 from fab.host.database import DatabaseHost
-from fab.helpers.dataretriever import DataRetriever
 
 
 class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.mock_data_retriever = self.mox.CreateMock(DataRetriever)
+        self.mock_data_retriever = self.mox.CreateMock(RSRDataRetriever)
 
         self.database_host = DatabaseHost(self.mock_data_retriever)
 

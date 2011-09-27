@@ -7,14 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.helpers.akvo_permissions_test import AkvoPermissionsTest
-from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
-from fab.tests.helpers.internet_test import InternetTest
+from fab.tests.data.rsr_data_retriever_test import RSRDataRetrieverTest
 
 
-def helpers_suite():
-    return TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, AkvoPermissionsTest, InternetTest])
+def data_suite():
+    return TestSuiteLoader().create_suite_from_classes([RSRDataRetrieverTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(helpers_suite())
+    TestRunner(TEST_MODE).run_test_suite(data_suite())

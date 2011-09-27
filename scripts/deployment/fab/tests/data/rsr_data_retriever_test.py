@@ -10,32 +10,32 @@ import mox, os
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.dataretriever import RSRDataRetrieverConfig
+from fab.data.retriever import RSRDataRetriever
 from fab.environment.python.virtualenv import VirtualEnv
-from fab.helpers.dataretriever import DataRetriever
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem
 
 
-class DataRetrieverTest(mox.MoxTestBase):
+class RSRDataRetrieverTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(DataRetrieverTest, self).setUp()
+        super(RSRDataRetrieverTest, self).setUp()
         self.mock_data_retriever_config = self.mox.CreateMock(RSRDataRetrieverConfig)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.data_retriever = DataRetriever(self.mock_data_retriever_config, self.mock_file_system,
+        self.data_retriever = RSRDataRetriever(self.mock_data_retriever_config, self.mock_file_system,
                                             self.mock_virtualenv, self.mock_feedback)
 
     def test_can_create_instance_for_local_host(self):
-        """fab.tests.helpers.data_retriever_test  Can create a DataRetriever instance for a local host"""
+        """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
 
         self._verify_instance_creation_for(LocalHostController)
 
     def test_can_create_instance_for_remote_host(self):
-        """fab.tests.helpers.data_retriever_test  Can create a DataRetriever instance for a remote host"""
+        """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a remote host"""
 
         self._verify_instance_creation_for(RemoteHostController)
 
@@ -44,10 +44,10 @@ class DataRetrieverTest(mox.MoxTestBase):
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        self.assertIsInstance(DataRetriever.create_instance(mock_host_controller), DataRetriever)
+        self.assertIsInstance(RSRDataRetriever.create_instance(mock_host_controller), RSRDataRetriever)
 
     def test_can_fetch_data_from_database(self):
-        """fab.tests.helpers.data_retriever_test  Can fetch data from database"""
+        """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""
 
         data_dumps_home = "/var/tmp/data_dumps"
         rsr_env_path = "/var/virtualenvs/rsr_1.0.9"
@@ -79,7 +79,7 @@ class DataRetrieverTest(mox.MoxTestBase):
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(DataRetrieverTest)
+    return TestSuiteLoader().load_tests_from(RSRDataRetrieverTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
