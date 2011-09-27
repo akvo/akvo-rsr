@@ -7,9 +7,9 @@
 
 from fab.environment.python.virtualenv import VirtualEnvInstaller
 from fab.helpers.internet import Internet
-from fab.helpers.permissions import AkvoPermissions
 from fab.host.deployment import DeploymentHost
 from fab.os.filesystem import FileSystem
+from fab.os.permissions import AkvoPermissions
 
 
 class VirtualEnvDeploymentHost(DeploymentHost):

@@ -7,13 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.helpers.akvo_permissions_test import AkvoPermissionsTest
 from fab.tests.helpers.execution_feedback_test import ExecutionFeedbackTest
 from fab.tests.helpers.internet_test import InternetTest
 
 
 def helpers_suite():
-    return TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, AkvoPermissionsTest, InternetTest])
+    return TestSuiteLoader().create_suite_from_classes([ExecutionFeedbackTest, InternetTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

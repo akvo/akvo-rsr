@@ -10,8 +10,8 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.permissions import AkvoPermissions
 from fab.host.controller import RemoteHostController
+from fab.os.permissions import AkvoPermissions
 
 
 class AkvoPermissionsTest(mox.MoxTestBase):
@@ -25,7 +25,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         self.permissions = AkvoPermissions(self.mock_host_controller)
 
     def test_will_confirm_group_membership_if_user_is_member_of_web_group(self):
-        """fab.tests.helpers.akvo_permissions_test  Will confirm group membership if user is a member of the web user group"""
+        """fab.tests.os.akvo_permissions_test  Will confirm group membership if user is a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone %s" % AkvoPermissions.WEB_USER_GROUP
         self.mock_host_controller.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
@@ -35,7 +35,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         self.permissions.exit_if_user_is_not_member_of_web_group("joesoap")
 
     def test_exit_if_user_is_not_a_member_of_web_group(self):
-        """fab.tests.helpers.akvo_permissions_test  Exit if the user is not a member of the web user group"""
+        """fab.tests.os.akvo_permissions_test  Exit if the user is not a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone writers"
         self.mock_host_controller.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
@@ -47,7 +47,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
             self.permissions.exit_if_user_is_not_member_of_web_group("joesoap")
 
     def test_can_set_web_group_ownership_on_specified_directory(self):
-        """fab.tests.helpers.akvo_permissions_test  Can set web group ownership on a specified directory"""
+        """fab.tests.os.akvo_permissions_test  Can set web group ownership on a specified directory"""
 
         web_dir = "/var/tmp/web/apps"
         self.mock_host_controller.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, web_dir))
@@ -56,7 +56,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         self.permissions.set_web_group_ownership_on_directory(web_dir)
 
     def test_can_set_web_group_permissions_on_specified_directory(self):
-        """fab.tests.helpers.akvo_permissions_test  Can set web group permissions on a specified directory"""
+        """fab.tests.os.akvo_permissions_test  Can set web group permissions on a specified directory"""
 
         web_dir = "/var/tmp/web/apps"
         self.mock_host_controller.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, web_dir))
