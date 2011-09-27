@@ -9,9 +9,9 @@ import os
 
 from fab.config.environment.python.packagetools import PackageInstallationToolsConfig
 from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.values import PythonConfigValues, SharedConfigValues
-from fab.helpers.filesystem import FileSystem
+from fab.config.values import PythonConfigValues
 from fab.helpers.internet import Internet
+from fab.os.filesystem import FileSystem
 
 
 class PackageInstallationPaths(object):
@@ -27,7 +27,7 @@ class PackageInstallationPaths(object):
         python_config_values = PythonConfigValues()
         return PackageInstallationPaths(python_config_values,
                                         PackageInstallationToolsConfig(python_config_values.pip_version),
-                                        RSRCodebaseConfig(SharedConfigValues().repository_branch))
+                                        RSRCodebaseConfig.create_instance())
 
 
 class SystemPythonPackageInstaller(object):
@@ -63,20 +63,28 @@ class SystemPythonPackageInstaller(object):
             self.host_controller.sudo("python %s" % self._file_from_url(setup_script_url))
 
     def install_system_packages(self):
+        self._install_system_packages(quietly=False)
+
+    def install_system_packages_quietly(self):
+        self._install_system_packages(quietly=True)
+
+    def _install_system_packages(self, quietly):
         self._list_installed_python_packages()
         self.feedback.comment("Updating system Python packages:")
-        self._install_packages_with_pip(self.paths.system_requirements_file_url)
+        self._install_packages_with_pip(self.paths.system_requirements_file_url, quietly)
         self._list_installed_python_packages()
 
     def _list_installed_python_packages(self):
         self.feedback.comment("Installed system packages:")
         self.host_controller.run("pip freeze")
 
-    def _install_packages_with_pip(self, requirements_file_url):
+    def _install_packages_with_pip(self, requirements_file_url, quietly):
         self.internet.download_file_to_directory(self.paths.package_download_dir, requirements_file_url)
 
         with self.host_controller.cd(self.paths.package_download_dir):
-            self.host_controller.sudo("pip install -M -r %s --log=pip_install.log" % self._file_from_url(requirements_file_url))
+            quiet_mode_switch = "-q " if quietly else ""
+            self.host_controller.sudo("pip install %s-M -r %s --log=pip_install.log" % (quiet_mode_switch,
+                                                                                        self._file_from_url(requirements_file_url)))
 
     def _file_from_url(self, file_url):
         return file_url.split('/')[-1]

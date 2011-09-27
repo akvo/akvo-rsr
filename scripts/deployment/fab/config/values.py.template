@@ -18,8 +18,18 @@ class PythonConfigValues(object):
         self.python_package_download_dir    = "/var/tmp/python/packages"
 
 
+class DataHostConfigValues(object):
+
+    def __init__(self):
+        self.deployed_rsr_version   = "1.0.9"
+        self.deployed_rsr_dir_name  = "%s_gitclone" % self.deployed_rsr_version
+        self.django_apps_home       = "/var/lib/django"
+        self.virtualenvs_home       = "/var/virtualenvs"
+        self.data_dumps_home        = "/var/tmp/data_dumps"
+
+
 class DeploymentHostConfigValues(object):
 
     def __init__(self):
-        self.repo_checkout_root = "/var/git"
+        self.repo_checkout_home = "/var/git"
         self.virtualenvs_home   = "/var/virtualenvs"

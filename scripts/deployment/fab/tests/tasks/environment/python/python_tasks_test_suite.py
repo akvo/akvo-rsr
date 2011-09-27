@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.tasks.environment.python.update_system_python_packages_test import UpdateSystemPythonPackagesTest
+from fab.tests.tasks.environment.python.update_system_python_packages_test import suite as python_packages_suite
+from fab.tests.tasks.environment.python.virtualenv.virtualenv_tasks_test_suite import virtualenv_tasks_suite
 
 
 def python_tasks_suite():
-    return TestSuiteLoader().create_suite_from_classes([UpdateSystemPythonPackagesTest])
+    return TestSuiteLoader().create_suite_from_list([python_packages_suite(), virtualenv_tasks_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

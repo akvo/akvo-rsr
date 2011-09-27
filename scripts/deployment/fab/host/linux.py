@@ -6,7 +6,7 @@
 
 
 from fab.dependency.systempackages import SystemPackageDependencyCollection
-from fab.dependency.verifier.packageverifier import SystemPackageVerifier
+from fab.environment.linux.packageverifier import LinuxPackageVerifier
 from fab.environment.python.systempackageinstaller import SystemPythonPackageInstaller
 from fab.host.controller import RemoteHostController
 from fab.os.linux.packageinspector import UbuntuPackageInspector
@@ -25,7 +25,7 @@ class LinuxHost(object):
         host_controller = RemoteHostController.create_instance()
 
         return LinuxHost(UbuntuPackageInspector(host_controller),
-                         SystemPackageVerifier.create_instance(host_controller.feedback),
+                         LinuxPackageVerifier.create_instance(host_controller.feedback),
                          SystemPythonPackageInstaller.create_instance(host_controller),
                          host_controller.feedback)
 

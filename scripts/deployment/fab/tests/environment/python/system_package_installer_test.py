@@ -12,9 +12,9 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.environment.python.systempackageinstaller import PackageInstallationPaths, SystemPythonPackageInstaller
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
 from fab.host.controller import RemoteHostController
+from fab.os.filesystem import FileSystem
 
 
 class SystemPythonPackageInstallerTest(mox.MoxTestBase):
@@ -69,25 +69,37 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
     def test_can_install_system_packages(self):
         """fab.tests.environment.python.system_package_installer_test  Can install system packages"""
 
+        self._set_expectations_to_install_python_packages(quietly=False)
+
+        self.package_installer.install_system_packages()
+
+    def test_can_install_system_packages_quietly(self):
+        """fab.tests.environment.python.system_package_installer_test  Can install system packages quietly"""
+
+        self._set_expectations_to_install_python_packages(quietly=True)
+
+        self.package_installer.install_system_packages_quietly()
+
+    def _set_expectations_to_install_python_packages(self, quietly):
         system_requirements_file_url = "http://repo.server/system_requirements.txt"
         self.mock_installation_paths.system_requirements_file_url = system_requirements_file_url
 
         self._set_expectations_to_list_installed_python_packages()
         self.mock_feedback.comment("Updating system Python packages:")
-        self._set_expectations_to_install_packages_with_pip(system_requirements_file_url)
+        self._set_expectations_to_install_packages_with_pip(system_requirements_file_url, quietly)
         self._set_expectations_to_list_installed_python_packages()
         self.mox.ReplayAll()
-
-        self.package_installer.install_system_packages()
 
     def _set_expectations_to_list_installed_python_packages(self):
         self.mock_feedback.comment("Installed system packages:")
         self.mock_host_controller.run("pip freeze")
 
-    def _set_expectations_to_install_packages_with_pip(self, requirements_file_url):
+    def _set_expectations_to_install_packages_with_pip(self, requirements_file_url, quietly):
         self.mock_internet.download_file_to_directory(self.package_download_dir, requirements_file_url)
         self.mock_host_controller.cd(self.package_download_dir).AndReturn(fabric.api.cd(self.package_download_dir))
-        self.mock_host_controller.sudo("pip install -M -r %s --log=pip_install.log" % self._file_from_url(requirements_file_url))
+        quiet_mode_switch = "-q " if quietly else ""
+        self.mock_host_controller.sudo("pip install %s-M -r %s --log=pip_install.log" % (quiet_mode_switch,
+                                                                                         self._file_from_url(requirements_file_url)))
 
     def _file_from_url(self, file_url):
         return file_url.split('/')[-1]

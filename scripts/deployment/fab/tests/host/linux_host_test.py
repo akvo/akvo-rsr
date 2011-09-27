@@ -9,9 +9,9 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.linux.systempackages import SystemPackageSpecifications
+from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 from fab.dependency.systempackages import SystemPackageDependencyCollection
-from fab.dependency.verifier.packageverifier import SystemPackageVerifier
+from fab.environment.linux.packageverifier import LinuxPackageVerifier
 from fab.environment.python.systempackageinstaller import SystemPythonPackageInstaller
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.linux import LinuxHost
@@ -24,7 +24,7 @@ class LinuxHostTest(mox.MoxTestBase):
         super(LinuxHostTest, self).setUp()
 
         self.mock_os_package_inspector = self.mox.CreateMock(UbuntuPackageInspector)
-        self.mock_os_package_verifier = self.mox.CreateMock(SystemPackageVerifier)
+        self.mock_os_package_verifier = self.mox.CreateMock(LinuxPackageVerifier)
         self.mock_python_package_installer = self.mox.CreateMock(SystemPythonPackageInstaller)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 

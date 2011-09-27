@@ -7,11 +7,15 @@
 
 import os
 
+from fab.config.values import SharedConfigValues
+
 
 class RSRCodebaseConfig(object):
+    """RSRCodebaseConfig represents paths and configuration values specific to the RSR codebase"""
 
-    PIP_REQUIREMENTS_PATH = "scripts/deployment/pip/requirements"
+    UNPACKED_RSR_ARCHIVE_DIR_MASK = "akvo-akvo-rsr-*"
 
+    PIP_REQUIREMENTS_PATH       = "scripts/deployment/pip/requirements"
     SYSTEM_REQUIREMENTS_FILE    = "0_system.txt"
     RSR_REQUIREMENTS_FILE       = "2_rsr.txt"
 
@@ -19,7 +23,16 @@ class RSRCodebaseConfig(object):
         self.repo_branch = repository_branch
         self.repo_branch_without_type = self._branch_without_type()
 
-        self._set_pip_requirements_paths()
+        self.rsr_archive_url = os.path.join("http://nodeload.github.com/akvo/akvo-rsr/zipball", self.repo_branch)
+
+        pip_requirements_base_url = os.path.join("https://raw.github.com/akvo/akvo-rsr", self.repo_branch, self.PIP_REQUIREMENTS_PATH)
+        self.system_requirements_file_url = os.path.join(pip_requirements_base_url, self.SYSTEM_REQUIREMENTS_FILE)
+
+        self.rsr_requirements_file_path = os.path.join(self.PIP_REQUIREMENTS_PATH, self.RSR_REQUIREMENTS_FILE)
+
+    @staticmethod
+    def create_instance():
+        return RSRCodebaseConfig(SharedConfigValues().repository_branch)
 
     def _branch_without_type(self):
         if self._branch_includes_type():
@@ -32,10 +45,3 @@ class RSRCodebaseConfig(object):
 
     def _branch_name_only(self):
         return self.repo_branch.split("/")[-1]
-
-    def _set_pip_requirements_paths(self):
-        rsr_files_base_url = "https://raw.github.com/akvo/akvo-rsr"
-        pip_requirements_base_url = os.path.join(rsr_files_base_url, self.repo_branch, self.PIP_REQUIREMENTS_PATH)
-
-        self.system_requirements_file_url   = os.path.join(pip_requirements_base_url, self.SYSTEM_REQUIREMENTS_FILE)
-        self.rsr_requirements_file_url      = os.path.join(pip_requirements_base_url, self.RSR_REQUIREMENTS_FILE)

@@ -12,13 +12,18 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.rsr.codebase import RSRCodebaseConfig
 
 
-class CodebaseConfigTest(unittest2.TestCase):
+class RSRCodebaseConfigTest(unittest2.TestCase):
 
     def setUp(self):
-        super(CodebaseConfigTest, self).setUp()
+        super(RSRCodebaseConfigTest, self).setUp()
 
         self.feature_branch = "feature/sms"
         self.codebase_config = RSRCodebaseConfig(self.feature_branch)
+
+    def test_can_create_rsrcodebaseconfig_instance(self):
+        """fab.tests.config.rsr.codebase_config_test  Can create RSRCodebaseConfig instance"""
+
+        self.assertIsInstance(RSRCodebaseConfig.create_instance(), RSRCodebaseConfig)
 
     def test_has_repository_branch(self):
         """fab.tests.config.rsr.codebase_config_test  Has repository branch"""
@@ -31,6 +36,16 @@ class CodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual("sms", RSRCodebaseConfig("feature/sms").repo_branch_without_type)
         self.assertEqual("develop", RSRCodebaseConfig("develop").repo_branch_without_type)
+
+    def test_has_rsr_code_archive_url(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR code archive URL"""
+
+        self.assertEqual("http://nodeload.github.com/akvo/akvo-rsr/zipball/feature/sms", self.codebase_config.rsr_archive_url)
+
+    def test_has_unpacked_rsr_archive_directory_mask(self):
+        """fab.tests.config.rsr.codebase_config_test  Has unpacked RSR archive directory mask"""
+
+        self.assertEqual("akvo-akvo-rsr-*", RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK)
 
     def test_has_pip_requirements_path(self):
         """fab.tests.config.rsr.codebase_config_test  Has pip requirements path"""
@@ -50,19 +65,20 @@ class CodebaseConfigTest(unittest2.TestCase):
     def test_has_system_requirements_file_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has system requirements file URL"""
 
-        self.assertEqual(self._expected_requirements_file_url(RSRCodebaseConfig.SYSTEM_REQUIREMENTS_FILE), self.codebase_config.system_requirements_file_url)
+        pip_requirements_base_url = os.path.join("https://raw.github.com/akvo/akvo-rsr", self.feature_branch, RSRCodebaseConfig.PIP_REQUIREMENTS_PATH)
+        expected_system_requirements_file_url = os.path.join(pip_requirements_base_url, RSRCodebaseConfig.SYSTEM_REQUIREMENTS_FILE)
 
-    def test_has_rsr_requirements_file_url(self):
-        """fab.tests.config.rsr.codebase_config_test  Has RSR requirements file URL"""
+        self.assertEqual(expected_system_requirements_file_url, self.codebase_config.system_requirements_file_url)
 
-        self.assertEqual(self._expected_requirements_file_url(RSRCodebaseConfig.RSR_REQUIREMENTS_FILE), self.codebase_config.rsr_requirements_file_url)
+    def test_has_rsr_requirements_file_path_relative_to_deployed_codebase(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR requirements file path relative to the deployed codebase"""
 
-    def _expected_requirements_file_url(self, requirements_file):
-        return os.path.join("https://raw.github.com/akvo/akvo-rsr", self.feature_branch, RSRCodebaseConfig.PIP_REQUIREMENTS_PATH, requirements_file)
+        expected_rsr_requirements_file_path = os.path.join(RSRCodebaseConfig.PIP_REQUIREMENTS_PATH, RSRCodebaseConfig.RSR_REQUIREMENTS_FILE)
+        self.assertEqual(expected_rsr_requirements_file_path, self.codebase_config.rsr_requirements_file_path)
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(CodebaseConfigTest)
+    return TestSuiteLoader().load_tests_from(RSRCodebaseConfigTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
