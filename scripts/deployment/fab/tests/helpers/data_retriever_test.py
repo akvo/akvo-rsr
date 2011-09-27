@@ -13,6 +13,7 @@ from fab.config.rsr.dataretriever import RSRDataRetrieverConfig
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.dataretriever import DataRetriever
 from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem
 
 
@@ -27,6 +28,23 @@ class DataRetrieverTest(mox.MoxTestBase):
 
         self.data_retriever = DataRetriever(self.mock_data_retriever_config, self.mock_file_system,
                                             self.mock_virtualenv, self.mock_feedback)
+
+    def test_can_create_instance_for_local_host(self):
+        """fab.tests.helpers.data_retriever_test  Can create a DataRetriever instance for a local host"""
+
+        self._verify_instance_creation_for(LocalHostController)
+
+    def test_can_create_instance_for_remote_host(self):
+        """fab.tests.helpers.data_retriever_test  Can create a DataRetriever instance for a remote host"""
+
+        self._verify_instance_creation_for(RemoteHostController)
+
+    def _verify_instance_creation_for(self, host_controller_class):
+        mock_host_controller = self.mox.CreateMock(host_controller_class)
+        mock_host_controller.feedback = self.mock_feedback
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(DataRetriever.create_instance(mock_host_controller), DataRetriever)
 
     def test_can_fetch_data_from_database(self):
         """fab.tests.helpers.data_retriever_test  Can fetch data from database"""

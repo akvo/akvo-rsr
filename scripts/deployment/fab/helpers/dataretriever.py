@@ -5,6 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from fab.config.rsr.dataretriever import RSRDataRetrieverConfig
+from fab.environment.python.virtualenv import VirtualEnv
+from fab.os.filesystem import FileSystem
+
+
 class DataRetriever(object):
 
     def __init__(self, data_retriever_config, file_system, virtualenv, feedback):
@@ -12,6 +17,13 @@ class DataRetriever(object):
         self.file_system = file_system
         self.virtualenv = virtualenv
         self.feedback = feedback
+
+    @staticmethod
+    def create_instance(host_controller):
+        data_retriever_config = RSRDataRetrieverConfig.create_instance()
+        virtualenv = VirtualEnv(data_retriever_config.rsr_env_path, host_controller)
+
+        return DataRetriever(data_retriever_config, FileSystem(host_controller), virtualenv, host_controller.feedback)
 
     def fetch_data_from_database(self):
         self._ensure_required_paths_exist()
