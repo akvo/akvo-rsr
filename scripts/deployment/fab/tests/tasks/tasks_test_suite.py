@@ -7,16 +7,13 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.tasks.fetch_rsr_data_test import FetchRSRDataTest
-
 from fab.tests.tasks.app.app_tasks_test_suite import app_tasks_suite
+from fab.tests.tasks.data.data_tasks_test_suite import data_tasks_suite
 from fab.tests.tasks.environment.environment_tasks_test_suite import environment_tasks_suite
 
 
 def tasks_suite():
-    tasks_suite = TestSuiteLoader().create_suite_from_classes([FetchRSRDataTest])
-
-    return TestSuiteLoader().create_suite_from_list([environment_tasks_suite(), app_tasks_suite(), tasks_suite])
+    return TestSuiteLoader().create_suite_from_list([environment_tasks_suite(), app_tasks_suite(), data_tasks_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
