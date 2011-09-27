@@ -9,50 +9,52 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.dataretriever import DataRetrieverConfig
+from fab.config.rsr.dataretriever import RSRDataRetrieverConfig
+from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.dataretriever import DataRetriever
 from fab.helpers.feedback import ExecutionFeedback
-from fab.host.database import DatabaseHost
+from fab.os.filesystem import FileSystem
 
 
 class DataRetrieverTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DataRetrieverTest, self).setUp()
-        self.mock_config = self.mox.CreateMock(DataRetrieverConfig)
-        self.mock_database_host = self.mox.CreateMock(DatabaseHost)
+        self.mock_data_retriever_config = self.mox.CreateMock(RSRDataRetrieverConfig)
+        self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_database_host.feedback = self.mock_feedback
-        self.data_retriever = DataRetriever(self.mock_config, self.mock_database_host)
+        self.data_retriever = DataRetriever(self.mock_data_retriever_config, self.mock_file_system,
+                                            self.mock_virtualenv, self.mock_feedback)
 
     def test_can_fetch_data_from_database(self):
         """fab.tests.helpers.data_retriever_test  Can fetch data from database"""
 
         data_dumps_home = "/var/tmp/data_dumps"
-        rsr_virtualenv_path = "/var/virtualenvs/rsr_1.0.9"
-        akvo_rsr_app_path = "/var/django_apps/rsr_1.0.9/akvo"
-        db_dump_script_path = os.path.join(akvo_rsr_app_path, "db_dump.py")
+        rsr_env_path = "/var/virtualenvs/rsr_1.0.9"
+        rsr_app_path = "/var/django_apps/rsr_1.0.9/akvo"
+        db_dump_script_path = os.path.join(rsr_app_path, "db_dump.py")
         rsr_data_dump_path = os.path.join(data_dumps_home, "rsr_1.0.9_utc_timestamp")
-        rsr_log_file_path = os.path.join(akvo_rsr_app_path, "akvo.log")
+        rsr_log_file_path = os.path.join(rsr_app_path, "akvo.log")
 
-        self.mock_config.data_dumps_home = data_dumps_home
-        self.mock_config.rsr_virtualenv_path = rsr_virtualenv_path
-        self.mock_config.akvo_rsr_app_path = akvo_rsr_app_path
-        self.mock_config.db_dump_script_path = db_dump_script_path
-        self.mock_config.rsr_data_dump_path = rsr_data_dump_path
-        self.mock_config.rsr_log_file_path = rsr_log_file_path
+        self.mock_data_retriever_config.data_dumps_home = data_dumps_home
+        self.mock_data_retriever_config.rsr_env_path = rsr_env_path
+        self.mock_data_retriever_config.rsr_app_path = rsr_app_path
+        self.mock_data_retriever_config.db_dump_script_path = db_dump_script_path
+        self.mock_data_retriever_config.rsr_log_file_path = rsr_log_file_path
 
-        self.mock_database_host.ensure_directory_exists_with_sudo(data_dumps_home)
-        self.mock_database_host.exit_if_directory_does_not_exist(rsr_virtualenv_path)
-        self.mock_database_host.exit_if_file_does_not_exist(db_dump_script_path)
+        self.mock_file_system.ensure_directory_exists_with_sudo(data_dumps_home)
+        self.mock_file_system.exit_if_directory_does_not_exist(rsr_env_path)
+        self.mock_file_system.exit_if_file_does_not_exist(db_dump_script_path)
         self.mock_feedback.comment("Ensuring RSR log file is writable")
-        self.mock_database_host.make_file_writable_for_all_users(rsr_log_file_path)
+        self.mock_file_system.make_file_writable_for_all_users(rsr_log_file_path)
+        self.mock_data_retriever_config.time_stamped_rsr_data_dump_path().AndReturn(rsr_data_dump_path)
         self.mock_feedback.comment(mox.StrContains("Fetching data from database"))
-        self.mock_database_host.run_within_virtualenv("python %s -d %s dump" % (db_dump_script_path, rsr_data_dump_path))
-        self.mock_database_host.compress_directory(rsr_data_dump_path)
-        self.mock_database_host.delete_directory(rsr_data_dump_path)
-        self.mock_database_host.download_file_to_local_directory("%s.*" % rsr_data_dump_path, data_dumps_home)
+        self.mock_virtualenv.run_within_virtualenv("python %s -d %s dump" % (db_dump_script_path, rsr_data_dump_path))
+        self.mock_file_system.compress_directory(rsr_data_dump_path)
+        self.mock_file_system.delete_directory(rsr_data_dump_path)
+        self.mock_file_system.download_file("%s.*" % rsr_data_dump_path, data_dumps_home)
         self.mox.ReplayAll()
 
         self.data_retriever.fetch_data_from_database()
