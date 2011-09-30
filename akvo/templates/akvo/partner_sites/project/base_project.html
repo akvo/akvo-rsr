@@ -28,7 +28,7 @@
         <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
           {{project.show_status_large}}<br />
           <div style="background-color:#fff; padding:20px; margin-top:20px;">
-            <h3>Funding</h3>
+            <h3><a href="{% url 'project_funding' project.id %}">{% trans "Funding" %}</a></h3>
             <div class="fundingbox-progress-bar">
               {% if project.budget_total %}
                 <div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
@@ -41,9 +41,6 @@
                 </a>
               </div>
             {% endif %}
-            <p class="small">
-              <a href="{% url 'project_funding' project.id %}">{% trans "Funding details" %}</a>
-            </p>
           </div>
         </div>
       {% endblock project_aside_funding %}
