@@ -21,3 +21,4 @@ scripts/deployment/static_project_structure.py
 tests/akvo/acceptance/test_settings.py
 tests/pvw/acceptance/test_settings.py
 akvo-rsr.komodoproject
+akvo/settings/backup
