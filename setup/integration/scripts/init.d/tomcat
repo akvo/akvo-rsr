@@ -5,7 +5,7 @@
 # description: Starts Tomcat automatically on server startup
 # processname: tomcat
 
-CATALINA_HOME=/usr/local/tomcat6
+CATALINA_HOME=/usr/local/tomcat
 
 
 function start_tomcat
@@ -21,13 +21,13 @@ function stop_tomcat
 case $1 in
 start)
         start_tomcat
-        ;; 
-stop)   
+        ;;
+stop)
         stop_tomcat
-        ;; 
+        ;;
 restart)
         stop_tomcat
         start_tomcat
-        ;; 
-esac    
+        ;;
+esac
 exit 0
