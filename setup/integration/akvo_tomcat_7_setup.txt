@@ -65,27 +65,8 @@ Configure Tomcat installation:
      - Follow the notes at http://tomcat.apache.org/tomcat-7.0-doc/proxy-howto.html
      a) Ensure that the Apache packages are installed:
           sudo aptitude install -y apache2 apache2-utils libapache2-mod-proxy-html
-     b) Edit /etc/apache2/httpd.conf and add the following lines: (where ci.akvo.org is the continuous integration server name)
-
-LoadModule  proxy_module            /usr/lib/apache2/modules/mod_proxy.so
-LoadModule  proxy_ajp_module        /usr/lib/apache2/modules/mod_proxy_ajp.so
-LoadModule  proxy_balancer_module   /usr/lib/apache2/modules/mod_proxy_balancer.so
-LoadModule  proxy_connect_module    /usr/lib/apache2/modules/mod_proxy_connect.so
-LoadModule  proxy_ftp_module        /usr/lib/apache2/modules/mod_proxy_ftp.so
-LoadModule  proxy_http_module       /usr/lib/apache2/modules/mod_proxy_http.so
-
-ProxyPass           /tomcat         http://ci.akvo.org:8081/
-ProxyPass           /manager        http://ci.akvo.org:8081/manager
-ProxyPassReverse    /manager        http://ci.akvo.org:8081/manager
-ProxyPass           /host-manager   http://ci.akvo.org:8081/host-manager
-ProxyPassReverse    /host-manager   http://ci.akvo.org:8081/host-manager
-ProxyPass           /docs           http://ci.akvo.org:8081/docs
-ProxyPassReverse    /docs           http://ci.akvo.org:8081/docs
-ProxyPass           /examples       http://ci.akvo.org:8081/examples
-ProxyPassReverse    /examples       http://ci.akvo.org:8081/examples
-ProxyPass           /images         http://ci.akvo.org:8081/images
-ProxyPassReverse    /images         http://ci.akvo.org:8081/images
-
+     b) Edit /etc/apache2/httpd_tomcat7.conf and add the content from the following file:
+        - setup/integration/config/etc/apache2/httpd_tomcat7.conf
      c) Edit the /usr/local/tomcat7/conf/server.xml configuration file:
         - disable SSL by setting SSLEngine="off" for the APR listener: (otherwise the APR takes ages to start up)
             <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="off" />
