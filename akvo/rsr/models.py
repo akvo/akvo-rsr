@@ -43,7 +43,7 @@ from registration.signals import user_activated
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from workflows import WorkflowBase
-#from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
+from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
 from permissions import PermissionBase
 from permissions.models import Role
 from permissions.utils import get_roles, add_local_role
@@ -99,11 +99,11 @@ class Country(models.Model):
     
     name            = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
     iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
-    continent       = models.CharField(_(u'continent name'), max_length=20, null=True, db_index=True,)
+    continent       = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
     continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
 
-#    name            = models.CharField(_(u'country name'), max_length=50, unique=True,)
-#    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    name            = models.CharField(_(u'country name'), max_length=50,)
+#    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
 #    continent       = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
 #    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
@@ -487,7 +487,7 @@ class FocusArea(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('focus_area', (), {'slug': self.slug})
+        return ('project_list', (), {'slug': self.slug})
         
     def projects(self):
         """
@@ -1240,27 +1240,9 @@ else: #akvo-rsr
     
         name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
-        status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+        status                          = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
         categories                  = models.ManyToManyField(Category, related_name='projects',)
-        #city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        #state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        #country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        #map                         = models.ImageField(
-        #                                _('map'),
-        #                                blank=True,
-        #                                upload_to=image_path,
-        #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
-        #                            )
-        #Project categories
-        #category_water              = models.BooleanField(_('water'))
-        #category_sanitation         = models.BooleanField(_('sanitation'))
-        #category_maintenance        = models.BooleanField(_('maintenance'))
-        #category_training           = models.BooleanField(_('training'))
-        #category_education          = models.BooleanField(_('education'))
-        #category_product_development= models.BooleanField(_('product development'))
-        #category_other              = models.BooleanField(_('other'))
-        
-        #current_status_summary = models.TextField()
+
         project_plan_summary        = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
         current_image               = ImageWithThumbnailsField(
                                         _('project photo'),
@@ -1276,23 +1258,7 @@ else: #akvo-rsr
         goal_3                      = models.CharField(_('goal 3'), blank=True, max_length=60)
         goal_4                      = models.CharField(_('goal 4'), blank=True, max_length=60)
         goal_5                      = models.CharField(_('goal 5'), blank=True, max_length=60)
-        #Project target benchmarks
-        #water_systems               = models.IntegerField(_('water systems'), default=0)
-        #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
-        #hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
-        #improved_water              = models.IntegerField(_('water: # people affected'), default=0)
-        #improved_water_years        = models.IntegerField(_('for # years'), default=0)
-        #improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
-        #improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
-        #trainees                    = models.IntegerField(_('# people trained'), default=0)
-        #mdg_count_water             = models.IntegerField(default=0)
-        #mdg_count_sanitation        = models.IntegerField(default=0)
-    
-        #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
-        #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
-        #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
+
         current_status_detail       = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
         project_plan_detail         = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
         sustainability              = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
@@ -1302,11 +1268,11 @@ else: #akvo-rsr
         notes                       = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
     
         #budget    
-        currency            = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-        date_request_posted = models.DateField(_('Date request posted'), default=date.today)
-        date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
+        currency                    = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+        date_request_posted         = models.DateField(_('Date request posted'), default=date.today)
+        date_complete               = models.DateField(_('Date complete'), null=True, blank=True)
     
-        locations           = generic.GenericRelation(Location)
+        locations                   = generic.GenericRelation(Location)
     
         #Custom manager
         #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1647,8 +1613,13 @@ else: #akvo-rsr
                 return self.status_complete().get_largest_value_sum(
                     getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
                     ['Sanitation']
-                )                
-    
+                )
+
+            def latest_update_fields(self):
+                #used in project_list view
+                #cheating slightly, counting on that both id and time are the largest for the latest update
+                return self.annotate(latest_update_id=Max('project_updates__id'),latest_update_date=Max('project_updates__time'))
+
             #the following 4 return an organisation queryset!
             def support_partners(self):
                 o = Organisation.objects.all()
@@ -1884,13 +1855,13 @@ else: #akvo-rsr
             ('management', _('management')),
             ('other', _('other')),
         )
-        project             = models.ForeignKey(Project)
+        project             = models.ForeignKey(Project,)
         item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
         amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
         
         class Meta:
-            verbose_name=_('Budget item')
-            verbose_name_plural=_('Budget items')
+            verbose_name        = _('Budget item')
+            verbose_name_plural = _('Budget items')
             unique_together     = ('project', 'item')
             permissions = (
                 ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),

@@ -37,7 +37,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="{% url 'project_list' %}" class="{% if site_section = 'projects' %}active{% endif %}">
+					<a href="{% url 'project_list' 'all' %}" class="{% if site_section = 'projects' %}active{% endif %}">
 						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>

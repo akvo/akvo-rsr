@@ -281,3 +281,28 @@ def widthratio_trunc(parser, token):
     )
 
 
+class QSHiddenInputNode(template.Node):
+    def __init__(self, identifiers):
+        self.identifiers = identifiers
+
+    def render(self, context):
+        get_values = context['request'].GET
+        html = ''
+        for ident in self.identifiers:
+            if ident in get_values.keys():
+                html += '<input type="hidden" name="%s" value="%s"/>' %(ident, get_values[ident])
+        return html
+
+@register.tag
+def hidden_inputs_from_qs(parser, token):
+    """
+    Generate hidden input tags for query string params that we want to propagate in a form post
+    Example: {% hidden_inputs_from_qs sort dir %} captures sort and dir query variables used by
+    django-sorting. They can then be put into the form used by django-filter.
+    """
+    try:
+        tag_name, identifiers = token.split_contents()[0], token.split_contents()[1:]
+    except:
+        raise template.TemplateSyntaxError("The %r tag requires at least one argument" % token.contents.split()[0])
+
+    return QSHiddenInputNode(identifiers)

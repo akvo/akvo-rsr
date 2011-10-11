@@ -11,7 +11,7 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
 
 {% comment %}
 <div style="float:right; margin-right:10px;">

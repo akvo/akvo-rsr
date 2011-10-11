@@ -20,12 +20,12 @@
 {% block breadcrum_items %}
   {% if org %}
     {{block.super}}
-      <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+      <li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
       <li id="last_breadcrum_item">{% trans 'Project listing for' %} {{org.name}}</li>
   {% else %}
     {% if focus_area.slug != 'all' %}
       {{block.super}}
-        <li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+        <li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
         <li id="last_breadcrum_item">{{focus_area.name}}</li>
     {% else %}
       {{block.super}}
@@ -273,7 +273,7 @@
               <td>
                 <p class="td-text">
                     {% for area in project.focus_areas %}
-                        <a href="{% url 'focus_area' area.slug %}">{{area.name}}</a><br/>
+                        <a href="{% url 'project_list' area.slug %}">{{area.name}}</a><br/>
                     {% endfor %}
                 </p>
               </td>

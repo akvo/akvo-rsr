@@ -10,7 +10,7 @@
 
 {% block breadcrum_items %}
 	{{block.super}}
-	<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
 	<li id="last_breadcrum_item">{% trans 'Project participants' %}</li>
 {% endblock breadcrum_items %}
 
@@ -104,7 +104,7 @@
 	              			<td>
 	                			<p class="td-text">
 	                  				{% if org.published_projects.count %}
-	                    				<a href="{% url 'project_list_for_org' org.pk %}">
+	                    				<a href="{% url 'project_list' org.pk %}">
 	                      					{{org.published_projects.count}}
 	                      					{% blocktrans count org.published_projects.count as projects_count %}
 	                        					project
