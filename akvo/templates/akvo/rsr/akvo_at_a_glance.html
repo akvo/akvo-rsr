@@ -33,7 +33,7 @@
 								{% if request.path = '/rsr/projects/' %}
 								<h2>{% trans 'Projects in Akvo' %}</h2>
 								{% else %}
-									<a href="{% url 'project_list' %}">
+									<a href="{% url 'project_list' 'all' %}">
 										<h2>{% trans 'Projects in Akvo' %}</h2>
 									</a>
 								{% endif %}

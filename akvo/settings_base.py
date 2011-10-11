@@ -7,7 +7,7 @@
 # is imported into settings.py.
 
 # Alphabetically ordered (more or less...)
-
+PVW_RSR = True
 # Accounts not activated in a week get purged. Used by registration app.
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -55,8 +55,10 @@ INSTALLED_APPS = (
     #'feedjack', #maybe later...
     # not used here, used for GraphViz on the Mac 'extensions', #django-command-extensions see http://code.google.com/p/django-command-extensions
     'akvo.rsr',
-    'akvo.gateway',
-    'template_utils',
+    #'akvo.gateway',
+    #'template_utils',
+
+    #'template_utils', #see http://code.google.com/p/django-template-utils/
     'registration', #see http://code.google.com/p/django-registration/
     #'django_granular_permissions',
     #'akvo.status',
@@ -71,7 +73,8 @@ INSTALLED_APPS = (
     'django_markup',
     'notification',
     'permissions',
-    'workflows',    
+    'workflows',
+    'django_filters'
 )
 
 #INTERNAL_IPS = (
@@ -122,7 +125,14 @@ MIDDLEWARE_CLASSES = (
 # PAYPAL_RECEIVER_EMAIL = 'noreply@akvo.org'
 
 # Is this the pvw-rsr?
-PVW_RSR = False 
+PVW_RSR = False
+
+# DWS blog settings for home page
+NEWS_CATEGORY_ID        = 3 #wordpress ID of news category that's shown in top left box
+NEWS_ARTICLE_COUNT      = 3 #how many news articles to link to
+FEATURE_CATEGORY_ID     = 7 #wordpress ID of feature category
+FEATURE_ARTICLE_COUNT   = 2 #how many features to display in More headlines box
+IMAGE_CATEGORY_ID       = 11 #wordpress ID of image category
 
 ROOT_URLCONF = 'akvo.urls'
 
@@ -175,6 +185,7 @@ USE_I18N = True
 USE_L10N = True
 
 # Logging
+LOG_FILE_PATH = '/Users/gabriel/git/akvo-rsr/akvo'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -208,7 +219,7 @@ LOGGING = {
         'file':{
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(os.path.dirname(__file__), 'akvo.log').replace('\\','/'),
+            'filename': os.path.join(LOG_FILE_PATH, 'akvo.log').replace('\\','/'),
             'maxBytes': 1024*1024,
             'backupCount': 4,
             'formatter': 'verbose',
@@ -221,7 +232,7 @@ LOGGING = {
         'request_to_file':{
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(os.path.dirname(__file__), 'akvo.log').replace('\\','/'),
+            'filename': os.path.join(LOG_FILE_PATH, 'akvo.log').replace('\\','/'),
             'maxBytes': 1024*1024,
             'backupCount': 4,
             'formatter': 'verbose_request',

@@ -63,7 +63,7 @@
 			<a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-		<p class="smallFont"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+		<p class="smallFont"><span class="capz">{{project.primary_location.country.continent}}</span><br />
 			{{project.primary_location.country}}, {{project.primary_location.city}}
 		</p>
 		<p class="smallFont grey topmargin">{% trans 'Status' %}</p>

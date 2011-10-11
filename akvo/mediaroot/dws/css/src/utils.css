@@ -5,12 +5,15 @@
 .space15 { margin:15px; }
 .space20 { margin:20px; }
 
-.top-margin { margin-top: 19px; }
+.top-margin { margin-top: 18px; }
 
 .green      { color:#4D8722; }
-.red        { color:#A5000F; }
+.red        { color:#E60113; }
+.red:hover  { color:#A5000F; }
+.red:visited { color:#E60113; }
 .blue       { color:#3A8CB9; }
-.yellow     { color:#FEC344; }
+.yellow     { color:#FF0; }
+.yellow:hover { color:#FF0; }
 .grey       { color:#7D818E; }
 .black      { color:#000; }
 .white      { color:#fff; }
@@ -21,6 +24,8 @@
 .link_blue  { color: #1877B8; }
 .link_blue:hover  { color: #1E95E6; }
 .orange     { color: #E35D18; }
+.orange:hover  { color:#E35D18; }
+.orange:visited { color:#E35D18; }
 
 /* Bare left and right are used in Akvo template. */
 .right {float:right;}
@@ -70,4 +75,7 @@
 .grey_hover:hover {
     background-color:#F1F5F9;
     }
-    
+
+.center {
+    text-align: center;
+}
