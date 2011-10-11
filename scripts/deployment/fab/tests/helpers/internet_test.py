@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -95,6 +96,17 @@ class InternetTest(mox.MoxTestBase):
 
         with self.assertRaises(SystemExit):
             self.internet.file_name_from_url_headers(file_url)
+
+    def test_can_download_file_to_specified_directory(self):
+        """fab.tests.helpers.internet_test  Can download a file to a specified directory"""
+
+        download_directory = "/var/tmp/downloads"
+        file_url = "http://some.server.org/code/file.txt"
+        self.mock_host_controller.cd(download_directory).AndReturn(fabric.api.cd(download_directory))
+        self.mock_host_controller.run("wget -nv %s" % file_url)
+        self.mox.ReplayAll()
+
+        self.internet.download_file_to_directory(download_directory, file_url)
 
     def test_can_download_file_at_url_and_save_it_with_specified_file_name(self):
         """fab.tests.helpers.internet_test  Can download the file at a URL and save it with a specified file name"""

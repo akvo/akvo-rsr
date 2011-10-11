@@ -5,30 +5,26 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
-from fab.helpers.permissions import AkvoPermissions
-from fab.helpers.virtualenv import VirtualEnv
 from fab.host.neutral import NeutralHost
+from fab.os.filesystem import FileSystem
+from fab.os.permissions import AkvoPermissions
 
 
 class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
-    def __init__(self, file_system, permissions, internet_helper, virtualenv, feedback):
+    def __init__(self, file_system, permissions, internet_helper, feedback):
         super(DeploymentHost, self).__init__(file_system, feedback)
-        self.file_system = file_system
         self.permissions = permissions
         self.internet = internet_helper
-        self.virtualenv = virtualenv
 
     @staticmethod
-    def create_instance(virtualenv_path, host_controller):
-        file_system = FileSystem(host_controller)
-        permissions = AkvoPermissions(host_controller)
-        virtualenv = VirtualEnv(virtualenv_path, host_controller, file_system)
-
-        return DeploymentHost(file_system, permissions, Internet(host_controller), virtualenv, host_controller.feedback)
+    def create_instance(host_controller):
+        return DeploymentHost(FileSystem(host_controller),
+                              AkvoPermissions(host_controller),
+                              Internet(host_controller),
+                              host_controller.feedback)
 
     def create_directory(self, dir_path):
         self.file_system.create_directory(dir_path)
@@ -91,15 +87,3 @@ class DeploymentHost(NeutralHost):
 
     def download_file_at_url_as(self, downloaded_file_path, file_url):
         self.internet.download_file_at_url_as(downloaded_file_path, file_url)
-
-    def create_empty_virtualenv(self, pip_install_log_file):
-        self.virtualenv.create_empty_virtualenv(pip_install_log_file)
-
-    def install_virtualenv_packages(self, pip_requirements_file, pip_install_log_file):
-        self.virtualenv.install_packages(pip_requirements_file, pip_install_log_file)
-
-    def list_installed_virtualenv_packages(self):
-        self.virtualenv.list_installed_virtualenv_packages()
-
-    def run_within_virtualenv(self, command):
-        self.virtualenv.run_within_virtualenv(command)

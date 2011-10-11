@@ -10,8 +10,8 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.helpers.filesystem import FileSystem
 from fab.host.neutral import NeutralHost
+from fab.os.filesystem import FileSystem
 
 
 class NeutralHostTest(mox.MoxTestBase):

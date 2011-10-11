@@ -11,15 +11,18 @@ from fab.tests.host.database_host_test import DatabaseHostTest
 from fab.tests.host.deployment_host_test import DeploymentHostTest
 from fab.tests.host.host_controller_mode_test import HostControllerModeTest
 from fab.tests.host.host_controller_test import HostControllerTest
+from fab.tests.host.linux_host_test import LinuxHostTest
 from fab.tests.host.local_host_controller_test import LocalHostControllerTest
 from fab.tests.host.neutral_host_test import NeutralHostTest
 from fab.tests.host.remote_host_controller_test import RemoteHostControllerTest
+from fab.tests.host.virtualenv_deployment_host_test import VirtualEnvDeploymentHostTest
 
 
 def host_suite():
     return TestSuiteLoader().create_suite_from_classes([HostControllerModeTest, HostControllerTest,
                                                         LocalHostControllerTest, RemoteHostControllerTest,
-                                                        NeutralHostTest, DatabaseHostTest, DeploymentHostTest])
+                                                        LinuxHostTest, NeutralHostTest, DatabaseHostTest,
+                                                        DeploymentHostTest, VirtualEnvDeploymentHostTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

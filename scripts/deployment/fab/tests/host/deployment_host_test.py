@@ -10,13 +10,11 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.filesystem import FileSystem
 from fab.helpers.internet import Internet
-from fab.helpers.permissions import AkvoPermissions
-from fab.helpers.virtualenv import VirtualEnv
-from fab.host.controller import LocalHostController
-from fab.host.controller import RemoteHostController
+from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.deployment import DeploymentHost
+from fab.os.filesystem import FileSystem
+from fab.os.permissions import AkvoPermissions
 
 
 class DeploymentHostTest(mox.MoxTestBase):
@@ -26,18 +24,16 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_internet = self.mox.CreateMock(Internet)
-        self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_internet,
-                                              self.mock_virtualenv, self.mock_feedback)
+        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_internet, self.mock_feedback)
+
     def test_can_create_a_remote_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a remote DeploymentHost instance"""
 
         host = self._create_deploymenthost_instance_with(RemoteHostController)
 
         self.assertIsInstance(host, DeploymentHost)
-
 
     def test_can_create_a_local_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a local DeploymentHost instance"""
@@ -50,7 +46,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
 
-        return DeploymentHost.create_instance("/some/virtualenv/path", mock_host_controller)
+        return DeploymentHost.create_instance(mock_host_controller)
 
     def test_can_create_directory(self):
         """fab.tests.host.deployment_host_test  Can create a directory"""
@@ -248,43 +244,6 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.deployment_host.download_file_at_url_as(downloaded_file_path, file_url)
-
-    def test_can_create_empty_virtualenv(self):
-        """fab.tests.host.deployment_host_test  Can create empty virtualenv"""
-
-        expected_pip_log_file = "/some/log/dir/pip_log.txt"
-
-        self.mock_virtualenv.create_empty_virtualenv(expected_pip_log_file)
-        self.mox.ReplayAll()
-
-        self.deployment_host.create_empty_virtualenv(expected_pip_log_file)
-
-    def test_can_install_virtualenv_packages(self):
-        """fab.tests.host.deployment_host_test  Can install virtualenv packages"""
-
-        expected_pip_requirements_file = "/some/pip/requirements.txt"
-        expected_pip_log_file = "/some/log/dir/pip_log.txt"
-
-        self.mock_virtualenv.install_packages(expected_pip_requirements_file, expected_pip_log_file)
-        self.mox.ReplayAll()
-
-        self.deployment_host.install_virtualenv_packages(expected_pip_requirements_file, expected_pip_log_file)
-
-    def test_can_list_installed_virtualenv_packages(self):
-        """fab.tests.host.deployment_host_test  Can create empty virtualenv"""
-
-        self.mock_virtualenv.list_installed_virtualenv_packages()
-        self.mox.ReplayAll()
-
-        self.deployment_host.list_installed_virtualenv_packages()
-
-    def test_can_run_command_within_virtualenv(self):
-        """fab.tests.host.deployment_host_test  Can run command within virtualenv"""
-
-        self.mock_virtualenv.run_within_virtualenv("some command")
-        self.mox.ReplayAll()
-
-        self.deployment_host.run_within_virtualenv("some command")
 
 
 def suite():
