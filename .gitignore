@@ -6,7 +6,7 @@
 *.mo
 *.pyc
 *.templatec
-akvo/akvo.log
+akvo/akvo.log*
 akvo/data
 akvo/datadir
 akvo/datadir.*
