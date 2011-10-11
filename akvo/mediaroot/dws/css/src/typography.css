@@ -209,6 +209,7 @@ option { padding: 0 .4em; }
 a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 .last {margin-bottom: 0;}
 .strong {font-weight: bold;}
+h1.box-heading {margin-bottom: 15px;}
 
 /*------------------------------------------------------------------ 
 [7. Nice to have classes] 
@@ -216,7 +217,7 @@ a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
 .hide { display:none; }
 .grey { color:#888; }
 .red { color:#E60113; }
-
+.serif { font-family: 'Georgia', serif; }
 
 /*------------------------------------------------------------------ 
 [8. Text sizes] 

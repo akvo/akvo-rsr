@@ -13,10 +13,15 @@ from django.db.models import get_model
 from django.forms.formsets import all_valid
 from django.forms.models import modelform_factory
 from django.forms.util import ErrorList
+from django.http import Http404
+from django.utils.decorators import method_decorator
 from django.utils.encoding import force_unicode
 from django.utils.functional import curry
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.views.decorators.csrf import csrf_protect
+
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
@@ -27,9 +32,12 @@ from forms import ReadonlyFKAdminField
 from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from utils import get_rsr_limited_change_permission
 from utils import groups_from_user
+from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
 
 
 NON_FIELD_ERRORS = '__all__'
+
+csrf_protect_m = method_decorator(csrf_protect)
 
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (u'__unicode__', u'content_type', )
@@ -40,8 +48,9 @@ admin.site.register(get_model('auth', 'permission'), PermissionAdmin)
 
 
 class CountryAdmin(admin.ModelAdmin):
-    list_display = (u'country_name', u'continent', )
+    list_display = (u'name', u'iso_code', u'continent', u'continent_code', )
     list_filter  = (u'continent', )
+    readonly_fields = (u'name', u'continent', u'continent_code')
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -49,8 +58,24 @@ class CountryAdmin(admin.ModelAdmin):
         opts = self.opts
         if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
             del actions['delete_selected']
-        return actions    
+        return actions
 
+    def save_model(self, request, obj, form, change):
+        if obj.iso_code:
+            iso_code = obj.iso_code
+            continent_code = COUNTRY_CONTINENTS[iso_code]
+
+            obj.name = dict(ISO_3166_COUNTRIES)[iso_code]
+            obj.continent = dict(CONTINENTS)[continent_code]
+            obj.continent_code =continent_code
+        obj.save()
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+#            return u'iso_code', u'name', u'continent', u'continent_code'
+            return u'name', u'continent', u'continent_code'
+        else:
+            return u'name', u'continent', u'continent_code'
 
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
@@ -75,7 +100,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     if settings.PVW_RSR:
         fieldsets = (
             #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
-            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
+            (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'focus_org', )}),
             #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
             (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
             (_(u'About the organisation'), {'fields': ('description', )}),
@@ -247,19 +272,20 @@ class LinkInline(admin.TabularInline):
 
 def partner_clean(obj, field_name='partner'):
     """
-    this function firgures out if a given user's organisation is a partner in some function
+    this function figures out if a given user's organisation is a partner in some function
     associated with the current project. This is to avoid the situation where a user
     who is a partner admin creates a project without the own org as a partner
-    resulting in a project that can't be edited by that usur or anyone else form the org.
+    resulting in a project that can't be edited by that user or anyone else form the org.
     params:
         obj: a formset for one of the partner types
         field_name: the filed name of the foreign key field that points to the org
     """
-    #from dbgp.client import brk
-    #brk(host="localhost", port=9000)
     user_profile = obj.request.user.get_profile()
+    # superusers can do whatever they like!
+    if obj.request.user.is_superuser:
+        found = True
     # if the user is a partner org we try to avoid foot shooting
-    if user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
+    elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
         my_org = user_profile.organisation
         found = False
         for i in range(0, obj.total_form_count()):
@@ -304,6 +330,11 @@ class FundingPartnerInline(admin.TabularInline):
     # the custom clean()
     formset = RSR_FundingPartnerInlineFormFormSet
 
+    def get_formset(self, request, *args, **kwargs):
+        formset = super(FundingPartnerInline, self).get_formset(request, *args, **kwargs)
+        formset.request = request
+        return formset
+
 #see above
 class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
@@ -313,6 +344,11 @@ class FieldPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'fieldpartner')
     extra = 1
     formset = RSR_FieldPartnerInlineFormFormSet
+
+    def get_formset(self, request, *args, **kwargs):
+        formset = super(FieldPartnerInline, self).get_formset(request, *args, **kwargs)
+        formset.request = request
+        return formset
 
 #see above
 class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
@@ -324,6 +360,11 @@ class SupportPartnerInline(admin.TabularInline):
     extra = 1
     formset = RSR_SupportPartnerInlineFormFormSet
 
+    def get_formset(self, request, *args, **kwargs):
+        formset = super(SupportPartnerInline, self).get_formset(request, *args, **kwargs)
+        formset.request = request
+        return formset
+
 #see above
 class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
@@ -334,6 +375,10 @@ class SponsorPartnerInline(admin.TabularInline):
     extra = 1
     formset = RSR_SponsorPartnerInlineFormFormSet
 
+    def get_formset(self, request, *args, **kwargs):
+        formset = super(SponsorPartnerInline, self).get_formset(request, *args, **kwargs)
+        formset.request = request
+        return formset
 
 class BudgetItemAdminInLine(admin.TabularInline):
     if not settings.PVW_RSR:        
@@ -344,7 +389,6 @@ class BudgetItemAdminInLine(admin.TabularInline):
         pass
 
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
-
 
 class BudgetAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budget')
@@ -357,11 +401,6 @@ admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
 
 class ProjectAdminForm(forms.ModelForm):
-    def __init__(self, request, *args, **kwargs):
-        # request is needed when validating
-        self.request = request
-        super(ProjectAdminForm, self).__init__(*args, **kwargs)
-
     class Meta:
         model = get_model('rsr', 'project')
 
@@ -382,19 +421,11 @@ class BenchmarknameInline(admin.TabularInline):
     model = get_model('rsr', 'Category').benchmarknames.through
     extra = 3
 
+
 class CategoryAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Category')
     #inlines = (BenchmarknameInline,)
     list_display = ('name', 'focus_areas_html', 'category_benchmarks_html', )
-    #fieldsets = (
-    #    ('', {
-    #        'fields': (
-    #            'name',
-    #            'focus_area',
-    #        ),
-    #    }),
-    #)
-    
 
 admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
 
@@ -507,7 +538,12 @@ if settings.PVW_RSR:
             }),
             (_(u'Project meta info'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' %
-                    _(u"Set the Currency to be used in budget and on funding calculations. Use the Notes and comments field to communicate with other members of your organisation or partners with access to your projects in the Admin. Check the Showcase box to include this project as a featured project on the site."),
+                    _(
+                        u"""Set the Currency to be used in budget and on funding calculations.
+                        Use the Notes and comments field to communicate with other members of your organisation or
+                        partners with access to your projects in the Admin. Check the Showcase box to make it appear
+                        in the Project focus box of the home page."""
+                    ),
                 'fields': (
                     'currency',
                     'total_budget',
@@ -525,7 +561,7 @@ if settings.PVW_RSR:
                 ),
             }),        
         )
-        list_display = ('id', 'name', 'project_plan_summary', 'is_published')
+        list_display = ('id', 'name', 'project_plan_summary', 'showcase', 'is_published')
         #list_filter = ('currency',)
         
         #form = ProjectAdminModelForm
@@ -585,15 +621,15 @@ if settings.PVW_RSR:
                 else:
                     return True
             return False
-    
+
         def add_view(self, request, form_url='', extra_context=None):
             "The 'add' admin view for this model."
             model = self.model
             opts = model._meta
-            
+
             if not self.has_add_permission(request):
                 raise PermissionDenied
-            
+
             ModelForm = self.get_form(request)
             formsets = []
             if request.method == 'POST':
@@ -612,7 +648,7 @@ if settings.PVW_RSR:
                     formset.request = request
                     formsets.append(formset)
                 #from dbgp.client import brk
-                #brk(host="localhost", port=9000)            
+                #brk(host="localhost", port=9000)
                 if all_valid(formsets) and form_validated:
                     if hasattr(new_object, 'found') and not new_object.found:
                         form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'You cannot completely remove your organisation as a partner.')])
@@ -623,7 +659,7 @@ if settings.PVW_RSR:
                         form.save_m2m()
                         for formset in formsets:
                             self.save_formset(request, form, formset, change=False)
-                        
+
                         self.log_addition(request, new_object)
                         return self.response_add(request, new_object)
             else:
@@ -641,17 +677,17 @@ if settings.PVW_RSR:
                 for FormSet in self.get_formsets(request):
                     formset = FormSet(instance=self.model())
                     formsets.append(formset)
-            
+
             adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)), self.prepopulated_fields)
             media = self.media + adminForm.media
-            
+
             inline_admin_formsets = []
             for inline, formset in zip(self.inline_instances, formsets):
                 fieldsets = list(inline.get_fieldsets(request))
                 inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
                 inline_admin_formsets.append(inline_admin_formset)
                 media = media + inline_admin_formset.media
-            
+
             context = {
                 'title': _('Add %s') % force_unicode(opts.verbose_name),
                 'adminform': adminForm,
@@ -766,6 +802,7 @@ else:
         model = get_model('rsr', 'project')
         inlines = (BudgetItemAdminInLine, LinkInline, FundingPartnerInline, SponsorPartnerInline, 
                    FieldPartnerInline, SupportPartnerInline, LocationInline, BenchmarkInline)
+        save_as = True
         fieldsets = (
             (_(u'Project description'), {
                 'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(u"Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing."),
@@ -887,34 +924,41 @@ else:
                 else:
                     return True
             return False
-    
+
+        @csrf_protect_m
+        @transaction.commit_on_success
         def add_view(self, request, form_url='', extra_context=None):
             "The 'add' admin view for this model."
             model = self.model
             opts = model._meta
-            
+
             if not self.has_add_permission(request):
                 raise PermissionDenied
-            
+
             ModelForm = self.get_form(request)
             formsets = []
             if request.method == 'POST':
-                form = ModelForm(request, request.POST, request.FILES)
+                form = ModelForm(request.POST, request.FILES)
                 if form.is_valid():
-                    form_validated = True
                     new_object = self.save_form(request, form, change=False)
+                    form_validated = True
                 else:
                     form_validated = False
                     new_object = self.model()
-                for FormSet in self.get_formsets(request):
-                    formset = FormSet(data=request.POST, files=request.FILES,
-                                      instance=new_object,
-                                      save_as_new=request.POST.has_key("_saveasnew"))
-                    #added to make request available for formset.clean()
-                    formset.request = request
-                    formsets.append(formset)
-                #from dbgp.client import brk
-                #brk(host="localhost", port=9000)            
+                prefixes = {}
+                for FormSet, inline in zip(self.get_formsets(request), self.inline_instances):
+                    prefix = FormSet.get_default_prefix()
+                    # check if we're trying to create a new project by copying an existing one. If so we ignore
+                    # location and benchmark inlines
+                    if not "_saveasnew" in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
+                        prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                        if prefixes[prefix] != 1:
+                            prefix = "%s-%s" % (prefix, prefixes[prefix])
+                        formset = FormSet(data=request.POST, files=request.FILES,
+                                          instance=new_object,
+                                          save_as_new="_saveasnew" in request.POST,
+                                          prefix=prefix, queryset=inline.queryset(request))
+                        formsets.append(formset)
                 if all_valid(formsets) and form_validated:
                     if not new_object.found:
                         form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
@@ -925,7 +969,7 @@ else:
                         form.save_m2m()
                         for formset in formsets:
                             self.save_formset(request, form, formset, change=False)
-                        
+
                         self.log_addition(request, new_object)
                         return self.response_add(request, new_object)
             else:
@@ -939,25 +983,36 @@ else:
                         continue
                     if isinstance(f, models.ManyToManyField):
                         initial[k] = initial[k].split(",")
-                form = ModelForm(request, initial=initial)
-                for FormSet in self.get_formsets(request):
-                    formset = FormSet(instance=self.model())
+                form = ModelForm(initial=initial)
+                prefixes = {}
+                for FormSet, inline in zip(self.get_formsets(request),
+                                           self.inline_instances):
+                    prefix = FormSet.get_default_prefix()
+                    prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                    if prefixes[prefix] != 1:
+                        prefix = "%s-%s" % (prefix, prefixes[prefix])
+                    formset = FormSet(instance=self.model(), prefix=prefix,
+                                      queryset=inline.queryset(request))
                     formsets.append(formset)
-            
-            adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)), self.prepopulated_fields)
+
+            adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
+                self.prepopulated_fields, self.get_readonly_fields(request),
+                model_admin=self)
             media = self.media + adminForm.media
-            
+
             inline_admin_formsets = []
             for inline, formset in zip(self.inline_instances, formsets):
                 fieldsets = list(inline.get_fieldsets(request))
-                inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
+                readonly = list(inline.get_readonly_fields(request))
+                inline_admin_formset = helpers.InlineAdminFormSet(inline, formset,
+                    fieldsets, readonly, model_admin=self)
                 inline_admin_formsets.append(inline_admin_formset)
                 media = media + inline_admin_formset.media
-            
+
             context = {
                 'title': _('Add %s') % force_unicode(opts.verbose_name),
                 'adminform': adminForm,
-                'is_popup': request.REQUEST.has_key('_popup'),
+                'is_popup': "_popup" in request.REQUEST,
                 'show_delete': False,
                 'media': mark_safe(media),
                 'inline_admin_formsets': inline_admin_formsets,
@@ -966,85 +1021,96 @@ else:
                 'app_label': opts.app_label,
             }
             context.update(extra_context or {})
-            return self.render_change_form(request, context, add=True)
-        add_view = transaction.commit_on_success(add_view)
-        
+            return self.render_change_form(request, context, form_url=form_url, add=True)
+
+        @csrf_protect_m
+        @transaction.commit_on_success
         def change_view(self, request, object_id, extra_context=None):
             "The 'change' admin view for this model."
             model = self.model
             opts = model._meta
-            
-            try:
-                obj = model._default_manager.get(pk=unquote(object_id))
-            except model.DoesNotExist:
-                # Don't raise Http404 just yet, because we haven't checked
-                # permissions yet. We don't want an unauthenticated user to be able
-                # to determine whether a given object exists.
-                obj = None
-            
+
+            obj = self.get_object(request, unquote(object_id))
+
             if not self.has_change_permission(request, obj):
                 raise PermissionDenied
-            
+
             if obj is None:
                 raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-            
-            if request.method == 'POST' and request.POST.has_key("_saveasnew"):
-                return self.add_view(request, form_url='../../add/')
-            
+
+            if request.method == 'POST' and "_saveasnew" in request.POST:
+                return self.add_view(request, form_url='../add/')
+
             ModelForm = self.get_form(request, obj)
             formsets = []
             if request.method == 'POST':
-                form = ModelForm(request, request.POST, request.FILES, instance=obj)
+                form = ModelForm(request.POST, request.FILES, instance=obj)
                 if form.is_valid():
                     form_validated = True
                     new_object = self.save_form(request, form, change=True)
                 else:
                     form_validated = False
                     new_object = obj
-                for FormSet in self.get_formsets(request, new_object):
+                prefixes = {}
+                for FormSet, inline in zip(self.get_formsets(request, new_object),
+                                           self.inline_instances):
+                    prefix = FormSet.get_default_prefix()
+                    prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                    if prefixes[prefix] != 1:
+                        prefix = "%s-%s" % (prefix, prefixes[prefix])
                     formset = FormSet(request.POST, request.FILES,
-                                      instance=new_object)
-                    #added to make request available for formset.clean()
-                    formset.request = request
+                                      instance=new_object, prefix=prefix,
+                                      queryset=inline.queryset(request))
+
                     formsets.append(formset)
-                
+
                 if all_valid(formsets) and form_validated:
                     if not new_object.found:
                         form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
                         for fs in new_object.partner_formsets:
-                            fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])                        
+                            fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
                     else:
                         self.save_model(request, new_object, form, change=True)
                         form.save_m2m()
                         for formset in formsets:
                             self.save_formset(request, form, formset, change=True)
-                        
+
                         change_message = self.construct_change_message(request, form, formsets)
                         self.log_change(request, new_object, change_message)
                         return self.response_change(request, new_object)
-            
+
             else:
-                form = ModelForm(request, instance=obj)
-                for FormSet in self.get_formsets(request, obj):
-                    formset = FormSet(instance=obj)
+                form = ModelForm(instance=obj)
+                prefixes = {}
+                for FormSet, inline in zip(self.get_formsets(request, obj), self.inline_instances):
+                    prefix = FormSet.get_default_prefix()
+                    prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                    if prefixes[prefix] != 1:
+                        prefix = "%s-%s" % (prefix, prefixes[prefix])
+                    formset = FormSet(instance=obj, prefix=prefix,
+                                      queryset=inline.queryset(request))
                     formsets.append(formset)
-            
-            adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
+
+            adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj),
+                self.prepopulated_fields, self.get_readonly_fields(request, obj),
+                model_admin=self)
             media = self.media + adminForm.media
-            
+
             inline_admin_formsets = []
             for inline, formset in zip(self.inline_instances, formsets):
                 fieldsets = list(inline.get_fieldsets(request, obj))
-                inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
+                readonly = list(inline.get_readonly_fields(request, obj))
+                inline_admin_formset = helpers.InlineAdminFormSet(inline, formset,
+                    fieldsets, readonly, model_admin=self)
                 inline_admin_formsets.append(inline_admin_formset)
                 media = media + inline_admin_formset.media
-            
+
             context = {
                 'title': _('Change %s') % force_unicode(opts.verbose_name),
                 'adminform': adminForm,
                 'object_id': object_id,
                 'original': obj,
-                'is_popup': request.REQUEST.has_key('_popup'),
+                'is_popup': "_popup" in request.REQUEST,
                 'media': mark_safe(media),
                 'inline_admin_formsets': inline_admin_formsets,
                 'errors': helpers.AdminErrorList(form, formsets),
@@ -1053,7 +1119,6 @@ else:
             }
             context.update(extra_context or {})
             return self.render_change_form(request, context, change=True, obj=obj)
-        change_view = transaction.commit_on_success(change_view)
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
@@ -1106,7 +1171,8 @@ class UserProfileAdminForm(forms.ModelForm):
     is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-    is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
+    if not settings.PVW_RSR:
+        is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
     
     def __init__(self, *args, **kwargs):
         initial_data = {}
@@ -1115,16 +1181,21 @@ class UserProfileAdminForm(forms.ModelForm):
             initial_data['is_active']       = instance.get_is_active()
             initial_data['is_org_admin']    = instance.get_is_org_admin()
             initial_data['is_org_editor']   = instance.get_is_org_editor()
-            initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
+            if not settings.PVW_RSR:
+                initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
             kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
-    search_fields = ('user', 'organisation',)
+    if settings.PVW_RSR:
+        list_display = ('user_name', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
+    else:
+        list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
+    search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
     list_filter  = ('organisation',)
-    ordering = ('user__username',)
-    inlines = [SmsReporterInline,]
+    ordering = ("user__username",)
+    if not settings.PVW_RSR:
+        inlines = [SmsReporterInline,]
     form = UserProfileAdminForm
     
     def get_actions(self, request):
@@ -1134,7 +1205,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
             del actions['delete_selected']
         return actions
-    
+
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def get_form(self, request, obj=None, **kwargs):
         # non-superusers don't get to see it all
@@ -1157,18 +1228,20 @@ class UserProfileAdmin(admin.ModelAdmin):
         #    self.inlines = [SmsReporterInline,]
         return form
 
-    def get_readonly_fields(self, request, obj):
+    def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
             # only superusers are allowed to add/remove sms updaters in beta phase
-            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
-            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
+            if not settings.PVW_RSR:
+                self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
+                self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
             # user and org are only shown as text, not select widget
-            return ['user', 'organisation',]            
+            return ['user', 'organisation',]
         else:
-            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
-            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
+            if not settings.PVW_RSR:
+                self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
+                self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
             return []
-        
+
 
     def queryset(self, request):
         """
@@ -1188,10 +1261,10 @@ class UserProfileAdmin(admin.ModelAdmin):
         """
         Returns True if the given request has permission to change the given
         Django model instance.
-        
+
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-        
+
         get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
         "own" projects, organisation and user profiles
         """
@@ -1208,24 +1281,26 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """
-        override of django.contrib.admin.options.save_model        
+        override of django.contrib.admin.options.save_model
         """
         # Act upon the checkboxes that fake admin settings for the partner users.
         is_active       = form.cleaned_data['is_active']
         is_admin        = form.cleaned_data['is_org_admin']
         is_editor       = form.cleaned_data['is_org_editor']
-        is_sms_updater  = form.cleaned_data['is_sms_updater']
+        if not settings.PVW_RSR:
+            is_sms_updater  = form.cleaned_data['is_sms_updater']
         obj.set_is_active(is_active) #master switch
         obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
         obj.set_is_org_editor(is_editor) #can edit projects
         obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
         # TODO: fix "real" permissions, currently only superusers can change sms updter status
-        if is_sms_updater:
-            obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
-            obj.init_sms_update_workflow()
-        else:
-            obj.disable_sms_update_workflow(request.user)
-            obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+        if not settings.PVW_RSR:
+            if is_sms_updater:
+                obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
+                obj.init_sms_update_workflow()
+            else:
+                obj.disable_sms_update_workflow(request.user)
+                obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
         obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
