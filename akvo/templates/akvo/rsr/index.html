@@ -48,7 +48,7 @@
                     <div class="white_box" style="min-height: 370px;">
                         {% if update.video %}
                             <div class="clearfix">
-                                <a class="video_thumb" href="{% url 'project_update' project.id update.id %}">
+                                <a class="video_thumb" href="{% url 'project_update' update.project.id update.id %}">
                                     <img src="{{update.get_video_thumbnail_url}}" style="width:203px;" alt="" />
                                     <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
                                 </a>
@@ -58,8 +58,7 @@
             				    {% thumbnail update.photo 203x152 crop sharpen upscale as update_photo %}
             				    {% if update_photo %}
               					    <a href="{% url 'project_update' update.project.id update.id %}">
-                					    <img src="{{update_photo}}" style="margin:0;"{% if update.photo_caption %} 
-										    title="{{update.photo_caption}}"{% endif %}>
+                					    <img src="{{update_photo}}" alt="" style="margin:0;"{% if update.photo_caption %} title="{{update.photo_caption}}"{% endif %}>
               					    </a>
                                 {% endif %}
                             {% endif %}

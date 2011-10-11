@@ -103,12 +103,17 @@
 				<div class="green_fold"></div>
 				<div class="two_column_right_inner" style="background-color:#fff;">
 					<div style="border:1px solid #ccc; border-top:none; margin-bottom:10px;">
-						{% if update.video_thumbnail %}
-							<p class="small last" style="padding:5px 5px 0 5px;">
-                  				<b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b>
-							</p>
-							<div style="width:290px; margin-left:auto; margin-right:auto; overflow:hidden; text-align:center;">
-								{{ update.video_thumbnail }}
+                        {% if update.video %}
+                            <div style="float:left; width:175px;">
+                                <p class="small last" style="padding:5px 5px 0 5px;">
+                                    <b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b>
+                                    <br/>{{update.text|smart_truncate:50}}
+                                </p>
+                            </div>
+                            <div style="float:right; width:116px;">
+                                <a class="video_thumb" href="{% url 'project_update' project.id update.id %}">
+                                    <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:116px;">
+                                    <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
 							</div>
 						{% else %}
 							{% if update.photo %}
