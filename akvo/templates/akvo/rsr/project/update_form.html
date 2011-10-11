@@ -80,7 +80,7 @@
         <span class="small grey"> ({% trans 'optional' %})</span>
       </h2>
       {% if update and update.photo %}
-        <p class="grey">{% trans 'Current photo' %}:</p>
+        <p class="grey">{% trans 'Current photo' %}</p>
         <img src="{% thumbnail update.photo 200x150 crop autocrop sharpen upscale %}">
         <br /><br />
       {% endif %}
@@ -144,7 +144,7 @@
         {% endif %}
       </h4>
       {% if update and update.video %}
-          <p class="grey">{% trans 'Current video' %}:</p>
+          <p class="grey">{% trans 'Current video' %}</p>
           <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:200px;">
           <br /><br />
       {% endif %}
