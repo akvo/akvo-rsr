@@ -19,22 +19,6 @@ source "$CONFIG_DIR/python_system.config"
 
 PY_PATH="$PY_BIN_PATH/python"
 
-function ensure_package_download_dir_exists
-{
-    if [ ! -d "$PACKAGE_DOWNLOAD_DIR" ]; then
-        printf ">> Creating package download directory: $PACKAGE_DOWNLOAD_DIR\n"
-        mkdir -p "$PACKAGE_DOWNLOAD_DIR"
-    else
-        # check if directory is empty
-        if [ "$(ls -A $PACKAGE_DOWNLOAD_DIR)" ]; then
-            printf ">> Clearing existing package download directory: $PACKAGE_DOWNLOAD_DIR\n"
-            rm -r "$PACKAGE_DOWNLOAD_DIR"/*
-        else
-            printf ">> Using existing package download directory: $PACKAGE_DOWNLOAD_DIR\n"
-        fi
-    fi
-}
-
 function install_distribute_package
 {
     # See installation notes at http://pypi.python.org/pypi/distribute#distribute-setup-py
@@ -96,7 +80,6 @@ function install_system_packages
 
 function build_system_environment
 {
-    ensure_package_download_dir_exists
     install_distribute_package
 
     # proceed if no errors occurred

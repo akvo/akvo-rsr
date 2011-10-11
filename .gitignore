@@ -6,7 +6,7 @@
 *.mo
 *.pyc
 *.templatec
-akvo/akvo.log
+akvo/akvo.log*
 akvo/data
 akvo/datadir
 akvo/datadir.*
@@ -21,8 +21,7 @@ scripts/deployment/builders/osx/config/python_system.config
 scripts/deployment/builders/osx/config/rsr_env.config
 scripts/deployment/builders/osx/config/user.config
 scripts/deployment/deploy_rsr_config.py
-scripts/deployment/fab/config/dataretriever.py
-scripts/deployment/fab/config/deployer.py
+scripts/deployment/fab/config/values.py
 scripts/deployment/fab/tests/test_settings.py
 scripts/deployment/static_project_structure.py
 tests/akvo/acceptance/test_settings.py

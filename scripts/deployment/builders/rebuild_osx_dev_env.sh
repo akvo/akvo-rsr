@@ -13,6 +13,7 @@ if [ $? -ne 0 ]; then
 fi
 
 source "$OSX_DIR/ensure_osx_config_files_exist.sh"
+source "$OSX_DIR/ensure_required_dirs_exist.sh"
 
 source "$CONFIG_DIR/user.config"
 
