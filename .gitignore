@@ -8,7 +8,8 @@ akvo-rsr.komodoproject
 *.pyc
 *.templatec
 
-akvo/akvo.log
+akvo/log/akvo.log
+akvo/log/akvo.log*
 akvo/data
 akvo/datadir
 akvo/datadir.*
@@ -17,7 +18,6 @@ akvo/mediaroot/db
 akvo/mollie_banklist.xml
 akvo/rebuild_db.py
 akvo/testing.py
-akvo/akvo.log
 akvo/settings/5*.conf
 akvo/settings/6*.conf
 akvo/settings/backup
