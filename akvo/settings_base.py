@@ -7,7 +7,7 @@
 # is imported into settings.py.
 
 # Alphabetically ordered (more or less...)
-PVW_RSR = True
+PVW_RSR = False
 # Accounts not activated in a week get purged. Used by registration app.
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -185,7 +185,7 @@ USE_I18N = True
 USE_L10N = True
 
 # Logging
-LOG_FILE_PATH = '/var/log/akvo'
+LOG_FILE_PATH = '/Users/gabriel/git/akvo-rsr/akvo'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

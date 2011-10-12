@@ -293,7 +293,7 @@ def project_list(request, slug='all'):
             else:
                 queryset = Project.objects.published().filter(categories__focus_area=focus_area)
 
-    queryset = queryset.budget_total().latest_update_fields().distinct().order_by('-pk')
+    queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
 
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
 
