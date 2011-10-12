@@ -45,15 +45,23 @@
 		<div class="span-12 last">
 			{% for update in updates %}
 				<div class="span-4{% if forloop.last %} last{% endif %}">
-        			<div class="white_box" style="min-height: 370px;">
-						{% if update.photo %}
-            				{% thumbnail update.photo 203x152 crop sharpen upscale as update_photo %}
-            				{% if update_photo %}
-              					<a href="{% url 'project_update' update.project.id update.id %}">
-                					<img src="{{update_photo}}" style="margin:0;"{% if update.photo_caption %} 
-										title="{{update.photo_caption}}"{% endif %}>
-              					</a>
-            				{% endif %}
+                    <div class="white_box" style="min-height: 370px;">
+                        {% if update.video %}
+                            <div class="clearfix">
+                                <a class="video_thumb" href="{% url 'project_update' update.project.id update.id %}">
+                                    <img src="{{update.get_video_thumbnail_url}}" style="width:203px;" alt="" />
+                                    <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                                </a>
+                            </div>
+                        {% else %}
+						    {% if update.photo %}
+            				    {% thumbnail update.photo 203x152 crop sharpen upscale as update_photo %}
+            				    {% if update_photo %}
+              					    <a href="{% url 'project_update' update.project.id update.id %}">
+                					    <img src="{{update_photo}}" alt="" style="margin:0;"{% if update.photo_caption %} title="{{update.photo_caption}}"{% endif %}>
+              					    </a>
+                                {% endif %}
+                            {% endif %}
           				{% endif %}
 						<div class="space10">
             				<a href="{% url 'project_update' update.project.id update.id %}">
@@ -123,7 +131,7 @@
         		<div style="padding-left: 20px;">
           			<h1 class="white last" style="line-height: 1em">{{projects.count}}</h1>
           			<p class="small">
-						<a class="right_now_blue" href="{% url 'project_list' %}">{% trans 'Projects' %}</a>
+						<a class="right_now_blue" href="{% url 'project_list' 'all' %}">{% trans 'Projects' %}</a>
 					</p>
           			<h1 class="white last" style="line-height: 1em">{{orgs.count}}</h1>
           			<p class="small">

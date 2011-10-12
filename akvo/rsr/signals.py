@@ -124,6 +124,16 @@ def set_active_cms(instance, created, **kwargs):
     if instance.active:
         MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
 
+def set_showcase_project(instance, created, **kwargs):
+    Project = get_model('rsr', 'Project')
+    if instance.showcase:
+        Project.objects.exclude(pk=instance.pk).update(showcase=False)
+
+def set_focus_org(instance, created, **kwargs):
+    Organisation = get_model('rsr', 'Organisation')
+    if instance.focus_org:
+        Organisation.objects.exclude(pk=instance.pk).update(focus_org=False)
+
 def create_benchmark_objects(project):
     """
     create the relevant Benchmark objects for this project based on the Categories of the project

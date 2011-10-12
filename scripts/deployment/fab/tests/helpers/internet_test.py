@@ -5,13 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
-from fab.helpers.hosts import RemoteHost
 from fab.helpers.internet import Internet
+from fab.host.controller import RemoteHostController
 
 
 class StubbedInternet(Internet):
@@ -41,12 +42,12 @@ class InternetTest(mox.MoxTestBase):
 
     def setUp(self):
         super(InternetTest, self).setUp()
-        self.mock_remote_host = self.mox.CreateMock(RemoteHost)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_remote_host.feedback = self.mock_feedback
+        self.mock_host_controller.feedback = self.mock_feedback
 
-        self.internet = StubbedInternet(self.mock_remote_host)
+        self.internet = StubbedInternet(self.mock_host_controller)
 
     def test_can_get_file_name_at_specified_url(self):
         """fab.tests.helpers.internet_test  Can get file name at a specified URL"""
@@ -93,18 +94,26 @@ class InternetTest(mox.MoxTestBase):
         self.mock_feedback.abort(header_not_available_message).AndRaise(SystemExit(header_not_available_message))
         self.mox.ReplayAll()
 
-        try:
+        with self.assertRaises(SystemExit):
             self.internet.file_name_from_url_headers(file_url)
-            self.fail("Should have raised a SystemExit exception if the file name could not be read from the HTTP response headers")
-        except SystemExit: # expected
-            pass
+
+    def test_can_download_file_to_specified_directory(self):
+        """fab.tests.helpers.internet_test  Can download a file to a specified directory"""
+
+        download_directory = "/var/tmp/downloads"
+        file_url = "http://some.server.org/code/file.txt"
+        self.mock_host_controller.cd(download_directory).AndReturn(fabric.api.cd(download_directory))
+        self.mock_host_controller.run("wget -nv %s" % file_url)
+        self.mox.ReplayAll()
+
+        self.internet.download_file_to_directory(download_directory, file_url)
 
     def test_can_download_file_at_url_and_save_it_with_specified_file_name(self):
         """fab.tests.helpers.internet_test  Can download the file at a URL and save it with a specified file name"""
 
         file_url = "http://some.server.org/file.zip"
         downloaded_file_path = "/var/tmp/archives/rsr_archive.zip"
-        self.mock_remote_host.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))
+        self.mock_host_controller.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))
         self.mox.ReplayAll()
 
         self.internet.download_file_at_url_as(downloaded_file_path, file_url)

@@ -12,7 +12,7 @@ PROJECT_CHILDREN = ["goal_2", "subtitle", "map", "date_complete", "current_statu
                     "name", "currency", "country", "notes", "category_training", "longitude", "context",
                     "goals_overview", "improved_sanitation_years"]
 
-COUNTRY_CHILDREN = ["country_name", "id", "continent"]
+COUNTRY_CHILDREN = ["name", "id", "continent"]
 
 PROJECT_UPDATE_CHILDREN = ["photo_credit", "photo_caption", "title", "text", "project", "time", "id", "photo"]
 
