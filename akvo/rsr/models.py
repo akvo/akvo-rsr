@@ -43,7 +43,7 @@ from registration.signals import user_activated
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from workflows import WorkflowBase
-#from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
+from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
 from permissions import PermissionBase
 from permissions.models import Role
 from permissions.utils import get_roles, add_local_role
@@ -68,8 +68,10 @@ from signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, set_active_cms,
-    act_on_log_entry, user_activated_callback
+    act_on_log_entry, user_activated_callback, set_showcase_project, set_focus_org,
 )
+
+from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -84,27 +86,34 @@ class QuerySetManager(models.Manager):
         except AttributeError:
             return getattr(self.get_query_set(), attr, *args)
             
-CONTINENTS = (
-    (1, _('Africa')),
-    (2, _('Asia')),
-    (3, _('Australia')),
-    (4, _('Europe')),
-    (5, _('North America')),
-    (6, _('South America')),
+OLD_CONTINENTS = (
+    ("1", _('Africa')),
+    ("2", _('Asia')),
+    ("3", _('Australia')),
+    ("4", _('Europe')),
+    ("5", _('North America')),
+    ("6", _('South America')),
 )
 
 class Country(models.Model):
     
-    country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
-    continent                   = models.IntegerField(_(u'continent'), choices=CONTINENTS)
+    name            = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
+    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
+    continent       = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
+    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
+
+#    name            = models.CharField(_(u'country name'), max_length=50,)
+#    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    continent       = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
+#    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
     def __unicode__(self):
-        return self.country_name
+        return self.name
 
     class Meta:
         verbose_name = _('country')
         verbose_name_plural = _('countries')
-        ordering = ['country_name']
+        ordering = ['name']
 
 
 class LatitudeField(models.FloatField):
@@ -201,6 +210,8 @@ class Organisation(models.Model):
 
     url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
 
+    if settings.PVW_RSR:
+        focus_org               = models.BooleanField(_('Focus organisation'), help_text=_('The organisation selected to be highlighted in the Expert focus box of the home page.'))
     #map                         = models.ImageField(
     #                                _('map'),
     #                                blank=True,
@@ -476,7 +487,7 @@ class FocusArea(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('focus_area', (), {'slug': self.slug})
+        return ('project_list', (), {'slug': self.slug})
         
     def projects(self):
         """
@@ -570,8 +581,10 @@ if settings.PVW_RSR: #pvw-rsr
         def image_path(instance, file_name):
             return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
             
-        top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
+        top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, blank=True, help_text=_('CURRENTLY NOT USED! Enter the text that will appear in the top right box of the home page. (350 characters)'))
         map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
+#        alternative video_url to use whith thumbed vid
+#        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The ID of the video to be shown on the home page. <br/>   Example: if the URL to the video is http://www.youtube.com/watch?v=Cn2mDS-WNJs then Cn2mDS-WNJs is entered in the field. '))
         video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The URL to the video to be shown on the home page.'))
         tagline_box          = models.TextField(_(_(u'tagline box text'), ), max_length=100, help_text=_('Enter the text that will appear in the on-line box at the bottom of the home page. (100 characters).'))
         active              = models.BooleanField(_(u'currently active home page'), default=False)
@@ -1227,27 +1240,9 @@ else: #akvo-rsr
     
         name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
         subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
-        status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+        status                          = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
         categories                  = models.ManyToManyField(Category, related_name='projects',)
-        #city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        #state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        #country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        #map                         = models.ImageField(
-        #                                _('map'),
-        #                                blank=True,
-        #                                upload_to=image_path,
-        #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
-        #                            )
-        #Project categories
-        #category_water              = models.BooleanField(_('water'))
-        #category_sanitation         = models.BooleanField(_('sanitation'))
-        #category_maintenance        = models.BooleanField(_('maintenance'))
-        #category_training           = models.BooleanField(_('training'))
-        #category_education          = models.BooleanField(_('education'))
-        #category_product_development= models.BooleanField(_('product development'))
-        #category_other              = models.BooleanField(_('other'))
-        
-        #current_status_summary = models.TextField()
+
         project_plan_summary        = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
         current_image               = ImageWithThumbnailsField(
                                         _('project photo'),
@@ -1263,23 +1258,7 @@ else: #akvo-rsr
         goal_3                      = models.CharField(_('goal 3'), blank=True, max_length=60)
         goal_4                      = models.CharField(_('goal 4'), blank=True, max_length=60)
         goal_5                      = models.CharField(_('goal 5'), blank=True, max_length=60)
-        #Project target benchmarks
-        #water_systems               = models.IntegerField(_('water systems'), default=0)
-        #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
-        #hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
-        #improved_water              = models.IntegerField(_('water: # people affected'), default=0)
-        #improved_water_years        = models.IntegerField(_('for # years'), default=0)
-        #improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
-        #improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
-        #trainees                    = models.IntegerField(_('# people trained'), default=0)
-        #mdg_count_water             = models.IntegerField(default=0)
-        #mdg_count_sanitation        = models.IntegerField(default=0)
-    
-        #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
-        #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
-        #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
+
         current_status_detail       = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
         project_plan_detail         = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
         sustainability              = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
@@ -1289,11 +1268,11 @@ else: #akvo-rsr
         notes                       = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
     
         #budget    
-        currency            = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-        date_request_posted = models.DateField(_('Date request posted'), default=date.today)
-        date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
+        currency                    = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+        date_request_posted         = models.DateField(_('Date request posted'), default=date.today)
+        date_complete               = models.DateField(_('Date complete'), null=True, blank=True)
     
-        locations           = generic.GenericRelation(Location)
+        locations                   = generic.GenericRelation(Location)
     
         #Custom manager
         #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1634,8 +1613,13 @@ else: #akvo-rsr
                 return self.status_complete().get_largest_value_sum(
                     getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
                     ['Sanitation']
-                )                
-    
+                )
+
+            def latest_update_fields(self):
+                #used in project_list view
+                #cheating slightly, counting on that both id and time are the largest for the latest update
+                return self.annotate(latest_update_id=Max('project_updates__id'),latest_update_date=Max('project_updates__time'))
+
             #the following 4 return an organisation queryset!
             def support_partners(self):
                 o = Organisation.objects.all()
@@ -1871,13 +1855,13 @@ else: #akvo-rsr
             ('management', _('management')),
             ('other', _('other')),
         )
-        project             = models.ForeignKey(Project)
+        project             = models.ForeignKey(Project,)
         item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
         amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
         
         class Meta:
-            verbose_name=_('Budget item')
-            verbose_name_plural=_('Budget items')
+            verbose_name        = _('Budget item')
+            verbose_name_plural = _('Budget items')
             unique_together     = ('project', 'item')
             permissions = (
                 ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
@@ -2232,7 +2216,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def disable_all_reporters(self):
         self.disable_reporting()
-        
+
     def destroy_reporter(self, reporter=None):
         logger.debug("Entering: %s()" % who_am_i())
         if reporter:
@@ -2292,7 +2276,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         Check for correct state and send email and SMS notifying the user about the enabled project
         If reporters=None we try to enable all reporters
         """
-        logger.debug("Entering: %s()" % who_am_i())        
+        logger.debug("Entering: %s()" % who_am_i())
         if reporter and reporter.project:
             reporters = [reporter]
         else:
@@ -2337,7 +2321,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.disable_all_reporters()
         self.set_initial_state() #Phone disabled
         logger.debug("Exiting: %s()" % who_am_i())
-    
+
     def add_phone_number(self, phone_number):
         """
         Set up workflow
@@ -2377,7 +2361,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """used in myakvo navigation template to determin what links to show
         """
         return (
-            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or 
+            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
     has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
@@ -2545,7 +2529,10 @@ class ProjectUpdate(models.Model):
 
     def img(self, value=''):
         if self.photo:
-            value = self.photo.thumbnail_tag
+            try:
+                value = self.photo.thumbnail_tag
+            except:
+                pass
         return value
     img.allow_tags = True
 
@@ -2820,3 +2807,5 @@ if settings.PVW_RSR:
     post_save.connect(change_name_of_file_on_create, sender=Category)
     pre_save.connect(change_name_of_file_on_change, sender=Category)
     post_save.connect(set_active_cms, sender=MiniCMS)
+    post_save.connect(set_showcase_project, sender=Project)
+    post_save.connect(set_focus_org, sender=Organisation)

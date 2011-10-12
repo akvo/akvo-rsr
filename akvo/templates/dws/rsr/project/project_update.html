@@ -2,6 +2,12 @@
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
 {% load url from future %}
 
+{% block style %}
+  {% asset_bundle 'dws_style14' %}
+  <!--[if IE 6]>
+    {% asset_bundle 'dws_ie6_style' %}
+  <![endif]-->
+{% endblock style %}
 
 {% block title %}
   - {{project.name}}
@@ -34,22 +40,18 @@
                     by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}
                 {% endblocktrans %}                
             </p>	
-            {% if update.photo %}
-				{% if u.photo_location == 'B' %}
-					{% update_thumb update 720 540 %}
-					{% if u.text %}
-						<div class="prepend-top">
-							{{u.text|linebreaks}}
-						</div>
-					{% endif %}
-				{% else %}
-					{% if u.text %}
-						<div class="prepend-top">
-							{{u.text|linebreaks}}
-						</div>
-					{% endif %}
-					{% update_thumb update 720 540 %}
-				{% endif %}
+            {% if update.photo and update.photo_location == 'B' %}
+              {% update_thumb update 720 540 %}
+            {% endif %}
+
+            {% if update.text %}
+              <div class="prepend-top">
+                {{update.text|linebreaks|safe}}
+              </div>
+            {% endif %}
+
+            {% if update.photo and update.photo_location == 'E' %}
+              {% update_thumb update 720 540 %}
             {% endif %}
           </div>
         </div>

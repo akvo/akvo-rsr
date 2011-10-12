@@ -61,13 +61,13 @@
                 </div>
 				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 				<div id="project_location">
-					<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+					<p class="smallFont"><span class="capz">{{project.country.continent}}</span><br />
 						{{project.country}}, {{project.city}}
 					</p>
 				</div>
 				{% comment %}
 				<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-				<p class="smallFont"><span class="capz">{{project.country.get_continent_display}}</span><br />
+				<p class="smallFont"><span class="capz">{{project.country.continent}}</span><br />
 					{{project.country}}, {{project.city}}
 				</p>
 				{% endcomment %}
