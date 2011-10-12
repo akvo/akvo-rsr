@@ -185,7 +185,7 @@ USE_I18N = True
 USE_L10N = True
 
 # Logging
-LOG_FILE_PATH = '/Users/gabriel/git/akvo-rsr/akvo'
+LOG_FILE_PATH = '/var/log/akvo'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
