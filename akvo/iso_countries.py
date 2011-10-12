@@ -14,7 +14,7 @@ def convert():
     for country in countries:
         if not country.iso_code:
             for iso in ISO_3166_COUNTRIES:
-                if country.name in iso[1]:
+                if country.name == iso[1]:
                     country.iso_code = iso[0]
                     country.name = iso[1]
         if country.iso_code:
