@@ -10,6 +10,7 @@ django-piston==0.2.2
 django-rosetta==0.6.2
 djangoembed==0.1.1
 sorl-thumbnail==3.2.5
+django-filter==0.5.3
 
 # Django apps from VCS web services
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@fad7080fe769#egg=django_registration-tip
