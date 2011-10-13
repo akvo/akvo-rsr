@@ -71,7 +71,8 @@ INSTALLED_APPS = (
     'django_markup',
     'notification',
     'permissions',
-    'workflows',    
+    'workflows',
+    'south'
 )
 
 #INTERNAL_IPS = (
