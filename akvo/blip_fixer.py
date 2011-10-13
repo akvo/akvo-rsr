@@ -19,11 +19,18 @@ def get_new_url(url):
 
     Returns a new-style URL string or None
 
+    IMPORTANT:
+
+    This, in fact, doesn't work because new-style URLs cannot be predicted based
+    on anything in the old URL.
+
+    This script should be deprecated.
+
     """
     parsed_url = urlparse(url)
     if parsed_url.netloc.endswith('.blip.tv'):  # matches *.blip.tv but not ^blip.tv
         user, video_id = parsed_url.netloc.split('.')[0], parsed_url.path
-        return u'http://blip.tv/%s/%s' % (user, video_id)
+        return u'http://blip.tv/%s%s' % (user, video_id)
     return
 
 
