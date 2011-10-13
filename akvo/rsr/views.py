@@ -187,8 +187,8 @@ def index(request, cms_id=None):
         #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
         
-        #get three featured updates
-        updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
+        #get three featured updates with video and/or photo
+        updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
     elif news_posts:
         for post in image_posts:
             if post.get('image', None):
