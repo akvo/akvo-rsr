@@ -64,12 +64,12 @@
 						</th>
 					{% endif %}
 				{% endif %}
-					<th scope="col" id="locationColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'country__continent' %}activeTableHeader{% endif %}{% if request_get.order_by = 'country__country_name' %}activeTableHeader{% endif %}">
-						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "country__continent"%}" target="_self" {% if request_get.order_by = 'country__country_name'%} style="font-weight:normal;" {% endif %}>{% trans 'Continent' %}</a> 
+					<th scope="col" id="locationColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'country__continent' %}activeTableHeader{% endif %}{% if request_get.order_by = 'country__name' %}activeTableHeader{% endif %}">
+						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "country__continent"%}" target="_self" {% if request_get.order_by = 'country__name'%} style="font-weight:normal;" {% endif %}>{% trans 'Continent' %}</a>
 						
 						<span style="font-weight:normal;">/</span><br /> 
 						
-						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "country__country_name" %}" target="_self" {% if equest_get.order_by = 'country__continent' %}style="font-weight:normal" {% endif %} >{% trans 'Country' %}</a>
+						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "country__name" %}" target="_self" {% if equest_get.order_by = 'country__continent' %}style="font-weight:normal" {% endif %} >{% trans 'Country' %}</a>
 					</th>
 					<th scope="col" id="statusColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'status' %}activeTableHeader{% endif %} {% if request_get.order_by = 'last_update' %}activeTableHeader{% endif %}">
 						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "status" %}" target="_self" {% if request_get.order_by = 'last_update' %} style="font-weight:normal;" {% endif %}>{% trans 'Status' %}</a> <span style="font-weight:normal;">/</span><br /> 
@@ -108,7 +108,7 @@
                     </a>
 				</td>
 				<td class="tableRow locationCell">
-					<p style="margin-top:3px;"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+					<p style="margin-top:3px;"><span class="capz">{{project.primary_location.country.continent}}</span><br />
 						{{project.primary_location.country}}, {{project.primary_location.city}}
 					</p>
 					<p class="miniFont lightgrey">
