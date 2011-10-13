@@ -21,16 +21,18 @@
   <div class="clear"></div>
   <div class="marg_top40 white_back">
     {% autosort project_list %}
-      {% autopaginate project_list 10 %}
-      {% paginate %}
-    <table id="projects" style="margin-bottom:0; width:100%">
+    {% autopaginate project_list 10 %}
+    {% paginate %}
+    <table id="projects" class="marg_bottom0 full_width">
       <tr>
         <th class="normal">{% anchor name Name %}</th>
-        <th class="normal">{% anchor locations__country Location %}</th>
+        <th class="normal">{% trans "Location" %}</th>
+        {#<th class="normal">{% anchor locations__country Location %}</th>#}
         <th class="normal">{% anchor status Status %}</th>
-        <th class="normal"><span class="small">Partners</span></th>
+        <th class="normal">{% trans "Partners" %}</span></th>
         <th class="normal">{% anchor latest_update 'Updated' %}</th>
-        <th class="normal">{% anchor funds_needed Funding %}</th>
+        <th class="normal">{% trans "Funding" %}</th>
+        {#<th class="normal">{% anchor funds_needed Funding %}</th>#}
       </tr>
       {% for project in project_list %}
         <tr>

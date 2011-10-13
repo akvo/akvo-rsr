@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters google_maps %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters google_maps sorting_tags pagination_tags rsr_filters %}
 {% load url from future %}
 
 
@@ -15,24 +15,54 @@
 
 {% block content %}
   <div class="clearfix">
-    <article>
-      <h1>{% trans "Project partners" %}</h1>
-      <div class="pad20 whitebox">
-        <ul>
-          {% for partner in partner_list  %}
-            <li><a href="{% url 'partner_main' partner.id %}">{{partner}}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-    </article>
-    <aside>
-      <div class="pad20 whitebox">
-        <p>
-          Map<br />
-          Number of partners<br />
-          Partners in what parts of the world?
-        </p>
-      </div>
-    </aside>
+    <h1>{% trans "Project partners" %}</h1>
+    <div class="marg_top40 white_back">
+      {% comment %}
+        Sort on location is broken, countries pop in and out.
+        Sort on number of projects is also broken.
+      {% endcomment %}
+      {% autosort partner_list %}
+      {% autopaginate partner_list 10 %}
+      {% paginate %}
+      <table id="partners" class="marg_bottom0 full_width whitebox">
+        <tr>
+          <th class="normal">{% anchor name Name %}</th>
+          <th class="normal">{% anchor organisation_type Type %}</th>
+          <th class="normal">{% trans "Location" %}</th>
+          <th class="normal">{% trans "Projects" %}</th>
+          {% comment %}
+          <th class="normal">{% anchor locations__country Location %}</th>
+          <th class="normal">{% anchor number_of_projects Projects %}</th>
+          {% endcomment %}
+        </tr>
+        {% for partner in partner_list %}
+          <tr>
+            <td {% if forloop.last %}class="no_bottom_border"{% endif %}>
+              <a href="{% url 'partner_main' partner.id %}" class="small">
+              {% org_logo partner 100 75 'float: left; margin-right: 10px;' %}
+              </a>
+              <a href="{% url 'partner_main' partner.id %}" class="">{{partner}}</a>
+            </td>
+            <td class="small {% if forloop.last %} no_bottom_border{% endif %}">
+              {{partner.get_organisation_type_display}}
+            </td>
+            <td class="small{% if forloop.last %} no_bottom_border{% endif %}">
+              {{partner.primary_location.country}}
+            </td>
+            <td class="small no_right_border{% if forloop.last %} no_bottom_border{% endif %}">
+              {% if partner.published_projects.count %}
+                  {{partner.published_projects.count}}
+                  {% blocktrans count partner.published_projects.count as projects_count %}
+                    project{% plural %}projects 
+                  {% endblocktrans %}
+              {% else %}
+                {% trans 'No projects' %}
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+      {% paginate %}
+    </div>
   </div>
 {% endblock content %}

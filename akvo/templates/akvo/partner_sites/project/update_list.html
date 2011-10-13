@@ -31,7 +31,8 @@
             {% else %}
               {% if update.photo %}
                 <a href="{% url 'update_main' project.id update.id %}">
-                  <img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" alt="" />
+                  <img src="{% thumbnail update.photo 240x172 crop autocrop upscale sharpen %}" alt="" />
+                  {#<img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" alt="" />#}
                 </a>
               {% else %}
                 &nbsp;

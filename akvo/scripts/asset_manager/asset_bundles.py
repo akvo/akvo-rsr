@@ -102,6 +102,7 @@ ASSET_BUNDLES = {
             'typography.css',
             'breadcrum.css',
             'tabs.css',
+            'utils.css',
             ],
     },
     'partner_sites_script': {
