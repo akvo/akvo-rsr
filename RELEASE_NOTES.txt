@@ -9,6 +9,38 @@ Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat pover
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR v 1.0.11 release notes
+-------------------------------------------
+XXX, (Code name: Rhubarb) XXX
+
+Overview
+------------
+...
+
+New features
+------------
+
+### New settings 
+
+Updated the way internal RSR settings are handled to support a more flexible setup. This also fixes issue with serving multiple versions of RSR with the same code base.
+
+---
+
+Akvo RSR v 1.0.10 release notes
+-------------------------------------------
+XXX, (Code name: Granite) XXX
+
+Overview
+------------
+...
+
+New features
+------------
+
+...
+---
+
+
 Akvo RSR v 1.0.9 release notes
 -------------------------------------------
 28 June 2011, (Code name: Quadrant) pb
