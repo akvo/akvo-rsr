@@ -31,7 +31,7 @@ urlpatterns = patterns('',
         views.ProjectUpdateListView.as_view(),
         name='update_list'),
 
-    url(r'^project/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
+    url(r'^(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
         views.ProjectUpdateView.as_view(),
         name='update_main'),
 
