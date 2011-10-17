@@ -263,7 +263,7 @@ def project_list(request, slug='all'):
     if country_id:
         if not query_dict.get('continent', None) == dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]:
             query_dict['continent'] = dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]
-            return HttpResponsePermanentRedirect("%s?%s" % (reverse('project_list', args=[slug] ), query_dict.urlencode()))
+            return HttpResponseRedirect("%s?%s" % (reverse('project_list', args=[slug] ), query_dict.urlencode()))
 
     org = None
     focus_area = None
@@ -1679,7 +1679,7 @@ def void_invoice(request, invoice_id, action=None):
                 engine=invoice.engine)
         elif action == 'cancel':
             return redirect('project_main', project_id=invoice.project.id)
-    return redirect('project_list')
+    return redirect('project_list', slug='all')
 
 def mollie_report(request):
     transaction_id = request.GET.get('transaction_id', None)
