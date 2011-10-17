@@ -41,6 +41,10 @@ Bug fixes
 
 [Lighthouse RSR ticket 227](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/227-error-with-password-reset)
 
+### Fix to text filtering of user profiles in RSR Admin.
+
+[Lighthouse RSR ticket 169](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/169-search-user-profile-listfielderror)
+
 ---
 
 Akvo RSR v 1.0.10 release notes
