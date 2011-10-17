@@ -30,6 +30,17 @@ Recently posted project updates with videos are now displayed on the home page. 
 
 Video thumbnails are also now displayed on the main project page.
 
+### Refactor of country data
+
+Refactoring of how we handle countries in the data model. We now use the ISO-3166-1 alpha-2 list of countries as the base for the country list. The only outward facing change is a slight modification in how the filter on the project listing page (/rsr/projects/all/) behaves, having lost the automatic change to the available countries when a continent was selected. Instead the relevant continent is always set when a country is selected in the filter.
+
+Bug fixes
+---------
+
+### Server error bug when generating password reset email message has been fixed.
+
+[Lighthouse RSR ticket 227](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/227-error-with-password-reset)
+
 ---
 
 Akvo RSR v 1.0.10 release notes
@@ -41,8 +52,8 @@ New features
 
 This release contains no new features.
 
-Bugs
-----
+Bug fixes
+---------
 
 ### Broken link in project listing widget
 
