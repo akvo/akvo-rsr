@@ -16,6 +16,10 @@ Akvo RSR v 1.0.11 release notes
 New features
 ------------
 
+### Duplicating projects
+
+In the admin you can now create a copy of an existing project. One of the buttons for saving the project from has been renamed from "Save and add another" to "Save as new". Using this button will create a new project with most of the information copied from the current one. Location data is not copied and all benchmark values are set to 0. The project image is not copied either, and the new project is unpublished regardless of the publishing state of the original.
+
 ### New settings 
 
 Updated the way internal RSR settings are handled to support a more flexible setup. This also fixes issue with serving multiple versions of RSR with the same code base.
