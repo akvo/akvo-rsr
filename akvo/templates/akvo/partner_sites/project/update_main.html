@@ -23,11 +23,11 @@
       {{ update.text|linebreaks }}
     {% endif %}	
     {% if update.video %}
-      <div style="margin: 10px 10px 30px 20px;">
-        {% oembed 400x300 %}{{ update.video }}{% endoembed %}
+      <div class="marg20">
+        {{update.video|oembed:"580x435"}}
       </div>
       {% if update.video_caption or update.video_credit %}
-        <p class="small">
+        <p class="grey small">
           {% if update.video_caption %}
             {{ update.video_caption }}
           {% endif %}
@@ -38,8 +38,10 @@
       {% endif %}
     {% endif %}
     {% if update.photo %}
-      {% update_thumb update 400 300 %}
-    {% endif %}   	
+      <div class="marg20">
+        {% update_thumb update 580 435 %}
+      </div>
+    {% endif %}
     {% if update.text_location == 'E' %}
       {{ update.text|linebreaks }}
     {% endif %}
