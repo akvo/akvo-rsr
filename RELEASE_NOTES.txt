@@ -39,8 +39,22 @@ Akvo RSR v 1.0.10 release notes
 New features
 ------------
 
+This release contains no new features.
+
 Bugs
 ----
+
+### Broken link in project listing widget
+
+A broken link reference in the project listing widget template was causing 500 errors on partner websites. This has been fixed.
+
+### Benchmarks list rendering issue
+
+Fixed broken benchmarks list which caused the project page to render incorrectly in some older browsers.
+
+### Cron script to handle stale invoices
+
+After the addition of the SMS gateway application, the cron script to detect stale invoices was no longer able to run. The script now functions as expected.
 
 
 Akvo RSR v 1.0.9 release notes
