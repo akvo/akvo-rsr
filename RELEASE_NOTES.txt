@@ -1,6 +1,6 @@
-RELEASE_NOTES.txt, v1.0.9
+RELEASE_NOTES.txt, v1.0.11
 
-Last changed: 28 June 2011, pb
+Last changed: 17 October 2011, pb & bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -11,45 +11,46 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR v 1.0.11 release notes
 -------------------------------------------
-17 October 2011, (Code name: Rhubarb) pb
+17 October 2011, (Code name: Rhubarb) pb & bw
+
+Overview
+------------
+The release fixes a bug in password reset, and expands existing functionality related to embedded video updates and editing updates. It adds the ability to use an existing project as the basis for a new project. Several internal changes to Akvo RSR have also been made, including use of ISO 3166 country codes in location fields, a different sorting method on listing pages, RSR settings file changes, and a move to using South for data migration.
 
 New features
 ------------
-
-### Duplicating projects
-
-In the admin you can now create a copy of an existing project. One of the buttons for saving the project from has been renamed from "Save and add another" to "Save as new". Using this button will create a new project with most of the information copied from the current one. Location data is not copied and all benchmark values are set to 0. The project image is not copied either, and the new project is unpublished regardless of the publishing state of the original.
-
-### New settings 
-
-Updated the way internal RSR settings are handled to support a more flexible setup. This also fixes issue with serving multiple versions of RSR with the same code base.
+### Save existing project as new project
+In the admin you can now create a copy of an existing project. The "Save and add another" button is replaced by "Save as new". Use this button to create a new project with most of the same information as the current one. Location data, project image, updates, individual donations and comments are not copied. All benchmark values are set to 0.
 
 ### Improved project update form
+When editing a project update, the update form now displays thumbnails of any video or photo included with the original update. The original video or photo can be replaced, or the video removed. The photo cannot (yet) be completely removed.
 
-When editing an existing project update, the update form now displays thumbnails of any videos or photos included with the update as a visual clue to the user.
+### Updates with video now thumbnails on Akvo home page and project page
+Updates with embedded video now display thumbnails of the video on the project page.
 
-### Video thumbnails
-
-Recently posted project updates with videos are now displayed on the home page. Previously only updates with photos were displayed.
-
-Video thumbnails are also now displayed on the main project page.
+Recently posted project updates with videos are now displayed on the home page. Previously only updates with photos were displayed. Updates containing both a photo and video will display the video thumbnail to represent the update.
 
 ### Refactor of country data
+Refactoring of how we handle countries in the data model. We now use the ISO-3166-1 alpha-2 list of countries as the base for the country list. The only outward facing change is a slight modification in how the filter on the project listing page (/rsr/projects/all/) behaves. Selecting a continent no longer automatically restricts the countries displayed on the country pulldown.
+Instead the relevant continent is always set when a country is selected in the filter.
 
-Refactoring of how we handle countries in the data model. We now use the ISO-3166-1 alpha-2 list of countries as the base for the country list. The only outward facing change is a slight modification in how the filter on the project listing page (/rsr/projects/all/) behaves, having lost the automatic change to the available countries when a continent was selected. Instead the relevant continent is always set when a country is selected in the filter.
+### Rework RSR settings
+Internal RSR settings have been updated to a more flexible arrangement. This also fixes issue with serving multiple versions of RSR with the same code base.
+
+### Changed version of django-sorting library used by RSR.
+Changing the library also uncovered several SQL issues, now fixed.
 
 Bug fixes
 ---------
-
 ### Server error bug when generating password reset email message has been fixed.
-
 [Lighthouse RSR ticket 227](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/227-error-with-password-reset)
 
 ### Fix to text filtering of user profiles in RSR Admin.
-
 [Lighthouse RSR ticket 169](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/169-search-user-profile-listfielderror)
 
+
 ---
+
 
 Akvo RSR v 1.0.10 release notes
 -------------------------------------------
