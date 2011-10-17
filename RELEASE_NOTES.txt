@@ -11,11 +11,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR v 1.0.11 release notes
 -------------------------------------------
-XXX, (Code name: Rhubarb) XXX
-
-Overview
-------------
-...
+17 October 2011, (Code name: Rhubarb) pb
 
 New features
 ------------
@@ -24,21 +20,27 @@ New features
 
 Updated the way internal RSR settings are handled to support a more flexible setup. This also fixes issue with serving multiple versions of RSR with the same code base.
 
+### Improved project update form
+
+When editing an existing project update, the update form now displays thumbnails of any videos or photos included with the update as a visual clue to the user.
+
+### Video thumbnails
+
+Recently posted project updates with videos are now displayed on the home page. Previously only updates with photos were displayed.
+
+Video thumbnails are also now displayed on the main project page.
+
 ---
 
 Akvo RSR v 1.0.10 release notes
 -------------------------------------------
-XXX, (Code name: Granite) XXX
-
-Overview
-------------
-...
+17 October 2011, (Code name: Granite) pb
 
 New features
 ------------
 
-...
----
+Bugs
+----
 
 
 Akvo RSR v 1.0.9 release notes
