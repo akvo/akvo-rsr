@@ -54,7 +54,7 @@ Bug fixes
 
 Akvo RSR v 1.0.10 release notes
 -------------------------------------------
-17 October 2011, (Code name: Granite) pb
+17 October 2011 / Deployed 4 July 2011, (Code name: Granite) pb
 
 New features
 ------------
