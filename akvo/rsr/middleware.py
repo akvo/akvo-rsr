@@ -23,6 +23,9 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 # TODO: refactor into separate methods to increase readability
 
+def redirect_to_marketing_site():
+    return redirect('http://www.akvoapp.org/')
+
 class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
         if settings.PVW_RSR:
@@ -41,7 +44,7 @@ class PartnerSitesRouterMiddleware(object):
         elif (domain == 'www.akvoapp.org' or
               domain == 'www.akvotest.org' or
               domain == 'akvoapp.dev'):  # Partner sites marketing instance
-            return redirect('http://www.akvoapp.org/')
+            return redirect_to_marketing_site()
         elif (domain.endswith('.akvoapp.org') or
               domain.endswith('.akvotest.org') or
               domain.endswith('.akvoapp.dev')):  # Partner site instance
@@ -54,7 +57,7 @@ class PartnerSitesRouterMiddleware(object):
                 except:
                     pass
             if partner_site is None or not partner_site.enabled:
-                return redirect('http://www.akvoapp.org/')
+                return redirect_to_marketing_site()
         else:  # Partner site instance on partner-nominated domain (probably)
             site = Site.objects.get(id=2)
             domain_name = site.domain
