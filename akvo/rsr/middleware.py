@@ -40,11 +40,14 @@ class PartnerSitesRouterMiddleware(object):
             else:
                 domain_name = domain
             request.urlconf = 'akvo.urls.rsr'
-        elif domain == 'www.akvoapp.org' or domain == 'akvoapp.dev':  # Partner sites marketing instance
+        elif (domain == 'www.akvoapp.org' or
+              domain == 'www.akvotest.org' or
+              domain == 'akvoapp.dev'):  # Partner sites marketing instance
             site = Site.objects.get(id=2)
             domain_name = site.domain
             request.urlconf = 'akvo.urls.partner_sites_marketing'
-        elif ((domain.endswith('.akvoapp.org') and not domain == 'www.akvoapp.org') or
+        elif (domain.endswith('.akvoapp.org') or
+              domain.endswith('.akvotest.org') or
               domain.endswith('.akvoapp.dev')):  # Partner site instance
             site = Site.objects.get(id=2)
             domain_name = site.domain
