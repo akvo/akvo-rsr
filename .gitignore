@@ -1,23 +1,69 @@
-.DS_Store
-.TemporaryItems
-*.kpf
-*.mo
-*.pyc
-*.komodoproject
-*.komodotools
+# Project
+
+## RSR
 akvo/data
 akvo/datadir
-akvo/datadir.zip
-akvo/datadir.tgz
+akvo/datadir.*
+akvo/log/akvo.log
+akvo/log/akvo.log*
 akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/mollie_banklist.xml
-akvo/settings.py
 akvo/rebuild_db.py
+akvo/settings/5*.conf
+akvo/settings/6*.conf
+akvo/settings/backup
 akvo/testing.py
-akvo/akvo.log
-akvo/settings/
+
+## Deployment
+scripts/deployment/builders/osx/config/python_system.config
+scripts/deployment/builders/osx/config/rsr_env.config
+scripts/deployment/builders/osx/config/user.config
+scripts/deployment/deploy_rsr_config.py
+scripts/deployment/fab/config/values.py
+scripts/deployment/fab/tests/test_settings.py
 scripts/deployment/static_project_structure.py
+
+## Tests
 tests/akvo/acceptance/test_settings.py
 tests/pvw/acceptance/test_settings.py
-akvo-rsr.komodoproject
+
+
+# Environment
+
+## Mac
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+.TemporaryItems
+
+## Windows
+Thumbs.db 
+Desktop.ini
+
+## Python
+*.py[co]
+*.mo
+
+## Vim
+.*.sw[a-z]
+*.un~
+Session.vim
+
+## SublimeText
+/*.sublime-project
+
+## Textmate
+*.tmproj
+*.tmproject
+tmtags
+
+## Komodo
+*.komodoproject
+*.komodotools
+*.kpf
+*.templatec
+
+#PyCharm
+.idea

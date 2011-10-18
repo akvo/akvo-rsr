@@ -4,7 +4,7 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url project_list %}"><span>{% trans 'Projects' %}</span></a></li>
+<li><a href="{% url project_list 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
 <li><a href="{% url project_main project.id %}"><span>{{project.name}}</span></a></li>
 <li id="last_breadcrum_item">
   {% if edit_mode %}
@@ -79,6 +79,9 @@
         {% endif %}
         <span class="small grey"> ({% trans 'optional' %})</span>
       </h2>
+      {% if update and update.photo %}
+        <img style="margin-bottom:30px;" src="{% thumbnail update.photo 200x150 crop autocrop sharpen upscale %}">
+      {% endif %}
       <h4 style="margin-bottom:20px;">
         {% if edit_mode %}
           {% trans 'Upload new photo file' %}
@@ -131,6 +134,9 @@
     {% endif %}
     <div style="width:500px;">
       <h2 style="margin-bottom:20px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
+      {% if update and update.video %}
+        <img src="{{ update.get_video_thumbnail_url }}" alt="" style="margin-bottom:30px;width:200px;">
+      {% endif %}
       <h4>
         {% if edit_mode %}
           {% trans 'Edit video URL' %}
