@@ -3,6 +3,9 @@
 {% load url from future %}
 
 
+{% block title %}{% trans "Partners" %} - {% endblock title %}
+
+
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>

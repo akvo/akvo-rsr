@@ -3,6 +3,8 @@
 {% load url from future %}
 
 
+{% block title %}{% trans "Projects" %} - {% endblock title %}
+
 {% block breadcrum_items %}
   {{block.super}}
   <li class="last_breadcrum_item">{% trans "Projects" %}</li>

@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail %}
+{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters %}
 {% load url from future %}
 
 {% block breadcrum_items %}
@@ -12,7 +12,133 @@
 {% block project_content %}
   <h1>{% trans "Funding" %}</h1>
   <section class="whitebox pad20">
-    <p>....</p>
+    <table class="no_border_table marg_top20">
+      <tr>
+        <td><h3>{% trans 'Project Budget' %}</h3></td>
+        <td>&nbsp;</td>
+      </tr>
+      {% if project.budget_employment %}
+        <tr>
+          <td class="small txt_right">{% trans 'Employment costs' %}:</td>
+          <td class="small">{{project.get_currency_display|safe}} {{project.budget_employment|round|intcomma}}</td>
+        </tr>
+      {% endif %}
+      {% if project.budget_building %}
+        <tr>
+          <td class="small txt_right">{% trans 'Building Material costs' %}:</td>
+          <td class="small">{{project.get_currency_display|safe}} {{project.budget_building|round|intcomma}}</td>
+        </tr>
+      {% endif %}
+      {% if project.budget_training %}
+        <tr>
+          <td class="small txt_right">{% trans 'Training costs' %}:</td>
+          <td class="small">{{project.get_currency_display|safe}} {{project.budget_training|round|intcomma}}</td>
+        </tr>
+      {% endif %}
+      {% if project.budget_maintenance %}
+        <tr>
+          <td class="small txt_right">{% trans 'Maintenance costs' %}:</td>
+          <td class="small">{{project.get_currency_display|safe}} {{project.budget_maintenance|round|intcomma}}</td>
+        </tr>
+      {% endif %}
+      {% if project.budget_management %}
+        <tr>
+          <td class="small txt_right">{% trans 'Management costs' %}:</td>
+          <td  class="small">{{project.get_currency_display|safe}} {{project.budget_management|round|intcomma}}</td>
+        </tr>
+      {% endif %}
+      {% if project.budget_other %}
+        <tr>
+          <td class="small txt_right">{% trans 'Other costs' %}:</td>
+          <td  class="small">{{project.get_currency_display|safe}} {{project.budget_other|round|intcomma}}</td>
+        </tr>
+      {% endif %}
+      {% if project.budget_total %}
+        <tr>
+          <td class="small txt_right"><b>{% trans 'Total' %}:</b></td>
+          <td  class="small"><b>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</b></td>
+        </tr>
+      {% else %}
+        <tr>
+          <td class="small txt_right"><b>{% trans 'Total' %}:</b></td>
+          <td class="small"><b>{{project.get_currency_display|safe}} 0</b></td>
+        </tr>
+      {% endif %}
+      {% if project.all_donations %}
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><h3>{% trans 'Individual donations' %}</h3></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="small txt_right"><b>{% trans 'Individual raised' %}*:</b></td>
+          <td class="small"><b>
+            {{project.get_currency_display|safe}}
+            {{project.all_donations_amount_received|round|intcomma}}
+            </b>
+          </td>
+        </tr>
+        {% for donors in public_donations %}
+          <tr>
+            <td class="small txt_right">
+              {{donors.name}}:
+            </td>
+            <td class="small">
+             {{project.get_currency_display|safe}} {{donors.amount}}
+            </td>
+          </tr>
+        {% endfor %}
+        {% if project.anonymous_donations_amount_received != 0 %}
+          <tr>
+            <td class="small txt_right">
+              {% trans 'Anonymous' %}: 
+            </td>
+            <td class="small">
+              {{project.get_currency_display|safe}} 
+              {{project.anonymous_donations_amount_received|round|intcomma}}
+            </td>
+          </tr>
+        {% endif %}
+      {% endif %}
+    </table>
+    {% if project.anonymous_donations_amount_received != 0 %}
+      <p class="small grey">
+        * {% trans 'Raised equals donations minus transaction fees.' %}
+      </p>
+    {% endif %}
+    {% if project.fundingpartner_set.all %}
+      <table class="no_border_table marg_top20">
+        <tr>
+          <td><h3>{% trans 'Current funders' %}</h3></td>
+          <td>&nbsp;</td>
+        </tr>
+        {% for funder in project.fundingpartner_set.all %}
+          <tr>
+            <td class="small">
+              <a href="{% url 'partner_main' funder.funding_organisation.id %}">
+                {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
+              </a>
+            </td>
+            <td class="small">
+              <a href="{% url 'partner_main' funder.funding_organisation.id %}">
+                {{funder.funding_organisation}}
+              </a><br />
+              {% if funder.funding_organisation.primary_location %}
+                {{funder.funding_organisation.primary_location.city}},
+                {{funder.funding_organisation.primary_location.state}}, 
+                {{funder.funding_organisation.primary_location.country}}
+              {% endif %}
+            </td>
+            <td class="small">
+              <br /><b>{{project.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}</b>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
   </section>
 {% endblock project_content %}
 
