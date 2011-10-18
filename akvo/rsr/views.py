@@ -187,8 +187,8 @@ def index(request, cms_id=None):
         #round to nearest whole 1000
         people_served = int(people_served / 1000) * 1000
         
-        #get three featured updates
-        updates = ProjectUpdate.objects.exclude(photo__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
+        #get three featured updates with video and/or photo
+        updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
     elif news_posts:
         for post in image_posts:
             if post.get('image', None):
@@ -263,7 +263,7 @@ def project_list(request, slug='all'):
     if country_id:
         if not query_dict.get('continent', None) == dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]:
             query_dict['continent'] = dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]
-            return HttpResponsePermanentRedirect("%s?%s" % (reverse('project_list', args=[slug] ), query_dict.urlencode()))
+            return HttpResponseRedirect("%s?%s" % (reverse('project_list', args=[slug] ), query_dict.urlencode()))
 
     org = None
     focus_area = None
@@ -293,7 +293,7 @@ def project_list(request, slug='all'):
             else:
                 queryset = Project.objects.published().filter(categories__focus_area=focus_area)
 
-    queryset = queryset.budget_total().latest_update_fields().distinct().order_by('-pk')
+    queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
 
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
 
@@ -1679,7 +1679,7 @@ def void_invoice(request, invoice_id, action=None):
                 engine=invoice.engine)
         elif action == 'cancel':
             return redirect('project_main', project_id=invoice.project.id)
-    return redirect('project_list')
+    return redirect('project_list', slug='all')
 
 def mollie_report(request):
     transaction_id = request.GET.get('transaction_id', None)
