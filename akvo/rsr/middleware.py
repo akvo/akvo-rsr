@@ -24,13 +24,11 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 # TODO: refactor into separate methods to increase readability
 
 class PartnerSitesRouterMiddleware(object):
-    def process_request(self, request, hostname='', port=None, partner_site=None):
+    def process_request(self, request, hostname='', partner_site=None):
         if settings.PVW_RSR:
             return
         host = request.get_host().split(':')
         domain = host[0]
-        if len(host) == 2:
-            port = int(host[1])
         domain_parts = domain.split('.')
         local_domains = ('localhost', '127.0.0.1', 'akvo.dev')
         if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
@@ -60,14 +58,7 @@ class PartnerSitesRouterMiddleware(object):
             except:
                 pass
             if partner_site is None or not partner_site.enabled:
-                host = u'.'.join(domain_parts[-2:])
-                if port is not None:
-                    host = u'%s:%d' % (host, port)
-                if host.startswith('akvoapp.org'):
-                    redirect_url = u'http://www.%s/' % host
-                elif host.startswith('akvoapp.dev'):
-                    redirect_url = u'http://%s/' % host
-                return redirect(redirect_url)
+                return redirect('http://www.akvoapp.org/')
         else:  # Partner site instance on partner-nominated domain
             site = Site.objects.get(id=2)
             domain_name = site.domain
