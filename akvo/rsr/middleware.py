@@ -37,7 +37,9 @@ class PartnerSitesRouterMiddleware(object):
             else:
                 domain_name = domain
             request.urlconf = 'akvo.urls.rsr'
-        elif domain == 'akvoapp.dev':
+        elif (domain == 'www.akvoapp.org' or
+              domain == 'www.akvotest.org' or
+              domain == 'akvoapp.dev'):
             return redirect(self.marketing_site_url)
         elif (domain.endswith('.akvoapp.org') or
               domain.endswith('.akvotest.org') or
