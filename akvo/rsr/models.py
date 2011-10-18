@@ -1426,7 +1426,7 @@ else: #akvo-rsr
                 funding_queries = {
                     #how much money does the project need to be fully funded, given that all pending donations complete
                     'funds_needed':
-                        ''' SELECT DISTINCT (
+                        ''' (SELECT DISTINCT (
                                 SELECT CASE 
                                     WHEN Sum(amount) IS NULL THEN 0
                                     ELSE Sum(amount)
@@ -1456,11 +1456,11 @@ else: #akvo-rsr
                                 FROM rsr_invoice
                                 WHERE rsr_invoice.project_id = rsr_project.id
                                 AND rsr_invoice.status = %d
-                            )
+                            ))
                         ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                     #how much money has been donated by individual donors, including pending donations
                     'donated':
-                        ''' SELECT DISTINCT (
+                        ''' (SELECT DISTINCT (
                                 SELECT CASE
                                     WHEN Sum(amount) IS NULL THEN 0
                                     ELSE Sum(amount)
@@ -1476,33 +1476,34 @@ else: #akvo-rsr
                                 FROM rsr_invoice
                                 WHERE rsr_invoice.project_id = rsr_project.id
                                 AND rsr_invoice.status = %d
-                            )
+                            ))
                         ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                     #how much donated money from individuals is pending
                     'pending':
-                        ''' SELECT CASE
+                        ''' (SELECT CASE
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
                             FROM rsr_invoice
                             WHERE rsr_invoice.project_id = rsr_project.id
                                 AND rsr_invoice.status = %d
+                            )
                         ''' % PAYPAL_INVOICE_STATUS_PENDING,
                     #the total budget for the project as per the budgetitems
                     'total_budget':
-                        ''' SELECT CASE
+                        ''' (SELECT CASE
                                 WHEN SUM(amount) IS NULL THEN 0
                                 ELSE SUM(amount)
                             END
                             FROM rsr_budgetitem
-                            WHERE rsr_budgetitem.project_id = rsr_project.id
+                            WHERE rsr_budgetitem.project_id = rsr_project.id)
                         ''',
                 }
                 #how much has been pledged by organisations. if an org param is supplied
                 #this is modified to show huw much _that_ org has pledged to each project
                 pledged = {
                     'pledged':
-                        ''' SELECT CASE
+                        ''' (SELECT CASE
                                 WHEN Sum(funding_amount) IS NULL THEN 0
                                 ELSE Sum(funding_amount)
                             END
@@ -1515,6 +1516,7 @@ else: #akvo-rsr
                         AND rsr_fundingpartner.funding_organisation_id = %d''' % (
                             pledged['pledged'], organisation.pk
                         )
+                pledged['pledged'] = "%s)" % pledged['pledged']
                 funding_queries.update(pledged)
                 #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
                 return self.extra(select=funding_queries)
