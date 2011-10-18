@@ -153,3 +153,9 @@ div.counter_badge span {
   background-color: #00b200 !important;
   height: 12px;
 }
+.no_border_table, .no_border_table td {
+  border: none;
+}
+.no_border_table td {
+  padding: 5px;
+}

@@ -3,6 +3,8 @@
 {% load url from future %}
 
 
+{% block title %}{{update.title}} - {% endblock title %}
+
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>

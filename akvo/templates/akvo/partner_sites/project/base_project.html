@@ -1,7 +1,9 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize %}
 {% load url from future %}
 
+
+{% block title %}{{project}} - {% endblock title %}
 
 {% block breadcrum_right %}
   {{block.super}}
@@ -25,10 +27,14 @@
     <aside>
 
       {% block project_aside_funding %}
-        <div class="money_blue_background" style="height:180px; padding:10px; color:#fff;">
+        <div class="money_blue_background" style="padding:10px; color:#fff;">
           {{project.show_status_large}}<br />
           <div style="background-color:#fff; padding:20px; margin-top:20px;">
-            <h3><a href="{% url 'project_funding' project.id %}">{% trans "Funding" %}</a></h3>
+            <h3>
+              <a href="{% url 'project_funding' project.id %}">{% trans "Funding" %}</a> 
+              <span class="grey normal">
+                ({% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}% {% trans "of" %} {{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}})
+            </h3>
             <div class="fundingbox-progress-bar">
               {% if project.budget_total %}
                 <div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
@@ -40,7 +46,14 @@
                   {% trans "Donate" %}
                 </a>
               </div>
+            {% else %}
+              
             {% endif %}
+            <p class="black small marg_bottom0">
+                <a href="{% url 'project_funding' project.id %}">
+                  {% trans 'See funding details' %} &#x25BA;
+                </a>
+              </p>
           </div>
         </div>
       {% endblock project_aside_funding %}
@@ -51,7 +64,7 @@
         </a></h2>
         {% if updates_with_images %}
           {% for update in updates_with_images %}
-            <div class="whitebox" style="margin-top:20px; padding:5px">
+            <div class="whitebox marg_top20 pad5">
               <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
               <a class="small" href="{% url 'update_main' project.id update.id %}">
                 {{update.title}}
@@ -66,8 +79,8 @@
       {% endblock project_aside_updates %}
       
       {% block project_aside_partners %}
-        <h2 class="marg_top40"><a href="{% url 'partner_list' %}">Partners</a></h2>
-        <div class="whitebox" style="margin-top:20px; padding:10px; padding-top:20px">
+        <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Partners" %}</a></h2>
+        <div class="whitebox marg_top20 pad_top20 pad5">
           {% for partner in project.all_partners %}
             {% if partner.id != organisation.id %}
               <div style="float:left; width:100px;">
@@ -92,6 +105,15 @@
           {% endfor %} 
         </div>
       {% endblock project_aside_partners %}
+
+      {% block project_tools %}
+        <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
+        <div class="whitebox marg_top20 pad_top20">
+          <p class="grey small pad5">
+            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
+          </p>
+        </div>
+      {% endblock project_tools %}
 
     </aside>
   </div>

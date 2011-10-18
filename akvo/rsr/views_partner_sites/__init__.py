@@ -6,10 +6,16 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
+
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
-from ..models import Organisation, Project, ProjectUpdate
-from .base import BaseProjectListView, BaseProjectView, BaseView, BaseListView
+
+from akvo.rsr.models import Organisation, Project, ProjectUpdate
+from akvo.rsr.views_partner_sites.base import BaseProjectListView, \
+                                              BaseProjectView, \
+                                              BaseView, \
+                                              BaseListView
+
 
 __all__ = [
     'HomeView',
@@ -23,12 +29,12 @@ __all__ = [
 
 
 class HomeView(BaseProjectListView):
-    """View represents the home page"""
+    """Represents the home page (/) on a partner site"""
     template_name = 'partner_sites/home.html'
 
 
 class ProjectMainView(BaseProjectView):
-    """Extend the BaseProjectView with benchmarks """
+    """Extends the BaseProjectView with benchmarks."""
     template_name = "partner_sites/project/project_main.html"
 
     def get_context_data(self, **kwargs):
@@ -44,13 +50,19 @@ class ProjectMainView(BaseProjectView):
 
 
 class ProjectFundingView(BaseProjectView):
-    """View that represents the project funding page"""
+    """Extends the project view with public donations."""
     template_name = 'partner_sites/project/project_funding.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectFundingView, self).get_context_data(**kwargs)
+        context['public_donations'] = context['project'].public_donations()
+        return context
+    
 
 
 class ProjectUpdateListView(BaseListView):
-    """View that adds latest updates to the partner sites home pages. The
-    updates are available as "latest_updates" in the template"""
+    """List view that makes a projects updates available as update_list in the
+    template."""
     template_name = "partner_sites/project/update_list.html"
     context_object_name = 'update_list'
 
@@ -66,7 +78,7 @@ class ProjectUpdateListView(BaseListView):
 
 
 class ProjectUpdateView(BaseProjectView):
-    """Extend the project view with the current update"""
+    """Extends the project view with the current update"""
     template_name = "partner_sites/project/update_main.html"
 
     def get_context_data(self, **kwargs):
@@ -77,7 +89,8 @@ class ProjectUpdateView(BaseProjectView):
 
 
 class PartnerListView(BaseListView):
-    """Represents the partner list"""
+    """Represents the partner list for the current organisation. Makes the 
+    partners available as partner_list in the template"""
     template_name = 'partner_sites/partners/partner_list.html'
     context_object_name = 'partner_list'
 
@@ -94,7 +107,7 @@ class PartnerListView(BaseListView):
 
 
 class PartnerView(BaseView):
-    """Main partner view"""
+    """Main partner view, 'partner' is available in the template"""
     template_name = 'partner_sites/partners/partner_main.html'
 
     def get_context_data(self, **kwargs):
