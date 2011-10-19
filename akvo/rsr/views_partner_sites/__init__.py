@@ -57,7 +57,6 @@ class ProjectFundingView(BaseProjectView):
         context = super(ProjectFundingView, self).get_context_data(**kwargs)
         context['public_donations'] = context['project'].public_donations()
         return context
-    
 
 
 class ProjectUpdateListView(BaseListView):
@@ -89,7 +88,7 @@ class ProjectUpdateView(BaseProjectView):
 
 
 class PartnerListView(BaseListView):
-    """Represents the partner list for the current organisation. Makes the 
+    """Represents the partner list for the current organisation. Makes the
     partners available as partner_list in the template"""
     template_name = 'partner_sites/partners/partner_list.html'
     context_object_name = 'partner_list'
