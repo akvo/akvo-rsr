@@ -10,12 +10,12 @@ django-piston==0.2.2
 django-rosetta==0.6.2
 djangoembed==0.1.1
 sorl-thumbnail==3.2.5
-djangotoolbox==0.9.2
 django-filter==0.5.3
 
 # Django apps from VCS web services
 -e hg+http://bitbucket.org/ubernostrum/django-registration/@fad7080fe769#egg=django_registration-tip
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
+-e hg+https://bitbucket.org/wkornewald/djangotoolbox#egg=djangotoolbox
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
