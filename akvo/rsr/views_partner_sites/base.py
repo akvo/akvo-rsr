@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
-from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS
 from akvo.rsr.models import Organisation, Project, Country
 
 __all__ = [
@@ -78,6 +78,13 @@ class BaseListView(DebugViewMixin, ListView):
         context['return_url'] = self.request.partner_site.return_url
         context['favicon'] = self.request.partner_site.favicon
         context['stylesheet'] = self.request.partner_site.stylesheet
+        if context['filtered_projects'].form.data:
+            continent_code = context['filtered_projects'].form.data.get('continent', '')
+            country_id = context['filtered_projects'].form.data.get('locations__country', '')
+            org_id = context['filtered_projects'].form.data.get('organisation', '')
+            context['search_country'] = Country.objects.get(pk=int(country_id)) if country_id else ''
+            context['search_continent'] = dict(CONTINENTS)[continent_code] if continent_code else ''
+            context['search_organisation'] = Organisation.objects.get(pk=int(org_id)) if org_id else ''
         return context
 
 
