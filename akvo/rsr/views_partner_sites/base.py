@@ -24,8 +24,15 @@ __all__ = [
     'BaseView',
     ]
 
+class DebugViewMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(DebugViewMixin, self).get_context_data(**kwargs)
+        if settings.DEBUG:
+            from django.db import connection
+            context['queries'] = connection.queries
 
-class BaseView(TemplateView):
+
+class BaseView(DebugViewMixin, TemplateView):
     """Base view that adds current organisation to the template context or
     throws a 404. Also adds the return_url, favicon and stylesheet context
     variables."""
@@ -38,9 +45,6 @@ class BaseView(TemplateView):
         context['favicon'] = self.request.partner_site.favicon
         context['stylesheet'] = self.request.partner_site.stylesheet
         # Queries should be removed for production
-        if settings.DEBUG:
-            from django.db import connection
-            context['queries'] = connection.queries
         return context
 
 
@@ -62,7 +66,7 @@ class BaseProjectView(BaseView):
         return context
 
 
-class BaseListView(ListView):
+class BaseListView(DebugViewMixin, ListView):
     """List view that are extended with the current organisation and the
     proejcts connected to the organisation available in the template context
     variable project_list"""
@@ -74,9 +78,6 @@ class BaseListView(ListView):
         context['return_url'] = self.request.partner_site.return_url
         context['favicon'] = self.request.partner_site.favicon
         context['stylesheet'] = self.request.partner_site.stylesheet
-        if settings.DEBUG:
-            from django.db import connection
-            context['queries'] = connection.queries
         return context
 
 
@@ -93,8 +94,9 @@ class BaseProjectListView(BaseListView):
         # if filtering on country, set the correct continent
         country_id = query_dict.get('locations__country', '')
         if country_id:
-            if not query_dict.get('continent', None) == dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]:
-                query_dict['continent'] = dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]
+            continent = dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]
+            if not query_dict.get('continent', None) == continent:
+                query_dict['continent'] = continent
                 return redirect("%s?%s" % (reverse('home'), query_dict.urlencode()))
 
         return super(BaseProjectListView, self).render_to_response(context)
@@ -103,4 +105,8 @@ class BaseProjectListView(BaseListView):
         projects = get_object_or_404(
             Organisation, pk=self.request.organisation_id
         ).published_projects().funding().latest_update_fields().order_by('-id')
-        return ProjectFilterSet(self.request.GET.copy() or None, queryset=projects, organisation_id=self.request.organisation_id)
+        return ProjectFilterSet(
+            self.request.GET.copy() or None,
+            queryset=projects,
+            organisation_id=self.request.organisation_id
+        )
