@@ -30,7 +30,7 @@ class DebugViewMixin(object):
         if settings.DEBUG:
             from django.db import connection
             context['queries'] = connection.queries
-
+        return context
 
 class BaseView(DebugViewMixin, TemplateView):
     """Base view that adds current organisation to the template context or
