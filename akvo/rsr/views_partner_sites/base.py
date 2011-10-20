@@ -8,12 +8,14 @@
 from __future__ import absolute_import
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
 
-from akvo.rsr.models import Organisation, Project
-
+from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
+from akvo.rsr.models import Organisation, Project, Country
 
 __all__ = [
     'BaseProjectListView',
@@ -22,8 +24,15 @@ __all__ = [
     'BaseView',
     ]
 
+class DebugViewMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(DebugViewMixin, self).get_context_data(**kwargs)
+        if settings.DEBUG:
+            from django.db import connection
+            context['queries'] = connection.queries
 
-class BaseView(TemplateView):
+
+class BaseView(DebugViewMixin, TemplateView):
     """Base view that adds current organisation to the template context or
     throws a 404. Also adds the return_url, favicon and stylesheet context
     variables."""
@@ -36,9 +45,6 @@ class BaseView(TemplateView):
         context['favicon'] = self.request.partner_site.favicon
         context['stylesheet'] = self.request.partner_site.stylesheet
         # Queries should be removed for production
-        if settings.DEBUG:
-            from django.db import connection
-            context['queries'] = connection.queries
         return context
 
 
@@ -60,7 +66,7 @@ class BaseProjectView(BaseView):
         return context
 
 
-class BaseListView(ListView):
+class BaseListView(DebugViewMixin, ListView):
     """List view that are extended with the current organisation and the
     proejcts connected to the organisation available in the template context
     variable project_list"""
@@ -72,28 +78,35 @@ class BaseListView(ListView):
         context['return_url'] = self.request.partner_site.return_url
         context['favicon'] = self.request.partner_site.favicon
         context['stylesheet'] = self.request.partner_site.stylesheet
-        if settings.DEBUG:
-            from django.db import connection
-            context['queries'] = connection.queries
         return context
 
 
 class BaseProjectListView(BaseListView):
     """List view that extends BaseListView with a project list queryset"""
-    context_object_name = 'project_list'
+    context_object_name = 'filtered_projects'
+
+    def render_to_response(self, context):
+        """here we sanitize the query string, removing empty variables, and then we add the continent
+        if the country is part of the query string
+        """
+        # remove empty query string variables
+        query_dict = remove_empty_querydict_items(self.request.GET)
+        # if filtering on country, set the correct continent
+        country_id = query_dict.get('locations__country', '')
+        if country_id:
+            continent = dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]
+            if not query_dict.get('continent', None) == continent:
+                query_dict['continent'] = continent
+                return redirect("%s?%s" % (reverse('home'), query_dict.urlencode()))
+
+        return super(BaseProjectListView, self).render_to_response(context)
 
     def get_queryset(self):
-        projects = get_object_or_404(Organisation,
-                                     pk=self.request.organisation_id) \
-                                        .published_projects() \
-                                        .funding() \
-                                        .order_by('-id')
-        return projects.extra(select={
-            'latest_update': """SELECT MAX(time) FROM rsr_projectupdate
-                             WHERE project_id = rsr_project.id""",
-            'latest_update_id': """SELECT id FROM rsr_projectupdate
-                         WHERE project_id = rsr_project.id AND
-                         time = (SELECT MAX(time)
-                         FROM rsr_projectupdate
-                         WHERE project_id = rsr_project.id)""",
-            })
+        projects = get_object_or_404(
+            Organisation, pk=self.request.organisation_id
+        ).published_projects().funding().latest_update_fields().order_by('-id')
+        return ProjectFilterSet(
+            self.request.GET.copy() or None,
+            queryset=projects,
+            organisation_id=self.request.organisation_id
+        )

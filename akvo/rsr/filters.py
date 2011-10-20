@@ -84,6 +84,7 @@ class ProjectFilterSet(django_filters.FilterSet):
     currency        = django_filters.ChoiceFilter()
 
     def __init__(self, *args, **kwargs):
+        organisation_id = kwargs.pop('organisation_id', None)
         super(ProjectFilterSet, self).__init__(*args, **kwargs)
 
         self.filters['name'].field.widget.input_type = 'search'
@@ -95,9 +96,13 @@ class ProjectFilterSet(django_filters.FilterSet):
 
         self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
 
-        qs = Organisation.objects.all()
+        if organisation_id:
+            qs = Organisation.objects.get(pk=organisation_id).partners()
+            self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+        else:
+            qs = Organisation.objects.all()
+            self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
         self.filters['organisation'].extra.update({'queryset': qs})
-        self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
 
         self.filters['andor'].field_class = BooleanField
         self.filters['status'].field_class = CheckboxMultipleChoiceField
