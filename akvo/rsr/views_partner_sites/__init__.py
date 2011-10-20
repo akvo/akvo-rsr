@@ -7,6 +7,7 @@
 """
 from __future__ import absolute_import
 
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 
@@ -106,11 +107,15 @@ class PartnerListView(BaseListView):
 
 
 class PartnerView(BaseView):
-    """Main partner view, 'partner' is available in the template"""
+    """Main partner view, 'partner' is available in the template. If the
+    organisation is not a partner throw a 404"""
     template_name = 'partner_sites/partners/partner_main.html'
 
     def get_context_data(self, **kwargs):
         context = super(PartnerView, self).get_context_data(**kwargs)
         context['partner'] = \
             get_object_or_404(Organisation, pk=self.kwargs['partner_id'])
+        if context['partner'] not in context['organisation'] \
+            .partners():
+            raise Http404
         return context
