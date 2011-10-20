@@ -13,7 +13,7 @@ from django_counter.urls import urlpatterns as counter_urls
 
 urlpatterns = patterns('',
     # Home
-    url(r'^$', \
+    url(r'^$',
         views.HomeView.as_view(),
         name='home'),
 
@@ -36,7 +36,7 @@ urlpatterns = patterns('',
         name='update_main'),
 
     # Partners
-    url(r'^partners/$', \
+    url(r'^partners/$',
         views.PartnerListView.as_view(),
         name='partner_list'),
 
