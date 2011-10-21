@@ -78,6 +78,15 @@ class BaseListView(DebugViewMixin, ListView):
         context['return_url'] = self.request.partner_site.return_url
         context['favicon'] = self.request.partner_site.favicon
         context['stylesheet'] = self.request.partner_site.stylesheet
+        return context
+
+
+class BaseProjectListView(BaseListView):
+    """List view that extends BaseListView with a project list queryset"""
+    context_object_name = 'filtered_projects'
+
+    def get_context_data(self, **kwargs):
+        context = super(BaseProjectListView, self).get_context_data(**kwargs)
         if context['filtered_projects'].form.data:
             continent_code = context['filtered_projects'].form.data.get('continent', '')
             country_id = context['filtered_projects'].form.data.get('locations__country', '')
@@ -86,11 +95,6 @@ class BaseListView(DebugViewMixin, ListView):
             context['search_continent'] = dict(CONTINENTS)[continent_code] if continent_code else ''
             context['search_organisation'] = Organisation.objects.get(pk=int(org_id)) if org_id else ''
         return context
-
-
-class BaseProjectListView(BaseListView):
-    """List view that extends BaseListView with a project list queryset"""
-    context_object_name = 'filtered_projects'
 
     def render_to_response(self, context):
         """here we sanitize the query string, removing empty variables, and then we add the continent

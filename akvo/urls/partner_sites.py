@@ -18,29 +18,29 @@ urlpatterns = patterns('',
         name='home'),
 
     # Projects
-    url(r'^(?P<project_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/$',
         views.ProjectMainView.as_view(),
         name='project_main'),
 
-    url(r'^(?P<project_id>\d+)/funding/$',
+    url(r'^project/(?P<project_id>\d+)/funding/$',
         views.ProjectFundingView.as_view(),
         name='project_funding'),
 
     # Project updates
-    url(r'^(?P<project_id>\d+)/updates/$',
+    url(r'^project/(?P<project_id>\d+)/updates/$',
         views.ProjectUpdateListView.as_view(),
         name='update_list'),
 
-    url(r'^(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$',
         views.ProjectUpdateView.as_view(),
         name='update_main'),
 
     # Partners
-    url(r'^partners/$',
+    url(r'^organisations/$',
         views.PartnerListView.as_view(),
         name='partner_list'),
 
-    url(r'^partners/(?P<partner_id>\d+)/$',
+    url(r'^organisation/(?P<partner_id>\d+)/$',
         views.PartnerView.as_view(),
         name='partner_main'),
 )
