@@ -5,6 +5,16 @@
 
 {% block title %}{% trans "Projects" %} - {% endblock title %}
 
+{% block head %}
+  {% if request.partner_site.about_image %}
+    <style type="text/css" media="screen">
+      #about_box {
+        background: transparent url({% thumbnail request.partner_site.about_image 470x250 sharpen autocrop crop upscale %}) no-repeat;
+      }
+    </style>
+  {% endif %}
+{% endblock head %}
+
 {% block breadcrum_items %}
   {{block.super}}
   <li class="last_breadcrum_item">{% trans "Projects" %}</li>
@@ -15,10 +25,10 @@
   {% autopaginate sorted_projects 20 5 as project_list %}
 
   <div class="two_col_left whitebox fixed_height_250px">
-    <div class="pad20">
-      <h2>{{organisation}}</h2>
-      {{organisation.description|smart_truncate:300|linebreaks|safe}}
-    </div>      
+    <div id="about_box">
+      {{request.partner_site.about_box|safe}}
+      <div class="clear"></div>
+    </div>
   </div>
   <div class="two_col_right whitebox">
     {% google_queryset_projects_map sorted_projects 'dynamic' 470 250 1 %}

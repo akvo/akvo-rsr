@@ -184,3 +184,66 @@ div.counter_badge span {
 #filterButton {
   margin: 4px;
 }
+
+/* styling the about box */
+
+#about_box {
+    height: 250px;
+    position:relative;
+    border: 0;
+}
+
+#about_box .left {
+    position: absolute;
+    left: 0;
+}
+
+#about_box .right {
+    position: absolute;
+    right: 0;
+}
+
+#about_box .bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+#about_box .half {
+    width: 235px;
+}
+
+#about_box .quarter {
+    width: 118px;
+}
+
+#about_box .three_quarters {
+    width: 353px;
+}
+
+#about_box .full {
+    width: 470px;
+}
+
+#about_box .text_bg {
+    background: transparent url(../img/backgrd_lt_grey.png) repeat;
+    padding: 20px;
+}
+
+#about_box h1 {
+    font-size: 1.875em;
+}
+
+#about_box p {
+    font-size: 1em;
+    margin-bottom: .5em;
+}
+
+#about_box p.last {
+    margin-bottom: 0;
+    padding: 0;
+}
+
+#about_box p.first {
+    margin-top: 0.2em;
+    padding: 0;
+}

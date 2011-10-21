@@ -2778,6 +2778,9 @@ payment_was_flagged.connect(process_paypal_ipn)
 
 class PartnerSite(models.Model):
 
+    def about_image_path(instance, file_name):
+        return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)
+
     def custom_css_path(instance, filename):
         return 'db/partner_sites/%s/custom.css' % instance.hostname
 
@@ -2801,6 +2804,42 @@ class PartnerSite(models.Model):
                                                'This setting is optional but recommended.'))
     custom_favicon = models.FileField(_('favicon'), blank=True, upload_to=custom_favicon_path,
                                       help_text=_('Upload a favicon.ico file. This setting is optional but recommended.'))
+
+    about_box = models.TextField(_(_(u'about box text'), ), max_length=500, help_text=_(
+        '''Enter HTML that will make up the top left box of the home page. (500 characters)
+        <p>
+            Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for
+            text formatting.
+        </p>
+        <p>
+            The outer &lt;div&gt; can use the classes <code>quarter, half, three_quarters and full</code>
+            to specify the width of the text and <code>bottom</code> and <code>right</code> if a position other than top
+            left is desired.
+        </p>
+        <p>
+            The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background
+            and any inline styles you want to apply to the text itself.<br/>
+        </p>
+        <p>
+            The font color of &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags is blue while &lt;p&gt; is black by
+            default.
+        </p>
+        <p>
+            The classes <code>first</code> and <code>last</code> can be applied to &lt;p&gt; to reduce the margin above
+            and below respectively.
+        </p>
+        <p>
+            Additional styling can be added either inline or by using the Stylesheet uploaded file. If you use the file
+            and only want the style to apply to the about box use the #about_box ID selector.
+        </p>'''
+    ))
+    about_image = models.ImageField(
+        _('about box image'),
+        blank=True,
+        upload_to=about_image_path,
+        help_text=_('The background image of the About box.')
+    )
+
     enabled = models.BooleanField(_('enabled'), default=True)
 
     def __unicode__(self):
