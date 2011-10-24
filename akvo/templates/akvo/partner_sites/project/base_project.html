@@ -62,13 +62,39 @@
         <h2 class="marg_top40"><a href="{% url 'update_list' project.id %}">
           {% trans "Project updates" %}
         </a></h2>
-        {% if updates_with_images %}
-          {% for update in updates_with_images %}
+        {% if updates %}
+          {% for update in updates|slice:":3" %}
             <div class="whitebox marg_top20 pad5">
               <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
-              <a class="small" href="{% url 'update_main' project.id update.id %}">
-                {{update.title}}
-              </a>
+              {% if update.video or update.photo %}
+                <div style="float:left; width:170px;">
+                  <p class="small marg_bottom0" style="padding:5px 5px 0 5px;">
+                    <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b>
+                    <br/>{{update.text|smart_truncate:80}}
+                  </p>
+                </div>
+                {% if update.video %}
+                  <div style="float:right; width:108px;">
+                    <a class="video_thumb" href="{% url 'update_main' project.id update.id %}">
+                      <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:108px;">
+                      <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                    </a>
+                  </div>
+                <div class="clear"></div>
+                {% else %}
+                  <div style="float:right; width:108px; height: 81px; text-align:right;">
+                    <a href="{% url 'update_main' project.id update.id %}">
+                      <img src="{% thumbnail update.photo 108x81 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
+                    </a>
+                  </div>
+                {% endif %}
+                <div class="clear"></div>
+              {% else %}
+                <p class="small" style="padding:5px; margin-bottom:5px;">
+                  <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
+                  {{update.text|smart_truncate:150}}
+                </p>
+              {% endif %}
             </div>
           {% endfor %}
         {% else %} 
