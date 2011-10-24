@@ -2847,7 +2847,7 @@ class PartnerSite(models.Model):
 
     @property
     def logo(self):
-        return self.custom_logo or self.organisation.logo or None
+        return self.custom_logo or None
 
     @property
     def return_url(self):

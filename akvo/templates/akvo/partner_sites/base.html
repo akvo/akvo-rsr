@@ -22,11 +22,16 @@
   </script>
 </head>
 <body>
-  <div class="top_bar">
-    <div class="container">
-      <img src=" {% thumbnail logo 148x36 sharpen autocrop %}" alt="" />
-      {#<img src="{{MEDIA_URL}}{{logo}}" height="36px" width="148px" alt="{{logo}}" />#}
-      <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
+  <div class="bottom_gradient_bar pad_bottom10">
+    <div class="container pad_top10">
+      {% if logo %}
+        <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
+      {% else %}
+        <img src=" {% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
+      {% endif %}
+      <span class="small marg_left20">
+        <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
+      </span>
     </div>    
   </div>
 
