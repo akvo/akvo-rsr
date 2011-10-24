@@ -66,14 +66,16 @@ class BaseProjectView(BaseView):
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
-        context['project'] = \
-            get_object_or_404(Project, pk=self.kwargs['project_id'])
-        if context['project'] not in context['organisation'] \
-            .published_projects():
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        if project not in context['organisation'].published_projects():
             raise Http404
-        context['updates_with_images'] = context['project'] \
-            .project_updates.all().exclude(photo__exact='') \
-            .order_by('-time')[:3]
+        updates = project.project_updates.all().order_by('-time')
+        updates_with_images = updates.exclude(photo__exact='')
+        context.update({
+            'project': project,
+            'updates': updates,
+            'updates_with_images': updates_with_images,
+        })
         return context
 
 
