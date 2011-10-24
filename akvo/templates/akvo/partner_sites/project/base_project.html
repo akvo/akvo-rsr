@@ -59,13 +59,15 @@
       {% endblock project_aside_funding %}
       
       {% block project_aside_updates %}
-        <h2 class="marg_top40"><a href="{% url 'update_list' project.id %}">
-          {% trans "Project updates" %}
-        </a></h2>
+        <h2 class="marg_top40">
+          <a href="{% url 'update_list' project.id %}">
+            {% trans "Project updates" %}
+          </a>
+        </h2>
         {% if updates %}
           {% for update in updates|slice:":3" %}
             {% if update.video or update.photo %}
-              <div class="whitebox marg_top20 pad5" style="min-height: 91px;">
+              <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %}">
                 <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
                 <div style="float:left; width:170px;">
                   <p class="small marg_bottom0" style="margin-top: 15px;">
@@ -90,7 +92,7 @@
                 <div class="clear"></div>
               </div>
             {% else %}
-              <div class="whitebox marg_top20 pad5">
+              <div class="whitebox pad5"{% if not forloop.first %} style="margin-top: 10px;"{% endif %}>
                 <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
                 <p class="small" style="padding:5px; margin-bottom:5px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
@@ -108,7 +110,7 @@
       
       {% block project_aside_partners %}
         <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Partners" %}</a></h2>
-        <div class="whitebox marg_top20 pad_top20 pad5">
+        <div class="whitebox pad_top20 pad5">
           {% for partner in project.all_partners %}
             {% if partner.id != organisation.id %}
               <div style="float:left; width:100px;">
@@ -136,9 +138,9 @@
 
       {% block project_tools %}
         <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
-        <div class="whitebox marg_top20 pad_top20">
-          <p class="grey small pad5">
-            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
+        <div class="whitebox">
+          <p class="grey small pad10" style="margin: 0;">
+            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}
           </p>
         </div>
       {% endblock project_tools %}
