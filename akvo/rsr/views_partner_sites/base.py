@@ -41,7 +41,7 @@ class PartnerSitesMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(PartnerSitesMixin, self).get_context_data(**kwargs)
-        context['favicon'] = self.request.partner_site.favicon  
+        context['favicon'] = self.request.partner_site.favicon
         context['logo'] = self.request.partner_site.logo
         context['organisation'] = \
             get_object_or_404(Organisation, pk=self.request.organisation_id)
