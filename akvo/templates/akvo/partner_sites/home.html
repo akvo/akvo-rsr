@@ -34,8 +34,36 @@
     {% google_queryset_projects_map sorted_projects 'dynamic' 470 250 1 %}
   </div>
   <div class="clear"></div>
+
   <div class="marg_top40 white_back">
-    <div>
+    <form action="." method="get" accept-charset="utf-8" name="filter_form">
+			<div id="project_search" >
+				<div class="round" style="border: 1px solid #ccc;">
+					<div class="space15">
+
+            {{ filtered_projects.form.name }}
+            {{ filtered_projects.form.continent }}
+            {{ filtered_projects.form.locations__country }}
+            {{ filtered_projects.form.organisation }}
+
+						<a id="filterButton" class="" style="float:right;"
+							href="javascript:document.filter_form.submit();">
+							<span>{% trans 'Filter' %}</span>
+						</a>
+
+            <br/><a href="{% url 'home' %}" class="tiny" style="float:right; margin: 4px;">Reset filter</a>
+            {% hidden_inputs_from_qs sort dir %}
+
+						<div id="q_help" class="tiny grey" style="padding-left:25px; margin: 4px;">
+              {% trans 'Filter on project name or subtitle' %}
+						</div>
+            <div class="clear"></div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+    <div class="whitebox table_head_foot" style="border-bottom: 0;">
       {% blocktrans count sorted_projects.count as project_count %}
         {{ project_count }} project
       {% plural %}
@@ -64,36 +92,8 @@
           filtered by keywords: {{ keywords }}
         {% endblocktrans %}
       {% endif %}
+      {% paginate %}
     </div>
-    {% paginate %}
-
-    <form action="." method="get" accept-charset="utf-8" name="filter_form">
-			<div id="project_search" >
-				<div class="round" style="border: 1px solid #ccc;">
-					<div class="space15">
-
-            {{ filtered_projects.form.name }}
-            {{ filtered_projects.form.continent }}
-            {{ filtered_projects.form.locations__country }}
-            {{ filtered_projects.form.organisation }}
-
-						<a id="filterButton" class="" style="float:right;"
-							href="javascript:document.filter_form.submit();">
-							<span>{% trans 'Filter' %}</span>
-						</a>
-
-            <br/><a href="{% url 'home' %}" class="tiny" style="float:right; margin: 4px;">Reset filter</a>
-            {% hidden_inputs_from_qs sort dir %}
-
-						<div id="q_help" class="tiny grey" style="padding-left:25px; margin: 4px;">
-              {% trans 'Filter on project name or subtitle' %}
-						</div>
-            <div class="clear"></div>
-					</div>
-				</div>
-			</div>
-		</form>
-
     <table id="projects" class="marg_bottom0 full_width">
       <tr>
         <th class="normal">{% anchor name Name %}</th>
@@ -194,6 +194,9 @@
         </tr>
       {% endfor %}
     </table>
-    {% paginate %}
+    <div class="whitebox table_head_foot" style="border-top: 0;">
+     {% paginate %}
+      <div class="clear"></div>
+    </div>
   </div>
 {% endblock content %}

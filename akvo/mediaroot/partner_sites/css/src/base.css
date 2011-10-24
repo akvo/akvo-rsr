@@ -9,11 +9,14 @@ body {
   border: 1px solid #ccc;
   background-color: #fff;
 }
+.table_head_foot {
+    background-color: #E5E5E9;
+    padding: 10px;
+    font-size: 0.8125em;
+}
 .pagination {
-  background-color: #E5E5E9;
+  float: right;
   text-align: right;
-  padding: 10px;
-  font-size: 0.8125em;
 }
 article {
   float: left;
