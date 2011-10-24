@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign rsr_tags %}
+{% load i18n rsr_tags webdesign rsr_tags thumbnail %}
 {% load url from future %}
 
 
@@ -22,6 +22,14 @@
   </script>
 </head>
 <body>
+  <div class="top_bar">
+    <div class="container">
+      <img src=" {% thumbnail logo 148x36 sharpen autocrop %}" alt="" />
+      {#<img src="{{MEDIA_URL}}{{logo}}" height="36px" width="148px" alt="{{logo}}" />#}
+      <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
+    </div>    
+  </div>
+
   <div class="container">
     <div class="breadcrum_back clearfix">
       {% comment %}
