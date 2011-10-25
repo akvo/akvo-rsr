@@ -55,6 +55,8 @@
     </div>
     {% block content %}{% endblock content %}
   </div>
+  {% comment %}
+    
   <div class="container">
     <footer>
       <div class="two_col_left">
@@ -82,6 +84,25 @@
       {% endif %}
     </div>
   </div>
+  {% endcomment %}
+  
+  <div class="top_gradient_bar pad_bottom10">
+    <div class="container pad_top10">
+      <div class="two_col_left">
+          <p class="small">
+           {% trans "Contact at " %}
+            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
+          </p>
+      </div>
+      <div class="two_col_right" style="text-align:right;">
+          <p class="small">
+            {% trans "Powered by" %} <a href="http://www.akvoapp.org">Akvo</a>
+          </p>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </div>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
   <script type="text/javascript">
     !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.6.2.min.js"><\/script>');
