@@ -19,52 +19,60 @@
 {% block content %}
   <div class="clearfix">
     <h1>{% trans "Project partners" %}</h1>
-    <div class="marg_top40 white_back">
-      {% comment %}
-        Sort on location is broken, countries pop in and out.
-        Sort on number of projects is also broken.
-      {% endcomment %}
-      {% autosort partner_list %}
-      {% autopaginate partner_list 10 %}
+    {% autosort partner_list %}
+    {% autopaginate partner_list 10 %} 
+    <div class="table_top">
+      {% blocktrans count partner_list.count as partner_count %}
+        {{ partner_count }} partner
+      {% plural %}
+        {{ partner_count }} partners
+      {% endblocktrans %}
       {% paginate %}
-      <table id="partners" class="marg_bottom0 full_width whitebox">
+    </div>
+    <table id="partners" class="marg_bottom0 full_width">
+      <tr>
+        <th class="normal">{% anchor name Name %}</th>
+        <th class="normal">{% anchor organisation_type Type %}</th>
+        <th class="normal">{% trans "Location" %}</th>
+        <th class="normal">{% trans "Projects" %}</th>
+        {% comment %}
+        <th class="normal">{% anchor locations__country Location %}</th>
+        <th class="normal">{% anchor number_of_projects Projects %}</th>
+        {% endcomment %}
+      </tr>
+      {% for partner in partner_list %}
         <tr>
-          <th class="normal">{% anchor name Name %}</th>
-          <th class="normal">{% anchor organisation_type Type %}</th>
-          <th class="normal">{% trans "Location" %}</th>
-          <th class="normal">{% trans "Projects" %}</th>
-          {% comment %}
-          <th class="normal">{% anchor locations__country Location %}</th>
-          <th class="normal">{% anchor number_of_projects Projects %}</th>
-          {% endcomment %}
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}>
+            <a href="{% url 'partner_main' partner.id %}" class="small">
+            {% org_logo partner 100 75 'float: left; margin-right: 10px;' %}
+            </a>
+            <a href="{% url 'partner_main' partner.id %}" class="">{{partner}}</a>
+          </td>
+          <td class="small {% if forloop.last %} no_bottom_border{% endif %}">
+            {{partner.get_organisation_type_display}}
+          </td>
+          <td class="small{% if forloop.last %} no_bottom_border{% endif %}">
+            {{partner.primary_location.country}}
+          </td>
+          <td class="small no_right_border{% if forloop.last %} no_bottom_border{% endif %}">
+            {% if partner.published_projects.count %}
+                {{partner.published_projects.count}}
+                {% blocktrans count partner.published_projects.count as projects_count %}
+                  project{% plural %}projects 
+                {% endblocktrans %}
+            {% else %}
+              {% trans 'No projects' %}
+            {% endif %}
+          </td>
         </tr>
-        {% for partner in partner_list %}
-          <tr>
-            <td {% if forloop.last %}class="no_bottom_border"{% endif %}>
-              <a href="{% url 'partner_main' partner.id %}" class="small">
-              {% org_logo partner 100 75 'float: left; margin-right: 10px;' %}
-              </a>
-              <a href="{% url 'partner_main' partner.id %}" class="">{{partner}}</a>
-            </td>
-            <td class="small {% if forloop.last %} no_bottom_border{% endif %}">
-              {{partner.get_organisation_type_display}}
-            </td>
-            <td class="small{% if forloop.last %} no_bottom_border{% endif %}">
-              {{partner.primary_location.country}}
-            </td>
-            <td class="small no_right_border{% if forloop.last %} no_bottom_border{% endif %}">
-              {% if partner.published_projects.count %}
-                  {{partner.published_projects.count}}
-                  {% blocktrans count partner.published_projects.count as projects_count %}
-                    project{% plural %}projects 
-                  {% endblocktrans %}
-              {% else %}
-                {% trans 'No projects' %}
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </table>
+      {% endfor %}
+    </table>
+    <div class="table_bottom">
+      {% blocktrans count partner_list.count as partner_count %}
+        {{ partner_count }} partner
+      {% plural %}
+        {{ partner_count }} partners
+      {% endblocktrans %}
       {% paginate %}
     </div>
   </div>
