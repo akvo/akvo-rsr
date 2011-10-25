@@ -58,6 +58,29 @@
       {% plural %}
         {{ project_count }} projects
       {% endblocktrans %}
+      
+      {# TODO: this bock may need revisiting to support different languages ways of ordering stuff #}
+      {% if search_country %}
+        {% blocktrans %}
+          in {{ search_country }}
+        {% endblocktrans %}
+      {% else %}
+        {% if search_continent %}
+          {% blocktrans %}
+            in {{ search_continent }}
+          {% endblocktrans %}
+        {% endif %}
+      {% endif %}
+      {% if search_organisation %}
+        {% blocktrans %}
+          in partnership with {{ search_organisation }}
+        {% endblocktrans %}
+      {% endif %}
+      {% if filtered_projects.form.data.name %}
+        {% blocktrans with keywords=filtered_projects.form.data.name %}
+          filtered by keywords: {{ keywords }}
+        {% endblocktrans %}
+      {% endif %}
       {% paginate %}
     </div>
 
