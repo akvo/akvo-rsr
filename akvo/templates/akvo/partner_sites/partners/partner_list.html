@@ -19,10 +19,10 @@
 {% block content %}
   <div class="clearfix">
     <h1>{% trans "Project partners" %}</h1>
-    {% autosort partner_list %}
+    {% autosort partner_list as sorted_partner_list %}
     {% autopaginate partner_list 10 %} 
     <div class="table_top">
-      {% blocktrans count partner_list.count as partner_count %}
+      {% blocktrans count sorted_partner_list.count as partner_count %}
         {{ partner_count }} partner
       {% plural %}
         {{ partner_count }} partners
@@ -68,7 +68,7 @@
       {% endfor %}
     </table>
     <div class="table_bottom">
-      {% blocktrans count partner_list.count as partner_count %}
+      {% blocktrans count sorted_partner_list.count as partner_count %}
         {{ partner_count }} partner
       {% plural %}
         {{ partner_count }} partners
