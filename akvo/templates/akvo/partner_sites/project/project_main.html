@@ -38,8 +38,8 @@
       <h2 class="black">{% trans 'Location' %}</h2>
       {% if project.primary_location %} 
         <p class="grey">
-          {{ project.primary_location.country.get_continent_display }}, 
-          {{project.primary_location.country}}<br />
+          {{project.primary_location.country}},
+          {{ project.primary_location.country.continent }}<br />
           {{project.primary_location.city}}
           <br />
           {{ project.primary_location.latitude }},
