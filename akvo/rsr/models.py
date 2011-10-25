@@ -1662,7 +1662,7 @@ else: #akvo-rsr
                 #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
     
         def __unicode__(self):
-            return u'Project %d: %s' % (self.id,self.name)
+            return u'%s' % self.name
             
         def updates_desc(self):
             """

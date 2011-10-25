@@ -35,21 +35,34 @@
   </div>
   <div class="clear"></div>
   <h1 class="marg_top20">{% trans "Find projects" %}</h1>
-  <div class="marg_top20 white_back">
+  <div class="marg_top20">
     <div class="greybox pad10 marg_bottom10">
-      <form action="." method="get" accept-charset="utf-8" name="filter_form" class="marg_bottom10">
-        {{ filtered_projects.form.name }}
-        {{ filtered_projects.form.continent }}
-        {{ filtered_projects.form.locations__country }}
-        {{ filtered_projects.form.organisation }}
+      <form action="." method="get" accept-charset="utf-8" name="filter_form" class="marg_bottom0">
+        <div class="marg0; pad0">
+          {{ filtered_projects.form.name }}
+          {{ filtered_projects.form.continent }}
+          {{ filtered_projects.form.locations__country }}
+          {{ filtered_projects.form.organisation }}
 
-        <a id="filterButton" class="blue awesome" style="float:right; color:#fff" 
-          href="javascript:document.filter_form.submit();">
-          <span>{% trans 'Filter' %}</span>
-        </a>
-        
+          <a id="filterButton" class="blue awesome" style="float:right; color:#fff" 
+            href="javascript:document.filter_form.submit();">
+            <span>{% trans 'Filter' %}</span>
+          </a>
+        </div>
         {% hidden_inputs_from_qs sort dir %}
       </form>
+      <div class="clear"></div>
+      <div style="width:45%; float:left;">
+        <span class="tiny grey marg_left20">
+          {% trans 'Filter on project name or subtitle' %} 
+        </span>
+      </div>
+      <div style="width:45%; float:right; text-align:right;">
+        <a href="{% url 'home' %}" class="tiny">
+          {% trans "Reset filter" %}
+        </a>
+      </div>
+      <div class="clear"></div>
     </div>
 
     <div class="table_top">
@@ -84,7 +97,7 @@
       {% paginate %}
     </div>
 
-    <table id="projects" class="marg_bottom0 full_width">
+    <table id="projects" class="marg_bottom0 full_width white_back">
       <tr>
         <th class="normal">{% anchor name Name %}</th>
         <th class="normal">{% trans "Location" %}</th>
