@@ -19,7 +19,10 @@
     <h2>{{update.title}}</h2>
     <p class="grey small">
       {{ update.time|date:"d-M-Y" }},
-      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+      {%  url 'partner_main' update.user.userprofile.organisation.id as user_org_url %}
+      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.get_update_method_display as update_meth %}
+        by {{user_name}}, <a href="{{user_org_url}}">{{user_org}}</a>, via {{update_meth}}
+      {% endblocktrans %}
     </p>
     {% if update.text_location == 'B' %}
       {{ update.text|linebreaks }}
