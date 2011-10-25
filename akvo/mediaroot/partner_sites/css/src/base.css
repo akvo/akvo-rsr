@@ -9,11 +9,25 @@ body {
   border: 1px solid #ccc;
   background-color: #fff;
 }
+.greybox {
+  -khtml-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
 .pagination {
-  background-color: #E5E5E9;
   text-align: right;
-  padding: 10px;
+  float: right;
+}
+.table_top {
   font-size: 0.8125em;
+  background-color: #E5E5E9;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  padding: 10px;
 }
 article {
   float: left;
@@ -235,6 +249,4 @@ div.counter_badge span {
 }
 .bottom_gradient_bar {
   background: #ffffff url(../img/header_shadow.png) repeat-x scroll bottom;
-  /*padding-bottom:10px;*/
-
 }

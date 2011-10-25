@@ -103,6 +103,7 @@ ASSET_BUNDLES = {
             'breadcrum.css',
             'tabs.css',
             'utils.css',
+            'buttons.css',
             ],
     },
     'partner_sites_script': {
