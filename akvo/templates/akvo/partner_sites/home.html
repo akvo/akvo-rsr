@@ -138,6 +138,13 @@
         </tr>
       {% endfor %}
     </table>
-    {% paginate %}
+    <div class="table_bottom">
+      {% blocktrans count sorted_projects.count as project_count %}
+        {{ project_count }} project
+      {% plural %}
+        {{ project_count }} projects
+      {% endblocktrans %}
+      {% paginate %}
+    </div>
   </div>
 {% endblock content %}
