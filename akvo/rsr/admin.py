@@ -1444,4 +1444,44 @@ else: #akvo-rsr
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
 
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(PartnerSiteAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions
+
+    def queryset(self, request):
+        qs = super(PartnerSiteAdmin, self).queryset(request)
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            organisation = request.user.get_profile().organisation
+            return qs.filter(organisation=organisation)
+        else:
+            raise PermissionDenied
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
+
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+
+        get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
+        "own" projects, organisation, patner_site and user profiles
+        """
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return True
+        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            if obj:
+                return obj.organisation == request.user.get_profile().organisation
+            else:
+                return True
+        return False
+
 admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
