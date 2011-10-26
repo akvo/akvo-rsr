@@ -123,27 +123,25 @@
         <h2 class="marg_top20"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
         <div class="whitebox pad_top20 pad5">
           {% for partner in project.all_partners %}
-            {% if partner.id != organisation.id %}
-              <div style="float:left; width:100px;">
-                <a href="{% url 'partner_main' partner.id %}">
-                  {% org_logo partner 90 60 'margin:0;' %}
-                </a>
-              </div>
-              <div style="float:left; width:165px;">
-                <p class="small grey" style="margin:0;">
-                  <a href="{% url 'partner_main' partner.id %}">{{partner.name}}</a><br />
-                  {% if partner.primary_location.city %}
-                    {{partner.primary_location.city}},
-                  {% endif %}
-                  {{partner.primary_location.country}}
-                </p>
-              </div>
-              <div class="clear"></div>
-              {% if not forloop.last %}
-                <hr style="margin-bottom:12px; margin-top:10px;"/>
-              {% endif %}              
-            {% endif %}  
-          {% endfor %} 
+            <div style="float:left; width:100px;">
+              <a href="{% url 'partner_main' partner.id %}">
+                {% org_logo partner 90 60 'margin:0;' %}
+              </a>
+            </div>
+            <div style="float:left; width:165px;">
+              <p class="small grey" style="margin:0;">
+                <a href="{% url 'partner_main' partner.id %}">{{partner.name}}</a><br />
+                {% if partner.primary_location.city %}
+                  {{partner.primary_location.city}},
+                {% endif %}
+                {{partner.primary_location.country}}
+              </p>
+            </div>
+            <div class="clear"></div>
+            {% if not forloop.last %}
+              <hr style="margin-bottom:12px; margin-top:10px;"/>
+            {% endif %}
+          {% endfor %}
         </div>
       {% endblock project_aside_partners %}
 
