@@ -111,13 +111,13 @@
           {% endfor %}
         {% endif %}
         {% if project.external_links %}
-          <h4>
+           <span class="normal">
             {% blocktrans count project.external_links.count as links %}
               External link
             {% plural %}
               External links
             {% endblocktrans %}
-          </h4>
+          </span>
           <p class="small grey">
             ({% trans 'Will open in new window' %})
           </p>
