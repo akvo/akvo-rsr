@@ -94,10 +94,10 @@
               </div>
             {% else %}
               <div class="whitebox pad5"{% if not forloop.first %} style="margin-top: 10px;"{% endif %}>
-                <span class="tiny grey">{{update.time|date:"d-M-Y"}}</span><br />
-                <p class="small" style="padding:5px; margin-bottom:5px;">
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
+                <p class="small marg_bottom0" style="margin-top: 15px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
-                  {{update.text|smart_truncate:150}}
+                  {{update.text|smart_truncate:120}}
                 </p>
               </div>
             {% endif %}
