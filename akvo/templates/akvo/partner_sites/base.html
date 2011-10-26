@@ -24,11 +24,13 @@
 <body>
   <div class="bottom_gradient_bar pad_bottom10">
     <div class="container pad_top10">
-      {% if logo %}
-        <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
-      {% else %}
-        <img src=" {% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
-      {% endif %}
+      <a href="{{return_url}}" style="text-decoration:none;">
+        {% if logo %}
+          <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
+        {% else %}
+          <img src=" {% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
+        {% endif %}
+      </a>
       <span class="small marg_left20">
         <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
       </span>
