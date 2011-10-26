@@ -96,14 +96,11 @@ class PartnerListView(BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(PartnerListView, self).get_context_data(**kwargs)
-        context['organisation'] = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context['organisation'] = self.request.partner_site.organisation
         return context
 
     def get_queryset(self):
-        return get_object_or_404(Organisation,
-                                 pk=self.request.organisation_id) \
-            .partners().distinct()
+        return self.request.partner_site.organisation.partners().distinct()
 
 
 class PartnerView(BaseView):
