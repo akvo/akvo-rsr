@@ -61,10 +61,10 @@
       
       {% block project_aside_updates %}
         {% if updates %}
-          <div style="float:left; width:130px;">
+          <div style="float:left; width:130px; padding-top: 20px;">
             <h2>{% trans 'Latest updates' %}</h2>
           </div>
-          <div style="margin:1px 0; float:right; width:130px; text-align:right;">
+          <div style="margin:1px 0; float:right; width:130px; text-align:right; padding-top: 20px;">
             <a class="small" href="{% url 'update_list' project.id %}">{% trans 'See all updates' %} &#x25BA;</a>
           </div>
           <div class="clear"></div>
@@ -118,9 +118,18 @@
           </h2>
         {% endif %}
       {% endblock project_aside_updates %}
-      
+
+      {% block project_tools %}
+        <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
+        <div class="whitebox">
+          <p class="grey small pad10" style="margin: 0;">
+            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}
+          </p>
+        </div>
+      {% endblock project_tools %}
+
       {% block project_aside_partners %}
-        <h2 class="marg_top20"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
+        <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
         <div class="whitebox pad_top20 pad5">
           {% for partner in project.all_partners %}
             <div style="float:left; width:100px;">
@@ -143,19 +152,11 @@
             {% endif %}
           {% endfor %}
         </div>
-      {% endblock project_aside_partners %}
-
-      {% block project_tools %}
-        <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
-        <div class="whitebox">
-          <p class="grey small pad10" style="margin: 0;">
-            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}
-          </p>
-        </div>
         <div class="txt_right marg_top20">
           <span class="grey tiny">{% trans "Akvo ref" %}: {{project.id}}</span>
         </div>
-      {% endblock project_tools %}
+      {% endblock project_aside_partners %}
+
     </aside>
   </div>
 {% endblock content %}
