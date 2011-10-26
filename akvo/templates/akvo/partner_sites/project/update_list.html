@@ -13,7 +13,10 @@
 
 {% block project_content %}
   <section class="whitebox pad20">
-    <h2>{% trans "Project updates" %}</h2>
+    <span class="small">
+      <a href="{% url 'project_main' project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+    </span>
+    <h2 style="padding-top:20px;">{% trans "Project updates" %}</h2>
     {% if not update_list %}
       <p>{% trans 'No updates yet.' %}</p>
     {% else %}
