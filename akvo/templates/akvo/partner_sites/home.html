@@ -132,9 +132,7 @@
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Partner column #}
             <p class="small">
               {% for partner in project.all_partners %}
-                {% if partner.id != organisation.id %}
-                  <a href="{% url 'partner_main' partner.id %}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
-                {% endif %}
+                <a href="{% url 'partner_main' partner.id %}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
               {% endfor %}
             </p>
           </td>
