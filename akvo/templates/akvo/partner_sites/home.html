@@ -114,17 +114,17 @@
               <a href="{% url 'project_main' project.id %}">
                 {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
               </a>
-              <a href="{% url 'project_main' project.id %}" class="small" style="margin-bottom:0">
+              <a href="{% url 'project_main' project.id %}" style="margin-bottom:0">
                   {{project.name}}
               </a>
               <p class="tiny grey">
-                {{project.project_plan_summary|capfirst|smart_truncate:100}}
+                {{project.project_plan_summary|capfirst|smart_truncate:250}}
               </p> 
             </div>
           </td>
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Location column #}
             <p class="small">{{project.primary_location.country}}</p>
-            <p class="small">{{project.primary_location.country.get_continent_display}}</p>
+            <p class="small">{{project.primary_location.country.continent}}</p>
           </td>
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Status column #}
             <p class="small green">{{project.show_status}}</p>
@@ -148,7 +148,10 @@
             </p>
           </td>
           <td class="no_right_border {% if forloop.last %}no_bottom_border{% endif %}"> {# Funding column #}
-            <div class="fundingbox-progress-bar" style="height:5px;">
+            <p class="small marg_bottom0" style="text-align:center;">
+              {{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}
+            </p>
+            <div class="fundingbox-progress-bar" style="height:5px; width:60px;">
               {% if project.budget_total %}
                 <div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}%"> 
                 </div>
