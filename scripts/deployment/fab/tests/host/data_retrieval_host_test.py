@@ -22,7 +22,7 @@ class DataRetrievalHostTest(mox.MoxTestBase):
         self.data_retrieval_host = DataRetrievalHost(self.mock_data_retriever)
 
     def test_can_create_instance(self):
-        """fab.tests.host.data_retrieval_host_test  Can create a DatabaseHost instance"""
+        """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance"""
 
         self.assertIsInstance(DataRetrievalHost.create_instance(), DataRetrievalHost)
 
