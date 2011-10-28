@@ -15,28 +15,28 @@ Akvo RSR v 2.0 release notes
 
 Overview
 ------------
-Akvo RSR 2.0 is a preview release that introduces a major new feature to Akvo RSR, multitenancy, which we call Partner sites. Partner sites allow an organisation which has projects on the Akvo RSR system to display all these projects, using the Akvo RSR tools on their own URL, with their own branding and styling. We believe that this will be the main way most people will think of Akvo RSR in the future.
+Akvo RSR 2.0 is a preview release that introduces a major new feature to Akvo RSR, multitenancy, which we call Partner sites. Partner sites allows an organisation which already has projects on the Akvo RSR system to display all of these projects on their own website. This will be done by useing the Akvo RSR tools on their own designated URL, with their own branding and styling. We believe that this will be the main way most people will think of Akvo RSR in the future.
 
-Being a preview release means that all the features we are expecting on a Partner site in the future are not ready yet, there are some rough edges, but we consider the features which are available suitable to start experimenting with.
+Being a preview release means that all the features we are expecting on a Partner site in the future are not ready yet, there are some rough edges, but we consider the features that are available suitable enough to start experimenting with.
 
 The Akvo RSR tools available on the aggregated site (Akvo.org) have not changed for this release, except for a minor bug fix.
 
 New features
 ----------------
 ### Partner sites, multitenancy
-The Partner sites features allow you to have your own projects on your own separate URL, with your own branding and styling.
+The Partner sites features allow you to have your own projects on your own website with a separate URL, with your own branding and styling.
 
 A Partner site will live under a separate domain. The default URL for a new Partner site for Akvo.org will be a subdomain under akvoapp.org, for example: [http://connect4change.akvoapp.org](http://connect4change.akvoapp.org). The partner site can also be setup to be displayed under another appropriate domain, for example: [http://projects.connect4change.nl](http://projects.connect4change.nl).
 
-Your Partner site can be setup, configured and managed by a user with organisation administrator privileges.
+Your own Partner site can be configured and managed by a user with organisation administrator privileges (initial setup you need to request the Akvo.org team to do during the preview period).
 
 ### Notes about Akvo RSR Partner sites multitenancy
-The Akvo RSR multitenancy implementation has a shared data space for the application. Information which is shared between partners is also shared between Partner sites as well as shown on the aggregation site (i.e. Akvo.org). 
+The Akvo RSR multitenancy implementation has a shared data space for the application. Information that is shared between partners is also shared between Partner sites as well as shown on the aggregation site (i.e. Akvo.org). 
 
-For example: the information about one a project is shared between all organisations which collaborate on that project. An update to a project will show up on all Partner sites which are showing this project. Likewise, if an organisation changes its logo on the organisation page the logo will change on all Partner sites displaying this organisation, as well as on Akvo.org.
+For example: the information about one a project is shared between all organisations that collaborate on that project. An update to a project will show up on all the various Partner sites which are showing that particular project. Likewise, if an organisation changes its logo on the organisation page the logo will also change on all Partner sites displaying this organisation, as well as on Akvo.org.
 
 ### New functionality 
-The following functions are new to Akvo RSR 2.0 preview of Partner sites and doesn’t exist on Akvo RSR on Akvo.org. Some of these functions may be added to the aggregated site (Akvo.org) later.
+The following functions are new to Akvo RSR 2.0 preview of Partner sites and don’t exist on Akvo RSR on Akvo.org. Some of these functions may be added to the aggregated site (Akvo.org) later.
 
 - A Partner site will live under a separate domain, distinct from the aggregate domain
 - A Partner site can be displayed under a custom domain (CNAME)
@@ -51,7 +51,7 @@ The following features have not been completely implemented yet in Akvo RSR 2.0 
 
 - Funding box on project page has limited layout
 - Latest updates display on project page (banner is missing)
-- A list of partners to the owner of the Partner site, the link is on Project partners on the project page, but this is not the final place for access to this 
+- Project partners listing 
 - Donations, you will be sent to the Akvo.org site to do a donation and not returned to the Partner site
 
 ### Excluded functionality
