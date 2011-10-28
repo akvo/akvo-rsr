@@ -95,18 +95,12 @@ class BaseProjectListView(BaseListView):
     def get_context_data(self, **kwargs):
         context = super(BaseProjectListView, self).get_context_data(**kwargs)
         if context['filtered_projects'].form.data:
-            continent_code = \
-                context['filtered_projects'].form.data.get('continent', '')
-            country_id = context['filtered_projects'] \
-                .form.data.get('locations__country', '')
-            org_id = context['filtered_projects'] \
-                .form.data.get('organisation', '')
-            context['search_country'] = \
-                Country.objects.get(pk=int(country_id)) if country_id else ''
-            context['search_continent'] = \
-                dict(CONTINENTS)[continent_code] if continent_code else ''
-            context['search_organisation'] = \
-                Organisation.objects.get(pk=int(org_id)) if org_id else ''
+            continent_code = context['filtered_projects'].form.data.get('continent', '')
+            country_id = context['filtered_projects'].form.data.get('locations__country', '')
+            org_id = context['filtered_projects'].form.data.get('organisation', '')
+            context['search_country'] = Country.objects.get(pk=int(country_id)) if country_id else ''
+            context['search_continent'] = dict(CONTINENTS)[continent_code] if continent_code else ''
+            context['search_organisation'] = Organisation.objects.get(pk=int(org_id)) if org_id else ''
         return context
 
     def render_to_response(self, context):
@@ -118,12 +112,10 @@ class BaseProjectListView(BaseListView):
         # if filtering on country, set the correct continent
         country_id = query_dict.get('locations__country', '')
         if country_id:
-            continent = dict(COUNTRY_CONTINENTS)[Country \
-                .objects.get(pk=int(country_id)).iso_code]
+            continent = dict(COUNTRY_CONTINENTS)[Country.objects.get(pk=int(country_id)).iso_code]
             if not query_dict.get('continent', None) == continent:
                 query_dict['continent'] = continent
-                return redirect("%s?%s" % (reverse('home'), \
-                    query_dict.urlencode()))
+                return redirect("%s?%s" % (reverse('home'), query_dict.urlencode()))
 
         return super(BaseProjectListView, self).render_to_response(context)
 

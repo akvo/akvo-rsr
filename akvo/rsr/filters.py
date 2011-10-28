@@ -27,7 +27,7 @@ class ProjectFilterSet(django_filters.FilterSet):
     def filter_by_org(qs, org):
         if org:
             projs = org.published_projects().values_list('id', flat=True)
-            return qs.filter(pk__in=projs).annotate(budget_total=Sum('budgetitem__amount'),)
+            return qs.filter(pk__in=projs)
         else:
             return qs
 
@@ -72,7 +72,7 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def filter_by_budget_range(qs, what):
         if what:
-            return qs.filter(**{'budget_total__range': (int(what.start) if what.start else 0, int(what.stop) if what.stop else sys.maxint)})
+            return qs.filter(**{'total_budget__range': (int(what.start) if what.start else 0, int(what.stop) if what.stop else sys.maxint)})
         return qs
 
     name            = django_filters.CharFilter(action=filter_by_project_names)
