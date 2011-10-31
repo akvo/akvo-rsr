@@ -14,6 +14,10 @@ class SQLStatementExecutor(object):
         self.database_connection = database_connection
 
     @staticmethod
+    def for_admin():
+        return SQLStatementExecutor(DatabaseConnection.for_admin_user())
+
+    @staticmethod
     def for_database(database_name, database_connection=DatabaseConnection.for_admin_user()):
         statement_executor = SQLStatementExecutor(database_connection)
         statement_executor.use_database(database_name)
