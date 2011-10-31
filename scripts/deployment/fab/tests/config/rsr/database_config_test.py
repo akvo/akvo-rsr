@@ -15,7 +15,7 @@ from fab.format.timestamp import TimeStampFormatter
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
 
-from config_values import DatabaseAdminConfigValues
+from config_values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
 
 
 class RSRDatabaseConfigTest(mox.MoxTestBase):
@@ -23,9 +23,11 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
     def setUp(self):
         super(RSRDatabaseConfigTest, self).setUp()
         self.database_admin_config_values = DatabaseAdminConfigValues()
+        self.database_config_values = RSRDatabaseConfigValues()
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
-        self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.mock_time_stamp_formatter)
+        self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values,
+                                                 self.mock_time_stamp_formatter)
 
     def test_can_create_instance(self):
         """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig instance"""
@@ -41,6 +43,16 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         """fab.tests.config.rsr.database_config_test  Has admin login password"""
 
         self.assertEqual(self.database_admin_config_values.admin_password, self.database_config.admin_password)
+
+    def test_has_rsr_database_name(self):
+        """fab.tests.config.rsr.database_config_test  Has RSR database name"""
+
+        self.assertEqual(self.database_config_values.rsr_database_name, self.database_config.rsr_database_name)
+
+    def test_has_rsr_database_user(self):
+        """fab.tests.config.rsr.database_config_test  Has RSR database user"""
+
+        self.assertEqual(self.database_config_values.rsr_database_user, self.database_config.rsr_database_user)
 
 
 def suite():
