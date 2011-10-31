@@ -56,7 +56,7 @@ class PartnerSitesRouterMiddleware(object):
             site = Site.objects.get(id=2)
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
-		domain_name = '%s.akvoapp.org' % partner_site.hostname
+                domain_name = '%s.akvoapp.org' % partner_site.hostname
             except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
