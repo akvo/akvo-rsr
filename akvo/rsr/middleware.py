@@ -33,19 +33,17 @@ class PartnerSitesRouterMiddleware(object):
         if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
             site = Site.objects.get(id=1)
             if domain == 'www.akvo.org' or domain in local_domains:
-                domain_name = site.domain
+                domain_name = 'akvo.org'
             else:
                 domain_name = domain
             request.urlconf = 'akvo.urls.rsr'
-        elif (domain == 'www.akvoapp.org' or
-              domain == 'www.akvotest.org' or
-              domain == 'akvoapp.dev'):
+        elif domain == 'akvoapp.dev':
             return redirect(self.marketing_site_url)
         elif (domain.endswith('.akvoapp.org') or
               domain.endswith('.akvotest.org') or
               domain.endswith('.akvoapp.dev')):  # Partner site instance
             site = Site.objects.get(id=2)
-            domain_name = site.domain
+            domain_name = domain
             if len(domain_parts) >= 3:  # matches (*.)hostname.akvoapp|akvotest.org and (*.)hostname.akvoapp.dev
                 hostname = domain_parts[-3]
                 try:
@@ -56,9 +54,9 @@ class PartnerSitesRouterMiddleware(object):
                 return redirect(self.marketing_site_url)
         else:  # Partner site instance on partner-nominated domain (probably)
             site = Site.objects.get(id=2)
-            domain_name = site.domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
+		domain_name = '%s.akvoapp.org' % partner_site.hostname
             except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
