@@ -32,7 +32,7 @@ class SchemaInformationTest(mox.MoxTestBase):
         self.schema_information = StubbedSchemaInformation(self.mock_statement_executor)
 
     def test_initialiser_uses_information_schema_database(self):
-        """fab.tests.database.schema_information_test  Initialiser uses information schema database"""
+        """fab.tests.database.mysql.schema_information_test  Initialiser uses information schema database"""
 
         mock_database_connection = self.mox.CreateMock(DatabaseConnection)
         mock_cursor = self.mox.CreateMock(Cursor)
@@ -44,7 +44,7 @@ class SchemaInformationTest(mox.MoxTestBase):
         self.assertIsInstance(SchemaInformation(mock_database_connection), SchemaInformation)
 
     def test_can_recognise_existing_database(self):
-        """fab.tests.database.schema_information_test  Can recognise an existing database"""
+        """fab.tests.database.mysql.schema_information_test  Can recognise an existing database"""
 
         expected_database_count_query = "SELECT COUNT(*) FROM schemata WHERE schema_name = 'mysql'"
 
@@ -54,7 +54,7 @@ class SchemaInformationTest(mox.MoxTestBase):
         self.assertTrue(self.schema_information.database_exists("mysql"), "Existing database should be recognised")
 
     def test_can_recognise_nonexistent_database(self):
-        """fab.tests.database.schema_information_test  Can recognise a nonexistent database"""
+        """fab.tests.database.mysql.schema_information_test  Can recognise a nonexistent database"""
 
         expected_database_count_query = "SELECT COUNT(*) FROM schemata WHERE schema_name = 'foo'"
 
