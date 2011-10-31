@@ -143,7 +143,8 @@ def send_donation_confirmation_emails(invoice_id):
     c = Context(dict(invoice=invoice, site_url=site_url,
         project_url=project_url, project_updates_url=project_updates_url))
     message_body = t.render(c)
-    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
+    subject_field = _(u'Thank you from Akvo.org!')
+    from_field = settings.DEFAULT_FROM_EMAIL or 'noreply@akvo.org'
     bcc_field = [invoice.notification_email]
     to_field = invoice.get_email
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
