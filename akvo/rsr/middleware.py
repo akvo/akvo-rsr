@@ -17,12 +17,10 @@ from djangotoolbox.utils import make_tls_property
 from akvo.rsr.models import PartnerSite
 
 
-DOMAIN_NAME = settings.__dict__['_wrapped'].__class__.DOMAIN_NAME = make_tls_property()
 SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 
 class PartnerSitesRouterMiddleware(object):
-    marketing_site_url = 'http://www.akvoapp.org/'
     def process_request(self, request, partner_site=None):
         if settings.PVW_RSR:
             return
@@ -30,20 +28,16 @@ class PartnerSitesRouterMiddleware(object):
         domain = host[0]
         domain_parts = domain.split('.')
         local_domains = ('localhost', '127.0.0.1', 'akvo.dev')
-        if domain.endswith('akvo.org') or domain in local_domains:  # Regular RSR instance
+        marketing_site_url = 'http://www.akvoapp.org/'
+        if domain.endswith('.akvo.org') or domain in local_domains:  # Regular RSR instance
             site = Site.objects.get(id=1)
-            if domain == 'www.akvo.org' or domain in local_domains:
-                domain_name = 'akvo.org'
-            else:
-                domain_name = domain
             request.urlconf = 'akvo.urls.rsr'
         elif domain == 'akvoapp.dev':
-            return redirect(self.marketing_site_url)
+            return redirect(marketing_site_url)
         elif (domain.endswith('.akvoapp.org') or
               domain.endswith('.akvotest.org') or
               domain.endswith('.akvoapp.dev')):  # Partner site instance
             site = Site.objects.get(id=2)
-            domain_name = domain
             if len(domain_parts) >= 3:  # matches (*.)hostname.akvoapp|akvotest.org and (*.)hostname.akvoapp.dev
                 hostname = domain_parts[-3]
                 try:
@@ -51,18 +45,16 @@ class PartnerSitesRouterMiddleware(object):
                 except:
                     pass
             if partner_site is None or not partner_site.enabled:
-                return redirect(self.marketing_site_url)
+                return redirect(marketing_site_url)
         else:  # Partner site instance on partner-nominated domain (probably)
             site = Site.objects.get(id=2)
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
-                domain_name = '%s.akvoapp.org' % partner_site.hostname
             except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
             request.partner_site = partner_site
             request.organisation_id = partner_site.organisation.id
             request.urlconf = 'akvo.urls.partner_sites'
-        DOMAIN_NAME.value = domain_name
         SITE_ID.value = site.id
         return
