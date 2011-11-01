@@ -2792,52 +2792,80 @@ class PartnerSite(models.Model):
 
     organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
     hostname = models.CharField(_('Hostname'), max_length=50, unique=True,
-                                help_text=_('Entering "aqua4all" results in your partner site being accessible at "http://aqua4all.akvoapp.org/". '))
+        help_text=_('''
+            <p>
+                Your hostname is used in the default web address of your partner site.
+                The web address created from  the hostname <em>myorganisation</em> would be
+                <em>http://myorganisation.akvoapp.org/</em>.
+            </p>
+        ''')
+    )
     cname = NullCharField(_('CNAME'), max_length=100, unique=True, blank=True, null=True,
-                          help_text=_('For example "projects.aqua4all.nl".'))
+        help_text=_('''
+            <p>
+                Enter a custom domain name for accessing the partner site,
+                for example <i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.
+            </p>
+        ''')
+    )
     custom_return_url = models.URLField(_('Return URL'), blank=True,
-                                        help_text=_('The URL on your own site to return users to. Enter a full URL (starting with "http://"). ' \
-                                                     'This setting is optional but recommended.'))
+        help_text=_('''
+            <p>
+                Enter the full URL (including http://) for the page to which users
+                should be returned when leaving the partner site.
+            </p>
+        ''')
+    )
     custom_css = models.FileField(_('Stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=custom_logo_path,
-                                   help_text=_('Upload a high-resolution banner logo for your organisation. ' \
-                                               'This setting is optional but recommended.'))
+        help_text=_('''
+            <p>
+                Upload a logo file for the banner at the top of the partner site page.
+                By default the logo currently used by www.akvo.org will be displayed.
+            </p>
+        ''')
+    )
     custom_favicon = models.FileField(_('favicon'), blank=True, upload_to=custom_favicon_path,
-                                      help_text=_('Upload a favicon.ico file. This setting is optional but recommended.'))
-
-    about_box = models.TextField(_(_(u'about box text'), ), max_length=500, help_text=_(
-        '''Enter HTML that will make up the top left box of the home page. (500 characters)
-        <p>
-            Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for
-            text formatting.
-        </p>
-        <p>
-            The outer &lt;div&gt; can use the classes <code>quarter, half, three_quarters and full</code>
-            to specify the width of the text and <code>bottom</code> and <code>right</code> if a position other than top
-            left is desired.
-        </p>
-        <p>
-            The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background
-            and any inline styles you want to apply to the text itself.<br/>
-        </p>
-        <p>
-            The font color of &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags is blue while &lt;p&gt; is black by
-            default.
-        </p>
-        <p>
-            The classes <code>first</code> and <code>last</code> can be applied to &lt;p&gt; to reduce the margin above
-            and below respectively.
-        </p>
-        <p>
-            Additional styling can be added either inline or by using the Stylesheet uploaded file. If you use the file
-            and only want the style to apply to the about box use the #about_box ID selector.
-        </p>'''
-    ))
-    about_image = models.ImageField(
-        _('about box image'),
-        blank=True,
-        upload_to=about_image_path,
-        help_text=_('The background image of the About box.')
+        help_text=_('''
+            <p>
+                A favicon (.ico file) is the 16x16 pixel image shown inside the browser's location bar,
+                on tabs and in the bookmark menu.
+            </p>
+        ''')
+    )
+    about_box = models.TextField(_(_(u'about box text'), ), max_length=500, blank=True,
+        help_text=_('''
+            Enter HTML that will make up the top left box of the home page. (500 characters)
+            <p>
+                Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying position and width
+                of the text, and an inner for formatting of the text .
+            </p>
+            <p>
+                The Outer &lt;div&gt; tag can use the classes <code>quarter, half, three_quarters and full</code> to
+                specify the
+                width of the text. It can use the classes <code>bottom</code> and <code>right</code> to specify a position other than top left.
+            </p>
+            <p>
+                The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a semi-transparent text
+                background if a background image will be uploaded. Any other inline styles can also be used within the
+                inner &lt;div&gt;. The tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while &lt;p&gt;
+                tags are black by default. Use the classes <code>first</code> and <code>last</code> with &lt;p&gt; tags
+                to reduce the margins above or below respectively.
+            </p>
+            <p>
+                Add additional styling inline, or upload a .css stylesheet in the Stylesheet setting above.
+                <em>Tip:</em> When using a .css file, use the #about_box ID selector to apply a style only to
+                the About box.
+            </p>
+        ''')
+    )
+    about_image = models.ImageField(_('about box image'), blank=True, upload_to=about_image_path,
+        help_text=_('''
+            <p>
+                The background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall.
+                It is however optional.
+            </p>
+        ''')
     )
 
     enabled = models.BooleanField(_('enabled'), default=True)
