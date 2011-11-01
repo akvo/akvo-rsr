@@ -38,8 +38,9 @@ class DeploymentHostConfigValues(object):
 class DatabaseAdminConfigValues(object):
 
     def __init__(self):
-        self.admin_user         = "root"
-        self.admin_password     = "root_db_password"
+        self.admin_user                 = "root"
+        self.admin_password             = "root_db_password"
+        self.remote_config_values_home  = "/var/tmp/deployment/config"
 
 
 class RSRDatabaseConfigValues(object):

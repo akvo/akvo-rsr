@@ -7,21 +7,32 @@
 
 import imp, os
 
+from fab.config.rsr.codebase import RSRCodebaseConfig
+from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.format.timestamp import TimeStampFormatter
 
 
 class RSRDatabaseConfig(object):
 
-    def __init__(self, db_admin_config_values, db_config_values, time_stamp_formatter):
+    DATABASE_ADMIN_SCRIPTS_HOME = "scripts/deployment/database"
+
+    def __init__(self, db_admin_config_values, db_config_values, deployment_config, time_stamp_formatter):
         self.admin_user = db_admin_config_values.admin_user
         self.admin_password = db_admin_config_values.admin_password
         self.rsr_database_name  = db_config_values.rsr_database_name
         self.rsr_database_user  = db_config_values.rsr_database_user
+
+        self.config_values_file_path = os.path.join(db_admin_config_values.remote_config_values_home, "values.py")
+        self.admin_scripts_path = os.path.join(deployment_config.rsr_deployment_home, self.DATABASE_ADMIN_SCRIPTS_HOME)
+
         self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
     def from_config_values_file(config_values_file_path):
         imp.load_source('config_values', config_values_file_path)
-        from config_values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
+        from config_values import DatabaseAdminConfigValues, DeploymentHostConfigValues, RSRDatabaseConfigValues
 
-        return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), TimeStampFormatter())
+        deployment_config = RSRDeploymentConfig(None, DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
+
+        return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), deployment_config,
+                                 TimeStampFormatter())

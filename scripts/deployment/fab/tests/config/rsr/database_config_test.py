@@ -10,6 +10,7 @@ import imp, mox, os
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.format.timestamp import TimeStampFormatter
 
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
@@ -24,11 +25,12 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         super(RSRDatabaseConfigTest, self).setUp()
         self.database_admin_config_values = DatabaseAdminConfigValues()
         self.database_config_values = RSRDatabaseConfigValues()
+        self.deployment_config = RSRDeploymentConfig.create_instance(None)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
         config_values_template_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
         self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values,
-                                                 self.mock_time_stamp_formatter)
+                                                 self.deployment_config, self.mock_time_stamp_formatter)
 
     def test_can_create_config_from_config_values_file(self):
         """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig from a given config values file"""
@@ -54,6 +56,20 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         """fab.tests.config.rsr.database_config_test  Has RSR database user"""
 
         self.assertEqual(self.database_config_values.rsr_database_user, self.database_config.rsr_database_user)
+
+    def test_has_config_values_file_path(self):
+        """fab.tests.config.rsr.database_config_test  Has config values file path"""
+
+        expected_config_value_file_path = os.path.join(self.database_admin_config_values.remote_config_values_home, "values.py")
+
+        self.assertEqual(expected_config_value_file_path, self.database_config.config_values_file_path)
+
+    def test_has_database_admin_scripts_path(self):
+        """fab.tests.config.rsr.database_config_test  Has database admin scripts path"""
+
+        expected_admin_scripts_path = os.path.join(self.deployment_config.rsr_deployment_home, RSRDatabaseConfig.DATABASE_ADMIN_SCRIPTS_HOME)
+
+        self.assertEqual(expected_admin_scripts_path, self.database_config.admin_scripts_path)
 
 
 def suite():
