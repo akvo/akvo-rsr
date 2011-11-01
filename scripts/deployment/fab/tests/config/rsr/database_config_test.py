@@ -26,13 +26,14 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         self.database_config_values = RSRDatabaseConfigValues()
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
+        config_values_template_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
         self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values,
                                                  self.mock_time_stamp_formatter)
 
-    def test_can_create_instance(self):
-        """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig instance"""
+    def test_can_create_config_from_config_values_file(self):
+        """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig from a given config values file"""
 
-        self.assertIsInstance(RSRDatabaseConfig.create_instance(), RSRDatabaseConfig)
+        self.assertIsInstance(RSRDatabaseConfig.from_config_values_file(CONFIG_VALUES_TEMPLATE_PATH), RSRDatabaseConfig)
 
     def test_has_admin_login_user_name(self):
         """fab.tests.config.rsr.database_config_test  Has admin login user name"""

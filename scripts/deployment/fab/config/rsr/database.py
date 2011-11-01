@@ -5,9 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os
+import imp, os
 
-from fab.config.values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
 from fab.format.timestamp import TimeStampFormatter
 
 
@@ -18,7 +17,11 @@ class RSRDatabaseConfig(object):
         self.admin_password = db_admin_config_values.admin_password
         self.rsr_database_name  = db_config_values.rsr_database_name
         self.rsr_database_user  = db_config_values.rsr_database_user
+        self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
-    def create_instance():
+    def from_config_values_file(config_values_file_path):
+        imp.load_source('config_values', config_values_file_path)
+        from config_values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
+
         return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), TimeStampFormatter())
