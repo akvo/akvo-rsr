@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 
 def extra_context(request):
-    domain_name = settings.DOMAIN_NAME
+    domain_name = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     current_site = Site.objects.get_current()
     django_version = django.get_version()
     template_context = dict(
