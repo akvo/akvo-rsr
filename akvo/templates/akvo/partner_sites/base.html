@@ -1,0 +1,120 @@
+{% load i18n rsr_tags webdesign rsr_tags thumbnail %}
+{% load url from future %}
+
+
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock title %}{{organisation}}</title>
+
+  {% asset_bundle 'partner_sites_style' %}
+  {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+  {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
+  {% block head %}{% endblock head %}
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+  <script type="text/javascript">
+    !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
+  </script>
+</head>
+<body>
+  <div class="bottom_gradient_bar pad_bottom10">
+    <div class="container pad_top10">
+      <a href="{{return_url}}" style="text-decoration:none;">
+        {% if logo %}
+          <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
+        {% else %}
+          <img src=" {% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
+        {% endif %}
+      </a>
+      <span class="small marg_left20">
+        <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
+      </span>
+    </div>    
+  </div>
+
+  <div class="container">
+    <div class="breadcrum_back marg_bottom20 clearfix">
+      {% comment %}
+      <div style="float:right;">
+        <p class="normal" style="margin: 4px 10px 0 0; font-size:12px">
+          {% block breadcrum_right %}
+            Feeds: 
+            <a href="#">All projects</a>
+          {% endblock breadcrum_right %}
+        </p>
+      </div>
+      {% endcomment %}
+      <ul class="breadcrum">
+        {% block breadcrum_items %}
+          <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
+        {% endblock breadcrum_items %}
+      </ul>
+    </div>
+    {% block content %}{% endblock content %}
+  </div>
+  {% comment %}
+    
+  <div class="container">
+    <footer>
+      <div class="two_col_left">
+          <p class="small">
+            Contact <a href="{{organisation.url}}">{{organisation}}</a> at 
+            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>.
+          </p>
+      </div>
+      <div class="two_col_right" style="text-align:right;">
+          <p class="small">
+            Powered by <a href="http://www.akvoapp.org">Akvo</a>
+          </p>
+      </div>
+      <div class="clear"></div>
+    </footer>
+    <div style="background-color:#111; margin-top:80px">
+      <h1 style="color:#ACCC7D;">Development information</h1>
+      {% if queries %}
+        <h2 style="margin:10px; color:#ACCC7D">{{ queries|length }} Quer{{ queries|pluralize:"y,ies" }}</h2>
+        <p style="font-size:12px; color:#888; margin:10px;">
+          {% for query in queries %}
+            {{query}}<br /><br />
+          {% endfor %}
+        </p>
+      {% endif %}
+    </div>
+  </div>
+  {% endcomment %}
+  
+  <div class="top_gradient_bar pad_bottom10 marg_top40">
+    <div class="container pad_top10">
+      <div class="two_col_left">
+          <p class="small">
+           {% trans "Contact at " %}
+            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
+          </p>
+      </div>
+      <div class="two_col_right" style="text-align:right;">
+          <p class="small">
+            {% trans "Powered by" %} <a href="http://www.akvoapp.org">Akvo</a>
+          </p>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.6.2.min.js"><\/script>');
+  </script>
+  {% block js %}{% endblock js %}
+  <script type="text/javascript">
+    var $ = jQ = jQuery.noConflict();
+    jQ(document).ready(function(){
+      {% block jq_ready %}{% endblock jq_ready %}
+    });
+  </script>
+ </body>
+</html>

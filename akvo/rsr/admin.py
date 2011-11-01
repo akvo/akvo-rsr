@@ -4,14 +4,13 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.contrib import admin
-from django.contrib import auth
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
+from django.contrib.sites.admin import SiteAdmin
 from django.contrib.contenttypes import generic
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
-from django.forms.models import modelform_factory
 from django.forms.util import ErrorList
 from django.http import Http404
 from django.utils.decorators import method_decorator
@@ -27,12 +26,12 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from permissions.models import Role
 
-from forms import ReadonlyFKAdminField
-
-from utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
-from utils import get_rsr_limited_change_permission
-from utils import groups_from_user
-from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
+from akvo.rsr.forms import PartnerSiteAdminForm
+from akvo.rsr.forms import ReadonlyFKAdminField
+from akvo.rsr.iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
+from akvo.rsr.utils import GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from akvo.rsr.utils import get_rsr_limited_change_permission
+from akvo.rsr.utils import groups_from_user
 
 
 NON_FIELD_ERRORS = '__all__'
@@ -1130,7 +1129,7 @@ class SmsReporterInline(admin.TabularInline):
     def get_readonly_fields(self, request, obj):
         """ Only allow viewing of gateway number and project for non-superusers
         """
-        opts = self.opts
+        #opts = self.opts
         user = request.user
         if not user.is_superuser:
             self.readonly_fields = ('gw_number', 'project',)            
@@ -1440,3 +1439,49 @@ else: #akvo-rsr
         list_filter = ('paypal_gateway', 'mollie_gateway')
     
     admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
+
+
+class PartnerSiteAdmin(admin.ModelAdmin):
+    form = PartnerSiteAdminForm
+
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(PartnerSiteAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions
+
+    def queryset(self, request):
+        qs = super(PartnerSiteAdmin, self).queryset(request)
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            organisation = request.user.get_profile().organisation
+            return qs.filter(organisation=organisation)
+        else:
+            raise PermissionDenied
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
+
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+
+        get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
+        "own" projects, organisation, patner_site and user profiles
+        """
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return True
+        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            if obj:
+                return obj.organisation == request.user.get_profile().organisation
+            else:
+                return True
+        return False
+
+admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
