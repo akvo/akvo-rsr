@@ -7,8 +7,6 @@
 
 import MySQLdb
 
-from fab.config.rsr.database import RSRDatabaseConfig
-
 
 class DatabaseConnection(object):
 
@@ -17,11 +15,6 @@ class DatabaseConnection(object):
             self.db_connection = MySQLdb.connect(user=username)
         else:
             self.db_connection = MySQLdb.connect(user=username, passwd=password)
-
-    @staticmethod
-    def for_admin_user():
-        db_config = RSRDatabaseConfig.create_instance()
-        return DatabaseConnection(db_config.admin_user, db_config.admin_password)
 
     def create_cursor(self):
         return self.db_connection.cursor()

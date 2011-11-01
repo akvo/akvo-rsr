@@ -11,6 +11,9 @@ from fab.database.mysql.statement import SQLStatementExecutor
 
 class DatabaseAdmin(object):
 
+    def __init__(self, database_connection):
+        self.database_connection = database_connection
+
     def database_exists(self, database_name):
         return self._create_schema_information().database_exists(database_name)
 
@@ -21,7 +24,7 @@ class DatabaseAdmin(object):
         self._create_statement_executor().execute_statement("GRANT ALL ON %s.* TO %s@localhost" % (database_name, database_user))
 
     def _create_schema_information(self):
-        return SchemaInformation()
+        return SchemaInformation(self.database_connection)
 
     def _create_statement_executor(self):
-        return SQLStatementExecutor.for_admin()
+        return SQLStatementExecutor(self.database_connection)
