@@ -147,7 +147,7 @@ def send_donation_confirmation_emails(invoice_id):
     subject_field = _(u'Thank you from Akvo.org!')
     from_field = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@akvo.org')
     bcc_field = [invoice.notification_email]
-    to_field = invoice.get_email
+    to_field = [invoice.get_email]
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send()
