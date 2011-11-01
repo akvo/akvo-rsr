@@ -134,7 +134,8 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site_url = 'http://%s/' % settings.DOMAIN_NAME
+    site = Site.objects.get_current().domain
+    site_url = 'http://%s/' % site
     base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
     project_url = 'http://%s%s' % (site, base_project_url)
     base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
