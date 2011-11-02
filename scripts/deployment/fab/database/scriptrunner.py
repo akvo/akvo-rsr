@@ -7,6 +7,8 @@
 
 import os
 
+from fab.config.rsr.database import RSRDatabaseConfig
+
 
 class DatabaseAdminScriptRunner(object):
 
@@ -14,8 +16,11 @@ class DatabaseAdminScriptRunner(object):
         self.db_config = database_config
         self.host_controller = host_controller
 
+    @staticmethod
+    def create_instance(host_controller):
+        return DatabaseAdminScriptRunner(RSRDatabaseConfig.create_instance(), host_controller)
+
     def run(self, script_name):
-        # pass config file path to admin scripts
         self.host_controller.run("python %s %s" % (self._admin_script_path(script_name), self.db_config.config_values_file_path))
 
     def _admin_script_path(self, script_name):

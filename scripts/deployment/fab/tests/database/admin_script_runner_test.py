@@ -24,6 +24,11 @@ class DatabaseAdminScriptRunnerTest(mox.MoxTestBase):
 
         self.admin_script_runner = DatabaseAdminScriptRunner(self.database_config, self.mock_host_controller)
 
+    def test_can_create_instance(self):
+        """fab.tests.database.admin_script_runner_test  Can create instance"""
+
+        self.assertIsInstance(DatabaseAdminScriptRunner.create_instance(self.mock_host_controller), DatabaseAdminScriptRunner)
+
     def test_can_run_database_admin_script(self):
         """fab.tests.database.admin_script_runner_test  Can run database admin script"""
 
