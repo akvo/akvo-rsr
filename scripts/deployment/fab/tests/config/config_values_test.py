@@ -12,7 +12,8 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
 
-from config_values import SharedConfigValues, PythonConfigValues, DataHostConfigValues, DeploymentHostConfigValues
+from config_values import SharedConfigValues, PythonConfigValues, DataHostConfigValues
+from config_values import DeploymentHostConfigValues, DatabaseAdminConfigValues, RSRDatabaseConfigValues
 
 
 class ConfigValuesTest(unittest2.TestCase):
@@ -23,6 +24,8 @@ class ConfigValuesTest(unittest2.TestCase):
         self.python_config_values = PythonConfigValues()
         self.data_host_config_values = DataHostConfigValues()
         self.deployment_config_values = DeploymentHostConfigValues()
+        self.database_admin_config_values = DatabaseAdminConfigValues()
+        self.rsr_database_config_values = RSRDatabaseConfigValues()
 
     def test_sharedconfigvalues_has_repository_branch(self):
         """fab.tests.config.config_values_test  SharedConfigValues has repository branch"""
@@ -74,8 +77,33 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.deployment_config_values.virtualenvs_home, "virtualenvs home")
 
+    def test_databaseadminconfigvalues_has_admin_user(self):
+        """fab.tests.config.config_values_test  DatabaseAdminConfigValues has admin user"""
+
+        self._verify_expected_config_value(self.database_admin_config_values.admin_user, "admin user")
+
+    def test_databaseadminconfigvalues_has_admin_password(self):
+        """fab.tests.config.config_values_test  DatabaseAdminConfigValues has admin password"""
+
+        self._verify_expected_config_value(self.database_admin_config_values.admin_password, "admin password")
+
+    def test_databaseadminconfigvalues_has_remote_config_values_home(self):
+        """fab.tests.config.config_values_test  DatabaseAdminConfigValues has remote config values home"""
+
+        self._verify_expected_config_value(self.database_admin_config_values.remote_config_values_home, "remote config values home")
+
+    def test_rsrdatabaseconfigvalues_has_database_name(self):
+        """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database name"""
+
+        self._verify_expected_config_value(self.rsr_database_config_values.rsr_database_name, "RSR database name")
+
+    def test_rsrdatabaseconfigvalues_has_database_user(self):
+        """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database user"""
+
+        self._verify_expected_config_value(self.rsr_database_config_values.rsr_database_user, "RSR database user")
+
     def _verify_expected_config_value(self, config_value, config_value_description):
-        self.assertTrue(len(config_value) > 0, "Expected %s" % config_value_description)
+        self.assertTrue(len(config_value) > 0, "Expected %s config value" % config_value_description)
 
 
 def suite():
