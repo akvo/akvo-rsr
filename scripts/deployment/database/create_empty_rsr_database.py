@@ -13,12 +13,12 @@ from fab.database.mysql.connection import DatabaseConnection
 
 
 def display_usage_and_exit():
-    print "Usage: create_empty_rsr_database <database_config_file_path>"
+    print "Usage: create_empty_rsr_database <config_values_file_path>"
     sys.exit(1)
 
 def verify_expected_parameters():
     if len(sys.argv) > 0 and len(sys.argv) < 2:
-        print "Missing script parameter: <database_config_file_path>"
+        print "Missing script parameter: <config_values_file_path>"
         display_usage_and_exit()
 
 def exit_if_config_file_not_found(config_file_path):
@@ -41,7 +41,7 @@ def create_empty_rsr_database(db_config_values_file):
 
 if __name__ == "__main__":
     verify_expected_parameters()
-    db_config_values_file = sys.argv[1]
+    config_values_file_path = sys.argv[1]
 
-    exit_if_config_file_not_found(db_config_values_file)
-    create_empty_rsr_database(db_config_values_file)
+    exit_if_config_file_not_found(config_values_file_path)
+    create_empty_rsr_database(config_values_file_path)
