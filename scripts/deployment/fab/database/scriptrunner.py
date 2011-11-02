@@ -15,7 +15,8 @@ class DatabaseAdminScriptRunner(object):
         self.host_controller = host_controller
 
     def run(self, script_name):
-        self.host_controller.run("python %s" % self._admin_script_path(script_name))
+        # pass config file path to admin scripts
+        self.host_controller.run("python %s %s" % (self._admin_script_path(script_name), self.db_config.config_values_file_path))
 
     def _admin_script_path(self, script_name):
         return os.path.join(self.db_config.admin_scripts_path, script_name)
