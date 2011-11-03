@@ -45,18 +45,10 @@
                   <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
                 </a>
                 </div>
-                  
-               {% comment %}
-                <div style="width:240px; margin-left:auto; margin-right:auto;">
-                  <a href="{% url 'project_update' project.id update.id %}">
-                    <img style="background: url({{ update.get_video_thumbnail_url }}); width: 240px;" src="{{ MEDIA_URL }}core/img/play_button.png" width="100px" />
-                  </a>
-                </div>
-                {% endcomment %} 
               {% else %}
                 {% if update.photo %}
                   <a href="{% url 'project_update' project.id update.id %}">
-                    <img src="{% thumbnail update.photo 116x100 crop autocrop upscale sharpen %}" />
+                    <img src="{% thumbnail update.photo 240x172 crop autocrop upscale sharpen %}" />
                   </a>
                 {% else %}
                   &nbsp;

@@ -246,21 +246,6 @@ a {
 /*------------------------------------------------------------------ 
 [7. Nice to have classes] 
 */
-.hide {
-  display: none;
-}
-.grey {
-  color: #7E8197;
-}
-.red {
-  color: #E60113;
-}
-.black {
-  color: #333;
-}
-.serif {
-  font-family: 'Georgia', serif;
-}
 /*------------------------------------------------------------------ 
 [8. Text sizes] 
 */
