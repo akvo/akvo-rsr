@@ -61,6 +61,14 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
 
         self.assertEqual(self.database_config_values.rsr_database_user, self.database_config.rsr_database_user)
 
+    def test_has_local_config_values_file_path(self):
+        """fab.tests.config.rsr.database_config_test  Has local config values file path"""
+
+        expected_config_values_file_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config',
+                                                                         RSRDatabaseConfig.CONFIG_VALUES_FILE_NAME))
+
+        self.assertEqual(expected_config_values_file_path, RSRDatabaseConfig.LOCAL_CONFIG_VALUES_PATH)
+
     def test_has_remote_config_values_file_path(self):
         """fab.tests.config.rsr.database_config_test  Has remote config values file path"""
 
