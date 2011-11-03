@@ -9,18 +9,24 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.scriptrunner import DatabaseAdminScriptRunner
+from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.database import DatabaseHost
+from fab.os.filesystem import FileSystem
 
 
 class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
+        self.database_config = RSRDatabaseConfig.create_instance()
         self.mock_admin_script_runner = self.mox.CreateMock(DatabaseAdminScriptRunner)
+        self.mock_file_system = self.mox.CreateMock(FileSystem)
 
-        self.database_host = DatabaseHost(self.mock_admin_script_runner)
+        self.database_host = DatabaseHost(self.database_config, self.mock_admin_script_runner,
+                                          self.mock_file_system, None)
 
     def test_can_create_remote_database_host_instance(self):
         """fab.tests.host.database_host_test  Can create a remote DatabaseHost instance"""
@@ -34,10 +40,20 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def _create_database_host_instance_with(self, host_controller_class):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
+        mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mox.ReplayAll()
 
         return DatabaseHost.create_instance(mock_host_controller)
+
+    def test_can_upload_database_config(self):
+        """fab.tests.host.database_host_test  Can upload database configuration"""
+
+        self.mock_file_system.ensure_directory_exists(self.database_config.remote_config_values_home)
+        self.mock_file_system.upload_file(self.database_config.local_config_values_file, self.database_config.remote_config_values_home)
+        self.mox.ReplayAll()
+
+        self.database_host.upload_database_configuration()
 
     def test_can_rename_existing_database(self):
         """fab.tests.host.database_host_test  Can rename existing database"""
