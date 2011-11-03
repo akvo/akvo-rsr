@@ -39,6 +39,7 @@ class CreateRSRDatabaseTest(mox.MoxTestBase):
     def test_can_create_empty_rsr_database(self):
         """fab.tests.tasks.database.create_rsr_database_test  Can create an empty RSR database"""
 
+        self.mock_database_host.upload_database_configuration()
         self.mock_database_host.rename_existing_database()
         self.mock_database_host.create_empty_database()
         self.mox.ReplayAll()

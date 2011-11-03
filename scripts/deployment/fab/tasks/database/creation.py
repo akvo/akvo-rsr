@@ -19,6 +19,7 @@ class CreateRSRDatabase(fabric.tasks.Task):
     def run(self, host_controller_mode):
         self.database_host = self._create_database_host_with(host_controller_mode)
 
+        self.database_host.upload_database_configuration()
         self.database_host.rename_existing_database()
         self.database_host.create_empty_database()
 
