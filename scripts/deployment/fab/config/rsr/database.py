@@ -44,3 +44,6 @@ class RSRDatabaseConfig(object):
 
         return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), deployment_config,
                                  TimeStampFormatter())
+
+    def time_stamped_database_name(self):
+        return self.time_stamp_formatter.append_timestamp(self.rsr_database_name)

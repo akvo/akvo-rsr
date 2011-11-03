@@ -90,6 +90,17 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
 
         self.assertEqual(expected_admin_scripts_path, self.database_config.admin_scripts_path)
 
+    def test_can_get_time_stamped_database_name(self):
+        """fab.tests.config.rsr.database_config_test  Can get time-stamped database name"""
+
+        original_database_name = self.database_config_values.rsr_database_name
+        time_stamped_database_name = "%s_%s" % (original_database_name, "timestamp")
+
+        self.mock_time_stamp_formatter.append_timestamp(original_database_name).AndReturn(time_stamped_database_name)
+        self.mox.ReplayAll()
+
+        self.assertEqual(time_stamped_database_name, self.database_config.time_stamped_database_name())
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDatabaseConfigTest)
