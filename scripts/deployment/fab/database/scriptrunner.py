@@ -21,7 +21,7 @@ class DatabaseAdminScriptRunner(object):
         return DatabaseAdminScriptRunner(RSRDatabaseConfig.create_instance(), host_controller)
 
     def run(self, script_name):
-        self.host_controller.run("python %s %s" % (self._admin_script_path(script_name), self.db_config.remote_config_values_path))
+        self.host_controller.run("python %s %s" % (self._admin_script_path(script_name), self.db_config.remote_config_values_file))
 
     def _admin_script_path(self, script_name):
         return os.path.join(self.db_config.admin_scripts_path, script_name)

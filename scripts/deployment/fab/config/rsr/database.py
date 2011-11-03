@@ -15,7 +15,7 @@ from fab.format.timestamp import TimeStampFormatter
 class RSRDatabaseConfig(object):
 
     CONFIG_VALUES_FILE_NAME     = "values.py"
-    LOCAL_CONFIG_VALUES_PATH    = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', CONFIG_VALUES_FILE_NAME))
+    LOCAL_CONFIG_VALUES_FILE    = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', CONFIG_VALUES_FILE_NAME))
     DATABASE_ADMIN_SCRIPTS_HOME = "scripts/deployment/database"
 
     def __init__(self, db_admin_config_values, db_config_values, deployment_config, time_stamp_formatter):
@@ -24,14 +24,16 @@ class RSRDatabaseConfig(object):
         self.rsr_database_name  = db_config_values.rsr_database_name
         self.rsr_database_user  = db_config_values.rsr_database_user
 
-        self.remote_config_values_path  = os.path.join(db_admin_config_values.remote_config_values_home, self.CONFIG_VALUES_FILE_NAME)
+        self.local_config_values_file   = self.LOCAL_CONFIG_VALUES_FILE
+        self.remote_config_values_home  = db_admin_config_values.remote_config_values_home
+        self.remote_config_values_file  = os.path.join(self.remote_config_values_home, self.CONFIG_VALUES_FILE_NAME)
         self.admin_scripts_path         = os.path.join(deployment_config.rsr_deployment_home, self.DATABASE_ADMIN_SCRIPTS_HOME)
 
         self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
     def create_instance():
-        return RSRDatabaseConfig.from_config_values_file(RSRDatabaseConfig.LOCAL_CONFIG_VALUES_PATH)
+        return RSRDatabaseConfig.from_config_values_file(RSRDatabaseConfig.LOCAL_CONFIG_VALUES_FILE)
 
     @staticmethod
     def from_config_values_file(config_values_file_path):
