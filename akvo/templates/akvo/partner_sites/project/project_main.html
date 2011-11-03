@@ -1,0 +1,174 @@
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags cache humanize google_maps %}
+{% load url from future %}
+
+
+{% block head %}
+  <style type="text/css">
+    div#gallery_box_slider {width:{{slider_width}}px;}
+  </style>
+
+  <!--[if lte IE 7]> 
+    <style type="text/css" media="screen">
+      .galleria-info-text{background-color:#fff};
+    </style>
+  <![endif]-->
+{% endblock head %}
+
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li class="last_breadcrum_item">{{project}}</li>
+{% endblock breadcrum_items %}
+
+
+{% block project_content %}
+  <section class="whitebox pad20 marg_bottom40">
+    {% counter_badge project %}
+    <h2>{% trans "Description" %}</h2>
+    {{project.project_plan_summary|linebreaks}}
+    <div style="float:left; width:340px;">
+      <div id="galleria" style="width:338px; height:350px;"></div>
+    </div>
+    <div style="float:right; width:265px;">
+      {% if benchmarks %}
+        <h2 class="black">{% trans 'Who will benefit?' %}</h2>
+        {% include "rsr/inc_target_benchmarks.html" %}
+      {% endif %}
+      <h2 class="black">{% trans 'Location' %}</h2>
+      {% if project.primary_location %} 
+        <p class="grey">
+          {{project.primary_location.country}},
+          {{ project.primary_location.country.continent }}<br />
+          {{project.primary_location.city}}
+          <br />
+          {{ project.primary_location.latitude }},
+          {{ project.primary_location.longitude }}
+        </p>
+        {% google_map project 260 180 3 %}
+      {% else %}
+        <p style="color: red;">{% trans 'No map available' %}</p>
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+  </section>
+  <h2>{% trans "Project in depth" %}</h2>
+  <section class="marg_bottom40">
+    <div class="whitebox pad20" style="width:435px; float:left;">
+      <div id="project_tabs">
+        <ul class="small">
+          <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
+          {% if project.goal_1 or project.goal_2 or project.goal_3 or project.goal_4 or project.goal_5 %}
+            <li><a href="#tab_outcomes"><span>{% trans 'Outcomes' %}</span></a></li>
+          {% endif %}
+          <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
+        </ul>
+        <div id="tab_background" class="tab">
+          <p>{{project.context|linebreaks}}</p>
+          <h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
+          <p>{{project.goals_overview|linebreaks}}</p>
+          <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
+          <p>{{project.current_status_detail|linebreaks}}</p>
+          <h4 style="font-weight:bold">{% trans 'Project plan' %}</h4>
+          <p>{{project.project_plan_detail|linebreaks}}</p>
+        </div>
+        {% if project.goal_1 or project.goal_2 or project.goal_3 or project.goal_4 or project.goal_5 %}
+          <div id="tab_outcomes" class="tab">
+            <h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
+            <ul style="margin-top:15px;">
+              {% if project.goal_1 %}<li>{{project.goal_1}}</li>{% endif %}
+              {% if project.goal_2 %}<li>{{project.goal_2}}</li>{% endif %}
+              {% if project.goal_3 %}<li>{{project.goal_3}}</li>{% endif %}
+              {% if project.goal_4 %}<li>{{project.goal_4}}</li>{% endif %}
+              {% if project.goal_5 %}<li>{{project.goal_5}}</li>{% endif %}
+            </ul>
+          </div>
+        {% endif %}
+        <div id="tab_sustainability" class="tab">
+          <p>{{project.sustainability|linebreaks}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="whitebox pad20" style="width:130px; float:right;">
+      <h2>{% trans 'Related to this project' %}</h2>
+      <hr />
+      {% if not project.links.all %}
+        <p>{% trans 'Nothing related.' %}</p>
+      {% else %}
+        {% if project.akvopedia_links %}
+          <h4>
+            {% blocktrans count project.akvopedia_links.count as links %}
+              Akvopedia article
+            {% plural %}
+              Akvopedia articles
+            {% endblocktrans %}
+          </h4>
+          {% for link in project.akvopedia_links %}
+            <p><a href="{{link.url}}">{{link.caption}}</a></p>
+            {% if forloop.last and p.external_links %}
+              <hr />
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if project.external_links %}
+           <span class="normal">
+            {% blocktrans count project.external_links.count as links %}
+              External link
+            {% plural %}
+              External links
+            {% endblocktrans %}
+          </span>
+          <p class="small grey">
+            ({% trans 'Will open in new window' %})
+          </p>
+          {% for link in project.external_links %}
+            <p><a href="{{link.url}}" target="_black">{{link.caption}}</a></p>
+          {% endfor %}
+          <p class="small grey">
+            {% trans 'Akvo.org is not responsible for content of external links' %}
+          </p>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+  </section>
+{% endblock project_content %}
+
+
+{% block js %}
+  {{ block.super }}
+  {% if debug %}
+    <script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.min.js"></script>
+  {% else %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+  {% endif %}
+  {% asset_bundle 'partner_sites_script' %}
+  <script>
+    var galleria_data = [
+      {
+        description: '&nbsp;',
+        image: '{% thumbnail project.current_image 400x300 autocrop sharpen %}',
+        thumb: '{% thumbnail project.current_image 64x48 autocrop sharpen %}',
+        title: '{{project.current_image_caption}}'
+      }
+      {% if updates_with_images %},
+        {% for update_with_image in updates_with_images %}
+          {
+            description: '{% if update_with_image.photo_credit %}{% trans "Photo credit:" %} {{update_with_image.photo_credit}}{% else %}&nbsp;{% endif %}',
+            image: '{% thumbnail update_with_image.photo 400x300 autocrop sharpen %}',
+            thumb: '{% thumbnail update_with_image.photo 64x48 autocrop sharpen %}',
+            title: '{{update_with_image.photo_caption}}'
+          }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      {% endif%}
+      ];
+    </script>
+{% endblock js %}
+
+
+{% block jq_ready %}
+  {{block.super}}
+  jQ('#project_tabs').tabs();
+  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
+  jQ('#galleria').galleria({data_source: galleria_data});
+{% endblock jq_ready %}

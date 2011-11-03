@@ -1,0 +1,68 @@
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail oembed_tags %}
+{% load url from future %}
+
+
+{% block title %}{{update.title}} - {% endblock title %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  <li><a href="{% url 'update_list' project.id %}"><span>{% trans "Updates" %}</span></a></li>
+  <li class="last_breadcrum_item">{{update.title}}</li>
+{% endblock breadcrum_items %}
+
+
+{% block project_content %}
+  <section class="whitebox pad20">
+    <div style="float:left; margin-left:0px; margin-top:0px">
+      <span class="small">
+        <a href="{% url 'update_list' project.id %}">&#x25C0; {% trans 'Back to project updates' %}</a>
+      </span>
+      <h2 style="padding-top:20px;">{{update.title}}</h2>
+      <p class="grey small">
+        {{ update.time|date:"d-M-Y" }},
+        {%  url 'partner_main' update.user.userprofile.organisation.id as user_org_url %}
+        {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.get_update_method_display as update_meth %}
+          by {{user_name}}, <a href="{{user_org_url}}">{{user_org}}</a>, via {{update_meth}}
+        {% endblocktrans %}
+      </p>
+    </div>
+    {% counter_badge update %}
+    <div class="clear"></div>
+    {% if update.text_location == 'B' %}
+      {{ update.text|linebreaks }}
+    {% endif %}	
+    {% if update.video %}
+      <div class="marg20">
+        {{update.video|oembed:"580x435"}}
+      </div>
+      {% if update.video_caption or update.video_credit %}
+        <p class="grey small">
+          {% if update.video_caption %}
+            {{ update.video_caption }}
+          {% endif %}
+          {% if update.video_credit %}
+            {% trans 'Video credit' %}: {{ update.video_credit }}
+          {% endif %}
+        </p>
+      {% endif %}
+    {% endif %}
+    {% if update.photo %}
+      <div class="marg20">
+        {% update_thumb update 580 435 %}
+      </div>
+    {% endif %}
+    {% if update.text_location == 'E' %}
+      {{ update.text|linebreaks }}
+    {% endif %}
+    <hr style="margin-bottom:5px;" />
+    <div class="txt_right">
+      <a class="small" href=".">{% trans 'Permalink' %}</a>
+    </div>
+  </section>
+{% endblock project_content %}
+
+{% block project_aside_updates %}
+  {# Overriding the aside update section #}
+{% endblock project_aside_updates %}

@@ -134,7 +134,7 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site = Site.objects.get_current()
+    site = Site.objects.get_current().domain
     site_url = 'http://%s/' % site
     base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
     project_url = 'http://%s%s' % (site, base_project_url)
@@ -144,12 +144,10 @@ def send_donation_confirmation_emails(invoice_id):
     c = Context(dict(invoice=invoice, site_url=site_url,
         project_url=project_url, project_updates_url=project_updates_url))
     message_body = t.render(c)
-    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
+    subject_field = _(u'Thank you from Akvo.org!')
+    from_field = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@akvo.org')
     bcc_field = [invoice.notification_email]
-    if invoice.user:
-        to_field = [invoice.user.email]
-    else:
-        to_field = [invoice.email]
+    to_field = [invoice.get_email]
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send()

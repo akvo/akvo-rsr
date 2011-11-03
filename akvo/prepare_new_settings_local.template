@@ -7,55 +7,40 @@
 """
 
 
+import os.path
+
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '{{SECRET_KEY}}'
 
 PVW_RSR = {{PVW_RSR}}
 
-if {% if PVW_RSR %}not {% endif %}PVW_RSR:
-    LIVE_EARTH_ENABLED = {{LIVE_EARTH_ENABLED}}
-    WALKING_FOR_WATER_ENABLED = {{WALKING_FOR_WATER_ENABLED}}
-    SITE_ID = {{SITE_ID}}
-    DATABASES = {
-        'default': {
-            'NAME': '{{DB_NAME}}',
-            'ENGINE': '{{DB_ENGINE}}',
-            'USER': '{{DB_USER}}',
-            'PASSWORD': '{{DB_PASSWORD}}',
-            'HOST':'{{DB_HOST}}',
-        },
-        'wordpress': {
-            'NAME': '{{WP_NAME}}',
-            'ENGINE': 'django.db.backends.mysql',
-            'USER': '{{WP_USER}}',
-            'PASSWORD': '{{WP_PASSWORD}}',
-            'HOST': '{{WP_HOST}}',
-        }
-    }
+# If local development you might want to have the logs in the project dir.
+#LOG_FILE_PATH = os.path.join(os.path.dirname(__file__),'../log')
 
-else:
-    MEDIA_ROOT = ''
-    MEDIA_URL = ''
-    LIVE_EARTH_ENABLED = False
-    WALKING_FOR_WATER_ENABLED = False
-    SITE_ID = 1
-    
-    DATABASES = {
-        'default': {
-            'NAME': 'dws-rsr',
-            'ENGINE': 'django.db.backends.mysql',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST':'localhost',
-        },
-        'wordpress': {
-            'NAME': 'akvo-wp',
-            'ENGINE': 'django.db.backends.mysql',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-        }
+
+LIVE_EARTH_ENABLED = {{LIVE_EARTH_ENABLED}}
+WALKING_FOR_WATER_ENABLED = {{WALKING_FOR_WATER_ENABLED}}
+SITE_ID = {{SITE_ID}}
+MEDIA_ROOT = {{MEDIA_ROOT}}
+MEDIA_URL = {{MEDIA_URL}}
+DATABASES = {
+    'default': {
+        'NAME': '{{DB_NAME}}',
+        'ENGINE': '{{DB_ENGINE}}',
+        'USER': '{{DB_USER}}',
+        'PASSWORD': '{{DB_PASSWORD}}',
+        'HOST':'{{DB_HOST}}',
+    },
+    'wordpress': {
+        'NAME': '{{WP_NAME}}',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': '{{WP_USER}}',
+        'PASSWORD': '{{WP_PASSWORD}}',
+        'HOST': '{{WP_HOST}}',
     }
+}
+
 
 #TEST_RUNNER = 'test_runner.run_tests'
 

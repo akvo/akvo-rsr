@@ -27,7 +27,7 @@ class ProjectFilterSet(django_filters.FilterSet):
     def filter_by_org(qs, org):
         if org:
             projs = org.published_projects().values_list('id', flat=True)
-            return qs.filter(pk__in=projs).annotate(budget_total=Sum('budgetitem__amount'),)
+            return qs.filter(pk__in=projs)
         else:
             return qs
 
@@ -72,7 +72,7 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def filter_by_budget_range(qs, what):
         if what:
-            return qs.filter(**{'budget_total__range': (int(what.start) if what.start else 0, int(what.stop) if what.stop else sys.maxint)})
+            return qs.filter(**{'total_budget__range': (int(what.start) if what.start else 0, int(what.stop) if what.stop else sys.maxint)})
         return qs
 
     name            = django_filters.CharFilter(action=filter_by_project_names)
@@ -84,6 +84,7 @@ class ProjectFilterSet(django_filters.FilterSet):
     currency        = django_filters.ChoiceFilter()
 
     def __init__(self, *args, **kwargs):
+        organisation_id = kwargs.pop('organisation_id', None)
         super(ProjectFilterSet, self).__init__(*args, **kwargs)
 
         self.filters['name'].field.widget.input_type = 'search'
@@ -95,9 +96,13 @@ class ProjectFilterSet(django_filters.FilterSet):
 
         self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
 
-        qs = Organisation.objects.all()
+        if organisation_id:
+            qs = Organisation.objects.get(pk=organisation_id).partners()
+            self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+        else:
+            qs = Organisation.objects.all()
+            self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
         self.filters['organisation'].extra.update({'queryset': qs})
-        self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
 
         self.filters['andor'].field_class = BooleanField
         self.filters['status'].field_class = CheckboxMultipleChoiceField

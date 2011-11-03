@@ -90,7 +90,30 @@ ASSET_BUNDLES = {
         'path': 'dws/css/',
         'compress': False,
         'files': ['ie6.css',],
-    },    
+    },
+    'partner_sites_style': {
+        'type': 'css',
+        'path': 'partner_sites/css/',
+        'compress': True,
+        'files': [
+            'foundation.css',
+            'base.css',
+            'scaffold.css',
+            'typography.css',
+            'breadcrum.css',
+            'tabs.css',
+            'utils.css',
+            'buttons.css',
+            ],
+    },
+    'partner_sites_script': {
+        'type': 'js',
+        'path': 'partner_sites/js/',
+        'compress': True,
+        'files': [
+            'galleria.js',
+            ],
+    },
     'widget_cobranded_banner': {
         'type': 'css',
         'path': 'widgets/cobranded_banner/css/',
