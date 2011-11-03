@@ -270,3 +270,19 @@ div.counter_badge span {
 td {
   vertical-align: top;
 }
+.tiny_table {
+  border: none;
+  color: #000;
+  margin-bottom: 0;
+}
+.tiny_table td {
+  margin: 0;
+  padding: 5px;
+  font-size: 0.6875em;
+  font-size: 0.5626em;
+  border: none;
+  font-weight: bold;
+}
+.tiny_table tr {
+  border: none;
+}
