@@ -33,7 +33,7 @@ class DatabaseAdminScriptRunnerTest(mox.MoxTestBase):
         """fab.tests.database.admin_script_runner_test  Can run database admin script"""
 
         self.mock_host_controller.run("python %s %s" % (self._expected_admin_script_path("some_admin_script.py"),
-                                                     self.database_config.config_values_file_path))
+                                                        self.database_config.remote_config_values_path))
         self.mox.ReplayAll()
 
         self.admin_script_runner.run("some_admin_script.py")
