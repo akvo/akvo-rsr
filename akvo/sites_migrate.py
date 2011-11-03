@@ -11,7 +11,7 @@ def main():
     for existing_site in existing_sites:
         existing_site.delete()
         print 'Removed legacy site %s.' % existing_site.domain
-    default_site = Site(id=1, domain='akvo.org', name='Akvo RSR')
+    default_site = Site(id=1, domain='www.akvo.org', name='Akvo RSR')
     default_site.save()
     print 'Created default site.'
     partner_site = Site(id=2, domain='akvoapp.org', name='Akvo Partner Site')
