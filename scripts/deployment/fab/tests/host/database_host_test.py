@@ -21,7 +21,7 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.database_config = RSRDatabaseConfig.create_instance()
+        self.database_config = RSRDatabaseConfig.from_local_config_values()
         self.mock_admin_script_runner = self.mox.CreateMock(DatabaseAdminScriptRunner)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
 

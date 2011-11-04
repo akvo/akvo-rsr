@@ -32,7 +32,7 @@ class RSRDatabaseConfig(object):
         self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
-    def create_instance():
+    def from_local_config_values():
         return RSRDatabaseConfig.from_config_values_file(RSRDatabaseConfig.LOCAL_CONFIG_VALUES_FILE)
 
     @staticmethod

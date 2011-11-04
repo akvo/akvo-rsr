@@ -21,7 +21,7 @@ class DatabaseHost(NeutralHost):
 
     @staticmethod
     def create_instance(host_controller):
-        database_config = RSRDatabaseConfig.create_instance()
+        database_config = RSRDatabaseConfig.from_local_config_values()
 
         return DatabaseHost(database_config,
                             DatabaseAdminScriptRunner(database_config, host_controller),
