@@ -11,7 +11,6 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.format.timestamp import TimeStampFormatter
 
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
@@ -26,10 +25,8 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         self.database_admin_config_values = DatabaseAdminConfigValues()
         self.database_config_values = RSRDatabaseConfigValues()
         self.deployment_config = RSRDeploymentConfig.create_instance(None)
-        self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
-        self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values,
-                                                 self.deployment_config, self.mock_time_stamp_formatter)
+        self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values, self.deployment_config)
 
     def test_can_create_config_from_config_values_file(self):
         """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig from a given config values file"""
@@ -89,17 +86,6 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         expected_admin_scripts_path = os.path.join(self.deployment_config.rsr_deployment_home, RSRDatabaseConfig.DATABASE_ADMIN_SCRIPTS_HOME)
 
         self.assertEqual(expected_admin_scripts_path, self.database_config.admin_scripts_path)
-
-    def test_can_get_time_stamped_database_name(self):
-        """fab.tests.config.rsr.database_config_test  Can get time-stamped database name"""
-
-        original_database_name = self.database_config_values.rsr_database_name
-        time_stamped_database_name = "%s_%s" % (original_database_name, "timestamp")
-
-        self.mock_time_stamp_formatter.append_timestamp(original_database_name).AndReturn(time_stamped_database_name)
-        self.mox.ReplayAll()
-
-        self.assertEqual(time_stamped_database_name, self.database_config.time_stamped_database_name())
 
 
 def suite():

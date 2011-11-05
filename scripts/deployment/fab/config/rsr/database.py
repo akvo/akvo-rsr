@@ -9,7 +9,6 @@ import imp, os
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.format.timestamp import TimeStampFormatter
 
 
 class RSRDatabaseConfig(object):
@@ -18,7 +17,7 @@ class RSRDatabaseConfig(object):
     LOCAL_CONFIG_VALUES_FILE    = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', CONFIG_VALUES_FILE_NAME))
     DATABASE_ADMIN_SCRIPTS_HOME = "scripts/deployment/database"
 
-    def __init__(self, db_admin_config_values, db_config_values, deployment_config, time_stamp_formatter):
+    def __init__(self, db_admin_config_values, db_config_values, deployment_config):
         self.admin_user = db_admin_config_values.admin_user
         self.admin_password = db_admin_config_values.admin_password
         self.rsr_database_name  = db_config_values.rsr_database_name
@@ -28,8 +27,6 @@ class RSRDatabaseConfig(object):
         self.remote_config_values_home  = db_admin_config_values.remote_config_values_home
         self.remote_config_values_file  = os.path.join(self.remote_config_values_home, self.CONFIG_VALUES_FILE_NAME)
         self.admin_scripts_path         = os.path.join(deployment_config.rsr_deployment_home, self.DATABASE_ADMIN_SCRIPTS_HOME)
-
-        self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
     def from_local_config_values():
@@ -42,8 +39,4 @@ class RSRDatabaseConfig(object):
 
         deployment_config = RSRDeploymentConfig(None, DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
 
-        return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), deployment_config,
-                                 TimeStampFormatter())
-
-    def time_stamped_database_name(self):
-        return self.time_stamp_formatter.append_timestamp(self.rsr_database_name)
+        return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), deployment_config)
