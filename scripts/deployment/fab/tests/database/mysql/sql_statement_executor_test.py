@@ -5,78 +5,44 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import mox
-
-from MySQLdb.cursors import Cursor
+import imp, mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.database.mysql.connection import DatabaseConnection
+from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.mysql.statement import SQLStatementExecutor
+from fab.host.controller import RemoteHostController
 
 
 class SQLStatementExecutorTest(mox.MoxTestBase):
 
     def setUp(self):
         super(SQLStatementExecutorTest, self).setUp()
-        self.mock_database_connection = self.mox.CreateMock(DatabaseConnection)
-        self.mock_cursor = self.mox.CreateMock(Cursor)
+        database_config = RSRDatabaseConfig.create_instance()
+        self.expected_admin_credentials = "--user=%s --password=%s" % (database_config.admin_user, database_config.admin_password)
 
-        self.statement_executor = SQLStatementExecutor(self.mock_database_connection)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
 
-    def test_can_create_statement_executor_for_given_database(self):
-        """fab.tests.database.mysql.sql_statement_executor_test  Can create a statement executor for a given database"""
+        self.statement_executor = SQLStatementExecutor(database_config, self.mock_host_controller)
 
-        self._set_expectations_to_execute_statement("USE project_db")
+    def test_can_execute_single_statement(self):
+        """fab.tests.database.mysql.sql_statement_executor_test  Can execute a single statement"""
 
-        SQLStatementExecutor.for_database("project_db", self.mock_database_connection)
-
-    def test_can_use_specified_database(self):
-        """fab.tests.database.mysql.sql_statement_executor_test  Can use a specified database"""
-
-        self._set_expectations_to_execute_statement("USE project_db")
-
-        self.statement_executor.use_database("project_db")
-
-    def test_can_execute_given_statement(self):
-        """fab.tests.database.mysql.sql_statement_executor_test  Can execute a given statement"""
-
-        drop_table_statement = "DROP TABLE foo"
-
-        self._set_expectations_to_execute_statement(drop_table_statement)
-
-        self.statement_executor.execute_statement(drop_table_statement)
-
-    def _set_expectations_to_execute_statement(self, statement_text):
-        self.mock_database_connection.create_cursor().AndReturn(self.mock_cursor)
-        self.mock_cursor.execute(statement_text)
+        self.mock_host_controller.run('mysql %s -e "show databases"' % self.expected_admin_credentials)
         self.mox.ReplayAll()
 
-    def test_can_execute_given_query_and_return_resulting_rows(self):
-        """fab.tests.database.mysql.sql_statement_executor_test  Can execute a given query and return the resulting rows"""
+        self.statement_executor.execute(["show databases"])
 
-        all_teams_query = "SELECT * FROM team"
-        expected_team_rows = (('A', 'Sales',), ('B', 'Support',), ('C', 'Testing',),)
+    def test_can_execute_multiple_statements(self):
+        """fab.tests.database.mysql.sql_statement_executor_test  Can execute multiple statements"""
 
-        self._set_expectations_for_query(all_teams_query, expected_team_rows)
+        statements = ["use dev_db", "show tables", "select * from projects"]
+        expected_statement_sequence = "; ".join(statements)
 
-        self.assertEqual(expected_team_rows, self.statement_executor.query(all_teams_query))
-
-    def test_can_execute_given_scalar_query_and_return_resulting_value(self):
-        """fab.tests.database.mysql.sql_statement_executor_test  Can execute a given scalar query and return the resulting value"""
-
-        team_count_query = "SELECT COUNT(*) FROM team"
-        expected_team_count_rows = ((3L,),)
-
-        self._set_expectations_for_query(team_count_query, expected_team_count_rows)
-
-        self.assertEqual(3L, self.statement_executor.scalar_query(team_count_query))
-
-    def _set_expectations_for_query(self, query_text, expected_rows):
-        self.mock_database_connection.create_cursor().AndReturn(self.mock_cursor)
-        self.mock_cursor.execute(query_text)
-        self.mock_cursor.fetchall().AndReturn(expected_rows)
+        self.mock_host_controller.run('mysql %s -e "%s"' % (self.expected_admin_credentials, expected_statement_sequence))
         self.mox.ReplayAll()
+
+        self.statement_executor.execute(statements)
 
 
 def suite():

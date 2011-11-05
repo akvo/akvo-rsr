@@ -7,30 +7,12 @@
 
 class SQLStatementExecutor(object):
 
-    def __init__(self, database_connection):
-        self.database_connection = database_connection
+    def __init__(self, database_config, host_controller):
+        self.admin_credentials = "--user=%s --password=%s" % (database_config.admin_user, database_config.admin_password)
+        self.host_controller = host_controller
 
-    @staticmethod
-    def for_database(database_name, database_connection):
-        statement_executor = SQLStatementExecutor(database_connection)
-        statement_executor.use_database(database_name)
+    def execute(self, statement_list):
+        self.host_controller.run('mysql %s -e "%s"' % (self.admin_credentials, self._format_statements(statement_list)))
 
-        return statement_executor
-
-    def use_database(self, database_name):
-        self.execute_statement("USE %s" % database_name)
-
-    def execute_statement(self, statement_text):
-        self._execute(statement_text)
-
-    def scalar_query(self, scalar_query_text):
-        return self.query(scalar_query_text)[0][0]
-
-    def query(self, query_text):
-        return self._execute(query_text).fetchall()
-
-    def _execute(self, statement_text):
-        cursor = self.database_connection.create_cursor()
-        cursor.execute(statement_text)
-
-        return cursor
+    def _format_statements(self, statement_list):
+        return "; ".join(statement_list)
