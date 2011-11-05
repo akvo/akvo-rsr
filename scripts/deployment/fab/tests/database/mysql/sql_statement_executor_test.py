@@ -11,7 +11,7 @@ import fabric.api
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.database.mysql.statement import SQLStatementExecutor
+from fab.database.mysql.command import SQLStatementExecutor
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
 
