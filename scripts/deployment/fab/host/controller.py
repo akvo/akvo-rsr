@@ -18,6 +18,9 @@ class HostControllerBase(object):
     def __init__(self, feedback):
         self.feedback = feedback
 
+    def hide_command(self):
+        return fabric.api.hide('running')
+
     def hide_output(self):
         return fabric.api.hide('stdout')
 
