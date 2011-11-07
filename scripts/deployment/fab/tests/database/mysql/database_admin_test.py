@@ -10,44 +10,25 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.database.mysql.admin import DatabaseAdmin
-from fab.database.mysql.schema import SchemaInformation
-from fab.database.mysql.statement import SQLStatementExecutor
-
-
-class StubbedDatabaseAdmin(DatabaseAdmin):
-
-    def __init__(self, schema_information, statement_executor):
-        self.schema_information = schema_information
-        self.statement_executor = statement_executor
-
-    def _create_schema_information(self):
-        return self.schema_information
-
-    def _create_statement_executor(self):
-        return self.statement_executor
+from fab.database.mysql.command import DatabaseCopier, SQLStatementExecutor
+from fab.format.timestamp import TimeStampFormatter
 
 
 class DatabaseAdminTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseAdminTest, self).setUp()
-        self.mock_schema_information = self.mox.CreateMock(SchemaInformation)
         self.mock_statement_executor = self.mox.CreateMock(SQLStatementExecutor)
+        self.mock_database_copier = self.mox.CreateMock(DatabaseCopier)
+        self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
-        self.database_admin = StubbedDatabaseAdmin(self.mock_schema_information, self.mock_statement_executor)
-
-    def test_can_verify_database_existence(self):
-        """fab.tests.database.mysql.database_admin_test  Can verify database existence"""
-
-        self.mock_schema_information.database_exists("mysql").AndReturn(True)
-        self.mox.ReplayAll()
-
-        self.assertTrue(self.database_admin.database_exists("mysql"), "Expected known database to be recognised")
+        self.database_admin = DatabaseAdmin(self.mock_statement_executor, self.mock_database_copier,
+                                            self.mock_time_stamp_formatter)
 
     def test_can_create_empty_database(self):
         """fab.tests.database.mysql.database_admin_test  Can create empty database"""
 
-        self.mock_statement_executor.execute_statement("CREATE DATABASE foo DEFAULT CHARACTER SET UTF8")
+        self.mock_statement_executor.execute(["CREATE DATABASE foo DEFAULT CHARACTER SET UTF8"])
         self.mox.ReplayAll()
 
         self.database_admin.create_empty_database("foo")
@@ -55,10 +36,22 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_can_grant_all_database_permissions_for_specified_user(self):
         """fab.tests.database.mysql.database_admin_test  Can grant all database permissions for a specified user"""
 
-        self.mock_statement_executor.execute_statement("GRANT ALL ON foo.* TO rupaul@localhost")
+        self.mock_statement_executor.execute(["GRANT ALL ON foo.* TO rupaul@localhost"])
         self.mox.ReplayAll()
 
         self.database_admin.grant_all_database_permissions_for_user("rupaul", "foo")
+
+    def test_can_create_timestamped_backup_database(self):
+        """fab.tests.database.mysql.database_admin_test  Can create time-stamped backup database"""
+
+        expected_duplicate_database_name = "projects_db_20111014"
+
+        self.mock_time_stamp_formatter.append_timestamp("projects_db").AndReturn(expected_duplicate_database_name)
+        self.mock_statement_executor.execute(["CREATE DATABASE projects_db_20111014 DEFAULT CHARACTER SET UTF8"])
+        self.mock_database_copier.create_duplicate("projects_db", expected_duplicate_database_name)
+        self.mox.ReplayAll()
+
+        self.database_admin.create_timestamped_backup_database("projects_db")
 
 
 def suite():
