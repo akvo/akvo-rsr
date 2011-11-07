@@ -28,15 +28,10 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
 
         self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values, self.deployment_config)
 
-    def test_can_create_config_from_config_values_file(self):
-        """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig from a given config values file"""
+    def test_can_create_instance(self):
+        """fab.tests.config.rsr.database_config_test  Can create an RSRDatabaseConfig instance"""
 
-        self.assertIsInstance(RSRDatabaseConfig.from_config_values_file(CONFIG_VALUES_TEMPLATE_PATH), RSRDatabaseConfig)
-
-    def test_can_create_config_from_local_config_values(self):
-        """fab.tests.config.rsr.database_config_test  Can create RSRDatabaseConfig from local config values"""
-
-        self.assertIsInstance(RSRDatabaseConfig.from_local_config_values(), RSRDatabaseConfig)
+        self.assertIsInstance(RSRDatabaseConfig.create_instance(), RSRDatabaseConfig)
 
     def test_has_admin_login_user_name(self):
         """fab.tests.config.rsr.database_config_test  Has admin login user name"""

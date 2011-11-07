@@ -5,10 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os
+import os
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
+from fab.config.values import DatabaseAdminConfigValues, DeploymentHostConfigValues, RSRDatabaseConfigValues
 
 
 class RSRDatabaseConfig(object):
@@ -29,14 +30,7 @@ class RSRDatabaseConfig(object):
         self.admin_scripts_path         = os.path.join(deployment_config.rsr_deployment_home, self.DATABASE_ADMIN_SCRIPTS_HOME)
 
     @staticmethod
-    def from_local_config_values():
-        return RSRDatabaseConfig.from_config_values_file(RSRDatabaseConfig.LOCAL_CONFIG_VALUES_FILE)
-
-    @staticmethod
-    def from_config_values_file(config_values_file_path):
-        imp.load_source('config_values', config_values_file_path)
-        from config_values import DatabaseAdminConfigValues, DeploymentHostConfigValues, RSRDatabaseConfigValues
-
+    def create_instance():
         deployment_config = RSRDeploymentConfig(None, DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
 
         return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), deployment_config)
