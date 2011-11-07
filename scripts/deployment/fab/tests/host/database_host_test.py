@@ -10,23 +10,20 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.database.scriptrunner import DatabaseAdminScriptRunner
+from fab.database.mysql.admin import DatabaseAdmin
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.database import DatabaseHost
-from fab.os.filesystem import FileSystem
 
 
 class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.database_config = RSRDatabaseConfig.from_local_config_values()
-        self.mock_admin_script_runner = self.mox.CreateMock(DatabaseAdminScriptRunner)
-        self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.database_config = RSRDatabaseConfig.create_instance()
+        self.mock_database_admin = self.mox.CreateMock(DatabaseAdmin)
 
-        self.database_host = DatabaseHost(self.database_config, self.mock_admin_script_runner,
-                                          self.mock_file_system, None)
+        self.database_host = DatabaseHost(self.database_config, self.mock_database_admin)
 
     def test_can_create_remote_database_host_instance(self):
         """fab.tests.host.database_host_test  Can create a remote DatabaseHost instance"""
@@ -46,30 +43,13 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         return DatabaseHost.create_instance(mock_host_controller)
 
-    def test_can_upload_database_config(self):
-        """fab.tests.host.database_host_test  Can upload database configuration"""
+    def test_can_backup_existing_database(self):
+        """fab.tests.host.database_host_test  Can backup existing database"""
 
-        self.mock_file_system.ensure_directory_exists(self.database_config.remote_config_values_home)
-        self.mock_file_system.upload_file(self.database_config.local_config_values_file, self.database_config.remote_config_values_home)
+        self.mock_database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
         self.mox.ReplayAll()
 
-        self.database_host.upload_database_configuration()
-
-    def test_can_rename_existing_database(self):
-        """fab.tests.host.database_host_test  Can rename existing database"""
-
-        self.mock_admin_script_runner.run("rename_existing_rsr_database.py")
-        self.mox.ReplayAll()
-
-        self.database_host.rename_existing_database()
-
-    def test_can_create_empty_database(self):
-        """fab.tests.host.database_host_test  Can create empty database"""
-
-        self.mock_admin_script_runner.run("create_empty_rsr_database.py")
-        self.mox.ReplayAll()
-
-        self.database_host.create_empty_database()
+        self.database_host.backup_existing_database()
 
 
 def suite():

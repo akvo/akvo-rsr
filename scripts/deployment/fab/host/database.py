@@ -6,34 +6,21 @@
 
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.database.scriptrunner import DatabaseAdminScriptRunner
-from fab.host.neutral import NeutralHost
-from fab.os.filesystem import FileSystem
+from fab.database.mysql.admin import DatabaseAdmin
 
 
-class DatabaseHost(NeutralHost):
+class DatabaseHost(object):
     """DatabaseHost encapsulates database deployment actions"""
 
-    def __init__(self, database_config, admin_script_runner, file_system, feedback):
-        super(DatabaseHost, self).__init__(file_system, feedback)
+    def __init__(self, database_config, database_admin):
         self.database_config = database_config
-        self.admin_script_runner = admin_script_runner
+        self.database_admin = database_admin
 
     @staticmethod
     def create_instance(host_controller):
-        database_config = RSRDatabaseConfig.from_local_config_values()
+        database_config = RSRDatabaseConfig.create_instance()
 
-        return DatabaseHost(database_config,
-                            DatabaseAdminScriptRunner(database_config, host_controller),
-                            FileSystem(host_controller),
-                            host_controller.feedback)
+        return DatabaseHost(database_config, DatabaseAdmin.create_instance(database_config, host_controller))
 
-    def upload_database_configuration(self):
-        self.file_system.ensure_directory_exists(self.database_config.remote_config_values_home)
-        self.file_system.upload_file(self.database_config.local_config_values_file, self.database_config.remote_config_values_home)
-
-    def rename_existing_database(self):
-        self.admin_script_runner.run("rename_existing_rsr_database.py")
-
-    def create_empty_database(self):
-        self.admin_script_runner.run("create_empty_rsr_database.py")
+    def backup_existing_database(self):
+        self.database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
