@@ -14,7 +14,7 @@ class CommandExecutor(object):
 
     def _execute_command(self, command_with_credentials_and_parameters):
         with self.host_controller.hide_command(): # so that we don't expose passwords in any logged output
-            self.host_controller.run(command_with_credentials_and_parameters)
+            return self.host_controller.run(command_with_credentials_and_parameters)
 
     def _command_with_credentials(self, command, parameters):
         return "%s %s %s" % (command, self.admin_credentials, parameters)
@@ -26,7 +26,7 @@ class SQLStatementExecutor(CommandExecutor):
         statement_sequence = "; ".join(statement_list)
 
         self.feedback.comment("Executing SQL: %s" % statement_sequence)
-        self._execute_command(self._command_with_credentials('mysql', '-e "%s"' % statement_sequence))
+        return self._execute_command(self._command_with_credentials('mysql', '-e "%s"' % statement_sequence))
 
 
 class DatabaseCopier(CommandExecutor):
