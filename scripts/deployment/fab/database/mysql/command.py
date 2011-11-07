@@ -26,7 +26,7 @@ class SQLStatementExecutor(CommandExecutor):
         statement_sequence = "; ".join(statement_list)
 
         self.feedback.comment("Executing SQL: %s" % statement_sequence)
-        return self._execute_command(self._command_with_credentials('mysql', '-e "%s"' % statement_sequence))
+        return MySQLResponseData(self._execute_command(self._command_with_credentials('mysql', '-e "%s"' % statement_sequence)))
 
 
 class DatabaseCopier(CommandExecutor):
@@ -37,3 +37,12 @@ class DatabaseCopier(CommandExecutor):
 
         self.feedback.comment("Copying database [%s] to [%s]" % (original_database_name, duplicate_database_name))
         self._execute_command("%s | %s" % (dump_original_database, import_into_new_database))
+
+
+class MySQLResponseData(object):
+
+    def __init__(self, mysql_response_data):
+        self.mysql_response_data = mysql_response_data
+
+    def contains(self, text):
+        return self.mysql_response_data.find(text) >= 0
