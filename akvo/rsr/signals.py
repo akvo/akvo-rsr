@@ -16,12 +16,12 @@ from django.db.models import get_model, ImageField
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from utils import send_donation_confirmation_emails, who_am_i, rsr_send_mail_to_users
-from utils import (
+from akvo.rsr.utils import send_donation_confirmation_emails, who_am_i, rsr_send_mail_to_users
+from akvo.rsr.utils import (
     GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
 )
 
-import models
+import akvo.rsr.models
 
 def create_publishing_status(sender, **kwargs):
     """
@@ -124,13 +124,23 @@ def set_active_cms(instance, created, **kwargs):
     if instance.active:
         MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
 
+def set_showcase_project(instance, created, **kwargs):
+    Project = get_model('rsr', 'Project')
+    if instance.showcase:
+        Project.objects.exclude(pk=instance.pk).update(showcase=False)
+
+def set_focus_org(instance, created, **kwargs):
+    Organisation = get_model('rsr', 'Organisation')
+    if instance.focus_org:
+        Organisation.objects.exclude(pk=instance.pk).update(focus_org=False)
+
 def create_benchmark_objects(project):
     """
     create the relevant Benchmark objects for this project based on the Categories of the project
     """
     for category in project.categories.all():
         for benchmarkname in category.benchmarknames.all():
-            benchmark, created = models.Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
+            benchmark, created = akvo.rsr.models.Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
     #if kwargs['created']:
     #technology = kwargs['instance']
     #for factor in Factor.objects.filter(pk__in=[pk for pk in technology.factors.all().values_list('pk', flat=True)]):

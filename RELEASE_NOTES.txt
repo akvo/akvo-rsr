@@ -1,13 +1,147 @@
-RELEASE_NOTES.txt, v1.0.9
+RELEASE_NOTES.txt, v2.0
 
-Last changed: 28 June 2011, pb
+Last changed: 28 October 2011, tbp
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
-Akvo RSR is part of the Akvo Platform, which is used on Akvo.org to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
+We provide Akvo RSR as a service on your own URL and with your own branding, as well as and on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 2.0 release notes
+-------------------------------------------
+28 October 2011, (Code name: Garlic) tbp
+
+Overview
+------------
+Akvo RSR 2.0 is a preview release that introduces a major new feature to Akvo RSR, multitenancy, which we call Partner sites. Partner sites allows an organisation which already has projects on the Akvo RSR system to display all of these projects on their own website. This will be done by useing the Akvo RSR tools on their own designated URL, with their own branding and styling. We believe that this will be the main way most people will think of Akvo RSR in the future.
+
+Being a preview release means that all the features we are expecting on a Partner site in the future are not ready yet, there are some rough edges, but we consider the features that are available suitable enough to start experimenting with.
+
+The Akvo RSR tools available on the aggregated site (Akvo.org) have not changed for this release, except for a minor bug fix.
+
+New features
+----------------
+### Partner sites, multitenancy
+The Partner sites features allow you to have your own projects on your own website with a separate URL, with your own branding and styling.
+
+A Partner site will live under a separate domain. The default URL for a new Partner site for Akvo.org will be a subdomain under akvoapp.org, for example: [http://connect4change.akvoapp.org](http://connect4change.akvoapp.org). The partner site can also be setup to be displayed under another appropriate domain, for example: [http://projects.connect4change.nl](http://projects.connect4change.nl).
+
+Your own Partner site can be configured and managed by a user with organisation administrator privileges (initial setup you need to request the Akvo.org team to do during the preview period).
+
+### Notes about Akvo RSR Partner sites multitenancy
+The Akvo RSR multitenancy implementation has a shared data space for the application. Information that is shared between partners is also shared between Partner sites as well as shown on the aggregation site (i.e. Akvo.org). 
+
+For example: the information about one a project is shared between all organisations that collaborate on that project. An update to a project will show up on all the various Partner sites which are showing that particular project. Likewise, if an organisation changes its logo on the organisation page the logo will also change on all Partner sites displaying this organisation, as well as on Akvo.org.
+
+### New functionality 
+The following functions are new to Akvo RSR 2.0 preview of Partner sites and don’t exist on Akvo RSR on Akvo.org. Some of these functions may be added to the aggregated site (Akvo.org) later.
+
+- A Partner site will live under a separate domain, distinct from the aggregate domain
+- A Partner site can be displayed under a custom domain (CNAME)
+- Filtering also reflects the projects marked on the map on the Partner site home page (i.e. filtering for Africa will only show projects in Africa on the map)
+- Ability to style content with CSS on the Partner site
+- Ability to add a picture and HTML content for the description of an organisation on the home page of their Partner site
+- Filtering displays the number of projects displayed and what filter is applied
+- Ability to add a custom back link to another website
+
+### Limited functionality
+The following features have not been completely implemented yet in Akvo RSR 2.0 preview of Partner sites, but will be updated at a later stage.
+
+- Funding box on project page has limited layout
+- Latest updates display on project page (banner is missing)
+- Project partners listing 
+- Donations, you will be sent to the Akvo.org site to do a donation and not returned to the Partner site
+
+### Excluded functionality
+The following functions have not been implemented yet in Akvo RSR 2.0 preview of Partner sites, but will be implemented at a later stage, in some fashion.
+
+- Widgets
+- Comments
+- Focus areas and categories
+- RSS feeds
+- Sign in, you can sign in on Akvo.org to administrate your account and your projects
+- Add update, you can still sign in on Akvo.org to make an update
+- Partner listing showing a partners role in a project
+
+### Akvo.org specifics for Partner sites
+On Akvo.org you can request organisation administrator privileges by emailing partners@akvo.org, if your organisation is on a paid services plan.
+
+Bug fixes
+---------
+The link to the latest blog news article was not shown on the home page. 
+[Lighthouse RSR ticket 247](https://akvo.lighthouseapp.com/projects/46515/tickets/247)
+
+---
+
+Akvo RSR v 1.0.11 release notes
+-------------------------------------------
+17 October 2011, (Code name: Rhubarb) pb & bw
+
+Overview
+------------
+The release fixes a bug in password reset, and expands existing functionality related to embedded video updates and editing updates. It adds the ability to use an existing project as the basis for a new project. Several internal changes to Akvo RSR have also been made, including use of ISO 3166 country codes in location fields, a different sorting method on listing pages, RSR settings file changes, and a move to using South for data migration.
+
+New features
+------------
+### Save existing project as new project
+In the admin you can now create a copy of an existing project. The "Save and add another" button is replaced by "Save as new". Use this button to create a new project with most of the same information as the current one. Location data, project image, updates, individual donations and comments are not copied. All benchmark values are set to 0.
+
+### Improved project update form
+When editing a project update, the update form now displays thumbnails of any video or photo included with the original update. The original video or photo can be replaced, or the video removed. The photo cannot (yet) be completely removed.
+
+### Updates with video now thumbnails on Akvo home page and project page
+Updates with embedded video now display thumbnails of the video on the project page.
+
+Recently posted project updates with videos are now displayed on the home page. Previously only updates with photos were displayed. Updates containing both a photo and video will display the video thumbnail to represent the update.
+
+### Refactor of country data
+Refactoring of how we handle countries in the data model. We now use the ISO-3166-1 alpha-2 list of countries as the base for the country list. The only outward facing change is a slight modification in how the filter on the project listing page (/rsr/projects/all/) behaves. Selecting a continent no longer automatically restricts the countries displayed on the country pulldown.
+Instead the relevant continent is always set when a country is selected in the filter.
+
+### Rework RSR settings
+Internal RSR settings have been updated to a more flexible arrangement. This also fixes issue with serving multiple versions of RSR with the same code base.
+
+### Changed version of django-sorting library used by RSR.
+Changing the library also uncovered several SQL issues, now fixed.
+
+Bug fixes
+---------
+### Server error bug when generating password reset email message has been fixed.
+[Lighthouse RSR ticket 227](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/227-error-with-password-reset)
+
+### Fix to text filtering of user profiles in RSR Admin.
+[Lighthouse RSR ticket 169](https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets/169-search-user-profile-listfielderror)
+
+
+---
+
+
+Akvo RSR v 1.0.10 release notes
+-------------------------------------------
+17 October 2011 / Deployed 4 July 2011, (Code name: Granite) pb
+
+New features
+------------
+
+This release contains no new features.
+
+Bug fixes
+---------
+
+### Broken link in project listing widget
+
+A broken link reference in the project listing widget template was causing 500 errors on partner websites. This has been fixed.
+
+### Benchmarks list rendering issue
+
+Fixed broken benchmarks list which caused the project page to render incorrectly in some older browsers.
+
+### Cron script to handle stale invoices
+
+After the addition of the SMS gateway application, the cron script to detect stale invoices was no longer able to run. The script now functions as expected.
+
 
 Akvo RSR v 1.0.9 release notes
 -------------------------------------------

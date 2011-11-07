@@ -75,7 +75,7 @@
 		
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 		<div id="project_location">
-			<p class="smallFont"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+			<p class="smallFont"><span class="capz">{{project.primary_location.country.continent}}</span><br />
 				{{project.primary_location.country}}, {{project.primary_location.city}}
 			</p>
 		</div>

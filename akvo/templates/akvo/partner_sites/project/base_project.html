@@ -1,0 +1,156 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize %}
+{% load url from future %}
+
+
+{% block title %}{{project}} - {% endblock title %}
+
+{% block breadcrum_right %}
+  {{block.super}}
+  | <a href="#">Project updates</a>
+{% endblock breadcrum_right %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="{% url 'home' %}"><span>Projects</span></a></li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+  <div class="clearfix">
+    <article>
+      <h1 style="margin-bottom:4px">
+        <a href="{% url 'project_main' project.id %}">{{project}}</a>
+      </h1>
+      <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
+      {% block project_content %}{% endblock project_content %}
+    </article>
+    <aside>
+
+      {% block project_aside_funding %}
+        <div class="money_blue_background" style="padding:10px; color:#fff;">
+          {{project.show_status_large}}<br />
+          <div class="clearfix marg_top20">
+            <div style="float:left; width:145px; background-color:organe;">
+              <h3 style="color:#96FFFF;">{% trans "Funding" %}</h3>
+              {% partner_sites_funding_box project %}
+            </div>
+            <div style="float:right; width:110px;" >
+              <h3 style="color:#96FFFF;">{% trans "Schedule" %}</h3>
+              <p class="white tiny">
+                {% trans "Begun" %}<br />
+                <span class="fat">{{project.date_request_posted}}</span>
+              </p>
+              <p class="white tiny">
+                {% trans "Completed" %}<br />
+                {% if project.date_complete %}
+                  <span class="fat">{{project.date_complete}}</span>
+                {% else %}
+                <span class="fat">{% trans "Not yet" %}</span>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endblock project_aside_funding %}
+      
+      {% block project_aside_updates %}
+        {% if updates %}
+          <div style="float:left; width:160px; padding-top: 20px;">
+            <h2>{% trans 'Latest updates' %}</h2>
+          </div>
+          <div style="margin:1px 0; float:right; width:100px; text-align:right; padding-top: 20px;">
+            <a class="small" href="{% url 'update_list' project.id %}">{% trans 'See all' %} &#x25BA;</a>
+          </div>
+          <div class="clear"></div>
+
+          {% comment %}
+          <h2 class="marg_top40">
+            <a href="{% url 'update_list' project.id %}">
+              {% trans "Project updates" %}
+            </a>
+          </h2>
+          {% endcomment %}
+          {% for update in updates|slice:":3" %}
+            {% if update.video or update.photo %}
+              <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %}">
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
+                <div style="float:left; width:170px;">
+                  <p class="small marg_bottom0" style="margin-top: 15px;">
+                    <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b>
+                    <br/>{{update.text|smart_truncate:50}}
+                  </p>
+                </div>
+                {% if update.video %}
+                  <div style="width:108px; height: 81px; float: right;">
+                    <a class="video_thumb" href="{% url 'update_main' project.id update.id %}" style="width:108px;">
+                      <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:108px;">
+                      <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                    </a>
+                  </div>
+                {% else %}
+                  <div style="width:108px; height: 81px; float: right;">
+                    <a href="{% url 'update_main' project.id update.id %}">
+                      <img src="{% thumbnail update.photo 108x81 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
+                    </a>
+                  </div>
+                {% endif %}
+                <div class="clear"></div>
+              </div>
+            {% else %}
+              <div class="whitebox pad5"{% if not forloop.first %} style="margin-top: 10px;"{% endif %}>
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
+                <p class="small marg_bottom0" style="margin-top: 15px;">
+                  <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
+                  {{update.text|smart_truncate:120}}
+                </p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+           <h2 class="marg_top40">
+             {% trans "No updates yet" %}
+          </h2>
+        {% endif %}
+      {% endblock project_aside_updates %}
+
+      {% block project_tools %}
+        <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
+        <div class="whitebox">
+          <p class="grey small pad10" style="margin: 0;">
+            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}
+          </p>
+        </div>
+      {% endblock project_tools %}
+
+      {% block project_aside_partners %}
+        <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
+        <div class="whitebox pad_top20 pad5">
+          {% for partner in project.all_partners %}
+            <div style="float:left; width:100px;">
+              <a href="{% url 'partner_main' partner.id %}">
+                {% org_logo partner 90 60 'margin:0;' %}
+              </a>
+            </div>
+            <div style="float:left; width:165px;">
+              <p class="small grey" style="margin:0;">
+                <a href="{% url 'partner_main' partner.id %}">{{partner.name}}</a><br />
+                {% if partner.primary_location.city %}
+                  {{partner.primary_location.city}},
+                {% endif %}
+                {{partner.primary_location.country}}
+              </p>
+            </div>
+            <div class="clear"></div>
+            {% if not forloop.last %}
+              <hr style="margin-bottom:12px; margin-top:10px;"/>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="txt_right marg_top20">
+          <span class="grey tiny">{% trans "Akvo ref" %}: {{project.id}}</span>
+        </div>
+      {% endblock project_aside_partners %}
+
+    </aside>
+  </div>
+{% endblock content %}
