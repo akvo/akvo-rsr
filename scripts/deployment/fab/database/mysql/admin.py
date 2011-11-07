@@ -12,23 +12,29 @@ from fab.format.timestamp import TimeStampFormatter
 
 class DatabaseAdmin(object):
 
-    def __init__(self, statement_executor, database_copier, time_stamp_formatter):
+    def __init__(self, statement_executor, database_copier, time_stamp_formatter, feedback):
         self.statement_executor = statement_executor
         self.database_copier = database_copier
         self.time_stamp_formatter = time_stamp_formatter
+        self.feedback = feedback
 
     @staticmethod
     def create_instance(database_config, host_controller):
         return DatabaseAdmin(SQLStatementExecutor(database_config, host_controller),
                              DatabaseCopier(database_config, host_controller),
-                             TimeStampFormatter())
+                             TimeStampFormatter(),
+                             host_controller.feedback)
+
+    def database_exists(self, database_name):
+        return len(self.statement_executor.execute(["SHOW DATABASES LIKE '%s'" % database_name])) > 0
 
     def create_timestamped_backup_database(self, database_name):
-        self._copy_database(database_name, self.time_stamp_formatter.append_timestamp(database_name))
-
-    def _copy_database(self, original_database_name, duplicate_database_name):
-        self.create_empty_database(duplicate_database_name)
-        self.database_copier.create_duplicate(original_database_name, duplicate_database_name)
+        if self.database_exists(database_name):
+            duplicate_database_name = self.time_stamp_formatter.append_timestamp(database_name)
+            self.create_empty_database(duplicate_database_name)
+            self.database_copier.create_duplicate(database_name, duplicate_database_name)
+        else:
+            self.feedback.comment("Database [%s] does not exist -- backup not created" % database_name)
 
     def create_empty_database(self, database_name):
         self.statement_executor.execute(["CREATE DATABASE %s DEFAULT CHARACTER SET UTF8" % database_name])
