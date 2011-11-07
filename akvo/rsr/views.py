@@ -179,17 +179,16 @@ def index(request, cms_id=None):
     news_image = ''
     news_title = ''
 
-    if not settings.PVW_RSR: #extra stuff for akvo home page
-        projects = Project.objects.published().funding()
-        orgs = Organisation.objects.all()
+    projects = Project.objects.published().funding()
+    orgs = Organisation.objects.all()
 
-        people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
-        #round to nearest whole 1000
-        people_served = int(people_served / 1000) * 1000
+    people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
+    #round to nearest whole 1000
+    people_served = int(people_served / 1000) * 1000
         
-        #get three featured updates with video and/or photo
-        updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
-    elif news_posts:
+    #get three featured updates with video and/or photo
+    updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
+    if news_posts:
         for post in image_posts:
             if post.get('image', None):
                 news_image = post['image']
@@ -207,29 +206,13 @@ def index(request, cms_id=None):
         'news_posts': news_posts,
         'preview':  preview,
     }
-    if not settings.PVW_RSR: #extra stuff for akvo home page
-        context_dict.update({
-            'orgs': orgs,
-            'projects': projects,
-            'people_served': people_served,
-            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
-            'updates': updates,
-        })
-    else:
-        try:
-            showcase = Project.objects.get(showcase=True)
-        except:
-            showcase = Project.objects.published()[0]
-        try:
-            focus_org = Organisation.objects.get(focus_org=True)
-        except:
-            focus_org = None
-        context_dict.update({
-            'showcase'  : showcase,
-            'focus_org' : focus_org,
-            'news_image': news_image,
-            'news_title': news_title,
-        })
+    context_dict.update({
+        'orgs': orgs,
+        'projects': projects,
+        'people_served': people_served,
+        'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
+        'updates': updates,
+    })
     return context_dict
 
 def oldindex(request):
@@ -267,36 +250,21 @@ def project_list(request, slug='all'):
 
     org = None
     focus_area = None
-    # TODO: fix DWS, they don't need funding()
-    if settings.PVW_RSR:
-        if org_id:
-            org = get_object_or_404(Organisation, pk=org_id)
-            queryset = org.published_projects()
-        elif slug:
-            focus_area = get_object_or_404(FocusArea, slug=slug)
-            if slug == 'all':
-                queryset = Project.objects.published()
-            else:
-                queryset = Project.objects.published().filter(categories__focus_area=focus_area).distinct()
+    try:
+        org_id = int(slug)
+    except:
+        org_id = 0
+    if org_id:
+        org = get_object_or_404(Organisation, pk=org_id)
+        queryset = org.published_projects()
+    elif slug:
+        focus_area = get_object_or_404(FocusArea, slug=slug)
+    if slug == 'all':
+        queryset = Project.objects.published()
     else:
-        try:
-            org_id = int(slug)
-        except:
-            org_id = 0
-        if org_id:
-            org = get_object_or_404(Organisation, pk=org_id)
-            queryset = org.published_projects()
-        elif slug:
-            focus_area = get_object_or_404(FocusArea, slug=slug)
-            if slug == 'all':
-                queryset = Project.objects.published()
-            else:
-                queryset = Project.objects.published().filter(categories__focus_area=focus_area)
-
-    queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
-
-    filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
-
+        queryset = Project.objects.published().filter(categories__focus_area=focus_area)
+        queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
+        filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
     return {
         'filter': filtered_projects,
         'site_section': 'projects',
@@ -423,323 +391,258 @@ def project_list(request, slug='all'):
 
 def old_project_list(request):
     return HttpResponsePermanentRedirect(reverse('project_list', args=['all']))
+        
+@render_to('rsr/project_directory.html')
+def filteredprojectlist(request, org_id):
+    '''List of  projects in RSR
+    filtered on an organisation
+    Context:
+    projs: list of all projects
+    page: paginator
+    o: organisation
+    '''
+    #for use in akvo at a glance
+    projs = Project.objects.published().funding()
+    # get all projects the org is asociated with
+    o = get_object_or_404(Organisation, pk=org_id)
+    projects = o.published_projects().funding()
+    showcases = projects.order_by('?')[:3]
+    page = project_list_data(request, projects)
+    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
 
-
-if settings.PVW_RSR:
+@render_to('rsr/organisation/landing_pages/liveearth.html')
+def liveearth(request):
+    '''List of all projects associated with Live Earth
+    Context:
+    projects: list of all projects
+    stats: the aggregate projects data
+    page: paginator
+    '''
+    org = get_object_or_404(Organisation, pk=getattr(settings, 'LIVE_EARTH_ID', 0))
+    projects = org.published_projects().funding()
+    page = project_list_data(request, projects)
+    active_projects = projects.status_not_cancelled().status_not_archived()
+    return {
+        'page': page,
+        'org': org,
+        'active_projects': active_projects,
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+    }
     
-    @render_to('rsr/directory.html')
-    def directory(request, org_type='all'):
-        return {'site_section': 'directory',}
+@render_to('rsr/organisation/landing_pages/wfw.html')
+def walking_for_water(request):
+    '''List of all projects associated with Walking for Water
+    Context:                                                                       
+    projects: list of all projects                                                 
+    stats: the aggregate projects data                                             
+    page: paginator                                                                
+    '''
+    org = get_object_or_404(Organisation, pk=getattr(settings, 'WALKING_FOR_WATER_ID', 0))
+    projects = org.published_projects().funding()
+    page = project_list_data(request, projects)
+    active_projects = projects.status_not_cancelled().status_not_archived()
+    return {
+        'page': page,
+        'org': org,
+        'active_projects': active_projects,
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+    }
 
+@render_to('rsr/organisation/landing_pages/rabobank.html')
+def rabobank(request):
+    '''List of all projects associated with Rabobank 
+    Context:
+    projects: list of all projects
+    stats: the aggregate projects data
+    page: paginator
+    '''
+    org = get_object_or_404(Organisation, pk=getattr(settings, 'RABOBANK_ID', 0))
+    projects = org.published_projects().funding()
+    delivered_business_people = projects.status_complete().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business'))
+    upcoming_business_people = projects.active().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business')) - delivered_business_people
+    # round to nearest whole 1000
+    # people_served = int(people_served / 1000) * 1000
+    page = project_list_data(request, projects)
+    active_projects = projects.status_not_cancelled().status_not_archived()
+    return {
+        'page': page,
+        'org': org,
+        'upcoming_business_people': upcoming_business_people,
+        'delivered_business_people': delivered_business_people,
+        'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
+        'active_projects': active_projects,
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+    }
+        
+@render_to('rsr/project/project_directory.html')
+def projectlist(request):
+    '''List of relevant projects in RSR
 
-    @render_to('rsr/organisation/organisation_directory.html')
-    def orglist(request):
-        '''
-        '''
-        orgs = Organisation.objects.all()
-        
-        # Simple filter on the Organisation model
-        query_string = ''
-        found_entries = None
-        if ('q' in request.GET) and request.GET['q'].strip():
-            query_string = request.GET['q']
-            org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
-            orgs = orgs.filter(org_query).distinct()
-        
-        return {
-            'site_section': 'directory',
-            'orgs': orgs,
-            'query': query_string,
-        }
-
-    def liveearth(request):
-        pass
-else:
-        
-    @render_to('rsr/project_directory.html')
-    def filteredprojectlist(request, org_id):
-        '''
-        List of  projects in RSR
-        filtered on an organisation
-        Context:
-        projs: list of all projects
-        page: paginator
-        o: organisation
-        '''
-        #for use in akvo at a glance
-        projs = Project.objects.published().funding()
-        # get all projects the org is asociated with
-        o = get_object_or_404(Organisation, pk=org_id)
-        projects = o.published_projects().funding()
-        showcases = projects.order_by('?')[:3]
-        page = project_list_data(request, projects)
-        return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
-
-    @render_to('rsr/organisation/landing_pages/liveearth.html')
-    def liveearth(request):
-        '''
-        List of all projects associated with Live Earth
-        Context:
-        projects: list of all projects
-        stats: the aggregate projects data
-        page: paginator
-        '''
-        org = get_object_or_404(Organisation, pk=getattr(settings, 'LIVE_EARTH_ID', 0))
-        projects = org.published_projects().funding()
-        page = project_list_data(request, projects)
-        active_projects = projects.status_not_cancelled().status_not_archived()
-        return {
-            'page': page,
-            'org': org,
-            'active_projects': active_projects,
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-        }
-    
-    @render_to('rsr/organisation/landing_pages/wfw.html')
-    def walking_for_water(request):
-        '''                                                                            
-        List of all projects associated with Walking for Water
-        Context:                                                                       
-        projects: list of all projects                                                 
-        stats: the aggregate projects data                                             
-        page: paginator                                                                
-        '''
-        org = get_object_or_404(Organisation, pk=getattr(settings, 'WALKING_FOR_WATER_ID', 0))
-        projects = org.published_projects().funding()
-        page = project_list_data(request, projects)
-        active_projects = projects.status_not_cancelled().status_not_archived()
-        return {
-            'page': page,
-            'org': org,
-            'active_projects': active_projects,
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-        }
-
-    @render_to('rsr/organisation/landing_pages/rabobank.html')
-    def rabobank(request):
-        '''
-        List of all projects associated with Rabobank 
-        Context:
-        projects: list of all projects
-        stats: the aggregate projects data
-        page: paginator
-        '''
-        org = get_object_or_404(Organisation, pk=getattr(settings, 'RABOBANK_ID', 0))
-        projects = org.published_projects().funding()
-        delivered_business_people = projects.status_complete().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business'))
-        upcoming_business_people = projects.active().get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people running sustainable business')) - delivered_business_people
-        # round to nearest whole 1000
-        # people_served = int(people_served / 1000) * 1000
-        page = project_list_data(request, projects)
-        active_projects = projects.status_not_cancelled().status_not_archived()
-        return {
-            'page': page,
-            'org': org,
-            'upcoming_business_people': upcoming_business_people,
-            'delivered_business_people': delivered_business_people,
-            'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
-            'active_projects': active_projects,
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-        }
-
-
-    
-        
-    @render_to('rsr/project/project_directory.html')
-    def projectlist(request):
-        '''
-        List of relevant projects in RSR
-            
-        To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-        '''
-        
-        # Get relevant projects
-        projects = Project.objects.published().status_not_archived().funding().select_related()
-        
-        # Get projects either by using the query or all
-        query_string = ''
-        if ('q' in request.GET) and request.GET['q'].strip():
-            query_string = request.GET['q']
-    
-            #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-            project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
-            projects = projects.filter(project_query)
-        
-        # Add extra last_update column
-        projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-        
-        # Setup sort query
-        order_by = request.GET.get('order_by', 'name')
-        last_order = request.GET.get('last_order')
-        sort = request.GET.get('sort', 'asc')
-        
-        # sort desv or asc
-        if sort == 'asc':
-            projects = projects.order_by(order_by, 'name')
-        else:
-            projects = projects.order_by('-%s' % order_by, 'name')
-    
-        # Setup paginator
-        PROJECTS_PER_PAGE = 10
-        paginator = Paginator(projects, PROJECTS_PER_PAGE)
-        page = paginator.page(request.GET.get('page', 1))
-        
-        return {
-            'site_section': 'projects',
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-            'page': page,
-            'query_string': query_string,
-            'request_get': request.GET,
-            'sort': sort,
-            'order_by': order_by,
-            'last_order': last_order,
-        }
+    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
+    '''
+    # Get relevant projects
+    projects = Project.objects.published().status_not_archived().funding().select_related()
+    # Get projects either by using the query or all
+    query_string = ''
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+    #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+    project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
+    projects = projects.filter(project_query)
+    # Add extra last_update column
+    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    # Setup sort query
+    order_by = request.GET.get('order_by', 'name')
+    last_order = request.GET.get('last_order')
+    sort = request.GET.get('sort', 'asc')
+    # sort desv or asc
+    if sort == 'asc':
+        projects = projects.order_by(order_by, 'name')
+    else:
+        projects = projects.order_by('-%s' % order_by, 'name')
+    # Setup paginator
+    PROJECTS_PER_PAGE = 10
+    paginator = Paginator(projects, PROJECTS_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
+    return {
+        'site_section': 'projects',
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+        'page': page,
+        'query_string': query_string,
+        'request_get': request.GET,
+        'sort': sort,
+        'order_by': order_by,
+        'last_order': last_order,
+    }
     
     
-    @render_to('rsr/project/project_directory.html')
-    def filteredprojectlist(request, org_id):
-        '''
-        List of relevant projects in RSR for a specific organisation
-            
-        To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-        '''    
-    
-        # get all projects the org is asociated with
-        o = get_object_or_404(Organisation, pk=org_id)
-        projects = o.published_projects().status_not_archived().funding()
-        
-        # Get projects either by using the query or all
-        query_string = ''
-        if ('q' in request.GET) and request.GET['q'].strip():
-            query_string = request.GET['q']
-    
-            '''
-            Super dump continent filtering
-            This needs to be made much better, (case, multi continent, same time as query...)
-            
-            CONTINENTS = (
-                (1, _('Africa')),
-                (2, _('Asia')),
-                (3, _('Australia')),
-                (4, _('Europe')),
-                (5, _('North America')),
-                (6, _('South America')),
-            )
-            '''
-            
-            if 'Africa' in query_string:
-                projects = projects.filter(country__continent='1')
-            elif 'Asia' in query_string:
-                projects = projects.filter(country__continent='2')
-            elif 'Australia' in query_string:
-                projects = projects.filter(country__continent='3')
-            elif 'Europe' in query_string:
-                projects = projects.filter(country__continent='4')
-            elif 'North America' in query_string:
-                projects = projects.filter(country__continent='5')
-            elif 'South America' in query_string:
-                projects = projects.filter(country__continent='6')
-            else:
-                #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-                project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
-                projects = projects.filter(project_query)
-        
-        # Add extra last_update column
-        projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-        
-        # Sort query
-        order_by = request.GET.get('order_by', 'name')
-        last_order = request.GET.get('last_order')
-        sort = request.GET.get('sort', 'asc')
-        
-        if sort == 'asc':
-            projects = projects.order_by(order_by, 'name')
-        else:
-            projects = projects.order_by('-%s' % order_by, 'name')
-            
-        # Setup paginator
-        PROJECTS_PER_PAGE = 10
-        paginator = Paginator(projects, PROJECTS_PER_PAGE)
-        page = paginator.page(request.GET.get('page', 1))
-        
-        return {
-            'site_section': 'projects',
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-            'page': page,
-            'query_string': query_string,
-            'request_get': request.GET,
-            'sort': sort,
-            'order_by': order_by,
-            'last_order': last_order,
-            'o': o,    
-        }
+@render_to('rsr/project/project_directory.html')
+def filteredprojectlist(request, org_id):
+    '''List of relevant projects in RSR for a specific organisation
+
+    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
+    '''    
+    # get all projects the org is asociated with
+    o = get_object_or_404(Organisation, pk=org_id)
+    projects = o.published_projects().status_not_archived().funding()
+    # Get projects either by using the query or all
+    query_string = ''
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+    '''Super dump continent filtering
+    This needs to be made much better, (case, multi continent, same time as query...)
+
+    CONTINENTS = (
+        (1, _('Africa')),
+        (2, _('Asia')),
+        (3, _('Australia')),
+        (4, _('Europe')),
+        (5, _('North America')),
+        (6, _('South America')),
+    )
+    '''
+    if 'Africa' in query_string:
+        projects = projects.filter(country__continent='1')
+    elif 'Asia' in query_string:
+        projects = projects.filter(country__continent='2')
+    elif 'Australia' in query_string:
+        projects = projects.filter(country__continent='3')
+    elif 'Europe' in query_string:
+        projects = projects.filter(country__continent='4')
+    elif 'North America' in query_string:
+        projects = projects.filter(country__continent='5')
+    elif 'South America' in query_string:
+        projects = projects.filter(country__continent='6')
+    else:
+        #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
+        project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
+        projects = projects.filter(project_query)
+    # Add extra last_update column
+    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    # Sort query
+    order_by = request.GET.get('order_by', 'name')
+    last_order = request.GET.get('last_order')
+    sort = request.GET.get('sort', 'asc')
+    if sort == 'asc':
+        projects = projects.order_by(order_by, 'name')
+    else:
+        projects = projects.order_by('-%s' % order_by, 'name')
+    # Setup paginator
+    PROJECTS_PER_PAGE = 10
+    paginator = Paginator(projects, PROJECTS_PER_PAGE)
+    page = paginator.page(request.GET.get('page', 1))
+    return {
+        'site_section': 'projects',
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+        'page': page,
+        'query_string': query_string,
+        'request_get': request.GET,
+        'sort': sort,
+        'order_by': order_by,
+        'last_order': last_order,
+        'o': o,    
+    }
 
 
-    @render_to('rsr/organisation/organisation_directory.html')
-    def orglist(request, org_type='all'):
-        '''
-        List of all projects in RSR
-        Context:
-        orgs: list of all organisations
-        stats: the aggregate projects data
-        page: paginated orgs
-        '''
-        orgs = Organisation.objects
-        #orgs = Organisation.objects.select_related()
-        if org_type == 'field':
-            orgs = orgs.fieldpartners()
-        elif org_type == 'support':
-            orgs = orgs.supportpartners()
-        elif org_type == 'funding':
-            orgs = orgs.fundingpartners()
-        elif org_type == 'sponsor':
-            orgs = orgs.sponsorpartners()
-        elif org_type == 'ngos':
-            orgs = orgs.ngos()
-        elif org_type == 'governmental':
-            orgs = orgs.governmental()
-        elif org_type == 'commercial':
-            orgs = orgs.commercial()
-        elif org_type == 'knowledge':
-            orgs = orgs.knowledge()
-        else:
-            orgs = orgs.all()
-    
-        query_string = ''
-        found_entries = None
-        if ('q' in request.GET) and request.GET['q'].strip():
-            query_string = request.GET['q']
-            org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
-            orgs = orgs.filter(org_query).distinct()
-
-        # Sort query
-        order_by = request.GET.get('order_by', 'name')
-        last_order = request.GET.get('last_order')
-        sort = request.GET.get('sort', 'asc')
-    
-        if sort == 'asc':
-            orgs = orgs.order_by(order_by, 'name')
-        else:
-            orgs = orgs.order_by('-%s' % order_by, 'name')
-        
-        paginator = Paginator(orgs, getattr(settings, 'ORGANISATION_LIST_COUNT', 20))
-        page = paginator.page(request.GET.get('page', 1))
-        projs = Project.objects.published()
-    
-        return {
-            'site_section': 'index',
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-            'lang': get_language(),
-            'page': page,
-            'projs': projs,
-            'query_string': query_string,
-            'request_get': request.GET,
-            'sort': sort,
-            'order_by': order_by,
-            'last_order': last_order,
-            'org_type': org_type,
-            'orgs': orgs,
-        }
+@render_to('rsr/organisation/organisation_directory.html')
+def orglist(request, org_type='all'):
+    '''List of all projects in RSR
+    Context:
+    orgs: list of all organisations
+    stats: the aggregate projects data
+    page: paginated orgs
+    '''
+    orgs = Organisation.objects
+    #orgs = Organisation.objects.select_related()
+    if org_type == 'field':
+        orgs = orgs.fieldpartners()
+    elif org_type == 'support':
+        orgs = orgs.supportpartners()
+    elif org_type == 'funding':
+        orgs = orgs.fundingpartners()
+    elif org_type == 'sponsor':
+        orgs = orgs.sponsorpartners()
+    elif org_type == 'ngos':
+        orgs = orgs.ngos()
+    elif org_type == 'governmental':
+        orgs = orgs.governmental()
+    elif org_type == 'commercial':
+        orgs = orgs.commercial()
+    elif org_type == 'knowledge':
+        orgs = orgs.knowledge()
+    else:
+        orgs = orgs.all()
+    query_string = ''
+    found_entries = None
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+    org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
+    orgs = orgs.filter(org_query).distinct()
+    # Sort query
+    order_by = request.GET.get('order_by', 'name')
+    last_order = request.GET.get('last_order')
+    sort = request.GET.get('sort', 'asc')
+    if sort == 'asc':
+        orgs = orgs.order_by(order_by, 'name')
+    else:
+        orgs = orgs.order_by('-%s' % order_by, 'name')
+    paginator = Paginator(orgs, getattr(settings, 'ORGANISATION_LIST_COUNT', 20))
+    page = paginator.page(request.GET.get('page', 1))
+    projs = Project.objects.published()
+    return {
+        'site_section': 'index',
+        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
+        'lang': get_language(),
+        'page': page,
+        'projs': projs,
+        'query_string': query_string,
+        'request_get': request.GET,
+        'sort': sort,
+        'order_by': order_by,
+        'last_order': last_order,
+        'org_type': org_type,
+        'orgs': orgs,
+    }
 
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
@@ -1276,11 +1179,8 @@ def commentform(request, project_id):
 @render_to('rsr/organisation/organisation.html')
 def orgdetail(request, org_id):
     o = get_object_or_404(Organisation, pk=org_id)
-    if settings.PVW_RSR:
-        org_projects = o.published_projects()
-    else:
-        org_projects = o.published_projects().status_not_cancelled().status_not_complete()
-        #org_projects = org_projects.status_not_cancelled().status_not_complete()
+    org_projects = o.published_projects().status_not_cancelled().status_not_complete()
+    #org_projects = org_projects.status_not_cancelled().status_not_complete()
     org_partners = o.partners().distinct()
     return {
         'org': o, 
@@ -1312,16 +1212,13 @@ def projectmain(request, project_id):
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
     #slider_width        = (len(updates_with_images) + 1) * 115    
     comments            = project.projectcomment_set.all().order_by('-time')[:3]
-    if settings.PVW_RSR:
-        benchmarks      = None
-    else:
-        # comprehensions are fun! here we use it to get the categories that 
-        # don't contain only 0 value benchmarks
-        benchmarks = project.benchmarks.filter(
-            category__in=[category for category in project.categories.all()
-                if project.benchmarks.filter(category=category) \
-                    .aggregate(Sum('value'))['value__sum']
-            ])
+    # comprehensions are fun! here we use it to get the categories that 
+    # don't contain only 0 value benchmarks
+    benchmarks = project.benchmarks.filter(
+        category__in=[category for category in project.categories.all()
+        if project.benchmarks.filter(category=category) \
+            .aggregate(Sum('value'))['value__sum']
+        ])
 
     # a little model meta data magic
     opts = project._meta
