@@ -5,12 +5,23 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from fab.config.rsr.database import RSRDatabaseConfig
+from fab.database.mysql.command import DatabaseCopier, SQLStatementExecutor
+from fab.format.timestamp import TimeStampFormatter
+
+
 class DatabaseAdmin(object):
 
     def __init__(self, statement_executor, database_copier, time_stamp_formatter):
         self.statement_executor = statement_executor
         self.database_copier = database_copier
         self.time_stamp_formatter = time_stamp_formatter
+
+    @staticmethod
+    def create_instance(database_config, host_controller):
+        return DatabaseAdmin(SQLStatementExecutor(database_config, host_controller),
+                             DatabaseCopier(database_config, host_controller),
+                             TimeStampFormatter())
 
     def create_timestamped_backup_database(self, database_name):
         self._copy_database(database_name, self.time_stamp_formatter.append_timestamp(database_name))

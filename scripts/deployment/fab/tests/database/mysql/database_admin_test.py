@@ -9,9 +9,12 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.database.mysql.command import DatabaseCopier, SQLStatementExecutor
 from fab.format.timestamp import TimeStampFormatter
+from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import RemoteHostController
 
 
 class DatabaseAdminTest(mox.MoxTestBase):
@@ -24,6 +27,18 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self.database_admin = DatabaseAdmin(self.mock_statement_executor, self.mock_database_copier,
                                             self.mock_time_stamp_formatter)
+
+    def test_can_create_instance(self):
+        """fab.tests.database.mysql.database_admin_test  Can create a DatabaseAdmin instance"""
+
+        database_config = RSRDatabaseConfig.create_instance()
+        mock_feedback = self.mox.CreateMock(ExecutionFeedback)
+        mock_host_controller = self.mox.CreateMock(RemoteHostController)
+        mock_host_controller.feedback = mock_feedback
+
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(DatabaseAdmin.create_instance(database_config, mock_host_controller), DatabaseAdmin)
 
     def test_can_create_empty_database(self):
         """fab.tests.database.mysql.database_admin_test  Can create empty database"""
