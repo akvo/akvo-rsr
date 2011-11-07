@@ -10,6 +10,9 @@ import datetime
 
 class TimeStampFormatter(object):
 
+    def append_timestamp(self, text):
+        return "%s_%s" % (text, self.file_timestamp())
+
     def file_timestamp(self):
         return self._utc_datetime_now().strftime('%Y%m%d_%H%M%S') # i.e. 20110408_162032
 

@@ -71,8 +71,28 @@ class SystemPackageSpecifications(object):
 
     PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',    'version': '2.6.31.dfsg-2ubuntu1.6'}]
 
+    DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
+                                 {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
+                                 {'name': 'libpam-runtime',     'version': '0.99.7.1-5ubuntu6.4'},
+                                 {'name': 'libpam0g',           'version': '0.99.7.1-5ubuntu6.4'},
+                                 {'name': 'libpam-modules',     'version': '0.99.7.1-5ubuntu6.4'},
+                                 {'name': 'login',              'version': '1:4.0.18.2-1ubuntu2.2'},
+                                 {'name': 'passwd',             'version': '1:4.0.18.2-1ubuntu2.2'},
+                                 {'name': 'adduser',               'version': '3.105ubuntu1'}]
+
     DATABASE =  [{'name': 'mysql-common',           'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'libmysqlclient15off',    'version': '5.0.51a-3ubuntu5.8'},
+                 {'name': 'libnet-daemon-perl',     'version': '0.38-1.1'},
+                 {'name': 'libplrpc-perl',          'version': '0.2017-1.1'},
+                 {'name': 'libdbi-perl',            'version': '1.601-1'},
+                 {'name': 'libdbd-mysql-perl',      'version': '4.005-1'},
+                 {'name': 'libwrap0',               'version': '7.6.dbs-14'},
+                 {'name': 'mysql-client-5.0',       'version': '5.0.51a-3ubuntu5.8'},
+                 {'name': 'ncurses-bin',            'version': '5.6+20071124-1ubuntu2'},
+                 {'name': 'sed',                    'version': '4.1.5-5'},
+                 {'name': 'lsb-base',               'version': '4.0-0ubuntu0.8.04.1'},
+                 {'name': 'psmisc',                 'version': '22.6-1'},
+                 {'name': 'mysql-server-5.0',       'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'python-support',         'version': '0.7.5ubuntu1'},
                  {'name': 'python-mysqldb',         'version': '1.2.2-5ubuntu1'}]
 
@@ -94,4 +114,5 @@ class SystemPackageSpecifications(object):
                          {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'}]
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
-                     PYTHON, PYTHON_PACKAGE_DEPENDENCIES, DATABASE, ADDITIONAL_TOOLS]
+                     PYTHON, PYTHON_PACKAGE_DEPENDENCIES, DATABASE_AUTHENTICATION,
+                     DATABASE, ADDITIONAL_TOOLS]
