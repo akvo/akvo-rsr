@@ -7,12 +7,11 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.database.admin_script_runner_test import suite as admin_script_runner_suite
 from fab.tests.database.mysql.mysql_database_test_suite import mysql_database_suite
 
 
 def database_suite():
-    return TestSuiteLoader().create_suite_from_list([admin_script_runner_suite(), mysql_database_suite()])
+    return TestSuiteLoader().create_suite_from_list([mysql_database_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
