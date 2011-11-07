@@ -6,7 +6,7 @@
 
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.database.mysql.command import DatabaseCopier, SQLStatementExecutor
+from fab.database.mysql.command import DatabaseCopier, MySQLResponseData, SQLStatementExecutor
 from fab.format.timestamp import TimeStampFormatter
 
 
@@ -26,7 +26,12 @@ class DatabaseAdmin(object):
                              host_controller.feedback)
 
     def database_exists(self, database_name):
-        return len(self.statement_executor.execute(["SHOW DATABASES LIKE '%s'" % database_name])) > 0
+        return self.statement_executor.execute(["SHOW DATABASES LIKE '%s'" % database_name]).contains(database_name)
+
+    def database_user_exists(self, user_name):
+        sql_to_find_user = ["USE mysql", "SELECT User FROM user WHERE User = '%s'" % user_name]
+
+        return self.statement_executor.execute(sql_to_find_user).contains(user_name)
 
     def create_timestamped_backup_database(self, database_name):
         if self.database_exists(database_name):

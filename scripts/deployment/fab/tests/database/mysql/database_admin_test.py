@@ -11,7 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.mysql.admin import DatabaseAdmin
-from fab.database.mysql.command import DatabaseCopier, SQLStatementExecutor
+from fab.database.mysql.command import DatabaseCopier, MySQLResponseData, SQLStatementExecutor
 from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
@@ -43,8 +43,11 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_can_check_database_existence(self):
         """fab.tests.database.mysql.database_admin_test  Can check database existence"""
 
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'existing_db'"]).AndReturn("+--\n|existing_db|\n--+")
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'non_existent_db'"]).AndReturn("")
+        existing_db_response_data = MySQLResponseData("+--\n|existing_db|\n--+")
+        nonexistent_db_response_data = MySQLResponseData("")
+
+        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'existing_db'"]).AndReturn(existing_db_response_data)
+        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'non_existent_db'"]).AndReturn(nonexistent_db_response_data)
         self.mox.ReplayAll()
 
         self.assertTrue(self.database_admin.database_exists("existing_db"), "Should recognise an existing database")
@@ -70,8 +73,9 @@ class DatabaseAdminTest(mox.MoxTestBase):
         """fab.tests.database.mysql.database_admin_test  Can create time-stamped backup of an existing database"""
 
         expected_duplicate_database_name = "projects_db_20111014"
+        show_databases_response_data = MySQLResponseData("+--\n|projects_db|\n--+")
 
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'projects_db'"]).AndReturn("+--\n|projects_db|\n--+")
+        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'projects_db'"]).AndReturn(show_databases_response_data)
         self.mock_time_stamp_formatter.append_timestamp("projects_db").AndReturn(expected_duplicate_database_name)
         self.mock_statement_executor.execute(["CREATE DATABASE projects_db_20111014 DEFAULT CHARACTER SET UTF8"])
         self.mock_database_copier.create_duplicate("projects_db", expected_duplicate_database_name)
@@ -82,7 +86,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_does_not_attempt_to_create_backup_of_nonexistent_database(self):
         """fab.tests.database.mysql.database_admin_test  Does not attempt to create a backup of a non-existent database"""
 
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'nonexistent_db'"]).AndReturn("")
+        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'nonexistent_db'"]).AndReturn(MySQLResponseData(""))
         self.mock_feedback.comment("Database [nonexistent_db] does not exist -- backup not created")
         self.mox.ReplayAll()
 
