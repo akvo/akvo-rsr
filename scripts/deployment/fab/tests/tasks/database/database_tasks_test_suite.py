@@ -7,11 +7,11 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.tasks.database.create_rsr_database_test import CreateRSRDatabaseTest
+from fab.tests.tasks.database.backup_rsr_database_test import BackupRSRDatabaseTest
 
 
 def database_tasks_suite():
-    return TestSuiteLoader().create_suite_from_classes([CreateRSRDatabaseTest])
+    return TestSuiteLoader().create_suite_from_classes([BackupRSRDatabaseTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

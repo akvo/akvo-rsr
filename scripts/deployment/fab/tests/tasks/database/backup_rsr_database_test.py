@@ -11,10 +11,10 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
-from fab.tasks.database.creation import CreateRSRDatabase
+from fab.tasks.database.backup import BackupRSRDatabase
 
 
-class StubbedCreateRSRDatabase(CreateRSRDatabase):
+class StubbedBackupRSRDatabase(BackupRSRDatabase):
 
     def __init__(self, database_host):
         self.database_host = database_host
@@ -23,32 +23,30 @@ class StubbedCreateRSRDatabase(CreateRSRDatabase):
         return self.database_host
 
 
-class CreateRSRDatabaseTest(mox.MoxTestBase):
+class BackupRSRDatabaseTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(CreateRSRDatabaseTest, self).setUp()
+        super(BackupRSRDatabaseTest, self).setUp()
         self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-        self.create_rsr_database_task = StubbedCreateRSRDatabase(self.mock_database_host)
+        self.create_rsr_database_task = StubbedBackupRSRDatabase(self.mock_database_host)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.database.create_rsr_database_test  Has expected task name"""
+        """fab.tests.tasks.database.backup_database_test  Has expected task name"""
 
-        self.assertEqual("create_empty_rsr_database", CreateRSRDatabase.name)
+        self.assertEqual("duplicate_rsr_database", BackupRSRDatabase.name)
 
-    def test_can_create_empty_rsr_database(self):
-        """fab.tests.tasks.database.create_rsr_database_test  Can create an empty RSR database"""
+    def test_can_duplicate_existing_rsr_database(self):
+        """fab.tests.tasks.database.backup_database_test  Can duplicate an existing RSR database"""
 
-        self.mock_database_host.upload_database_configuration()
-        self.mock_database_host.rename_existing_database()
-        self.mock_database_host.create_empty_database()
+        self.mock_database_host.backup_existing_database()
         self.mox.ReplayAll()
 
         self.create_rsr_database_task.run(HostControllerMode.REMOTE)
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(CreateRSRDatabaseTest)
+    return TestSuiteLoader().load_tests_from(BackupRSRDatabaseTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
