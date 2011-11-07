@@ -14,7 +14,7 @@ import fab.host.database
 class BackupRSRDatabase(fabric.tasks.Task):
     """Creates a duplicate RSR database"""
 
-    name = "duplicate_rsr_database"
+    name = "backup_rsr_database"
 
     def run(self, host_controller_mode):
         self._create_database_host_with(host_controller_mode).backup_existing_database()
