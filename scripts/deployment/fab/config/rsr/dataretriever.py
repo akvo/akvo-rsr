@@ -24,7 +24,7 @@ class RSRDataRetrieverConfig(object):
         self.rsr_app_path   = os.path.join(data_host_config_values.django_apps_home, data_host_config_values.deployed_rsr_dir_name, 'akvo')
 
         self.db_dump_script_path    = os.path.join(self.rsr_app_path, 'db_dump.py')
-        self.rsr_log_file_path      = os.path.join(self.rsr_app_path, 'akvo.log')
+        self.rsr_log_file_path      = os.path.join(data_host_config_values.rsr_logs_home, 'akvo.log')
 
     @staticmethod
     def create_instance():
