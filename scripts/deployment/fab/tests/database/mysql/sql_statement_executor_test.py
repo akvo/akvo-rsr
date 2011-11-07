@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox
+import mox
 import fabric.api
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
