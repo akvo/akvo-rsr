@@ -303,10 +303,22 @@ class FileSystemTest(mox.MoxTestBase):
 
         host_file_path = "/var/some/dir/file.zip"
         local_directory = "/var/tmp/archives"
+
         self.mock_host_controller.get(host_file_path, local_directory)
         self.mox.ReplayAll()
 
         self.file_system.download_file(host_file_path, local_directory)
+
+    def test_can_upload_file(self):
+        """fab.tests.os.file_system_test  Can upload a file"""
+
+        local_file_path = "/var/some/local/file.zip"
+        remote_directory = "/var/tmp/archives"
+
+        self.mock_host_controller.put(local_file_path, remote_directory, mirror_local_mode=True)
+        self.mox.ReplayAll()
+
+        self.file_system.upload_file(local_file_path, remote_directory)
 
 
 def suite():

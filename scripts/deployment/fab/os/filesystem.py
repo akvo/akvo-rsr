@@ -103,3 +103,6 @@ class FileSystem(object):
 
     def download_file(self, host_file_path, local_dir):
         self.host_controller.get(host_file_path, local_dir)
+
+    def upload_file(self, local_file_path, remote_dir):
+        self.host_controller.put(local_file_path, remote_dir, mirror_local_mode=True)

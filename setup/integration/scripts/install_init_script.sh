@@ -6,12 +6,12 @@
 
 SCRIPT_FILE_DIR="`dirname $0`"
 SOURCE_REPOSITORY_ROOT="`cd $SCRIPT_FILE_DIR/../../..; pwd`"
-INIT_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts/init.d
+INIT_SCRIPTS_DIR=$SOURCE_REPOSITORY_ROOT/setup/integration/scripts/etc/init.d
 
 
 function display_usage_and_exit
 {
-    echo "Usage: install_init_script <init_script_name>"
+    echo "Usage: install_init_script.sh <init_script_name>"
     echo "Specify a script from the init scripts directory for installation in /etc/init.d"
     exit -1
 }

@@ -31,5 +31,5 @@ class RSRDataRetrieverConfig(object):
         return RSRDataRetrieverConfig(DataHostConfigValues(), TimeStampFormatter())
 
     def time_stamped_rsr_data_dump_path(self):
-        rsr_data_dir_name = "%s_%s" % (self.rsr_env_name, self.time_stamp_formatter.file_timestamp())
+        rsr_data_dir_name = self.time_stamp_formatter.append_timestamp(self.rsr_env_name)
         return os.path.join(self.data_dumps_home, rsr_data_dir_name)

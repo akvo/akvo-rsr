@@ -27,15 +27,19 @@ class TimeStampFormatterTest(unittest2.TestCase):
     def setUp(self):
         super(TimeStampFormatterTest, self).setUp()
         self.expected_utc_datetime_now = datetime.datetime.utcnow()
+        self.expected_timestamp = self.expected_utc_datetime_now.strftime('%Y%m%d_%H%M%S') # e.g. 20110922_173806
 
         self.date_time_formatter = StubbedTimeStampFormatter(self.expected_utc_datetime_now)
+
+    def test_can_append_timestamp_to_given_text(self):
+        """fab.tests.format.time_stamp_formatter_test  Can append timestamp to given text"""
+
+        self.assertEqual("some_text_%s" % self.expected_timestamp, self.date_time_formatter.append_timestamp("some_text"))
 
     def test_can_create_file_timestamp_with_current_date_and_time(self):
         """fab.tests.format.time_stamp_formatter_test  Can create a file timestamp with the current date and time"""
 
-        expected_file_timestamp = self.expected_utc_datetime_now.strftime('%Y%m%d_%H%M%S') # e.g. 20110922_173806
-
-        self.assertEqual(expected_file_timestamp, self.date_time_formatter.file_timestamp())
+        self.assertEqual(self.expected_timestamp, self.date_time_formatter.file_timestamp())
 
     def test_can_call_timestamp_method_without_stubbing(self):
         """fab.tests.format.time_stamp_formatter_test  Can call actual timestamp method without stubbing"""

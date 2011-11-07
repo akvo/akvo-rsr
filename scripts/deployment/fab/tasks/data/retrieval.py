@@ -7,7 +7,7 @@
 
 import fabric.tasks
 
-import fab.host.database
+import fab.host.dataretrieval
 
 
 class FetchRSRData(fabric.tasks.Task):
@@ -15,15 +15,15 @@ class FetchRSRData(fabric.tasks.Task):
 
     name = "fetch_rsr_data"
 
-    def __init__(self, database_host):
-        self.database_host = database_host
+    def __init__(self, data_retrieval_host):
+        self.data_retrieval_host = data_retrieval_host
 
     @staticmethod
     def create_task_instance():
-        return FetchRSRData(fab.host.database.DatabaseHost.create_instance())
+        return FetchRSRData(fab.host.dataretrieval.DataRetrievalHost.create_instance())
 
     def run(self):
-        self.database_host.fetch_latest_data()
+        self.data_retrieval_host.fetch_latest_data()
 
 
 instance = FetchRSRData.create_task_instance()
