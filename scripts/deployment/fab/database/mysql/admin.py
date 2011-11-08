@@ -26,12 +26,24 @@ class DatabaseAdmin(object):
                              host_controller.feedback)
 
     def database_exists(self, database_name):
-        return self.statement_executor.execute(["SHOW DATABASES LIKE '%s'" % database_name]).contains(database_name)
+        database_search = self.statement_executor.execute_without_output(["SHOW DATABASES LIKE '%s'" % database_name])
+        if database_search.contains(database_name):
+            self.feedback.comment("Found database '%s'" % database_name)
+        else:
+            self.feedback.comment("Database '%s' does not exist" % database_name)
+
+        return database_search.contains(database_name)
 
     def database_user_exists(self, user_name):
         sql_to_find_user = ["USE mysql", "SELECT User FROM user WHERE User = '%s'" % user_name]
+        user_search = self.statement_executor.execute_without_output(sql_to_find_user)
 
-        return self.statement_executor.execute(sql_to_find_user).contains(user_name)
+        if user_search.contains(user_name):
+            self.feedback.comment("Found user '%s'" % user_name)
+        else:
+            self.feedback.comment("User '%s' does not exist" % user_name)
+
+        return user_search.contains(user_name)
 
     def create_timestamped_backup_database(self, database_name):
         if self.database_exists(database_name):
@@ -39,10 +51,10 @@ class DatabaseAdmin(object):
             self.create_empty_database(duplicate_database_name)
             self.database_copier.create_duplicate(database_name, duplicate_database_name)
         else:
-            self.feedback.comment("Database [%s] does not exist -- backup not created" % database_name)
+            self.feedback.comment("No backup created for database: %s" % database_name)
 
     def create_empty_database(self, database_name):
-        self.statement_executor.execute(["CREATE DATABASE %s DEFAULT CHARACTER SET UTF8" % database_name])
+        self.statement_executor.execute(["CREATE DATABASE '%s' DEFAULT CHARACTER SET UTF8" % database_name])
 
     def grant_all_database_permissions_for_user(self, database_user, database_name):
         self.statement_executor.execute(["GRANT ALL ON %s.* TO %s@localhost" % (database_name, database_user)])

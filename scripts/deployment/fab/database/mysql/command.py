@@ -46,7 +46,7 @@ class DatabaseCopier(CommandExecutor):
         dump_original_database = self._command_with_credentials("mysqldump", original_database_name)
         import_into_new_database = self._command_with_credentials("mysql", duplicate_database_name)
 
-        self.feedback.comment("Copying database [%s] to [%s]" % (original_database_name, duplicate_database_name))
+        self.feedback.comment("Copying database '%s' to '%s'" % (original_database_name, duplicate_database_name))
         self._execute_command("%s | %s" % (dump_original_database, import_into_new_database))
 
 

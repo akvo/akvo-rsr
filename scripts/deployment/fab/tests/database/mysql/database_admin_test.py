@@ -40,26 +40,59 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self.assertIsInstance(DatabaseAdmin.create_instance(database_config, mock_host_controller), DatabaseAdmin)
 
-    def test_can_check_database_existence(self):
-        """fab.tests.database.mysql.database_admin_test  Can check database existence"""
+    def test_can_check_for_existing_database(self):
+        """fab.tests.database.mysql.database_admin_test  Can check for an existing database"""
 
-        existing_db_response_data = MySQLResponseData("+--\n|existing_db|\n--+")
-        nonexistent_db_response_data = MySQLResponseData("")
+        database_search_response = MySQLResponseData("+--\n|existing_db|\n--+")
 
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'existing_db'"]).AndReturn(existing_db_response_data)
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'non_existent_db'"]).AndReturn(nonexistent_db_response_data)
+        self.mock_statement_executor.execute_without_output(["SHOW DATABASES LIKE 'existing_db'"]).AndReturn(database_search_response)
+        self.mock_feedback.comment("Found database 'existing_db'")
         self.mox.ReplayAll()
 
         self.assertTrue(self.database_admin.database_exists("existing_db"), "Should recognise an existing database")
+
+    def test_can_check_for_nonexistent_database(self):
+        """fab.tests.database.mysql.database_admin_test  Can check for a non-existent database"""
+
+        database_search_response = MySQLResponseData("")
+
+        self.mock_statement_executor.execute_without_output(["SHOW DATABASES LIKE 'non_existent_db'"]).AndReturn(database_search_response)
+        self.mock_feedback.comment("Database 'non_existent_db' does not exist")
+        self.mox.ReplayAll()
+
         self.assertFalse(self.database_admin.database_exists("non_existent_db"), "Should recognise a non-existent database")
+
+    def test_can_check_for_existing_database_user(self):
+        """fab.tests.database.mysql.database_admin_test  Can check for an existing database user"""
+
+        user_search_response = MySQLResponseData("+--\n|joe|\n--+")
+        sql_for_user_search = ["USE mysql", "SELECT User FROM user WHERE User = 'joe'"]
+
+        self.mock_statement_executor.execute_without_output(sql_for_user_search).AndReturn(user_search_response)
+        self.mock_feedback.comment("Found user 'joe'")
+        self.mox.ReplayAll()
+
+        self.assertTrue(self.database_admin.database_user_exists("joe"), "Should recognise an existing user")
+
+    def test_can_check_for_nonexistent_database_user(self):
+        """fab.tests.database.mysql.database_admin_test  Can check for a non-existent database user"""
+
+        user_search_response = MySQLResponseData("")
+        sql_for_user_search = ["USE mysql", "SELECT User FROM user WHERE User = 'kenny'"]
+
+        self.mock_statement_executor.execute_without_output(sql_for_user_search).AndReturn(user_search_response)
+        self.mock_feedback.comment("User 'kenny' does not exist")
+        self.mox.ReplayAll()
+
+        self.assertFalse(self.database_admin.database_user_exists("kenny"), "Should recognise a non-existent database user")
 
     def test_can_create_empty_database(self):
         """fab.tests.database.mysql.database_admin_test  Can create empty database"""
 
-        self.mock_statement_executor.execute(["CREATE DATABASE foo DEFAULT CHARACTER SET UTF8"])
+        self.mock_statement_executor.execute(["CREATE DATABASE 'projects_db' DEFAULT CHARACTER SET UTF8"])
         self.mox.ReplayAll()
 
-        self.database_admin.create_empty_database("foo")
+        self.database_admin.create_empty_database("projects_db")
 
     def test_can_grant_all_database_permissions_for_specified_user(self):
         """fab.tests.database.mysql.database_admin_test  Can grant all database permissions for a specified user"""
@@ -75,9 +108,10 @@ class DatabaseAdminTest(mox.MoxTestBase):
         expected_duplicate_database_name = "projects_db_20111014"
         show_databases_response_data = MySQLResponseData("+--\n|projects_db|\n--+")
 
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'projects_db'"]).AndReturn(show_databases_response_data)
+        self.mock_statement_executor.execute_without_output(["SHOW DATABASES LIKE 'projects_db'"]).AndReturn(show_databases_response_data)
+        self.mock_feedback.comment("Found database 'projects_db'")
         self.mock_time_stamp_formatter.append_timestamp("projects_db").AndReturn(expected_duplicate_database_name)
-        self.mock_statement_executor.execute(["CREATE DATABASE projects_db_20111014 DEFAULT CHARACTER SET UTF8"])
+        self.mock_statement_executor.execute(["CREATE DATABASE 'projects_db_20111014' DEFAULT CHARACTER SET UTF8"])
         self.mock_database_copier.create_duplicate("projects_db", expected_duplicate_database_name)
         self.mox.ReplayAll()
 
@@ -86,11 +120,12 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_does_not_attempt_to_create_backup_of_nonexistent_database(self):
         """fab.tests.database.mysql.database_admin_test  Does not attempt to create a backup of a non-existent database"""
 
-        self.mock_statement_executor.execute(["SHOW DATABASES LIKE 'nonexistent_db'"]).AndReturn(MySQLResponseData(""))
-        self.mock_feedback.comment("Database [nonexistent_db] does not exist -- backup not created")
+        self.mock_statement_executor.execute_without_output(["SHOW DATABASES LIKE 'non_existent_db'"]).AndReturn(MySQLResponseData(""))
+        self.mock_feedback.comment("Database 'non_existent_db' does not exist")
+        self.mock_feedback.comment("No backup created for database: non_existent_db")
         self.mox.ReplayAll()
 
-        self.database_admin.create_timestamped_backup_database("nonexistent_db")
+        self.database_admin.create_timestamped_backup_database("non_existent_db")
 
 
 def suite():
