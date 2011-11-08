@@ -13,6 +13,7 @@ from fab.dependency.systempackages import SystemPackageDependencyCollection
 from fab.dependency.verifier.collectionverifier import DependencyCollectionVerifier
 from fab.environment.linux.packageverifier import LinuxPackageVerifier
 from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import RemoteHostController
 
 
 class LinuxPackageVerifierTest(mox.MoxTestBase):
@@ -21,14 +22,25 @@ class LinuxPackageVerifierTest(mox.MoxTestBase):
         super(LinuxPackageVerifierTest, self).setUp()
         self.mock_dependency_verifier = self.mox.CreateMock(DependencyCollectionVerifier)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_dependency_collection = self.mox.CreateMock(SystemPackageDependencyCollection)
 
-        self.system_package_verifier = LinuxPackageVerifier(self.mock_dependency_verifier, self.mock_feedback)
+        self.mock_host_controller.feedback = self.mock_feedback
+
+        self.system_package_verifier = LinuxPackageVerifier(self.mock_dependency_verifier, self.mock_host_controller)
 
     def test_can_create_linuxpackageverifier_instance(self):
         """fab.tests.environment.linux.package_verifier_test  Can create a LinuxPackageVerifier instance"""
 
-        self.assertIsInstance(LinuxPackageVerifier.create_instance(self.mock_feedback), LinuxPackageVerifier)
+        self.assertIsInstance(LinuxPackageVerifier.create_instance(self.mock_host_controller), LinuxPackageVerifier)
+
+    def test_can_update_package_sources(self):
+        """fab.tests.environment.linux.package_verifier_test  Can update package sources"""
+
+        self.mock_host_controller.sudo("aptitude update")
+        self.mox.ReplayAll()
+
+        self.system_package_verifier.update_package_sources()
 
     def test_will_exit_if_package_dependencies_have_not_been_met(self):
         """fab.tests.environment.linux.package_verifier_test  Will exit if package dependencies have not been met"""

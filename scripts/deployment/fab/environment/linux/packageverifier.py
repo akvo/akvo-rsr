@@ -10,13 +10,17 @@ from fab.dependency.verifier.collectionverifier import DependencyCollectionVerif
 
 class LinuxPackageVerifier(object):
 
-    def __init__(self, dependency_verifier, feedback):
+    def __init__(self, dependency_verifier, host_controller):
         self.dependency_verifier = dependency_verifier
-        self.feedback = feedback
+        self.host_controller = host_controller
+        self.feedback = host_controller.feedback
 
     @staticmethod
-    def create_instance(feedback):
-        return LinuxPackageVerifier(DependencyCollectionVerifier(), feedback)
+    def create_instance(host_controller):
+        return LinuxPackageVerifier(DependencyCollectionVerifier(), host_controller)
+
+    def update_package_sources(self):
+        self.host_controller.sudo("aptitude update")
 
     def exit_if_package_dependencies_not_met(self, dependency_collection):
         self.feedback.comment("Verifying expected system packages")

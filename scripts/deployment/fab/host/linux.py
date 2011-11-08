@@ -25,7 +25,7 @@ class LinuxHost(object):
         host_controller = RemoteHostController.create_instance()
 
         return LinuxHost(UbuntuPackageInspector(host_controller),
-                         LinuxPackageVerifier.create_instance(host_controller.feedback),
+                         LinuxPackageVerifier.create_instance(host_controller),
                          SystemPythonPackageInstaller.create_instance(host_controller),
                          host_controller.feedback)
 
