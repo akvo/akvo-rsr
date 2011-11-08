@@ -62,6 +62,11 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.data_host_config_values.virtualenvs_home, "virtualenvs home")
 
+    def test_datahostconfigvalues_has_rsr_logs_home(self):
+        """fab.tests.config.config_values_test  DataHostConfigValues has RSR logs home"""
+
+        self._verify_expected_config_value(self.data_host_config_values.rsr_logs_home, "RSR logs home")
+
     def test_datahostconfigvalues_has_data_dumps_home(self):
         """fab.tests.config.config_values_test  DataHostConfigValues has data dumps home"""
 

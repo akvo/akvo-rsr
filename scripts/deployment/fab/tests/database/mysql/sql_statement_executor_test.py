@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox
+import mox
 import fabric.api
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -32,9 +32,16 @@ class SQLStatementExecutorTest(mox.MoxTestBase):
     def test_can_execute_single_statement(self):
         """fab.tests.database.mysql.sql_statement_executor_test  Can execute a single statement"""
 
-        self._set_expectations_for_executing_statements("show databases")
+        self._set_expectations_for_executing_statements("show databases", hide_output=False)
 
         self.statement_executor.execute(["show databases"])
+
+    def test_can_execute_single_statement_without_output(self):
+        """fab.tests.database.mysql.sql_statement_executor_test  Can execute a single statement without output"""
+
+        self._set_expectations_for_executing_statements("show databases", hide_output=True)
+
+        self.statement_executor.execute_without_output(["show databases"])
 
     def test_can_execute_multiple_statements(self):
         """fab.tests.database.mysql.sql_statement_executor_test  Can execute multiple statements"""
@@ -42,13 +49,26 @@ class SQLStatementExecutorTest(mox.MoxTestBase):
         statements = ["use dev_db", "show tables", "select * from projects"]
         expected_statement_sequence = "; ".join(statements)
 
-        self._set_expectations_for_executing_statements(expected_statement_sequence)
+        self._set_expectations_for_executing_statements(expected_statement_sequence, hide_output=False)
 
         self.statement_executor.execute(statements)
 
-    def _set_expectations_for_executing_statements(self, expected_statement_sequence):
-        self.mock_feedback.comment("Executing SQL: %s" % expected_statement_sequence)
-        self.mock_host_controller.hide_command().AndReturn(fabric.api.hide('running'))
+    def test_can_execute_multiple_statements_without_output(self):
+        """fab.tests.database.mysql.sql_statement_executor_test  Can execute multiple statements without output"""
+
+        statements = ["use dev_db", "show tables", "select * from projects"]
+        expected_statement_sequence = "; ".join(statements)
+
+        self._set_expectations_for_executing_statements(expected_statement_sequence, hide_output=True)
+
+        self.statement_executor.execute_without_output(statements)
+
+    def _set_expectations_for_executing_statements(self, expected_statement_sequence, hide_output):
+        if hide_output:
+            self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        else:
+            self.mock_feedback.comment("Executing SQL: %s" % expected_statement_sequence)
+            self.mock_host_controller.hide_command().AndReturn(fabric.api.hide('running'))
         self.mock_host_controller.run('mysql %s -e "%s"' % (self.expected_admin_credentials, expected_statement_sequence))
         self.mox.ReplayAll()
 

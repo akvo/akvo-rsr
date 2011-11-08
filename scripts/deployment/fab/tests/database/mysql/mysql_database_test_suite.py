@@ -9,11 +9,13 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.database.mysql.database_admin_test import DatabaseAdminTest
 from fab.tests.database.mysql.database_copier_test import DatabaseCopierTest
+from fab.tests.database.mysql.mysql_response_data_test import MySQLResponseDataTest
 from fab.tests.database.mysql.sql_statement_executor_test import SQLStatementExecutorTest
 
 
 def mysql_database_suite():
-    return TestSuiteLoader().create_suite_from_classes([SQLStatementExecutorTest, DatabaseCopierTest, DatabaseAdminTest])
+    return TestSuiteLoader().create_suite_from_classes([SQLStatementExecutorTest, MySQLResponseDataTest,
+                                                        DatabaseCopierTest, DatabaseAdminTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

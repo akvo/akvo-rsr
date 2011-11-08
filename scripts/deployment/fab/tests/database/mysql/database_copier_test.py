@@ -36,7 +36,7 @@ class DatabaseCopierTest(mox.MoxTestBase):
         import_into_new_database_command = "mysql %s projects_copy" % self.expected_admin_credentials
         expected_database_copy_command = "%s | %s" % (dump_original_database_command, import_into_new_database_command)
 
-        self.mock_feedback.comment("Copying database [projects_db] to [projects_copy]")
+        self.mock_feedback.comment("Copying database 'projects_db' to 'projects_copy'")
         self.mock_host_controller.hide_command().AndReturn(fabric.api.hide('running'))
         self.mock_host_controller.run(expected_database_copy_command)
         self.mox.ReplayAll()

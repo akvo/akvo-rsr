@@ -34,7 +34,7 @@ class BackupRSRDatabaseTest(mox.MoxTestBase):
     def test_has_expected_task_name(self):
         """fab.tests.tasks.database.backup_database_test  Has expected task name"""
 
-        self.assertEqual("duplicate_rsr_database", BackupRSRDatabase.name)
+        self.assertEqual("backup_rsr_database", BackupRSRDatabase.name)
 
     def test_can_duplicate_existing_rsr_database(self):
         """fab.tests.tasks.database.backup_database_test  Can duplicate an existing RSR database"""
