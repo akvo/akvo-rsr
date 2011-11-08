@@ -13,7 +13,11 @@ class CommandExecutor(object):
         self.feedback = host_controller.feedback
 
     def _execute_command(self, command_with_credentials_and_parameters):
-        with self.host_controller.hide_command(): # so that we don't expose passwords in any logged output
+        with self.host_controller.hide_command(): # so that we don't expose passwords in logged output
+            return self.host_controller.run(command_with_credentials_and_parameters)
+
+    def _execute_command_without_output(self, command_with_credentials_and_parameters):
+        with self.host_controller.hide_command_and_output(): # so that we don't expose passwords in logged output
             return self.host_controller.run(command_with_credentials_and_parameters)
 
     def _command_with_credentials(self, command, parameters):
@@ -23,10 +27,17 @@ class CommandExecutor(object):
 class SQLStatementExecutor(CommandExecutor):
 
     def execute(self, statement_list):
-        statement_sequence = "; ".join(statement_list)
+        self.feedback.comment("Executing SQL: %s" % self._as_sequence(statement_list))
+        return MySQLResponseData(self._execute_command(self._compose_command(statement_list)))
 
-        self.feedback.comment("Executing SQL: %s" % statement_sequence)
-        return MySQLResponseData(self._execute_command(self._command_with_credentials('mysql', '-e "%s"' % statement_sequence)))
+    def execute_without_output(self, statement_list):
+        return MySQLResponseData(self._execute_command_without_output(self._compose_command(statement_list)))
+
+    def _compose_command(self, statement_list):
+        return self._command_with_credentials('mysql', '-e "%s"' % self._as_sequence(statement_list))
+
+    def _as_sequence(self, statement_list):
+        return "; ".join(statement_list)
 
 
 class DatabaseCopier(CommandExecutor):
