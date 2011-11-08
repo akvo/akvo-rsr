@@ -36,6 +36,14 @@ class LinuxHostTest(mox.MoxTestBase):
 
         self.assertIsInstance(LinuxHost.create_instance(), LinuxHost)
 
+    def test_can_update_system_package_sources(self):
+        """fab.tests.host.linux_host_test  Can update system package sources"""
+
+        self.mock_os_package_verifier.update_package_sources()
+        self.mox.ReplayAll()
+
+        self.linux_host.update_system_package_sources()
+
     def test_will_exit_if_system_package_dependencies_have_not_been_met(self):
         """fab.tests.host.linux_host_test  Will exit if system package dependencies have not been met"""
 
