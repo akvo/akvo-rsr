@@ -150,7 +150,7 @@ def create_benchmark_objects(project):
     #        except Relevancy.DoesNotExist:
     #            Relevancy.objects.create(technology=technology, criterion=criterion,)
 
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 def act_on_log_entry(sender, **kwargs):
     """
