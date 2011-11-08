@@ -54,7 +54,7 @@ class DatabaseAdmin(object):
             self.feedback.comment("No backup created for database: %s" % database_name)
 
     def create_empty_database(self, database_name):
-        self.statement_executor.execute(["CREATE DATABASE '%s' DEFAULT CHARACTER SET UTF8" % database_name])
+        self.statement_executor.execute(["CREATE DATABASE %s DEFAULT CHARACTER SET UTF8" % database_name])
 
     def grant_all_database_permissions_for_user(self, database_user, database_name):
         self.statement_executor.execute(["GRANT ALL ON %s.* TO %s@localhost" % (database_name, database_user)])

@@ -89,7 +89,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_can_create_empty_database(self):
         """fab.tests.database.mysql.database_admin_test  Can create empty database"""
 
-        self.mock_statement_executor.execute(["CREATE DATABASE 'projects_db' DEFAULT CHARACTER SET UTF8"])
+        self.mock_statement_executor.execute(["CREATE DATABASE projects_db DEFAULT CHARACTER SET UTF8"])
         self.mox.ReplayAll()
 
         self.database_admin.create_empty_database("projects_db")
@@ -111,7 +111,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
         self.mock_statement_executor.execute_without_output(["SHOW DATABASES LIKE 'projects_db'"]).AndReturn(show_databases_response_data)
         self.mock_feedback.comment("Found database 'projects_db'")
         self.mock_time_stamp_formatter.append_timestamp("projects_db").AndReturn(expected_duplicate_database_name)
-        self.mock_statement_executor.execute(["CREATE DATABASE 'projects_db_20111014' DEFAULT CHARACTER SET UTF8"])
+        self.mock_statement_executor.execute(["CREATE DATABASE projects_db_20111014 DEFAULT CHARACTER SET UTF8"])
         self.mock_database_copier.create_duplicate("projects_db", expected_duplicate_database_name)
         self.mox.ReplayAll()
 
