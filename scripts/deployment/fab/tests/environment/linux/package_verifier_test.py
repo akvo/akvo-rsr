@@ -37,6 +37,7 @@ class LinuxPackageVerifierTest(mox.MoxTestBase):
     def test_can_update_package_sources(self):
         """fab.tests.environment.linux.package_verifier_test  Can update package sources"""
 
+        self.mock_feedback.comment("Updating system package sources")
         self.mock_host_controller.sudo("aptitude update")
         self.mox.ReplayAll()
 

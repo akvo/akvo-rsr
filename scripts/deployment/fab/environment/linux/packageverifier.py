@@ -20,6 +20,7 @@ class LinuxPackageVerifier(object):
         return LinuxPackageVerifier(DependencyCollectionVerifier(), host_controller)
 
     def update_package_sources(self):
+        self.feedback.comment("Updating system package sources")
         self.host_controller.sudo("aptitude update")
 
     def exit_if_package_dependencies_not_met(self, dependency_collection):
