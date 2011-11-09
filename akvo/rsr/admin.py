@@ -690,22 +690,20 @@ class ProjectAdmin(admin.ModelAdmin):
                                   queryset=inline.queryset(request))
 
                 formsets.append(formset)
+            if all_valid(formsets) and form_validated:
+                if not new_object.found:
+                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
+                    for fs in new_object.partner_formsets:
+                        fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
+                else:
+                    self.save_model(request, new_object, form, change=True)
+                    form.save_m2m()
+                    for formset in formsets:
+                        self.save_formset(request, form, formset, change=True)
 
-        if all_valid(formsets) and form_validated:
-            if not new_object.found:
-                form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
-                for fs in new_object.partner_formsets:
-                    fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
-            else:
-                self.save_model(request, new_object, form, change=True)
-                form.save_m2m()
-                for formset in formsets:
-                    self.save_formset(request, form, formset, change=True)
-
-            change_message = self.construct_change_message(request, form, formsets)
-            self.log_change(request, new_object, change_message)
-            return self.response_change(request, new_object)
-
+                change_message = self.construct_change_message(request, form, formsets)
+                self.log_change(request, new_object, change_message)
+                return self.response_change(request, new_object)
         else:
             form = ModelForm(instance=obj)
             prefixes = {}
