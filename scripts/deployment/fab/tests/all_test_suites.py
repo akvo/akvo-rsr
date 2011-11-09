@@ -12,6 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.tests.app.app_test_suite import app_suite
 from fab.tests.config.config_test_suite import config_suite
 from fab.tests.data.data_test_suite import data_suite
+from fab.tests.database.database_test_suite import database_suite
 from fab.tests.dependency.dependency_test_suite import dependency_suite
 from fab.tests.environment.environment_test_suite import environment_suite
 from fab.tests.format.formatting_test_suite import formatting_suite
@@ -24,7 +25,8 @@ from fab.tests.tasks.tasks_test_suite import tasks_suite
 def unit_test_suites():
     return TestSuiteLoader().create_suite_from_list([formatting_suite(), config_suite(), dependency_suite(),
                                                      environment_suite(), helpers_suite(), os_suite(),
-                                                     data_suite(), host_suite(), app_suite(), tasks_suite()])
+                                                     data_suite(), database_suite(), host_suite(),
+                                                     app_suite(), tasks_suite()])
 
 if __name__ == "__main__":
     print "Test suite root: %s\n" % os.path.realpath(os.path.dirname(__file__))

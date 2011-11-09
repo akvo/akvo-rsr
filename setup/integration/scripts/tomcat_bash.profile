@@ -12,8 +12,8 @@ alias la="ls -la"
 # Tomcat settings
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
-export CATALINA_HOME=/usr/local/tomcat6
-export CATALINA_BASE=/usr/local/tomcat6
+export CATALINA_HOME=/usr/local/tomcat
+export CATALINA_BASE=/usr/local/tomcat
 
 # TeamCity settings
 export TOMCAT_JVM_OPTS="-Xmx512m -XX:MaxPermSize=128m"
