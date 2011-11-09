@@ -10,26 +10,19 @@ from decimal import Decimal
 import logging
 logger = logging.getLogger('akvo.rsr')
 
-from BeautifulSoup import BeautifulSoup
 import oembed
 
-from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import F, Max, Sum
+from django.db.models import Max, Sum
 from django.db.models.query import QuerySet
-from django.db.models.signals import pre_save, post_save, m2m_changed
-from django.contrib import admin
+from django.db.models.signals import pre_save, post_save
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
-from django.core.exceptions import ValidationError
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
-from django.template import loader, Context
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -37,19 +30,16 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
 from paypal.standard.ipn.signals import payment_was_flagged
-from registration.models import RegistrationProfile, RegistrationManager
 from registration.signals import user_activated
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from workflows import WorkflowBase
-from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
+from workflows.utils import get_workflow, set_initial_state, get_allowed_transitions, do_transition
 from permissions import PermissionBase
 from permissions.models import Role
 from permissions.utils import get_roles, add_local_role
 
-from akvo.settings import MEDIA_ROOT
-
-from akvo.gateway.models import GatewayNumber, Gateway, MoSms
+from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField
 from akvo.rsr.utils import (
@@ -61,7 +51,7 @@ from akvo.rsr.utils import (
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
 from akvo.rsr.utils import (
-    groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
+    groups_from_user, rsr_image_path, qs_column_sum,
     who_am_i, send_now, state_equals, to_gmt
 )
 from akvo.rsr.signals import (
@@ -71,7 +61,7 @@ from akvo.rsr.signals import (
     act_on_log_entry, user_activated_callback, set_showcase_project, set_focus_org,
 )
 
-from iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
+from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -97,15 +87,15 @@ OLD_CONTINENTS = (
 
 class Country(models.Model):
 
-    name            = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
-    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
-    continent       = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
-    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
+    name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
+    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
+    continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
+    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
 
-#    name            = models.CharField(_(u'country name'), max_length=50,)
-#    iso_code        = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
-#    continent       = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
-#    continent_code  = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
+#    name = models.CharField(_(u'country name'), max_length=50,)
+#    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    continent = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
+#    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
