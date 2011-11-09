@@ -24,12 +24,12 @@ class RSRDataRetrieverConfig(object):
         self.rsr_app_path   = os.path.join(data_host_config_values.django_apps_home, data_host_config_values.deployed_rsr_dir_name, 'akvo')
 
         self.db_dump_script_path    = os.path.join(self.rsr_app_path, 'db_dump.py')
-        self.rsr_log_file_path      = os.path.join(self.rsr_app_path, 'akvo.log')
+        self.rsr_log_file_path      = os.path.join(data_host_config_values.rsr_logs_home, 'akvo.log')
 
     @staticmethod
     def create_instance():
         return RSRDataRetrieverConfig(DataHostConfigValues(), TimeStampFormatter())
 
     def time_stamped_rsr_data_dump_path(self):
-        rsr_data_dir_name = "%s_%s" % (self.rsr_env_name, self.time_stamp_formatter.file_timestamp())
+        rsr_data_dir_name = self.time_stamp_formatter.append_timestamp(self.rsr_env_name)
         return os.path.join(self.data_dumps_home, rsr_data_dir_name)

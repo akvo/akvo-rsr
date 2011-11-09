@@ -5,19 +5,22 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.data.retriever import RSRDataRetriever
-from fab.host.controller import RemoteHostController
+from fab.config.rsr.database import RSRDatabaseConfig
+from fab.database.mysql.admin import DatabaseAdmin
 
 
 class DatabaseHost(object):
-    """DatabaseHost encapsulates common actions available when retrieving data from a remote database host"""
+    """DatabaseHost encapsulates database deployment actions"""
 
-    def __init__(self, data_retriever):
-        self.data_retriever = data_retriever
+    def __init__(self, database_config, database_admin):
+        self.database_config = database_config
+        self.database_admin = database_admin
 
     @staticmethod
-    def create_instance():
-        return DatabaseHost(RSRDataRetriever.create_instance(RemoteHostController.create_instance()))
+    def create_instance(host_controller):
+        database_config = RSRDatabaseConfig.create_instance()
 
-    def fetch_latest_data(self):
-        self.data_retriever.fetch_data_from_database()
+        return DatabaseHost(database_config, DatabaseAdmin.create_instance(database_config, host_controller))
+
+    def backup_existing_database(self):
+        self.database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)

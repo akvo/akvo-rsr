@@ -4,46 +4,42 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_syncdb
 from django.utils.translation import ugettext_noop as _
 
-if not settings.PVW_RSR:
-    if "notification" in settings.INSTALLED_APPS:
-        from notification import models as notification
+if "notification" in settings.INSTALLED_APPS:
+    from notification import models as notification
 
-        def create_notice_types(app, created_models, verbosity, **kwargs):
-            print "Creating notice types for SMS updates"
-            notification.create_notice_type(
-                "phone_added",
-                _("Phone number added"),
-                _("Your mobile phone has been added to your user profile")
-            )
-            notification.create_notice_type(
-                "phone_confirmed",
-                _("Phone confirmed"),
-                _("Your mobile phone number has been confirmed for use in updating RSR projects")
-            )
-            notification.create_notice_type(
-                "reporting_enabled",
-                _("SMS updates enabled for project"),
-                _("You can now send SMS-updates to an RSR project")
-            )
-            notification.create_notice_type(
-                "reporting_cancelled",
-                _("SMS updates cancelled"),
-                _("SMS-updates to an RSR project has been cancelled")
-            )
-            notification.create_notice_type(
-                "phone_disabled",
-                _("Phone disabled"),
-                _("SMS-updates from your mobile phone are no longer accepted")
-            )
-            notification.create_notice_type(
-                "update_received",
-                _("Update received"),
-                _("Akvo has received an update from your phone")
-            )
-
-        post_syncdb.connect(create_notice_types, sender=notification)
-    else:
-        print "Skipping creation of NoticeTypes as notification app not found"
+    def create_notice_types(app, created_models, verbosity, **kwargs):
+        print "Creating notice types for SMS updates"
+        notification.create_notice_type(
+            "phone_added",
+            _("Phone number added"),
+            _("Your mobile phone has been added to your user profile")
+        )
+        notification.create_notice_type(
+            "phone_confirmed",
+            _("Phone confirmed"),
+            _("Your mobile phone number has been confirmed for use in updating RSR projects")
+        )
+        notification.create_notice_type(
+            "reporting_enabled",
+            _("SMS updates enabled for project"),
+            _("You can now send SMS-updates to an RSR project")
+        )
+        notification.create_notice_type(
+            "reporting_cancelled",
+            _("SMS updates cancelled"),
+            _("SMS-updates to an RSR project has been cancelled")
+        )
+        notification.create_notice_type(
+            "phone_disabled",
+            _("Phone disabled"),
+            _("SMS-updates from your mobile phone are no longer accepted")
+        )
+        notification.create_notice_type(
+            "update_received",
+            _("Update received"),
+            _("Akvo has received an update from your phone")
+        )
+    post_syncdb.connect(create_notice_types, sender=notification)
 
     def create_model_instance(model, **kwargs):
         handle = kwargs.pop('handle')
@@ -109,7 +105,6 @@ if not settings.PVW_RSR:
     if "permissions" in settings.INSTALLED_APPS:
         from permissions import models as permissions
         from permissions.utils import add_role
-        from .models import UserProfile
 
         def create_principal_role_relations(sender, **kwargs):
             try:

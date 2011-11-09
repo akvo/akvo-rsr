@@ -22,8 +22,6 @@ SITE_ID = settings.__dict__['_wrapped'].__class__.SITE_ID = make_tls_property()
 
 class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
-        if settings.PVW_RSR:
-            return
         host = request.get_host().split(':')
         domain = host[0]
         domain_parts = domain.split('.')

@@ -56,10 +56,20 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON))
 
+    def test_has_expected_database_authentication_package_specifications(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database authentication package specifications"""
+
+        expected_packages = ['mktemp', 'debianutils', 'libpam-runtime', 'libpam0g', 'libpam-modules',
+                             'login', 'passwd', 'adduser']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE_AUTHENTICATION))
+
     def test_has_expected_database_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database package specifications"""
 
-        expected_packages = ['mysql-common', 'libmysqlclient15off', 'python-support', 'python-mysqldb']
+        expected_packages = ['mysql-common', 'libmysqlclient15off', 'libnet-daemon-perl', 'libplrpc-perl', 'libdbi-perl',
+                             'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0', 'ncurses-bin', 'sed', 'lsb-base',
+                             'psmisc', 'mysql-server-5.0', 'python-support', 'python-mysqldb']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 
@@ -88,6 +98,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
                              SystemPackageSpecifications.LOCALES_AND_LANGUAGES,
                              SystemPackageSpecifications.PYTHON,
                              SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES,
+                             SystemPackageSpecifications.DATABASE_AUTHENTICATION,
                              SystemPackageSpecifications.DATABASE,
                              SystemPackageSpecifications.ADDITIONAL_TOOLS]
 

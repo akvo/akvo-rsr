@@ -74,7 +74,7 @@ class RSRDataRetrieverConfigTest(mox.MoxTestBase):
     def test_has_rsr_log_file_path(self):
         """fab.tests.config.rsr.data_retriever_config_test  Has RSR log file path"""
 
-        expected_log_file_path = os.path.join(self.expected_rsr_app_path, "akvo.log")
+        expected_log_file_path = os.path.join(self.data_host_config_values.rsr_logs_home, "akvo.log")
 
         self.assertEqual(expected_log_file_path, self.data_retriever_config.rsr_log_file_path)
 
@@ -85,7 +85,7 @@ class RSRDataRetrieverConfigTest(mox.MoxTestBase):
         rsr_data_dir_name = "%s_%s" % (self.expected_rsr_env_name, data_dump_file_time_stamp)
         expected_data_dump_file_path = os.path.join(self.data_host_config_values.data_dumps_home, rsr_data_dir_name)
 
-        self.mock_time_stamp_formatter.file_timestamp().AndReturn(data_dump_file_time_stamp)
+        self.mock_time_stamp_formatter.append_timestamp(self.expected_rsr_env_name).AndReturn(rsr_data_dir_name)
         self.mox.ReplayAll()
 
         self.assertEqual(expected_data_dump_file_path, self.data_retriever_config.time_stamped_rsr_data_dump_path())

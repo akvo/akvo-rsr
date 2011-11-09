@@ -9,7 +9,10 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.data.retriever import RSRDataRetriever
+from fab.config.rsr.database import RSRDatabaseConfig
+from fab.database.mysql.admin import DatabaseAdmin
+from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.database import DatabaseHost
 
 
@@ -17,22 +20,36 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.mock_data_retriever = self.mox.CreateMock(RSRDataRetriever)
+        self.database_config = RSRDatabaseConfig.create_instance()
+        self.mock_database_admin = self.mox.CreateMock(DatabaseAdmin)
 
-        self.database_host = DatabaseHost(self.mock_data_retriever)
+        self.database_host = DatabaseHost(self.database_config, self.mock_database_admin)
 
-    def test_can_create_instance(self):
-        """fab.tests.host.database_host_test  Can create a DatabaseHost instance"""
+    def test_can_create_remote_database_host_instance(self):
+        """fab.tests.host.database_host_test  Can create a remote DatabaseHost instance"""
 
-        self.assertIsInstance(DatabaseHost.create_instance(), DatabaseHost)
+        self.assertIsInstance(self._create_database_host_instance_with(RemoteHostController), DatabaseHost)
 
-    def test_can_fetch_data_from_host(self):
-        """fab.tests.host.database_host_test  Can fetch data from the host"""
+    def test_can_create_local_database_host_instance(self):
+        """fab.tests.host.database_host_test  Can create a local DatabaseHost instance"""
 
-        self.mock_data_retriever.fetch_data_from_database()
+        self.assertIsInstance(self._create_database_host_instance_with(LocalHostController), DatabaseHost)
+
+    def _create_database_host_instance_with(self, host_controller_class):
+        mock_host_controller = self.mox.CreateMock(host_controller_class)
+        mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
+
         self.mox.ReplayAll()
 
-        self.database_host.fetch_latest_data()
+        return DatabaseHost.create_instance(mock_host_controller)
+
+    def test_can_backup_existing_database(self):
+        """fab.tests.host.database_host_test  Can backup existing database"""
+
+        self.mock_database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
+        self.mox.ReplayAll()
+
+        self.database_host.backup_existing_database()
 
 
 def suite():

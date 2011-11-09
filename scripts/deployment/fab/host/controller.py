@@ -18,6 +18,9 @@ class HostControllerBase(object):
     def __init__(self, feedback):
         self.feedback = feedback
 
+    def hide_command(self):
+        return fabric.api.hide('running')
+
     def hide_output(self):
         return fabric.api.hide('stdout')
 
@@ -47,6 +50,9 @@ class RemoteHostController(HostControllerBase):
     def get(self, remote_path, local_path=None):
         return fabric.api.get(remote_path, local_path)
 
+    def put(self, local_path, remote_path, use_sudo=False, mirror_local_mode=False, mode=None):
+        return fabric.api.put(local_path, remote_path, use_sudo, mirror_local_mode, mode)
+
 
 class LocalHostController(HostControllerBase):
     """LocalHostController encapsulates basic command execution and path validation calls made to a local host via Fabric"""
@@ -68,7 +74,12 @@ class LocalHostController(HostControllerBase):
         return fabric.api.lcd(path)
 
     def get(self, remote_path, local_path=None):
+        # ToDo: implement a local file copy operation
         raise Exception("Unsupported operation: %s.get()" % LocalHostController.__name__)
+
+    def put(self, local_path, remote_path, use_sudo=False, mirror_local_mode=False, mode=None):
+        # ToDo: implement a local file copy operation
+        raise Exception("Unsupported operation: %s.put()" % LocalHostController.__name__)
 
 
 class HostControllerMode(object):
