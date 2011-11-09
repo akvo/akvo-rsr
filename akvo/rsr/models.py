@@ -483,15 +483,15 @@ class Benchmarkname(models.Model):
 
     class Meta:
         ordering = ['order', 'name',]
-        verbose_name=_('benchmark name')
-        verbose_name_plural=_('benchmark names')
+        verbose_name = _('benchmark name')
+        verbose_name_plural = _('benchmark names')
 
 
 class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name                    = models.CharField(_('category name'), max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
+    name = models.CharField(_('category name'), max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
     #icon                    = ImageWithThumbnailsField(
     #                            _('category icon'),
     #                            blank=True,
@@ -499,8 +499,8 @@ class Category(models.Model):
     #                            thumbnail={'size': (20, 20), 'options': ('crop', )},
     #                            help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
     #                        )
-    focus_area              = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
-    benchmarknames          = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_('Select the benchmark names for the category.'), )
+    focus_area = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
+    benchmarknames = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_('Select the benchmark names for the category.'), )
 
     class Meta:
         verbose_name=_('category')
@@ -552,8 +552,8 @@ class MiniCMS(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
 
-    label               = models.CharField(_(u'label'), max_length=50, help_text=_(u'The label is used for identification only'), )
-    feature_box         = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
+    label = models.CharField(_(u'label'), max_length=50, help_text=_(u'The label is used for identification only'), )
+    feature_box = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
         '''Enter the text that will appear in the feature box of the home page. (350 characters)
         <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
         <p>The outer &lt;div&gt; can use the classes<br/>
@@ -572,14 +572,13 @@ class MiniCMS(models.Model):
         <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>
         '''
     ))
-    feature_image       = models.ImageField(_('feature image'),
-                                            blank=True,
-                                            upload_to=image_path,
-                                            help_text=_('Ideally the image should be 645x363 pixels in size.'))
-    top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
-    #map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
-    lower_height        = models.IntegerField(_(u'accordion height'), default=500, )
-    active              = models.BooleanField(_(u'currently active home page'), default=False)
+    feature_image = models.ImageField(_('feature image'),
+                                      blank=True,
+                                      upload_to=image_path,
+                                      help_text=_('Ideally the image should be 645x363 pixels in size.'))
+    top_right_box = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
+    lower_height = models.IntegerField(_(u'accordion height'), default=500, )
+    active = models.BooleanField(_(u'currently active home page'), default=False)
 
     def __unicode__(self):
         return self.label
@@ -656,11 +655,6 @@ class Project(models.Model):
         amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         return amount or 0
 
-        '''
-        if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-        return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-        '''
-
     @property
     def view_count(self):
         counter = ViewCounter.objects.get_for_object(self)
@@ -668,7 +662,7 @@ class Project(models.Model):
 
     @property
     def primary_location(self, location=None):
-        '''Returns a project's primary location'''
+        '''Return a project's primary location'''
         qs = self.locations.filter(primary=True)
         qs = qs.exclude(latitude=0, longitude=0)
         if qs:
@@ -767,33 +761,33 @@ class Project(models.Model):
                             SELECT CASE
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
-                                END
-                                FROM rsr_budgetitem
-                                WHERE rsr_budgetitem.project_id = rsr_project.id
-                            ) - (
-                                SELECT CASE
-                                    WHEN Sum(funding_amount) IS NULL THEN 0
-                                    ELSE Sum(funding_amount)
-                                END
-                                FROM rsr_fundingpartner
-                                WHERE rsr_fundingpartner.project_id = rsr_project.id
-                            ) - (
-                                SELECT CASE
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ) - (
-                                SELECT CASE
-                                    WHEN Sum(amount_received) IS NULL THEN 0
-                                    ELSE Sum(amount_received)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ))
+                            END
+                            FROM rsr_budgetitem
+                            WHERE rsr_budgetitem.project_id = rsr_project.id
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(funding_amount) IS NULL THEN 0
+                                ELSE Sum(funding_amount)
+                            END
+                            FROM rsr_fundingpartner
+                            WHERE rsr_fundingpartner.project_id = rsr_project.id
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(amount) IS NULL THEN 0
+                                ELSE Sum(amount)
+                            END
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(amount_received) IS NULL THEN 0
+                                ELSE Sum(amount_received)
+                            END
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
+                        ))
                         ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                     #how much money has been donated by individual donors, including pending donations
                     'donated':
@@ -1160,10 +1154,10 @@ class Project(models.Model):
 
 
 class Benchmark(models.Model):
-    project     = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
-    category    = models.ForeignKey(Category, verbose_name=_(u'category'), )
-    name        = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
-    value       = models.IntegerField(_(u'benchmark value'), )
+    project = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
+    category = models.ForeignKey(Category, verbose_name=_(u'category'), )
+    name = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
+    value = models.IntegerField(_(u'benchmark value'), )
 
     def __unicode__(self):
         return _(u'Category: %s, Benchmark: %d %s') % (self.category, self.value, self.name, )
@@ -1183,14 +1177,14 @@ class BudgetItem(models.Model):
         ('management', _('management')),
         ('other', _('other')),
     )
-    project             = models.ForeignKey(Project,)
-    item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
-    amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
+    project = models.ForeignKey(Project,)
+    item = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
 
     class Meta:
-        verbose_name        = _('Budget item')
+        verbose_name = _('Budget item')
         verbose_name_plural = _('Budget items')
-        unique_together     = ('project', 'item')
+        unique_together= ('project', 'item')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
@@ -1221,8 +1215,8 @@ class Link(models.Model):
         ('A', _('Akvopedia entry')),
         ('E', _('External link')),
     )
-    kind    = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
-    url     = models.URLField(_(u'URL'))
+    kind = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
+    url = models.URLField(_(u'URL'))
     caption = models.CharField(_('caption'), max_length=50)
     project = models.ForeignKey(Project, related_name='links')
 
@@ -1233,74 +1227,71 @@ class Link(models.Model):
         return '<a href="%s">%s</a>' % (self.url, self.caption,)
 
     class Meta:
-        verbose_name        = _('link')
+        verbose_name = _('link')
         verbose_name_plural = _('links')
 
 
 
 class FundingPartner(models.Model):
-    funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount          = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
-    project                 = models.ForeignKey(Project,)
+    funding_organisation = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
+    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
+    project = models.ForeignKey(Project,)
 
     class Meta:
-        verbose_name=_('Funding partner')
-        verbose_name_plural=_('Funding partners')
+        verbose_name = _('Funding partner')
+        verbose_name_plural = _('Funding partners')
 
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
 
 class SponsorPartner(models.Model):
-    sponsor_organisation    = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
-    project                 = models.ForeignKey(Project,)
+    sponsor_organisation = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     class Meta:
-        verbose_name=_('Sponsor partner')
-        verbose_name_plural=_('Sponsor partners')
+        verbose_name = _('Sponsor partner')
+        verbose_name_plural = _('Sponsor partners')
 
     def __unicode__(self):
         return "%s" % (self.sponsor_organisation.name, )
 
 class SupportPartner(models.Model):
-    support_organisation    = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
-    project                 = models.ForeignKey(Project,)
+    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     class Meta:
-        verbose_name=_('Support partner')
-        verbose_name_plural=_('Support partners')
+        verbose_name = _('Support partner')
+        verbose_name_plural = _('Support partners')
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
 
 class FieldPartner(models.Model):
-    field_organisation      = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
-    project                 = models.ForeignKey(Project,)
+    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     class Meta:
-        verbose_name=_('Field partner')
-        verbose_name_plural=_('Field partners')
+        verbose_name = _('Field partner')
+        verbose_name_plural = _('Field partners')
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
 
-
-    # kept for updating database. may be renamed Funding for certain DBs
-    #class Budget(models.Model):
-    #    project             = models.OneToOneField(Project, primary_key=True)
-    #    date_request_posted = models.DateField(default=date.today)
-    #    date_complete       = models.DateField(null=True, blank=True)
-    #    # budget itmes
-    #    employment          = models.IntegerField()
-    #    building            = models.IntegerField()
-    #    training            = models.IntegerField()
-    #    maintenance         = models.IntegerField()
-    #    other               = models.IntegerField()
-    #
-    #
-    #    def __unicode__(self):
-    #        return self.project.__unicode__()
-
-
+# kept for updating database. may be renamed Funding for certain DBs
+#class Budget(models.Model):
+#    project             = models.OneToOneField(Project, primary_key=True)
+#    date_request_posted = models.DateField(default=date.today)
+#    date_complete       = models.DateField(null=True, blank=True)
+#    # budget itmes
+#    employment          = models.IntegerField()
+#    building            = models.IntegerField()
+#    training            = models.IntegerField()
+#    maintenance         = models.IntegerField()
+#    other               = models.IntegerField()
+#
+#
+#    def __unicode__(self):
+#        return self.project.__unicode__()
 
 PHOTO_LOCATIONS = (
     ('B', _('At the beginning of the update')),
@@ -1345,34 +1336,34 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
-    user                = models.OneToOneField(User)
-    organisation        = models.ForeignKey(Organisation)
-    phone_number        = models.CharField(max_length=50, blank=True)# TODO: check uniqueness if non-empty
-    validation          = models.CharField(_('validation code'), max_length=20, blank=True)
+    user = models.OneToOneField(User)
+    organisation = models.ForeignKey(Organisation)
+    phone_number = models.CharField(max_length=50, blank=True)# TODO: check uniqueness if non-empty
+    validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
-    objects             = UserProfileManager()
+    objects = UserProfileManager()
 
     # "constants" for use with SMS updating workflow
-    VALIDATED                               = 'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
-    WORKFLOW_SMS_UPDATE                     = 'SMS update' #Name of workflow for SMS updating
-    STATE_PHONE_NUMBER_ADDED                = 'Phone number added' #Phone number has been added to the profile
-    #STATE_PHONE_NUMBER_VALIDATED            = 'Phone number validated' #The phone has been validated with a validation code SMS
-    STATE_UPDATES_ENABLED                   = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
-    STATE_PHONE_DISABLED                    = 'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
-    TRANSITION_ADD_PHONE_NUMBER             = 'Add phone number'
-    TRANSITION_VALIDATE_PHONE_NUMBER        = 'Validate phone number'
-    TRANSITION_ENABLE_UPDATING              = 'Enable updating'
-    TRANSITION_DISABLE_UPDATING             = 'Disable updating'
-    GROUP_SMS_UPDATER                       = u'SMS updater'
-    GROUP_SMS_MANAGER                       = u'SMS manager'
-    ROLE_SMS_UPDATER                        = u'SMS updater'
-    ROLE_SMS_MANAGER                        = u'SMS manager'
-    PERMISSION_ADD_SMS_UPDATES              = 'add_sms_updates'
-    PERMISSION_MANAGE_SMS_UPDATES           = 'manage_sms_updates'
-    GATEWAY_42IT                            = '42it'
+    VALIDATED = 'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
+    WORKFLOW_SMS_UPDATE = 'SMS update' #Name of workflow for SMS updating
+    STATE_PHONE_NUMBER_ADDED = 'Phone number added' #Phone number has been added to the profile
+    #STATE_PHONE_NUMBER_VALIDATED = 'Phone number validated' #The phone has been validated with a validation code SMS
+    STATE_UPDATES_ENABLED = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
+    STATE_PHONE_DISABLED = 'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
+    TRANSITION_ADD_PHONE_NUMBER = 'Add phone number'
+    TRANSITION_VALIDATE_PHONE_NUMBER = 'Validate phone number'
+    TRANSITION_ENABLE_UPDATING = 'Enable updating'
+    TRANSITION_DISABLE_UPDATING = 'Disable updating'
+    GROUP_SMS_UPDATER = u'SMS updater'
+    GROUP_SMS_MANAGER = u'SMS manager'
+    ROLE_SMS_UPDATER = u'SMS updater'
+    ROLE_SMS_MANAGER = u'SMS manager'
+    PERMISSION_ADD_SMS_UPDATES = 'add_sms_updates'
+    PERMISSION_MANAGE_SMS_UPDATES = 'manage_sms_updates'
+    GATEWAY_42IT = '42it'
 
     class Meta:
-        verbose_name        = _('user profile')
+        verbose_name = _('user profile')
         verbose_name_plural = _('user profiles')
 
     def __unicode__(self):
@@ -1714,10 +1705,10 @@ class SmsReporter(models.Model):
     Mapping between projects, gateway phone numbers and users phones
     """
     userprofile = models.ForeignKey(UserProfile, related_name='reporters')
-    gw_number   = models.ForeignKey(GatewayNumber)
-    project     = models.ForeignKey(Project, null=True, blank=True, )
+    gw_number = models.ForeignKey(GatewayNumber)
+    project = models.ForeignKey(Project, null=True, blank=True, )
 
-    objects     = SmsReporterManager()
+    objects = SmsReporterManager()
 
     class Meta:
         unique_together = ('userprofile', 'gw_number', 'project',)
@@ -1819,32 +1810,32 @@ class ProjectUpdate(models.Model):
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
 
-    project         = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
-    user            = models.ForeignKey(User, verbose_name=_('user'))
-    title           = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
-    text            = models.TextField(_('text'), blank=True)
-    #status          = models.CharField(max_length=1, choices=STATUSES, default='N')
-    photo           = ImageWithThumbnailsField(
-                        blank=True,
-                        upload_to=image_path,
-                        thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-                        help_text = 'The image should have 4:3 height:width ratio for best displaying result',
-                    )
-    photo_location  = models.CharField(_('photo location'), max_length=1,
+    project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    title = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
+    text = models.TextField(_('text'), blank=True)
+    #status = models.CharField(max_length=1, choices=STATUSES, default='N')
+    photo = ImageWithThumbnailsField(
+                blank=True,
+                upload_to=image_path,
+                thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+                help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+            )
+    photo_location = models.CharField(_('photo location'), max_length=1,
                                        choices=PHOTO_LOCATIONS)
-    photo_caption   = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    photo_credit    = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    video           = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
-    video_caption   = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    video_credit    = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    update_method   = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
+    photo_caption = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    photo_credit = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    video = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video_caption = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    video_credit = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    update_method = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time = models.DateTimeField(_('time'), auto_now_add=True)
     time_last_updated = models.DateTimeField(_('time last updated'), auto_now=True)
-    featured        = models.BooleanField(_('featured'))
+    featured = models.BooleanField(_('featured'))
 
     class Meta:
-        get_latest_by       = "time"
-        verbose_name        = _('project update')
+        get_latest_by = "time"
+        verbose_name = _('project update')
         verbose_name_plural = _('project updates')
 
     def __unicode__(self):
@@ -1926,10 +1917,10 @@ class ProjectUpdate(models.Model):
 
 
 class ProjectComment(models.Model):
-    project         = models.ForeignKey(Project, verbose_name=_('project'))
-    user            = models.ForeignKey(User, verbose_name=_('user'))
-    comment         = models.TextField(_('comment'))
-    time            = models.DateTimeField(_('time'))
+    project = models.ForeignKey(Project, verbose_name=_('project'))
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    comment = models.TextField(_('comment'))
+    time = models.DateTimeField(_('time'))
 
 
 # Payment engines
@@ -2018,22 +2009,19 @@ class Invoice(models.Model):
     project = models.ForeignKey(Project)
     # Common
     amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
-    amount_received = models.DecimalField(max_digits=10, decimal_places=2,
-        blank=True, null=True,
-        help_text=_('Amount actually received after charges have been applied.'))
+    amount_received = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,
+                                          help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
-    campaign_code = models.CharField(_('Campaign code'),
-                                     blank=True, max_length=15)
+    campaign_code = models.CharField(_('Campaign code'), blank=True, max_length=15)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
     ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
-        choices=get_mollie_banklist(), blank=True)
+    bank = models.CharField(_('mollie.nl bank ID'), max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(_('mollie.nl transaction ID'), max_length=100, blank=True)
 
     admin_objects = models.Manager()
