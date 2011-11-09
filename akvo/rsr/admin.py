@@ -18,7 +18,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 
-
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from permissions.models import Role
