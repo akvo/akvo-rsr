@@ -34,10 +34,8 @@ from registration.signals import user_activated
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from workflows import WorkflowBase
-from workflows.utils import get_workflow, set_initial_state, get_allowed_transitions, do_transition
 from permissions import PermissionBase
 from permissions.models import Role
-from permissions.utils import get_roles, add_local_role
 
 from akvo.gateway.models import GatewayNumber, Gateway
 
@@ -57,8 +55,8 @@ from akvo.rsr.utils import (
 from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, set_active_cms,
-    act_on_log_entry, user_activated_callback, set_showcase_project, set_focus_org,
+    create_payment_gateway_selector, donation_completed,
+    act_on_log_entry, user_activated_callback
 )
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
@@ -1681,7 +1679,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
 
 class SmsReporterManager(models.Manager):
-    def select(profile=None, gw_number=None, project=None):
+    def select(self, profile=None, gw_number=None, project=None):
         #need either gw_number or project
         if gw_number or project:
             if gw_number:
