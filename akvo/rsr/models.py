@@ -161,53 +161,38 @@ class Organisation(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
-    #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
-    field_partner               = models.BooleanField(_(u'field partner'))
-    support_partner             = models.BooleanField(_(u'support partner'))
-    funding_partner             = models.BooleanField(_(u'funding partner'))
-    sponsor_partner             = models.BooleanField(_(u'sponsor partner'))
+    #type = models.CharField(max_length=1, choices=PARNER_TYPES)
+    field_partner = models.BooleanField(_(u'field partner'))
+    support_partner = models.BooleanField(_(u'support partner'))
+    funding_partner = models.BooleanField(_(u'funding partner'))
+    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
 
-    name                        = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).')
-                                )
-    long_name                   = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).')
-                                )
-    organisation_type           = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
+    name = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).'))
+    long_name = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).'))
+    organisation_type = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
 
-    logo                        = ImageWithThumbnailsField(
-                                    _('logo'),
+    logo = ImageWithThumbnailsField(_('logo'),
                                     blank=True,
                                     upload_to=image_path,
                                     thumbnail={'size': (360,270)},
                                     help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
-                                )
-    #city = models.CharField(_('city'), max_length=25)
-    #state = models.CharField(_('state'), max_length=15)
-    #country = models.ForeignKey(Country)
+                                   )
+    
+    url = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
 
-    url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
+    phone = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    mobile = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    fax = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    contact_person = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
+    contact_email = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
+    description = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
 
-    #map                         = models.ImageField(
-    #                                _('map'),
-    #                                blank=True,
-    #                                upload_to=image_path,
-    #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'),
-    #                            )
-    #address_1                   = models.CharField(_('address 1'), blank=True, max_length=35, help_text=_('Street address (35 characters).'))
-    #address_2                   = models.CharField(_('address 2'), blank=True, max_length=35, help_text=_('Street address 2 (35 characters).'))
-    #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-    phone                       = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    mobile                      = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    fax                         = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    contact_person              = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
-    contact_email               = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
-    description                 = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
-
-    locations                   = generic.GenericRelation(Location)
+    locations = generic.GenericRelation(Location)
 
     #Managers, one default, one custom
     #objects = models.Manager()
-    objects     = QuerySetManager()
-    projects    = ProjectsQuerySetManager()
+    objects = QuerySetManager()
+    projects = ProjectsQuerySetManager()
 
     def get_absolute_url(self):
         return '/rsr/organisation/%d/' % self.id
