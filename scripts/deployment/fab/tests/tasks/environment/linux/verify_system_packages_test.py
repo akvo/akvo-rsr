@@ -35,6 +35,7 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
     def test_can_verify_expected_system_package_dependencies(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can verify expected system package dependencies"""
 
+        self.mock_linux_host.update_system_package_sources()
         for package_specifications in SystemPackageSpecifications.ALL_PACKAGES:
             self.mock_linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
 

@@ -92,11 +92,6 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.database_admin_config_values.admin_password, "admin password")
 
-    def test_databaseadminconfigvalues_has_remote_config_values_home(self):
-        """fab.tests.config.config_values_test  DatabaseAdminConfigValues has remote config values home"""
-
-        self._verify_expected_config_value(self.database_admin_config_values.remote_config_values_home, "remote config values home")
-
     def test_rsrdatabaseconfigvalues_has_database_name(self):
         """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database name"""
 
