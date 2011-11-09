@@ -1460,7 +1460,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
                 logger.debug("Exiting: %s()" % who_am_i())
                 return reporter
             else:
-                logger.error("%s(): No numbers defined for gateway %s. Can't create a reporter for user %s ." % (who_am_i(), gw, self.user))
+                logger.error("%s(): No numbers defined for gateway. Can't create a reporter for user %s ." % (who_am_i(), self.user))
                 logger.debug("Exiting: %s()" % who_am_i())
                 return None
 
