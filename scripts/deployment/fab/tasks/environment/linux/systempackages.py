@@ -24,6 +24,8 @@ class VerifySystemPackages(fabric.tasks.Task):
         return VerifySystemPackages(fab.host.linux.LinuxHost.create_instance())
 
     def run(self):
+        self.linux_host.update_system_package_sources()
+
         for package_specifications in fab.config.environment.linux.systempackages.SystemPackageSpecifications.ALL_PACKAGES:
             self.linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
 

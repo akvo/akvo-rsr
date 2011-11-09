@@ -35,9 +35,12 @@ class Internet(object):
 
     def download_file_to_directory(self, download_dir, file_url):
         with self.host_controller.cd(download_dir):
-            self.host_controller.run("wget -nv %s" % file_url)
+            self.host_controller.run(self._wget_command(file_url))
 
     def download_file_at_url_as(self, downloaded_file_path, file_url):
         # When we have a more recent version of wget on our servers we can enable parsing the download
         # file name from the HTTP response headers with the --content-disposition option
-        self.host_controller.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))
+        self.host_controller.run(self._wget_command("-O %s %s" % (downloaded_file_path, file_url)))
+
+    def _wget_command(self, parameters):
+        return "wget -nv --no-check-certificate %s" % parameters
