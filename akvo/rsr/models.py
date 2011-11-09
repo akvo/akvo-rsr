@@ -1838,9 +1838,6 @@ class ProjectUpdate(models.Model):
         verbose_name = _('project update')
         verbose_name_plural = _('project updates')
 
-    def __unicode__(self):
-        return self.title
-
     def img(self, value=''):
         if self.photo:
             try:
