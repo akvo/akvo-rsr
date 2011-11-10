@@ -6,47 +6,41 @@
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (
-    MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner,
-    Location, Country, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, CURRENCY_CHOICES,
+    MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment,
+    Country
 )
 from akvo.rsr.models import UserProfile, Invoice, SmsReporter
 from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm, ProjectUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
 
 from akvo.rsr.decorators import fetch_project
-from akvo.rsr.iso3166 import CONTINENTS, COUNTRY_CONTINENTS
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, state_equals
 
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.sites.models import Site
-from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.db.models import F, Sum
+from django.db.models import Sum
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from datetime import datetime
-import time
 from registration.models import RegistrationProfile
 import random
-from decimal import Decimal
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
-from workflows.utils import get_workflow_for_object,  set_workflow_for_object, get_workflow
 from notification.models import Notice
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -102,11 +96,12 @@ def set_test_cookie(request):
     request.session.set_test_cookie()
     return HttpResponseRedirect('/rsr/?nocookie=test')
 
-def get_random_from_qs(qs, count):
-    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
-    qs_list = list(qs.values_list('pk', flat=True))
-    random.shuffle(qs_list)
-    return qs.filter(pk__in=qs_list[:count])
+# This is defined in and imported from utils.py
+#def get_random_from_qs(qs, count):
+#    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
+#    qs_list = list(qs.values_list('pk', flat=True))
+#    random.shuffle(qs_list)
+#    return qs.filter(pk__in=qs_list[:count])
 
 # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
 import re
