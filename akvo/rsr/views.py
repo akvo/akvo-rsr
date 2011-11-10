@@ -728,27 +728,6 @@ def activate(request, activation_key,
                                 },
                               context_instance=context)    
     
-    #activation_key = activation_key.lower() # Normalize before trying anything with it.
-    #user = RegistrationProfile.objects.activate_user(activation_key)
-    #if user:
-    #    #Since we want to verify the user before letting anyone in we set is_active
-    #    #to False (it is set to True by RegistrationProfile.objects.activate_user)
-    #    user.is_active = False
-    #    user.save()
-    #    current_site = Site.objects.get_current()
-    #    subject = 'Akvo user email confirmed'                
-    #    message = 'A user, %s, has confirmed her email. Check it out!' % user.username
-    #    send_mail(subject, message, 'noreply@%s' % current_site, REGISTRATION_RECEIVERS)
-    #if extra_context is None:
-    #    extra_context = {}
-    #context = RequestContext(request)
-    #for key, value in extra_context.items():
-    #    context[key] = callable(value) and value() or value
-    #return render_to_response(template_name,
-    #                          { 'account': user,
-    #                            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
-    #                          context_instance=context)
-
 
 #copied from django.contrib.auth.views to be able to customize the form widget attrs
 def password_change(request, template_name='registration/password_change_form.html',
