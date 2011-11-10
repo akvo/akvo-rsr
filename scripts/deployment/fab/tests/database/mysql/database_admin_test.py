@@ -122,7 +122,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self.mock_statement_executor.execute_without_output(["SHOW DATABASES LIKE 'non_existent_db'"]).AndReturn(MySQLResponseData(""))
         self.mock_feedback.comment("Database 'non_existent_db' does not exist")
-        self.mock_feedback.comment("No backup created for database: non_existent_db")
+        self.mock_feedback.comment("No backup required for database: non_existent_db")
         self.mox.ReplayAll()
 
         self.database_admin.create_timestamped_backup_database("non_existent_db")

@@ -51,7 +51,7 @@ class DatabaseAdmin(object):
             self.create_empty_database(duplicate_database_name)
             self.database_copier.create_duplicate(database_name, duplicate_database_name)
         else:
-            self.feedback.comment("No backup created for database: %s" % database_name)
+            self.feedback.comment("No backup required for database: %s" % database_name)
 
     def create_empty_database(self, database_name):
         self.statement_executor.execute(["CREATE DATABASE %s DEFAULT CHARACTER SET UTF8" % database_name])
