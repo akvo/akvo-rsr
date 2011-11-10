@@ -5,17 +5,17 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
-from akvo.rsr.models import (
-    MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment,
-    Country
-)
-from akvo.rsr.models import UserProfile, Invoice, SmsReporter
-from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm, ProjectUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
+                             Project, ProjectUpdate, ProjectComment, Country,
+                             UserProfile, Invoice, SmsReporter)
+from akvo.rsr.forms import (InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail,
+                            RSR_ProfileUpdateForm, ProjectUpdateForm)
 
 from akvo.rsr.decorators import fetch_project
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
-from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, state_equals
+from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
+                            get_random_from_qs, state_equals)
 
 from django import forms
 from django import http
