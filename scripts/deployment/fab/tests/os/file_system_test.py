@@ -101,10 +101,7 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.os.file_system_test  Can create directory"""
 
         new_dir = "/var/tmp/packages"
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.run("mkdir %s" % new_dir)
-        self.mock_host_controller.run("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=False)
 
         self.file_system.create_directory(new_dir)
 
@@ -112,10 +109,7 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.os.file_system_test  Can create directory with sudo"""
 
         new_dir = "/var/tmp/packages"
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.sudo("mkdir %s" % new_dir)
-        self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=True)
 
         self.file_system.create_directory_with_sudo(new_dir)
 
@@ -134,10 +128,7 @@ class FileSystemTest(mox.MoxTestBase):
 
         new_dir = "/var/tmp/packages"
         self.mock_host_controller.path_exists(new_dir).AndReturn(False)
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.run("mkdir %s" % new_dir)
-        self.mock_host_controller.run("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=False)
 
         self.file_system.ensure_directory_exists(new_dir)
 
@@ -156,12 +147,19 @@ class FileSystemTest(mox.MoxTestBase):
 
         new_dir = "/var/tmp/packages"
         self.mock_host_controller.path_exists(new_dir).AndReturn(False)
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.sudo("mkdir %s" % new_dir)
-        self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=True)
 
         self.file_system.ensure_directory_exists_with_sudo(new_dir)
+
+    def _set_expectations_for_creating_directory(self, new_dir, with_sudo=False):
+        self.mock_feedback.comment("Creating directory: %s" % new_dir)
+        if with_sudo:
+            self.mock_host_controller.sudo("mkdir -p %s" % new_dir)
+            self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
+        else:
+            self.mock_host_controller.run("mkdir -p %s" % new_dir)
+            self.mock_host_controller.run("chmod 755 %s" % new_dir)
+        self.mox.ReplayAll()
 
     def test_can_rename_file(self):
         """fab.tests.os.file_system_test  Can rename a file"""

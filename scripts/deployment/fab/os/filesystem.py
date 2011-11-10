@@ -46,7 +46,7 @@ class FileSystem(object):
 
     def _create_directory_with(self, run_command, dir_path):
         self.feedback.comment("Creating directory: %s" % dir_path)
-        run_command("mkdir %s" % dir_path)
+        run_command("mkdir -p %s" % dir_path)
         run_command("chmod 755 %s" % dir_path)
 
     def ensure_directory_exists(self, dir_path):
