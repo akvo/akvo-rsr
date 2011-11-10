@@ -53,6 +53,11 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
 
         self.assertEqual(self.database_config_values.rsr_database_user, self.database_config.rsr_database_user)
 
+    def test_has_rsr_database_password(self):
+        """fab.tests.config.rsr.database_config_test  Has RSR database password"""
+
+        self.assertEqual(self.database_config_values.rsr_database_password, self.database_config.rsr_database_password)
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDatabaseConfigTest)

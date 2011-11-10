@@ -102,6 +102,11 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.rsr_database_config_values.rsr_database_user, "RSR database user")
 
+    def test_rsrdatabaseconfigvalues_has_database_password(self):
+        """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database password"""
+
+        self._verify_expected_config_value(self.rsr_database_config_values.rsr_database_password, "RSR database password")
+
     def _verify_expected_config_value(self, config_value, config_value_description):
         self.assertTrue(len(config_value) > 0, "Expected %s config value" % config_value_description)
 

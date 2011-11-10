@@ -46,5 +46,6 @@ class DatabaseAdminConfigValues(object):
 class RSRDatabaseConfigValues(object):
 
     def __init__(self):
-        self.rsr_database_name  = "some_rsrdb"
-        self.rsr_database_user  = "rsruser"
+        self.rsr_database_name      = "some_rsrdb"
+        self.rsr_database_user      = "rsruser"
+        self.rsr_database_password  = "rsr_password"
