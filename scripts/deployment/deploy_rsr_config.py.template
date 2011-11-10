@@ -5,7 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-LIVE_DATABASE_HOST  = "database_server:ssh_port" # usually the live RSR server if you want the most recent live data
-DEPLOYMENT_HOST     = "rsr_host_for_deployment:ssh_port" # deployment to live server not yet supported
-USERNAME            = "your_username"
-PASSWORD            = "your_password"
+DEPLOYMENT_HOST             = "rsr_host:ssh_port" # deployment to live server not yet supported
+DEPLOYMENT_HOST_USERNAME    = "your_username"
+DEPLOYMENT_HOST_PASSWORD    = "your_password"
+
+DATA_HOST                   = "database_server:ssh_port" # usually the live RSR server if you want the most recent live data
+DATA_HOST_USERNAME          = "dh_user"
+DATA_HOST_PASSWORD          = "dh_password"
