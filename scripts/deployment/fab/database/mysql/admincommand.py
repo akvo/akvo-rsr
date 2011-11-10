@@ -30,7 +30,7 @@ class DatabaseAdminCommand(object):
 
         return database_found
 
-    def database_user_exists(self, user_name):
+    def user_exists(self, user_name):
         sql_to_find_user = ["USE mysql", "SELECT User FROM user WHERE User = '%s'" % user_name]
         user_found = self.statement_executor.execute_without_output(sql_to_find_user).contains(user_name)
 
@@ -47,7 +47,7 @@ class DatabaseAdminCommand(object):
     def create_empty_database(self, database_name):
         self.statement_executor.execute(["CREATE DATABASE %s DEFAULT CHARACTER SET UTF8" % database_name])
 
-    def create_database_user(self, user_name, password):
+    def create_user_account(self, user_name, password):
         sql_to_create_user = ["CREATE USER %s IDENTIFIED BY '%s'" % (user_name, password)]
         self.statement_executor.execute_without_output(sql_to_create_user)
 

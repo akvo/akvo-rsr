@@ -58,8 +58,8 @@ class DatabaseAdminCommandTest(mox.MoxTestBase):
 
         self.assertFalse(self.database_admin_command.database_exists("non_existent_db"), "Should recognise a non-existent database")
 
-    def test_can_check_for_existing_database_user(self):
-        """fab.tests.database.mysql.database_admin_command_test  Can check for an existing database user"""
+    def test_can_check_for_existing_user_account(self):
+        """fab.tests.database.mysql.database_admin_command_test  Can check for an existing user account"""
 
         user_search_response = MySQLResponseData("+--\n|joe|\n--+")
         sql_for_user_search = ["USE mysql", "SELECT User FROM user WHERE User = 'joe'"]
@@ -68,10 +68,10 @@ class DatabaseAdminCommandTest(mox.MoxTestBase):
         self.mock_feedback.comment("Found user 'joe'")
         self.mox.ReplayAll()
 
-        self.assertTrue(self.database_admin_command.database_user_exists("joe"), "Should recognise an existing user")
+        self.assertTrue(self.database_admin_command.user_exists("joe"), "Should recognise an existing user account")
 
-    def test_can_check_for_nonexistent_database_user(self):
-        """fab.tests.database.mysql.database_admin_command_test  Can check for a non-existent database user"""
+    def test_can_check_for_nonexistent_user_account(self):
+        """fab.tests.database.mysql.database_admin_command_test  Can check for a non-existent user account"""
 
         user_search_response = MySQLResponseData("")
         sql_for_user_search = ["USE mysql", "SELECT User FROM user WHERE User = 'kenny'"]
@@ -80,7 +80,7 @@ class DatabaseAdminCommandTest(mox.MoxTestBase):
         self.mock_feedback.comment("User 'kenny' does not exist")
         self.mox.ReplayAll()
 
-        self.assertFalse(self.database_admin_command.database_user_exists("kenny"), "Should recognise a non-existent database user")
+        self.assertFalse(self.database_admin_command.user_exists("kenny"), "Should recognise a non-existent user account")
 
     def test_can_drop_database(self):
         """fab.tests.database.mysql.database_admin_command_test  Can drop database"""
@@ -98,13 +98,13 @@ class DatabaseAdminCommandTest(mox.MoxTestBase):
 
         self.database_admin_command.create_empty_database("projects_db")
 
-    def test_can_create_database_user(self):
-        """fab.tests.database.mysql.database_admin_command_test  Can create database user"""
+    def test_can_create_user_account(self):
+        """fab.tests.database.mysql.database_admin_command_test  Can create user account"""
 
         self.mock_statement_executor.execute_without_output(["CREATE USER joe IDENTIFIED BY 'secret'"])
         self.mox.ReplayAll()
 
-        self.database_admin_command.create_database_user("joe", "secret")
+        self.database_admin_command.create_user_account("joe", "secret")
 
     def test_can_grant_all_database_permissions_for_specified_user(self):
         """fab.tests.database.mysql.database_admin_command_test  Can grant all database permissions for a specified user"""
