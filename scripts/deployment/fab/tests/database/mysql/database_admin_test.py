@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.database.mysql.admincommand import DatabaseAdminCommand
-from fab.database.mysql.command import DatabaseCopier
+from fab.database.mysql.commandexecution import DatabaseCopier
 from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController

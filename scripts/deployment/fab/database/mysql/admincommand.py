@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.database.mysql.command import SQLStatementExecutor
+from fab.database.mysql.commandexecution import SQLStatementExecutor
 
 
 class DatabaseAdminCommand(object):
