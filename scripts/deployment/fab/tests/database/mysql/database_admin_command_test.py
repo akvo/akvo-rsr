@@ -98,6 +98,14 @@ class DatabaseAdminCommandTest(mox.MoxTestBase):
 
         self.database_admin_command.create_empty_database("projects_db")
 
+    def test_can_create_database_user(self):
+        """fab.tests.database.mysql.database_admin_command_test  Can create database user"""
+
+        self.mock_statement_executor.execute_without_output(["CREATE USER joe IDENTIFIED BY 'secret'"])
+        self.mox.ReplayAll()
+
+        self.database_admin_command.create_database_user("joe", "secret")
+
     def test_can_grant_all_database_permissions_for_specified_user(self):
         """fab.tests.database.mysql.database_admin_command_test  Can grant all database permissions for a specified user"""
 

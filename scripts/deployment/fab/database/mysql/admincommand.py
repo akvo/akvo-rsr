@@ -47,5 +47,9 @@ class DatabaseAdminCommand(object):
     def create_empty_database(self, database_name):
         self.statement_executor.execute(["CREATE DATABASE %s DEFAULT CHARACTER SET UTF8" % database_name])
 
+    def create_database_user(self, user_name, password):
+        sql_to_create_user = ["CREATE USER %s IDENTIFIED BY '%s'" % (user_name, password)]
+        self.statement_executor.execute_without_output(sql_to_create_user)
+
     def grant_all_database_permissions_for_user(self, database_user, database_name):
         self.statement_executor.execute(["GRANT ALL ON %s.* TO %s@localhost" % (database_name, database_user)])
