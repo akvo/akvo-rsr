@@ -14,12 +14,16 @@ from fab.config.values import DeploymentHostConfigValues
 
 class RSRDataPopulatorConfig(object):
 
-    def __init__(self, deployment_config, deployment_host_config_values):
+    def __init__(self, deployment_config, deployment_host_config_values, codebase_config):
         self.data_archives_home = deployment_host_config_values.data_archives_home
 
         rsr_app_path = os.path.join(deployment_config.rsr_deployment_home, 'akvo')
         self.db_dump_script_path = os.path.join(rsr_app_path, 'db_dump.py')
 
+        rsr_env_name        = "rsr_%s" % codebase_config.repo_branch_without_type
+        self.rsr_env_path   = os.path.join(deployment_host_config_values.virtualenvs_home, rsr_env_name)
+
     @staticmethod
     def create_instance():
-        return RSRDataPopulatorConfig(RSRDeploymentConfig.create_instance(), DeploymentHostConfigValues())
+        return RSRDataPopulatorConfig(RSRDeploymentConfig.create_instance(), DeploymentHostConfigValues(),
+                                      RSRCodebaseConfig.create_instance())
