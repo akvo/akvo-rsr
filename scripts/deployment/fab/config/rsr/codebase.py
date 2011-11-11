@@ -19,6 +19,8 @@ class RSRCodebaseConfig(object):
     SYSTEM_REQUIREMENTS_FILE    = "0_system.txt"
     RSR_REQUIREMENTS_FILE       = "2_rsr.txt"
     TESTING_REQUIREMENTS_FILE   = "3_testing.txt"
+    MANAGE_SCRIPT_PATH          = "akvo/manage.py"
+    DB_DUMP_SCRIPT_PATH         = "akvo/db_dump.py"
 
     def __init__(self, repository_branch):
         self.repo_branch = repository_branch

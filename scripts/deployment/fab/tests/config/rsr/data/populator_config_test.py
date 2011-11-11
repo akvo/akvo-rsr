@@ -27,7 +27,7 @@ class RSRDataPopulatorConfigTest(unittest2.TestCase):
         self.deployment_host_config_values = DeploymentHostConfigValues()
         self.codebase_config = RSRCodebaseConfig.create_instance()
 
-        self.expected_rsr_app_path = os.path.join(self.deployment_config.rsr_deployment_home, 'akvo')
+        self.expected_rsr_deployment_home = self.deployment_config.rsr_deployment_home
 
         self.data_populator_config = RSRDataPopulatorConfig(self.deployment_config, self.deployment_host_config_values,
                                                             self.codebase_config)
@@ -42,12 +42,10 @@ class RSRDataPopulatorConfigTest(unittest2.TestCase):
 
         self.assertEqual(self.deployment_host_config_values.data_archives_home, self.data_populator_config.data_archives_home)
 
-    def test_has_db_dump_script_path(self):
-        """fab.tests.config.rsr.data.populator_config_test  Has the db_dump script path"""
+    def test_has_rsr_deployment_home(self):
+        """fab.tests.config.rsr.data.populator_config_test  Has RSR deployment home"""
 
-        expected_db_dump_script_path = os.path.join(self.expected_rsr_app_path, 'db_dump.py')
-
-        self.assertEqual(expected_db_dump_script_path, self.data_populator_config.db_dump_script_path)
+        self.assertEqual(self.expected_rsr_deployment_home, self.data_populator_config.rsr_deployment_home)
 
     def test_has_rsr_virtualenv_path(self):
         """fab.tests.config.rsr.data.populator_config_test  Has RSR virtualenv path"""

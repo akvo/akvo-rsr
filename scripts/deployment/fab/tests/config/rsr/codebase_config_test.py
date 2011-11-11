@@ -67,6 +67,16 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual("3_testing.txt", RSRCodebaseConfig.TESTING_REQUIREMENTS_FILE)
 
+    def test_has_manage_script_path(self):
+        """fab.tests.config.rsr.codebase_config_test  Has manage.py script path"""
+
+        self.assertEqual("akvo/manage.py", RSRCodebaseConfig.MANAGE_SCRIPT_PATH)
+
+    def test_has_db_dump_script_path(self):
+        """fab.tests.config.rsr.codebase_config_test  Has db_dump.py script path"""
+
+        self.assertEqual("akvo/db_dump.py", RSRCodebaseConfig.DB_DUMP_SCRIPT_PATH)
+
     def test_has_system_requirements_file_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has system requirements file URL"""
 
