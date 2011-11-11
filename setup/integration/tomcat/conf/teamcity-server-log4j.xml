@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
+
+<log4j:configuration>
+  <appender name="CONSOLE-WARN" class="org.apache.log4j.ConsoleAppender">
+    <param name="target" value="System.err"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/>
+    </layout>
+    <filter class="org.apache.log4j.varia.LevelRangeFilter">
+      <param name="LevelMin" value="WARN"/>
+    </filter>
+  </appender>
+
+  <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-server.log"/>
+    <param name="maxBackupIndex" value="3"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/>
+    </layout>
+
+    <filter class="jetbrains.buildServer.log.CategoryFilter">
+      <param name="DenyCategory" value="jetbrains.buildServer.VCS"/>
+    </filter>
+
+    <filter class="jetbrains.buildServer.log.CategoryFilter">
+      <param name="DenyCategory" value="javasvn.output"/>
+    </filter>
+    
+    <filter class="jetbrains.buildServer.log.CategoryFilter">
+      <param name="DenyCategory" value="jetbrains.buildServer.performance"/>
+    </filter>
+    
+  </appender>
+
+
+  <appender name="STARTEAM.LOG" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-starteam.log"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p [%t] - %30.30c - %m %n"/>
+    </layout>
+  </appender>
+
+
+  <appender name="SVN.LOG" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-svn.log"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/>
+    </layout>
+  </appender>
+
+  <appender name="PERFORMANCE.LOG" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-performance.log"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/>
+    </layout>
+  </appender>
+
+  <appender name="ROLL.VCS" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-vcs.log"/>
+    <param name="maxBackupIndex" value="2"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/>
+    </layout>
+
+    <filter class="org.apache.log4j.varia.LevelRangeFilter">
+      <param name="LevelMin" value="DEBUG"/>
+    </filter>
+  </appender>
+
+  <appender name="ACTIVITIES.LOG" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-activities.log"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/>
+    </layout>
+  </appender>
+
+
+  <!--================================================================-->
+
+
+  <category name="jetbrains.buildServer.buildTriggers.vcs.starteam">
+    <priority value="INFO"/>
+    <appender-ref ref="STARTEAM.LOG"/>
+  </category>
+
+  <category name="jetbrains.buildServer.ACTIVITIES">
+    <priority value="INFO"/>
+    <appender-ref ref="ACTIVITIES.LOG"/>
+  </category>
+
+  <category name="jetbrains.buildServer.VCS">
+    <priority value="INFO"/>
+    <appender-ref ref="ROLL.VCS"/>
+  </category>
+
+  <category name="jetbrains.buildServer">
+    <!--<priority value="DEBUG"/>-->
+    <appender-ref ref="ROLL"/>
+  </category>
+
+  <!--
+  <category name="javasvn.output">
+    <priority value="DEBUG"/>
+    <appender-ref ref="SVN.LOG"/>
+  </category>
+  -->
+
+  <!--
+  <category name="jetbrains.buildServer.performance">
+    <priority value="ALL"/>
+    <appender-ref ref="PERFORMANCE.LOG"/>
+  </category>
+  -->
+
+  <root>
+    <priority value="INFO"/>
+    <appender-ref ref="CONSOLE-WARN"/>
+  </root>
+
+</log4j:configuration>

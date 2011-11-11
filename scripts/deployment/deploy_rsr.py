@@ -8,10 +8,18 @@
 import os, subprocess, sys
 
 
-if not os.path.exists("deploy_rsr_config.py"):
-    print ">> Expected configuration file deploy_rsr_config.py not found"
-    print ">> Copy the deploy_rsr_config.py.template file and edit as necessary"
-    sys.exit(1)
+def exit_if_config_file_is_missing(config_file_path):
+    if not os.path.exists(config_file_path):
+        config_file_name = config_file_path.split('/')[-1]
+        print ">> Configuration file missing: %s" % config_file_path
+        print ">> Copy the %s.template file and edit as necessary" % config_file_name
+        sys.exit(1)
+    else:
+        print ">> Found expected configuration file: %s" % config_file_path
+
+exit_if_config_file_is_missing("deploy_rsr_config.py")
+exit_if_config_file_is_missing("fab/config/values.py")
+print "\r"
 
 
 from deploy_rsr_config import LIVE_DATABASE_HOST, DEPLOYMENT_HOST, USERNAME, PASSWORD
@@ -46,9 +54,12 @@ def run_fab_task(fully_qualified_task, host):
 
 def deploy_rsr():
     os.chdir(FABRIC_SCRIPTS_HOME)
-    run_fab_task("fab.tasks.dataretriever.fetch_rsr_data", LIVE_DATABASE_HOST)
-    run_fab_task("fab.tasks.codedeployment.deploy_rsr_code", DEPLOYMENT_HOST)
-    run_fab_task("fab.tasks.virtualenv.rebuild_rsr_virtualenv", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.environment.linux.systempackages.verify_system_packages", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.environment.python.systempackages.update_system_python_packages", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote", DEPLOYMENT_HOST)
+    run_fab_task("fab.tasks.data.retrieval.fetch_rsr_data", LIVE_DATABASE_HOST)
+    run_fab_task("fab.tasks.database.backup.backup_rsr_database:host_controller_mode=remote", DEPLOYMENT_HOST)
 
 
 if __name__ == "__main__":

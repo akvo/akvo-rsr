@@ -1,12 +1,12 @@
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_syncdb
 from django.utils.translation import ugettext_noop as _
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
- 
+
     def create_notice_types(app, created_models, verbosity, **kwargs):
         print "Creating notice types for SMS updates"
         notification.create_notice_type(
@@ -39,96 +39,117 @@ if "notification" in settings.INSTALLED_APPS:
             _("Update received"),
             _("Akvo has received an update from your phone")
         )
- 
     post_syncdb.connect(create_notice_types, sender=notification)
-else:
-    print "Skipping creation of NoticeTypes as notification app not found"
 
-def create_model_instance(model, **kwargs):
-    handle = kwargs.pop('handle')
-    try:
-        existing_instance = model.objects.get(**handle)
-        updated = False
-        for key in kwargs.keys():
-            if kwargs[key] != getattr(existing_instance, key, False):
-                setattr(existing_instance, key, kwargs[key])
-                updated = True
-        if updated:
-            existing_instance.save()
-            #if verbosity > 1:
-            #    print "Updated %s %s" % (label, existing_instance)
-        return existing_instance
-    except model.DoesNotExist:
-        kwargs.update(handle)
-        return model.objects.create(**kwargs)
-        #if verbosity > 1:
-        #    print "Created %s NoticeType" % label
-
-    
-#workflow for UserProfile
-#principalrolerelation group SMS updater - role SMS updater
-#principalrolerelation group SMS manager - role SMS manager
-#principalrolerelation group SMS manager - role SMS updater
-
-
-#if "permissions" in settings.INSTALLED_APPS:
-#    from permissions.utils import register_role
-#    
-#    def create_permissions_objects(app, created_models, verbosity, **kwargs):
-#        #register_role('SMS Updater')
-#        print "Done creating permissions objects"
-#
-#    post_syncdb.connect(create_permissions_objects, sender=permissions)
-#else:
-#    print "Skipping creation of Permissions objects as permissions app not found"
-#    
-
-from django.contrib.auth import models as auth_models
-def create_workflow_groups(sender, **kwargs):
-    sms_updater_group = create_model_instance(Group, **{'handle': {'name': UserProfile.GROUP_SMS_UPDATER}})
-    sms_manager_group = create_model_instance(Group, **{'handle': {'name': UserProfile.GROUP_SMS_MANAGER}})
-    print "Done creating groups"    
-    
-post_syncdb.connect(create_workflow_groups, sender=auth_models)
-
-if "workflows" in settings.INSTALLED_APPS:
-    from workflows import models as workflows
-    from workflows.utils import set_workflow_for_model
-    from .models import UserProfile
-    
-    def create_workflows_model_relation(app, created_models, verbosity, **kwargs):
-        set_workflow_for_model(ContentType.objects.get_for_model(UserProfile), UserProfile.WORKFLOW_SMS_UPDATE)
-        print "Created workflow relation for UserProfile"
-
-    post_syncdb.connect(create_workflows_model_relation, sender=workflows)
-else:
-    print "Skipping creation of Workflow objects as workflows app not found"
-
-
-if "permissions" in settings.INSTALLED_APPS:
-    from permissions import models as permissions
-    from permissions.utils import add_role
-    from .models import UserProfile
-    
-    def create_principal_role_relations(sender, **kwargs):
+    def create_model_instance(model, **kwargs):
+        handle = kwargs.pop('handle')
         try:
-            sms_updater_group = Group.objects.get(name=UserProfile.GROUP_SMS_UPDATER)
-            sms_manager_group = Group.objects.get(name=UserProfile.GROUP_SMS_MANAGER)
-            sms_updater_role  = permissions.Role.objects.get(name=UserProfile.GROUP_SMS_UPDATER)
-            sms_manager_role  = permissions.Role.objects.get(name=UserProfile.GROUP_SMS_MANAGER)
-            
-            add_role(sms_updater_group, sms_updater_role)
-            add_role(sms_manager_group, sms_updater_role)
-            add_role(sms_manager_group, sms_manager_role)
-            
-            print "Created principal role relations for %s and %s" % (UserProfile.GROUP_SMS_MANAGER, UserProfile.GROUP_SMS_UPDATER)
-        except:
-            print "Role relations could not be created since fixtures are missing. Run manage.py syncdb again please!"
+            existing_instance = model.objects.get(**handle)
+            updated = False
+            for key in kwargs.keys():
+                if kwargs[key] != getattr(existing_instance, key, False):
+                    setattr(existing_instance, key, kwargs[key])
+                    updated = True
+            if updated:
+                existing_instance.save()
+                #if verbosity > 1:
+                #    print "Updated %s %s" % (label, existing_instance)
+            return existing_instance
+        except model.DoesNotExist:
+            kwargs.update(handle)
+            return model.objects.create(**kwargs)
+            #if verbosity > 1:
+            #    print "Created %s NoticeType" % label
 
-    post_syncdb.connect(create_principal_role_relations, sender=permissions)
-else:
-    print "Skipping creation of Roles as permissions app was not found"
 
+    #workflow for UserProfile
+    #principalrolerelation group SMS updater - role SMS updater
+    #principalrolerelation group SMS manager - role SMS manager
+    #principalrolerelation group SMS manager - role SMS updater
+
+
+    #if "permissions" in settings.INSTALLED_APPS:
+    #    from permissions.utils import register_role
+    #
+    #    def create_permissions_objects(app, created_models, verbosity, **kwargs):
+    #        #register_role('SMS Updater')
+    #        print "Done creating permissions objects"
+    #
+    #    post_syncdb.connect(create_permissions_objects, sender=permissions)
+    #else:
+    #    print "Skipping creation of Permissions objects as permissions app not found"
+    #
+
+    from django.contrib.auth import models as auth_models
+    def create_workflow_groups(sender, **kwargs):
+        sms_updater_group = create_model_instance(Group, **{'handle': {'name': UserProfile.GROUP_SMS_UPDATER}})
+        sms_manager_group = create_model_instance(Group, **{'handle': {'name': UserProfile.GROUP_SMS_MANAGER}})
+        print "Done creating groups"
+
+    post_syncdb.connect(create_workflow_groups, sender=auth_models)
+
+    if "workflows" in settings.INSTALLED_APPS:
+        from workflows import models as workflows
+        from workflows.utils import set_workflow_for_model
+        from .models import UserProfile
+
+        def create_workflows_model_relation(app, created_models, verbosity, **kwargs):
+            set_workflow_for_model(ContentType.objects.get_for_model(UserProfile), UserProfile.WORKFLOW_SMS_UPDATE)
+            print "Created workflow relation for UserProfile"
+
+        post_syncdb.connect(create_workflows_model_relation, sender=workflows)
+    else:
+        print "Skipping creation of Workflow objects as workflows app not found"
+
+
+    if "permissions" in settings.INSTALLED_APPS:
+        from permissions import models as permissions
+        from permissions.utils import add_role
+
+        def create_principal_role_relations(sender, **kwargs):
+            try:
+                sms_updater_group = Group.objects.get(name=UserProfile.GROUP_SMS_UPDATER)
+                sms_manager_group = Group.objects.get(name=UserProfile.GROUP_SMS_MANAGER)
+                sms_updater_role  = permissions.Role.objects.get(name=UserProfile.GROUP_SMS_UPDATER)
+                sms_manager_role  = permissions.Role.objects.get(name=UserProfile.GROUP_SMS_MANAGER)
+
+                add_role(sms_updater_group, sms_updater_role)
+                add_role(sms_manager_group, sms_updater_role)
+                add_role(sms_manager_group, sms_manager_role)
+
+                print "Created principal role relations for %s and %s" % (UserProfile.GROUP_SMS_MANAGER, UserProfile.GROUP_SMS_UPDATER)
+            except:
+                print "Role relations could not be created since fixtures are missing. Run manage.py syncdb again please!"
+
+        post_syncdb.connect(create_principal_role_relations, sender=permissions)
+    else:
+        print "Skipping creation of Roles as permissions app was not found"
+
+    if "akvo.rsr" in settings.INSTALLED_APPS:
+        from akvo.rsr import models as rsr
+        def create_limited_change_permissions(sender, **kwargs):
+            print "Adding RSR limited permissions"
+            print
+            models = [
+                rsr.Organisation, rsr.Project,
+                rsr.SmsReporter, rsr.UserProfile, rsr.PartnerSite
+            ]
+            for model in models:
+                opts = model._meta
+                model_name = opts.object_name.lower()
+                permission, created = Permission.objects.get_or_create(
+                    codename=u"rsr_limited_change_%s" % model_name,
+                    defaults={
+                        'name': u'RSR limited change %s' % model_name,
+                        'content_type_id': ContentType.objects.get_for_model(model).id,
+                    }
+                )
+                if created:
+                    print 'Created RSR limited change %s Permission' % model_name
+                else:
+                    print 'RSR limited change %s Permission already exists in the database' % model_name
+
+        post_syncdb.connect(create_limited_change_permissions, sender=rsr)
 
 
 

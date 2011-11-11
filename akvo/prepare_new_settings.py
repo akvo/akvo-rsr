@@ -10,8 +10,6 @@ import sys
 from django.core.management import setup_environ
 from django.template import Context, Template
 
-setup_environ(settings)
-
 cwd = os.path.abspath(os.path.dirname(__file__))
 settings_dir = os.path.join(cwd, 'settings')
 backup_dir = os.path.join(settings_dir, 'backup')
@@ -25,7 +23,7 @@ confs = {
     'LIVE_EARTH_ENABLED': '',
     'WALKING_FOR_WATER_ENABLED': '',
     'SITE_ID': ''
-    }
+}
 
 
 def verify_settings_dir():
@@ -44,6 +42,7 @@ def backup_old_settings():
     except OSError:
         pass
 
+    # copy settings.py to backup
     try:
         settings_string = \
             'cp %s/settings.py %s/settings.py' % (cwd, backup_dir)
@@ -56,11 +55,12 @@ def backup_old_settings():
         print 'Could not add copy settings file, Got error: %s' % e
         sys.exit(0)
 
+    # copy settings_base.py to backup
     try:
         settings_base_string = \
             'cp %s/settings_base.py %s/settings_base.py' % (cwd, backup_dir)
-        retcode2 = subprocess.call(settings_base_string, shell=True)
-        if retcode2 < 0:
+        retcode = subprocess.call(settings_base_string, shell=True)
+        if retcode < 0:
             print >> sys.stderr, \
             "Could not copy the settings_base file," \
             "Copy was terminated by signal", -retcode
@@ -68,20 +68,34 @@ def backup_old_settings():
         print 'Could not add copy settings_base file, Got error: %s' % e
         sys.exit(0)
 
+    # create copy of settings.py with another name
+    try:
+        settings_old_string = \
+            'cp %s/settings.py %s/ye_olde_settings.py' % (cwd, cwd,)
+        retcode = subprocess.call(settings_old_string, shell=True)
+        if retcode < 0:
+            print >> sys.stderr, \
+            "Could not copy settings.py to ye_olde_settings.py file," \
+            "Copy was terminated by signal", -retcode
+    except OSError, e:
+        print 'Could not copy settings.py to ye_olde_settings.py file, Got error: %s' % e
+        sys.exit(0)
+
     print '\nCompleted backing up old settings files to: \n\t%s/' % backup_dir
 
 
 def get_simple_settings():
     """Add the simple values to the conf dictinary"""
+    import ye_olde_settings as settings
     for key in confs.keys():
         try:
             confs[key] = getattr(settings, '%s' % key)
         except Exception, e:
-            raise e
-
+            print "Simple setting import error:", e
 
 def get_multilevel_settings():
     """Add multilevel dictionaries(DATABASES) to the confs dictionary"""
+    import ye_olde_settings as settings
     db_confs = {
         'NAME': '',
         'ENGINE': '',
@@ -103,6 +117,8 @@ def get_multilevel_settings():
 
 def generate_new_settings():
     """Use the confs and the settings template to create a settings string"""
+    setup_environ(settings)
+    
     template_file = open('%s/prepare_new_settings_local.template' % cwd)
     template_content = template_file.read()
     template_file.close()

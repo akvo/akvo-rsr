@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PY_VERSION=2.5
+PY_VERSION=2.6
 PY_BIN_PATH="/Library/Frameworks/Python.framework/Versions/$PY_VERSION/bin"
 PY_PACKAGES_BIN_PATH="$PY_BIN_PATH" # this might be /usr/local/share/python when using homebrew Python
 

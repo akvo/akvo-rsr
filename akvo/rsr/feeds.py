@@ -227,7 +227,7 @@ class AllProjectUpdates(UpdateFeed):
     title = _(u'Akvo RSR all project updates')
     
     def link(self):
-        return reverse('project_list')
+        return reverse('project_list', args=['all'])
 
     description = _('Project updates for all Akvo RSR projects')
 

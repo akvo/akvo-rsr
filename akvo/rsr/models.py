@@ -10,27 +10,19 @@ from decimal import Decimal
 import logging
 logger = logging.getLogger('akvo.rsr')
 
-from BeautifulSoup import BeautifulSoup
 import oembed
 
-from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models import F, Max, Sum
+from django.db.models import Max, Sum
 from django.db.models.query import QuerySet
-from django.db.models.signals import pre_save, post_save, m2m_changed
-from django.contrib import admin
+from django.db.models.signals import pre_save, post_save
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.exceptions import ValidationError
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
-from django.template import loader, Context
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -38,38 +30,36 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
 from paypal.standard.ipn.signals import payment_was_flagged
-from registration.models import RegistrationProfile, RegistrationManager
 from registration.signals import user_activated
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from workflows import WorkflowBase
-#from workflows.utils import get_workflow, set_initial_state, get_state, get_allowed_transitions, do_transition
 from permissions import PermissionBase
 from permissions.models import Role
-from permissions.utils import get_roles, add_local_role
 
-from akvo.settings import MEDIA_ROOT
+from akvo.gateway.models import GatewayNumber, Gateway
 
-from akvo.gateway.models import GatewayNumber, Gateway, MoSms
-
-from utils import (
+from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField
+from akvo.rsr.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
 )
-from utils import (
+from akvo.rsr.utils import (
     PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
-from utils import (
-    groups_from_user, rsr_image_path, rsr_send_mail_to_users, qs_column_sum,
+from akvo.rsr.utils import (
+    groups_from_user, rsr_image_path, qs_column_sum,
     who_am_i, send_now, state_equals, to_gmt
 )
-from signals import (
+from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, set_active_cms,
+    create_payment_gateway_selector, donation_completed,
     act_on_log_entry, user_activated_callback
 )
+
+from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -83,41 +73,36 @@ class QuerySetManager(models.Manager):
             return getattr(self.__class__, attr, *args)
         except AttributeError:
             return getattr(self.get_query_set(), attr, *args)
-            
-CONTINENTS = (
-    (1, _('Africa')),
-    (2, _('Asia')),
-    (3, _('Australia')),
-    (4, _('Europe')),
-    (5, _('North America')),
-    (6, _('South America')),
+
+OLD_CONTINENTS = (
+    ("1", _('Africa')),
+    ("2", _('Asia')),
+    ("3", _('Australia')),
+    ("4", _('Europe')),
+    ("5", _('North America')),
+    ("6", _('South America')),
 )
 
 class Country(models.Model):
-    
-    country_name                = models.CharField(_(u'country name'), max_length=50, unique=True,)
-    continent                   = models.IntegerField(_(u'continent'), choices=CONTINENTS)
+
+    name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
+    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
+    continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
+    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
+
+#    name = models.CharField(_(u'country name'), max_length=50,)
+#    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    continent = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
+#    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
     def __unicode__(self):
-        return self.country_name
+        return self.name
 
     class Meta:
         verbose_name = _('country')
         verbose_name_plural = _('countries')
-        ordering = ['country_name']
+        ordering = ['name']
 
-
-class LatitudeField(models.FloatField):
-    description = _('Latitude coordinate.')
-    def __init__(self, *args, **kwargs):
-        super(LatitudeField, self).__init__(*args, **kwargs)
-        self.validators = [MinValueValidator(-90), MaxValueValidator(90)]
-
-class LongitudeField(models.FloatField):
-    description = _('Longitude coordinate.')
-    def __init__(self, *args, **kwargs):
-        super(LongitudeField, self).__init__(*args, **kwargs)
-        self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 class Location(models.Model):
     latitude = LatitudeField(_('latitude'), default=0,
@@ -172,57 +157,42 @@ class Organisation(models.Model):
         (ORG_TYPE_COM, _('Commercial')),
         (ORG_TYPE_KNO, _('Knowledge institution')),
     )
-    
+
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
-    #type                        = models.CharField(max_length=1, choices=PARNER_TYPES)
-    field_partner               = models.BooleanField(_(u'field partner'))
-    support_partner             = models.BooleanField(_(u'support partner'))
-    funding_partner             = models.BooleanField(_(u'funding partner'))
-    sponsor_partner             = models.BooleanField(_(u'sponsor partner'))
+    #type = models.CharField(max_length=1, choices=PARNER_TYPES)
+    field_partner = models.BooleanField(_(u'field partner'))
+    support_partner = models.BooleanField(_(u'support partner'))
+    funding_partner = models.BooleanField(_(u'funding partner'))
+    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
 
-    name                        = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).')
-                                )
-    long_name                   = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).')
-                                )
-    organisation_type           = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
+    name = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).'))
+    long_name = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).'))
+    organisation_type = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
 
-    logo                        = ImageWithThumbnailsField(
-                                    _('logo'),
+    logo = ImageWithThumbnailsField(_('logo'),
                                     blank=True,
                                     upload_to=image_path,
                                     thumbnail={'size': (360,270)},
                                     help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
-                                )
-    #city = models.CharField(_('city'), max_length=25)
-    #state = models.CharField(_('state'), max_length=15)
-    #country = models.ForeignKey(Country)
+                                   )
+    
+    url = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
 
-    url                         = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
+    phone = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    mobile = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    fax = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
+    contact_person = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
+    contact_email = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
+    description = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
 
-    #map                         = models.ImageField(
-    #                                _('map'),
-    #                                blank=True,
-    #                                upload_to=image_path,
-    #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).'),
-    #                            )
-    #address_1                   = models.CharField(_('address 1'), blank=True, max_length=35, help_text=_('Street address (35 characters).'))
-    #address_2                   = models.CharField(_('address 2'), blank=True, max_length=35, help_text=_('Street address 2 (35 characters).'))
-    #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-    phone                       = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    mobile                      = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    fax                         = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    contact_person              = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
-    contact_email               = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
-    description                 = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
-
-    locations                   = generic.GenericRelation(Location)
+    locations = generic.GenericRelation(Location)
 
     #Managers, one default, one custom
-    #objects = models.Manager()    
-    objects     = QuerySetManager()
-    projects    = ProjectsQuerySetManager()
+    #objects = models.Manager()
+    objects = QuerySetManager()
+    projects = ProjectsQuerySetManager()
 
     @models.permalink
     def get_absolute_url(self):
@@ -238,7 +208,7 @@ class Organisation(models.Model):
             return location
         return
 
-    
+
     class QuerySet(QuerySet):
         def has_primary_location(self):
             content_type = ContentType.objects.get_for_model(Organisation)
@@ -250,7 +220,7 @@ class Organisation(models.Model):
 
         def fieldpartners(self):
             return self.filter(field_partner__exact=True)
-    
+
         def supportpartners(self):
             return self.filter(support_partner__exact=True)
 
@@ -259,7 +229,7 @@ class Organisation(models.Model):
 
         def fundingpartners(self):
             return self.filter(funding_partner__exact=True)
-            
+
         def ngos(self):
             return self.filter(organisation_type__exact='N')
 
@@ -289,13 +259,10 @@ class Organisation(models.Model):
             note that self is a queryset of orgs
             '''
             projs = Project.objects.published()
-            if settings.PVW_RSR:
-                return (projs.filter(project_partners__partner__in=self)).distinct()
-            else:
-                return (projs.filter(supportpartner__support_organisation__in=self) | \
-                         projs.filter(fieldpartner__field_organisation__in=self) | \
-                         projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-                         projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
+            return (projs.filter(supportpartner__support_organisation__in=self) | \
+                    projs.filter(fieldpartner__field_organisation__in=self) | \
+                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
+                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
         def all(self):
             '''
@@ -303,13 +270,10 @@ class Organisation(models.Model):
             note that self is a queryset of orgs
             '''
             projs = Project.objects.all()
-            if settings.PVW_RSR:
-                return (projs.filter(project_partners__partner__in=self)).distinct()
-            else:
-                return (projs.filter(supportpartner__support_organisation__in=self) | \
-                         projs.filter(fieldpartner__field_organisation__in=self) | \
-                         projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-                         projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
+            return (projs.filter(supportpartner__support_organisation__in=self) | \
+                    projs.filter(fieldpartner__field_organisation__in=self) | \
+                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
+                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
     def __unicode__(self):
         return self.name
@@ -321,14 +285,6 @@ class Organisation(models.Model):
     #    if self.sponsor_partner: pt += "P"
     #    if self.funding_partner: pt += "M"
     #    return pt
-
-    if settings.PVW_RSR:
-        def partner_types(self):
-            """
-            return a list all ProjectPartner partner_types the org has
-            """
-            partners = ProjectPartner.objects.filter(partner=self)
-            return list(set([partner.get_partner_type_display() for partner in partners]))
 
     #def has_water_projects(self):
     #    if self.all_projects().filter(category_water__exact=True):
@@ -347,7 +303,7 @@ class Organisation(models.Model):
     #        return True
     #    else:
     #        return False
-    #        
+    #
     #def has_maintenance_projects(self):
     #    if self.all_projects().filter(category_maintenance__exact=True):
     #        return True
@@ -371,11 +327,11 @@ class Organisation(models.Model):
     #        return True
     #    else:
     #        return False
-    
+
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
-    
+
     def published_projects(self):
         '''
         returns a queryset with published projects that has self as any kind of partner
@@ -387,7 +343,7 @@ class Organisation(models.Model):
         returns a queryset with all projects that has self as any kind of partner
         '''
         return Organisation.projects.filter(pk=self.pk).all()
-    
+
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
 
@@ -414,7 +370,7 @@ class Organisation(models.Model):
             'pledged_dollars': all_active.dollars().total_pledged(self),
             'still_needed_dollars': my_projs.dollars().total_funds_needed()
         }
-        
+
     # rewrite of funding, not currently used since we're mimmicing 0.9.xx behaviour regarding funding info on the org page:
     #def funding(self):
     #    my_projs = self.published_projects().status_not_cancelled().status_not_archived()
@@ -425,7 +381,7 @@ class Organisation(models.Model):
     #        'total_pledged_euros': my_projs.euros().total_pledged(),
     #        'total_raised_euros': my_projs.euros().total_pledged() + my_projs.euros().total_donated() - my_projs.euros().total_pending(),
     #        'still_needed_euros': my_projs.euros().total_funds_needed(),
-    #        
+    #
     #        'total_dollars': my_projs.dollars().total_total_budget(),
     #        'donated_dollars': my_projs.dollars().total_donated() - my_projs.dollars().total_pending(),
     #        'pledged_dollars': my_projs.dollars().total_pledged(self),
@@ -434,14 +390,14 @@ class Organisation(models.Model):
     #        'still_needed_dollars': my_projs.dollars().total_funds_needed()
     #    }
 
-    class Meta: 
+    class Meta:
         verbose_name=_('Organisation')
         verbose_name_plural=_('Organisations')
         ordering = ['name']
         permissions = (
             ("%s_organisation" % RSR_LIMITED_CHANGE, u'RSR limited change organisation'),
         )
-        
+
 
 class OrganisationAccount(models.Model):
     """
@@ -477,14 +433,14 @@ class FocusArea(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('focus_area', (), {'slug': self.slug})
-        
+        return ('project_list', (), {'slug': self.slug})
+
     def projects(self):
         """
         return all projects that "belong" to the FA through the Categories it links to
         """
         return Project.objects.filter(categories__in=self.categories.all())
-        
+
     def __unicode__(self):
         return self.name
 
@@ -501,15 +457,15 @@ class Benchmarkname(models.Model):
 
     class Meta:
         ordering = ['order', 'name',]
-        verbose_name=_('benchmark name')
-        verbose_name_plural=_('benchmark names')
+        verbose_name = _('benchmark name')
+        verbose_name_plural = _('benchmark names')
 
-    
+
 class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name                    = models.CharField(_('category name'), max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
+    name = models.CharField(_('category name'), max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
     #icon                    = ImageWithThumbnailsField(
     #                            _('category icon'),
     #                            blank=True,
@@ -517,13 +473,13 @@ class Category(models.Model):
     #                            thumbnail={'size': (20, 20), 'options': ('crop', )},
     #                            help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
     #                        )
-    focus_area              = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
-    benchmarknames          = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_('Select the benchmark names for the category.'), )
-    
+    focus_area = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
+    benchmarknames = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_('Select the benchmark names for the category.'), )
+
     class Meta:
         verbose_name=_('category')
         verbose_name_plural=_('categories')
-        
+
     def __unicode__(self):
         return '%s (%s)' % (self.name, self.focus_areas())
 
@@ -549,7 +505,7 @@ CURRENCY_CHOICES = (
 STATUSES = (
     ('N', _('None')),
     ('H', _('Needs funding')),
-    ('A', _('Active')),    
+    ('A', _('Active')),
     ('C', _('Complete')),
     ('L', _('Cancelled')),
     ('R', _('Archived')),
@@ -557,940 +513,259 @@ STATUSES = (
 #STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
 STATUSES_COLORS = {'N':'black', 'A':'#AFF167', 'H':'orange', 'C':'grey', 'R':'grey', 'L':'red', }
 
+
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
 
-if settings.PVW_RSR: #pvw-rsr    
 
+class MiniCMS(models.Model):
+    '''
+    A model that holds a bunch of fields for editable text on the home page and the project listing page.
+    '''
+    def image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
 
-    class MiniCMS(models.Model):
+    label = models.CharField(_(u'label'), max_length=50, help_text=_(u'The label is used for identification only'), )
+    feature_box = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
+        '''Enter the text that will appear in the feature box of the home page. (350 characters)
+        <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
+        <p>The outer &lt;div&gt; can use the classes<br/>
+        <code>quarter, half, three_quarters and full</code><br/>
+        to specify the width of the text and
+        <code>bottom and right</code><br/> if a position other than top left is desired.</p>
+        <p>
+            The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
+            The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
+        </p>
+        <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.</p>
+        <p>
+            The following classes can be used to give text "Akvo colors":
+            <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
+        </p>
+        <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>
         '''
-        A model that holds a bunch of fields for editable text on the home page and the project listing page.
-        '''
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
-            
-        top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
-        map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
-        video_url           = models.CharField(_(_(u'video url'), ), max_length=100, help_text=_('The URL to the video to be shown on the home page.'))
-        tagline_box          = models.TextField(_(_(u'tagline box text'), ), max_length=100, help_text=_('Enter the text that will appear in the on-line box at the bottom of the home page. (100 characters).'))
-        active              = models.BooleanField(_(u'currently active home page'), default=False)
-    
-        def __unicode__(self):
-            return self.top_right_box[:50]
-        
-        class Meta:
-            verbose_name        =_(u'MiniCMS')
-            verbose_name_plural =_(u'MiniCMS')
+    ))
+    feature_image = models.ImageField(_('feature image'),
+                                      blank=True,
+                                      upload_to=image_path,
+                                      help_text=_('Ideally the image should be 645x363 pixels in size.'))
+    top_right_box = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
+    lower_height = models.IntegerField(_(u'accordion height'), default=500, )
+    active = models.BooleanField(_(u'currently active home page'), default=False)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        verbose_name = _('MiniCMS')
+        verbose_name_plural = _('MiniCMS')
 
 
-    class Project(models.Model):    
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
+class Project(models.Model):
+    def image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-        name                        = models.CharField(_('title'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
-        subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
-        status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
-        categories                  = models.ManyToManyField(Category, related_name='projects',)
+    name = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
+    subtitle = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
+    status = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
+    categories = models.ManyToManyField(Category, related_name='projects',)
 
-        # DEPRECATED LOCATION FIELDS -->
-        #city = models.CharField(_('location (city/village)'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        #state = models.CharField(_('state/region'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        #country = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        #map = models.ImageField(_('map'),
-        #                        blank=True,
-        #                        upload_to=image_path,
-        #                        help_text=_('The map image should be roughly
-        #                        square and no larger than 240x240 pixels
-        #                        (approx. 100-200kb in size).'))
-        # <-- DEPRECATED LOCATION FIELDS
+    project_plan_summary = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
+    current_image = ImageWithThumbnailsField(
+                        _('project photo'),
+                        blank=True,
+                        upload_to=image_path,
+                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
+                        help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
+                    )
+    current_image_caption = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
+    goals_overview = models.TextField(_('overview'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
+    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
+    goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
+    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
+    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
-        #Project categories
-        #category_water              = models.BooleanField(_('water'))
-        #category_sanitation         = models.BooleanField(_('sanitation'))
-        #category_maintenance        = models.BooleanField(_('maintenance'))
-        #category_training           = models.BooleanField(_('training'))
-        #category_education          = models.BooleanField(_('education'))
-        #category_product_development= models.BooleanField(_('product development'))
-        #category_other              = models.BooleanField(_('other'))
+    current_status_detail = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
+    project_plan_detail = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
+    sustainability = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
+    context = models.TextField(_('context'), blank=True, max_length=500, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).'))
 
-        showcase                     = models.BooleanField(_('showcase'))
-        
-        #current_status_summary = models.TextField()
-        project_plan_summary        = models.TextField(_('summary'), max_length=500, help_text=_('Briefly summarize the project (500 characters).'))
-        current_image               = ImageWithThumbnailsField(
-                                        _('project photo'),
-                                        blank=True,
-                                        upload_to=image_path,
-                                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                        help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
-                                    )
-        current_image_caption       = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
-        goals_overview              = models.TextField(_('goals'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
-        goal_1                      = models.CharField(_('deliverable or activity 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-        goal_2                      = models.CharField(_('deliverable or activity 2'), blank=True, max_length=60)
-        goal_3                      = models.CharField(_('deliverable or activity 3'), blank=True, max_length=60)
-        goal_4                      = models.CharField(_('deliverable or activity 4'), blank=True, max_length=60)
-        goal_5                      = models.CharField(_('deliverable or activity 5'), blank=True, max_length=60)
-        beneficiaries               = models.IntegerField(_(u'beneficiaries'), blank=True, default=0, help_text=_(u'Enter the number pf people that benefit from this project.'), )
-        #Project target benchmarks
-        #water_systems               = models.IntegerField(_('water systems'), default=0)
-        #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
-        #hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
-        #improved_water              = models.IntegerField(_('water: # people affected'), default=0)
-        #improved_water_years        = models.IntegerField(_('for # years'), default=0)
-        #improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
-        #improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
-        #trainees                    = models.IntegerField(_('# people trained'), default=0)
-        #mdg_count_water             = models.IntegerField(default=0)
-        #mdg_count_sanitation        = models.IntegerField(default=0)
-    
-        #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
-        #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
-        #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
-        current_status_detail       = models.TextField(_('current status detail'), blank=True, max_length=600, help_text=_('(600 characters).'))
-        project_plan_detail         = models.TextField(_('project plan details'), blank=True, help_text=_('(unlimited)'))
-        impact                      = models.TextField(_('impact'), blank=True, help_text=_('(unlimited)'))
-        spin_off                    = models.TextField(_('spin off and market impact'), blank=True, help_text=_('(unlimited)'))
-        lessons_learned             = models.TextField(_('lessons learned'), blank=True, help_text=_('(unlimited)'))
-        technologies_used           = models.TextField(_('technologies used'), blank=True, help_text=_('(unlimited)'))
+    project_rating = models.IntegerField(_('Project rating'), default=0)
+    notes = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
 
-        notes                       = models.TextField(_('notes and comments'), blank=True, help_text=_('(unlimited).'))
-    
-        #budget    
-        currency                    = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-        
-        #duration
-        start_date                  = models.DateField(_('start date'), default=date.today)
-        end_date                    = models.DateField(_('end date'), null=True, blank=True)
-        total_budget                = models.IntegerField(_(u'total budget'), default=0, help_text=_(u'Enter the total budget for the project.'), )
-        pvw_budget                  = models.IntegerField(_(u'pvw budget'), default=0, help_text=_(u'Enter the amount that Partners for Water contribute to the project.'), )
-        locations                   = generic.GenericRelation(Location)
-        
-        #Custom manager
-        #based on http://www.djangosnippets.org/snippets/562/ and
-        #http://simonwillison.net/2008/May/1/orm/
-        objects = QuerySetManager()
-        organisations = OrganisationsQuerySetManager()
-    
-        @models.permalink
-        def get_absolute_url(self):
-            return ('project_main', (), {'project_id': self.pk})
-    
-        @property
-        def view_count(self):
-            counter = ViewCounter.objects.get_for_object(self)
-            return counter.count or 0
+    #budget
+    currency = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    date_request_posted = models.DateField(_('Date request posted'), default=date.today)
+    date_complete = models.DateField(_('Date complete'), null=True, blank=True)
 
-        @property
-        def primary_location(self):
-            qs = self.locations.filter(primary=True)
-            qs = qs.exclude(latitude=0, longitude=0)
-            if qs:
-                location = qs[0]
-                return location
-            return
+    locations = generic.GenericRelation(Location)
 
+    #Custom manager
+    #based on http://www.djangosnippets.org/snippets/562/ and
+    #http://simonwillison.net/2008/May/1/orm/
+    objects = QuerySetManager()
+    organisations = OrganisationsQuerySetManager()
 
-        class QuerySet(QuerySet):
-            def has_primary_location(self):
-                content_type = ContentType.objects.get_for_model(Project)
-                locations = Location.objects.filter(content_type=content_type,
-                    primary=True)
-                locations = locations.exclude(latitude=0, longitude=0)
-                project_ids = [location.object_id for location in locations]
-                return self.filter(id__in=project_ids)
+    @models.permalink
+    def get_absolute_url(self):
+        return ('project_main', (), {'project_id': self.pk})
 
-            def published(self):
-                return self.filter(publishingstatus__status='published')
-        
-            def unpublished(self):
-                return self.filter(publishingstatus__status='unpublished')
-        
-            def status_none(self):
-                return self.filter(status__exact='N')
-        
-            def status_active(self):
-                return self.filter(status__exact='A')
-    
-            def status_onhold(self):
-                return self.filter(status__exact='H')
+    def all_donations(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
 
-            def status_complete(self):
-                return self.filter(status__exact='C')
+    def public_donations(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
 
-            def status_not_complete(self):
-                return self.exclude(status__exact='C')
+    def all_donations_amount(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
 
-            def status_cancelled(self):
-                return self.filter(status__exact='L')
-            
-            def status_not_cancelled(self):
-                return self.exclude(status__exact='L')
+    def all_donations_amount_received(self):
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
 
-            def status_archived(self):
-                return self.filter(status__exact='R')
+    def anonymous_donations_amount_received(self):
+        amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
+        amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
+        return amount or 0
 
-            def status_not_archived(self):
-                return self.exclude(status__exact='R')
+    @property
+    def view_count(self):
+        counter = ViewCounter.objects.get_for_object(self)
+        return counter.count or 0
 
-            def active(self):
-                """
-                return projects that are publushed and not cancelled or archived
-                """
-                return self.published().status_not_cancelled().status_not_archived()
-          
-            def euros(self):
-                return self.filter(currency='EUR')
-    
-            def dollars(self):
-                return self.filter(currency='USD')
-    
-            def budget_employment(self):
-                return self.filter(budgetitem__item__exact='employment').annotate(
-                    budget_employment=Sum('budgetitem__amount'),
-                )
-    
-            def budget_building(self):
-                return self.filter(budgetitem__item__exact='building').annotate(
-                    budget_building=Sum('budgetitem__amount'),
-                )
-    
-            def budget_training(self):
-                return self.filter(budgetitem__item__exact='training').annotate(
-                    budget_training=Sum('budgetitem__amount'),
-                )
-    
-            def budget_maintenance(self):
-                return self.filter(budgetitem__item__exact='maintenance').annotate(
-                    budget_maintenance=Sum('budgetitem__amount'),
-                )
-    
-            def budget_management(self):
-                return self.filter(budgetitem__item__exact='management').annotate(
-                    budget_management=Sum('budgetitem__amount'),
-                )
-    
-            def budget_other(self):
-                return self.filter(budgetitem__item__exact='other').annotate(
-                    budget_other=Sum('budgetitem__amount'),
-                )
-    
-            def budget_total(self):
-                return self.annotate(budget_total=Sum('project_partners__funding_amount'),).distinct()
-    
-            def donated(self):
-                return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
-                    donated=Sum('invoice__amount_received'),
-                ).distinct()
-    
-            def pledged(self, org=None):
-                if org:
-                    self.filter(funding_organisation__exact=org)
-                return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
-    
-            def funding(self, organisation=None):
-                '''create extra columns "funds_needed", "pledged" and "donated"
-                that calculate the respective values for each project in the queryset
-                '''
-                funding_queries = {
-                    #how much money does the project need to be fully funded, given that all pending donations complete
-                    'funds_needed':
-                        ''' SELECT DISTINCT (
-                                SELECT CASE 
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_budgetitem
-                                WHERE rsr_budgetitem.project_id = rsr_project.id
-                            ) - (
-                                SELECT CASE 
-                                    WHEN Sum(funding_amount) IS NULL THEN 0
-                                    ELSE Sum(funding_amount)
-                                END
-                                FROM rsr_fundingpartner
-                                WHERE rsr_fundingpartner.project_id = rsr_project.id
-                            ) - (
-                                SELECT CASE 
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ) - (
-                                SELECT CASE
-                                    WHEN Sum(amount_received) IS NULL THEN 0
-                                    ELSE Sum(amount_received)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            )
-                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
-                    #how much money has been donated by individual donors, including pending donations
-                    'donated':
-                        ''' SELECT DISTINCT (
-                                SELECT CASE
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ) + (
-                                SELECT CASE
-                                    WHEN Sum(amount_received) IS NULL THEN 0
-                                    ELSE Sum(amount_received)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            )
-                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
-                    #how much donated money from individuals is pending
-                    'pending':
-                        ''' SELECT CASE
-                                WHEN Sum(amount) IS NULL THEN 0
-                                ELSE Sum(amount)
-                            END
-                            FROM rsr_invoice
-                            WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                        ''' % PAYPAL_INVOICE_STATUS_PENDING,
-                    #the total budget for the project as per the budgetitems
-                    'total_budget':
-                        ''' SELECT CASE
-                                WHEN SUM(amount) IS NULL THEN 0
-                                ELSE SUM(amount)
-                            END
-                            FROM rsr_budgetitem
-                            WHERE rsr_budgetitem.project_id = rsr_project.id
-                        ''',
-                }
-                #how much has been pledged by organisations. if an org param is supplied
-                #this is modified to show huw much _that_ org has pledged to each project
-                pledged = {
-                    'pledged':
-                        ''' SELECT CASE
-                                WHEN Sum(funding_amount) IS NULL THEN 0
-                                ELSE Sum(funding_amount)
-                            END
-                            FROM rsr_fundingpartner
-                            WHERE rsr_fundingpartner.project_id = rsr_project.id
-                        '''
-                }
-                if organisation:
-                    pledged['pledged'] = '''%s
-                        AND rsr_fundingpartner.funding_organisation_id = %d''' % (
-                            pledged['pledged'], organisation.pk
-                        )
-                funding_queries.update(pledged)
-                #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
-                return self.extra(select=funding_queries)
-    
-            def need_funding(self):
-                "projects that projects need funding"
-                #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
-                #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
-                return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
-    
-            def need_funding_count(self):
-                "how many projects need funding"
-                return len(self.need_funding())
-    
-            def total_funds_needed(self):
-                "how much money the projects still need"
-                return qs_column_sum(self.funding(), 'funds_needed')
-    
-            def total_total_budget(self):
-                "how much money the projects still need"
-                return qs_column_sum(self.funding(), 'total_budget')
-    
-            def total_pledged(self, org=None):
-                '''
-                how much money has been commited to the projects
-                if org is supplied, only money pledged by that org is calculated
-                '''
-                return qs_column_sum(self.funding(org), 'pledged')
-    
-            def total_donated(self):
-                "how much money has bee donated by individuals"
-                return qs_column_sum(self.funding(), 'donated')
-    
-            def total_pending(self):
-                "individual donations still pending"
-                return qs_column_sum(self.funding(), 'pending')
-    
-            def total_pending_negative(self):
-                "individual donations still pending NEGATIVE (used by akvo at a glance)"
-                return -qs_column_sum(self.funding(), 'pending')
-                
-            def get_planned_water_calc(self):
-                "how many will get improved water"
-                return qs_column_sum(self.status_not_cancelled(), 'improved_water') - qs_column_sum(self.status_complete(), 'improved_water')
-    
-            def get_planned_sanitation_calc(self):
-                "how many will get improved sanitation"
-                return qs_column_sum(self.status_not_cancelled(), 'improved_sanitation') - qs_column_sum(self.status_complete(), 'improved_sanitation')
-    
-            def get_actual_water_calc(self):
-                "how many have gotten improved water"
-                return qs_column_sum(self.status_complete(), 'improved_water')
-    
-            def get_actual_sanitation_calc(self):
-                "how many have gotten improved sanitation"
-                return qs_column_sum(self.status_complete(), 'improved_sanitation')
+    @property
+    def primary_location(self, location=None):
+        '''Return a project's primary location'''
+        qs = self.locations.filter(primary=True)
+        qs = qs.exclude(latitude=0, longitude=0)
+        if qs:
+            location = qs[0]
+            return location
+        return
 
-            def all_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(
-                    partner_projects__project__in=self
-                )
-            
-            def lead_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(
-                    partner_projects__project__in=self,
-                    partner_projects__partner_type__exact='L'
-                )
-            
-            def other_partners(self):
-                "All partners except lead partners"
-                o = Organisation.objects.all()
-                return o.filter(
-                    partner_projects__project__in=self,
-                    partner_projects__partner_type__in=['P', 'F', 'I', 'C',]
-                )
-    
-        #TODO: is this relly needed? the default QS has identical methods
-        class OrganisationsQuerySet(QuerySet):
-            pass
-            #def all_partners(self):
-            #    o = Organisation.objects.all()
-            #    return o.filter(partner_projects__project__in=self)
-            #
-            #def lead_partners(self):
-            #    o = Organisation.objects.all()
-            #    return o.filter(partner_projects__project__in=self).filter(partner_projects__partner_type__exact='L')
-            #
-            #def other_partners(self):
-            #    "All partners except lead partners"
-            #    o = Organisation.objects.all()
-            #    return o.filter(partner_projects__project__in=self).exclude(partner_projects__partner_type__exact='L')
-    
-        def __unicode__(self):
-            return _(u'Project %d: %s') % (self.id, self.name)
-            
-        #def project_type(self):
-        #    pt = ""
-        #    if self.category_water: pt += "W"
-        #    if self.category_sanitation: pt += "S"
-        #    if self.category_maintenance: pt += "M"
-        #    if self.category_training: pt += "T"
-        #    if self.category_education: pt += "E"
-        #    if self.category_product_development: pt += "P"
-        #    if self.category_other: pt += "O"
-        #    return pt
-        #project_type.allow_tags = True
-        
-        def show_status(self):
-            "Show the current project status"
-            return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
-        
-        def show_current_image(self):
-            try:
-                return self.current_image.thumbnail_tag
-            except:
-                return ''
-        show_current_image.allow_tags = True
-        
-        def show_map(self):
-            try:
-                return '<img src="%s" />' % (self.map.url,)
-            except:
-                return ''
-        show_map.allow_tags = True
-        
-        def connected_to_user(self, user):
-            '''
-            Test if a user is connected to self through an arganisation
-            '''
-            is_connected = False
-            try:
-                is_connected = self in UserProfile.objects.get(user=user).organisation.published_projects()
-            except:
-                pass
-            return is_connected
-    
-        def is_published(self):
-            if self.publishingstatus:
-                return self.publishingstatus.status == 'published'
-            return False
-        is_published.boolean = True
-    
-        #shortcuts to funding/budget data for a single project
-        def funding_pledged(self, organisation=None):
-            return Project.objects.funding(organisation).get(pk=self.pk).pledged
-    
-        def funding_donated(self):
-            return Project.objects.funding().get(pk=self.pk).donated
-    
-        def funding_total_given(self):
-            # Decimal(str(result)) conversion is necessary
-            # because SQLite doesn't handle decimals natively
-            # See item 16 here: http://www.sqlite.org/faq.html
-            # MySQL and PostgreSQL are not affected by this limitation
-            result = self.funding_pledged() + self.funding_donated()
-            decimal_result = Decimal(str(result))
-            return decimal_result
-    
-        def funding_still_needed(self):
-            result =  Project.objects.funding().get(pk=self.pk).funds_needed
-            decimal_result = Decimal(str(result))
-            return decimal_result
-    
+    class QuerySet(QuerySet):
+        def has_primary_location(self):
+            content_type = ContentType.objects.get_for_model(Project)
+            locations = Location.objects.filter(content_type=content_type, primary=True)
+            locations = locations.exclude(latitude=0, longitude=0)
+            project_ids = [location.object_id for location in locations]
+            return self.filter(id__in=project_ids)
+
+        def published(self):
+            return self.filter(publishingstatus__status='published')
+
+        def unpublished(self):
+            return self.filter(publishingstatus__status='unpublished')
+
+        def status_none(self):
+            return self.filter(status__exact='N')
+
+        def status_active(self):
+            return self.filter(status__exact='A')
+
+        def status_onhold(self):
+            return self.filter(status__exact='H')
+
+        def status_complete(self):
+            return self.filter(status__exact='C')
+
+        def status_not_complete(self):
+            return self.exclude(status__exact='C')
+
+        def status_cancelled(self):
+            return self.filter(status__exact='L')
+
+        def status_not_cancelled(self):
+            return self.exclude(status__exact='L')
+
+        def status_archived(self):
+            return self.filter(status__exact='R')
+
+        def status_not_archived(self):
+            return self.exclude(status__exact='R')
+
+        def active(self):
+            """Return projects that are publushed and not cancelled or archived"""
+            return self.published().status_not_cancelled().status_not_archived()
+
+        def euros(self):
+            return self.filter(currency='EUR')
+
+        def dollars(self):
+            return self.filter(currency='USD')
+
         def budget_employment(self):
-            return Project.objects.budget_employment().get(pk=self.pk).budget_employment
-    
+            return self.filter(budgetitem__item__exact='employment').annotate(budget_employment=Sum('budgetitem__amount'),)
+
         def budget_building(self):
-            return Project.objects.budget_building().get(pk=self.pk).budget_building
-    
+            return self.filter(budgetitem__item__exact='building').annotate(budget_building=Sum('budgetitem__amount'),)
+
         def budget_training(self):
-            return Project.objects.budget_training().get(pk=self.pk).budget_training
-    
+            return self.filter(budgetitem__item__exact='training').annotate(budget_training=Sum('budgetitem__amount'),)
+
         def budget_maintenance(self):
-            return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
-    
+            return self.filter(budgetitem__item__exact='maintenance').annotate(budget_maintenance=Sum('budgetitem__amount'),)
+
         def budget_management(self):
-            return Project.objects.budget_management().get(pk=self.pk).budget_management
-    
+            return self.filter(budgetitem__item__exact='management').annotate(budget_management=Sum('budgetitem__amount'),)
+
         def budget_other(self):
-            return Project.objects.budget_other().get(pk=self.pk).budget_other
-    
+            return self.filter(budgetitem__item__exact='other').annotate(budget_other=Sum('budgetitem__amount'),)
+
         def budget_total(self):
-            return Project.objects.budget_total().get(pk=self.pk).budget_total
-    
-        def focus_areas(self):
-            return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
-        focus_areas.allow_tags = True
-            
-        def areas_and_categories(self):
-            area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
-            areas = []
-            for area_obj in area_objs:
-                area = {'area': area_obj}
-                area['categories'] = []
-                for cat_obj in Category.objects.filter(focus_area=area_obj, projects=self).order_by('name'):
-                    area['categories'] += [cat_obj.name]
-                areas += [area]
-            return areas
-                
-        #shortcuts to linked orgs for a single project
-        def all_partners(self):
-            return Project.objects.filter(pk=self.pk).all_partners()
-    
-        def lead_partners(self):
-            return Project.objects.filter(pk=self.pk).lead_partners()
-    
-        def other_partners(self):
-            return Project.objects.filter(pk=self.pk).other_partners()
+            return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
 
-        @property
-        def view_count(self):
-            counter = ViewCounter.objects.get_for_object(self)
-            return counter.count or 0
-                
-        @property
-        def primary_location(self):
-            "Returns a project's primary location"
-            qs = self.locations.filter(primary=True)
-            qs = qs.exclude(latitude=0, longitude=0)
-            if qs:
-                location = qs[0]
-                return location
-            return
-    
-        def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
-            try:
-                latitude = float(self.latitude)
-                longitude = float(self.longitude)
-                if not latitude == 0 and not longitude == 0:
-                    return True
-            except:
-                return False
+        def donated(self):
+            return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(donated=Sum('invoice__amount_received'),).distinct()
 
-        def show_status_large(self):
-            "Show the current project status with background"
-            return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        def pledged(self, org=None):
+            if org:
+                self.filter(funding_organisation__exact=org)
+            return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
 
-        class Meta:
-            verbose_name=_('project')
-            verbose_name_plural=_('projects')
-
-
-    class ProjectPartner(models.Model):
-        CHOICES_PARTNER_TYPE = (
-            (u'P', _('Partner')),
-            (u'L', _('Lead partner')),
-            (u'F', _('Funder')),    
-            (u'I', _('Initiator')),
-            (u'C', _('Contractor')),
-        )        
-        partner                 = models.ForeignKey(Organisation, related_name='partner_projects',)
-        project                 = models.ForeignKey(Project, related_name='project_partners',)
-        partner_type            = models.CharField(_('partner type'), max_length=1, choices=CHOICES_PARTNER_TYPE, )
-        funding_amount          = models.DecimalField(_('funding amount'), blank=True, null=True, max_digits=10, decimal_places=2)
-        funding_instrument      = models.CharField(_('funding instrument'), max_length=100, blank=True, )
-        funding_instrument_url  = models.URLField(_('URL to funding instrument website'), blank=True,)
-
-        class Meta:
-            verbose_name=_('partner')
-            verbose_name_plural=_('partners')
-    
-        def __unicode__(self):
-            return self.partner.name
-
-
-    class Image(models.Model):
-        def image_path(instance, file_name):
-            return rsr_image_path(instance.project, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
-            
-        project                 = models.ForeignKey(Project, related_name='images',)
-        image                   = ImageWithThumbnailsField(
-                                    _('project photo'),
-                                    blank=True,
-                                    upload_to=image_path,
-                                    thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                    help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
-                                )
-        current_image_caption   = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
-
-        class Meta:
-            verbose_name=_('image')
-            verbose_name_plural=_('images')
-
-        
-else: #akvo-rsr
-    
-    class MiniCMS(models.Model):
-        '''
-        A model that holds a bunch of fields for editable text on the home page and the project listing page.
-        '''
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
-        
-        label               = models.CharField(_(u'label'), max_length=50, help_text=_(u'The label is used for identification only'), )
-        feature_box         = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
-            '''Enter the text that will appear in the feature box of the home page. (350 characters)
-            <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
-            <p>The outer &lt;div&gt; can use the classes<br/>
-            <code>quarter, half, three_quarters and full</code><br/>
-            to specify the width of the text and 
-            <code>bottom and right</code><br/> if a position other than top left is desired.</p>
-            <p>
-                The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
-                The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
-            </p>
-            <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.</p>
-            <p>
-                The following classes can be used to give text "Akvo colors":
-                <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
-            </p>
-            <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>
+        def funding(self, organisation=None):
+            '''create extra columns "funds_needed", "pledged" and "donated"
+            that calculate the respective values for each project in the queryset
             '''
-        ))
-        feature_image       = models.ImageField(
-                                _('feature image'),
-                                blank=True,
-                                upload_to=image_path,
-                                help_text=_('Ideally the image should be 645x363 pixels in size.')
-                            )
-        top_right_box       = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
-        #map_box             = models.TextField(_(_(u'map box text'), ), max_length=200, help_text=_('Enter the text that will appear below the map on the home page. (200 characters).'))
-        lower_height        = models.IntegerField(_(u'accordion height'), default=500, )
-        active              = models.BooleanField(_(u'currently active home page'), default=False)
-    
-        def __unicode__(self):
-            return self.label
-        
-        class Meta:
-            verbose_name = _('MiniCMS')
-            verbose_name_plural = _('MiniCMS')
-    
-    
-    class Project(models.Model):
-        def image_path(instance, file_name):
-            return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
-    
-        name                        = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
-        subtitle                    = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
-        status                      = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
-        categories                  = models.ManyToManyField(Category, related_name='projects',)
-        #city                        = models.CharField(_('city'), max_length=25, help_text=_('Name of city, village, town, slum, etc. (25 characters).'))
-        #state                       = models.CharField(_('state'), max_length=15, help_text=_('Name of state, province, county, region, etc. (15 characters).'))
-        #country                     = models.ForeignKey(Country, help_text=_('Country where project is taking place.'))
-        #map                         = models.ImageField(
-        #                                _('map'),
-        #                                blank=True,
-        #                                upload_to=image_path,
-        #                                help_text=_('The map image should be roughly square and no larger than 240x240 pixels (approx. 100-200kb in size).')
-        #                            )
-        #Project categories
-        #category_water              = models.BooleanField(_('water'))
-        #category_sanitation         = models.BooleanField(_('sanitation'))
-        #category_maintenance        = models.BooleanField(_('maintenance'))
-        #category_training           = models.BooleanField(_('training'))
-        #category_education          = models.BooleanField(_('education'))
-        #category_product_development= models.BooleanField(_('product development'))
-        #category_other              = models.BooleanField(_('other'))
-        
-        #current_status_summary = models.TextField()
-        project_plan_summary        = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
-        current_image               = ImageWithThumbnailsField(
-                                        _('project photo'),
-                                        blank=True,
-                                        upload_to=image_path,
-                                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                                        help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
-                                    )
-        current_image_caption       = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
-        goals_overview              = models.TextField(_('overview'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
-        goal_1                      = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-        goal_2                      = models.CharField(_('goal 2'), blank=True, max_length=60)
-        goal_3                      = models.CharField(_('goal 3'), blank=True, max_length=60)
-        goal_4                      = models.CharField(_('goal 4'), blank=True, max_length=60)
-        goal_5                      = models.CharField(_('goal 5'), blank=True, max_length=60)
-        #Project target benchmarks
-        #water_systems               = models.IntegerField(_('water systems'), default=0)
-        #sanitation_systems          = models.IntegerField(_('sanitation systems'), default=0)
-        #hygiene_facilities          = models.IntegerField(_('hygiene facilities'), default=0)
-        #improved_water              = models.IntegerField(_('water: # people affected'), default=0)
-        #improved_water_years        = models.IntegerField(_('for # years'), default=0)
-        #improved_sanitation         = models.IntegerField(_('sanitation: # people affected'), default=0)
-        #improved_sanitation_years   = models.IntegerField(_('for # years'), default=0)
-        #trainees                    = models.IntegerField(_('# people trained'), default=0)
-        #mdg_count_water             = models.IntegerField(default=0)
-        #mdg_count_sanitation        = models.IntegerField(default=0)
-    
-        #location_1                  = models.CharField(_('location 1'), blank=True, max_length=50, help_text=_('Street address (50 characters).'))
-        #location_2                  = models.CharField(_('location 2'), blank=True, max_length=50, help_text=_('Street address 2 (50 characters).'))
-        #postcode                    = models.CharField(_('post code'), blank=True, max_length=10, help_text=_('Postcode, zip code, etc. (10 characters).'))
-        #longitude                   = models.CharField(_('longitude'), blank=True, max_length=20, help_text=_(u'East/west measurement(λ) in degrees/minutes/seconds, for example 23° 27′ 30" E.'))
-        #latitude                    = models.CharField(_('latitude'), blank=True, max_length=20, help_text=_(u'North/south measurement(ϕ) in degrees/minutes/seconds, for example 23° 26′ 21″ N.'))
-        current_status_detail       = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
-        project_plan_detail         = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
-        sustainability              = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
-        context                     = models.TextField(_('context'), blank=True, max_length=500, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).'))
-    
-        project_rating              = models.IntegerField(_('Project rating'), default=0)
-        notes                       = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
-    
-        #budget    
-        currency            = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-        date_request_posted = models.DateField(_('Date request posted'), default=date.today)
-        date_complete       = models.DateField(_('Date complete'), null=True, blank=True)
-    
-        locations           = generic.GenericRelation(Location)
-    
-        #Custom manager
-        #based on http://www.djangosnippets.org/snippets/562/ and
-        #http://simonwillison.net/2008/May/1/orm/
-        objects = QuerySetManager()
-        organisations = OrganisationsQuerySetManager()
-    
-        @models.permalink
-        def get_absolute_url(self):
-            return ('project_main', (), {'project_id': self.pk})
-        
-        def all_donations(self):
-            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
-            
-        def public_donations(self):
-            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
-        
-        def all_donations_amount(self):
-            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
-        
-        def all_donations_amount_received(self):
-            return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
-        
-        def anonymous_donations_amount_received(self):
-            amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
-            amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-            return amount or 0
-            
-            '''
-            if Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-            return Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False).filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-            '''
-    
-        @property
-        def view_count(self):
-            counter = ViewCounter.objects.get_for_object(self)
-            return counter.count or 0
-                
-        @property
-        def primary_location(self, location=None):
-            '''Returns a project's primary location'''
-            qs = self.locations.filter(primary=True)
-            qs = qs.exclude(latitude=0, longitude=0)
-            if qs:
-                location = qs[0]
-                return location
-            return
-    
-        def has_valid_legacy_coordinates(self): # TO BE DEPRECATED
-            try:
-                latitude = float(self.latitude)
-                longitude = float(self.longitude)
-                return True
-            except:
-                return False
-    
-    
-        class QuerySet(QuerySet):
-            def has_primary_location(self):
-                content_type = ContentType.objects.get_for_model(Project)
-                locations = Location.objects.filter(content_type=content_type,
-                    primary=True)
-                locations = locations.exclude(latitude=0, longitude=0)
-                project_ids = [location.object_id for location in locations]
-                return self.filter(id__in=project_ids)
-    
-            def published(self):
-                return self.filter(publishingstatus__status='published')
-        
-            def unpublished(self):
-                return self.filter(publishingstatus__status='unpublished')
-        
-            def status_none(self):
-                return self.filter(status__exact='N')
-        
-            def status_active(self):
-                return self.filter(status__exact='A')
-    
-            def status_onhold(self):
-                return self.filter(status__exact='H')
-        
-            def status_complete(self):
-                return self.filter(status__exact='C')
-        
-            def status_not_complete(self):
-                return self.exclude(status__exact='C')
-        
-            def status_cancelled(self):
-                return self.filter(status__exact='L')
-            
-            def status_not_cancelled(self):
-                return self.exclude(status__exact='L')
-    
-            def status_archived(self):
-                return self.filter(status__exact='R')
-    
-            def status_not_archived(self):
-                return self.exclude(status__exact='R')
-    
-            def active(self):
-                """
-                return projects that are publushed and not cancelled or archived
-                """
-                return self.published().status_not_cancelled().status_not_archived()
-          
-            def euros(self):
-                return self.filter(currency='EUR')
-    
-            def dollars(self):
-                return self.filter(currency='USD')
-    
-            def budget_employment(self):
-                return self.filter(budgetitem__item__exact='employment').annotate(
-                    budget_employment=Sum('budgetitem__amount'),
-                )
-    
-            def budget_building(self):
-                return self.filter(budgetitem__item__exact='building').annotate(
-                    budget_building=Sum('budgetitem__amount'),
-                )
-    
-            def budget_training(self):
-                return self.filter(budgetitem__item__exact='training').annotate(
-                    budget_training=Sum('budgetitem__amount'),
-                )
-    
-            def budget_maintenance(self):
-                return self.filter(budgetitem__item__exact='maintenance').annotate(
-                    budget_maintenance=Sum('budgetitem__amount'),
-                )
-    
-            def budget_management(self):
-                return self.filter(budgetitem__item__exact='management').annotate(
-                    budget_management=Sum('budgetitem__amount'),
-                )
-    
-            def budget_other(self):
-                return self.filter(budgetitem__item__exact='other').annotate(
-                    budget_other=Sum('budgetitem__amount'),
-                )
-    
-            def budget_total(self):
-                return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
-    
-            def donated(self):
-                return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(
-                    donated=Sum('invoice__amount_received'),
-                ).distinct()
-    
-            def pledged(self, org=None):
-                if org:
-                    self.filter(funding_organisation__exact=org)
-                return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
-    
-            def funding(self, organisation=None):
-                '''create extra columns "funds_needed", "pledged" and "donated"
-                that calculate the respective values for each project in the queryset
-                '''
-                funding_queries = {
-                    #how much money does the project need to be fully funded, given that all pending donations complete
-                    'funds_needed':
-                        ''' SELECT DISTINCT (
-                                SELECT CASE 
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_budgetitem
-                                WHERE rsr_budgetitem.project_id = rsr_project.id
-                            ) - (
-                                SELECT CASE 
-                                    WHEN Sum(funding_amount) IS NULL THEN 0
-                                    ELSE Sum(funding_amount)
-                                END
-                                FROM rsr_fundingpartner
-                                WHERE rsr_fundingpartner.project_id = rsr_project.id
-                            ) - (
-                                SELECT CASE 
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ) - (
-                                SELECT CASE
-                                    WHEN Sum(amount_received) IS NULL THEN 0
-                                    ELSE Sum(amount_received)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            )
+            funding_queries = {
+                #how much money does the project need to be fully funded, given that all pending donations complete
+                'funds_needed':
+                    ''' (SELECT DISTINCT (
+                            SELECT CASE
+                                WHEN Sum(amount) IS NULL THEN 0
+                                ELSE Sum(amount)
+                            END
+                            FROM rsr_budgetitem
+                            WHERE rsr_budgetitem.project_id = rsr_project.id
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(funding_amount) IS NULL THEN 0
+                                ELSE Sum(funding_amount)
+                            END
+                            FROM rsr_fundingpartner
+                            WHERE rsr_fundingpartner.project_id = rsr_project.id
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(amount) IS NULL THEN 0
+                                ELSE Sum(amount)
+                            END
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
+                        ) - (
+                            SELECT CASE
+                                WHEN Sum(amount_received) IS NULL THEN 0
+                                ELSE Sum(amount_received)
+                            END
+                            FROM rsr_invoice
+                            WHERE rsr_invoice.project_id = rsr_project.id
+                            AND rsr_invoice.status = %d
+                        ))
                         ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                     #how much money has been donated by individual donors, including pending donations
                     'donated':
-                        ''' SELECT DISTINCT (
+                        ''' (SELECT DISTINCT (
                                 SELECT CASE
                                     WHEN Sum(amount) IS NULL THEN 0
                                     ELSE Sum(amount)
@@ -1506,383 +781,387 @@ else: #akvo-rsr
                                 FROM rsr_invoice
                                 WHERE rsr_invoice.project_id = rsr_project.id
                                 AND rsr_invoice.status = %d
-                            )
+                            ))
                         ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
                     #how much donated money from individuals is pending
                     'pending':
-                        ''' SELECT CASE
+                        ''' (SELECT CASE
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
                             FROM rsr_invoice
                             WHERE rsr_invoice.project_id = rsr_project.id
                                 AND rsr_invoice.status = %d
+                            )
                         ''' % PAYPAL_INVOICE_STATUS_PENDING,
                     #the total budget for the project as per the budgetitems
                     'total_budget':
-                        ''' SELECT CASE
+                        ''' (SELECT CASE
                                 WHEN SUM(amount) IS NULL THEN 0
                                 ELSE SUM(amount)
                             END
                             FROM rsr_budgetitem
-                            WHERE rsr_budgetitem.project_id = rsr_project.id
+                            WHERE rsr_budgetitem.project_id = rsr_project.id)
                         ''',
                 }
                 #how much has been pledged by organisations. if an org param is supplied
                 #this is modified to show huw much _that_ org has pledged to each project
-                pledged = {
-                    'pledged':
-                        ''' SELECT CASE
-                                WHEN Sum(funding_amount) IS NULL THEN 0
-                                ELSE Sum(funding_amount)
-                            END
-                            FROM rsr_fundingpartner
-                            WHERE rsr_fundingpartner.project_id = rsr_project.id
-                        '''
-                }
-                if organisation:
-                    pledged['pledged'] = '''%s
-                        AND rsr_fundingpartner.funding_organisation_id = %d''' % (
-                            pledged['pledged'], organisation.pk
-                        )
-                funding_queries.update(pledged)
-                #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
-                return self.extra(select=funding_queries)
-    
-            def need_funding(self):
-                "projects that projects need funding"
-                #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
-                #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
-                return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
-    
-            def need_funding_count(self):
-                "how many projects need funding"
-                return len(self.need_funding())
-    
-            def total_funds_needed(self):
-                "how much money the projects still need"
-                return qs_column_sum(self.funding(), 'funds_needed')
-    
-            def total_total_budget(self):
-                "how much money the projects still need"
-                return qs_column_sum(self.funding(), 'total_budget')
-    
-            def total_pledged(self, org=None):
-                '''
-                how much money has been commited to the projects
-                if org is supplied, only money pledeg by that org is calculated
-                '''
-                return qs_column_sum(self.funding(org), 'pledged')
-    
-            def total_donated(self):
-                "how much money has bee donated by individuals"
-                return qs_column_sum(self.funding(), 'donated')
-    
-            def total_pending(self):
-                "individual donations still pending"
-                return qs_column_sum(self.funding(), 'pending')
-    
-            def total_pending_negative(self):
-                "individual donations still pending NEGATIVE (used by akvo at a glance)"
-                return -qs_column_sum(self.funding(), 'pending')
-    
-                
-            def get_largest_value_sum(self, benchmarkname, cats=None):
-                if cats:
-                    result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
-                        benchmarks__name__name=benchmarkname,
-                        benchmarks__category__name__in=cats
+            pledged = {
+                'pledged':
+                    ''' (SELECT CASE
+                            WHEN Sum(funding_amount) IS NULL THEN 0
+                            ELSE Sum(funding_amount)
+                        END
+                        FROM rsr_fundingpartner
+                        WHERE rsr_fundingpartner.project_id = rsr_project.id
+                    '''
+            }
+            if organisation:
+                pledged['pledged'] = '''%s
+                    AND rsr_fundingpartner.funding_organisation_id = %d''' % (
+                        pledged['pledged'], organisation.pk
                     )
-                else:
-                    result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for all categories
-                        benchmarks__name__name=benchmarkname
-                    )
-                return result.annotate( #annotate the greatest of the "benchmarkname" values into max_value
-                    max_value=Max('benchmarks__value')
-                ).aggregate( #sum max_value for all projects
-                    Sum('max_value')
-                )['max_value__sum'] or 0 #we want to return 0 instead of an empty QS
-    
-            def get_planned_water_calc(self):
-                "how many will get improved water"
-                return self.status_not_cancelled().get_largest_value_sum(
-                    getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                    ['Water']
-                ) - self.status_complete().get_largest_value_sum(
-                    getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                    ['Water']
+            pledged['pledged'] = "%s)" % pledged['pledged']
+            funding_queries.update(pledged)
+            #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
+            return self.extra(select=funding_queries)
+
+        def need_funding(self):
+            "projects that projects need funding"
+            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
+            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
+            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
+
+        def need_funding_count(self):
+            "how many projects need funding"
+            return len(self.need_funding())
+
+        def total_funds_needed(self):
+            "how much money the projects still need"
+            return qs_column_sum(self.funding(), 'funds_needed')
+
+        def total_total_budget(self):
+            "how much money the projects still need"
+            return qs_column_sum(self.funding(), 'total_budget')
+
+        def total_pledged(self, org=None):
+            '''
+            how much money has been commited to the projects
+            if org is supplied, only money pledeg by that org is calculated
+            '''
+            return qs_column_sum(self.funding(org), 'pledged')
+
+        def total_donated(self):
+            "how much money has bee donated by individuals"
+            return qs_column_sum(self.funding(), 'donated')
+
+        def total_pending(self):
+            "individual donations still pending"
+            return qs_column_sum(self.funding(), 'pending')
+
+        def total_pending_negative(self):
+            "individual donations still pending NEGATIVE (used by akvo at a glance)"
+            return -qs_column_sum(self.funding(), 'pending')
+
+        def get_largest_value_sum(self, benchmarkname, cats=None):
+            if cats:
+                result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                    benchmarks__name__name=benchmarkname,
+                    benchmarks__category__name__in=cats
                 )
-    
-            def get_planned_sanitation_calc(self):
-                "how many will get improved sanitation"
-                return self.status_not_cancelled().get_largest_value_sum(
-                    getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                    ['Sanitation']
-                ) - self.status_complete().get_largest_value_sum(
-                    getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                    ['Sanitation']
-                )
-    
-            def get_actual_water_calc(self):
-                "how many have gotten improved water"
-                return self.status_complete().get_largest_value_sum(
-                    getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                    ['Water']
-                )                
-    
-            def get_actual_sanitation_calc(self):
-                "how many have gotten improved sanitation"
-                return self.status_complete().get_largest_value_sum(
-                    getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                    ['Sanitation']
-                )                
-    
-            #the following 4 return an organisation queryset!
-            def support_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(support_partners__project__in=self)
-    
-            def sponsor_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(sponsor_partners__project__in=self)
-    
-            def funding_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(funding_partners__project__in=self)
-    
-            def field_partners(self):
-                o = Organisation.objects.all()
-                return o.filter(field_partners__project__in=self)
-    
-            def all_partners(self):
-                return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
-                
-    
-        #TODO: is this relly needed? the default QS has identical methods
-        class OrganisationsQuerySet(QuerySet):
-            def support_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(support_partners__project__in=self)
-    
-            def sponsor_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(sponsor_partners__project__in=self)
-    
-            def funding_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(funding_partners__project__in=self)
-    
-            def field_partners(self):
-                orgs = Organisation.objects.all()
-                return orgs.filter(field_partners__project__in=self)
-    
-            def all_partners(self):
-                orgs = Organisation.objects.all()
-                return (orgs.filter(support_partners__project__in=self) | \
-                        orgs.filter(sponsor_partners__project__in=self) | \
-                        orgs.filter(funding_partners__project__in=self) | \
-                        orgs.filter(field_partners__project__in=self)).distinct()
-                #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
-    
-        def __unicode__(self):
-            return u'Project %d: %s' % (self.id,self.name)
-            
-        def updates_desc(self):
-            """
-            return ProjectUpdates for self, newest first
-            """
-            return self.project_updates.all().order_by('-time')
-        
-        def latest_update(self):
-            """
-            for use in the admin
-            lists data useful when looking for projects that haven't been updated in a while (or not at all)
-            note: it would have been useful to make this column sortable via the admin_order_field attribute, but this results in
-            multiple rows shown for the project in the admin change list view and there's no easy way to distinct() them
-            TODO: probably this can be solved by customizing ModelAdmin.queryset
-            """
-            updates = self.updates_desc()
-            if updates:
-                update = updates[0]
-                # date of update shown as link poiting to the update page
-                update_info = '<a href="%s">%s</a><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time,)
-                # if we have an email of the user doing the update, add that as a mailto link
-                if update.user.email:
-                    update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
-                else:
-                    update_info  = '%s<br/>' % update_info
             else:
-                update_info = "%s<br/><br/>" % (ugettext(u'No update yet'),)
-            # links to the project's support partners
-            update_info = "%sSP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.support_partners()]))
-            # links to the project's field partners
-            return "%s<br/>FP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.field_partners()]))
-            
-        latest_update.allow_tags = True
-        #no go, results in duplicate projects entries in the admin change list
-        #latest_update.admin_order_field = 'project_updates__time'
-                
-        def show_status(self):
-            "Show the current project status"
-            return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
-            
-        def show_current_image(self):
-            try:
-                return self.current_image.thumbnail_tag
-            except:
-                return ''
-        show_current_image.allow_tags = True
-        
-        def show_map(self):
-            try:
-                return '<img src="%s" />' % (self.map.url,)
-            except:
-                return ''
-        show_map.allow_tags = True
-        
-        def connected_to_user(self, user):
-            '''
-            Test if a user is connected to self through an arganisation
-            '''
-            is_connected = False
-            try:
-                is_connected = self in UserProfile.objects.get(user=user).organisation.published_projects()
-            except:
-                pass
-            return is_connected
-    
-        def is_published(self):
-            if self.publishingstatus:
-                return self.publishingstatus.status == 'published'
-            return False
-        is_published.boolean = True
-        
-        def akvopedia_links(self):
-            return self.links.filter(kind='A')
-    
-        def external_links(self):
-            return self.links.filter(kind='E')
-    
-        #shortcuts to funding/budget data for a single project
-        def funding_pledged(self, organisation=None):
-            return Project.objects.funding(organisation).get(pk=self.pk).pledged
-    
-        def funding_donated(self):
-            return Project.objects.funding().get(pk=self.pk).donated
-    
-        def funding_total_given(self):
-            # Decimal(str(result)) conversion is necessary
-            # because SQLite doesn't handle decimals natively
-            # See item 16 here: http://www.sqlite.org/faq.html
-            # MySQL and PostgreSQL are not affected by this limitation
-            result = self.funding_pledged() + self.funding_donated()
-            decimal_result = Decimal(str(result))
-            return decimal_result
-    
-        def funding_still_needed(self):
-            result =  Project.objects.funding().get(pk=self.pk).funds_needed
-            decimal_result = Decimal(str(result))
-            return decimal_result
-    
-        def budget_employment(self):
-            return Project.objects.budget_employment().get(pk=self.pk).budget_employment
-    
-        def budget_building(self):
-            return Project.objects.budget_building().get(pk=self.pk).budget_building
-    
-        def budget_training(self):
-            return Project.objects.budget_training().get(pk=self.pk).budget_training
-    
-        def budget_maintenance(self):
-            return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
-    
-        def budget_management(self):
-            return Project.objects.budget_management().get(pk=self.pk).budget_management
-    
-        def budget_other(self):
-            return Project.objects.budget_other().get(pk=self.pk).budget_other
-    
-        def budget_total(self):
-            return Project.objects.budget_total().get(pk=self.pk).budget_total
-        
-        def focus_areas(self):
-            return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
-        focus_areas.allow_tags = True
-    
-        def areas_and_categories(self):
-            area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
-            areas = []
-            for area_obj in area_objs:
-                area = {'area': area_obj}
-                area['categories'] = []
-                for cat_obj in Category.objects.filter(focus_area=area_obj, projects=self).order_by('name'):
-                    area['categories'] += [cat_obj.name]
-                areas += [area]
-            return areas
-                    
-        #shortcuts to linked orgs for a single project
+                result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for all categories
+                    benchmarks__name__name=benchmarkname
+                )
+            return result.annotate( #annotate the greatest of the "benchmarkname" values into max_value
+                                   max_value=Max('benchmarks__value')).aggregate( #sum max_value for all projects
+                                   Sum('max_value'))['max_value__sum'] or 0 #we want to return 0 instead of an empty QS
+
+        def get_planned_water_calc(self):
+            "how many will get improved water"
+            return self.status_not_cancelled().get_largest_value_sum(
+                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
+                ['Water']
+            ) - self.status_complete().get_largest_value_sum(
+                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
+                ['Water']
+            )
+
+        def get_planned_sanitation_calc(self):
+            "how many will get improved sanitation"
+            return self.status_not_cancelled().get_largest_value_sum(
+                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
+                ['Sanitation']
+            ) - self.status_complete().get_largest_value_sum(
+                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
+                ['Sanitation']
+            )
+
+        def get_actual_water_calc(self):
+            "how many have gotten improved water"
+            return self.status_complete().get_largest_value_sum(
+                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
+                ['Water']
+            )
+
+        def get_actual_sanitation_calc(self):
+            "how many have gotten improved sanitation"
+            return self.status_complete().get_largest_value_sum(
+                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
+                ['Sanitation']
+            )
+
+        def latest_update_fields(self):
+            #used in project_list view
+            #cheating slightly, counting on that both id and time are the largest for the latest update
+            return self.annotate(latest_update_id=Max('project_updates__id'),latest_update_date=Max('project_updates__time'))
+
+        #the following 4 return an organisation queryset!
         def support_partners(self):
-            return Project.objects.filter(pk=self.pk).support_partners()
-    
+            o = Organisation.objects.all()
+            return o.filter(support_partners__project__in=self)
+
         def sponsor_partners(self):
-            return Project.objects.filter(pk=self.pk).sponsor_partners()
-    
+            o = Organisation.objects.all()
+            return o.filter(sponsor_partners__project__in=self)
+
         def funding_partners(self):
-            return Project.objects.filter(pk=self.pk).funding_partners()
-    
+            o = Organisation.objects.all()
+            return o.filter(funding_partners__project__in=self)
+
         def field_partners(self):
-            return Project.objects.filter(pk=self.pk).field_partners()
-    
+            o = Organisation.objects.all()
+            return o.filter(field_partners__project__in=self)
+
         def all_partners(self):
-            return Project.objects.filter(pk=self.pk).all_partners()
-    
-        def show_status_large(self):
-            "Show the current project status with background"
-            return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
-        
-        class Meta:
-            permissions = (
-                ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
-            )
-            verbose_name=_('project')
-            verbose_name_plural=_('projects')
-    
-    
-    class Benchmark(models.Model):
-        project     = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
-        category    = models.ForeignKey(Category, verbose_name=_(u'category'), )
-        name        = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
-        value       = models.IntegerField(_(u'benchmark value'), )
-    
-        def __unicode__(self):
-            return _(u'Category: %s, Benchmark: %d %s') % (self.category, self.value, self.name, )
-    
-        class Meta:
-            ordering=['category__name', 'name__order']
-            verbose_name=_('benchmark')
-            verbose_name_plural=_('benchmarks')
-    
-    
-    class BudgetItem(models.Model):
-        ITEM_CHOICES = (
-            ('employment', _('employment')),
-            ('building', _('building')),
-            ('training', _('training')),
-            ('maintenance', _('maintenance')),
-            ('management', _('management')),
-            ('other', _('other')),
+            return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
+
+
+        #TODO: is this relly needed? the default QS has identical methods
+    class OrganisationsQuerySet(QuerySet):
+        def support_partners(self):
+            orgs = Organisation.objects.all()
+            return orgs.filter(support_partners__project__in=self)
+
+        def sponsor_partners(self):
+            orgs = Organisation.objects.all()
+            return orgs.filter(sponsor_partners__project__in=self)
+
+        def funding_partners(self):
+            orgs = Organisation.objects.all()
+            return orgs.filter(funding_partners__project__in=self)
+
+        def field_partners(self):
+            orgs = Organisation.objects.all()
+            return orgs.filter(field_partners__project__in=self)
+
+        def all_partners(self):
+            orgs = Organisation.objects.all()
+            return (orgs.filter(support_partners__project__in=self) | \
+                    orgs.filter(sponsor_partners__project__in=self) | \
+                    orgs.filter(funding_partners__project__in=self) | \
+                    orgs.filter(field_partners__project__in=self)).distinct()
+            #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
+
+    def __unicode__(self):
+        return u'%s' % self.name
+
+    def updates_desc(self):
+        """
+        return ProjectUpdates for self, newest first
+        """
+        return self.project_updates.all().order_by('-time')
+
+    def latest_update(self):
+        """
+        for use in the admin
+        lists data useful when looking for projects that haven't been updated in a while (or not at all)
+        note: it would have been useful to make this column sortable via the admin_order_field attribute, but this results in
+        multiple rows shown for the project in the admin change list view and there's no easy way to distinct() them
+        TODO: probably this can be solved by customizing ModelAdmin.queryset
+        """
+        updates = self.updates_desc()
+        if updates:
+            update = updates[0]
+            # date of update shown as link poiting to the update page
+            update_info = '<a href="%s">%s</a><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time,)
+            # if we have an email of the user doing the update, add that as a mailto link
+            if update.user.email:
+                update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
+            else:
+                update_info  = '%s<br/>' % update_info
+        else:
+            update_info = "%s<br/><br/>" % (ugettext(u'No update yet'),)
+        # links to the project's support partners
+        update_info = "%sSP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.support_partners()]))
+        # links to the project's field partners
+        return "%s<br/>FP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.field_partners()]))
+
+    latest_update.allow_tags = True
+    #no go, results in duplicate projects entries in the admin change list
+    #latest_update.admin_order_field = 'project_updates__time'
+
+    def show_status(self):
+        "Show the current project status"
+        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+
+    def show_current_image(self):
+        try:
+            return self.current_image.thumbnail_tag
+        except:
+            return ''
+    show_current_image.allow_tags = True
+
+    def show_map(self):
+        try:
+            return '<img src="%s" />' % (self.map.url,)
+        except:
+            return ''
+    show_map.allow_tags = True
+
+    def connected_to_user(self, user):
+        '''
+        Test if a user is connected to self through an arganisation
+        '''
+        is_connected = False
+        try:
+            is_connected = self in UserProfile.objects.get(user=user).organisation.published_projects()
+        except:
+            pass
+        return is_connected
+
+    def is_published(self):
+        if self.publishingstatus:
+            return self.publishingstatus.status == 'published'
+        return False
+    is_published.boolean = True
+
+    def akvopedia_links(self):
+        return self.links.filter(kind='A')
+
+    def external_links(self):
+        return self.links.filter(kind='E')
+
+    #shortcuts to funding/budget data for a single project
+    def funding_pledged(self, organisation=None):
+        return Project.objects.funding(organisation).get(pk=self.pk).pledged
+
+    def funding_donated(self):
+        return Project.objects.funding().get(pk=self.pk).donated
+
+    def funding_total_given(self):
+        # Decimal(str(result)) conversion is necessary
+        # because SQLite doesn't handle decimals natively
+        # See item 16 here: http://www.sqlite.org/faq.html
+        # MySQL and PostgreSQL are not affected by this limitation
+        result = self.funding_pledged() + self.funding_donated()
+        decimal_result = Decimal(str(result))
+        return decimal_result
+
+    def funding_still_needed(self):
+        result =  Project.objects.funding().get(pk=self.pk).funds_needed
+        decimal_result = Decimal(str(result))
+        return decimal_result
+
+    def budget_employment(self):
+        return Project.objects.budget_employment().get(pk=self.pk).budget_employment
+
+    def budget_building(self):
+        return Project.objects.budget_building().get(pk=self.pk).budget_building
+
+    def budget_training(self):
+        return Project.objects.budget_training().get(pk=self.pk).budget_training
+
+    def budget_maintenance(self):
+        return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
+
+    def budget_management(self):
+        return Project.objects.budget_management().get(pk=self.pk).budget_management
+
+    def budget_other(self):
+        return Project.objects.budget_other().get(pk=self.pk).budget_other
+
+    def budget_total(self):
+        return Project.objects.budget_total().get(pk=self.pk).budget_total
+
+    def focus_areas(self):
+        return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
+    focus_areas.allow_tags = True
+
+    def areas_and_categories(self):
+        area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
+        areas = []
+        for area_obj in area_objs:
+            area = {'area': area_obj}
+            area['categories'] = []
+            for cat_obj in Category.objects.filter(focus_area=area_obj, projects=self).order_by('name'):
+                area['categories'] += [cat_obj.name]
+            areas += [area]
+        return areas
+
+    #shortcuts to linked orgs for a single project
+    def support_partners(self):
+        return Project.objects.filter(pk=self.pk).support_partners()
+
+    def sponsor_partners(self):
+        return Project.objects.filter(pk=self.pk).sponsor_partners()
+
+    def funding_partners(self):
+        return Project.objects.filter(pk=self.pk).funding_partners()
+
+    def field_partners(self):
+        return Project.objects.filter(pk=self.pk).field_partners()
+
+    def all_partners(self):
+        return Project.objects.filter(pk=self.pk).all_partners()
+
+    def show_status_large(self):
+        "Show the current project status with background"
+        return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+
+    class Meta:
+        permissions = (
+            ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
         )
-        project             = models.ForeignKey(Project)
-        item                = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
-        amount              = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
-        
-        class Meta:
-            verbose_name=_('Budget item')
-            verbose_name_plural=_('Budget items')
-            unique_together     = ('project', 'item')
-            permissions = (
-                ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
-            )
+        verbose_name=_('project')
+        verbose_name_plural=_('projects')
+
+
+class Benchmark(models.Model):
+    project = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
+    category = models.ForeignKey(Category, verbose_name=_(u'category'), )
+    name = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
+    value = models.IntegerField(_(u'benchmark value'), )
+
+    def __unicode__(self):
+        return _(u'Category: %s, Benchmark: %d %s') % (self.category, self.value, self.name, )
+
+    class Meta:
+        ordering=['category__name', 'name__order']
+        verbose_name=_('benchmark')
+        verbose_name_plural=_('benchmarks')
+
+
+class BudgetItem(models.Model):
+    ITEM_CHOICES = (
+        ('employment', _('employment')),
+        ('building', _('building')),
+        ('training', _('training')),
+        ('maintenance', _('maintenance')),
+        ('management', _('management')),
+        ('other', _('other')),
+    )
+    project = models.ForeignKey(Project,)
+    item = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
+
+    class Meta:
+        verbose_name = _('Budget item')
+        verbose_name_plural = _('Budget items')
+        unique_together= ('project', 'item')
+        permissions = (
+            ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
+        )
 
 class PublishingStatus(models.Model):
     """
@@ -1900,103 +1179,94 @@ class PublishingStatus(models.Model):
     class Meta:
         verbose_name        = _('publishing status')
         verbose_name_plural = _('publishing statuses')
-    
+
     def project_info(self):
         return self.project
 
-    
+
 class Link(models.Model):
-    if settings.PVW_RSR:
-        LINK_KINDS = (
-            ('E', _('External link')),
-            ('V', _('Video link')),
-        )
-    else:
-        LINK_KINDS = (
-            ('A', _('Akvopedia entry')),
-            ('E', _('External link')),
-        )
-    kind    = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
-    url     = models.URLField(_(u'URL'))
+    LINK_KINDS = (
+        ('A', _('Akvopedia entry')),
+        ('E', _('External link')),
+    )
+    kind = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
+    url = models.URLField(_(u'URL'))
     caption = models.CharField(_('caption'), max_length=50)
     project = models.ForeignKey(Project, related_name='links')
-    
+
     def __unicode__(self):
         return self.url
-    
+
     def show_link(self):
         return '<a href="%s">%s</a>' % (self.url, self.caption,)
 
     class Meta:
-        verbose_name        = _('link')
+        verbose_name = _('link')
         verbose_name_plural = _('links')
-    
+
 
 
 class FundingPartner(models.Model):
-    funding_organisation    = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount          = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
-    project                 = models.ForeignKey(Project,)
-    
+    funding_organisation = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
+    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
+    project = models.ForeignKey(Project,)
+
     class Meta:
-        verbose_name=_('Funding partner')
-        verbose_name_plural=_('Funding partners')
+        verbose_name = _('Funding partner')
+        verbose_name_plural = _('Funding partners')
 
     def __unicode__(self):
         return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
 
 class SponsorPartner(models.Model):
-    sponsor_organisation    = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
-    project                 = models.ForeignKey(Project,)
-    
+    sponsor_organisation = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
+    project = models.ForeignKey(Project,)
+
     class Meta:
-        verbose_name=_('Sponsor partner')
-        verbose_name_plural=_('Sponsor partners')
+        verbose_name = _('Sponsor partner')
+        verbose_name_plural = _('Sponsor partners')
 
     def __unicode__(self):
         return "%s" % (self.sponsor_organisation.name, )
 
 class SupportPartner(models.Model):
-    support_organisation    = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
-    project                 = models.ForeignKey(Project,)
+    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     class Meta:
-        verbose_name=_('Support partner')
-        verbose_name_plural=_('Support partners')
+        verbose_name = _('Support partner')
+        verbose_name_plural = _('Support partners')
 
     def __unicode__(self):
         return "%s" % (self.support_organisation.name, )
 
 class FieldPartner(models.Model):
-    field_organisation      = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
-    project                 = models.ForeignKey(Project,)
+    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
+    project = models.ForeignKey(Project,)
 
     class Meta:
-        verbose_name=_('Field partner')
-        verbose_name_plural=_('Field partners')
+        verbose_name = _('Field partner')
+        verbose_name_plural = _('Field partners')
 
     def __unicode__(self):
         return "%s" % (self.field_organisation.name, )
 
+# kept for updating database. may be renamed Funding for certain DBs
+#class Budget(models.Model):
+#    project             = models.OneToOneField(Project, primary_key=True)
+#    date_request_posted = models.DateField(default=date.today)
+#    date_complete       = models.DateField(null=True, blank=True)
+#    # budget itmes
+#    employment          = models.IntegerField()
+#    building            = models.IntegerField()
+#    training            = models.IntegerField()
+#    maintenance         = models.IntegerField()
+#    other               = models.IntegerField()
+#
+#
+#    def __unicode__(self):
+#        return self.project.__unicode__()
 
-    # kept for updating database. may be renamed Funding for certain DBs
-    #class Budget(models.Model):
-    #    project             = models.OneToOneField(Project, primary_key=True)
-    #    date_request_posted = models.DateField(default=date.today)
-    #    date_complete       = models.DateField(null=True, blank=True)
-    #    # budget itmes
-    #    employment          = models.IntegerField()
-    #    building            = models.IntegerField()
-    #    training            = models.IntegerField()
-    #    maintenance         = models.IntegerField()
-    #    other               = models.IntegerField()
-    #    
-    #    
-    #    def __unicode__(self):
-    #        return self.project.__unicode__()
-
-
-        
 PHOTO_LOCATIONS = (
     ('B', _('At the beginning of the update')),
     ('E', _('At the end of the update')),
@@ -2009,8 +1279,8 @@ UPDATE_METHODS = (
 
 class UserProfileManager(models.Manager):
     def process_sms(self, mo_sms):
-        try:                
-            profile = self.get(phone_number__exact=mo_sms.sender) # ??? reporter instead ???        
+        try:
+            profile = self.get(phone_number__exact=mo_sms.sender) # ??? reporter instead ???
             #state = get_state(profile)
             #if state:
             if state_equals(profile, profile.STATE_PHONE_NUMBER_ADDED):
@@ -2035,39 +1305,39 @@ class UserProfileManager(models.Manager):
                 logger.error('Error in UserProfileManager.process_sms: workflow disabled or in an unknown state. Locals:\n %s\n\n' % (locals()))
         except Exception, e:
             logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-            
+
 class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
-    user                = models.OneToOneField(User)
-    organisation        = models.ForeignKey(Organisation)
-    phone_number        = models.CharField(max_length=50, blank=True)# TODO: check uniqueness if non-empty
-    validation          = models.CharField(_('validation code'), max_length=20, blank=True)
+    user = models.OneToOneField(User)
+    organisation = models.ForeignKey(Organisation)
+    phone_number = models.CharField(max_length=50, blank=True)# TODO: check uniqueness if non-empty
+    validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
-    objects             = UserProfileManager()
+    objects = UserProfileManager()
 
-    # "constants" for use with SMS updating workflow    
-    VALIDATED                               = 'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED    
-    WORKFLOW_SMS_UPDATE                     = 'SMS update' #Name of workflow for SMS updating
-    STATE_PHONE_NUMBER_ADDED                = 'Phone number added' #Phone number has been added to the profile
-    #STATE_PHONE_NUMBER_VALIDATED            = 'Phone number validated' #The phone has been validated with a validation code SMS
-    STATE_UPDATES_ENABLED                   = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
-    STATE_PHONE_DISABLED                    = 'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
-    TRANSITION_ADD_PHONE_NUMBER             = 'Add phone number'
-    TRANSITION_VALIDATE_PHONE_NUMBER        = 'Validate phone number'
-    TRANSITION_ENABLE_UPDATING              = 'Enable updating'
-    TRANSITION_DISABLE_UPDATING             = 'Disable updating'    
-    GROUP_SMS_UPDATER                       = u'SMS updater'
-    GROUP_SMS_MANAGER                       = u'SMS manager'
-    ROLE_SMS_UPDATER                        = u'SMS updater'
-    ROLE_SMS_MANAGER                        = u'SMS manager'
-    PERMISSION_ADD_SMS_UPDATES              = 'add_sms_updates'
-    PERMISSION_MANAGE_SMS_UPDATES           = 'manage_sms_updates'
-    GATEWAY_42IT                            = '42it'
-    
+    # "constants" for use with SMS updating workflow
+    VALIDATED = 'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
+    WORKFLOW_SMS_UPDATE = 'SMS update' #Name of workflow for SMS updating
+    STATE_PHONE_NUMBER_ADDED = 'Phone number added' #Phone number has been added to the profile
+    #STATE_PHONE_NUMBER_VALIDATED = 'Phone number validated' #The phone has been validated with a validation code SMS
+    STATE_UPDATES_ENABLED = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
+    STATE_PHONE_DISABLED = 'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
+    TRANSITION_ADD_PHONE_NUMBER = 'Add phone number'
+    TRANSITION_VALIDATE_PHONE_NUMBER = 'Validate phone number'
+    TRANSITION_ENABLE_UPDATING = 'Enable updating'
+    TRANSITION_DISABLE_UPDATING = 'Disable updating'
+    GROUP_SMS_UPDATER = u'SMS updater'
+    GROUP_SMS_MANAGER = u'SMS manager'
+    ROLE_SMS_UPDATER = u'SMS updater'
+    ROLE_SMS_MANAGER = u'SMS manager'
+    PERMISSION_ADD_SMS_UPDATES = 'add_sms_updates'
+    PERMISSION_MANAGE_SMS_UPDATES = 'manage_sms_updates'
+    GATEWAY_42IT = '42it'
+
     class Meta:
-        verbose_name        = _('user profile')
+        verbose_name = _('user profile')
         verbose_name_plural = _('user profiles')
 
     def __unicode__(self):
@@ -2075,10 +1345,10 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def user_name(self):
         return self.__unicode__()
-    
+
     def organisation_name(self):
         return self.organisation.name
-    
+
     def updates(self):
         """
         return all updates created by the user
@@ -2091,7 +1361,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             return updates[0].time
         else:
             return None
-    
+
     #methods that insteract with the User model
     def get_is_active(self):
         return self.user.is_active
@@ -2101,15 +1371,15 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def set_is_active(self, set_it):
         self.user.is_active = set_it
         self.user.save()
-    
+
     def get_is_staff(self):
         return self.user.is_staff
     get_is_staff.boolean = True #make pretty icons in the admin list view
-    
+
     def set_is_staff(self, set_it):
         self.user.is_staff = set_it
         self.user.save()
-        
+
     def get_is_rsr_admin(self):
         return GROUP_RSR_EDITORS in groups_from_user(self.user)
 
@@ -2123,7 +1393,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self._add_user_to_group(GROUP_RSR_PARTNER_ADMINS)
         else:
             self._remove_user_from_group(GROUP_RSR_PARTNER_ADMINS)
-    
+
     def get_is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
     get_is_org_editor.boolean = True #make pretty icons in the admin list view
@@ -2134,7 +1404,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self._add_user_to_group(GROUP_RSR_PARTNER_EDITORS)
         else:
             self._remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
-    
+
     def _add_user_to_group(self, group_name):
         group = Group.objects.get(name=group_name)
         user = self.user
@@ -2148,10 +1418,10 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         if group in user.groups.all():
             user.groups.remove(group)
             user.save()
-    
+
     def my_projects(self):
         return self.organisation.all_projects()
-        
+
     def my_unreported_projects(self):
         """
         Projects I may do SMS updates for that aren't linked through an SmsReporter yet, filtering out reporters that have no project set
@@ -2191,7 +1461,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
                 logger.debug("Exiting: %s()" % who_am_i())
                 return reporter
             else:
-                logger.error("%s(): No numbers defined for gateway %s. Can't create a reporter for user %s ." % (who_am_i(), gw, self.user))
+                logger.error("%s(): No numbers defined for gateway. Can't create a reporter for user %s ." % (who_am_i(), self.user))
                 logger.debug("Exiting: %s()" % who_am_i())
                 return None
 
@@ -2233,7 +1503,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def disable_all_reporters(self):
         self.disable_reporting()
-        
+
     def destroy_reporter(self, reporter=None):
         logger.debug("Entering: %s()" % who_am_i())
         if reporter:
@@ -2293,7 +1563,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         Check for correct state and send email and SMS notifying the user about the enabled project
         If reporters=None we try to enable all reporters
         """
-        logger.debug("Entering: %s()" % who_am_i())        
+        logger.debug("Entering: %s()" % who_am_i())
         if reporter and reporter.project:
             reporters = [reporter]
         else:
@@ -2338,7 +1608,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.disable_all_reporters()
         self.set_initial_state() #Phone disabled
         logger.debug("Exiting: %s()" % who_am_i())
-    
+
     def add_phone_number(self, phone_number):
         """
         Set up workflow
@@ -2378,24 +1648,24 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """used in myakvo navigation template to determin what links to show
         """
         return (
-            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or 
+            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
     has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
     has_perm_add_sms_updates.short_description = 'may create SMS project updates'
-        
-    
+
+
     #def phone_number_changed(self, phone_number):
     #    logger.debug("Entering: %s()" % who_am_i())
     #    #sanity check, if number are the same we shouldn't do anything
     #    if self.phone_number != phone_number:
-    #        
-    #        
+    #
+    #
     #    logger.debug("Exiting: %s()" % who_am_i())
 
 
 class SmsReporterManager(models.Manager):
-    def select(profile=None, gw_number=None, project=None):
+    def select(self, profile=None, gw_number=None, project=None):
         #need either gw_number or project
         if gw_number or project:
             if gw_number:
@@ -2409,11 +1679,11 @@ class SmsReporter(models.Model):
     Mapping between projects, gateway phone numbers and users phones
     """
     userprofile = models.ForeignKey(UserProfile, related_name='reporters')
-    gw_number   = models.ForeignKey(GatewayNumber)
-    project     = models.ForeignKey(Project, null=True, blank=True, )
-    
-    objects     = SmsReporterManager()
-    
+    gw_number = models.ForeignKey(GatewayNumber)
+    project = models.ForeignKey(Project, null=True, blank=True, )
+
+    objects = SmsReporterManager()
+
     class Meta:
         unique_together = ('userprofile', 'gw_number', 'project',)
         permissions = (
@@ -2425,7 +1695,7 @@ class SmsReporter(models.Model):
             return "%s:%s:%s" % (self.userprofile.user.username, self.gw_number, self.project)
         else:
             return "%s:%s" % (self.userprofile.user.username, self.gw_number)
-        
+
     def create_sms_update(self, mo_sms):
         """
         Create a project update from an incoming SMS
@@ -2448,7 +1718,7 @@ class SmsReporter(models.Model):
             self.update_received(update)
             logger.debug("Exiting: %s()" % who_am_i())
             return update
-        except Exception, e:    
+        except Exception, e:
             logger.exception("Exception when creating an sms project update. Error: %s Locals:\n %s\n\n" % (e.message, locals(), ))
             logger.debug("Exiting: %s()" % who_am_i())
             return False
@@ -2463,7 +1733,7 @@ class SmsReporter(models.Model):
             'domain'        : Site.objects.get_current().domain,
         }
         send_now([profile.user], 'update_received', extra_context=extra_context, on_site=True)
-        
+
     def reporting_cancelled(self, set_delete=False):
         profile = self.userprofile
         #self.delete = set_delete
@@ -2473,7 +1743,7 @@ class SmsReporter(models.Model):
             'project'       : self.project,
         }
         send_now([profile.user], 'reporting_cancelled', extra_context=extra_context, on_site=True)
-    
+
     def reporting_enabled(self):
         profile = self.userprofile
         extra_context = {
@@ -2482,7 +1752,7 @@ class SmsReporter(models.Model):
             'project'       : self.project,
         }
         send_now([profile.user], 'reporting_enabled', extra_context=extra_context, on_site=True)
-    
+
     def create_validation_request(self):
         """
         send validation code through email and an SMS that the user can easily
@@ -2514,33 +1784,32 @@ class ProjectUpdate(models.Model):
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
 
-    project             = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
-    user                = models.ForeignKey(User, verbose_name=_('user'))
-    title               = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
-    text                = models.TextField(_('text'), blank=True)
-    photo               = ImageWithThumbnailsField(
-                            blank=True,
-                            upload_to=image_path,
-                            thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-                            help_text = 'The image should have 4:3 height:width ratio for best displaying result',
-                        )
-    photo_location      = models.CharField(_('photo location'), max_length=1,
+    project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    title = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
+    text = models.TextField(_('text'), blank=True)
+    #status = models.CharField(max_length=1, choices=STATUSES, default='N')
+    photo = ImageWithThumbnailsField(
+                blank=True,
+                upload_to=image_path,
+                thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+                help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+            )
+    photo_location = models.CharField(_('photo location'), max_length=1,
                                        choices=PHOTO_LOCATIONS)
-    photo_caption       = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    photo_credit        = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    video               = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
-    video_caption       = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    video_credit        = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    update_method       = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time                = models.DateTimeField(_('time'), auto_now_add=True)
-    time_last_updated   = models.DateTimeField(_('time last updated'), auto_now=True)
-    
-    if not settings.PVW_RSR:
-        featured        = models.BooleanField(_('featured'))
-    
+    photo_caption = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    photo_credit = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    video = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video_caption = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
+    video_credit = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
+    update_method = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
+    time = models.DateTimeField(_('time'), auto_now_add=True)
+    time_last_updated = models.DateTimeField(_('time last updated'), auto_now=True)
+    featured = models.BooleanField(_('featured'))
+
     class Meta:
-        get_latest_by       = "time"
-        verbose_name        = _('project update')
+        get_latest_by = "time"
+        verbose_name = _('project update')
         verbose_name_plural = _('project updates')
 
     def img(self, value=''):
@@ -2554,7 +1823,7 @@ class ProjectUpdate(models.Model):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
     get_is_featured.short_description = 'update is featured'
-    
+
     def get_video_thumbnail_url(self, url=''):
         if self.video:
             try:
@@ -2617,11 +1886,11 @@ class ProjectUpdate(models.Model):
 
 
 class ProjectComment(models.Model):
-    project         = models.ForeignKey(Project, verbose_name=_('project'))
-    user            = models.ForeignKey(User, verbose_name=_('user'))
-    comment         = models.TextField(_('comment'))
-    time            = models.DateTimeField(_('time'))
-        
+    project = models.ForeignKey(Project, verbose_name=_('project'))
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    comment = models.TextField(_('comment'))
+    time = models.DateTimeField(_('time'))
+
 
 # Payment engines
 class PaymentGateway(models.Model):
@@ -2709,30 +1978,27 @@ class Invoice(models.Model):
     project = models.ForeignKey(Project)
     # Common
     amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
-    amount_received = models.DecimalField(max_digits=10, decimal_places=2,
-        blank=True, null=True,
-        help_text=_('Amount actually received after charges have been applied.'))
+    amount_received = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,
+                                          help_text=_('Amount actually received after charges have been applied.'))
     time = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
     http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
-    campaign_code = models.CharField(_('Campaign code'),
-                                     blank=True, max_length=15)
+    campaign_code = models.CharField(_('Campaign code'), blank=True, max_length=15)
     is_anonymous = models.BooleanField(_('anonymous donation'))
     # PayPal
     ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_('mollie.nl bank ID'), max_length=4,
-        choices=get_mollie_banklist(), blank=True)
+    bank = models.CharField(_('mollie.nl bank ID'), max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(_('mollie.nl transaction ID'), max_length=100, blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
 
     def get_favicon(self):
-        pass # @ grab favicon from HTTP_REFERER site    
-    
+        pass # @ grab favicon from HTTP_REFERER site
+
     @property
     def get_name(self):
         if self.user:
@@ -2769,7 +2035,7 @@ class Invoice(models.Model):
             return self.project.paymentgatewayselector.paypal_gateway.notification_email
         elif self.engine == 'ideal':
             return self.project.paymentgatewayselector.mollie_gateway.notification_email
-    
+
     @property
     def donation_fee(self):
         return (self.amount - self.amount_received)
@@ -2793,6 +2059,120 @@ def process_paypal_ipn(sender, **kwargs):
 payment_was_flagged.connect(process_paypal_ipn)
 
 
+class PartnerSite(models.Model):
+
+    def about_image_path(instance, file_name):
+        return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)
+
+    def custom_css_path(instance, filename):
+        return 'db/partner_sites/%s/custom.css' % instance.hostname
+
+    def custom_favicon_path(instance, filename):
+        return 'db/partner_sites/%s/favicon.ico' % instance.hostname
+
+    def custom_logo_path(instance, filename):
+        return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
+
+    organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
+    hostname = models.CharField(_('Hostname'), max_length=50, unique=True,
+        help_text=_('''
+            <p>
+                Your hostname is used in the default web address of your partner site.
+                The web address created from  the hostname <em>myorganisation</em> would be
+                <em>http://myorganisation.akvoapp.org/</em>.
+            </p>
+        ''')
+    )
+    cname = NullCharField(_('CNAME'), max_length=100, unique=True, blank=True, null=True,
+        help_text=_('''
+            <p>
+                Enter a custom domain name for accessing the partner site,
+                for example <i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.
+            </p>
+        ''')
+    )
+    custom_return_url = models.URLField(_('Return URL'), blank=True,
+        help_text=_('''
+            <p>
+                Enter the full URL (including http://) for the page to which users
+                should be returned when leaving the partner site.
+            </p>
+        ''')
+    )
+    custom_css = models.FileField(_('Stylesheet'), blank=True, upload_to=custom_css_path)
+    custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=custom_logo_path,
+        help_text=_('''
+            <p>
+                Upload a logo file for the banner at the top of the partner site page.
+                By default the logo currently used by www.akvo.org will be displayed.
+            </p>
+        ''')
+    )
+    custom_favicon = models.FileField(_('favicon'), blank=True, upload_to=custom_favicon_path,
+        help_text=_('''
+            <p>
+                A favicon (.ico file) is the 16x16 pixel image shown inside the browser's location bar,
+                on tabs and in the bookmark menu.
+            </p>
+        ''')
+    )
+    about_box = models.TextField(_(_(u'about box text'), ), max_length=500, blank=True,
+        help_text=_('''
+            Enter HTML that will make up the top left box of the home page. (500 characters)
+            <p>
+                Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying position and width
+                of the text, and an inner for formatting of the text .
+            </p>
+            <p>
+                The Outer &lt;div&gt; tag can use the classes <code>quarter, half, three_quarters and full</code> to
+                specify the
+                width of the text. It can use the classes <code>bottom</code> and <code>right</code> to specify a position other than top left.
+            </p>
+            <p>
+                The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a semi-transparent text
+                background if a background image will be uploaded. Any other inline styles can also be used within the
+                inner &lt;div&gt;. The tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while &lt;p&gt;
+                tags are black by default. Use the classes <code>first</code> and <code>last</code> with &lt;p&gt; tags
+                to reduce the margins above or below respectively.
+            </p>
+            <p>
+                Add additional styling inline, or upload a .css stylesheet in the Stylesheet setting above.
+                <em>Tip:</em> When using a .css file, use the #about_box ID selector to apply a style only to
+                the About box.
+            </p>
+        ''')
+    )
+    about_image = models.ImageField(_('about box image'), blank=True, upload_to=about_image_path,
+        help_text=_('''
+            <p>
+                The background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall.
+                It is however optional.
+            </p>
+        ''')
+    )
+
+    enabled = models.BooleanField(_('enabled'), default=True)
+
+    def __unicode__(self):
+        return u'Partner site for %s' % self.organisation.name
+
+    @property
+    def logo(self):
+        return self.custom_logo or None
+
+    @property
+    def return_url(self):
+        return self.custom_return_url or self.organisation.url or None
+
+    @property
+    def stylesheet(self):
+        return self.custom_css or None
+
+    @property
+    def favicon(self):
+        return self.custom_favicon or None
+
+
 # signals!
 user_activated.connect(user_activated_callback)
 
@@ -2814,10 +2194,3 @@ pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
 
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)
-
-if settings.PVW_RSR:
-    post_save.connect(change_name_of_file_on_create, sender=Image)
-    pre_save.connect(change_name_of_file_on_change, sender=Image)
-    post_save.connect(change_name_of_file_on_create, sender=Category)
-    pre_save.connect(change_name_of_file_on_change, sender=Category)
-    post_save.connect(set_active_cms, sender=MiniCMS)

@@ -11,7 +11,7 @@ import fabric.utils
 class ExecutionFeedback(object):
 
     def comment(self, message):
-        self._puts(self._add_comment_prefix_to(message), True, '\n', False)
+        self._puts(self._add_comment_prefix_to(message), True, '\n', True)
 
     def _puts(self, formatted_message, display_host_prefix, line_ending, flush_output):
         fabric.utils.puts(formatted_message, display_host_prefix, line_ending, flush_output)

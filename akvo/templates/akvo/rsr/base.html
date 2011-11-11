@@ -15,7 +15,7 @@
 		{% asset_bundle 'akvo_ie6_style' %}
 	<![endif]-->
 
-  	<style type="text/css" media="screen">
+  <style type="text/css" media="screen">
   	{% block inline_styles %}{% endblock inline_styles %}
 	</style>
   
@@ -39,7 +39,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="{% url 'project_list' %}" class="{% if site_section = 'projects' %}active{% endif %}">
+					<a href="{% url 'project_list' 'all' %}" class="{% if site_section = 'projects' %}active{% endif %}">
 						<span>{% trans 'Projects' %}</span>
 					</a>
 				</li>

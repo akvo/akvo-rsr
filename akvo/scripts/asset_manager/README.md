@@ -35,7 +35,7 @@ We will use a Python dictionary to define asset bundles. You will load a asset b
 - {% asset_bundle ‘foo’ %}, Django template tag loading the 'foo' bundle (uses the map.py for lookup).   
 - git_hooks/pre-commit, Hook that call the packer script before a commit.   
 - akvo/scripts/asset_manager/__init__.py, On first request and execution a symlink to the git hook is made.    (hence one need to run the project to setup the githook!!!)   
-- A DEV_ASSET_BUNDLES=TRUE setting.   
+- A ASSET_MANAGER_DEV=TRUE setting.
 - Expires header to the web server configuration. (optional)   
 
 ### In depth / example
