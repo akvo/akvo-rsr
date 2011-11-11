@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController
-from fab.os.filesystem import FileSystem
+from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
 class FileSystemTest(mox.MoxTestBase):
@@ -24,6 +24,11 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.mock_host_controller.feedback = self.mock_feedback
         self.file_system = FileSystem(self.mock_host_controller)
+
+    def test_can_crete_localfilesystem_instance(self):
+        """fab.tests.os.file_system_test  Can create a LocalFileSystem instance"""
+
+        self.assertIsInstance(LocalFileSystem(), LocalFileSystem)
 
     def test_can_change_directory(self):
         """fab.tests.os.file_system_test  Can change directory"""
@@ -317,6 +322,14 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.file_system.upload_file(local_file_path, remote_directory)
+
+    def test_can_get_most_recent_file_in_directory(self):
+        """fab.tests.os.file_system_test  Can get most recent file in a directory"""
+
+        self.mock_host_controller.run("ls -1tr /var/some/dir | tail -1")
+        self.mox.ReplayAll()
+
+        self.file_system.most_recent_file_in_directory("/var/some/dir")
 
 
 def suite():

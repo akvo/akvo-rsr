@@ -7,6 +7,8 @@
 
 import os
 
+from fab.host.controller import LocalHostController
+
 
 class FileSystem(object):
     """FileSystem encapsulates file system actions that are common to both local and remote hosts"""
@@ -106,3 +108,12 @@ class FileSystem(object):
 
     def upload_file(self, local_file_path, remote_dir):
         self.host_controller.put(local_file_path, remote_dir, mirror_local_mode=True)
+
+    def most_recent_file_in_directory(self, dir_path):
+        return self.host_controller.run("ls -1tr %s | tail -1" % dir_path)
+
+
+class LocalFileSystem(FileSystem):
+
+    def __init__(self):
+        super(LocalFileSystem, self).__init__(LocalHostController.create_instance())
