@@ -307,10 +307,11 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.file_system.compress_directory(dir_to_compress)
 
-    def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, compressed_file_name):
+    def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, archive_name):
         self.mock_feedback.comment("Compressing %s" % dir_to_compress)
         self.mock_host_controller.cd("/var/archives").AndReturn(fabric.api.cd("/var/archives"))
-        self.mock_host_controller.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
+        archive_file_with_extension = "%s%s" % (archive_name, FileSystem.DATA_ARCHIVE_EXTENSION)
+        self.mock_host_controller.run("tar -cjf %s %s" % (archive_file_with_extension, archive_name))
         self.mox.ReplayAll()
 
     def test_can_download_file(self):

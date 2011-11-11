@@ -14,6 +14,7 @@ class FileSystem(object):
     """FileSystem encapsulates file system actions that are common to both local and remote hosts"""
 
     CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
+    DATA_ARCHIVE_EXTENSION  = ".tar.bz2"
 
     def __init__(self, host_controller):
         self.host_controller = host_controller
@@ -99,13 +100,14 @@ class FileSystem(object):
         with self.host_controller.cd(destination_dir):
             self.host_controller.run("tar -xf %s" % archive_file_path)
 
-    def compress_directory(self, full_path_to_compress):
-        stripped_path = full_path_to_compress.rstrip("/")
+    def compress_directory(self, dir_path):
+        stripped_path = dir_path.rstrip("/")
         self.feedback.comment("Compressing %s" % stripped_path)
         parent_dir = os.path.dirname(stripped_path)
-        compressed_file_name = os.path.basename(stripped_path)
+        dir_to_compress = os.path.basename(stripped_path)
+        archive_file_name = "%s%s" % (dir_to_compress, self.DATA_ARCHIVE_EXTENSION)
         with self.host_controller.cd(parent_dir):
-            self.host_controller.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
+            self.host_controller.run("tar -cjf %s %s" % (archive_file_name, dir_to_compress))
 
     def download_file(self, host_file_path, local_dir):
         self.host_controller.get(host_file_path, local_dir)
