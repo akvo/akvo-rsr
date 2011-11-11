@@ -95,6 +95,10 @@ class FileSystem(object):
     def decompress_code_archive(self, archive_file_name, destination_dir):
         self.host_controller.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
 
+    def decompress_data_archive(self, archive_file_path, destination_dir):
+        with self.host_controller.cd(destination_dir):
+            self.host_controller.run("tar -xf %s" % archive_file_path)
+
     def compress_directory(self, full_path_to_compress):
         stripped_path = full_path_to_compress.rstrip("/")
         self.feedback.comment("Compressing %s" % stripped_path)

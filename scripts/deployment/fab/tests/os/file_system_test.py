@@ -279,6 +279,18 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.file_system.decompress_code_archive(archive_file, destination_dir)
 
+    def test_can_decompress_data_archive(self):
+        """fab.tests.os.file_system_test  Can decompress a data archive"""
+
+        archive_file_path = "/some/data/dir/rsr_data.tar.bz2"
+        destination_dir = "/var/tmp/unpack"
+
+        self.mock_host_controller.cd(destination_dir).AndReturn(fabric.api.cd(destination_dir))
+        self.mock_host_controller.run("tar -xf %s" % archive_file_path)
+        self.mox.ReplayAll()
+
+        self.file_system.decompress_data_archive(archive_file_path, destination_dir)
+
     def test_can_compress_directory(self):
         """fab.tests.os.file_system_test  Can compress a specified directory"""
 
