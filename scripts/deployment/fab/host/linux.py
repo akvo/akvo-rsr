@@ -25,9 +25,12 @@ class LinuxHost(object):
         host_controller = RemoteHostController.create_instance()
 
         return LinuxHost(UbuntuPackageInspector(host_controller),
-                         LinuxPackageVerifier.create_instance(host_controller.feedback),
+                         LinuxPackageVerifier.create_instance(host_controller),
                          SystemPythonPackageInstaller.create_instance(host_controller),
                          host_controller.feedback)
+
+    def update_system_package_sources(self):
+        self.os_package_verifier.update_package_sources()
 
     def exit_if_system_package_dependencies_not_met(self, os_package_specifications):
         dependency_collection = SystemPackageDependencyCollection(os_package_specifications, self.os_package_inspector, self.feedback)

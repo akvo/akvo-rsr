@@ -13,8 +13,12 @@ class CommandExecutor(object):
         self.feedback = host_controller.feedback
 
     def _execute_command(self, command_with_credentials_and_parameters):
-        with self.host_controller.hide_command(): # so that we don't expose passwords in any logged output
-            self.host_controller.run(command_with_credentials_and_parameters)
+        with self.host_controller.hide_command(): # so that we don't expose passwords in logged output
+            return self.host_controller.run(command_with_credentials_and_parameters)
+
+    def _execute_command_without_output(self, command_with_credentials_and_parameters):
+        with self.host_controller.hide_command_and_output(): # so that we don't expose passwords in logged output
+            return self.host_controller.run(command_with_credentials_and_parameters)
 
     def _command_with_credentials(self, command, parameters):
         return "%s %s %s" % (command, self.admin_credentials, parameters)
@@ -23,10 +27,17 @@ class CommandExecutor(object):
 class SQLStatementExecutor(CommandExecutor):
 
     def execute(self, statement_list):
-        statement_sequence = "; ".join(statement_list)
+        self.feedback.comment("Executing SQL: %s" % self._as_sequence(statement_list))
+        return MySQLResponseData(self._execute_command(self._compose_command(statement_list)))
 
-        self.feedback.comment("Executing SQL: %s" % statement_sequence)
-        self._execute_command(self._command_with_credentials('mysql', '-e "%s"' % statement_sequence))
+    def execute_without_output(self, statement_list):
+        return MySQLResponseData(self._execute_command_without_output(self._compose_command(statement_list)))
+
+    def _compose_command(self, statement_list):
+        return self._command_with_credentials('mysql', '-e "%s"' % self._as_sequence(statement_list))
+
+    def _as_sequence(self, statement_list):
+        return "; ".join(statement_list)
 
 
 class DatabaseCopier(CommandExecutor):
@@ -35,5 +46,14 @@ class DatabaseCopier(CommandExecutor):
         dump_original_database = self._command_with_credentials("mysqldump", original_database_name)
         import_into_new_database = self._command_with_credentials("mysql", duplicate_database_name)
 
-        self.feedback.comment("Copying database [%s] to [%s]" % (original_database_name, duplicate_database_name))
+        self.feedback.comment("Copying database '%s' to '%s'" % (original_database_name, duplicate_database_name))
         self._execute_command("%s | %s" % (dump_original_database, import_into_new_database))
+
+
+class MySQLResponseData(object):
+
+    def __init__(self, mysql_response_data):
+        self.mysql_response_data = mysql_response_data
+
+    def contains(self, text):
+        return self.mysql_response_data.find(text) >= 0

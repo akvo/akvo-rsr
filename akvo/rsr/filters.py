@@ -7,7 +7,6 @@
 import django_filters
 import sys
 
-from django.db.models.aggregates import Sum
 from django.db.models.query_utils import Q
 from django.forms import widgets, BooleanField
 from django.forms.fields import MultipleChoiceField

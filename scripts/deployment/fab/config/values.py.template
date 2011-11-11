@@ -21,10 +21,11 @@ class PythonConfigValues(object):
 class DataHostConfigValues(object):
 
     def __init__(self):
-        self.deployed_rsr_version   = "1.0.9"
+        self.deployed_rsr_version   = "2.0" # change this to the latest version
         self.deployed_rsr_dir_name  = "%s_gitclone" % self.deployed_rsr_version
         self.django_apps_home       = "/var/lib/django"
         self.virtualenvs_home       = "/var/virtualenvs"
+        self.rsr_logs_home          = "/var/log/akvo"
         self.data_dumps_home        = "/var/tmp/data_dumps"
 
 
@@ -38,9 +39,8 @@ class DeploymentHostConfigValues(object):
 class DatabaseAdminConfigValues(object):
 
     def __init__(self):
-        self.admin_user                 = "root"
-        self.admin_password             = "root_db_password"
-        self.remote_config_values_home  = "/var/tmp/deployment/config"
+        self.admin_user         = "sqladmin"
+        self.admin_password     = "admin_password"
 
 
 class RSRDatabaseConfigValues(object):

@@ -62,6 +62,11 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.data_host_config_values.virtualenvs_home, "virtualenvs home")
 
+    def test_datahostconfigvalues_has_rsr_logs_home(self):
+        """fab.tests.config.config_values_test  DataHostConfigValues has RSR logs home"""
+
+        self._verify_expected_config_value(self.data_host_config_values.rsr_logs_home, "RSR logs home")
+
     def test_datahostconfigvalues_has_data_dumps_home(self):
         """fab.tests.config.config_values_test  DataHostConfigValues has data dumps home"""
 
@@ -86,11 +91,6 @@ class ConfigValuesTest(unittest2.TestCase):
         """fab.tests.config.config_values_test  DatabaseAdminConfigValues has admin password"""
 
         self._verify_expected_config_value(self.database_admin_config_values.admin_password, "admin password")
-
-    def test_databaseadminconfigvalues_has_remote_config_values_home(self):
-        """fab.tests.config.config_values_test  DatabaseAdminConfigValues has remote config values home"""
-
-        self._verify_expected_config_value(self.database_admin_config_values.remote_config_values_home, "remote config values home")
 
     def test_rsrdatabaseconfigvalues_has_database_name(self):
         """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database name"""

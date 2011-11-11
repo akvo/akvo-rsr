@@ -103,7 +103,7 @@ class InternetTest(mox.MoxTestBase):
         download_directory = "/var/tmp/downloads"
         file_url = "http://some.server.org/code/file.txt"
         self.mock_host_controller.cd(download_directory).AndReturn(fabric.api.cd(download_directory))
-        self.mock_host_controller.run("wget -nv %s" % file_url)
+        self.mock_host_controller.run(self._expected_wget_command(file_url))
         self.mox.ReplayAll()
 
         self.internet.download_file_to_directory(download_directory, file_url)
@@ -113,10 +113,13 @@ class InternetTest(mox.MoxTestBase):
 
         file_url = "http://some.server.org/file.zip"
         downloaded_file_path = "/var/tmp/archives/rsr_archive.zip"
-        self.mock_host_controller.run("wget -nv -O %s %s" % (downloaded_file_path, file_url))
+        self.mock_host_controller.run(self._expected_wget_command("-O %s %s" % (downloaded_file_path, file_url)))
         self.mox.ReplayAll()
 
         self.internet.download_file_at_url_as(downloaded_file_path, file_url)
+
+    def _expected_wget_command(self, parameters):
+        return "wget -nv --no-check-certificate %s" % parameters
 
 
 def suite():
