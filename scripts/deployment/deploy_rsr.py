@@ -66,7 +66,7 @@ def deploy_rsr():
     run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
     run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
     run_data_retrieval_task("fab.tasks.data.retrieval.fetch_rsr_data")
-    run_deployment_task("fab.tasks.database.backup.backup_rsr_database:host_controller_mode=remote")
+    run_deployment_task("fab.tasks.database.rsr.rebuild_rsr_database:host_controller_mode=remote")
 
 
 if __name__ == "__main__":
