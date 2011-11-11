@@ -82,6 +82,11 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.deployment_config_values.virtualenvs_home, "virtualenvs home")
 
+    def test_deploymenthostconfigvalues_has_data_archives_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has data archives home"""
+
+        self._verify_expected_config_value(self.deployment_config_values.data_archives_home, "data archives home")
+
     def test_databaseadminconfigvalues_has_admin_user(self):
         """fab.tests.config.config_values_test  DatabaseAdminConfigValues has admin user"""
 
