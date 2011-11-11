@@ -62,6 +62,11 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual("2_rsr.txt", RSRCodebaseConfig.RSR_REQUIREMENTS_FILE)
 
+    def test_has_testing_requirements_file_name(self):
+        """fab.tests.config.rsr.codebase_config_test  Has testing requirements file name"""
+
+        self.assertEqual("3_testing.txt", RSRCodebaseConfig.TESTING_REQUIREMENTS_FILE)
+
     def test_has_system_requirements_file_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has system requirements file URL"""
 
@@ -70,11 +75,20 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_system_requirements_file_url, self.codebase_config.system_requirements_file_url)
 
-    def test_has_rsr_requirements_file_path_relative_to_deployed_codebase(self):
-        """fab.tests.config.rsr.codebase_config_test  Has RSR requirements file path relative to the deployed codebase"""
+    def test_has_rsr_requirements_file_path_in_deployed_codebase(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR requirements file path in the deployed codebase"""
 
-        expected_rsr_requirements_file_path = os.path.join(RSRCodebaseConfig.PIP_REQUIREMENTS_PATH, RSRCodebaseConfig.RSR_REQUIREMENTS_FILE)
-        self.assertEqual(expected_rsr_requirements_file_path, self.codebase_config.rsr_requirements_file_path)
+        self.assertEqual(self._expected_requirements_file_path(RSRCodebaseConfig.RSR_REQUIREMENTS_FILE),
+                         self.codebase_config.rsr_requirements_file_path)
+
+    def test_has_testing_requirements_file_path_within_deployed_codebase(self):
+        """fab.tests.config.rsr.codebase_config_test  Has testing requirements file path within the deployed codebase"""
+
+        self.assertEqual(self._expected_requirements_file_path(RSRCodebaseConfig.TESTING_REQUIREMENTS_FILE),
+                         self.codebase_config.testing_requirements_file_path)
+
+    def _expected_requirements_file_path(self, requirements_file):
+        return os.path.join(RSRCodebaseConfig.PIP_REQUIREMENTS_PATH, requirements_file)
 
 
 def suite():
