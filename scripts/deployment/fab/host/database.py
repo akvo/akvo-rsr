@@ -22,5 +22,8 @@ class DatabaseHost(object):
 
         return DatabaseHost(database_config, DatabaseAdmin.create_instance(database_config, host_controller))
 
-    def backup_existing_database(self):
+    def rebuild_rsr_database(self):
         self.database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
+        self.database_admin.rebuild_database(self.database_config.rsr_database_name,
+                                             self.database_config.rsr_database_user,
+                                             self.database_config.rsr_database_password)

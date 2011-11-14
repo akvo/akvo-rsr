@@ -43,13 +43,16 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         return DatabaseHost.create_instance(mock_host_controller)
 
-    def test_can_backup_existing_database(self):
-        """fab.tests.host.database_host_test  Can backup existing database"""
+    def test_can_rebuild_rsr_database(self):
+        """fab.tests.host.database_host_test  Can rebuild an RSR database"""
 
         self.mock_database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
+        self.mock_database_admin.rebuild_database(self.database_config.rsr_database_name,
+                                                  self.database_config.rsr_database_user,
+                                                  self.database_config.rsr_database_password)
         self.mox.ReplayAll()
 
-        self.database_host.backup_existing_database()
+        self.database_host.rebuild_rsr_database()
 
 
 def suite():

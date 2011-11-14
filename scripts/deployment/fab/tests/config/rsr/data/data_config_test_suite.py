@@ -7,14 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.app.db_dump_command_test import DBDumpCommandTest
-from fab.tests.app.django_manage_command_test import DjangoManageCommandTest
-from fab.tests.app.rsr_app_deployer_test import RSRAppDeployerTest
+from fab.tests.config.rsr.data.populator_config_test import RSRDataPopulatorConfigTest
 
 
-def app_suite():
-    return TestSuiteLoader().create_suite_from_classes([RSRAppDeployerTest, DBDumpCommandTest, DjangoManageCommandTest])
+def data_config_suite():
+    return TestSuiteLoader().create_suite_from_classes([RSRDataPopulatorConfigTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(app_suite())
+    TestRunner(TEST_MODE).run_test_suite(data_config_suite())

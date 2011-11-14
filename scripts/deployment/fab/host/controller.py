@@ -65,7 +65,7 @@ class LocalHostController(HostControllerBase):
         return os.path.exists(path)
 
     def run(self, command):
-        return fabric.api.local(command)
+        return fabric.api.local(command, capture=True)
 
     def sudo(self, command):
         return self.run("sudo %s" % command)
