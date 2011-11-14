@@ -11,18 +11,18 @@ import fab.host.controller
 import fab.host.database
 
 
-class BackupRSRDatabase(fabric.tasks.Task):
-    """Creates a duplicate RSR database"""
+class RebuildRSRDatabase(fabric.tasks.Task):
+    """Rebuilds the RSR database"""
 
-    name = "backup_rsr_database"
+    name = "rebuild_rsr_database"
 
     def run(self, host_controller_mode):
-        self._create_database_host_with(host_controller_mode).backup_existing_database()
+        self._create_database_host(host_controller_mode).rebuild_rsr_database()
 
-    def _create_database_host_with(self, host_controller_mode):
+    def _create_database_host(self, host_controller_mode):
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
 
         return fab.host.database.DatabaseHost.create_instance(host_controller)
 
 
-instance = BackupRSRDatabase()
+instance = RebuildRSRDatabase()

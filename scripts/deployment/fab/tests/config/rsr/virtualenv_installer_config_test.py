@@ -63,10 +63,17 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
     def test_has_rsr_requirements_file_path(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Has RSR requirements file path"""
 
-        expected_rsr_requirements_file_path = os.path.join(self.deployment_config.rsr_deployment_home,
-                                                           self.codebase_config.rsr_requirements_file_path)
+        self.assertEqual(self._expected_requirements_file_path(self.codebase_config.rsr_requirements_file_path),
+                         self.virtualenv_installer_config.rsr_requirements_path)
 
-        self.assertEqual(expected_rsr_requirements_file_path, self.virtualenv_installer_config.rsr_requirements_path)
+    def test_has_testing_requirements_file_path(self):
+        """fab.tests.config.rsr.virtualenv_installer_config_test  Has testing requirements file path"""
+
+        self.assertEqual(self._expected_requirements_file_path(self.codebase_config.testing_requirements_file_path),
+                         self.virtualenv_installer_config.testing_requirements_path)
+
+    def _expected_requirements_file_path(self, requirements_file):
+        return os.path.join(self.deployment_config.rsr_deployment_home, requirements_file)
 
     def test_can_get_time_stamped_pip_install_log_file_path(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Can get time stamped pip install log file path"""

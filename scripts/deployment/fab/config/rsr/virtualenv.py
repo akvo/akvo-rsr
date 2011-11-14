@@ -16,11 +16,14 @@ from fab.format.timestamp import TimeStampFormatter
 class RSRVirtualEnvInstallerConfig(object):
 
     def __init__(self, deployment_host_config_values, codebase_config, deployment_config, time_stamp_formatter):
-        self.virtualenvs_home       = deployment_host_config_values.virtualenvs_home
-        self.rsr_env_name           = "rsr_%s" % codebase_config.repo_branch_without_type
-        self.rsr_env_path           = os.path.join(self.virtualenvs_home, self.rsr_env_name)
-        self.rsr_requirements_path  = os.path.join(deployment_config.rsr_deployment_home, codebase_config.rsr_requirements_file_path)
-        self.time_stamp_formatter   = time_stamp_formatter
+        self.virtualenvs_home   = deployment_host_config_values.virtualenvs_home
+        self.rsr_env_name       = "rsr_%s" % codebase_config.repo_branch_without_type
+        self.rsr_env_path       = os.path.join(self.virtualenvs_home, self.rsr_env_name)
+
+        self.rsr_requirements_path      = os.path.join(deployment_config.rsr_deployment_home, codebase_config.rsr_requirements_file_path)
+        self.testing_requirements_path  = os.path.join(deployment_config.rsr_deployment_home, codebase_config.testing_requirements_file_path)
+
+        self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
     def create_instance():

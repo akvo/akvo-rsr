@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.data.rsr_data_populator_test import RSRDataPopulatorTest
 from fab.tests.data.rsr_data_retriever_test import RSRDataRetrieverTest
 
 
 def data_suite():
-    return TestSuiteLoader().create_suite_from_classes([RSRDataRetrieverTest])
+    return TestSuiteLoader().create_suite_from_classes([RSRDataRetrieverTest, RSRDataPopulatorTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

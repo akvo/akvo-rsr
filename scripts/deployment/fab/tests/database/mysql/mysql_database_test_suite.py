@@ -7,6 +7,7 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.database.mysql.database_admin_command_test import DatabaseAdminCommandTest
 from fab.tests.database.mysql.database_admin_test import DatabaseAdminTest
 from fab.tests.database.mysql.database_copier_test import DatabaseCopierTest
 from fab.tests.database.mysql.mysql_response_data_test import MySQLResponseDataTest
@@ -15,7 +16,8 @@ from fab.tests.database.mysql.sql_statement_executor_test import SQLStatementExe
 
 def mysql_database_suite():
     return TestSuiteLoader().create_suite_from_classes([SQLStatementExecutorTest, MySQLResponseDataTest,
-                                                        DatabaseCopierTest, DatabaseAdminTest])
+                                                        DatabaseCopierTest, DatabaseAdminCommandTest,
+                                                        DatabaseAdminTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

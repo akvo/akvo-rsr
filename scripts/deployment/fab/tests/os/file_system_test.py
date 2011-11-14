@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController
-from fab.os.filesystem import FileSystem
+from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
 class FileSystemTest(mox.MoxTestBase):
@@ -24,6 +24,11 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.mock_host_controller.feedback = self.mock_feedback
         self.file_system = FileSystem(self.mock_host_controller)
+
+    def test_can_crete_localfilesystem_instance(self):
+        """fab.tests.os.file_system_test  Can create a LocalFileSystem instance"""
+
+        self.assertIsInstance(LocalFileSystem(), LocalFileSystem)
 
     def test_can_change_directory(self):
         """fab.tests.os.file_system_test  Can change directory"""
@@ -101,10 +106,7 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.os.file_system_test  Can create directory"""
 
         new_dir = "/var/tmp/packages"
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.run("mkdir %s" % new_dir)
-        self.mock_host_controller.run("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=False)
 
         self.file_system.create_directory(new_dir)
 
@@ -112,10 +114,7 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.os.file_system_test  Can create directory with sudo"""
 
         new_dir = "/var/tmp/packages"
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.sudo("mkdir %s" % new_dir)
-        self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=True)
 
         self.file_system.create_directory_with_sudo(new_dir)
 
@@ -134,10 +133,7 @@ class FileSystemTest(mox.MoxTestBase):
 
         new_dir = "/var/tmp/packages"
         self.mock_host_controller.path_exists(new_dir).AndReturn(False)
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.run("mkdir %s" % new_dir)
-        self.mock_host_controller.run("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=False)
 
         self.file_system.ensure_directory_exists(new_dir)
 
@@ -156,12 +152,19 @@ class FileSystemTest(mox.MoxTestBase):
 
         new_dir = "/var/tmp/packages"
         self.mock_host_controller.path_exists(new_dir).AndReturn(False)
-        self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        self.mock_host_controller.sudo("mkdir %s" % new_dir)
-        self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
-        self.mox.ReplayAll()
+        self._set_expectations_for_creating_directory(new_dir, with_sudo=True)
 
         self.file_system.ensure_directory_exists_with_sudo(new_dir)
+
+    def _set_expectations_for_creating_directory(self, new_dir, with_sudo=False):
+        self.mock_feedback.comment("Creating directory: %s" % new_dir)
+        if with_sudo:
+            self.mock_host_controller.sudo("mkdir -p %s" % new_dir)
+            self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
+        else:
+            self.mock_host_controller.run("mkdir -p %s" % new_dir)
+            self.mock_host_controller.run("chmod 755 %s" % new_dir)
+        self.mox.ReplayAll()
 
     def test_can_rename_file(self):
         """fab.tests.os.file_system_test  Can rename a file"""
@@ -276,6 +279,18 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.file_system.decompress_code_archive(archive_file, destination_dir)
 
+    def test_can_decompress_data_archive(self):
+        """fab.tests.os.file_system_test  Can decompress a data archive"""
+
+        archive_file_path = "/some/data/dir/rsr_data.tar.bz2"
+        destination_dir = "/var/tmp/unpack"
+
+        self.mock_host_controller.cd(destination_dir).AndReturn(fabric.api.cd(destination_dir))
+        self.mock_host_controller.run("tar -xf %s" % archive_file_path)
+        self.mox.ReplayAll()
+
+        self.file_system.decompress_data_archive(archive_file_path, destination_dir)
+
     def test_can_compress_directory(self):
         """fab.tests.os.file_system_test  Can compress a specified directory"""
 
@@ -292,10 +307,11 @@ class FileSystemTest(mox.MoxTestBase):
 
         self.file_system.compress_directory(dir_to_compress)
 
-    def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, compressed_file_name):
+    def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, archive_name):
         self.mock_feedback.comment("Compressing %s" % dir_to_compress)
         self.mock_host_controller.cd("/var/archives").AndReturn(fabric.api.cd("/var/archives"))
-        self.mock_host_controller.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
+        archive_file_with_extension = "%s%s" % (archive_name, FileSystem.DATA_ARCHIVE_EXTENSION)
+        self.mock_host_controller.run("tar -cjf %s %s" % (archive_file_with_extension, archive_name))
         self.mox.ReplayAll()
 
     def test_can_download_file(self):
@@ -319,6 +335,14 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.file_system.upload_file(local_file_path, remote_directory)
+
+    def test_can_get_most_recent_file_in_directory(self):
+        """fab.tests.os.file_system_test  Can get most recent file in a directory"""
+
+        self.mock_host_controller.run("ls -1tr /var/some/dir | tail -1")
+        self.mox.ReplayAll()
+
+        self.file_system.most_recent_file_in_directory("/var/some/dir")
 
 
 def suite():
