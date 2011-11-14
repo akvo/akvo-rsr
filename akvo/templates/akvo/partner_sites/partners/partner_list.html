@@ -43,10 +43,10 @@
       {% for partner in partner_list %}
         <tr>
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}>
-            <a href="{% url 'partner_main' partner.id %}" class="small">
+            <a href="{{partner.get_absolute_url}}" class="small">
             {% org_logo partner 100 75 'float: left; margin-right: 10px;' %}
             </a>
-            <a href="{% url 'partner_main' partner.id %}" class="">{{partner}}</a>
+            <a href="{{partner.get_absolute_url}}" class="">{{partner}}</a>
           </td>
           <td class="small {% if forloop.last %} no_bottom_border{% endif %}">
             {{partner.get_organisation_type_display}}

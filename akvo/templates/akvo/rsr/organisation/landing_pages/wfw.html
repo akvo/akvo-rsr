@@ -273,7 +273,7 @@
 						<div class="space10">
 							<p style="margin-bottom:0;">
 								{% for partner in p.all_partners %}
-									<a href="{% url 'org_detail' partner.id %}">{{partner.name}}</a>{% if not forloop.last %},<br />{% endif %}
+									<a href="{{partner.get_absolute_url}}">{{partner.name}}</a>{% if not forloop.last %},<br />{% endif %}
 								{% endfor %}
 							</p>
 						</div>

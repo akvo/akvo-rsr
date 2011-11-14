@@ -154,7 +154,7 @@
           </h3>
           <p>
             {% for partner in org_partners %}
-                <a href="{% url 'org_detail' partner.pk %}">{{partner}}</a><br/>
+                <a href="{{partner.get_absolute_url}}">{{partner}}</a><br/>
             {% endfor %}
           </p>
         {% endif %}
