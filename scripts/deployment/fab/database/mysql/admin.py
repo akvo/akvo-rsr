@@ -6,6 +6,7 @@
 
 
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.data.population import RSRDataPopulator
 from fab.database.mysql.admincommand import DatabaseAdminCommand
 from fab.database.mysql.commandexecution import DatabaseCopier, SQLStatementExecutor
 from fab.format.timestamp import TimeStampFormatter
@@ -13,9 +14,10 @@ from fab.format.timestamp import TimeStampFormatter
 
 class DatabaseAdmin(object):
 
-    def __init__(self, admin_command, database_copier, time_stamp_formatter, feedback):
+    def __init__(self, admin_command, database_copier, data_populator, time_stamp_formatter, feedback):
         self.admin_command = admin_command
         self.database_copier = database_copier
+        self.data_populator = data_populator
         self.time_stamp_formatter = time_stamp_formatter
         self.feedback = feedback
 
@@ -23,6 +25,7 @@ class DatabaseAdmin(object):
     def create_instance(database_config, host_controller):
         return DatabaseAdmin(DatabaseAdminCommand.create_instance(database_config, host_controller),
                              DatabaseCopier(database_config, host_controller),
+                             RSRDataPopulator.create_instance(host_controller),
                              TimeStampFormatter(),
                              host_controller.feedback)
 
@@ -45,3 +48,4 @@ class DatabaseAdmin(object):
             self.admin_command.create_user_account(user_name, user_password)
 
         self.admin_command.grant_all_database_permissions_for_user(user_name, database_name)
+        self.data_populator.populate_database(database_name)

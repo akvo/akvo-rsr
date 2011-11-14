@@ -10,6 +10,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.data.population import RSRDataPopulator
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.database.mysql.admincommand import DatabaseAdminCommand
 from fab.database.mysql.commandexecution import DatabaseCopier
@@ -24,10 +25,11 @@ class DatabaseAdminTest(mox.MoxTestBase):
         super(DatabaseAdminTest, self).setUp()
         self.mock_admin_command = self.mox.CreateMock(DatabaseAdminCommand)
         self.mock_database_copier = self.mox.CreateMock(DatabaseCopier)
+        self.mock_data_populator = self.mox.CreateMock(RSRDataPopulator)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.database_admin = DatabaseAdmin(self.mock_admin_command, self.mock_database_copier,
+        self.database_admin = DatabaseAdmin(self.mock_admin_command, self.mock_database_copier, self.mock_data_populator,
                                             self.mock_time_stamp_formatter, self.mock_feedback)
 
     def test_can_create_instance(self):
@@ -101,6 +103,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
         if not user_exists:
             self.mock_admin_command.create_user_account("joe", "secret_pw")
         self.mock_admin_command.grant_all_database_permissions_for_user("joe", "projects_db")
+        self.mock_data_populator.populate_database("projects_db")
         self.mox.ReplayAll()
 
 
