@@ -147,8 +147,8 @@ class UpdateFeed(Feed):
             size = item.photo.size
             return '<![CDATA[<p><a href="%s"><img src="%s" alt="" /></a></p><p>%s</p>]]>' % (
                 item.get_absolute_url(),
-                item.photo.url,
-                item.text
+                item.photo.thumbnail.absolute_url,
+                item.text,
             )
         except:
             return item.text
@@ -187,7 +187,7 @@ class ProjectUpdates(UpdateFeed):
         return Project.objects.get(pk__exact=project_id)
 
     def title(self, obj):
-        return _(u'Akvo RSR-no %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.name}
+        return _(u'Akvo RSR project %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.name}
 
     def description(self, obj):
         return "Project updates for project %(project_name)s" % {'project_name': obj.name}

@@ -196,7 +196,7 @@ class Organisation(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('org_detail', (), {'org_id': self.pk})
+        return ('organisation_main', (), {'org_id': self.pk})
 
     @property
     def primary_location(self):
@@ -984,7 +984,7 @@ class Project(models.Model):
         if updates:
             update = updates[0]
             # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (reverse('project_update', args=[update.project.id, update.id]), update.time,)
+            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url, update.time,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
                 update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
@@ -993,9 +993,9 @@ class Project(models.Model):
         else:
             update_info = "%s<br/><br/>" % (ugettext(u'No update yet'),)
         # links to the project's support partners
-        update_info = "%sSP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.support_partners()]))
+        update_info = "%sSP: %s" % (update_info, ", ".join([u'<a href="%s">%s</a>' % (partner.get_absolute_url(), partner.name) for partner in self.support_partners()]))
         # links to the project's field partners
-        return "%s<br/>FP: %s" % (update_info, ", ".join(['<a href="%s">%s</a>' % (reverse('org_detail', args=[partner.id]), partner.name) for partner in self.field_partners()]))
+        return "%s<br/>FP: %s" % (update_info, ", ".join([u'<a href="%s">%s</a>' % (partner.get_absolute_url(), partner.name) for partner in self.field_partners()]))
 
     latest_update.allow_tags = True
     #no go, results in duplicate projects entries in the admin change list
@@ -1879,7 +1879,7 @@ class ProjectUpdate(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project_update', (), {'project_id': self.project.pk, 'update_id': self.pk})
+        return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
         return u'Project update for %s' % self.project.name

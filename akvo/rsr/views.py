@@ -912,9 +912,7 @@ def updateform(request, project_id,
             update.user = request.user
             update.update_method = 'W'
             update.save()
-            return redirect('project_update',
-                            project_id=update.project.id,
-                            update_id=update.id)
+            return redirect(update.get_absolute_url())
     else:
         form = form_class(instance=update)
     return render_to_response('rsr/project/update_form.html',
