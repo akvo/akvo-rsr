@@ -6,10 +6,12 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
+
 from django.conf.urls.defaults import patterns, url
-from akvo.rsr import views_partner_sites as views
 from django_counter.urls import urlpatterns as counter_urls
 
+from akvo.rsr import views_partner_sites as views
+from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates
 
 urlpatterns = patterns('',
     # Home
@@ -40,9 +42,19 @@ urlpatterns = patterns('',
         views.PartnerListView.as_view(),
         name='partner_list'),
 
-    url(r'^organisation/(?P<partner_id>\d+)/$',
+    url(r'^organisation/(?P<org_id>\d+)/$',
         views.PartnerView.as_view(),
-        name='partner_main'),
+        name='organisation_main'),
+
+    # RSS
+    url(r'^rss/project/(?P<project_id>\d+)/updates/$',
+        ProjectUpdates(),
+        name="rss_project_updates"
+    ),
+    url(r'^rss/organisation/(?P<org_id>\d+)/updates/$',
+        OrganisationUpdates(),
+        name="rss_org_updates"
+    ),
 )
 
 urlpatterns += counter_urls

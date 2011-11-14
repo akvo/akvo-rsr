@@ -111,7 +111,7 @@ class PartnerView(BaseView):
     def get_context_data(self, **kwargs):
         context = super(PartnerView, self).get_context_data(**kwargs)
         context['partner'] = get_object_or_404(
-            Organisation, pk=self.kwargs['partner_id']
+            Organisation, pk=self.kwargs['org_id']
         )
         if context['partner'] != context['organisation'] and \
            context['partner'] not in context['organisation'].partners():

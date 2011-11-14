@@ -20,11 +20,6 @@ admin.autodiscover()
 import oembed
 oembed.autodiscover()
 
-feeds = {
-    'updates': ProjectUpdates,
-    'all-updates': AllProjectUpdates,
-}
-
 urlpatterns = patterns('',
     
     # Front page
@@ -92,7 +87,7 @@ urlpatterns += patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$', 'akvo.rsr.views.updateform', name='project_edit_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', name='project_add_update'),
-    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
+    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='update_main'),
     
     # Maps
     url(r'^rsr/maps/projects/all/$', direct_to_template, {'template': 'rsr/project/global_project_map.html'},
@@ -103,7 +98,7 @@ urlpatterns += patterns('',
     # Organisation
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
-    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name='org_detail'),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name='organisation_main'),
 
     # Account
     url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
