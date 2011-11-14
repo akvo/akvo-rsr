@@ -18,7 +18,7 @@ SysPathVerifier().exit_if_deployment_scripts_home_not_on_syspath()
 
 import fab.tasks.app.deployment
 import fab.tasks.data.retrieval
-import fab.tasks.database.backup
+import fab.tasks.database.rsr
 import fab.tasks.environment.linux.systempackages
 import fab.tasks.environment.python.systempackages
 import fab.tasks.environment.python.virtualenv.rsr

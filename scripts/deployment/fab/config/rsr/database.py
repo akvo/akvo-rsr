@@ -7,21 +7,18 @@
 
 import os
 
-from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.config.values import DatabaseAdminConfigValues, DeploymentHostConfigValues, RSRDatabaseConfigValues
+from fab.config.values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
 
 
 class RSRDatabaseConfig(object):
 
-    def __init__(self, db_admin_config_values, db_config_values, deployment_config):
-        self.admin_user = db_admin_config_values.admin_user
-        self.admin_password = db_admin_config_values.admin_password
-        self.rsr_database_name  = db_config_values.rsr_database_name
-        self.rsr_database_user  = db_config_values.rsr_database_user
+    def __init__(self, db_admin_config_values, db_config_values):
+        self.admin_user             = db_admin_config_values.admin_user
+        self.admin_password         = db_admin_config_values.admin_password
+        self.rsr_database_name      = db_config_values.rsr_database_name
+        self.rsr_database_user      = db_config_values.rsr_database_user
+        self.rsr_database_password  = db_config_values.rsr_database_password
 
     @staticmethod
     def create_instance():
-        deployment_config = RSRDeploymentConfig(None, DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
-
-        return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues(), deployment_config)
+        return RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues())

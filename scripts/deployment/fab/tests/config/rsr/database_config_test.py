@@ -10,7 +10,6 @@ import imp, mox, os
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.rsr.deployment import RSRDeploymentConfig
 
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
@@ -24,9 +23,8 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         super(RSRDatabaseConfigTest, self).setUp()
         self.database_admin_config_values = DatabaseAdminConfigValues()
         self.database_config_values = RSRDatabaseConfigValues()
-        self.deployment_config = RSRDeploymentConfig.create_instance(None)
 
-        self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values, self.deployment_config)
+        self.database_config = RSRDatabaseConfig(self.database_admin_config_values, self.database_config_values)
 
     def test_can_create_instance(self):
         """fab.tests.config.rsr.database_config_test  Can create an RSRDatabaseConfig instance"""
@@ -52,6 +50,11 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
         """fab.tests.config.rsr.database_config_test  Has RSR database user"""
 
         self.assertEqual(self.database_config_values.rsr_database_user, self.database_config.rsr_database_user)
+
+    def test_has_rsr_database_password(self):
+        """fab.tests.config.rsr.database_config_test  Has RSR database password"""
+
+        self.assertEqual(self.database_config_values.rsr_database_password, self.database_config.rsr_database_password)
 
 
 def suite():

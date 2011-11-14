@@ -7,11 +7,14 @@
 
 import os
 
+from fab.host.controller import LocalHostController
+
 
 class FileSystem(object):
     """FileSystem encapsulates file system actions that are common to both local and remote hosts"""
 
     CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
+    DATA_ARCHIVE_EXTENSION  = ".tar.bz2"
 
     def __init__(self, host_controller):
         self.host_controller = host_controller
@@ -46,7 +49,7 @@ class FileSystem(object):
 
     def _create_directory_with(self, run_command, dir_path):
         self.feedback.comment("Creating directory: %s" % dir_path)
-        run_command("mkdir %s" % dir_path)
+        run_command("mkdir -p %s" % dir_path)
         run_command("chmod 755 %s" % dir_path)
 
     def ensure_directory_exists(self, dir_path):
@@ -93,16 +96,30 @@ class FileSystem(object):
     def decompress_code_archive(self, archive_file_name, destination_dir):
         self.host_controller.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
 
-    def compress_directory(self, full_path_to_compress):
-        stripped_path = full_path_to_compress.rstrip("/")
+    def decompress_data_archive(self, archive_file_path, destination_dir):
+        with self.host_controller.cd(destination_dir):
+            self.host_controller.run("tar -xf %s" % archive_file_path)
+
+    def compress_directory(self, dir_path):
+        stripped_path = dir_path.rstrip("/")
         self.feedback.comment("Compressing %s" % stripped_path)
         parent_dir = os.path.dirname(stripped_path)
-        compressed_file_name = os.path.basename(stripped_path)
+        dir_to_compress = os.path.basename(stripped_path)
+        archive_file_name = "%s%s" % (dir_to_compress, self.DATA_ARCHIVE_EXTENSION)
         with self.host_controller.cd(parent_dir):
-            self.host_controller.run("tar -cjf %s.tar.bz2 %s" % (compressed_file_name, compressed_file_name))
+            self.host_controller.run("tar -cjf %s %s" % (archive_file_name, dir_to_compress))
 
     def download_file(self, host_file_path, local_dir):
         self.host_controller.get(host_file_path, local_dir)
 
     def upload_file(self, local_file_path, remote_dir):
         self.host_controller.put(local_file_path, remote_dir, mirror_local_mode=True)
+
+    def most_recent_file_in_directory(self, dir_path):
+        return self.host_controller.run("ls -1tr %s | tail -1" % dir_path)
+
+
+class LocalFileSystem(FileSystem):
+
+    def __init__(self):
+        super(LocalFileSystem, self).__init__(LocalHostController.create_instance())

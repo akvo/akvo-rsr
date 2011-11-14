@@ -3,10 +3,13 @@
 # Requirements for building selenium
 rdflib==3.1.0
 
+# Requirements for building lettuce
+multiprocessing==2.6.2.1
+
 # Modules used for app testing
 unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
-selenium==2.11.1
+selenium==2.12.1
 lettuce==0.1.33
 lettuce_webdriver==0.2

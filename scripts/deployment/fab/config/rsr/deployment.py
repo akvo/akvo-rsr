@@ -26,5 +26,5 @@ class RSRDeploymentConfig(object):
         self.rsr_deployment_home        = os.path.join(self.repo_checkout_home, self.rsr_deployment_dir_name)
 
     @staticmethod
-    def create_instance(deployment_user):
+    def create_instance(deployment_user=None):
         return RSRDeploymentConfig(deployment_user, DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
