@@ -38,18 +38,18 @@ http {
         keepalive_timeout       10;
 
         # Drupal
-        location /web {
-            root /var/www/drupal;
+        location    /web {
+            alias   /var/www/drupal;
         }
 
         # Wordpress
-        location /blog {
-            root /var/www/wordpress;
+        location    /blog {
+            alias   /var/www/wordpress;
         }
 
         # RSR static media
-        location /rsr/media {
-            root /var/www/akvo/mediaroot;
+        location    /rsr/media {
+            alias   /var/www/akvo/mediaroot;
         }
 
         # RSR
