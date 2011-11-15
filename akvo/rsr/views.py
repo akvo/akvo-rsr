@@ -496,8 +496,8 @@ def orglist(request, org_type='all'):
     found_entries = None
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-    org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
-    orgs = orgs.filter(org_query).distinct()
+        org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
+        orgs = orgs.filter(org_query).distinct()
     # Sort query
     order_by = request.GET.get('order_by', 'name')
     last_order = request.GET.get('last_order')
