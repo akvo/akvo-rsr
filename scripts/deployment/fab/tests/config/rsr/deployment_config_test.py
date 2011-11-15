@@ -37,6 +37,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
         """fab.tests.config.rsr.deployment_config_test  Can create RSRDeploymentConfig instance"""
 
         self.assertIsInstance(RSRDeploymentConfig.create_instance(self.deployment_user), RSRDeploymentConfig)
+        self.assertIsInstance(RSRDeploymentConfig.create_instance(), RSRDeploymentConfig)
 
     def test_has_deployment_user_name(self):
         """fab.tests.config.rsr.deployment_config_test  Has deployment user name"""

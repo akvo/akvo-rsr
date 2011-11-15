@@ -128,12 +128,12 @@
         {% for funder in project.fundingpartner_set.all %}
           <tr>
             <td class="small">
-              <a href="{% url 'partner_main' funder.funding_organisation.id %}">
+              <a href="{{funder.funding_organisation.get_absolute_url}}">
                 {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
               </a>
             </td>
             <td class="small">
-              <a href="{% url 'partner_main' funder.funding_organisation.id %}">
+              <a href="{{funder.funding_organisation.get_absolute_url}}">
                 {{funder.funding_organisation}}
               </a><br />
               {% if funder.funding_organisation.primary_location %}

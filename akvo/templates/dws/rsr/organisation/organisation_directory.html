@@ -78,7 +78,7 @@
             			<tr>
 	              			<td>
 	                			<div class="space10">
-	                  				<a href="{% url 'org_detail' org.pk %}">
+	                  				<a href="{{org.get_absolute_url}}">
 	                    				{% org_logo org 100 75 'float:left; margin: 0 10px 10px 0;' %}
 	                    				<p class="nano-lede strong link_blue">{{org.name}}</p> 
 	                  				</a>

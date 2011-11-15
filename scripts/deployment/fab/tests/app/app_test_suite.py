@@ -7,11 +7,13 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.app.db_dump_command_test import DBDumpCommandTest
+from fab.tests.app.django_manage_command_test import DjangoManageCommandTest
 from fab.tests.app.rsr_app_deployer_test import RSRAppDeployerTest
 
 
 def app_suite():
-    return TestSuiteLoader().create_suite_from_classes([RSRAppDeployerTest])
+    return TestSuiteLoader().create_suite_from_classes([RSRAppDeployerTest, DBDumpCommandTest, DjangoManageCommandTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

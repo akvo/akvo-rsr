@@ -368,7 +368,7 @@
       </div>
       <div class="space15">
         <div class="h1_companion">
-          <a href="{% url 'org_detail' focus_org.pk %}">
+          <a href="{{focus_org.get_absolute_url}}">
             {% trans 'Read more about' %} {{ focus_org }}
             <span class="link_triangle">&#x25BA;</span>
           </a>
