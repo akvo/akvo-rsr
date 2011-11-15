@@ -1,5 +1,8 @@
 import multiprocessing
 
 
-bind    = '127.0.0.1:8000'
-workers = multiprocessing.cpu_count() * 2 + 1
+accesslog   = "/var/log/akvo/gunicorn/access.log"
+errorlog    = "/var/log/akvo/gunicorn/error.log"
+
+bind        = "127.0.0.1:8000"
+workers     = multiprocessing.cpu_count() * 2 + 1
