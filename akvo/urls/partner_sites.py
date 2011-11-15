@@ -7,6 +7,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 from __future__ import absolute_import
 
+from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django_counter.urls import urlpatterns as counter_urls
 
@@ -58,3 +59,8 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += counter_urls
+
+urlpatterns += patterns('',
+    (r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+)
+
