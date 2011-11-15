@@ -1059,13 +1059,13 @@ def projectmain(request, project_id):
     site_section: for use in the main nav hilighting
     slider_width: used by the thumbnail image slider
     '''
-    project             = get_object_or_404(Project, pk=project_id)
-    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
-    related             = get_random_from_qs(related, 2)
-    all_updates         = project.project_updates.all().order_by('-time')
+    project = get_object_or_404(Project, pk=project_id)
+    related = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
+    related = get_random_from_qs(related, 2)
+    all_updates = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
-    #slider_width        = (len(updates_with_images) + 1) * 115    
-    comments            = project.projectcomment_set.all().order_by('-time')[:3]
+    #slider_width = (len(updates_with_images) + 1) * 115    
+    comments = project.projectcomment_set.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that 
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
@@ -1081,7 +1081,6 @@ def projectmain(request, project_id):
         admin_change_url = admin_change_url[0] #don't friggin ask why!!!
     else:
         admin_change_url = None
-
     return {
         'project'               : project,
         'p'                     : project, #compatibility with new_look
