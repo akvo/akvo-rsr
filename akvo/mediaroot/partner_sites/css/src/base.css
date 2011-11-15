@@ -279,7 +279,8 @@ td {
   margin: 0;
   padding: 5px;
   font-size: 0.6875em;
-  font-size: 0.5626em;
+  /*font-size:0.5626em;*/
+
   border: none;
   font-weight: bold;
 }
