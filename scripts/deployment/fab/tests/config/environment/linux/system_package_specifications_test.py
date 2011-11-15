@@ -73,6 +73,13 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 
+    def test_has_expected_web_server_package_specifications(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected web server package specifications"""
+
+        expected_packages = ['openssl', 'libpcrecpp0', 'libpcre3', 'libpcre3-dev']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.WEB_SERVER))
+
     def test_has_expected_python_package_dependency_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected Python package dependency package specifications"""
 
@@ -100,6 +107,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
                              SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES,
                              SystemPackageSpecifications.DATABASE_AUTHENTICATION,
                              SystemPackageSpecifications.DATABASE,
+                             SystemPackageSpecifications.WEB_SERVER,
                              SystemPackageSpecifications.ADDITIONAL_TOOLS]
 
         self.assertEqual(expected_packages, SystemPackageSpecifications.ALL_PACKAGES)
