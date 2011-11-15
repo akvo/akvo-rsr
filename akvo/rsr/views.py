@@ -23,7 +23,7 @@ from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import RequestSite
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
@@ -609,10 +609,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         form.fields['username'].widget.attrs = {'class': 'signin_field input'}
         form.fields['password'].widget.attrs = {'class': 'signin_field input'}
     request.session.set_test_cookie()
-    if Site._meta.installed:
-        current_site = Site.objects.get_current()
-    else:
-        current_site = RequestSite(request)
+    current_site = RequestSite(request)
     return render_to_response(template_name, {
         'form': form,
         redirect_field_name: redirect_to,
@@ -1224,7 +1221,6 @@ def templatedev(request, template_name):
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
     
-from django.db.models import Max
 
 def select_project_widget(request, org_id, template=''):
     o = get_object_or_404(Organisation, pk=org_id) #TODO: better error handling for widgets than straight 404

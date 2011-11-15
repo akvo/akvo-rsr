@@ -27,7 +27,6 @@ from workflows.models import State
 from workflows.utils import get_state
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.mail import send_mail, EmailMessage
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
@@ -92,9 +91,9 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
         to_list is a list of email addresses
         subject and message are templates for use as email subject and message body
         subject_context and msg_context are dicts used when renedering the respective templates
-    Site.objects.get_current() is added to both contexts as current_site
+    settings.DOMAIN_NAME is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
     """
-    current_site = Site.objects.get_current()
+    current_site = getattr(settings, 'DOMAIN_NAME', 'akvo.org')
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
     # Email subject *must not* contain newlines
@@ -134,15 +133,14 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site = Site.objects.get_current().domain
-    site_url = 'http://%s/' % site
+    site_url = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'akvo.org')
     base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
-    project_url = 'http://%s%s' % (site, base_project_url)
+    project_url = site_url + base_project_url
     base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
-    project_updates_url = 'http://%s%s' % (site, base_project_updates_url)
+    project_updates_url = site_url + base_project_updates_url
     t = loader.get_template('rsr/project/donate/donation_confirmation_email.html')
     c = Context(dict(invoice=invoice, site_url=site_url,
-        project_url=project_url, project_updates_url=project_updates_url))
+                     project_url=project_url, project_updates_url=project_updates_url))
     message_body = t.render(c)
     subject_field = _(u'Thank you from Akvo.org!')
     from_field = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@akvo.org')
@@ -258,7 +256,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
     notice_type = NoticeType.objects.get(label=label)
 
     protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
-    current_site = Site.objects.get_current()
+    current_site = getattr(settings, 'DOMAIN_NAME', 'akvo.org')
     
     notices_url = u"%s://%s%s" % (
         protocol,
