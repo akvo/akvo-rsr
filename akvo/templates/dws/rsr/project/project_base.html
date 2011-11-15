@@ -76,11 +76,11 @@
 				{% for org in project.lead_partners.distinct %}
 					<div style="margin: 0 8px;"><hr /></div>
 	          		<div class="space15">
-	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" style="padding: 0;">
+	            		<a title="{{org.name}}" href="{{org.get_absolute_url}}" style="padding: 0;">
 	              			{% org_logo org 162 120 %}
 	            		</a>
 	            		<br/>
-	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" class="tiny">{{org.name}}</a>
+	            		<a title="{{org.name}}" href="{{org.get_absolute_url}}" class="tiny">{{org.name}}</a>
 	            		<p class="tiny lt_grey">
 							{% if org.city and org.country %}
 								{{org.city}}, {{org.country}}<br/>
@@ -98,11 +98,11 @@
 				{% for org in project.other_partners.distinct %}
 					<div style="margin: 0 8px;"><hr /></div>
 	          		<div class="space15">
-	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" style="padding: 0;">
+	            		<a title="{{org.name}}" href="{{org.get_absolute_url}}" style="padding: 0;">
 	              			{% org_logo org 162 120 %}
 	            		</a>
 	            		<br/>
-	            		<a title="{{org.name}}" href="{% url 'org_detail' org.id %}" class="tiny">{{org.name}}</a>
+	            		<a title="{{org.name}}" href="{{org.get_absolute_url}}" class="tiny">{{org.name}}</a>
 	            		<p class="tiny lt_grey">
 							{% if org.city and org.country %}
 								{{org.city}}, {{org.country}}<br/>

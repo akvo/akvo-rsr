@@ -21,6 +21,13 @@
       <h1 style="margin-bottom:4px">
         <a href="{% url 'project_main' project.id %}">{{project}}</a>
       </h1>
+      {% if updates %}
+      <div style="float:right; width:15px; text-align:right;">
+        <a href="{% url 'rss_project_updates' project.id %}">
+          <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="{% trans 'RSS' %}" title="{% trans 'RSS' %}">
+        </a>
+      </div>
+      {% endif %}
       <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
       {% block project_content %}{% endblock project_content %}
     </article>
@@ -127,13 +134,13 @@
         <div class="whitebox pad_top20 pad5">
           {% for partner in project.all_partners %}
             <div style="float:left; width:100px;">
-              <a href="{% url 'partner_main' partner.id %}">
+              <a href="{{partner.get_absolute_url}}">
                 {% org_logo partner 90 60 'margin:0;' %}
               </a>
             </div>
             <div style="float:left; width:165px;">
               <p class="small grey" style="margin:0;">
-                <a href="{% url 'partner_main' partner.id %}">{{partner.name}}</a><br />
+                <a href="{{partner.get_absolute_url}}">{{partner.name}}</a><br />
                 {% if partner.primary_location.city %}
                   {{partner.primary_location.city}},
                 {% endif %}

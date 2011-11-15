@@ -6,7 +6,7 @@
 {% block title %}{{project.name}}{% endblock title %}
 
 {% block head %}
-<link rel="alternate" type="application/rss+xml" title="Updates to {{project.name}}" href="/rsr/rss/updates/{{project.id}}/">
+  <link rel="alternate" type="application/rss+xml" title="Updates to {{project.name}}" id="gallery" href="{%  url 'rss_project_updates' project.id %}">
 {% endblock head %}
 
 {% block breadcrum_items %}
@@ -46,7 +46,7 @@
     <h1 style="margin-bottom:5px;">{{project.name}}</h1>
   </a>
   <div style="float:right; width:100px; text-align:right;">
-    <a href="/rsr/rss/updates/{{project.id}}/">
+    <a href="{%  url 'rss_project_updates' project.id %}">
       <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
     </a>
   </div>
@@ -106,12 +106,12 @@
                         {% if update.video %}
                             <div style="float:left; width:175px;">
                                 <p class="small last" style="padding:5px 5px 0 5px;">
-                                    <b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b>
+                                    <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b>
                                     <br/>{{update.text|smart_truncate:50}}
                                 </p>
                             </div>
                             <div style="float:right; width:116px;">
-                                <a class="video_thumb" href="{% url 'project_update' project.id update.id %}">
+                                <a class="video_thumb" href="{{ update.get_absolute_url }}">
                                     <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:116px;">
                                     <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
                                 </a>
@@ -121,19 +121,19 @@
 							{% if update.photo %}
 								<div style="float:left; width:175px;">
 									<p class="small last" style="padding:5px 5px 0 5px;">
-		                  				<b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b>
+		                  				<b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b>
 										<br/>{{update.text|smart_truncate:50}}
 									</p>
 								</div>
 								<div style="float:right; width:116px; height: 100px; text-align:right;">
-		                			<a href="{% url 'project_update' project.id update.id %}">
+		                			<a href="{{ update.get_absolute_url }}">
 		                  				<img src="{% thumbnail update.photo 116x100 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
 		                			</a>
 								</div>
 								<div class="clear"></div>
 							{% else %}
 								<p class="small" style="padding:5px; margin-bottom:5px;">
-									<b><a href="{% url 'project_update' project.id update.id %}">{{update.title}}</a></b><br />
+									<b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b><br />
 									{{update.text|smart_truncate:150}}
 								</p>
 							{% endif %}
@@ -186,13 +186,13 @@
 				<div class="space10">
 					{% for partner in project.all_partners %}
 						<div style="float:left; width:100px;">
-							<a href="{% url 'org_detail' partner.id %}">
+							<a href="{{partner.get_absolute_url}}">
 								{% org_logo partner 90 60 'margin:0;' %}
 							</a>
 						</div>
 						<div style="float:left; width:170px;">
 							<p class="small grey" style="margin:0; padding:=;">
-								<a href="{% url 'org_detail' partner.id %}">{{partner.name}}</a><br />
+								<a href="{{partner.get_absolute_url}}">{{partner.name}}</a><br />
                 {% if partner.primary_location.city %}
                   {{partner.primary_location.city}},
                 {% endif %}

@@ -134,7 +134,7 @@
 						{% if fieldpartners %}
 							<p class="grey" style="margin-top:2px;">{% trans 'Field Partner' %}{{fieldpartners.count|pluralize}}<br />
 							{% for fieldpartner in fieldpartners %}
-								<a href="{% url 'org_detail' fieldpartner.field_organisation.id %}">{{fieldpartner.field_organisation.name}}</a>{% if not forloop.last %},{% endif %}
+								<a href="{{fieldpartner.field_organisation.get_absolute_url}}">{{fieldpartner.field_organisation.name}}</a>{% if not forloop.last %},{% endif %}
 							{% endfor %}
 							</p>
 						{% endif %}						
@@ -143,7 +143,7 @@
 						{% if fundingpartners %}
 							<p class="grey">{% trans 'Funding Partner' %}{{fundingpartners.count|pluralize}}<br />
 							{% for fundingpartner in fundingpartners %}
-								<a href="{% url 'org_detail' fundingpartner.funding_organisation.id %}">{{fundingpartner.funding_organisation.name}}</a>{% if not forloop.last %},{% endif %}
+								<a href="{{fundingpartner.funding_organisation.get_absolute_url}}">{{fundingpartner.funding_organisation.name}}</a>{% if not forloop.last %},{% endif %}
 							{% endfor %}
 							</p>
 						{% endif %}						
@@ -152,7 +152,7 @@
 						{% if supportpartners %}
 							<p class="grey">{% trans 'Support Partner' %}{{supportpartners.count|pluralize}}<br />
 							{% for supportpartner in supportpartners %}
-								<a href="{% url 'org_detail' supportpartner.support_organisation.id %}">{{supportpartner.support_organisation.name}}</a>{% if not forloop.last %},{% endif %}
+								<a href="{{supportpartner.support_organisation.get_absolute_url}}">{{supportpartner.support_organisation.name}}</a>{% if not forloop.last %},{% endif %}
 							{% endfor %}
 							</p>
 						{% endif %}						

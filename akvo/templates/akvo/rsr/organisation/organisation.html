@@ -5,6 +5,10 @@
 
 {% block title %}{{o.name}}{% endblock title %}
 
+{% block head %}
+  <link rel="alternate" type="application/rss+xml" title="{% trans 'Project updates for projects partnered by {{o.name}}' %}" id="gallery" href="{%  url 'rss_org_updates' o.id %}">
+{% endblock head %}
+
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="{% url 'rsr_org_list' %}"><span>{% trans 'Organisations' %}</span></a></li>
@@ -15,6 +19,11 @@
 
 <div class="two_column_left">
 	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
+  <div style="float:right; width:100px; text-align:right;">
+    <a href="{%  url 'rss_org_updates' o.id %}">
+      <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+    </a>
+  </div>
 	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.primary_location.country}}</p>{% endif %}
 	<div class="white_box">
 		<div class="space20">
@@ -249,7 +258,7 @@
 					{% if org_partners %}
 						{% for partner in org_partners %}
 						<li>
-							<a href="{% url 'org_detail' partner.id %}">{{partner.name}}</a>
+							<a href="{{partner.get_absolute_url}}">{{partner.name}}</a>
 						</li>
 						{% endfor %}
 					{% else %}

@@ -282,14 +282,14 @@
               <td>
                 <p class="td-text">
                   {% for partner in project.all_partners %}
-                    <a href="{% url 'org_detail' partner.id %}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                    <a href="{{partner.get_absolute_url}}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
                   {% endfor %}
                 </p>
               </td>
               <td>
                 <p class="td-text">
                     {% if project.latest_update_id %}
-                      <a href="{% url 'project_update' project.pk project.latest_update_id %}">{{project.latest_update_date|string_to_date|date:"d M Y"}}</a>
+                      <a href="{% url 'update_main' project.pk project.latest_update_id %}">{{project.latest_update_date|string_to_date|date:"d M Y"}}</a>
                     {% else %}
                       {% trans 'Not yet' %}
                     {% endif %}

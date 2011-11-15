@@ -266,7 +266,7 @@
               <td>
                 <p class="td-text">
                   {% for partner in project.project_partners.all %}
-                    <a href="{% url 'org_detail' partner.partner.id %}">{{partner.partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                    <a href="{{partner.partner.get_absolute_url}}">{{partner.partner}}</a>{% if not forloop.last %}<br />{% endif %}
                   {% endfor %}
                 </p>
               </td>
