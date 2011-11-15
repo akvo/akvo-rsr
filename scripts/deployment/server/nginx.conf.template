@@ -1,49 +1,50 @@
-worker_processes 1;
+worker_processes    1;
+user                www-data www-data;
 
-user www-data www-data;
+error_log   /var/log/nginx/error.log;
+pid         /var/run/nginx.pid;
 
 events {
-    worker_connections 1024;
-    accept_mutex off;
+    worker_connections  1024;
+    accept_mutex        off;
 }
 
 http {
-    include mime.types;
-    default_type application/octet-stream;
-    access_log /tmp/nginx.access.log combined;
-    sendfile on;
+    include         mime.types;
+    default_type    application/octet-stream;
+    access_log      /var/log/nginx/access.log combined;
+    sendfile        on;
 
     upstream gunicorn {
-        # Conncet to local RSR gunicorn instance
+        # Connect to local RSR gunicorn instance
         server 127.0.0.1:8000 fail_timeout=0;
     }
 
     # Compression
     # text/html files are gzipped by default if gzip is on
-    gzip on;
-    gzip_buffers 16 8k;
+    gzip            on;
+    gzip_buffers    16 8k;
     gzip_comp_level 2;
-    gzip_disable "msie6";
-    gzip_proxied any;
-    gzip_types text/css text/javascript text/plain text/xml
-               application/atom+xml application/x-javascript
-               application/xml application/xml+rss;
+    gzip_disable    "msie6";
+    gzip_proxied    any;
+    gzip_types      text/css text/javascript text/plain text/xml
+                    application/atom+xml application/x-javascript
+                    application/xml application/xml+rss;
 
     server {
-        listen 80 default;
-        client_max_body_size 4G;
-        server_name _;
-
-        keepalive_timeout 5;
+        listen                  80 default;
+        client_max_body_size    4G;
+        server_name             server_name.akvo.org;
+        keepalive_timeout       10;
 
         # Drupal
         location /web {
-            root /var/www/akvo/drupal;
+            root /var/www/drupal;
         }
 
         # Wordpress
         location /blog {
-            root /var/www/akvo/wordpress;
+            root /var/www/wordpress;
         }
 
         # RSR static media
@@ -53,9 +54,9 @@ http {
 
         # RSR
         location / {
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header Host $http_host;
-            proxy_redirect off;
+            proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header    Host            $http_host;
+            proxy_redirect      off;
 
             if (!-f $request_filename) {
                 proxy_pass http://gunicorn;
