@@ -186,7 +186,7 @@
 				<div style="float: left; width:540px;">
 					<div class="space10">
 						<p style="margin:0;">
-							<a href="{% url 'org_detail' o.id %}">
+							<a href="{{o.get_absolute_url}}">
                 {% org_logo o 100 75 'float: left; margin-right: 10px;' %}
 								{% comment %}
 									<img src="{% thumbnail o.logo 100x75 autocrop,upscale,sharpen %}" alt="" />
@@ -194,7 +194,7 @@
 								{% endcomment %}
 							</a>
 							<span class="small" style="font-size:1em;">
-								<a href="{% url 'org_detail' o.id %}">{{o.name}}</a>
+								<a href="{{o.get_absolute_url}}">{{o.name}}</a>
 							</span><br />
 							<span class="grey small" style="">{{o.long_name}}</span>
 						</p>

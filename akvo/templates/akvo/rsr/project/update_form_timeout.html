@@ -19,6 +19,6 @@
   </p>
   <ul>
     <li><a href="{% url 'project_main' project.id %}">{% trans "Return to project page" %}</a></li>
-    <li><a href="{% url 'project_update' project.id update.id %}">{% trans "Return to update page" %}</a></li>
+    <li><a href="{{ update.get_absolute_url }}">{% trans "Return to update page" %}</a></li>
   </ul>
 {% endblock message_body %}

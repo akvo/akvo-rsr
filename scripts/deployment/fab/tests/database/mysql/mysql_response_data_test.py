@@ -9,7 +9,7 @@ import mox, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.database.mysql.command import MySQLResponseData
+from fab.database.mysql.commandexecution import MySQLResponseData
 
 
 class MySQLResponseDataTest(unittest2.TestCase):

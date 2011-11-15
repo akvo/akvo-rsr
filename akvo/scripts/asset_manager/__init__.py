@@ -11,4 +11,4 @@ if settings.DEBUG:
         if retcode < 0:
             print >>sys.stderr, "Symlinking the githook was terminated by signal", -retcode
     except OSError, e:
-        print 'Could not setup git hooks. Got error: %s' %s
+        print 'Could not setup git hooks. Got error: %s' % e.message

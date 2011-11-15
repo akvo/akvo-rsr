@@ -82,6 +82,11 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.deployment_config_values.virtualenvs_home, "virtualenvs home")
 
+    def test_deploymenthostconfigvalues_has_data_archives_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has data archives home"""
+
+        self._verify_expected_config_value(self.deployment_config_values.data_archives_home, "data archives home")
+
     def test_databaseadminconfigvalues_has_admin_user(self):
         """fab.tests.config.config_values_test  DatabaseAdminConfigValues has admin user"""
 
@@ -101,6 +106,11 @@ class ConfigValuesTest(unittest2.TestCase):
         """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database user"""
 
         self._verify_expected_config_value(self.rsr_database_config_values.rsr_database_user, "RSR database user")
+
+    def test_rsrdatabaseconfigvalues_has_database_password(self):
+        """fab.tests.config.config_values_test  RSRDatabaseConfigValues has RSR database password"""
+
+        self._verify_expected_config_value(self.rsr_database_config_values.rsr_database_password, "RSR database password")
 
     def _verify_expected_config_value(self, config_value, config_value_description):
         self.assertTrue(len(config_value) > 0, "Expected %s config value" % config_value_description)
