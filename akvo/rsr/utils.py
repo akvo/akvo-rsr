@@ -93,7 +93,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
         subject_context and msg_context are dicts used when renedering the respective templates
     settings.DOMAIN_NAME is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
     """
-    current_site = getattr(settings, 'DOMAIN_NAME', 'akvo.org')
+    current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
     # Email subject *must not* contain newlines
@@ -133,7 +133,7 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site_url = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'akvo.org')
+    site_url = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
     project_url = site_url + base_project_url
     base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
@@ -256,7 +256,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
     notice_type = NoticeType.objects.get(label=label)
 
     protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
-    current_site = getattr(settings, 'DOMAIN_NAME', 'akvo.org')
+    current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     
     notices_url = u"%s://%s%s" % (
         protocol,
