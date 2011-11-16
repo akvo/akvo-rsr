@@ -254,12 +254,15 @@ def project_list(request, slug='all'):
         queryset = org.published_projects()
     elif slug:
         focus_area = get_object_or_404(FocusArea, slug=slug)
-    if slug == 'all':
-        queryset = Project.objects.published()
-    else:
-        queryset = Project.objects.published().filter(categories__focus_area=focus_area)
-        queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
+        if slug == 'all':
+            queryset = Project.objects.published()
+        else:
+            queryset = Project.objects.published().filter(categories__focus_area=focus_area)
+
+    queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
+
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
+
     return {
         'filter': filtered_projects,
         'site_section': 'projects',

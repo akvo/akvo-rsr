@@ -181,7 +181,7 @@
 	{% for operator in project.fieldpartner_set.all %}
 	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
 											'field',
-											'{% url 'org_detail' operator.field_organisation.id %}');
+											'{{operator.field_organisation.get_absolute_url}}');
 	{% endfor %}
 	
 	

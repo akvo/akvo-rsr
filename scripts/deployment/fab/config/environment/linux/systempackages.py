@@ -69,7 +69,7 @@ class SystemPackageSpecifications(object):
                  {'name': 'python-minimal',         'version': '2.5.2-0ubuntu1'},
                  {'name': 'python',                 'version': '2.5.2-0ubuntu1'}]
 
-    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',    'version': '2.6.31.dfsg-2ubuntu1.6'}]
+    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',        'version': '2.6.31.dfsg-2ubuntu1.6'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
                                  {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
@@ -78,7 +78,7 @@ class SystemPackageSpecifications(object):
                                  {'name': 'libpam-modules',     'version': '0.99.7.1-5ubuntu6.4'},
                                  {'name': 'login',              'version': '1:4.0.18.2-1ubuntu2.2'},
                                  {'name': 'passwd',             'version': '1:4.0.18.2-1ubuntu2.2'},
-                                 {'name': 'adduser',               'version': '3.105ubuntu1'}]
+                                 {'name': 'adduser',            'version': '3.105ubuntu1'}]
 
     DATABASE =  [{'name': 'mysql-common',           'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'libmysqlclient15off',    'version': '5.0.51a-3ubuntu5.8'},
@@ -95,6 +95,11 @@ class SystemPackageSpecifications(object):
                  {'name': 'mysql-server-5.0',       'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'python-support',         'version': '0.7.5ubuntu1'},
                  {'name': 'python-mysqldb',         'version': '1.2.2-5ubuntu1'}]
+
+    WEB_SERVER =    [{'name': 'openssl',            'version': '0.9.8g-4ubuntu3.13'},
+                     {'name': 'libpcrecpp0',        'version': '7.4-1ubuntu2.1'},
+                     {'name': 'libpcre3',           'version': '7.4-1ubuntu2.1'},
+                     {'name': 'libpcre3-dev',       'version': '7.4-1ubuntu2.1'}]
 
     ADDITIONAL_TOOLS =  [{'name': 'libcomerr2',         'version': '1.40.8-2ubuntu2'},
                          {'name': 'libidn11',           'version': '1.1-1'},
@@ -115,4 +120,4 @@ class SystemPackageSpecifications(object):
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
                      PYTHON, PYTHON_PACKAGE_DEPENDENCIES, DATABASE_AUTHENTICATION,
-                     DATABASE, ADDITIONAL_TOOLS]
+                     DATABASE, WEB_SERVER, ADDITIONAL_TOOLS]
