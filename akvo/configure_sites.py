@@ -14,6 +14,7 @@ def remove_old_sites():
         site.delete()
         print 'Removed site %s.' % site.domain
 
+
 def create_new_sites():
     sites = ((1, 'www'), (2, 'test'), (3, 'test2'),
              (4, 'gabriel'), (5, 'daniel'), (6, 'paul'),
@@ -28,3 +29,4 @@ def create_new_sites():
 if __name__ == '__main__':
     remove_old_sites()
     create_new_sites()
+    print 'Success!'
