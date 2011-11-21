@@ -1,0 +1,36 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+
+{% block title %}{% trans "Projects" %} - {% endblock title %}
+
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li class="last_breadcrum_item">{% trans "Sign-in" %}</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+<section class="whitebox pad20 marg_bottom40">
+  <h1>{% trans "Sign in with your Akvo account" %}</h1>
+
+  {% if form.non_field_errors %}
+    {{ form.non_field_errors }}   
+  {% endif %}
+
+  <form action="{% url 'sign_in' %}" method='post'>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.REQUEST.next }}" />
+    
+    {% for field in form %}
+      <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+      </div>
+    {%  endfor %}
+    <p><input type="submit" value="Back"></p>
+    <p><input type="submit" value="Sign in"></p>
+  </form>
+</section>
+{% endblock content %}

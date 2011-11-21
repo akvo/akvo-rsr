@@ -56,6 +56,17 @@ urlpatterns = patterns('',
         OrganisationUpdates(),
         name="rss_org_updates"
     ),
+
+    # Auth
+    url(r'^sign-in/$',
+        views.SignInView.as_view(),
+        name="sign_in"
+    ),
+    
+    url(r'^sign-out/$',
+        views.signout,
+        name='sign_out'
+    ),
 )
 
 urlpatterns += counter_urls
