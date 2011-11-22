@@ -156,6 +156,9 @@ class UpdateFeed(Feed):
     def item_pubdate(self, item):
         return item.time
 
+    def item_author_name(self, item):
+        return item.user.get_full_name()
+
     def item_credit(self, item):
         return item.photo_credit
 
@@ -179,6 +182,7 @@ class UpdateFeed(Feed):
             return kwargs
         except:
             return {}
+
 
 class ProjectUpdates(UpdateFeed):
     """feed with all updates for a particular project
