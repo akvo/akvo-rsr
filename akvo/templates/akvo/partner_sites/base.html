@@ -28,7 +28,7 @@
         {% if logo %}
           <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
         {% else %}
-          <img src=" {% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
+          <img src="{% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
         {% endif %}
       </a>
       <span class="small marg_left20">
