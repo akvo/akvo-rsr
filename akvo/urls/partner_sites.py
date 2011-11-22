@@ -50,23 +50,20 @@ urlpatterns = patterns('',
     # RSS
     url(r'^rss/project/(?P<project_id>\d+)/updates/$',
         ProjectUpdates(),
-        name="rss_project_updates"
-    ),
+        name="rss_project_updates"),
+    
     url(r'^rss/organisation/(?P<org_id>\d+)/updates/$',
         OrganisationUpdates(),
-        name="rss_org_updates"
-    ),
+        name="rss_org_updates"),
 
     # Auth
-    url(r'^sign-in/$',
+    url(r'^rsr/signin/$',
         views.SignInView.as_view(),
-        name="sign_in"
-    ),
+        name="sign_in"),
     
-    url(r'^sign-out/$',
+    url(r'^rsr/signout/$',
         views.signout,
-        name='sign_out'
-    ),
+        name='sign_out'),
 )
 
 urlpatterns += counter_urls
