@@ -16,21 +16,39 @@
   <h1>{% trans "Sign in with your Akvo account" %}</h1>
 
   {% if form.non_field_errors %}
-    {{ form.non_field_errors }}   
+    {% for error in form.non_field_errors %}
+      <p class="red small">{{error}}</p>
+    {% endfor %}
   {% endif %}
 
-  <form action="{% url 'sign_in' %}" method='post'>
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.REQUEST.next }}" />
-    
-    {% for field in form %}
-      <div class="fieldWrapper">
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
+  <form action="{% url 'sign_in' %}" method='post' name="auth_form">
+    <fieldset>
+      {% for field in form %}
+        <div class="clearfix">
+          {{field.label_tag}}
+          <div class="input">
+            {{field}}
+            {% if field.errors %}
+              <span class="red small">{{field.errors.0}}</span> 
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="clearfix">
+        <div class="input marg_top15">
+          <a class="yellow awesome" style="color:#fff" href="{{next}}">{% trans 'Cancel' %}</a> &nbsp;
+          <a class="aqua awesome" style="color:#fff" href="javascript:document.auth_form.submit()">{% trans 'Sign in' %}</a>
+        </div>
       </div>
-    {%  endfor %}
-    <p><input type="submit" value="Back"></p>
-    <p><input type="submit" value="Sign in"></p>
+    
+    <p style="visibility:hidden;"><input type="submit" value="Sign in"></p>
+    {% csrf_token %}
+    {# To make sure the next parameter works on both first load and on form errors #}
+    {% if request.POST.next %}
+      <input type="hidden" name="next" value="{{request.POST.next}}" />
+    {% else %}
+      <input type="hidden" name="next" value="{{next}}" />
+    {% endif %}
   </form>
 </section>
 {% endblock content %}

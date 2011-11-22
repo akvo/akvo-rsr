@@ -104,6 +104,7 @@ ASSET_BUNDLES = {
             'tabs.css',
             'utils.css',
             'buttons.css',
+            'forms.css',
             ],
     },
     'partner_sites_script': {
