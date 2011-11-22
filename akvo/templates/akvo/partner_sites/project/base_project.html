@@ -29,7 +29,7 @@
       {% block project_aside_funding %}
         <div class="money_blue_background" style="padding:10px; color:#fff;">
           {{project.show_status_large}}<br />
-          <div class="clearfix marg_top20">
+          <div class="clearfix marg_top20 marg_bottom10">
             <div style="float:left; width:145px; background-color:organe;">
               <h3 style="color:#96FFFF;">{% trans "Funding" %}</h3>
               {% partner_sites_funding_box project %}
@@ -50,6 +50,11 @@
               </p>
             </div>
           </div>
+          {% block project_aside_funding_link %}
+          <a href="{% url 'project_funding' project.id %}" class="tiny" style="color:yellow">
+            {% trans "See funding and milestone details" %} &#x25BA;
+          </a>
+          {% endblock project_aside_funding_link %}
         </div>
       {% endblock project_aside_funding %}
       
