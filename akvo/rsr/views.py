@@ -652,7 +652,9 @@ def register2(request,
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_user = form.save()
+            import pdb
+            pdb.set_trace()
+            new_user = form.save(request)
             return HttpResponseRedirect('/rsr/accounts/register/complete/')
     else:
         form = form_class(initial={'org_id': org_id})
