@@ -5,36 +5,58 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import imp, os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.environment.python.packagetools import PackageInstallationToolsConfig
+CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
+imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
+
+from config_values import PythonConfigValues, SharedConfigValues
+
 from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.values import PythonConfigValues, SharedConfigValues
 from fab.environment.python.systempackageinstaller import PackageInstallationPaths
 
 
 class PackageInstallationPathsTest(unittest2.TestCase):
+
+    def setUp(self):
+        super(PackageInstallationPathsTest, self).setUp()
+
+        self.python_config_values = PythonConfigValues()
+        self.codebase_config = RSRCodebaseConfig(SharedConfigValues().repository_branch)
+
+        self.installation_paths = PackageInstallationPaths(self.python_config_values, self.codebase_config)
 
     def test_can_create_packageinstallationpaths_instance(self):
         """fab.tests.environment.python.package_installation_paths_test  Can create PackageInstallationPaths instance"""
 
         self.assertIsInstance(PackageInstallationPaths.create_instance(), PackageInstallationPaths)
 
-    def test_initialiser_sets_package_installation_paths(self):
-        """fab.tests.environment.python.package_installation_paths_test  Initialiser sets package installation paths"""
+    def test_has_package_download_dir(self):
+        """fab.tests.environment.python.package_installation_paths_test  Has package download directory"""
 
-        python_config_values = PythonConfigValues()
-        package_tools_config = PackageInstallationToolsConfig(python_config_values.pip_version)
-        codebase_config = RSRCodebaseConfig(SharedConfigValues().repository_branch)
+        self.assertEqual(self.python_config_values.python_package_download_dir, self.installation_paths.package_download_dir)
 
-        installation_paths = PackageInstallationPaths.create_instance()
+    def test_has_distribute_setup_url(self):
+        """fab.tests.environment.python.package_installation_paths_test  Has distribute package setup URL"""
 
-        self.assertEqual(installation_paths.package_download_dir, python_config_values.python_package_download_dir)
-        self.assertEqual(installation_paths.distribute_setup_url, package_tools_config.distribute_setup_url)
-        self.assertEqual(installation_paths.pip_setup_url, package_tools_config.pip_setup_url)
-        self.assertEqual(installation_paths.system_requirements_file_url, codebase_config.system_requirements_file_url)
+        self.assertEqual("http://python-distribute.org/distribute_setup.py", self.installation_paths.distribute_setup_url)
+
+    def test_has_explicit_pip_version(self):
+        """fab.tests.environment.python.package_installation_paths_test  Has explicit pip version"""
+
+        self.assertEqual("1.0.2", PackageInstallationPaths.PIP_VERSION)
+
+    def test_has_pip_setup_url(self):
+        """fab.tests.environment.python.package_installation_paths_test  Has pip setup URL"""
+
+        self.assertEqual("https://raw.github.com/pypa/pip/1.0.2/contrib/get-pip.py", self.installation_paths.pip_setup_url)
+
+    def test_has_system_requirements_file_url(self):
+        """fab.tests.environment.python.package_installation_paths_test  Has system requirements file URL"""
+
+        self.assertEqual(self.codebase_config.system_requirements_file_url, self.installation_paths.system_requirements_file_url)
 
 
 def suite():

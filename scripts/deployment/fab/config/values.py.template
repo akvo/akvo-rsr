@@ -14,7 +14,6 @@ class SharedConfigValues(object):
 class PythonConfigValues(object):
 
     def __init__(self):
-        self.pip_version                    = "1.0.2"
         self.python_package_download_dir    = "/var/tmp/python/packages"
 
 

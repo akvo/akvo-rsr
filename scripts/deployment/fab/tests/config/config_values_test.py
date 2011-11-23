@@ -32,11 +32,6 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(SharedConfigValues().repository_branch, "repository branch")
 
-    def test_pythonconfigvalues_has_pip_version(self):
-        """fab.tests.config.config_values_test  PythonConfigValues has pip version"""
-
-        self._verify_expected_config_value(self.python_config_values.pip_version, "pip version")
-
     def test_pythonconfigvalues_has_python_package_download_directory(self):
         """fab.tests.config.config_values_test  PythonConfigValues has Python package download directory"""
 
