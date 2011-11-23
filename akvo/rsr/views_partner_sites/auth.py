@@ -44,7 +44,7 @@ class SignInView(PartnerSitesMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SignInView, self).get_context_data(**kwargs)
-        context['next'] = self.request.GET.get('next', '/') 
+        context['next'] = self.request.GET.get('next', '/')
         return context
 
     def render_to_response(self, context):
@@ -58,9 +58,11 @@ class SignInView(PartnerSitesMixin, FormView):
         """Helper method that builds the url to the sign in page on the app
         domain. Next querystring variables are passed on and https support
         is honored."""
-        url = 'http://%s.%s%s' % (self.request.partner_site.hostname, \
-                                 settings.APP_DOMAIN_NAME,
-                                 self.request.get_full_path())
+        hostname = self.request.partner_site.hostname
+        app_domain = settings.APP_DOMAIN_NAME
+        request_path = self.request.get_full_path()
+        url = 'http://%s.%s%s' % (hostname, app_domain, request_path)
+ 
         if getattr(settings, 'HTTPS_SUPPORT', True):
             return url.replace('http://', 'https://')
         return url
