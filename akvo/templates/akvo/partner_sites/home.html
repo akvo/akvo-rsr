@@ -9,7 +9,7 @@
   {% if request.partner_site.about_image %}
     <style type="text/css" media="screen">
       #about_box {
-        background: transparent url({{MEDIA_URL}}{{ request.partner_site.about_image }}) no-repeat;
+        background: transparent url({{MEDIA_URL|iriencode}}{{ request.partner_site.about_image|iriencode }}) no-repeat;
       }
     </style>
   {% endif %}
