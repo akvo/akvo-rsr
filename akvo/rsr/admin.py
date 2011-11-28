@@ -578,12 +578,16 @@ class ProjectAdmin(admin.ModelAdmin):
                 # location and benchmark inlines
                 if not "_saveasnew" in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
-                if prefixes[prefix] != 1:
-                    prefix = "%s-%s" % (prefix, prefixes[prefix])
-                    formset = FormSet(data=request.POST, files=request.FILES,
-                                      instance=new_object,
-                                      save_as_new="_saveasnew" in request.POST,
-                                      prefix=prefix, queryset=inline.queryset(request))
+                    if prefixes[prefix] != 1:
+                        prefix = "%s-%s" % (prefix, prefixes[prefix])
+                    formset = FormSet(
+                        data=request.POST,
+                        files=request.FILES,
+                        instance=new_object,
+                        save_as_new="_saveasnew" in request.POST,
+                        prefix=prefix,
+                        queryset=inline.queryset(request)
+                    )
                     formsets.append(formset)
             if all_valid(formsets) and form_validated:
                 if not new_object.found:
