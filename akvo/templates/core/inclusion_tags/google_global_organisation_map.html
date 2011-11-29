@@ -36,7 +36,7 @@
 	        var center = new google.maps.LatLng(0,0);
 
 	        {% for organisation in organisations %}
-                var organisation_{{ organisation.id }}_url = "{% url 'org_detail' org_id=organisation.id %}";
+                var organisation_{{ organisation.id }}_url = "{{organisation.get_absolute_url}}";
 	            var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude }};
 	            var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude }};
 	            var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);
@@ -83,7 +83,7 @@
 	                    '<a href="' + organisation_{{ organisation.id }}_url + '">' +
 		                '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
 						'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
-						'{{organisation.primary_location.country.get_continent_display}}<br />' +
+						'{{organisation.primary_location.country.continent}}<br />' +
 						'{{organisation.primary_location.country}}' +
 						'{% if organisation.primary_location.city and organisation.primary_location.country %},{% endif %} {{organisation.primary_location.city}}</p></div>' +
 		                '</div>';

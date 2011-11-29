@@ -16,10 +16,9 @@
   {% endif %}
 {% endblock title %}
 
-
 {% block breadcrum_items %}
 	{{block.super}}
-	<li><a href="{% url 'project_list' %}"><span>{% trans 'Projects' %}</span></a></li>
+	<li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
 	{% if org %}
 		{% if request.GET.q %}
 			<li id="last_breadcrum_item">
@@ -53,6 +52,9 @@
 
 {% block maincontent %}
 
+{% autosort filter.qs as sorted_projects %}
+{% autopaginate sorted_projects 20 5 as projects %}
+
 <div class='container'>
 	<div class='column span-18 last'>
     {% if org %}
@@ -79,115 +81,31 @@
     {% endif %}
     <div class="clear"></div>
 		<h1 class="h0">
-			{{projects.count}}
-      {% blocktrans count projects.count as project_count %}
+			{{sorted_projects.count}}
+      {% blocktrans count sorted_projects.count as project_count %}
         project
       {% plural %}
         projects
       {% endblocktrans %}
 		</h1>
-		
+
 		<form action="." method="get" accept-charset="utf-8" name="filter_form">
 			<div id="project_search" class="span-18">
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
-						<input id="q" name="q" 
-							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" 
-							value="{{ query_string|escape }}">
 
-						<select name="continent" id="continent" size="1" style="margin-left:40px;width:120px; margin-top:4px;">
-							<option value="all">{% trans 'All continents' %}</option>
-							{% for continent in continents %}
-							<option value="{{continent.0}}"
-								{% if continent.0 = selected_continent %} SELECTED {% endif %}>
-								{{continent.1}}
-							</option>
-							{% endfor %}
-						</select>
-						&nbsp;
-						<select name="country" id="country" size="1" style="width:120px; margin-left:10px; margin-top:4px;">
-							<option id="all_country" value="all">{% trans 'All countries' %}</option>
-							{% if selected_continent == 'all' %}	
-								{% for country in countries %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
-							{% if selected_continent == 1 %}
-								{% for country in countries_in_africa %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
-							{% if selected_continent == 2 %}
-								{% for country in countries_in_asia %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
-							{% if selected_continent == 3 %}
-								{% for country in countries_in_australia %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
-							{% if selected_continent == 4 %}
-								{% for country in countries_in_europe %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
-							{% if selected_continent == 5 %}
-								{% for country in countries_in_north_america %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
-							{% if selected_continent == 6 %}
-								{% for country in countries_in_south_america %}
-								<option value="{{country.id}}"
-									{% if country.id = selected_country %} SELECTED {% endif %}>
-									{{country.country_name}}
-								</option>
-								{% endfor %}
-							{% endif %}
+            {{ filter.form.name }}
+            {{ filter.form.continent }}
+            {{ filter.form.locations__country }}
+            {{ filter.form.organisation }}
 
-						</select>
-						
-						<select name="organisation" id="organisation" size="1" style="margin-left:40px;width:150px; margin-top:4px;">
-							<option value="all">{% trans 'All partners' %}</option>
-							{% for organisation in organisations  %}
-								<option value="{{organisation.id}}">{{organisation.name}}</option>
-							{% endfor %}
-						</select>
 						<a id="filterButton" class="blue awesome" style="float:right;"
 							href="javascript:document.filter_form.submit();">
 							<span>{% trans 'Filter' %}</span>
 						</a>
-						{% comment %}
-						<a id="filterButton" class="blue awesome" style="float:right;"
-							href="javascript:document.filter_form.submit();" onclick="this.blur();">
-							<span>{% trans 'Filter' %}</span>
-						</a>
-						{% endcomment %}
-						<input type="submit" value="Filter" 
-							style="display:none;">
-						{% comment %}
-						<input type="submit" value="Filter" 
-							style="display:inline; margin-left:15px; margin-top:20px;">
-						{% endcomment %}
+
+            <br/><a href="{% url 'project_list' slug %}" class="nano" style="float:right; margin-top: 4px; margin-right: 3px">Reset filter</a>
+            {% hidden_inputs_from_qs sort dir %}
 
 						<div id="q_help" style="padding-left:25px; margin-top:10px;">
 							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">
@@ -198,12 +116,123 @@
 				</div>
 			</div>
 		</form>
-	
+
+{#		<form action="." method="get" accept-charset="utf-8" name="filter_form">#}
+{#			<div id="project_search" class="span-18">#}
+{#				<div class="round" style="border: 1px solid #ccc;">#}
+{#					<div class="space15">#}
+{#						<input id="q" name="q" #}
+{#							type="search" style="margin-left:20px;margin-top:4px;width:300px;display:inline;" #}
+{#							value="{{ query_string|escape }}">#}
+{##}
+{#						<select name="continent" id="continent" size="1" style="margin-left:40px;width:120px; margin-top:4px;">#}
+{#							<option value="all">{% trans 'All continents' %}</option>#}
+{#							{% for continent in continents %}#}
+{#							<option value="{{continent.0}}"#}
+{#								{% if continent.0 = selected_continent %} SELECTED {% endif %}>#}
+{#								{{continent.1}}#}
+{#							</option>#}
+{#							{% endfor %}#}
+{#						</select>#}
+{#						&nbsp;#}
+{#						<select name="country" id="country" size="1" style="width:120px; margin-left:10px; margin-top:4px;">#}
+{#							<option id="all_country" value="all">{% trans 'All countries' %}</option>#}
+{#							{% if selected_continent == 'all' %}	#}
+{#								{% for country in countries %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{#							{% if selected_continent == 1 %}#}
+{#								{% for country in countries_in_africa %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{#							{% if selected_continent == 2 %}#}
+{#								{% for country in countries_in_asia %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{#							{% if selected_continent == 3 %}#}
+{#								{% for country in countries_in_australia %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{#							{% if selected_continent == 4 %}#}
+{#								{% for country in countries_in_europe %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{#							{% if selected_continent == 5 %}#}
+{#								{% for country in countries_in_north_america %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{#							{% if selected_continent == 6 %}#}
+{#								{% for country in countries_in_south_america %}#}
+{#								<option value="{{country.id}}"#}
+{#									{% if country.id = selected_country %} SELECTED {% endif %}>#}
+{#									{{country.name}}#}
+{#								</option>#}
+{#								{% endfor %}#}
+{#							{% endif %}#}
+{##}
+{#						</select>#}
+{#						#}
+{#						<select name="organisation" id="organisation" size="1" style="margin-left:40px;width:150px; margin-top:4px;">#}
+{#							<option value="all">{% trans 'All partners' %}</option>#}
+{#							{% for organisation in organisations  %}#}
+{#								<option value="{{organisation.id}}">{{organisation.name}}</option>#}
+{#							{% endfor %}#}
+{#						</select>#}
+{#						<a id="filterButton" class="blue awesome" style="float:right;"#}
+{#							href="javascript:document.filter_form.submit();">#}
+{#							<span>{% trans 'Filter' %}</span>#}
+{#						</a>#}
+{#						{% comment %}#}
+{#						<a id="filterButton" class="blue awesome" style="float:right;"#}
+{#							href="javascript:document.filter_form.submit();" onclick="this.blur();">#}
+{#							<span>{% trans 'Filter' %}</span>#}
+{#						</a>#}
+{#						{% endcomment %}#}
+{#						<input type="submit" value="Filter" #}
+{#							style="display:none;">#}
+{#						{% comment %}#}
+{#						<input type="submit" value="Filter" #}
+{#							style="display:inline; margin-left:15px; margin-top:20px;">#}
+{#						{% endcomment %}#}
+{##}
+{#						<div id="q_help" style="padding-left:25px; margin-top:10px;">#}
+{#							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">#}
+{#								{% trans 'Filter on project name or subtitle' %}#}
+{#							</p>#}
+{#						</div>#}
+{#					</div>#}
+{#				</div>#}
+{#			</div>#}
+{#		</form>    #}
+{#	#}
+
 		<div class='column span-18 last' style="margin-top:15px;">
-      	{% autosort projects %}
-      	{% autopaginate projects 10 %}
-      		<div class="white_box">
-        		{% paginate %}
+      <div class="white_box">
+        {% paginate %}
         <table id="projects">
           <colgroup class="name_col"></colgroup>
           <colgroup span="6" class="colgroup"></colgroup>
@@ -211,7 +240,7 @@
             <th>
               {% anchor name Name %}
             </th>
-            <th>{% anchor locations__country Location %}</th>
+            <th>{% anchor locations__country__name Location %}</th>
             <th>
               {% anchor status Status %}
             </th>
@@ -219,7 +248,7 @@
                 <span class="small">Partners</span>
             </th>
             <th>
-              {% anchor latest_update 'Updated' %}
+              {% anchor latest_update_date 'Updated' %}
             </th>
             <th>
                 <span class="small">Focus area</span>
@@ -245,7 +274,7 @@
               </td>
               <td>
                 <p class="td-text">{{project.primary_location.country}}</p>
-                <p class="td-text">{{project.primary_location.country.get_continent_display}}</p>
+                <p class="td-text">{{project.primary_location.country.continent}}</p>
               </td>
               <td>
                 <p class="td-text green">{{project.show_status}}</p>
@@ -253,14 +282,14 @@
               <td>
                 <p class="td-text">
                   {% for partner in project.all_partners %}
-                    <a href="{% url 'org_detail' partner.id %}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                    <a href="{{partner.get_absolute_url}}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
                   {% endfor %}
                 </p>
               </td>
               <td>
                 <p class="td-text">
-                    {% if project.latest_update %}
-                      <a href="{% url 'project_updates' project.id %}#{{project.update_id}}">{{project.latest_update|string_to_date|date:"d M Y"}}</a>
+                    {% if project.latest_update_id %}
+                      <a href="{% url 'update_main' project.pk project.latest_update_id %}">{{project.latest_update_date|string_to_date|date:"d M Y"}}</a>
                     {% else %}
                       {% trans 'Not yet' %}
                     {% endif %}
@@ -269,7 +298,7 @@
               <td>
                 <p class="td-text">
                     {% for area in project.focus_areas %}
-                        <a href="{% url 'focus_area' area.slug %}">{{area.name}}</a><br/>
+                        <a href="{% url 'project_list' area.slug %}">{{area.name}}</a><br/>
                     {% endfor %}
                 </p>
               </td>
@@ -278,19 +307,19 @@
 					{# --- funding start --- #}
 					<div style="text-align:center;">
 						<p class="small" style="margin:0;">
-							{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}
+							{{project.get_currency_display|safe}} {{project.total_budget|round|intcomma}}
 						</p>
 					</div>
 					<div class="fundingbox-progress-bar" style="height:5px;">
-						{% if project.budget_total %}
-						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}%"> 
+						{% if project.total_budget %}
+						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %}%">
 						</div>
 						{% endif %}
 					</div>
 					<div style="text-align:center;">
 						<p class="tiny grey" style="margin:0;">
               {# |add:1 truncates so we get truc(funding_total_given+1) #}
-							{% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %} %
+							{% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %} %
 						</p>
 					</div>
 					<div style="text-align:center;">
@@ -355,37 +384,37 @@
 
 		var all_countries = [];
 		{% for country in countries %}
-			all_countries[all_countries.length] = new Country('{{country.country_name}}',{{country.id}});
+			all_countries[all_countries.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_africa = [];
 		{% for country in countries_in_africa %}
-			countries_in_africa[countries_in_africa.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_africa[countries_in_africa.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_asia = [];
 		{% for country in countries_in_asia %}
-			countries_in_asia[countries_in_asia.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_asia[countries_in_asia.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_australia = [];
 		{% for country in countries_in_australia %}
-			countries_in_australia[countries_in_australia.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_australia[countries_in_australia.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_europe = [];
 		{% for country in countries_in_europe %}
-			countries_in_europe[countries_in_europe.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_europe[countries_in_europe.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_north_america = [];
 		{% for country in countries_in_north_america %}
-			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_north_america[countries_in_north_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var countries_in_south_america = [];
 		{% for country in countries_in_south_america %}
-			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.country_name}}',{{country.id}});
+			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
 		var selected_continent = jQ('#continent').val();		

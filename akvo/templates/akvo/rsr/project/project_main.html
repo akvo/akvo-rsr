@@ -4,6 +4,8 @@
 
 
 {% block head %}
+{{block.super}}
+
 <style type="text/css">
 	div#gallery_box_slider {width:{{slider_width}}px;}
 </style>
@@ -47,7 +49,7 @@
 				<h2 class="black">{% trans 'Location' %}</h2>
 				<p class="grey">
 					{% if p.primary_location %}
-					{{ p.primary_location.country.get_continent_display }}, {{p.primary_location.country}}<br />{{p.primary_location.city}}
+					{{ p.primary_location.country.continent }}, {{p.primary_location.country}}<br />{{p.primary_location.city}}
 					<br />
 					{{ p.primary_location.latitude }}, {{ p.primary_location.longitude }}	
 					{% endif %}

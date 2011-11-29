@@ -1,0 +1,18 @@
+Dev tools for Akvo development
+------------------------------
+1)  Install a recent 2.6 or 2.7 Mac OS X Python build: http://python.org/download/releases
+    -> this will add /Library/Frameworks/Python.framework/Versions/2.6/bin or similar to your PATH environment variable
+
+2)  Setup Git and Github access:
+    a) Install Git command-line tools: http://git-scm.com/download
+    b) Create a Github account for yourself at http://github.com
+    c) Request Github access to the relevant Akvo repositories from one of the Akvo Dev team members
+    d) Follow the setup notes at: http://help.github.com/mac-set-up-git
+    e) Install the Github for Mac application: http://mac.github.com
+
+3)  Install Homebrew: https://github.com/mxcl/homebrew/wiki/installation
+
+4)  Install the following packages with Homebrew:
+    a) brew install git-flow  # used as part of the Akvo dev process
+    b) brew install jpeg      # used for building the Python Image Library (PIL)
+    c) brew install gmp       # for building some extensions in pycrypto

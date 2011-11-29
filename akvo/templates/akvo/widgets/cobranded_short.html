@@ -75,7 +75,7 @@
         </div>
 		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
 		<div id="project_location">
-			<p class="smallFont"><span class="capz">{{project.primary_location.country.get_continent_display}}</span><br />
+			<p class="smallFont"><span class="capz">{{project.primary_location.country.continent}}</span><br />
 				{{project.primary_location.country}}, {{project.primary_location.city}}
 			</p>
 		</div>
@@ -101,7 +101,7 @@
 				{% for sponsor in project.sponsorpartner_set.all %}
 					{% if forloop.first %}
 					<p class="smallFont grey left">{% trans 'Presented by' %}<br />
-					<a class="smallFont" href="{% url 'org_detail' sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation.name}}</a></p>
+					<a class="smallFont" href="{{sponsor.sponsor_organisation.get_absolute_url}}">{{sponsor.sponsor_organisation.name}}</a></p>
 					{% endif%}
 				{% endfor %}
 			{% else %}
@@ -109,7 +109,7 @@
 					{% for funder in project.fundingpartner_set.all %}
 						{% if forloop.first %}
 						<p class="smallFont grey left">{% trans 'Underwritten by' %}<br />
-						<a class="smallFont" href="{% url 'org_detail' funder.funding_organisation.id %}">{{funder.funding_organisation.name}}</a></p>
+						<a class="smallFont" href="{{funder.funding_organisation.get_absolute_url}}">{{funder.funding_organisation.name}}</a></p>
 						{% endif%}
 					{% endfor %}
 				{% else %}
@@ -117,7 +117,7 @@
 						{% for supporter in project.supportpartner_set.all %}
 							{% if forloop.first %}
 							<p class="smallFont grey left">{% trans 'Supported by' %}<br />
-							<a href="{% url 'org_detail' supporter.support_organisation.id %}">{{supporter.support_organisation.name}}</a></p>
+							<a href="{{supporter.support_organisation.get_absolute_url}}">{{supporter.support_organisation.name}}</a></p>
 							{% endif%}
 						{% endfor %}
 					{% else %}
@@ -125,7 +125,7 @@
 						{% for operator in project.fieldpartner_set.all %}
 							{% if forloop.first %}
 							<p class="smallFont grey left">{% trans 'Implemented by' %}<br />
-							<a href="{% url 'org_detail' operator.field_organisation.id %}">{{operator.field_organisation.name}}</a></p>
+							<a href="{{operator.field_organisation.get_absolute_url}}">{{operator.field_organisation.name}}</a></p>
 							{% endif%}
 						{% endfor %}
 						{% endif %}
@@ -160,14 +160,14 @@
 		
 	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
 											'sponsor',
-											'{% url 'org_detail' sponsor.sponsor_organisation.id %}');											
+											'{{sponsor.sponsor_organisation.get_absolute_url}}');
 	{% endfor %}
 	
 	{% for funder in project.fundingpartner_set.all %}
 	
 	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
 											'funding',
-											'{% url 'org_detail' funder.funding_organisation.id %}');
+											'{{funder.funding_organisation.get_absolute_url}}');
 	{% endfor %}
 	
 	{% for supporter in project.supportpartner_set.all %}
@@ -175,13 +175,13 @@
 
 	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
 											'support',
-											'{% url 'org_detail' supporter.support_organisation.id %}');
+											'{{supporter.support_organisation.get_absolute_url}}');
 	{% endfor %}
 
 	{% for operator in project.fieldpartner_set.all %}
 	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
 											'field',
-											'{% url 'org_detail' operator.field_organisation.id %}');
+											'{{operator.field_organisation.get_absolute_url}}');
 	{% endfor %}
 	
 	

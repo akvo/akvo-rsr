@@ -2,6 +2,12 @@
 {% load i18n rsr_tags rsr_filters webdesign thumbnail counter_tags google_maps cache humanize %}
 {% load url from future %}
 
+{% block style %}
+  {% asset_bundle 'dws_style14' %}
+  <!--[if IE 6]>
+    {% asset_bundle 'dws_ie6_style' %}
+  <![endif]-->
+{% endblock style %}
 
 {% block title %}
   - {{project.name}}
@@ -44,7 +50,7 @@
   
               {% if update.photo %}
                 <div class="column span-2">
-                  <a href="{% url 'project_update' update.project.id update.id %}">
+                  <a href="{{ update.get_absolute_url }}">
                     <img width="120" height="120" src="{% thumbnail update.photo 120x120 crop sharpen %}" alt="{{update.photo_caption}}"/>
                   </a>
                 </div>
@@ -52,12 +58,12 @@
               {% else %}
                 <div class="column span-9 last" style="width: 578px; position: relative; height: 120px;">
               {% endif %}
-                  <h4><a href="{% url 'project_update' update.project.id update.id %}">{{update.title}}</a></h4>
+                  <h4><a href="{{ update.get_absolute_url }}">{{update.title}}</a></h4>
                   <p>
                     {{update.text|safe|smart_truncate:200}}
                   </p>
                   <div style="right:0; bottom: 0; position: absolute; display: block;">
-                    <p class="nano-lede" style="margin: 0;"><a href="{% url 'project_update' update.project.id update.id %}">{% trans 'Read full update' %} <span class="link_triangle">&#x25BA;</span></a></p>
+                    <p class="nano-lede" style="margin: 0;"><a href="{{ update.get_absolute_url }}">{% trans 'Read full update' %} <span class="link_triangle">&#x25BA;</span></a></p>
                   </div>
                 </div>
                 <div class="clear"></div>

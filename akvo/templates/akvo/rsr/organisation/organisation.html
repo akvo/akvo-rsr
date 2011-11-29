@@ -5,6 +5,10 @@
 
 {% block title %}{{o.name}}{% endblock title %}
 
+{% block head %}
+  <link rel="alternate" type="application/rss+xml" title="{% trans 'Project updates for projects partnered by {{o.name}}' %}" id="gallery" href="{%  url 'rss_org_updates' o.id %}">
+{% endblock head %}
+
 {% block breadcrum_items %}
 {{block.super}}
 <li><a href="{% url 'rsr_org_list' %}"><span>{% trans 'Organisations' %}</span></a></li>
@@ -14,8 +18,22 @@
 {% block maincontent %}
 
 <div class="two_column_left">
-	<h1 style="margin-bottom:0px;">{{o.name}}</h1>
-	{% if o.long_name %}<p class="grey">{{o.long_name}}, {{o.primary_location.country}}</p>{% endif %}
+  {% if o.long_name %}
+    <h1 style="margin-bottom:0px;">{{o.name}}</h1>
+    <div style="float:right; width:20px; text-align:right;">
+      <a href="{%  url 'rss_org_updates' o.id %}">
+        <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+      </a>
+    </div>
+    <p class="grey">{{o.long_name}}, {{o.primary_location.country}}</p>
+  {% else %}
+    <div style="float:right; width:20px; text-align:right; margin-top: 10px;">
+      <a href="{%  url 'rss_org_updates' o.id %}">
+        <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+      </a>
+    </div>
+    <h1>{{o.name}}</h1>
+  {% endif %}
 	<div class="white_box">
 		<div class="space20">
 			<div style="float:left; width:196px; height:280px">
@@ -93,7 +111,7 @@
 			<h2>{% trans 'Projects in Akvo' %}</h2>
 		</div>
 		<div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-			<a class="small" href="{% url 'project_list_for_org' o.id %}">{% trans 'See all' %} &#x25BA;</a>
+			<a class="small" href="{% url 'project_list' o.id %}">{% trans 'See all' %} &#x25BA;</a>
 		</div>
 		<div class="clear"></div>
 		<div class="white_box">
@@ -249,7 +267,7 @@
 					{% if org_partners %}
 						{% for partner in org_partners %}
 						<li>
-							<a href="{% url 'org_detail' partner.id %}">{{partner.name}}</a>
+							<a href="{{partner.get_absolute_url}}">{{partner.name}}</a>
 						</li>
 						{% endfor %}
 					{% else %}

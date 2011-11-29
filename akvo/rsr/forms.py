@@ -14,11 +14,12 @@ from django import forms
 #from django import oldforms
 #from django.core import validators
 #from django.core.validators import alnum_re
-from django.conf import settings
+#from django.conf import settings
 #from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import get_current_site
 from django.db.models import get_model
+from django.template.defaultfilters import slugify
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -154,7 +155,7 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         return self.cleaned_data
     
     
-    def save(self):
+    def save(self, request):
         """
         Create the new ``User`` and ``RegistrationProfile``, and
         returns the ``User``.
@@ -168,12 +169,12 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         recording the org_id associated with the user
         
         """
-        site = Site.objects.get(id=settings.SITE_ID)
+        site = get_current_site(request)
         new_user =  RegistrationProfile.objects.create_inactive_user(
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            site=site
+            site=site,
         )
         new_user.first_name = first_name=self.cleaned_data['first_name']
         new_user.last_name  = last_name=self.cleaned_data['last_name']
@@ -316,3 +317,13 @@ class ProjectUpdateForm(forms.ModelForm):
                 path = '/watch?v=%s' % path.lstrip('/')
                 data = urlunsplit((scheme, netloc, path, query, fragment))
         return data
+
+class PartnerSiteAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'partnersite')
+
+    def clean_hostname(self):
+        hostname = slugify(self.cleaned_data['hostname'])
+        if hostname == 'www':  # TODO: test for other reserved hostnames
+            raise forms.ValidationError(_('www is a reserved hostname. Please choose another hostname.'))
+        return hostname

@@ -27,7 +27,6 @@ from workflows.models import State
 from workflows.utils import get_state
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.mail import send_mail, EmailMessage
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
@@ -92,9 +91,9 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
         to_list is a list of email addresses
         subject and message are templates for use as email subject and message body
         subject_context and msg_context are dicts used when renedering the respective templates
-    Site.objects.get_current() is added to both contexts as current_site
+    settings.DOMAIN_NAME is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
     """
-    current_site = Site.objects.get_current()
+    current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
     # Email subject *must not* contain newlines
@@ -134,28 +133,29 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 def send_donation_confirmation_emails(invoice_id):
     invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site = Site.objects.get_current()
-    site_url = 'http://%s/' % site
+    site_url = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
-    project_url = 'http://%s%s' % (site, base_project_url)
+    project_url = site_url + base_project_url
     base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
-    project_updates_url = 'http://%s%s' % (site, base_project_updates_url)
+    project_updates_url = site_url + base_project_updates_url
     t = loader.get_template('rsr/project/donate/donation_confirmation_email.html')
     c = Context(dict(invoice=invoice, site_url=site_url,
-        project_url=project_url, project_updates_url=project_updates_url))
+                     project_url=project_url, project_updates_url=project_updates_url))
     message_body = t.render(c)
-    subject_field, from_field = _(u'Thank you from Akvo.org!'), settings.DEFAULT_FROM_EMAIL
+    subject_field = _(u'Thank you from Akvo.org!')
+    from_field = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@akvo.org')
     bcc_field = [invoice.notification_email]
-    if invoice.user:
-        to_field = [invoice.user.email]
-    else:
-        to_field = [invoice.email]
+    to_field = [invoice.get_email]
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send()
     
 
-def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2):
+def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
+    """get a number of blog posts from wordpress
+    category_id is the numerical ID of the category to filter on
+    limit is the number of posts
+    """
     from django.db import connections
     try:
         cursor = connections[connection].cursor()
@@ -166,36 +166,36 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         site_url = 'http://akvo.org/blog'
     
     try:
-        cursor.execute("""
-            SELECT * FROM posts, term_relationships
-                WHERE post_status != 'draft'
-                    AND post_status != 'auto-draft'
-                    AND post_type = 'post'
-                    AND term_taxonomy_id = %d
-                    and ID = object_id
-                ORDER By post_date DESC LIMIT %d
-            """ % (new_section_id, limit)
-        )
+        if category_id:
+            cursor.execute("""
+                SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users, term_relationships
+                    WHERE post_status != 'draft'
+                        AND post_status != 'auto-draft'
+                        AND post_type = 'post'
+                        AND term_taxonomy_id = %d
+                        and posts.ID = object_id
+                        AND posts.post_author = users.ID
+                    ORDER By post_date DESC LIMIT %d
+                """ % (category_id, limit)
+            )
+        else:
+            cursor.execute("""
+                SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users
+                    WHERE post_status != 'draft'
+                        AND post_status != 'auto-draft'
+                        AND post_type = 'post'
+                        AND posts.post_author = users.ID
+                    ORDER By post_date DESC LIMIT %d
+                """ % limit
+            )
         rows = cursor.fetchall()
-        
-        news_post = {'title': rows[0][5], 'url': '%s/?p=%s' % (site_url, rows[0][0],)}
-    
-        cursor.execute("""
-            SELECT * FROM posts, users
-                WHERE post_status != 'draft'
-                    AND post_status != 'auto-draft'
-                    AND post_type = 'post'
-                    AND posts.post_author = users.ID
-                ORDER By post_date DESC LIMIT %d
-            """ % limit
-        )
-        rows = cursor.fetchall()
+
     except:
-        return None, None
+        return None
 
     posts = []
     for post in rows:
-        post_content_soup = BeautifulSoup(post[4])
+        post_content_soup = BeautifulSoup(post[2])
 
         # Find first image in post
         try:
@@ -207,17 +207,13 @@ def wordpress_get_lastest_posts(connection='wpdb', new_section_id=None, limit=2)
         try:
             post_p = post_content_soup('p')[0].contents
         except:
-            # If no paragraph then use the raw content
-            post_p = post_content_soup
-
-        # Create one string
-        p = ''
-        for text in post_p:
-            p = '%s%s' % (p, text)
+            # no p-tags
+            # if text has no name attr then it's not inside a tag, i.e. it's text!
+            post_p = ''.join([text for text in post_content_soup if not getattr(text, 'name', False)])
         
-        posts.append({ 'title': post[5], 'image': post_img, 'text': p, 'date': post[2], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[33]})
+        posts.append({ 'title': post[1], 'image': post_img, 'text': post_p, 'date': post[3], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[4]})
 
-    return news_post, posts
+    return posts
 
 def get_random_from_qs(qs, count):
     "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
@@ -260,7 +256,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
     notice_type = NoticeType.objects.get(label=label)
 
     protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
-    current_site = Site.objects.get_current()
+    current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
     
     notices_url = u"%s://%s%s" % (
         protocol,

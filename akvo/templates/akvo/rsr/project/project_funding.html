@@ -120,23 +120,23 @@
 			{% for funder in project.fundingpartner_set.all %}
 				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
 					<div style="float:left; width:140px;">
-						<a href="{% url 'org_detail' funder.funding_organisation.id %}">
+						<a href="{{funder.funding_organisation.get_absolute_url}}">
 		                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
 		                </a>							
 					</div>
 					<div style="float:left; width:250px; margin-left:20px;">
 						<p class="small">
-							<a href="{% url 'org_detail' funder.funding_organisation.id %}">
+							<a href="{{funder.funding_organisation.get_absolute_url}}">
                 {% with funder.funding_organisation as f_org %}
-                  {% with  funder.funding_organisation.primary_location as f_org_loc %}
+                  {% with f_org.primary_location as f_org_loc %}
                     {{f_org}}</a><br />
-                    {% if f_org_loc.primary_location.city %}
-                      {{f_org_loc.primary_location.city}},
+                    {% if f_org_loc.city %}
+                      {{f_org_loc.city}},
                     {% endif %}
-                    {% if f_org_loc.primary_location.state %}
-                      {{f_org_loc.primary_location.state}}, 
+                    {% if f_org_loc.state %}
+                      {{f_org_loc.state}},
                     {% endif %}
-                    {{f_org_loc.primary_location.country}}
+                    {{f_org_loc.country}}
                   {% endwith %}
                 {% endwith %}
 						</p>

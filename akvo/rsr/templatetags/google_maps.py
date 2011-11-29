@@ -73,3 +73,14 @@ def google_organisation_projects_map(org, map_type, width, height, zoom):
                             height=height,
                             zoom=zoom)
     return template_context
+
+@register.inclusion_tag('inclusion_tags/google_global_project_map.html')
+def google_queryset_projects_map(queryset, map_type, width, height, zoom):
+    marker_icon = _PROJECT_MARKER_ICON
+    template_context = dict(map_type=map_type,
+                            marker_icon=marker_icon,
+                            projects=queryset,
+                            width=width,
+                            height=height,
+                            zoom=zoom)
+    return template_context

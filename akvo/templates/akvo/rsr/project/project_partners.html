@@ -35,13 +35,13 @@
 				{% for fp in project.fieldpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">							
-							<a href="{% url 'org_detail' fp.field_organisation.id %}">
+							<a href="{{fp.field_organisation.get_absolute_url}}">
 			          {% org_logo fp.field_organisation 90 60 %}
 			        </a>
 						</div>
 						<div style="float:left; width:300px; margin-left:20px;">
 							<p style="margin:0">
-							<a href="{% url 'org_detail' fp.field_organisation.id %}">{{fp.field_organisation}}</a><br />
+							<a href="{{fp.field_organisation.get_absolute_url}}">{{fp.field_organisation}}</a><br />
 							{{fp.field_organisation.primary_location.city}}, {{fp.field_organisation.primary_location.state}}, {{fp.field_organisation.primary_location.country}}
 							</p>
 						</div>
@@ -61,13 +61,13 @@
 				{% for sp in project.supportpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
-							<a href="{% url 'org_detail' sp.support_organisation.id %}">
+							<a href="{{sp.support_organisation.get_absolute_url}}">
                 {% org_logo sp.support_organisation 90 60 %}
               </a>							
 						</div>
 						<div style="float:left; width:300px; margin-left:20px;">
 							<p style="margin:0">
-							<a href="{% url 'org_detail' sp.support_organisation.id %}">{{sp.support_organisation}}</a><br />
+							<a href="{{sp.support_organisation.get_absolute_url}}">{{sp.support_organisation}}</a><br />
 							{{sp.support_organisation.primary_location.city}}, {{sp.support_organisation.primary_location.state}}, {{sp.support_organisation.primary_location.country}}
 							</p>
 						</div>
@@ -86,13 +86,13 @@
 				{% for sponsor in project.sponsorpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">						
 						<div style="float:left; width:100px;">
-							<a href="{% url 'org_detail' sponsor.sponsor_organisation.id %}">
+							<a href="{{sponsor.sponsor_organisation.get_absolute_url}}">
                 {% org_logo sponsor.sponsor_organisation 90 60 %}
               </a>
 						</div>
 						<div style="float:left; width:300px; margin-left:20px;">
 							<p style="margin:0">
-							<a href="{% url 'org_detail' sponsor.sponsor_organisation.id %}">{{sponsor.sponsor_organisation}}</a><br />
+							<a href="{{sponsor.sponsor_organisation.get_absolute_url}}">{{sponsor.sponsor_organisation}}</a><br />
 							{{sponsor.sponsor_organisation.primary_location.city}}, {{sponsor.sponsor_organisation.primary_location.state}}, {{sponsor.sponsor_organisation.primary_location.country}}
 							</p>
 						</div>
@@ -111,13 +111,13 @@
 				{% for funder in project.fundingpartner_set.all %}
 					<div style=" border-bottom:1px solid #ccc; padding:10px;">
 						<div style="float:left; width:100px;">
-							<a href="{% url 'org_detail' funder.funding_organisation.id %}">
+							<a href="{{funder.funding_organisation.get_absolute_url}}">
 			          {% org_logo funder.funding_organisation 90 60 %}
 			        </a>							
 						</div>
 						<div style="float:left; width:300px; margin-left:20px;">
 							<p style="margin:0">
-							<a href="{% url 'org_detail' funder.funding_organisation.id %}">{{funder.funding_organisation}}</a><br />
+							<a href="{{funder.funding_organisation.get_absolute_url}}">{{funder.funding_organisation}}</a><br />
 							{{funder.funding_organisation.primary_location.city}}, {{funder.funding_organisation.primary_location.state}}, {{funder.funding_organisation.primary_location.country}}
 							</p>
 						</div>

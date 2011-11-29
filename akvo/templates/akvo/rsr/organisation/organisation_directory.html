@@ -160,14 +160,14 @@
 						{% else %}
 							<a href="{% url 'rsr_org_list_filtered' 'org_type' %}
 						{% endif %}
-							{% if request_get.order_by == 'country__country_name' %}
+							{% if request_get.order_by == 'country__name' %}
 								{% if request_get.sort == 'asc' %}
-									{% addparam "order_by" "locations__country__country_name" "sort" "desc" "last_order" order_by %}
+									{% addparam "order_by" "locations__country__name" "sort" "desc" "last_order" order_by %}
 								{% else %}
-									{% addparam "order_by" "locations__country__country_name" "sort" "asc" "last_order" order_by %}
+									{% addparam "order_by" "locations__country__name" "sort" "asc" "last_order" order_by %}
 								{% endif %}						
 							{% else %}
-								{% addparam "order_by" "locations__country__country_name" "sort" "asc" "last_order" order_by %}
+								{% addparam "order_by" "locations__country__name" "sort" "asc" "last_order" order_by %}
 							{% endif %}
 						">{% trans 'Location' %}</a>
 					</p>
@@ -186,7 +186,7 @@
 				<div style="float: left; width:540px;">
 					<div class="space10">
 						<p style="margin:0;">
-							<a href="{% url 'org_detail' o.id %}">
+							<a href="{{o.get_absolute_url}}">
                 {% org_logo o 100 75 'float: left; margin-right: 10px;' %}
 								{% comment %}
 									<img src="{% thumbnail o.logo 100x75 autocrop,upscale,sharpen %}" alt="" />
@@ -194,7 +194,7 @@
 								{% endcomment %}
 							</a>
 							<span class="small" style="font-size:1em;">
-								<a href="{% url 'org_detail' o.id %}">{{o.name}}</a>
+								<a href="{{o.get_absolute_url}}">{{o.name}}</a>
 							</span><br />
 							<span class="grey small" style="">{{o.long_name}}</span>
 						</p>
@@ -210,14 +210,14 @@
 					<div class="space10">
 						<p class="small" style="margin-bottom:0;">
 							{{o.primary_location.country}}<br />
-							<span class="grey">{{ o.primary_location.country.get_continent_display }}</span>
+							<span class="grey">{{ o.primary_location.country.continent }}</span>
 						</p>
 					</div>
 				</div>
 				<div style="float: left; width:100px;">
 					<div class="space10">
 						<p class="small">
-						<a href="{% url 'project_list_for_org' o.id %}">{{o.published_projects.count}}</a>
+						<a href="{% url 'project_list' o.id %}">{{o.published_projects.count}}</a>
 						</p>
 					</div>
 				</div>

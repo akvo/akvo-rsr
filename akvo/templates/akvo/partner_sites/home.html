@@ -1,0 +1,186 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n google_maps rsr_tags webdesign thumbnail sorting_tags pagination_tags rsr_filters humanize %}
+{% load url from future %}
+
+
+{% block title %}{% trans "Projects" %} - {% endblock title %}
+
+{% block head %}
+  {% if request.partner_site.about_image %}
+    <style type="text/css" media="screen">
+      #about_box {
+        background: transparent url({{MEDIA_URL|iriencode}}{{ request.partner_site.about_image|iriencode }}) no-repeat;
+      }
+    </style>
+  {% endif %}
+{% endblock head %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li class="last_breadcrum_item">{% trans "Projects" %}</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+  {% autosort filtered_projects.qs as sorted_projects %}
+  {% autopaginate sorted_projects 20 5 as project_list %}
+
+  <div class="two_col_left whitebox fixed_height_250px">
+    <div id="about_box">
+      {{request.partner_site.about_box|safe}}
+      <div class="clear"></div>
+    </div>
+  </div>
+  <div class="two_col_right whitebox">
+    {% google_queryset_projects_map sorted_projects 'dynamic' 470 250 1 %}
+  </div>
+  <div class="clear"></div>
+  <h1 class="marg_top20">{% trans "Find projects" %}</h1>
+  <div class="marg_top20">
+    <div class="greybox pad10 marg_bottom10">
+      <form action="." method="get" accept-charset="utf-8" name="filter_form" class="marg_bottom0">
+        <div class="marg0; pad0">
+          {{ filtered_projects.form.name }}
+          {{ filtered_projects.form.continent }}
+          {{ filtered_projects.form.locations__country }}
+          {{ filtered_projects.form.organisation }}
+          <a id="filterButton" class="blue awesome" style="float:right; color:#fff"
+            href="javascript:document.filter_form.submit();">
+            <span>{% trans 'Filter' %}</span>
+          </a>
+        </div>
+        {% hidden_inputs_from_qs sort dir %}
+      </form>
+      <div class="clear"></div>
+      <div style="width:45%; float:left;">
+        <span class="tiny grey marg_left20">
+          {% trans 'Filter on project name or subtitle' %} 
+        </span>
+      </div>
+      <div style="width:45%; float:right; text-align:right;">
+        <a href="{% url 'home' %}" class="tiny">
+          {% trans "Reset filter" %}
+        </a>
+      </div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="table_top">
+      {% blocktrans count sorted_projects.count as project_count %}
+        {{ project_count }} project
+      {% plural %}
+        {{ project_count }} projects
+      {% endblocktrans %}
+      
+      {# TODO: this bock may need revisiting to support different languages ways of ordering stuff #}
+      {% if search_country %}
+        {% blocktrans %}
+          in {{ search_country }}
+        {% endblocktrans %}
+      {% else %}
+        {% if search_continent %}
+          {% blocktrans %}
+            in {{ search_continent }}
+          {% endblocktrans %}
+        {% endif %}
+      {% endif %}
+      {% if search_organisation %}
+        {% blocktrans %}
+          in partnership with {{ search_organisation }}
+        {% endblocktrans %}
+      {% endif %}
+      {% if filtered_projects.form.data.name %}
+        {% blocktrans with keywords=filtered_projects.form.data.name %}
+          filtered by keywords: {{ keywords }}
+        {% endblocktrans %}
+      {% endif %}
+      {% paginate %}
+    </div>
+
+    <table id="projects" class="marg_bottom0 full_width white_back">
+      <tr>
+        <th class="normal">{% anchor name Name %}</th>
+        <th class="normal">{% trans "Location" %}</th>
+        {#<th class="normal">{% anchor locations__country Location %}</th>#}
+        <th class="normal">{% anchor status Status %}</th>
+        <th class="normal">{% trans "Partners" %}</th>
+        <th class="normal">{% anchor latest_update_date 'Updated' %}</th>
+        <th class="normal">{% anchor funds_needed Funding %}</th>
+      </tr>
+      {% for project in project_list %}
+        <tr>
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Name column #}
+            <div class="space10">
+              <a href="{% url 'project_main' project.id %}">
+                {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0; height:90px;' %}
+              </a>
+              <a href="{% url 'project_main' project.id %}" style="margin-bottom:0">
+                  {{project.name}}
+              </a>
+              <p class="tiny grey">
+                {{project.project_plan_summary|capfirst|smart_truncate:250}}
+              </p> 
+            </div>
+          </td>
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Location column #}
+            <p class="small">{{project.primary_location.country}}</p>
+            <p class="small">{{project.primary_location.country.continent}}</p>
+          </td>
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Status column #}
+            <p class="small green">{{project.show_status}}</p>
+          </td>
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Partner column #}
+            <p class="small">
+              {% for partner in project.all_partners %}
+                <a href="{{partner.get_absolute_url}}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
+              {% endfor %}
+            </p>
+          </td>
+          <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Updates column #}
+            <p class="small">
+              {% if project.latest_update_id %}
+                <a href="{% url 'update_main' project.id project.latest_update_id %}">
+                  {{project.latest_update_date|string_to_date|date:"d M Y"}}
+                </a>
+              {% else %}
+                {% trans 'Not yet' %}
+              {% endif %}
+            </p>
+          </td>
+          <td class="no_right_border {% if forloop.last %}no_bottom_border{% endif %}"> {# Funding column #}
+            <p class="small marg_bottom0" style="text-align:center;">
+              {{project.get_currency_display|safe}} {{project.total_budget|round|intcomma}}
+            </p>
+            <div class="fundingbox-progress-bar" style="height:5px; width:60px;">
+              {% if project.total_budget %}
+                <div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %}%">
+                </div>
+              {% endif %}
+            </div>
+            <div style="text-align:center;">
+              <p class="tiny grey" style="margin:0;">
+                {# |add:1 truncates so we get truc(funding_total_given+1) #}
+                {% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %} %
+              </p>
+            </div>
+            {% if project.funding_still_needed|round != 0 and not project.status == 'L' and not project.status == 'R' %}
+              <div style="text-align:center;">
+                <a id="filterButton" class="yellow awesome small" style="float:right; color:#fff" 
+                  href="http://akvo.org/rsr/project/{{project.id}}/donate/">
+                  <span>{% trans 'Donate' %}</span>
+                </a>
+              </div>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    <div class="table_bottom">
+      {% blocktrans count sorted_projects.count as project_count %}
+        {{ project_count }} project
+      {% plural %}
+        {{ project_count }} projects
+      {% endblocktrans %}
+      {% paginate %}
+    </div>
+  </div>
+{% endblock content %}
