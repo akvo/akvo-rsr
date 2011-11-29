@@ -5,48 +5,42 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
-from akvo.rsr.models import (
-    MiniCMS, FocusArea, Category, Organisation, Project, ProjectUpdate, ProjectComment, FundingPartner,
-    Location, Country, PHOTO_LOCATIONS, STATUSES, UPDATE_METHODS, CURRENCY_CHOICES,
-)
-from akvo.rsr.models import UserProfile, Invoice, SmsReporter
-from akvo.rsr.forms import InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail, RSR_ProfileUpdateForm, ProjectUpdateForm# , RSR_RegistrationForm, RSR_PasswordChangeForm, RSR_AuthenticationForm, RSR_RegistrationProfile
+from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
+                             Project, ProjectUpdate, ProjectComment, Country,
+                             UserProfile, Invoice, SmsReporter)
+from akvo.rsr.forms import (InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail,
+                            RSR_ProfileUpdateForm, ProjectUpdateForm)
 
 from akvo.rsr.decorators import fetch_project
-from akvo.rsr.iso3166 import CONTINENTS, COUNTRY_CONTINENTS
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
-from akvo.rsr.utils import wordpress_get_lastest_posts, get_rsr_limited_change_permission, get_random_from_qs, state_equals
+from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
+                            get_random_from_qs, state_equals)
 
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.core.mail import send_mail
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.sites.models import RequestSite
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.db.models import F, Sum
+from django.db.models import Sum
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from datetime import datetime
-import time
 from registration.models import RegistrationProfile
 import random
-from decimal import Decimal
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
-from workflows.utils import get_workflow_for_object,  set_workflow_for_object, get_workflow
 from notification.models import Notice
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -102,11 +96,12 @@ def set_test_cookie(request):
     request.session.set_test_cookie()
     return HttpResponseRedirect('/rsr/?nocookie=test')
 
-def get_random_from_qs(qs, count):
-    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
-    qs_list = list(qs.values_list('pk', flat=True))
-    random.shuffle(qs_list)
-    return qs.filter(pk__in=qs_list[:count])
+# This is defined in and imported from utils.py
+#def get_random_from_qs(qs, count):
+#    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
+#    qs_list = list(qs.values_list('pk', flat=True))
+#    random.shuffle(qs_list)
+#    return qs.filter(pk__in=qs_list[:count])
 
 # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
 import re
@@ -259,12 +254,15 @@ def project_list(request, slug='all'):
         queryset = org.published_projects()
     elif slug:
         focus_area = get_object_or_404(FocusArea, slug=slug)
-    if slug == 'all':
-        queryset = Project.objects.published()
-    else:
-        queryset = Project.objects.published().filter(categories__focus_area=focus_area)
-        queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
-        filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
+        if slug == 'all':
+            queryset = Project.objects.published()
+        else:
+            queryset = Project.objects.published().filter(categories__focus_area=focus_area)
+
+    queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
+
+    filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
+
     return {
         'filter': filtered_projects,
         'site_section': 'projects',
@@ -501,8 +499,8 @@ def orglist(request, org_type='all'):
     found_entries = None
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-    org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
-    orgs = orgs.filter(org_query).distinct()
+        org_query = get_query(query_string, ['name', 'long_name','locations__country__name','locations__city','locations__state','contact_person','contact_email',])
+        orgs = orgs.filter(org_query).distinct()
     # Sort query
     order_by = request.GET.get('order_by', 'name')
     last_order = request.GET.get('last_order')
@@ -614,10 +612,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         form.fields['username'].widget.attrs = {'class': 'signin_field input'}
         form.fields['password'].widget.attrs = {'class': 'signin_field input'}
     request.session.set_test_cookie()
-    if Site._meta.installed:
-        current_site = Site.objects.get_current()
-    else:
-        current_site = RequestSite(request)
+    current_site = RequestSite(request)
     return render_to_response(template_name, {
         'form': form,
         redirect_field_name: redirect_to,
@@ -657,7 +652,7 @@ def register2(request,
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_user = form.save()
+            new_user = form.save(request)
             return HttpResponseRedirect('/rsr/accounts/register/complete/')
     else:
         form = form_class(initial={'org_id': org_id})
@@ -733,27 +728,6 @@ def activate(request, activation_key,
                                 },
                               context_instance=context)    
     
-    #activation_key = activation_key.lower() # Normalize before trying anything with it.
-    #user = RegistrationProfile.objects.activate_user(activation_key)
-    #if user:
-    #    #Since we want to verify the user before letting anyone in we set is_active
-    #    #to False (it is set to True by RegistrationProfile.objects.activate_user)
-    #    user.is_active = False
-    #    user.save()
-    #    current_site = Site.objects.get_current()
-    #    subject = 'Akvo user email confirmed'                
-    #    message = 'A user, %s, has confirmed her email. Check it out!' % user.username
-    #    send_mail(subject, message, 'noreply@%s' % current_site, REGISTRATION_RECEIVERS)
-    #if extra_context is None:
-    #    extra_context = {}
-    #context = RequestContext(request)
-    #for key, value in extra_context.items():
-    #    context[key] = callable(value) and value() or value
-    #return render_to_response(template_name,
-    #                          { 'account': user,
-    #                            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
-    #                          context_instance=context)
-
 
 #copied from django.contrib.auth.views to be able to customize the form widget attrs
 def password_change(request, template_name='registration/password_change_form.html',
@@ -1088,13 +1062,13 @@ def projectmain(request, project_id):
     site_section: for use in the main nav hilighting
     slider_width: used by the thumbnail image slider
     '''
-    project             = get_object_or_404(Project, pk=project_id)
-    related             = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
-    related             = get_random_from_qs(related, 2)
-    all_updates         = project.project_updates.all().order_by('-time')
+    project = get_object_or_404(Project, pk=project_id)
+    related = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
+    related = get_random_from_qs(related, 2)
+    all_updates = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
-    #slider_width        = (len(updates_with_images) + 1) * 115    
-    comments            = project.projectcomment_set.all().order_by('-time')[:3]
+    #slider_width = (len(updates_with_images) + 1) * 115    
+    comments = project.projectcomment_set.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that 
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
@@ -1110,7 +1084,6 @@ def projectmain(request, project_id):
         admin_change_url = admin_change_url[0] #don't friggin ask why!!!
     else:
         admin_change_url = None
-
     return {
         'project'               : project,
         'p'                     : project, #compatibility with new_look
@@ -1248,7 +1221,6 @@ def templatedev(request, template_name):
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
     
-from django.db.models import Max
 
 def select_project_widget(request, org_id, template=''):
     o = get_object_or_404(Organisation, pk=org_id) #TODO: better error handling for widgets than straight 404

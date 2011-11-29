@@ -9,7 +9,7 @@
   {% if request.partner_site.about_image %}
     <style type="text/css" media="screen">
       #about_box {
-        background: transparent url({{MEDIA_URL}}{{ request.partner_site.about_image }}) no-repeat;
+        background: transparent url({{MEDIA_URL|iriencode}}{{ request.partner_site.about_image|iriencode }}) no-repeat;
       }
     </style>
   {% endif %}
@@ -34,14 +34,6 @@
     {% google_queryset_projects_map sorted_projects 'dynamic' 470 250 1 %}
   </div>
   <div class="clear"></div>
-  <div class="marg_top20" style="float:right;">
-    <a class="small" href="{% url 'rss_org_updates' request.organisation_id %}">
-      {% trans 'RSS' %}
-    </a>
-    <a class="small" href="{% url 'rss_org_updates' request.organisation_id %}">
-      <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="{% trans 'RSS' %}" title="{% trans 'RSS' %}" style="margin-left:5px; margin-right:0">
-    </a>
-  </div>
   <h1 class="marg_top20">{% trans "Find projects" %}</h1>
   <div class="marg_top20">
     <div class="greybox pad10 marg_bottom10">

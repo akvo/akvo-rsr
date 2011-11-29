@@ -1,6 +1,4 @@
-RELEASE_NOTES.txt, v2.0
-
-Last changed: 28 October 2011, tbp
+Last changed: 29 November 2011, kad
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -8,6 +6,62 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 2.0.1 release notes
+-------------------------------------------
+29 November 2011, (Code name: Elderberry) kad
+
+Overview
+------------
+The release's biggest feature is extended RSS feeds. Besides that the images on the updates list page have been sized to match videos as on partners sites.
+
+Several related bugs around the presentation of funding have been fixed.
+
+New features
+----------------
+
+### RSS feed with images and media extensions
+The RSS feed for project updates has been upgraded to include any images that are part of the update. The image is included in the <description> field as an <img> and will be shown as part of the update text in most feed readers.
+
+Currently the Akvo RSS includes three kinds of feeds:
+
+* **/rsr/rss/updates/NNN** where NNN is the ID of a Project.
+
+  Returns all updates for that project. An RSS icon for this feed can be found on the main page of each project.
+
+* **/rsr/rss/org-updates/NNN** where NNN is the ID of an Organisation
+
+  Returns all updates for all projects that the organisation is a partner to. An RSS icon for this feed can be found on each organisation page.
+
+* **/rsr/rss/all-updates/**
+
+  Returns all project updates in RSR. An RSS icon for this feed can be found on the home page.
+
+All feeds are in reverse chronological order.
+
+All feeds are extended using the [Media RSS module defined by Yahoo](http://video.search.yahoo.com/mrss) for easy retrieval of the images available through the feeds.
+
+The feed has also been extended to include the author of the project update.
+
+### Increase size of images in updates list
+Backport partner sites photo thumbnail size on /updates/ list page to akvo.org's /updates/ list page. The increase makes them the same size as video
+
+### Renamed RELEASE_NOTES.txt to RELEASE_NOTES.md
+To make Github understand and apply the correct format to the Markdown file it is renamed to .md.
+
+Bug fixes
+---------
+
+### Removed self referencing "funding details" link
+Removed self referencing "funding details" link in the funding box.
+
+### Added funding details box to partner site's funding page
+Funding details page were missing funding/status box.
+
+### Link to funding details have disappeared from the funding box
+Link to funding details have disappeared on Partner Sites.
+
+---
 
 Akvo RSR v 2.0 release notes
 -------------------------------------------
