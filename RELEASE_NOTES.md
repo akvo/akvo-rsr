@@ -13,7 +13,7 @@ Akvo RSR v 2.0.1 release notes
 
 Overview
 ------------
-The release biggest feature is extended RSS feeds. Besides that the images on the updates list page have been sized to match videos as on partners sites.
+The release's biggest feature is extended RSS feeds. Besides that the images on the updates list page have been sized to match videos as on partners sites.
 
 Several related bugs around the presentation of funding have been fixed.
 
@@ -25,17 +25,17 @@ The RSS feed for project updates has been upgraded to include any images that ar
 
 Currently the Akvo RSS includes three kinds of feeds:
 
-*/rsr/rss/updates/NNN** where NNN is the ID of a Project.
+* **/rsr/rss/updates/NNN** where NNN is the ID of a Project.
 
-Returns all updates for that project. An RSS icon for this feed can be found on the main page of each project.
+  Returns all updates for that project. An RSS icon for this feed can be found on the main page of each project.
 
-*/rsr/rss/org-updates/NNN** where NNN is the ID of an Organisation
+* **/rsr/rss/org-updates/NNN** where NNN is the ID of an Organisation
 
-Returns all updates for all projects that the organisation is a partner to. An RSS icon for this feed can be found on each organisation page.
+  Returns all updates for all projects that the organisation is a partner to. An RSS icon for this feed can be found on each organisation page.
 
-*/rsr/rss/all-updates/**
+* **/rsr/rss/all-updates/**
 
-Returns all project updates in RSR. An RSS icon for this feed can be found on the home page.
+  Returns all project updates in RSR. An RSS icon for this feed can be found on the home page.
 
 All feeds are in reverse chronological order.
 
