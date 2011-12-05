@@ -5,12 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox, os
+import imp, os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.dataretriever import RSRDataRetrieverConfig
-from fab.format.timestamp import TimeStampFormatter
 
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
@@ -18,19 +17,16 @@ imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
 from config_values import DataHostConfigValues, DeploymentHostConfigValues
 
 
-class RSRDataRetrieverConfigTest(mox.MoxTestBase):
+class RSRDataRetrieverConfigTest(unittest2.TestCase):
 
     def setUp(self):
         super(RSRDataRetrieverConfigTest, self).setUp()
         self.deployment_host_config_values = DeploymentHostConfigValues()
         self.data_host_config_values = DataHostConfigValues()
-        self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
         self.expected_data_dumps_home = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'data_dumps')
 
-        self.data_retriever_config = RSRDataRetrieverConfig(self.deployment_host_config_values,
-                                                            self.data_host_config_values,
-                                                            self.mock_time_stamp_formatter)
+        self.data_retriever_config = RSRDataRetrieverConfig(self.deployment_host_config_values, self.data_host_config_values)
 
     def test_can_create_instance(self):
         """fab.tests.config.rsr.data_retriever_config_test  Can create RSRDataRetrieverConfig instance"""
@@ -62,17 +58,6 @@ class RSRDataRetrieverConfigTest(mox.MoxTestBase):
         expected_log_file_path = os.path.join(self.deployment_host_config_values.logging_home, "akvo.log")
 
         self.assertEqual(expected_log_file_path, self.data_retriever_config.rsr_log_file_path)
-
-    def test_can_get_time_stamped_rsr_data_dump_path(self):
-        """fab.tests.config.rsr.data_retriever_config_test  Has RSR log file path"""
-
-        rsr_data_dir_with_timestamp = "rsrdb_20110923_153244"
-        expected_data_dump_file_path = os.path.join(self.expected_data_dumps_home, rsr_data_dir_with_timestamp)
-
-        self.mock_time_stamp_formatter.append_timestamp("rsrdb").AndReturn(rsr_data_dir_with_timestamp)
-        self.mox.ReplayAll()
-
-        self.assertEqual(expected_data_dump_file_path, self.data_retriever_config.time_stamped_rsr_data_dump_path())
 
 
 def suite():
