@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
 
-from config_values import PythonConfigValues, SharedConfigValues
+from config_values import DeploymentHostConfigValues, SharedConfigValues
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.environment.python.systempackageinstaller import PackageInstallationPaths
@@ -23,10 +23,10 @@ class PackageInstallationPathsTest(unittest2.TestCase):
     def setUp(self):
         super(PackageInstallationPathsTest, self).setUp()
 
-        self.python_config_values = PythonConfigValues()
+        self.deployment_host_config_values = DeploymentHostConfigValues()
         self.codebase_config = RSRCodebaseConfig(SharedConfigValues().repository_branch)
 
-        self.installation_paths = PackageInstallationPaths(self.python_config_values, self.codebase_config)
+        self.installation_paths = PackageInstallationPaths(self.deployment_host_config_values, self.codebase_config)
 
     def test_can_create_packageinstallationpaths_instance(self):
         """fab.tests.environment.python.package_installation_paths_test  Can create PackageInstallationPaths instance"""
@@ -36,7 +36,9 @@ class PackageInstallationPathsTest(unittest2.TestCase):
     def test_has_package_download_dir(self):
         """fab.tests.environment.python.package_installation_paths_test  Has package download directory"""
 
-        self.assertEqual(self.python_config_values.python_package_download_dir, self.installation_paths.package_download_dir)
+        expected_package_download_dir = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'python_packages')
+
+        self.assertEqual(expected_package_download_dir, self.installation_paths.package_download_dir)
 
     def test_has_distribute_setup_url(self):
         """fab.tests.environment.python.package_installation_paths_test  Has distribute package setup URL"""

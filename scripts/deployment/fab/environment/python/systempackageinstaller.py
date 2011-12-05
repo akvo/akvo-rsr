@@ -8,7 +8,7 @@
 import os
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.values import PythonConfigValues
+from fab.config.values import DeploymentHostConfigValues
 from fab.helpers.internet import Internet
 from fab.os.filesystem import FileSystem
 
@@ -17,16 +17,15 @@ class PackageInstallationPaths(object):
 
     PIP_VERSION = "1.0.2"
 
-    def __init__(self, python_config_values, codebase_config):
-        self.package_download_dir = python_config_values.python_package_download_dir
+    def __init__(self, deployment_host_config_values, codebase_config):
+        self.package_download_dir = os.path.join(deployment_host_config_values.deployment_processing_home, 'python_packages')
         self.distribute_setup_url = "http://python-distribute.org/distribute_setup.py"
         self.pip_setup_url = os.path.join("https://raw.github.com/pypa/pip", self.PIP_VERSION, "contrib/get-pip.py")
         self.system_requirements_file_url = codebase_config.system_requirements_file_url
 
     @staticmethod
     def create_instance():
-        python_config_values = PythonConfigValues()
-        return PackageInstallationPaths(python_config_values, RSRCodebaseConfig.create_instance())
+        return PackageInstallationPaths(DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
 
 
 class SystemPythonPackageInstaller(object):
