@@ -164,7 +164,7 @@ def index(request, cms_id=None):
     )
     # posts that we show in the more headlines box
     blog_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', 7), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2)
+        'wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', None), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2)
     )
     # from this category we draw the image to show in the news box
     image_posts = wordpress_get_lastest_posts(
