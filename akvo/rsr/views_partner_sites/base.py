@@ -55,6 +55,10 @@ class PartnerSitesMixin(object):
         context['app_url'] = '%s%s.%s' % (protocol, \
                                           self.request.partner_site.hostname,
                                           settings.APP_DOMAIN_NAME)
+
+        # If partner sites auth set to false remove app url
+        if not getattr(settings, 'PARTNER_SITES_AUTH', False):
+            context['app_url'] = None
         return context
 
 

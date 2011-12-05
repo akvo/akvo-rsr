@@ -97,18 +97,20 @@
       </div>
       <div class="two_col_right" style="text-align:right;">
           <p class="small">
-            {% if not user.username %}
-              <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">
-                <span>{% trans 'Sign in' %}</span>
-              </a>
-            {% else %}
-              {% trans "Hello" %} 
-              {% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}!
-              <a id="main_nav_account" href="{% url 'sign_out' %}?next={{request.path}}" title="{{user.username}}">
-                <span>{% trans 'Sign out' %}</span>
-              </a>
+            {% if app_url %}
+              {% if not user.username %}
+                <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">
+                  <span>{% trans 'Sign in' %}</span>
+                </a>
+              {% else %}
+                {% trans "Hello" %} 
+                  {% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}!
+                  <a id="main_nav_account" href="{% url 'sign_out' %}?next={{request.path}}" title="{{user.username}}">
+                    <span>{% trans 'Sign out' %}</span>
+                  </a>
+              {% endif %}
+              |
             {% endif %}
-          |
             {% trans "Powered by" %} <a href="http://www.akvoapp.org">Akvo</a>
           </p>
       </div>

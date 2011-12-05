@@ -56,19 +56,23 @@ urlpatterns = patterns('',
         OrganisationUpdates(),
         name="rss_org_updates"),
 
-    # Auth
-    url(r'^rsr/signin/$',
-        views.SignInView.as_view(),
-        name="sign_in"),
-    
-    url(r'^rsr/signout/$',
-        views.signout,
-        name='sign_out'),
 )
+
+if getattr(settings, 'PARTNER_SITES_AUTH', False):
+    urlpatterns += (
+        # Auth
+        url(r'^rsr/signin/$',
+            views.SignInView.as_view(),
+            name="sign_in"),
+    
+        url(r'^rsr/signout/$',
+            views.signout,
+            name='sign_out'),
+    )
 
 urlpatterns += counter_urls
 
-urlpatterns += patterns('',
-    (r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-)
+#urlpatterns += patterns('',
+#    (r'^rsr/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+#)
 
