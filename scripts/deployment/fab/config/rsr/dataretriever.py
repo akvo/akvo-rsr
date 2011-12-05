@@ -13,7 +13,7 @@ from fab.config.values import DataHostConfigValues, DeploymentHostConfigValues
 class RSRDataRetrieverConfig(object):
 
     def __init__(self, deployment_host_config_values, data_host_config_values):
-        self.data_dumps_home    = os.path.join(deployment_host_config_values.deployment_processing_home, 'data_dumps')
+        self.data_archives_home = os.path.join(deployment_host_config_values.deployment_processing_home, 'data_archives')
         self.rsr_env_path       = os.path.join(data_host_config_values.virtualenvs_home, 'current')
         self.rsr_app_path       = os.path.join(data_host_config_values.django_apps_home, 'current')
         self.rsr_log_file_path  = os.path.join(deployment_host_config_values.logging_home, 'akvo.log')

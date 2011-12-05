@@ -24,7 +24,7 @@ class RSRDataRetrieverConfigTest(unittest2.TestCase):
         self.deployment_host_config_values = DeploymentHostConfigValues()
         self.data_host_config_values = DataHostConfigValues()
 
-        self.expected_data_dumps_home = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'data_dumps')
+        self.expected_data_archives_home = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'data_archives')
 
         self.data_retriever_config = RSRDataRetrieverConfig(self.deployment_host_config_values, self.data_host_config_values)
 
@@ -33,10 +33,10 @@ class RSRDataRetrieverConfigTest(unittest2.TestCase):
 
         self.assertIsInstance(RSRDataRetrieverConfig.create_instance(), RSRDataRetrieverConfig)
 
-    def test_has_data_dumps_home(self):
-        """fab.tests.config.rsr.data_retriever_config_test  Has data dumps home"""
+    def test_has_data_archives_home(self):
+        """fab.tests.config.rsr.data_retriever_config_test  Has data archives home"""
 
-        self.assertEqual(self.expected_data_dumps_home, self.data_retriever_config.data_dumps_home)
+        self.assertEqual(self.expected_data_archives_home, self.data_retriever_config.data_archives_home)
 
     def test_has_rsr_virtualenv_path(self):
         """fab.tests.config.rsr.data_retriever_config_test  Has RSR virtualenv path"""

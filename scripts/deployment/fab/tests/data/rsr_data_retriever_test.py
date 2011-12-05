@@ -53,19 +53,19 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
     def test_can_fetch_data_from_database(self):
         """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""
 
-        rsr_data_dump_path = os.path.join(self.data_retriever_config.data_dumps_home, "rsrdb_utc_timestamp")
+        rsr_data_archive_path = os.path.join(self.data_retriever_config.data_archives_home, "rsrdb_utc_timestamp")
 
         self._ensure_required_paths_exist()
         self._ensure_rsr_log_file_is_writable()
-        self._extract_latest_data(rsr_data_dump_path)
-        self._remove_extraneous_database_files(rsr_data_dump_path)
-        self._compress_and_download_data_archive(rsr_data_dump_path)
+        self._extract_latest_data(rsr_data_archive_path)
+        self._remove_extraneous_database_files(rsr_data_archive_path)
+        self._compress_and_download_data_archive(rsr_data_archive_path)
         self.mox.ReplayAll()
 
         self.data_retriever.fetch_data_from_database()
 
     def _ensure_required_paths_exist(self):
-        self.mock_file_system.ensure_directory_exists_with_sudo(self.data_retriever_config.data_dumps_home)
+        self.mock_file_system.ensure_directory_exists_with_sudo(self.data_retriever_config.data_archives_home)
         self.mock_file_system.exit_if_directory_does_not_exist(self.data_retriever_config.rsr_env_path)
         self.mock_file_system.exit_if_file_does_not_exist(self.data_retriever_config.rsr_app_path)
         self.mock_file_system.exit_if_file_does_not_exist(self.data_retriever_config.rsr_log_file_path)
@@ -74,19 +74,19 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_feedback.comment("Ensuring RSR log file is writable")
         self.mock_file_system.make_file_writable_for_all_users(self.data_retriever_config.rsr_log_file_path)
 
-    def _extract_latest_data(self, rsr_data_dump_path):
-        self.mock_time_stamp_formatter.append_timestamp("rsrdb").AndReturn(rsr_data_dump_path)
+    def _extract_latest_data(self, rsr_data_archive_path):
+        self.mock_time_stamp_formatter.append_timestamp("rsrdb").AndReturn(rsr_data_archive_path)
         self.mock_feedback.comment("Extracting latest data from database at %s" % self.data_retriever_config.rsr_app_path)
         self.mock_file_system.cd(self.data_retriever_config.rsr_app_path).AndReturn(fabric.api.cd("/some/path"))
-        self.mock_virtualenv.run_within_virtualenv(DBDumpCommand.dump_to(rsr_data_dump_path))
+        self.mock_virtualenv.run_within_virtualenv(DBDumpCommand.dump_to(rsr_data_archive_path))
 
-    def _remove_extraneous_database_files(self, rsr_data_dump_path):
-        self.mock_file_system.delete_file(os.path.join(rsr_data_dump_path, "workflows_workflowpermissionrelation.py"))
+    def _remove_extraneous_database_files(self, rsr_data_archive_path):
+        self.mock_file_system.delete_file(os.path.join(rsr_data_archive_path, "workflows_workflowpermissionrelation.py"))
 
-    def _compress_and_download_data_archive(self, rsr_data_dump_path):
-        self.mock_file_system.compress_directory(rsr_data_dump_path)
-        self.mock_file_system.delete_directory(rsr_data_dump_path)
-        self.mock_file_system.download_file("%s.*" % rsr_data_dump_path, self.data_retriever_config.data_dumps_home)
+    def _compress_and_download_data_archive(self, rsr_data_archive_path):
+        self.mock_file_system.compress_directory(rsr_data_archive_path)
+        self.mock_file_system.delete_directory(rsr_data_archive_path)
+        self.mock_file_system.download_file("%s.*" % rsr_data_archive_path, self.data_retriever_config.data_archives_home)
 
 
 def suite():

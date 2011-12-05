@@ -38,14 +38,14 @@ class RSRDataRetriever(object):
         self._ensure_required_paths_exist()
         self._ensure_rsr_log_file_is_writable()
 
-        self.rsr_data_dump_path = os.path.join(self.config.data_dumps_home, self.time_stamp_formatter.append_timestamp("rsrdb"))
+        self.rsr_data_archive_path = os.path.join(self.config.data_archives_home, self.time_stamp_formatter.append_timestamp("rsrdb"))
 
         self._extract_latest_data()
         self._remove_extraneous_database_files()
         self._compress_and_download_data_archive()
 
     def _ensure_required_paths_exist(self):
-        self.file_system.ensure_directory_exists_with_sudo(self.config.data_dumps_home)
+        self.file_system.ensure_directory_exists_with_sudo(self.config.data_archives_home)
         self.file_system.exit_if_directory_does_not_exist(self.config.rsr_env_path)
         self.file_system.exit_if_file_does_not_exist(self.config.rsr_app_path)
         self.file_system.exit_if_file_does_not_exist(self.config.rsr_log_file_path)
@@ -57,12 +57,12 @@ class RSRDataRetriever(object):
     def _extract_latest_data(self):
         self.feedback.comment("Extracting latest data from database at %s" % self.config.rsr_app_path)
         with self.file_system.cd(self.config.rsr_app_path):
-            self.virtualenv.run_within_virtualenv(DBDumpCommand.dump_to(self.rsr_data_dump_path))
+            self.virtualenv.run_within_virtualenv(DBDumpCommand.dump_to(self.rsr_data_archive_path))
 
     def _remove_extraneous_database_files(self):
-        self.file_system.delete_file(os.path.join(self.rsr_data_dump_path, "workflows_workflowpermissionrelation.py"))
+        self.file_system.delete_file(os.path.join(self.rsr_data_archive_path, "workflows_workflowpermissionrelation.py"))
 
     def _compress_and_download_data_archive(self):
-        self.file_system.compress_directory(self.rsr_data_dump_path)
-        self.file_system.delete_directory(self.rsr_data_dump_path)
-        self.file_system.download_file("%s.*" % self.rsr_data_dump_path, self.config.data_dumps_home)
+        self.file_system.compress_directory(self.rsr_data_archive_path)
+        self.file_system.delete_directory(self.rsr_data_archive_path)
+        self.file_system.download_file("%s.*" % self.rsr_data_archive_path, self.config.data_archives_home)
