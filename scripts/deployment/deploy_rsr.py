@@ -24,6 +24,7 @@ print "\r"
 
 from deploy_rsr_config import DEPLOYMENT_HOST, DEPLOYMENT_HOST_USERNAME, DEPLOYMENT_HOST_PASSWORD
 from deploy_rsr_config import DATA_HOST, DATA_HOST_USERNAME, DATA_HOST_PASSWORD
+from deploy_rsr_config import MEDIA_HOST, MEDIA_HOST_USERNAME, MEDIA_HOST_PASSWORD
 
 
 FABRIC_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), 'fab'))

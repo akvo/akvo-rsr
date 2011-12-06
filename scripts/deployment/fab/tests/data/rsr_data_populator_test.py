@@ -29,12 +29,9 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self.mock_local_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
-        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
-
-        self.mock_host_controller.feedback = self.mock_feedback
 
         self.data_populator = RSRDataPopulator(self.data_populator_config, self.mock_data_host_file_system,
-                                               self.mock_local_file_system, self.mock_virtualenv, self.mock_host_controller)
+                                               self.mock_local_file_system, self.mock_virtualenv, self.mock_feedback)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_populator_test  Can create an RSRDataPopulator instance for a local host"""
@@ -86,7 +83,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         expected_data_archive_file_path = os.path.join(data_archives_home, latest_data_archive_name)
         expected_data_archive_dir = os.path.join(data_archives_home, latest_data_archive_name).replace(FileSystem.DATA_ARCHIVE_EXTENSION, "")
 
-        self.mock_host_controller.cd(rsr_deployment_home).AndReturn(fabric.api.cd(rsr_deployment_home))
+        self.mock_data_host_file_system.cd(rsr_deployment_home).AndReturn(fabric.api.cd(rsr_deployment_home))
         self.mock_feedback.comment("Creating initial data models")
         self.mock_virtualenv.run_within_virtualenv(DjangoManageCommand.SYNCDB_WITHOUT_CREATING_SUPERUSERS)
         self.mock_feedback.comment("Loading RSR data")

@@ -12,8 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
 
-from config_values import SharedConfigValues, PythonConfigValues, DataHostConfigValues
-from config_values import DeploymentHostConfigValues, DatabaseAdminConfigValues, RSRDatabaseConfigValues
+from config_values import SharedConfigValues, DataHostConfigValues, DeploymentHostConfigValues, DatabaseAdminConfigValues, RSRDatabaseConfigValues
 
 
 class ConfigValuesTest(unittest2.TestCase):
@@ -21,7 +20,6 @@ class ConfigValuesTest(unittest2.TestCase):
     def setUp(self):
         super(ConfigValuesTest, self).setUp()
         
-        self.python_config_values = PythonConfigValues()
         self.data_host_config_values = DataHostConfigValues()
         self.deployment_config_values = DeploymentHostConfigValues()
         self.database_admin_config_values = DatabaseAdminConfigValues()
@@ -31,26 +29,6 @@ class ConfigValuesTest(unittest2.TestCase):
         """fab.tests.config.config_values_test  SharedConfigValues has repository branch"""
 
         self._verify_expected_config_value(SharedConfigValues().repository_branch, "repository branch")
-
-    def test_pythonconfigvalues_has_pip_version(self):
-        """fab.tests.config.config_values_test  PythonConfigValues has pip version"""
-
-        self._verify_expected_config_value(self.python_config_values.pip_version, "pip version")
-
-    def test_pythonconfigvalues_has_python_package_download_directory(self):
-        """fab.tests.config.config_values_test  PythonConfigValues has Python package download directory"""
-
-        self._verify_expected_config_value(self.python_config_values.python_package_download_dir, "Python package download directory")
-
-    def test_datahostconfigvalues_has_deployed_rsr_version(self):
-        """fab.tests.config.config_values_test  DataHostConfigValues has deployed RSR version"""
-
-        self._verify_expected_config_value(self.data_host_config_values.deployed_rsr_version, "deployed RSR version")
-
-    def test_datahostconfigvalues_has_deployed_rsr_dir_name(self):
-        """fab.tests.config.config_values_test  DataHostConfigValues has deployed RSR directory name"""
-
-        self._verify_expected_config_value(self.data_host_config_values.deployed_rsr_dir_name, "deployed RSR directory name")
 
     def test_datahostconfigvalues_has_django_apps_home(self):
         """fab.tests.config.config_values_test  DataHostConfigValues has Django apps home"""
@@ -62,15 +40,10 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.data_host_config_values.virtualenvs_home, "virtualenvs home")
 
-    def test_datahostconfigvalues_has_rsr_logs_home(self):
-        """fab.tests.config.config_values_test  DataHostConfigValues has RSR logs home"""
+    def test_deploymenthostconfigvalues_has_configuration_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has configuration home"""
 
-        self._verify_expected_config_value(self.data_host_config_values.rsr_logs_home, "RSR logs home")
-
-    def test_datahostconfigvalues_has_data_dumps_home(self):
-        """fab.tests.config.config_values_test  DataHostConfigValues has data dumps home"""
-
-        self._verify_expected_config_value(self.data_host_config_values.data_dumps_home, "data dumps home")
+        self._verify_expected_config_value(self.deployment_config_values.config_home, "configuration home")
 
     def test_deploymenthostconfigvalues_has_repository_checkout_home(self):
         """fab.tests.config.config_values_test  DeploymentHostConfigValues has repository checkout home"""
@@ -82,10 +55,15 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.deployment_config_values.virtualenvs_home, "virtualenvs home")
 
-    def test_deploymenthostconfigvalues_has_data_archives_home(self):
-        """fab.tests.config.config_values_test  DeploymentHostConfigValues has data archives home"""
+    def test_deploymenthostconfigvalues_has_logging_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has logging home"""
 
-        self._verify_expected_config_value(self.deployment_config_values.data_archives_home, "data archives home")
+        self._verify_expected_config_value(self.deployment_config_values.logging_home, "logging home")
+
+    def test_deploymenthostconfigvalues_has_deployment_processing_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has deployment processing home"""
+
+        self._verify_expected_config_value(self.deployment_config_values.deployment_processing_home, "deployment processing home")
 
     def test_databaseadminconfigvalues_has_admin_user(self):
         """fab.tests.config.config_values_test  DatabaseAdminConfigValues has admin user"""
