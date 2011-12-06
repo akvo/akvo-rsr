@@ -984,7 +984,7 @@ class Project(models.Model):
         if updates:
             update = updates[0]
             # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url, update.time,)
+            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.time,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
                 update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
