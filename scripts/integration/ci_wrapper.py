@@ -38,4 +38,4 @@ def run_acceptance_tests():
 if __name__ == "__main__":
     os.chdir(TESTING_SCRIPTS_PATH)
     run_django_tests()
-    run_acceptance_tests()
+#   run_acceptance_tests()
