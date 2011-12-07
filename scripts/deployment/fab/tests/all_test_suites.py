@@ -5,7 +5,21 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os
+import os, sys
+
+def real_path_for(relative_path):
+    return os.path.realpath(os.path.join(os.path.dirname(__file__), relative_path))
+
+def ensure_syspath_has(expected_path):
+    if expected_path not in sys.path:
+        sys.path.insert(0, expected_path)
+
+DEPLOYMENT_SCRIPTS_HOME = real_path_for('../..')
+TESTING_HELPERS_HOME = real_path_for('../../../../tests/shared')
+
+ensure_syspath_has(DEPLOYMENT_SCRIPTS_HOME)
+ensure_syspath_has(TESTING_HELPERS_HOME)
+
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
