@@ -20,14 +20,14 @@ fi
 
 cd ../../akvo
 
-printf "\nValidating Django models:\n"
+printf "\n>> Validating Django models:\n"
 python manage.py validate
 
-printf "\nSyncing database:\n"
+printf "\n>> Syncing database:\n"
 echo no | python manage.py syncdb
 python manage.py syncdb
 
-printf "\nRunning Django tests:\n"
+printf "\n>> Running Django tests:\n"
 python manage.py test --noinput rsr
 
 deactivate
