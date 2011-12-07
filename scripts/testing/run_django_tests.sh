@@ -18,17 +18,16 @@ else
     exit -1
 fi
 
-python ../deployment/verify_static_project_structure.py $2
+cd ../../akvo
 
-# proceed if no error codes returned from last script
-if [ $? -eq 0 ]; then
-    cd ../../akvo
-    printf "\nValidating Django models:\n"
-    python manage.py validate
-    printf "\nRunning Django tests:\n"
-    python manage.py test --noinput rsr
-else
-    printf "\nUnable to run Django tests due to errors above\n"
-fi
+printf "\nValidating Django models:\n"
+python manage.py validate
+
+printf "\nSyncing database:\n"
+echo no | python manage.py syncdb
+python manage.py syncdb
+
+printf "\nRunning Django tests:\n"
+python manage.py test --noinput rsr
 
 deactivate
