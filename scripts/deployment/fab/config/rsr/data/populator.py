@@ -15,7 +15,7 @@ from fab.config.values import DeploymentHostConfigValues
 class RSRDataPopulatorConfig(object):
 
     def __init__(self, deployment_config, deployment_host_config_values, codebase_config):
-        self.data_archives_home     = deployment_host_config_values.data_archives_home
+        self.data_archives_home     = os.path.join(deployment_host_config_values.deployment_processing_home, 'data_archives')
         self.rsr_deployment_home    = deployment_config.rsr_deployment_home
 
         rsr_env_name        = "rsr_%s" % codebase_config.repo_branch_without_type
@@ -23,5 +23,4 @@ class RSRDataPopulatorConfig(object):
 
     @staticmethod
     def create_instance():
-        return RSRDataPopulatorConfig(RSRDeploymentConfig.create_instance(), DeploymentHostConfigValues(),
-                                      RSRCodebaseConfig.create_instance())
+        return RSRDataPopulatorConfig(RSRDeploymentConfig.create_instance(), DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())

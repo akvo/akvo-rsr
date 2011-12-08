@@ -16,13 +16,12 @@ from fab.os.filesystem import FileSystem, LocalFileSystem
 
 class RSRDataPopulator(object):
 
-    def __init__(self, data_populator_config, data_host_file_system, local_file_system, virtualenv, host_controller):
+    def __init__(self, data_populator_config, data_host_file_system, local_file_system, virtualenv, feedback):
         self.config = data_populator_config
         self.data_host_file_system = data_host_file_system
         self.local_file_system = local_file_system
         self.virtualenv = virtualenv
-        self.host_controller = host_controller
-        self.feedback = host_controller.feedback
+        self.feedback = feedback
 
     @staticmethod
     def create_instance(host_controller):
@@ -32,7 +31,7 @@ class RSRDataPopulator(object):
                                 FileSystem(host_controller),
                                 LocalFileSystem(),
                                 VirtualEnv(data_populator_config.rsr_env_path, host_controller),
-                                host_controller)
+                                host_controller.feedback)
 
     def populate_database(self, rsr_database_name):
         self._ensure_expected_paths_exist()
@@ -59,7 +58,7 @@ class RSRDataPopulator(object):
     def _populate_rsr_database(self, latest_data_archive_name):
         data_archive_dir = self._data_archive_path(latest_data_archive_name).replace(FileSystem.DATA_ARCHIVE_EXTENSION, "")
 
-        with self.host_controller.cd(self.config.rsr_deployment_home):
+        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
             self.feedback.comment("Creating initial data models")
             self.virtualenv.run_within_virtualenv(DjangoManageCommand.SYNCDB_WITHOUT_CREATING_SUPERUSERS)
             self.feedback.comment("Loading RSR data")

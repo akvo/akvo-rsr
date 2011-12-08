@@ -29,8 +29,7 @@ class RSRDataPopulatorConfigTest(unittest2.TestCase):
 
         self.expected_rsr_deployment_home = self.deployment_config.rsr_deployment_home
 
-        self.data_populator_config = RSRDataPopulatorConfig(self.deployment_config, self.deployment_host_config_values,
-                                                            self.codebase_config)
+        self.data_populator_config = RSRDataPopulatorConfig(self.deployment_config, self.deployment_host_config_values, self.codebase_config)
 
     def test_can_create_rsrdatapopulatorconfig_instance(self):
         """fab.tests.config.rsr.data.populator_config_test  Can create RSRDataPopulatorConfig instance"""
@@ -40,7 +39,9 @@ class RSRDataPopulatorConfigTest(unittest2.TestCase):
     def test_has_data_archives_home(self):
         """fab.tests.config.rsr.data.populator_config_test  Has data archives home"""
 
-        self.assertEqual(self.deployment_host_config_values.data_archives_home, self.data_populator_config.data_archives_home)
+        expected_data_archives_home = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'data_archives')
+
+        self.assertEqual(expected_data_archives_home, self.data_populator_config.data_archives_home)
 
     def test_has_rsr_deployment_home(self):
         """fab.tests.config.rsr.data.populator_config_test  Has RSR deployment home"""

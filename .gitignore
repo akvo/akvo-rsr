@@ -23,6 +23,7 @@ scripts/deployment/deploy_rsr_config.py
 scripts/deployment/fab/config/values.py
 scripts/deployment/fab/tests/test_settings.py
 scripts/deployment/static_project_structure.py
+scripts/deployment/update_ci_server_config.py
 
 ## Tests
 tests/akvo/acceptance/test_settings.py

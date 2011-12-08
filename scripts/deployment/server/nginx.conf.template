@@ -47,6 +47,11 @@ http {
             alias   /var/www/wordpress;
         }
 
+        # Akvopedia
+        location    /wiki {
+            alias   /var/www/wiki;
+        }
+
         # RSR static media
         location    /rsr/media {
             alias   /var/www/akvo/mediaroot;
