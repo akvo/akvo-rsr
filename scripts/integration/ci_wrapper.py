@@ -6,7 +6,6 @@
 
 import os, subprocess, sys
 
-from ci_cleanup import *
 from ci_environment import *
 from ci_settings import *
 
@@ -28,16 +27,15 @@ elif len(sys.argv) == 2:
 
 def run_django_tests():
     print "Using virtualenv path: %s" % VIRTUAL_ENV_PATH
-    subprocess.call(["./run_django_tests", VIRTUAL_ENV_PATH, "ci_mode"])
-    remove_project_links_to_prevent_subsequent_build_failure()
+    subprocess.call(["./run_django_tests.sh", VIRTUAL_ENV_PATH, "ci_mode"])
 
 def run_acceptance_tests():
     configure_acceptance_test_settings_for_ci()
     print "Running acceptance tests for project: %s" % TEST_PROJECT_NAME
-    subprocess.call(["./run_acceptance_tests", TEST_PROJECT_NAME, SELENIUM_SERVER_LOG_PATH, XVFB_LOG_PATH])
+    subprocess.call(["./run_acceptance_tests.sh", TEST_PROJECT_NAME, SELENIUM_SERVER_LOG_PATH, XVFB_LOG_PATH])
 
 
 if __name__ == "__main__":
     os.chdir(TESTING_SCRIPTS_PATH)
     run_django_tests()
-    run_acceptance_tests()
+#   run_acceptance_tests()

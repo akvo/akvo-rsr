@@ -71,7 +71,7 @@ if [ -n "$3" ]; then
     fi
 fi
 
-"$TESTING_SCRIPTS_DIR/ensure_selenium_rc_server_has_started" "$RC_SERVER_LOG_PATH" "$XVFB_LOG_PATH"
+"$TESTING_SCRIPTS_DIR/ensure_selenium_rc_server_has_started.sh" "$RC_SERVER_LOG_PATH" "$XVFB_LOG_PATH"
 
 # proceed if no error codes returned from last script
 if [ $? -eq 0 ]; then

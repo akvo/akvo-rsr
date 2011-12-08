@@ -49,7 +49,7 @@ function ensure_xvfb_is_running_and_set_display
             XVFB_DISPLAY="$2"
         fi
 
-        "$TESTING_SCRIPTS_DIR/start_xvfb" $XVFB_LOG_PATH $XVFB_DISPLAY
+        "$TESTING_SCRIPTS_DIR/start_xvfb.sh" $XVFB_LOG_PATH $XVFB_DISPLAY
     fi
 
     export DISPLAY="`cat $XVFB_LOG_PATH/xvfb_display.txt`"
@@ -71,9 +71,9 @@ function ensure_selenium_rc_server_is_running
             XVFB_LOG_PATH="$2"
             ensure_xvfb_is_running_and_set_display "$XVFB_LOG_PATH" "$3"
 
-            "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH" "$XVFB_LOG_PATH"
+            "$TESTING_SCRIPTS_DIR/start_selenium_rc_server.sh" "$RC_SERVER_LOG_PATH" "$XVFB_LOG_PATH"
         else
-            "$TESTING_SCRIPTS_DIR/start_selenium_rc_server" "$RC_SERVER_LOG_PATH"
+            "$TESTING_SCRIPTS_DIR/start_selenium_rc_server.sh" "$RC_SERVER_LOG_PATH"
         fi    
     fi
 }
