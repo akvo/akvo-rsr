@@ -17,6 +17,7 @@ from akvo.rsr.views_partner_sites.base import BaseProjectListView, \
                                               BaseView, \
                                               BaseListView
 from akvo.rsr.views_partner_sites.auth import SignInView, signout 
+from akvo.rsr.views_partner_sites.project import ProjectUpdateFormView
 
 
 __all__ = [
@@ -25,6 +26,7 @@ __all__ = [
     'PartnerView',
     'ProjectFundingView',
     'ProjectMainView',
+    'ProjectUpdateFormView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
     'SignInView',
@@ -86,8 +88,10 @@ class ProjectUpdateView(BaseProjectView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateView, self).get_context_data(**kwargs)
-        context['update'] = get_object_or_404(ProjectUpdate,
-                                              id=self.kwargs['update_id'])
+        update =  get_object_or_404(ProjectUpdate, id=self.kwargs['update_id'])
+        context['update'] = update
+        context['can_edit_update'] = (update.user == self.request.user and context['can_add_update'] and
+                       not update.edit_window_has_expired())
         return context
 
 
