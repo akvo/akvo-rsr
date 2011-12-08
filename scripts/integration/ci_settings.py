@@ -9,13 +9,13 @@ INTEGRATION_SCRIPTS_PATH = os.path.realpath(os.path.dirname(__file__))
 TESTING_SCRIPTS_PATH = os.path.realpath(os.path.join(INTEGRATION_SCRIPTS_PATH, '..', 'testing'))
 
 # Django settings
-VIRTUAL_ENV_PATH="/var/virtualenv/akvo"
+VIRTUAL_ENV_PATH="/var/virtualenvs/rsr_develop"
 
 # Selenium settings
-SELENIUM_SERVER_LOG_PATH = "/var/tmp/log/selenium"
+SELENIUM_SERVER_LOG_PATH = "/var/tmp/rsr/log/selenium"
 SELENIUM_RC_HOST = "localhost"
 SELENIUM_RC_PORT = 4444
 BROWSER_ENVIRONMENT = "*firefox /usr/bin/firefox-bin"
 
 # Virtual frame buffer settings for headless mode
-XVFB_LOG_PATH = "/var/tmp/log/xvfb"
+XVFB_LOG_PATH = "/var/tmp/rsr/log/xvfb"
