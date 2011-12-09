@@ -129,7 +129,7 @@
             </p>
           {% endif %}
         </div>
-        <div id="video_meta" style="{% if not form.video.errors and not form.video_caption.errors and not form.video_credit.errors %}display:none;{% endif %}">
+        <div id="video_meta" style="{% if not form.video.errors and not form.video_caption.errors and not form.video_credit.errors and not form.video_credit.value and not form.video_caption.value %}display:none;{% endif %}">
           <div class="clearfix">
             {{form.video_caption.label_tag}}
             <div class="input">
