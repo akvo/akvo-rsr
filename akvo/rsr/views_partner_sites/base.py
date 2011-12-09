@@ -83,10 +83,12 @@ class BaseProjectView(BaseView):
             raise Http404
         updates = project.project_updates.all().order_by('-time')
         updates_with_images = updates.exclude(photo__exact='')
+        can_add_update = project.connected_to_user(self.request.user)
         context.update({
             'project': project,
             'updates': updates,
             'updates_with_images': updates_with_images,
+            'can_add_update': can_add_update,
         })
         return context
 
