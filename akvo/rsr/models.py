@@ -1204,6 +1204,25 @@ class Link(models.Model):
         verbose_name = _('link')
         verbose_name_plural = _('links')
 
+        
+class ProjectPartner(models.Model):
+    PARTNER_TYPES = (
+        ('field', _('field partner')),
+        ('funding', _('funding partner')),
+        ('sponsor', _('sponsor partner')),
+        ('support', _('support partner')),
+    )
+    organisation = models.ForeignKey(Organisation, related_name='project_partners',)
+    project = models.ForeignKey(Project,)
+    partner_type = models.CharField(max_length=8, choices=PARTNER_TYPES)
+    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = _('Project partner')
+        verbose_name_plural = _('Project partners')
+
+    def __unicode__(self):
+        return self.organisation.name
 
 
 class FundingPartner(models.Model):
