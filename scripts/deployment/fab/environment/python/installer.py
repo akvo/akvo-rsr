@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class PythonBrew(object):
+class PythonInstaller(object):
 
     PYTHONBREW_VERSION = "1.1"
 
