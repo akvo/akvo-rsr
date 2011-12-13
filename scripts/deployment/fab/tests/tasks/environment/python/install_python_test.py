@@ -5,10 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp
-
-imp.load_source("syspath_verification", '../../../../../verifiers/ensure_syspath_contains_testing_path_dependencies.py')
-
 import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner

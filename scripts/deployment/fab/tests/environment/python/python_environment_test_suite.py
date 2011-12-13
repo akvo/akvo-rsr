@@ -5,12 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os
-
-DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../..'))
-
-imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_testing_path_dependencies.py'))
-
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.environment.python.pip_installer_test import PipInstallerTest
