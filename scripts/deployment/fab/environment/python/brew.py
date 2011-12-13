@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class PythonBrewInstaller(object):
+class PythonBrew(object):
 
     PYTHONBREW_VERSION = "1.1"
 
@@ -16,13 +16,23 @@ class PythonBrewInstaller(object):
     def ensure_pythonbrew_is_installed(self):
         if not self._pythonbrew_is_installed():
             self._install_pythonbrew()
+        else:
+            self.feedback.comment("Found pythonbrew version %s at: %s" % (self._installed_pythonbrew_version(),
+                                                                          self._installed_pythonbrew_path()))
 
     def _pythonbrew_is_installed(self):
-        return self._installed_pythonbrew_path().find("pythonbrew") > 0
+        try:
+            return self._installed_pythonbrew_path().find("pythonbrew") > 0
+        except SystemExit:
+            return False
 
     def _installed_pythonbrew_path(self):
         with self.host_controller.hide_command_and_output():
             return self.host_controller.run("which pythonbrew")
+
+    def _installed_pythonbrew_version(self):
+        with self.host_controller.hide_command_and_output():
+            return self.host_controller.run("pythonbrew version")
 
     def _install_pythonbrew(self):
         self.feedback.comment("Installing pythonbrew")
