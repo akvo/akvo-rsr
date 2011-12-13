@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os
+import imp
 
-imp.load_source("syspath_verification", os.path.join(os.path.dirname(__file__), '../verifiers/ensure_syspath_contains_deployment_scripts_home.py'))
+imp.load_source("syspath_verification", '../verifiers/ensure_syspath_contains_deployment_scripts_home.py')
 
 
 # Use "fab --list" or "fab --shortlist" to display the list of available tasks
@@ -16,5 +16,6 @@ import fab.tasks.app.deployment
 import fab.tasks.data.retrieval
 import fab.tasks.database.rsr
 import fab.tasks.environment.linux.systempackages
+import fab.tasks.environment.python.installer
 import fab.tasks.environment.python.systempackages
 import fab.tasks.environment.python.virtualenv.rsr
