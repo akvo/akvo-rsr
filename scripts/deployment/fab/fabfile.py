@@ -5,9 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp
+import imp, os
 
-imp.load_source("syspath_verification", '../verifiers/ensure_syspath_contains_deployment_scripts_home.py')
+DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+
+imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_testing_path_dependencies.py'))
 
 
 # Use "fab --list" or "fab --shortlist" to display the list of available tasks
