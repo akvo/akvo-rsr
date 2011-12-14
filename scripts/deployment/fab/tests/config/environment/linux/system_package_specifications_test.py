@@ -68,7 +68,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_package_specifications_for_python_package_dependencies(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python package dependencies"""
 
-        expected_packages = ['libxml2']
+        expected_packages = ['libxml2', 'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 

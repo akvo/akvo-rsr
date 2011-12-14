@@ -85,7 +85,10 @@ class SystemPackageSpecifications(object):
                          {'name': 'libgc1c2',           'version': '1:6.8-1.1'},
                          {'name': 'libgc-dev',          'version': '1:6.8-1.1'}]
 
-    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',        'version': '2.6.31.dfsg-2ubuntu1.6'}]
+    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',        'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'libgmp3c2',      'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'libgmpxx4ldbl',  'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'libgmp3-dev',    'version': '2:4.2.2+dfsg-1ubuntu2'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
                                  {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
