@@ -5,21 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, sys
+import imp, os
 
-def real_path_for(relative_path):
-    return os.path.realpath(os.path.join(os.path.dirname(__file__), relative_path))
+DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 
-def ensure_syspath_has(expected_path):
-    if expected_path not in sys.path:
-        sys.path.insert(0, expected_path)
-
-DEPLOYMENT_SCRIPTS_HOME = real_path_for('../..')
-TESTING_HELPERS_HOME = real_path_for('../../../../tests/shared')
-
-ensure_syspath_has(DEPLOYMENT_SCRIPTS_HOME)
-ensure_syspath_has(TESTING_HELPERS_HOME)
-
+imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_testing_path_dependencies.py'))
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 

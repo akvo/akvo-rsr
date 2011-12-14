@@ -1,0 +1,24 @@
+{% extends "rsr/base_message.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project.name}}</span></a></li>
+  <li id="last_breadcrum_item">{% trans "Edit update" %}</li>
+{% endblock breadcrum_items %}
+
+{% block message_head %}
+  <h1>{% trans 'Your editing time has expired' %}</h1>
+{% endblock message_head %}
+
+{% block message_body %}
+  <p>
+    {% trans "Project updates can be edited for a limited period." %}
+  </p>
+  <ul>
+    <li><a href="{% url 'project_main' project.id %}">{% trans "Return to project page" %}</a></li>
+    <li><a href="{{ update.get_absolute_url }}">{% trans "Return to update page" %}</a></li>
+  </ul>
+{% endblock message_body %}

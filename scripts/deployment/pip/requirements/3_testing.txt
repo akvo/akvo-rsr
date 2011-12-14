@@ -10,6 +10,6 @@ multiprocessing==2.6.2.1
 unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
-selenium==2.12.1
+selenium==2.14.0
 lettuce==0.1.33
 lettuce_webdriver==0.2

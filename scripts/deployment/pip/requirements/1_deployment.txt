@@ -7,6 +7,6 @@ distribute==0.6.24
 pypi-tools==0.0.2
 
 # Fabric requirements
-ssh==1.7.9
+ssh==1.7.11
 pycrypto==2.4.1
-Fabric==1.3.2
+Fabric==1.3.3

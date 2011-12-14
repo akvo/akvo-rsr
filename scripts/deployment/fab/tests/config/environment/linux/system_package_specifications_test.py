@@ -56,6 +56,22 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON))
 
+    def test_has_expected_package_specifications_for_python_extensions(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python extensions"""
+
+        expected_packages = ['python2.5-dev', 'python-dev', 'libffi4', 'libffi4-dev', 'libpcre3', 'libglib2.0-0',
+                             'pkg-config', 'zlib1g-dev', 'libbz2-dev', 'libncurses5-dev', 'libexpat1', 'libexpat1-dev',
+                             'libssl-dev', 'libgc1c2', 'libgc-dev']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_EXTENSIONS))
+
+    def test_has_expected_package_specifications_for_python_package_dependencies(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python package dependencies"""
+
+        expected_packages = ['libxml2']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
+
     def test_has_expected_database_authentication_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database authentication package specifications"""
 
@@ -76,16 +92,9 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_web_server_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected web server package specifications"""
 
-        expected_packages = ['openssl', 'libpcrecpp0', 'libpcre3', 'libpcre3-dev']
+        expected_packages = ['openssl', 'libpcrecpp0', 'libpcre3-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.WEB_SERVER))
-
-    def test_has_expected_python_package_dependency_package_specifications(self):
-        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected Python package dependency package specifications"""
-
-        expected_packages = ['libxml2']
-
-        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
     def test_has_expected_additional_tools_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected additional tools package specifications"""
@@ -104,6 +113,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
                              SystemPackageSpecifications.PACKAGE_TOOLS,
                              SystemPackageSpecifications.LOCALES_AND_LANGUAGES,
                              SystemPackageSpecifications.PYTHON,
+                             SystemPackageSpecifications.PYTHON_EXTENSIONS,
                              SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES,
                              SystemPackageSpecifications.DATABASE_AUTHENTICATION,
                              SystemPackageSpecifications.DATABASE,

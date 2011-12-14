@@ -4,12 +4,11 @@
 
 from django.conf import settings
 from django.conf.urls.defaults import *
-from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
-from akvo.rsr.feeds import ProjectUpdates, AllProjectUpdates
+from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
@@ -21,79 +20,53 @@ admin.autodiscover()
 import oembed
 oembed.autodiscover()
 
-feeds = {
-    'updates': ProjectUpdates,
-    'all-updates': AllProjectUpdates,
-}
-
-#hack to get going without having to comb through differences in urls btw pvw and akvo
-if settings.PVW_RSR:
-    urlpatterns = patterns('',
-        (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
-        
-        url(r'^rsr/areas/$', 'akvo.rsr.views.focusareas', name='areas'),
-
-        
-        # changed compared to akvo-rsr; don't know if we should have an "if settings.PVW_RSR:" here for that or separate urls.py
+urlpatterns = patterns('',
     
-        url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='get_widget'),
+    # Front page
+    (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
+
+    # Data collections
+    url(r'^rsr/data/overview/$', 'akvo.rsr.views.data_overview', name='akvo_at_a_glance'),
             
-        url(r'^rsr/directory/$', 'akvo.rsr.views.directory', name='directory'),
-        url(r'^rsr/partners-widget/$', 'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
-    
-        (r'^rsr/setlowbandwidth/$', 'akvo.rsr.views.set_low_bandwidth', ),
-        (r'^rsr/sethighbandwidth/$', 'akvo.rsr.views.set_high_bandwidth', ),
-        (r'^rsr/settestcookie/$', 'akvo.rsr.views.set_test_cookie', ),
-    
-    )
-else:
-    urlpatterns = patterns('',
-        
-        # Front page
-        (r'^rsr/$', 'akvo.rsr.views.oldindex', ),
+    # Project listing
+    #url(r'^rsr/projects/$','akvo.rsr.views.projectlist', name='project_list'),
+    #url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
 
-        # Data collections
-        url(r'^rsr/data/overview/$', 'akvo.rsr.views.data_overview', name='akvo_at_a_glance'),
-                
-        # Project listing
-        #url(r'^rsr/projects/$','akvo.rsr.views.projectlist', name='project_list'),
-        #url(r'^rsr/projects/(?P<org_id>\d+)/$','akvo.rsr.views.filteredprojectlist',name='filtered_project_list'),
+    # Project
+    url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),
+    url(r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', name='project_funding'),
+    url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
+    url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
+    url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
+    (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
     
-        # Project
-        url(r'^rsr/project/(?P<project_id>\d+)/details/$', 'akvo.rsr.views.projectdetails', name='project_details'),
-        url(r'^rsr/project/(?P<project_id>\d+)/funding/$', 'akvo.rsr.views.projectfunding', name='project_funding'),
-        url(r'^rsr/project/(?P<project_id>\d+)/partners/$','akvo.rsr.views.projectpartners', name='project_partners'),
-        url(r'^rsr/project/(?P<project_id>\d+)/comments/$', 'akvo.rsr.views.projectcomments', name='project_comments'),
-        url(r'^rsr/project/(?P<project_id>\d+)/get-a-widget/$', 'akvo.rsr.views.getwidget', name='project_get_widget'),
-        (r'^rsr/project/(?P<project_id>\d+)/comment/$', 'akvo.rsr.views.commentform', ),
-        
-        
-        # Payment engines
-        url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),
-        url(r'^rsr/invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
-        url(r'^rsr/project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
-            'akvo.rsr.views.donate', name='complete_donation'),
-        url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.setup_donation', name='project_donate'),
-        url(r'^rsr/donate/ideal/thanks/$', 'akvo.rsr.views.mollie_thanks', name='mollie_thanks'),
-        url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
-        url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
-        url(r'^rsr/donate/paypal/ipn/$', csrf_exempt(paypal_ipn), name='paypal_ipn'),
+    
+    # Payment engines
+    url(r'^rsr/mollie/report/$', 'akvo.rsr.views.mollie_report', name='mollie_report'),
+    url(r'^rsr/invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$', 'akvo.rsr.views.void_invoice', name='void_invoice'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
+        'akvo.rsr.views.donate', name='complete_donation'),
+    url(r'^rsr/project/(?P<project_id>\d+)/donate/$', 'akvo.rsr.views.setup_donation', name='project_donate'),
+    url(r'^rsr/donate/ideal/thanks/$', 'akvo.rsr.views.mollie_thanks', name='mollie_thanks'),
+    url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
+    url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
+    url(r'^rsr/donate/paypal/ipn/$', csrf_exempt(paypal_ipn), name='paypal_ipn'),
+)
+
+if getattr(settings, 'LIVE_EARTH_ENABLED', False):
+    urlpatterns += patterns('',
+        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
     )
 
-    if getattr(settings, 'LIVE_EARTH_ENABLED', False):
-        urlpatterns += patterns('',
-            url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
-        )
+if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
+    urlpatterns += patterns('',
+        url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
+    )
 
-    if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
-        urlpatterns += patterns('',
-            url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
-        )
-
-    if getattr(settings, 'RABOBANK_ENABLED', False):
-        urlpatterns += patterns('',
-            url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
-        )
+if getattr(settings, 'RABOBANK_ENABLED', False):
+    urlpatterns += patterns('',
+        url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
+    )
 
 urlpatterns += patterns('',
 
@@ -114,7 +87,7 @@ urlpatterns += patterns('',
     url(r'^rsr/project/(?P<project_id>\d+)/updates/$', 'akvo.rsr.views.projectupdates', name='project_updates'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$', 'akvo.rsr.views.updateform', name='project_edit_update'),
     url(r'^rsr/project/(?P<project_id>\d+)/update/$', 'akvo.rsr.views.updateform', name='project_add_update'),
-    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='project_update'),
+    url(r'^rsr/project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$', 'akvo.rsr.views.projectupdate', name='update_main'),
     
     # Maps
     url(r'^rsr/maps/projects/all/$', direct_to_template, {'template': 'rsr/project/global_project_map.html'},
@@ -125,7 +98,7 @@ urlpatterns += patterns('',
     # Organisation
     url(r'^rsr/organisations/$', 'akvo.rsr.views.orglist', name='rsr_org_list'),
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
-    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name='org_detail'),
+    url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name='organisation_main'),
 
     # Account
     url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
@@ -181,8 +154,12 @@ urlpatterns += patterns('',
         {'template': 'rsr/error_access_denied.html'},
         name='access_denied'),
     
-    url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
-    
+    #url(r'^rsr/rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='akvo_feeds'),
+
+    url(r'^rsr/rss/updates/(?P<project_id>\d+)/$', ProjectUpdates(), name="rss_project_updates"),
+    url(r'^rsr/rss/org-updates/(?P<org_id>\d+)/$', OrganisationUpdates(), name="rss_org_updates"),
+    url(r'^rsr/rss/all-updates/$', AllProjectUpdates(), name="rss_all_updates"),
+
     # Phone
     #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),    
     #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),

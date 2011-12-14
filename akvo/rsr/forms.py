@@ -14,10 +14,10 @@ from django import forms
 #from django import oldforms
 #from django.core import validators
 #from django.core.validators import alnum_re
-from django.conf import settings
+#from django.conf import settings
 #from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import get_current_site
 from django.db.models import get_model
 from django.template.defaultfilters import slugify
 from django.utils.html import escape
@@ -155,7 +155,7 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         return self.cleaned_data
     
     
-    def save(self):
+    def save(self, request):
         """
         Create the new ``User`` and ``RegistrationProfile``, and
         returns the ``User``.
@@ -169,12 +169,12 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         recording the org_id associated with the user
         
         """
-        site = Site.objects.get(id=settings.SITE_ID)
+        site = get_current_site(request)
         new_user =  RegistrationProfile.objects.create_inactive_user(
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            site=site
+            site=site,
         )
         new_user.first_name = first_name=self.cleaned_data['first_name']
         new_user.last_name  = last_name=self.cleaned_data['last_name']
@@ -280,19 +280,20 @@ class ProjectUpdateForm(forms.ModelForm):
         ('B', _('At the beginning of the update.')),
         ('E', _('At the end of the update.'))
     )
-    js_snippet = "return taCount(this,'myCounter')"
-    js_snippet = mark_safe(js_snippet)    
+    #js_snippet = "return taCount(this,'myCounter')"
+    #js_snippet = mark_safe(js_snippet)    
     title = forms.CharField(widget=forms.TextInput(
-        attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+        #attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+        attrs={'class':'input', 'maxlength':'50', 'size':'42'}
                       ))
-    text = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
+    text = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'44'}))
     #status = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
     photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
     photo_location = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
     photo_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
     video = forms.CharField(required=False, widget=forms.TextInput(
-        attrs={'class':'input', 'size':'50', 'maxlength':'255'}))
+        attrs={'class':'input', 'size':'42', 'maxlength':'255'}))
     video_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75'}))
     video_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25'}))
 

@@ -1,0 +1,223 @@
+{% extends "rsr/base_sheet.html" %}
+
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li><a href="{% url project_list 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
+<li><a href="{% url project_main project.id %}"><span>{{project.name}}</span></a></li>
+<li id="last_breadcrum_item">
+  {% if edit_mode %}
+   {% trans "Edit update" %}
+  {% else %}
+    {% trans "Add update" %}
+  {% endif %}
+</li>
+{% endblock breadcrum_items %}
+
+{% block content %}
+<form enctype="multipart/form-data" method="post" action="." name="add_update_form">
+  {% csrf_token %}
+  <div class="space20">
+    {% if form.non_field_errors %}
+          <div class="error">
+        <p>{{ form.non_field_errors }}</p>
+          </div>
+        {% endif %}
+    <div style="width:500px;">
+      <h1>
+        {% if edit_mode %}
+          {% trans 'Edit update' %}
+        {% else %}
+          {% trans 'Add update' %}
+        {% endif %}
+      </h1>
+      {% if edit_mode %}
+        <p class="red">You posted this update at {{ update.time_gmt|date:"H:i T"}}. You have until {{ update.expires_at|date:"H:i T" }} to save your edits.</p>
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+    {% if form.title.errors %}
+      <div class="error">
+        <p>{{ form.title.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h3>{% trans 'Title' %}</h3>
+      {{form.title|safe}}<br />
+      <p class="small grey">
+        {% trans '50 characters' %}
+      </p>
+    </div>
+    <div class="clear"></div>
+    {% if form.text.errors %}
+      <div class="error">
+        <p>{{ form.text.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h3>{% trans 'Text' %}</h3>
+      {{form.text}}
+    </div>
+    <div class="clear"></div>
+    <br />
+    <br />
+    <hr />
+    <br />
+    {% if form.photo.errors %}
+      <div class="error">
+        <p><b>{% trans 'A problem occurred' %}:</b></p>
+        <p>{{ form.photo.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h2 style="margin-bottom:20px;">
+        {% if edit_mode %}
+          {% trans 'Edit photo' %}
+        {% else %}
+          {% trans 'Add a photo' %}
+        {% endif %}
+        <span class="small grey"> ({% trans 'optional' %})</span>
+      </h2>
+      {% if update and update.photo %}
+        <img style="margin-bottom:30px;" src="{% thumbnail update.photo 200x150 crop autocrop sharpen upscale %}">
+      {% endif %}
+      <h4 style="margin-bottom:20px;">
+        {% if edit_mode %}
+          {% trans 'Upload new photo file' %}
+        {% else %}
+          {% trans 'Upload photo file' %}
+        {% endif %}
+      </h4>
+      {{form.photo}}
+    </div>
+    <div class="clear"></div>
+    <br />
+    <br />
+    {% if form.photo_location.errors %}
+      <div class="error">
+        <p><b>{% trans 'A problem occurred' %}:</b></p>
+        <p>{{ form.photo_location.errors.as_text }}</p>
+      </div>
+    {% endif %}				
+    {% if form.photo_caption.errors %}
+      <div class="error">
+        <p>{{ form.photo_caption.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h4>{% trans 'Photo caption' %}</h4>
+      {{form.photo_caption}}
+      <p class="small grey">75 {% trans 'characters' %}</p>
+    </div>
+    <div class="clear"></div>
+    <br />
+    {# <hr /> #}
+    {% if form.photo_credit.errors %}
+      <div class="error">
+        <p>{{ form.photo_credit.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h4>{% trans 'Photo credit' %} <span class="small grey">({% trans 'optional' %})</span></h4>
+      {{form.photo_credit}}
+      <p class="small grey">25 {% trans 'characters' %}</p>
+    </div>
+    <div class="clear"></div>
+    <br />
+    <hr />
+    <br />
+    {% if form.video.errors %}
+      <div class="error">
+        <p>{{ form.video.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h2 style="margin-bottom:20px;">{% trans 'Embed a video' %}<span class="small grey"> ({% trans 'optional' %})</span></h2>
+      {% if update and update.video %}
+        <img src="{{ update.get_video_thumbnail_url }}" alt="" style="margin-bottom:30px;width:200px;">
+      {% endif %}
+      <h4>
+        {% if edit_mode %}
+          {% trans 'Edit video URL' %}
+        {% else %}
+          {% trans 'Paste video URL' %}
+        {% endif %}
+      </h4>
+      {{form.video}}
+      <p class="small grey">{% trans 'Supported providers' %}: Blip, Vimeo, YouTube.</p>
+    </div>
+    <div class="clear"></div>
+    <br />
+    {% if form.video_caption.errors %}
+      <div class="error">
+        <p>{{ form.video_caption.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h4>{% trans 'Video caption' %}</h4>
+      {{ form.video_caption }}
+      <p class="small grey">75 {% trans 'characters' %}</p>
+    </div>
+    <div class="clear"></div>
+    <br />
+    {% if form.video_credit.errors %}
+      <div class="error">
+        <p>{{ form.video_credit.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <h4>{% trans 'Video credit' %} <span class="small grey">({% trans 'optional' %})</span></h4>
+      {{form.video_credit}}
+      <p class="small grey">25 {% trans 'characters' %}</p>
+    </div>
+    <div class="clear"></div>
+    <br />
+    <hr />
+    <br />
+    <div style="width:500px;">
+      <h2 style="margin-bottom:15px;">Text placement</h2>
+      <h4 style="margin-bottom:20px;">If you added a photo and/or video...</h4>
+      {# form.photo_location #}
+      <ol class="form_list">
+        <li>
+          <input type="radio" id="id_photo_location_0" 
+            name="photo_location" value="E" {% if update.photo_location == 'E' or not update %} 
+            checked="checked"{% endif %} /> 
+          <label for="id_photo_location_0">
+            {% trans 'Keep text above photo/video' %}
+          </label>
+        </li>
+        <li>
+          <input type="radio" id="id_photo_location_1" 
+            name="photo_location" value="B" {% if update.photo_location == 'B'%} 
+            checked="checked"{% endif %}/> 
+          <label for="id_photo_location_1">
+            {% trans 'Keep text below photo/video' %}
+          </label>
+        </li>
+      </ol>
+    </div>
+    <div class="clear"></div>
+    <br />	
+    <br />	
+    <hr />
+    <div style="text-align:center; padding-bottom:20px;">
+      <div style="float:left;">
+        {% if edit_mode %}
+          <a href="{{ update.get_absolute_url }}" class="small">{% trans 'Cancel' %}</a>
+        {% else %}
+          <a href="{% url project_main project.id %}" class="small">{% trans 'Cancel' %}</a>
+        {% endif %}
+      </div>
+      <a class="aqua awesome" href="javascript:document.add_update_form.submit();">
+        {% if edit_mode %}
+          {% trans 'Save edits' %}
+        {% else %}
+          {% trans 'Add update' %}
+        {% endif %}
+      </a>
+    </div>
+  </div>
+</form>
+{% endblock content %}
