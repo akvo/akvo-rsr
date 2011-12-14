@@ -131,7 +131,9 @@ class SystemPackageSpecifications(object):
                          {'name': 'libldap-2.4-2',      'version': '2.4.9-0ubuntu0.8.04.5'},
                          {'name': 'libcurl3',           'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'curl',               'version': '7.18.0-1ubuntu2.3'},
-                         {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'}]
+                         {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'},
+                         {'name': 'tar',                'version': '1.19-3'},
+                         {'name': 'unzip',              'version': '5.52-10ubuntu2'}]
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
                      PYTHON, PYTHON_EXTENSIONS, PYTHON_PACKAGE_DEPENDENCIES,
