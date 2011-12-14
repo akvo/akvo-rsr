@@ -37,6 +37,13 @@ from workflows import WorkflowBase
 from permissions import PermissionBase
 from permissions.models import Role
 
+# needed to get custom fields work with South.
+# See http://south.aeracode.org/docs/customfields.html#extending-introspection
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^akvo\.rsr\.fields\.NullCharField"])
+add_introspection_rules([], ["^akvo\.rsr\.fields\.LatitudeField"])
+add_introspection_rules([], ["^akvo\.rsr\.fields\.LongitudeField"])
+
 from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField
@@ -138,6 +145,35 @@ class Location(models.Model):
         super(Location, self).save(*args, **kwargs)
 
 
+class ProjectPartner(models.Model):
+    FIELD_PARTNER       = 'field'
+    FUNDING_PARTNER     = 'funding'
+    SPONSOR_PARTNER     = 'sponsor'
+    SUPPORT_PARTNER     = 'support'
+
+    PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
+    PARTNER_LABELS      = [_('Field partner'), _('Funding partner'), _('Sponsor partner'), _('Support partner'),]
+    PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+
+    organisation = models.ForeignKey('Organisation',)
+    project = models.ForeignKey('Project',)
+    partner_type = models.CharField(max_length=8, choices=PARTNER_TYPES,)
+    funding_amount = models.DecimalField(
+        _('funding amount (Only for funding partners)'),
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        verbose_name = _('Project partner')
+        verbose_name_plural = _('Project partners')
+
+    def __unicode__(self):
+        return self.organisation.name
+
+
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.ProjectsQuerySet(self.model)
@@ -162,10 +198,10 @@ class Organisation(models.Model):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
     #type = models.CharField(max_length=1, choices=PARNER_TYPES)
-    field_partner = models.BooleanField(_(u'field partner'))
-    support_partner = models.BooleanField(_(u'support partner'))
-    funding_partner = models.BooleanField(_(u'funding partner'))
-    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
+#    field_partner = models.BooleanField(_(u'field partner'))
+#    support_partner = models.BooleanField(_(u'support partner'))
+#    funding_partner = models.BooleanField(_(u'funding partner'))
+#    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
 
     name = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).'))
@@ -192,7 +228,7 @@ class Organisation(models.Model):
     #Managers, one default, one custom
     #objects = models.Manager()
     objects = QuerySetManager()
-    projects = ProjectsQuerySetManager()
+#    projects = ProjectsQuerySetManager()
 
     @models.permalink
     def get_absolute_url(self):
@@ -218,115 +254,103 @@ class Organisation(models.Model):
             project_ids = [location.object_id for location in locations]
             return self.filter(id__in=project_ids)
 
+#        def fieldpartners(self):
+#            return self.filter(field_partner__exact=True)
+#
+#        def supportpartners(self):
+#            return self.filter(support_partner__exact=True)
+#
+#        def sponsorpartners(self):
+#            return self.filter(sponsor_partner__exact=True)
+#
+#        def fundingpartners(self):
+#            return self.filter(funding_partner__exact=True)
+
+        def partners(self, partner_type):
+            "return the organisations in the queryset that are partners of type partner_type"
+            return self.filter(projectpartner__partner_type__exact=partner_type).distinct()
+
         def fieldpartners(self):
-            return self.filter(field_partner__exact=True)
-
-        def supportpartners(self):
-            return self.filter(support_partner__exact=True)
-
-        def sponsorpartners(self):
-            return self.filter(sponsor_partner__exact=True)
+            return self.partners(ProjectPartner.FIELD_PARTNER)
 
         def fundingpartners(self):
-            return self.filter(funding_partner__exact=True)
+            return self.partners(ProjectPartner.FUNDING_PARTNER)
+
+        def sponsorpartners(self):
+            return self.partners(ProjectPartner.SPONSOR_PARTNER)
+
+        def supportpartners(self):
+            return self.partners(ProjectPartner.SUPPORT_PARTNER)
 
         def ngos(self):
-            return self.filter(organisation_type__exact='N')
+            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_NGO)
 
         def governmental(self):
-            return self.filter(organisation_type__exact='G')
+            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_GOV)
 
         def commercial(self):
-            return self.filter(organisation_type__exact='C')
+            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_COM)
 
         def knowledge(self):
-            return self.filter(organisation_type__exact='K')
+            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_KNO)
 
-    class ProjectsQuerySet(QuerySet):
-        """
-        used for the projects manager on the Organisation
-        returns querysets of projects
-        Usage:
-        orgs = Organisation.projects.filter(filter_criteria)
-        orgs.published() -> all projects "belonging to the orgs" returned from
-        the first statement
-        Note: Organisation.projects.all() returns all orgs!
-        To get all projects you need to write Organisation.projects.all().all() ;-)
-        """
-        def published(self):
-            '''
-            returns a queryset with published projects that has self as any kind of partner
-            note that self is a queryset of orgs
-            '''
-            projs = Project.objects.published()
-            return (projs.filter(supportpartner__support_organisation__in=self) | \
-                    projs.filter(fieldpartner__field_organisation__in=self) | \
-                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
-
-        def all(self):
-            '''
-            returns a queryset with all projects that has self as any kind of partner
-            note that self is a queryset of orgs
-            '''
-            projs = Project.objects.all()
-            return (projs.filter(supportpartner__support_organisation__in=self) | \
-                    projs.filter(fieldpartner__field_organisation__in=self) | \
-                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
+#    class ProjectsQuerySet(QuerySet):
+#        """
+#        used for the projects manager on the Organisation
+#        returns querysets of projects
+#        Usage:
+#        orgs = Organisation.projects.filter(filter_criteria)
+#        orgs.published() -> all projects "belonging to the orgs" returned from
+#        the first statement
+#        Note: Organisation.projects.all() returns all orgs!
+#        To get all projects you need to write Organisation.projects.all().all() ;-)
+#        """
+#        def published(self):
+#            '''
+#            returns a queryset with published projects that has self as any kind of partner
+#            note that self is a queryset of orgs
+#            '''
+#            projs = Project.objects.published()
+#            import pdb
+#            pdb.set_trace()
+#            return (projs.filter(supportpartner__support_organisation__in=self) | \
+#                    projs.filter(fieldpartner__field_organisation__in=self) | \
+#                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
+#                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
+#
+#        def all(self):
+#            '''
+#            returns a queryset with all projects that has self as any kind of partner
+#            note that self is a queryset of orgs
+#            '''
+#            projs = Project.objects.all()
+#            return (projs.filter(supportpartner__support_organisation__in=self) | \
+#                    projs.filter(fieldpartner__field_organisation__in=self) | \
+#                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
+#                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
     def __unicode__(self):
         return self.name
 
-    #def partner_types(self):
-    #    pt = ""
-    #    if self.field_partner: pt += "F"
-    #    if self.support_partner: pt += "S"
-    #    if self.sponsor_partner: pt += "P"
-    #    if self.funding_partner: pt += "M"
-    #    return pt
+    def is_partner_type(self, partner_type):
+        "returns True if the organisation is a partner of type partner_type to at least one project"
+        return self.projectpartner_set.filter(partner_type__exact=partner_type).count() > 0
 
-    #def has_water_projects(self):
-    #    if self.all_projects().filter(category_water__exact=True):
-    #        return True
-    #    else:
-    #        return False
-    #
-    #def has_sanitation_projects(self):
-    #    if self.all_projects().filter(category_sanitation__exact=True):
-    #        return True
-    #    else:
-    #        return False
-    #
-    #def has_training_projects(self):
-    #    if self.all_projects().filter(category_training__exact=True):
-    #        return True
-    #    else:
-    #        return False
-    #
-    #def has_maintenance_projects(self):
-    #    if self.all_projects().filter(category_maintenance__exact=True):
-    #        return True
-    #    else:
-    #        return False
-    #
-    #def has_education_projects(self):
-    #    if self.all_projects().filter(category_education__exact=True):
-    #        return True
-    #    else:
-    #        return False
-    #
-    #def has_product_development_projects(self):
-    #    if self.all_projects().filter(category_product_development__exact=True):
-    #        return True
-    #    else:
-    #        return False
-    #
-    #def has_other_projects(self):
-    #    if self.all_projects().filter(category_other__exact=True):
-    #        return True
-    #    else:
-    #        return False
+    def is_field_partner(self):
+        "returns True if the organisation is a field partner to at least one project"
+        return self.is_partner_type(ProjectPartner.FIELD_PARTNER)
+
+    def is_funding_partner(self):
+        "returns True if the organisation is a funding partner to at least one project"
+        return self.is_partner_type(ProjectPartner.FUNDING_PARTNER)
+
+    def is_sponsor_partner(self):
+        "returns True if the organisation is a sponsor partner to at least one project"
+        return self.is_partner_type(ProjectPartner.SPONSOR_PARTNER)
+
+    def is_support_partner(self):
+        "returns True if the organisation is a support partner to at least one project"
+        return self.is_partner_type(ProjectPartner.SUPPORT_PARTNER)
 
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
@@ -336,13 +360,14 @@ class Organisation(models.Model):
         '''
         returns a queryset with published projects that has self as any kind of partner
         '''
-        return Organisation.projects.filter(pk=self.pk).published()
+        return self.projects.published().distinct()
+
 
     def all_projects(self):
         '''
         returns a queryset with all projects that has self as any kind of partner
         '''
-        return Organisation.projects.filter(pk=self.pk).all()
+        return self.projects.all().distinct()
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
@@ -351,7 +376,7 @@ class Organisation(models.Model):
         '''
         returns a queryset of all organisations that self has at least one project in common with, excluding self
         '''
-        return Project.organisations.filter(pk__in=self.published_projects()).all_partners().exclude(id__exact=self.id)
+        return self.projects.all_partners().exclude(id__exact=self.id)
 
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled().status_not_archived()
@@ -570,7 +595,7 @@ class Project(models.Model):
     subtitle = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
     status = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
     categories = models.ManyToManyField(Category, related_name='projects',)
-
+    partners = models.ManyToManyField(Organisation, through=ProjectPartner, related_name='projects',)
     project_plan_summary = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
     current_image = ImageWithThumbnailsField(
                         _('project photo'),
@@ -743,8 +768,8 @@ class Project(models.Model):
                                 WHEN Sum(funding_amount) IS NULL THEN 0
                                 ELSE Sum(funding_amount)
                             END
-                            FROM rsr_fundingpartner
-                            WHERE rsr_fundingpartner.project_id = rsr_project.id
+                            FROM rsr_projectpartner
+                            WHERE rsr_projectpartner.project_id = rsr_project.id
                         ) - (
                             SELECT CASE
                                 WHEN Sum(amount) IS NULL THEN 0
@@ -812,13 +837,13 @@ class Project(models.Model):
                             WHEN Sum(funding_amount) IS NULL THEN 0
                             ELSE Sum(funding_amount)
                         END
-                        FROM rsr_fundingpartner
-                        WHERE rsr_fundingpartner.project_id = rsr_project.id
+                        FROM rsr_projectpartner
+                        WHERE rsr_projectpartner.project_id = rsr_project.id
                     '''
             }
             if organisation:
                 pledged['pledged'] = '''%s
-                    AND rsr_fundingpartner.funding_organisation_id = %d''' % (
+                    AND rsr_projectpartner.organisation_id = %d''' % (
                         pledged['pledged'], organisation.pk
                     )
             pledged['pledged'] = "%s)" % pledged['pledged']
@@ -916,52 +941,54 @@ class Project(models.Model):
             #cheating slightly, counting on that both id and time are the largest for the latest update
             return self.annotate(latest_update_id=Max('project_updates__id'),latest_update_date=Max('project_updates__time'))
 
-        #the following 4 return an organisation queryset!
-        def support_partners(self):
-            o = Organisation.objects.all()
-            return o.filter(support_partners__project__in=self)
-
-        def sponsor_partners(self):
-            o = Organisation.objects.all()
-            return o.filter(sponsor_partners__project__in=self)
+        #the following 6 methods return organisation querysets!
+        def _partners(self, partner_type=None):
+            orgs = Organisation.objects.filter(projectpartner__in=self)
+            if partner_type:
+                orgs = orgs.filter(projectpartner__partner_type=partner_type)
+            return orgs.distinct()
+        
+        def field_partners(self):
+            return self._partners(ProjectPartner.FIELD_PARTNER)
 
         def funding_partners(self):
-            o = Organisation.objects.all()
-            return o.filter(funding_partners__project__in=self)
-
-        def field_partners(self):
-            o = Organisation.objects.all()
-            return o.filter(field_partners__project__in=self)
-
-        def all_partners(self):
-            return (self.support_partners() | self.sponsor_partners() | self.funding_partners() | self.field_partners()).distinct()
-
-
-        #TODO: is this relly needed? the default QS has identical methods
-    class OrganisationsQuerySet(QuerySet):
-        def support_partners(self):
-            orgs = Organisation.objects.all()
-            return orgs.filter(support_partners__project__in=self)
+            return self._partners(ProjectPartner.FUNDING_PARTNER)
 
         def sponsor_partners(self):
-            orgs = Organisation.objects.all()
-            return orgs.filter(sponsor_partners__project__in=self)
+            return self._partners(ProjectPartner.SPONSOR_PARTNER)
 
-        def funding_partners(self):
-            orgs = Organisation.objects.all()
-            return orgs.filter(funding_partners__project__in=self)
-
-        def field_partners(self):
-            orgs = Organisation.objects.all()
-            return orgs.filter(field_partners__project__in=self)
+        def support_partners(self):
+            return self._partners(ProjectPartner.SUPPORT_PARTNER)
 
         def all_partners(self):
-            orgs = Organisation.objects.all()
-            return (orgs.filter(support_partners__project__in=self) | \
-                    orgs.filter(sponsor_partners__project__in=self) | \
-                    orgs.filter(funding_partners__project__in=self) | \
-                    orgs.filter(field_partners__project__in=self)).distinct()
-            #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
+            return self._partners()
+
+
+#        #TODO: is this relly needed? the default QS has identical methods
+#    class OrganisationsQuerySet(QuerySet):
+#        def support_partners(self):
+#            orgs = Organisation.objects.all()
+#            return orgs.filter(support_partners__project__in=self)
+#
+#        def sponsor_partners(self):
+#            orgs = Organisation.objects.all()
+#            return orgs.filter(sponsor_partners__project__in=self)
+#
+#        def funding_partners(self):
+#            orgs = Organisation.objects.all()
+#            return orgs.filter(funding_partners__project__in=self)
+#
+#        def field_partners(self):
+#            orgs = Organisation.objects.all()
+#            return orgs.filter(field_partners__project__in=self)
+#
+#        def all_partners(self):
+#            orgs = Organisation.objects.all()
+#            return (orgs.filter(support_partners__project__in=self) | \
+#                    orgs.filter(sponsor_partners__project__in=self) | \
+#                    orgs.filter(funding_partners__project__in=self) | \
+#                    orgs.filter(field_partners__project__in=self)).distinct()
+#            #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -1100,20 +1127,30 @@ class Project(models.Model):
         return areas
 
     #shortcuts to linked orgs for a single project
-    def support_partners(self):
-        return Project.objects.filter(pk=self.pk).support_partners()
-
-    def sponsor_partners(self):
-        return Project.objects.filter(pk=self.pk).sponsor_partners()
-
-    def funding_partners(self):
-        return Project.objects.filter(pk=self.pk).funding_partners()
+    def _partners(self, partner_type=None):
+        """
+        Return the partner organisations to the project.
+        If partner_type is specified only organisations having that role are returned
+        """
+        orgs = self.partners.all()
+        if partner_type:
+            return orgs.filter(projectpartner__partner_type=partner_type).distinct()
+        return orgs.distinct()
 
     def field_partners(self):
-        return Project.objects.filter(pk=self.pk).field_partners()
+        return self._partners(ProjectPartner.FIELD_PARTNER)
+
+    def funding_partners(self):
+        return self._partners(ProjectPartner.FUNDING_PARTNER)
+
+    def sponsor_partners(self):
+        return self._partners(ProjectPartner.SPONSOR_PARTNER)
+
+    def support_partners(self):
+        return self._partners(ProjectPartner.SUPPORT_PARTNER)
 
     def all_partners(self):
-        return Project.objects.filter(pk=self.pk).all_partners()
+        return self._partners()
 
     def show_status_large(self):
         "Show the current project status with background"
@@ -1204,71 +1241,51 @@ class Link(models.Model):
         verbose_name = _('link')
         verbose_name_plural = _('links')
 
-        
-class ProjectPartner(models.Model):
-    PARTNER_TYPES = (
-        ('field', _('field partner')),
-        ('funding', _('funding partner')),
-        ('sponsor', _('sponsor partner')),
-        ('support', _('support partner')),
-    )
-    organisation = models.ForeignKey(Organisation, related_name='project_partners',)
-    project = models.ForeignKey(Project,)
-    partner_type = models.CharField(max_length=8, choices=PARTNER_TYPES)
-    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
 
-    class Meta:
-        verbose_name = _('Project partner')
-        verbose_name_plural = _('Project partners')
-
-    def __unicode__(self):
-        return self.organisation.name
-
-
-class FundingPartner(models.Model):
-    funding_organisation = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
-    project = models.ForeignKey(Project,)
-
-    class Meta:
-        verbose_name = _('Funding partner')
-        verbose_name_plural = _('Funding partners')
-
-    def __unicode__(self):
-        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
-
-class SponsorPartner(models.Model):
-    sponsor_organisation = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
-    project = models.ForeignKey(Project,)
-
-    class Meta:
-        verbose_name = _('Sponsor partner')
-        verbose_name_plural = _('Sponsor partners')
-
-    def __unicode__(self):
-        return "%s" % (self.sponsor_organisation.name, )
-
-class SupportPartner(models.Model):
-    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
-    project = models.ForeignKey(Project,)
-
-    class Meta:
-        verbose_name = _('Support partner')
-        verbose_name_plural = _('Support partners')
-
-    def __unicode__(self):
-        return "%s" % (self.support_organisation.name, )
-
-class FieldPartner(models.Model):
-    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
-    project = models.ForeignKey(Project,)
-
-    class Meta:
-        verbose_name = _('Field partner')
-        verbose_name_plural = _('Field partners')
-
-    def __unicode__(self):
-        return "%s" % (self.field_organisation.name, )
+#class FundingPartner(models.Model):
+#    funding_organisation = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
+#    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
+#    project = models.ForeignKey(Project,)
+#
+#    class Meta:
+#        verbose_name = _('Funding partner')
+#        verbose_name_plural = _('Funding partners')
+#
+#    def __unicode__(self):
+#        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
+#
+#class SponsorPartner(models.Model):
+#    sponsor_organisation = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
+#    project = models.ForeignKey(Project,)
+#
+#    class Meta:
+#        verbose_name = _('Sponsor partner')
+#        verbose_name_plural = _('Sponsor partners')
+#
+#    def __unicode__(self):
+#        return "%s" % (self.sponsor_organisation.name, )
+#
+#class SupportPartner(models.Model):
+#    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
+#    project = models.ForeignKey(Project,)
+#
+#    class Meta:
+#        verbose_name = _('Support partner')
+#        verbose_name_plural = _('Support partners')
+#
+#    def __unicode__(self):
+#        return "%s" % (self.support_organisation.name, )
+#
+#class FieldPartner(models.Model):
+#    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
+#    project = models.ForeignKey(Project,)
+#
+#    class Meta:
+#        verbose_name = _('Field partner')
+#        verbose_name_plural = _('Field partners')
+#
+#    def __unicode__(self):
+#        return "%s" % (self.field_organisation.name, )
 
 # kept for updating database. may be renamed Funding for certain DBs
 #class Budget(models.Model):
