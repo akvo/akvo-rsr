@@ -7,33 +7,10 @@
 
 class PythonInstaller(object):
 
-    PYTHONBREW_VERSION = "1.1"
+    def __init__(self, pythonbrew):
+        self.pythonbrew = pythonbrew
 
-    def __init__(self, host_controller):
-        self.host_controller = host_controller
-        self.feedback = host_controller.feedback
-
-    def ensure_pythonbrew_is_installed(self):
-        if not self._pythonbrew_is_installed():
-            self._install_pythonbrew()
-        else:
-            self.feedback.comment("Found pythonbrew version %s at: %s" % (self._installed_pythonbrew_version(),
-                                                                          self._installed_pythonbrew_path()))
-
-    def _pythonbrew_is_installed(self):
-        try:
-            return self._installed_pythonbrew_path().find("pythonbrew") > 0
-        except SystemExit:
-            return False
-
-    def _installed_pythonbrew_path(self):
-        with self.host_controller.hide_command_and_output():
-            return self.host_controller.run("which pythonbrew")
-
-    def _installed_pythonbrew_version(self):
-        with self.host_controller.hide_command_and_output():
-            return self.host_controller.run("pythonbrew version")
-
-    def _install_pythonbrew(self):
-        self.feedback.comment("Installing pythonbrew")
-        self.host_controller.sudo("curl -kL http://xrl.us/pythonbrewinstall | bash")
+    def ensure_python_is_installed_with_version(self, python_version):
+        self.pythonbrew.ensure_pythonbrew_is_installed()
+        self.pythonbrew.install_python(python_version)
+        self.pythonbrew.enable_python_version_for_all_users(python_version)
