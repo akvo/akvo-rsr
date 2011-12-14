@@ -35,7 +35,10 @@ class PipInstaller(object):
             self.feedback.comment("Found expected pip version: %s" % self._installed_pip_version())
 
     def _pip_is_installed(self):
-        return self._installed_pip_path().find("pip") > 0
+        try:
+            return self._installed_pip_path().find("pip") > 0
+        except SystemExit:
+            return False
 
     def _pip_not_installed(self):
         return not self._pip_is_installed()

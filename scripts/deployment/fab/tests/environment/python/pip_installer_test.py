@@ -51,7 +51,7 @@ class PipInstallerTest(mox.MoxTestBase):
     def test_can_install_pip_if_not_already_installed(self):
         """fab.tests.environment.python.pip_installer_test  Can install pip if not already installed"""
 
-        self._search_for_pip_path_and_return("")
+        self._search_for_pip_path_and_raise(SystemExit('not found'))
         self._download_and_install_package("distribute", self.installation_paths.distribute_setup_url)
         self._download_and_install_package("pip", self.installation_paths.pip_setup_url)
         self.mox.ReplayAll()
@@ -81,6 +81,10 @@ class PipInstallerTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.pip_installer.ensure_pip_is_installed()
+
+    def _search_for_pip_path_and_raise(self, expected_exception):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        self.mock_host_controller.run("which pip").AndRaise(expected_exception)
 
     def _search_for_pip_path_and_return(self, expected_path):
         self._run_command_with_expected_response("which pip", expected_path)
