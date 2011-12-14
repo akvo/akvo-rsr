@@ -54,6 +54,7 @@ def rebuild_ci_server():
     os.chdir(FABRIC_SCRIPTS_HOME)
     run_deployment_task("fab.tasks.environment.linux.systempackages.verify_system_packages")
     run_deployment_task("fab.tasks.environment.python.systempackages.update_system_python_packages")
+    run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
     run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
 
 

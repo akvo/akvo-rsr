@@ -8,6 +8,7 @@
 
 {% block breadcrum_items %}
   {{block.super}}
+  <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
   <li class="last_breadcrum_item">{% trans "Sign-in" %}</li>
 {% endblock breadcrum_items %}
 
@@ -36,7 +37,6 @@
       {% endfor %}
       <div class="clearfix">
         <div class="input marg_top15">
-          <a class="yellow awesome" style="color:#fff" href="{{next}}">{% trans 'Cancel' %}</a> &nbsp;
           <a class="aqua awesome" style="color:#fff" href="javascript:document.auth_form.submit()">{% trans 'Sign in' %}</a>
         </div>
       </div>

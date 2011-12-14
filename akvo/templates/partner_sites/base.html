@@ -96,11 +96,8 @@
           <p class="small">
            {% trans "Contact at " %}
             <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
-          </p>
-      </div>
-      <div class="two_col_right" style="text-align:right;">
-          <p class="small">
             {% if app_url %}
+              |
               {% if not user.username %}
                 <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">
                   <span>{% trans 'Sign in' %}</span>
@@ -112,9 +109,14 @@
                     <span>{% trans 'Sign out' %}</span>
                   </a>
               {% endif %}
-              |
             {% endif %}
-            {% trans "Powered by" %} <a href="http://www.akvoapp.org">Akvo</a>
+          </p>
+      </div>
+      <div class="two_col_right" style="text-align:right;">
+          <p class="small">
+            <a href="{{domain_url}}">
+              <img src="{{MEDIA_URL}}widgets/img/akvo-badge.gif" width="100" height="30" alt="Akvo.org" style="vertical-align:text-bottom;" />
+            </a>
           </p>
       </div>
       <div class="clear"></div>

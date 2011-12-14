@@ -191,7 +191,7 @@ div.counter_badge span {
 #id_name {
   display: inline;
   width: 300px;
-  margin-left: 0px;
+  margin-left: 0;
   margin-top: 4px;
 }
 #id_continent {
