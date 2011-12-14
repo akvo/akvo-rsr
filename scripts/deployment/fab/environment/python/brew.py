@@ -21,9 +21,11 @@ class PythonBrew(object):
                                                                           self._installed_pythonbrew_path()))
 
     def install_python(self, python_version):
-        self.host_controller.run("sudopybrew install --no-setuptools %s" % python_version)
+        self.feedback.comment("Installing Python %s" % python_version)
+        self.host_controller.run("sudopybrew install --no-setuptools --no-test --verbose %s" % python_version)
 
     def enable_python_version_for_all_users(self, python_version):
+        self.feedback.comment("Enabling Python %s for all users" % python_version)
         self.host_controller.run("sudopybrew switch %s" % python_version)
 
     def _pythonbrew_is_installed(self):

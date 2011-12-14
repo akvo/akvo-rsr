@@ -67,7 +67,8 @@ class PythonBrewTest(mox.MoxTestBase):
     def test_can_install_specified_python_version(self):
         """fab.tests.environment.python.pythonbrew_test  Can install a specified Python version"""
 
-        self.mock_host_controller.run("sudopybrew install --no-setuptools 2.7.2")
+        self.mock_feedback.comment("Installing Python 2.7.2")
+        self.mock_host_controller.run("sudopybrew install --no-setuptools --no-test --verbose 2.7.2")
         self.mox.ReplayAll()
 
         self.pythonbrew.install_python("2.7.2")
@@ -75,6 +76,7 @@ class PythonBrewTest(mox.MoxTestBase):
     def test_can_enable_specified_python_version_for_all_users(self):
         """fab.tests.environment.python.pythonbrew_test  Can enable a specified Python version for all users"""
 
+        self.mock_feedback.comment("Enabling Python 2.7.2 for all users")
         self.mock_host_controller.run("sudopybrew switch 2.7.2")
         self.mox.ReplayAll()
 
