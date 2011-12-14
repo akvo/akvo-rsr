@@ -23,7 +23,7 @@ class InstallPython(fabric.tasks.Task):
         return InstallPython(fab.host.linux.LinuxHost.create_instance())
 
     def run(self, python_version):
-        self.linux_host.install_python(python_version)
+        self.linux_host.ensure_python_is_installed_with_version(python_version)
 
 
 instance = InstallPython.create_task_instance()

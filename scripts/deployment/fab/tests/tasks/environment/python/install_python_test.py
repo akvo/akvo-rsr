@@ -35,7 +35,7 @@ class InstallPythonTest(mox.MoxTestBase):
 
         install_python_task = InstallPython(mock_linux_host)
 
-        mock_linux_host.install_python("2.7.2")
+        mock_linux_host.ensure_python_is_installed_with_version("2.7.2")
         self.mox.ReplayAll()
 
         install_python_task.run("2.7.2")
