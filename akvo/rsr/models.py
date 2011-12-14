@@ -145,7 +145,7 @@ class Location(models.Model):
         super(Location, self).save(*args, **kwargs)
 
 
-class ProjectPartner(models.Model):
+class Partnership(models.Model):
     FIELD_PARTNER       = 'field'
     FUNDING_PARTNER     = 'funding'
     SPONSOR_PARTNER     = 'sponsor'
@@ -268,19 +268,19 @@ class Organisation(models.Model):
 
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
-            return self.filter(projectpartner__partner_type__exact=partner_type).distinct()
+            return self.filter(partnership__partner_type__exact=partner_type).distinct()
 
         def fieldpartners(self):
-            return self.partners(ProjectPartner.FIELD_PARTNER)
+            return self.partners(Partnership.FIELD_PARTNER)
 
         def fundingpartners(self):
-            return self.partners(ProjectPartner.FUNDING_PARTNER)
+            return self.partners(Partnership.FUNDING_PARTNER)
 
         def sponsorpartners(self):
-            return self.partners(ProjectPartner.SPONSOR_PARTNER)
+            return self.partners(Partnership.SPONSOR_PARTNER)
 
         def supportpartners(self):
-            return self.partners(ProjectPartner.SUPPORT_PARTNER)
+            return self.partners(Partnership.SUPPORT_PARTNER)
 
         def ngos(self):
             return self.filter(organisation_type__exact=Organisation.ORG_TYPE_NGO)
@@ -334,23 +334,23 @@ class Organisation(models.Model):
 
     def is_partner_type(self, partner_type):
         "returns True if the organisation is a partner of type partner_type to at least one project"
-        return self.projectpartner_set.filter(partner_type__exact=partner_type).count() > 0
+        return self.partnership_set.filter(partner_type__exact=partner_type).count() > 0
 
     def is_field_partner(self):
         "returns True if the organisation is a field partner to at least one project"
-        return self.is_partner_type(ProjectPartner.FIELD_PARTNER)
+        return self.is_partner_type(Partnership.FIELD_PARTNER)
 
     def is_funding_partner(self):
         "returns True if the organisation is a funding partner to at least one project"
-        return self.is_partner_type(ProjectPartner.FUNDING_PARTNER)
+        return self.is_partner_type(Partnership.FUNDING_PARTNER)
 
     def is_sponsor_partner(self):
         "returns True if the organisation is a sponsor partner to at least one project"
-        return self.is_partner_type(ProjectPartner.SPONSOR_PARTNER)
+        return self.is_partner_type(Partnership.SPONSOR_PARTNER)
 
     def is_support_partner(self):
         "returns True if the organisation is a support partner to at least one project"
-        return self.is_partner_type(ProjectPartner.SUPPORT_PARTNER)
+        return self.is_partner_type(Partnership.SUPPORT_PARTNER)
 
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
@@ -595,7 +595,7 @@ class Project(models.Model):
     subtitle = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
     status = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
     categories = models.ManyToManyField(Category, related_name='projects',)
-    partners = models.ManyToManyField(Organisation, through=ProjectPartner, related_name='projects',)
+    partners = models.ManyToManyField(Organisation, through=Partnership, related_name='projects',)
     project_plan_summary = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
     current_image = ImageWithThumbnailsField(
                         _('project photo'),
@@ -768,8 +768,8 @@ class Project(models.Model):
                                 WHEN Sum(funding_amount) IS NULL THEN 0
                                 ELSE Sum(funding_amount)
                             END
-                            FROM rsr_projectpartner
-                            WHERE rsr_projectpartner.project_id = rsr_project.id
+                            FROM rsr_partnership
+                            WHERE rsr_partnership.project_id = rsr_project.id
                         ) - (
                             SELECT CASE
                                 WHEN Sum(amount) IS NULL THEN 0
@@ -837,13 +837,13 @@ class Project(models.Model):
                             WHEN Sum(funding_amount) IS NULL THEN 0
                             ELSE Sum(funding_amount)
                         END
-                        FROM rsr_projectpartner
-                        WHERE rsr_projectpartner.project_id = rsr_project.id
+                        FROM rsr_partnership
+                        WHERE rsr_partnership.project_id = rsr_project.id
                     '''
             }
             if organisation:
                 pledged['pledged'] = '''%s
-                    AND rsr_projectpartner.organisation_id = %d''' % (
+                    AND rsr_partnership.organisation_id = %d''' % (
                         pledged['pledged'], organisation.pk
                     )
             pledged['pledged'] = "%s)" % pledged['pledged']
@@ -943,22 +943,22 @@ class Project(models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(projectpartner__in=self)
+            orgs = Organisation.objects.filter(partnership__in=self)
             if partner_type:
-                orgs = orgs.filter(projectpartner__partner_type=partner_type)
+                orgs = orgs.filter(partnership__partner_type=partner_type)
             return orgs.distinct()
         
         def field_partners(self):
-            return self._partners(ProjectPartner.FIELD_PARTNER)
+            return self._partners(Partnership.FIELD_PARTNER)
 
         def funding_partners(self):
-            return self._partners(ProjectPartner.FUNDING_PARTNER)
+            return self._partners(Partnership.FUNDING_PARTNER)
 
         def sponsor_partners(self):
-            return self._partners(ProjectPartner.SPONSOR_PARTNER)
+            return self._partners(Partnership.SPONSOR_PARTNER)
 
         def support_partners(self):
-            return self._partners(ProjectPartner.SUPPORT_PARTNER)
+            return self._partners(Partnership.SUPPORT_PARTNER)
 
         def all_partners(self):
             return self._partners()
@@ -1134,20 +1134,20 @@ class Project(models.Model):
         """
         orgs = self.partners.all()
         if partner_type:
-            return orgs.filter(projectpartner__partner_type=partner_type).distinct()
+            return orgs.filter(partnership__partner_type=partner_type).distinct()
         return orgs.distinct()
 
     def field_partners(self):
-        return self._partners(ProjectPartner.FIELD_PARTNER)
+        return self._partners(Partnership.FIELD_PARTNER)
 
     def funding_partners(self):
-        return self._partners(ProjectPartner.FUNDING_PARTNER)
+        return self._partners(Partnership.FUNDING_PARTNER)
 
     def sponsor_partners(self):
-        return self._partners(ProjectPartner.SPONSOR_PARTNER)
+        return self._partners(Partnership.SPONSOR_PARTNER)
 
     def support_partners(self):
-        return self._partners(ProjectPartner.SUPPORT_PARTNER)
+        return self._partners(Partnership.SUPPORT_PARTNER)
 
     def all_partners(self):
         return self._partners()

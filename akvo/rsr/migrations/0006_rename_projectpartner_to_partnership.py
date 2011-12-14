@@ -1,73 +1,18 @@
 # encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-# since Partnership was initially named ProjectPartner we need this little hack
-try:
-    from akvo.rsr.models import Partnership
-except:
-    from akvo.rsr.models import ProjectPartner as Partnership
-
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        for field_partner in orm.FieldPartner.objects.all():
-            orm.ProjectPartner.objects.create(
-                project=field_partner.project,
-                organisation=field_partner.field_organisation,
-                partner_type=Partnership.FIELD_PARTNER
-            )
-        for sponsor_partner in orm.SponsorPartner.objects.all():
-            orm.ProjectPartner.objects.create(
-                project=sponsor_partner.project,
-                organisation=sponsor_partner.sponsor_organisation,
-                partner_type=Partnership.SPONSOR_PARTNER
-            )
-        for support_partner in orm.SupportPartner.objects.all():
-            orm.ProjectPartner.objects.create(
-                project=support_partner.project,
-                organisation=support_partner.support_organisation,
-                partner_type=Partnership.SUPPORT_PARTNER
-            )
-        for funding_partner in orm.FundingPartner.objects.all():
-            orm.ProjectPartner.objects.create(
-                project=funding_partner.project,
-                organisation=funding_partner.funding_organisation,
-                partner_type=Partnership.FUNDING_PARTNER,
-                funding_amount=funding_partner.funding_amount
-            )
 
+        db.rename_table('rsr_projectpartner', 'rsr_partnership')
 
     def backwards(self, orm):
-        for project_partner in orm.ProjectPartner.objects.all():
-            if project_partner.partner_type == Partnership.FIELD_PARTNER:
-                orm.FieldPartner.objects.create(
-                    project=project_partner.project,
-                    field_organisation=project_partner.partner,
-                )
-            elif project_partner.partner_type == Partnership.SPONSOR_PARTNER:
-                orm.SponsorPartner.objects.create(
-                    project=project_partner.project,
-                    sponsor_organisation=project_partner.partner,
-                )
-            elif project_partner.partner_type == Partnership.SUPPORT_PARTNER:
-                orm.SupportPartner.objects.create(
-                    project=project_partner.project,
-                    support_organisation=project_partner.partner,
-                )
-            elif project_partner.partner_type == Partnership.FUNDING_PARTNER:
-                orm.FundingPartner.objects.create(
-                    project=project_partner.project,
-                    funding_organisation=project_partner.partner,
-                    funding_amount=project_partner.funding_amount
-                )
-            else:
-                raise RuntimeError(
-                    "Cannot reverse this migration. Unknown type of partner: %s" % project_partner.get_partner_type_display()
-                )
-
+        
+        db.rename_table('rsr_partnership', 'rsr_projectpartner')
 
     models = {
         'auth.group': {
@@ -160,12 +105,6 @@ class Migration(DataMigration):
             'iso_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'})
         },
-        'rsr.fieldpartner': {
-            'Meta': {'object_name': 'FieldPartner'},
-            'field_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'field_partners'", 'to': "orm['rsr.Organisation']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
-        },
         'rsr.focusarea': {
             'Meta': {'object_name': 'FocusArea'},
             'description': ('django.db.models.fields.TextField', [], {'max_length': '500'}),
@@ -174,13 +113,6 @@ class Migration(DataMigration):
             'link_to': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
-        },
-        'rsr.fundingpartner': {
-            'Meta': {'object_name': 'FundingPartner'},
-            'funding_amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'funding_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'funding_partners'", 'to': "orm['rsr.Organisation']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
         },
         'rsr.invoice': {
             'Meta': {'object_name': 'Invoice'},
@@ -250,8 +182,6 @@ class Migration(DataMigration):
             'contact_person': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'field_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'funding_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'logo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'long_name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
@@ -259,14 +189,20 @@ class Migration(DataMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'sponsor_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'support_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
         'rsr.organisationaccount': {
             'Meta': {'object_name': 'OrganisationAccount'},
             'account_level': ('django.db.models.fields.CharField', [], {'default': "'free'", 'max_length': '12'}),
             'organisation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['rsr.Organisation']", 'unique': 'True', 'primary_key': 'True'})
+        },
+        'rsr.partnership': {
+            'Meta': {'object_name': 'Partnership'},
+            'funding_amount': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
+            'partner_type': ('django.db.models.fields.CharField', [], {'max_length': '8'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
         },
         'rsr.partnersite': {
             'Meta': {'object_name': 'PartnerSite'},
@@ -318,7 +254,7 @@ class Migration(DataMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '45'}),
             'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'partners': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.Organisation']", 'through': "orm['rsr.ProjectPartner']", 'symmetrical': 'False'}),
+            'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'project_plan_detail': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'project_plan_summary': ('django.db.models.fields.TextField', [], {'max_length': '220'}),
             'project_rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -333,14 +269,6 @@ class Migration(DataMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
             'time': ('django.db.models.fields.DateTimeField', [], {}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
-        'rsr.projectpartner': {
-            'Meta': {'object_name': 'ProjectPartner'},
-            'funding_amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
-            'partner_type': ('django.db.models.fields.CharField', [], {'max_length': '8'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
         },
         'rsr.projectupdate': {
             'Meta': {'object_name': 'ProjectUpdate'},
@@ -373,18 +301,6 @@ class Migration(DataMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']", 'null': 'True', 'blank': 'True'}),
             'userprofile': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reporters'", 'to': "orm['rsr.UserProfile']"})
-        },
-        'rsr.sponsorpartner': {
-            'Meta': {'object_name': 'SponsorPartner'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'sponsor_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sponsor_partners'", 'to': "orm['rsr.Organisation']"})
-        },
-        'rsr.supportpartner': {
-            'Meta': {'object_name': 'SupportPartner'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'support_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'support_partners'", 'to': "orm['rsr.Organisation']"})
         },
         'rsr.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
