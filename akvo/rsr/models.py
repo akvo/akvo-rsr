@@ -1154,6 +1154,10 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
+    def funding_partner_info(self):
+        "Return the Partnership objects associated with the project that have funding information"
+        return self.partnership_set.filter(partner_type=Partnership.FUNDING_PARTNER)
+
     def show_status_large(self):
         "Show the current project status with background"
         return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
