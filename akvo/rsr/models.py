@@ -169,6 +169,7 @@ class Partnership(models.Model):
     class Meta:
         verbose_name = _('Project partner')
         verbose_name_plural = _('Project partners')
+        ordering = ['partner_type']
 
     def __unicode__(self):
         return self.organisation.name
@@ -1135,7 +1136,8 @@ class Project(models.Model):
         orgs = self.partners.all()
         if partner_type:
             return orgs.filter(partnership__partner_type=partner_type).distinct()
-        return orgs.distinct()
+        else:
+            return orgs.distinct()
 
     def field_partners(self):
         return self._partners(Partnership.FIELD_PARTNER)
