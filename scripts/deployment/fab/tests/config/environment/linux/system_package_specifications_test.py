@@ -101,7 +101,8 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         expected_packages = ['libcomerr2', 'libidn11', 'libkeyutils1', 'libkrb53', 'libgpg-error0', 'libgcrypt11',
                              'liblzo2-2', 'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
-                             'libldap-2.4-2', 'libcurl3', 'curl', 'wget', 'tar', 'unzip']
+                             'libldap-2.4-2', 'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client', 'openssh-blacklist',
+                             'libdbus-1-3', 'libck-connector0', 'openssh-server', 'ssh', 'tar', 'unzip']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.ADDITIONAL_TOOLS))
 

@@ -135,6 +135,13 @@ class SystemPackageSpecifications(object):
                          {'name': 'libcurl3',           'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'curl',               'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'},
+                         {'name': 'libedit2',           'version': '2.9.cvs.20050518-4'},
+                         {'name': 'openssh-client',     'version': '1:4.7p1-8ubuntu3'},
+                         {'name': 'openssh-blacklist',  'version': '0.1-1ubuntu0.8.04.1'},
+                         {'name': 'libdbus-1-3',        'version': '1.1.20-1ubuntu3.5'},
+                         {'name': 'libck-connector0',   'version': '0.2.3-3ubuntu5'},
+                         {'name': 'openssh-server',     'version': '1:4.7p1-8ubuntu3'},
+                         {'name': 'ssh',                'version': '1:4.7p1-8ubuntu3'},
                          {'name': 'tar',                'version': '1.19-3'},
                          {'name': 'unzip',              'version': '5.52-10ubuntu2'}]
 
