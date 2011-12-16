@@ -113,13 +113,13 @@ class Country(models.Model):
 
 class Location(models.Model):
     latitude = LatitudeField(_('latitude'), default=0,
-        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+        help_text=_('Go to <a href="http://itouchmap.com/latlong.html"'
                   'target="_blank">iTouchMap.com</a> '
-                  'to get the decimal coordinates of your project')
+                  'to get the decimal coordinates of your project'))
     longitude = LongitudeField(_('longitude'), default=0,
-        help_text='Go to <a href="http://itouchmap.com/latlong.html"'
+        help_text=_('Go to <a href="http://itouchmap.com/latlong.html"'
                   'target="_blank">iTouchMap.com</a> '
-                  'to get the decimal coordinates of your project')
+                  'to get the decimal coordinates of your project'))
     city = models.CharField(_('city'), blank=True, max_length=255)
     state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)
@@ -255,18 +255,6 @@ class Organisation(models.Model):
             project_ids = [location.object_id for location in locations]
             return self.filter(id__in=project_ids)
 
-#        def fieldpartners(self):
-#            return self.filter(field_partner__exact=True)
-#
-#        def supportpartners(self):
-#            return self.filter(support_partner__exact=True)
-#
-#        def sponsorpartners(self):
-#            return self.filter(sponsor_partner__exact=True)
-#
-#        def fundingpartners(self):
-#            return self.filter(funding_partner__exact=True)
-
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
             return self.filter(partnership__partner_type__exact=partner_type).distinct()
@@ -294,41 +282,6 @@ class Organisation(models.Model):
 
         def knowledge(self):
             return self.filter(organisation_type__exact=Organisation.ORG_TYPE_KNO)
-
-#    class ProjectsQuerySet(QuerySet):
-#        """
-#        used for the projects manager on the Organisation
-#        returns querysets of projects
-#        Usage:
-#        orgs = Organisation.projects.filter(filter_criteria)
-#        orgs.published() -> all projects "belonging to the orgs" returned from
-#        the first statement
-#        Note: Organisation.projects.all() returns all orgs!
-#        To get all projects you need to write Organisation.projects.all().all() ;-)
-#        """
-#        def published(self):
-#            '''
-#            returns a queryset with published projects that has self as any kind of partner
-#            note that self is a queryset of orgs
-#            '''
-#            projs = Project.objects.published()
-#            import pdb
-#            pdb.set_trace()
-#            return (projs.filter(supportpartner__support_organisation__in=self) | \
-#                    projs.filter(fieldpartner__field_organisation__in=self) | \
-#                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-#                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
-#
-#        def all(self):
-#            '''
-#            returns a queryset with all projects that has self as any kind of partner
-#            note that self is a queryset of orgs
-#            '''
-#            projs = Project.objects.all()
-#            return (projs.filter(supportpartner__support_organisation__in=self) | \
-#                    projs.filter(fieldpartner__field_organisation__in=self) | \
-#                    projs.filter(sponsorpartner__sponsor_organisation__in=self) | \
-#                    projs.filter(fundingpartner__funding_organisation__in=self)).distinct()
 
     def __unicode__(self):
         return self.name
@@ -358,25 +311,19 @@ class Organisation(models.Model):
     website.allow_tags = True
 
     def published_projects(self):
-        '''
-        returns a queryset with published projects that has self as any kind of partner
-        '''
+        "returns a queryset with published projects that has self as any kind of partner"
         return self.projects.published().distinct()
 
 
     def all_projects(self):
-        '''
-        returns a queryset with all projects that has self as any kind of partner
-        '''
+        "returns a queryset with all projects that has self as any kind of partner"
         return self.projects.all().distinct()
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
 
     def partners(self):
-        '''
-        returns a queryset of all organisations that self has at least one project in common with, excluding self
-        '''
+        "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.projects.all_partners().exclude(id__exact=self.id)
 
     def funding(self):
@@ -396,25 +343,6 @@ class Organisation(models.Model):
             'pledged_dollars': all_active.dollars().total_pledged(self),
             'still_needed_dollars': my_projs.dollars().total_funds_needed()
         }
-
-    # rewrite of funding, not currently used since we're mimmicing 0.9.xx behaviour regarding funding info on the org page:
-    #def funding(self):
-    #    my_projs = self.published_projects().status_not_cancelled().status_not_archived()
-    #    return {
-    #        'total_euros': my_projs.euros().total_total_budget(),
-    #        'donated_euros': my_projs.euros().total_donated() - my_projs.euros().total_pending(),
-    #        'pledged_euros': my_projs.euros().total_pledged(self),
-    #        'total_pledged_euros': my_projs.euros().total_pledged(),
-    #        'total_raised_euros': my_projs.euros().total_pledged() + my_projs.euros().total_donated() - my_projs.euros().total_pending(),
-    #        'still_needed_euros': my_projs.euros().total_funds_needed(),
-    #
-    #        'total_dollars': my_projs.dollars().total_total_budget(),
-    #        'donated_dollars': my_projs.dollars().total_donated() - my_projs.dollars().total_pending(),
-    #        'pledged_dollars': my_projs.dollars().total_pledged(self),
-    #        'total_pledged_dollars': my_projs.dollars().total_pledged(),
-    #        'total_raised_dollars': my_projs.dollars().total_pledged() + my_projs.dollars().total_donated() - my_projs.dollars().total_pending(),
-    #        'still_needed_dollars': my_projs.dollars().total_funds_needed()
-    #    }
 
     class Meta:
         verbose_name=_('Organisation')
@@ -462,9 +390,7 @@ class FocusArea(models.Model):
         return ('project_list', (), {'slug': self.slug})
 
     def projects(self):
-        """
-        return all projects that "belong" to the FA through the Categories it links to
-        """
+        'return all projects that "belong" to the FA through the Categories it links to'
         return Project.objects.filter(categories__in=self.categories.all())
 
     def __unicode__(self):
@@ -536,13 +462,7 @@ STATUSES = (
     ('L', _('Cancelled')),
     ('R', _('Archived')),
 )
-#STATUSES_DICT = dict(STATUSES) #used to output STATUSES text
 STATUSES_COLORS = {'N':'black', 'A':'#AFF167', 'H':'orange', 'C':'grey', 'R':'grey', 'L':'red', }
-
-
-class OrganisationsQuerySetManager(QuerySetManager):
-    def get_query_set(self):
-        return self.model.OrganisationsQuerySet(self.model)
 
 
 class MiniCMS(models.Model):
@@ -587,6 +507,10 @@ class MiniCMS(models.Model):
         verbose_name = _('MiniCMS')
         verbose_name_plural = _('MiniCMS')
 
+
+class OrganisationsQuerySetManager(QuerySetManager):
+    def get_query_set(self):
+        return self.model.OrganisationsQuerySet(self.model)
 
 class Project(models.Model):
     def image_path(instance, file_name):
@@ -964,40 +888,11 @@ class Project(models.Model):
         def all_partners(self):
             return self._partners()
 
-
-#        #TODO: is this relly needed? the default QS has identical methods
-#    class OrganisationsQuerySet(QuerySet):
-#        def support_partners(self):
-#            orgs = Organisation.objects.all()
-#            return orgs.filter(support_partners__project__in=self)
-#
-#        def sponsor_partners(self):
-#            orgs = Organisation.objects.all()
-#            return orgs.filter(sponsor_partners__project__in=self)
-#
-#        def funding_partners(self):
-#            orgs = Organisation.objects.all()
-#            return orgs.filter(funding_partners__project__in=self)
-#
-#        def field_partners(self):
-#            orgs = Organisation.objects.all()
-#            return orgs.filter(field_partners__project__in=self)
-#
-#        def all_partners(self):
-#            orgs = Organisation.objects.all()
-#            return (orgs.filter(support_partners__project__in=self) | \
-#                    orgs.filter(sponsor_partners__project__in=self) | \
-#                    orgs.filter(funding_partners__project__in=self) | \
-#                    orgs.filter(field_partners__project__in=self)).distinct()
-#            #return (self.support_partners()|self.funding_partners()|self.field_partners()).distinct()
-
     def __unicode__(self):
         return u'%s' % self.name
 
     def updates_desc(self):
-        """
-        return ProjectUpdates for self, newest first
-        """
+        "return ProjectUpdates for self, newest first"
         return self.project_updates.all().order_by('-time')
 
     def latest_update(self):
@@ -1212,8 +1107,8 @@ class PublishingStatus(models.Model):
     extend to other object types.
     """
     PUBLISHING_STATUS = (
-        ('unpublished', 'Unpublished'),
-        ('published', 'Published'),
+        ('unpublished', _('Unpublished')),
+        ('published', _('Published')),
     )
     #TODO: change to a generic relation if we want to have publishing stats on
     #other objects than projects
@@ -1247,67 +1142,6 @@ class Link(models.Model):
         verbose_name = _('link')
         verbose_name_plural = _('links')
 
-
-#class FundingPartner(models.Model):
-#    funding_organisation = models.ForeignKey(Organisation, related_name='funding_partners', limit_choices_to = {'funding_partner__exact': True})
-#    funding_amount = models.DecimalField(_('funding amount'), max_digits=10, decimal_places=2)
-#    project = models.ForeignKey(Project,)
-#
-#    class Meta:
-#        verbose_name = _('Funding partner')
-#        verbose_name_plural = _('Funding partners')
-#
-#    def __unicode__(self):
-#        return "%s %d %s" % (self.funding_organisation.name, self.funding_amount, self.project.get_currency_display())
-#
-#class SponsorPartner(models.Model):
-#    sponsor_organisation = models.ForeignKey(Organisation, related_name='sponsor_partners', limit_choices_to = {'sponsor_partner__exact': True})
-#    project = models.ForeignKey(Project,)
-#
-#    class Meta:
-#        verbose_name = _('Sponsor partner')
-#        verbose_name_plural = _('Sponsor partners')
-#
-#    def __unicode__(self):
-#        return "%s" % (self.sponsor_organisation.name, )
-#
-#class SupportPartner(models.Model):
-#    support_organisation = models.ForeignKey(Organisation, related_name='support_partners', limit_choices_to = {'support_partner__exact': True})
-#    project = models.ForeignKey(Project,)
-#
-#    class Meta:
-#        verbose_name = _('Support partner')
-#        verbose_name_plural = _('Support partners')
-#
-#    def __unicode__(self):
-#        return "%s" % (self.support_organisation.name, )
-#
-#class FieldPartner(models.Model):
-#    field_organisation = models.ForeignKey(Organisation, related_name='field_partners', limit_choices_to = {'field_partner__exact': True})
-#    project = models.ForeignKey(Project,)
-#
-#    class Meta:
-#        verbose_name = _('Field partner')
-#        verbose_name_plural = _('Field partners')
-#
-#    def __unicode__(self):
-#        return "%s" % (self.field_organisation.name, )
-
-# kept for updating database. may be renamed Funding for certain DBs
-#class Budget(models.Model):
-#    project             = models.OneToOneField(Project, primary_key=True)
-#    date_request_posted = models.DateField(default=date.today)
-#    date_complete       = models.DateField(null=True, blank=True)
-#    # budget itmes
-#    employment          = models.IntegerField()
-#    building            = models.IntegerField()
-#    training            = models.IntegerField()
-#    maintenance         = models.IntegerField()
-#    other               = models.IntegerField()
-#
-#
-#    def __unicode__(self):
-#        return self.project.__unicode__()
 
 PHOTO_LOCATIONS = (
     ('B', _('At the beginning of the update')),
@@ -1408,7 +1242,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def get_is_active(self):
         return self.user.is_active
     get_is_active.boolean = True #make pretty icons in the admin list view
-    get_is_active.short_description = 'user is activated (may log in)'
+    get_is_active.short_description = _('user is activated (may log in)')
 
     def set_is_active(self, set_it):
         self.user.is_active = set_it
@@ -1428,7 +1262,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
     get_is_org_admin.boolean = True #make pretty icons in the admin list view
-    get_is_org_admin.short_description = 'user is an organisation administrator'
+    get_is_org_admin.short_description = _('user is an organisation administrator')
 
     def set_is_org_admin(self, set_it):
         if set_it:
@@ -1439,7 +1273,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def get_is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
     get_is_org_editor.boolean = True #make pretty icons in the admin list view
-    get_is_org_editor.short_description = 'user is a project editor'
+    get_is_org_editor.short_description = _('user is a project editor')
 
     def set_is_org_editor(self, set_it):
         if set_it:
@@ -1694,7 +1528,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
     has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
-    has_perm_add_sms_updates.short_description = 'may create SMS project updates'
+    has_perm_add_sms_updates.short_description = _('may create SMS project updates')
 
 
     #def phone_number_changed(self, phone_number):
@@ -1835,7 +1669,7 @@ class ProjectUpdate(models.Model):
                 blank=True,
                 upload_to=image_path,
                 thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-                help_text = 'The image should have 4:3 height:width ratio for best displaying result',
+                help_text = _('The image should have 4:3 height:width ratio for best displaying result'),
             )
     photo_location = models.CharField(_('photo location'), max_length=1,
                                        choices=PHOTO_LOCATIONS)
@@ -1864,7 +1698,7 @@ class ProjectUpdate(models.Model):
     def get_is_featured(self):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
-    get_is_featured.short_description = 'update is featured'
+    get_is_featured.short_description = _('update is featured')
 
     def get_video_thumbnail_url(self, url=''):
         if self.video:
