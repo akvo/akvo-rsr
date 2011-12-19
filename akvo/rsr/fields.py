@@ -2,9 +2,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-
 class NullCharField(models.CharField):
-    description = "CharField that stores NULL but returns an empty string"
+    description = _("CharField that stores NULL but returns an empty string")
     def to_python(self, value):
         if isinstance(value, models.CharField):
             return value 
