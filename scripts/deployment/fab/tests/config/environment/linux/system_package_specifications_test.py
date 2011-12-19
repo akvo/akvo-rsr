@@ -59,16 +59,17 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_package_specifications_for_python_extensions(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python extensions"""
 
-        expected_packages = ['python2.5-dev', 'python-dev', 'libffi4', 'libffi4-dev', 'libpcre3', 'libglib2.0-0',
-                             'pkg-config', 'zlib1g-dev', 'libbz2-dev', 'libncurses5-dev', 'libexpat1', 'libexpat1-dev',
-                             'libssl-dev', 'libgc1c2', 'libgc-dev']
+        expected_packages = ['python-support', 'python2.5-dev', 'python-dev', 'libffi4', 'libffi4-dev', 'libpcre3',
+                             'libglib2.0-0', 'pkg-config', 'zlib1g-dev', 'libbz2-dev', 'libncurses5-dev', 'libexpat1',
+                             'libexpat1-dev', 'libssl-dev', 'libgc1c2', 'libgc-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_EXTENSIONS))
 
     def test_has_expected_package_specifications_for_python_package_dependencies(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python package dependencies"""
 
-        expected_packages = ['libxml2', 'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev']
+        expected_packages = ['libxml2', 'libxml2-dev', 'libgpg-error0', 'libgcrypt11', 'libxslt1.1', 'libxslt1-dev',
+                             'python-libxml2', 'python-libxslt1', 'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
@@ -85,8 +86,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         expected_packages = ['mysql-common', 'libmysqlclient15off', 'libmysqlclient15-dev', 'libnet-daemon-perl',
                              'libplrpc-perl', 'libdbi-perl', 'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0',
-                             'ncurses-bin', 'sed', 'lsb-base', 'psmisc', 'mysql-server-5.0', 'python-support',
-                             'python-mysqldb']
+                             'ncurses-bin', 'sed', 'lsb-base', 'psmisc', 'mysql-server-5.0', 'python-mysqldb']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 
@@ -100,9 +100,9 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_additional_tools_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected additional tools package specifications"""
 
-        expected_packages = ['libcomerr2', 'libidn11', 'libkeyutils1', 'libkrb53', 'libgpg-error0', 'libgcrypt11',
-                             'liblzo2-2', 'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
-                             'libldap-2.4-2', 'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client', 'openssh-blacklist',
+        expected_packages = ['libcomerr2', 'libidn11', 'libkeyutils1', 'libkrb53', 'liblzo2-2', 'libopencdk10',
+                             'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2', 'libldap-2.4-2',
+                             'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client', 'openssh-blacklist',
                              'libdbus-1-3', 'libck-connector0', 'openssh-server', 'ssh', 'tar', 'unzip']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.ADDITIONAL_TOOLS))

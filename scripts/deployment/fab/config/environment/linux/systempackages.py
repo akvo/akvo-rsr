@@ -69,7 +69,8 @@ class SystemPackageSpecifications(object):
                  {'name': 'python-minimal',         'version': '2.5.2-0ubuntu1'},
                  {'name': 'python',                 'version': '2.5.2-0ubuntu1'}]
 
-    PYTHON_EXTENSIONS = [{'name': 'python2.5-dev',      'version': '2.5.2-2ubuntu6.1'},
+    PYTHON_EXTENSIONS = [{'name': 'python-support',     'version': '0.7.5ubuntu1'},
+                         {'name': 'python2.5-dev',      'version': '2.5.2-2ubuntu6.1'},
                          {'name': 'python-dev',         'version': '2.5.2-0ubuntu1'},
                          {'name': 'libffi4',            'version': '4.2.4-1ubuntu4'},
                          {'name': 'libffi4-dev',        'version': '4.2.4-1ubuntu4'},
@@ -85,10 +86,17 @@ class SystemPackageSpecifications(object):
                          {'name': 'libgc1c2',           'version': '1:6.8-1.1'},
                          {'name': 'libgc-dev',          'version': '1:6.8-1.1'}]
 
-    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',        'version': '2.6.31.dfsg-2ubuntu1.6'},
-                                     {'name': 'libgmp3c2',      'version': '2:4.2.2+dfsg-1ubuntu2'},
-                                     {'name': 'libgmpxx4ldbl',  'version': '2:4.2.2+dfsg-1ubuntu2'},
-                                     {'name': 'libgmp3-dev',    'version': '2:4.2.2+dfsg-1ubuntu2'}]
+    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',            'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'libxml2-dev',        'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'libgpg-error0',      'version': '1.4-2ubuntu7'},
+                                     {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},
+                                     {'name': 'libxslt1.1',         'version': '1.1.22-1ubuntu1.2'},
+                                     {'name': 'libxslt1-dev',       'version': '1.1.22-1ubuntu1.2'},
+                                     {'name': 'python-libxml2',     'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'python-libxslt1',    'version': '1.1.22-1ubuntu1.2'},
+                                     {'name': 'libgmp3c2',          'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'libgmpxx4ldbl',      'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'libgmp3-dev',        'version': '2:4.2.2+dfsg-1ubuntu2'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
                                  {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
@@ -113,7 +121,6 @@ class SystemPackageSpecifications(object):
                  {'name': 'lsb-base',               'version': '4.0-0ubuntu0.8.04.1'},
                  {'name': 'psmisc',                 'version': '22.6-1'},
                  {'name': 'mysql-server-5.0',       'version': '5.0.51a-3ubuntu5.8'},
-                 {'name': 'python-support',         'version': '0.7.5ubuntu1'},
                  {'name': 'python-mysqldb',         'version': '1.2.2-5ubuntu1'}]
 
     WEB_SERVER =    [{'name': 'openssl',            'version': '0.9.8g-4ubuntu3.13'},
@@ -124,8 +131,6 @@ class SystemPackageSpecifications(object):
                          {'name': 'libidn11',           'version': '1.1-1'},
                          {'name': 'libkeyutils1',       'version': '1.2-4'},
                          {'name': 'libkrb53',           'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
-                         {'name': 'libgpg-error0',      'version': '1.4-2ubuntu7'},
-                         {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},
                          {'name': 'liblzo2-2',          'version': '2.02-3'},
                          {'name': 'libopencdk10',       'version': '0.6.6-1ubuntu1'},
                          {'name': 'libtasn1-3',         'version': '1.1-1'},
