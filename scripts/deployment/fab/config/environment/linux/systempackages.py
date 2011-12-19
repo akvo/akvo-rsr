@@ -97,7 +97,8 @@ class SystemPackageSpecifications(object):
                                      {'name': 'python-libxslt1',    'version': '1.1.22-1ubuntu1.2'},
                                      {'name': 'libgmp3c2',          'version': '2:4.2.2+dfsg-1ubuntu2'},
                                      {'name': 'libgmpxx4ldbl',      'version': '2:4.2.2+dfsg-1ubuntu2'},
-                                     {'name': 'libgmp3-dev',        'version': '2:4.2.2+dfsg-1ubuntu2'}]
+                                     {'name': 'libgmp3-dev',        'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'python-gmpy',        'version': '1.01.dfsg.1-1'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
                                  {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
