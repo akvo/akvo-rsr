@@ -69,8 +69,7 @@ class SystemPackageSpecifications(object):
                  {'name': 'python-minimal',         'version': '2.5.2-0ubuntu1'},
                  {'name': 'python',                 'version': '2.5.2-0ubuntu1'}]
 
-    PYTHON_EXTENSIONS = [{'name': 'python-support',     'version': '0.7.5ubuntu1'},
-                         {'name': 'python2.5-dev',      'version': '2.5.2-2ubuntu6.1'},
+    PYTHON_EXTENSIONS = [{'name': 'python2.5-dev',      'version': '2.5.2-2ubuntu6.1'},
                          {'name': 'python-dev',         'version': '2.5.2-0ubuntu1'},
                          {'name': 'libffi4',            'version': '4.2.4-1ubuntu4'},
                          {'name': 'libffi4-dev',        'version': '4.2.4-1ubuntu4'},
@@ -86,7 +85,9 @@ class SystemPackageSpecifications(object):
                          {'name': 'libgc1c2',           'version': '1:6.8-1.1'},
                          {'name': 'libgc-dev',          'version': '1:6.8-1.1'}]
 
-    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',            'version': '2.6.31.dfsg-2ubuntu1.6'},
+    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'python-support',     'version': '0.7.5ubuntu1'},
+                                     {'name': 'python-central',     'version': '0.6.7ubuntu0.1'},
+                                     {'name': 'libxml2',            'version': '2.6.31.dfsg-2ubuntu1.6'},
                                      {'name': 'libxml2-dev',        'version': '2.6.31.dfsg-2ubuntu1.6'},
                                      {'name': 'libgpg-error0',      'version': '1.4-2ubuntu7'},
                                      {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},

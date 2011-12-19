@@ -59,17 +59,18 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_package_specifications_for_python_extensions(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python extensions"""
 
-        expected_packages = ['python-support', 'python2.5-dev', 'python-dev', 'libffi4', 'libffi4-dev', 'libpcre3',
-                             'libglib2.0-0', 'pkg-config', 'zlib1g-dev', 'libbz2-dev', 'libncurses5-dev', 'libexpat1',
-                             'libexpat1-dev', 'libssl-dev', 'libgc1c2', 'libgc-dev']
+        expected_packages = ['python2.5-dev', 'python-dev', 'libffi4', 'libffi4-dev', 'libpcre3', 'libglib2.0-0',
+                             'pkg-config', 'zlib1g-dev', 'libbz2-dev', 'libncurses5-dev', 'libexpat1', 'libexpat1-dev',
+                             'libssl-dev', 'libgc1c2', 'libgc-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_EXTENSIONS))
 
     def test_has_expected_package_specifications_for_python_package_dependencies(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python package dependencies"""
 
-        expected_packages = ['libxml2', 'libxml2-dev', 'libgpg-error0', 'libgcrypt11', 'libxslt1.1', 'libxslt1-dev',
-                             'python-libxml2', 'python-libxslt1', 'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev']
+        expected_packages = ['python-support', 'python-central', 'libxml2', 'libxml2-dev', 'libgpg-error0',
+                             'libgcrypt11', 'libxslt1.1', 'libxslt1-dev', 'python-libxml2', 'python-libxslt1',
+                             'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
