@@ -101,6 +101,7 @@ class SystemPackageSpecifications(object):
 
     DATABASE =  [{'name': 'mysql-common',           'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'libmysqlclient15off',    'version': '5.0.51a-3ubuntu5.8'},
+                 {'name': 'libmysqlclient15-dev',   'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'libnet-daemon-perl',     'version': '0.38-1.1'},
                  {'name': 'libplrpc-perl',          'version': '0.2017-1.1'},
                  {'name': 'libdbi-perl',            'version': '1.601-1'},

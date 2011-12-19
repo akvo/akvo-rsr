@@ -83,9 +83,10 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_database_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database package specifications"""
 
-        expected_packages = ['mysql-common', 'libmysqlclient15off', 'libnet-daemon-perl', 'libplrpc-perl', 'libdbi-perl',
-                             'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0', 'ncurses-bin', 'sed', 'lsb-base',
-                             'psmisc', 'mysql-server-5.0', 'python-support', 'python-mysqldb']
+        expected_packages = ['mysql-common', 'libmysqlclient15off', 'libmysqlclient15-dev', 'libnet-daemon-perl',
+                             'libplrpc-perl', 'libdbi-perl', 'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0',
+                             'ncurses-bin', 'sed', 'lsb-base', 'psmisc', 'mysql-server-5.0', 'python-support',
+                             'python-mysqldb']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 
