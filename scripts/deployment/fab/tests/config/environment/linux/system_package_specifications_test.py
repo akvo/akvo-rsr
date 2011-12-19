@@ -70,7 +70,8 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         expected_packages = ['python-support', 'python-central', 'libxml2', 'libxml2-dev', 'libgpg-error0',
                              'libgcrypt11', 'libxslt1.1', 'libxslt1-dev', 'python-libxml2', 'python-libxslt1',
-                             'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev', 'python-gmpy']
+                             'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev', 'python-gmpy', 'libfreetype6',
+                             'libjpeg62', 'libjpeg62-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 

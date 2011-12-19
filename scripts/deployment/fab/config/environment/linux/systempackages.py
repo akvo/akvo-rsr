@@ -98,7 +98,10 @@ class SystemPackageSpecifications(object):
                                      {'name': 'libgmp3c2',          'version': '2:4.2.2+dfsg-1ubuntu2'},
                                      {'name': 'libgmpxx4ldbl',      'version': '2:4.2.2+dfsg-1ubuntu2'},
                                      {'name': 'libgmp3-dev',        'version': '2:4.2.2+dfsg-1ubuntu2'},
-                                     {'name': 'python-gmpy',        'version': '1.01.dfsg.1-1'}]
+                                     {'name': 'python-gmpy',        'version': '1.01.dfsg.1-1'},
+                                     {'name': 'libfreetype6',       'version': '2.3.5-1ubuntu4.8.04.7'},
+                                     {'name': 'libjpeg62',          'version': '6b-14'},
+                                     {'name': 'libjpeg62-dev',      'version': '6b-14'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
                                  {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
