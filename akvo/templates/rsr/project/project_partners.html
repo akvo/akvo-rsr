@@ -25,106 +25,70 @@
 			<span>{% trans 'views' %}</span>
 		</div>
 		<div class="clear"></div>
-		<div class="space20">	
-			{% if project.fieldpartner_set.count %}
-				{% if project.fieldpartner_set.count = 1 %}
-		            <h3>{% trans 'Field partner' %}</h3>
-		        {% else %}
-		            <h3>{% trans 'Field partners' %}</h3>
-		        {% endif %}
-				{% for fp in project.fieldpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px;">
-						<div style="float:left; width:100px;">							
-							<a href="{{fp.field_organisation.get_absolute_url}}">
-			          {% org_logo fp.field_organisation 90 60 %}
-			        </a>
-						</div>
-						<div style="float:left; width:300px; margin-left:20px;">
-							<p style="margin:0">
-							<a href="{{fp.field_organisation.get_absolute_url}}">{{fp.field_organisation}}</a><br />
-							{{fp.field_organisation.primary_location.city}}, {{fp.field_organisation.primary_location.state}}, {{fp.field_organisation.primary_location.country}}
-							</p>
-						</div>
-						<div class="clear"></div>						
-					</div>
-				{% endfor %}
-				<br /><br />
-			{% endif %}
-			
-			
-			{% if project.supportpartner_set.count %}
-				{% if project.supportpartner_set.count = 1 %}
-		            <h3>{% trans 'Support partner' %}</h3>
-		        {% else %}
-		            <h3>{% trans 'Support partners' %}</h3>
-		        {% endif %}
-				{% for sp in project.supportpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px;">
-						<div style="float:left; width:100px;">
-							<a href="{{sp.support_organisation.get_absolute_url}}">
-                {% org_logo sp.support_organisation 90 60 %}
-              </a>							
-						</div>
-						<div style="float:left; width:300px; margin-left:20px;">
-							<p style="margin:0">
-							<a href="{{sp.support_organisation.get_absolute_url}}">{{sp.support_organisation}}</a><br />
-							{{sp.support_organisation.primary_location.city}}, {{sp.support_organisation.primary_location.state}}, {{sp.support_organisation.primary_location.country}}
-							</p>
-						</div>
-						<div class="clear"></div>
-					</div>
-				{% endfor %}
-				<br /><br />
-			{% endif %}
-			
-			{% if project.sponsorpartner_set.count %}
-				{% if project.sponsorpartner_set.count = 1 %}
-		            <h3>{% trans 'Sponsor partner' %}</h3>
-		        {% else %}
-		            <h3>{% trans 'Sponsor partners' %}</h3>
-		        {% endif %}
-				{% for sponsor in project.sponsorpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px;">						
-						<div style="float:left; width:100px;">
-							<a href="{{sponsor.sponsor_organisation.get_absolute_url}}">
-                {% org_logo sponsor.sponsor_organisation 90 60 %}
+		<div class="space20">
+
+      {% for partner in project.partnership_set.all %}
+        {% ifchanged partner.partner_type %}
+          {% if not forloop.first %}
+            <br/><br/>
+          {% endif %}
+          {% if partner.partner_type == 'field' %}
+            {% if partproject.ner.field_partners.count > 1 %}
+              <h3>{% trans 'Field partners' %}</h3>
+            {%  else %}
+              <h3>{% trans 'Field partner' %}</h3>
+            {% endif %}
+          {% else %}
+            {% if partner.partner_type == 'funding' %}
+              {% if partproject.ner.funding_partners.count > 1 %}
+                <h3>{% trans 'Funding partners' %}</h3>
+              {%  else %}
+                <h3>{% trans 'Funding partner' %}</h3>
+              {% endif %}
+            {% else %}
+              {% if partner.partner_type == 'sponsor' %}
+                {% if partproject.ner.sponsor_partners.count > 1 %}
+                  <h3>{% trans 'Sponsor partners' %}</h3>
+                {%  else %}
+                  <h3>{% trans 'Sponsor partner' %}</h3>
+                {% endif %}
+              {% else %}
+                {% if partner.partner_type == 'support' %}
+                  {% if partproject.ner.support_partners.count > 1 %}
+                    <h3>{% trans 'Support partners' %}</h3>
+                  {%  else %}
+                    <h3>{% trans 'Support partner' %}</h3>
+                  {% endif %}
+                {% else %}
+                {%  endif %}
+              {%  endif %}
+            {%  endif %}
+          {%  endif %}
+        {% endifchanged %}
+
+        {% with organisation=partner.organisation location=partner.organisation.primary_location %}
+          <div style="{% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %} padding:10px;">
+            <div style="float:left; width:100px;">
+              <a href="{{organisation.get_absolute_url}}">
+                {% org_logo organisation 90 60 %}
               </a>
-						</div>
-						<div style="float:left; width:300px; margin-left:20px;">
-							<p style="margin:0">
-							<a href="{{sponsor.sponsor_organisation.get_absolute_url}}">{{sponsor.sponsor_organisation}}</a><br />
-							{{sponsor.sponsor_organisation.primary_location.city}}, {{sponsor.sponsor_organisation.primary_location.state}}, {{sponsor.sponsor_organisation.primary_location.country}}
-							</p>
-						</div>
-						<div class="clear"></div>						
-					</div>
-				{% endfor %}
-				<br /><br />
-			{% endif %}
-			
-			{% if project.fundingpartner_set.count %}
-				{% if project.fundingpartner_set.count = 1 %}
-		            <h3>{% trans 'Funding partner' %}</h3>
-		        {% else %}
-		            <h3>{% trans 'Funding partners' %}</h3>
-		        {% endif %}
-				{% for funder in project.fundingpartner_set.all %}
-					<div style=" border-bottom:1px solid #ccc; padding:10px;">
-						<div style="float:left; width:100px;">
-							<a href="{{funder.funding_organisation.get_absolute_url}}">
-			          {% org_logo funder.funding_organisation 90 60 %}
-			        </a>							
-						</div>
-						<div style="float:left; width:300px; margin-left:20px;">
-							<p style="margin:0">
-							<a href="{{funder.funding_organisation.get_absolute_url}}">{{funder.funding_organisation}}</a><br />
-							{{funder.funding_organisation.primary_location.city}}, {{funder.funding_organisation.primary_location.state}}, {{funder.funding_organisation.primary_location.country}}
-							</p>
-						</div>
-						<div class="clear"></div>
-					</div>
-				{% endfor %}
-			{% endif %}
+            </div>
+            <div style="float:left; width:300px; margin-left:20px;">
+              <p style="margin:0">
+                <a href="{{organisation.get_absolute_url}}">{{organisation}}</a><br />
+                {% if location.city %}
+                  {{location.city}},
+                {% endif %}
+                {% if location.state %}
+                  {{location.state}},
+                {% endif %}
+                {{location.country}}
+              </p>
+            </div>
+            <div class="clear"></div>
+          </div>
+        {% endwith %}
+      {% endfor %}
 			
 		</div>
 	</div>

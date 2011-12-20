@@ -106,7 +106,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
 def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt', subject_context={}, msg_context={}):
     """
-    Send mail to many users supllied through a queryset
+    Send mail to many users supplied through a queryset
     """
     to_list = [user.email for user in users if user.email]
     rsr_send_mail(to_list, subject, message, subject_context, msg_context)

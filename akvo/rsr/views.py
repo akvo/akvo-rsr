@@ -360,7 +360,6 @@ def rabobank(request):
 @render_to('rsr/project/project_directory.html')
 def projectlist(request):
     '''List of relevant projects in RSR
-
     To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
     '''
     # Get relevant projects
@@ -397,75 +396,6 @@ def projectlist(request):
         'order_by': order_by,
         'last_order': last_order,
     }
-    
-    
-@render_to('rsr/project/project_directory.html')
-def filteredprojectlist(request, org_id):
-    '''List of relevant projects in RSR for a specific organisation
-
-    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-    '''    
-    # get all projects the org is asociated with
-    o = get_object_or_404(Organisation, pk=org_id)
-    projects = o.published_projects().status_not_archived().funding()
-    # Get projects either by using the query or all
-    query_string = ''
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-    '''Super dump continent filtering
-    This needs to be made much better, (case, multi continent, same time as query...)
-
-    CONTINENTS = (
-        (1, _('Africa')),
-        (2, _('Asia')),
-        (3, _('Australia')),
-        (4, _('Europe')),
-        (5, _('North America')),
-        (6, _('South America')),
-    )
-    '''
-    if 'Africa' in query_string:
-        projects = projects.filter(country__continent='1')
-    elif 'Asia' in query_string:
-        projects = projects.filter(country__continent='2')
-    elif 'Australia' in query_string:
-        projects = projects.filter(country__continent='3')
-    elif 'Europe' in query_string:
-        projects = projects.filter(country__continent='4')
-    elif 'North America' in query_string:
-        projects = projects.filter(country__continent='5')
-    elif 'South America' in query_string:
-        projects = projects.filter(country__continent='6')
-    else:
-        #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-        project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
-        projects = projects.filter(project_query)
-    # Add extra last_update column
-    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    # Sort query
-    order_by = request.GET.get('order_by', 'name')
-    last_order = request.GET.get('last_order')
-    sort = request.GET.get('sort', 'asc')
-    if sort == 'asc':
-        projects = projects.order_by(order_by, 'name')
-    else:
-        projects = projects.order_by('-%s' % order_by, 'name')
-    # Setup paginator
-    PROJECTS_PER_PAGE = 10
-    paginator = Paginator(projects, PROJECTS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
-    return {
-        'site_section': 'projects',
-        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
-        'page': page,
-        'query_string': query_string,
-        'request_get': request.GET,
-        'sort': sort,
-        'order_by': order_by,
-        'last_order': last_order,
-        'o': o,    
-    }
-
 
 @render_to('rsr/organisation/organisation_directory.html')
 def orglist(request, org_type='all'):
