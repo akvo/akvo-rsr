@@ -10,7 +10,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.host.controller import RemoteHostController
-from fab.os.info import SystemInfo, SystemType
+from fab.os.system import SystemInfo, SystemType
 
 
 class SystemInfoTest(mox.MoxTestBase):
