@@ -169,8 +169,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         if category_id:
             cursor.execute("""
                 SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users, term_relationships
-                    WHERE post_status != 'draft'
-                        AND post_status != 'auto-draft'
+                    WHERE post_status = 'publish'
                         AND post_type = 'post'
                         AND term_taxonomy_id = %d
                         and posts.ID = object_id
@@ -181,7 +180,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         else:
             cursor.execute("""
                 SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users
-                    WHERE post_status != 'draft'
+                    WHERE post_status = 'publish'
                         AND post_status != 'auto-draft'
                         AND post_type = 'post'
                         AND posts.post_author = users.ID
