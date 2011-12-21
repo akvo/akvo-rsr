@@ -19,7 +19,15 @@ class SystemInfoTest(mox.MoxTestBase):
         super(SystemInfoTest, self).setUp()
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
 
-        self.system_info = SystemInfo(self.mock_host_controller)
+    def test_initialiser_reads_system_name(self):
+        """fab.tests.os.system_info_test  Initialiser reads system name"""
+
+        self.mock_host_controller.run("uname -s").AndReturn(SystemType.LINUX)
+        self.mox.ReplayAll()
+
+        system_info = SystemInfo(self.mock_host_controller)
+
+        self.assertEqual(system_info.system_name, SystemType.LINUX, "Expected Linux system to be recognised")
 
     def test_can_detect_linux_system(self):
         """fab.tests.os.system_info_test  Can detect a Linux system"""
@@ -27,7 +35,7 @@ class SystemInfoTest(mox.MoxTestBase):
         self.mock_host_controller.run("uname -s").AndReturn(SystemType.LINUX)
         self.mox.ReplayAll()
 
-        self.assertTrue(self.system_info.is_linux(), "Expected Linux system to be recognised")
+        self.assertTrue(SystemInfo(self.mock_host_controller).is_linux(), "Expected Linux system to be recognised")
 
     def test_can_detect_osx_system(self):
         """fab.tests.os.system_info_test  Can detect a Mac OS X system"""
@@ -35,7 +43,7 @@ class SystemInfoTest(mox.MoxTestBase):
         self.mock_host_controller.run("uname -s").AndReturn(SystemType.MAC_OSX)
         self.mox.ReplayAll()
 
-        self.assertTrue(self.system_info.is_osx(), "Expected Mac OS X system to be recognised")
+        self.assertTrue(SystemInfo(self.mock_host_controller).is_osx(), "Expected Mac OS X system to be recognised")
 
 
 def suite():
