@@ -205,11 +205,9 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         # Find first paragraph in post
         try:
             post_p = post_content_soup('p')[0].contents
-        except:
-            # no p-tags
-            # if text has no name attr then it's not inside a tag, i.e. it's text!
-            post_p = ''.join([text for text in post_content_soup if not getattr(text, 'name', False)])
-        
+        except: # no p-tags
+            post_p = ''.join(post_content_soup.findAll(text=True))
+            
         posts.append({ 'title': post[1], 'image': post_img, 'text': post_p, 'date': post[3], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[4]})
 
     return posts
