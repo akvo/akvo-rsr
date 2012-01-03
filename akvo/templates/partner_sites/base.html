@@ -16,10 +16,13 @@
   {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
   {% block head %}{% endblock head %}
 
+  {% comment %}
+    
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">
     !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
   </script>
+  {% endcomment %}
 </head>
 <body>
   <div class="bottom_gradient_bar pad_bottom10">
@@ -93,11 +96,8 @@
           <p class="small">
            {% trans "Contact at " %}
             <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
-          </p>
-      </div>
-      <div class="two_col_right" style="text-align:right;">
-          <p class="small">
             {% if app_url %}
+              |
               {% if not user.username %}
                 <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">
                   <span>{% trans 'Sign in' %}</span>
@@ -109,18 +109,23 @@
                     <span>{% trans 'Sign out' %}</span>
                   </a>
               {% endif %}
-              |
             {% endif %}
-            {% trans "Powered by" %} <a href="http://www.akvoapp.org">Akvo</a>
+          </p>
+      </div>
+      <div class="two_col_right" style="text-align:right;">
+          <p class="small">
+            <a href="{{domain_url}}">
+              <img src="{{MEDIA_URL}}widgets/img/akvo-badge.gif" width="100" height="30" alt="Akvo.org" style="vertical-align:text-bottom;" />
+            </a>
           </p>
       </div>
       <div class="clear"></div>
     </div>
   </div>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script type="text/javascript">
-    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.6.2.min.js"><\/script>');
+    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
   </script>
   {% block js %}{% endblock js %}
   <script type="text/javascript">

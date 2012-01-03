@@ -218,7 +218,7 @@ class OrganisationUpdates(UpdateFeed):
             return _(u"Project updates for projects partnered by %(org_name)s - %(long_name)s") % {'org_name': obj.name, 'long_name': obj.long_name}
 
     def items(self, obj):
-        projects = Organisation.projects.filter(pk=obj.id).published()
+        projects = Organisation.objects.get(pk=obj.id).projects.published()
         return ProjectUpdate.objects.filter(project__id__in=projects).order_by('-time')
 
     def item_title(self, item):

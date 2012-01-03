@@ -12,6 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 from fab.dependency.systempackages import SystemPackageDependencyCollection
 from fab.environment.linux.packageverifier import LinuxPackageVerifier
+from fab.environment.python.installer import PythonInstaller
 from fab.environment.python.systempackageinstaller import SystemPythonPackageInstaller
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.linux import LinuxHost
@@ -22,19 +23,28 @@ class LinuxHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(LinuxHostTest, self).setUp()
-
+        self.mock_python_installer = self.mox.CreateMock(PythonInstaller)
         self.mock_os_package_inspector = self.mox.CreateMock(UbuntuPackageInspector)
         self.mock_os_package_verifier = self.mox.CreateMock(LinuxPackageVerifier)
         self.mock_python_package_installer = self.mox.CreateMock(SystemPythonPackageInstaller)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.linux_host = LinuxHost(self.mock_os_package_inspector, self.mock_os_package_verifier,
-                                    self.mock_python_package_installer, self.mock_feedback)
+        self.linux_host = LinuxHost(self.mock_python_installer, self.mock_os_package_inspector,
+                                    self.mock_os_package_verifier, self.mock_python_package_installer,
+                                    self.mock_feedback)
 
     def test_can_create_a_linuxhost_instance(self):
         """fab.tests.host.linux_host_test  Can create a LinuxHost instance"""
 
         self.assertIsInstance(LinuxHost.create_instance(), LinuxHost)
+
+    def test_can_ensure_specified_python_version_is_installed(self):
+        """fab.tests.host.linux_host_test  Can ensure specified Python version is installed"""
+
+        self.mock_python_installer.ensure_python_is_installed_with_version("2.7.2")
+        self.mox.ReplayAll()
+
+        self.linux_host.ensure_python_is_installed_with_version("2.7.2")
 
     def test_can_update_system_package_sources(self):
         """fab.tests.host.linux_host_test  Can update system package sources"""

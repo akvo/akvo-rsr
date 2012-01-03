@@ -102,7 +102,7 @@
                 <div class="clear"></div>
               </div>
             {% else %}
-              <div class="whitebox pad5"{% if not forloop.first %} style="margin-top: 10px;"{% endif %}>
+              <div class="whitebox pad5" style="overflow:hidden; {% if not forloop.first %}margin-top: 10px;{% endif %}">
                 <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
                 <p class="small marg_bottom0" style="margin-top: 15px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
@@ -122,7 +122,8 @@
         <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
         <div class="whitebox">
           <p class="grey small pad10" style="margin: 0;">
-            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}
+            <a href="{% url 'project_main' project.id %}">{% trans 'Project permalink' %}</a><br />
+            <a href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
           </p>
         </div>
       {% endblock project_tools %}

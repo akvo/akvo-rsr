@@ -90,7 +90,7 @@ class OrganisationAdminForm(forms.ModelForm):
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
+#        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
         #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
         #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
@@ -249,7 +249,7 @@ class LinkInline(admin.TabularInline):
     extra = 3
     list_display = ('url', 'caption', 'show_link')
 
-def partner_clean(obj, field_name='partner'):
+def partner_clean(obj, field_name='organisation'):
     """
     this function figures out if a given user's organisation is a partner in some function
     associated with the current project. This is to avoid the situation where a user
@@ -295,24 +295,24 @@ def partner_clean(obj, field_name='partner'):
     obj.instance.partner_formsets.append(obj)
     
 
-class RSR_FundingPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    # do cleaning looking for the user's org in the funding partner forms
-    def clean(self):
-        partner_clean(self, 'funding_organisation')  
-            
-class FundingPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'fundingpartner')
-    extra = 1
-    # put custom formset in chain of inheritance. the formset creation ends up
-    # returning a formset of type FundingPartnerFormForm (I think...) but the
-    # RSR_FundingPartnerInlineFormFormSet is a parent to it and thus we can access
-    # the custom clean()
-    formset = RSR_FundingPartnerInlineFormFormSet
-
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(FundingPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
+#class RSR_FundingPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+#    # do cleaning looking for the user's org in the funding partner forms
+#    def clean(self):
+#        partner_clean(self, 'funding_organisation')
+#
+#class FundingPartnerInline(admin.TabularInline):
+#    model = get_model('rsr', 'fundingpartner')
+#    extra = 1
+#    # put custom formset in chain of inheritance. the formset creation ends up
+#    # returning a formset of type FundingPartnerFormForm (I think...) but the
+#    # RSR_FundingPartnerInlineFormFormSet is a parent to it and thus we can access
+#    # the custom clean()
+#    formset = RSR_FundingPartnerInlineFormFormSet
+#
+#    def get_formset(self, request, *args, **kwargs):
+#        formset = super(FundingPartnerInline, self).get_formset(request, *args, **kwargs)
+#        formset.request = request
+#        return formset
 
 #see above
 class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
@@ -427,10 +427,49 @@ class BenchmarkInline(admin.TabularInline):
     extra = 0
     max_num = 0
 
+
+class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        user = self.request.user
+        user_profile = user.get_profile()
+        # superusers can do whatever they like!
+        if user.is_superuser:
+            found = True
+        # if the user is a partner org we try to avoid foot shooting
+        elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
+            my_org = user_profile.organisation
+            found = False
+            for i in range(0, self.total_form_count()):
+                form = self.forms[i]
+                try:
+                    form_org = form.cleaned_data['organisation']
+                    if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
+                        # found our own org, all is well move on!
+                        found = True
+                        break
+                except:
+                    pass
+        else:
+            found = True
+        if not found:
+            self._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
+
+class PartnershipInline(admin.TabularInline):
+    model = get_model('rsr', 'Partnership')
+    extra = 1
+    formset = RSR_PartnershipInlineFormFormSet
+
+    def get_formset(self, request, *args, **kwargs):
+        formset = super(PartnershipInline, self).get_formset(request, *args, **kwargs)
+        formset.request = request
+        return formset
+
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
-    inlines = (BudgetItemAdminInLine, LinkInline, FundingPartnerInline, SponsorPartnerInline, 
-               FieldPartnerInline, SupportPartnerInline, LocationInline, BenchmarkInline)
+    inlines = (
+        BudgetItemAdminInLine, LinkInline, PartnershipInline, #FundingPartnerInline, SponsorPartnerInline, FieldPartnerInline, SupportPartnerInline,
+        LocationInline, BenchmarkInline
+    )
     save_as = True
     fieldsets = (
         (_(u'Project description'), {
@@ -448,22 +487,22 @@ class ProjectAdmin(admin.ModelAdmin):
                 </p>
             '''),
             'fields': (
-                #('category_water', 'category_sanitation', 'category_maintenance'), 
+                #('category_water', 'category_sanitation', 'category_maintenance'),
                 #('category_training', 'category_education', 'category_product_development'), 'category_other',
                 ('categories',)
             ),
         }),
-            
+
         #(_(u'Location'), {
         #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
         #    'fields': ('city', 'state', 'country',)
         #}),
-            
+
         #(_(u'Location extra'), {
         #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
         #    'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',),
         #}),
-            
+
         (_(u'Project info'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The summary should <em>briefly</em> explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished.</p>'),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
@@ -474,7 +513,7 @@ class ProjectAdmin(admin.ModelAdmin):
         }),
         #(_(u'Project target benchmarks'), {
         #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
-        #    'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water', 
+        #    'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water',
         #    'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
         #}),
         (_(u'Project details'), {
@@ -488,7 +527,7 @@ class ProjectAdmin(admin.ModelAdmin):
         (_(u'Project budget'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The request posted date is filled in for you automatically when you create a project. When the project implementation phase is complete, enter the <em>Date complete</em> here.</p>'),
             'fields': ('currency', 'date_request_posted', 'date_complete', ),
-        }),        
+        }),
         )
     #list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
     #                'city', 'project_plan_summary', 'show_current_image', 'is_published',)
@@ -503,7 +542,7 @@ class ProjectAdmin(admin.ModelAdmin):
         if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
             del actions['delete_selected']
         return actions
-        
+
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
         """
@@ -512,7 +551,7 @@ class ProjectAdmin(admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
         super(ProjectAdmin, self).__init__(model, admin_site)
-    
+
     def queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
@@ -527,15 +566,15 @@ class ProjectAdmin(admin.ModelAdmin):
             return qs.filter(pk__in=projects)
         else:
             raise PermissionDenied
-    
+
     def has_change_permission(self, request, obj=None):
         """
         Returns True if the given request has permission to change the given
         Django model instance.
-        
+
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-    
+
         get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
         "own" projects, organisation and user profiles
         """
@@ -590,18 +629,14 @@ class ProjectAdmin(admin.ModelAdmin):
                     )
                     formsets.append(formset)
             if all_valid(formsets) and form_validated:
-                if not new_object.found:
-                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
-                    for fs in new_object.partner_formsets:
-                        fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
-                else:
-                    self.save_model(request, new_object, form, change=False)
-                    form.save_m2m()
-                    for formset in formsets:
-                        self.save_formset(request, form, formset, change=False)
+                self.save_model(request, new_object, form, change=False)
+                form.save_m2m()
+                for formset in formsets:
+                    self.save_formset(request, form, formset, change=False)
 
-                    self.log_addition(request, new_object)
-                    return self.response_add(request, new_object)
+                self.log_addition(request, new_object)
+                return self.response_add(request, new_object)
+
         else:
             # Prepare the dict of initial data from the request.
             # We have to special-case M2Ms as a list of comma-separated PKs.
@@ -694,19 +729,15 @@ class ProjectAdmin(admin.ModelAdmin):
 
                 formsets.append(formset)
             if all_valid(formsets) and form_validated:
-                if not new_object.found:
-                    form._errors[NON_FIELD_ERRORS] = ErrorList([_(u'Your organisation should be among the partners!')])
-                    for fs in new_object.partner_formsets:
-                        fs._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
-                else:
-                    self.save_model(request, new_object, form, change=True)
-                    form.save_m2m()
-                    for formset in formsets:
-                        self.save_formset(request, form, formset, change=True)
+                self.save_model(request, new_object, form, change=True)
+                form.save_m2m()
+                for formset in formsets:
+                    self.save_formset(request, form, formset, change=True)
 
                 change_message = self.construct_change_message(request, form, formsets)
                 self.log_change(request, new_object, change_message)
                 return self.response_change(request, new_object)
+
         else:
             form = ModelForm(instance=obj)
             prefixes = {}
@@ -760,9 +791,9 @@ class SmsReporterInline(admin.TabularInline):
         #opts = self.opts
         user = request.user
         if not user.is_superuser:
-            self.readonly_fields = ('gw_number', 'project',)            
+            self.readonly_fields = ('gw_number', 'project',)
         else:
-            self.readonly_fields = ()            
+            self.readonly_fields = ()
         return super(SmsReporterInline, self).get_readonly_fields(request, obj)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -771,12 +802,12 @@ class SmsReporterInline(admin.TabularInline):
         instance.
 
         If kwargs are given, they're passed to the form Field's constructor.
-        
+
         Added by GvH:
         Use hook to implement limits to project list select for org users.
         """
         request = kwargs.get("request", None)
-        
+
         # Limit the choices of the project db_field to projects linked to user's org
         # if we have an org user
         if db_field.attname == 'project_id':
@@ -784,7 +815,7 @@ class SmsReporterInline(admin.TabularInline):
             user = request.user
             if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
                 db_field.rel.limit_choices_to = {'pk__in': user.get_profile().organisation.all_projects()}
-            
+
         return super(SmsReporterInline, self).formfield_for_dbfield(db_field, **kwargs)
 
 class UserProfileAdminForm(forms.ModelForm):

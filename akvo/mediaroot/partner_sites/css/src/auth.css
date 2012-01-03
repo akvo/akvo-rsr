@@ -1,0 +1,13 @@
+form.auth {
+  padding-left: 0;
+}
+form.auth fieldset {
+  border: 1px solid #ccc;
+  background-color: #D0FFFF;
+  width: 200px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+form.auth label {
+  font-size: 14px;
+}

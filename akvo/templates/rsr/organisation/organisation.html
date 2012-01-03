@@ -40,10 +40,10 @@
 				{% org_logo o 100 75 'margin-bottom: 1.5em;' %}
 				<h3>{% trans 'Activities' %}</h3>
 				<p class="small">
-					{% if o.field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
-					{% if o.support_partner %}{% trans 'Support partner' %}<br />{% endif %}
-					{% if o.funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
-					{% if o.sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
+					{% if o.is_field_partner   %}{% trans 'Field partner'   %}<br />{% endif %}
+					{% if o.is_support_partner %}{% trans 'Support partner' %}<br />{% endif %}
+					{% if o.is_funding_partner %}{% trans 'Funding partner' %}<br />{% endif %}
+					{% if o.is_sponsor_partner %}{% trans 'Sponsor partner' %}<br />{% endif %}
 				</p>
 				<h3>{% trans 'Type' %}</h3>
 				<p class="small">{{o.get_organisation_type_display}}</p>

@@ -69,6 +69,22 @@ class SystemPackageSpecifications(object):
                  {'name': 'python-minimal',         'version': '2.5.2-0ubuntu1'},
                  {'name': 'python',                 'version': '2.5.2-0ubuntu1'}]
 
+    PYTHON_EXTENSIONS = [{'name': 'python2.5-dev',      'version': '2.5.2-2ubuntu6.1'},
+                         {'name': 'python-dev',         'version': '2.5.2-0ubuntu1'},
+                         {'name': 'libffi4',            'version': '4.2.4-1ubuntu4'},
+                         {'name': 'libffi4-dev',        'version': '4.2.4-1ubuntu4'},
+                         {'name': 'libpcre3',           'version': '7.4-1ubuntu2.1'},
+                         {'name': 'libglib2.0-0',       'version': '2.16.3-1'},
+                         {'name': 'pkg-config',         'version': '0.22-1'},
+                         {'name': 'zlib1g-dev',         'version': '1:1.2.3.3.dfsg-7ubuntu1'},
+                         {'name': 'libbz2-dev',         'version': '1.0.4-2ubuntu4.1'},
+                         {'name': 'libncurses5-dev',    'version': '5.6+20071124-1ubuntu2'},
+                         {'name': 'libexpat1',          'version': '2.0.1-0ubuntu1.1'},
+                         {'name': 'libexpat1-dev',      'version': '2.0.1-0ubuntu1.1'},
+                         {'name': 'libssl-dev',         'version': '0.9.8g-4ubuntu3.13'},
+                         {'name': 'libgc1c2',           'version': '1:6.8-1.1'},
+                         {'name': 'libgc-dev',          'version': '1:6.8-1.1'}]
+
     PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',        'version': '2.6.31.dfsg-2ubuntu1.6'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
@@ -98,7 +114,6 @@ class SystemPackageSpecifications(object):
 
     WEB_SERVER =    [{'name': 'openssl',            'version': '0.9.8g-4ubuntu3.13'},
                      {'name': 'libpcrecpp0',        'version': '7.4-1ubuntu2.1'},
-                     {'name': 'libpcre3',           'version': '7.4-1ubuntu2.1'},
                      {'name': 'libpcre3-dev',       'version': '7.4-1ubuntu2.1'}]
 
     ADDITIONAL_TOOLS =  [{'name': 'libcomerr2',         'version': '1.40.8-2ubuntu2'},
@@ -119,5 +134,5 @@ class SystemPackageSpecifications(object):
                          {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'}]
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
-                     PYTHON, PYTHON_PACKAGE_DEPENDENCIES, DATABASE_AUTHENTICATION,
-                     DATABASE, WEB_SERVER, ADDITIONAL_TOOLS]
+                     PYTHON, PYTHON_EXTENSIONS, PYTHON_PACKAGE_DEPENDENCIES,
+                     DATABASE_AUTHENTICATION, DATABASE, WEB_SERVER, ADDITIONAL_TOOLS]

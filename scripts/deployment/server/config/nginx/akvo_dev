@@ -1,0 +1,90 @@
+upstream rsr {
+    #server unix:/tmp/gunicorn.sock fail_timeout=0;
+    # For a TCP configuration:
+    server 127.0.0.1:1337 fail_timeout=0;
+}
+
+upstream php {
+    server unix:/tmp/php-cgi.socket;
+    server 127.0.0.1:9000;
+}
+
+server {
+    listen 80;
+    server_name akvo.org akvo.dev;
+    index index.php index.html index.htm;
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    location ^~ /blog {
+        root /var/www;
+        try_files $uri $uri/ /index.php;
+        location ~ \.php$ {
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+            fastcgi_pass 127.0.0.1:9000;
+        }
+    }
+	
+	# Handling static from the hosts Nginx
+    # location /rsr/media {
+    #    alias /vagrant/static/rsr/media;
+    # }
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+        if (!-f $request_filename) {
+            proxy_pass http://rsr;
+            break;
+        }
+    }
+	# access_log /<path>/logs/akvo.dev/access.log;
+    # error_log	 /<path>/logs/akvo.dev/error.log;
+}
+
+server {
+    listen 80 default;
+    #server_name akvoapp.org akvoapp.dev;
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+	# Handling static from the hosts Nginx
+    location /rsr/media {
+		#autoindex    on;
+        alias /vagrant/static/rsr/media;
+    }
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+        if (!-f $request_filename) {
+            proxy_pass http://rsr;
+            break;
+        }
+    }
+	# access_log /<path>/logs/akvoapp.dev/access.log;
+    # error_log	 /<path>/logs/akvoapp.dev/error.log;
+}

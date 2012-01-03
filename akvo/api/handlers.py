@@ -24,7 +24,7 @@ class OrgProjectsHandler(ProjectHandler):
     All projects connected to an organisation
     """
     def read(self, request, org_id):
-        return Organisation.projects.filter(pk=org_id).all()
+        return Organisation.objects.get(pk=org_id).projects.all()
 
 
 class LEProjectHandler(OrgProjectsHandler):
