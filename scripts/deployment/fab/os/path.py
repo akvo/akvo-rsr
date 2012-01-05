@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.os.system import SystemInfo, SystemType
+from fab.os.command.stat import StatCommand
+from fab.os.system import SystemInfo
 
 
 class PathType(object):
@@ -21,13 +22,11 @@ class PathInfo(object):
         self.path = path
         self.host_controller = host_controller
 
-        self.determine_path_type(host_controller)
+        self.determine_path_type(SystemInfo(host_controller).system_type)
 
-    def determine_path_type(self, host_controller):
-        system_type = SystemInfo(host_controller).system_type
-        path_type_query_format = { SystemType.LINUX: "-c %F", SystemType.MAC_OSX: "-f %HT" }[system_type]
-
-        self.path_type = self.host_controller.run("stat %s %s" % (path_type_query_format, self.path)).lower()
+    def determine_path_type(self, system_type):
+        path_type_query = StatCommand(system_type).for_path(self.path)
+        self.path_type = self.host_controller.run(path_type_query).lower()
 
     def exists(self):
         return self.host_controller.path_exists(self.path)
