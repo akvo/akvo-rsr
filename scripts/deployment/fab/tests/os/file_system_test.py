@@ -47,7 +47,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_host_controller.path_exists(expected_file_path).AndReturn(True)
         self.mox.ReplayAll()
 
-        self.assertTrue(self.file_system.file_exists(expected_file_path), "Expected file to exist")
+        self.assertTrue(self.file_system.file_exists(expected_file_path), "Expected file to be found")
 
     def test_can_verify_directory_existence(self):
         """fab.tests.os.file_system_test  Can verify directory existence"""
@@ -56,7 +56,7 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_host_controller.path_exists(expected_dir_path).AndReturn(True)
         self.mox.ReplayAll()
 
-        self.assertTrue(self.file_system.directory_exists(expected_dir_path), "Expected directory to exist")
+        self.assertTrue(self.file_system.directory_exists(expected_dir_path), "Expected directory to be found")
 
     def test_will_exit_if_file_does_not_exist(self):
         """fab.tests.os.file_system_test  Will exit if file does not exist"""
@@ -165,6 +165,50 @@ class FileSystemTest(mox.MoxTestBase):
             self.mock_host_controller.run("mkdir -p %s" % new_dir)
             self.mock_host_controller.run("chmod 755 %s" % new_dir)
         self.mox.ReplayAll()
+
+    def test_can_create_symlink(self):
+        """fab.tests.os.file_system_test  Can create a symlink"""
+
+        self._create_symlink("/path/to/symlink", "/some/real/path", with_sudo=False)
+        self.mox.ReplayAll()
+
+        self.file_system.create_symlink("/path/to/symlink", "/some/real/path")
+
+    def test_can_create_symlink_with_sudo(self):
+        """fab.tests.os.file_system_test  Can create a symlink with sudo"""
+
+        self._create_symlink("/path/to/symlink", "/some/real/path", with_sudo=True)
+        self.mox.ReplayAll()
+
+        self.file_system.create_symlink("/path/to/symlink", "/some/real/path", with_sudo=True)
+
+    def _create_symlink(self, symlink_path, real_path, with_sudo):
+        self._run_command("ln -s %s %s" % (real_path, symlink_path), with_sudo)
+        self.mock_host_controller.run("readlink %s" % symlink_path).AndReturn(real_path)
+        self.mock_feedback.comment("Created symlink: %s -> %s" % (symlink_path, real_path))
+
+    def test_can_remove_symlink(self):
+        """fab.tests.os.file_system_test  Can remove a symlink"""
+
+        self._remove_symlink("/path/to/symlink", with_sudo=False)
+        self.mox.ReplayAll()
+
+        self.file_system.remove_symlink("/path/to/symlink")
+
+    def test_can_remove_symlink_with_sudo(self):
+        """fab.tests.os.file_system_test  Can remove a symlink with sudo"""
+
+        self._remove_symlink("/path/to/symlink", with_sudo=True)
+        self.mox.ReplayAll()
+
+        self.file_system.remove_symlink("/path/to/symlink", with_sudo=True)
+
+    def _remove_symlink(self, symlink_path, with_sudo):
+        self.mock_feedback.comment("Removing symlink: /path/to/symlink")
+        self._run_command("unlink /path/to/symlink", with_sudo)
+
+    def _run_command(self, command, with_sudo=False):
+        return self.mock_host_controller.sudo(command) if with_sudo else self.mock_host_controller.run(command)
 
     def test_can_rename_file(self):
         """fab.tests.os.file_system_test  Can rename a file"""

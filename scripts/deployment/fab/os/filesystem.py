@@ -64,6 +64,14 @@ class FileSystem(object):
         else:
             self._create_directory_with(run_command, dir_path)
 
+    def create_symlink(self, symlink_path, real_path, with_sudo=False):
+        self._run_command("ln -s %s %s" % (real_path, symlink_path), with_sudo)
+        self.feedback.comment("Created symlink: %s" % SymlinkInfo(symlink_path, self.host_controller))
+
+    def remove_symlink(self, symlink_path, with_sudo=False):
+        self.feedback.comment("Removing symlink: %s" % symlink_path)
+        self._run_command("unlink %s" % symlink_path, with_sudo)
+
     def rename_file(self, original_file, new_file):
         self._rename_path(original_file, new_file)
 
@@ -92,6 +100,9 @@ class FileSystem(object):
         if self.host_controller.path_exists(path):
             self.feedback.comment("Deleting %s: %s" % (path_type, path))
             run_command("rm -r %s" % path)
+
+    def _run_command(self, command, with_sudo=False):
+        return self.host_controller.sudo(command) if with_sudo else self.host_controller.run(command)
 
     def decompress_code_archive(self, archive_file_name, destination_dir):
         self.host_controller.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
