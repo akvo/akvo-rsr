@@ -20,20 +20,9 @@ class PathInfoTest(mox.MoxTestBase):
         super(PathInfoTest, self).setUp()
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
 
-    def test_initialiser_determines_path_type(self):
-        """fab.tests.os.path_info_test  Initialiser determines path type"""
-
-        self._set_expected_path_type_for(SystemType.LINUX, "/some/directory/path", PathType.DIRECTORY)
-        self.mox.ReplayAll()
-
-        path = PathInfo("/some/directory/path", self.mock_host_controller)
-
-        self.assertEqual(path.path_type, PathType.DIRECTORY, "Expected directory path type")
-
     def test_can_determine_path_existence(self):
         """fab.tests.os.path_info_test  Can determine path existence"""
 
-        self._set_expected_path_type_for(SystemType.LINUX, "/some/path", PathType.DIRECTORY)
         self.mock_host_controller.path_exists("/some/path").AndReturn(True)
         self.mox.ReplayAll()
 

@@ -22,20 +22,19 @@ class PathInfo(object):
         self.path = path
         self.host_controller = host_controller
 
-        self.determine_path_type(SystemInfo(host_controller).system_type)
-
-    def determine_path_type(self, system_type):
-        path_type_query = StatCommand(system_type).for_path(self.path)
-        self.path_type = self.host_controller.run(path_type_query).lower()
-
     def exists(self):
         return self.host_controller.path_exists(self.path)
 
     def is_directory(self):
-        return self.path_type == PathType.DIRECTORY
+        return self._path_type() == PathType.DIRECTORY
 
     def is_file(self):
-        return self.path_type.find(PathType.FILE) > 0
+        return self._path_type().find(PathType.FILE) > 0
 
     def is_symlink(self):
-        return self.path_type == PathType.SYMLINK
+        return self._path_type() == PathType.SYMLINK
+
+    def _path_type(self):
+        path_type_query = StatCommand(SystemInfo(self.host_controller).system_type).for_path(self.path)
+
+        return self.host_controller.run(path_type_query).lower()
