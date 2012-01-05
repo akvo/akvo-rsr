@@ -24,6 +24,7 @@ class DeploymentHostConfigValues(object):
         self.config_home                = "/usr/local/etc/akvo"
         self.repo_checkout_home         = "/var/git"
         self.virtualenvs_home           = "/var/virtualenvs"
+        self.web_media_home             = "/var/www/akvo"
         self.logging_home               = "/var/log/akvo"
         self.deployment_processing_home = "/var/tmp/rsr" # temp directory for handling deployment activity
 

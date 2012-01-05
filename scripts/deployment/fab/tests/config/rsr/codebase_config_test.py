@@ -67,6 +67,21 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual("3_testing.txt", RSRCodebaseConfig.TESTING_REQUIREMENTS_FILE)
 
+    def test_has_rsr_settings_home(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR settings home"""
+
+        self.assertEqual("akvo/settings", RSRCodebaseConfig.RSR_SETTINGS_HOME)
+
+    def test_has_local_settings_file_name(self):
+        """fab.tests.config.rsr.codebase_config_test  Has local settings file name"""
+
+        self.assertEqual("60-local.conf", RSRCodebaseConfig.LOCAL_SETTINGS_FILE)
+
+    def test_has_rsr_media_root(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR media root"""
+
+        self.assertEqual("akvo/mediaroot", RSRCodebaseConfig.RSR_MEDIA_ROOT)
+
     def test_has_manage_script_path(self):
         """fab.tests.config.rsr.codebase_config_test  Has manage.py script path"""
 

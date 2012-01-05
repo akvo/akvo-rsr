@@ -55,6 +55,11 @@ class ConfigValuesTest(unittest2.TestCase):
 
         self._verify_expected_config_value(self.deployment_config_values.virtualenvs_home, "virtualenvs home")
 
+    def test_deploymenthostconfigvalues_has_web_media_home(self):
+        """fab.tests.config.config_values_test  DeploymentHostConfigValues has web media home"""
+
+        self._verify_expected_config_value(self.deployment_config_values.web_media_home, "web media home")
+
     def test_deploymenthostconfigvalues_has_logging_home(self):
         """fab.tests.config.config_values_test  DeploymentHostConfigValues has logging home"""
 
