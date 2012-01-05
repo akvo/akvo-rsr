@@ -33,6 +33,7 @@ class DeployRSRApp(fabric.tasks.Task):
         self.app_deployer.ensure_required_directories_exist()
         self.app_deployer.clean_deployment_directories()
         self.app_deployer.download_and_unpack_rsr_archive()
+        self.app_deployer.ensure_app_symlinks_exist()
 
     def _initialise_app_deployer_using(self, host_controller_mode):
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)

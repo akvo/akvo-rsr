@@ -69,6 +69,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         self.mock_app_deployer.ensure_required_directories_exist()
         self.mock_app_deployer.clean_deployment_directories()
         self.mock_app_deployer.download_and_unpack_rsr_archive()
+        self.mock_app_deployer.ensure_app_symlinks_exist()
         self.mox.ReplayAll()
 
         self.deploy_rsr_app_task.run(HostControllerMode.REMOTE)
