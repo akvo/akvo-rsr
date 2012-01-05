@@ -27,7 +27,7 @@ class SystemInfoTest(mox.MoxTestBase):
 
         system_info = SystemInfo(self.mock_host_controller)
 
-        self.assertEqual(system_info.system_name, SystemType.LINUX, "Expected Linux system to be recognised")
+        self.assertEqual(system_info.system_type, SystemType.LINUX, "Expected Linux system to be recognised")
 
     def test_can_detect_linux_system(self):
         """fab.tests.os.system_info_test  Can detect a Linux system"""
