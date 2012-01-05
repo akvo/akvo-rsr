@@ -45,3 +45,30 @@ class RSRAppDeployer(object):
             self.deployment_host.decompress_code_archive(archive_file_on_host, self.config.repo_checkout_home)
             self.deployment_host.rename_directory(self.config.unpacked_archive_dir_mask, self.config.rsr_deployment_dir_name)
             self.deployment_host.set_web_group_ownership_on_directory(self.config.rsr_deployment_dir_name)
+
+    def ensure_app_symlinks_exist(self):
+        self.feedback.comment("Verifying expected symlink target paths")
+        self._verify_symlink_target_paths()
+        self.feedback.comment("Ensuring expected RSR app symlinks exist")
+        self._link_configuration_files()
+        self._link_mediaroot_directories()
+        self._link_current_deployment_home()
+
+    def _verify_symlink_target_paths(self):
+        self.deployment_host.exit_if_directory_does_not_exist(self.config.host_config_home)
+        self.deployment_host.exit_if_file_does_not_exist(self.config.deployed_rsr_settings_file)
+        self.deployment_host.exit_if_directory_does_not_exist(self.config.django_media_admin_path)
+        self.deployment_host.exit_if_directory_does_not_exist(self.config.web_media_db_path)
+
+    def _link_configuration_files(self):
+        with self.deployment_host.cd(self.config.rsr_settings_home):
+            self.deployment_host.ensure_symlink_exists(self.config.local_rsr_settings_file_name, self.config.deployed_rsr_settings_file)
+
+    def _link_mediaroot_directories(self):
+        with self.deployment_host.cd(self.config.rsr_media_root):
+            self.deployment_host.ensure_symlink_exists("admin", self.config.django_media_admin_path)
+            self.deployment_host.ensure_symlink_exists("db", self.config.web_media_db_path)
+
+    def _link_current_deployment_home(self):
+        with self.deployment_host.cd(self.config.repo_checkout_home):
+            self.deployment_host.ensure_symlink_exists("current", self.config.rsr_deployment_home)

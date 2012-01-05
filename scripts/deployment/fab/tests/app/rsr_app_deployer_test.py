@@ -20,13 +20,14 @@ class RSRAppDeployerTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RSRAppDeployerTest, self).setUp()
-        self.mock_deployment_config = self.mox.CreateMock(RSRDeploymentConfig)
         self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mock_deployment_host.feedback = self.mock_feedback
 
-        self.app_deployer = RSRAppDeployer(self.mock_deployment_config, self.mock_deployment_host)
+        self.deployment_config = RSRDeploymentConfig.create_instance("rupaul")
+
+        self.app_deployer = RSRAppDeployer(self.deployment_config, self.mock_deployment_host)
 
     def test_initialiser_uses_executionfeedback_instance_from_deployment_host(self):
         """fab.tests.app.rsr_app_deployer_test  Initialiser uses ExecutionFeedback from deployment host"""
@@ -39,17 +40,9 @@ class RSRAppDeployerTest(mox.MoxTestBase):
     def test_can_ensure_required_directories_exist(self):
         """fab.tests.app.rsr_app_deployer_test  Can ensure required directories exist"""
 
-        deployment_user     = "rupaul"
-        repo_checkout_home  = "/var/repo"
-        repo_archives_dir   = "/var/repo/archives"
-
-        self.mock_deployment_config.deployment_user     = deployment_user
-        self.mock_deployment_config.repo_checkout_home  = repo_checkout_home
-        self.mock_deployment_config.repo_archives_dir   = repo_archives_dir
-
-        self.mock_deployment_host.exit_if_user_is_not_member_of_web_group(deployment_user)
-        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(repo_checkout_home)
-        self.mock_deployment_host.ensure_directory_exists(repo_archives_dir)
+        self.mock_deployment_host.exit_if_user_is_not_member_of_web_group(self.deployment_config.deployment_user)
+        self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(self.deployment_config.repo_checkout_home)
+        self.mock_deployment_host.ensure_directory_exists(self.deployment_config.repo_archives_dir)
         self.mox.ReplayAll()
 
         self.app_deployer.ensure_required_directories_exist()
@@ -57,11 +50,8 @@ class RSRAppDeployerTest(mox.MoxTestBase):
     def test_can_clean_deployment_directories(self):
         """fab.tests.app.rsr_app_deployer_test  Can clean deployment directories"""
 
-        deployment_home_dir = "/var/some/path/akvo-rsr_root"
-        self.mock_deployment_config.rsr_deployment_home = deployment_home_dir
-
         self.mock_feedback.comment("Clearing previous deployment directories")
-        self.mock_deployment_host.delete_directory_with_sudo(deployment_home_dir)
+        self.mock_deployment_host.delete_directory_with_sudo(self.deployment_config.rsr_deployment_home)
         self.mox.ReplayAll()
 
         self.app_deployer.clean_deployment_directories()
@@ -69,7 +59,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
     def test_can_download_and_unpack_rsr_code_archive_to_deployment_host(self):
         """fab.tests.app.rsr_app_deployer_test  Can download and unpack RSR code archive to deployment host"""
 
-        self._set_expectations_to_download_and_unpack_rsr_archive(archive_exists_on_host=False)
+        self._download_and_unpack_rsr_archive(archive_exists_on_host=False)
         self.mox.ReplayAll()
 
         self.app_deployer.download_and_unpack_rsr_archive()
@@ -77,21 +67,16 @@ class RSRAppDeployerTest(mox.MoxTestBase):
     def test_does_not_download_rsr_code_archive_if_available_on_deployment_host(self):
         """fab.tests.app.rsr_app_deployer_test  Does not download RSR code archive if already available on deployment host"""
 
-        self._set_expectations_to_download_and_unpack_rsr_archive(archive_exists_on_host=True)
+        self._download_and_unpack_rsr_archive(archive_exists_on_host=True)
         self.mox.ReplayAll()
 
         self.app_deployer.download_and_unpack_rsr_archive()
 
-    def _set_expectations_to_download_and_unpack_rsr_archive(self, archive_exists_on_host):
-        rsr_archive_url         = "http://some.server.org/archives"
-        repo_archives_dir       = "/var/repo/archives"
+    def _download_and_unpack_rsr_archive(self, archive_exists_on_host):
         archive_file_name       = "rsr_v1.0.9.zip"
-        archive_file_on_host    = os.path.join(repo_archives_dir, archive_file_name)
+        archive_file_on_host    = os.path.join(self.deployment_config.repo_archives_dir, archive_file_name)
 
-        self.mock_deployment_config.rsr_archive_url     = rsr_archive_url
-        self.mock_deployment_config.repo_archives_dir   = repo_archives_dir
-
-        self.mock_deployment_host.file_name_from_url_headers(rsr_archive_url).AndReturn(archive_file_name)
+        self.mock_deployment_host.file_name_from_url_headers(self.deployment_config.rsr_archive_url).AndReturn(archive_file_name)
         self.mock_feedback.comment("Downloading RSR archive file")
         self.mock_deployment_host.file_exists(archive_file_on_host).AndReturn(archive_exists_on_host)
 
@@ -99,26 +84,52 @@ class RSRAppDeployerTest(mox.MoxTestBase):
             self.mock_feedback.comment("Latest archive already exists at: %s" % archive_file_on_host)
         else:
             self.mock_feedback.comment("Fetching RSR archive from Github")
-            self.mock_deployment_host.download_file_at_url_as(archive_file_on_host, rsr_archive_url)
+            self.mock_deployment_host.download_file_at_url_as(archive_file_on_host, self.deployment_config.rsr_archive_url)
 
-        self._set_expectations_to_unpack_code_archive(archive_file_on_host)
+        self._unpack_code_archive(archive_file_on_host)
 
-    def _set_expectations_to_unpack_code_archive(self, archive_file_on_host):
-        repo_checkout_home          = "/var/repo"
-        rsr_deployment_dir_name     = "rsr_app_dir"
-        rsr_deployment_home         = os.path.join(repo_checkout_home, rsr_deployment_dir_name)
-        unpacked_archive_dir_mask   = "unpacked_rsr_archive_dir-*"
+    def _unpack_code_archive(self, archive_file_on_host):
+        self.mock_feedback.comment("Unpacking RSR archive in %s" % self.deployment_config.rsr_deployment_home)
+        self._change_dir_to(self.deployment_config.repo_checkout_home)
+        self.mock_deployment_host.decompress_code_archive(archive_file_on_host, self.deployment_config.repo_checkout_home)
+        self.mock_deployment_host.rename_directory(self.deployment_config.unpacked_archive_dir_mask, self.deployment_config.rsr_deployment_dir_name)
+        self.mock_deployment_host.set_web_group_ownership_on_directory(self.deployment_config.rsr_deployment_dir_name)
 
-        self.mock_deployment_config.rsr_deployment_dir_name     = rsr_deployment_dir_name
-        self.mock_deployment_config.rsr_deployment_home         = rsr_deployment_home
-        self.mock_deployment_config.repo_checkout_home          = repo_checkout_home
-        self.mock_deployment_config.unpacked_archive_dir_mask   = unpacked_archive_dir_mask
+    def test_can_create_app_symlinks(self):
+        """fab.tests.app.rsr_app_deployer_test  Can create app symlinks"""
 
-        self.mock_feedback.comment("Unpacking RSR archive in %s" % rsr_deployment_home)
-        self.mock_deployment_host.cd(repo_checkout_home).AndReturn(fabric.api.cd(repo_checkout_home))
-        self.mock_deployment_host.decompress_code_archive(archive_file_on_host, repo_checkout_home)
-        self.mock_deployment_host.rename_directory(unpacked_archive_dir_mask, rsr_deployment_dir_name)
-        self.mock_deployment_host.set_web_group_ownership_on_directory(rsr_deployment_dir_name)
+        self.mock_feedback.comment("Verifying expected symlink target paths")
+        self._verify_symlink_target_paths()
+        self.mock_feedback.comment("Ensuring expected RSR app symlinks exist")
+        self._link_configuration_files()
+        self._link_mediaroot_directories()
+        self._link_current_deployment_home()
+        self.mox.ReplayAll()
+
+        self.app_deployer.ensure_app_symlinks_exist()
+
+    def _verify_symlink_target_paths(self):
+        self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.host_config_home)
+        self.mock_deployment_host.exit_if_file_does_not_exist(self.deployment_config.deployed_rsr_settings_file)
+        self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.django_media_admin_path)
+        self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.web_media_db_path)
+
+    def _link_configuration_files(self):
+        self._change_dir_to(self.deployment_config.rsr_settings_home)
+        self.mock_deployment_host.ensure_symlink_exists(self.deployment_config.local_rsr_settings_file_name,
+                                                        self.deployment_config.deployed_rsr_settings_file)
+
+    def _link_mediaroot_directories(self):
+        self._change_dir_to(self.deployment_config.rsr_media_root)
+        self.mock_deployment_host.ensure_symlink_exists("admin", self.deployment_config.django_media_admin_path)
+        self.mock_deployment_host.ensure_symlink_exists("db", self.deployment_config.web_media_db_path)
+
+    def _link_current_deployment_home(self):
+        self._change_dir_to(self.deployment_config.repo_checkout_home)
+        self.mock_deployment_host.ensure_symlink_exists("current", self.deployment_config.rsr_deployment_home)
+
+    def _change_dir_to(self, expected_dir):
+        self.mock_deployment_host.cd(expected_dir).AndReturn(fabric.api.cd(expected_dir))
 
 
 def suite():
