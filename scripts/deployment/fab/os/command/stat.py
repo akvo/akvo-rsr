@@ -10,6 +10,10 @@ from fab.os.system import SystemType
 
 class StatCommand(object):
 
-    @staticmethod
-    def query_format_for(system_type):
-        return { SystemType.LINUX: "-c %F", SystemType.MAC_OSX: "-f %HT" }[system_type]
+    def __init__(self, system_type):
+        self.system_type = system_type
+
+    def for_path(self, path):
+        query_format = { SystemType.LINUX: "-c %F", SystemType.MAC_OSX: "-f %HT" }[self.system_type]
+
+        return "stat %s %s" % (query_format, path)

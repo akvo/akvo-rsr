@@ -18,15 +18,15 @@ class StatCommandTest(unittest2.TestCase):
     def setUp(self):
         super(StatCommandTest, self).setUp()
 
-    def test_can_get_stat_command_query_format_for_linux(self):
-        """fab.tests.os.command.stat_test  Can get stat command query type for Linux"""
+    def test_can_get_linux_stat_command_for_specified_path(self):
+        """fab.tests.os.command.stat_test  Can get Linux stat command for a specified path"""
 
-        self.assertEqual("-c %F", StatCommand.query_format_for(SystemType.LINUX))
+        self.assertEqual("stat -c %F /some/path", StatCommand(SystemType.LINUX).for_path("/some/path"))
 
-    def test_can_get_stat_command_query_format_for_mac_osx(self):
-        """fab.tests.os.command.stat_test  Can get stat command query type for Mac OS X"""
+    def test_can_get_mac_osx_stat_command_for_specified_path(self):
+        """fab.tests.os.command.stat_test  Can get Mac OS X stat command for a specified path"""
 
-        self.assertEqual("-f %HT", StatCommand.query_format_for(SystemType.MAC_OSX))
+        self.assertEqual("stat -f %HT /some/path", StatCommand(SystemType.MAC_OSX).for_path("/some/path"))
 
 
 def suite():
