@@ -8,6 +8,8 @@
 import os
 
 from fab.host.controller import LocalHostController
+from fab.os.path import PathInfo
+from fab.os.symlink import SymlinkInfo
 
 
 class FileSystem(object):
@@ -71,6 +73,24 @@ class FileSystem(object):
     def remove_symlink(self, symlink_path, with_sudo=False):
         self.feedback.comment("Removing symlink: %s" % symlink_path)
         self._run_command("unlink %s" % symlink_path, with_sudo)
+
+    def ensure_symlink_exists(self, symlink_path, real_path, with_sudo=False):
+        path = PathInfo(symlink_path, self.host_controller)
+
+        if path.exists() and not path.is_symlink():
+            self.feedback.abort("Found existing path but path is not a symlink: %s" % symlink_path)
+        elif not PathInfo(real_path, self.host_controller).exists():
+            self.feedback.abort("Cannot create symlink to nonexistent path: %s" % real_path)
+        else:
+            symlink = SymlinkInfo(symlink_path, self.host_controller)
+
+            if symlink.exists() and symlink.is_linked_to(real_path):
+                self.feedback.comment("Found expected symlink: %s" % symlink)
+            elif symlink.exists():
+                self.remove_symlink(symlink_path)
+                self.create_symlink(symlink_path, real_path, with_sudo)
+            else:
+                self.create_symlink(symlink_path, real_path, with_sudo)
 
     def rename_file(self, original_file, new_file):
         self._rename_path(original_file, new_file)
