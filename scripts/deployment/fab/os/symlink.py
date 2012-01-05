@@ -26,5 +26,8 @@ class SymlinkInfo(object):
     def is_linked_to(self, expected_path):
         return self._linked_path() == expected_path
 
+    def __str__(self):
+        return "%s -> %s" % (self.symlink_path, self._linked_path())
+
     def _linked_path(self):
         return self.host_controller.run("readlink %s" % self.symlink_path)

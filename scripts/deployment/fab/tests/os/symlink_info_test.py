@@ -80,6 +80,14 @@ class SymlinkInfoTest(mox.MoxTestBase):
 
         self.assertFalse(self.symlink.is_linked_to("/another/path"), "Expected linked path not to match")
 
+    def test_can_represent_symlink_info_as_string(self):
+        """fab.tests.os.symlink_info_test  Can represent symlink info as a string"""
+
+        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn("/real/path")
+        self.mox.ReplayAll()
+
+        self.assertEqual("/path/to/symlink -> /real/path", "%s" % self.symlink)
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(SymlinkInfoTest)
