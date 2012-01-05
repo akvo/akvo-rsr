@@ -25,7 +25,7 @@ class PathInfo(object):
 
     def determine_path_type(self, host_controller):
         system_type = SystemInfo(host_controller).system_type
-        path_type_query_format = { SystemType.LINUX: "-c %%%F", SystemType.MAC_OSX: "-f %%%HT" }[system_type]
+        path_type_query_format = { SystemType.LINUX: "-c %F", SystemType.MAC_OSX: "-f %HT" }[system_type]
 
         self.path_type = self.host_controller.run("stat %s %s" % (path_type_query_format, self.path)).lower()
 

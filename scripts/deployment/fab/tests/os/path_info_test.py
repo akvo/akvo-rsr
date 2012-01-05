@@ -102,7 +102,7 @@ class PathInfoTest(mox.MoxTestBase):
         self.assertTrue(path.is_symlink(), "Expected a Mac OS X symbolic link path to be recognised")
 
     def _set_expected_path_type_for(self, system_type, path, expected_path_type_response):
-        expected_path_type_query_format = { SystemType.LINUX: "-c %%%F", SystemType.MAC_OSX: "-f %%%HT" }[system_type]
+        expected_path_type_query_format = { SystemType.LINUX: "-c %F", SystemType.MAC_OSX: "-f %HT" }[system_type]
 
         self.mock_host_controller.run("uname -s").AndReturn(system_type)
         self.mock_host_controller.run("stat %s %s" % (expected_path_type_query_format, path)).AndReturn(expected_path_type_response)
