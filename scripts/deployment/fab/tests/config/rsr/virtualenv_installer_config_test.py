@@ -12,7 +12,6 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
-from fab.format.timestamp import TimeStampFormatter
 
 CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
 imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
@@ -31,13 +30,13 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
         self.deployment_host_config_values = DeploymentHostConfigValues()
         self.codebase_config = RSRCodebaseConfig(feature_branch)
         self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
-        self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
         self.expected_virtualenvs_home = self.deployment_host_config_values.virtualenvs_home
         self.expected_rsr_env_name = "rsr_%s" % self.codebase_config.repo_branch_without_type
 
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig(self.deployment_host_config_values, self.codebase_config,
-                                                                        self.deployment_config, self.mock_time_stamp_formatter)
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig(self.deployment_host_config_values,
+                                                                        self.codebase_config,
+                                                                        self.deployment_config)
 
     def test_can_create_instance(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Can create RSRVirtualEnvInstallerConfig instance"""
@@ -80,18 +79,6 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
 
     def _expected_requirements_file_path(self, requirements_file):
         return os.path.join(self.deployment_config.rsr_deployment_home, requirements_file)
-
-    def test_can_get_time_stamped_pip_install_log_file_path(self):
-        """fab.tests.config.rsr.virtualenv_installer_config_test  Can get time stamped pip install log file path"""
-
-        expected_file_timestamp = "20110923_153244"
-        expected_pip_log_file_name = "pip_install_%s_%s.log" % (self.expected_rsr_env_name, expected_file_timestamp)
-        expected_pip_install_log_file_path = os.path.join(self.expected_virtualenvs_home, expected_pip_log_file_name)
-
-        self.mock_time_stamp_formatter.file_timestamp().AndReturn(expected_file_timestamp)
-        self.mox.ReplayAll()
-
-        self.assertEqual(expected_pip_install_log_file_path, self.virtualenv_installer_config.time_stamped_pip_install_log_file_path())
 
 
 def suite():

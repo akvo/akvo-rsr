@@ -5,12 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import mox
+import fabric.api
+import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.environment.python.virtualenv import VirtualEnv, VirtualEnvInstaller
+from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem
@@ -20,20 +22,21 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
     def setUp(self):
         super(VirtualEnvInstallerTest, self).setUp()
-        self.mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
+        self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
-        self.expected_virtualenv_path = "/some/env/path"
+        self.deployment_user = "rupaul"
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
+
         self.pip_requirements_file = "/some/path/to/pip_requirements.txt"
 
         self.mock_host_controller.feedback = self.mock_feedback
-        self.mock_virtualenv_installer_config.rsr_env_path = self.expected_virtualenv_path
 
-        self.virtualenv_installer = VirtualEnvInstaller(self.mock_virtualenv_installer_config, self.mock_host_controller,
-                                                        self.mock_file_system, self.mock_virtualenv)
+        self.virtualenv_installer = VirtualEnvInstaller(self.virtualenv_installer_config, self.mock_host_controller,
+                                                        self.mock_file_system, self.mock_virtualenv, self.mock_time_stamp_formatter)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can create VirtualEnvInstaller instance for a local host"""
@@ -50,7 +53,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        virtualenv_installer_instance = VirtualEnvInstaller.create_instance(self.mock_virtualenv_installer_config,
+        virtualenv_installer_instance = VirtualEnvInstaller.create_instance(self.virtualenv_installer_config,
                                                                             mock_host_controller,
                                                                             self.mock_file_system)
 
@@ -59,7 +62,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
     def test_can_check_for_virtualenv_existence(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can check for virtualenv existence"""
 
-        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
+        self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).AndReturn(True)
         self.mox.ReplayAll()
 
         self.assertTrue(self.virtualenv_installer.virtualenv_exists(), "Virtualenv should exist")
@@ -67,7 +70,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
     def test_can_delete_existing_virtualenv(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can delete existing virtualenv"""
 
-        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
+        self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).AndReturn(True)
         self._set_expectations_to_delete_virtualenv()
         self.mox.ReplayAll()
 
@@ -76,7 +79,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
     def test_does_nothing_when_attempting_to_delete_nonexistent_virtualenv(self):
         """fab.tests.environment.python.virtualenv_installer_test  Does nothing when attempting to delete a nonexistent virtualenv"""
 
-        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(False)
+        self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).AndReturn(False)
         self.mox.ReplayAll()
 
         self.virtualenv_installer.delete_existing_virtualenv()
@@ -105,8 +108,8 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
     def test_can_ensure_virtualenv_exists_and_confirm_an_existing_virtualenv(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
 
-        self.mock_file_system.directory_exists(self.expected_virtualenv_path).AndReturn(True)
-        self.mock_feedback.comment("Found existing virtualenv at %s" % self.expected_virtualenv_path)
+        self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).AndReturn(True)
+        self.mock_feedback.comment("Found existing virtualenv at %s" % self.virtualenv_installer_config.rsr_env_path)
         self.mock_virtualenv.list_installed_packages()
         self.mox.ReplayAll()
 
@@ -114,21 +117,21 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
     def _set_expectations_to_create_empty_virtualenv(self, existing_virtualenv):
         if existing_virtualenv:
-            self.mock_file_system.directory_exists(self.expected_virtualenv_path).MultipleTimes().AndReturn(True)
+            self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).MultipleTimes().AndReturn(True)
             self._set_expectations_to_delete_virtualenv()
         else:
-            self.mock_file_system.directory_exists(self.expected_virtualenv_path).MultipleTimes().AndReturn(False)
+            self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).MultipleTimes().AndReturn(False)
 
-        expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.expected_virtualenv_path
+        expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.virtualenv_installer_config.rsr_env_path
 
-        self.mock_feedback.comment("Creating new virtualenv at %s" % self.expected_virtualenv_path)
+        self.mock_feedback.comment("Creating new virtualenv at %s" % self.virtualenv_installer_config.rsr_env_path)
         self.mock_host_controller.run(expected_virtualenv_creation_command)
         self.mock_virtualenv.list_installed_packages()
         self.mox.ReplayAll()
 
     def _set_expectations_to_delete_virtualenv(self):
         self.mock_feedback.comment("Deleting existing virtualenv")
-        self.mock_file_system.delete_directory_with_sudo(self.expected_virtualenv_path)
+        self.mock_file_system.delete_directory_with_sudo(self.virtualenv_installer_config.rsr_env_path)
 
     def test_can_install_packages_from_given_pip_requirements(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can install packages from given pip requirements"""
@@ -146,17 +149,32 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
     def _set_expectations_to_install_packages(self, quietly):
         quiet_mode_switch = "-q " if quietly else ""
-        expected_pip_log_file_path = "/some/log/path/pip.log"
+        time_stamped_rsr_env_name = "%s_some_time_stamp" % self.virtualenv_installer_config.rsr_env_name
+        pip_log_file_name = "pip_install_%s.log" % time_stamped_rsr_env_name
+        expected_pip_log_file_path = os.path.join(self.virtualenv_installer_config.virtualenvs_home, pip_log_file_name)
+
         expected_pip_install_command = "pip install %s-M -E %s -r %s --log=%s" % (quiet_mode_switch,
-                                                                                  self.expected_virtualenv_path,
+                                                                                  self.virtualenv_installer_config.rsr_env_path,
                                                                                   self.pip_requirements_file,
                                                                                   expected_pip_log_file_path)
 
-        self.mock_feedback.comment("Installing packages in virtualenv at %s" % self.expected_virtualenv_path)
-        self.mock_virtualenv_installer_config.time_stamped_pip_install_log_file_path().AndReturn(expected_pip_log_file_path)
+        self.mock_feedback.comment("Installing packages in virtualenv at %s" % self.virtualenv_installer_config.rsr_env_path)
+        self.mock_time_stamp_formatter.append_timestamp(self.virtualenv_installer_config.rsr_env_name).AndReturn(time_stamped_rsr_env_name)
         self.mock_virtualenv.run_within_virtualenv(expected_pip_install_command)
         self.mock_virtualenv.list_installed_packages()
         self.mox.ReplayAll()
+
+    def test_can_ensure_virtualenv_symlinks_exist(self):
+        """fab.tests.environment.python.virtualenv_installer_test  Can ensure virtualenv symlinks exist"""
+
+        self._change_dir_to(self.virtualenv_installer_config.virtualenvs_home)
+        self.mock_file_system.ensure_symlink_exists("current", self.virtualenv_installer_config.rsr_env_name)
+        self.mox.ReplayAll()
+
+        self.virtualenv_installer.ensure_virtualenv_symlinks_exist()
+
+    def _change_dir_to(self, expected_dir):
+        self.mock_host_controller.cd(expected_dir).AndReturn(fabric.api.cd(expected_dir))
 
 
 def suite():
