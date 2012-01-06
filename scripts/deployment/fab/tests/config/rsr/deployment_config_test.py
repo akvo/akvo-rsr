@@ -31,6 +31,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.expected_rsr_dir_name = "rsr_%s" % self.codebase_config.repo_branch_without_type
         self.expected_rsr_deployment_home = os.path.join(self.deployment_host_config_values.repo_checkout_home, self.expected_rsr_dir_name)
+        self.expected_current_virtualenv_path = os.path.join(self.deployment_host_config_values.virtualenvs_home, "current")
 
         self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
 
@@ -98,11 +99,15 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_current_rsr_media_root, self.deployment_config.current_rsr_media_root)
 
+    def test_has_current_virtualenv_path(self):
+        """fab.tests.config.rsr.deployment_config_test  Has current virtualenv path"""
+
+        self.assertEqual(self.expected_current_virtualenv_path, self.deployment_config.current_virtualenv_path)
+
     def test_has_django_media_admin_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has Django media admin path"""
 
-        current_virtualenv_path = os.path.join(self.deployment_host_config_values.virtualenvs_home, "current")
-        expected_django_media_admin_path = os.path.join(current_virtualenv_path, RSRDeploymentConfig.DJANGO_LIB_PATH, "contrib/admin/media")
+        expected_django_media_admin_path = os.path.join(self.expected_current_virtualenv_path, RSRDeploymentConfig.DJANGO_LIB_PATH, "contrib/admin/media")
 
         self.assertEqual(expected_django_media_admin_path, self.deployment_config.django_media_admin_path)
 
