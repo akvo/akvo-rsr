@@ -31,7 +31,7 @@ class DeploymentHost(NeutralHost):
                               Internet(host_controller),
                               host_controller.feedback)
 
-    def verify_sudo_and_web_admin_permissions_for(self, user_id):
+    def ensure_user_has_required_deployment_permissions(self, user_id):
         self.user_verifier.verify_sudo_and_web_admin_permissions_for(user_id)
 
     def create_directory(self, dir_path):

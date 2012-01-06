@@ -39,7 +39,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
     def test_can_ensure_user_has_required_deployment_permissions(self):
         """fab.tests.app.rsr_app_deployer_test  Can ensure user has required deployment permissions"""
 
-        self.mock_deployment_host.verify_sudo_and_web_admin_permissions_for(self.deployment_config.deployment_user)
+        self.mock_deployment_host.ensure_user_has_required_deployment_permissions(self.deployment_config.deployment_user)
         self.mox.ReplayAll()
 
         self.app_deployer.ensure_user_has_required_deployment_permissions()

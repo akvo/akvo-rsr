@@ -31,13 +31,13 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_user_verifier, self.mock_permissions,
                                               self.mock_internet, self.mock_feedback)
 
-    def test_can_verify_sudo_and_web_admin_permissions_for_specified_user(self):
-        """fab.tests.host.deployment_host_test  Can verify sudo and web admin permissions for a specified user"""
+    def test_can_ensure_user_has_required_deployment_permissions(self):
+        """fab.tests.host.deployment_host_test  Can ensure user has required deployment permissions"""
 
         self.mock_user_verifier.verify_sudo_and_web_admin_permissions_for("joesoap")
         self.mox.ReplayAll()
 
-        self.deployment_host.verify_sudo_and_web_admin_permissions_for("joesoap")
+        self.deployment_host.ensure_user_has_required_deployment_permissions("joesoap")
 
     def test_can_create_a_remote_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a remote DeploymentHost instance"""
