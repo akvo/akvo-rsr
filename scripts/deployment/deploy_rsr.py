@@ -60,11 +60,11 @@ def run_data_retrieval_task(fully_qualified_task):
 
 def deploy_rsr():
     os.chdir(FABRIC_SCRIPTS_HOME)
-    # run_deployment_task("fab.tasks.environment.linux.systempackages.verify_system_packages")
-    #run_deployment_task("fab.tasks.environment.python.systempackages.update_system_python_packages")
-    #run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
-    #run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
-    #run_data_retrieval_task("fab.tasks.data.retrieval.fetch_rsr_data")
+    run_deployment_task("fab.tasks.environment.linux.systempackages.verify_system_packages")
+    run_deployment_task("fab.tasks.environment.python.systempackages.update_system_python_packages")
+    run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
+    run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
+    run_data_retrieval_task("fab.tasks.data.retrieval.fetch_rsr_data")
     run_deployment_task("fab.tasks.database.rsr.rebuild_rsr_database:host_controller_mode=remote")
 
 
