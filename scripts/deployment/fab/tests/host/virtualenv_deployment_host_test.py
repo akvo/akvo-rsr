@@ -99,6 +99,14 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
 
         self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_file)
 
+    def test_can_ensure_virtualenv_symlinks_exist(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can ensure virtualenv symlinks exist"""
+
+        self.mock_virtualenv_installer.ensure_virtualenv_symlinks_exist()
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(VirtualEnvDeploymentHostTest)
