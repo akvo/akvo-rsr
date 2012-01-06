@@ -17,19 +17,21 @@ from fab.environment.python.systempackageinstaller import SystemPythonPackageIns
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.linux import LinuxHost
 from fab.os.linux.packageinspector import UbuntuPackageInspector
+from fab.verifiers.user import DeploymentUserVerifier
 
 
 class LinuxHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(LinuxHostTest, self).setUp()
+        self.mock_user_verifier = self.mox.CreateMock(DeploymentUserVerifier)
         self.mock_python_installer = self.mox.CreateMock(PythonInstaller)
         self.mock_os_package_inspector = self.mox.CreateMock(UbuntuPackageInspector)
         self.mock_os_package_verifier = self.mox.CreateMock(LinuxPackageVerifier)
         self.mock_python_package_installer = self.mox.CreateMock(SystemPythonPackageInstaller)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.linux_host = LinuxHost(self.mock_python_installer, self.mock_os_package_inspector,
+        self.linux_host = LinuxHost(self.mock_user_verifier, self.mock_python_installer, self.mock_os_package_inspector,
                                     self.mock_os_package_verifier, self.mock_python_package_installer,
                                     self.mock_feedback)
 
@@ -37,6 +39,14 @@ class LinuxHostTest(mox.MoxTestBase):
         """fab.tests.host.linux_host_test  Can create a LinuxHost instance"""
 
         self.assertIsInstance(LinuxHost.create_instance(), LinuxHost)
+
+    def test_can_ensure_user_has_required_deployment_permissions(self):
+        """fab.tests.app.linux_host_test  Can ensure user has required deployment permissions"""
+
+        self.mock_user_verifier.verify_sudo_permission_for("jane")
+        self.mox.ReplayAll()
+
+        self.linux_host.ensure_user_has_required_deployment_permissions("jane")
 
     def test_can_ensure_specified_python_version_is_installed(self):
         """fab.tests.host.linux_host_test  Can ensure specified Python version is installed"""
