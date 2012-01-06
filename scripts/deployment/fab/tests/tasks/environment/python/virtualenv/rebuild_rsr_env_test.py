@@ -67,6 +67,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         self.mock_virtualenv_deployment_host.ensure_virtualenv_exists()
         self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_path)
         self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_path)
+        self.mock_virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
         self.mox.ReplayAll()
 
         self.rebuild_virtualenv_task.run(HostControllerMode.REMOTE)

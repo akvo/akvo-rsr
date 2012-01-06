@@ -31,6 +31,7 @@ class RebuildRSREnv(fabric.tasks.Task):
         self.virtualenv_deployment_host.ensure_virtualenv_exists()
         self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_path)
         self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_path)
+        self.virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
 
     def _configure_host_using(self, host_controller_mode):
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
