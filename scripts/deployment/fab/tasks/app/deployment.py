@@ -23,8 +23,8 @@ class DeployRSRApp(fabric.tasks.Task):
         self.deployment_config = deployment_config
 
     @staticmethod
-    def create_task_instance():
-        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(fabric.api.env.user))
+    def create_task_instance(deployment_user):
+        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(deployment_user))
 
     def run(self, host_controller_mode):
         self._initialise_app_deployer_using(host_controller_mode)
@@ -44,4 +44,4 @@ class DeployRSRApp(fabric.tasks.Task):
         self.feedback = deployment_host.feedback
 
 
-instance = DeployRSRApp.create_task_instance()
+instance = DeployRSRApp.create_task_instance(fabric.api.env.user)
