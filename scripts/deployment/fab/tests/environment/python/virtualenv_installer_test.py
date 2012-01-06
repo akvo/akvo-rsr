@@ -168,7 +168,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         """fab.tests.environment.python.virtualenv_installer_test  Can ensure virtualenv symlinks exist"""
 
         self._change_dir_to(self.virtualenv_installer_config.virtualenvs_home)
-        self.mock_file_system.ensure_symlink_exists("current", self.virtualenv_installer_config.rsr_env_name)
+        self.mock_file_system.ensure_symlink_exists("current", self.virtualenv_installer_config.rsr_env_name, with_sudo=True)
         self.mox.ReplayAll()
 
         self.virtualenv_installer.ensure_virtualenv_symlinks_exist()

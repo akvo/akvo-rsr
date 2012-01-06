@@ -84,8 +84,8 @@ class DeploymentHost(NeutralHost):
             self.ensure_directory_exists_with_sudo(dir_path)
             self.set_web_group_permissions_on_directory(dir_path)
 
-    def ensure_symlink_exists(self, symlink_path, real_path, with_sudo=False):
-        self.file_system.ensure_symlink_exists(symlink_path, real_path, with_sudo)
+    def ensure_symlink_exists(self, symlink_path, real_path):
+        self.file_system.ensure_symlink_exists(symlink_path, real_path, with_sudo=True)
 
     def file_name_at_url(self, url):
         return self.internet.file_name_at_url(url)

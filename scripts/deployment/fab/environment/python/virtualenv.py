@@ -95,4 +95,4 @@ class VirtualEnvInstaller(object):
 
     def ensure_virtualenv_symlinks_exist(self):
         with self.host_controller.cd(self.virtualenv_installer_config.virtualenvs_home):
-            self.file_system.ensure_symlink_exists("current", self.virtualenv_installer_config.rsr_env_name)
+            self.file_system.ensure_symlink_exists("current", self.virtualenv_installer_config.rsr_env_name, with_sudo=True)

@@ -222,18 +222,10 @@ class DeploymentHostTest(mox.MoxTestBase):
     def test_can_ensure_symlink_exists(self):
         """fab.tests.host.deployment_host_test  Can ensure symlink exists"""
 
-        self.mock_file_system.ensure_symlink_exists("/path/to/symlink", "/some/real/path", False)
+        self.mock_file_system.ensure_symlink_exists("/path/to/symlink", "/some/real/path", with_sudo=True)
         self.mox.ReplayAll()
 
         self.deployment_host.ensure_symlink_exists("/path/to/symlink", "/some/real/path")
-
-    def test_can_ensure_symlink_exists_with_sudo(self):
-        """fab.tests.host.deployment_host_test  Can ensure symlink exists with sudo"""
-
-        self.mock_file_system.ensure_symlink_exists("/path/to/symlink", "/some/real/path", True)
-        self.mox.ReplayAll()
-
-        self.deployment_host.ensure_symlink_exists("/path/to/symlink", "/some/real/path", with_sudo=True)
 
     def test_can_get_file_name_at_specified_url(self):
         """fab.tests.host.deployment_host_test  Can get the file name at a specified URL"""
