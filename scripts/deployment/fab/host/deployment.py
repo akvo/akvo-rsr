@@ -9,22 +9,30 @@ from fab.helpers.internet import Internet
 from fab.host.neutral import NeutralHost
 from fab.os.filesystem import FileSystem
 from fab.os.permissions import AkvoPermissions
+from fab.verifiers.user import DeploymentUserVerifier
 
 
 class DeploymentHost(NeutralHost):
     """DeploymentHost encapsulates common actions available during a deployment"""
 
-    def __init__(self, file_system, permissions, internet_helper, feedback):
+    def __init__(self, file_system, deployment_user_verifier, permissions, internet_helper, feedback):
         super(DeploymentHost, self).__init__(file_system, feedback)
+        self.user_verifier = deployment_user_verifier
         self.permissions = permissions
         self.internet = internet_helper
 
     @staticmethod
     def create_instance(host_controller):
+        permissions = AkvoPermissions(host_controller)
+
         return DeploymentHost(FileSystem(host_controller),
-                              AkvoPermissions(host_controller),
+                              DeploymentUserVerifier(permissions),
+                              permissions,
                               Internet(host_controller),
                               host_controller.feedback)
+
+    def verify_sudo_and_web_admin_permissions_for(self, user_id):
+        self.user_verifier.verify_sudo_and_web_admin_permissions_for(user_id)
 
     def create_directory(self, dir_path):
         self.file_system.create_directory(dir_path)
@@ -61,9 +69,6 @@ class DeploymentHost(NeutralHost):
 
     def decompress_code_archive(self, archive_file_name, destination_dir):
         self.file_system.decompress_code_archive(archive_file_name, destination_dir)
-
-    def exit_if_user_is_not_member_of_web_group(self, user_id):
-        self.permissions.exit_if_user_is_not_member_of_web_group(user_id)
 
     def set_web_group_permissions_on_directory(self, dir_path):
         self.permissions.set_web_group_permissions_on_directory(dir_path)

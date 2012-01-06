@@ -15,6 +15,7 @@ from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.deployment import DeploymentHost
 from fab.os.filesystem import FileSystem
 from fab.os.permissions import AkvoPermissions
+from fab.verifiers.user import DeploymentUserVerifier
 
 
 class DeploymentHostTest(mox.MoxTestBase):
@@ -22,11 +23,21 @@ class DeploymentHostTest(mox.MoxTestBase):
     def setUp(self):
         super(DeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_user_verifier = self.mox.CreateMock(DeploymentUserVerifier)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_internet = self.mox.CreateMock(Internet)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_internet, self.mock_feedback)
+        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_user_verifier, self.mock_permissions,
+                                              self.mock_internet, self.mock_feedback)
+
+    def test_can_verify_sudo_and_web_admin_permissions_for_specified_user(self):
+        """fab.tests.host.deployment_host_test  Can verify sudo and web admin permissions for a specified user"""
+
+        self.mock_user_verifier.verify_sudo_and_web_admin_permissions_for("joesoap")
+        self.mox.ReplayAll()
+
+        self.deployment_host.verify_sudo_and_web_admin_permissions_for("joesoap")
 
     def test_can_create_a_remote_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a remote DeploymentHost instance"""
@@ -170,14 +181,6 @@ class DeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.deployment_host.decompress_code_archive(code_archive_file, destination_dir)
-
-    def test_will_exit_if_user_is_not_member_of_web_group(self):
-        """fab.tests.host.deployment_host_test  Will exit if user is not a member of the web user group"""
-
-        self.mock_permissions.exit_if_user_is_not_member_of_web_group("joesoap")
-        self.mox.ReplayAll()
-
-        self.deployment_host.exit_if_user_is_not_member_of_web_group("joesoap")
 
     def test_can_set_web_group_permissions_on_specified_directory(self):
         """fab.tests.host.deployment_host_test  Can set web user group permissions on a specified directory"""
