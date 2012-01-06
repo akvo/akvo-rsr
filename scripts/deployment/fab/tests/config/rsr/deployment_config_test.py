@@ -102,7 +102,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def test_has_web_media_db_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has web media DB path"""
 
-        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "db"), self.deployment_config.web_media_db_path)
+        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "akvo/db"), self.deployment_config.web_media_db_path)
 
     def test_has_host_config_home(self):
         """fab.tests.config.rsr.deployment_config_test  Has host configuration home"""

@@ -31,7 +31,7 @@ class RSRDeploymentConfig(object):
 
         current_virtualenv_path         = os.path.join(deployment_host_config_values.virtualenvs_home, "current")
         self.django_media_admin_path    = os.path.join(current_virtualenv_path, self.DJANGO_LIB_PATH, "contrib/admin/media")
-        self.web_media_db_path          = os.path.join(deployment_host_config_values.web_media_home, "db")
+        self.web_media_db_path          = os.path.join(deployment_host_config_values.web_media_home, "akvo/db")
 
         self.host_config_home               = deployment_host_config_values.config_home
         self.local_rsr_settings_file_name   = RSRCodebaseConfig.LOCAL_SETTINGS_FILE
