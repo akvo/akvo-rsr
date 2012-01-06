@@ -21,14 +21,14 @@ class DeploymentUserVerifierTest(mox.MoxTestBase):
 
         self.deployment_user_verifier = DeploymentUserVerifier(self.mock_permissions)
 
-    def test_can_verify_expected_user_group_memberships(self):
-        """fab.tests.verifiers.deployment_user_verifier_test  Can verify expected user group memberships"""
+    def test_can_verify_expected_sudo_and_web_admin_permissions_for_sepcified_user(self):
+        """fab.tests.verifiers.deployment_user_verifier_test  Can verify expected sudo and web admin permissions for a specified user"""
 
         self.mock_permissions.exit_if_user_does_not_have_sudo_permission("jane")
         self.mock_permissions.exit_if_user_is_not_member_of_web_group("jane")
         self.mox.ReplayAll()
 
-        self.deployment_user_verifier.verify_expected_user_group_memberships("jane")
+        self.deployment_user_verifier.verify_sudo_and_web_admin_permissions_for("jane")
 
 
 def suite():
