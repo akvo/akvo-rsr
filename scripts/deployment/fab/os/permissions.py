@@ -5,9 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from fab.os.command.groups import GroupsCommand
+
+
 class AkvoPermissions(object):
 
-    GROUPS_COMMAND = "groups"
     WEB_USER_GROUP = "www-edit"
 
     def __init__(self, host_controller):
@@ -15,11 +17,13 @@ class AkvoPermissions(object):
         self.feedback = host_controller.feedback
 
     def exit_if_user_is_not_member_of_web_group(self, user_id):
-        group_membership = self.host_controller.run(AkvoPermissions.GROUPS_COMMAND)
-        if group_membership.find(AkvoPermissions.WEB_USER_GROUP) == -1:
+        if not self._user_is_web_group_member(user_id):
             self.feedback.abort("User [%s] should be a member of group [%s]" % (user_id, AkvoPermissions.WEB_USER_GROUP))
         else:
             self.feedback.comment("User [%s] is a member of expected group [%s]" % (user_id, AkvoPermissions.WEB_USER_GROUP))
+
+    def _user_is_web_group_member(self, user_id):
+        return GroupsCommand(self.host_controller).user(user_id).is_a_member_of(AkvoPermissions.WEB_USER_GROUP)
 
     def set_web_group_permissions_on_directory(self, dir_path):
         self.set_web_group_ownership_on_directory(dir_path)

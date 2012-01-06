@@ -28,7 +28,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         """fab.tests.os.akvo_permissions_test  Will confirm group membership if user is a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone %s" % AkvoPermissions.WEB_USER_GROUP
-        self.mock_host_controller.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
+        self.mock_host_controller.run("groups joesoap").AndReturn(groups_for_joe)
         self.mock_feedback.comment("User [joesoap] is a member of expected group [%s]" % AkvoPermissions.WEB_USER_GROUP)
         self.mox.ReplayAll()
 
@@ -38,7 +38,7 @@ class AkvoPermissionsTest(mox.MoxTestBase):
         """fab.tests.os.akvo_permissions_test  Exit if the user is not a member of the web user group"""
 
         groups_for_joe = "joesoap accounts everyone writers"
-        self.mock_host_controller.run(AkvoPermissions.GROUPS_COMMAND).AndReturn(groups_for_joe)
+        self.mock_host_controller.run("groups joesoap").AndReturn(groups_for_joe)
         expected_user_not_in_group_message = "User [joesoap] should be a member of group [%s]" % AkvoPermissions.WEB_USER_GROUP
         self.mock_feedback.abort(expected_user_not_in_group_message).AndRaise(SystemExit(expected_user_not_in_group_message))
         self.mox.ReplayAll()
