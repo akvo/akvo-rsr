@@ -15,6 +15,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.virtualenv import VirtualEnvDeploymentHost
 from fab.os.filesystem import FileSystem
+from fab.verifiers.user import DeploymentUserVerifier
 
 
 class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
@@ -22,6 +23,7 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def setUp(self):
         super(VirtualEnvDeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_user_verifier = self.mox.CreateMock(DeploymentUserVerifier)
         self.mock_virtualenv_installer = self.mox.CreateMock(VirtualEnvInstaller)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
@@ -29,7 +31,16 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         # we don't have any additional expections on the AkvoPermission and Internet dependencies (since
         # those are already tested in the DeploymentHost base class) so we set these to None for now
         self.virtualenv_deployment_host = VirtualEnvDeploymentHost(self.expected_virtualenvs_home, self.mock_file_system,
-                                                                   None, None, self.mock_virtualenv_installer, self.mock_feedback)
+                                                                   self.mock_user_verifier, None, None, self.mock_virtualenv_installer,
+                                                                   self.mock_feedback)
+
+    def test_can_verify_sudo_and_web_admin_permissions_for_specified_user(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can verify sudo and web admin permissions for a specified user"""
+
+        self.mock_user_verifier.verify_sudo_and_web_admin_permissions_for("joesoap")
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.verify_sudo_and_web_admin_permissions_for("joesoap")
 
     def test_can_create_a_remote_host_instance(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can create a remote VirtualEnvDeploymentHost instance"""
