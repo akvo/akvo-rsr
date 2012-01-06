@@ -26,9 +26,9 @@ class RebuildRSREnvTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RebuildRSREnvTest, self).setUp()
-        deployment_user = "rupaul"
+        self.deployment_user = "rupaul"
 
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(deployment_user)
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
         self.mock_virtualenv_deployment_host = self.mox.CreateMock(VirtualEnvDeploymentHost)
 
         self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.virtualenv_installer_config)
@@ -42,7 +42,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can create task instance"""
 
-        self.assertIsInstance(RebuildRSREnv.create_task_instance(), RebuildRSREnv)
+        self.assertIsInstance(RebuildRSREnv.create_task_instance(self.deployment_user), RebuildRSREnv)
 
     def test_can_configure_host_using_local_hostcontrollermode(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can configure host using local HostControllerMode"""
@@ -55,7 +55,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         self._verify_host_configuration_with(HostControllerMode.REMOTE)
 
     def _verify_host_configuration_with(self, host_controller_mode):
-        rebuild_rsr_env_task = RebuildRSREnv.create_task_instance()
+        rebuild_rsr_env_task = RebuildRSREnv.create_task_instance(self.deployment_user)
         rebuild_rsr_env_task._configure_host_using(host_controller_mode)
 
         self.assertIsInstance(rebuild_rsr_env_task.virtualenv_deployment_host, VirtualEnvDeploymentHost)

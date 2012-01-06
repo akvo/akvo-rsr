@@ -21,8 +21,8 @@ class RebuildRSREnv(fabric.tasks.Task):
         self.virtualenv_installer_config = virtualenv_installer_config
 
     @staticmethod
-    def create_task_instance():
-        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvInstallerConfig.create_instance(fabric.api.env.user))
+    def create_task_instance(deployment_user):
+        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvInstallerConfig.create_instance(deployment_user))
 
     def run(self, host_controller_mode):
         self._configure_host_using(host_controller_mode)
@@ -37,4 +37,4 @@ class RebuildRSREnv(fabric.tasks.Task):
         self.virtualenv_deployment_host = fab.host.virtualenv.VirtualEnvDeploymentHost.create_instance(self.virtualenv_installer_config, host_controller)
 
 
-instance = RebuildRSREnv.create_task_instance()
+instance = RebuildRSREnv.create_task_instance(fabric.api.env.user)
