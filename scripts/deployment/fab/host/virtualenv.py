@@ -16,9 +16,9 @@ from fab.verifiers.user import DeploymentUserVerifier
 class VirtualEnvDeploymentHost(DeploymentHost):
     """VirtualEnvDeploymentHost extends DeploymentHost and encapsulates virtualenv installation actions on a given host"""
 
-    def __init__(self, virtualenvs_home, file_system, deployment_user_verifier, permissions, internet_helper, virtualenv_installer, feedback):
+    def __init__(self, virtualenv_installer_config, file_system, deployment_user_verifier, permissions, internet_helper, virtualenv_installer, feedback):
         super(VirtualEnvDeploymentHost, self).__init__(file_system, deployment_user_verifier, permissions, internet_helper, feedback)
-        self.virtualenvs_home = virtualenvs_home
+        self.config = virtualenv_installer_config
         self.virtualenv_installer = virtualenv_installer
 
     @staticmethod
@@ -26,7 +26,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
         file_system = FileSystem(host_controller)
         permissions = AkvoPermissions(host_controller)
 
-        return VirtualEnvDeploymentHost(virtualenv_installer_config.virtualenvs_home,
+        return VirtualEnvDeploymentHost(virtualenv_installer_config,
                                         file_system,
                                         DeploymentUserVerifier(permissions),
                                         permissions,
@@ -34,8 +34,8 @@ class VirtualEnvDeploymentHost(DeploymentHost):
                                         VirtualEnvInstaller.create_instance(virtualenv_installer_config, host_controller, file_system),
                                         host_controller.feedback)
 
-    def verify_sudo_and_web_admin_permissions_for(self, user_id):
-        self.user_verifier.verify_sudo_and_web_admin_permissions_for(user_id)
+    def ensure_user_has_required_deployment_permissions(self):
+        self.user_verifier.verify_sudo_and_web_admin_permissions_for(self.config.deployment_user)
 
     def create_empty_virtualenv(self):
         self._ensure_virtualenvs_home_exists()
@@ -46,7 +46,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
         self.virtualenv_installer.ensure_virtualenv_exists()
 
     def _ensure_virtualenvs_home_exists(self):
-        self.ensure_directory_exists_with_web_group_permissions(self.virtualenvs_home)
+        self.ensure_directory_exists_with_web_group_permissions(self.config.virtualenvs_home)
 
     def install_virtualenv_packages(self, pip_requirements_file):
         self.virtualenv_installer.install_packages(pip_requirements_file)
