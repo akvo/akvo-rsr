@@ -7,11 +7,12 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.os.command.groups_test import GroupsCommandTest
 from fab.tests.os.command.stat_test import StatCommandTest
 
 
 def os_command_suite():
-    return TestSuiteLoader().create_suite_from_classes([StatCommandTest])
+    return TestSuiteLoader().create_suite_from_classes([GroupsCommandTest, StatCommandTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
