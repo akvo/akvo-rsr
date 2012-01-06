@@ -16,14 +16,26 @@ class AkvoPermissions(object):
         self.host_controller = host_controller
         self.feedback = host_controller.feedback
 
+    def exit_if_user_does_not_have_sudo_permission(self, user_id):
+        if not self._user_has_sudo_access(user_id):
+            self.feedback.abort("User [%s] should have sudo permission through membership of the [admin] group" % user_id)
+        else:
+            self.feedback.comment("User [%s] has expected sudo permission through membership of the [admin] group" % user_id)
+
     def exit_if_user_is_not_member_of_web_group(self, user_id):
         if not self._user_is_web_group_member(user_id):
             self.feedback.abort("User [%s] should be a member of group [%s]" % (user_id, AkvoPermissions.WEB_USER_GROUP))
         else:
             self.feedback.comment("User [%s] is a member of expected group [%s]" % (user_id, AkvoPermissions.WEB_USER_GROUP))
 
+    def _user_has_sudo_access(self, user_id):
+        return self._group_member(user_id).is_a_member_of("admin")
+
     def _user_is_web_group_member(self, user_id):
-        return GroupsCommand(self.host_controller).user(user_id).is_a_member_of(AkvoPermissions.WEB_USER_GROUP)
+        return self._group_member(user_id).is_a_member_of(AkvoPermissions.WEB_USER_GROUP)
+
+    def _group_member(self, user_id):
+        return GroupsCommand(self.host_controller).user(user_id)
 
     def set_web_group_permissions_on_directory(self, dir_path):
         self.set_web_group_ownership_on_directory(dir_path)
