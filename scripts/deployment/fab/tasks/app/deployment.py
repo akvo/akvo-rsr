@@ -30,6 +30,7 @@ class DeployRSRApp(fabric.tasks.Task):
         self._initialise_app_deployer_using(host_controller_mode)
 
         self.feedback.comment("Starting RSR app deployment")
+        self.app_deployer.ensure_user_has_required_deployment_permissions()
         self.app_deployer.ensure_required_directories_exist()
         self.app_deployer.clean_deployment_directories()
         self.app_deployer.download_and_unpack_rsr_archive()

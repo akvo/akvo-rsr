@@ -66,6 +66,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can deploy RSR app"""
 
         self.mock_feedback.comment("Starting RSR app deployment")
+        self.mock_app_deployer.ensure_user_has_required_deployment_permissions()
         self.mock_app_deployer.ensure_required_directories_exist()
         self.mock_app_deployer.clean_deployment_directories()
         self.mock_app_deployer.download_and_unpack_rsr_archive()

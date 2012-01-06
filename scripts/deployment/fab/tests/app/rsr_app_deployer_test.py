@@ -23,9 +23,8 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         self.mock_deployment_host = self.mox.CreateMock(DeploymentHost)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.mock_deployment_host.feedback = self.mock_feedback
-
         self.deployment_config = RSRDeploymentConfig.create_instance("rupaul")
+        self.mock_deployment_host.feedback = self.mock_feedback
 
         self.app_deployer = RSRAppDeployer(self.deployment_config, self.mock_deployment_host)
 
@@ -37,10 +36,17 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         self.assertIsInstance(self.app_deployer, RSRAppDeployer)
         self.assertIsInstance(self.app_deployer.feedback, ExecutionFeedback)
 
+    def test_can_ensure_user_has_required_deployment_permissions(self):
+        """fab.tests.app.rsr_app_deployer_test  Can ensure user has required deployment permissions"""
+
+        self.mock_deployment_host.verify_sudo_and_web_admin_permissions_for(self.deployment_config.deployment_user)
+        self.mox.ReplayAll()
+
+        self.app_deployer.ensure_user_has_required_deployment_permissions()
+
     def test_can_ensure_required_directories_exist(self):
         """fab.tests.app.rsr_app_deployer_test  Can ensure required directories exist"""
 
-        self.mock_deployment_host.exit_if_user_is_not_member_of_web_group(self.deployment_config.deployment_user)
         self.mock_deployment_host.ensure_directory_exists_with_web_group_permissions(self.deployment_config.repo_checkout_home)
         self.mock_deployment_host.ensure_directory_exists(self.deployment_config.repo_archives_dir)
         self.mox.ReplayAll()

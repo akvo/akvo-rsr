@@ -15,8 +15,10 @@ class RSRAppDeployer(object):
         self.deployment_host = deployment_host
         self.feedback = deployment_host.feedback
 
+    def ensure_user_has_required_deployment_permissions(self):
+        self.deployment_host.verify_sudo_and_web_admin_permissions_for(self.config.deployment_user)
+
     def ensure_required_directories_exist(self):
-        self.deployment_host.exit_if_user_is_not_member_of_web_group(self.config.deployment_user)
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(self.config.repo_checkout_home)
         self.deployment_host.ensure_directory_exists(self.config.repo_archives_dir)
 
