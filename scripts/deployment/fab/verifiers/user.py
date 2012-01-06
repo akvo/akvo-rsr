@@ -10,6 +10,9 @@ class DeploymentUserVerifier(object):
     def __init__(self, permissions):
         self.permissions = permissions
 
-    def verify_sudo_and_web_admin_permissions_for(self, user_id):
+    def verify_sudo_permission_for(self, user_id):
         self.permissions.exit_if_user_does_not_have_sudo_permission(user_id)
+
+    def verify_sudo_and_web_admin_permissions_for(self, user_id):
+        self.verify_sudo_permission_for(user_id)
         self.permissions.exit_if_user_is_not_member_of_web_group(user_id)
