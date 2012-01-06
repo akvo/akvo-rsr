@@ -23,16 +23,18 @@ class DeployRSRApp(fabric.tasks.Task):
         self.deployment_config = deployment_config
 
     @staticmethod
-    def create_task_instance():
-        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(fabric.api.env.user))
+    def create_task_instance(deployment_user):
+        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(deployment_user))
 
     def run(self, host_controller_mode):
         self._initialise_app_deployer_using(host_controller_mode)
 
         self.feedback.comment("Starting RSR app deployment")
+        self.app_deployer.ensure_user_has_required_deployment_permissions()
         self.app_deployer.ensure_required_directories_exist()
         self.app_deployer.clean_deployment_directories()
         self.app_deployer.download_and_unpack_rsr_archive()
+        self.app_deployer.ensure_app_symlinks_exist()
 
     def _initialise_app_deployer_using(self, host_controller_mode):
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
@@ -42,4 +44,4 @@ class DeployRSRApp(fabric.tasks.Task):
         self.feedback = deployment_host.feedback
 
 
-instance = DeployRSRApp.create_task_instance()
+instance = DeployRSRApp.create_task_instance(fabric.api.env.user)

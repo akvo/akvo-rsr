@@ -15,6 +15,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.virtualenv import VirtualEnvDeploymentHost
 from fab.os.filesystem import FileSystem
+from fab.verifiers.user import DeploymentUserVerifier
 
 
 class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
@@ -22,14 +23,26 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def setUp(self):
         super(VirtualEnvDeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_user_verifier = self.mox.CreateMock(DeploymentUserVerifier)
         self.mock_virtualenv_installer = self.mox.CreateMock(VirtualEnvInstaller)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.expected_virtualenvs_home = "/some/path/to/virtualenvs"
+        self.deployment_user = "rupaul"
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
+
         # we don't have any additional expections on the AkvoPermission and Internet dependencies (since
         # those are already tested in the DeploymentHost base class) so we set these to None for now
-        self.virtualenv_deployment_host = VirtualEnvDeploymentHost(self.expected_virtualenvs_home, self.mock_file_system,
-                                                                   None, None, self.mock_virtualenv_installer, self.mock_feedback)
+        self.virtualenv_deployment_host = VirtualEnvDeploymentHost(self.virtualenv_installer_config, self.mock_file_system,
+                                                                   self.mock_user_verifier, None, None, self.mock_virtualenv_installer,
+                                                                   self.mock_feedback)
+
+    def test_can_ensure_user_has_required_deployment_permissions(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can ensure user has required deployment permissions"""
+
+        self.mock_user_verifier.verify_sudo_and_web_admin_permissions_for(self.deployment_user)
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.ensure_user_has_required_deployment_permissions()
 
     def test_can_create_a_remote_host_instance(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can create a remote VirtualEnvDeploymentHost instance"""
@@ -46,15 +59,12 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.assertIsInstance(host_instance, VirtualEnvDeploymentHost)
 
     def _create_host_instance_with(self, host_controller_class):
-        mock_virtualenv_installer_config = self.mox.CreateMock(RSRVirtualEnvInstallerConfig)
-        mock_virtualenv_installer_config.virtualenvs_home = self.expected_virtualenvs_home
-        mock_virtualenv_installer_config.rsr_env_path = os.path.join(self.expected_virtualenvs_home, "rsr_env")
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mox.ReplayAll()
 
-        return VirtualEnvDeploymentHost.create_instance(mock_virtualenv_installer_config, mock_host_controller)
+        return VirtualEnvDeploymentHost.create_instance(self.virtualenv_installer_config, mock_host_controller)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can create empty virtualenv"""
@@ -76,8 +86,8 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
 
     def _set_expectations_to_ensure_virtualenvs_home_exists(self):
 
-        self.mock_file_system.directory_exists(self.expected_virtualenvs_home).AndReturn(True)
-        self.mock_feedback.comment("Found expected directory: %s" % self.expected_virtualenvs_home)
+        self.mock_file_system.directory_exists(self.virtualenv_installer_config.virtualenvs_home).AndReturn(True)
+        self.mock_feedback.comment("Found expected directory: %s" % self.virtualenv_installer_config.virtualenvs_home)
 
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can install virtualenv packages"""
@@ -88,6 +98,14 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_file)
+
+    def test_can_ensure_virtualenv_symlinks_exist(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can ensure virtualenv symlinks exist"""
+
+        self.mock_virtualenv_installer.ensure_virtualenv_symlinks_exist()
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
 
 
 def suite():

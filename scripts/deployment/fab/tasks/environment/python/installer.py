@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import fabric.tasks
 
 import fab.host.linux
@@ -15,15 +16,17 @@ class InstallPython(fabric.tasks.Task):
 
     name = "install_python"
 
-    def __init__(self, linux_host):
+    def __init__(self, deployment_user, linux_host):
+        self.deployment_user = deployment_user
         self.linux_host = linux_host
 
     @staticmethod
-    def create_task_instance():
-        return InstallPython(fab.host.linux.LinuxHost.create_instance())
+    def create_task_instance(deployment_user):
+        return InstallPython(deployment_user, fab.host.linux.LinuxHost.create_instance())
 
     def run(self, python_version):
+        self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         self.linux_host.ensure_python_is_installed_with_version(python_version)
 
 
-instance = InstallPython.create_task_instance()
+instance = InstallPython.create_task_instance(fabric.api.env.user)

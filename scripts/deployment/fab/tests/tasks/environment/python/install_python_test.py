@@ -18,6 +18,8 @@ class InstallPythonTest(mox.MoxTestBase):
     def setUp(self):
         super(InstallPythonTest, self).setUp()
 
+        self.deployment_user = "rupaul"
+
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.python.install_python_test  Has expected task name"""
 
@@ -26,15 +28,16 @@ class InstallPythonTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.environment.python.install_python_test  Can create task instance"""
 
-        self.assertIsInstance(InstallPython.create_task_instance(), InstallPython)
+        self.assertIsInstance(InstallPython.create_task_instance(self.deployment_user), InstallPython)
 
     def test_can_install_specified_python_version(self):
         """fab.tests.tasks.environment.python.install_python_test  Can install specified python version"""
 
         mock_linux_host = self.mox.CreateMock(LinuxHost)
 
-        install_python_task = InstallPython(mock_linux_host)
+        install_python_task = InstallPython(self.deployment_user, mock_linux_host)
 
+        mock_linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         mock_linux_host.ensure_python_is_installed_with_version("2.7.2")
         self.mox.ReplayAll()
 

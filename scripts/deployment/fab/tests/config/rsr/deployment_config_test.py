@@ -30,6 +30,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
         self.codebase_config = RSRCodebaseConfig(self.feature_branch)
 
         self.expected_rsr_dir_name = "rsr_%s" % self.codebase_config.repo_branch_without_type
+        self.expected_rsr_deployment_home = os.path.join(self.deployment_host_config_values.repo_checkout_home, self.expected_rsr_dir_name)
 
         self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
 
@@ -74,9 +75,63 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def test_has_rsr_deployment_home(self):
         """fab.tests.config.rsr.deployment_config_test  Has RSR deployment home"""
 
-        expected_rsr_deployment_home = os.path.join(self.deployment_host_config_values.repo_checkout_home, self.expected_rsr_dir_name)
+        self.assertEqual(self.expected_rsr_deployment_home, self.deployment_config.rsr_deployment_home)
 
-        self.assertEqual(expected_rsr_deployment_home, self.deployment_config.rsr_deployment_home)
+    def test_has_rsr_settings_home(self):
+        """fab.tests.config.rsr.deployment_config_test  Has RSR settings home"""
+
+        expected_rsr_settings_home = os.path.join(self.expected_rsr_deployment_home, RSRCodebaseConfig.RSR_SETTINGS_HOME)
+
+        self.assertEqual(expected_rsr_settings_home, self.deployment_config.rsr_settings_home)
+
+    def test_has_rsr_media_root(self):
+        """fab.tests.config.rsr.deployment_config_test  Has RSR media root"""
+
+        expected_rsr_media_root = os.path.join(self.expected_rsr_deployment_home, RSRCodebaseConfig.RSR_MEDIA_ROOT)
+
+        self.assertEqual(expected_rsr_media_root, self.deployment_config.rsr_media_root)
+
+    def test_has_current_rsr_media_root(self):
+        """fab.tests.config.rsr.deployment_config_test  Has current RSR media root"""
+
+        expected_current_rsr_media_root = os.path.join(self.deployment_config.repo_checkout_home, "current", RSRCodebaseConfig.RSR_MEDIA_ROOT)
+
+        self.assertEqual(expected_current_rsr_media_root, self.deployment_config.current_rsr_media_root)
+
+    def test_has_django_media_admin_path(self):
+        """fab.tests.config.rsr.deployment_config_test  Has Django media admin path"""
+
+        current_virtualenv_path = os.path.join(self.deployment_host_config_values.virtualenvs_home, "current")
+        expected_django_media_admin_path = os.path.join(current_virtualenv_path, RSRDeploymentConfig.DJANGO_LIB_PATH, "contrib/admin/media")
+
+        self.assertEqual(expected_django_media_admin_path, self.deployment_config.django_media_admin_path)
+
+    def test_has_rsr_web_media_home(self):
+        """fab.tests.config.rsr.deployment_config_test  Has RSR web media home"""
+
+        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "akvo"), self.deployment_config.rsr_web_media_home)
+
+    def test_has_web_media_db_path(self):
+        """fab.tests.config.rsr.deployment_config_test  Has web media DB path"""
+
+        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "akvo/db"), self.deployment_config.web_media_db_path)
+
+    def test_has_host_config_home(self):
+        """fab.tests.config.rsr.deployment_config_test  Has host configuration home"""
+
+        self.assertEqual(self.deployment_host_config_values.config_home, self.deployment_config.host_config_home)
+
+    def test_has_local_rsr_settings_file_name(self):
+        """fab.tests.config.rsr.deployment_config_test  Has local RSR settings file name"""
+
+        self.assertEqual(RSRCodebaseConfig.LOCAL_SETTINGS_FILE, self.deployment_config.local_rsr_settings_file_name)
+
+    def test_has_deployed_rsr_settings_file_path(self):
+        """fab.tests.config.rsr.deployment_config_test  Has deployed RSR settings file path"""
+
+        expected_deployed_settings_file_path = os.path.join(self.deployment_host_config_values.config_home, RSRCodebaseConfig.LOCAL_SETTINGS_FILE)
+
+        self.assertEqual(expected_deployed_settings_file_path, self.deployment_config.deployed_rsr_settings_file)
 
 
 def suite():
