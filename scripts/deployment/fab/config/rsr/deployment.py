@@ -38,6 +38,8 @@ class RSRDeploymentConfig(object):
         self.host_config_home               = deployment_host_config_values.config_home
         self.local_rsr_settings_file_name   = RSRCodebaseConfig.LOCAL_SETTINGS_FILE
         self.deployed_rsr_settings_file     = os.path.join(self.host_config_home, self.local_rsr_settings_file_name)
+        self.mod_python_file_name           = RSRCodebaseConfig.MOD_PYTHON_FILE
+        self.deployed_mod_python_file       = os.path.join(self.host_config_home, self.mod_python_file_name)
 
     @staticmethod
     def create_instance(deployment_user=None):
