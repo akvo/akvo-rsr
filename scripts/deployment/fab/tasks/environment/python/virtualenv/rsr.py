@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import fabric.tasks
 
 import fab.config.rsr.virtualenv
@@ -21,11 +22,12 @@ class RebuildRSREnv(fabric.tasks.Task):
 
     @staticmethod
     def create_task_instance():
-        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvInstallerConfig.create_instance())
+        return RebuildRSREnv(fab.config.rsr.virtualenv.RSRVirtualEnvInstallerConfig.create_instance(fabric.api.env.user))
 
     def run(self, host_controller_mode):
         self._configure_host_using(host_controller_mode)
 
+        self.virtualenv_deployment_host.ensure_user_has_required_deployment_permissions()
         self.virtualenv_deployment_host.ensure_virtualenv_exists()
         self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_path)
         self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_path)

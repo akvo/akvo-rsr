@@ -26,7 +26,9 @@ class RebuildRSREnvTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RebuildRSREnvTest, self).setUp()
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance()
+        deployment_user = "rupaul"
+
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(deployment_user)
         self.mock_virtualenv_deployment_host = self.mox.CreateMock(VirtualEnvDeploymentHost)
 
         self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.virtualenv_installer_config)
@@ -61,6 +63,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
     def test_can_rebuild_rsr_virtualenv(self):
         """fab.tests.tasks.environment.python.virtualenv.rebuild_rsr_env_test  Can rebuild an RSR virtualenv"""
 
+        self.mock_virtualenv_deployment_host.ensure_user_has_required_deployment_permissions()
         self.mock_virtualenv_deployment_host.ensure_virtualenv_exists()
         self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_path)
         self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_path)
