@@ -26,10 +26,11 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
         super(RSRVirtualEnvInstallerConfigTest, self).setUp()
 
         feature_branch = "feature/sms"
+        self.deployment_user = "rupaul"
 
         self.deployment_host_config_values = DeploymentHostConfigValues()
         self.codebase_config = RSRCodebaseConfig(feature_branch)
-        self.deployment_config = RSRDeploymentConfig(None, self.deployment_host_config_values, self.codebase_config)
+        self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
         self.expected_virtualenvs_home = self.deployment_host_config_values.virtualenvs_home
@@ -41,7 +42,12 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Can create RSRVirtualEnvInstallerConfig instance"""
 
-        self.assertIsInstance(RSRVirtualEnvInstallerConfig.create_instance(), RSRVirtualEnvInstallerConfig)
+        self.assertIsInstance(RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user), RSRVirtualEnvInstallerConfig)
+
+    def test_has_deployment_user_name(self):
+        """fab.tests.config.rsr.virtualenv_installer_config_test  Has deployment user name"""
+
+        self.assertEqual(self.deployment_user, self.virtualenv_installer_config.deployment_user)
 
     def test_has_virtualenvs_home(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Has virtualenvs home"""
