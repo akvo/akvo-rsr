@@ -104,6 +104,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         self._link_configuration_files()
         self._link_mediaroot_directories()
         self._link_current_deployment_home()
+        self._link_web_media_directories()
         self.mox.ReplayAll()
 
         self.app_deployer.ensure_app_symlinks_exist()
@@ -112,6 +113,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
         self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.host_config_home)
         self.mock_deployment_host.exit_if_file_does_not_exist(self.deployment_config.deployed_rsr_settings_file)
         self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.django_media_admin_path)
+        self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.rsr_web_media_home)
         self.mock_deployment_host.exit_if_directory_does_not_exist(self.deployment_config.web_media_db_path)
 
     def _link_configuration_files(self):
@@ -127,6 +129,10 @@ class RSRAppDeployerTest(mox.MoxTestBase):
     def _link_current_deployment_home(self):
         self._change_dir_to(self.deployment_config.repo_checkout_home)
         self.mock_deployment_host.ensure_symlink_exists("current", self.deployment_config.rsr_deployment_home)
+
+    def _link_web_media_directories(self):
+        self._change_dir_to(self.deployment_config.rsr_web_media_home)
+        self.mock_deployment_host.ensure_symlink_exists("mediaroot", self.deployment_config.current_rsr_media_root)
 
     def _change_dir_to(self, expected_dir):
         self.mock_deployment_host.cd(expected_dir).AndReturn(fabric.api.cd(expected_dir))

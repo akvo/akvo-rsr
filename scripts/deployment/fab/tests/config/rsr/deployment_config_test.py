@@ -91,6 +91,13 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_rsr_media_root, self.deployment_config.rsr_media_root)
 
+    def test_has_current_rsr_media_root(self):
+        """fab.tests.config.rsr.deployment_config_test  Has current RSR media root"""
+
+        expected_current_rsr_media_root = os.path.join(self.deployment_config.repo_checkout_home, "current", RSRCodebaseConfig.RSR_MEDIA_ROOT)
+
+        self.assertEqual(expected_current_rsr_media_root, self.deployment_config.current_rsr_media_root)
+
     def test_has_django_media_admin_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has Django media admin path"""
 
@@ -98,6 +105,11 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
         expected_django_media_admin_path = os.path.join(current_virtualenv_path, RSRDeploymentConfig.DJANGO_LIB_PATH, "contrib/admin/media")
 
         self.assertEqual(expected_django_media_admin_path, self.deployment_config.django_media_admin_path)
+
+    def test_has_rsr_web_media_home(self):
+        """fab.tests.config.rsr.deployment_config_test  Has RSR web media home"""
+
+        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "akvo"), self.deployment_config.rsr_web_media_home)
 
     def test_has_web_media_db_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has web media DB path"""

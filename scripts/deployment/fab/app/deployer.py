@@ -53,11 +53,13 @@ class RSRAppDeployer(object):
         self._link_configuration_files()
         self._link_mediaroot_directories()
         self._link_current_deployment_home()
+        self._link_web_media_directories()
 
     def _verify_symlink_target_paths(self):
         self.deployment_host.exit_if_directory_does_not_exist(self.config.host_config_home)
         self.deployment_host.exit_if_file_does_not_exist(self.config.deployed_rsr_settings_file)
         self.deployment_host.exit_if_directory_does_not_exist(self.config.django_media_admin_path)
+        self.deployment_host.exit_if_directory_does_not_exist(self.config.rsr_web_media_home)
         self.deployment_host.exit_if_directory_does_not_exist(self.config.web_media_db_path)
 
     def _link_configuration_files(self):
@@ -72,3 +74,7 @@ class RSRAppDeployer(object):
     def _link_current_deployment_home(self):
         with self.deployment_host.cd(self.config.repo_checkout_home):
             self.deployment_host.ensure_symlink_exists("current", self.config.rsr_deployment_home)
+
+    def _link_web_media_directories(self):
+        with self.deployment_host.cd(self.config.rsr_web_media_home):
+            self.deployment_host.ensure_symlink_exists("mediaroot", self.config.current_rsr_media_root)
