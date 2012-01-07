@@ -15,12 +15,10 @@ class SystemInfo(object):
 
     def __init__(self, host_controller):
         self.host_controller = host_controller
+        self.system_type = self.host_controller.run("uname -s")
 
     def is_linux(self):
-        return self._system_name() == SystemType.LINUX
+        return self.system_type == SystemType.LINUX
 
     def is_osx(self):
-        return self._system_name() == SystemType.MAC_OSX
-
-    def _system_name(self):
-        return self.host_controller.run("uname -s")
+        return self.system_type == SystemType.MAC_OSX

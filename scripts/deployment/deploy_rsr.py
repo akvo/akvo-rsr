@@ -37,15 +37,13 @@ def attempting_to_deploy_to_live_server():
     return deployment_host_contains("www.akvo.org") or (deployment_host_contains("akvo.org") and not deployment_host_contains(".akvo.org"))
 
 def verify_configuration():
-    if DATA_HOST == DEPLOYMENT_HOST:
-        print ">> Cannot deploy to the same host as the database host: %s" % DEPLOYMENT_HOST
-        sys.exit(1)
-    elif attempting_to_deploy_to_live_server():
-        print ">> Deployment to live server not yet supported: %s" % DEPLOYMENT_HOST
-        sys.exit(1)
-    else:
-        print ">> Fetching data from: %s" % DATA_HOST
-        print ">> Deploying RSR to:   %s\n" % DEPLOYMENT_HOST
+    if attempting_to_deploy_to_live_server():
+        confirm_live_deployment = raw_input(">> Confirm deployment to live server? (%s) [y/N] " % DEPLOYMENT_HOST)
+        if confirm_live_deployment.lower() != 'y':
+            sys.exit(1)
+
+    print ">> Fetching data from: %s" % DATA_HOST
+    print ">> Deploying RSR to:   %s\n" % DEPLOYMENT_HOST
 
 def run_fab_task(fully_qualified_task, host, username, password):
     exit_code = subprocess.call(["fab", "-f", "fabfile.py", fully_qualified_task, "-H", host, "-u", username, "-p", password])
@@ -62,11 +60,11 @@ def run_data_retrieval_task(fully_qualified_task):
 
 def deploy_rsr():
     os.chdir(FABRIC_SCRIPTS_HOME)
-    # run_deployment_task("fab.tasks.environment.linux.systempackages.verify_system_packages")
-    #run_deployment_task("fab.tasks.environment.python.systempackages.update_system_python_packages")
-    #run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
-    #run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
-    #run_data_retrieval_task("fab.tasks.data.retrieval.fetch_rsr_data")
+    run_deployment_task("fab.tasks.environment.linux.systempackages.verify_system_packages")
+    run_deployment_task("fab.tasks.environment.python.systempackages.update_system_python_packages")
+    run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
+    run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
+    run_data_retrieval_task("fab.tasks.data.retrieval.fetch_rsr_data")
     run_deployment_task("fab.tasks.database.rsr.rebuild_rsr_database:host_controller_mode=remote")
 
 

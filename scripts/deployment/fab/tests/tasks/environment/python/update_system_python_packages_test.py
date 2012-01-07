@@ -18,6 +18,8 @@ class UpdateSystemPythonPackagesTest(mox.MoxTestBase):
     def setUp(self):
         super(UpdateSystemPythonPackagesTest, self).setUp()
 
+        self.deployment_user = "rupaul"
+
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Has expected task name"""
 
@@ -26,15 +28,16 @@ class UpdateSystemPythonPackagesTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Can create task instance"""
 
-        self.assertIsInstance(UpdateSystemPythonPackages.create_task_instance(), UpdateSystemPythonPackages)
+        self.assertIsInstance(UpdateSystemPythonPackages.create_task_instance(self.deployment_user), UpdateSystemPythonPackages)
 
     def test_can_update_system_python_packages(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Can update system python packages"""
 
         mock_linux_host = self.mox.CreateMock(LinuxHost)
 
-        update_system_python_packages_task = UpdateSystemPythonPackages(mock_linux_host)
+        update_system_python_packages_task = UpdateSystemPythonPackages(self.deployment_user, mock_linux_host)
 
+        mock_linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         mock_linux_host.update_system_python_packages()
         self.mox.ReplayAll()
 

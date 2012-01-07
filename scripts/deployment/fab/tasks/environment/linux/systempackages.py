@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import fabric.tasks
 
 import fab.config.environment.linux.systempackages
@@ -16,18 +17,20 @@ class VerifySystemPackages(fabric.tasks.Task):
 
     name = "verify_system_packages"
 
-    def __init__(self, linux_host):
+    def __init__(self, deployment_user, linux_host):
+        self.deployment_user = deployment_user
         self.linux_host = linux_host
 
     @staticmethod
-    def create_task_instance():
-        return VerifySystemPackages(fab.host.linux.LinuxHost.create_instance())
+    def create_task_instance(deployment_user):
+        return VerifySystemPackages(deployment_user, fab.host.linux.LinuxHost.create_instance())
 
     def run(self):
+        self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         self.linux_host.update_system_package_sources()
 
         for package_specifications in fab.config.environment.linux.systempackages.SystemPackageSpecifications.ALL_PACKAGES:
             self.linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
 
 
-instance = VerifySystemPackages.create_task_instance()
+instance = VerifySystemPackages.create_task_instance(fabric.api.env.user)
