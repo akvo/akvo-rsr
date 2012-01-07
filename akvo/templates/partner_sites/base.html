@@ -27,16 +27,20 @@
 <body>
   <div class="bottom_gradient_bar pad_bottom10">
     <div class="container pad_top10">
-      <a href="{{return_url}}" style="text-decoration:none;">
-        {% if logo %}
-          <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
-        {% else %}
-          <img src="{% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
-        {% endif %}
-      </a>
+      {% if return_url %}
+        <a href="{{return_url}}" style="text-decoration:none;">
+      {% endif %}
+      {% if logo %}
+        <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
+      {% else %}
+        <img src="{% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
+      {% endif %}
+      {% if return_url %}
+        </a>
       <span class="small marg_left20">
         <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
       </span>
+      {% endif %}
     </div>    
   </div>
 
@@ -54,7 +58,11 @@
       {% endcomment %}
       <ul class="breadcrum">
         {% block breadcrum_items %}
-          <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
+          {% if return_url %}
+            <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
+          {% else %}
+            <li class="last_breadcrum_item">{{organisation}}</li>
+          {% endif %}
         {% endblock breadcrum_items %}
       </ul>
     </div>
