@@ -13,6 +13,8 @@ from fab.config.values import DeploymentHostConfigValues
 
 class RSRDeploymentConfig(object):
 
+    DJANGO_LIB_PATH = "lib/python2.5/site-packages/django"
+
     def __init__(self, deployment_user, deployment_host_config_values, codebase_config):
         self.deployment_user = deployment_user
 
@@ -24,6 +26,20 @@ class RSRDeploymentConfig(object):
 
         self.rsr_deployment_dir_name    = "rsr_%s" % codebase_config.repo_branch_without_type
         self.rsr_deployment_home        = os.path.join(self.repo_checkout_home, self.rsr_deployment_dir_name)
+        self.rsr_settings_home          = os.path.join(self.rsr_deployment_home, RSRCodebaseConfig.RSR_SETTINGS_HOME)
+        self.rsr_media_root             = os.path.join(self.rsr_deployment_home, RSRCodebaseConfig.RSR_MEDIA_ROOT)
+        self.current_rsr_media_root     = os.path.join(self.repo_checkout_home, "current", RSRCodebaseConfig.RSR_MEDIA_ROOT)
+
+        self.current_virtualenv_path    = os.path.join(deployment_host_config_values.virtualenvs_home, "current")
+        self.django_media_admin_path    = os.path.join(self.current_virtualenv_path, self.DJANGO_LIB_PATH, "contrib/admin/media")
+        self.rsr_web_media_home         = os.path.join(deployment_host_config_values.web_media_home, "akvo")
+        self.web_media_db_path          = os.path.join(self.rsr_web_media_home, "db")
+
+        self.host_config_home               = deployment_host_config_values.config_home
+        self.local_rsr_settings_file_name   = RSRCodebaseConfig.LOCAL_SETTINGS_FILE
+        self.deployed_rsr_settings_file     = os.path.join(self.host_config_home, self.local_rsr_settings_file_name)
+        self.mod_python_file_name           = RSRCodebaseConfig.MOD_PYTHON_FILE
+        self.deployed_mod_python_file       = os.path.join(self.host_config_home, self.mod_python_file_name)
 
     @staticmethod
     def create_instance(deployment_user=None):

@@ -11,8 +11,12 @@
 {% endblock breadcrum_right %}
 
 {% block breadcrum_items %}
-  {{block.super}}
-  <li><a href="{% url 'home' %}"><span>Projects</span></a></li>
+  {% if return_url %}
+    {{block.super}}
+    <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
+  {% else %}
+    <li><a href="{% url 'home' %}"><span>{{organisation}}</span></a></li>
+  {% endif %}
 {% endblock breadcrum_items %}
 
 {% block content %}
@@ -102,7 +106,7 @@
                 <div class="clear"></div>
               </div>
             {% else %}
-              <div class="whitebox pad5"{% if not forloop.first %} style="margin-top: 10px;"{% endif %}>
+              <div class="whitebox pad5" style="overflow:hidden; {% if not forloop.first %}margin-top: 10px;{% endif %}">
                 <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
                 <p class="small marg_bottom0" style="margin-top: 15px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
@@ -122,7 +126,14 @@
         <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
         <div class="whitebox">
           <p class="grey small pad10" style="margin: 0;">
-            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}
+            <a href="{% url 'project_main' project.id %}">{% trans 'Project permalink' %}</a><br />
+            {% if can_add_update %}
+              <a href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
+            {% else %}
+              {% if not user.username %}
+                <a href="{{app_url}}{% url 'sign_in' %}?next={{request.path}">{% trans "Sign in" %}</a>{% trans "to add update" %}
+              {% endif %}
+            {% endif %}
           </p>
         </div>
       {% endblock project_tools %}

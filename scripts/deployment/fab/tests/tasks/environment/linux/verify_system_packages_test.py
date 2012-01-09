@@ -20,7 +20,9 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
         super(VerifySystemPackagesTest, self).setUp()
         self.mock_linux_host = self.mox.CreateMock(LinuxHost)
 
-        self.verify_system_packages_task = VerifySystemPackages(self.mock_linux_host)
+        self.deployment_user = "rupaul"
+
+        self.verify_system_packages_task = VerifySystemPackages(self.deployment_user, self.mock_linux_host)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Has expected task name"""
@@ -30,12 +32,14 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can create task instance"""
 
-        self.assertIsInstance(VerifySystemPackages.create_task_instance(), VerifySystemPackages)
+        self.assertIsInstance(VerifySystemPackages.create_task_instance(self.deployment_user), VerifySystemPackages)
 
     def test_can_verify_expected_system_package_dependencies(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can verify expected system package dependencies"""
 
+        self.mock_linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         self.mock_linux_host.update_system_package_sources()
+
         for package_specifications in SystemPackageSpecifications.ALL_PACKAGES:
             self.mock_linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
 

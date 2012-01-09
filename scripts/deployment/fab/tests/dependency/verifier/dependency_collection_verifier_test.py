@@ -52,7 +52,7 @@ class DependencyCollectionVerifierTest(mox.MoxTestBase):
 
         self.dependency_collection_verifier.unmet_dependencies = ['package1', 'package4']
 
-        self.assertEqual("package1, package4", self.dependency_collection_verifier.unmet_dependency_names())
+        self.assertEqual("package1 package4", self.dependency_collection_verifier.unmet_dependency_names())
 
 
 def suite():

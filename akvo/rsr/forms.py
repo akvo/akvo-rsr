@@ -280,19 +280,20 @@ class ProjectUpdateForm(forms.ModelForm):
         ('B', _('At the beginning of the update.')),
         ('E', _('At the end of the update.'))
     )
-    js_snippet = "return taCount(this,'myCounter')"
-    js_snippet = mark_safe(js_snippet)    
+    #js_snippet = "return taCount(this,'myCounter')"
+    #js_snippet = mark_safe(js_snippet)    
     title = forms.CharField(widget=forms.TextInput(
-        attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+        #attrs={'class':'input', 'maxlength':'50', 'size':'25', 'onKeyPress':'return taLimit(this)', 'onKeyUp':js_snippet}
+        attrs={'class':'input', 'maxlength':'50', 'size':'42'}
                       ))
-    text = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'50'}))
+    text = forms.CharField(required=False, widget=forms.Textarea(attrs={'class':'textarea', 'cols':'44'}))
     #status = forms.CharField(widget=forms.RadioSelect(choices=STATUSES, attrs={'class':'radio'}))
     photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'input', 'size':'15', 'style':'height: 2em'}))
     photo_location = forms.CharField(required=False, widget=forms.RadioSelect(choices=PHOTO_LOCATIONS, attrs={'class':'radio'}))
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75',}))
     photo_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25',}))
     video = forms.CharField(required=False, widget=forms.TextInput(
-        attrs={'class':'input', 'size':'50', 'maxlength':'255'}))
+        attrs={'class':'input', 'size':'42', 'maxlength':'255'}))
     video_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'75'}))
     video_credit = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'25'}))
 

@@ -17,7 +17,9 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li class="last_breadcrum_item">{% trans "Projects" %}</li>
+  {% if return_url %}
+    <li class="last_breadcrum_item">{% trans "Projects" %}</li>
+  {% endif %}
 {% endblock breadcrum_items %}
 
 {% block content %}
@@ -163,8 +165,8 @@
               </p>
             </div>
             {% if project.funding_still_needed|round != 0 and not project.status == 'L' and not project.status == 'R' %}
-              <div style="text-align:center;">
-                <a id="filterButton" class="yellow awesome small" style="float:right; color:#fff" 
+              <div class="txt_center">
+                <a id="filterButton" class="yellow awesome small" style="color:#fff" 
                   href="http://akvo.org/rsr/project/{{project.id}}/donate/">
                   <span>{% trans 'Donate' %}</span>
                 </a>

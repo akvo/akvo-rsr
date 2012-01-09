@@ -1,0 +1,260 @@
+{% extends "partner_sites/project/base_project.html" %}
+{% load i18n rsr_tags webdesign thumbnail %}
+{% load url from future %}
+
+
+{% block title %}{% trans "Add update" %} - {% endblock title %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  {% if update %}
+    <li><a href="{% url 'update_main' project.id update.id %}"><span>{{update}}</span></a></li>
+    <li class="last_breadcrum_item">{% trans "Edit" %}</li>
+  {% else %}
+    <li class="last_breadcrum_item">{% trans "Add update" %}</li>
+  {% endif %}
+{% endblock breadcrum_items %}
+
+{% block project_content %}
+  <section class="whitebox pad20">
+    <div style="float:left; margin-left:0px; margin-top:0px">
+      <span class="small">
+        {% if update %}
+          <a href="{% url 'update_main' project.id update.id %}">&#x25C0; {% trans 'Back to update' %}</a>
+        {% else %}
+          <a href="{% url 'project_main' project.id %}">&#x25C0; {% trans 'Back to project' %}</a>
+        {% endif %}
+      </span>
+      {% if update %}
+        <h2 style="padding-top:20px;">{% trans "Edit update" %}</h2>
+      {% else %}  
+        <h2 style="padding-top:20px;">{% trans "Add update to project" %}</h2>
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+    
+    {% if form.non_field_errors %}
+      {% for error in form.non_field_errors %}
+        <p class="red small">{{error}}</p>
+      {% endfor %}
+    {% endif %}
+
+    <form enctype="multipart/form-data" method="post" action="." name="add_update_form">
+      <fieldset>
+        <div class="clearfix margin_top20">
+          {{form.title.label_tag}}
+          <div class="input">
+            {{form.title}}
+            {% if form.title.errors %}
+              <span class="red small">{{form.title.errors.0}}</span>
+            {% endif %}
+          </div>
+          <p class="small grey marg_bottom0 marg_top0">
+            <span id="id_title_tips" class="hide"><span id="id_title_tips_length">50</span> {% trans 'characters left' %}</span>&nbsp;
+          </p>
+        </div>
+
+        <div class="clearfix">
+          {{form.text.label_tag}}
+          <div class="input">
+            {{form.text}}
+            {% if form.text.errors %}
+              <span class="red small">{{form.text.errors.0}}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="clearfix marg_top20">
+          {{form.photo.label_tag}}
+          <div class="input">
+            {{form.photo}}
+            {% if form.photo.errors %}
+              <span class="red small">{{form.photo.errors.0}}</span>
+            {% endif %}
+          </div>
+          <p class="small grey marg_bottom0 marg_top0">
+              <span id="id_photo_tips" class="hide"></span>&nbsp;
+            </p>
+        </div>
+
+        <div id="photo_meta" style="display:none;">
+          <div class="clearfix">
+            {{form.photo_caption.label_tag}}
+            <div class="input">
+              {{form.photo_caption}}
+              {% if form.photo_caption.errors %}
+                <span class="red small">{{form.photo_caption.errors.0}}</span>
+              {% endif %}
+            </div>
+            <p class="small grey marg_bottom0 marg_top0">
+              <span id="id_photo_caption_tips" class="hide"><span id="id_photo_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
+            </p>
+          </div>
+
+          <div class="clearfix">
+            {{form.photo_credit.label_tag}}
+            <div class="input">
+              {{form.photo_credit}}
+              {% if form.photo_credit.errors %}
+                <span class="red small">{{form.photo_credit.errors.0}}</span>
+              {% endif %}
+            </div>
+            <p class="small grey marg_bottom0 marg_top0">
+              <span id="id_photo_credit_tips" class="hide"><span id="id_photo_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
+            </p>
+          </div>
+          <p class="tiny marg_top0"><a style="color:red;" id="clear_photo" href="#">{% trans "Remove photo" %}</a></p>
+        </div>
+
+        <div class="clearfix marg_top20">
+          {{form.video.label_tag}}
+          <span class="tiny grey">{% trans "Youtube, Blip or Vimeo" %}</span>
+          <div class="input">
+            {{form.video}}
+            {% if 0 %}
+              <span class="red small">{{form.video.errors.0}}</span>
+            {% endif %}
+          </div>
+          {# if form.video.errors #}
+          {% if 0 %}
+              <p class="small red marg_bottom0 marg_top0">
+                <span class="red small">{{form.video.errors.0}}</span>
+              </p>
+          {% else %}
+             <p class="small grey marg_bottom0 marg_top0">
+              <span id="video_tips" class="">
+                {# trans "Supported providers: Blip, Vimeo, YouTube" #} &nbsp;
+              </span>
+              &nbsp;
+            </p>
+          {% endif %}
+        </div>
+        <div id="video_meta" style="{% if not form.video.errors and not form.video_caption.errors and not form.video_credit.errors and not form.video_credit.value and not form.video_caption.value %}display:none;{% endif %}">
+          <div class="clearfix">
+            {{form.video_caption.label_tag}}
+            <div class="input">
+              {{form.video_caption}}
+            </div>
+            <p class="small grey marg_bottom0 marg_top0">
+              <span id="id_video_caption_tips" class="hide"><span id="id_video_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
+            </p>
+          </div>
+          <div class="clearfix">
+            {{form.video_credit.label_tag}}
+            <div class="input">
+              {{form.video_credit}}
+              {% if form.video_credit.errors %}
+                <span class="red small">{{form.video_credit.errors.0}}</span>
+              {% endif %}
+            </div>
+            <p class="small grey marg_bottom0 marg_top0">
+              <span id="id_video_credit_tips" class="hide"><span id="id_video_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
+            </p>
+          </div>
+          <p class="tiny"><a style="color:red;" id="clear_video" href="#">{% trans "Remove video" %}</a></p>
+        </div>
+
+        <div class="clearfix">
+          <div class="input marg_top15">
+            {% if update %}
+              <a class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Save update' %}</a>
+            {% else %}
+              <a class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Add update' %}</a>
+            {% endif %}
+          </div>
+        </div>
+        <input type="hidden" name="photo_location_1" value="B" id="id_photo_location_1" />
+        </fieldset>
+      {% csrf_token %}
+    </form>
+  </section>
+{% endblock project_content %}
+
+{% block jq_ready %}
+  var video_warning = '{% trans "The url provided is not a valid Blip, Vimeo or YouTube video" %}';
+  var video_ok = '{% trans "Valid url :-)" %}';
+
+  {# Text element length check #}
+  jQ("input[type='text']").on("keyup", function(event){
+    if (jQ('#' + jQ(this).attr('id') + '_tips_length').length){
+      var current_length = jQ(this).val().length;
+      var max_length = jQ(this).attr('maxlength');
+      jQ('#' + jQ(this).attr('id') + '_tips_length').html(max_length-current_length);
+    }
+  });
+
+  jQ("input[type='text']").on("focusin", function(event){
+    jQ('#' + jQ(this).attr('id') + '_tips').show();
+  });
+
+  jQ("input[type='text']").on("focusout", function(event){
+    jQ('#' + jQ(this).attr('id') + '_tips').hide();
+  });
+  
+  jQ('#id_photo').on("change", function(event){
+    if (jQ('#id_photo').val() != '') {
+      jQ('#photo_meta').show('slow');
+    } else {
+      jQ('#photo_meta').hide('slow'); 
+    }
+  });
+  
+  jQ('#clear_photo').on("click", function(event){
+    jQ('#id_photo').val('');
+    jQ('#id_photo_caption').val('');
+    jQ('#id_photo_credit').val(''); 
+    jQ('#photo_meta').hide('slow');
+  });
+
+  jQ('#id_video').on("focusin", function(event){
+    if (jQ(this).val() == ''){
+      jQ('#video_tips').show();
+    }
+    jQ('#video_meta').show('slow');
+  });
+
+  jQ('#id_video').on("focusout", function(event){
+    var url = jQ(this).val();
+    if (url == ''){
+       jQ('#video_meta').hide('slow');
+    }
+    if (validate_movie(url) || url == '' ) {
+      jQ('#video_tips').hide();
+      jQ('#video_tips').removeClass('red');
+      jQ('#video_tips').removeClass('green');
+    } 
+  });
+
+  jQ('#id_video').on("keyup", function(event){
+    var url = jQ(this).val();
+    if (validate_movie(url)) {
+      jQ('#video_tips').html(video_ok);
+      jQ('#video_tips').removeClass('red');
+      jQ('#video_tips').addClass('green');
+    } else {
+      jQ('#video_tips').html(video_warning);
+      jQ('#video_tips').removeClass('green');
+      jQ('#video_tips').addClass('red');
+    }
+    jQ('#video_tips').show();
+  });
+
+  jQ('#clear_video').on("click", function(event){
+    jQ('#id_video').val('');
+    jQ('#id_video_caption').val('');
+    jQ('#id_video_credit').val('');
+    jQ('#video_meta').hide('slow');
+  });
+
+  function validate_movie(url){
+    /* Regular expression for Youtube, Blip and Vimeo; created by http://embed.ly/tools/generator */
+    var regEx = /((http:\/\/(.*youtube\.com\/watch.*|.*\.youtube\.com\/v\/.*|youtu\.be\/.*|.*\.youtube\.com\/user\/.*|.*\.youtube\.com\/.*#.*\/.*|m\.youtube\.com\/watch.*|m\.youtube\.com\/index.*|.*\.youtube\.com\/profile.*|.*\.youtube\.com\/view_play_list.*|.*\.youtube\.com\/playlist.*|blip\.tv\/.*\/.*|.*\.blip\.tv\/.*\/.*|www\.vimeo\.com\/groups\/.*\/videos\/.*|www\.vimeo\.com\/.*|vimeo\.com\/groups\/.*\/videos\/.*|vimeo\.com\/.*|vimeo\.com\/m\/#\/.*))|(https:\/\/(.*youtube\.com\/watch.*|.*\.youtube\.com\/v\/.*)))/i;
+    return url.match(regEx);
+  }
+
+  {% if form.video.errors %}
+    jQ('#id_video').keyup();
+  {% endif %}
+
+{% endblock jq_ready %}

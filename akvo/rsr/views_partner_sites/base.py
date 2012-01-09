@@ -55,6 +55,7 @@ class PartnerSitesMixin(object):
         context['app_url'] = '%s%s.%s' % (protocol, \
                                           self.request.partner_site.hostname,
                                           settings.APP_DOMAIN_NAME)
+        context['domain_url'] = '%s%s' % (protocol, settings.DOMAIN_NAME)
 
         # If partner sites auth set to false remove app url
         if not getattr(settings, 'PARTNER_SITES_AUTH', False):
@@ -83,10 +84,12 @@ class BaseProjectView(BaseView):
             raise Http404
         updates = project.project_updates.all().order_by('-time')
         updates_with_images = updates.exclude(photo__exact='')
+        can_add_update = project.connected_to_user(self.request.user)
         context.update({
             'project': project,
             'updates': updates,
             'updates_with_images': updates_with_images,
+            'can_add_update': can_add_update,
         })
         return context
 

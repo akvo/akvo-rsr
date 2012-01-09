@@ -19,6 +19,13 @@ class RSRCodebaseConfig(object):
     SYSTEM_REQUIREMENTS_FILE    = "0_system.txt"
     RSR_REQUIREMENTS_FILE       = "2_rsr.txt"
     TESTING_REQUIREMENTS_FILE   = "3_testing.txt"
+
+    RSR_SETTINGS_HOME           = "akvo/settings"
+    LOCAL_SETTINGS_FILE         = "60-local.conf"
+    MOD_PYTHON_FILE             = "akvo_modpython.py"
+
+    RSR_MEDIA_ROOT              = "akvo/mediaroot"
+
     MANAGE_SCRIPT_PATH          = "akvo/manage.py"
     DB_DUMP_SCRIPT_PATH         = "akvo/db_dump.py"
 

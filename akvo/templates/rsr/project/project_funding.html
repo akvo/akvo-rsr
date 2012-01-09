@@ -113,41 +113,39 @@
 				<p class="small grey">{% trans '* The amount indicated is the donation minus transaction fees.' %}</p>
 			{% endif %}
 			
-			{% if project.fundingpartner_set.all %}
+			{% if project.funding_partner_info %}
 			<hr />
 			<h3>{% trans 'Current funders' %}</h3>
 			{% endif %}
-			{% for funder in project.fundingpartner_set.all %}
-				<div style=" border-bottom:1px solid #ccc; padding:10px; background-color:#fff;">
-					<div style="float:left; width:140px;">
-						<a href="{{funder.funding_organisation.get_absolute_url}}">
-		                    {% org_logo funder.funding_organisation 98 60 'margin: 10px 20px;' %}
-		                </a>							
-					</div>
-					<div style="float:left; width:250px; margin-left:20px;">
-						<p class="small">
-							<a href="{{funder.funding_organisation.get_absolute_url}}">
-                {% with funder.funding_organisation as f_org %}
-                  {% with f_org.primary_location as f_org_loc %}
-                    {{f_org}}</a><br />
-                    {% if f_org_loc.city %}
-                      {{f_org_loc.city}},
-                    {% endif %}
-                    {% if f_org_loc.state %}
-                      {{f_org_loc.state}},
-                    {% endif %}
-                    {{f_org_loc.country}}
-                  {% endwith %}
+			{% for funding_info in project.funding_partner_info %}
+        {% with organisation=funding_info.organisation %}
+          <div style="{% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %} padding:10px; background-color:#fff;">
+            <div style="float:left; width:140px;">
+              <a href="{{organisation.get_absolute_url}}">
+                {% org_logo organisation 98 60 'margin: 10px 20px;' %}
+              </a>
+            </div>
+            <div style="float:left; width:250px; margin-left:20px;">
+              <p class="small">
+                {% with organisation.primary_location as location %}
+                  <a href="{{organisation.get_absolute_url}}">
+                    {{organisation}}
+                  </a>
+                  <br/>
+                  {% if location.city %}{{location.city}},{% endif %}
+                  {% if location.state %}{{location.state}},{% endif %}
+                  {{location.country}}
                 {% endwith %}
-						</p>
-					</div>
-					<div style="float:left; width:100px; margin-left:20px;">
-						<p class="small">
-							{% trans 'Grant' %}: {{project.get_currency_display|safe}} {{funder.funding_amount|round|intcomma}}
-						</p>
-					</div>
-					<div class="clear"></div>
-				</div>
+              </p>
+            </div>
+            <div style="float:left; width:100px; margin-left:20px;">
+              <p class="small">
+                {% trans 'Grant' %}: {{project.get_currency_display|safe}} {{funding_info.funding_amount|round|intcomma}}
+              </p>
+            </div>
+            <div class="clear"></div>
+          </div>
+        {% endwith %}
 			{% endfor %}
 			
 			

@@ -17,4 +17,4 @@ class DependencyCollectionVerifier(object):
         return len(self.unmet_dependencies) > 0
 
     def unmet_dependency_names(self):
-        return ", ".join(self.unmet_dependencies)
+        return " ".join(self.unmet_dependencies)
