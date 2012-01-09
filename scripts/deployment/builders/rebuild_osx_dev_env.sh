@@ -1,10 +1,12 @@
 #!/bin/bash
 
-OSX_DIR="$(cd `dirname $0` && pwd)/osx"
+BUILDER_SCRIPTS_HOME="$(cd `dirname $0` && pwd)"
+DEPLOYMENT_SCRIPTS_HOME="$(cd "$BUILDER_SCRIPTS_HOME/.." && pwd)"
+OSX_DIR="$BUILDER_SCRIPTS_HOME/osx"
 CONFIG_DIR="$OSX_DIR/config"
-VERIFIERS_DIR="$(cd "$OSX_DIR/../../verifiers" && pwd)"
+VERIFIERS_DIR="$(cd "$DEPLOYMENT_SCRIPTS_HOME/verifiers" && pwd)"
 
-"$VERIFIERS_DIR/verify_system_packages.py"
+python "$VERIFIERS_DIR/verify_system_packages.py"
 
 # exit if any errors occurred while verifying the system packages
 if [ $? -ne 0 ]; then
