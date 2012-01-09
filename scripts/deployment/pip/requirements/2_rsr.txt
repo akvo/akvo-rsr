@@ -8,7 +8,7 @@ django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.2
 django-piston==0.2.3
-django-rosetta==0.6.2
+django-rosetta==0.6.3
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
@@ -25,9 +25,9 @@ sorl-thumbnail==3.2.5
 # General requirements
 BeautifulSoup==3.2.0
 httplib2==0.7.2
-lxml==2.3.2
+lxml==2.3.3
 pytz==2011n
-simplejson==2.3.0
+simplejson==2.3.2
 
 # RSR requirements
 Markdown==2.1.0
