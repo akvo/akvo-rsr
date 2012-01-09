@@ -14,13 +14,13 @@ TEST_EXECUTION_HELPERS_HOME = os.path.realpath(os.path.join(DEPLOYMENT_SCRIPTS_H
 
 class SysPathVerifier(object):
 
-    def ensure_syspath_contains_deployment_scripts_home():
-        SysPath.ensure_syspath_contains(DEPLOYMENT_SCRIPTS_HOME)
+    def ensure_syspath_contains_deployment_scripts_home(self):
+        self.ensure_syspath_contains(DEPLOYMENT_SCRIPTS_HOME)
 
-    def ensure_syspath_contains_testing_helpers_home():
-        SysPath.ensure_syspath_contains(TEST_EXECUTION_HELPERS_HOME)
+    def ensure_syspath_contains_testing_helpers_home(self):
+        self.ensure_syspath_contains(TEST_EXECUTION_HELPERS_HOME)
 
-    def ensure_syspath_contains(expected_path):
+    def ensure_syspath_contains(self, expected_path):
         full_path = os.path.realpath(expected_path)
         if full_path not in sys.path:
             sys.path.insert(0, full_path)
