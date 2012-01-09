@@ -53,3 +53,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
 
     def ensure_virtualenv_symlinks_exist(self):
         self.virtualenv_installer.ensure_virtualenv_symlinks_exist()
+
+    def set_web_group_permissions_and_ownership_on_deployed_virtualenv(self):
+        self.feedback.comment("Setting web group permissions and ownership on %s" % self.config.rsr_env_path)
+        self.permissions.set_web_group_permissions_on_directory(self.config.rsr_env_path)
