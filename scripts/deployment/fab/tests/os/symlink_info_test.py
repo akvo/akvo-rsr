@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -36,7 +37,7 @@ class SymlinkInfoTest(mox.MoxTestBase):
 
         real_path = "/some/real/path"
 
-        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn(real_path)
+        self._linked_path_should_be(real_path)
         self.mock_host_controller.path_exists(real_path).AndReturn(True)
         self.mox.ReplayAll()
 
@@ -47,7 +48,7 @@ class SymlinkInfoTest(mox.MoxTestBase):
 
         unbroken_path = "/some/existing/path"
 
-        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn(unbroken_path)
+        self._linked_path_should_be(unbroken_path)
         self.mock_host_controller.path_exists(unbroken_path).AndReturn(True)
         self.mox.ReplayAll()
 
@@ -58,7 +59,7 @@ class SymlinkInfoTest(mox.MoxTestBase):
 
         broken_path = "/some/nonexistent/path"
 
-        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn(broken_path)
+        self._linked_path_should_be(broken_path)
         self.mock_host_controller.path_exists(broken_path).AndReturn(False)
         self.mox.ReplayAll()
 
@@ -67,7 +68,7 @@ class SymlinkInfoTest(mox.MoxTestBase):
     def test_can_recognise_matching_linked_path(self):
         """fab.tests.os.symlink_info_test  Can recognise a matching linked path"""
 
-        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn("/matched/path")
+        self._linked_path_should_be("/matched/path")
         self.mox.ReplayAll()
 
         self.assertTrue(self.symlink.is_linked_to("/matched/path"), "Expected linked path to match")
@@ -75,7 +76,7 @@ class SymlinkInfoTest(mox.MoxTestBase):
     def test_can_recognise_non_matching_linked_path(self):
         """fab.tests.os.symlink_info_test  Can recognise a non-matching linked path"""
 
-        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn("/some/path")
+        self._linked_path_should_be("/some/path")
         self.mox.ReplayAll()
 
         self.assertFalse(self.symlink.is_linked_to("/another/path"), "Expected linked path not to match")
@@ -83,11 +84,14 @@ class SymlinkInfoTest(mox.MoxTestBase):
     def test_can_represent_symlink_info_as_string(self):
         """fab.tests.os.symlink_info_test  Can represent symlink info as a string"""
 
-        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn("/real/path")
+        self._linked_path_should_be("/real/path")
         self.mox.ReplayAll()
 
         self.assertEqual("/path/to/symlink -> /real/path", "%s" % self.symlink)
 
+    def _linked_path_should_be(self, expected_path):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        self.mock_host_controller.run("readlink %s" % self.symlink_path).AndReturn(expected_path)
 
 def suite():
     return TestSuiteLoader().load_tests_from(SymlinkInfoTest)

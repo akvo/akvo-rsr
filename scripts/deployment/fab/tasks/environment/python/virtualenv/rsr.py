@@ -29,8 +29,11 @@ class RebuildRSREnv(fabric.tasks.Task):
 
         self.virtualenv_deployment_host.ensure_user_has_required_deployment_permissions()
         self.virtualenv_deployment_host.ensure_virtualenv_exists()
+        self.virtualenv_deployment_host.remove_previously_downloaded_package_sources()
+        self.virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_path)
         self.virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_path)
+        self.virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         self.virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
 
     def _configure_host_using(self, host_controller_mode):

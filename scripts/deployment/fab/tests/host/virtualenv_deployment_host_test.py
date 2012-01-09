@@ -15,6 +15,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.virtualenv import VirtualEnvDeploymentHost
 from fab.os.filesystem import FileSystem
+from fab.os.permissions import AkvoPermissions
 from fab.verifiers.user import DeploymentUserVerifier
 
 
@@ -24,16 +25,21 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         super(VirtualEnvDeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_user_verifier = self.mox.CreateMock(DeploymentUserVerifier)
+        self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_virtualenv_installer = self.mox.CreateMock(VirtualEnvInstaller)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.deployment_user = "rupaul"
         self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
 
-        # we don't have any additional expections on the AkvoPermission and Internet dependencies (since
-        # those are already tested in the DeploymentHost base class) so we set these to None for now
-        self.virtualenv_deployment_host = VirtualEnvDeploymentHost(self.virtualenv_installer_config, self.mock_file_system,
-                                                                   self.mock_user_verifier, None, None, self.mock_virtualenv_installer,
+        # we don't have any additional expections on the Internet dependency (since this is already
+        # tested in the DeploymentHost base class) so we set this to None for now
+        self.virtualenv_deployment_host = VirtualEnvDeploymentHost(self.virtualenv_installer_config,
+                                                                   self.mock_file_system,
+                                                                   self.mock_user_verifier,
+                                                                   self.mock_permissions,
+                                                                   None,
+                                                                   self.mock_virtualenv_installer,
                                                                    self.mock_feedback)
 
     def test_can_ensure_user_has_required_deployment_permissions(self):
@@ -89,6 +95,14 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.mock_file_system.directory_exists(self.virtualenv_installer_config.virtualenvs_home).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % self.virtualenv_installer_config.virtualenvs_home)
 
+    def test_can_remove_previously_downloaded_package_sources(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can remove previously downloaded package source files"""
+
+        self.mock_virtualenv_installer.remove_previously_downloaded_package_sources()
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.remove_previously_downloaded_package_sources()
+
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can install virtualenv packages"""
 
@@ -106,6 +120,15 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
+
+    def test_can_set_web_group_permissions_and_ownership_on_deployed_virtualenv(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can set web group permissions and ownership on deployed virtualenv"""
+
+        self.mock_feedback.comment("Setting web group permissions and ownership on %s" % self.virtualenv_installer_config.rsr_env_path)
+        self.mock_permissions.set_web_group_permissions_on_directory(self.virtualenv_installer_config.rsr_env_path)
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
 
 
 def suite():

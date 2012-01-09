@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -93,7 +94,9 @@ class PathInfoTest(mox.MoxTestBase):
     def _set_expected_path_type_for(self, system_type, path, expected_path_type_response):
         expected_path_type_query_format = { SystemType.LINUX: "-c %F", SystemType.MAC_OSX: "-f %HT" }[system_type]
 
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
         self.mock_host_controller.run("uname -s").AndReturn(system_type)
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
         self.mock_host_controller.run("stat %s %s" % (expected_path_type_query_format, path)).AndReturn(expected_path_type_response)
 
 

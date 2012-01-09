@@ -37,4 +37,5 @@ class PathInfo(object):
     def _path_type(self):
         path_type_query = StatCommand(SystemInfo(self.host_controller).system_type).for_path(self.path)
 
-        return self.host_controller.run(path_type_query).lower()
+        with self.host_controller.hide_command_and_output():
+            return self.host_controller.run(path_type_query).lower()

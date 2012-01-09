@@ -48,8 +48,15 @@ class VirtualEnvDeploymentHost(DeploymentHost):
     def _ensure_virtualenvs_home_exists(self):
         self.ensure_directory_exists_with_web_group_permissions(self.config.virtualenvs_home)
 
+    def remove_previously_downloaded_package_sources(self):
+        self.virtualenv_installer.remove_previously_downloaded_package_sources()
+
     def install_virtualenv_packages(self, pip_requirements_file):
         self.virtualenv_installer.install_packages(pip_requirements_file)
 
     def ensure_virtualenv_symlinks_exist(self):
         self.virtualenv_installer.ensure_virtualenv_symlinks_exist()
+
+    def set_web_group_permissions_and_ownership_on_deployed_virtualenv(self):
+        self.feedback.comment("Setting web group permissions and ownership on %s" % self.config.rsr_env_path)
+        self.permissions.set_web_group_permissions_on_directory(self.config.rsr_env_path)

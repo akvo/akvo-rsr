@@ -30,4 +30,5 @@ class SymlinkInfo(object):
         return "%s -> %s" % (self.symlink_path, self._linked_path())
 
     def _linked_path(self):
-        return self.host_controller.run("readlink %s" % self.symlink_path)
+        with self.host_controller.hide_command_and_output():
+            return self.host_controller.run("readlink %s" % self.symlink_path)

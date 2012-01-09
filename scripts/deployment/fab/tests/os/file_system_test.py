@@ -187,7 +187,7 @@ class FileSystemTest(mox.MoxTestBase):
 
     def _create_symlink(self, symlink_path, real_path, with_sudo):
         self._run_command("ln -s %s %s" % (real_path, symlink_path), with_sudo)
-        self.mock_host_controller.run("readlink %s" % symlink_path).AndReturn(real_path)
+        self._linked_path_for_symlink(symlink_path, real_path)
         self.mock_feedback.comment("Created symlink: %s -> %s" % (symlink_path, real_path))
 
     def test_can_remove_symlink(self):
@@ -237,7 +237,8 @@ class FileSystemTest(mox.MoxTestBase):
         self._set_expected_path_type(PathType.SYMLINK, "/path/to/symlink")
         self.mock_host_controller.path_exists("/some/real/path").AndReturn(True)
         self.mock_host_controller.path_exists("/path/to/symlink").AndReturn(True)
-        self.mock_host_controller.run("readlink /path/to/symlink").MultipleTimes().AndReturn("/some/real/path")
+        self._linked_path_for_symlink("/path/to/symlink", "/some/real/path")
+        self._linked_path_for_symlink("/path/to/symlink", "/some/real/path")
         self.mock_feedback.comment("Found expected symlink: /path/to/symlink -> /some/real/path")
         self.mox.ReplayAll()
 
@@ -250,13 +251,17 @@ class FileSystemTest(mox.MoxTestBase):
         self._set_expected_path_type(PathType.SYMLINK, "/path/to/symlink")
         self.mock_host_controller.path_exists("/some/real/path").AndReturn(True)
         self.mock_host_controller.path_exists("/path/to/symlink").AndReturn(True)
-        self.mock_host_controller.run("readlink /path/to/symlink").AndReturn("/another/path")
+        self._linked_path_for_symlink("/path/to/symlink", "/another/path")
         self.mock_host_controller.path_exists("/path/to/symlink").AndReturn(True)
         self._remove_symlink("/path/to/symlink", with_sudo=False)
         self._create_symlink("/path/to/symlink", "/some/real/path", with_sudo=False)
         self.mox.ReplayAll()
 
         self.file_system.ensure_symlink_exists("/path/to/symlink", "/some/real/path")
+
+    def _linked_path_for_symlink(self, symlink_path, expected_path):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        self.mock_host_controller.run("readlink %s" % symlink_path).AndReturn(expected_path)
 
     def test_can_ensure_symlink_exists_by_creating_missing_symlink(self):
         """fab.tests.os.file_system_test  Can ensure symlink exists by creating a missing symlink"""
@@ -270,7 +275,9 @@ class FileSystemTest(mox.MoxTestBase):
         self.file_system.ensure_symlink_exists("/path/to/symlink", "/some/real/path")
 
     def _set_expected_path_type(self, path_type, path):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
         self.mock_host_controller.run("uname -s").AndReturn(SystemType.LINUX)
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
         self.mock_host_controller.run(StatCommand(SystemType.LINUX).for_path(path)).AndReturn(path_type)
 
     def _run_command(self, command, with_sudo=False):

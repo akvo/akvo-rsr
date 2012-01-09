@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
@@ -22,7 +23,7 @@ class SystemInfoTest(mox.MoxTestBase):
     def test_initialiser_reads_system_name(self):
         """fab.tests.os.system_info_test  Initialiser reads system name"""
 
-        self.mock_host_controller.run("uname -s").AndReturn(SystemType.LINUX)
+        self._system_type_should_be(SystemType.LINUX)
         self.mox.ReplayAll()
 
         system_info = SystemInfo(self.mock_host_controller)
@@ -32,7 +33,7 @@ class SystemInfoTest(mox.MoxTestBase):
     def test_can_detect_linux_system(self):
         """fab.tests.os.system_info_test  Can detect a Linux system"""
 
-        self.mock_host_controller.run("uname -s").AndReturn(SystemType.LINUX)
+        self._system_type_should_be(SystemType.LINUX)
         self.mox.ReplayAll()
 
         self.assertTrue(SystemInfo(self.mock_host_controller).is_linux(), "Expected Linux system to be recognised")
@@ -40,10 +41,14 @@ class SystemInfoTest(mox.MoxTestBase):
     def test_can_detect_osx_system(self):
         """fab.tests.os.system_info_test  Can detect a Mac OS X system"""
 
-        self.mock_host_controller.run("uname -s").AndReturn(SystemType.MAC_OSX)
+        self._system_type_should_be(SystemType.MAC_OSX)
         self.mox.ReplayAll()
 
         self.assertTrue(SystemInfo(self.mock_host_controller).is_osx(), "Expected Mac OS X system to be recognised")
+
+    def _system_type_should_be(self, expected_system_type):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        self.mock_host_controller.run("uname -s").AndReturn(expected_system_type)
 
 
 def suite():
