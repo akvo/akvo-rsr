@@ -154,6 +154,7 @@ class SystemPackageSpecifications(object):
                          {'name': 'openssh-server',     'version': '1:4.7p1-8ubuntu3'},
                          {'name': 'ssh',                'version': '1:4.7p1-8ubuntu3'},
                          {'name': 'tar',                'version': '1.19-3'},
+                         {'name': 'zip',                'version': '2.32-1'},
                          {'name': 'unzip',              'version': '5.52-10ubuntu2'}]
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
