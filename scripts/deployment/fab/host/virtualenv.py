@@ -48,6 +48,9 @@ class VirtualEnvDeploymentHost(DeploymentHost):
     def _ensure_virtualenvs_home_exists(self):
         self.ensure_directory_exists_with_web_group_permissions(self.config.virtualenvs_home)
 
+    def remove_previously_downloaded_package_sources(self):
+        self.virtualenv_installer.remove_previously_downloaded_package_sources()
+
     def install_virtualenv_packages(self, pip_requirements_file):
         self.virtualenv_installer.install_packages(pip_requirements_file)
 

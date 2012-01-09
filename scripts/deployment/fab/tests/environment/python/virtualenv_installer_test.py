@@ -105,16 +105,6 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 
         self.virtualenv_installer.ensure_virtualenv_exists()
 
-    def test_can_ensure_virtualenv_exists_and_confirm_an_existing_virtualenv(self):
-        """fab.tests.environment.python.virtualenv_installer_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
-
-        self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).AndReturn(True)
-        self.mock_feedback.comment("Found existing virtualenv at %s" % self.virtualenv_installer_config.rsr_env_path)
-        self.mock_virtualenv.list_installed_packages()
-        self.mox.ReplayAll()
-
-        self.virtualenv_installer.ensure_virtualenv_exists()
-
     def _set_expectations_to_create_empty_virtualenv(self, existing_virtualenv):
         if existing_virtualenv:
             self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).MultipleTimes().AndReturn(True)
@@ -132,6 +122,27 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
     def _set_expectations_to_delete_virtualenv(self):
         self.mock_feedback.comment("Deleting existing virtualenv")
         self.mock_file_system.delete_directory_with_sudo(self.virtualenv_installer_config.rsr_env_path)
+
+    def test_can_ensure_virtualenv_exists_and_confirm_an_existing_virtualenv(self):
+        """fab.tests.environment.python.virtualenv_installer_test  Can ensure virtualenv exists and confirm an existing virtualenv"""
+
+        self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).AndReturn(True)
+        self.mock_feedback.comment("Found existing virtualenv at %s" % self.virtualenv_installer_config.rsr_env_path)
+        self.mock_virtualenv.list_installed_packages()
+        self.mox.ReplayAll()
+
+        self.virtualenv_installer.ensure_virtualenv_exists()
+
+    def test_can_remove_previously_downloaded_package_sources(self):
+        """fab.tests.environment.python.virtualenv_installer_test  Can remove previously downloaded package source files"""
+
+        python_package_sources_directory = os.path.join(self.virtualenv_installer_config.rsr_env_path, "src")
+        self.mock_file_system.directory_exists(python_package_sources_directory).AndReturn(True)
+        self.mock_feedback.comment("Removing previously downloaded Python package source files")
+        self.mock_file_system.delete_directory_with_sudo(python_package_sources_directory)
+        self.mox.ReplayAll()
+
+        self.virtualenv_installer.remove_previously_downloaded_package_sources()
 
     def test_can_install_packages_from_given_pip_requirements(self):
         """fab.tests.environment.python.virtualenv_installer_test  Can install packages from given pip requirements"""

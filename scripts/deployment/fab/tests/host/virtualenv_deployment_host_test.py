@@ -95,6 +95,14 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.mock_file_system.directory_exists(self.virtualenv_installer_config.virtualenvs_home).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % self.virtualenv_installer_config.virtualenvs_home)
 
+    def test_can_remove_previously_downloaded_package_sources(self):
+        """fab.tests.host.virtualenv_deployment_host_test  Can remove previously downloaded package source files"""
+
+        self.mock_virtualenv_installer.remove_previously_downloaded_package_sources()
+        self.mox.ReplayAll()
+
+        self.virtualenv_deployment_host.remove_previously_downloaded_package_sources()
+
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can install virtualenv packages"""
 

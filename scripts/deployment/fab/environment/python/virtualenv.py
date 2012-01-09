@@ -63,6 +63,12 @@ class VirtualEnvInstaller(object):
             self.feedback.comment("Found existing virtualenv at %s" % self.virtualenv_path)
             self.virtualenv.list_installed_packages()
 
+    def remove_previously_downloaded_package_sources(self):
+        python_package_sources_directory = os.path.join(self.virtualenv_path, "src")
+        if self.file_system.directory_exists(python_package_sources_directory):
+            self.feedback.comment("Removing previously downloaded Python package source files")
+            self.file_system.delete_directory_with_sudo(python_package_sources_directory)
+
     def create_empty_virtualenv(self):
         if self.virtualenv_exists():
             self.delete_existing_virtualenv()
