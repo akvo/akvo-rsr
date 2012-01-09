@@ -29,7 +29,7 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE',
 def is_partner_site(domain):
     domain_parts = domain.split('.')
     if len(domain_parts) >= 3:
-        domain_name = domain_parts[-2:]
+        domain_name = '%s.%s' % tuple(domain_parts[-2:])
         if domain_name in PARTNER_SITES_DOMAINS:
             return True
     return False
