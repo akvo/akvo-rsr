@@ -2035,7 +2035,7 @@ class PartnerSite(models.Model):
     @property
     def return_url(self):
         domain_name = 'http://%s' % settings.DOMAIN_NAME
-        return self.custom_return_url or self.organisation.url or domain_name
+        return self.custom_return_url or self.organisation.url
 
     @property
     def stylesheet(self):

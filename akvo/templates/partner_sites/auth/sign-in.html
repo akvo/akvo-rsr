@@ -6,8 +6,12 @@
 {% block title %}{% trans "Projects" %} - {% endblock title %}
 
 {% block breadcrum_items %}
-  {{block.super}}
-  <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
+  {% if return_url %}
+    {{block.super}}
+    <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
+  {% else %}
+    <li><a href="{% url 'home' %}"><span>{{organisation}}</span></a></li>
+  {% endif %}
   <li class="last_breadcrum_item">{% trans "Sign-in" %}</li>
 {% endblock breadcrum_items %}
 
@@ -54,5 +58,8 @@
       </fieldset>
     </form>
   </div>
+  <span class="small">
+    <a href="{{domain_url}}/rsr/accounts/password/reset/">{% trans "I forgot my username and/or password" %}</a>
+  </span>
 </section>
 {% endblock content %}
