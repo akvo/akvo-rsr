@@ -1,0 +1,29 @@
+{% load i18n %}
+{% load url from future %}
+
+
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+  <div>
+    <h1>Map widget</h1>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
+  </script>
+  <script type="text/javascript">
+    var $ = jQ = jQuery.noConflict();
+    jQ(document).ready(function(){
+    });
+  </script>
+ </body>
+</html>

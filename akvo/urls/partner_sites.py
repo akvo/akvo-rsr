@@ -56,6 +56,11 @@ urlpatterns = patterns('',
         OrganisationUpdates(),
         name="rss_org_updates"),
 
+    # Widgets
+    # url(r'^widgets/map/$',
+    #     views.OranisationMapView.as_view(),
+    #     name="widget_org_map"),
+    
 )
 
 if getattr(settings, 'PARTNER_SITES_AUTH', False):
