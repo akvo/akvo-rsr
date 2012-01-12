@@ -11,10 +11,10 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
-from fab.tasks.database.rebuild import RebuildRSRDatabase
+from fab.tasks.database.migrate import RunDatabaseMigrations
 
 
-class StubbedRebuildRSRDatabase(RebuildRSRDatabase):
+class StubbedRunDatabaseMigrations(RunDatabaseMigrations):
 
     def __init__(self, database_host):
         self.database_host = database_host
@@ -23,31 +23,30 @@ class StubbedRebuildRSRDatabase(RebuildRSRDatabase):
         return self.database_host
 
 
-class RebuildRSRDatabaseTest(mox.MoxTestBase):
+class RunDatabaseMigrationsTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(RebuildRSRDatabaseTest, self).setUp()
+        super(RunDatabaseMigrationsTest, self).setUp()
         self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-        self.rebuild_rsr_database_task = StubbedRebuildRSRDatabase(self.mock_database_host)
+        self.run_database_migrations_task = StubbedRunDatabaseMigrations(self.mock_database_host)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.database.rebuild_rsr_database_test  Has expected task name"""
+        """fab.tests.tasks.database.run_database_migrations_test  Has expected task name"""
 
-        self.assertEqual("rebuild_rsr_database", RebuildRSRDatabase.name)
+        self.assertEqual("run_database_migrations", RunDatabaseMigrations.name)
 
-    def test_can_rebuild_rsr_database(self):
-        """fab.tests.tasks.database.rebuild_rsr_database_test  Can rebuild the RSR database"""
+    def test_can_run_database_migrations(self):
+        """fab.tests.tasks.database.run_database_migrations_test  Can run database migrations"""
 
-        self.mock_database_host.backup_rsr_database()
-        self.mock_database_host.rebuild_rsr_database()
+        self.mock_database_host.run_all_migrations()
         self.mox.ReplayAll()
 
-        self.rebuild_rsr_database_task.run(HostControllerMode.REMOTE)
+        self.run_database_migrations_task.run(HostControllerMode.REMOTE)
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(RebuildRSRDatabaseTest)
+    return TestSuiteLoader().load_tests_from(RunDatabaseMigrationsTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

@@ -11,10 +11,10 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
-from fab.tasks.database.rebuild import RebuildRSRDatabase
+from fab.tasks.database.backup import BackupRSRDatabase
 
 
-class StubbedRebuildRSRDatabase(RebuildRSRDatabase):
+class StubbedBackupRSRDatabase(BackupRSRDatabase):
 
     def __init__(self, database_host):
         self.database_host = database_host
@@ -23,31 +23,30 @@ class StubbedRebuildRSRDatabase(RebuildRSRDatabase):
         return self.database_host
 
 
-class RebuildRSRDatabaseTest(mox.MoxTestBase):
+class BackupRSRDatabaseTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(RebuildRSRDatabaseTest, self).setUp()
+        super(BackupRSRDatabaseTest, self).setUp()
         self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-        self.rebuild_rsr_database_task = StubbedRebuildRSRDatabase(self.mock_database_host)
+        self.backup_rsr_database_task = StubbedBackupRSRDatabase(self.mock_database_host)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.database.rebuild_rsr_database_test  Has expected task name"""
+        """fab.tests.tasks.database.backup_rsr_database_test  Has expected task name"""
 
-        self.assertEqual("rebuild_rsr_database", RebuildRSRDatabase.name)
+        self.assertEqual("backup_rsr_database", BackupRSRDatabase.name)
 
-    def test_can_rebuild_rsr_database(self):
-        """fab.tests.tasks.database.rebuild_rsr_database_test  Can rebuild the RSR database"""
+    def test_can_backup_rsr_database(self):
+        """fab.tests.tasks.database.backup_rsr_database_test  Can backup the RSR database"""
 
         self.mock_database_host.backup_rsr_database()
-        self.mock_database_host.rebuild_rsr_database()
         self.mox.ReplayAll()
 
-        self.rebuild_rsr_database_task.run(HostControllerMode.REMOTE)
+        self.backup_rsr_database_task.run(HostControllerMode.REMOTE)
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(RebuildRSRDatabaseTest)
+    return TestSuiteLoader().load_tests_from(BackupRSRDatabaseTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
