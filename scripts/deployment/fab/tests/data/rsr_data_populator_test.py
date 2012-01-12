@@ -152,6 +152,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
     def test_can_run_all_migrations(self):
         """fab.tests.data.rsr_data_populator_test  Can run all migrations"""
 
+        self._change_dir_to(self.data_populator_config.rsr_deployment_home)
         self.mock_feedback.comment("Running all migrations")
         self._skip_migrations_for_django_apps()
         self.mock_django_admin.run_all_migrations_for(self.data_populator_config.rsr_app_name)

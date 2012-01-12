@@ -100,20 +100,15 @@ class RSRDataPopulator(object):
     def skip_migrations_to(self, rsr_migration_number):
         self._skip_migrations_for_django_apps()
         self.feedback.comment("Skipping RSR migrations to %s" % rsr_migration_number)
-        self._skip_rsr_migrations_to(rsr_migration_number)
+        self.django_admin.skip_migrations_to(rsr_migration_number, self.config.rsr_app_name)
 
     def run_all_migrations(self):
-        self.feedback.comment("Running all migrations")
-        self._skip_migrations_for_django_apps()
-        self._run_all_migrations_for_rsr()
+        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
+            self.feedback.comment("Running all migrations")
+            self._skip_migrations_for_django_apps()
+            self.django_admin.run_all_migrations_for(self.config.rsr_app_name)
 
     def _skip_migrations_for_django_apps(self):
         self.feedback.comment("Skipping migrations for Django apps")
         for app_name in self.config.django_apps_to_migrate:
             self.django_admin.skip_all_migrations_for(app_name)
-
-    def _skip_rsr_migrations_to(self, migration_number):
-        self.django_admin.skip_migrations_to(migration_number, self.config.rsr_app_name)
-
-    def _run_all_migrations_for_rsr(self):
-        self.django_admin.run_all_migrations_for(self.config.rsr_app_name)
