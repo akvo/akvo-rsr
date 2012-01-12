@@ -5,9 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import mox
+import imp, mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
+
+CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../config/values.py.template'))
+imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
+
+from config_values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
 
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.mysql.admin import DatabaseAdmin
@@ -20,7 +25,7 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.database_config = RSRDatabaseConfig.create_instance()
+        self.database_config = RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues())
         self.mock_database_admin = self.mox.CreateMock(DatabaseAdmin)
 
         self.database_host = DatabaseHost(self.database_config, self.mock_database_admin)
@@ -43,16 +48,39 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         return DatabaseHost.create_instance(mock_host_controller)
 
-    def test_can_rebuild_rsr_database(self):
-        """fab.tests.host.database_host_test  Can rebuild an RSR database"""
+    def test_can_backup_rsr_database(self):
+        """fab.tests.host.database_host_test  Can backup the RSR database"""
 
         self.mock_database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
+        self.mox.ReplayAll()
+
+        self.database_host.backup_rsr_database()
+
+    def test_can_rebuild_rsr_database(self):
+        """fab.tests.host.database_host_test  Can rebuild the RSR database"""
+
         self.mock_database_admin.rebuild_database(self.database_config.rsr_database_name,
                                                   self.database_config.rsr_database_user,
                                                   self.database_config.rsr_database_password)
         self.mox.ReplayAll()
 
         self.database_host.rebuild_rsr_database()
+
+    def test_can_convert_database_for_migrations(self):
+        """fab.tests.host.database_host_test  Can convert database for migrations"""
+
+        self.mock_database_admin.convert_database_for_migrations()
+        self.mox.ReplayAll()
+
+        self.database_host.convert_database_for_migrations()
+
+    def test_can_run_all_database_migrations(self):
+        """fab.tests.host.database_host_test  Can run all database migrations"""
+
+        self.mock_database_admin.run_all_migrations()
+        self.mox.ReplayAll()
+
+        self.database_host.run_all_migrations()
 
 
 def suite():
