@@ -29,6 +29,8 @@ class RSRCodebaseConfig(object):
     MANAGE_SCRIPT_PATH          = "akvo/manage.py"
     DB_DUMP_SCRIPT_PATH         = "akvo/db_dump.py"
 
+    RSR_APP_NAME                = "rsr"
+
     def __init__(self, repository_branch):
         self.repo_branch = repository_branch
         self.repo_branch_without_type = self._branch_without_type()

@@ -97,6 +97,11 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual("akvo/db_dump.py", RSRCodebaseConfig.DB_DUMP_SCRIPT_PATH)
 
+    def test_has_rsr_app_name(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR Django app name"""
+
+        self.assertEqual("rsr", RSRCodebaseConfig.RSR_APP_NAME)
+
     def test_has_system_requirements_file_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has system requirements file URL"""
 
