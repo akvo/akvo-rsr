@@ -6,7 +6,7 @@
 
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.data.population import RSRDataPopulator
+from fab.data.populator import RSRDataPopulator
 from fab.database.mysql.admincommand import DatabaseAdminCommand
 from fab.database.mysql.commandexecution import DatabaseCopier, SQLStatementExecutor
 from fab.format.timestamp import TimeStampFormatter

@@ -13,7 +13,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.app.admin import DBDump, DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
-from fab.data.population import RSRDataPopulator
+from fab.data.populator import RSRDataPopulator
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem
