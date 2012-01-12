@@ -7,7 +7,7 @@
 
 import os
 
-from fab.app.command import DBDumpCommand, DjangoManageCommand
+from fab.app.admin import DBDump, DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
 from fab.environment.python.virtualenv import VirtualEnv
@@ -16,56 +16,104 @@ from fab.os.filesystem import FileSystem, LocalFileSystem
 
 class RSRDataPopulator(object):
 
-    def __init__(self, data_populator_config, data_host_file_system, local_file_system, virtualenv, feedback):
+    def __init__(self, data_populator_config, data_host_file_system, local_file_system, django_admin, db_dump, feedback):
         self.config = data_populator_config
         self.data_host_file_system = data_host_file_system
         self.local_file_system = local_file_system
-        self.virtualenv = virtualenv
+        self.django_admin = django_admin
+        self.db_dump = db_dump
         self.feedback = feedback
 
     @staticmethod
     def create_instance(host_controller):
         data_populator_config = RSRDataPopulatorConfig.create_instance()
+        virtualenv = VirtualEnv(data_populator_config.rsr_env_path, host_controller)
 
         return RSRDataPopulator(data_populator_config,
                                 FileSystem(host_controller),
                                 LocalFileSystem(),
-                                VirtualEnv(data_populator_config.rsr_env_path, host_controller),
+                                DjangoAdmin(virtualenv),
+                                DBDump(virtualenv),
                                 host_controller.feedback)
 
-    def populate_database(self, rsr_database_name):
+    def initialise_database(self):
+        self.data_host_file_system.ensure_directory_exists(self.config.rsr_deployment_home)
+        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
+            self.feedback.comment("Initialising database")
+            self.django_admin.initialise_database_without_superusers()
+
+    def populate_database(self):
         self._ensure_expected_paths_exist()
-
-        latest_data_archive_name = self.local_file_system.most_recent_file_in_directory(self.config.data_archives_home)
-
-        self._upload_and_unpack_data_archive(latest_data_archive_name)
-        self._populate_rsr_database(latest_data_archive_name)
+        latest_data_archive_name = self._upload_latest_data_archive()
+        self._populate_rsr_database(self._data_archive_path(latest_data_archive_name))
 
     def _ensure_expected_paths_exist(self):
         self.local_file_system.exit_if_directory_does_not_exist(self.config.data_archives_home)
         self.data_host_file_system.ensure_directory_exists(self.config.data_archives_home)
+        self.data_host_file_system.ensure_directory_exists(self.config.rsr_deployment_home)
 
-    def _upload_and_unpack_data_archive(self, latest_data_archive_name):
+    def _upload_latest_data_archive(self):
+        # we use the same data archive path both locally and on the data host
+        latest_data_archive_name = self.local_file_system.most_recent_file_in_directory(self.config.data_archives_home)
+
+        if len(latest_data_archive_name) > 0:
+            self._upload_data_archive(latest_data_archive_name)
+        else:
+            self.feedback.abort("No data archives available on local host in: %s" % self.config.data_archives_home)
+
+        return latest_data_archive_name
+
+    def _upload_data_archive(self, latest_data_archive_name):
         data_archive_file_path = self._data_archive_path(latest_data_archive_name)
 
-        # we use the same data archive path both locally and on the data host
-        self.feedback.comment("Unpacking latest data archive: %s" % latest_data_archive_name)
-        if not self.data_host_file_system.file_exists(data_archive_file_path):
+        if self.data_host_file_system.file_exists(data_archive_file_path):
+            self.feedback.comment("Found latest data archive at: %s" % data_archive_file_path)
+        else:
+            self.feedback.comment("Uploading latest data archive: %s" % latest_data_archive_name)
             self.data_host_file_system.upload_file(data_archive_file_path, self.config.data_archives_home)
-        self.data_host_file_system.decompress_data_archive(data_archive_file_path, self.config.data_archives_home)
-        self.data_host_file_system.delete_file(data_archive_file_path)
-
-    def _populate_rsr_database(self, latest_data_archive_name):
-        data_archive_dir = self._data_archive_path(latest_data_archive_name).replace(FileSystem.DATA_ARCHIVE_EXTENSION, "")
-
-        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
-            self.feedback.comment("Creating initial data models")
-            self.virtualenv.run_within_virtualenv(DjangoManageCommand.SYNCDB_WITHOUT_CREATING_SUPERUSERS)
-            self.feedback.comment("Loading RSR data")
-            self.virtualenv.run_within_virtualenv(DBDumpCommand.load_from(data_archive_dir))
-            self.feedback.comment("Resyncing data models")
-            self.virtualenv.run_within_virtualenv(DjangoManageCommand.SYNCDB_WITH_STALE_CONTENT_TYPE_DELETION)
-            self.virtualenv.run_within_virtualenv(DjangoManageCommand.SYNCDB)
 
     def _data_archive_path(self, latest_data_archive_name):
         return os.path.join(self.config.data_archives_home, latest_data_archive_name)
+
+    def _populate_rsr_database(self, data_archive_file_path):
+        self._unpack_data_archive(data_archive_file_path)
+        data_archive_dir = data_archive_file_path.rstrip(".zip")
+
+        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
+            self._synchronise_data_models()
+            self.feedback.comment("Loading RSR data")
+            self.db_dump.load_data_from(data_archive_dir)
+
+    def _unpack_data_archive(self, data_archive_file_path):
+        self.data_host_file_system.decompress_data_archive(data_archive_file_path, self.config.data_archives_home)
+        self.data_host_file_system.delete_file(data_archive_file_path)
+
+    def _synchronise_data_models(self):
+        self.feedback.comment("Synchronising data models")
+        self.django_admin.synchronise_data_models()
+
+    def convert_database_for_migrations(self):
+        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
+            self._synchronise_data_models()
+            self.skip_migrations_to("0001")
+
+    def skip_migrations_to(self, rsr_migration_number):
+        self._skip_migrations_for_django_apps()
+        self.feedback.comment("Skipping RSR migrations to %s" % rsr_migration_number)
+        self._skip_rsr_migrations_to(rsr_migration_number)
+
+    def run_all_migrations(self):
+        self.feedback.comment("Running all migrations")
+        self._skip_migrations_for_django_apps()
+        self._run_all_migrations_for_rsr()
+
+    def _skip_migrations_for_django_apps(self):
+        self.feedback.comment("Skipping migrations for Django apps")
+        for app_name in self.config.django_apps_to_migrate:
+            self.django_admin.skip_all_migrations_for(app_name)
+
+    def _skip_rsr_migrations_to(self, migration_number):
+        self.django_admin.skip_migrations_to(migration_number, self.config.rsr_app_name)
+
+    def _run_all_migrations_for_rsr(self):
+        self.django_admin.run_all_migrations_for(self.config.rsr_app_name)

@@ -56,6 +56,16 @@ class RSRDataPopulatorConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_rsr_env_path, self.data_populator_config.rsr_env_path)
 
+    def test_has_list_of_django_apps_to_migrate(self):
+        """fab.tests.config.rsr.data.populator_config_test  Has list of Django apps to migrate"""
+
+        self.assertEqual(["oembed", "ipn"], self.data_populator_config.django_apps_to_migrate)
+
+    def test_has_rsr_app_name(self):
+        """fab.tests.config.rsr.data.populator_config_test  Has RSR app name"""
+
+        self.assertEqual(RSRCodebaseConfig.RSR_APP_NAME, self.data_populator_config.rsr_app_name)
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDataPopulatorConfigTest)

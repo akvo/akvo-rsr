@@ -21,6 +21,9 @@ class RSRDataPopulatorConfig(object):
         rsr_env_name        = "rsr_%s" % codebase_config.repo_branch_without_type
         self.rsr_env_path   = os.path.join(deployment_host_config_values.virtualenvs_home, rsr_env_name)
 
+        self.django_apps_to_migrate = ["oembed", "ipn"]
+        self.rsr_app_name           = RSRCodebaseConfig.RSR_APP_NAME
+
     @staticmethod
     def create_instance():
         return RSRDataPopulatorConfig(RSRDeploymentConfig.create_instance(), DeploymentHostConfigValues(), RSRCodebaseConfig.create_instance())
