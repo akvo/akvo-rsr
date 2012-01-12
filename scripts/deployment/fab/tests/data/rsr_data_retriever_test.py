@@ -11,7 +11,7 @@ import mox, os
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.app.admin import DBDump
-from fab.config.rsr.dataretriever import RSRDataRetrieverConfig
+from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.data.retriever import RSRDataRetriever
 from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
