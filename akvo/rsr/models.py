@@ -146,10 +146,10 @@ class Location(models.Model):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER       = 'field'
-    FUNDING_PARTNER     = 'funding'
-    SPONSOR_PARTNER     = 'sponsor'
-    SUPPORT_PARTNER     = 'support'
+    FIELD_PARTNER       = u'field'
+    FUNDING_PARTNER     = u'funding'
+    SPONSOR_PARTNER     = u'sponsor'
+    SUPPORT_PARTNER     = u'support'
 
     PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
     PARTNER_LABELS      = [_('Field partner'), _('Funding partner'), _('Sponsor partner'), _('Support partner'),]
@@ -159,7 +159,7 @@ class Partnership(models.Model):
     project = models.ForeignKey('Project',)
     partner_type = models.CharField(max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
-        _('funding amount (Only for funding partners)'),
+        _('funding amount'),
         max_digits=10,
         decimal_places=2,
         blank=True,
@@ -1066,40 +1066,59 @@ class Project(models.Model):
 
 
 class Benchmark(models.Model):
-    project = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name=_(u'benchmarks'), )
     category = models.ForeignKey(Category, verbose_name=_(u'category'), )
     name = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
     value = models.IntegerField(_(u'benchmark value'), )
 
     def __unicode__(self):
-        return _(u'Category: %s, Benchmark: %d %s') % (self.category, self.value, self.name, )
+        return _(
+            u'Category: %(category)s, Benchmark: %(value)d %(name)s'
+        ) % {
+            'category': self.category,
+            'value': self.value,
+            'name': self.name,
+        }
 
     class Meta:
-        ordering=['category__name', 'name__order']
-        verbose_name=_('benchmark')
-        verbose_name_plural=_('benchmarks')
+        ordering            =  ('category__name', 'name__order')
+        verbose_name        = _('benchmark')
+        verbose_name_plural = _('benchmarks')
+
+
+class BudgetItemLabel(models.Model):
+    label = models.CharField(_('label'), max_length=20, unique=True)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        ordering            = ('label',)
+        verbose_name        = _('budget item label')
+        verbose_name_plural = _('budget item labels')
 
 
 class BudgetItem(models.Model):
-    ITEM_CHOICES = (
-        ('employment', _('employment')),
-        ('building', _('building')),
-        ('training', _('training')),
-        ('maintenance', _('maintenance')),
-        ('management', _('management')),
-        ('other', _('other')),
+    project     = models.ForeignKey(Project, verbose_name=_('project'),)
+    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_('label'),)
+    other_extra = models.CharField(
+        max_length=20, null=True, blank=True, verbose_name=_('"Other" labels extra info'),
+        help_text=_('Extra information about the exact nature of an "other" budget item.'),
     )
-    project = models.ForeignKey(Project,)
-    item = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
-    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
+    amount      = models.DecimalField(_('amount'), max_digits=10, decimal_places=2,)
+
+    def __unicode__(self):
+        return self.label.__unicode__()
 
     class Meta:
-        verbose_name = _('Budget item')
-        verbose_name_plural = _('Budget items')
-        unique_together= ('project', 'item')
+        ordering            = ('label',)
+        verbose_name        = _('budget item')
+        verbose_name_plural = _('budget items')
+        unique_together     = ('project', 'label')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
+
 
 class PublishingStatus(models.Model):
     """
@@ -1114,6 +1133,7 @@ class PublishingStatus(models.Model):
     #other objects than projects
     project = models.OneToOneField(Project,)
     status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+
     class Meta:
         verbose_name        = _('publishing status')
         verbose_name_plural = _('publishing statuses')
