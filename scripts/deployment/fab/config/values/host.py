@@ -33,9 +33,27 @@ class HostAlias(object):
 
     CI      = 'ci'
     LIVE    = 'live'
+    MEDIA   = 'media'
     TEST    = 'test'
     TEST2   = 'test2'
     UAT     = 'uat'
+
+
+class SSHConnection(object):
+
+    connection_map  = { HostAlias.CI:       'ci.akvo.org:2275',
+                        HostAlias.LIVE:     'www.akvo.org:22',
+                        HostAlias.MEDIA:    '89.233.254.43:2268',
+                        HostAlias.TEST:     'test.akvo.org:2270',
+                        HostAlias.TEST2:    'test2.akvo.org:2273',
+                        HostAlias.UAT:      'uat.akvo.org:2279'}
+
+    @staticmethod
+    def for_host(host_alias):
+        if host_alias not in SSHConnection.connection_map:
+            raise LookupError('No SSH connection details for: %s' % host_alias)
+
+        return SSHConnection.connection_map[host_alias]
 
 
 class DeploymentHostPaths(object):
@@ -57,7 +75,7 @@ class DeploymentHostPaths(object):
     @staticmethod
     def for_host(host_alias):
         if host_alias not in DeploymentHostPaths.host_paths_map:
-            raise LookupError('No host path configuration for %s' % host_alias)
+            raise LookupError('No host path configuration for: %s' % host_alias)
 
         return DeploymentHostPaths(DeploymentHostPaths.host_paths_map[host_alias])
 

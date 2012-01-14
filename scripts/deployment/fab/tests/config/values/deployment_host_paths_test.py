@@ -39,6 +39,14 @@ class DeploymentHostPathsTest(unittest2.TestCase):
 
         self.assertEqual(DeploymentHostPaths(HostPathValues.DEFAULT), DeploymentHostPaths.for_host(HostAlias.CI))
 
+    def test_raises_lookup_error_for_unrecognised_host_alias(self):
+        """fab.tests.config.values.deployment_host_paths_test  Raises LookupError for unrecognised host alias"""
+
+        with self.assertRaises(LookupError) as raised:
+            DeploymentHostPaths.for_host('nonexistent_host')
+
+        self.assertEqual('No host path configuration for: nonexistent_host', raised.exception.message)
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(DeploymentHostPathsTest)

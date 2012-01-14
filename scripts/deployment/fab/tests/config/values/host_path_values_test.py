@@ -51,7 +51,6 @@ class HostPathValuesTest(unittest2.TestCase):
         self.assertEqual(expected_path_values, HostPathValues.TEST2)
 
 
-
 def suite():
     return TestSuiteLoader().load_tests_from(HostPathValuesTest)
 
