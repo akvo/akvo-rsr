@@ -39,7 +39,7 @@ class ConfigFileVerifierTest(mox.MoxTestBase):
     def test_will_exit_if_database_credentials_not_found(self):
         """fab.tests.verifiers.config_file_verifier_test  Will exit if database credentials are not found"""
 
-        expected_database_credentials_path = os.path.join(self.expected_deployment_scripts_home, 'fab/config/rsr/database_credentials.py')
+        expected_database_credentials_path = os.path.join(self.expected_deployment_scripts_home, 'fab/config/rsr/credentials.py')
         self.mock_local_file_system.exit_if_file_does_not_exist(expected_database_credentials_path)
         self.mox.ReplayAll()
 
