@@ -80,6 +80,10 @@ class DeploymentHostPaths(object):
         self.deployment_processing_home = host_paths['deployment_processing_home'] # temp directory for handling deployment activity
 
     @staticmethod
+    def default():
+        return DeploymentHostPaths(HostPathValues.DEFAULT)
+
+    @staticmethod
     def for_host(host_alias):
         if host_alias not in DeploymentHostPaths.host_paths_map:
             raise LookupError('No host path configuration for: %s' % host_alias)

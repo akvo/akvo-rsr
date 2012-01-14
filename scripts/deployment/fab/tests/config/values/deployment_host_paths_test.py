@@ -14,6 +14,11 @@ from fab.config.values.host import DeploymentHostPaths, HostAlias, HostPathValue
 
 class DeploymentHostPathsTest(unittest2.TestCase):
 
+    def test_can_use_default_host_paths(self):
+        """fab.tests.config.values.deployment_host_paths_test  Can use default host paths"""
+
+        self.assertEqual(DeploymentHostPaths(HostPathValues.DEFAULT), DeploymentHostPaths.default())
+
     def test_has_host_paths_for_live_server(self):
         """fab.tests.config.values.deployment_host_paths_test  Has host paths for live server"""
 
