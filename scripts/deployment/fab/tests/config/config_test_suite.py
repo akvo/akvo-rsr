@@ -7,7 +7,7 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.config_values_test import suite as config_values_suite
+from fab.tests.config.values.config_values_test_suite import config_values_suite
 
 from fab.tests.config.environment.environment_config_test_suite import environment_config_suite
 from fab.tests.config.rsr.rsr_config_test_suite import rsr_config_suite
