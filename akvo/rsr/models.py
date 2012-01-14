@@ -645,26 +645,8 @@ class Project(models.Model):
         def dollars(self):
             return self.filter(currency='USD')
 
-        def budget_employment(self):
-            return self.filter(budgetitem__item__exact='employment').annotate(budget_employment=Sum('budgetitem__amount'),)
-
-        def budget_building(self):
-            return self.filter(budgetitem__item__exact='building').annotate(budget_building=Sum('budgetitem__amount'),)
-
-        def budget_training(self):
-            return self.filter(budgetitem__item__exact='training').annotate(budget_training=Sum('budgetitem__amount'),)
-
-        def budget_maintenance(self):
-            return self.filter(budgetitem__item__exact='maintenance').annotate(budget_maintenance=Sum('budgetitem__amount'),)
-
-        def budget_management(self):
-            return self.filter(budgetitem__item__exact='management').annotate(budget_management=Sum('budgetitem__amount'),)
-
-        def budget_other(self):
-            return self.filter(budgetitem__item__exact='other').annotate(budget_other=Sum('budgetitem__amount'),)
-
         def budget_total(self):
-            return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
+            return self.annotate(budget_total=Sum('budget_items__amount'),).distinct()
 
         def donated(self):
             return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(donated=Sum('invoice__amount_received'),).distinct()
@@ -773,7 +755,6 @@ class Project(models.Model):
                     )
             pledged['pledged'] = "%s)" % pledged['pledged']
             funding_queries.update(pledged)
-            #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
             return self.extra(select=funding_queries)
 
         def need_funding(self):
@@ -986,24 +967,6 @@ class Project(models.Model):
         decimal_result = Decimal(str(result))
         return decimal_result
 
-    def budget_employment(self):
-        return Project.objects.budget_employment().get(pk=self.pk).budget_employment
-
-    def budget_building(self):
-        return Project.objects.budget_building().get(pk=self.pk).budget_building
-
-    def budget_training(self):
-        return Project.objects.budget_training().get(pk=self.pk).budget_training
-
-    def budget_maintenance(self):
-        return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
-
-    def budget_management(self):
-        return Project.objects.budget_management().get(pk=self.pk).budget_management
-
-    def budget_other(self):
-        return Project.objects.budget_other().get(pk=self.pk).budget_other
-
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
 
@@ -1099,7 +1062,9 @@ class BudgetItemLabel(models.Model):
 
 
 class BudgetItem(models.Model):
-    project     = models.ForeignKey(Project, verbose_name=_('project'),)
+    OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
+
+    project     = models.ForeignKey(Project, verbose_name=_('project'), related_name='budget_items')
     label       = models.ForeignKey(BudgetItemLabel, verbose_name=_('label'),)
     other_extra = models.CharField(
         max_length=20, null=True, blank=True, verbose_name=_('"Other" labels extra info'),
