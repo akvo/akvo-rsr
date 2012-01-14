@@ -7,11 +7,13 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.config.values.deployment_host_paths_test import DeploymentHostPathsTest
+from fab.tests.config.values.host_path_values_test import HostPathValuesTest
 from fab.tests.config.values.shared_config_values_test import SharedConfigValuesTest
 
 
 def config_values_suite():
-    return TestSuiteLoader().create_suite_from_classes([SharedConfigValuesTest])
+    return TestSuiteLoader().create_suite_from_classes([HostPathValuesTest, DeploymentHostPathsTest, SharedConfigValuesTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
