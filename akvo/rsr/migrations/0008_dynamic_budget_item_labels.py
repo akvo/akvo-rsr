@@ -17,9 +17,12 @@ class Migration(DataMigration):
                 label=other_label,
             )
         for item in orm.BudgetItem.objects.all():
+            # change a couple of labels
             if item.item == u'other':
                 item.item = u'other 1'
                 item.other_extra = 'Other'
+            if item.item == u'building':
+                item.item = u'building material'
             label, created = orm.BudgetItemLabel.objects.get_or_create(
                 label=item.item,
             )
@@ -36,6 +39,8 @@ class Migration(DataMigration):
             # new label "other 1" corresponds to the old label "other"
             elif item.label.label == u'other 1':
                 item.item = u'other'
+            elif item.label.label == u'building material':
+                item.item = u'building'
             else:
                 item.item = item.label.label
             item.save()
