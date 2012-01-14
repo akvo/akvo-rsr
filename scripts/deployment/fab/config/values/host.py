@@ -5,30 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class HostPathValues(object):
-
-    DEFAULT = { 'config_home':                  '/usr/local/etc/akvo',
-                'repo_checkout_home':           '/var/git',
-                'virtualenvs_home':             '/var/virtualenvs',
-                'static_media_home':            '/var/www',
-                'logging_home':                 '/var/log/akvo',
-                'deployment_processing_home':   '/var/tmp/rsr'}
-
-    LIVE    = { 'config_home':                  DEFAULT['config_home'],
-                'repo_checkout_home':           '/var/lib/django',
-                'virtualenvs_home':             DEFAULT['virtualenvs_home'],
-                'static_media_home':            DEFAULT['static_media_home'],
-                'logging_home':                 DEFAULT['logging_home'],
-                'deployment_processing_home':   DEFAULT['deployment_processing_home']}
-
-    TEST2   = { 'config_home':                  '/usr/local/etc/akvo/test2',
-                'repo_checkout_home':           '/var/dev/test2',
-                'virtualenvs_home':             '/var/dev/virtualenvs/test2',
-                'static_media_home':            '/var/www/test2',
-                'logging_home':                 '/var/log/akvo',
-                'deployment_processing_home':   '/var/tmp/rsr/test2'}
-
-
 class HostAlias(object):
 
     CI      = 'ci'
@@ -54,6 +30,37 @@ class SSHConnection(object):
             raise LookupError('No SSH connection details for: %s' % host_alias)
 
         return SSHConnection.connection_map[host_alias]
+
+
+class DataHostPaths(object):
+
+    def __init__(self):
+        self.django_apps_home   = '/var/lib/django'
+        self.virtualenvs_home   = '/var/virtualenvs'
+
+
+class HostPathValues(object):
+
+    DEFAULT = { 'config_home':                  '/usr/local/etc/akvo',
+                'repo_checkout_home':           '/var/git',
+                'virtualenvs_home':             '/var/virtualenvs',
+                'static_media_home':            '/var/www',
+                'logging_home':                 '/var/log/akvo',
+                'deployment_processing_home':   '/var/tmp/rsr'}
+
+    LIVE    = { 'config_home':                  DEFAULT['config_home'],
+                'repo_checkout_home':           '/var/lib/django',
+                'virtualenvs_home':             DEFAULT['virtualenvs_home'],
+                'static_media_home':            DEFAULT['static_media_home'],
+                'logging_home':                 DEFAULT['logging_home'],
+                'deployment_processing_home':   DEFAULT['deployment_processing_home']}
+
+    TEST2   = { 'config_home':                  '/usr/local/etc/akvo/test2',
+                'repo_checkout_home':           '/var/dev/test2',
+                'virtualenvs_home':             '/var/dev/virtualenvs/test2',
+                'static_media_home':            '/var/www/test2',
+                'logging_home':                 '/var/log/akvo',
+                'deployment_processing_home':   '/var/tmp/rsr/test2'}
 
 
 class DeploymentHostPaths(object):
