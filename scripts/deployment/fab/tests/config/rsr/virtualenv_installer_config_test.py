@@ -5,18 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox, os
+import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
-
-CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
-imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
-
-from config_values import DeploymentHostConfigValues
+from fab.config.values.standard import CIDeploymentConfig
 
 
 class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
@@ -24,24 +20,23 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
     def setUp(self):
         super(RSRVirtualEnvInstallerConfigTest, self).setUp()
 
-        feature_branch = "feature/sms"
         self.deployment_user = "rupaul"
+        self.deployment_host_config = CIDeploymentConfig.for_test()
+        self.codebase_config = RSRCodebaseConfig(self.deployment_host_config.repository_branch)
+        self.deployment_config = RSRDeploymentConfig(self.deployment_host_config.host_paths, self.deployment_user, self.codebase_config)
 
-        self.deployment_host_config_values = DeploymentHostConfigValues()
-        self.codebase_config = RSRCodebaseConfig(feature_branch)
-        self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
-
-        self.expected_virtualenvs_home = self.deployment_host_config_values.virtualenvs_home
+        self.expected_virtualenvs_home = self.deployment_host_config.host_paths.virtualenvs_home
         self.expected_rsr_env_name = "rsr_%s" % self.codebase_config.repo_branch_without_type
 
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig(self.deployment_host_config_values,
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig(self.deployment_host_config.host_paths,
                                                                         self.codebase_config,
                                                                         self.deployment_config)
 
     def test_can_create_instance(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Can create RSRVirtualEnvInstallerConfig instance"""
 
-        self.assertIsInstance(RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user), RSRVirtualEnvInstallerConfig)
+        self.assertIsInstance(RSRVirtualEnvInstallerConfig.create_instance(self.deployment_host_config, self.deployment_user),
+                              RSRVirtualEnvInstallerConfig)
 
     def test_has_deployment_user_name(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Has deployment user name"""
