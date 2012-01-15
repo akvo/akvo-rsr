@@ -7,8 +7,6 @@
 
 import os
 
-from fab.config.values import SharedConfigValues
-
 
 class RSRCodebaseConfig(object):
     """RSRCodebaseConfig represents paths and configuration values specific to the RSR codebase"""
@@ -42,10 +40,6 @@ class RSRCodebaseConfig(object):
 
         self.rsr_requirements_file_path     = self._requirements_path(self.RSR_REQUIREMENTS_FILE)
         self.testing_requirements_file_path = self._requirements_path(self.TESTING_REQUIREMENTS_FILE)
-
-    @staticmethod
-    def create_instance():
-        return RSRCodebaseConfig(SharedConfigValues().repository_branch)
 
     def _branch_without_type(self):
         if self._branch_includes_type():
