@@ -12,11 +12,23 @@ from fab.config.values.host import DeploymentHostPaths, HostAlias, SSHConnection
 
 class UserCredentials(object):
 
+    CURRENT_USER        = subprocess.check_output('whoami').strip()
     DEFAULT_SSH_ID_PATH = '~/.ssh/id_rsa'
 
-    def __init__(self, ssh_id_file_path=DEFAULT_SSH_ID_PATH):
+    def __init__(self, deployment_user, ssh_id_file_path):
         self.deployment_user    = subprocess.check_output('whoami').strip()
         self.ssh_id_file_path   = ssh_id_file_path
+
+    @staticmethod
+    def default():
+        return UserCredentials(UserCredentials.CURRENT_USER, UserCredentials.DEFAULT_SSH_ID_PATH)
+
+    def __eq__(self, credentials):
+        return (self.deployment_user    == credentials.deployment_user and
+                self.ssh_id_file_path   == credentials.ssh_id_file_path)
+
+    def __ne__(self, credentials):
+        return not self.__eq__(credentials)
 
 
 class RepositoryBranch(object):

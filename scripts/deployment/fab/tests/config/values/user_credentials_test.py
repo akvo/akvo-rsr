@@ -14,15 +14,22 @@ from fab.config.values.standard import UserCredentials
 
 class UserCredentialsTest(unittest2.TestCase):
 
-    def test_has_deployment_user_name(self):
-        """fab.tests.config.values.user_credentials_test  Has deployment user name"""
+    def test_has_current_user_name(self):
+        """fab.tests.config.values.user_credentials_test  Has current user name"""
 
-        self.assertEqual(subprocess.check_output('whoami').strip(), UserCredentials().deployment_user)
+        self.assertEqual(subprocess.check_output('whoami').strip(), UserCredentials.CURRENT_USER)
 
-    def test_has_ssh_id_file_path(self):
-        """fab.tests.config.values.user_credentials_test  Has SSH ID file path"""
+    def test_has_default_ssh_id_path(self):
+        """fab.tests.config.values.user_credentials_test  Has default SSH ID file path"""
 
-        self.assertEqual(UserCredentials.DEFAULT_SSH_ID_PATH, UserCredentials().ssh_id_file_path)
+        self.assertEqual('~/.ssh/id_rsa', UserCredentials.DEFAULT_SSH_ID_PATH)
+
+    def test_can_create_default_user_credentials(self):
+        """fab.tests.config.values.user_credentials_test  Can create default user credentials"""
+
+        expected_default_credentials = UserCredentials(UserCredentials.CURRENT_USER, UserCredentials.DEFAULT_SSH_ID_PATH)
+
+        self.assertEqual(expected_default_credentials, UserCredentials.default())
 
 
 def suite():
