@@ -8,6 +8,8 @@
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.config.values.ci_deployment_config_test import CIDeploymentConfigTest
+from fab.tests.config.values.custom_deployment_config_test import CustomDeploymentConfigTest
+from fab.tests.config.values.custom_user_credentials_test import CustomUserCredentialsTest
 from fab.tests.config.values.data_host_paths_test import DataHostPathsTest
 from fab.tests.config.values.deployment_host_paths_test import DeploymentHostPathsTest
 from fab.tests.config.values.host_path_values_test import HostPathValuesTest
@@ -16,8 +18,9 @@ from fab.tests.config.values.user_credentials_test import UserCredentialsTest
 
 
 def config_values_suite():
-    return TestSuiteLoader().create_suite_from_classes([CIDeploymentConfigTest, DataHostPathsTest, DeploymentHostPathsTest,
-                                                        HostPathValuesTest, SSHConnectionValuesTest, UserCredentialsTest])
+    return TestSuiteLoader().create_suite_from_classes([CIDeploymentConfigTest, CustomDeploymentConfigTest, CustomUserCredentialsTest,
+                                                        DataHostPathsTest, DeploymentHostPathsTest, HostPathValuesTest,
+                                                        SSHConnectionValuesTest, UserCredentialsTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
