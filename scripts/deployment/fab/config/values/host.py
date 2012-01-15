@@ -22,7 +22,7 @@ class SSHConnection(object):
                         HostAlias.MEDIA:    '89.233.254.43:2268',
                         HostAlias.TEST:     'test.akvo.org:2270',
                         HostAlias.TEST2:    'test2.akvo.org:2273',
-                        HostAlias.UAT:      'uat.akvo.org:2279'}
+                        HostAlias.UAT:      'uat.akvo.org:2279' }
 
     @staticmethod
     def for_host(host_alias):
@@ -46,21 +46,21 @@ class HostPathValues(object):
                 'virtualenvs_home':             '/var/virtualenvs',
                 'static_media_home':            '/var/www',
                 'logging_home':                 '/var/log/akvo',
-                'deployment_processing_home':   '/var/tmp/rsr'}
+                'deployment_processing_home':   '/var/tmp/rsr' }
 
     LIVE    = { 'config_home':                  DEFAULT['config_home'],
                 'repo_checkout_home':           '/var/lib/django',
                 'virtualenvs_home':             DEFAULT['virtualenvs_home'],
                 'static_media_home':            DEFAULT['static_media_home'],
                 'logging_home':                 DEFAULT['logging_home'],
-                'deployment_processing_home':   DEFAULT['deployment_processing_home']}
+                'deployment_processing_home':   DEFAULT['deployment_processing_home'] }
 
     TEST2   = { 'config_home':                  '/usr/local/etc/akvo/test2',
                 'repo_checkout_home':           '/var/dev/test2',
                 'virtualenvs_home':             '/var/dev/virtualenvs/test2',
                 'static_media_home':            '/var/www/test2',
                 'logging_home':                 '/var/log/akvo',
-                'deployment_processing_home':   '/var/tmp/rsr/test2'}
+                'deployment_processing_home':   '/var/tmp/rsr/test2' }
 
 
 class DeploymentHostPaths(object):
@@ -69,7 +69,7 @@ class DeploymentHostPaths(object):
                         HostAlias.LIVE:     HostPathValues.LIVE,
                         HostAlias.TEST:     HostPathValues.DEFAULT,
                         HostAlias.TEST2:    HostPathValues.TEST2,
-                        HostAlias.UAT:      HostPathValues.DEFAULT}
+                        HostAlias.UAT:      HostPathValues.DEFAULT }
 
     def __init__(self, host_paths):
         self.config_home                = host_paths['config_home']
