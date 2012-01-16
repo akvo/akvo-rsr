@@ -9,7 +9,9 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.rsr.credentials import DatabaseCredentials
+import fab.tests.templates.database_credentials_template_loader
+from credentials import DatabaseCredentials
+
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.config.values.standard import CIDeploymentHostConfig
 from fab.data.populator import RSRDataPopulator
