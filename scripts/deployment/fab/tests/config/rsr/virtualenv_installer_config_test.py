@@ -35,7 +35,7 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Can create RSRVirtualEnvInstallerConfig instance"""
 
-        self.assertIsInstance(RSRVirtualEnvInstallerConfig.create_instance(self.deployment_host_config, self.deployment_user),
+        self.assertIsInstance(RSRVirtualEnvInstallerConfig.create_with(self.deployment_host_config, self.deployment_user),
                               RSRVirtualEnvInstallerConfig)
 
     def test_has_deployment_user_name(self):

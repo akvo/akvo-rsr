@@ -24,7 +24,7 @@ class RSRVirtualEnvInstallerConfig(object):
         self.testing_requirements_path  = os.path.join(deployment_config.rsr_deployment_home, codebase_config.testing_requirements_file_path)
 
     @staticmethod
-    def create_instance(deployment_host_config, deployment_user):
+    def create_with(deployment_host_config, deployment_user):
         codebase_config = RSRCodebaseConfig(deployment_host_config.repository_branch)
         deployment_config = RSRDeploymentConfig(deployment_host_config.host_paths, deployment_user, codebase_config)
 
