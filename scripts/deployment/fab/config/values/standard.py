@@ -37,7 +37,7 @@ class RepositoryBranch(object):
     DEVELOP = 'develop'
 
 
-class DeploymentConfig(object):
+class DeploymentHostConfig(object):
 
     def __init__(self, repository_branch, rsr_database_name, ssh_connection, deployment_host_paths):
         self.repository_branch  = repository_branch
@@ -45,35 +45,35 @@ class DeploymentConfig(object):
         self.ssh_connection     = ssh_connection
         self.host_paths         = deployment_host_paths
 
-    def __eq__(self, deployment_config):
-        return (self.repository_branch  == deployment_config.repository_branch and
-                self.rsr_database_name  == deployment_config.rsr_database_name and
-                self.ssh_connection     == deployment_config.ssh_connection and
-                self.host_paths         == deployment_config.host_paths)
+    def __eq__(self, deployment_host_config):
+        return (self.repository_branch  == deployment_host_config.repository_branch and
+                self.rsr_database_name  == deployment_host_config.rsr_database_name and
+                self.ssh_connection     == deployment_host_config.ssh_connection and
+                self.host_paths         == deployment_host_config.host_paths)
 
-    def __ne__(self, deployment_config):
-        return not self.__eq__(deployment_config)
+    def __ne__(self, deployment_host_config):
+        return not self.__eq__(deployment_host_config)
 
 
-class CIDeploymentConfig(DeploymentConfig):
-    """Continuous integration deployment configurations"""
+class CIDeploymentHostConfig(DeploymentHostConfig):
+    """Deployment host configurations for continuous integration"""
 
     @staticmethod
     def for_host(host_alias, repository_branch, rsr_database_name):
-        return CIDeploymentConfig(repository_branch, rsr_database_name, SSHConnection.for_host(host_alias), DeploymentHostPaths.for_host(host_alias))
+        return CIDeploymentHostConfig(repository_branch, rsr_database_name, SSHConnection.for_host(host_alias), DeploymentHostPaths.for_host(host_alias))
 
     @staticmethod
     def for_test():
-        return CIDeploymentConfig.for_host(HostAlias.TEST, RepositoryBranch.DEVELOP, 'rsrdb_develop')
+        return CIDeploymentHostConfig.for_host(HostAlias.TEST, RepositoryBranch.DEVELOP, 'rsrdb_develop')
 
     @staticmethod
     def for_test2():
-        return CIDeploymentConfig.for_host(HostAlias.TEST2, RepositoryBranch.DEVELOP, 'test2_rsrdb_develop')
+        return CIDeploymentHostConfig.for_host(HostAlias.TEST2, RepositoryBranch.DEVELOP, 'test2_rsrdb_develop')
 
     @staticmethod
     def for_uat(release_branch, rsr_database_name):
-        return CIDeploymentConfig.for_host(HostAlias.UAT, release_branch, rsr_database_name)
+        return CIDeploymentHostConfig.for_host(HostAlias.UAT, release_branch, rsr_database_name)
 
     @staticmethod
     def for_live(rsr_database_name):
-        return CIDeploymentConfig.for_host(HostAlias.LIVE, RepositoryBranch.MASTER, rsr_database_name)
+        return CIDeploymentHostConfig.for_host(HostAlias.LIVE, RepositoryBranch.MASTER, rsr_database_name)

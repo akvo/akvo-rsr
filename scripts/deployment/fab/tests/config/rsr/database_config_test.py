@@ -15,7 +15,7 @@ imp.load_source('rsr_credentials', DATABASE_CREDENTIALS_TEMPLATE)
 from rsr_credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.values.standard import CIDeploymentConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 
 
 
@@ -24,9 +24,9 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
     def setUp(self):
         super(RSRDatabaseConfigTest, self).setUp()
         self.database_credentials = DatabaseCredentials()
-        self.deployment_config = CIDeploymentConfig.for_test()
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
 
-        self.database_config = RSRDatabaseConfig(self.database_credentials, self.deployment_config)
+        self.database_config = RSRDatabaseConfig(self.database_credentials, self.deployment_host_config)
 
     def test_has_admin_user_name(self):
         """fab.tests.config.rsr.database_config_test  Has admin user name"""
@@ -41,7 +41,7 @@ class RSRDatabaseConfigTest(mox.MoxTestBase):
     def test_has_rsr_database_name(self):
         """fab.tests.config.rsr.database_config_test  Has RSR database name"""
 
-        self.assertEqual(self.deployment_config.rsr_database_name, self.database_config.rsr_database)
+        self.assertEqual(self.deployment_host_config.rsr_database_name, self.database_config.rsr_database)
 
     def test_has_rsr_database_user(self):
         """fab.tests.config.rsr.database_config_test  Has RSR database user"""

@@ -11,7 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.config.values.standard import CIDeploymentConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 
 
 class RSRDeploymentConfigTest(unittest2.TestCase):
@@ -20,7 +20,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
         super(RSRDeploymentConfigTest, self).setUp()
 
         self.deployment_user = "rupaul"
-        self.deployment_host_config = CIDeploymentConfig.for_test()
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
         self.deployment_host_paths = self.deployment_host_config.host_paths
         self.codebase_config = RSRCodebaseConfig(self.deployment_host_config.repository_branch)
 

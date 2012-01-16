@@ -12,24 +12,24 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 CUSTOM_CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values/custom.py.template'))
 imp.load_source('custom_config_values', CUSTOM_CONFIG_VALUES_TEMPLATE_PATH)
 
-from custom_config_values import CustomDeploymentConfig
+from custom_config_values import CustomDeploymentHostConfig
 
 from fab.config.values.standard import DeploymentHostPaths, RepositoryBranch
 
 
-class CustomDeploymentConfigTest(unittest2.TestCase):
+class CustomDeploymentHostConfigTest(unittest2.TestCase):
 
-    def test_can_create_custom_deployment_configuration(self):
-        """fab.tests.config.values.custom_deployment_config_test  Can create custom deployment configuration"""
+    def test_can_create_custom_deployment_host_configuration(self):
+        """fab.tests.config.values.custom_deployment_host_config_test  Can create custom deployment host configuration"""
 
-        custom_config = CustomDeploymentConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
-                                               DeploymentHostPaths(CustomDeploymentConfig.HOST_PATHS))
+        custom_config = CustomDeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
+                                                   DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))
 
-        self.assertEqual(custom_config, CustomDeploymentConfig.create())
+        self.assertEqual(custom_config, CustomDeploymentHostConfig.create())
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(CustomDeploymentConfigTest)
+    return TestSuiteLoader().load_tests_from(CustomDeploymentHostConfigTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
