@@ -13,6 +13,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.app.admin import DBDump, DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.data.populator import RSRDataPopulator
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -23,7 +24,8 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RSRDataPopulatorTest, self).setUp()
-        self.data_populator_config = RSRDataPopulatorConfig.create_instance()
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.data_populator_config = RSRDataPopulatorConfig.create_with(self.deployment_host_config)
         self.mock_data_host_file_system = self.mox.CreateMock(FileSystem)
         self.mock_local_file_system = self.mox.CreateMock(FileSystem)
         self.mock_django_admin = self.mox.CreateMock(DjangoAdmin)
@@ -49,7 +51,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        self.assertIsInstance(RSRDataPopulator.create_instance(mock_host_controller), RSRDataPopulator)
+        self.assertIsInstance(RSRDataPopulator.create_with(self.deployment_host_config, mock_host_controller), RSRDataPopulator)
 
     def test_can_initialise_database(self):
         """fab.tests.data.rsr_data_populator_test  Can initialise a database"""

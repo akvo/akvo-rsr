@@ -25,8 +25,8 @@ class RSRDataPopulator(object):
         self.feedback = feedback
 
     @staticmethod
-    def create_instance(host_controller):
-        data_populator_config = RSRDataPopulatorConfig.create_instance()
+    def create_with(deployment_host_config, host_controller):
+        data_populator_config = RSRDataPopulatorConfig.create_with(deployment_host_config)
         virtualenv = VirtualEnv(data_populator_config.rsr_env_path, host_controller)
 
         return RSRDataPopulator(data_populator_config,

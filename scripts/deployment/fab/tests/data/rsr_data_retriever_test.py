@@ -12,6 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.app.admin import DBDump
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
+from fab.config.values.host import DataHostPaths
 from fab.data.retriever import RSRDataRetriever
 from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
@@ -23,7 +24,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RSRDataRetrieverTest, self).setUp()
-        self.data_retriever_config = RSRDataRetrieverConfig.create_instance()
+        self.data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
         self.mock_data_host_file_system = self.mox.CreateMock(FileSystem)
         self.mock_local_file_system = self.mox.CreateMock(LocalFileSystem)
         self.mock_db_dump = self.mox.CreateMock(DBDump)
@@ -49,7 +50,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        self.assertIsInstance(RSRDataRetriever.create_instance(mock_host_controller), RSRDataRetriever)
+        self.assertIsInstance(RSRDataRetriever.create_with(mock_host_controller), RSRDataRetriever)
 
     def test_can_fetch_data_from_database(self):
         """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""

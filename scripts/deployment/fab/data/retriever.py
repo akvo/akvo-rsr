@@ -9,6 +9,7 @@ import os
 
 from fab.app.admin import DBDump
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
+from fab.config.values.host import DataHostPaths
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.format.timestamp import TimeStampFormatter
 from fab.os.filesystem import FileSystem, LocalFileSystem
@@ -25,8 +26,8 @@ class RSRDataRetriever(object):
         self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
-    def create_instance(host_controller):
-        data_retriever_config = RSRDataRetrieverConfig.create_instance()
+    def create_with(host_controller):
+        data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
 
         return RSRDataRetriever(data_retriever_config,
                                 FileSystem(host_controller),
