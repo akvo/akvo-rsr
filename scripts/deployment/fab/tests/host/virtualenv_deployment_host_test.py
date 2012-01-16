@@ -10,6 +10,7 @@ import mox, os
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.environment.python.virtualenv import VirtualEnvInstaller
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -30,7 +31,8 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.deployment_user = "rupaul"
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
+        deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_with(deployment_host_config, self.deployment_user)
 
         # we don't have any additional expections on the Internet dependency (since this is already
         # tested in the DeploymentHost base class) so we set this to None for now
@@ -70,7 +72,7 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        return VirtualEnvDeploymentHost.create_instance(self.virtualenv_installer_config, mock_host_controller)
+        return VirtualEnvDeploymentHost.create_with(self.virtualenv_installer_config, mock_host_controller)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can create empty virtualenv"""
