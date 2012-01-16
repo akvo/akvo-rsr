@@ -32,13 +32,6 @@ class SSHConnection(object):
         return SSHConnection.connection_map[host_alias]
 
 
-class DataHostPaths(object):
-
-    def __init__(self):
-        self.django_apps_home   = '/var/lib/django'
-        self.virtualenvs_home   = '/var/virtualenvs'
-
-
 class HostPathValues(object):
 
     DEFAULT = { 'config_home':                  '/usr/local/etc/akvo',
@@ -61,6 +54,15 @@ class HostPathValues(object):
                 'static_media_home':            '/var/www/test2',
                 'logging_home':                 '/var/log/akvo',
                 'deployment_processing_home':   '/var/tmp/rsr/test2' }
+
+
+class DataHostPaths(object):
+
+    def __init__(self):
+        self.django_apps_home           = '/var/lib/django'
+        self.virtualenvs_home           = HostPathValues.DEFAULT['virtualenvs_home']
+        self.logging_home               = HostPathValues.DEFAULT['logging_home']
+        self.deployment_processing_home = HostPathValues.DEFAULT['deployment_processing_home']
 
 
 class DeploymentHostPaths(object):
