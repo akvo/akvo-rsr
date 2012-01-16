@@ -10,52 +10,42 @@ import imp, os, unittest2
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
-
-CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../../config/values.py.template'))
-imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
-
-from config_values import DataHostConfigValues, DeploymentHostConfigValues
+from fab.config.values.host import DataHostPaths
 
 
 class RSRDataRetrieverConfigTest(unittest2.TestCase):
 
     def setUp(self):
         super(RSRDataRetrieverConfigTest, self).setUp()
-        self.deployment_host_config_values = DeploymentHostConfigValues()
-        self.data_host_config_values = DataHostConfigValues()
+        self.data_host_paths = DataHostPaths()
 
-        self.expected_data_archives_home = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'data_archives')
-
-        self.data_retriever_config = RSRDataRetrieverConfig(self.deployment_host_config_values, self.data_host_config_values)
-
-    def test_can_create_instance(self):
-        """fab.tests.config.rsr.data.retriever_config_test  Can create RSRDataRetrieverConfig instance"""
-
-        self.assertIsInstance(RSRDataRetrieverConfig.create_instance(), RSRDataRetrieverConfig)
+        self.data_retriever_config = RSRDataRetrieverConfig(self.data_host_paths)
 
     def test_has_data_archives_home(self):
         """fab.tests.config.rsr.data.retriever_config_test  Has data archives home"""
 
-        self.assertEqual(self.expected_data_archives_home, self.data_retriever_config.data_archives_home)
+        expected_data_archives_home = os.path.join(self.data_host_paths.deployment_processing_home, 'data_archives')
+
+        self.assertEqual(expected_data_archives_home, self.data_retriever_config.data_archives_home)
 
     def test_has_rsr_virtualenv_path(self):
         """fab.tests.config.rsr.data.retriever_config_test  Has RSR virtualenv path"""
 
-        expected_rsr_env_path = os.path.join(self.data_host_config_values.virtualenvs_home, 'current')
+        expected_rsr_env_path = os.path.join(self.data_host_paths.virtualenvs_home, 'current')
 
         self.assertEqual(expected_rsr_env_path, self.data_retriever_config.rsr_env_path)
 
     def test_has_rsr_app_path(self):
         """fab.tests.config.rsr.data.retriever_config_test  Has RSR app path"""
 
-        expected_rsr_app_path = os.path.join(self.data_host_config_values.django_apps_home, 'current')
+        expected_rsr_app_path = os.path.join(self.data_host_paths.django_apps_home, 'current')
 
         self.assertEqual(expected_rsr_app_path, self.data_retriever_config.rsr_app_path)
 
     def test_has_rsr_log_file_path(self):
         """fab.tests.config.rsr.data.retriever_config_test  Has RSR log file path"""
 
-        expected_log_file_path = os.path.join(self.deployment_host_config_values.logging_home, "akvo.log")
+        expected_log_file_path = os.path.join(self.data_host_paths.logging_home, "akvo.log")
 
         self.assertEqual(expected_log_file_path, self.data_retriever_config.rsr_log_file_path)
 
