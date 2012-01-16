@@ -163,4 +163,4 @@ class FileSystem(object):
 class LocalFileSystem(FileSystem):
 
     def __init__(self):
-        super(LocalFileSystem, self).__init__(LocalHostController.create_instance())
+        super(LocalFileSystem, self).__init__(LocalHostController())

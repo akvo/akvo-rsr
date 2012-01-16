@@ -38,7 +38,7 @@ class LinuxHostTest(mox.MoxTestBase):
     def test_can_create_a_linuxhost_instance(self):
         """fab.tests.host.linux_host_test  Can create a LinuxHost instance"""
 
-        self.assertIsInstance(LinuxHost.create_instance(), LinuxHost)
+        self.assertIsInstance(LinuxHost.create(), LinuxHost)
 
     def test_can_ensure_user_has_required_deployment_permissions(self):
         """fab.tests.app.linux_host_test  Can ensure user has required deployment permissions"""

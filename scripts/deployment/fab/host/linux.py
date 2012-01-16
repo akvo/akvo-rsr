@@ -26,8 +26,8 @@ class LinuxHost(object):
         self.feedback = feedback
 
     @staticmethod
-    def create_instance():
-        host_controller = RemoteHostController.create_instance()
+    def create():
+        host_controller = RemoteHostController()
 
         return LinuxHost(DeploymentUserVerifier(AkvoPermissions(host_controller)),
                          PythonInstaller.create_instance(host_controller),
