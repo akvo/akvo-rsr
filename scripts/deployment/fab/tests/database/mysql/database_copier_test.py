@@ -10,7 +10,11 @@ import fabric.api
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+import fab.tests.templates.database_credentials_template_loader
+from credentials import DatabaseCredentials
+
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.database.mysql.commandexecution import DatabaseCopier
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
@@ -20,7 +24,7 @@ class DatabaseCopierTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseCopierTest, self).setUp()
-        database_config = RSRDatabaseConfig.create_instance()
+        database_config = RSRDatabaseConfig(DatabaseCredentials(), CIDeploymentHostConfig.for_test())
         self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_config.admin_user, database_config.admin_password)
 
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)

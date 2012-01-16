@@ -9,9 +9,7 @@ import imp, os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CREDENTIALS_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/rsr/credentials.py.template'))
-imp.load_source('credentials', CREDENTIALS_TEMPLATE_PATH)
-
+import fab.tests.templates.database_credentials_template_loader
 from credentials import DatabaseCredentials
 
 
