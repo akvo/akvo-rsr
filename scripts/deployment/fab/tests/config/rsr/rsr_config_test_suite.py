@@ -16,8 +16,9 @@ from fab.tests.config.rsr.virtualenv_installer_config_test import suite as virtu
 
 
 def rsr_config_suite():
-    return TestSuiteLoader().create_suite_from_list([database_credentials_suite(), codebase_config_suite(), data_config_suite(),
-                                                     database_config_suite(), deployment_config_suite(), virtualenv_installer_config_suite()])
+    return TestSuiteLoader().create_suite_from_list([codebase_config_suite(), data_config_suite(), database_config_suite(),
+                                                     database_credentials_suite(), deployment_config_suite(),
+                                                     virtualenv_installer_config_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

@@ -13,7 +13,7 @@ from fab.tests.config.rsr.rsr_config_test_suite import rsr_config_suite
 
 
 def config_suite():
-    return TestSuiteLoader().create_suite_from_list([config_values_suite(), environment_config_suite(), rsr_config_suite()])
+    return TestSuiteLoader().create_suite_from_list([environment_config_suite(), rsr_config_suite(), config_values_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

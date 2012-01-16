@@ -12,7 +12,7 @@ from fab.tests.config.rsr.data.retriever_config_test import RSRDataRetrieverConf
 
 
 def data_config_suite():
-    return TestSuiteLoader().create_suite_from_classes([RSRDataRetrieverConfigTest, RSRDataPopulatorConfigTest])
+    return TestSuiteLoader().create_suite_from_classes([RSRDataPopulatorConfigTest, RSRDataRetrieverConfigTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
