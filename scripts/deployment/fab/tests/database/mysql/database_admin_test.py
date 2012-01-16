@@ -9,7 +9,9 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.credentials import DatabaseCredentials
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.data.populator import RSRDataPopulator
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.database.mysql.admincommand import DatabaseAdminCommand
@@ -35,13 +37,14 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.database.mysql.database_admin_test  Can create a DatabaseAdmin instance"""
 
-        database_config = RSRDatabaseConfig.create_instance()
+        deployment_host_config = CIDeploymentHostConfig.for_test()
+        database_config = RSRDatabaseConfig(DatabaseCredentials(), deployment_host_config)
         mock_host_controller = self.mox.CreateMock(RemoteHostController)
         mock_host_controller.feedback = self.mock_feedback
 
         self.mox.ReplayAll()
 
-        self.assertIsInstance(DatabaseAdmin.create_instance(database_config, mock_host_controller), DatabaseAdmin)
+        self.assertIsInstance(DatabaseAdmin.create_with(database_config, deployment_host_config, mock_host_controller), DatabaseAdmin)
 
     def test_can_create_timestamped_backup_of_existing_database(self):
         """fab.tests.database.mysql.database_admin_test  Can create time-stamped backup of an existing database"""

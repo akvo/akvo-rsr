@@ -22,10 +22,10 @@ class DatabaseAdmin(object):
         self.feedback = feedback
 
     @staticmethod
-    def create_instance(database_config, host_controller):
-        return DatabaseAdmin(DatabaseAdminCommand.create_instance(database_config, host_controller),
+    def create_with(database_config, deployment_host_config, host_controller):
+        return DatabaseAdmin(DatabaseAdminCommand.create_with(database_config, host_controller),
                              DatabaseCopier(database_config, host_controller),
-                             RSRDataPopulator.create_instance(host_controller),
+                             RSRDataPopulator.create_with(deployment_host_config, host_controller),
                              TimeStampFormatter(),
                              host_controller.feedback)
 
