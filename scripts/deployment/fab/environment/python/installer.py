@@ -14,7 +14,7 @@ class PythonInstaller(object):
         self.pythonbrew = pythonbrew
 
     @staticmethod
-    def create_instance(host_controller):
+    def create_with(host_controller):
         return PythonInstaller(PythonBrew(host_controller))
 
     def ensure_python_is_installed_with_version(self, python_version):
