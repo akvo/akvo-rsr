@@ -27,11 +27,13 @@ class DeployRSRAppTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DeployRSRAppTest, self).setUp()
-        self.mock_config = self.mox.CreateMock(RSRDeploymentConfig)
         self.mock_app_deployer = self.mox.CreateMock(RSRAppDeployer)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.deploy_rsr_app_task = StubbedDeployRSRApp(self.mock_config)
+        self.deployment_user = "rupaul"
+        self.deployment_config = RSRDeploymentConfig.create_instance(self.deployment_user)
+
+        self.deploy_rsr_app_task = StubbedDeployRSRApp(self.deployment_config)
         self.deploy_rsr_app_task.app_deployer = self.mock_app_deployer
         self.deploy_rsr_app_task.feedback = self.mock_feedback
 
@@ -43,7 +45,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can create task instance"""
 
-        self.assertIsInstance(DeployRSRApp.create_task_instance(), DeployRSRApp)
+        self.assertIsInstance(DeployRSRApp.create_task_instance(self.deployment_user), DeployRSRApp)
 
     def test_can_initialise_app_deployer_using_local_hostcontrollermode(self):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can initialise app deployer using local HostControllerMode"""
@@ -56,7 +58,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         self._verify_app_deployer_creation_with(HostControllerMode.REMOTE)
 
     def _verify_app_deployer_creation_with(self, host_controller_mode):
-        deploy_rsr_app_task = DeployRSRApp.create_task_instance()
+        deploy_rsr_app_task = DeployRSRApp.create_task_instance(self.deployment_user)
         deploy_rsr_app_task._initialise_app_deployer_using(host_controller_mode)
 
         self.assertIsInstance(deploy_rsr_app_task.app_deployer, RSRAppDeployer)
@@ -66,9 +68,11 @@ class DeployRSRAppTest(mox.MoxTestBase):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can deploy RSR app"""
 
         self.mock_feedback.comment("Starting RSR app deployment")
+        self.mock_app_deployer.ensure_user_has_required_deployment_permissions()
         self.mock_app_deployer.ensure_required_directories_exist()
         self.mock_app_deployer.clean_deployment_directories()
         self.mock_app_deployer.download_and_unpack_rsr_archive()
+        self.mock_app_deployer.ensure_app_symlinks_exist()
         self.mox.ReplayAll()
 
         self.deploy_rsr_app_task.run(HostControllerMode.REMOTE)

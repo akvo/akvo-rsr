@@ -7,12 +7,8 @@
 
 import imp, os
 
-SCRIPT_DIR = os.path.dirname(__file__)
+imp.load_source("syspath_verifiers", os.path.join(os.path.dirname(__file__), 'syspath.py'))
+from syspath_verifiers import SysPathVerifier
 
-imp.load_source("syspath_verifiers", os.path.join(SCRIPT_DIR, 'syspath.py'))
 
-from syspath_verifiers import SysPath
-
-DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(SCRIPT_DIR, '..'))
-
-SysPath.ensure_syspath_contains(DEPLOYMENT_SCRIPTS_HOME)
+SysPathVerifier().ensure_syspath_contains_deployment_scripts_home()

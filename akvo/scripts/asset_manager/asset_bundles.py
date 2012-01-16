@@ -57,6 +57,7 @@ ASSET_BUNDLES = {
             'utils.css',
             'buttons.css',
             'forms.css',
+            'auth.css'
             ],
     },
     'partner_sites_script': {

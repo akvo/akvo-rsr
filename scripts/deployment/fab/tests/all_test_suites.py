@@ -24,13 +24,14 @@ from fab.tests.helpers.helpers_test_suite import helpers_suite
 from fab.tests.host.host_test_suite import host_suite
 from fab.tests.os.os_test_suite import os_suite
 from fab.tests.tasks.tasks_test_suite import tasks_suite
+from fab.tests.verifiers.verifiers_test_suite import verifiers_suite
 
 
 def unit_test_suites():
     return TestSuiteLoader().create_suite_from_list([formatting_suite(), config_suite(), dependency_suite(),
                                                      environment_suite(), helpers_suite(), os_suite(),
                                                      data_suite(), database_suite(), host_suite(),
-                                                     app_suite(), tasks_suite()])
+                                                     app_suite(), tasks_suite(), verifiers_suite()])
 
 if __name__ == "__main__":
     print "Test suite root: %s\n" % os.path.realpath(os.path.dirname(__file__))
