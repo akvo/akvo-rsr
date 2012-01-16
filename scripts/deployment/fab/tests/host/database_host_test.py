@@ -9,12 +9,11 @@ import imp, mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../config/values.py.template'))
-imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
-
-from config_values import DatabaseAdminConfigValues, RSRDatabaseConfigValues
+import fab.tests.templates.database_credentials_template_loader
+from credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -25,7 +24,8 @@ class DatabaseHostTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
-        self.database_config = RSRDatabaseConfig(DatabaseAdminConfigValues(), RSRDatabaseConfigValues())
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.database_config = RSRDatabaseConfig(DatabaseCredentials(), self.deployment_host_config)
         self.mock_database_admin = self.mox.CreateMock(DatabaseAdmin)
 
         self.database_host = DatabaseHost(self.database_config, self.mock_database_admin)
@@ -46,12 +46,12 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        return DatabaseHost.create_instance(mock_host_controller)
+        return DatabaseHost.create_with(self.database_config, self.deployment_host_config, mock_host_controller)
 
     def test_can_backup_rsr_database(self):
         """fab.tests.host.database_host_test  Can backup the RSR database"""
 
-        self.mock_database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
+        self.mock_database_admin.create_timestamped_backup_database(self.database_config.rsr_database)
         self.mox.ReplayAll()
 
         self.database_host.backup_rsr_database()
@@ -59,9 +59,9 @@ class DatabaseHostTest(mox.MoxTestBase):
     def test_can_rebuild_rsr_database(self):
         """fab.tests.host.database_host_test  Can rebuild the RSR database"""
 
-        self.mock_database_admin.rebuild_database(self.database_config.rsr_database_name,
-                                                  self.database_config.rsr_database_user,
-                                                  self.database_config.rsr_database_password)
+        self.mock_database_admin.rebuild_database(self.database_config.rsr_database,
+                                                  self.database_config.rsr_user,
+                                                  self.database_config.rsr_password)
         self.mox.ReplayAll()
 
         self.database_host.rebuild_rsr_database()
