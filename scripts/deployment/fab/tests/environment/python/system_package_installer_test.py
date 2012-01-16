@@ -11,6 +11,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.environment.python.pipinstaller import PipInstaller
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 from fab.environment.python.systempackageinstaller import SystemPythonPackageInstaller
@@ -24,8 +25,10 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
 
     def setUp(self):
         super(SystemPythonPackageInstallerTest, self).setUp()
-        self.codebase_config = RSRCodebaseConfig("some_repo_branch")
-        self.installation_paths = SystemPackageInstallationPaths.create_instance()
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.codebase_config = RSRCodebaseConfig(self.deployment_host_config.repository_branch)
+        self.installation_paths = SystemPackageInstallationPaths(self.deployment_host_config.host_paths)
+
         self.mock_pip_installer = self.mox.CreateMock(PipInstaller)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_internet = self.mox.CreateMock(Internet)
@@ -42,7 +45,7 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        package_installer = SystemPythonPackageInstaller.create_instance(self.mock_host_controller)
+        package_installer = SystemPythonPackageInstaller.create_with(self.deployment_host_config, self.mock_host_controller)
 
         self.assertIsInstance(package_installer, SystemPythonPackageInstaller)
         self.assertIsInstance(package_installer.feedback, ExecutionFeedback)

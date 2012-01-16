@@ -10,6 +10,7 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.environment.python.virtualenv import VirtualEnv, VirtualEnvInstaller
 from fab.format.timestamp import TimeStampFormatter
@@ -28,8 +29,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
-        self.deployment_user = "rupaul"
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_with(CIDeploymentHostConfig.for_test(), "deployment_user")
 
         self.pip_requirements_file = "/some/path/to/pip_requirements.txt"
 
@@ -53,9 +53,9 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        virtualenv_installer_instance = VirtualEnvInstaller.create_instance(self.virtualenv_installer_config,
-                                                                            mock_host_controller,
-                                                                            self.mock_file_system)
+        virtualenv_installer_instance = VirtualEnvInstaller.create_with(self.virtualenv_installer_config,
+                                                                        mock_host_controller,
+                                                                        self.mock_file_system)
 
         self.assertIsInstance(virtualenv_installer_instance, VirtualEnvInstaller)
 

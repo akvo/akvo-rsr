@@ -27,10 +27,10 @@ class SystemPythonPackageInstaller(object):
         self.feedback = host_controller.feedback
 
     @staticmethod
-    def create_instance(host_controller):
-        return SystemPythonPackageInstaller(RSRCodebaseConfig.create_instance(),
-                                            SystemPackageInstallationPaths.create_instance(),
-                                            PipInstaller.create_instance(host_controller),
+    def create_with(deployment_host_config, host_controller):
+        return SystemPythonPackageInstaller(RSRCodebaseConfig(deployment_host_config.repository_branch),
+                                            SystemPackageInstallationPaths(deployment_host_config.host_paths),
+                                            PipInstaller.create_with(deployment_host_config, host_controller),
                                             FileSystem(host_controller),
                                             Internet(host_controller),
                                             host_controller)
