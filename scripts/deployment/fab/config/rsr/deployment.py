@@ -41,6 +41,6 @@ class RSRDeploymentConfig(object):
         self.deployed_mod_python_file       = os.path.join(self.host_config_home, self.mod_python_file_name)
 
     @staticmethod
-    def create_instance(deployment_host_config, deployment_user=None):
+    def create_with(deployment_host_config, deployment_user=None):
         return RSRDeploymentConfig(deployment_host_config.host_paths, deployment_user, 
                                    RSRCodebaseConfig(deployment_host_config.repository_branch))
