@@ -45,6 +45,13 @@ class DeploymentHostConfig(object):
         self.ssh_connection     = ssh_connection
         self.host_paths         = deployment_host_paths
 
+    @staticmethod
+    def create_with(host_alias, repository_branch, rsr_database_name):
+        return DeploymentHostConfig(repository_branch,
+                                    rsr_database_name,
+                                    SSHConnection.for_host(host_alias),
+                                    DeploymentHostPaths.for_host(host_alias))
+
     def __eq__(self, deployment_host_config):
         return (self.repository_branch  == deployment_host_config.repository_branch and
                 self.rsr_database_name  == deployment_host_config.rsr_database_name and
@@ -55,25 +62,21 @@ class DeploymentHostConfig(object):
         return not self.__eq__(deployment_host_config)
 
 
-class CIDeploymentHostConfig(DeploymentHostConfig):
+class CIDeploymentHostConfig(object):
     """Deployment host configurations for continuous integration"""
 
     @staticmethod
-    def for_host(host_alias, repository_branch, rsr_database_name):
-        return CIDeploymentHostConfig(repository_branch, rsr_database_name, SSHConnection.for_host(host_alias), DeploymentHostPaths.for_host(host_alias))
-
-    @staticmethod
     def for_test():
-        return CIDeploymentHostConfig.for_host(HostAlias.TEST, RepositoryBranch.DEVELOP, 'rsrdb_develop')
+        return DeploymentHostConfig.create_with(HostAlias.TEST, RepositoryBranch.DEVELOP, 'rsrdb_develop')
 
     @staticmethod
     def for_test2():
-        return CIDeploymentHostConfig.for_host(HostAlias.TEST2, RepositoryBranch.DEVELOP, 'test2_rsrdb_develop')
+        return DeploymentHostConfig.create_with(HostAlias.TEST2, RepositoryBranch.DEVELOP, 'test2_rsrdb_develop')
 
     @staticmethod
     def for_uat(release_branch, rsr_database_name):
-        return CIDeploymentHostConfig.for_host(HostAlias.UAT, release_branch, rsr_database_name)
+        return DeploymentHostConfig.create_with(HostAlias.UAT, release_branch, rsr_database_name)
 
     @staticmethod
     def for_live(rsr_database_name):
-        return CIDeploymentHostConfig.for_host(HostAlias.LIVE, RepositoryBranch.MASTER, rsr_database_name)
+        return DeploymentHostConfig.create_with(HostAlias.LIVE, RepositoryBranch.MASTER, rsr_database_name)
