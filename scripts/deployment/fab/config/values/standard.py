@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import subprocess
+import os, subprocess
 
 from fab.config.values.host import DeploymentHostPaths, HostAlias, SSHConnection
 
@@ -17,7 +17,7 @@ class UserCredentials(object):
 
     def __init__(self, deployment_user, ssh_id_file_path):
         self.deployment_user    = subprocess.check_output('whoami').strip()
-        self.ssh_id_file_path   = ssh_id_file_path
+        self.ssh_id_file_path   = os.path.expanduser(ssh_id_file_path)
 
     @staticmethod
     def default():
