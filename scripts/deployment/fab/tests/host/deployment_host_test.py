@@ -57,7 +57,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
 
-        return DeploymentHost.create_instance(mock_host_controller)
+        return DeploymentHost.create_with(mock_host_controller)
 
     def test_can_create_directory(self):
         """fab.tests.host.deployment_host_test  Can create a directory"""

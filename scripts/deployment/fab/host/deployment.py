@@ -22,7 +22,7 @@ class DeploymentHost(NeutralHost):
         self.internet = internet_helper
 
     @staticmethod
-    def create_instance(host_controller):
+    def create_with(host_controller):
         permissions = AkvoPermissions(host_controller)
 
         return DeploymentHost(FileSystem(host_controller),
