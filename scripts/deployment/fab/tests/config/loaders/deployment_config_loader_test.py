@@ -5,31 +5,29 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CUSTOM_CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values/custom.py.template'))
-imp.load_source('custom_config_values', CUSTOM_CONFIG_VALUES_TEMPLATE_PATH)
-
-from custom_config_values import CustomDeploymentHostConfig
+import fab.tests.templates.config_loaders_template
+from config_loaders import CustomDeploymentHostConfig, DeploymentConfigLoader
 
 from fab.config.values.standard import DeploymentHostConfig, DeploymentHostPaths, RepositoryBranch
 
 
-class CustomDeploymentHostConfigTest(unittest2.TestCase):
+class DeploymentConfigLoaderTest(unittest2.TestCase):
 
     def test_can_create_custom_deployment_host_configuration(self):
-        """fab.tests.config.values.custom_deployment_host_config_test  Can create custom deployment host configuration"""
+        """fab.tests.config.loaders.deployment_config_loader_test  Can load custom deployment host configuration"""
 
         custom_config = DeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
                                              DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))
 
-        self.assertEqual(custom_config, CustomDeploymentHostConfig.create())
+        self.assertEqual(custom_config, DeploymentConfigLoader.load())
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(CustomDeploymentHostConfigTest)
+    return TestSuiteLoader().load_tests_from(DeploymentConfigLoaderTest)
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

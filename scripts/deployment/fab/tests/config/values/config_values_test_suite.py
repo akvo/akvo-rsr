@@ -8,8 +8,6 @@
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.tests.config.values.ci_deployment_host_config_test import CIDeploymentHostConfigTest
-from fab.tests.config.values.custom_deployment_host_config_test import CustomDeploymentHostConfigTest
-from fab.tests.config.values.custom_user_credentials_test import CustomUserCredentialsTest
 from fab.tests.config.values.data_host_paths_test import DataHostPathsTest
 from fab.tests.config.values.deployment_host_paths_test import DeploymentHostPathsTest
 from fab.tests.config.values.host_path_values_test import HostPathValuesTest
@@ -18,8 +16,7 @@ from fab.tests.config.values.user_credentials_test import UserCredentialsTest
 
 
 def config_values_suite():
-    return TestSuiteLoader().create_suite_from_classes([CIDeploymentHostConfigTest, CustomDeploymentHostConfigTest,
-                                                        CustomUserCredentialsTest, DataHostPathsTest,
+    return TestSuiteLoader().create_suite_from_classes([CIDeploymentHostConfigTest, DataHostPathsTest,
                                                         DeploymentHostPathsTest, HostPathValuesTest,
                                                         SSHConnectionValuesTest, UserCredentialsTest])
 
