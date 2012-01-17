@@ -10,6 +10,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.dependency.systempackages import SystemPackageDependencyCollection
 from fab.environment.linux.packageverifier import LinuxPackageVerifier
 from fab.environment.python.installer import PythonInstaller
@@ -38,10 +39,10 @@ class LinuxHostTest(mox.MoxTestBase):
     def test_can_create_a_linuxhost_instance(self):
         """fab.tests.host.linux_host_test  Can create a LinuxHost instance"""
 
-        self.assertIsInstance(LinuxHost.create(), LinuxHost)
+        self.assertIsInstance(LinuxHost.create_with(CIDeploymentHostConfig.for_test()), LinuxHost)
 
     def test_can_ensure_user_has_required_deployment_permissions(self):
-        """fab.tests.app.linux_host_test  Can ensure user has required deployment permissions"""
+        """fab.tests.host.linux_host_test  Can ensure user has required deployment permissions"""
 
         self.mock_user_verifier.verify_sudo_permission_for("jane")
         self.mox.ReplayAll()
