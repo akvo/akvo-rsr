@@ -19,7 +19,7 @@ class CustomUserCredentials(UserCredentials):
         return CustomUserCredentials(UserCredentials.CURRENT_USER, '~/.ssh/another_private_id_rsa')
 
 
-class CustomDeploymentHostConfig(DeploymentHostConfig):
+class CustomDeploymentHostConfig(object):
 
     HOST_PATHS  = { 'config_home':                  '/usr/local/etc/akvo',
                     'repo_checkout_home':           '/var/git',
@@ -30,5 +30,5 @@ class CustomDeploymentHostConfig(DeploymentHostConfig):
 
     @staticmethod
     def create():
-        return CustomDeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
-                                          DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))
+        return DeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
+                                    DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))

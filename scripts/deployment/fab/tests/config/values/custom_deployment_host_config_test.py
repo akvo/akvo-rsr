@@ -14,7 +14,7 @@ imp.load_source('custom_config_values', CUSTOM_CONFIG_VALUES_TEMPLATE_PATH)
 
 from custom_config_values import CustomDeploymentHostConfig
 
-from fab.config.values.standard import DeploymentHostPaths, RepositoryBranch
+from fab.config.values.standard import DeploymentHostConfig, DeploymentHostPaths, RepositoryBranch
 
 
 class CustomDeploymentHostConfigTest(unittest2.TestCase):
@@ -22,8 +22,8 @@ class CustomDeploymentHostConfigTest(unittest2.TestCase):
     def test_can_create_custom_deployment_host_configuration(self):
         """fab.tests.config.values.custom_deployment_host_config_test  Can create custom deployment host configuration"""
 
-        custom_config = CustomDeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
-                                                   DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))
+        custom_config = DeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
+                                             DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))
 
         self.assertEqual(custom_config, CustomDeploymentHostConfig.create())
 
