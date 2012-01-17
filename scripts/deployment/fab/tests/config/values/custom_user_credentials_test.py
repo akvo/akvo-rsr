@@ -22,7 +22,7 @@ class CustomUserCredentialsTest(unittest2.TestCase):
     def test_can_create_custom_user_credentials(self):
         """fab.tests.config.values.custom_user_credentials_test  Can create custom user credentials"""
 
-        self.assertEqual(CustomUserCredentials(UserCredentials.CURRENT_USER, '~/.ssh/another_private_id_rsa'), CustomUserCredentials.create())
+        self.assertEqual(UserCredentials(UserCredentials.CURRENT_USER, '~/.ssh/another_private_id_rsa'), CustomUserCredentials.create())
 
 
 def suite():

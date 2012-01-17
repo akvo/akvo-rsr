@@ -12,11 +12,16 @@ from fab.config.values.standard import DeploymentHostConfig, RepositoryBranch, U
 # Configure these classes if you're deploying to your own VM or if you require a different configuration set
 # from those already listed in the fab.config.values.host and fab.config.values.standard modules.
 
-class CustomUserCredentials(UserCredentials):
+class CustomUserCredentials(object):
 
     @staticmethod
     def create():
-        return CustomUserCredentials(UserCredentials.CURRENT_USER, '~/.ssh/another_private_id_rsa')
+        # either a default user configuration with:
+        # return UserCredentials.default()
+        #
+        # or with custom values:
+
+        return UserCredentials(UserCredentials.CURRENT_USER, '~/.ssh/another_private_id_rsa')
 
 
 class CustomDeploymentHostConfig(object):
