@@ -25,7 +25,7 @@ class VerifySystemPackages(fabric.tasks.Task):
     @staticmethod
     def create_task():
         linux_host = fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load())
-        return VerifySystemPackages(fabric.api.env.user, fab.config.loaders.DeploymentConfigLoader.load())
+        return VerifySystemPackages(fabric.api.env.user, linux_host)
 
     def run(self):
         self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
