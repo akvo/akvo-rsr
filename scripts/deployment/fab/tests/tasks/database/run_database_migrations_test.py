@@ -36,6 +36,11 @@ class RunDatabaseMigrationsTest(mox.MoxTestBase):
 
         self.assertEqual("run_database_migrations", RunDatabaseMigrations.name)
 
+    def test_can_create_task_instance(self):
+        """fab.tests.tasks.database.run_database_migrations_test  Can create task instance"""
+
+        self.assertIsInstance(RunDatabaseMigrations.create_task(), RunDatabaseMigrations)
+
     def test_can_run_database_migrations(self):
         """fab.tests.tasks.database.run_database_migrations_test  Can run database migrations"""
 

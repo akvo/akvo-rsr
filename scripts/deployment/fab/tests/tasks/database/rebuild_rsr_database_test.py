@@ -36,6 +36,11 @@ class RebuildRSRDatabaseTest(mox.MoxTestBase):
 
         self.assertEqual("rebuild_rsr_database", RebuildRSRDatabase.name)
 
+    def test_can_create_task_instance(self):
+        """fab.tests.tasks.database.rebuild_rsr_database_test  Can create task instance"""
+
+        self.assertIsInstance(RebuildRSRDatabase.create_task(), RebuildRSRDatabase)
+
     def test_can_rebuild_rsr_database(self):
         """fab.tests.tasks.database.rebuild_rsr_database_test  Can rebuild the RSR database"""
 

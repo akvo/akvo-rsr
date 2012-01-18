@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fab.config.loaders
 import fab.tasks.database.basetask
 
 
@@ -13,10 +14,14 @@ class RebuildRSRDatabase(fab.tasks.database.basetask.RSRDatabaseTask):
 
     name = "rebuild_rsr_database"
 
+    @staticmethod
+    def create_task():
+        return RebuildRSRDatabase(fab.config.loaders.DeploymentConfigLoader.load())
+
     def run(self, host_controller_mode):
         super(RebuildRSRDatabase, self).run(host_controller_mode)
         self.database_host.backup_rsr_database()
         self.database_host.rebuild_rsr_database()
 
 
-instance = RebuildRSRDatabase()
+instance = RebuildRSRDatabase.create_task()

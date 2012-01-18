@@ -36,6 +36,11 @@ class ConvertRSRDatabaseForMigrationsTest(mox.MoxTestBase):
 
         self.assertEqual("convert_rsr_database_for_migrations", ConvertRSRDatabaseForMigrations.name)
 
+    def test_can_create_task_instance(self):
+        """fab.tests.tasks.database.convert_rsr_database_for_migrations_test  Can create task instance"""
+
+        self.assertIsInstance(ConvertRSRDatabaseForMigrations.create_task(), ConvertRSRDatabaseForMigrations)
+
     def test_can_convert_rsr_database_for_migrations(self):
         """fab.tests.tasks.database.convert_rsr_database_for_migrations_test  Can convert the RSR database for migrations"""
 

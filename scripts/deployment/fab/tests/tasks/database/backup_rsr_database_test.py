@@ -36,6 +36,11 @@ class BackupRSRDatabaseTest(mox.MoxTestBase):
 
         self.assertEqual("backup_rsr_database", BackupRSRDatabase.name)
 
+    def test_can_create_task_instance(self):
+        """fab.tests.tasks.database.backup_rsr_database_test  Can create task instance"""
+
+        self.assertIsInstance(BackupRSRDatabase.create_task(), BackupRSRDatabase)
+
     def test_can_backup_rsr_database(self):
         """fab.tests.tasks.database.backup_rsr_database_test  Can backup the RSR database"""
 
