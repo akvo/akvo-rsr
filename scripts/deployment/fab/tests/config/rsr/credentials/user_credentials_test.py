@@ -19,6 +19,11 @@ class UserCredentialsTest(unittest2.TestCase):
 
         self.assertEqual(subprocess.check_output('whoami').strip(), UserCredentials.CURRENT_USER)
 
+    def test_default_password_is_empty(self):
+        """fab.tests.config.rsr.credentials.user_credentials_test  Default password is empty"""
+
+        self.assertEqual('', UserCredentials.NO_PASSWORD)
+
     def test_has_default_ssh_id_path(self):
         """fab.tests.config.rsr.credentials.user_credentials_test  Has default SSH ID file path"""
 
@@ -27,7 +32,9 @@ class UserCredentialsTest(unittest2.TestCase):
     def test_can_create_default_user_credentials(self):
         """fab.tests.config.rsr.credentials.user_credentials_test  Can create default user credentials"""
 
-        expected_default_credentials = UserCredentials(UserCredentials.CURRENT_USER, UserCredentials.DEFAULT_SSH_ID_PATH)
+        expected_default_credentials = UserCredentials(UserCredentials.CURRENT_USER,
+                                                       UserCredentials.NO_PASSWORD,
+                                                       UserCredentials.DEFAULT_SSH_ID_PATH)
 
         self.assertEqual(expected_default_credentials, UserCredentials.default())
 
