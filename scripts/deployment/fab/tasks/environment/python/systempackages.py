@@ -8,6 +8,7 @@
 import fabric.api
 import fabric.tasks
 
+import fab.config.loaders
 import fab.host.linux
 
 
@@ -21,12 +22,12 @@ class UpdateSystemPythonPackages(fabric.tasks.Task):
         self.linux_host = linux_host
 
     @staticmethod
-    def create_task_instance(deployment_user):
-        return UpdateSystemPythonPackages(deployment_user, fab.host.linux.LinuxHost.create_instance())
+    def create_task():
+        return UpdateSystemPythonPackages(fabric.api.env.user, fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load()))
 
     def run(self):
         self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         self.linux_host.update_system_python_packages()
 
 
-instance = UpdateSystemPythonPackages.create_task_instance(fabric.api.env.user)
+instance = UpdateSystemPythonPackages.create_task()
