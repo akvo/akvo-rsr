@@ -10,7 +10,7 @@ import fabric.api
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-import fab.tests.templates.database_credentials_template_loader
+import fab.tests.templates.database_credentials_template
 from credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig

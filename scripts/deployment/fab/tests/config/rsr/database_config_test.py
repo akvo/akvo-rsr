@@ -9,10 +9,8 @@ import imp, mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-DATABASE_CREDENTIALS_TEMPLATE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/rsr/credentials.py.template'))
-imp.load_source('rsr_credentials', DATABASE_CREDENTIALS_TEMPLATE)
-
-from rsr_credentials import DatabaseCredentials
+import fab.tests.templates.database_credentials_template
+from credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.config.values.standard import CIDeploymentHostConfig
