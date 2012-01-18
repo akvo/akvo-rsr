@@ -5,10 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+import fab.tests.templates.config_loaders_template
+from config_loaders import UserCredentialsLoader
+
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.tasks.runner import TaskParameters, TaskRunner
 
 
@@ -26,21 +30,43 @@ class TaskRunnerTest(unittest2.TestCase):
     def setUp(self):
         super(TaskRunnerTest, self).setUp()
 
-        self.host_with_ssh_port = "some_host:2288"
-        self.ssh_id_file_path = "/path/to/id_rsa"
+        self.user_credentials = UserCredentialsLoader.load()
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
 
-        self.task_runner = StubbedTaskRunner(self.host_with_ssh_port, self.ssh_id_file_path)
+        self.task_runner = StubbedTaskRunner(self.user_credentials, self.deployment_host_config)
 
-    def test_can_run_task(self):
-        """fab.tests.tasks.task_runner_test  Can run task"""
+    def test_has_expected_fabfile_path(self):
+        """fab.tests.tasks.task_runner_test  Has expected fabfile.py path"""
+
+        expected_fabfile_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../fabfile.py'))
+
+        self.assertEqual(expected_fabfile_path, TaskRunner.FABFILE_PATH)
+
+    def test_can_run_deployment_task(self):
+        """fab.tests.tasks.task_runner_test  Can run deployment task"""
 
         self.task_runner.fake_exit_code = 0
-        expected_command_with_parameters = ['fab', '-f', TaskRunner.FABFILE_PATH, 'some.deployment.task.name',
-                                            '-H', self.host_with_ssh_port, '-i', self.ssh_id_file_path]
 
-        self.task_runner.run_task('some.deployment.task.name')
+        self.task_runner.run_deployment_task('some.deployment.task.name')
 
-        self.assertEqual(expected_command_with_parameters, self.task_runner.executed_command_with_parameters)
+        self.assertEqual(self._expected_fabric_call_with('some.deployment.task.name', TaskParameters.NONE),
+                         self.task_runner.executed_command_with_parameters)
+
+    def test_can_run_remote_deployment_task(self):
+        """fab.tests.tasks.task_runner_test  Can run remote deployment task"""
+
+        self.task_runner.fake_exit_code = 0
+
+        self.task_runner.run_remote_deployment_task('some.deployment.task.name')
+
+        self.assertEqual(self._expected_fabric_call_with('some.deployment.task.name', TaskParameters.REMOTE_HOST_CONTROLLER_MODE),
+                         self.task_runner.executed_command_with_parameters)
+
+    def _expected_fabric_call_with(self, fully_qualified_task, task_parameters):
+        return ['fab', '-f', TaskRunner.FABFILE_PATH,
+                fully_qualified_task + task_parameters,
+                '-H', self.deployment_host_config.ssh_connection,
+                '-i', self.user_credentials.ssh_id_file_path]
 
     def test_will_raise_systemexit_if_task_execution_fails(self):
         """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
@@ -48,21 +74,9 @@ class TaskRunnerTest(unittest2.TestCase):
         self.task_runner.fake_exit_code = 2
 
         with self.assertRaises(SystemExit) as raised:
-            self.task_runner.run_task('some.deployment.task.name')
+            self.task_runner._run_task('some.deployment.task.name')
 
         self.assertTrue(raised.exception.message.find('Deployment failed due to errors above') > 0)
-
-    def test_can_run_explicitly_remote_task(self):
-        """fab.tests.tasks.task_runner_test  Can run explicitly remote task"""
-
-        self.task_runner.fake_exit_code = 0
-        expected_task_with_parameters = 'some.deployment.task.name' + TaskParameters.REMOTE_HOST_CONTROLLER_MODE
-        expected_command_with_parameters = ['fab', '-f', TaskRunner.FABFILE_PATH, expected_task_with_parameters,
-                                            '-H', self.host_with_ssh_port, '-i', self.ssh_id_file_path]
-
-        self.task_runner.run_remote_task('some.deployment.task.name')
-
-        self.assertEqual(expected_command_with_parameters, self.task_runner.executed_command_with_parameters)
 
 
 def suite():

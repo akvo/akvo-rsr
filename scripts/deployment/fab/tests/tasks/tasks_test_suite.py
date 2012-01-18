@@ -15,8 +15,8 @@ from fab.tests.tasks.environment.environment_tasks_test_suite import environment
 
 
 def tasks_suite():
-    return TestSuiteLoader().create_suite_from_list([task_runner_suite(), environment_tasks_suite(), app_tasks_suite(),
-                                                     data_tasks_suite(), database_tasks_suite()])
+    return TestSuiteLoader().create_suite_from_list([task_runner_suite(), app_tasks_suite(), data_tasks_suite(),
+                                                     database_tasks_suite(), environment_tasks_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
