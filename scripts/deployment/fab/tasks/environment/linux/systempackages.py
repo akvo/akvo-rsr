@@ -9,6 +9,7 @@ import fabric.api
 import fabric.tasks
 
 import fab.config.environment.linux.systempackages
+import fab.config.loaders
 import fab.host.linux
 
 
@@ -22,8 +23,9 @@ class VerifySystemPackages(fabric.tasks.Task):
         self.linux_host = linux_host
 
     @staticmethod
-    def create_task_instance(deployment_user):
-        return VerifySystemPackages(deployment_user, fab.host.linux.LinuxHost.create_instance())
+    def create_task():
+        linux_host = fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load())
+        return VerifySystemPackages(fabric.api.env.user, fab.config.loaders.DeploymentConfigLoader.load())
 
     def run(self):
         self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
@@ -33,4 +35,4 @@ class VerifySystemPackages(fabric.tasks.Task):
             self.linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
 
 
-instance = VerifySystemPackages.create_task_instance(fabric.api.env.user)
+instance = VerifySystemPackages.create_task()
