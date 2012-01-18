@@ -8,6 +8,7 @@
 import fabric.api
 import fabric.tasks
 
+import fab.config.loaders
 import fab.host.linux
 
 
@@ -21,12 +22,12 @@ class InstallPython(fabric.tasks.Task):
         self.linux_host = linux_host
 
     @staticmethod
-    def create_task_instance(deployment_user):
-        return InstallPython(deployment_user, fab.host.linux.LinuxHost.create_instance())
+    def create_task():
+        return InstallPython(fabric.api.env.user, fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load()))
 
     def run(self, python_version):
         self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         self.linux_host.ensure_python_is_installed_with_version(python_version)
 
 
-instance = InstallPython.create_task_instance(fabric.api.env.user)
+instance = InstallPython.create_task()
