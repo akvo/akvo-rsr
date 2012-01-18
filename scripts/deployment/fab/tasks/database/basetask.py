@@ -7,7 +7,7 @@
 
 import fabric.tasks
 
-import fab.config.rsr.credentials
+import fab.config.rsr.credentials.database
 import fab.config.rsr.database
 import fab.host.controller
 import fab.host.database
@@ -16,7 +16,7 @@ import fab.host.database
 class RSRDatabaseTask(fabric.tasks.Task):
     """Base task for RSR database actions"""
 
-    def __init__(self, deployment_host_config, database_credentials=fab.config.rsr.credentials.DatabaseCredentials()):
+    def __init__(self, deployment_host_config, database_credentials=fab.config.rsr.credentials.database.DatabaseCredentials()):
         self.database_config = fab.config.rsr.database.RSRDatabaseConfig(database_credentials, deployment_host_config)
         self.deployment_host_config = deployment_host_config
 

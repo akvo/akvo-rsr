@@ -10,7 +10,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 import fab.tests.templates.database_credentials_template
-from credentials import DatabaseCredentials
+from database_credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.config.values.standard import CIDeploymentHostConfig

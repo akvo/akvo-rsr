@@ -9,23 +9,23 @@ import subprocess, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.values.standard import UserCredentials
+from fab.config.rsr.credentials.user import UserCredentials
 
 
 class UserCredentialsTest(unittest2.TestCase):
 
     def test_has_current_user_name(self):
-        """fab.tests.config.values.user_credentials_test  Has current user name"""
+        """fab.tests.config.rsr.credentials.user_credentials_test  Has current user name"""
 
         self.assertEqual(subprocess.check_output('whoami').strip(), UserCredentials.CURRENT_USER)
 
     def test_has_default_ssh_id_path(self):
-        """fab.tests.config.values.user_credentials_test  Has default SSH ID file path"""
+        """fab.tests.config.rsr.credentials.user_credentials_test  Has default SSH ID file path"""
 
         self.assertEqual('~/.ssh/id_rsa', UserCredentials.DEFAULT_SSH_ID_PATH)
 
     def test_can_create_default_user_credentials(self):
-        """fab.tests.config.values.user_credentials_test  Can create default user credentials"""
+        """fab.tests.config.rsr.credentials.user_credentials_test  Can create default user credentials"""
 
         expected_default_credentials = UserCredentials(UserCredentials.CURRENT_USER, UserCredentials.DEFAULT_SSH_ID_PATH)
 

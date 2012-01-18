@@ -5,8 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.values.host import DeploymentHostPaths
-from fab.config.values.standard import DeploymentHostConfig, RepositoryBranch, UserCredentials
+from fab.config.values.standard import DeploymentHostConfig, RepositoryBranch
 
 
 # Configure these classes if you're deploying to your own VM or if you require a different configuration set

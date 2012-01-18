@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 import fab.tests.templates.config_loaders_template
 from config_loaders import UserCredentialsLoader
 
-from fab.config.values.standard import UserCredentials
+from fab.config.rsr.credentials.user import UserCredentials
 
 
 class UserCredentialsLoaderTest(unittest2.TestCase):

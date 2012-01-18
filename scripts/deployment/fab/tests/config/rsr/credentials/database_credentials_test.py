@@ -10,7 +10,7 @@ import imp, os, unittest2
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 import fab.tests.templates.database_credentials_template
-from credentials import DatabaseCredentials
+from database_credentials import DatabaseCredentials
 
 
 class DatabaseCredentialsTest(unittest2.TestCase):
@@ -21,22 +21,22 @@ class DatabaseCredentialsTest(unittest2.TestCase):
         self.database_credentials = DatabaseCredentials()
 
     def test_has_admin_user(self):
-        """fab.tests.config.rsr.database_credentials_test  Has database admin user"""
+        """fab.tests.config.rsr.credentials.database_credentials_test  Has database admin user"""
 
         self._verify_expected_config_value(self.database_credentials.admin_user, "admin user")
 
     def test_has_admin_password(self):
-        """fab.tests.config.rsr.database_credentials_test  Has database admin password"""
+        """fab.tests.config.rsr.credentials.database_credentials_test  Has database admin password"""
 
         self._verify_expected_config_value(self.database_credentials.admin_password, "admin password")
 
     def test_has_rsr_user(self):
-        """fab.tests.config.rsr.database_credentials_test  Has RSR database user"""
+        """fab.tests.config.rsr.credentials.database_credentials_test  Has RSR database user"""
 
         self._verify_expected_config_value(self.database_credentials.rsr_user, "RSR user")
 
     def test_has_rsr_password(self):
-        """fab.tests.config.rsr.database_credentials_test  Has RSR database password"""
+        """fab.tests.config.rsr.credentials.database_credentials_test  Has RSR database password"""
 
         self._verify_expected_config_value(self.database_credentials.rsr_password, "RSR password")
 

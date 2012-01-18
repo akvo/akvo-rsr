@@ -10,7 +10,7 @@ import unittest2
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 import fab.tests.templates.database_credentials_template
-from credentials import DatabaseCredentials
+from database_credentials import DatabaseCredentials
 
 from fab.config.values.standard import CIDeploymentHostConfig
 from fab.host.controller import HostControllerMode
