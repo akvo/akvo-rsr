@@ -11,6 +11,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.app.deployer import RSRAppDeployer
 from fab.config.rsr.deployment import RSRDeploymentConfig
+from fab.config.values.standard import CIDeploymentHostConfig
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import HostControllerMode
 from fab.host.deployment import DeploymentHost
@@ -31,7 +32,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.deployment_user = "rupaul"
-        self.deployment_config = RSRDeploymentConfig.create_instance(self.deployment_user)
+        self.deployment_config = RSRDeploymentConfig.create_with(CIDeploymentHostConfig.for_test(), self.deployment_user)
 
         self.deploy_rsr_app_task = StubbedDeployRSRApp(self.deployment_config)
         self.deploy_rsr_app_task.app_deployer = self.mock_app_deployer
@@ -45,7 +46,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can create task instance"""
 
-        self.assertIsInstance(DeployRSRApp.create_task_instance(self.deployment_user), DeployRSRApp)
+        self.assertIsInstance(DeployRSRApp.create_task(), DeployRSRApp)
 
     def test_can_initialise_app_deployer_using_local_hostcontrollermode(self):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can initialise app deployer using local HostControllerMode"""
@@ -58,7 +59,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         self._verify_app_deployer_creation_with(HostControllerMode.REMOTE)
 
     def _verify_app_deployer_creation_with(self, host_controller_mode):
-        deploy_rsr_app_task = DeployRSRApp.create_task_instance(self.deployment_user)
+        deploy_rsr_app_task = DeployRSRApp.create_task()
         deploy_rsr_app_task._initialise_app_deployer_using(host_controller_mode)
 
         self.assertIsInstance(deploy_rsr_app_task.app_deployer, RSRAppDeployer)
