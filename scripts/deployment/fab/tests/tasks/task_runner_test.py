@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
@@ -14,6 +14,7 @@ from config_loaders import UserCredentialsLoader
 
 from fab.config.values.standard import CIDeploymentHostConfig
 from fab.tasks.runner import TaskParameters, TaskRunner
+from fab.verifiers.config import ConfigFileVerifier
 
 
 class StubbedTaskRunner(TaskRunner):
@@ -25,7 +26,7 @@ class StubbedTaskRunner(TaskRunner):
         return self.fake_exit_code
 
 
-class TaskRunnerTest(unittest2.TestCase):
+class TaskRunnerTest(mox.MoxTestBase):
 
     def setUp(self):
         super(TaskRunnerTest, self).setUp()
@@ -34,6 +35,16 @@ class TaskRunnerTest(unittest2.TestCase):
         self.deployment_host_config = CIDeploymentHostConfig.for_test()
 
         self.task_runner = StubbedTaskRunner(self.user_credentials, self.deployment_host_config)
+
+    def test_can_create_taskrunner_instance(self):
+        """fab.tests.tasks.task_runner_test  Can create a TaskRunner instance"""
+
+        mock_config_file_verifier = self.mox.CreateMock(ConfigFileVerifier)
+
+        mock_config_file_verifier.exit_if_config_loaders_not_found()
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(TaskRunner.create(mock_config_file_verifier), TaskRunner)
 
     def test_has_expected_fabfile_path(self):
         """fab.tests.tasks.task_runner_test  Has expected fabfile.py path"""

@@ -7,6 +7,8 @@
 
 import os, subprocess, sys
 
+from fab.verifiers.config import ConfigFileVerifier
+
 
 class TaskParameters(object):
 
@@ -21,6 +23,13 @@ class TaskRunner(object):
     def __init__(self, user_credentials, deployment_host_config):
         self.ssh_id_file_path = user_credentials.ssh_id_file_path
         self.ssh_connection = deployment_host_config.ssh_connection
+
+    @staticmethod
+    def create(config_file_verifier=ConfigFileVerifier()):
+        config_file_verifier.exit_if_config_loaders_not_found()
+
+        from fab.config.loaders import DeploymentConfigLoader, UserCredentialsLoader
+        return TaskRunner(UserCredentialsLoader.load(), DeploymentConfigLoader.load())
 
     def run_remote_deployment_task(self, fully_qualified_task):
         self._run_task(fully_qualified_task, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
