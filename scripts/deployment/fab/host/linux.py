@@ -32,7 +32,7 @@ class LinuxHost(object):
         return LinuxHost(DeploymentUserVerifier(AkvoPermissions(host_controller)),
                          PythonInstaller.create_with(host_controller),
                          UbuntuPackageInspector(host_controller),
-                         LinuxPackageVerifier.create_instance(host_controller),
+                         LinuxPackageVerifier.create_with(host_controller),
                          SystemPythonPackageInstaller.create_with(deployment_host_config, host_controller),
                          host_controller.feedback)
 
