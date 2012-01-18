@@ -18,10 +18,10 @@ class ConfigFileVerifier(object):
         self.local_file_system = local_file_system
 
     def exit_if_database_credentials_not_found(self):
-        self._exit_if_file_is_missing('fab/config/rsr/credentials.py')
+        self._exit_if_file_is_missing('fab/config/rsr/credentials/database.py')
 
-    def exit_if_deployment_config_values_are_missing(self, relative_config_values_path):
-        self._exit_if_file_is_missing(relative_config_values_path)
+    def exit_if_config_loaders_not_found(self):
+        self._exit_if_file_is_missing('fab/config/loaders.py')
 
     def _exit_if_file_is_missing(self, relative_deployment_file_path):
         self.local_file_system.exit_if_file_does_not_exist(os.path.join(self.DEPLOYMENT_SCRIPTS_HOME, relative_deployment_file_path))
