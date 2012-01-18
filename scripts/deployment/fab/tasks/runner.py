@@ -22,6 +22,7 @@ class TaskRunner(object):
 
     def __init__(self, user_credentials, deployment_host_config):
         self.ssh_id_file_path = user_credentials.ssh_id_file_path
+        self.sudo_password = user_credentials.sudo_password
         self.ssh_connection = deployment_host_config.ssh_connection
 
     @staticmethod
@@ -44,7 +45,8 @@ class TaskRunner(object):
         exit_code = self._execute(['fab', '-f', self.FABFILE_PATH,
                                    fully_qualified_task_name + parameters,
                                    '-H', self.ssh_connection,
-                                   '-i', self.ssh_id_file_path])
+                                   '-i', self.ssh_id_file_path,
+                                   '-p', self.sudo_password])
 
         if exit_code != 0:
             raise SystemExit('\n>> Deployment failed due to errors above.\n')

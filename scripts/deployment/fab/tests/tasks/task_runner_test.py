@@ -77,7 +77,8 @@ class TaskRunnerTest(mox.MoxTestBase):
         return ['fab', '-f', TaskRunner.FABFILE_PATH,
                 fully_qualified_task + task_parameters,
                 '-H', self.deployment_host_config.ssh_connection,
-                '-i', self.user_credentials.ssh_id_file_path]
+                '-i', self.user_credentials.ssh_id_file_path,
+                '-p', self.user_credentials.sudo_password]
 
     def test_will_raise_systemexit_if_task_execution_fails(self):
         """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
