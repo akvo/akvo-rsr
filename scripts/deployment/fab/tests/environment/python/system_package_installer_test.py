@@ -19,6 +19,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.internet import Internet
 from fab.host.controller import RemoteHostController
 from fab.os.filesystem import FileSystem
+from fab.os.permissions import AkvoPermissions
 
 
 class SystemPythonPackageInstallerTest(mox.MoxTestBase):
@@ -31,14 +32,17 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
 
         self.mock_pip_installer = self.mox.CreateMock(PipInstaller)
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_internet = self.mox.CreateMock(Internet)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.mock_host_controller.feedback = self.mock_feedback
 
-        self.package_installer = SystemPythonPackageInstaller(self.codebase_config, self.installation_paths, self.mock_pip_installer,
-                                                              self.mock_file_system, self.mock_internet, self.mock_host_controller)
+        self.package_installer = SystemPythonPackageInstaller(self.deployment_host_config.host_paths, self.codebase_config,
+                                                              self.installation_paths, self.mock_pip_installer,
+                                                              self.mock_file_system, self.mock_permissions,
+                                                              self.mock_internet, self.mock_host_controller)
 
     def test_can_create_systempythonpackageinstaller_instance(self):
         """fab.tests.environment.python.system_package_installer_test  Can create SystemPythonPackageInstaller instance"""
@@ -53,12 +57,20 @@ class SystemPythonPackageInstallerTest(mox.MoxTestBase):
     def test_can_install_package_tools(self):
         """fab.tests.environment.python.system_package_installer_test  Can install package tools"""
 
-        self.mock_file_system.delete_directory_with_sudo(self.installation_paths.package_download_dir)
-        self.mock_file_system.ensure_directory_exists(self.installation_paths.package_download_dir)
+        self._clear_package_download_directory()
         self.mock_pip_installer.ensure_pip_is_installed()
         self.mox.ReplayAll()
 
         self.package_installer.install_package_tools()
+
+    def _clear_package_download_directory(self):
+        self.mock_file_system.delete_directory_with_sudo(self.installation_paths.package_download_dir)
+        self._ensure_directory_exists_with_web_group_permissions(self.deployment_host_config.host_paths.deployment_processing_home)
+        self._ensure_directory_exists_with_web_group_permissions(self.installation_paths.package_download_dir)
+
+    def _ensure_directory_exists_with_web_group_permissions(self, dir_path):
+        self.mock_file_system.ensure_directory_exists_with_sudo(dir_path)
+        self.mock_permissions.set_web_group_permissions_on_directory(dir_path)
 
     def test_can_install_system_packages(self):
         """fab.tests.environment.python.system_package_installer_test  Can install system packages"""
