@@ -889,7 +889,7 @@ class Project(models.Model):
             return self._partners(Partnership.SUPPORT_PARTNER)
 
         def all_partners(self):
-            return self._partners()
+                return self._partners()
 
     def __unicode__(self):
         return u'%s' % self.name
