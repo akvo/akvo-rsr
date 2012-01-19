@@ -79,10 +79,10 @@ class DeploymentHost(NeutralHost):
     def ensure_directory_exists_with_web_group_permissions(self, dir_path):
         if self.directory_exists(dir_path):
             self.feedback.comment("Found expected directory: %s" % dir_path)
-            # TODO: check the file mode and set web group permissions as necessary
         else:
             self.ensure_directory_exists_with_sudo(dir_path)
-            self.set_web_group_permissions_on_directory(dir_path)
+
+        self.set_web_group_permissions_on_directory(dir_path)
 
     def ensure_symlink_exists(self, symlink_path, real_path):
         self.file_system.ensure_symlink_exists(symlink_path, real_path, with_sudo=True)

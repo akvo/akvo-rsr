@@ -77,7 +77,7 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def test_can_create_empty_virtualenv(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can create empty virtualenv"""
 
-        self._set_expectations_to_ensure_virtualenvs_home_exists()
+        self._ensure_virtualenvs_home_exists()
         self.mock_virtualenv_installer.create_empty_virtualenv()
         self.mox.ReplayAll()
 
@@ -86,16 +86,16 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def test_can_ensure_virtualenv_exists(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can ensure virtualenv exists"""
 
-        self._set_expectations_to_ensure_virtualenvs_home_exists()
+        self._ensure_virtualenvs_home_exists()
         self.mock_virtualenv_installer.ensure_virtualenv_exists()
         self.mox.ReplayAll()
 
         self.virtualenv_deployment_host.ensure_virtualenv_exists()
 
-    def _set_expectations_to_ensure_virtualenvs_home_exists(self):
-
+    def _ensure_virtualenvs_home_exists(self):
         self.mock_file_system.directory_exists(self.virtualenv_installer_config.virtualenvs_home).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % self.virtualenv_installer_config.virtualenvs_home)
+        self.mock_permissions.set_web_group_permissions_on_directory(self.virtualenv_installer_config.virtualenvs_home)
 
     def test_can_remove_previously_downloaded_package_sources(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can remove previously downloaded package source files"""

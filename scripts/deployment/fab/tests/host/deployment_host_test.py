@@ -215,6 +215,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         web_dir = "/some/web/dir"
         self.mock_file_system.directory_exists(web_dir).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % web_dir)
+        self.mock_permissions.set_web_group_permissions_on_directory(web_dir)
         self.mox.ReplayAll()
 
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(web_dir)
