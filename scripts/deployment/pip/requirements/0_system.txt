@@ -8,5 +8,5 @@ meld3==0.6.7
 
 # System modules -- these would normally be installed outside a virtualenv
 virtualenv==1.7
-virtualenvwrapper==2.11.1
+virtualenvwrapper==2.10.1
 supervisor==3.0a12 # currently only operates outside virtualenv
