@@ -38,6 +38,9 @@ class DeploymentHostConfig(object):
     def __ne__(self, deployment_host_config):
         return not self.__eq__(deployment_host_config)
 
+    def __repr__(self):
+        return repr([self.repository_branch, self.rsr_database_name, self.ssh_connection, repr(self.host_paths)])
+
 
 class CIDeploymentHostConfig(object):
     """Deployment host configurations for continuous integration"""

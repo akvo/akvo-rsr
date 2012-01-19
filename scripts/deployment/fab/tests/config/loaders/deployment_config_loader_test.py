@@ -12,18 +12,25 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 import fab.tests.templates.config_loaders_template
 from config_loaders import CustomDeploymentHostConfig, DeploymentConfigLoader
 
-from fab.config.values.standard import DeploymentHostConfig, DeploymentHostPaths, RepositoryBranch
+from fab.config.values.standard import DeploymentHostConfig, DeploymentHostPaths, HostAlias, RepositoryBranch
 
 
 class DeploymentConfigLoaderTest(unittest2.TestCase):
 
-    def test_can_create_custom_deployment_host_configuration(self):
-        """fab.tests.config.loaders.deployment_config_loader_test  Can load custom deployment host configuration"""
+    def test_can_create_partially_custom_deployment_host_configuration(self):
+        """fab.tests.config.loaders.deployment_config_loader_test  Can create a partially custom deployment host configuration"""
+
+        custom_config = DeploymentHostConfig.create_with(HostAlias.TEST, 'repository_branch', 'rsr_database_name')
+
+        self.assertEqual(custom_config, DeploymentConfigLoader.load())
+
+    def test_can_create_completely_custom_deployment_host_configuration(self):
+        """fab.tests.config.loaders.deployment_config_loader_test  Can create a completely custom deployment host configuration"""
 
         custom_config = DeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
                                              DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))
 
-        self.assertEqual(custom_config, DeploymentConfigLoader.load())
+        self.assertIsInstance(custom_config, DeploymentHostConfig)
 
 
 def suite():

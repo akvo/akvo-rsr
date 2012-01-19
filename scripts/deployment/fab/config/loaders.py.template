@@ -6,7 +6,7 @@
 
 
 from fab.config.rsr.credentials.user import UserCredentials
-from fab.config.values.host import DeploymentHostPaths
+from fab.config.values.host import DeploymentHostPaths, HostAlias
 from fab.config.values.standard import CIDeploymentHostConfig, DeploymentHostConfig, RepositoryBranch
 
 
@@ -44,12 +44,12 @@ class DeploymentConfigLoader(object):
 
     @staticmethod
     def load():
-        # either a standard configuration with:
-        # return DeploymentHostConfig.create_with(HostAlias.SOME_ALIAS, 'repository_branch', 'rsr_database_name')
+        # either a completely custom configuration as configured in CustomDeploymentHostConfig above:
+        # return CustomDeploymentHostConfig.create()
         #
         # or a pre-configured configuration with:
         # return CIDeploymentHostConfig.for_test()
         #
-        # or a custom configuration as configured above:
+        # or a standard configuration a below:
 
-        return CustomDeploymentHostConfig.create()
+        return DeploymentHostConfig.create_with(HostAlias.TEST, 'repository_branch', 'rsr_database_name')

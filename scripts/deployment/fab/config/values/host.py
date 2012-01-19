@@ -102,3 +102,7 @@ class DeploymentHostPaths(object):
 
     def __ne__(self, host_paths):
         return not self.__eq__(host_paths)
+
+    def __repr__(self):
+        return repr([self.config_home, self.repo_checkout_home, self.virtualenvs_home,
+                     self.static_media_home, self.logging_home, self.deployment_processing_home])
