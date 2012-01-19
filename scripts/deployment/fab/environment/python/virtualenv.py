@@ -45,7 +45,7 @@ class VirtualEnvInstaller(object):
         return VirtualEnvInstaller(virtualenv_installer_config,
                                    host_controller,
                                    file_system,
-                                   VirtualEnv(virtualenv_installer_config, host_controller),
+                                   VirtualEnv(virtualenv_installer_config.rsr_env_path, host_controller),
                                    TimeStampFormatter())
 
     def virtualenv_exists(self):
