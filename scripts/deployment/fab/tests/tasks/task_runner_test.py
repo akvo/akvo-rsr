@@ -38,6 +38,12 @@ class TaskRunnerTest(mox.MoxTestBase):
 
         self.task_runner = StubbedTaskRunner(self.user_credentials, self.deployment_host_config)
 
+    def test_has_expected_task_parameter_options(self):
+        """fab.tests.tasks.task_runner_test  Has expected task parameter options"""
+
+        self.assertEqual('', TaskParameters.NONE)
+        self.assertEqual('host_controller_mode=remote', TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+
     def test_can_create_taskrunner_instance(self):
         """fab.tests.tasks.task_runner_test  Can create a TaskRunner instance"""
 
