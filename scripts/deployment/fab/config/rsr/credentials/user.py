@@ -19,9 +19,15 @@ class UserCredentials(object):
         self.sudo_password      = sudo_password
         self.ssh_id_file_path   = os.path.expanduser(ssh_id_file_path)
 
+        self._exit_if_ssh_id_not_found()
+
     @staticmethod
     def default():
         return UserCredentials(UserCredentials.CURRENT_USER, UserCredentials.NO_PASSWORD, UserCredentials.DEFAULT_SSH_ID_PATH)
+
+    def _exit_if_ssh_id_not_found(self):
+        if not os.path.exists(self.ssh_id_file_path):
+            raise SystemExit('\n## SSH key not found: %s\n' % self.ssh_id_file_path)
 
     def __eq__(self, credentials):
         return (self.deployment_user    == credentials.deployment_user and

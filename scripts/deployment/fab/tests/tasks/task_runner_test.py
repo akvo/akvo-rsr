@@ -9,9 +9,7 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-import fab.tests.templates.config_loaders_template
-from config_loaders import UserCredentialsLoader
-
+from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.values.standard import CIDeploymentHostConfig
 from fab.tasks.database.backup import BackupRSRDatabase
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
@@ -33,7 +31,7 @@ class TaskRunnerTest(mox.MoxTestBase):
     def setUp(self):
         super(TaskRunnerTest, self).setUp()
 
-        self.user_credentials = UserCredentialsLoader.load()
+        self.user_credentials = UserCredentials.default()
         self.deployment_host_config = CIDeploymentHostConfig.for_test()
 
         self.task_runner = StubbedTaskRunner(self.user_credentials, self.deployment_host_config)

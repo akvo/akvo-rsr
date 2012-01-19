@@ -17,12 +17,12 @@ class UserCredentialsLoader(object):
 
     @staticmethod
     def load():
-        # either a default user configuration with:
-        # return UserCredentials.default()
+        # either custom sudo password and SSH ID path
+        # return UserCredentials(UserCredentials.CURRENT_USER, 'your_sudo_password', '~/.ssh/your_private_id_rsa')
         #
-        # or with custom values as below:
+        # or with custom sudo password only:
 
-        return UserCredentials(UserCredentials.CURRENT_USER, 'your_sudo_password', '~/.ssh/your_private_id_rsa')
+        return UserCredentials(UserCredentials.CURRENT_USER, 'your_sudo_password', UserCredentials.DEFAULT_SSH_ID_PATH)
 
 
 class CustomDeploymentHostConfig(object):

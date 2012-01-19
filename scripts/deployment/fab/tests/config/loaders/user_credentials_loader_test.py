@@ -20,7 +20,7 @@ class UserCredentialsLoaderTest(unittest2.TestCase):
     def test_can_load_custom_user_credentials(self):
         """fab.tests.config.loaders.user_credentials_loader_test  Can load custom user credentials"""
 
-        expected_user_credentials = UserCredentials(UserCredentials.CURRENT_USER, 'your_sudo_password', '~/.ssh/your_private_id_rsa')
+        expected_user_credentials = UserCredentials(UserCredentials.CURRENT_USER, 'your_sudo_password', UserCredentials.DEFAULT_SSH_ID_PATH)
 
         self.assertEqual(expected_user_credentials, UserCredentialsLoader.load())
 
