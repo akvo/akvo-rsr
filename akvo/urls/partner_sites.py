@@ -57,9 +57,15 @@ urlpatterns = patterns('',
         name="rss_org_updates"),
 
     # Widgets
-    # url(r'^widgets/map/$',
-    #     views.OranisationMapView.as_view(),
-    #     name="widget_org_map"),
+    url(r'^widgets/projects/map/$',
+        views.ProjectMapView.as_view(),
+        name="widget_org_map"),
+    
+    # Beta API
+    url(r'^api/beta/projects_cordinates.json$',
+        views.ProjectCordinates.as_view(),
+        #views.projects_cordinates,
+        name="api_projects_cordinates"), 
     
 )
 

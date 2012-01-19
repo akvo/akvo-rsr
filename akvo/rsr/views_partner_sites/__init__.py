@@ -15,6 +15,7 @@ from akvo.rsr.views_partner_sites.base import BaseProjectListView
 from akvo.rsr.views_partner_sites.partner import PartnerListView, PartnerView
 from akvo.rsr.views_partner_sites.project import ProjectFundingView, ProjectMainView, \
     ProjectUpdateFormView, ProjectUpdateListView, ProjectUpdateView
+from akvo.rsr.views_partner_sites.widgets import ProjectMapView, ProjectCordinates
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS
 from akvo.rsr.models import Organisation, Country
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
@@ -22,6 +23,7 @@ from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
 
 __all__ = [
     'HomeView',
+    'OrganisationMapView',
     'PartnerListView',
     'PartnerView',
     'ProjectFundingView',
@@ -32,6 +34,7 @@ __all__ = [
     'ProjectUpdateView',
     'SignInView',
     'signout',
+    'ProjectCordinates',
     ]
 
 
