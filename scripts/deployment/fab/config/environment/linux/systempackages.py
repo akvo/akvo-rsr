@@ -134,6 +134,7 @@ class SystemPackageSpecifications(object):
 
     ADDITIONAL_TOOLS =  [{'name': 'libcomerr2',         'version': '1.40.8-2ubuntu2'},
                          {'name': 'libidn11',           'version': '1.1-1'},
+                         {'name': 'libidn11-dev',       'version': '1.1-1'},
                          {'name': 'libkeyutils1',       'version': '1.2-4'},
                          {'name': 'libkrb53',           'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
                          {'name': 'liblzo2-2',          'version': '2.02-3'},
@@ -143,6 +144,7 @@ class SystemPackageSpecifications(object):
                          {'name': 'libsasl2-modules',   'version': '2.1.22.dfsg1-18ubuntu2.1'},
                          {'name': 'libsasl2-2',         'version': '2.1.22.dfsg1-18ubuntu2.1'},
                          {'name': 'libldap-2.4-2',      'version': '2.4.9-0ubuntu0.8.04.5'},
+                         {'name': 'libldap2-dev',       'version': '2.4.9-0ubuntu0.8.04.5'},
                          {'name': 'libcurl3',           'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'curl',               'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'},
@@ -157,6 +159,14 @@ class SystemPackageSpecifications(object):
                          {'name': 'zip',                'version': '2.32-1'},
                          {'name': 'unzip',              'version': '5.52-10ubuntu2'}]
 
+    GIT_DEPENDENCIES =  [{'name': 'comerr-dev',             'version': '2.1-1.40.8-2ubuntu2'},
+                         {'name': 'libkadm55',              'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
+                         {'name': 'libkrb5-dev',            'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
+                         {'name': 'libcurl4-openssl-dev',   'version': '7.18.0-1ubuntu2.3'},
+                         {'name': 'gettext-base',           'version': '0.17-2ubuntu1'},
+                         {'name': 'gettext',                'version': '0.17-2ubuntu1'}]
+
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
                      PYTHON, PYTHON_EXTENSIONS, PYTHON_PACKAGE_DEPENDENCIES,
-                     DATABASE_AUTHENTICATION, DATABASE, WEB_SERVER, ADDITIONAL_TOOLS]
+                     DATABASE_AUTHENTICATION, DATABASE, WEB_SERVER, ADDITIONAL_TOOLS,
+                     GIT_DEPENDENCIES]

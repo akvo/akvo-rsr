@@ -102,12 +102,20 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_additional_tools_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected additional tools package specifications"""
 
-        expected_packages = ['libcomerr2', 'libidn11', 'libkeyutils1', 'libkrb53', 'liblzo2-2', 'libopencdk10',
-                             'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2', 'libldap-2.4-2',
-                             'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client', 'openssh-blacklist',
-                             'libdbus-1-3', 'libck-connector0', 'openssh-server', 'ssh', 'tar', 'zip', 'unzip']
+        expected_packages = ['libcomerr2', 'libidn11', 'libidn11-dev', 'libkeyutils1', 'libkrb53', 'liblzo2-2',
+                             'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
+                             'libldap-2.4-2', 'libldap2-dev', 'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client',
+                             'openssh-blacklist', 'libdbus-1-3', 'libck-connector0', 'openssh-server', 'ssh', 'tar',
+                             'zip', 'unzip']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.ADDITIONAL_TOOLS))
+
+    def test_has_expected_package_specifications_for_building_git(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for building git"""
+
+        expected_packages = ['comerr-dev', 'libkadm55', 'libkrb5-dev', 'libcurl4-openssl-dev', 'gettext-base', 'gettext']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.GIT_DEPENDENCIES))
 
     def test_has_expected_package_specifications_in_all_packages_definition(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications in the ALL_PACKAGES definition"""
@@ -122,7 +130,8 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
                              SystemPackageSpecifications.DATABASE_AUTHENTICATION,
                              SystemPackageSpecifications.DATABASE,
                              SystemPackageSpecifications.WEB_SERVER,
-                             SystemPackageSpecifications.ADDITIONAL_TOOLS]
+                             SystemPackageSpecifications.ADDITIONAL_TOOLS,
+                             SystemPackageSpecifications.GIT_DEPENDENCIES]
 
         self.assertEqual(expected_packages, SystemPackageSpecifications.ALL_PACKAGES)
 
