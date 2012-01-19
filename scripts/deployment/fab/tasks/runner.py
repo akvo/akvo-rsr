@@ -12,7 +12,7 @@ from fab.verifiers.config import ConfigFileVerifier
 
 class TaskParameters(object):
 
-    REMOTE_HOST_CONTROLLER_MODE = ':host_controller_mode=remote'
+    REMOTE_HOST_CONTROLLER_MODE = 'host_controller_mode=remote'
     NONE = ''
 
 
@@ -32,24 +32,35 @@ class TaskRunner(object):
         from fab.config.loaders import DeploymentConfigLoader, UserCredentialsLoader
         return TaskRunner(UserCredentialsLoader.load(), DeploymentConfigLoader.load())
 
-    def run_remote_deployment_task(self, fully_qualified_task):
-        self._run_task(fully_qualified_task, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+    def run_remote_deployment_task(self, task_class):
+        self._run_task(task_class, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
 
-    def run_deployment_task(self, fully_qualified_task):
-        self._run_task(fully_qualified_task)
+    def run_deployment_task(self, task_class):
+        self._run_task(task_class)
 
-    def run_data_retrieval_task(self, fully_qualified_task):
-        self._run_task(fully_qualified_task)
+    def run_data_retrieval_task(self, task_class):
+        self._run_task(task_class)
 
-    def _run_task(self, fully_qualified_task_name, parameters=TaskParameters.NONE):
+    def _run_task(self, task_class, task_parameters=TaskParameters.NONE):
         exit_code = self._execute(['fab', '-f', self.FABFILE_PATH,
-                                   fully_qualified_task_name + parameters,
+                                   self._task_with_parameters(task_class, task_parameters),
                                    '-H', self.ssh_connection,
                                    '-i', self.ssh_id_file_path,
                                    '-p', self.sudo_password])
 
         if exit_code != 0:
             raise SystemExit('\n>> Deployment failed due to errors above.\n')
+
+    def _task_with_parameters(self, task_class, task_parameters):
+        task_name = self._fully_qualified_task_name(task_class)
+
+        if task_parameters == TaskParameters.NONE:
+            return task_name
+        else:
+            return '%s:%s' % (task_name, task_parameters)
+
+    def _fully_qualified_task_name(self, task_class):
+        return '%s.%s' % (task_class.__module__, task_class.name)
 
     def _execute(self, command_with_parameters):
         return subprocess.call(command_with_parameters)

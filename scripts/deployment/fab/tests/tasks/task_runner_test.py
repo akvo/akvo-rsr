@@ -13,6 +13,8 @@ import fab.tests.templates.config_loaders_template
 from config_loaders import UserCredentialsLoader
 
 from fab.config.values.standard import CIDeploymentHostConfig
+from fab.tasks.database.backup import BackupRSRDatabase
+from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
 from fab.tasks.runner import TaskParameters, TaskRunner
 from fab.verifiers.config import ConfigFileVerifier
 
@@ -58,9 +60,9 @@ class TaskRunnerTest(mox.MoxTestBase):
 
         self.task_runner.fake_exit_code = 0
 
-        self.task_runner.run_deployment_task('some.deployment.task.name')
+        self.task_runner.run_deployment_task(UpdateSystemPythonPackages)
 
-        self.assertEqual(self._expected_fabric_call_with('some.deployment.task.name', TaskParameters.NONE),
+        self.assertEqual(self._expected_fabric_call_with(UpdateSystemPythonPackages, TaskParameters.NONE),
                          self.task_runner.executed_command_with_parameters)
 
     def test_can_run_remote_deployment_task(self):
@@ -68,17 +70,28 @@ class TaskRunnerTest(mox.MoxTestBase):
 
         self.task_runner.fake_exit_code = 0
 
-        self.task_runner.run_remote_deployment_task('some.deployment.task.name')
+        self.task_runner.run_remote_deployment_task(BackupRSRDatabase)
 
-        self.assertEqual(self._expected_fabric_call_with('some.deployment.task.name', TaskParameters.REMOTE_HOST_CONTROLLER_MODE),
+        self.assertEqual(self._expected_fabric_call_with(BackupRSRDatabase, TaskParameters.REMOTE_HOST_CONTROLLER_MODE),
                          self.task_runner.executed_command_with_parameters)
 
-    def _expected_fabric_call_with(self, fully_qualified_task, task_parameters):
+    def _expected_fabric_call_with(self, task_class, task_parameters):
         return ['fab', '-f', TaskRunner.FABFILE_PATH,
-                fully_qualified_task + task_parameters,
+                self._expected_task_with_parameters(task_class, task_parameters),
                 '-H', self.deployment_host_config.ssh_connection,
                 '-i', self.user_credentials.ssh_id_file_path,
                 '-p', self.user_credentials.sudo_password]
+
+    def _expected_task_with_parameters(self, task_class, task_parameters):
+        task_name = self._fully_qualified_task_name(task_class)
+
+        if task_parameters == TaskParameters.NONE:
+            return task_name
+        else:
+            return '%s:%s' % (task_name, task_parameters)
+
+    def _fully_qualified_task_name(self, task_class):
+        return '%s.%s' % (task_class.__module__, task_class.name)
 
     def test_will_raise_systemexit_if_task_execution_fails(self):
         """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
@@ -86,7 +99,7 @@ class TaskRunnerTest(mox.MoxTestBase):
         self.task_runner.fake_exit_code = 2
 
         with self.assertRaises(SystemExit) as raised:
-            self.task_runner._run_task('some.deployment.task.name')
+            self.task_runner._run_task(BackupRSRDatabase)
 
         self.assertTrue(raised.exception.message.find('Deployment failed due to errors above') > 0)
 
