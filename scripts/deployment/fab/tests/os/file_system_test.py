@@ -161,12 +161,8 @@ class FileSystemTest(mox.MoxTestBase):
 
     def _set_expectations_for_creating_directory(self, new_dir, with_sudo=False):
         self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        if with_sudo:
-            self.mock_host_controller.sudo("mkdir -p %s" % new_dir)
-            self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
-        else:
-            self.mock_host_controller.run("mkdir -p %s" % new_dir)
-            self.mock_host_controller.run("chmod 755 %s" % new_dir)
+        self._run_command("mkdir -p %s" % new_dir, with_sudo)
+        self._run_command("chmod 775 %s" % new_dir, with_sudo)
         self.mox.ReplayAll()
 
     def test_can_create_symlink(self):
@@ -279,9 +275,6 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_host_controller.run("uname -s").AndReturn(SystemType.LINUX)
         self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
         self.mock_host_controller.run(StatCommand(SystemType.LINUX).for_path(path)).AndReturn(path_type)
-
-    def _run_command(self, command, with_sudo=False):
-        return self.mock_host_controller.sudo(command) if with_sudo else self.mock_host_controller.run(command)
 
     def test_can_rename_file(self):
         """fab.tests.os.file_system_test  Can rename a file"""
@@ -462,6 +455,9 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.file_system.most_recent_file_in_directory("/var/some/dir")
+
+    def _run_command(self, command, with_sudo=False):
+        return self.mock_host_controller.sudo(command) if with_sudo else self.mock_host_controller.run(command)
 
     def _change_dir_to(self, expected_dir):
         self.mock_host_controller.cd(expected_dir).AndReturn(fabric.api.cd(expected_dir))
