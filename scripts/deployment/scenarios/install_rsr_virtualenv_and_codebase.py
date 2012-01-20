@@ -13,10 +13,10 @@ imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_sys
 from scenarios.runner import ScenarioRunner
 
 
-def install_rsr_and_virtualenv(scenario_runner):
-    scenario_runner.run_step('install_rsr_codebase')
+def install_rsr_virtualenv_and_codebase(scenario_runner):
     scenario_runner.run_step('rebuild_rsr_virtualenv')
+    scenario_runner.run_step('install_rsr_codebase')
 
 
 if __name__ == '__main__':
-    install_rsr_and_virtualenv(ScenarioRunner())
+    install_rsr_virtualenv_and_codebase(ScenarioRunner())
