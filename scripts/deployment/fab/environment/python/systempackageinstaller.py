@@ -12,26 +12,32 @@ from fab.environment.python.pipinstaller import PipInstaller
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 from fab.helpers.internet import Internet
 from fab.os.filesystem import FileSystem
+from fab.os.permissions import AkvoPermissions
 
 
 class SystemPythonPackageInstaller(object):
 
-    def __init__(self, codebase_config, package_installation_paths, pip_installer, file_system, internet_helper, host_controller):
+    def __init__(self, deployment_host_paths, codebase_config, package_installation_paths, pip_installer,
+                       file_system, permissions, internet_helper, host_controller):
+        self.deployment_processing_home = deployment_host_paths.deployment_processing_home
         self.system_requirements_file_url = codebase_config.system_requirements_file_url
         self.package_download_dir = package_installation_paths.package_download_dir
 
         self.pip_installer = pip_installer
         self.file_system = file_system
+        self.permissions = permissions
         self.internet = internet_helper
         self.host_controller = host_controller
         self.feedback = host_controller.feedback
 
     @staticmethod
-    def create_instance(host_controller):
-        return SystemPythonPackageInstaller(RSRCodebaseConfig.create_instance(),
-                                            SystemPackageInstallationPaths.create_instance(),
-                                            PipInstaller.create_instance(host_controller),
+    def create_with(deployment_host_config, host_controller):
+        return SystemPythonPackageInstaller(deployment_host_config.host_paths,
+                                            RSRCodebaseConfig(deployment_host_config.repository_branch),
+                                            SystemPackageInstallationPaths(deployment_host_config.host_paths),
+                                            PipInstaller.create_with(deployment_host_config, host_controller),
                                             FileSystem(host_controller),
+                                            AkvoPermissions(host_controller),
                                             Internet(host_controller),
                                             host_controller)
 
@@ -41,7 +47,12 @@ class SystemPythonPackageInstaller(object):
 
     def _clear_package_download_directory(self):
         self.file_system.delete_directory_with_sudo(self.package_download_dir)
-        self.file_system.ensure_directory_exists(self.package_download_dir)
+        self._ensure_directory_exists_with_web_group_permissions(self.deployment_processing_home)
+        self._ensure_directory_exists_with_web_group_permissions(self.package_download_dir)
+
+    def _ensure_directory_exists_with_web_group_permissions(self, dir_path):
+        self.file_system.ensure_directory_exists_with_sudo(dir_path)
+        self.permissions.set_web_group_permissions_on_directory(dir_path)
 
     def install_system_packages(self):
         self._install_system_packages(quietly=False)

@@ -41,7 +41,7 @@ class VirtualEnvInstaller(object):
         self.virtualenv_path = self.virtualenv_installer_config.rsr_env_path
 
     @staticmethod
-    def create_instance(virtualenv_installer_config, host_controller, file_system):
+    def create_with(virtualenv_installer_config, host_controller, file_system):
         return VirtualEnvInstaller(virtualenv_installer_config,
                                    host_controller,
                                    file_system,

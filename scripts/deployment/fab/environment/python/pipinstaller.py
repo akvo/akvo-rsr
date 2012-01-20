@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.config.values import DeploymentHostConfigValues
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 from fab.helpers.internet import Internet
 from fab.os.filesystem import FileSystem
@@ -21,8 +20,8 @@ class PipInstaller(object):
         self.feedback = host_controller.feedback
 
     @staticmethod
-    def create_instance(host_controller):
-        return PipInstaller(SystemPackageInstallationPaths.create_instance(),
+    def create_with(deployment_host_config, host_controller):
+        return PipInstaller(SystemPackageInstallationPaths(deployment_host_config.host_paths),
                             FileSystem(host_controller),
                             Internet(host_controller),
                             host_controller)

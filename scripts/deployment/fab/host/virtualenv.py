@@ -22,7 +22,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
         self.virtualenv_installer = virtualenv_installer
 
     @staticmethod
-    def create_instance(virtualenv_installer_config, host_controller):
+    def create_with(virtualenv_installer_config, host_controller):
         file_system = FileSystem(host_controller)
         permissions = AkvoPermissions(host_controller)
 
@@ -31,7 +31,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
                                         DeploymentUserVerifier(permissions),
                                         permissions,
                                         Internet(host_controller),
-                                        VirtualEnvInstaller.create_instance(virtualenv_installer_config, host_controller, file_system),
+                                        VirtualEnvInstaller.create_with(virtualenv_installer_config, host_controller, file_system),
                                         host_controller.feedback)
 
     def ensure_user_has_required_deployment_permissions(self):

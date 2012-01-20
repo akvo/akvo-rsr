@@ -9,14 +9,17 @@ import imp, os
 
 DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
-imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_testing_path_dependencies.py'))
+imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_deployment_scripts_home.py'))
 
 
 # Use "fab --list" or "fab --shortlist" to display the list of available tasks
 
 import fab.tasks.app.deployment
 import fab.tasks.data.retrieval
-import fab.tasks.database.rsr
+import fab.tasks.database.backup
+import fab.tasks.database.convert
+import fab.tasks.database.migrate
+import fab.tasks.database.rebuild
 import fab.tasks.environment.linux.systempackages
 import fab.tasks.environment.python.installer
 import fab.tasks.environment.python.systempackages
