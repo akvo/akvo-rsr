@@ -13,7 +13,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController
 from fab.os.command.stat import StatCommand
-from fab.os.filesystem import FileSystem, LocalFileSystem
+from fab.os.filesystem import ArchiveOptions, FileSystem, LocalFileSystem
 from fab.os.path import PathType
 from fab.os.system import SystemType
 
@@ -161,12 +161,8 @@ class FileSystemTest(mox.MoxTestBase):
 
     def _set_expectations_for_creating_directory(self, new_dir, with_sudo=False):
         self.mock_feedback.comment("Creating directory: %s" % new_dir)
-        if with_sudo:
-            self.mock_host_controller.sudo("mkdir -p %s" % new_dir)
-            self.mock_host_controller.sudo("chmod 755 %s" % new_dir)
-        else:
-            self.mock_host_controller.run("mkdir -p %s" % new_dir)
-            self.mock_host_controller.run("chmod 755 %s" % new_dir)
+        self._run_command("mkdir -p %s" % new_dir, with_sudo)
+        self._run_command("chmod 775 %s" % new_dir, with_sudo)
         self.mox.ReplayAll()
 
     def test_can_create_symlink(self):
@@ -280,9 +276,6 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
         self.mock_host_controller.run(StatCommand(SystemType.LINUX).for_path(path)).AndReturn(path_type)
 
-    def _run_command(self, command, with_sudo=False):
-        return self.mock_host_controller.sudo(command) if with_sudo else self.mock_host_controller.run(command)
-
     def test_can_rename_file(self):
         """fab.tests.os.file_system_test  Can rename a file"""
 
@@ -389,30 +382,30 @@ class FileSystemTest(mox.MoxTestBase):
     def test_can_decompress_code_archive(self):
         """fab.tests.os.file_system_test  Can decompress a code archive"""
 
-        archive_file = "rsr_v1.0.10.zip"
-        destination_dir = "/var/tmp/unpack"
-        self.mock_host_controller.run("unzip -q %s -d %s -x %s" % (archive_file, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
-        self.mox.ReplayAll()
+        self._decompress_archive("/path/to/rsr_code.zip", "/some/destination/dir", "-x %s" % ArchiveOptions.CODE_ARCHIVE_EXCLUSIONS)
 
-        self.file_system.decompress_code_archive(archive_file, destination_dir)
+        self.file_system.decompress_code_archive("/path/to/rsr_code.zip", "/some/destination/dir")
 
     def test_can_decompress_data_archive(self):
         """fab.tests.os.file_system_test  Can decompress a data archive"""
 
-        archive_file_path = "/some/data/dir/rsr_data.tar.bz2"
-        destination_dir = "/var/tmp/unpack"
+        self._decompress_archive("/path/to/rsr_data.zip", "/some/destination/dir", ArchiveOptions.NONE)
 
-        self.mock_host_controller.cd(destination_dir).AndReturn(fabric.api.cd(destination_dir))
-        self.mock_host_controller.run("tar -xf %s" % archive_file_path)
+        self.file_system.decompress_data_archive("/path/to/rsr_data.zip", "/some/destination/dir")
+
+    def _decompress_archive(self, expected_archive_file_name, expected_destination_dir, expected_options):
+        self.mock_host_controller.run("unzip -q %s -d %s %s".rstrip() % (expected_archive_file_name,
+                                                                         expected_destination_dir,
+                                                                         expected_options))
         self.mox.ReplayAll()
-
-        self.file_system.decompress_data_archive(archive_file_path, destination_dir)
 
     def test_can_compress_directory(self):
         """fab.tests.os.file_system_test  Can compress a specified directory"""
 
         dir_to_compress = "/var/archives/data_4423"
-        self._set_expected_compression_path_and_compressed_file_name(dir_to_compress, "data_4423")
+        expected_parent_dir = "/var/archives"
+        expected_archive_file = "data_4423.zip"
+        self._compress_resource(dir_to_compress, expected_parent_dir, expected_archive_file)
 
         self.file_system.compress_directory(dir_to_compress)
 
@@ -420,15 +413,17 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.os.file_system_test  Can compress a specified directory even with a trailing path separator"""
 
         dir_to_compress = "/var/archives/data_4423/"
-        self._set_expected_compression_path_and_compressed_file_name(dir_to_compress.rstrip("/"), "data_4423")
+        expected_parent_dir = "/var/archives"
+        expected_archive_file = "data_4423.zip"
+        self._compress_resource(dir_to_compress.rstrip("/"), expected_parent_dir, expected_archive_file)
 
         self.file_system.compress_directory(dir_to_compress)
 
-    def _set_expected_compression_path_and_compressed_file_name(self, dir_to_compress, archive_name):
-        self.mock_feedback.comment("Compressing %s" % dir_to_compress)
-        self.mock_host_controller.cd("/var/archives").AndReturn(fabric.api.cd("/var/archives"))
-        archive_file_with_extension = "%s%s" % (archive_name, FileSystem.DATA_ARCHIVE_EXTENSION)
-        self.mock_host_controller.run("tar -cjf %s %s" % (archive_file_with_extension, archive_name))
+    def _compress_resource(self, resource_path, expected_parent_dir, expected_archive_file):
+        self.mock_feedback.comment("Compressing %s" % resource_path)
+        self._change_dir_to(expected_parent_dir)
+        expected_archive_name = expected_archive_file.replace(".zip", "")
+        self.mock_host_controller.run("zip -r %s %s" % (expected_archive_file, expected_archive_name))
         self.mox.ReplayAll()
 
     def test_can_download_file(self):
@@ -460,6 +455,12 @@ class FileSystemTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.file_system.most_recent_file_in_directory("/var/some/dir")
+
+    def _run_command(self, command, with_sudo=False):
+        return self.mock_host_controller.sudo(command) if with_sudo else self.mock_host_controller.run(command)
+
+    def _change_dir_to(self, expected_dir):
+        self.mock_host_controller.cd(expected_dir).AndReturn(fabric.api.cd(expected_dir))
 
 
 def suite():

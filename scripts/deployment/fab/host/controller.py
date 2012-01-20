@@ -15,7 +15,7 @@ from fab.helpers.feedback import ExecutionFeedback
 
 class HostControllerBase(object):
 
-    def __init__(self, feedback):
+    def __init__(self, feedback=ExecutionFeedback()):
         self.feedback = feedback
 
     def hide_command(self):
@@ -30,10 +30,6 @@ class HostControllerBase(object):
 
 class RemoteHostController(HostControllerBase):
     """RemoteHostController encapsulates basic command execution and path validation calls made to a remote host via Fabric"""
-
-    @staticmethod
-    def create_instance():
-        return RemoteHostController(ExecutionFeedback())
 
     def path_exists(self, path):
         return fabric.contrib.files.exists(path)
@@ -56,10 +52,6 @@ class RemoteHostController(HostControllerBase):
 
 class LocalHostController(HostControllerBase):
     """LocalHostController encapsulates basic command execution and path validation calls made to a local host via Fabric"""
-
-    @staticmethod
-    def create_instance():
-        return LocalHostController(ExecutionFeedback())
 
     def path_exists(self, path):
         return os.path.exists(path)
@@ -105,4 +97,4 @@ class HostController(object):
 
     @staticmethod
     def create_from(controller_mode_text):
-        return HostController.classes[HostControllerMode.parse(controller_mode_text)].create_instance()
+        return HostController.classes[HostControllerMode.parse(controller_mode_text)]()

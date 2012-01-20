@@ -9,6 +9,7 @@ import fabric.api
 import fabric.tasks
 
 import fab.app.deployer
+import fab.config.loaders
 import fab.config.rsr.deployment
 import fab.host.controller
 import fab.host.deployment
@@ -23,8 +24,9 @@ class DeployRSRApp(fabric.tasks.Task):
         self.deployment_config = deployment_config
 
     @staticmethod
-    def create_task_instance(deployment_user):
-        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_instance(deployment_user))
+    def create_task():
+        return DeployRSRApp(fab.config.rsr.deployment.RSRDeploymentConfig.create_with(fab.config.loaders.DeploymentConfigLoader.load(),
+                                                                                      fabric.api.env.user))
 
     def run(self, host_controller_mode):
         self._initialise_app_deployer_using(host_controller_mode)
@@ -38,10 +40,10 @@ class DeployRSRApp(fabric.tasks.Task):
 
     def _initialise_app_deployer_using(self, host_controller_mode):
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
-        deployment_host = fab.host.deployment.DeploymentHost.create_instance(host_controller)
+        deployment_host = fab.host.deployment.DeploymentHost.create_with(host_controller)
 
-        self.app_deployer = fab.app.deployer.RSRAppDeployer(self.deployment_config, deployment_host)
         self.feedback = deployment_host.feedback
+        self.app_deployer = fab.app.deployer.RSRAppDeployer(self.deployment_config, deployment_host)
 
 
-instance = DeployRSRApp.create_task_instance(fabric.api.env.user)
+instance = DeployRSRApp.create_task()

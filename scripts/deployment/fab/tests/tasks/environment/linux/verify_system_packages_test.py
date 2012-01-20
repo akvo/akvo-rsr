@@ -32,7 +32,7 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can create task instance"""
 
-        self.assertIsInstance(VerifySystemPackages.create_task_instance(self.deployment_user), VerifySystemPackages)
+        self.assertIsInstance(VerifySystemPackages.create_task(), VerifySystemPackages)
 
     def test_can_verify_expected_system_package_dependencies(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can verify expected system package dependencies"""

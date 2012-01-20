@@ -21,9 +21,9 @@ scripts/deployment/builders/osx/config/rsr_env.config
 scripts/deployment/builders/osx/config/user.config
 scripts/deployment/builders/ubuntu/install_python27_config.py
 scripts/deployment/deploy_rsr_config.py
-scripts/deployment/fab/config/values.py
+scripts/deployment/fab/config/loaders.py
+scripts/deployment/fab/config/rsr/credentials/database.py
 scripts/deployment/fab/tests/test_settings.py
-scripts/deployment/static_project_structure.py
 scripts/deployment/update_ci_server_config.py
 
 ## Tests

@@ -15,9 +15,9 @@ from fab.tests.database.mysql.sql_statement_executor_test import SQLStatementExe
 
 
 def mysql_database_suite():
-    return TestSuiteLoader().create_suite_from_classes([SQLStatementExecutorTest, MySQLResponseDataTest,
-                                                        DatabaseCopierTest, DatabaseAdminCommandTest,
-                                                        DatabaseAdminTest])
+    return TestSuiteLoader().create_suite_from_classes([DatabaseAdminCommandTest, DatabaseAdminTest,
+                                                        DatabaseCopierTest, MySQLResponseDataTest,
+                                                        SQLStatementExecutorTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

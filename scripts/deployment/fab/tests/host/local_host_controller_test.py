@@ -18,7 +18,7 @@ class LocalHostControllerTest(unittest2.TestCase):
     def test_can_create_instance_with_feedback_member(self):
         """fab.tests.host.local_host_controller_test  Can create a LocalHostController instance with an ExecutionFeedback member"""
 
-        host_controller = LocalHostController.create_instance()
+        host_controller = LocalHostController()
 
         self.assertIsInstance(host_controller, LocalHostController)
         self.assertIsInstance(host_controller.feedback, ExecutionFeedback)

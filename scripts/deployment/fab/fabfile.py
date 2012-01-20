@@ -16,7 +16,10 @@ imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'v
 
 import fab.tasks.app.deployment
 import fab.tasks.data.retrieval
-import fab.tasks.database.rsr
+import fab.tasks.database.backup
+import fab.tasks.database.convert
+import fab.tasks.database.migrate
+import fab.tasks.database.rebuild
 import fab.tasks.environment.linux.systempackages
 import fab.tasks.environment.python.installer
 import fab.tasks.environment.python.systempackages

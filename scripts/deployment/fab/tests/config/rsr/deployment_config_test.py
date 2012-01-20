@@ -5,17 +5,13 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
-
-CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
-imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
-
-from config_values import DeploymentHostConfigValues
+from fab.config.values.standard import CIDeploymentHostConfig
 
 
 class RSRDeploymentConfigTest(unittest2.TestCase):
@@ -24,22 +20,21 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
         super(RSRDeploymentConfigTest, self).setUp()
 
         self.deployment_user = "rupaul"
-        self.feature_branch = "feature/sms"
-
-        self.deployment_host_config_values = DeploymentHostConfigValues()
-        self.codebase_config = RSRCodebaseConfig(self.feature_branch)
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.deployment_host_paths = self.deployment_host_config.host_paths
+        self.codebase_config = RSRCodebaseConfig(self.deployment_host_config.repository_branch)
 
         self.expected_rsr_dir_name = "rsr_%s" % self.codebase_config.repo_branch_without_type
-        self.expected_rsr_deployment_home = os.path.join(self.deployment_host_config_values.repo_checkout_home, self.expected_rsr_dir_name)
-        self.expected_current_virtualenv_path = os.path.join(self.deployment_host_config_values.virtualenvs_home, "current")
+        self.expected_rsr_deployment_home = os.path.join(self.deployment_host_paths.repo_checkout_home, self.expected_rsr_dir_name)
+        self.expected_current_virtualenv_path = os.path.join(self.deployment_host_paths.virtualenvs_home, "current")
 
-        self.deployment_config = RSRDeploymentConfig(self.deployment_user, self.deployment_host_config_values, self.codebase_config)
+        self.deployment_config = RSRDeploymentConfig(self.deployment_host_paths, self.deployment_user, self.codebase_config)
 
     def test_can_create_rsrdeploymentconfig_instance(self):
         """fab.tests.config.rsr.deployment_config_test  Can create RSRDeploymentConfig instance"""
 
-        self.assertIsInstance(RSRDeploymentConfig.create_instance(self.deployment_user), RSRDeploymentConfig)
-        self.assertIsInstance(RSRDeploymentConfig.create_instance(), RSRDeploymentConfig)
+        self.assertIsInstance(RSRDeploymentConfig.create_with(self.deployment_host_config, self.deployment_user), RSRDeploymentConfig)
+        self.assertIsInstance(RSRDeploymentConfig.create_with(self.deployment_host_config), RSRDeploymentConfig)
 
     def test_has_deployment_user_name(self):
         """fab.tests.config.rsr.deployment_config_test  Has deployment user name"""
@@ -49,12 +44,12 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def test_has_repository_checkout_home(self):
         """fab.tests.config.rsr.deployment_config_test  Has repository checkout home"""
 
-        self.assertEqual(self.deployment_host_config_values.repo_checkout_home, self.deployment_config.repo_checkout_home)
+        self.assertEqual(self.deployment_host_paths.repo_checkout_home, self.deployment_config.repo_checkout_home)
 
     def test_has_repository_archives_directory(self):
         """fab.tests.config.rsr.deployment_config_test  Has repository archives directory"""
 
-        expected_repo_archives_dir = os.path.join(self.deployment_host_config_values.repo_checkout_home, "archives")
+        expected_repo_archives_dir = os.path.join(self.deployment_host_paths.repo_checkout_home, "archives")
 
         self.assertEqual(expected_repo_archives_dir, self.deployment_config.repo_archives_dir)
 
@@ -111,20 +106,20 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_django_media_admin_path, self.deployment_config.django_media_admin_path)
 
-    def test_has_rsr_web_media_home(self):
-        """fab.tests.config.rsr.deployment_config_test  Has RSR web media home"""
+    def test_has_rsr_static_media_home(self):
+        """fab.tests.config.rsr.deployment_config_test  Has RSR static media home"""
 
-        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "akvo"), self.deployment_config.rsr_web_media_home)
+        self.assertEqual(os.path.join(self.deployment_host_paths.static_media_home, "akvo"), self.deployment_config.rsr_static_media_home)
 
-    def test_has_web_media_db_path(self):
-        """fab.tests.config.rsr.deployment_config_test  Has web media DB path"""
+    def test_has_static_media_db_path(self):
+        """fab.tests.config.rsr.deployment_config_test  Has static media DB path"""
 
-        self.assertEqual(os.path.join(self.deployment_host_config_values.web_media_home, "akvo/db"), self.deployment_config.web_media_db_path)
+        self.assertEqual(os.path.join(self.deployment_host_paths.static_media_home, "akvo/db"), self.deployment_config.static_media_db_path)
 
     def test_has_host_config_home(self):
         """fab.tests.config.rsr.deployment_config_test  Has host configuration home"""
 
-        self.assertEqual(self.deployment_host_config_values.config_home, self.deployment_config.host_config_home)
+        self.assertEqual(self.deployment_host_paths.config_home, self.deployment_config.host_config_home)
 
     def test_has_local_rsr_settings_file_name(self):
         """fab.tests.config.rsr.deployment_config_test  Has local RSR settings file name"""
@@ -134,7 +129,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def test_has_deployed_rsr_settings_file_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has deployed RSR settings file path"""
 
-        expected_deployed_settings_file_path = os.path.join(self.deployment_host_config_values.config_home, RSRCodebaseConfig.LOCAL_SETTINGS_FILE)
+        expected_deployed_settings_file_path = os.path.join(self.deployment_host_paths.config_home, RSRCodebaseConfig.LOCAL_SETTINGS_FILE)
 
         self.assertEqual(expected_deployed_settings_file_path, self.deployment_config.deployed_rsr_settings_file)
 
@@ -146,7 +141,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def test_has_deployed_mod_python_file_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has deployed mod_python file path"""
 
-        expected_deployed_mod_python_file_path = os.path.join(self.deployment_host_config_values.config_home, RSRCodebaseConfig.MOD_PYTHON_FILE)
+        expected_deployed_mod_python_file_path = os.path.join(self.deployment_host_paths.config_home, RSRCodebaseConfig.MOD_PYTHON_FILE)
 
         self.assertEqual(expected_deployed_mod_python_file_path, self.deployment_config.deployed_mod_python_file)
 
