@@ -17,7 +17,9 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li class="last_breadcrum_item">{% trans "Projects" %}</li>
+  {% if return_url %}
+    <li class="last_breadcrum_item">{% trans "Projects" %}</li>
+  {% endif %}
 {% endblock breadcrum_items %}
 
 {% block content %}
