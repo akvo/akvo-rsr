@@ -28,6 +28,7 @@ class TaskRunner(object):
     @staticmethod
     def create(config_file_verifier=ConfigFileVerifier()):
         config_file_verifier.exit_if_config_loaders_not_found()
+        config_file_verifier.exit_if_database_credentials_not_found()
 
         from fab.config.loaders import DeploymentConfigLoader, UserCredentialsLoader
         return TaskRunner(UserCredentialsLoader.load(), DeploymentConfigLoader.load())
