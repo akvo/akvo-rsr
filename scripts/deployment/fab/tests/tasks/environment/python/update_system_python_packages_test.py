@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import mox, os
+import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
@@ -28,7 +28,7 @@ class UpdateSystemPythonPackagesTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Can create task instance"""
 
-        self.assertIsInstance(UpdateSystemPythonPackages.create_task_instance(self.deployment_user), UpdateSystemPythonPackages)
+        self.assertIsInstance(UpdateSystemPythonPackages.create_task(), UpdateSystemPythonPackages)
 
     def test_can_update_system_python_packages(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Can update system python packages"""

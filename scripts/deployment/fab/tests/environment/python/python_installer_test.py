@@ -12,6 +12,8 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.environment.python.brew import PythonBrew
 from fab.environment.python.installer import PythonInstaller
+from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import RemoteHostController
 
 
 class PythonInstallerTest(mox.MoxTestBase):
@@ -21,6 +23,16 @@ class PythonInstallerTest(mox.MoxTestBase):
         self.mock_pythonbrew = self.mox.CreateMock(PythonBrew)
 
         self.python_installer = PythonInstaller(self.mock_pythonbrew)
+
+    def test_can_create_pythoninstaller_instance(self):
+        """fab.tests.environment.python.python_installer_test  Can create PythonInstaller instance"""
+
+        mock_host_controller = self.mox.CreateMock(RemoteHostController)
+        mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
+
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(PythonInstaller.create_with(mock_host_controller), PythonInstaller)
 
     def test_can_ensure_specified_python_version_is_installed(self):
         """fab.tests.environment.python.python_installer_test  Can ensure specified Python version is installed"""

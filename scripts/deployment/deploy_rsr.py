@@ -55,6 +55,9 @@ def run_fab_task(fully_qualified_task, host, username, password):
 def run_deployment_task(fully_qualified_task):
     run_fab_task(fully_qualified_task, DEPLOYMENT_HOST, DEPLOYMENT_HOST_USERNAME, DEPLOYMENT_HOST_PASSWORD)
 
+def run_remote_deployment_task(fully_qualified_task):
+    run_deployment_task("%s:host_controller_mode=remote" % fully_qualified_task)
+
 def run_data_retrieval_task(fully_qualified_task):
     run_fab_task(fully_qualified_task, DATA_HOST, DATA_HOST_USERNAME, DATA_HOST_PASSWORD)
 
@@ -62,10 +65,14 @@ def deploy_rsr():
     os.chdir(FABRIC_SCRIPTS_HOME)
     run_deployment_task("fab.tasks.environment.linux.systempackages.verify_system_packages")
     run_deployment_task("fab.tasks.environment.python.systempackages.update_system_python_packages")
-    run_deployment_task("fab.tasks.app.deployment.deploy_rsr_app:host_controller_mode=remote")
-    run_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env:host_controller_mode=remote")
+    run_remote_deployment_task("fab.tasks.app.deployment.deploy_rsr_app")
+    run_remote_deployment_task("fab.tasks.environment.python.virtualenv.rsr.rebuild_rsr_env")
+    ### sync media assets
     run_data_retrieval_task("fab.tasks.data.retrieval.fetch_rsr_data")
-    run_deployment_task("fab.tasks.database.rsr.rebuild_rsr_database:host_controller_mode=remote")
+    run_remote_deployment_task("fab.tasks.database.rebuild.rebuild_rsr_database")
+    ### switch to release branch + redeploy app code, then continue
+    run_remote_deployment_task("fab.tasks.database.convert.convert_rsr_database_for_migrations")
+    run_remote_deployment_task("fab.tasks.database.migrate.run_database_migrations")
 
 
 if __name__ == "__main__":

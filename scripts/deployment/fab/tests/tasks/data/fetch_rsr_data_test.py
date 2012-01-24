@@ -29,7 +29,7 @@ class FetchRSRDataTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.data.fetch_rsr_data_test  Can create task instance"""
 
-        self.assertIsInstance(FetchRSRData.create_task_instance(), FetchRSRData)
+        self.assertIsInstance(FetchRSRData.create_task(), FetchRSRData)
 
     def test_can_fetch_data_from_data_host(self):
         """fab.tests.tasks.data.fetch_rsr_data_test  Can fetch RSR data from the data host"""

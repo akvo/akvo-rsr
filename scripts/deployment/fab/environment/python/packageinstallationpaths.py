@@ -7,18 +7,12 @@
 
 import os
 
-from fab.config.values import DeploymentHostConfigValues
-
 
 class SystemPackageInstallationPaths(object):
 
     PIP_VERSION = "1.0.2"
 
-    def __init__(self, deployment_host_config_values):
-        self.package_download_dir   = os.path.join(deployment_host_config_values.deployment_processing_home, 'python_packages')
+    def __init__(self, deployment_host_paths):
+        self.package_download_dir   = os.path.join(deployment_host_paths.deployment_processing_home, 'python_packages')
         self.distribute_setup_url   = "http://python-distribute.org/distribute_setup.py"
         self.pip_setup_url          = os.path.join("https://raw.github.com/pypa/pip", self.PIP_VERSION, "contrib/get-pip.py")
-
-    @staticmethod
-    def create_instance():
-        return SystemPackageInstallationPaths(DeploymentHostConfigValues())

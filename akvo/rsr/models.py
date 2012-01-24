@@ -864,7 +864,7 @@ class Project(models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(partnership__in=self)
+            orgs = Organisation.objects.filter(partnership__project__in=self)
             if partner_type:
                 orgs = orgs.filter(partnership__partner_type=partner_type)
             return orgs.distinct()
@@ -882,7 +882,7 @@ class Project(models.Model):
             return self._partners(Partnership.SUPPORT_PARTNER)
 
         def all_partners(self):
-            return self._partners()
+                return self._partners()
 
     def __unicode__(self):
         return u'%s' % self.name

@@ -7,8 +7,6 @@
 
 import os
 
-from fab.config.values import SharedConfigValues
-
 
 class RSRCodebaseConfig(object):
     """RSRCodebaseConfig represents paths and configuration values specific to the RSR codebase"""
@@ -29,6 +27,8 @@ class RSRCodebaseConfig(object):
     MANAGE_SCRIPT_PATH          = "akvo/manage.py"
     DB_DUMP_SCRIPT_PATH         = "akvo/db_dump.py"
 
+    RSR_APP_NAME                = "rsr"
+
     def __init__(self, repository_branch):
         self.repo_branch = repository_branch
         self.repo_branch_without_type = self._branch_without_type()
@@ -40,10 +40,6 @@ class RSRCodebaseConfig(object):
 
         self.rsr_requirements_file_path     = self._requirements_path(self.RSR_REQUIREMENTS_FILE)
         self.testing_requirements_file_path = self._requirements_path(self.TESTING_REQUIREMENTS_FILE)
-
-    @staticmethod
-    def create_instance():
-        return RSRCodebaseConfig(SharedConfigValues().repository_branch)
 
     def _branch_without_type(self):
         if self._branch_includes_type():
