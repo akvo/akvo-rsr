@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.tests.config.loaders.deployment_config_loader_test import DeploymentConfigLoaderTest
-from fab.tests.config.loaders.user_credentials_loader_test import UserCredentialsLoaderTest
+from fab.tests.config.loader.config_type_test import ConfigTypeTest
+from fab.tests.config.loader.deployment_config_loader_test import DeploymentConfigLoaderTest
 
 
 def config_loaders_suite():
-    return TestSuiteLoader().create_suite_from_classes([DeploymentConfigLoaderTest, UserCredentialsLoaderTest])
+    return TestSuiteLoader().create_suite_from_classes([ConfigTypeTest, DeploymentConfigLoaderTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
