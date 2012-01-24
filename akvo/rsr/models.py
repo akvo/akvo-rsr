@@ -314,7 +314,6 @@ class Organisation(models.Model):
         "returns a queryset with published projects that has self as any kind of partner"
         return self.projects.published().distinct()
 
-
     def all_projects(self):
         "returns a queryset with all projects that has self as any kind of partner"
         return self.projects.all().distinct()
@@ -324,7 +323,7 @@ class Organisation(models.Model):
 
     def partners(self):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
-        return self.projects.all_partners().exclude(id__exact=self.id)
+        return self.published_projects().all_partners().exclude(id__exact=self.id)
 
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled().status_not_archived()
