@@ -17,12 +17,13 @@ from djangotoolbox.utils import make_tls_property
 from akvo.rsr.models import PartnerSite
 
 
+PARTNER_SITES_ORGANISATION_ID = settings.__class__.PARTNER_SITES_ORGANISATION_ID = make_tls_property()
 SITE_ID = settings.__class__.SITE_ID = make_tls_property()
 
 
 PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings, 'PARTNER_SITES_DEVELOPMENT_DOMAIN', 'akvoapp.dev')
 PARTNER_SITES_DOMAINS = getattr(settings, 'PARTNER_SITES_DOMAINS',
-        'akvoapp.org', 'akvotest.org', 'akvotest2.org', PARTNER_SITES_DEVELOPMENT_DOMAIN)
+        ('akvoapp.org', 'akvotest.org', 'akvotest2.org', 'akvotest3.org', PARTNER_SITES_DEVELOPMENT_DOMAIN))
 PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
 
 
@@ -64,7 +65,7 @@ class PartnerSitesRouterMiddleware(object):
                 raise Http404
         if partner_site is not None and partner_site.enabled:
             request.partner_site = partner_site
-            request.organisation_id = partner_site.organisation.id
+            request.organisation_id = PARTNER_SITES_ORGANISATION_ID = partner_site.organisation.id
             request.urlconf = 'akvo.urls.partner_sites'
         SITE_ID = site.id
         return
