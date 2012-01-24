@@ -33,13 +33,28 @@ class DeploymentConfigLoader(object):
     preconfigured_hosts = { HostAlias.TEST:     CIDeploymentHostConfig.for_test(),
                             HostAlias.TEST2:    CIDeploymentHostConfig.for_test2() }
 
-    def load_preconfigured_for(self, host_alias):
+    def __init__(self, feedback):
+        self.feedback = feedback
+
+    def host_config_for(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
+        self.config_type = ConfigType(config_type)
+
+        if self.config_type.is_standard():
+            return self._load_standard_from(host_alias, repository_branch, database_name)
+        elif self.config_type.is_preconfigured():
+            return self._load_preconfigured_for(host_alias)
+        elif self.config_type.is_custom():
+            return self._load_custom_from(custom_config_module_path)
+        else:
+            self.feedback.abort('Unknown configuration type: %s' % config_type)
+
+    def _load_preconfigured_for(self, host_alias):
         return self.preconfigured_hosts[host_alias]
 
-    def load(self, host_alias, repository_branch, database_name):
+    def _load_standard_from(self, host_alias, repository_branch, database_name):
         return DeploymentHostConfig.create_with(host_alias, repository_branch, database_name)
 
-    def load_custom_from(self, custom_config_module_path):
+    def _load_custom_from(self, custom_config_module_path):
         import imp
         imp.load_source('custom_config', custom_config_module_path)
         from custom_config import CustomDeploymentHostConfig
