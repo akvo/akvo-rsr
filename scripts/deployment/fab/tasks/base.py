@@ -13,7 +13,7 @@ import fab.config.loader
 class DeploymentTaskBase(fabric.tasks.Task):
     """Base task for RSR deployment actions"""
 
-    def __init__(self, feedback, config_loader=fab.config.loader.DeploymentConfigLoader()):
+    def __init__(self, feedback, config_loader):
         self.config_loader = config_loader
         self.feedback = feedback
 

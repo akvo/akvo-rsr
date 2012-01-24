@@ -26,11 +26,6 @@ class DeploymentTaskBaseTest(mox.MoxTestBase):
 
         self.deployment_task = DeploymentTaskBase(self.mock_feedback, self.mock_config_loader)
 
-    def test_can_instantiate_with_default_config_loader(self):
-        """fab.tests.tasks.deployment_task_base_test  Can instantiate with default configuration loader"""
-
-        self.assertIsInstance(DeploymentTaskBase(self.mock_feedback).config_loader, DeploymentConfigLoader)
-
     def test_can_load_host_config_from_standard_configuration_set(self):
         """fab.tests.tasks.deployment_task_base_test  Can run deployment task with standard configuration set"""
 
