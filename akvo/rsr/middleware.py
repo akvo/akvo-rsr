@@ -25,6 +25,7 @@ class PartnerSitesRouterMiddleware(object):
             return redirect(marketing_site_url)
         elif (domain.endswith('.akvoapp.org') or
               domain.endswith('.akvotest.org') or
+              domain.endswith('.akvotest2.org') or
               domain.endswith('.akvoapp.dev')):  # Partner site instance
             domain_parts = domain.split('.')
             if len(domain_parts) >= 3:  # matches (*.)hostname.akvoapp|akvotest.org and (*.)hostname.akvoapp.dev
