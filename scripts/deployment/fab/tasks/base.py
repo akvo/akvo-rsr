@@ -17,14 +17,14 @@ class DeploymentTaskBase(fabric.tasks.Task):
         self.config_loader = config_loader
         self.feedback = feedback
 
-    def run(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
+    def _host_config_for(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
         self.config_type = fab.config.loader.ConfigType(config_type)
 
         if self.config_type.is_standard():
-            self.host_config = self.config_loader.load(host_alias, repository_branch, database_name)
+            return self.config_loader.load(host_alias, repository_branch, database_name)
         elif self.config_type.is_preconfigured():
-            self.host_config = self.config_loader.load_preconfigured_for(host_alias)
+            return self.config_loader.load_preconfigured_for(host_alias)
         elif self.config_type.is_custom():
-            self.host_config = self.config_loader.load_custom_from(custom_config_module_path)
+            return self.config_loader.load_custom_from(custom_config_module_path)
         else:
             self.feedback.abort('Unknown configuration type: %s' % config_type)
