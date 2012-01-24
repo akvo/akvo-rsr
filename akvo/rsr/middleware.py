@@ -42,7 +42,7 @@ class PartnerSitesRouterMiddleware(object):
         domain = host[0]
         dev_domains = ('localhost', '127.0.0.1', PARTNER_SITES_DEVELOPMENT_DOMAIN)
         if domain.endswith('akvo.org') or domain in dev_domains:  # Regular RSR instance
-            site = Site.objects.get_or_create(domain=domain, name=domain)
+            site, created = Site.objects.get_or_create(domain=domain, name=domain)
             request.urlconf = 'akvo.urls.rsr'
         elif domain == PARTNER_SITES_DEVELOPMENT_DOMAIN:
             return redirect(PARTNER_SITES_MARKETING_SITE)
@@ -51,7 +51,7 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
                 if partner_site is not None:
-                    site = Site.objects.get_or_create(domain=hostname, name=hostname)
+                    site, created = Site.objects.get_or_create(domain=hostname, name=hostname)
             except:
                 pass
             if partner_site is None or not partner_site.enabled:
@@ -60,7 +60,7 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
                 if partner_site is not None:
-                    site = Site.objects.get_or_create(domain=partner_site.hostname, name=partner_site.hostname)
+                    site, created = Site.objects.get_or_create(domain=partner_site.hostname, name=partner_site.hostname)
             except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
