@@ -52,11 +52,3 @@ class CIDeploymentHostConfig(object):
     @staticmethod
     def for_test2():
         return DeploymentHostConfig.create_with(HostAlias.TEST2, RepositoryBranch.DEVELOP, 'test2_rsrdb_develop')
-
-    @staticmethod
-    def for_uat(release_branch, rsr_database_name):
-        return DeploymentHostConfig.create_with(HostAlias.UAT, release_branch, rsr_database_name)
-
-    @staticmethod
-    def for_live(rsr_database_name):
-        return DeploymentHostConfig.create_with(HostAlias.LIVE, RepositoryBranch.MASTER, rsr_database_name)
