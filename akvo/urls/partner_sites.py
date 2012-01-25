@@ -70,11 +70,11 @@ if getattr(settings, 'PARTNER_SITES_AUTH', False):
             name='sign_out'),
 
         url(r'^project/(?P<project_id>\d+)/update/$',
-            views.ProjectUpdateFormView.as_view(),
+            views.ProjectUpdateAddView.as_view(),
             name='update_add'),
 
         url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$',
-            views.ProjectUpdateFormView.as_view(),
+            views.ProjectUpdateEditView.as_view(),
             name='update_edit'),
     )
 
