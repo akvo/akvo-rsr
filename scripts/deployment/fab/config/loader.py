@@ -7,6 +7,7 @@
 
 from fab.config.rsr.host import CIDeploymentHostConfig, DeploymentHostConfig
 from fab.config.values.host import HostAlias
+from fab.helpers.feedback import ExecutionFeedback
 
 
 class ConfigType(object):
@@ -33,7 +34,7 @@ class DeploymentConfigLoader(object):
     preconfigured_hosts = { HostAlias.TEST:     CIDeploymentHostConfig.for_test(),
                             HostAlias.TEST2:    CIDeploymentHostConfig.for_test2() }
 
-    def __init__(self, feedback):
+    def __init__(self, feedback=ExecutionFeedback()):
         self.feedback = feedback
 
     def host_config_for(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):

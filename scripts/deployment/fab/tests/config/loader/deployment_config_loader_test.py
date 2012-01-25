@@ -23,6 +23,11 @@ class DeploymentConfigLoaderTest(mox.MoxTestBase):
 
         self.config_loader = DeploymentConfigLoader(self.mock_feedback)
 
+    def test_initialiser_has_default_execution_feedback(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Initialiser has default ExecutionFeedback"""
+
+        self.assertIsInstance(DeploymentConfigLoader().feedback, ExecutionFeedback)
+
     def test_can_load_preconfigured_configuration_for_test_host(self):
         """fab.tests.config.loader.deployment_config_loader_test  Can load preconfigured configuration for test host"""
 
