@@ -27,7 +27,7 @@ PARTNER_SITES_DOMAINS = getattr(settings, 'PARTNER_SITES_DOMAINS',
 PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
 
 
-def is_akvo_site(domain):
+def is_rsr(domain):
     dev_domains = ('localhost', '127.0.0.1', PARTNER_SITES_DEVELOPMENT_DOMAIN)
     if domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains:
         return True
@@ -44,9 +44,10 @@ def is_partner_site(domain):
 
 
 class PartnerSitesRouterMiddleware(object):
+
     def process_request(self, request, partner_site=None):
         domain = request.get_host().split(':')[0]
-        if is_akvo_site(domain):  # Regular RSR instance
+        if is_rsr(domain):  # Vanilla Akvo RSR instance
             site, _created = Site.objects.get_or_create(domain=domain, name=domain)
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site(domain):  # Partner site instance
