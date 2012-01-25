@@ -9,40 +9,31 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType
-from fab.config.rsr.host import DeploymentHostConfig
+from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.hostbase import LinuxHostBaseTask
-
-
-class StubbedLinuxHostBaseTask(LinuxHostBaseTask):
-
-    def __init__(self, linux_host):
-        super(StubbedLinuxHostBaseTask, self).__init__()
-        self.linux_host = linux_host
-
-    def _configure_linux_host_with(self, host_config):
-        self.actual_host_config_used = host_config
-        return self.linux_host
 
 
 class LinuxHostBaseTaskTest(mox.MoxTestBase):
 
     def setUp(self):
         super(LinuxHostBaseTaskTest, self).setUp()
+        self.mock_config_loader = self.mox.CreateMock(DeploymentConfigLoader)
 
-    def test_can_configure_linux_host_when_task_is_executed(self):
-        """fab.tests.tasks.environment.linux_host_base_task_test  Can configure Linux host when task is executed"""
+        self.linux_host_base_task = LinuxHostBaseTask()
+        self.linux_host_base_task.config_loader = self.mock_config_loader
 
-        mock_linux_host = self.mox.CreateMock(LinuxHost)
+    def test_can_configure_linux_host_with_given_config_parameters(self):
+        """fab.tests.tasks.environment.linux_host_base_task_test  Can configure Linux host with the given configuration parameters"""
 
-        linux_host_base_task = StubbedLinuxHostBaseTask(mock_linux_host)
-
+        self.mock_config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None).AndReturn(CIDeploymentHostConfig.for_test())
         self.mox.ReplayAll()
 
-        linux_host_base_task.run(ConfigType.PRECONFIGURED, HostAlias.TEST)
-        self.assertIsInstance(linux_host_base_task.actual_host_config_used, DeploymentHostConfig)
+        configured_linux_host = self.linux_host_base_task._configure_linux_host_with(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None)
+
+        self.assertIsInstance(configured_linux_host, LinuxHost)
 
 
 def suite():
