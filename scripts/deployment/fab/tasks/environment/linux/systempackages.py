@@ -9,7 +9,7 @@ import fabric.api
 import fabric.tasks
 
 import fab.config.environment.linux.systempackages
-import fab.config.loaders
+import fab.config.loader
 import fab.host.linux
 
 
@@ -18,21 +18,22 @@ class VerifySystemPackages(fabric.tasks.Task):
 
     name = "verify_system_packages"
 
-    def __init__(self, deployment_user, linux_host):
+    def __init__(self, deployment_user):
         self.deployment_user = deployment_user
-        self.linux_host = linux_host
+        self.config_loader = fab.config.loader.DeploymentConfigLoader()
 
-    @staticmethod
-    def create_task():
-        linux_host = fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load())
-        return VerifySystemPackages(fabric.api.env.user, linux_host)
+    def run(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
+        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
+        linux_host = self._configure_linux_host_with(host_config)
 
-    def run(self):
-        self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
-        self.linux_host.update_system_package_sources()
+        linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
+        linux_host.update_system_package_sources()
 
         for package_specifications in fab.config.environment.linux.systempackages.SystemPackageSpecifications.ALL_PACKAGES:
-            self.linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
+            linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
+
+    def _configure_linux_host_with(self, host_config):
+        return fab.host.linux.LinuxHost.create_with(host_config)
 
 
-instance = VerifySystemPackages.create_task()
+instance = VerifySystemPackages(fabric.api.env.user)

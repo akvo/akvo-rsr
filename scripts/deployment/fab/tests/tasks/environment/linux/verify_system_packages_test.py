@@ -10,8 +10,22 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
+from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.linux.systempackages import VerifySystemPackages
+
+
+class StubbedVerifySystemPackages(VerifySystemPackages):
+
+    def __init__(self, deployment_user, linux_host):
+        super(StubbedVerifySystemPackages, self).__init__(deployment_user)
+        self.linux_host = linux_host
+
+    def _configure_linux_host_with(self, host_config):
+        self.actual_host_config_used = host_config
+        return self.linux_host
 
 
 class VerifySystemPackagesTest(mox.MoxTestBase):
@@ -22,17 +36,17 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
 
         self.deployment_user = "rupaul"
 
-        self.verify_system_packages_task = VerifySystemPackages(self.deployment_user, self.mock_linux_host)
+        self.verify_system_packages_task = StubbedVerifySystemPackages(self.deployment_user, self.mock_linux_host)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Has expected task name"""
 
         self.assertEqual("verify_system_packages", VerifySystemPackages.name)
 
-    def test_can_create_task_instance(self):
-        """fab.tests.tasks.environment.linux.verify_system_packages_test  Can create task instance"""
+    def test_initialiser_sets_default_config_loader(self):
+        """fab.tests.tasks.environment.linux.verify_system_packages_test  Initialiser sets default config loader"""
 
-        self.assertIsInstance(VerifySystemPackages.create_task(), VerifySystemPackages)
+        self.assertIsInstance(VerifySystemPackages(self.deployment_user).config_loader, DeploymentConfigLoader)
 
     def test_can_verify_expected_system_package_dependencies(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can verify expected system package dependencies"""
@@ -45,7 +59,8 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        self.verify_system_packages_task.run()
+        self.verify_system_packages_task.run(ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.assertEqual(CIDeploymentHostConfig.for_test(), self.verify_system_packages_task.actual_host_config_used)
 
 
 def suite():
