@@ -50,15 +50,6 @@ if __name__ == '__main__':
     TestRunner(TEST_MODE).run_test_suite(suite())
 
 
-class SiteFinder(object):
-
-    def __init__(self, site_objects):
-        self.site_objects = site_objects
-
-    def find(self, domain_name):
-        return self.site_objects.get_or_create(domain=domain_name, name=domain_name)
-
-
 import mox
 
 from django.core.management import setup_environ
@@ -69,10 +60,20 @@ from django.contrib.sites.models import Site, SiteManager
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-class SitefinderTest(mox.MoxTestBase):
+
+class SiteFinder(object):
+
+    def __init__(self, site_objects):
+        self.site_objects = site_objects
+
+    def find(self, domain_name):
+        return self.site_objects.get_or_create(domain=domain_name, name=domain_name)
+
+
+class SiteFinderTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(SitefinderTest, self).setUp()
+        super(SiteFinderTest, self).setUp()
         self.mock_site_model_manager = self.mox.CreateMock(SiteManager)
         self.mock_site = self.mox.CreateMock(Site)
         self.site_finder = SiteFinder(self.mock_site_model_manager)
@@ -85,8 +86,10 @@ class SitefinderTest(mox.MoxTestBase):
         actual_site_tuple = self.site_finder.find('some.domain.org')
         self.assertEqual(expected_site_tuple, actual_site_tuple)
 
+
 def suite():
-    return TestSuiteLoader().load_tests_from(SitefinderTest)
+    return TestSuiteLoader().load_tests_from(SiteFinderTest)
+
 
 if __name__ == '__main__':
     from test_settings import TEST_MODE

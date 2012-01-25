@@ -27,6 +27,13 @@ PARTNER_SITES_DOMAINS = getattr(settings, 'PARTNER_SITES_DOMAINS',
 PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
 
 
+def is_akvo_site(domain):
+    dev_domains = ('localhost', '127.0.0.1', PARTNER_SITES_DEVELOPMENT_DOMAIN)
+    if domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains:
+        return True
+    return False
+
+
 def is_partner_site(domain):
     domain_parts = domain.split('.')
     if len(domain_parts) >= 3:
@@ -38,21 +45,17 @@ def is_partner_site(domain):
 
 class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
-        host = request.get_host().split(':')
-        domain = host[0]
-        dev_domains = ('localhost', '127.0.0.1', PARTNER_SITES_DEVELOPMENT_DOMAIN)
-        if domain.endswith('akvo.org') or domain in dev_domains:  # Regular RSR instance
-            site, created = Site.objects.get_or_create(domain=domain, name=domain)
+        domain = request.get_host().split(':')[0]
+        if is_akvo_site(domain):  # Regular RSR instance
+            site, _created = Site.objects.get_or_create(domain=domain, name=domain)
             request.urlconf = 'akvo.urls.rsr'
-        elif domain == PARTNER_SITES_DEVELOPMENT_DOMAIN:
-            return redirect(PARTNER_SITES_MARKETING_SITE)
         elif is_partner_site(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
                 if partner_site is not None:
-                    site, created = Site.objects.get_or_create(domain=hostname, name=hostname)
-            except:
+                    site, _created = Site.objects.get_or_create(domain=hostname, name=hostname)
+            except LookupError:
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
@@ -60,8 +63,8 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
                 if partner_site is not None:
-                    site, created = Site.objects.get_or_create(domain=partner_site.hostname, name=partner_site.hostname)
-            except:
+                    site, _created = Site.objects.get_or_create(domain=partner_site.hostname, name=partner_site.hostname)
+            except LookupError:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
             request.partner_site = partner_site
