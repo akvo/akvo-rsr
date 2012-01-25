@@ -11,7 +11,6 @@ from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.loader import ConfigType
 from fab.config.rsr.credentials.user import UserCredentials
-from fab.config.rsr.host import DeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.python.installer import InstallPython
@@ -23,8 +22,7 @@ class StubbedInstallPython(InstallPython):
         super(StubbedInstallPython, self).__init__()
         self.linux_host = linux_host
 
-    def _configure_linux_host_with(self, host_config):
-        self.actual_host_config_used = host_config
+    def _configure_linux_host_with(self, config_type, host_alias, repository_branch, database_name, custom_config_module_path):
         return self.linux_host
 
 
@@ -50,7 +48,6 @@ class InstallPythonTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         install_python_task.run('2.7.2', ConfigType.PRECONFIGURED, HostAlias.TEST)
-        self.assertIsInstance(install_python_task.actual_host_config_used, DeploymentHostConfig)
 
 
 def suite():

@@ -5,24 +5,19 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fab.host.linux
-import fab.tasks.base
+import fab.tasks.environment.hostbase
 
 
-class InstallPython(fab.tasks.base.BaseDeploymentTask):
+class InstallPython(fab.tasks.environment.hostbase.LinuxHostBaseTask):
     """Installs a specified Python interpreter"""
 
     name = 'install_python'
 
     def run(self, python_version, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
-        linux_host = self._configure_linux_host_with(host_config)
+        linux_host = self._configure_linux_host_with(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
 
         linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         linux_host.ensure_python_is_installed_with_version(python_version)
-
-    def _configure_linux_host_with(self, host_config):
-        return fab.host.linux.LinuxHost.create_with(host_config)
 
 
 instance = InstallPython()
