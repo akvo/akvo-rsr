@@ -7,10 +7,11 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
@@ -19,8 +20,8 @@ from fab.tasks.environment.linux.systempackages import VerifySystemPackages
 
 class StubbedVerifySystemPackages(VerifySystemPackages):
 
-    def __init__(self, deployment_user, linux_host):
-        super(StubbedVerifySystemPackages, self).__init__(deployment_user)
+    def __init__(self, linux_host):
+        super(StubbedVerifySystemPackages, self).__init__()
         self.linux_host = linux_host
 
     def _configure_linux_host_with(self, host_config):
@@ -34,24 +35,17 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
         super(VerifySystemPackagesTest, self).setUp()
         self.mock_linux_host = self.mox.CreateMock(LinuxHost)
 
-        self.deployment_user = "rupaul"
-
-        self.verify_system_packages_task = StubbedVerifySystemPackages(self.deployment_user, self.mock_linux_host)
+        self.verify_system_packages_task = StubbedVerifySystemPackages(self.mock_linux_host)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Has expected task name"""
 
-        self.assertEqual("verify_system_packages", VerifySystemPackages.name)
-
-    def test_initialiser_sets_default_config_loader(self):
-        """fab.tests.tasks.environment.linux.verify_system_packages_test  Initialiser sets default config loader"""
-
-        self.assertIsInstance(VerifySystemPackages(self.deployment_user).config_loader, DeploymentConfigLoader)
+        self.assertEqual('verify_system_packages', VerifySystemPackages.name)
 
     def test_can_verify_expected_system_package_dependencies(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can verify expected system package dependencies"""
 
-        self.mock_linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
+        self.mock_linux_host.ensure_user_has_required_deployment_permissions(UserCredentials.CURRENT_USER)
         self.mock_linux_host.update_system_package_sources()
 
         for package_specifications in SystemPackageSpecifications.ALL_PACKAGES:

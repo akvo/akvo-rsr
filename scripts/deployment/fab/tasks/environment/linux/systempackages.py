@@ -5,22 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fabric.api
-import fabric.tasks
-
 import fab.config.environment.linux.systempackages
-import fab.config.loader
 import fab.host.linux
+import fab.tasks.base
 
 
-class VerifySystemPackages(fabric.tasks.Task):
+class VerifySystemPackages(fab.tasks.base.BaseDeploymentTask):
     """Verifies that the expected Linux system packages exist"""
 
-    name = "verify_system_packages"
-
-    def __init__(self, deployment_user):
-        self.deployment_user = deployment_user
-        self.config_loader = fab.config.loader.DeploymentConfigLoader()
+    name = 'verify_system_packages'
 
     def run(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
         host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
@@ -36,4 +29,4 @@ class VerifySystemPackages(fabric.tasks.Task):
         return fab.host.linux.LinuxHost.create_with(host_config)
 
 
-instance = VerifySystemPackages(fabric.api.env.user)
+instance = VerifySystemPackages()
