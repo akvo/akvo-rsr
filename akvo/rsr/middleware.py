@@ -29,7 +29,7 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE',
 
 def is_rsr(domain):
     """
-    Test whether an incoming request should be handled as a regular instance of Akvo RSR.
+    Test if an incoming request should be handled as a regular instance of Akvo RSR.
 
     >>> is_rsr('test2.akvo.org')
     True
@@ -44,7 +44,7 @@ def is_rsr(domain):
 
 def is_partner_site(domain):
     """
-    Test whether an incoming request should be handled as a partner site instance.
+    Test if an incoming request should be handled as a partner site instance.
 
     >>> is_partner_site('connect4change.akvoapp.org')
     True
