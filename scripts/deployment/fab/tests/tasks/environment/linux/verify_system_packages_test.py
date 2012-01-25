@@ -10,9 +10,8 @@ import mox
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
-from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.loader import ConfigType
 from fab.config.rsr.credentials.user import UserCredentials
-from fab.config.rsr.host import DeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.linux.systempackages import VerifySystemPackages
@@ -24,8 +23,7 @@ class StubbedVerifySystemPackages(VerifySystemPackages):
         super(StubbedVerifySystemPackages, self).__init__()
         self.linux_host = linux_host
 
-    def _configure_linux_host_with(self, host_config):
-        self.actual_host_config_used = host_config
+    def _configure_linux_host_with(self, config_type, host_alias, repository_branch, database_name, custom_config_module_path):
         return self.linux_host
 
 
@@ -54,7 +52,6 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.verify_system_packages_task.run(ConfigType.PRECONFIGURED, HostAlias.TEST)
-        self.assertIsInstance(self.verify_system_packages_task.actual_host_config_used, DeploymentHostConfig)
 
 
 def suite():

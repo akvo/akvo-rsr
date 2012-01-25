@@ -6,27 +6,22 @@
 
 
 import fab.config.environment.linux.systempackages
-import fab.host.linux
-import fab.tasks.base
+import fab.tasks.environment.hostbase
 
 
-class VerifySystemPackages(fab.tasks.base.BaseDeploymentTask):
+class VerifySystemPackages(fab.tasks.environment.hostbase.LinuxHostBaseTask):
     """Verifies that the expected Linux system packages exist"""
 
     name = 'verify_system_packages'
 
     def run(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
-        linux_host = self._configure_linux_host_with(host_config)
+        linux_host = self._configure_linux_host_with(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
 
         linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         linux_host.update_system_package_sources()
 
         for package_specifications in fab.config.environment.linux.systempackages.SystemPackageSpecifications.ALL_PACKAGES:
             linux_host.exit_if_system_package_dependencies_not_met(package_specifications)
-
-    def _configure_linux_host_with(self, host_config):
-        return fab.host.linux.LinuxHost.create_with(host_config)
 
 
 instance = VerifySystemPackages()
