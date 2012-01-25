@@ -9,8 +9,8 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
-from fab.config.values.standard import CIDeploymentHostConfig
 from fab.environment.python.virtualenv import VirtualEnvInstaller
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController

@@ -10,7 +10,7 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.environment.python.virtualenv import VirtualEnv, VirtualEnvInstaller
 from fab.format.timestamp import TimeStampFormatter
