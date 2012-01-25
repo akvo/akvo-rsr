@@ -5,29 +5,24 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fabric.api
-import fabric.tasks
-
-import fab.config.loaders
 import fab.host.linux
+import fab.tasks.base
 
 
-class InstallPython(fabric.tasks.Task):
+class InstallPython(fab.tasks.base.BaseDeploymentTask):
     """Installs a specified Python interpreter"""
 
-    name = "install_python"
+    name = 'install_python'
 
-    def __init__(self, deployment_user, linux_host):
-        self.deployment_user = deployment_user
-        self.linux_host = linux_host
+    def run(self, python_version, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
+        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
+        linux_host = self._configure_linux_host_with(host_config)
 
-    @staticmethod
-    def create_task():
-        return InstallPython(fabric.api.env.user, fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load()))
+        linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
+        linux_host.ensure_python_is_installed_with_version(python_version)
 
-    def run(self, python_version):
-        self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
-        self.linux_host.ensure_python_is_installed_with_version(python_version)
+    def _configure_linux_host_with(self, host_config):
+        return fab.host.linux.LinuxHost.create_with(host_config)
 
 
-instance = InstallPython.create_task()
+instance = InstallPython()

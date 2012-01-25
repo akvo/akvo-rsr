@@ -12,7 +12,7 @@ from testing.helpers.execution import TestRunner, TestSuiteLoader
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 from fab.config.loader import ConfigType, DeploymentConfigLoader
 from fab.config.rsr.credentials.user import UserCredentials
-from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.rsr.host import DeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.linux.systempackages import VerifySystemPackages
@@ -54,7 +54,7 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.verify_system_packages_task.run(ConfigType.PRECONFIGURED, HostAlias.TEST)
-        self.assertEqual(CIDeploymentHostConfig.for_test(), self.verify_system_packages_task.actual_host_config_used)
+        self.assertIsInstance(self.verify_system_packages_task.actual_host_config_used, DeploymentHostConfig)
 
 
 def suite():

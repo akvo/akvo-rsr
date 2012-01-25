@@ -7,10 +7,25 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
+from fab.config.loader import ConfigType
+from fab.config.rsr.credentials.user import UserCredentials
+from fab.config.rsr.host import DeploymentHostConfig
+from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.python.installer import InstallPython
+
+
+class StubbedInstallPython(InstallPython):
+
+    def __init__(self, linux_host):
+        super(StubbedInstallPython, self).__init__()
+        self.linux_host = linux_host
+
+    def _configure_linux_host_with(self, host_config):
+        self.actual_host_config_used = host_config
+        return self.linux_host
 
 
 class InstallPythonTest(mox.MoxTestBase):
@@ -18,30 +33,24 @@ class InstallPythonTest(mox.MoxTestBase):
     def setUp(self):
         super(InstallPythonTest, self).setUp()
 
-        self.deployment_user = "rupaul"
-
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.python.install_python_test  Has expected task name"""
 
-        self.assertEqual("install_python", InstallPython.name)
-
-    def test_can_create_task_instance(self):
-        """fab.tests.tasks.environment.python.install_python_test  Can create task instance"""
-
-        self.assertIsInstance(InstallPython.create_task(), InstallPython)
+        self.assertEqual('install_python', InstallPython.name)
 
     def test_can_install_specified_python_version(self):
         """fab.tests.tasks.environment.python.install_python_test  Can install specified python version"""
 
         mock_linux_host = self.mox.CreateMock(LinuxHost)
 
-        install_python_task = InstallPython(self.deployment_user, mock_linux_host)
+        install_python_task = StubbedInstallPython(mock_linux_host)
 
-        mock_linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
-        mock_linux_host.ensure_python_is_installed_with_version("2.7.2")
+        mock_linux_host.ensure_user_has_required_deployment_permissions(UserCredentials.CURRENT_USER)
+        mock_linux_host.ensure_python_is_installed_with_version('2.7.2')
         self.mox.ReplayAll()
 
-        install_python_task.run("2.7.2")
+        install_python_task.run('2.7.2', ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.assertIsInstance(install_python_task.actual_host_config_used, DeploymentHostConfig)
 
 
 def suite():
