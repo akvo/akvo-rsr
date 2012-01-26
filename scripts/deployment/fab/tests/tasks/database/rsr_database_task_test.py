@@ -5,25 +5,31 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
-
-from fab.tests.templates.database_credentials_template import CREDENTIALS_TEMPLATE_PATH
 
 from fab.config.loader import ConfigType
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
 from fab.tasks.database.basetask import RSRDatabaseTask
+from fab.verifiers.config import ConfigFileVerifier
 
 
-class RSRDatabaseTaskTest(unittest2.TestCase):
+class RSRDatabaseTaskTest(mox.MoxTestBase):
+
+    def setUp(self):
+        super(RSRDatabaseTaskTest, self).setUp()
+        self.mock_config_verifier = self.mox.CreateMock(ConfigFileVerifier)
 
     def test_can_configure_database_host_when_task_is_executed(self):
         """fab.tests.tasks.database.rsr_database_task_test  Can configure database host when the task is executed"""
 
-        database_task = RSRDatabaseTask(CREDENTIALS_TEMPLATE_PATH)
+        self.mock_config_verifier.exit_if_database_credentials_not_found()
+        self.mox.ReplayAll()
+
+        database_task = RSRDatabaseTask(self.mock_config_verifier)
 
         database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
 
