@@ -10,6 +10,7 @@ import mox
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.loader import ConfigType
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
@@ -22,18 +23,32 @@ class RSRDatabaseTaskTest(mox.MoxTestBase):
     def setUp(self):
         super(RSRDatabaseTaskTest, self).setUp()
         self.mock_config_verifier = self.mox.CreateMock(ConfigFileVerifier)
+        self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-    def test_can_configure_database_host_when_task_is_executed(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can configure database host when the task is executed"""
+    def test_can_configure_database_host_for_task_execution(self):
+        """fab.tests.tasks.database.rsr_database_task_test  Can configure database host for task execution"""
 
         self.mock_config_verifier.exit_if_database_credentials_not_found()
         self.mox.ReplayAll()
 
         database_task = RSRDatabaseTask(self.mock_config_verifier)
 
-        database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        configured_database_host = database_task._configure_database_host_with(HostControllerMode.REMOTE, CIDeploymentHostConfig.for_test())
 
-        self.assertIsInstance(database_task.database_host, DatabaseHost)
+        self.assertIsInstance(configured_database_host, DatabaseHost)
+
+    def test_will_raise_not_implemented_error_if_no_database_actions_defined(self):
+        """fab.tests.tasks.database.rsr_database_task_test  Will raise NotImplementedError if no database actions have been defined"""
+
+        self.mock_config_verifier.exit_if_database_credentials_not_found()
+        self.mox.ReplayAll()
+
+        database_task = RSRDatabaseTask(self.mock_config_verifier)
+
+        with self.assertRaises(NotImplementedError) as raised:
+            database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+
+        self.assertEqual('No database actions defined', raised.exception.message)
 
 
 def suite():

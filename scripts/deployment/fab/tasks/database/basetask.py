@@ -22,7 +22,10 @@ class RSRDatabaseTask(fab.tasks.base.BaseDeploymentTask):
 
     def run(self, host_controller_mode, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
         host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
-        self.database_host = self._configure_database_host_with(host_controller_mode, host_config)
+        self._perform_database_actions_with(self._configure_database_host_with(host_controller_mode, host_config))
+
+    def _perform_database_actions_with(self, database_host):
+        raise NotImplementedError('No database actions defined')
 
     def _configure_database_host_with(self, host_controller_mode, host_config):
         database_credentials = fab.config.rsr.credentials.database.DatabaseCredentials()
