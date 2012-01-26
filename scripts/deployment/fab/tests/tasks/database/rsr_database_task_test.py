@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType
+from fab.config.loader import ConfigType, DeploymentConfigLoader
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
@@ -18,11 +18,19 @@ from fab.tasks.database.basetask import RSRDatabaseTask
 from fab.verifiers.config import ConfigFileVerifier
 
 
+class StubbedRSRDatabaseTask(RSRDatabaseTask):
+
+    def __init__(self, config_verifier, config_loader):
+        super(StubbedRSRDatabaseTask, self).__init__(config_verifier)
+        self.config_loader = config_loader
+
+
 class RSRDatabaseTaskTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RSRDatabaseTaskTest, self).setUp()
         self.mock_config_verifier = self.mox.CreateMock(ConfigFileVerifier)
+        self.mock_config_loader = self.mox.CreateMock(DeploymentConfigLoader)
         self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
     def test_can_configure_database_host_for_task_execution(self):
@@ -41,9 +49,10 @@ class RSRDatabaseTaskTest(mox.MoxTestBase):
         """fab.tests.tasks.database.rsr_database_task_test  Will raise NotImplementedError if no database actions have been defined"""
 
         self.mock_config_verifier.exit_if_database_credentials_not_found()
+        self.mock_config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None).AndReturn(CIDeploymentHostConfig.for_test())
         self.mox.ReplayAll()
 
-        database_task = RSRDatabaseTask(self.mock_config_verifier)
+        database_task = StubbedRSRDatabaseTask(self.mock_config_verifier, self.mock_config_loader)
 
         with self.assertRaises(NotImplementedError) as raised:
             database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
