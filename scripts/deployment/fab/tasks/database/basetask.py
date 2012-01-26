@@ -18,7 +18,7 @@ class RSRDatabaseTask(fab.tasks.base.BaseDeploymentTask):
 
     def __init__(self, config_file_verifier=fab.verifiers.config.ConfigFileVerifier()):
         super(RSRDatabaseTask, self).__init__()
-        config_file_verifier.exit_if_database_credentials_not_found()
+        self.config_file_verifier = config_file_verifier
 
     def run(self, host_controller_mode, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
         host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
@@ -28,6 +28,7 @@ class RSRDatabaseTask(fab.tasks.base.BaseDeploymentTask):
         raise NotImplementedError('No database actions defined')
 
     def _configure_database_host_with(self, host_controller_mode, host_config):
+        self.config_file_verifier.exit_if_database_credentials_not_found()
         database_credentials = fab.config.rsr.credentials.database.DatabaseCredentials()
         database_config = fab.config.rsr.database.RSRDatabaseConfig(database_credentials, host_config.rsr_database_name)
         host_controller = fab.host.controller.HostController.create_from(host_controller_mode)
