@@ -7,12 +7,12 @@
 
 import unittest2
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
+from fab.tests.templates.database_credentials_template import CREDENTIALS_TEMPLATE_PATH
 
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.loader import ConfigType
+from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
 from fab.tasks.database.basetask import RSRDatabaseTask
@@ -20,22 +20,12 @@ from fab.tasks.database.basetask import RSRDatabaseTask
 
 class RSRDatabaseTaskTest(unittest2.TestCase):
 
-    def test_can_initialise_task_with_deployment_host_config_and_database_credentials(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can initialise task with deployment host config and database credentials"""
+    def test_can_configure_database_host_when_task_is_executed(self):
+        """fab.tests.tasks.database.rsr_database_task_test  Can configure database host when the task is executed"""
 
-        self.assertIsInstance(RSRDatabaseTask(CIDeploymentHostConfig.for_test(), DatabaseCredentials()), RSRDatabaseTask)
+        database_task = RSRDatabaseTask(CREDENTIALS_TEMPLATE_PATH)
 
-    def test_can_initialise_task_with_deployment_host_config_only(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can initialise task with deployment host config only"""
-
-        self.assertIsInstance(RSRDatabaseTask(CIDeploymentHostConfig.for_test()), RSRDatabaseTask)
-
-    def test_can_create_database_host_when_task_is_executed(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can create the database host when the task is executed"""
-
-        database_task = RSRDatabaseTask(CIDeploymentHostConfig.for_test())
-
-        database_task.run(HostControllerMode.REMOTE)
+        database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
 
         self.assertIsInstance(database_task.database_host, DatabaseHost)
 
@@ -43,6 +33,6 @@ class RSRDatabaseTaskTest(unittest2.TestCase):
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDatabaseTaskTest)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from fab.tests.test_settings import TEST_MODE
     TestRunner(TEST_MODE).run_test_suite(suite())
