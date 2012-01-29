@@ -18,69 +18,26 @@ class TaskParametersTest(unittest2.TestCase):
 
     CUSTOM_DEPLOYMENT_CONFIG_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../config/custom.py.template'))
 
-    def test_has_expected_task_parameter_options(self):
-        """fab.tests.tasks.task_parameters_test  Has expected task parameter options"""
+    def test_has_remote_host_controller_mode_parameter(self):
+        """fab.tests.tasks.task_parameters_test  Has remote host controller mode parameter"""
 
-        self.assertEqual('', TaskParameters.NONE)
         self.assertEqual('host_controller_mode=remote', TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
 
-    def test_can_compose_parameter_list_for_standard_host_configuration(self):
-        """fab.tests.tasks.task_parameters_test  Can compose parameter list for a standard host configuration"""
+    def test_can_compose_parameter_list_from_host_config_specification(self):
+        """fab.tests.tasks.task_parameters_test  Can compose parameter list from a given host configuration specification"""
 
-        expected_parameter_list = 'host_alias=uat,repository_branch=some_repo_branch,database_name=some_rsrdb'
+        host_config_specification = 'standard:uat;some_repo_branch;some_rsrdb'
+        expected_parameter_list = 'host_config_specification=%s' % host_config_specification
 
-        self.assertEqual(expected_parameter_list, self._compose_parameters(ConfigType.STANDARD, TaskParameters.NONE, HostAlias.UAT,
-                                                                           'some_repo_branch', 'some_rsrdb'))
+        self.assertEqual(expected_parameter_list, TaskParameters().compose_from(host_config_specification))
 
-    def test_can_compose_parameter_list_for_standard_host_configuration_with_additional_task_parameters(self):
-        """fab.tests.tasks.task_parameters_test  Can compose parameter list for a standard host configuration with additional task parameters"""
+    def test_can_compose_parameter_list_from_host_config_specification_and_additional_task_parameters(self):
+        """fab.tests.tasks.task_parameters_test  Can compose parameter list from a given host configuration specification and additional task parameters"""
 
-        expected_parameter_list = '%s,host_alias=uat,repository_branch=some_repo_branch,database_name=some_rsrdb' % TaskParameters.REMOTE_HOST_CONTROLLER_MODE
+        host_config_specification = 'standard:uat;some_repo_branch;some_rsrdb'
+        expected_parameter_list = 'host_config_specification=%s,%s' % (host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
 
-        self.assertEqual(expected_parameter_list, self._compose_parameters(ConfigType.STANDARD, TaskParameters.REMOTE_HOST_CONTROLLER_MODE,
-                                                                           HostAlias.UAT, 'some_repo_branch', 'some_rsrdb'))
-
-    def test_can_compose_parameter_list_for_preconfigured_host_configuration(self):
-        """fab.tests.tasks.task_parameters_test  Can compose parameter list for a preconfigured host configuration"""
-
-        expected_parameter_list = 'host_alias=test2'
-
-        self.assertEqual(expected_parameter_list, self._compose_parameters(ConfigType.PRECONFIGURED, TaskParameters.NONE, HostAlias.TEST2))
-
-    def test_can_compose_parameter_list_for_preconfigured_host_configuration_with_additional_task_parameters(self):
-        """fab.tests.tasks.task_parameters_test  Can compose parameter list for a preconfigured host configuration with additional task parameters"""
-
-        expected_parameter_list = '%s,host_alias=test2' % TaskParameters.REMOTE_HOST_CONTROLLER_MODE
-
-        self.assertEqual(expected_parameter_list, self._compose_parameters(ConfigType.PRECONFIGURED, TaskParameters.REMOTE_HOST_CONTROLLER_MODE, HostAlias.TEST2))
-
-    def test_can_compose_parameter_list_for_custom_host_configuration(self):
-        """fab.tests.tasks.task_parameters_test  Can compose parameter list for a custom host configuration"""
-
-        expected_parameter_list = 'custom_config_module_path=%s' % self.CUSTOM_DEPLOYMENT_CONFIG_TEMPLATE_PATH
-
-        self.assertEqual(expected_parameter_list, self._compose_parameters(ConfigType.CUSTOM, TaskParameters.NONE,
-                                                                           custom_config_module_path=self.CUSTOM_DEPLOYMENT_CONFIG_TEMPLATE_PATH))
-
-    def test_can_compose_parameter_list_for_custom_host_configuration_with_additional_task_parameters(self):
-        """fab.tests.tasks.task_parameters_test  Can compose parameter list for a custom host configuration with additional task parameters"""
-
-        expected_parameter_list = '%s,custom_config_module_path=%s' % (TaskParameters.REMOTE_HOST_CONTROLLER_MODE, self.CUSTOM_DEPLOYMENT_CONFIG_TEMPLATE_PATH)
-
-        self.assertEqual(expected_parameter_list, self._compose_parameters(ConfigType.CUSTOM, TaskParameters.REMOTE_HOST_CONTROLLER_MODE,
-                                                                           custom_config_module_path=self.CUSTOM_DEPLOYMENT_CONFIG_TEMPLATE_PATH))
-
-    def _compose_parameters(self, config_type,
-                                  additional_task_parameters,
-                                  host_alias=None,
-                                  repository_branch=None,
-                                  database_name=None,
-                                  custom_config_module_path=None):
-        return TaskParameters(config_type).compose_parameter_list(additional_task_parameters,
-                                                                  host_alias,
-                                                                  repository_branch,
-                                                                  database_name,
-                                                                  custom_config_module_path)
+        self.assertEqual(expected_parameter_list, TaskParameters().compose_from(host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE))
 
 
 def suite():
