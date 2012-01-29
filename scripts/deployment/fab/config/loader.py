@@ -28,6 +28,9 @@ class ConfigType(object):
     def is_standard(self):
         return self.config_type == self.STANDARD
 
+    def __repr__(self):
+        return self.config_type
+
 
 class DeploymentConfigLoader(object):
 
@@ -37,25 +40,31 @@ class DeploymentConfigLoader(object):
     def __init__(self, feedback=ExecutionFeedback()):
         self.feedback = feedback
 
-    def host_config_for(self, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        self.config_type = ConfigType(config_type)
+    def parse(self, config_specification):
+        if self._invalid_host_config_format(config_specification):
+            self.feedback.abort('Invalid host configuration specification: %s -- expected config_type:some;config;values' % config_specification)
 
-        if self.config_type.is_standard():
-            return self._load_standard_from(host_alias, repository_branch, database_name)
-        elif self.config_type.is_preconfigured():
-            return self._load_preconfigured_for(host_alias)
-        elif self.config_type.is_custom():
-            return self._load_custom_from(custom_config_module_path)
+        config_spec_parts = config_specification.split(':')
+
+        return self._parse_config_spec(ConfigType(config_spec_parts[0]), config_spec_parts[-1].split(';'))
+
+    def _invalid_host_config_format(self, config_specification):
+        return config_specification.find(':') < 0
+
+    def _parse_config_spec(self, config_type, config_parameters):
+        if config_type.is_preconfigured():
+            host_alias = config_parameters[0]
+            if host_alias not in self.preconfigured_hosts:
+                self.feedback.abort('No preconfigured values for host alias: %s' % host_alias)
+            return self.preconfigured_hosts[host_alias]
+        elif config_type.is_standard():
+            return DeploymentHostConfig.create_with(config_parameters[0], config_parameters[1], config_parameters[2])
+        elif config_type.is_custom():
+            return self._custom_config_from(config_parameters[0])
         else:
-            self.feedback.abort('Unknown configuration type: %s' % config_type)
+            self.feedback.abort('Cannot parse host configuration from: %s:%s' % (config_type, ''.join(config_parameters)))
 
-    def _load_preconfigured_for(self, host_alias):
-        return self.preconfigured_hosts[host_alias]
-
-    def _load_standard_from(self, host_alias, repository_branch, database_name):
-        return DeploymentHostConfig.create_with(host_alias, repository_branch, database_name)
-
-    def _load_custom_from(self, custom_config_module_path):
+    def _custom_config_from(self, custom_config_module_path):
         import imp
         imp.load_source('custom_config', custom_config_module_path)
         from custom_config import CustomDeploymentHostConfig

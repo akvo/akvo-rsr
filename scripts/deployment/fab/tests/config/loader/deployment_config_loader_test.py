@@ -28,54 +28,70 @@ class DeploymentConfigLoaderTest(mox.MoxTestBase):
 
         self.assertIsInstance(DeploymentConfigLoader().feedback, ExecutionFeedback)
 
-    def test_can_load_preconfigured_configuration_for_test_host(self):
-        """fab.tests.config.loader.deployment_config_loader_test  Can load preconfigured configuration for test host"""
+    def test_will_exit_if_host_config_cannot_be_parsed_from_given_task_parameters(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Will exit if host configuration cannot be parsed from given task parameters"""
+
+        invalid_config_format_message = 'Invalid host configuration specification: task_parameters_without_colon -- expected config_type:some;config;values'
+
+        self._exit_with_error_message_when_parsing('task_parameters_without_colon', invalid_config_format_message)
+
+    def test_can_parse_preconfigured_test_host_config_from_given_task_parameters(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Can parse preconfigured test host configuration from given task parameters"""
 
         self.mox.ReplayAll()
 
-        self.assertEqual(CIDeploymentHostConfig.for_test(), self.config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST))
+        self.assertEqual(CIDeploymentHostConfig.for_test(), self.config_loader.parse(self._preconfigured_config_spec_for(HostAlias.TEST)))
 
-    def test_can_load_preconfigured_configuration_for_test2_host(self):
-        """fab.tests.config.loader.deployment_config_loader_test  Can load preconfigured configuration for test2 host"""
-
-        self.mox.ReplayAll()
-
-        self.assertEqual(CIDeploymentHostConfig.for_test2(), self.config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST2))
-
-    def test_can_load_standard_configuration(self):
-        """fab.tests.config.loader.deployment_config_loader_test  Can load a standard configuration"""
+    def test_can_parse_preconfigured_test2_host_config_from_given_task_parameters(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Can parse preconfigured test2 host configuration from given task parameters"""
 
         self.mox.ReplayAll()
 
-        expected_config = DeploymentHostConfig.create_with(HostAlias.UAT, RepositoryBranch.DEVELOP, 'some_rsrdb')
+        self.assertEqual(CIDeploymentHostConfig.for_test2(), self.config_loader.parse(self._preconfigured_config_spec_for(HostAlias.TEST2)))
 
-        self.assertEqual(expected_config, self.config_loader.host_config_for(ConfigType.STANDARD, HostAlias.UAT,
-                                                                             RepositoryBranch.DEVELOP, 'some_rsrdb'))
+    def test_will_exit_if_preconfigured_host_configs_do_not_match_specified_host_alias(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Will exit if preconfigured host configurations don't match a specified host alias"""
 
-    def test_can_load_custom_configuration(self):
-        """fab.tests.config.loader.deployment_config_loader_test  Can load a custom configuration"""
+        self._exit_with_error_message_when_parsing(self._preconfigured_config_spec_for('non_existent_host'),
+                                                   'No preconfigured values for host alias: non_existent_host')
 
-        custom_config_module = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/custom.py.template'))
-
-        imp.load_source('custom_config', custom_config_module)
-        from custom_config import CustomDeploymentHostConfig
-
-        actual_host_config = self.config_loader.host_config_for(ConfigType.CUSTOM, custom_config_module_path=custom_config_module)
-
-        self.assertEqual(CustomDeploymentHostConfig.create(), actual_host_config)
-
-    def test_will_exit_if_configuration_type_is_unrecognised(self):
-        """fab.tests.config.loader.deployment_config_loader_test  Will exit if configuration type is unrecognised"""
-
-        unknown_config_type_message = 'Unknown configuration type: non-existent'
-
-        self.mock_feedback.abort(unknown_config_type_message).AndRaise(SystemExit(unknown_config_type_message))
+    def _exit_with_error_message_when_parsing(self, invalid_host_config, invalid_host_config_message):
+        self.mock_feedback.abort(invalid_host_config_message).AndRaise(SystemExit(invalid_host_config_message))
         self.mox.ReplayAll()
 
         with self.assertRaises(SystemExit) as raised:
-            self.config_loader.host_config_for('non-existent', host_alias=HostAlias.UAT)
+            self.config_loader.parse(invalid_host_config)
 
-        self.assertEqual(unknown_config_type_message, raised.exception.message)
+        self.assertEqual(invalid_host_config_message, raised.exception.message)
+
+    def _preconfigured_config_spec_for(self, host_alias):
+        return '%s:%s' % (ConfigType.PRECONFIGURED, host_alias)
+
+    def test_can_parse_standard_configuration_from_given_task_parameters(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Can parse a standard configuration from given task parameters"""
+
+        expected_config = DeploymentHostConfig.create_with(HostAlias.UAT, RepositoryBranch.DEVELOP, 'some_rsrdb')
+        standard_config_spec = '%s:%s;%s;%s' % (ConfigType.STANDARD, HostAlias.UAT, RepositoryBranch.DEVELOP, 'some_rsrdb')
+
+        self.mox.ReplayAll()
+
+        self.assertEqual(expected_config, self.config_loader.parse(standard_config_spec))
+
+    def test_can_parse_custom_configuration_from_given_task_parameters(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Can parse a custom configuration from given task parameters"""
+
+        custom_config_module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/custom.py.template'))
+        custom_config_spec = '%s:%s' % (ConfigType.CUSTOM, custom_config_module_path)
+
+        self.mox.ReplayAll()
+
+        self.assertEqual(self._custom_config_from(custom_config_module_path), self.config_loader.parse(custom_config_spec))
+
+    def _custom_config_from(self, custom_config_module_path):
+        imp.load_source('custom_config', custom_config_module_path)
+        from custom_config import CustomDeploymentHostConfig
+
+        return CustomDeploymentHostConfig.create()
 
 
 def suite():
