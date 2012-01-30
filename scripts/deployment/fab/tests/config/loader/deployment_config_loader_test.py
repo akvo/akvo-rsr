@@ -10,7 +10,7 @@ import imp, mox, os
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.loader import ConfigType, DeploymentConfigLoader
-from fab.config.rsr.host import CIDeploymentHostConfig, DeploymentHostConfig, RepositoryBranch
+from fab.config.rsr.host import CIDeploymentHostConfig, DataHostConfig, DeploymentHostConfig, RepositoryBranch
 from fab.config.values.host import HostAlias
 from fab.helpers.feedback import ExecutionFeedback
 
@@ -48,6 +48,13 @@ class DeploymentConfigLoaderTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.assertEqual(CIDeploymentHostConfig.for_test2(), self.config_loader.parse(self._preconfigured_config_spec_for(HostAlias.TEST2)))
+
+    def test_can_parse_preconfigured_data_host_config_from_given_task_parameters(self):
+        """fab.tests.config.loader.deployment_config_loader_test  Can parse preconfigured data host configuration from given task parameters"""
+
+        self.mox.ReplayAll()
+
+        self.assertEqual(DataHostConfig(), self.config_loader.parse(self._preconfigured_config_spec_for(HostAlias.DATA)))
 
     def test_will_exit_if_preconfigured_host_configs_do_not_match_specified_host_alias(self):
         """fab.tests.config.loader.deployment_config_loader_test  Will exit if preconfigured host configurations don't match a specified host alias"""

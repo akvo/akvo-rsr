@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.config.rsr.host import CIDeploymentHostConfig, DeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig, DataHostConfig, DeploymentHostConfig
 from fab.config.values.host import HostAlias
 from fab.helpers.feedback import ExecutionFeedback
 
@@ -35,7 +35,8 @@ class ConfigType(object):
 class DeploymentConfigLoader(object):
 
     preconfigured_hosts = { HostAlias.TEST:     CIDeploymentHostConfig.for_test(),
-                            HostAlias.TEST2:    CIDeploymentHostConfig.for_test2() }
+                            HostAlias.TEST2:    CIDeploymentHostConfig.for_test2(),
+                            HostAlias.DATA:     DataHostConfig() }
 
     def __init__(self, feedback=ExecutionFeedback()):
         self.feedback = feedback

@@ -5,13 +5,27 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from fab.config.values.host import DeploymentHostPaths, HostAlias, SSHConnection
+from fab.config.values.host import DataHostPaths, DeploymentHostPaths, HostAlias, SSHConnection
 
 
 class RepositoryBranch(object):
 
     MASTER  = 'master'
     DEVELOP = 'develop'
+
+
+class DataHostConfig(object):
+
+    def __init__(self):
+        self.ssh_connection = SSHConnection.for_host(HostAlias.DATA)
+        self.host_paths     = DataHostPaths()
+
+    def __eq__(self, data_host_config):
+        return (self.ssh_connection == data_host_config.ssh_connection and
+                self.host_paths     == data_host_config.host_paths)
+
+    def __ne__(self, data_host_config):
+        return not self.__eq__(data_host_config)
 
 
 class DeploymentHostConfig(object):
