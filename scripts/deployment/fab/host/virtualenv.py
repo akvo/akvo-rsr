@@ -51,8 +51,8 @@ class VirtualEnvDeploymentHost(DeploymentHost):
     def remove_previously_downloaded_package_sources(self):
         self.virtualenv_installer.remove_previously_downloaded_package_sources()
 
-    def install_virtualenv_packages(self, pip_requirements_file):
-        self.virtualenv_installer.install_packages(pip_requirements_file)
+    def install_virtualenv_packages(self, pip_requirements_url):
+        self.virtualenv_installer.install_packages(pip_requirements_url)
 
     def ensure_virtualenv_symlinks_exist(self):
         self.virtualenv_installer.ensure_virtualenv_symlinks_exist()
