@@ -20,8 +20,8 @@ class RSRDatabaseTask(fab.tasks.base.BaseDeploymentTask):
         super(RSRDatabaseTask, self).__init__()
         self.config_file_verifier = config_file_verifier
 
-    def run(self, host_controller_mode, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
+    def run(self, host_controller_mode, host_config_specification):
+        host_config = self.config_loader.parse(host_config_specification)
         self._perform_database_actions_with(self._configure_database_host_with(host_controller_mode, host_config))
 
     def _perform_database_actions_with(self, database_host):

@@ -9,8 +9,9 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.loader import DeploymentConfigLoader
 from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
@@ -48,14 +49,16 @@ class RSRDatabaseTaskTest(mox.MoxTestBase):
     def test_will_raise_not_implemented_error_if_no_database_actions_defined(self):
         """fab.tests.tasks.database.rsr_database_task_test  Will raise NotImplementedError if no database actions have been defined"""
 
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+
         self.mock_config_verifier.exit_if_database_credentials_not_found()
-        self.mock_config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None).AndReturn(CIDeploymentHostConfig.for_test())
+        self.mock_config_loader.parse(host_config_spec).AndReturn(CIDeploymentHostConfig.for_test())
         self.mox.ReplayAll()
 
         database_task = StubbedRSRDatabaseTask(self.mock_config_verifier, self.mock_config_loader)
 
         with self.assertRaises(NotImplementedError) as raised:
-            database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+            database_task.run(HostControllerMode.REMOTE, host_config_spec)
 
         self.assertEqual('No database actions defined', raised.exception.message)
 

@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
@@ -47,7 +47,7 @@ class BackupRSRDatabaseTest(mox.MoxTestBase):
         self.mock_database_host.backup_rsr_database()
         self.mox.ReplayAll()
 
-        self.backup_rsr_database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.backup_rsr_database_task.run(HostControllerMode.REMOTE, HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():

@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
@@ -48,7 +48,7 @@ class ConvertRSRDatabaseForMigrationsTest(mox.MoxTestBase):
         self.mock_database_host.convert_database_for_migrations()
         self.mox.ReplayAll()
 
-        self.convert_rsr_database_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.convert_rsr_database_task.run(HostControllerMode.REMOTE, HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():
