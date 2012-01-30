@@ -40,6 +40,8 @@ Bug fixes
 
 ### Remove PvW/DWS template files.
 
+### Fixes an issue whereby misleading information was given in donation templates and emails pertaining to the tax deductible status of certain types of donations in the United States of America.
+
 
 ---
 
