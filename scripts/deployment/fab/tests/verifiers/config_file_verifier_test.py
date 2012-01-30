@@ -36,6 +36,15 @@ class ConfigFileVerifierTest(mox.MoxTestBase):
         self.assertIsInstance(config_file_verifier, ConfigFileVerifier)
         self.assertIsInstance(config_file_verifier.local_file_system, LocalFileSystem)
 
+    def test_will_exit_if_custom_user_credentials_not_found(self):
+        """fab.tests.verifiers.config_file_verifier_test  Will exit if custom user credentials are not found"""
+
+        expected_user_credentials_path = os.path.join(self.expected_deployment_scripts_home, 'fab/config/rsr/credentials/custom.py')
+        self.mock_local_file_system.exit_if_file_does_not_exist(expected_user_credentials_path)
+        self.mox.ReplayAll()
+
+        self.config_file_verifier.exit_if_custom_user_credentials_not_found()
+
     def test_will_exit_if_database_credentials_not_found(self):
         """fab.tests.verifiers.config_file_verifier_test  Will exit if database credentials are not found"""
 
@@ -44,15 +53,6 @@ class ConfigFileVerifierTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.config_file_verifier.exit_if_database_credentials_not_found()
-
-    def test_will_exit_if_config_loaders_are_missing(self):
-        """fab.tests.verifiers.config_file_verifier_test  Will exit if config loaders are missing"""
-
-        expected_deployment_config_values_path = os.path.join(self.expected_deployment_scripts_home, 'fab/config/loaders.py')
-        self.mock_local_file_system.exit_if_file_does_not_exist(expected_deployment_config_values_path)
-        self.mox.ReplayAll()
-
-        self.config_file_verifier.exit_if_config_loaders_not_found()
 
 
 def suite():

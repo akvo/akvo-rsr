@@ -11,8 +11,8 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
-from fab.config.values.standard import CIDeploymentHostConfig
 
 
 class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
