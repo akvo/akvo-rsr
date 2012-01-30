@@ -24,8 +24,8 @@ class RebuildRSREnv(fab.tasks.base.BaseDeploymentTask):
         virtualenv_deployment_host.ensure_virtualenv_exists()
         virtualenv_deployment_host.remove_previously_downloaded_package_sources()
         virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
-        virtualenv_deployment_host.install_virtualenv_packages(virtualenv_installer_config.rsr_requirements_path)
-        virtualenv_deployment_host.install_virtualenv_packages(virtualenv_installer_config.testing_requirements_path)
+        virtualenv_deployment_host.install_virtualenv_packages(virtualenv_installer_config.rsr_requirements_url)
+        virtualenv_deployment_host.install_virtualenv_packages(virtualenv_installer_config.testing_requirements_url)
         virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
 
