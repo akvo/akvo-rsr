@@ -1,4 +1,4 @@
-Last changed: 29 November 2011, kad
+Last changed: 30 January 2012, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -6,6 +6,43 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 2.0.2 release notes
+-------------------------------------------
+30 January 2012, (Code name: Carrot) bw
+
+Overview
+------------
+The release adds the ability to sign in and add updates to Akvo RSR from a partner site. It also contains a reworking of the way in which organisations are internally linked to projects in RSR. We've also updated our version of JQuery.
+
+New features & changes
+----------------
+### Partner site sign in and add updates capability.
+Users with Akvo RSR accounts can now sign in to Akvo RSR on partner site pages and add project updates.
+
+### Rework of relationship between organisations and projects.
+Organisations can be linked to projects making them project partners. There are 4 types of links, or partnership types: Field partner, Funding partner, Sponsor partner and Support partner. The current code proved to be inefficient and needed to be changed.
+
+Users no longer need to enable a particular partnership type on the Organisation form. Instead partnership type is set directly on a project by choosing the organisation and then setting the type of partnership. It is possible for the same organisation to have multiple types of partnership on the same Project. Tip: In the organisation list on a project, press the first letter of an organisation's name to scroll the list forward.
+
+There is a Funding amount field visible regardless of type of partner chosen. Only Funding partner amounts are recorded and used in RSR. In a future release the field will be hidden unless the partnership type is set to Funding.
+
+### Updated JQuery to version 1.7.1.
+
+
+Bug fixes
+---------
+### Fixes an issue loading image files with name form used by RSR thumbnails.
+
+### Fixed home page WordPress issues.
+
+### Miscellaneous partner site ui and usability tweaks.
+
+### Remove PvW/DWS template files.
+
+
+---
+
 
 Akvo RSR v 2.0.1 release notes
 -------------------------------------------
@@ -51,7 +88,7 @@ To make Github understand and apply the correct format to the Markdown file it i
 
 Bug fixes
 ---------
-
+v
 ### Removed self referencing "funding details" link
 Removed self referencing "funding details" link in the funding box.
 
