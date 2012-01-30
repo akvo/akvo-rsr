@@ -9,9 +9,10 @@ import mox, os
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.loader import DeploymentConfigLoader
 from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.tasks.database.backup import BackupRSRDatabase
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
@@ -60,12 +61,13 @@ class TaskRunnerTest(mox.MoxTestBase):
     def test_can_run_deployment_task(self):
         """fab.tests.tasks.task_runner_test  Can run deployment task"""
 
-        self._set_expected_host_config()
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+        expected_parameter_list = TaskParameters().compose_from(host_config_spec)
 
-        expected_parameter_list = TaskParameters(ConfigType.PRECONFIGURED).compose_parameter_list(TaskParameters.NONE, HostAlias.TEST)
+        self._load_host_config_from(host_config_spec)
 
         self.task_runner.fake_exit_code = 0
-        self.task_runner.run_deployment_task(UpdateSystemPythonPackages, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.task_runner.run_deployment_task(UpdateSystemPythonPackages, host_config_spec)
 
         self.assertEqual(self._expected_fabric_call_with(UpdateSystemPythonPackages, expected_parameter_list),
                          self.task_runner.executed_command_with_parameters)
@@ -73,16 +75,20 @@ class TaskRunnerTest(mox.MoxTestBase):
     def test_can_run_remote_deployment_task(self):
         """fab.tests.tasks.task_runner_test  Can run remote deployment task"""
 
-        self._set_expected_host_config()
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+        expected_parameter_list = TaskParameters().compose_from(host_config_spec, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
 
-        expected_parameter_list = TaskParameters(ConfigType.PRECONFIGURED).compose_parameter_list(TaskParameters.REMOTE_HOST_CONTROLLER_MODE,
-                                                                                                  HostAlias.TEST)
+        self._load_host_config_from(host_config_spec)
 
         self.task_runner.fake_exit_code = 0
-        self.task_runner.run_remote_deployment_task(BackupRSRDatabase, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.task_runner.run_remote_deployment_task(BackupRSRDatabase, host_config_spec)
 
         self.assertEqual(self._expected_fabric_call_with(BackupRSRDatabase, expected_parameter_list),
                          self.task_runner.executed_command_with_parameters)
+
+    def _load_host_config_from(self, expected_host_config_spec):
+        self.mock_config_loader.parse(expected_host_config_spec).AndReturn(self.deployment_host_config)
+        self.mox.ReplayAll()
 
     def _expected_fabric_call_with(self, task_class, expected_parameter_list):
         return ['fab', '-f', TaskRunner.FABFILE_PATH,
@@ -90,10 +96,6 @@ class TaskRunnerTest(mox.MoxTestBase):
                 '-H', self.deployment_host_config.ssh_connection,
                 '-i', self.user_credentials.ssh_id_file_path,
                 '-p', self.user_credentials.sudo_password]
-
-    def _set_expected_host_config(self):
-        self.mock_config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None).AndReturn(self.deployment_host_config)
-        self.mox.ReplayAll()
 
     def _expected_task_with_parameters(self, task_class, expected_parameter_list):
         return '%s:%s' % (self._fully_qualified_task_name(task_class), expected_parameter_list)
@@ -104,12 +106,14 @@ class TaskRunnerTest(mox.MoxTestBase):
     def test_will_raise_systemexit_if_task_execution_fails(self):
         """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
 
-        self._set_expected_host_config()
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+
+        self._load_host_config_from(host_config_spec)
 
         self.task_runner.fake_exit_code = 2
 
         with self.assertRaises(SystemExit) as raised:
-            self.task_runner._run_task(BackupRSRDatabase, ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None, TaskParameters.NONE)
+            self.task_runner._run_task(BackupRSRDatabase, host_config_spec)
 
         self.assertTrue(raised.exception.message.find('Deployment failed due to errors above') > 0)
 

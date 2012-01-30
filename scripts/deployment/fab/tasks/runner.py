@@ -29,51 +29,22 @@ class TaskRunner(object):
 
         return TaskRunner(CustomUserCredentials.create(), config_loader)
 
-    def run_remote_deployment_task(self, task_class,
-                                         config_type,
-                                         host_alias=None,
-                                         repository_branch=None,
-                                         database_name=None,
-                                         custom_config_module_path=None):
-        self._run_task(task_class,
-                       config_type,
-                       host_alias,
-                       repository_branch,
-                       database_name,
-                       custom_config_module_path,
-                       TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+    def run_deployment_task(self, task_class, host_config_specification):
+        self._run_task(task_class, host_config_specification)
 
-    def run_deployment_task(self, task_class,
-                                  config_type,
-                                  host_alias=None,
-                                  repository_branch=None,
-                                  database_name=None,
-                                  custom_config_module_path=None):
-        self._run_task(task_class,
-                       config_type,
-                       host_alias,
-                       repository_branch,
-                       database_name,
-                       custom_config_module_path,
-                       TaskParameters.NONE)
+    def run_remote_deployment_task(self, task_class, host_config_specification):
+        self._run_task(task_class, host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
 
-    def run_data_retrieval_task(self, task_class):
-        self._run_task(task_class)
+    def run_data_retrieval_task(self, task_class, host_config_specification):
+        self._run_task(task_class, host_config_specification)
 
-    def _run_task(self, task_class,
-                        config_type,
-                        host_alias,
-                        repository_branch,
-                        database_name,
-                        custom_config_module_path,
-                        additional_task_parameters):
-        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
-        task_parameters = TaskParameters(config_type).compose_parameter_list(additional_task_parameters, host_alias, repository_branch,
-                                                                             database_name, custom_config_module_path)
+    def _run_task(self, task_class, host_config_specification, additional_task_parameters=None):
+        ssh_connection = self.config_loader.parse(host_config_specification).ssh_connection
+        task_parameters = TaskParameters().compose_from(host_config_specification, additional_task_parameters)
 
         exit_code = self._execute(['fab', '-f', self.FABFILE_PATH,
                                    self._task_with_parameters(task_class, task_parameters),
-                                   '-H', host_config.ssh_connection,
+                                   '-H', ssh_connection,
                                    '-i', self.user_credentials.ssh_id_file_path,
                                    '-p', self.user_credentials.sudo_password])
 
