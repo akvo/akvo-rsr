@@ -13,15 +13,17 @@ DEPLOYMENT_STEPS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__),
 class ScenarioRunner(object):
 
     def run_step(self, step_name, host_config_specification=None):
-        exit_code = self._run_script(os.path.join(DEPLOYMENT_STEPS_HOME, step_name + '.py'), host_config_specification)
+        exit_code = 0
+        deployment_script_path = os.path.join(DEPLOYMENT_STEPS_HOME, step_name + '.py')
+
+        if host_config_specification:
+            print '>> Running deployment step [%s] with host config specification [%s]' % (step_name, host_config_specification)
+            exit_code = subprocess.call([deployment_script_path, host_config_specification])
+        else:
+            print '>> Running deployment step [%s]' % step_name
+            exit_code = subprocess.call(deployment_script_path)
 
         self._stop_scenario_execution_if_deployment_step_failed(exit_code)
-
-    def _run_script(self, script_path, host_config_specification):
-        if host_config_specification:
-            return subprocess.call([script_path, host_config_specification])
-        else:
-            return subprocess.call(script_path)
 
     def _stop_scenario_execution_if_deployment_step_failed(self, exit_code):
         # we should already see a failure message when a deployment fails
