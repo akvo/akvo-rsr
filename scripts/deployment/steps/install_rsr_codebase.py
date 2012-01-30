@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os
+import imp, os, sys
 
 VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../verifiers'))
 imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_syspath_contains_deployment_scripts_home.py'))
@@ -13,10 +13,9 @@ imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_sys
 from fab.tasks.app.deployment import DeployRSRApp
 from fab.tasks.runner import TaskRunner
 
-
-def install_rsr_codebase():
-    TaskRunner.create().run_remote_deployment_task(DeployRSRApp)
+import steps.shared
 
 
 if __name__ == '__main__':
-    install_rsr_codebase()
+    steps.shared.display_usage_and_exit_if_parameters_are_missing(os.path.basename(__file__))
+    TaskRunner.create().run_remote_deployment_task(DeployRSRApp, sys.argv[1])
