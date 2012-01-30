@@ -30,29 +30,34 @@ class TaskRunner(object):
         return TaskRunner(CustomUserCredentials.create(), config_loader)
 
     def run_deployment_task(self, task_class, host_config_specification):
-        self._run_task(task_class, host_config_specification)
+        task_parameters = TaskParameters().compose_from(host_config_specification)
+        self._run_task(task_class, task_parameters, self.config_loader.parse(host_config_specification).ssh_connection)
 
     def run_remote_deployment_task(self, task_class, host_config_specification):
-        self._run_task(task_class, host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+        task_parameters = TaskParameters().compose_from(host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+        self._run_task(task_class, task_parameters, self.config_loader.parse(host_config_specification).ssh_connection)
 
     def run_data_retrieval_task(self, task_class, host_config_specification):
-        self._run_task(task_class, host_config_specification)
+        self._run_task(task_class, None, self.config_loader.parse(host_config_specification).ssh_connection)
 
-    def _run_task(self, task_class, host_config_specification, additional_task_parameters=None):
-        ssh_connection = self.config_loader.parse(host_config_specification).ssh_connection
-        task_parameters = TaskParameters().compose_from(host_config_specification, additional_task_parameters)
-
-        exit_code = self._execute(['fab', '-f', self.FABFILE_PATH,
-                                   self._task_with_parameters(task_class, task_parameters),
-                                   '-H', ssh_connection,
-                                   '-i', self.user_credentials.ssh_id_file_path,
-                                   '-p', self.user_credentials.sudo_password])
+    def _run_task(self, task_class, task_parameters, ssh_connection):
+        exit_code = self._run_fabric_script(self._task_with_parameters(task_class, task_parameters), ssh_connection)
 
         if exit_code != 0:
             raise SystemExit('\n>> Deployment failed due to errors above.\n')
 
+    def _run_fabric_script(self, task_with_parameters, ssh_connection):
+        return self._execute(['fab', '-f', self.FABFILE_PATH,
+                              task_with_parameters,
+                              '-H', ssh_connection,
+                              '-i', self.user_credentials.ssh_id_file_path,
+                              '-p', self.user_credentials.sudo_password])
+
     def _task_with_parameters(self, task_class, task_parameters):
-        return '%s:%s' % (self._fully_qualified_task_name(task_class), task_parameters)
+        if task_parameters:
+            return '%s:%s' % (self._fully_qualified_task_name(task_class), task_parameters)
+        else:
+            return self._fully_qualified_task_name(task_class)
 
     def _fully_qualified_task_name(self, task_class):
         return '%s.%s' % (task_class.__module__, task_class.name)
