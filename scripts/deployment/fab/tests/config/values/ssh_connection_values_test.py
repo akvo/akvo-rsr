@@ -19,6 +19,11 @@ class SSHConnectionValuesTest(unittest2.TestCase):
 
         self.assertEqual('www.akvo.org:22', SSHConnection.for_host(HostAlias.LIVE))
 
+    def test_has_connection_string_for_data_host(self):
+        """fab.tests.config.values.ssh_connection_values_test  Has SSH connection string for data host"""
+
+        self.assertEqual('www.akvo.org:22', SSHConnection.for_host(HostAlias.DATA))
+
     def test_has_connection_string_for_media_host(self):
         """fab.tests.config.values.ssh_connection_values_test  Has SSH connection string for media host"""
 
