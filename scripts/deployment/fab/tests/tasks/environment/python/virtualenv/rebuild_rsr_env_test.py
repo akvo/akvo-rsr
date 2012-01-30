@@ -9,10 +9,10 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.loader import ConfigType
 from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.virtualenv import VirtualEnvDeploymentHost
@@ -71,7 +71,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         self.mock_virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
         self.mox.ReplayAll()
 
-        self.rebuild_virtualenv_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.rebuild_virtualenv_task.run(HostControllerMode.REMOTE, HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():

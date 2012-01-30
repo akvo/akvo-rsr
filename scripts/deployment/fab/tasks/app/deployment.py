@@ -18,8 +18,8 @@ class DeployRSRApp(fab.tasks.base.BaseDeploymentTask):
 
     name = 'deploy_rsr_app'
 
-    def run(self, host_controller_mode, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
+    def run(self, host_controller_mode, host_config_specification):
+        host_config = self.config_loader.parse(host_config_specification)
         app_deployer = self._configure_app_deployer_using(host_controller_mode, host_config)
 
         self.feedback.comment('Starting RSR app deployment')

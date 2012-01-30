@@ -15,8 +15,8 @@ class RebuildRSREnv(fab.tasks.base.BaseDeploymentTask):
 
     name = 'rebuild_rsr_env'
 
-    def run(self, host_controller_mode, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        host_config = self.config_loader.host_config_for(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
+    def run(self, host_controller_mode, host_config_specification):
+        host_config = self.config_loader.parse(host_config_specification)
         virtualenv_installer_config = fab.config.rsr.virtualenv.RSRVirtualEnvInstallerConfig.create_with(host_config, self.deployment_user)
         virtualenv_deployment_host = self._configure_host_using(virtualenv_installer_config, host_controller_mode)
 

@@ -13,8 +13,8 @@ class InstallPython(fab.tasks.environment.hostbase.LinuxHostBaseTask):
 
     name = 'install_python'
 
-    def run(self, python_version, config_type, host_alias=None, repository_branch=None, database_name=None, custom_config_module_path=None):
-        linux_host = self._configure_linux_host_with(config_type, host_alias, repository_branch, database_name, custom_config_module_path)
+    def run(self, python_version, host_config_specification):
+        linux_host = self._configure_linux_host_with(host_config_specification)
 
         linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
         linux_host.ensure_python_is_installed_with_version(python_version)

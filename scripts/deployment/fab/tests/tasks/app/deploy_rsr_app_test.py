@@ -10,12 +10,11 @@ import mox
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.app.deployer import RSRAppDeployer
-from fab.config.loader import ConfigType
 from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import HostControllerMode
-from fab.host.deployment import DeploymentHost
 from fab.tasks.app.deployment import DeployRSRApp
 
 
@@ -55,8 +54,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         self._can_configure_app_deployer_with(HostControllerMode.REMOTE)
 
     def _can_configure_app_deployer_with(self, host_controller_mode):
-        host_config = CIDeploymentHostConfig.for_test()
-        self.assertIsInstance(DeployRSRApp()._configure_app_deployer_using(host_controller_mode, host_config), RSRAppDeployer)
+        self.assertIsInstance(DeployRSRApp()._configure_app_deployer_using(host_controller_mode, CIDeploymentHostConfig.for_test()), RSRAppDeployer)
 
     def test_can_deploy_rsr_app(self):
         """fab.tests.tasks.app.deploy_rsr_app_test  Can deploy RSR app"""
@@ -69,7 +67,7 @@ class DeployRSRAppTest(mox.MoxTestBase):
         self.mock_app_deployer.ensure_app_symlinks_exist()
         self.mox.ReplayAll()
 
-        self.deploy_rsr_app_task.run(HostControllerMode.REMOTE, ConfigType.PRECONFIGURED, HostAlias.TEST)
+        self.deploy_rsr_app_task.run(HostControllerMode.REMOTE, HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():

@@ -9,8 +9,8 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType
 from fab.config.rsr.credentials.user import UserCredentials
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
@@ -22,7 +22,7 @@ class StubbedUpdateSystemPythonPackages(UpdateSystemPythonPackages):
         super(StubbedUpdateSystemPythonPackages, self).__init__()
         self.linux_host = linux_host
 
-    def _configure_linux_host_with(self, config_type, host_alias, repository_branch, database_name, custom_config_module_path):
+    def _configure_linux_host_with(self, host_config_specification):
         return self.linux_host
 
 
@@ -48,7 +48,7 @@ class UpdateSystemPythonPackagesTest(mox.MoxTestBase):
         mock_linux_host.update_system_python_packages()
         self.mox.ReplayAll()
 
-        update_system_python_packages_task.run(ConfigType.PRECONFIGURED, HostAlias.TEST)
+        update_system_python_packages_task.run(HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():

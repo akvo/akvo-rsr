@@ -9,8 +9,9 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.loader import DeploymentConfigLoader
 from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.hostbase import LinuxHostBaseTask
@@ -25,15 +26,15 @@ class LinuxHostBaseTaskTest(mox.MoxTestBase):
         self.linux_host_base_task = LinuxHostBaseTask()
         self.linux_host_base_task.config_loader = self.mock_config_loader
 
-    def test_can_configure_linux_host_with_given_config_parameters(self):
-        """fab.tests.tasks.environment.linux_host_base_task_test  Can configure Linux host with the given configuration parameters"""
+    def test_can_configure_linux_host_with_given_host_config_specification(self):
+        """fab.tests.tasks.environment.linux_host_base_task_test  Can configure Linux host with the given host configuration specification"""
 
-        self.mock_config_loader.host_config_for(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None).AndReturn(CIDeploymentHostConfig.for_test())
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+
+        self.mock_config_loader.parse(host_config_spec).AndReturn(CIDeploymentHostConfig.for_test())
         self.mox.ReplayAll()
 
-        configured_linux_host = self.linux_host_base_task._configure_linux_host_with(ConfigType.PRECONFIGURED, HostAlias.TEST, None, None, None)
-
-        self.assertIsInstance(configured_linux_host, LinuxHost)
+        self.assertIsInstance(self.linux_host_base_task._configure_linux_host_with(host_config_spec), LinuxHost)
 
 
 def suite():
