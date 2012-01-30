@@ -63,4 +63,4 @@ class TaskRunner(object):
         return '%s.%s' % (task_class.__module__, task_class.name)
 
     def _execute(self, command_with_parameters):
-        return subprocess.call(command_with_parameters)
+        return subprocess.check_call(command_with_parameters)
