@@ -20,7 +20,6 @@ scripts/deployment/builders/osx/config/python_system.config
 scripts/deployment/builders/osx/config/rsr_env.config
 scripts/deployment/builders/osx/config/user.config
 scripts/deployment/builders/ubuntu/install_python27_config.py
-scripts/deployment/deploy_rsr_config.py
 scripts/deployment/fab/config/custom.py
 scripts/deployment/fab/config/rsr/credentials/custom.py
 scripts/deployment/fab/config/rsr/credentials/database.py
