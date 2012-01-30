@@ -36,10 +36,9 @@ class RSRCodebaseConfig(object):
         self.rsr_archive_url = os.path.join("http://nodeload.github.com/akvo/akvo-rsr/zipball", self.repo_branch)
 
         pip_requirements_base_url = os.path.join("https://raw.github.com/akvo/akvo-rsr", self.repo_branch, self.PIP_REQUIREMENTS_PATH)
-        self.system_requirements_file_url = os.path.join(pip_requirements_base_url, self.SYSTEM_REQUIREMENTS_FILE)
-
-        self.rsr_requirements_file_path     = self._requirements_path(self.RSR_REQUIREMENTS_FILE)
-        self.testing_requirements_file_path = self._requirements_path(self.TESTING_REQUIREMENTS_FILE)
+        self.system_requirements_file_url   = os.path.join(pip_requirements_base_url, self.SYSTEM_REQUIREMENTS_FILE)
+        self.rsr_requirements_file_url      = os.path.join(pip_requirements_base_url, self.RSR_REQUIREMENTS_FILE)
+        self.testing_requirements_file_url  = os.path.join(pip_requirements_base_url, self.TESTING_REQUIREMENTS_FILE)
 
     def _branch_without_type(self):
         if self._branch_includes_type():
@@ -52,6 +51,3 @@ class RSRCodebaseConfig(object):
 
     def _branch_name_only(self):
         return self.repo_branch.split("/")[-1]
-
-    def _requirements_path(self, requirements_file):
-        return os.path.join(self.PIP_REQUIREMENTS_PATH, requirements_file)
