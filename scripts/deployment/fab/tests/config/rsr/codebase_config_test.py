@@ -101,25 +101,24 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
     def test_has_system_requirements_file_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has system requirements file URL"""
 
-        pip_requirements_base_url = os.path.join("https://raw.github.com/akvo/akvo-rsr", self.feature_branch, RSRCodebaseConfig.PIP_REQUIREMENTS_PATH)
-        expected_system_requirements_file_url = os.path.join(pip_requirements_base_url, RSRCodebaseConfig.SYSTEM_REQUIREMENTS_FILE)
+        self.assertEqual(self._expected_requirements_file_url_for(RSRCodebaseConfig.SYSTEM_REQUIREMENTS_FILE),
+                         self.codebase_config.system_requirements_file_url)
 
-        self.assertEqual(expected_system_requirements_file_url, self.codebase_config.system_requirements_file_url)
+    def test_has_rsr_requirements_file_url(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR requirements file URL"""
 
-    def test_has_rsr_requirements_file_path_in_deployed_codebase(self):
-        """fab.tests.config.rsr.codebase_config_test  Has RSR requirements file path in the deployed codebase"""
-
-        self.assertEqual(self._expected_requirements_file_path(RSRCodebaseConfig.RSR_REQUIREMENTS_FILE),
-                         self.codebase_config.rsr_requirements_file_path)
+        self.assertEqual(self._expected_requirements_file_url_for(RSRCodebaseConfig.RSR_REQUIREMENTS_FILE),
+                         self.codebase_config.rsr_requirements_file_url)
 
     def test_has_testing_requirements_file_path_within_deployed_codebase(self):
         """fab.tests.config.rsr.codebase_config_test  Has testing requirements file path within the deployed codebase"""
 
-        self.assertEqual(self._expected_requirements_file_path(RSRCodebaseConfig.TESTING_REQUIREMENTS_FILE),
-                         self.codebase_config.testing_requirements_file_path)
+        self.assertEqual(self._expected_requirements_file_url_for(RSRCodebaseConfig.TESTING_REQUIREMENTS_FILE),
+                         self.codebase_config.testing_requirements_file_url)
 
-    def _expected_requirements_file_path(self, requirements_file):
-        return os.path.join(RSRCodebaseConfig.PIP_REQUIREMENTS_PATH, requirements_file)
+    def _expected_requirements_file_url_for(self, requirements_file):
+        pip_requirements_base_url = os.path.join("https://raw.github.com/akvo/akvo-rsr", self.feature_branch, RSRCodebaseConfig.PIP_REQUIREMENTS_PATH)
+        return os.path.join(pip_requirements_base_url, requirements_file)
 
 
 def suite():
