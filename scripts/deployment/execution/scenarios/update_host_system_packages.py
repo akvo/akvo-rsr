@@ -15,11 +15,11 @@ from execution.scenarios.runner import ScenarioRunner
 import execution.verification
 
 
-def update_host_system(scenario_runner, host_config_specification):
+def update_host_system_packages(scenario_runner, host_config_specification):
     scenario_runner.run_step('verify_system_packages', host_config_specification)
     scenario_runner.run_step('update_system_python_packages', host_config_specification)
 
 
 if __name__ == '__main__':
     execution.verification.display_usage_and_exit_if_host_config_spec_is_missing(os.path.basename(__file__))
-    update_host_system(ScenarioRunner(), sys.argv[1])
+    update_host_system_packages(ScenarioRunner(), sys.argv[1])
