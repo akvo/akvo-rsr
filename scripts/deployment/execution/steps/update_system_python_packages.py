@@ -7,15 +7,15 @@
 
 import imp, os, sys
 
-VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../verifiers'))
+VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../verifiers'))
 imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_syspath_contains_deployment_scripts_home.py'))
 
-from fab.tasks.data.retrieval import FetchRSRData
+from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
 from fab.tasks.runner import TaskRunner
 
-import steps.shared
+import execution.verification
 
 
 if __name__ == '__main__':
-    steps.shared.display_usage_and_exit_if_parameters_are_missing(os.path.basename(__file__))
-    TaskRunner.create().run_data_retrieval_task(FetchRSRData, sys.argv[1])
+    execution.verification.display_usage_and_exit_if_host_config_spec_is_missing(os.path.basename(__file__))
+    TaskRunner.create().run_deployment_task(UpdateSystemPythonPackages, sys.argv[1])

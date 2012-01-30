@@ -15,7 +15,7 @@ def display_deployment_script_usage(script_name):
     print '           standard:host_alias;repository_branch;database_name'
     print '           custom:/path/to/fab/config/custom.py\n'
 
-def display_usage_and_exit_if_parameters_are_missing(script_name):
+def display_usage_and_exit_if_host_config_spec_is_missing(script_name):
     if len(sys.argv) < 2:
         print 'Missing parameter: host_config_specification'
         display_deployment_script_usage(script_name)
