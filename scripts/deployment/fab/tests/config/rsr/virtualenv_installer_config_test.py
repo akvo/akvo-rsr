@@ -58,6 +58,13 @@ class RSRVirtualEnvInstallerConfigTest(mox.MoxTestBase):
 
         self.assertEqual(expected_rsr_env_path, self.virtualenv_installer_config.rsr_env_path)
 
+    def test_has_package_download_directory(self):
+        """fab.tests.config.rsr.virtualenv_installer_config_test  Has python package download directory"""
+
+        expected_package_download_dir = os.path.join(self.deployment_host_config.host_paths.deployment_processing_home, 'python_packages')
+
+        self.assertEqual(expected_package_download_dir, self.virtualenv_installer_config.package_download_dir)
+
     def test_has_rsr_requirements_url(self):
         """fab.tests.config.rsr.virtualenv_installer_config_test  Has RSR requirements URL"""
 

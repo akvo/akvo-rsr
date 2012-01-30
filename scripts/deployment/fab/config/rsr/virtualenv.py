@@ -19,6 +19,7 @@ class RSRVirtualEnvInstallerConfig(object):
         self.rsr_env_name       = "rsr_%s" % codebase_config.repo_branch_without_type
         self.rsr_env_path       = os.path.join(self.virtualenvs_home, self.rsr_env_name)
 
+        self.package_download_dir       = os.path.join(deployment_host_paths.deployment_processing_home, 'python_packages')
         self.rsr_requirements_url       = codebase_config.rsr_requirements_file_url
         self.testing_requirements_url   = codebase_config.testing_requirements_file_url
 
