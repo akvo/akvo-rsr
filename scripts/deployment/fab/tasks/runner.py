@@ -63,4 +63,7 @@ class TaskRunner(object):
         return '%s.%s' % (task_class.__module__, task_class.name)
 
     def _execute(self, command_with_parameters):
-        return subprocess.check_call(command_with_parameters)
+        try:
+            return subprocess.check_call(command_with_parameters)
+        except subprocess.CalledProcessError as deployment_error:
+            return deployment_error.returncode

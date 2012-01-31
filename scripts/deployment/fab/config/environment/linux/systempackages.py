@@ -132,39 +132,19 @@ class SystemPackageSpecifications(object):
                      {'name': 'libpcrecpp0',        'version': '7.4-1ubuntu2.1'},
                      {'name': 'libpcre3-dev',       'version': '7.4-1ubuntu2.1'}]
 
-
-    class Shared(object):
-
-        # for building Apache APR and curl
-        OPEN_LDAP = [{'name': 'liblzo2-2',          'version': '2.02-3'},
-                     {'name': 'libopencdk10',       'version': '0.6.6-1ubuntu1'},
-                     {'name': 'libtasn1-3',         'version': '1.1-1'},
-                     {'name': 'libgnutls13',        'version': '2.0.4-1ubuntu2.6'},
-                     {'name': 'libsasl2-modules',   'version': '2.1.22.dfsg1-18ubuntu2.1'},
-                     {'name': 'libsasl2-2',         'version': '2.1.22.dfsg1-18ubuntu2.1'},
-                     {'name': 'libldap-2.4-2',      'version': '2.4.9-0ubuntu0.8.04.5'}]
-
-        # for building Apache APR, curl and ssh
-        KERBEROS_RUNTIME =  [{'name': 'libcomerr2',     'version': '1.40.8-2ubuntu2'},
-                             {'name': 'libkeyutils1',   'version': '1.2-4'},
-                             {'name': 'libkrb53',       'version': '1.6.dfsg.3~beta1-2ubuntu1.8'}]
-
-    APACHE_PORTABLE_RUNTIME =   [{'name': 'libpq5',         'version': '8.3.17-0ubuntu0.8.04.1'},
-                                 {'name': 'libuuid1',       'version': '1.40.8-2ubuntu2'},
-                                 {'name': 'libapr1',        'version': '1.2.11-1ubuntu0.2'},
-                                 {'name': 'libaprutil1',    'version': '1.2.12+dfsg-3ubuntu0.3'}]
-
-    APACHE_WEB_SERVER = [{'name': 'libmagic1',              'version': '4.21-3ubuntu2'},
-                         {'name': 'net-tools',              'version': '1.60-19ubuntu1'},
-                         {'name': 'procps',                 'version': '1:3.2.7-5ubuntu3'},
-                         {'name': 'apache2-utils',          'version': '2.2.8-1ubuntu0.22'},
-                         {'name': 'apache2.2-common',       'version': '2.2.8-1ubuntu0.22'},
-                         {'name': 'apache2-mpm-worker',     'version': '2.2.8-1ubuntu0.22'},
-                         {'name': 'apache2',                'version': '2.2.8-1ubuntu0.22'},
-                         {'name': 'libapache2-mod-python',  'version': '3.3.1-2build1'}]
-
-    ADDITIONAL_TOOLS =  [{'name': 'libidn11',           'version': '1.1-1'},
+    ADDITIONAL_TOOLS =  [{'name': 'libcomerr2',         'version': '1.40.8-2ubuntu2'},
+                         {'name': 'libidn11',           'version': '1.1-1'},
                          {'name': 'libidn11-dev',       'version': '1.1-1'},
+                         {'name': 'libkeyutils1',       'version': '1.2-4'},
+                         {'name': 'libkrb53',           'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
+                         {'name': 'liblzo2-2',          'version': '2.02-3'},
+                         {'name': 'libopencdk10',       'version': '0.6.6-1ubuntu1'},
+                         {'name': 'libtasn1-3',         'version': '1.1-1'},
+                         {'name': 'libgnutls13',        'version': '2.0.4-1ubuntu2.6'},
+                         {'name': 'libsasl2-modules',   'version': '2.1.22.dfsg1-18ubuntu2.1'},
+                         {'name': 'libsasl2-2',         'version': '2.1.22.dfsg1-18ubuntu2.1'},
+                         {'name': 'libldap-2.4-2',      'version': '2.4.9-0ubuntu0.8.04.5'},
+                         {'name': 'libldap2-dev',       'version': '2.4.9-0ubuntu0.8.04.5'},
                          {'name': 'libcurl3',           'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'curl',               'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'},
@@ -182,13 +162,11 @@ class SystemPackageSpecifications(object):
     GIT_DEPENDENCIES =  [{'name': 'comerr-dev',             'version': '2.1-1.40.8-2ubuntu2'},
                          {'name': 'libkadm55',              'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
                          {'name': 'libkrb5-dev',            'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
-                         {'name': 'libldap2-dev',           'version': '2.4.9-0ubuntu0.8.04.5'},
                          {'name': 'libcurl4-openssl-dev',   'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'gettext-base',           'version': '0.17-2ubuntu1'},
                          {'name': 'gettext',                'version': '0.17-2ubuntu1'}]
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
                      PYTHON, PYTHON_EXTENSIONS, PYTHON_PACKAGE_DEPENDENCIES,
-                     DATABASE_AUTHENTICATION, DATABASE, WEB_SERVER, Shared.OPEN_LDAP,
-                     Shared.KERBEROS_RUNTIME, APACHE_PORTABLE_RUNTIME, APACHE_WEB_SERVER,
-                     ADDITIONAL_TOOLS, GIT_DEPENDENCIES]
+                     DATABASE_AUTHENTICATION, DATABASE, WEB_SERVER, ADDITIONAL_TOOLS,
+                     GIT_DEPENDENCIES]
