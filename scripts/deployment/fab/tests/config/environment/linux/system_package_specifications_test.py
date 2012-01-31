@@ -99,39 +99,12 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.WEB_SERVER))
 
-    def test_has_expected_shared_package_specifications_for_open_ldap(self):
-        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected shared package specifications for OpenLDAP"""
-
-        expected_packages = ['liblzo2-2', 'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2', 'libldap-2.4-2']
-
-        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.Shared.OPEN_LDAP))
-
-    def test_has_expected_shared_package_specifications_for_kerberos_runtime(self):
-        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected shared package specifications for Kerberos runtime"""
-
-        expected_packages = ['libcomerr2', 'libkeyutils1', 'libkrb53']
-
-        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.Shared.KERBEROS_RUNTIME))
-
-    def test_has_expected_shared_package_specifications_for_apache_portable_runtime(self):
-        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Apache APR"""
-
-        expected_packages = ['libpq5', 'libuuid1', 'libapr1', 'libaprutil1']
-
-        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.APACHE_PORTABLE_RUNTIME))
-
-    def test_has_expected_shared_package_specifications_for_apache_web_server(self):
-        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Apache web server"""
-
-        expected_packages = ['libmagic1', 'net-tools', 'procps', 'apache2-utils', 'apache2.2-common', 'apache2-mpm-worker',
-                             'apache2', 'libapache2-mod-python']
-
-        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.APACHE_WEB_SERVER))
-
     def test_has_expected_additional_tools_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected additional tools package specifications"""
 
-        expected_packages = ['libidn11', 'libidn11-dev', 'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client',
+        expected_packages = ['libcomerr2', 'libidn11', 'libidn11-dev', 'libkeyutils1', 'libkrb53', 'liblzo2-2',
+                             'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
+                             'libldap-2.4-2', 'libldap2-dev', 'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client',
                              'openssh-blacklist', 'libdbus-1-3', 'libck-connector0', 'openssh-server', 'ssh', 'tar',
                              'zip', 'unzip']
 
@@ -140,7 +113,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_package_specifications_for_building_git(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for building git"""
 
-        expected_packages = ['comerr-dev', 'libkadm55', 'libkrb5-dev', 'libldap2-dev', 'libcurl4-openssl-dev', 'gettext-base', 'gettext']
+        expected_packages = ['comerr-dev', 'libkadm55', 'libkrb5-dev', 'libcurl4-openssl-dev', 'gettext-base', 'gettext']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.GIT_DEPENDENCIES))
 
@@ -157,10 +130,6 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
                              SystemPackageSpecifications.DATABASE_AUTHENTICATION,
                              SystemPackageSpecifications.DATABASE,
                              SystemPackageSpecifications.WEB_SERVER,
-                             SystemPackageSpecifications.Shared.OPEN_LDAP,
-                             SystemPackageSpecifications.Shared.KERBEROS_RUNTIME,
-                             SystemPackageSpecifications.APACHE_PORTABLE_RUNTIME,
-                             SystemPackageSpecifications.APACHE_WEB_SERVER,
                              SystemPackageSpecifications.ADDITIONAL_TOOLS,
                              SystemPackageSpecifications.GIT_DEPENDENCIES]
 
