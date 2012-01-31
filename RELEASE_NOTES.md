@@ -18,7 +18,7 @@ The release adds the ability to sign in and add updates to Akvo RSR from a partn
 New features & changes
 ----------------
 ### Partner site sign in and add updates capability.
-Users with Akvo RSR accounts can now sign in to Akvo RSR on partner site pages and add project updates.
+Users with Akvo RSR accounts can now sign in to Akvo RSR on partner site pages. Signed-in users can add updates to projects on a partner site just as they do on the main Akvo site project pages. This includes adding text, a photo, or video URL to the update, and the ability to edit updates for a limited time after update creation.
 
 ### Rework of relationship between organisations and projects.
 Organisations can be linked to projects making them project partners. There are 4 types of links, or partnership types: Field partner, Funding partner, Sponsor partner and Support partner. The current code proved to be inefficient and needed to be changed.
@@ -32,15 +32,21 @@ There is a Funding amount field visible regardless of type of partner chosen. On
 
 Bug fixes
 ---------
-### Fixes an issue loading image files with name form used by RSR thumbnails.
+### Cannot upload image file names same as thumbnails.
+Fixes an issue loading image files with the same name format used by RSR thumbnails.
 
 ### Fixed home page WordPress issues.
+The home page was only presenting blog posts in the partners category. Now it will display the last 2 posts from any category.
+
+### Partner site breadcrumb, logo and courtesy back link.
+Added code to handle the case when no return URL is specified for the partner site, nor has a URL been specified for the organisation. In this situation the logo and the breadcrumb text are no longer links and the organisation courtesy link is completely suppressed.
 
 ### Miscellaneous partner site ui and usability tweaks.
-
-### Remove PvW/DWS template files.
+This includes adding the Powered by Akvo logo and centering the Donate button. 
 
 ### Fixes an issue whereby misleading information was given in donation templates and emails pertaining to the tax deductible status of certain types of donations in the United States of America.
+
+### Remove PvW/DWS template files.
 
 
 ---
@@ -90,7 +96,7 @@ To make Github understand and apply the correct format to the Markdown file it i
 
 Bug fixes
 ---------
-v
+
 ### Removed self referencing "funding details" link
 Removed self referencing "funding details" link in the funding box.
 
@@ -154,7 +160,7 @@ The following functions have not been implemented yet in Akvo RSR 2.0 preview of
 - Comments
 - Focus areas and categories
 - RSS feeds
-- Sign in, you can sign in on Akvo.org to administrate your account and your projects
+- Sign in, you can sign in on Akvo.org to administer your account and your projects
 - Add update, you can still sign in on Akvo.org to make an update
 - Partner listing showing a partners role in a project
 
