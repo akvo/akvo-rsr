@@ -14,7 +14,6 @@ import execution.verification
 
 from execution.scenarios.runner import ScenarioRunner
 from execution.scenarios.install_rsr_virtualenv_and_codebase import install_rsr_virtualenv_and_codebase
-from execution.scenarios.prepare_database_for_migrations import prepare_database_for_migrations
 from execution.scenarios.update_host_system_packages import update_host_system_packages
 
 from fab.config.rsr.host import RepositoryBranch
@@ -27,24 +26,29 @@ def confirm_deployment_if_deploying_to_live_server(host_alias):
         if confirm_live_deployment.lower() != 'yes':
             sys.exit(1)
 
-def deploy_rsr(scenario_runner, release_config_spec, master_config_spec):
+def create_202_database_and_prepare_for_migrations(scenario_runner, master_config_spec):
+    scenario_runner.run_step('rebuild_rsr_database', master_config_spec)
+
+def deploy_rsr_202_codebase(scenario_runner, release_config_spec):
     update_host_system_packages(scenario_runner, release_config_spec)
-    install_rsr_virtualenv_and_codebase(scenario_runner, master_config_spec)
-    prepare_database_for_migrations(scenario_runner, master_config_spec)
     install_rsr_virtualenv_and_codebase(scenario_runner, release_config_spec)
+
+def enable_database_migrations(scenario_runner, release_config_spec):
     scenario_runner.run_step('convert_rsr_database_for_migrations', release_config_spec)
     scenario_runner.run_step('run_all_database_migrations', release_config_spec)
 
+def deploy_202_release(scenario_runner, master_config_spec, release_config_spec):
+    create_202_database_and_prepare_for_migrations(scenario_runner, master_config_spec)
+    deploy_rsr_202_codebase(scenario_runner, release_config_spec)
+    enable_database_migrations(scenario_runner, release_config_spec)
 
 if __name__ == '__main__':
-    execution.verification.display_usage_and_exit_if_release_parameters_are_missing(os.path.basename(__file__))
-    host_alias = sys.argv[1]
-    rsr_database_name = sys.argv[2]
+    host_alias = 'live'
+    rsr_database_name = 'rsrdb_202'
 
     confirm_deployment_if_deploying_to_live_server(host_alias)
 
-    release_config_spec = HostConfigSpecification().create_standard_with(host_alias, 'release/2.0.2', rsr_database_name)
     master_config_spec = HostConfigSpecification().create_standard_with(host_alias, RepositoryBranch.MASTER, rsr_database_name)
+    release_config_spec = HostConfigSpecification().create_standard_with(host_alias, 'release/2.0.2', rsr_database_name)
 
-    scenario_runner = ScenarioRunner()
-    deploy_rsr(ScenarioRunner(), release_config_spec, master_config_spec)
+    deploy_202_release(ScenarioRunner(), master_config_spec, release_config_spec)
