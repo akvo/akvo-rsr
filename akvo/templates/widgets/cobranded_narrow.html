@@ -1,0 +1,200 @@
+{% extends "widgets/base_widget.html" %}
+{% load i18n rsr_tags rsr_filters thumbnail cache humanize %}
+{% load url from future %}
+
+
+{% block title %}project@{{block.super}}{% endblock title %}
+
+{% block style %}
+	{% asset_bundle 'widget_cobranded_narrow' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+	</style>
+	<![endif]-->
+{% endblock style %}
+
+{% block inline_styles %}
+{{block.super}}
+	#heightconstrain {
+		height: expression( this.scrollHeight > 809 ? "810px" : "auto" ); /* sets max-height for IE */
+		max-height:810px;
+		overflow:hidden;
+	}
+	.fundingbox-content {
+		height: expression( this.scrollHeight > 4 ? "123px" : "auto" ); /* sets max-height for IE */
+		max-height:121px;
+		height:121px;
+	}
+	
+	#progress_back {
+		background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+	}
+	
+	#progress_green {
+		background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+	}
+	
+	#project_title {
+		display:block;
+		height:36px;
+		overflow:hidden;
+	}
+	
+	#project_subtitle {
+		display:block;
+		max-height:32px;
+		overflow:hidden;
+	}
+	
+	#project_location{
+		display:block;
+		max-height:32px;
+		height:32px;
+		overflow:hidden;
+	}
+
+{% endblock inline_styles %}
+
+{% block header %}
+	<h1>{% trans 'Project' %}</h1>
+{% endblock header %}
+
+{% block content %}
+<div id="heightconstrain">
+	<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+	<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:30}}</p>	
+	<div class="photo_frame">
+		<a href="{% url 'project_main' project.id %}">{% project_thumb project 150 113 %}</a>
+	</div>
+
+	<p id="project_plan_summary">
+		{{project.project_plan_summary|safe|smart_truncate:90}}
+		<a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+	</p>
+	<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+	<div id="project_location">
+		<p class="smallFont"><span class="capz">{{project.primary_location.country.continent}}</span><br />
+			{{project.primary_location.country}}, {{project.primary_location.city}}
+		</p>
+	</div>
+	<p class="smallFont grey topmargin">{% trans 'Status' %}</p>
+	<p class="smallFont">{{project.show_status}}</p>
+	<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
+	{% with project.project_updates.latest as latest_update %}
+		{% if latest_update %}
+			<p class="smallFont"><a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a></p>
+		{% else %}
+			<p class="smallFont">{% trans 'Not yet' %}</p>
+		{% endif %}
+	{% endwith %}		
+
+	<hr class="divider" />
+
+	<div style="width:70px; float:left;"><p class="smallFont grey">{% trans 'Funding' %}</p></div>
+	<div id="akvoref" style="float:right; width:75px; padding-top:0">
+		<p class="miniFont lightgrey right" style="padding-top:2px; text-transform: capitalize;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
+	</div>
+
+	<div style="margin:0; margin-top:13px;">
+		{% funding_box_narrow2 project %}
+	</div>
+	<hr class="divider">
+	<div style="height:95px;">
+		<div id="partnerspace" style="text-align:center;">
+
+      {% with project.partnership_set.all.0 as first_partner %}
+        <p class="smallFont grey left">
+          {% if first_partner.partner_type == 'field' %}{% trans 'Implemented by' %}{% endif %}
+          {% if first_partner.partner_type == 'funding' %}{% trans 'Underwritten by' %}{% endif %}
+          {% if first_partner.partner_type == 'support' %}{% trans 'Supported by' %}{% endif %}
+          {% if first_partner.partner_type == 'sponsor' %}{% trans 'Presented by' %}{% endif %}
+        </p>
+        <a href="{{first_partner.organisation.get_absolute_url}}">
+          {% org_logo first_partner.organisation 70 30 'margin-top:10px; margin-bottom:5px;' %}
+        </a><br />
+        <a href="{{first_partner.organisation.get_absolute_url}}">{{first_partner}}</a>
+      {% endwith %}
+
+		</div>
+	</div>		
+</div>
+{% endblock content %}
+
+{% block inline_scripts %}
+
+{% comment %}
+	presented by = sponsor
+	underwritten by = funder
+	implemented by = field partner?
+	supported by = support partner
+{% endcomment %}
+
+<script type="text/javascript">
+	
+	var index = 1;
+	
+	function Partner(orgName,logo,partnerType,url) {
+		this.orgName = orgName;
+		this.logo = logo;
+		this.partnerType = partnerType;
+		this.url = url;
+		this.getName = function () { return this.orgName; }
+		this.getLogo = function () { return this.logo; }
+		this.getType = function () { return this.partnerType; }
+		this.getUrl = function () { return this.url; }
+	}
+	
+	var partners = [];
+
+  {% for partner in project.partnership_set.all %}
+    partners[partners.length] = new Partner('{{partner}}',
+            '{% org_logo partner.organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
+            '{{partner.partner_type}}',
+            '{{partner.organisation.get_absolute_url}}');
+  {% endfor %}
+
+	function switchPartner() {
+		index == (partners.length-1) ? index = 0 : index++;
+		animatePartnerSwitch();
+	}
+	
+	function animatePartnerSwitch(){
+		// If no or one partner bail since there is nothing to animate
+		if (partners.length <=1) {
+			return;
+		}
+			
+		var newHTML = '';
+		
+		switch(partners[index].getType()) {
+			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by' %}</p>'; break;
+			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by' %}</p>'; break;
+			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by' %}</p>'; break;
+			default: newHTML += '<p class="smallFont grey left">{% trans 'Presented by' %}</p>'; break;
+		}
+		
+		newHTML += '<a href="' + partners[index].getUrl() + '">';
+		newHTML += partners[index].getLogo() + '</a><br><a class="smallFont" href="' + partners[index].getUrl() + '">';
+		newHTML += partners[index].getName() +'</a>';
+		
+		jQ("#partnerspace")
+			.animate({opacity: 1.0},7000) // Display time
+			.fadeOut(1000, function() {
+				jQ("#partnerspace").html(newHTML)
+			})
+			.animate({opacity: 1.0},1000)
+			.fadeIn(1000, switchPartner);
+	}
+		
+</script>
+	
+{% endblock inline_scripts %}
+{% block jq_ready %}
+	animatePartnerSwitch();
+{% endblock jq_ready %}
+

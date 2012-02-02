@@ -106,7 +106,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
 def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt', subject_context={}, msg_context={}):
     """
-    Send mail to many users supllied through a queryset
+    Send mail to many users supplied through a queryset
     """
     to_list = [user.email for user in users if user.email]
     rsr_send_mail(to_list, subject, message, subject_context, msg_context)
@@ -169,8 +169,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         if category_id:
             cursor.execute("""
                 SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users, term_relationships
-                    WHERE post_status != 'draft'
-                        AND post_status != 'auto-draft'
+                    WHERE post_status = 'publish'
                         AND post_type = 'post'
                         AND term_taxonomy_id = %d
                         and posts.ID = object_id
@@ -181,7 +180,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         else:
             cursor.execute("""
                 SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users
-                    WHERE post_status != 'draft'
+                    WHERE post_status = 'publish'
                         AND post_status != 'auto-draft'
                         AND post_type = 'post'
                         AND posts.post_author = users.ID
@@ -206,11 +205,9 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         # Find first paragraph in post
         try:
             post_p = post_content_soup('p')[0].contents
-        except:
-            # no p-tags
-            # if text has no name attr then it's not inside a tag, i.e. it's text!
-            post_p = ''.join([text for text in post_content_soup if not getattr(text, 'name', False)])
-        
+        except: # no p-tags
+            post_p = ''.join(post_content_soup.findAll(text=True))
+            
         posts.append({ 'title': post[1], 'image': post_img, 'text': post_p, 'date': post[3], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[4]})
 
     return posts

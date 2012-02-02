@@ -1,0 +1,192 @@
+{% extends "rsr/project/project_subpage_base.html" %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load url from future %}
+
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Funding' %}</li>
+{% endblock breadcrum_items %}
+
+{% block project_left_column %}
+	<div class="white_box" style="background-color:#fff;">
+		<div style="float:left; margin-left:20px; margin-top:10px">
+			<span class="small">
+				<a href="{% url 'project_main' project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+			</span>
+			<h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
+			<p class="grey small">
+				{% trans 'Request posted' %} {{project.date_request_posted|date:"d-M-Y"}}				
+			</p>
+		</div>
+		<div class="counter_badge">
+			<span style="display:none;">{% counter project %}</span>
+			{% cache 10 project_view_count project.id %}
+				{{ project.view_count|intcomma }}
+			{% endcache %}
+			<br />
+			<span>{% trans 'views' %}</span>
+		</div>
+		<div class="clear"></div>
+		<div class="space20">
+			<h3>{% trans 'Project Budget' %}</h3>
+			<table class="project_budget_table" style="border:none; margin-top:20px;">
+				{% if project.budget_employment %}
+				<tr>
+					<td>{% trans 'Employment costs' %}:</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_employment|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if project.budget_building %}
+				<tr>
+					<td>{% trans 'Building Material costs' %}:</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_building|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if project.budget_training %}
+				<tr>
+					<td>{% trans 'Training costs' %}:</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_training|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if project.budget_maintenance %}
+				<tr>
+					<td>{% trans 'Maintenance costs' %}:</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_maintenance|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if project.budget_management %}
+				<tr>
+					<td>{% trans 'Management costs' %}:</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_management|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if project.budget_other %}
+				<tr>
+					<td>{% trans 'Other costs' %}:</td>
+					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_other|round|intcomma}}</td>
+				</tr>
+				{% endif %}
+				{% if project.budget_total %}
+				<tr>
+					<td><b>{% trans 'Total' %}:</b></td>
+					<td class="text_right"><b>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</b></td>
+				</tr>
+				{% else %}
+				<tr>
+					<td><b>{% trans 'Total' %}:</b></td>
+					<td class="text_right"><b>{{project.get_currency_display|safe}} 0</b></td>
+				</tr>
+				{% endif %}
+			</table>
+			<br />
+			
+			{% if project.all_donations %}
+				<h3 style="margin-top:40px;">{% trans 'Individual donations' %}</h3>
+				<table class="project_budget_table" style="width:50%;">
+					<tr>
+						<td style="font-weight:bold; text-align:right;">{% trans 'Individual raised' %}*:</td>
+						<td style="font-weight:bold; width:100px; ">
+							{{project.get_currency_display|safe}}
+							{{project.all_donations_amount_received|round|intcomma}}
+						</td>
+					</tr>
+					{% for donors in public_donations %}
+						<tr>
+							<td class="text_right">
+								{{donors.name}}:
+							</td>
+							<td>
+								{{project.get_currency_display|safe}} {{ donors.amount }}
+							</td>
+						</tr>
+					{% endfor %}
+					<tr>
+						<td class="text_right">
+							{% trans 'Anonymous' %}:
+						</td>
+						<td>
+							{{project.get_currency_display|safe}} {{ project.anonymous_donations_amount_received|round|intcomma }}
+						</td>
+					</tr>
+				</table>
+				<p class="small grey">{% trans '* The amount indicated is the donation minus transaction fees.' %}</p>
+			{% endif %}
+			
+			{% if project.funding_partner_info %}
+			<hr />
+			<h3>{% trans 'Current funders' %}</h3>
+			{% endif %}
+			{% for funding_info in project.funding_partner_info %}
+        {% with organisation=funding_info.organisation %}
+          <div style="{% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %} padding:10px; background-color:#fff;">
+            <div style="float:left; width:140px;">
+              <a href="{{organisation.get_absolute_url}}">
+                {% org_logo organisation 98 60 'margin: 10px 20px;' %}
+              </a>
+            </div>
+            <div style="float:left; width:250px; margin-left:20px;">
+              <p class="small">
+                {% with organisation.primary_location as location %}
+                  <a href="{{organisation.get_absolute_url}}">
+                    {{organisation}}
+                  </a>
+                  <br/>
+                  {% if location.city %}{{location.city}},{% endif %}
+                  {% if location.state %}{{location.state}},{% endif %}
+                  {{location.country}}
+                {% endwith %}
+              </p>
+            </div>
+            <div style="float:left; width:100px; margin-left:20px;">
+              <p class="small">
+                {% trans 'Grant' %}: {{project.get_currency_display|safe}} {{funding_info.funding_amount|round|intcomma}}
+              </p>
+            </div>
+            <div class="clear"></div>
+          </div>
+        {% endwith %}
+			{% endfor %}
+			
+			
+			{% comment %}
+
+			{% if project.all_donations %}
+				<div style="width: 33%; float: left;{% if forloop.first %} padding-left: 0;{% endif %}">
+					<p style="margin: 10px 0 10px 0;">
+						<span style="margin-left: 10px; float:right;">
+							{{project.get_currency_display|safe}}
+							{{project.all_donations_amount_received|round|intcomma}}
+						</span></b>
+						<b>{% trans 'Individuals raised' %}:
+						<br /><br />
+						<b>{% trans 'Donations' %}:</b><br />
+						{% for donors in public_donations %}
+						<div style="margin:0px 20px">
+							<span style="margin-left: 5px; float:right;">{{ donors.amount }}</span>
+							<span style="float:right;">{{project.get_currency_display|safe}}</span>
+							{{donors.name}}
+						</div>
+						{% endfor %}
+
+						{% ifnotequal project.anonymous_donations_amount_received 0 %}
+							<div style="margin:0px 20px">
+								<span style="margin-left: 5px; float:right;">
+									{{ project.anonymous_donations_amount_received|round|intcomma }}
+								</span>
+								<span style="float:right;">{{project.get_currency_display|safe}}</span>
+								{% trans 'Anonymous' %}:
+							</div>
+						{% endifnotequal %}					
+					</p>
+					<hr />
+					<p style="margin: 10px 0 10px 0; font-size:0.85em">
+						{% trans 'Raised equals donations minus transaction fees.' %}
+					</p>
+
+				</div>
+			{% endif %}
+			{% endcomment %}
+		</div>
+	</div>
+{% endblock project_left_column%}

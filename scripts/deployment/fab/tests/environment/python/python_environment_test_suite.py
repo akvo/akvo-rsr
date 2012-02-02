@@ -7,15 +7,18 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.environment.python.package_installation_paths_test import PackageInstallationPathsTest
+from fab.tests.environment.python.pip_installer_test import PipInstallerTest
+from fab.tests.environment.python.pythonbrew_test import PythonBrewTest
+from fab.tests.environment.python.python_installer_test import PythonInstallerTest
+from fab.tests.environment.python.system_package_installation_paths_test import SystemPackageInstallationPathsTest
 from fab.tests.environment.python.system_package_installer_test import SystemPythonPackageInstallerTest
 from fab.tests.environment.python.virtualenv_installer_test import VirtualEnvInstallerTest
 from fab.tests.environment.python.virtualenv_test import VirtualEnvTest
 
 
 def python_environment_suite():
-    return TestSuiteLoader().create_suite_from_classes([PackageInstallationPathsTest, SystemPythonPackageInstallerTest,
-                                                        VirtualEnvTest, VirtualEnvInstallerTest])
+    return TestSuiteLoader().create_suite_from_classes([PipInstallerTest, PythonBrewTest, PythonInstallerTest, SystemPackageInstallationPathsTest,
+                                                        SystemPythonPackageInstallerTest, VirtualEnvInstallerTest, VirtualEnvTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

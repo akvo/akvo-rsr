@@ -69,7 +69,39 @@ class SystemPackageSpecifications(object):
                  {'name': 'python-minimal',         'version': '2.5.2-0ubuntu1'},
                  {'name': 'python',                 'version': '2.5.2-0ubuntu1'}]
 
-    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'libxml2',        'version': '2.6.31.dfsg-2ubuntu1.6'}]
+    PYTHON_EXTENSIONS = [{'name': 'python2.5-dev',      'version': '2.5.2-2ubuntu6.1'},
+                         {'name': 'python-dev',         'version': '2.5.2-0ubuntu1'},
+                         {'name': 'libffi4',            'version': '4.2.4-1ubuntu4'},
+                         {'name': 'libffi4-dev',        'version': '4.2.4-1ubuntu4'},
+                         {'name': 'libpcre3',           'version': '7.4-1ubuntu2.1'},
+                         {'name': 'libglib2.0-0',       'version': '2.16.3-1'},
+                         {'name': 'pkg-config',         'version': '0.22-1'},
+                         {'name': 'zlib1g-dev',         'version': '1:1.2.3.3.dfsg-7ubuntu1'},
+                         {'name': 'libbz2-dev',         'version': '1.0.4-2ubuntu4.1'},
+                         {'name': 'libncurses5-dev',    'version': '5.6+20071124-1ubuntu2'},
+                         {'name': 'libexpat1',          'version': '2.0.1-0ubuntu1.1'},
+                         {'name': 'libexpat1-dev',      'version': '2.0.1-0ubuntu1.1'},
+                         {'name': 'libssl-dev',         'version': '0.9.8g-4ubuntu3.13'},
+                         {'name': 'libgc1c2',           'version': '1:6.8-1.1'},
+                         {'name': 'libgc-dev',          'version': '1:6.8-1.1'}]
+
+    PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'python-support',     'version': '0.7.5ubuntu1'},
+                                     {'name': 'python-central',     'version': '0.6.7ubuntu0.1'},
+                                     {'name': 'libxml2',            'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'libxml2-dev',        'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'libgpg-error0',      'version': '1.4-2ubuntu7'},
+                                     {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},
+                                     {'name': 'libxslt1.1',         'version': '1.1.22-1ubuntu1.2'},
+                                     {'name': 'libxslt1-dev',       'version': '1.1.22-1ubuntu1.2'},
+                                     {'name': 'python-libxml2',     'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'python-libxslt1',    'version': '1.1.22-1ubuntu1.2'},
+                                     {'name': 'libgmp3c2',          'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'libgmpxx4ldbl',      'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'libgmp3-dev',        'version': '2:4.2.2+dfsg-1ubuntu2'},
+                                     {'name': 'python-gmpy',        'version': '1.01.dfsg.1-1'},
+                                     {'name': 'libfreetype6',       'version': '2.3.5-1ubuntu4.8.04.7'},
+                                     {'name': 'libjpeg62',          'version': '6b-14'},
+                                     {'name': 'libjpeg62-dev',      'version': '6b-14'}]
 
     DATABASE_AUTHENTICATION =   [{'name': 'mktemp',             'version': '1.5-5ubuntu2'},
                                  {'name': 'debianutils',        'version': '2.28.2-0ubuntu1'},
@@ -82,6 +114,7 @@ class SystemPackageSpecifications(object):
 
     DATABASE =  [{'name': 'mysql-common',           'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'libmysqlclient15off',    'version': '5.0.51a-3ubuntu5.8'},
+                 {'name': 'libmysqlclient15-dev',   'version': '5.0.51a-3ubuntu5.8'},
                  {'name': 'libnet-daemon-perl',     'version': '0.38-1.1'},
                  {'name': 'libplrpc-perl',          'version': '0.2017-1.1'},
                  {'name': 'libdbi-perl',            'version': '1.601-1'},
@@ -93,20 +126,17 @@ class SystemPackageSpecifications(object):
                  {'name': 'lsb-base',               'version': '4.0-0ubuntu0.8.04.1'},
                  {'name': 'psmisc',                 'version': '22.6-1'},
                  {'name': 'mysql-server-5.0',       'version': '5.0.51a-3ubuntu5.8'},
-                 {'name': 'python-support',         'version': '0.7.5ubuntu1'},
                  {'name': 'python-mysqldb',         'version': '1.2.2-5ubuntu1'}]
 
     WEB_SERVER =    [{'name': 'openssl',            'version': '0.9.8g-4ubuntu3.13'},
                      {'name': 'libpcrecpp0',        'version': '7.4-1ubuntu2.1'},
-                     {'name': 'libpcre3',           'version': '7.4-1ubuntu2.1'},
                      {'name': 'libpcre3-dev',       'version': '7.4-1ubuntu2.1'}]
 
     ADDITIONAL_TOOLS =  [{'name': 'libcomerr2',         'version': '1.40.8-2ubuntu2'},
                          {'name': 'libidn11',           'version': '1.1-1'},
+                         {'name': 'libidn11-dev',       'version': '1.1-1'},
                          {'name': 'libkeyutils1',       'version': '1.2-4'},
                          {'name': 'libkrb53',           'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
-                         {'name': 'libgpg-error0',      'version': '1.4-2ubuntu7'},
-                         {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},
                          {'name': 'liblzo2-2',          'version': '2.02-3'},
                          {'name': 'libopencdk10',       'version': '0.6.6-1ubuntu1'},
                          {'name': 'libtasn1-3',         'version': '1.1-1'},
@@ -114,10 +144,29 @@ class SystemPackageSpecifications(object):
                          {'name': 'libsasl2-modules',   'version': '2.1.22.dfsg1-18ubuntu2.1'},
                          {'name': 'libsasl2-2',         'version': '2.1.22.dfsg1-18ubuntu2.1'},
                          {'name': 'libldap-2.4-2',      'version': '2.4.9-0ubuntu0.8.04.5'},
+                         {'name': 'libldap2-dev',       'version': '2.4.9-0ubuntu0.8.04.5'},
                          {'name': 'libcurl3',           'version': '7.18.0-1ubuntu2.3'},
                          {'name': 'curl',               'version': '7.18.0-1ubuntu2.3'},
-                         {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'}]
+                         {'name': 'wget',               'version': '1.10.2-3ubuntu1.2'},
+                         {'name': 'libedit2',           'version': '2.9.cvs.20050518-4'},
+                         {'name': 'openssh-client',     'version': '1:4.7p1-8ubuntu3'},
+                         {'name': 'openssh-blacklist',  'version': '0.1-1ubuntu0.8.04.1'},
+                         {'name': 'libdbus-1-3',        'version': '1.1.20-1ubuntu3.5'},
+                         {'name': 'libck-connector0',   'version': '0.2.3-3ubuntu5'},
+                         {'name': 'openssh-server',     'version': '1:4.7p1-8ubuntu3'},
+                         {'name': 'ssh',                'version': '1:4.7p1-8ubuntu3'},
+                         {'name': 'tar',                'version': '1.19-3'},
+                         {'name': 'zip',                'version': '2.32-1'},
+                         {'name': 'unzip',              'version': '5.52-10ubuntu2'}]
+
+    GIT_DEPENDENCIES =  [{'name': 'comerr-dev',             'version': '2.1-1.40.8-2ubuntu2'},
+                         {'name': 'libkadm55',              'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
+                         {'name': 'libkrb5-dev',            'version': '1.6.dfsg.3~beta1-2ubuntu1.8'},
+                         {'name': 'libcurl4-openssl-dev',   'version': '7.18.0-1ubuntu2.3'},
+                         {'name': 'gettext-base',           'version': '0.17-2ubuntu1'},
+                         {'name': 'gettext',                'version': '0.17-2ubuntu1'}]
 
     ALL_PACKAGES =  [COMPILATION, CORE_UTILS, PACKAGE_TOOLS, LOCALES_AND_LANGUAGES,
-                     PYTHON, PYTHON_PACKAGE_DEPENDENCIES, DATABASE_AUTHENTICATION,
-                     DATABASE, WEB_SERVER, ADDITIONAL_TOOLS]
+                     PYTHON, PYTHON_EXTENSIONS, PYTHON_PACKAGE_DEPENDENCIES,
+                     DATABASE_AUTHENTICATION, DATABASE, WEB_SERVER, ADDITIONAL_TOOLS,
+                     GIT_DEPENDENCIES]

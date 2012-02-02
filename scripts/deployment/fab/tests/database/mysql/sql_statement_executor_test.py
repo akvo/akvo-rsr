@@ -10,7 +10,11 @@ import fabric.api
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+import fab.tests.templates.database_credentials_template
+from database_credentials import DatabaseCredentials
+
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.database.mysql.commandexecution import SQLStatementExecutor
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
@@ -20,7 +24,7 @@ class SQLStatementExecutorTest(mox.MoxTestBase):
 
     def setUp(self):
         super(SQLStatementExecutorTest, self).setUp()
-        database_config = RSRDatabaseConfig.create_instance()
+        database_config = RSRDatabaseConfig(DatabaseCredentials(), CIDeploymentHostConfig.for_test())
         self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_config.admin_user, database_config.admin_password)
 
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)

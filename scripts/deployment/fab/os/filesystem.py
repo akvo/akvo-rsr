@@ -8,13 +8,18 @@
 import os
 
 from fab.host.controller import LocalHostController
+from fab.os.path import PathInfo
+from fab.os.symlink import SymlinkInfo
+
+
+class ArchiveOptions(object):
+
+    CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
+    NONE = ""
 
 
 class FileSystem(object):
     """FileSystem encapsulates file system actions that are common to both local and remote hosts"""
-
-    CODE_ARCHIVE_EXCLUSIONS = "*/.gitignore"
-    DATA_ARCHIVE_EXTENSION  = ".tar.bz2"
 
     def __init__(self, host_controller):
         self.host_controller = host_controller
@@ -50,7 +55,7 @@ class FileSystem(object):
     def _create_directory_with(self, run_command, dir_path):
         self.feedback.comment("Creating directory: %s" % dir_path)
         run_command("mkdir -p %s" % dir_path)
-        run_command("chmod 755 %s" % dir_path)
+        run_command("chmod 775 %s" % dir_path)
 
     def ensure_directory_exists(self, dir_path):
         self._ensure_directory_exists_with(self.host_controller.run, dir_path)
@@ -63,6 +68,32 @@ class FileSystem(object):
             self.feedback.comment("Found expected directory: %s" % dir_path)
         else:
             self._create_directory_with(run_command, dir_path)
+
+    def create_symlink(self, symlink_path, real_path, with_sudo=False):
+        self._run_command("ln -s %s %s" % (real_path, symlink_path), with_sudo)
+        self.feedback.comment("Created symlink: %s" % SymlinkInfo(symlink_path, self.host_controller))
+
+    def remove_symlink(self, symlink_path, with_sudo=False):
+        self.feedback.comment("Removing symlink: %s" % symlink_path)
+        self._run_command("unlink %s" % symlink_path, with_sudo)
+
+    def ensure_symlink_exists(self, symlink_path, real_path, with_sudo=False):
+        path = PathInfo(symlink_path, self.host_controller)
+
+        if path.exists() and not path.is_symlink():
+            self.feedback.abort("Found existing path but path is not a symlink: %s" % symlink_path)
+        elif not PathInfo(real_path, self.host_controller).exists():
+            self.feedback.abort("Cannot create symlink to nonexistent path: %s" % real_path)
+        else:
+            symlink = SymlinkInfo(symlink_path, self.host_controller)
+
+            if symlink.exists() and symlink.is_linked_to(real_path):
+                self.feedback.comment("Found expected symlink: %s" % symlink)
+            elif symlink.exists():
+                self.remove_symlink(symlink_path)
+                self.create_symlink(symlink_path, real_path, with_sudo)
+            else:
+                self.create_symlink(symlink_path, real_path, with_sudo)
 
     def rename_file(self, original_file, new_file):
         self._rename_path(original_file, new_file)
@@ -93,21 +124,31 @@ class FileSystem(object):
             self.feedback.comment("Deleting %s: %s" % (path_type, path))
             run_command("rm -r %s" % path)
 
-    def decompress_code_archive(self, archive_file_name, destination_dir):
-        self.host_controller.run("unzip -q %s -d %s -x %s" % (archive_file_name, destination_dir, FileSystem.CODE_ARCHIVE_EXCLUSIONS))
+    def _run_command(self, command, with_sudo=False):
+        return self.host_controller.sudo(command) if with_sudo else self.host_controller.run(command)
+
+    def decompress_code_archive(self, archive_file_path, destination_dir):
+        self._decompress_archive(archive_file_path, destination_dir, "-x %s" % ArchiveOptions.CODE_ARCHIVE_EXCLUSIONS)
 
     def decompress_data_archive(self, archive_file_path, destination_dir):
-        with self.host_controller.cd(destination_dir):
-            self.host_controller.run("tar -xf %s" % archive_file_path)
+        self._decompress_archive(archive_file_path, destination_dir)
+
+    def _decompress_archive(self, archive_file_path, destination_dir, options=ArchiveOptions.NONE):
+        self.host_controller.run("unzip -q %s -d %s %s".rstrip() % (archive_file_path, destination_dir, options))
+
+    def compress_file(self, file_path):
+        self._compress_resource(file_path)
 
     def compress_directory(self, dir_path):
-        stripped_path = dir_path.rstrip("/")
-        self.feedback.comment("Compressing %s" % stripped_path)
-        parent_dir = os.path.dirname(stripped_path)
-        dir_to_compress = os.path.basename(stripped_path)
-        archive_file_name = "%s%s" % (dir_to_compress, self.DATA_ARCHIVE_EXTENSION)
+        self._compress_resource(dir_path.rstrip("/"))
+
+    def _compress_resource(self, full_path):
+        self.feedback.comment("Compressing %s" % full_path)
+        parent_dir = os.path.dirname(full_path)
+        resource_to_compress = os.path.basename(full_path)
+        archive_file_name = "%s.zip" % resource_to_compress
         with self.host_controller.cd(parent_dir):
-            self.host_controller.run("tar -cjf %s %s" % (archive_file_name, dir_to_compress))
+            self.host_controller.run("zip -r %s %s" % (archive_file_name, resource_to_compress))
 
     def download_file(self, host_file_path, local_dir):
         self.host_controller.get(host_file_path, local_dir)
@@ -122,4 +163,4 @@ class FileSystem(object):
 class LocalFileSystem(FileSystem):
 
     def __init__(self):
-        super(LocalFileSystem, self).__init__(LocalHostController.create_instance())
+        super(LocalFileSystem, self).__init__(LocalHostController())

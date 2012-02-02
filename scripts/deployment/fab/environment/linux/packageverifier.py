@@ -16,7 +16,7 @@ class LinuxPackageVerifier(object):
         self.feedback = host_controller.feedback
 
     @staticmethod
-    def create_instance(host_controller):
+    def create_with(host_controller):
         return LinuxPackageVerifier(DependencyCollectionVerifier(), host_controller)
 
     def update_package_sources(self):

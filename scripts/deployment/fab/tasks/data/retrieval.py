@@ -19,11 +19,11 @@ class FetchRSRData(fabric.tasks.Task):
         self.data_retrieval_host = data_retrieval_host
 
     @staticmethod
-    def create_task_instance():
-        return FetchRSRData(fab.host.dataretrieval.DataRetrievalHost.create_instance())
+    def create_task():
+        return FetchRSRData(fab.host.dataretrieval.DataRetrievalHost.create())
 
     def run(self):
         self.data_retrieval_host.fetch_latest_data()
 
 
-instance = FetchRSRData.create_task_instance()
+instance = FetchRSRData.create_task()

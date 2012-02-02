@@ -7,11 +7,10 @@
 
 import imp, os, sys
 
-imp.load_source("syspath", os.path.join(os.path.dirname(__file__), 'syspath.py'))
+imp.load_source("syspath_verifiers", os.path.join(os.path.dirname(__file__), 'syspath.py'))
+from syspath_verifiers import SysPathVerifier
 
-from syspath import SysPathVerifier
-
-SysPathVerifier().exit_if_deployment_scripts_home_not_on_syspath()
+SysPathVerifier().ensure_syspath_contains_deployment_scripts_home()
 
 
 from verifiers.syspackages import SystemPackageVerifier

@@ -4,6 +4,8 @@ OSX_DIR="$(cd `dirname $0` && pwd)"
 CONFIG_DIR="$OSX_DIR/config"
 PIP_REQUIREMENTS_DIR="$(cd "$OSX_DIR/../../pip/requirements" && pwd)"
 
+EXPECTED_PIP_VERSION="1.0.2"
+
 CURRENT_USER="`whoami`"
 
 # exit if not running with sudo or as root
@@ -48,10 +50,51 @@ function install_pip_package
     # See installation notes at http://www.pip-installer.org/en/latest/installing.html
     source "$CONFIG_DIR/osx_build_flags_env_64.config"
     cd "$PACKAGE_DOWNLOAD_DIR"
-    GET_PIP_URL=https://raw.github.com/pypa/pip/1.0.2/contrib/get-pip.py
+    GET_PIP_URL=https://raw.github.com/pypa/pip/$EXPECTED_PIP_VERSION/contrib/get-pip.py
     printf "\n>> Installing pip package from $GET_PIP_URL (with 64-bit architecture)\n"
     curl -L -O $GET_PIP_URL
     $PY_PATH get-pip.py
+}
+
+function install_distribute_and_pip
+{
+    install_distribute_package
+
+    # proceed if no errors occurred
+    if [ $? -ne 0 ]; then
+        printf "\n>> Installation of distribute package failed\n"
+        exit -1
+    fi
+
+    link_easy_install
+    install_pip_package
+
+    # check for any installation errors
+    if [ $? -ne 0 ]; then
+        printf "\n>> Installation of pip package failed\n"
+        exit -1
+    fi
+}
+
+function ensure_distribute_and_pip_are_installed
+{
+    PIP_PATH=`which pip`
+
+    # check if pip is already installed
+    if [ -n "$PIP_PATH" ]; then
+        FULL_PIP_VERSION_DETAILS=`pip --version`
+        INSTALLED_PIP_VERSION_NUMBER=${FULL_PIP_VERSION_DETAILS:4:${#EXPECTED_PIP_VERSION}}
+
+        if [ "$INSTALLED_PIP_VERSION_NUMBER" = "$EXPECTED_PIP_VERSION" ]; then
+            printf "\n>> Found expected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
+        else
+            printf "\n>> Found outdated or unexpected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
+            install_distribute_and_pip
+        fi
+    else
+        printf "\n>> Expected pip version not installed\n\n"
+        install_distribute_and_pip
+    fi
 }
 
 function install_packages_with_pip
@@ -78,25 +121,11 @@ function install_system_packages
     pip freeze
 }
 
-function build_system_environment
+function rebuild_system_environment
 {
-    install_distribute_package
-
-    # proceed if no errors occurred
-    if [ $? -eq 0 ]; then
-        link_easy_install
-        install_pip_package
-
-        # proceed if no errors occurred
-        if [ $? -eq 0 ]; then
-            install_system_packages
-        else
-            printf "\n>> Installation of pip package failed -- see error details above\n"
-        fi
-    else
-        printf "\n>> Installation of distribute package failed -- see error details above\n"
-    fi
+    ensure_distribute_and_pip_are_installed
+    install_system_packages
 }
 
 
-build_system_environment
+rebuild_system_environment

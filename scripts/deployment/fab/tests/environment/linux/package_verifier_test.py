@@ -32,7 +32,7 @@ class LinuxPackageVerifierTest(mox.MoxTestBase):
     def test_can_create_linuxpackageverifier_instance(self):
         """fab.tests.environment.linux.package_verifier_test  Can create a LinuxPackageVerifier instance"""
 
-        self.assertIsInstance(LinuxPackageVerifier.create_instance(self.mock_host_controller), LinuxPackageVerifier)
+        self.assertIsInstance(LinuxPackageVerifier.create_with(self.mock_host_controller), LinuxPackageVerifier)
 
     def test_can_update_package_sources(self):
         """fab.tests.environment.linux.package_verifier_test  Can update package sources"""
@@ -49,8 +49,8 @@ class LinuxPackageVerifierTest(mox.MoxTestBase):
         self.mock_feedback.comment("Verifying expected system packages")
         self.mock_dependency_verifier.verify(self.mock_dependency_collection)
         self.mock_dependency_verifier.not_all_dependencies_met().AndReturn(True)
-        self.mock_dependency_verifier.unmet_dependency_names().AndReturn("package1, package4")
-        self.mock_feedback.abort("Missing system packages or packages with incorrect versions: package1, package4")
+        self.mock_dependency_verifier.unmet_dependency_names().AndReturn("package1 package4")
+        self.mock_feedback.abort("Missing system packages or packages with incorrect versions: package1 package4")
         self.mox.ReplayAll()
 
         self.system_package_verifier.exit_if_package_dependencies_not_met(self.mock_dependency_collection)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
@@ -9,23 +9,18 @@ import os, sys
 
 
 DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+TEST_EXECUTION_HELPERS_HOME = os.path.realpath(os.path.join(DEPLOYMENT_SCRIPTS_HOME, '../../tests/shared'))
 
 
 class SysPathVerifier(object):
 
-    def exit_if_deployment_scripts_home_not_on_syspath(self):
-        self.exit_if_dir_not_on_syspath(DEPLOYMENT_SCRIPTS_HOME)
+    def ensure_syspath_contains_deployment_scripts_home(self):
+        self.ensure_syspath_contains(DEPLOYMENT_SCRIPTS_HOME)
 
-    def exit_if_dir_not_on_syspath(self, expected_dir):
-        if expected_dir not in sys.path:
-            self.display_python_path_instructions_and_exit()
-        else:
-            try:
-                import verifiers.syspath
-            except ImportError:
-                self.display_python_path_instructions_and_exit()
+    def ensure_syspath_contains_testing_helpers_home(self):
+        self.ensure_syspath_contains(TEST_EXECUTION_HELPERS_HOME)
 
-    def display_python_path_instructions_and_exit(self):
-        print ">> The [%s] directory should be on the system path" % DEPLOYMENT_SCRIPTS_HOME
-        print ">> Add the missing path to your PYTHONPATH environment variable to run this script"
-        sys.exit(1)
+    def ensure_syspath_contains(self, expected_path):
+        full_path = os.path.realpath(expected_path)
+        if full_path not in sys.path:
+            sys.path.insert(0, full_path)

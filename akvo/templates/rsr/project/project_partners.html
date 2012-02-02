@@ -1,0 +1,95 @@
+{% extends "rsr/project/project_subpage_base.html" %}
+{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load url from future %}
+
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">Partners</li>
+{% endblock breadcrum_items %}
+
+{% block project_left_column %}
+	<div class="white_box" style="background-color:#fff;">
+		<div style="float:left; margin-left:20px; margin-top:10px">
+			<span class="small">
+				<a href="{% url 'project_main' project.id %}">&#x25C0; {% trans 'Back to main project page' %}</a>
+			</span>
+			<h2 style="padding-top:20px;">{% trans 'Project partners' %}</h2>
+		</div>
+		<div class="counter_badge">
+			<span style="display:none;">{% counter project %}</span>
+			{% cache 10 project_view_count project.id %}
+				{{ project.view_count|intcomma }}
+			{% endcache %}
+			<br />
+			<span>{% trans 'views' %}</span>
+		</div>
+		<div class="clear"></div>
+		<div class="space20">
+
+      {% for partner in project.partnership_set.all %}
+        {% ifchanged partner.partner_type %}
+          {% if not forloop.first %}
+            <br/><br/>
+          {% endif %}
+          {% if partner.partner_type == 'field' %}
+            {% if partproject.ner.field_partners.count > 1 %}
+              <h3>{% trans 'Field partners' %}</h3>
+            {%  else %}
+              <h3>{% trans 'Field partner' %}</h3>
+            {% endif %}
+          {% else %}
+            {% if partner.partner_type == 'funding' %}
+              {% if partproject.ner.funding_partners.count > 1 %}
+                <h3>{% trans 'Funding partners' %}</h3>
+              {%  else %}
+                <h3>{% trans 'Funding partner' %}</h3>
+              {% endif %}
+            {% else %}
+              {% if partner.partner_type == 'sponsor' %}
+                {% if partproject.ner.sponsor_partners.count > 1 %}
+                  <h3>{% trans 'Sponsor partners' %}</h3>
+                {%  else %}
+                  <h3>{% trans 'Sponsor partner' %}</h3>
+                {% endif %}
+              {% else %}
+                {% if partner.partner_type == 'support' %}
+                  {% if partproject.ner.support_partners.count > 1 %}
+                    <h3>{% trans 'Support partners' %}</h3>
+                  {%  else %}
+                    <h3>{% trans 'Support partner' %}</h3>
+                  {% endif %}
+                {% else %}
+                {%  endif %}
+              {%  endif %}
+            {%  endif %}
+          {%  endif %}
+        {% endifchanged %}
+
+        {% with organisation=partner.organisation location=partner.organisation.primary_location %}
+          <div style="{% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %} padding:10px;">
+            <div style="float:left; width:100px;">
+              <a href="{{organisation.get_absolute_url}}">
+                {% org_logo organisation 90 60 %}
+              </a>
+            </div>
+            <div style="float:left; width:300px; margin-left:20px;">
+              <p style="margin:0">
+                <a href="{{organisation.get_absolute_url}}">{{organisation}}</a><br />
+                {% if location.city %}
+                  {{location.city}},
+                {% endif %}
+                {% if location.state %}
+                  {{location.state}},
+                {% endif %}
+                {{location.country}}
+              </p>
+            </div>
+            <div class="clear"></div>
+          </div>
+        {% endwith %}
+      {% endfor %}
+			
+		</div>
+	</div>
+{% endblock project_left_column%}

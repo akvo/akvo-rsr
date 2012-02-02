@@ -1,0 +1,180 @@
+{% extends "widgets/base_widget.html" %}
+{% load i18n rsr_tags rsr_filters thumbnail cache humanize %}
+{% load url from future %}
+
+
+{% block title %}project@{{block.super}}{% endblock title %}
+
+{% block style %}
+	{% asset_bundle 'widget_cobranded_short' %}
+	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
+	<!--[if IE]>
+	<style type="text/css" media="screen">
+		.divider { 
+			margin-top:1px !important;
+			margin-bottom:1px !important;
+		}
+		
+	</style>
+	<![endif]-->
+{% endblock style %}
+
+{% block inline_styles %}
+{{block.super}}
+	#heightconstrain {
+		height: expression( this.scrollHeight > 809 ? "810px" : "auto" ); /* sets max-height for IE */
+		max-height:810px;
+		overflow:hidden;
+	}
+	.fundingbox-content {
+		height: expression( this.scrollHeight > 4 ? "123px" : "auto" ); /* sets max-height for IE */
+		max-height:121px;
+		height:121px;
+	}
+	
+	#progress_back {
+		background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+	}
+	#progress_green {
+		background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+	}
+	
+	#project_title {
+		display:block;
+		height:36px;
+		overflow:hidden;
+	}
+	
+	#project_subtitle {
+		display:block;
+		max-height:32px;
+		overflow:hidden;
+	}
+	
+	#project_location{
+		display:block;
+		max-height:32px;
+		height:32px;
+		overflow:hidden;
+	}
+
+{% endblock inline_styles %}
+
+	
+{% block header %}
+	<h1>{% trans 'Project' %}</h1>
+{% endblock header %}
+
+{% block content %}
+<div id="heightconstrain">
+		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+        <div class="photo_frame">
+            <a href="{% url 'project_main' project.id %}">
+                {% project_thumb project 150 113 %}
+            </a>
+        </div>
+		<p class="smallFont grey topmargin">{% trans 'Location' %}</p>
+		<div id="project_location">
+			<p class="smallFont"><span class="capz">{{project.primary_location.country.continent}}</span><br />
+				{{project.primary_location.country}}, {{project.primary_location.city}}
+			</p>
+		</div>
+		<div style="width:70px; float:left;" class="topmargin">
+			<p class="smallFont grey">{% trans 'Funding' %}</p>
+		</div>
+		<div id="akvoref" style="float:right; width:75px; padding-top:0" class="topmargin">
+			<p class="miniFont lightgrey right" style="padding-top:2px; text-transform: capitalize;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
+		</div>
+		<div style="clear:both; line-height:1px; margin:0; padding:0;"> </div>
+	
+		<div style="margin:0; margin-top:13px;">
+			{% funding_box_narrow2 project %}
+		</div>
+		<hr class="divider" />
+		
+		{% comment %}
+			Since we don't now what type of partner is the first so be presented we need to do some checking.
+		{% endcomment %}
+		<div style="height:35px;">
+			<div id="partnerspace" style="text-align:center; font-size:0.9em;">
+
+        {% with project.partnership_set.all.0 as first_partner %}
+          <p class="smallFont grey left">
+            {% if first_partner.partner_type == 'field' %}{% trans 'Implemented by' %}{% endif %}
+            {% if first_partner.partner_type == 'funding' %}{% trans 'Underwritten by' %}{% endif %}
+            {% if first_partner.partner_type == 'support' %}{% trans 'Supported by' %}{% endif %}
+            {% if first_partner.partner_type == 'sponsor' %}{% trans 'Presented by' %}{% endif %}
+            <br />
+            <a class="smallFont" href="{{first_partner.organisation.get_absolute_url}}">{{first_partner}}</a>
+          </p>
+        {% endwith %}
+
+			</div>
+		</div>
+</div>
+{% endblock content %}
+
+{% block inline_scripts %}
+
+<script type="text/javascript">
+	
+	var index = 1;
+	
+	function Partner (orgName,partnerType,url) 
+	{
+		this.orgName = orgName;
+		this.partnerType = partnerType;
+		this.url = url;
+		this.getName = function () { return this.orgName; }
+		this.getType = function () { return this.partnerType; }
+		this.getUrl = function () { return this.url; }
+	}
+	
+	var partners = [];
+
+  {% for partner in project.partnership_set.all %}
+    partners[partners.length] = new Partner('{{partner}}',
+            '{{partner.partner_type}}',
+            '{{partner.organisation.get_absolute_url}}');
+  {% endfor %}
+	
+	function switchPartner(){
+		index == (partners.length-1) ? index = 0 : index++;
+		animatePartnerSwitch();
+	}
+	
+	function animatePartnerSwitch() 
+	{
+		// If no or one partner bail since there is nothing to animate
+		if(partners.length <=1){
+			return;
+		}
+			
+		var newHTML = '';
+		
+		switch(partners[index].getType())
+		{
+			case "funding": newHTML += '<p class="smallFont grey left">{% trans 'Underwritten by' %}<br />'; break;
+			case "support": newHTML += '<p class="smallFont grey left">{% trans 'Supported by' %}<br />'; break;
+			case "field": 	newHTML += '<p class="smallFont grey left">{% trans 'Implemented by' %}<br />'; break;
+			default: newHTML += '<p class="smallFont grey left">{% trans 'Presented by' %}<br />'; break;
+		}
+		
+		newHTML += '<a class="smallFont" href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
+		
+		
+		jQ("#partnerspace")
+			.animate({opacity: 1.0},7000) // Display time
+			.fadeOut(1000, function() {
+				jQ("#partnerspace").html(newHTML)
+			})
+			.animate({opacity: 1.0},1000)
+			.fadeIn(1000, switchPartner);
+	}
+	
+</script>
+	
+{% endblock inline_scripts %}
+{% block jq_ready %}
+	animatePartnerSwitch();
+{% endblock jq_ready %}

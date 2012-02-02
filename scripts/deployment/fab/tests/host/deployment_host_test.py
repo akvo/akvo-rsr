@@ -15,6 +15,7 @@ from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.deployment import DeploymentHost
 from fab.os.filesystem import FileSystem
 from fab.os.permissions import AkvoPermissions
+from fab.verifiers.user import DeploymentUserVerifier
 
 
 class DeploymentHostTest(mox.MoxTestBase):
@@ -22,11 +23,21 @@ class DeploymentHostTest(mox.MoxTestBase):
     def setUp(self):
         super(DeploymentHostTest, self).setUp()
         self.mock_file_system = self.mox.CreateMock(FileSystem)
+        self.mock_user_verifier = self.mox.CreateMock(DeploymentUserVerifier)
         self.mock_permissions = self.mox.CreateMock(AkvoPermissions)
         self.mock_internet = self.mox.CreateMock(Internet)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_permissions, self.mock_internet, self.mock_feedback)
+        self.deployment_host = DeploymentHost(self.mock_file_system, self.mock_user_verifier, self.mock_permissions,
+                                              self.mock_internet, self.mock_feedback)
+
+    def test_can_ensure_user_has_required_deployment_permissions(self):
+        """fab.tests.host.deployment_host_test  Can ensure user has required deployment permissions"""
+
+        self.mock_user_verifier.verify_sudo_and_web_admin_permissions_for("joesoap")
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_user_has_required_deployment_permissions("joesoap")
 
     def test_can_create_a_remote_deploymenthost_instance(self):
         """fab.tests.host.deployment_host_test  Can create a remote DeploymentHost instance"""
@@ -46,7 +57,7 @@ class DeploymentHostTest(mox.MoxTestBase):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
 
-        return DeploymentHost.create_instance(mock_host_controller)
+        return DeploymentHost.create_with(mock_host_controller)
 
     def test_can_create_directory(self):
         """fab.tests.host.deployment_host_test  Can create a directory"""
@@ -171,14 +182,6 @@ class DeploymentHostTest(mox.MoxTestBase):
 
         self.deployment_host.decompress_code_archive(code_archive_file, destination_dir)
 
-    def test_will_exit_if_user_is_not_member_of_web_group(self):
-        """fab.tests.host.deployment_host_test  Will exit if user is not a member of the web user group"""
-
-        self.mock_permissions.exit_if_user_is_not_member_of_web_group("joesoap")
-        self.mox.ReplayAll()
-
-        self.deployment_host.exit_if_user_is_not_member_of_web_group("joesoap")
-
     def test_can_set_web_group_permissions_on_specified_directory(self):
         """fab.tests.host.deployment_host_test  Can set web user group permissions on a specified directory"""
 
@@ -212,9 +215,27 @@ class DeploymentHostTest(mox.MoxTestBase):
         web_dir = "/some/web/dir"
         self.mock_file_system.directory_exists(web_dir).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % web_dir)
+        self.mock_permissions.set_web_group_permissions_on_directory(web_dir)
         self.mox.ReplayAll()
 
         self.deployment_host.ensure_directory_exists_with_web_group_permissions(web_dir)
+
+    def test_can_ensure_symlink_exists(self):
+        """fab.tests.host.deployment_host_test  Can ensure symlink exists"""
+
+        self.mock_file_system.ensure_symlink_exists("/path/to/symlink", "/some/real/path", with_sudo=True)
+        self.mox.ReplayAll()
+
+        self.deployment_host.ensure_symlink_exists("/path/to/symlink", "/some/real/path")
+
+    def test_can_get_file_name_at_specified_url(self):
+        """fab.tests.host.deployment_host_test  Can get the file name at a specified URL"""
+
+        archives_url = "http://some.server.org/archives/dev"
+        self.mock_internet.file_name_at_url(archives_url).AndReturn("code_archive.zip")
+        self.mox.ReplayAll()
+
+        self.assertEqual("code_archive.zip", self.deployment_host.file_name_at_url(archives_url))
 
     def test_can_get_file_name_at_specified_url(self):
         """fab.tests.host.deployment_host_test  Can get the file name at a specified URL"""

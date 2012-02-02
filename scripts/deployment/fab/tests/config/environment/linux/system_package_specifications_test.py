@@ -56,6 +56,25 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON))
 
+    def test_has_expected_package_specifications_for_python_extensions(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python extensions"""
+
+        expected_packages = ['python2.5-dev', 'python-dev', 'libffi4', 'libffi4-dev', 'libpcre3', 'libglib2.0-0',
+                             'pkg-config', 'zlib1g-dev', 'libbz2-dev', 'libncurses5-dev', 'libexpat1', 'libexpat1-dev',
+                             'libssl-dev', 'libgc1c2', 'libgc-dev']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_EXTENSIONS))
+
+    def test_has_expected_package_specifications_for_python_package_dependencies(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python package dependencies"""
+
+        expected_packages = ['python-support', 'python-central', 'libxml2', 'libxml2-dev', 'libgpg-error0',
+                             'libgcrypt11', 'libxslt1.1', 'libxslt1-dev', 'python-libxml2', 'python-libxslt1',
+                             'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev', 'python-gmpy', 'libfreetype6',
+                             'libjpeg62', 'libjpeg62-dev']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
+
     def test_has_expected_database_authentication_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database authentication package specifications"""
 
@@ -67,34 +86,36 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_database_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected database package specifications"""
 
-        expected_packages = ['mysql-common', 'libmysqlclient15off', 'libnet-daemon-perl', 'libplrpc-perl', 'libdbi-perl',
-                             'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0', 'ncurses-bin', 'sed', 'lsb-base',
-                             'psmisc', 'mysql-server-5.0', 'python-support', 'python-mysqldb']
+        expected_packages = ['mysql-common', 'libmysqlclient15off', 'libmysqlclient15-dev', 'libnet-daemon-perl',
+                             'libplrpc-perl', 'libdbi-perl', 'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0',
+                             'ncurses-bin', 'sed', 'lsb-base', 'psmisc', 'mysql-server-5.0', 'python-mysqldb']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 
     def test_has_expected_web_server_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected web server package specifications"""
 
-        expected_packages = ['openssl', 'libpcrecpp0', 'libpcre3', 'libpcre3-dev']
+        expected_packages = ['openssl', 'libpcrecpp0', 'libpcre3-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.WEB_SERVER))
-
-    def test_has_expected_python_package_dependency_package_specifications(self):
-        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected Python package dependency package specifications"""
-
-        expected_packages = ['libxml2']
-
-        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
     def test_has_expected_additional_tools_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected additional tools package specifications"""
 
-        expected_packages = ['libcomerr2', 'libidn11', 'libkeyutils1', 'libkrb53', 'libgpg-error0', 'libgcrypt11',
-                             'liblzo2-2', 'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
-                             'libldap-2.4-2', 'libcurl3', 'curl', 'wget']
+        expected_packages = ['libcomerr2', 'libidn11', 'libidn11-dev', 'libkeyutils1', 'libkrb53', 'liblzo2-2',
+                             'libopencdk10', 'libtasn1-3', 'libgnutls13', 'libsasl2-modules', 'libsasl2-2',
+                             'libldap-2.4-2', 'libldap2-dev', 'libcurl3', 'curl', 'wget', 'libedit2', 'openssh-client',
+                             'openssh-blacklist', 'libdbus-1-3', 'libck-connector0', 'openssh-server', 'ssh', 'tar',
+                             'zip', 'unzip']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.ADDITIONAL_TOOLS))
+
+    def test_has_expected_package_specifications_for_building_git(self):
+        """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for building git"""
+
+        expected_packages = ['comerr-dev', 'libkadm55', 'libkrb5-dev', 'libcurl4-openssl-dev', 'gettext-base', 'gettext']
+
+        self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.GIT_DEPENDENCIES))
 
     def test_has_expected_package_specifications_in_all_packages_definition(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications in the ALL_PACKAGES definition"""
@@ -104,11 +125,13 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
                              SystemPackageSpecifications.PACKAGE_TOOLS,
                              SystemPackageSpecifications.LOCALES_AND_LANGUAGES,
                              SystemPackageSpecifications.PYTHON,
+                             SystemPackageSpecifications.PYTHON_EXTENSIONS,
                              SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES,
                              SystemPackageSpecifications.DATABASE_AUTHENTICATION,
                              SystemPackageSpecifications.DATABASE,
                              SystemPackageSpecifications.WEB_SERVER,
-                             SystemPackageSpecifications.ADDITIONAL_TOOLS]
+                             SystemPackageSpecifications.ADDITIONAL_TOOLS,
+                             SystemPackageSpecifications.GIT_DEPENDENCIES]
 
         self.assertEqual(expected_packages, SystemPackageSpecifications.ALL_PACKAGES)
 
