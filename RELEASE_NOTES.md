@@ -1,4 +1,4 @@
-Last changed: 29 November 2011, kad
+Last changed: 30 January 2012, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -6,6 +6,52 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 2.0.2 release notes
+-------------------------------------------
+30 January 2012, (Code name: Carrot) bw
+
+Overview
+------------
+The release adds the ability to sign in and add updates to Akvo RSR from a partner site. It also contains a reworking of the way in which organisations are internally linked to projects in RSR. We've also updated our version of JQuery.
+
+New features & changes
+----------------
+### Partner site sign in and add updates capability.
+Users with Akvo RSR accounts can now sign in to Akvo RSR on partner site pages. Signed-in users can add updates to projects on a partner site just as they do on the main Akvo site project pages. This includes adding text, a photo, or video URL to the update, and the ability to edit updates for a limited time after update creation.
+
+### Rework of relationship between organisations and projects.
+Organisations can be linked to projects making them project partners. There are 4 types of links, or partnership types: Field partner, Funding partner, Sponsor partner and Support partner. The current code proved to be inefficient and needed to be changed.
+
+Users no longer need to enable a particular partnership type on the Organisation form. Instead partnership type is set directly on a project by choosing the organisation and then setting the type of partnership. It is possible for the same organisation to have multiple types of partnership on the same Project. Tip: In the organisation list on a project, press the first letter of an organisation's name to scroll the list forward.
+
+There is a Funding amount field visible regardless of type of partner chosen. Only Funding partner amounts are recorded and used in RSR. In a future release the field will be hidden unless the partnership type is set to Funding.
+
+### Updated JQuery to version 1.7.1.
+
+
+Bug fixes
+---------
+### Cannot upload image file names same as thumbnails.
+Fixes an issue loading image files with the same name format used by RSR thumbnails.
+
+### Fixed home page WordPress issues.
+The home page was only presenting blog posts in the partners category. Now it will display the last 2 posts from any category.
+
+### Partner site breadcrumb, logo and courtesy back link.
+Added code to handle the case when no return URL is specified for the partner site, nor has a URL been specified for the organisation. In this situation the logo and the breadcrumb text are no longer links and the organisation courtesy link is completely suppressed.
+
+### Miscellaneous partner site ui and usability tweaks.
+This includes adding the Powered by Akvo logo and centering the Donate button. 
+
+### Changed tax status page on donation pages and messages.
+Fixes an issue whereby misleading information was given in donation templates and emails pertaining to the tax deductible status of certain types of donations in the United States of America.
+
+### Remove PvW/DWS template files.
+Removed old template files associated with the PvW/DWS project, which will be managed as its own branch from now.
+
+---
+
 
 Akvo RSR v 2.0.1 release notes
 -------------------------------------------
@@ -115,7 +161,7 @@ The following functions have not been implemented yet in Akvo RSR 2.0 preview of
 - Comments
 - Focus areas and categories
 - RSS feeds
-- Sign in, you can sign in on Akvo.org to administrate your account and your projects
+- Sign in, you can sign in on Akvo.org to administer your account and your projects
 - Add update, you can still sign in on Akvo.org to make an update
 - Partner listing showing a partners role in a project
 

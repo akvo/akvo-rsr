@@ -28,7 +28,8 @@ def create_publishing_status(sender, **kwargs):
     called when a new project is saved so an associated published record for the
     project is created
     """
-    if kwargs.get('created', False):
+    # kwargs['raw'] is True when we're running manage.py loaddata
+    if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_project = kwargs['instance']
         ps = get_model('rsr', 'publishingstatus')(status='unpublished')
         ps.project = new_project
@@ -39,7 +40,8 @@ def create_organisation_account(sender, **kwargs):
     called when a new organisation is saved so an associated org account is
     created with the "free" level of access to widgets
     """
-    if kwargs.get('created', False):
+    # kwargs['raw'] is True when we're running manage.py loaddata
+    if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_org = kwargs['instance']
         OrganisationAccount = get_model('rsr', 'OrganisationAccount')
         try:
@@ -57,7 +59,8 @@ def change_name_of_file_on_create(sender, **kwargs):
     Since we cannot do this until the instance of the model has been saved
     we do it as a post_save signal callback
     """
-    if kwargs['created']:
+    # kwargs['raw'] is True when we're running manage.py loaddata
+    if kwargs.get('created', False) and not kwargs.get('raw', False):
         instance = kwargs['instance']
         opts = instance._meta
         for f in opts.fields:
@@ -108,7 +111,8 @@ def create_payment_gateway_selector(instance, created, **kwargs):
     """Associates a newly created project with the default PayPal
     and Mollie payment gateways
     """
-    if created:
+    # kwargs['raw'] is True when we're running manage.py loaddata
+    if created and not kwargs.get('raw', False):
         project = instance
         gateway_selector = get_model('rsr', 'paymentgatewayselector').objects
         gateway_selector.create(project=project)
@@ -163,7 +167,7 @@ def act_on_log_entry(sender, **kwargs):
         {'app': 'rsr', 'model': 'project', 'action': ADDITION, 'call': create_benchmark_objects},
         {'app': 'rsr', 'model': 'project', 'action': CHANGE,   'call': create_benchmark_objects},
     ]
-    if kwargs.get('created', False):
+    if kwargs.get('created', False) and not kwargs.get('raw', False):
         log_entry = kwargs['instance']
         content_type = ContentType.objects.get(pk=log_entry.content_type_id)
         for criterion in CRITERIA:
@@ -215,7 +219,8 @@ def handle_incoming_sms(sender, **kwargs):
     called through post_save.connect(handle_incoming_sms, sender=MoSms)
     """
     logger.debug("Entering: %s()" % who_am_i())
-    if kwargs.get('created', False):
+    # kwargs['raw'] is True when we're running manage.py loaddata
+    if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_sms = kwargs['instance']
         try:
             profile = get_model('rsr', 'UserProfile').objects.process_sms(new_sms)

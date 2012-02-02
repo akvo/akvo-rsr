@@ -74,7 +74,8 @@
 }
 
 .activeTableHeader {
-	background: #d7d6df url('../img/header_down_arrow.gif') no-repeat scroll bottom right;
+	/*background: #d7d6df url('../../img/header_down_arrow.gif') no-repeat scroll bottom right;*/
+        background-color: #d7d6df;
 	/*border-left:1px solid #9B99AC;*/
 	font-weight:bold !important;
 }
