@@ -78,7 +78,8 @@ class AkvoPermissionsTest(mox.MoxTestBase):
 
         web_dir = "/var/tmp/web/apps"
         self.mock_host_controller.sudo("chown -R root:%s %s" % (AkvoPermissions.WEB_USER_GROUP, web_dir))
-        self.mock_host_controller.sudo("chmod -R g+rws %s" % web_dir)
+        self.mock_host_controller.sudo("chmod -R g+rw %s" % web_dir)
+        self.mock_host_controller.sudo("chmod g+s %s" % web_dir)
         self.mox.ReplayAll()
 
         self.permissions.set_web_group_permissions_on_directory(web_dir)

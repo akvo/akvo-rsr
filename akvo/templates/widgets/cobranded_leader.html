@@ -99,42 +99,15 @@
 	<div id="footer2">
 		<div id="" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px;">
 			<div id="partnerspace">
-			{% if project.sponsorpartner_set.all %}
-				{% for sponsor in project.sponsorpartner_set.all %}
-					{% if forloop.first %}
-						<p class="grey">{% trans 'Presented by' %} <a href="{{sponsor.sponsor_organisation.get_absolute_url}}">{{sponsor.sponsor_organisation.name}}</a>
-						</p>
-					{% endif%}
-				{% endfor %}
-			{% else %}
-				{% if project.fundingpartner_set.all %}
-					{% for funder in project.fundingpartner_set.all %}
-						{% if forloop.first %}
-						<p class="grey">{% trans 'Underwritten by' %} <a href="{{funder.funding_organisation.get_absolute_url}}">{{funder.funding_organisation.name}}</a>
-						</p>
-						{% endif%}
-					{% endfor %}
-				{% else %}
-					{% if project.supportpartner_set.all %}
-						{% for supporter in project.supportpartner_set.all %}
-							{% if forloop.first %}
-							<p class="grey">{% trans 'Supported by' %} <a href="{{supporter.support_organisation.get_absolute_url}}">{{supporter.support_organisation.name}}</a>
-							</p>							
-							{% endif%}
-						{% endfor %}
-					{% else %}
-						{% if project.fieldpartner_set.all %}
-						{% for operator in project.fieldpartner_set.all %}
-							{% if forloop.first %}
-							<p class="grey">{% trans 'Implemented by' %} <a href="{{operator.field_organisation.get_absolute_url}}">{{supporter.support_organisation.name}}</a>
-							</p>							
-							{% endif%}
-						{% endfor %}
-						{% endif %}
-					{% endif %}
-				{% endif %}
-			
-			{% endif %}
+        {% with project.partnership_set.all.0 as first_partner %}
+          <p class="grey" style="margin-bottom:0px;">
+            {% if first_partner.partner_type == 'field' %}{% trans 'Implemented by' %}{% endif %}
+            {% if first_partner.partner_type == 'funding' %}{% trans 'Underwritten by' %}{% endif %}
+            {% if first_partner.partner_type == 'support' %}{% trans 'Supported by' %}{% endif %}
+            {% if first_partner.partner_type == 'sponsor' %}{% trans 'Presented by' %}{% endif %}
+            <a href="{{first_partner.organisation.get_absolute_url}}">{{first_partner}}</a>
+          </p>
+        {% endwith %}
 			</div>
 		</div>
 	</div>	
@@ -158,39 +131,16 @@
 		this.getName = function () { return this.orgName; }
 		this.getLogo = function () { return this.logo; }
 		this.getType = function () { return this.partnerType; }
-		this.getUrl = function () { return this.url; }
+		this.getUrl  = function () { return this.url; }
 	}
 
 	var partners = [];
 
-	{% for sponsor in project.sponsorpartner_set.all %} 
-	partners[partners.length] = new Partner('{{sponsor.sponsor_organisation.name}}',
-											'',
-											'sponsor',
-											'{{sponsor.sponsor_organisation.get_absolute_url}}');
-	{% endfor %}
-
-	{% for funder in project.fundingpartner_set.all %}
-	partners[partners.length] = new Partner('{{funder.funding_organisation.name}}',
-											'',
-											'funding',
-											'{{funder.funding_organisation.get_absolute_url}}');
-	{% endfor %}
-
-	{% for supporter in project.supportpartner_set.all %}
-	partners[partners.length] = new Partner('{{supporter.support_organisation.name}}',
-											'',
-											'support',
-											'{{supporter.support_organisation.get_absolute_url}}');
-	{% endfor %}
-
-	{% for operator in project.fieldpartner_set.all %}
-	partners[partners.length] = new Partner('{{operator.field_organisation.name}}',
-											'',
-											'field',
-											'{{operator.field_organisation.get_absolute_url}}');
-	{% endfor %}
-
+  {% for partner in project.partnership_set.all %}
+    partners[partners.length] = new Partner('{{partner}}', '',
+            '{{partner.partner_type}}',
+            '{{partner.organisation.get_absolute_url}}');
+  {% endfor %}
 
 	function switchPartner(){
 		index == (partners.length-1) ? index = 0 : index++;

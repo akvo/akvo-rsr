@@ -14,7 +14,7 @@ import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.database.mysql.commandexecution import DatabaseCopier
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
