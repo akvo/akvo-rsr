@@ -314,7 +314,6 @@ class Organisation(models.Model):
         "returns a queryset with published projects that has self as any kind of partner"
         return self.projects.published().distinct()
 
-
     def all_projects(self):
         "returns a queryset with all projects that has self as any kind of partner"
         return self.projects.all().distinct()
@@ -324,7 +323,7 @@ class Organisation(models.Model):
 
     def partners(self):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
-        return self.projects.all_partners().exclude(id__exact=self.id)
+        return self.published_projects().all_partners().exclude(id__exact=self.id)
 
     def funding(self):
         my_projs = self.published_projects().status_not_cancelled().status_not_archived()
@@ -686,33 +685,38 @@ class Project(models.Model):
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
-                            FROM rsr_budgetitem
+                            FROM  rsr_budgetitem
                             WHERE rsr_budgetitem.project_id = rsr_project.id
                         ) - (
                             SELECT CASE
                                 WHEN Sum(funding_amount) IS NULL THEN 0
                                 ELSE Sum(funding_amount)
                             END
-                            FROM rsr_partnership
+                            FROM  rsr_partnership
                             WHERE rsr_partnership.project_id = rsr_project.id
+                            AND   rsr_partnership.partner_type = '%s'
                         ) - (
                             SELECT CASE
                                 WHEN Sum(amount) IS NULL THEN 0
                                 ELSE Sum(amount)
                             END
-                            FROM rsr_invoice
+                            FROM  rsr_invoice
                             WHERE rsr_invoice.project_id = rsr_project.id
-                            AND rsr_invoice.status = %d
+                            AND   rsr_invoice.status = %d
                         ) - (
                             SELECT CASE
                                 WHEN Sum(amount_received) IS NULL THEN 0
                                 ELSE Sum(amount_received)
                             END
-                            FROM rsr_invoice
+                            FROM  rsr_invoice
                             WHERE rsr_invoice.project_id = rsr_project.id
-                            AND rsr_invoice.status = %d
+                            AND   rsr_invoice.status = %d
                         ))
-                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
+                        ''' % (
+                            Partnership.FUNDING_PARTNER,
+                            PAYPAL_INVOICE_STATUS_PENDING,
+                            PAYPAL_INVOICE_STATUS_COMPLETE
+                        ),
                     #how much money has been donated by individual donors, including pending donations
                     'donated':
                         ''' (SELECT DISTINCT (
@@ -764,7 +768,8 @@ class Project(models.Model):
                         END
                         FROM rsr_partnership
                         WHERE rsr_partnership.project_id = rsr_project.id
-                    '''
+                        AND   rsr_partnership.partner_type = '%s'
+                    ''' % (Partnership.FUNDING_PARTNER,)
             }
             if organisation:
                 pledged['pledged'] = '''%s

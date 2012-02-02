@@ -9,8 +9,8 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
-from fab.config.values.standard import CIDeploymentHostConfig
 from fab.environment.python.virtualenv import VirtualEnvInstaller
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -108,12 +108,12 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can install virtualenv packages"""
 
-        expected_pip_requirements_file = "/some/pip/requirements.txt"
+        expected_pip_requirements_url = "http://some/pip/requirements.txt"
 
-        self.mock_virtualenv_installer.install_packages(expected_pip_requirements_file)
+        self.mock_virtualenv_installer.install_packages(expected_pip_requirements_url)
         self.mox.ReplayAll()
 
-        self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_file)
+        self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_url)
 
     def test_can_ensure_virtualenv_symlinks_exist(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can ensure virtualenv symlinks exist"""

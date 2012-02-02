@@ -13,7 +13,7 @@ import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
 
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.data.populator import RSRDataPopulator
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.database.mysql.admincommand import DatabaseAdminCommand

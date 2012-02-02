@@ -10,7 +10,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.dependency.systempackages import SystemPackageDependencyCollection
 from fab.environment.linux.packageverifier import LinuxPackageVerifier
 from fab.environment.python.installer import PythonInstaller
