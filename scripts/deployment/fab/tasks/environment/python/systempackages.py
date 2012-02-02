@@ -5,29 +5,19 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fabric.api
-import fabric.tasks
-
-import fab.config.loaders
-import fab.host.linux
+import fab.tasks.environment.hostbase
 
 
-class UpdateSystemPythonPackages(fabric.tasks.Task):
+class UpdateSystemPythonPackages(fab.tasks.environment.hostbase.LinuxHostBaseTask):
     """Updates the system Python packages for a given remote host"""
 
-    name = "update_system_python_packages"
+    name = 'update_system_python_packages'
 
-    def __init__(self, deployment_user, linux_host):
-        self.deployment_user = deployment_user
-        self.linux_host = linux_host
+    def run(self, host_config_specification):
+        linux_host = self._configure_linux_host_with(host_config_specification)
 
-    @staticmethod
-    def create_task():
-        return UpdateSystemPythonPackages(fabric.api.env.user, fab.host.linux.LinuxHost.create_with(fab.config.loaders.DeploymentConfigLoader.load()))
-
-    def run(self):
-        self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
-        self.linux_host.update_system_python_packages()
+        linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
+        linux_host.update_system_python_packages()
 
 
-instance = UpdateSystemPythonPackages.create_task()
+instance = UpdateSystemPythonPackages()

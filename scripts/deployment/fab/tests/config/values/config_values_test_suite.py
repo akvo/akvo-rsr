@@ -7,7 +7,6 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.values.ci_deployment_host_config_test import CIDeploymentHostConfigTest
 from fab.tests.config.values.data_host_paths_test import DataHostPathsTest
 from fab.tests.config.values.deployment_host_paths_test import DeploymentHostPathsTest
 from fab.tests.config.values.host_path_values_test import HostPathValuesTest
@@ -15,9 +14,8 @@ from fab.tests.config.values.ssh_connection_values_test import SSHConnectionValu
 
 
 def config_values_suite():
-    return TestSuiteLoader().create_suite_from_classes([CIDeploymentHostConfigTest, DataHostPathsTest,
-                                                        DeploymentHostPathsTest, HostPathValuesTest,
-                                                        SSHConnectionValuesTest])
+    return TestSuiteLoader().create_suite_from_classes([DataHostPathsTest, DeploymentHostPathsTest,
+                                                        HostPathValuesTest, SSHConnectionValuesTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

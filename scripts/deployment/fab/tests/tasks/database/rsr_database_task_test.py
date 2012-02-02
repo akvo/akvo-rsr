@@ -5,44 +5,67 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.loader import DeploymentConfigLoader
+from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.config.spec import HostConfigSpecification
+from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
 from fab.tasks.database.basetask import RSRDatabaseTask
+from fab.verifiers.config import ConfigFileVerifier
 
 
-class RSRDatabaseTaskTest(unittest2.TestCase):
+class StubbedRSRDatabaseTask(RSRDatabaseTask):
 
-    def test_can_initialise_task_with_deployment_host_config_and_database_credentials(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can initialise task with deployment host config and database credentials"""
+    def __init__(self, config_verifier, config_loader):
+        super(StubbedRSRDatabaseTask, self).__init__(config_verifier)
+        self.config_loader = config_loader
 
-        self.assertIsInstance(RSRDatabaseTask(CIDeploymentHostConfig.for_test(), DatabaseCredentials()), RSRDatabaseTask)
 
-    def test_can_initialise_task_with_deployment_host_config_only(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can initialise task with deployment host config only"""
+class RSRDatabaseTaskTest(mox.MoxTestBase):
 
-        self.assertIsInstance(RSRDatabaseTask(CIDeploymentHostConfig.for_test()), RSRDatabaseTask)
+    def setUp(self):
+        super(RSRDatabaseTaskTest, self).setUp()
+        self.mock_config_verifier = self.mox.CreateMock(ConfigFileVerifier)
+        self.mock_config_loader = self.mox.CreateMock(DeploymentConfigLoader)
+        self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-    def test_can_create_database_host_when_task_is_executed(self):
-        """fab.tests.tasks.database.rsr_database_task_test  Can create the database host when the task is executed"""
+    def test_can_configure_database_host_for_task_execution(self):
+        """fab.tests.tasks.database.rsr_database_task_test  Can configure database host for task execution"""
 
-        database_task = RSRDatabaseTask(CIDeploymentHostConfig.for_test())
+        self.mock_config_verifier.exit_if_database_credentials_not_found()
+        self.mox.ReplayAll()
 
-        database_task.run(HostControllerMode.REMOTE)
+        database_task = RSRDatabaseTask(self.mock_config_verifier)
 
-        self.assertIsInstance(database_task.database_host, DatabaseHost)
+        configured_database_host = database_task._configure_database_host_with(HostControllerMode.REMOTE, CIDeploymentHostConfig.for_test())
+
+        self.assertIsInstance(configured_database_host, DatabaseHost)
+
+    def test_will_raise_not_implemented_error_if_no_database_actions_defined(self):
+        """fab.tests.tasks.database.rsr_database_task_test  Will raise NotImplementedError if no database actions have been defined"""
+
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+
+        self.mock_config_verifier.exit_if_database_credentials_not_found()
+        self.mock_config_loader.parse(host_config_spec).AndReturn(CIDeploymentHostConfig.for_test())
+        self.mox.ReplayAll()
+
+        database_task = StubbedRSRDatabaseTask(self.mock_config_verifier, self.mock_config_loader)
+
+        with self.assertRaises(NotImplementedError) as raised:
+            database_task.run(HostControllerMode.REMOTE, host_config_spec)
+
+        self.assertEqual('No database actions defined', raised.exception.message)
 
 
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDatabaseTaskTest)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from fab.tests.test_settings import TEST_MODE
     TestRunner(TEST_MODE).run_test_suite(suite())

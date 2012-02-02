@@ -11,7 +11,7 @@ import mox
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.environment.python.pipinstaller import PipInstaller
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 from fab.environment.python.systempackageinstaller import SystemPythonPackageInstaller

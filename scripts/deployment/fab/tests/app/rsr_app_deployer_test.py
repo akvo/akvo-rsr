@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 
 from fab.app.deployer import RSRAppDeployer
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.deployment import DeploymentHost
 

@@ -7,10 +7,24 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
+from fab.config.rsr.credentials.user import UserCredentials
+from fab.config.spec import HostConfigSpecification
+from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
+
+
+class StubbedUpdateSystemPythonPackages(UpdateSystemPythonPackages):
+
+    def __init__(self, linux_host):
+        super(StubbedUpdateSystemPythonPackages, self).__init__()
+        self.linux_host = linux_host
+
+    def _configure_linux_host_with(self, host_config_specification):
+        return self.linux_host
+
 
 
 class UpdateSystemPythonPackagesTest(mox.MoxTestBase):
@@ -18,30 +32,23 @@ class UpdateSystemPythonPackagesTest(mox.MoxTestBase):
     def setUp(self):
         super(UpdateSystemPythonPackagesTest, self).setUp()
 
-        self.deployment_user = "rupaul"
-
     def test_has_expected_task_name(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Has expected task name"""
 
-        self.assertEqual("update_system_python_packages", UpdateSystemPythonPackages.name)
-
-    def test_can_create_task_instance(self):
-        """fab.tests.tasks.environment.python.update_system_python_packages_test  Can create task instance"""
-
-        self.assertIsInstance(UpdateSystemPythonPackages.create_task(), UpdateSystemPythonPackages)
+        self.assertEqual('update_system_python_packages', UpdateSystemPythonPackages.name)
 
     def test_can_update_system_python_packages(self):
         """fab.tests.tasks.environment.python.update_system_python_packages_test  Can update system python packages"""
 
         mock_linux_host = self.mox.CreateMock(LinuxHost)
 
-        update_system_python_packages_task = UpdateSystemPythonPackages(self.deployment_user, mock_linux_host)
+        update_system_python_packages_task = StubbedUpdateSystemPythonPackages(mock_linux_host)
 
-        mock_linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
+        mock_linux_host.ensure_user_has_required_deployment_permissions(UserCredentials.CURRENT_USER)
         mock_linux_host.update_system_python_packages()
         self.mox.ReplayAll()
 
-        update_system_python_packages_task.run()
+        update_system_python_packages_task.run(HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():

@@ -12,7 +12,7 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 
 
 class RSRDataPopulatorConfigTest(unittest2.TestCase):
