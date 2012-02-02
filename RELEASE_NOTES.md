@@ -44,10 +44,11 @@ Added code to handle the case when no return URL is specified for the partner si
 ### Miscellaneous partner site ui and usability tweaks.
 This includes adding the Powered by Akvo logo and centering the Donate button. 
 
-### Fixes an issue whereby misleading information was given in donation templates and emails pertaining to the tax deductible status of certain types of donations in the United States of America.
+### Changed tax status page on donation pages and messages.
+Fixes an issue whereby misleading information was given in donation templates and emails pertaining to the tax deductible status of certain types of donations in the United States of America.
 
 ### Remove PvW/DWS template files.
-
+Removed old template files associated with the PvW/DWS project, which will be managed as its own branch from now.
 
 ---
 
