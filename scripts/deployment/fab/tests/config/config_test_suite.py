@@ -7,14 +7,16 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.tests.config.config_values_test import suite as config_values_suite
-
 from fab.tests.config.environment.environment_config_test_suite import environment_config_suite
+from fab.tests.config.loader.config_loader_test_suite import config_loader_suite
 from fab.tests.config.rsr.rsr_config_test_suite import rsr_config_suite
+from fab.tests.config.spec.config_spec_test_suite import config_spec_suite
+from fab.tests.config.values.config_values_test_suite import config_values_suite
 
 
 def config_suite():
-    return TestSuiteLoader().create_suite_from_list([config_values_suite(), environment_config_suite(), rsr_config_suite()])
+    return TestSuiteLoader().create_suite_from_list([environment_config_suite(), config_loader_suite(),
+                                                     rsr_config_suite(), config_spec_suite(), config_values_suite()])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

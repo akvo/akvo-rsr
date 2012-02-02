@@ -6,15 +6,11 @@
 
 
 import fabric.api
-import imp, mox, os
+import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
-imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
-
-from config_values import DeploymentHostConfigValues
-
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.environment.python.pipinstaller import PipInstaller
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 from fab.helpers.feedback import ExecutionFeedback
@@ -27,7 +23,8 @@ class PipInstallerTest(mox.MoxTestBase):
 
     def setUp(self):
         super(PipInstallerTest, self).setUp()
-        self.installation_paths = SystemPackageInstallationPaths(DeploymentHostConfigValues())
+        self.deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.installation_paths = SystemPackageInstallationPaths(self.deployment_host_config.host_paths)
 
         self.mock_file_system = self.mox.CreateMock(FileSystem)
         self.mock_internet = self.mox.CreateMock(Internet)
@@ -43,7 +40,7 @@ class PipInstallerTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        pip_installer = PipInstaller.create_instance(self.mock_host_controller)
+        pip_installer = PipInstaller.create_with(self.deployment_host_config, self.mock_host_controller)
 
         self.assertIsInstance(pip_installer, PipInstaller)
         self.assertIsInstance(pip_installer.feedback, ExecutionFeedback)

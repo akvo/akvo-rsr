@@ -15,7 +15,7 @@ class DatabaseAdminCommand(object):
         self.feedback = feedback
 
     @staticmethod
-    def create_instance(database_config, host_controller):
+    def create_with(database_config, host_controller):
         return DatabaseAdminCommand(SQLStatementExecutor(database_config, host_controller),
                                     host_controller.feedback)
 

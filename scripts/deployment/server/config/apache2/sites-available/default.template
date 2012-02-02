@@ -1,0 +1,104 @@
+NameVirtualHost *
+
+<VirtualHost *>
+ServerName some_server.akvo.org
+ServerAdmin web.admin@akvo.org
+DocumentRoot /var/www
+
+#ErrorDocument 410 /server_down.html
+#RewriteEngine on
+#RewriteRule !^(/server_down\.html)|(/logo_akvo_250\.png)|(/sql.*)|(/blog.*)$ - [G,L]
+
+ErrorLog /var/log/apache2/error.log
+# Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
+LogLevel debug
+#LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combinedfwdip
+
+CustomLog /var/log/apache2/access.log "combinedfwdip"
+ServerSignature Off
+
+BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+
+<Directory />
+    Order Allow,Deny
+    Allow from All
+</Directory>
+
+<Directory /var/www>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order Allow,Deny
+    Allow from All
+</Directory>
+
+Alias /web /var/www/drupal/
+<Directory /var/www/drupal>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+    RewriteEngine on
+    RewriteBase /web
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ ?q=$1 [L,QSA]
+</Directory>
+
+Alias /wiki /var/www/wiki/
+<Directory /var/www/wiki>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+</Directory>
+
+Alias /blog /var/www/wordpress/
+<Directory /var/www/wordpress>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+    # Uncomment this directive is you want to see apache2's
+    # default start page (in /apache2-default) when you go to /
+    #RedirectMatch ^/$ /apache2-default/
+</Directory>
+
+Alias /lists /var/www/lists/
+<Directory /var/www/lists>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+</Directory>
+
+<LocationMatch ^/$>
+    SetHandler python-program
+    SetEnv DJANGO_SETTINGS_MODULE akvo.settings
+    PythonDebug On
+    PythonPath "['/var/virtualenvs/current/bin', '/var/git/current', '/var/git/current/akvo'] + sys.path"
+    PythonHandler akvo_modpython
+    PythonInterpreter rsr
+</LocationMatch>
+
+<Location "/rsr">
+    SetHandler python-program
+    SetEnv DJANGO_SETTINGS_MODULE akvo.settings
+    PythonDebug On
+    PythonPath "['/var/virtualenvs/current/bin', '/var/git/current', '/var/git/current/akvo'] + sys.path"
+    PythonHandler akvo_modpython
+    PythonInterpreter rsr
+</Location>
+
+Alias /rsr/media /var/www/akvo/mediaroot/
+<Directory /var/www/akvo/mediaroot/>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order Allow,Deny
+    Allow from All
+</Directory>
+
+<Location "/rsr/media">
+    SetHandler None
+</Location>
+
+</VirtualHost>
