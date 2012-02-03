@@ -1,4 +1,3 @@
-
 Feature: Sign on on partner sites
   In order to be able to make updates
   As a RSR user
