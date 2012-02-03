@@ -9,6 +9,7 @@ import mox, os
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.environment.python.virtualenv import VirtualEnvInstaller
 from fab.helpers.feedback import ExecutionFeedback
@@ -30,7 +31,8 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.deployment_user = "rupaul"
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_instance(self.deployment_user)
+        deployment_host_config = CIDeploymentHostConfig.for_test()
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_with(deployment_host_config, self.deployment_user)
 
         # we don't have any additional expections on the Internet dependency (since this is already
         # tested in the DeploymentHost base class) so we set this to None for now
@@ -70,12 +72,12 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        return VirtualEnvDeploymentHost.create_instance(self.virtualenv_installer_config, mock_host_controller)
+        return VirtualEnvDeploymentHost.create_with(self.virtualenv_installer_config, mock_host_controller)
 
     def test_can_create_empty_virtualenv(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can create empty virtualenv"""
 
-        self._set_expectations_to_ensure_virtualenvs_home_exists()
+        self._ensure_virtualenvs_home_exists()
         self.mock_virtualenv_installer.create_empty_virtualenv()
         self.mox.ReplayAll()
 
@@ -84,16 +86,16 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def test_can_ensure_virtualenv_exists(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can ensure virtualenv exists"""
 
-        self._set_expectations_to_ensure_virtualenvs_home_exists()
+        self._ensure_virtualenvs_home_exists()
         self.mock_virtualenv_installer.ensure_virtualenv_exists()
         self.mox.ReplayAll()
 
         self.virtualenv_deployment_host.ensure_virtualenv_exists()
 
-    def _set_expectations_to_ensure_virtualenvs_home_exists(self):
-
+    def _ensure_virtualenvs_home_exists(self):
         self.mock_file_system.directory_exists(self.virtualenv_installer_config.virtualenvs_home).AndReturn(True)
         self.mock_feedback.comment("Found expected directory: %s" % self.virtualenv_installer_config.virtualenvs_home)
+        self.mock_permissions.set_web_group_permissions_on_directory(self.virtualenv_installer_config.virtualenvs_home)
 
     def test_can_remove_previously_downloaded_package_sources(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can remove previously downloaded package source files"""
@@ -106,12 +108,12 @@ class VirtualEnvDeploymentHostTest(mox.MoxTestBase):
     def test_can_install_virtualenv_packages(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can install virtualenv packages"""
 
-        expected_pip_requirements_file = "/some/pip/requirements.txt"
+        expected_pip_requirements_url = "http://some/pip/requirements.txt"
 
-        self.mock_virtualenv_installer.install_packages(expected_pip_requirements_file)
+        self.mock_virtualenv_installer.install_packages(expected_pip_requirements_url)
         self.mox.ReplayAll()
 
-        self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_file)
+        self.virtualenv_deployment_host.install_virtualenv_packages(expected_pip_requirements_url)
 
     def test_can_ensure_virtualenv_symlinks_exist(self):
         """fab.tests.host.virtualenv_deployment_host_test  Can ensure virtualenv symlinks exist"""

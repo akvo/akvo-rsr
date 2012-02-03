@@ -5,28 +5,19 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import fabric.api
-import fabric.tasks
-
-import fab.host.linux
+import fab.tasks.environment.hostbase
 
 
-class InstallPython(fabric.tasks.Task):
+class InstallPython(fab.tasks.environment.hostbase.LinuxHostBaseTask):
     """Installs a specified Python interpreter"""
 
-    name = "install_python"
+    name = 'install_python'
 
-    def __init__(self, deployment_user, linux_host):
-        self.deployment_user = deployment_user
-        self.linux_host = linux_host
+    def run(self, python_version, host_config_specification):
+        linux_host = self._configure_linux_host_with(host_config_specification)
 
-    @staticmethod
-    def create_task_instance(deployment_user):
-        return InstallPython(deployment_user, fab.host.linux.LinuxHost.create_instance())
-
-    def run(self, python_version):
-        self.linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
-        self.linux_host.ensure_python_is_installed_with_version(python_version)
+        linux_host.ensure_user_has_required_deployment_permissions(self.deployment_user)
+        linux_host.ensure_python_is_installed_with_version(python_version)
 
 
-instance = InstallPython.create_task_instance(fabric.api.env.user)
+instance = InstallPython()

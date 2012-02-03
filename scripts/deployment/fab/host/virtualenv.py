@@ -22,7 +22,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
         self.virtualenv_installer = virtualenv_installer
 
     @staticmethod
-    def create_instance(virtualenv_installer_config, host_controller):
+    def create_with(virtualenv_installer_config, host_controller):
         file_system = FileSystem(host_controller)
         permissions = AkvoPermissions(host_controller)
 
@@ -31,7 +31,7 @@ class VirtualEnvDeploymentHost(DeploymentHost):
                                         DeploymentUserVerifier(permissions),
                                         permissions,
                                         Internet(host_controller),
-                                        VirtualEnvInstaller.create_instance(virtualenv_installer_config, host_controller, file_system),
+                                        VirtualEnvInstaller.create_with(virtualenv_installer_config, host_controller, file_system),
                                         host_controller.feedback)
 
     def ensure_user_has_required_deployment_permissions(self):
@@ -51,8 +51,8 @@ class VirtualEnvDeploymentHost(DeploymentHost):
     def remove_previously_downloaded_package_sources(self):
         self.virtualenv_installer.remove_previously_downloaded_package_sources()
 
-    def install_virtualenv_packages(self, pip_requirements_file):
-        self.virtualenv_installer.install_packages(pip_requirements_file)
+    def install_virtualenv_packages(self, pip_requirements_url):
+        self.virtualenv_installer.install_packages(pip_requirements_url)
 
     def ensure_virtualenv_symlinks_exist(self):
         self.virtualenv_installer.ensure_virtualenv_symlinks_exist()

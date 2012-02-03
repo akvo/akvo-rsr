@@ -1,7 +1,7 @@
 # Build with env64 or envintel - see setup/dev/dev_env_setup_for_osx.txt for details
 
 # Requirements for building selenium
-rdflib==3.1.0
+rdflib==3.2.0
 
 # Requirements for building lettuce
 multiprocessing==2.6.2.1
@@ -10,6 +10,7 @@ multiprocessing==2.6.2.1
 unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
-selenium==2.16.0
+py==1.4.6
+selenium==2.17.0
 lettuce==0.1.34
 lettuce_webdriver==0.2

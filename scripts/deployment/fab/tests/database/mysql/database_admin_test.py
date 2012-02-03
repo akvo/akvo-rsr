@@ -9,8 +9,12 @@ import mox
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+import fab.tests.templates.database_credentials_template
+from database_credentials import DatabaseCredentials
+
 from fab.config.rsr.database import RSRDatabaseConfig
-from fab.data.population import RSRDataPopulator
+from fab.config.rsr.host import CIDeploymentHostConfig
+from fab.data.populator import RSRDataPopulator
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.database.mysql.admincommand import DatabaseAdminCommand
 from fab.database.mysql.commandexecution import DatabaseCopier
@@ -35,13 +39,14 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.database.mysql.database_admin_test  Can create a DatabaseAdmin instance"""
 
-        database_config = RSRDatabaseConfig.create_instance()
+        deployment_host_config = CIDeploymentHostConfig.for_test()
+        database_config = RSRDatabaseConfig(DatabaseCredentials(), deployment_host_config)
         mock_host_controller = self.mox.CreateMock(RemoteHostController)
         mock_host_controller.feedback = self.mock_feedback
 
         self.mox.ReplayAll()
 
-        self.assertIsInstance(DatabaseAdmin.create_instance(database_config, mock_host_controller), DatabaseAdmin)
+        self.assertIsInstance(DatabaseAdmin.create_with(database_config, deployment_host_config, mock_host_controller), DatabaseAdmin)
 
     def test_can_create_timestamped_backup_of_existing_database(self):
         """fab.tests.database.mysql.database_admin_test  Can create time-stamped backup of an existing database"""
@@ -68,43 +73,78 @@ class DatabaseAdminTest(mox.MoxTestBase):
     def test_can_rebuild_existing_database_with_existing_user(self):
         """fab.tests.database.mysql.database_admin_test  Can rebuild an existing database with an existing user"""
 
-        self._set_expectations_for_rebuilding_database_where(database_exists=True, user_exists=True)
+        self._create_empty_database("projects_db", database_exists=True)
+        self._grant_database_permissions_for_user("projects_db", "joe", "secret_pw", user_exists=True)
+        self._initialise_and_populate_database()
+        self.mox.ReplayAll()
 
         self.database_admin.rebuild_database("projects_db", "joe", "secret_pw")
 
     def test_can_rebuild_new_database_with_existing_user(self):
         """fab.tests.database.mysql.database_admin_test  Can rebuild a new database with an existing user"""
 
-        self._set_expectations_for_rebuilding_database_where(database_exists=False, user_exists=True)
+        self._create_empty_database("projects_db", database_exists=False)
+        self._grant_database_permissions_for_user("projects_db", "joe", "secret_pw", user_exists=True)
+        self._initialise_and_populate_database()
+        self.mox.ReplayAll()
 
         self.database_admin.rebuild_database("projects_db", "joe", "secret_pw")
 
     def test_can_rebuild_existing_database_with_new_user(self):
         """fab.tests.database.mysql.database_admin_test  Can rebuild an existing database with a new user"""
 
-        self._set_expectations_for_rebuilding_database_where(database_exists=True, user_exists=False)
+        self._create_empty_database("projects_db", database_exists=True)
+        self._grant_database_permissions_for_user("projects_db", "joe", "secret_pw", user_exists=False)
+        self._initialise_and_populate_database()
+        self.mox.ReplayAll()
 
         self.database_admin.rebuild_database("projects_db", "joe", "secret_pw")
 
     def test_can_rebuild_new_database_with_new_user(self):
         """fab.tests.database.mysql.database_admin_test  Can rebuild a new database with a new user"""
 
-        self._set_expectations_for_rebuilding_database_where(database_exists=False, user_exists=False)
+        self._create_empty_database("projects_db", database_exists=False)
+        self._grant_database_permissions_for_user("projects_db", "joe", "secret_pw", user_exists=False)
+        self._initialise_and_populate_database()
+        self.mox.ReplayAll()
 
         self.database_admin.rebuild_database("projects_db", "joe", "secret_pw")
 
-    def _set_expectations_for_rebuilding_database_where(self, database_exists, user_exists):
-        self.mock_feedback.comment("Rebuild database 'projects_db' and granting all permissions to user 'joe'")
-        self.mock_admin_command.database_exists("projects_db").AndReturn(database_exists)
+    def _create_empty_database(self, database_name, database_exists):
+        self.mock_feedback.comment("Creating empty database '%s'" % database_name)
+        self.mock_admin_command.database_exists(database_name).AndReturn(database_exists)
         if database_exists:
-            self.mock_admin_command.drop_database("projects_db")
-        self.mock_admin_command.create_empty_database("projects_db")
-        self.mock_admin_command.user_exists("joe").AndReturn(user_exists)
+            self.mock_admin_command.drop_database(database_name)
+
+        self.mock_admin_command.create_empty_database(database_name)
+
+    def _grant_database_permissions_for_user(self, database_name, user_name, password, user_exists):
+        self.mock_feedback.comment("Granting all database permissions to user '%s'" % user_name)
+        self.mock_admin_command.user_exists(user_name).AndReturn(user_exists)
         if not user_exists:
-            self.mock_admin_command.create_user_account("joe", "secret_pw")
-        self.mock_admin_command.grant_all_database_permissions_for_user("joe", "projects_db")
-        self.mock_data_populator.populate_database("projects_db")
+            self.mock_admin_command.create_user_account(user_name, password)
+
+        self.mock_admin_command.grant_all_database_permissions_for_user(user_name, database_name)
+
+    def _initialise_and_populate_database(self):
+        self.mock_data_populator.initialise_database()
+        self.mock_data_populator.populate_database()
+
+    def test_can_convert_database_for_migrations(self):
+        """fab.tests.database.mysql.database_admin_test  Can convert database for migrations"""
+
+        self.mock_data_populator.convert_database_for_migrations()
         self.mox.ReplayAll()
+
+        self.database_admin.convert_database_for_migrations()
+
+    def test_can_run_all_database_migrations(self):
+        """fab.tests.database.mysql.database_admin_test  Can run all database migrations"""
+
+        self.mock_data_populator.run_all_migrations()
+        self.mox.ReplayAll()
+
+        self.database_admin.run_all_migrations()
 
 
 def suite():

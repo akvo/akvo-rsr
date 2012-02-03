@@ -5,15 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-CONFIG_VALUES_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../config/values.py.template'))
-imp.load_source('config_values', CONFIG_VALUES_TEMPLATE_PATH)
-
-from config_values import DeploymentHostConfigValues
-
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 
 
@@ -21,14 +17,10 @@ class SystemPackageInstallationPathsTest(unittest2.TestCase):
 
     def setUp(self):
         super(SystemPackageInstallationPathsTest, self).setUp()
-        self.deployment_host_config_values = DeploymentHostConfigValues()
 
-        self.installation_paths = SystemPackageInstallationPaths(self.deployment_host_config_values)
+        self.deployment_host_paths = CIDeploymentHostConfig.for_test().host_paths
 
-    def test_can_create_instance(self):
-        """fab.tests.environment.python.system_package_installation_paths_test  Can create SystemPackageInstallationPaths instance"""
-
-        self.assertIsInstance(SystemPackageInstallationPaths.create_instance(), SystemPackageInstallationPaths)
+        self.installation_paths = SystemPackageInstallationPaths(self.deployment_host_paths)
 
     def test_has_explicit_pip_version(self):
         """fab.tests.environment.python.system_package_installation_paths_test  Has explicit pip version"""
@@ -38,7 +30,7 @@ class SystemPackageInstallationPathsTest(unittest2.TestCase):
     def test_has_package_download_dir(self):
         """fab.tests.environment.python.system_package_installation_paths_test  Has package download directory"""
 
-        expected_package_download_dir = os.path.join(self.deployment_host_config_values.deployment_processing_home, 'python_packages')
+        expected_package_download_dir = os.path.join(self.deployment_host_paths.deployment_processing_home, 'python_packages')
 
         self.assertEqual(expected_package_download_dir, self.installation_paths.package_download_dir)
 

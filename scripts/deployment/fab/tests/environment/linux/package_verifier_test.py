@@ -32,7 +32,7 @@ class LinuxPackageVerifierTest(mox.MoxTestBase):
     def test_can_create_linuxpackageverifier_instance(self):
         """fab.tests.environment.linux.package_verifier_test  Can create a LinuxPackageVerifier instance"""
 
-        self.assertIsInstance(LinuxPackageVerifier.create_instance(self.mock_host_controller), LinuxPackageVerifier)
+        self.assertIsInstance(LinuxPackageVerifier.create_with(self.mock_host_controller), LinuxPackageVerifier)
 
     def test_can_update_package_sources(self):
         """fab.tests.environment.linux.package_verifier_test  Can update package sources"""

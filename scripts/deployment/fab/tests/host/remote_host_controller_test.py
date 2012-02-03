@@ -18,7 +18,7 @@ class RemoteHostControllerTest(unittest2.TestCase):
     def test_can_create_instance_with_feedback_member(self):
         """fab.tests.host.remote_host_controller_test  Can create a RemoteHostController instance with an ExecutionFeedback member"""
 
-        host_controller = RemoteHostController.create_instance()
+        host_controller = RemoteHostController()
 
         self.assertIsInstance(host_controller, RemoteHostController)
         self.assertIsInstance(host_controller.feedback, ExecutionFeedback)

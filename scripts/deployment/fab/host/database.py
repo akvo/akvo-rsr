@@ -17,13 +17,19 @@ class DatabaseHost(object):
         self.database_admin = database_admin
 
     @staticmethod
-    def create_instance(host_controller):
-        database_config = RSRDatabaseConfig.create_instance()
+    def create_with(database_config, deployment_host_config, host_controller):
+        return DatabaseHost(database_config, DatabaseAdmin.create_with(database_config, deployment_host_config, host_controller))
 
-        return DatabaseHost(database_config, DatabaseAdmin.create_instance(database_config, host_controller))
+    def backup_rsr_database(self):
+        self.database_admin.create_timestamped_backup_database(self.database_config.rsr_database)
 
     def rebuild_rsr_database(self):
-        self.database_admin.create_timestamped_backup_database(self.database_config.rsr_database_name)
-        self.database_admin.rebuild_database(self.database_config.rsr_database_name,
-                                             self.database_config.rsr_database_user,
-                                             self.database_config.rsr_database_password)
+        self.database_admin.rebuild_database(self.database_config.rsr_database,
+                                             self.database_config.rsr_user,
+                                             self.database_config.rsr_password)
+
+    def convert_database_for_migrations(self):
+        self.database_admin.convert_database_for_migrations()
+
+    def run_all_migrations(self):
+        self.database_admin.run_all_migrations()

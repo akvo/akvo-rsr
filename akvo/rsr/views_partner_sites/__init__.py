@@ -12,7 +12,7 @@ from akvo.rsr.views_partner_sites.auth import SignInView, signout
 from akvo.rsr.views_partner_sites.base import BaseProjectListView
 from akvo.rsr.views_partner_sites.partner import PartnerListView, PartnerView
 from akvo.rsr.views_partner_sites.project import ProjectFundingView, ProjectMainView, \
-    ProjectUpdateFormView, ProjectUpdateListView, ProjectUpdateView
+    ProjectUpdateAddView, ProjectUpdateEditView, ProjectUpdateListView, ProjectUpdateView
 
 
 __all__ = [
@@ -21,8 +21,8 @@ __all__ = [
     'PartnerView',
     'ProjectFundingView',
     'ProjectMainView',
-    'ProjectUpdateFormView',
-    'ProjectUpdateFormView',
+    'ProjectUpdateAddView',
+    'ProjectUpdateEditView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
     'SignInView',

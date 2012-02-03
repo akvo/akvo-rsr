@@ -24,7 +24,7 @@ class DataRetrievalHostTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance"""
 
-        self.assertIsInstance(DataRetrievalHost.create_instance(), DataRetrievalHost)
+        self.assertIsInstance(DataRetrievalHost.create(), DataRetrievalHost)
 
     def test_can_fetch_data_from_host(self):
         """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""

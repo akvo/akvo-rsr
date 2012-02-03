@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+
+import sys
+
+
+def display_deployment_script_usage_and_exit(script_name):
+    print 'Usage: %s "host_config_specification"' % script_name
+    print '       where host config is specified as either one of:'
+    print '           preconfigured:host_alias'
+    print '           standard:host_alias;repository_branch;database_name'
+    print '           custom:/path/to/fab/config/custom.py\n'
+    sys.exit(1)
+
+def display_usage_and_exit_if_host_config_spec_is_missing(script_name):
+    if len(sys.argv) < 2:
+        print 'Missing parameter: host_config_specification'
+        display_deployment_script_usage_and_exit(script_name)
+
+def display_release_script_usage_and_exit(script_name):
+    print 'Usage: %s <host_alias> <rsr_database_name>' % script_name
+    print '       where the host alias is either: test, test2, uat or live\n'
+    sys.exit(1)
+
+def display_usage_and_exit_if_release_parameters_are_missing(script_name):
+    if len(sys.argv) < 2:
+        print 'Missing parameters: host_alias, rsr_database_name'
+        display_release_script_usage_and_exit(script_name)
+    elif len(sys.argv) < 3:
+        print 'Missing parameter: rsr_database_name'
+        display_release_script_usage_and_exit(script_name)

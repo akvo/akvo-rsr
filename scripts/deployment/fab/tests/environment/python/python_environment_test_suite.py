@@ -17,9 +17,8 @@ from fab.tests.environment.python.virtualenv_test import VirtualEnvTest
 
 
 def python_environment_suite():
-    return TestSuiteLoader().create_suite_from_classes([PythonBrewTest, PythonInstallerTest, SystemPackageInstallationPathsTest,
-                                                        PipInstallerTest, SystemPythonPackageInstallerTest,
-                                                        VirtualEnvTest, VirtualEnvInstallerTest])
+    return TestSuiteLoader().create_suite_from_classes([PipInstallerTest, PythonBrewTest, PythonInstallerTest, SystemPackageInstallationPathsTest,
+                                                        SystemPythonPackageInstallerTest, VirtualEnvInstallerTest, VirtualEnvTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE
