@@ -74,24 +74,3 @@ class DjangoAdmin(AdminCommandBase):
 
     def _admin_command(self, command, options=CommandOption.NONE):
         return "python %s %s %s".strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
-
-
-class DBDumpAction(object):
-
-    DUMP_DATA   = "dump"
-    LOAD_DATA   = "load"
-
-
-class DBDump(AdminCommandBase):
-
-    def extract_data_to(self, data_archive_dir):
-        self._run_db_dump_command(DBDumpAction.DUMP_DATA, data_archive_dir)
-
-    def load_data_from(self, data_archive_dir):
-        self._run_db_dump_command(DBDumpAction.LOAD_DATA, data_archive_dir)
-
-    def _run_db_dump_command(self, action, data_archive_dir):
-        self._run_command_in_virtualenv(self._db_dump_command(action, data_archive_dir))
-
-    def _db_dump_command(self, action, data_archive_dir):
-        return "python %s -d %s %s" % (RSRCodebaseConfig.DB_DUMP_SCRIPT_PATH, data_archive_dir, action)
