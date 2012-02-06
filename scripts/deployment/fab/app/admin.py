@@ -8,15 +8,6 @@
 from fab.config.rsr.codebase import RSRCodebaseConfig
 
 
-class AdminCommandBase(object):
-
-    def __init__(self, virtualenv):
-        self.virtualenv = virtualenv
-
-    def _run_command_in_virtualenv(self, command):
-        self.virtualenv.run_within_virtualenv(command)
-
-
 class DjangoAdminCommand(object):
 
     DUMP_DATA   = "dumpdata"
@@ -37,7 +28,10 @@ class CommandResponse(object):
     NO_SUPER_USERS = "no"
 
 
-class DjangoAdmin(AdminCommandBase):
+class DjangoAdmin(object):
+
+    def __init__(self, virtualenv):
+        self.virtualenv = virtualenv
 
     def initialise_database_without_superusers(self):
         self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS, self._admin_command(DjangoAdminCommand.SYNC_DB)))
@@ -74,3 +68,6 @@ class DjangoAdmin(AdminCommandBase):
 
     def _admin_command(self, command, options=CommandOption.NONE):
         return "python %s %s %s".strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
+
+    def _run_command_in_virtualenv(self, command):
+        self.virtualenv.run_within_virtualenv(command)
