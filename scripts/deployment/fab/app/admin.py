@@ -18,16 +18,31 @@ class DjangoAdminCommand(object):
 
 class CommandOption(object):
 
-    FIXTURE_FORMAT      = '--format=xml'
-    FIXTURE_INDENTATION = '--indent=2'
-    EXTRACT_ALL_MODELS  = '--all'
-    SKIP_MIGRATION      = '--fake'
-    NONE                = ''
+    NONE = ''
 
 
 class CommandResponse(object):
 
     NO_SUPER_USERS = 'no'
+
+
+class FixtureOption(object):
+
+    XML_FORMAT          = '--format=xml'
+    WITH_INDENTATION    = '--indent=2'
+    EXTRACT_ALL_MODELS  = '--all'
+
+
+class Migration(object):
+
+    ZERO = 'zero'
+
+
+class MigrationOption(object):
+
+    SKIP_TO     = '--fake'
+    SKIP_ALL    = SKIP_TO
+    LIST_ALL    = '--list'
 
 
 class DjangoAdmin(object):
@@ -44,23 +59,32 @@ class DjangoAdmin(object):
     def synchronise_data_models(self):
         self._run_command(DjangoAdminCommand.SYNC_DB)
 
+    def last_applied_migration_for(self, app_name):
+        migration_listing = self._migrate(app_name, MigrationOption.LIST_ALL).split('\r\n')
+        applied_migrations = filter(lambda listing_line: listing_line.find('(*)') > 0, migration_listing)
+
+        if len(applied_migrations) > 0:
+            return applied_migrations[-1].split(' ')[-1].split('_')[0]
+        else:
+            return Migration.ZERO
+
     def run_all_migrations_for(self, app_name):
         self._migrate(app_name)
 
     def skip_all_migrations_for(self, app_name):
-        self._migrate(app_name, CommandOption.SKIP_MIGRATION)
+        self._migrate(app_name, MigrationOption.SKIP_ALL)
 
     def skip_migrations_to(self, migration_number, app_name):
-        self._migrate(app_name, '%s %s' % (CommandOption.SKIP_MIGRATION, migration_number))
+        self._migrate(app_name, ' '.join([MigrationOption.SKIP_TO, migration_number]))
 
     def _migrate(self, app_name, migration_options=CommandOption.NONE):
-        self._run_command(DjangoAdminCommand.MIGRATE, '%s %s' % (app_name, migration_options))
+        return self._run_command(DjangoAdminCommand.MIGRATE, ' '.join([app_name, migration_options]))
 
     def extract_app_data_to(self, data_fixture_file_path, app_name):
         self._run_command(DjangoAdminCommand.DUMP_DATA, self._dump_data_options(data_fixture_file_path, app_name))
 
     def _dump_data_options(self, data_fixture_file_path, app_name):
-        data_fixture_options = ' '.join([app_name, CommandOption.FIXTURE_FORMAT, CommandOption.FIXTURE_INDENTATION, CommandOption.EXTRACT_ALL_MODELS])
+        data_fixture_options = ' '.join([app_name, FixtureOption.XML_FORMAT, FixtureOption.WITH_INDENTATION, FixtureOption.EXTRACT_ALL_MODELS])
 
         return '%s > %s' % (data_fixture_options, data_fixture_file_path)
 
@@ -68,10 +92,10 @@ class DjangoAdmin(object):
         self._run_command(DjangoAdminCommand.LOAD_DATA, data_fixture_path)
 
     def _run_command(self, command, options=CommandOption.NONE):
-        self._run_command_in_virtualenv(self._admin_command(command, options))
+        return self._run_command_in_virtualenv(self._admin_command(command, options))
 
     def _admin_command(self, command, options=CommandOption.NONE):
         return 'python %s %s %s'.strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
 
     def _run_command_in_virtualenv(self, command):
-        self.virtualenv.run_within_virtualenv(command)
+        return self.virtualenv.run_within_virtualenv(command)
