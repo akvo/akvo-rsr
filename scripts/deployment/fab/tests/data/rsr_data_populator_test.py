@@ -8,9 +8,9 @@
 import fabric.api
 import mox, os
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.app.admin import DBDump, DjangoAdmin
+from fab.app.admin import DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
 from fab.config.rsr.host import CIDeploymentHostConfig
@@ -29,12 +29,10 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self.mock_data_host_file_system = self.mox.CreateMock(FileSystem)
         self.mock_local_file_system = self.mox.CreateMock(FileSystem)
         self.mock_django_admin = self.mox.CreateMock(DjangoAdmin)
-        self.mock_db_dump = self.mox.CreateMock(DBDump)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
         self.data_populator = RSRDataPopulator(self.data_populator_config, self.mock_data_host_file_system,
-                                               self.mock_local_file_system, self.mock_django_admin,
-                                               self.mock_db_dump, self.mock_feedback)
+                                               self.mock_local_file_system, self.mock_django_admin, self.mock_feedback)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_populator_test  Can create an RSRDataPopulator instance for a local host"""
@@ -72,7 +70,6 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
 
         self._ensure_expected_paths_exist()
         self._upload_data_archive(latest_data_archive_name, expected_data_archive_file_path)
-        self._unpack_data_archive(expected_data_archive_file_path)
         self._populate_rsr_database_with(expected_data_archive_file_path)
         self.mox.ReplayAll()
 
@@ -86,7 +83,6 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
 
         self._ensure_expected_paths_exist()
         self._use_existing_data_archive(latest_data_archive_name, expected_data_archive_file_path)
-        self._unpack_data_archive(expected_data_archive_file_path)
         self._populate_rsr_database_with(expected_data_archive_file_path)
         self.mox.ReplayAll()
 
@@ -123,15 +119,11 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         no_data_archives_available = "No data archives available on local host in: %s" % self.data_populator_config.data_archives_home
         self.mock_feedback.abort(no_data_archives_available).AndRaise(SystemExit(no_data_archives_available))
 
-    def _unpack_data_archive(self, expected_data_archive_file_path):
-        self.mock_data_host_file_system.decompress_data_archive(expected_data_archive_file_path, self.data_populator_config.data_archives_home)
-        self.mock_data_host_file_system.delete_file(expected_data_archive_file_path)
-
     def _populate_rsr_database_with(self, data_archive_path):
         self._change_dir_to(self.data_populator_config.rsr_deployment_home)
         self._synchronise_data_models()
         self.mock_feedback.comment("Loading RSR data")
-        self.mock_db_dump.load_data_from(data_archive_path.rstrip(".zip"))
+        self.mock_django_admin.load_data_fixture(data_archive_path)
 
     def test_can_skip_migrations_to_specified_rsr_migration_number(self):
         """fab.tests.data.rsr_data_populator_test  Can skip migrations to a specified RSR migration number"""
@@ -168,6 +160,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
 
     def _change_dir_to(self, expected_directory):
         self.mock_data_host_file_system.cd(expected_directory).AndReturn(fabric.api.cd(expected_directory))
+
 
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDataPopulatorTest)

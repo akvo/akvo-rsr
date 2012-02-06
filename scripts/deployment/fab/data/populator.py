@@ -7,7 +7,7 @@
 
 import os
 
-from fab.app.admin import DBDump, DjangoAdmin
+from fab.app.admin import DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
 from fab.environment.python.virtualenv import VirtualEnv
@@ -16,12 +16,11 @@ from fab.os.filesystem import FileSystem, LocalFileSystem
 
 class RSRDataPopulator(object):
 
-    def __init__(self, data_populator_config, data_host_file_system, local_file_system, django_admin, db_dump, feedback):
+    def __init__(self, data_populator_config, data_host_file_system, local_file_system, django_admin, feedback):
         self.config = data_populator_config
         self.data_host_file_system = data_host_file_system
         self.local_file_system = local_file_system
         self.django_admin = django_admin
-        self.db_dump = db_dump
         self.feedback = feedback
 
     @staticmethod
@@ -33,7 +32,6 @@ class RSRDataPopulator(object):
                                 FileSystem(host_controller),
                                 LocalFileSystem(),
                                 DjangoAdmin(virtualenv),
-                                DBDump(virtualenv),
                                 host_controller.feedback)
 
     def initialise_database(self):
@@ -76,17 +74,10 @@ class RSRDataPopulator(object):
         return os.path.join(self.config.data_archives_home, latest_data_archive_name)
 
     def _populate_rsr_database(self, data_archive_file_path):
-        self._unpack_data_archive(data_archive_file_path)
-        data_archive_dir = data_archive_file_path.rstrip(".zip")
-
         with self.data_host_file_system.cd(self.config.rsr_deployment_home):
             self._synchronise_data_models()
             self.feedback.comment("Loading RSR data")
-            self.db_dump.load_data_from(data_archive_dir)
-
-    def _unpack_data_archive(self, data_archive_file_path):
-        self.data_host_file_system.decompress_data_archive(data_archive_file_path, self.config.data_archives_home)
-        self.data_host_file_system.delete_file(data_archive_file_path)
+            self.django_admin.load_data_fixture(data_archive_file_path)
 
     def _synchronise_data_models(self):
         self.feedback.comment("Synchronising data models")
