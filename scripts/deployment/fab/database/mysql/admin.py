@@ -57,8 +57,5 @@ class DatabaseAdmin(object):
 
         self.admin_command.grant_all_database_permissions_for_user(user_name, database_name)
 
-    def convert_database_for_migrations(self):
-        self.data_populator.convert_database_for_migrations()
-
     def run_all_migrations(self):
         self.data_populator.run_all_migrations()
