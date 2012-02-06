@@ -133,16 +133,6 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self.mock_feedback.comment("Loading RSR data")
         self.mock_db_dump.load_data_from(data_archive_path.rstrip(".zip"))
 
-    def test_can_convert_database_for_migrations(self):
-        """fab.tests.data.rsr_data_populator_test  Can convert RSR database for migrations"""
-
-        self._change_dir_to(self.data_populator_config.rsr_deployment_home)
-        self._synchronise_data_models()
-        self._skip_migrations_to("0001")
-        self.mox.ReplayAll()
-
-        self.data_populator.convert_database_for_migrations()
-
     def test_can_skip_migrations_to_specified_rsr_migration_number(self):
         """fab.tests.data.rsr_data_populator_test  Can skip migrations to a specified RSR migration number"""
 

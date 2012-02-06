@@ -92,11 +92,6 @@ class RSRDataPopulator(object):
         self.feedback.comment("Synchronising data models")
         self.django_admin.synchronise_data_models()
 
-    def convert_database_for_migrations(self):
-        with self.data_host_file_system.cd(self.config.rsr_deployment_home):
-            self._synchronise_data_models()
-            self.skip_migrations_to("0001")
-
     def skip_migrations_to(self, rsr_migration_number):
         self._skip_migrations_for_django_apps()
         self.feedback.comment("Skipping RSR migrations to %s" % rsr_migration_number)

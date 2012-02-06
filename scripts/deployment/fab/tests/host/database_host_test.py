@@ -66,14 +66,6 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         self.database_host.rebuild_rsr_database()
 
-    def test_can_convert_database_for_migrations(self):
-        """fab.tests.host.database_host_test  Can convert database for migrations"""
-
-        self.mock_database_admin.convert_database_for_migrations()
-        self.mox.ReplayAll()
-
-        self.database_host.convert_database_for_migrations()
-
     def test_can_run_all_database_migrations(self):
         """fab.tests.host.database_host_test  Can run all database migrations"""
 

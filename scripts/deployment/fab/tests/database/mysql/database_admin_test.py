@@ -130,14 +130,6 @@ class DatabaseAdminTest(mox.MoxTestBase):
         self.mock_data_populator.initialise_database()
         self.mock_data_populator.populate_database()
 
-    def test_can_convert_database_for_migrations(self):
-        """fab.tests.database.mysql.database_admin_test  Can convert database for migrations"""
-
-        self.mock_data_populator.convert_database_for_migrations()
-        self.mox.ReplayAll()
-
-        self.database_admin.convert_database_for_migrations()
-
     def test_can_run_all_database_migrations(self):
         """fab.tests.database.mysql.database_admin_test  Can run all database migrations"""
 
