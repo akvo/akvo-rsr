@@ -10,6 +10,7 @@ import os
 from fab.app.admin import DjangoAdmin
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
+from fab.data.validator import DataFixtureValidator
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.format.timestamp import TimeStampFormatter
 from fab.os.filesystem import FileSystem, LocalFileSystem
@@ -17,11 +18,12 @@ from fab.os.filesystem import FileSystem, LocalFileSystem
 
 class RSRDataRetriever(object):
 
-    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, django_admin, feedback, time_stamp_formatter):
+    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, django_admin, fixture_validator, feedback, time_stamp_formatter):
         self.config = data_retriever_config
         self.data_host_file_system = data_host_file_system
         self.local_file_system = local_file_system
         self.django_admin = django_admin
+        self.fixture_validator = fixture_validator
         self.feedback = feedback
         self.time_stamp_formatter = time_stamp_formatter
 
@@ -33,6 +35,7 @@ class RSRDataRetriever(object):
                                 FileSystem(host_controller),
                                 LocalFileSystem(),
                                 DjangoAdmin(VirtualEnv(data_retriever_config.rsr_env_path, host_controller)),
+                                DataFixtureValidator(host_controller),
                                 host_controller.feedback,
                                 TimeStampFormatter())
 
@@ -61,6 +64,8 @@ class RSRDataRetriever(object):
         self.feedback.comment('Extracting latest data from database at %s' % self.config.rsr_app_path)
         with self.data_host_file_system.cd(self.config.rsr_app_path):
             self.django_admin.extract_app_data_to(data_fixture_file_path, self.config.rsr_app_name)
+
+        self.fixture_validator.validate(data_fixture_file_path)
 
     def _compress_and_download_data_fixture(self, data_fixture_file_path):
         self.data_host_file_system.compress_file(data_fixture_file_path)

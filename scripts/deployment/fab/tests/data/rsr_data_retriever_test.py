@@ -14,6 +14,7 @@ from fab.app.admin import DjangoAdmin
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
 from fab.data.retriever import RSRDataRetriever
+from fab.data.validator import DataFixtureValidator
 from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -28,12 +29,14 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_data_host_file_system = self.mox.CreateMock(FileSystem)
         self.mock_local_file_system = self.mox.CreateMock(LocalFileSystem)
         self.mock_django_admin = self.mox.CreateMock(DjangoAdmin)
+        self.mock_fixture_validator = self.mox.CreateMock(DataFixtureValidator)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
 
         self.data_retriever = RSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
                                                self.mock_local_file_system, self.mock_django_admin,
-                                               self.mock_feedback, self.mock_time_stamp_formatter)
+                                               self.mock_fixture_validator, self.mock_feedback,
+                                               self.mock_time_stamp_formatter)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
@@ -82,6 +85,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_feedback.comment('Extracting latest data from database at %s' % self.data_retriever_config.rsr_app_path)
         self._change_dir_to(self.data_retriever_config.rsr_app_path)
         self.mock_django_admin.extract_app_data_to(data_fixture_path, self.data_retriever_config.rsr_app_name)
+        self.mock_fixture_validator.validate(data_fixture_path)
 
     def _compress_and_download_data_fixture(self, data_fixture_path):
         self.mock_data_host_file_system.compress_file(data_fixture_path)
