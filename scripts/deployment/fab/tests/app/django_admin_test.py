@@ -122,6 +122,14 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self.assertEqual(Migration.ZERO, self.django_admin.last_applied_migration_for('some_app'))
 
+    def test_can_migrate_app_to_specified_migration_number(self):
+        """fab.tests.app.admin.django_admin_test  Can migrate an app to the specified migration number"""
+
+        self._migrate('rsr_app', '0048')
+        self.mox.ReplayAll()
+
+        self.django_admin.migrate_app_to('0048', 'rsr_app')
+
     def test_can_run_all_migrations_for_specified_app(self):
         """fab.tests.app.admin.django_admin_test  Can run all migrations for a specified app"""
 

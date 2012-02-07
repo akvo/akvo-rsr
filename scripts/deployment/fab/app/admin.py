@@ -67,6 +67,9 @@ class DjangoAdmin(object):
         else:
             return Migration.ZERO
 
+    def migrate_app_to(self, migration_number, app_name):
+        self._migrate(app_name, migration_number)
+
     def run_all_migrations_for(self, app_name):
         self._migrate(app_name)
 
