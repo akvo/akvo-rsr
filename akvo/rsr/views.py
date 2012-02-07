@@ -160,7 +160,7 @@ def index(request, cms_id=None):
 
     # posts that we get the titles from and display in the top news box
     news_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
+        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 13), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
     )
     # posts that we show in the more headlines box
     blog_posts = wordpress_get_lastest_posts(
