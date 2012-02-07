@@ -45,7 +45,6 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self.assertEqual('--format=xml', FixtureOption.XML_FORMAT)
         self.assertEqual('--indent=2', FixtureOption.WITH_INDENTATION)
-        self.assertEqual('--all', FixtureOption.EXTRACT_ALL_MODELS)
 
     def test_has_expected_migration_names(self):
         """fab.tests.app.admin.django_admin_test  Has expected migration names"""
@@ -62,7 +61,7 @@ class DjangoAdminTest(mox.MoxTestBase):
     def test_can_extract_app_data_to_specified_fixture_file(self):
         """fab.tests.app.admin.django_admin_test  Can extract app data to a specified data fixture file"""
 
-        data_fixture_options = ' '.join(['rsr_app', FixtureOption.XML_FORMAT, FixtureOption.WITH_INDENTATION, FixtureOption.EXTRACT_ALL_MODELS])
+        data_fixture_options = ' '.join(['rsr_app', FixtureOption.XML_FORMAT, FixtureOption.WITH_INDENTATION])
         dump_data_options = '%s > /some/data/fixture.xml' % data_fixture_options
         self._run_admin_command(DjangoAdminCommand.DUMP_DATA, dump_data_options)
         self.mox.ReplayAll()

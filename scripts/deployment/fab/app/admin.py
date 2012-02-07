@@ -30,7 +30,6 @@ class FixtureOption(object):
 
     XML_FORMAT          = '--format=xml'
     WITH_INDENTATION    = '--indent=2'
-    EXTRACT_ALL_MODELS  = '--all'
 
 
 class Migration(object):
@@ -84,7 +83,7 @@ class DjangoAdmin(object):
         self._run_command(DjangoAdminCommand.DUMP_DATA, self._dump_data_options(data_fixture_file_path, app_name))
 
     def _dump_data_options(self, data_fixture_file_path, app_name):
-        data_fixture_options = ' '.join([app_name, FixtureOption.XML_FORMAT, FixtureOption.WITH_INDENTATION, FixtureOption.EXTRACT_ALL_MODELS])
+        data_fixture_options = ' '.join([app_name, FixtureOption.XML_FORMAT, FixtureOption.WITH_INDENTATION])
 
         return '%s > %s' % (data_fixture_options, data_fixture_file_path)
 
