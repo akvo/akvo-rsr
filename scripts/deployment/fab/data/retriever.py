@@ -39,6 +39,15 @@ class RSRDataRetriever(object):
                                 host_controller.feedback,
                                 TimeStampFormatter())
 
+    def record_last_applied_migration(self):
+        self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
+        last_migration_file = self._create_last_migration_file(os.path.join(self.config.data_archives_home, 'last_migration.txt'))
+        last_migration_file.write(self.django_admin.last_applied_migration_for(self.config.rsr_app_name))
+        last_migration_file.close()
+
+    def _create_last_migration_file(self, last_migration_file_path):
+        return open(last_migration_file_path, 'w')
+
     def fetch_data_from_database(self):
         self._ensure_required_paths_exist()
         self._ensure_rsr_log_file_is_writable()

@@ -21,6 +21,18 @@ from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
+class StubbedRSRDataRetriever(RSRDataRetriever):
+
+    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, django_admin, fixture_validator,
+                 feedback, time_stamp_formatter, last_migration_file):
+        super(StubbedRSRDataRetriever, self).__init__(data_retriever_config, data_host_file_system, local_file_system,
+                                                      django_admin, fixture_validator, feedback, time_stamp_formatter)
+        self.last_migration_file = last_migration_file
+
+    def _create_last_migration_file(self, last_migration_file_path):
+        return self.last_migration_file
+
+
 class RSRDataRetrieverTest(mox.MoxTestBase):
 
     def setUp(self):
@@ -32,11 +44,12 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_fixture_validator = self.mox.CreateMock(DataFixtureValidator)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
+        self.mock_last_migration_file = self.mox.CreateMock(file)
 
-        self.data_retriever = RSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
-                                               self.mock_local_file_system, self.mock_django_admin,
-                                               self.mock_fixture_validator, self.mock_feedback,
-                                               self.mock_time_stamp_formatter)
+        self.data_retriever = StubbedRSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
+                                                      self.mock_local_file_system, self.mock_django_admin,
+                                                      self.mock_fixture_validator, self.mock_feedback,
+                                                      self.mock_time_stamp_formatter, self.mock_last_migration_file)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
@@ -54,6 +67,19 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.assertIsInstance(RSRDataRetriever.create_with(mock_host_controller), RSRDataRetriever)
+
+    def test_can_record_last_applied_database_migration(self):
+        """fab.tests.data.rsr_data_retriever_test  Can record the last applied database migration"""
+
+        last_rsr_migration = '0048'
+
+        self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
+        self.mock_django_admin.last_applied_migration_for(self.data_retriever_config.rsr_app_name).AndReturn(last_rsr_migration)
+        self.mock_last_migration_file.write(last_rsr_migration)
+        self.mock_last_migration_file.close()
+        self.mox.ReplayAll()
+
+        self.data_retriever.record_last_applied_migration()
 
     def test_can_fetch_data_from_database(self):
         """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""
