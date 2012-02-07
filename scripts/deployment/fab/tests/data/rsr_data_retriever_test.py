@@ -74,8 +74,12 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         last_rsr_migration = '0048'
 
         self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
+        self._exit_if_rsr_env_paths_not_found()
+        self._ensure_rsr_log_file_is_writable()
+        self.mock_feedback.comment('Recording last applied RSR database migration')
+        self._change_dir_to(self.data_retriever_config.rsr_app_path)
         self.mock_django_admin.last_applied_migration_for(self.data_retriever_config.rsr_app_name).AndReturn(last_rsr_migration)
-        self.mock_last_migration_file.write(last_rsr_migration)
+        self.mock_last_migration_file.write(last_rsr_migration + '\n')
         self.mock_last_migration_file.close()
         self.mox.ReplayAll()
 
@@ -88,7 +92,9 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_time_stamp_formatter.append_timestamp('rsrdb').AndReturn(time_stamped_fixture_name)
         rsr_data_fixture_path = os.path.join(self.data_retriever_config.data_archives_home, '%s.xml' % time_stamped_fixture_name)
 
-        self._ensure_required_paths_exist()
+        self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
+        self.mock_data_host_file_system.ensure_directory_exists_with_sudo(self.data_retriever_config.data_archives_home)
+        self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
         self._extract_data_to(rsr_data_fixture_path)
         self._compress_and_download_data_fixture(rsr_data_fixture_path)
@@ -96,9 +102,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
 
         self.data_retriever.fetch_data_from_database()
 
-    def _ensure_required_paths_exist(self):
-        self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
-        self.mock_data_host_file_system.ensure_directory_exists_with_sudo(self.data_retriever_config.data_archives_home)
+    def _exit_if_rsr_env_paths_not_found(self):
         self.mock_data_host_file_system.exit_if_directory_does_not_exist(self.data_retriever_config.rsr_env_path)
         self.mock_data_host_file_system.exit_if_file_does_not_exist(self.data_retriever_config.rsr_app_path)
         self.mock_data_host_file_system.exit_if_file_does_not_exist(self.data_retriever_config.rsr_log_file_path)

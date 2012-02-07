@@ -41,15 +41,22 @@ class RSRDataRetriever(object):
 
     def record_last_applied_migration(self):
         self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
-        last_migration_file = self._create_last_migration_file(os.path.join(self.config.data_archives_home, 'last_migration.txt'))
-        last_migration_file.write(self.django_admin.last_applied_migration_for(self.config.rsr_app_name))
-        last_migration_file.close()
+        self._exit_if_rsr_env_paths_not_found()
+        self._ensure_rsr_log_file_is_writable()
+
+        self.feedback.comment('Recording last applied RSR database migration')
+        with self.data_host_file_system.cd(self.config.rsr_app_path):
+            last_migration_file = self._create_last_migration_file(os.path.join(self.config.data_archives_home, 'last_migration.txt'))
+            last_migration_file.write(self.django_admin.last_applied_migration_for(self.config.rsr_app_name) + '\n')
+            last_migration_file.close()
 
     def _create_last_migration_file(self, last_migration_file_path):
         return open(last_migration_file_path, 'w')
 
     def fetch_data_from_database(self):
-        self._ensure_required_paths_exist()
+        self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
+        self.data_host_file_system.ensure_directory_exists_with_sudo(self.config.data_archives_home)
+        self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
 
         data_fixture_file_name = '%s.xml' % self.time_stamp_formatter.append_timestamp('rsrdb')
@@ -58,9 +65,7 @@ class RSRDataRetriever(object):
         self._extract_data_to(rsr_data_fixture_path)
         self._compress_and_download_data_fixture(rsr_data_fixture_path)
 
-    def _ensure_required_paths_exist(self):
-        self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
-        self.data_host_file_system.ensure_directory_exists_with_sudo(self.config.data_archives_home)
+    def _exit_if_rsr_env_paths_not_found(self):
         self.data_host_file_system.exit_if_directory_does_not_exist(self.config.rsr_env_path)
         self.data_host_file_system.exit_if_file_does_not_exist(self.config.rsr_app_path)
         self.data_host_file_system.exit_if_file_does_not_exist(self.config.rsr_log_file_path)
