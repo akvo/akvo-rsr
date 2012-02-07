@@ -23,6 +23,7 @@ class FetchRSRData(fabric.tasks.Task):
         return FetchRSRData(fab.host.dataretrieval.DataRetrievalHost.create())
 
     def run(self):
+        self.data_retrieval_host.record_last_applied_migration()
         self.data_retrieval_host.fetch_latest_data()
 
 
