@@ -66,13 +66,13 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         self.database_host.rebuild_rsr_database()
 
-    def test_can_run_all_database_migrations(self):
-        """fab.tests.host.database_host_test  Can run all database migrations"""
+    def test_can_run_new_database_migrations(self):
+        """fab.tests.host.database_host_test  Can run new database migrations"""
 
-        self.mock_database_admin.run_all_migrations()
+        self.mock_database_admin.run_new_rsr_migrations()
         self.mox.ReplayAll()
 
-        self.database_host.run_all_migrations()
+        self.database_host.run_new_migrations()
 
 
 def suite():

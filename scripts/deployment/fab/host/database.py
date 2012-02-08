@@ -28,5 +28,5 @@ class DatabaseHost(object):
                                              self.database_config.rsr_user,
                                              self.database_config.rsr_password)
 
-    def run_all_migrations(self):
-        self.database_admin.run_all_migrations()
+    def run_new_migrations(self):
+        self.database_admin.run_new_rsr_migrations()
