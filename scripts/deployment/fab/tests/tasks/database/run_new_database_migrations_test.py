@@ -13,45 +13,45 @@ from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
-from fab.tasks.database.migrate import RunDatabaseMigrations
+from fab.tasks.database.migrate import RunNewDatabaseMigrations
 from fab.verifiers.config import ConfigFileVerifier
 
 
-class StubbedRunDatabaseMigrations(RunDatabaseMigrations):
+class StubbedRunNewDatabaseMigrations(RunNewDatabaseMigrations):
 
     def __init__(self, config_verifier, configured_database_host):
-        super(StubbedRunDatabaseMigrations, self).__init__(config_verifier)
+        super(StubbedRunNewDatabaseMigrations, self).__init__(config_verifier)
         self.configured_database_host = configured_database_host
 
     def _configure_database_host_with(self, host_controller_mode, host_config):
         return self.configured_database_host
 
 
-class RunDatabaseMigrationsTest(mox.MoxTestBase):
+class RunNewDatabaseMigrationsTest(mox.MoxTestBase):
 
     def setUp(self):
-        super(RunDatabaseMigrationsTest, self).setUp()
+        super(RunNewDatabaseMigrationsTest, self).setUp()
         self.mock_config_verifier = self.mox.CreateMock(ConfigFileVerifier)
         self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-        self.run_database_migrations_task = StubbedRunDatabaseMigrations(self.mock_config_verifier, self.mock_database_host)
+        self.run_database_migrations_task = StubbedRunNewDatabaseMigrations(self.mock_config_verifier, self.mock_database_host)
 
     def test_has_expected_task_name(self):
-        """fab.tests.tasks.database.run_database_migrations_test  Has expected task name"""
+        """fab.tests.tasks.database.run_new_database_migrations_test  Has expected task name"""
 
-        self.assertEqual('run_database_migrations', RunDatabaseMigrations.name)
+        self.assertEqual('run_new_database_migrations', RunNewDatabaseMigrations.name)
 
-    def test_can_run_database_migrations(self):
-        """fab.tests.tasks.database.run_database_migrations_test  Can run database migrations"""
+    def test_can_run_new_database_migrations(self):
+        """fab.tests.tasks.database.run_new_database_migrations_test  Can run new database migrations"""
 
-        self.mock_database_host.run_all_migrations()
+        self.mock_database_host.run_new_migrations()
         self.mox.ReplayAll()
 
         self.run_database_migrations_task.run(HostControllerMode.REMOTE, HostConfigSpecification().create_preconfigured_with(HostAlias.TEST))
 
 
 def suite():
-    return TestSuiteLoader().load_tests_from(RunDatabaseMigrationsTest)
+    return TestSuiteLoader().load_tests_from(RunNewDatabaseMigrationsTest)
 
 if __name__ == '__main__':
     from fab.tests.test_settings import TEST_MODE
