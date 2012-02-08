@@ -37,6 +37,11 @@ class Migration(object):
     ZERO = 'zero'
 
 
+class MigrationStatusIndicator(object):
+
+    APPLIED = '(*)'
+
+
 class MigrationOption(object):
 
     SKIP_TO     = '--fake'
@@ -60,7 +65,7 @@ class DjangoAdmin(object):
 
     def last_applied_migration_for(self, app_name):
         migration_listing = self._migrate(app_name, MigrationOption.LIST_ALL).split('\r\n')
-        applied_migrations = filter(lambda listing_line: listing_line.find('(*)') > 0, migration_listing)
+        applied_migrations = filter(lambda listing_line: listing_line.find(MigrationStatusIndicator.APPLIED) > 0, migration_listing)
 
         if len(applied_migrations) > 0:
             return applied_migrations[-1].split(' ')[-1].split('_')[0]

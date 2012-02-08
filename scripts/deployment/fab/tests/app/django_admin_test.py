@@ -9,7 +9,8 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.app.admin import CommandOption, CommandResponse, DjangoAdmin, DjangoAdminCommand, FixtureOption, Migration, MigrationOption
+from fab.app.admin import CommandOption, CommandResponse, DjangoAdmin, DjangoAdminCommand
+from fab.app.admin import FixtureOption, Migration, MigrationOption, MigrationStatusIndicator
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.environment.python.virtualenv import VirtualEnv
 
@@ -50,6 +51,11 @@ class DjangoAdminTest(mox.MoxTestBase):
         """fab.tests.app.admin.django_admin_test  Has expected migration names"""
 
         self.assertEqual('zero', Migration.ZERO)
+
+    def test_has_expected_migration_status_indicators(self):
+        """fab.tests.app.admin.django_admin_test  Has expected migration status indicators"""
+
+        self.assertEqual('(*)', MigrationStatusIndicator.APPLIED)
 
     def test_has_expected_migration_options(self):
         """fab.tests.app.admin.django_admin_test  Has expected migration options"""
@@ -104,18 +110,18 @@ class DjangoAdminTest(mox.MoxTestBase):
                                 '  (*) 0001_initial\r\n' + \
                                 '  (*) 0002_auto__add_projectpartner\r\n' + \
                                 '  (*) 0003_auto__chg_field_projectpartner_funding_amount\r\n' + \
-                                '  (*) 0004_refactor_project_partners\r\n'
+                                '  ( ) 0004_refactor_project_partners\r\n'
 
         self._migrate('rsr_app', MigrationOption.LIST_ALL, rsr_migration_listing)
         self.mox.ReplayAll()
 
-        self.assertEqual('0004', self.django_admin.last_applied_migration_for('rsr_app'))
+        self.assertEqual('0003', self.django_admin.last_applied_migration_for('rsr_app'))
 
     def test_will_return_zero_migration_for_specified_app_when_applied_migrations_search_returns_none(self):
         """fab.tests.app.admin.django_admin_test  Will return the 'zero' migration for a specified app when applied migrations search returns none"""
 
         migration_listing = ' some_app\r\n' + \
-                            '  - 0001_initial\r\n'
+                            '  ( ) 0001_initial\r\n'
 
         self._migrate('some_app', MigrationOption.LIST_ALL, migration_listing)
         self.mox.ReplayAll()
