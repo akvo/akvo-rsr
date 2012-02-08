@@ -20,7 +20,7 @@ from fab.config.spec import HostConfigSpecification
 
 def display_usage_and_exit_if_release_parameters_are_missing():
     if len(sys.argv) < 4:
-        print 'Some missing parameters -- all required: host_alias, repository_branch, rsr_database_name'
+        print '>> Some missing parameters'
         print 'Usage: %s <host_alias> <repository_branch> <rsr_database_name>' % os.path.basename(__file__)
         print '       where the host alias is either: test, test2 or uat\n'
         sys.exit(1)
