@@ -26,6 +26,7 @@ class DjangoAdminTest(mox.MoxTestBase):
     def test_has_expected_admin_commands(self):
         """fab.tests.app.admin.django_admin_test  Has expected Django admin commands"""
 
+        self.assertEqual('diffsettings', DjangoAdminCommand.DIFF_SETTINGS)
         self.assertEqual('dumpdata', DjangoAdminCommand.DUMP_DATA)
         self.assertEqual('loaddata', DjangoAdminCommand.LOAD_DATA)
         self.assertEqual('syncdb', DjangoAdminCommand.SYNC_DB)
@@ -63,6 +64,18 @@ class DjangoAdminTest(mox.MoxTestBase):
         self.assertEqual('--fake', MigrationOption.SKIP_ALL)
         self.assertEqual('--fake', MigrationOption.SKIP_TO)
         self.assertEqual('--list', MigrationOption.LIST_ALL)
+
+    def test_can_read_specified_django_setting(self):
+        """fab.tests.app.admin.django_admin_test  Can read a specified Django setting"""
+
+        expected_find_setting_command = '%s | grep some_setting_name' % self._expected_admin_command(DjangoAdminCommand.DIFF_SETTINGS,
+                                                                                                     CommandOption.NONE)
+        expected_setting_string = "some_setting_name = ['list', 'of', 'stuff']"
+
+        self._run_command_in_virtualenv(expected_find_setting_command, expected_setting_string)
+        self.mox.ReplayAll()
+
+        self.assertEqual(['list', 'of', 'stuff'], self.django_admin.read_setting('some_setting_name'))
 
     def test_can_extract_app_data_to_specified_fixture_file(self):
         """fab.tests.app.admin.django_admin_test  Can extract app data to a specified data fixture file"""

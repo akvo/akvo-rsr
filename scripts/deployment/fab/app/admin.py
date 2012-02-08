@@ -5,15 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import ast
+
 from fab.config.rsr.codebase import RSRCodebaseConfig
 
 
 class DjangoAdminCommand(object):
 
-    DUMP_DATA   = 'dumpdata'
-    LOAD_DATA   = 'loaddata'
-    SYNC_DB     = 'syncdb'
-    MIGRATE     = 'migrate'
+    DIFF_SETTINGS   = 'diffsettings'
+    DUMP_DATA       = 'dumpdata'
+    LOAD_DATA       = 'loaddata'
+    SYNC_DB         = 'syncdb'
+    MIGRATE         = 'migrate'
 
 
 class CommandOption(object):
@@ -53,6 +56,11 @@ class DjangoAdmin(object):
 
     def __init__(self, virtualenv):
         self.virtualenv = virtualenv
+
+    def read_setting(self, setting_name):
+        find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
+        setting_value = self._run_command_in_virtualenv(find_setting_command).split(' = ')[-1]
+        return ast.literal_eval(setting_value)
 
     def initialise_database_without_superusers(self):
         self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS, self._admin_command(DjangoAdminCommand.SYNC_DB)))
