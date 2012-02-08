@@ -160,7 +160,7 @@ def index(request, cms_id=None):
 
     # posts that we get the titles from and display in the top news box
     news_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 3), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
+        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 13), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
     )
     # posts that we show in the more headlines box
     blog_posts = wordpress_get_lastest_posts(
@@ -766,10 +766,18 @@ def projectcomments(request, project_id):
     p: project
     updates: list of updates, ordered by time in reverse
     '''
-    p           = get_object_or_404(Project, pk=project_id)
-    comments    = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
-    form        = CommentForm()
-    return {'project': p, 'comments': comments, 'form': form, 'project_section':'comments', 'hide_comments': True,}
+    project = get_object_or_404(Project, pk=project_id)
+    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
+    form = CommentForm()
+    updates = project.project_updates.all().order_by('-time')[:3]
+    return {
+        'project': project, 
+        'comments': comments, 
+        'form': form, 
+        'project_section':'comments', 
+        'hide_comments': True,
+        'updates': updates,
+        }
 
 
 @login_required()
