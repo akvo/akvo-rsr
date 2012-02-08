@@ -11,11 +11,13 @@ class Migration(DataMigration):
         # labels for the three budget fields that may be customized by the users
         OTHER_LABELS = (u'other 1', u'other 2', u'other 3')
         # use enumerate to guarantee the OTHER_LABELS get index 1,2 and 3 resp
-        for id, other_label in enumerate(OTHER_LABELS, start=1):
+        id = 1
+        for other_label in OTHER_LABELS:
             label, created = orm.BudgetItemLabel.objects.get_or_create(
                 id=id,
                 label=other_label,
             )
+            id += 1
         for item in orm.BudgetItem.objects.all():
             # change a couple of labels
             if item.item == u'other':
