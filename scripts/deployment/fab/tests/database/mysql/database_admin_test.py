@@ -130,13 +130,13 @@ class DatabaseAdminTest(mox.MoxTestBase):
         self.mock_data_populator.initialise_database()
         self.mock_data_populator.populate_database()
 
-    def test_can_run_all_database_migrations(self):
-        """fab.tests.database.mysql.database_admin_test  Can run all database migrations"""
+    def test_can_run_new_rsr_migrations(self):
+        """fab.tests.database.mysql.database_admin_test  Can run new RSR migrations"""
 
-        self.mock_data_populator.run_all_migrations()
+        self.mock_data_populator.run_new_rsr_migrations()
         self.mox.ReplayAll()
 
-        self.database_admin.run_all_migrations()
+        self.database_admin.run_new_rsr_migrations()
 
 
 def suite():

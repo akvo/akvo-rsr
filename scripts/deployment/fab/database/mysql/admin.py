@@ -43,6 +43,9 @@ class DatabaseAdmin(object):
         self.data_populator.initialise_database()
         self.data_populator.populate_database()
 
+    def run_new_rsr_migrations(self):
+        self.data_populator.run_new_rsr_migrations()
+
     def _create_empty_database(self, database_name):
         self.feedback.comment("Creating empty database '%s'" % database_name)
         if self.admin_command.database_exists(database_name):
@@ -56,6 +59,3 @@ class DatabaseAdmin(object):
             self.admin_command.create_user_account(user_name, password)
 
         self.admin_command.grant_all_database_permissions_for_user(user_name, database_name)
-
-    def run_all_migrations(self):
-        self.data_populator.run_all_migrations()
