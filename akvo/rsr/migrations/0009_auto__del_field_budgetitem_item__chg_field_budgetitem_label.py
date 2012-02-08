@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.delete_column('rsr_budgetitem', 'item')
 
         # Changing field 'BudgetItem.label'
-        db.alter_column('rsr_budgetitem', 'label_id', self.gf('django.db.models.fields.related.ForeignKey')(default='', to=orm['rsr.BudgetItemLabel']))
+        db.alter_column('rsr_budgetitem', 'label_id', self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['rsr.BudgetItemLabel']))
 
 
     def backwards(self, orm):
