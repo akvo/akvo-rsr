@@ -8,6 +8,8 @@
 import ast
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
+from fab.config.rsr.deployment import RSRDeploymentConfig
+from fab.environment.python.virtualenv import VirtualEnv
 
 
 class DjangoAdminCommand(object):
@@ -54,13 +56,23 @@ class MigrationOption(object):
 
 class DjangoAdmin(object):
 
-    def __init__(self, virtualenv):
+    def __init__(self, rsr_app_path, virtualenv, host_controller):
+        self.rsr_app_path = rsr_app_path
         self.virtualenv = virtualenv
+        self.host_controller = host_controller
+        self.feedback = host_controller.feedback
+
+    @staticmethod
+    def create_with(rsr_env_path, rsr_app_path, host_controller):
+        return DjangoAdmin(rsr_app_path, VirtualEnv(rsr_env_path, host_controller), host_controller)
 
     def read_setting(self, setting_name):
-        find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
-        setting_value = self._run_command_in_virtualenv(find_setting_command).split(' = ')[-1]
-        return ast.literal_eval(setting_value)
+        with self.host_controller.cd(self.rsr_app_path):
+            with self.host_controller.hide_command_and_output():
+                self.feedback.comment('Reading setting: %s' % setting_name)
+                find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
+                setting_value = self._run_command_in_virtualenv(find_setting_command).split(' = ')[-1]
+                return ast.literal_eval(setting_value)
 
     def initialise_database_without_superusers(self):
         self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS, self._admin_command(DjangoAdminCommand.SYNC_DB)))

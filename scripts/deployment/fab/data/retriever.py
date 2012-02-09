@@ -11,7 +11,6 @@ from fab.app.admin import DjangoAdmin
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
 from fab.data.validator import DataFixtureValidator
-from fab.environment.python.virtualenv import VirtualEnv
 from fab.format.timestamp import TimeStampFormatter
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
@@ -30,11 +29,12 @@ class RSRDataRetriever(object):
     @staticmethod
     def create_with(host_controller):
         data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
+        host_file_system = FileSystem(host_controller)
 
         return RSRDataRetriever(data_retriever_config,
-                                FileSystem(host_controller),
+                                host_file_system,
                                 LocalFileSystem(),
-                                DjangoAdmin(VirtualEnv(data_retriever_config.rsr_env_path, host_controller)),
+                                DjangoAdmin.create_with(data_retriever_config.rsr_env_path, data_retriever_config.rsr_app_path, host_controller),
                                 DataFixtureValidator(host_controller),
                                 host_controller.feedback,
                                 TimeStampFormatter())
