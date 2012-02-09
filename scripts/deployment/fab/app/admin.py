@@ -5,93 +5,112 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import ast
+
 from fab.config.rsr.codebase import RSRCodebaseConfig
-
-
-class AdminCommandBase(object):
-
-    def __init__(self, virtualenv):
-        self.virtualenv = virtualenv
-
-    def _run_command_in_virtualenv(self, command):
-        self.virtualenv.run_within_virtualenv(command)
 
 
 class DjangoAdminCommand(object):
 
-    DUMP_DATA   = "dumpdata"
-    LOAD_DATA   = "loaddata"
-    SYNC_DB     = "syncdb"
-    MIGRATE     = "migrate"
+    DIFF_SETTINGS   = 'diffsettings'
+    DUMP_DATA       = 'dumpdata'
+    LOAD_DATA       = 'loaddata'
+    SYNC_DB         = 'syncdb'
+    MIGRATE         = 'migrate'
 
 
 class CommandOption(object):
 
-    DATA_FIXTURE_INDENTATION = "--indent=4"
-    SKIP_MIGRATION = "--fake"
-    NONE = ""
+    NONE = ''
 
 
 class CommandResponse(object):
 
-    NO_SUPER_USERS = "no"
+    NO_SUPER_USERS = 'no'
 
 
-class DjangoAdmin(AdminCommandBase):
+class FixtureOption(object):
+
+    XML_FORMAT          = '--format=xml'
+    WITH_INDENTATION    = '--indent=2'
+
+
+class Migration(object):
+
+    ZERO = 'zero'
+
+
+class MigrationStatusIndicator(object):
+
+    APPLIED = '(*)'
+
+
+class MigrationOption(object):
+
+    SKIP_TO     = '--fake'
+    SKIP_ALL    = SKIP_TO
+    LIST_ALL    = '--list'
+
+
+class DjangoAdmin(object):
+
+    def __init__(self, virtualenv):
+        self.virtualenv = virtualenv
+
+    def read_setting(self, setting_name):
+        find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
+        setting_value = self._run_command_in_virtualenv(find_setting_command).split(' = ')[-1]
+        return ast.literal_eval(setting_value)
 
     def initialise_database_without_superusers(self):
         self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS, self._admin_command(DjangoAdminCommand.SYNC_DB)))
 
     def _respond_with(self, response, command):
-        return "echo %s | %s" % (response, command)
+        return 'echo %s | %s' % (response, command)
 
     def synchronise_data_models(self):
         self._run_command(DjangoAdminCommand.SYNC_DB)
+
+    def last_applied_migration_for(self, app_name):
+        migration_listing = self._migrate(app_name, MigrationOption.LIST_ALL).split('\r\n')
+        applied_migrations = filter(lambda listing_line: listing_line.find(MigrationStatusIndicator.APPLIED) > 0, migration_listing)
+
+        if len(applied_migrations) > 0:
+            return applied_migrations[-1].split(' ')[-1].split('_')[0]
+        else:
+            return Migration.ZERO
+
+    def migrate_app_to(self, migration_number, app_name):
+        self._migrate(app_name, migration_number)
 
     def run_all_migrations_for(self, app_name):
         self._migrate(app_name)
 
     def skip_all_migrations_for(self, app_name):
-        self._migrate(app_name, CommandOption.SKIP_MIGRATION)
+        self._migrate(app_name, MigrationOption.SKIP_ALL)
 
     def skip_migrations_to(self, migration_number, app_name):
-        self._migrate(app_name, "%s %s" % (CommandOption.SKIP_MIGRATION, migration_number))
+        self._migrate(app_name, ' '.join([MigrationOption.SKIP_TO, migration_number]))
 
     def _migrate(self, app_name, migration_options=CommandOption.NONE):
-        self._run_command(DjangoAdminCommand.MIGRATE, "%s %s" % (app_name, migration_options))
+        return self._run_command(DjangoAdminCommand.MIGRATE, ' '.join([app_name, migration_options]))
 
     def extract_app_data_to(self, data_fixture_file_path, app_name):
         self._run_command(DjangoAdminCommand.DUMP_DATA, self._dump_data_options(data_fixture_file_path, app_name))
 
     def _dump_data_options(self, data_fixture_file_path, app_name):
-        return "%s %s > %s" % (app_name, CommandOption.DATA_FIXTURE_INDENTATION, data_fixture_file_path)
+        data_fixture_options = ' '.join([app_name, FixtureOption.XML_FORMAT, FixtureOption.WITH_INDENTATION])
+
+        return '%s > %s' % (data_fixture_options, data_fixture_file_path)
 
     def load_data_fixture(self, data_fixture_path):
         self._run_command(DjangoAdminCommand.LOAD_DATA, data_fixture_path)
 
     def _run_command(self, command, options=CommandOption.NONE):
-        self._run_command_in_virtualenv(self._admin_command(command, options))
+        return self._run_command_in_virtualenv(self._admin_command(command, options))
 
     def _admin_command(self, command, options=CommandOption.NONE):
-        return "python %s %s %s".strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
+        return 'python %s %s %s'.strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
 
-
-class DBDumpAction(object):
-
-    DUMP_DATA   = "dump"
-    LOAD_DATA   = "load"
-
-
-class DBDump(AdminCommandBase):
-
-    def extract_data_to(self, data_archive_dir):
-        self._run_db_dump_command(DBDumpAction.DUMP_DATA, data_archive_dir)
-
-    def load_data_from(self, data_archive_dir):
-        self._run_db_dump_command(DBDumpAction.LOAD_DATA, data_archive_dir)
-
-    def _run_db_dump_command(self, action, data_archive_dir):
-        self._run_command_in_virtualenv(self._db_dump_command(action, data_archive_dir))
-
-    def _db_dump_command(self, action, data_archive_dir):
-        return "python %s -d %s %s" % (RSRCodebaseConfig.DB_DUMP_SCRIPT_PATH, data_archive_dir, action)
+    def _run_command_in_virtualenv(self, command):
+        return self.virtualenv.run_within_virtualenv(command)

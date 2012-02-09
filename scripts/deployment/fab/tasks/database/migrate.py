@@ -8,13 +8,13 @@
 import fab.tasks.database.basetask
 
 
-class RunDatabaseMigrations(fab.tasks.database.basetask.RSRDatabaseTask):
-    """Runs all the database migrations"""
+class RunNewDatabaseMigrations(fab.tasks.database.basetask.RSRDatabaseTask):
+    """Runs any new database migrations since the last migration cycle"""
 
-    name = 'run_database_migrations'
+    name = 'run_new_database_migrations'
 
     def _perform_database_actions_with(self, database_host):
-        database_host.run_all_migrations()
+        database_host.run_new_migrations()
 
 
-instance = RunDatabaseMigrations()
+instance = RunNewDatabaseMigrations()
