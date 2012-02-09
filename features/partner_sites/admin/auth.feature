@@ -24,6 +24,6 @@ Feature: Sign on on partner sites
       Go to Akvo´s partner sites
       Access the link "Sign in"
       Fill the field "username" with "AkvoQAAdmin"
-      Fill the filed "password" with "zzz"
+      Fill the field "password" with "zzz"
       Click on "Sign in"
       Then I want to see the text "Error when signing in"
