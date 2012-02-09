@@ -29,9 +29,7 @@ def go_to_akvo_s_partner_sites(step):
 @step(u'Access the link "([^"]*)"')
 def access_the_link_group1(step, group1):
     world.browser.find_link_by_text(group1).first.click()
-    #world.browser.find_by_css('#main_nav_account').first.click()
     assert True
-    #assert world.browser.is_text_present('Sign in with your Akvo account')
 
 @step(u'Fill the field "([^"]*)" with "([^"]*)"')
 def fill_the_field_group1_with_group2(step, group1, group2):
@@ -42,7 +40,6 @@ def fill_the_field_group1_with_group2(step, group1, group2):
 def click_on_group1(step, group1):
     world.browser.find_link_by_text('Sign in').first.click()
     assert True
-    #assert False, 'This step must be implemented'
 
 @step(u'Then I want to see the text "([^"]*)"')
 def then_i_want_to_see_the_text_group1(step, group1):

@@ -10,7 +10,7 @@ Feature: Sign on on partner sites
     Scenario: Successfull sign in
       Go to Akvo´s partner sites
       Access the link "Sign in"
-      Fill the field "username" with "QAAdmin"
+      Fill the field "username" with "QAUser"
       Fill the field "password" with "correct"
       Click on "Sign in"
       Then I want to see the text "Hello Daniel!"
@@ -23,7 +23,7 @@ Feature: Sign on on partner sites
     Scenario: Unsuccessfull sign in
       Go to Akvo´s partner sites
       Access the link "Sign in"
-      Fill the field "username" with "AkvoQA"
+      Fill the field "username" with "QAUser"
       Fill the field "password" with "wrong"
       Click on "Sign in"
       Then I want to see the text "Error when signing in"
