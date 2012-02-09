@@ -10,7 +10,6 @@ import os
 from fab.app.admin import DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
-from fab.environment.python.virtualenv import VirtualEnv
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
@@ -26,12 +25,12 @@ class RSRDataPopulator(object):
     @staticmethod
     def create_with(deployment_host_config, host_controller):
         data_populator_config = RSRDataPopulatorConfig.create_with(deployment_host_config)
-        virtualenv = VirtualEnv(data_populator_config.rsr_env_path, host_controller)
+        django_admin = DjangoAdmin.create_with(data_populator_config.rsr_env_path, data_populator_config.rsr_deployment_home, host_controller)
 
         return RSRDataPopulator(data_populator_config,
                                 FileSystem(host_controller),
                                 LocalFileSystem(),
-                                DjangoAdmin(virtualenv),
+                                django_admin,
                                 host_controller.feedback)
 
     def initialise_database(self):
@@ -80,6 +79,7 @@ class RSRDataPopulator(object):
             self._run_rsr_migrations_to_last_applied()
             self.feedback.comment('Loading RSR data')
             self.django_admin.load_data_fixture(data_fixture_file_path)
+            self.django_admin.configure_sites()
 
     def _data_archive_path(self, latest_data_archive_name):
         return os.path.join(self.config.data_archives_home, latest_data_archive_name)

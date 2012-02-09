@@ -9,7 +9,6 @@ import imp, os
 
 from fab.app.admin import DjangoAdmin
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.environment.python.virtualenv import VirtualEnv
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
@@ -42,12 +41,9 @@ class RSRSettingsVerifier(object):
     @staticmethod
     def create_with(deployment_host_config, host_controller):
         deployment_config = RSRDeploymentConfig.create_with(deployment_host_config)
+        django_admin = DjangoAdmin.create_with(deployment_config.current_virtualenv_path, deployment_config.rsr_deployment_home, host_controller)
 
-        return RSRSettingsVerifier(deployment_host_config,
-                                   deployment_config,
-                                   DjangoAdmin(VirtualEnv(deployment_config.current_virtualenv_path, host_controller)),
-                                   FileSystem(host_controller),
-                                   host_controller.feedback)
+        return RSRSettingsVerifier(deployment_host_config, deployment_config, django_admin, FileSystem(host_controller), host_controller.feedback)
 
     def exit_if_local_rsr_settings_not_deployed(self):
         self.host_file_system.exit_if_directory_does_not_exist(self.deployment_config.host_config_home)
