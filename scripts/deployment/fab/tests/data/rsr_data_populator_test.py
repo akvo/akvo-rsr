@@ -143,6 +143,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self._run_rsr_migrations_to_last_applied()
         self.mock_feedback.comment('Loading RSR data')
         self.mock_django_admin.load_data_fixture(data_fixture_file_path)
+        self.mock_feedback.comment('Configuring RSR sites')
         self.mock_django_admin.configure_sites()
 
     def _run_all_migrations_for_django_apps(self):
