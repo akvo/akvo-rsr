@@ -25,7 +25,6 @@ class RSRCodebaseConfig(object):
     RSR_MEDIA_ROOT              = "akvo/mediaroot"
 
     MANAGE_SCRIPT_PATH          = "akvo/manage.py"
-    DB_DUMP_SCRIPT_PATH         = "akvo/db_dump.py"
 
     RSR_APP_NAME                = "rsr"
 
