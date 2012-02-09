@@ -10,7 +10,7 @@ import imp, os, sys
 VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../verifiers'))
 imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_syspath_contains_deployment_scripts_home.py'))
 
-from fab.tasks.database.migrate import RunDatabaseMigrations
+from fab.tasks.database.migrate import RunNewDatabaseMigrations
 from fab.tasks.runner import TaskRunner
 
 import execution.verification
@@ -18,4 +18,4 @@ import execution.verification
 
 if __name__ == '__main__':
     execution.verification.display_usage_and_exit_if_host_config_spec_is_missing(os.path.basename(__file__))
-    TaskRunner.create().run_remote_deployment_task(RunDatabaseMigrations, sys.argv[1])
+    TaskRunner.create().run_remote_deployment_task(RunNewDatabaseMigrations, sys.argv[1])

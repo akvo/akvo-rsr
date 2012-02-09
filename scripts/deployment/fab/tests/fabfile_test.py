@@ -18,9 +18,9 @@ class FabFileTest(unittest2.TestCase):
         # we use py.std.os calls to avoid namespace clashes with the fab.tests.os module
         fab_scripts_dir = py.std.os.path.realpath(py.std.os.path.join(py.std.os.path.dirname(__file__), '..'))
         expected_task_modules = ['fab.tasks.app.deployment', 'fab.tasks.data.retrieval', 'fab.tasks.database.backup',
-                                 'fab.tasks.database.convert', 'fab.tasks.database.migrate', 'fab.tasks.database.rebuild',
-                                 'fab.tasks.environment.linux.systempackages', 'fab.tasks.environment.python.installer',
-                                 'fab.tasks.environment.python.systempackages', 'fab.tasks.environment.python.virtualenv.rsr']
+                                 'fab.tasks.database.migrate', 'fab.tasks.database.rebuild', 'fab.tasks.environment.linux.systempackages',
+                                 'fab.tasks.environment.python.installer', 'fab.tasks.environment.python.systempackages',
+                                 'fab.tasks.environment.python.virtualenv.rsr']
 
         py.std.os.chdir(fab_scripts_dir)
         fabfile_listing = subprocess.check_output(['fab', '--list'])

@@ -26,6 +26,14 @@ class DataRetrievalHostTest(mox.MoxTestBase):
 
         self.assertIsInstance(DataRetrievalHost.create(), DataRetrievalHost)
 
+    def test_can_record_last_applied_migration(self):
+        """fab.tests.host.data_retrieval_host_test  Can record the last applied database migration number"""
+
+        self.mock_data_retriever.record_last_applied_migration()
+        self.mox.ReplayAll()
+
+        self.data_retrieval_host.record_last_applied_migration()
+
     def test_can_fetch_data_from_host(self):
         """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""
 

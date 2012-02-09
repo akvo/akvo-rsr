@@ -19,5 +19,8 @@ class DataRetrievalHost(object):
     def create():
         return DataRetrievalHost(RSRDataRetriever.create_with(RemoteHostController()))
 
+    def record_last_applied_migration(self):
+        self.data_retriever.record_last_applied_migration()
+
     def fetch_latest_data(self):
         self.data_retriever.fetch_data_from_database()
