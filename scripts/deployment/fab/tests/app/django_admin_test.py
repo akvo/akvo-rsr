@@ -100,8 +100,8 @@ class DjangoAdminTest(mox.MoxTestBase):
                                                                                                      CommandOption.NONE)
         expected_setting_string = "some_setting_name = ['list', 'of', 'stuff']"
 
-        self.mock_host_controller.cd(self.rsr_app_path).AndReturn(fabric.api.cd(self.rsr_app_path))
-        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        self._change_dir_rsr_app_home()
+        self._hide_command_and_output()
         self.mock_feedback.comment('Reading setting: some_setting_name')
         self._run_command_in_virtualenv(expected_find_setting_command, expected_setting_string)
         self.mox.ReplayAll()
@@ -125,6 +125,15 @@ class DjangoAdminTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.django_admin.load_data_fixture('/some/data/fixture.xml.zip')
+
+    def test_can_configure_django_sites(self):
+        """fab.tests.app.admin.django_admin_test  Can configure Django sites"""
+
+        self._change_dir_rsr_app_home()
+        self._run_command_in_virtualenv('python %s' % RSRCodebaseConfig.CONFIGURE_SITES_SCRIPT_PATH)
+        self.mox.ReplayAll()
+
+        self.django_admin.configure_sites()
 
     def test_can_initialise_database_without_superusers(self):
         """fab.tests.app.admin.django_admin_test  Can initialise a database without adding super users"""
@@ -215,6 +224,12 @@ class DjangoAdminTest(mox.MoxTestBase):
 
     def _expected_admin_command(self, command, options):
         return 'python %s %s %s'.strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
+
+    def _change_dir_rsr_app_home(self):
+        return self.mock_host_controller.cd(self.rsr_app_path).AndReturn(fabric.api.cd(self.rsr_app_path))
+
+    def _hide_command_and_output(self):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
 
 
 def suite():

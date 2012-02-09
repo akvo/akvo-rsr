@@ -67,7 +67,7 @@ class DjangoAdmin(object):
         return DjangoAdmin(rsr_app_path, VirtualEnv(rsr_env_path, host_controller), host_controller)
 
     def read_setting(self, setting_name):
-        with self.host_controller.cd(self.rsr_app_path):
+        with self._change_dir_rsr_app_home():
             with self.host_controller.hide_command_and_output():
                 self.feedback.comment('Reading setting: %s' % setting_name)
                 find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
@@ -117,6 +117,13 @@ class DjangoAdmin(object):
 
     def load_data_fixture(self, data_fixture_path):
         self._run_command(DjangoAdminCommand.LOAD_DATA, data_fixture_path)
+
+    def configure_sites(self):
+        with self._change_dir_rsr_app_home():
+            self._run_command_in_virtualenv('python %s' % RSRCodebaseConfig.CONFIGURE_SITES_SCRIPT_PATH)
+
+    def _change_dir_rsr_app_home(self):
+        return self.host_controller.cd(self.rsr_app_path)
 
     def _run_command(self, command, options=CommandOption.NONE):
         return self._run_command_in_virtualenv(self._admin_command(command, options))

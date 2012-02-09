@@ -79,6 +79,7 @@ class RSRDataPopulator(object):
             self._run_rsr_migrations_to_last_applied()
             self.feedback.comment('Loading RSR data')
             self.django_admin.load_data_fixture(data_fixture_file_path)
+            self.django_admin.configure_sites()
 
     def _data_archive_path(self, latest_data_archive_name):
         return os.path.join(self.config.data_archives_home, latest_data_archive_name)
