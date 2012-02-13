@@ -22,9 +22,9 @@ class DatabaseAdmin(object):
         self.feedback = feedback
 
     @staticmethod
-    def create_with(database_config, deployment_host_config, host_controller):
-        return DatabaseAdmin(DatabaseAdminCommand.create_with(database_config, host_controller),
-                             DatabaseCopier(database_config, host_controller),
+    def create_with(database_credentials, deployment_host_config, host_controller):
+        return DatabaseAdmin(DatabaseAdminCommand.create_with(database_credentials, host_controller),
+                             DatabaseCopier(database_credentials, host_controller),
                              RSRDataPopulator.create_with(deployment_host_config, host_controller),
                              TimeStampFormatter(),
                              host_controller.feedback)
@@ -35,7 +35,7 @@ class DatabaseAdmin(object):
             self.admin_command.create_empty_database(duplicate_database_name)
             self.database_copier.create_duplicate(database_name, duplicate_database_name)
         else:
-            self.feedback.comment("No backup required for database: %s" % database_name)
+            self.feedback.comment('No backup required for database: %s' % database_name)
 
     def rebuild_database(self, database_name, user_name, password):
         self._create_empty_database(database_name)

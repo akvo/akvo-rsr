@@ -26,7 +26,9 @@ class DatabaseHostTest(mox.MoxTestBase):
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
         self.deployment_host_config = CIDeploymentHostConfig.for_test()
-        self.database_config = RSRDatabaseConfig(DatabaseCredentials(), self.deployment_host_config)
+        self.database_credentials = DatabaseCredentials()
+        self.database_config = RSRDatabaseConfig(self.database_credentials, self.deployment_host_config)
+
         self.mock_settings_verifier = self.mox.CreateMock(RSRSettingsVerifier)
         self.mock_database_admin = self.mox.CreateMock(DatabaseAdmin)
 
@@ -48,7 +50,7 @@ class DatabaseHostTest(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        return DatabaseHost.create_with(self.database_config, self.deployment_host_config, mock_host_controller)
+        return DatabaseHost.create_with(self.database_credentials, self.deployment_host_config, mock_host_controller)
 
     def test_can_backup_rsr_database(self):
         """fab.tests.host.database_host_test  Can backup the RSR database"""

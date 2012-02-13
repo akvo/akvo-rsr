@@ -19,10 +19,10 @@ class DatabaseHost(object):
         self.database_admin = database_admin
 
     @staticmethod
-    def create_with(database_config, deployment_host_config, host_controller):
+    def create_with(database_credentials, deployment_host_config, host_controller):
         return DatabaseHost(RSRSettingsVerifier.create_with(deployment_host_config, host_controller),
-                            database_config,
-                            DatabaseAdmin.create_with(database_config, deployment_host_config, host_controller))
+                            RSRDatabaseConfig(database_credentials, deployment_host_config.rsr_database_name),
+                            DatabaseAdmin.create_with(database_credentials, deployment_host_config, host_controller))
 
     def backup_rsr_database(self):
         self._verify_database_configuration()

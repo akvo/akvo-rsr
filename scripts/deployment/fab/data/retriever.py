@@ -30,7 +30,7 @@ class RSRDataRetriever(object):
         self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
-    def create_with(database_config, host_controller):
+    def create_with(database_credentials, host_controller):
         data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
         host_file_system = FileSystem(host_controller)
         django_admin = DjangoAdmin.create_with(data_retriever_config.rsr_env_path, data_retriever_config.rsr_app_path, host_controller)
@@ -40,7 +40,7 @@ class RSRDataRetriever(object):
                                 LocalFileSystem(),
                                 django_admin,
                                 DjangoSettingsReader(django_admin),
-                                DataHandler(database_config, host_controller),
+                                DataHandler(database_credentials, host_controller),
                                 host_controller.feedback,
                                 TimeStampFormatter())
 

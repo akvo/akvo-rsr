@@ -16,8 +16,6 @@ from database_credentials import DatabaseCredentials
 from fab.app.admin import DjangoAdmin
 from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
-from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.values.host import DataHostPaths
 from fab.data.retriever import RSRDataRetriever
 from fab.database.mysql.commandexecution import DataHandler
@@ -70,13 +68,13 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self._can_create_instance_for(RemoteHostController)
 
     def _can_create_instance_for(self, host_controller_class):
-        database_config = RSRDatabaseConfig(DatabaseCredentials(), CIDeploymentHostConfig.for_test())
+        database_credentials = DatabaseCredentials()
 
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        self.assertIsInstance(RSRDataRetriever.create_with(database_config, mock_host_controller), RSRDataRetriever)
+        self.assertIsInstance(RSRDataRetriever.create_with(database_credentials, mock_host_controller), RSRDataRetriever)
 
     def test_can_record_last_applied_migration_and_fetch_data_from_database(self):
         """fab.tests.data.rsr_data_retriever_test  Can record last applied migration and fetch data from database"""
