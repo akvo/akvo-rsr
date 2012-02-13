@@ -39,31 +39,24 @@ class RSRDataRetriever(object):
                                 host_controller.feedback,
                                 TimeStampFormatter())
 
-    def record_last_applied_migration(self):
-        self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
-        self._exit_if_rsr_env_paths_not_found()
-        self._ensure_rsr_log_file_is_writable()
-
-        self.feedback.comment('Recording last applied RSR database migration')
-        with self.data_host_file_system.cd(self.config.rsr_app_path):
-            last_migration_file = self._create_last_migration_file(os.path.join(self.config.data_archives_home, 'last_migration.txt'))
-            last_migration_file.write(self.django_admin.last_applied_migration_for(self.config.rsr_app_name) + '\n')
-            last_migration_file.close()
-
     def _create_last_migration_file(self, last_migration_file_path):
         return open(last_migration_file_path, 'w')
 
     def fetch_data_from_database(self):
-        self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
-        self.data_host_file_system.ensure_directory_exists_with_sudo(self.config.data_archives_home)
+        self._ensure_data_archives_can_be_stored()
         self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
+        self._record_last_applied_migration()
 
         data_fixture_file_name = '%s.xml' % self.time_stamp_formatter.append_timestamp('rsrdb')
         rsr_data_fixture_path = os.path.join(self.config.data_archives_home, data_fixture_file_name)
 
         self._extract_data_to(rsr_data_fixture_path)
         self._compress_and_download_data_fixture(rsr_data_fixture_path)
+
+    def _ensure_data_archives_can_be_stored(self):
+        self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
+        self.data_host_file_system.ensure_directory_exists_with_sudo(self.config.data_archives_home)
 
     def _exit_if_rsr_env_paths_not_found(self):
         self.data_host_file_system.exit_if_directory_does_not_exist(self.config.rsr_env_path)
@@ -73,6 +66,13 @@ class RSRDataRetriever(object):
     def _ensure_rsr_log_file_is_writable(self):
         self.feedback.comment('Ensuring RSR log file is writable')
         self.data_host_file_system.make_file_writable_for_all_users(self.config.rsr_log_file_path)
+
+    def _record_last_applied_migration(self):
+        self.feedback.comment('Recording last applied RSR database migration')
+        with self.data_host_file_system.cd(self.config.rsr_app_path):
+            last_migration_file = self._create_last_migration_file(os.path.join(self.config.data_archives_home, 'last_migration.txt'))
+            last_migration_file.write(self.django_admin.last_applied_migration_for(self.config.rsr_app_name) + '\n')
+            last_migration_file.close()
 
     def _extract_data_to(self, data_fixture_file_path):
         self.feedback.comment('Extracting latest data from database at %s' % self.config.rsr_app_path)

@@ -54,53 +54,41 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
 
-        self._verify_instance_creation_for(LocalHostController)
+        self._can_create_instance_for(LocalHostController)
 
     def test_can_create_instance_for_remote_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a remote host"""
 
-        self._verify_instance_creation_for(RemoteHostController)
+        self._can_create_instance_for(RemoteHostController)
 
-    def _verify_instance_creation_for(self, host_controller_class):
+    def _can_create_instance_for(self, host_controller_class):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
         self.assertIsInstance(RSRDataRetriever.create_with(mock_host_controller), RSRDataRetriever)
 
-    def test_can_record_last_applied_database_migration(self):
-        """fab.tests.data.rsr_data_retriever_test  Can record the last applied database migration"""
+    def test_can_record_last_applied_migration_and_fetch_data_from_database(self):
+        """fab.tests.data.rsr_data_retriever_test  Can record last applied migration and fetch data from database"""
 
         last_rsr_migration = '0048'
-
-        self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
-        self._exit_if_rsr_env_paths_not_found()
-        self._ensure_rsr_log_file_is_writable()
-        self.mock_feedback.comment('Recording last applied RSR database migration')
-        self._change_dir_to(self.data_retriever_config.rsr_app_path)
-        self.mock_django_admin.last_applied_migration_for(self.data_retriever_config.rsr_app_name).AndReturn(last_rsr_migration)
-        self.mock_last_migration_file.write(last_rsr_migration + '\n')
-        self.mock_last_migration_file.close()
-        self.mox.ReplayAll()
-
-        self.data_retriever.record_last_applied_migration()
-
-    def test_can_fetch_data_from_database(self):
-        """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""
-
         time_stamped_fixture_name = 'rsrdb_utc_timestamp'
         self.mock_time_stamp_formatter.append_timestamp('rsrdb').AndReturn(time_stamped_fixture_name)
         rsr_data_fixture_path = os.path.join(self.data_retriever_config.data_archives_home, '%s.xml' % time_stamped_fixture_name)
 
-        self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
-        self.mock_data_host_file_system.ensure_directory_exists_with_sudo(self.data_retriever_config.data_archives_home)
+        self._ensure_data_archives_can_be_stored()
         self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
+        self._record_last_applied_migration(last_rsr_migration)
         self._extract_data_to(rsr_data_fixture_path)
         self._compress_and_download_data_fixture(rsr_data_fixture_path)
         self.mox.ReplayAll()
 
         self.data_retriever.fetch_data_from_database()
+
+    def _ensure_data_archives_can_be_stored(self):
+        self.mock_local_file_system.ensure_directory_exists(self.data_retriever_config.data_archives_home)
+        self.mock_data_host_file_system.ensure_directory_exists_with_sudo(self.data_retriever_config.data_archives_home)
 
     def _exit_if_rsr_env_paths_not_found(self):
         self.mock_data_host_file_system.exit_if_directory_does_not_exist(self.data_retriever_config.rsr_env_path)
@@ -110,6 +98,13 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
     def _ensure_rsr_log_file_is_writable(self):
         self.mock_feedback.comment('Ensuring RSR log file is writable')
         self.mock_data_host_file_system.make_file_writable_for_all_users(self.data_retriever_config.rsr_log_file_path)
+
+    def _record_last_applied_migration(self, last_rsr_migration):
+        self.mock_feedback.comment('Recording last applied RSR database migration')
+        self._change_dir_to(self.data_retriever_config.rsr_app_path)
+        self.mock_django_admin.last_applied_migration_for(self.data_retriever_config.rsr_app_name).AndReturn(last_rsr_migration)
+        self.mock_last_migration_file.write(last_rsr_migration + '\n')
+        self.mock_last_migration_file.close()
 
     def _extract_data_to(self, data_fixture_path):
         self.mock_feedback.comment('Extracting latest data from database at %s' % self.data_retriever_config.rsr_app_path)
