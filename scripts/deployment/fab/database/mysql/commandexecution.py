@@ -7,8 +7,8 @@
 
 class CommandExecutor(object):
 
-    def __init__(self, database_config, host_controller):
-        self.admin_credentials = "--user='%s' --password='%s'" % (database_config.admin_user, database_config.admin_password)
+    def __init__(self, database_credentials, host_controller):
+        self.admin_credentials = "--user='%s' --password='%s'" % (database_credentials.admin_user, database_credentials.admin_password)
         self.host_controller = host_controller
         self.feedback = host_controller.feedback
 
