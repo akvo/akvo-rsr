@@ -8,34 +8,39 @@
 import os
 
 from fab.app.admin import DjangoAdmin
+from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
-from fab.data.validator import DataFixtureValidator
+from fab.database.mysql.commandexecution import DataHandler
 from fab.format.timestamp import TimeStampFormatter
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
 class RSRDataRetriever(object):
 
-    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, django_admin, fixture_validator, feedback, time_stamp_formatter):
+    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, django_admin,
+                 settings_reader, data_handler, feedback, time_stamp_formatter):
         self.config = data_retriever_config
         self.data_host_file_system = data_host_file_system
         self.local_file_system = local_file_system
         self.django_admin = django_admin
-        self.fixture_validator = fixture_validator
+        self.settings_reader = settings_reader
+        self.data_handler = data_handler
         self.feedback = feedback
         self.time_stamp_formatter = time_stamp_formatter
 
     @staticmethod
-    def create_with(host_controller):
+    def create_with(database_config, host_controller):
         data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
         host_file_system = FileSystem(host_controller)
+        django_admin = DjangoAdmin.create_with(data_retriever_config.rsr_env_path, data_retriever_config.rsr_app_path, host_controller)
 
         return RSRDataRetriever(data_retriever_config,
                                 host_file_system,
                                 LocalFileSystem(),
-                                DjangoAdmin.create_with(data_retriever_config.rsr_env_path, data_retriever_config.rsr_app_path, host_controller),
-                                DataFixtureValidator(host_controller),
+                                django_admin,
+                                DjangoSettingsReader(django_admin),
+                                DataHandler(database_config, host_controller),
                                 host_controller.feedback,
                                 TimeStampFormatter())
 
@@ -48,11 +53,11 @@ class RSRDataRetriever(object):
         self._ensure_rsr_log_file_is_writable()
         self._record_last_applied_migration()
 
-        data_fixture_file_name = '%s.xml' % self.time_stamp_formatter.append_timestamp('rsrdb')
-        rsr_data_fixture_path = os.path.join(self.config.data_archives_home, data_fixture_file_name)
+        data_export_file_name = '%s.sql' % self.time_stamp_formatter.append_timestamp('rsrdb')
+        rsr_data_export_path = os.path.join(self.config.data_archives_home, data_export_file_name)
 
-        self._extract_data_to(rsr_data_fixture_path)
-        self._compress_and_download_data_fixture(rsr_data_fixture_path)
+        self._extract_data_to(rsr_data_export_path)
+        self._compress_and_download_data_extract(rsr_data_export_path)
 
     def _ensure_data_archives_can_be_stored(self):
         self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
@@ -74,14 +79,10 @@ class RSRDataRetriever(object):
             last_migration_file.write(self.django_admin.last_applied_migration_for(self.config.rsr_app_name) + '\n')
             last_migration_file.close()
 
-    def _extract_data_to(self, data_fixture_file_path):
-        self.feedback.comment('Extracting latest data from database at %s' % self.config.rsr_app_path)
-        with self.data_host_file_system.cd(self.config.rsr_app_path):
-            self.django_admin.extract_app_data_to(data_fixture_file_path, self.config.rsr_app_name)
+    def _extract_data_to(self, data_export_file_path):
+        self.data_handler.extract_data_to(data_export_file_path, self.settings_reader.rsr_database_name())
 
-        self.fixture_validator.validate(data_fixture_file_path)
-
-    def _compress_and_download_data_fixture(self, data_fixture_file_path):
-        self.data_host_file_system.compress_file(data_fixture_file_path)
-        self.data_host_file_system.delete_file(data_fixture_file_path)
-        self.data_host_file_system.download_file('%s.zip' % data_fixture_file_path, self.config.data_archives_home)
+    def _compress_and_download_data_extract(self, data_export_file_path):
+        self.data_host_file_system.compress_file(data_export_file_path)
+        self.data_host_file_system.delete_file(data_export_file_path)
+        self.data_host_file_system.download_file('%s.zip' % data_export_file_path, self.config.data_archives_home)
