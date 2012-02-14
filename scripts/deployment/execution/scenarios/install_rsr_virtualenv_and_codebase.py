@@ -10,8 +10,7 @@ import imp, os, sys
 VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../verifiers'))
 imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_syspath_contains_deployment_scripts_home.py'))
 
-from execution.scenarios.runner import ScenarioRunner
-
+import execution.scenarios.runner
 import execution.verification
 
 
@@ -22,4 +21,6 @@ def install_rsr_virtualenv_and_codebase(scenario_runner, host_config_specificati
 
 if __name__ == '__main__':
     execution.verification.display_usage_and_exit_if_host_config_spec_is_missing(os.path.basename(__file__))
-    install_rsr_virtualenv_and_codebase(ScenarioRunner(), sys.argv[1])
+    host_config_specification = sys.argv[1]
+
+    install_rsr_virtualenv_and_codebase(execution.scenarios.runner.ScenarioRunner(), host_config_specification)
