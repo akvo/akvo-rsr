@@ -69,7 +69,7 @@ class DjangoAdmin(object):
     def read_setting(self, setting_name):
         with self._change_dir_rsr_app_home():
             with self.host_controller.hide_command_and_output():
-                self.feedback.comment('Reading setting: %s' % setting_name)
+                self.feedback.comment('Reading Django app setting: %s' % setting_name)
                 find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
                 setting_value = self._run_command_in_virtualenv(find_setting_command).split(' = ')[-1]
                 return ast.literal_eval(setting_value)

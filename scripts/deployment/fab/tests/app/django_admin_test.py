@@ -102,7 +102,7 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self._change_dir_rsr_app_home()
         self._hide_command_and_output()
-        self.mock_feedback.comment('Reading setting: some_setting_name')
+        self.mock_feedback.comment('Reading Django app setting: some_setting_name')
         self._run_command_in_virtualenv(expected_find_setting_command, expected_setting_string)
         self.mox.ReplayAll()
 
