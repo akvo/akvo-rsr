@@ -30,26 +30,21 @@ def exit_if_attempting_deployment_to_live_server(host_alias):
         print '>> Deployment of release candidate to live server (www.akvo.org) is not permitted\n'
         sys.exit(1)
 
-def deploy_last_release(scenario_runner, master_config_spec):
-    update_host_system_packages(scenario_runner, master_config_spec)
-    install_rsr_virtualenv_and_codebase(scenario_runner, master_config_spec)
-
-def rebuild_database_with_last_applied_migrations(scenario_runner, master_config_spec):
-    scenario_runner.run_step('fetch_rsr_data')
-    scenario_runner.run_step('rebuild_rsr_database', master_config_spec)
-
 def deploy_release_candidate(scenario_runner, release_config_spec):
     update_host_system_packages(scenario_runner, release_config_spec)
     install_rsr_virtualenv_and_codebase(scenario_runner, release_config_spec)
 
-def run_new_database_migrations(scenario_runner, release_config_spec):
+def rebuild_rsr_database_with_new_migrations(scenario_runner, release_config_spec):
+    scenario_runner.run_step('fetch_rsr_data')
+    scenario_runner.run_step('rebuild_rsr_database', release_config_spec)
+
+def apply_new_database_migrations(scenario_runner, release_config_spec):
     scenario_runner.run_step('run_new_database_migrations', release_config_spec)
 
-def deploy_rsr_release_candidate(scenario_runner, master_config_spec, release_config_spec):
-    deploy_last_release(scenario_runner, master_config_spec)
-    rebuild_database_with_last_applied_migrations(scenario_runner, master_config_spec)
+def deploy_rsr_release_candidate(scenario_runner, release_config_spec):
     deploy_release_candidate(scenario_runner, release_config_spec)
-    run_new_database_migrations(scenario_runner, release_config_spec)
+    rebuild_rsr_database_with_new_migrations(scenario_runner, release_config_spec)
+    apply_new_database_migrations(scenario_runner, release_config_spec)
 
 
 if __name__ == '__main__':
@@ -60,8 +55,6 @@ if __name__ == '__main__':
 
     exit_if_attempting_deployment_to_live_server(host_alias)
 
-    master_config_spec = HostConfigSpecification().create_standard_with(host_alias, RepositoryBranch.MASTER, rsr_database_name)
     release_config_spec = HostConfigSpecification().create_standard_with(host_alias, repository_branch, rsr_database_name)
-    scenario_runner = ScenarioRunner()
 
-    deploy_rsr_release_candidate(scenario_runner, master_config_spec, release_config_spec)
+    deploy_rsr_release_candidate(ScenarioRunner(), release_config_spec)
