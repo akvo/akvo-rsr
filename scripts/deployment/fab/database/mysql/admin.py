@@ -25,7 +25,7 @@ class DatabaseAdmin(object):
     def create_with(database_credentials, deployment_host_config, host_controller):
         return DatabaseAdmin(DatabaseAdminCommand.create_with(database_credentials, host_controller),
                              DatabaseCopier(database_credentials, host_controller),
-                             RSRDataPopulator.create_with(deployment_host_config, host_controller),
+                             RSRDataPopulator.create_with(database_credentials, deployment_host_config, host_controller),
                              TimeStampFormatter(),
                              host_controller.feedback)
 
@@ -41,7 +41,7 @@ class DatabaseAdmin(object):
         self._create_empty_database(database_name)
         self._grant_all_permissions_for_user(database_name, user_name, password)
         self.data_populator.initialise_database()
-        self.data_populator.populate_database()
+        self.data_populator.populate_database(database_name)
 
     def run_new_rsr_migrations(self):
         self.data_populator.run_new_rsr_migrations()

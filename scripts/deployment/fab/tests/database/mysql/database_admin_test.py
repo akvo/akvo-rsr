@@ -74,7 +74,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self._create_empty_database("projects_db", database_exists=True)
         self._grant_database_permissions_for_user('projects_db', 'joe', 'some_password', user_exists=True)
-        self._initialise_and_populate_database()
+        self._initialise_and_populate_database('projects_db')
         self.mox.ReplayAll()
 
         self.database_admin.rebuild_database('projects_db', 'joe', 'some_password')
@@ -84,7 +84,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self._create_empty_database('projects_db', database_exists=False)
         self._grant_database_permissions_for_user('projects_db', 'joe', 'some_password', user_exists=True)
-        self._initialise_and_populate_database()
+        self._initialise_and_populate_database('projects_db')
         self.mox.ReplayAll()
 
         self.database_admin.rebuild_database('projects_db', 'joe', 'some_password')
@@ -94,7 +94,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self._create_empty_database('projects_db', database_exists=True)
         self._grant_database_permissions_for_user('projects_db', 'joe', 'some_password', user_exists=False)
-        self._initialise_and_populate_database()
+        self._initialise_and_populate_database('projects_db')
         self.mox.ReplayAll()
 
         self.database_admin.rebuild_database('projects_db', 'joe', 'some_password')
@@ -104,7 +104,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self._create_empty_database('projects_db', database_exists=False)
         self._grant_database_permissions_for_user('projects_db', 'joe', 'some_password', user_exists=False)
-        self._initialise_and_populate_database()
+        self._initialise_and_populate_database('projects_db')
         self.mox.ReplayAll()
 
         self.database_admin.rebuild_database('projects_db', 'joe', 'some_password')
@@ -125,9 +125,9 @@ class DatabaseAdminTest(mox.MoxTestBase):
 
         self.mock_admin_command.grant_all_database_permissions_for_user(user_name, database_name)
 
-    def _initialise_and_populate_database(self):
+    def _initialise_and_populate_database(self, database_name):
         self.mock_data_populator.initialise_database()
-        self.mock_data_populator.populate_database()
+        self.mock_data_populator.populate_database(database_name)
 
     def test_can_run_new_rsr_migrations(self):
         """fab.tests.database.mysql.database_admin_test  Can run new RSR migrations"""
