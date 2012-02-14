@@ -41,7 +41,6 @@ class RSRDataPopulator(object):
         with self.data_host_file_system.cd(self.config.rsr_deployment_home):
             self.feedback.comment('Initialising database')
             self.django_admin.initialise_database_without_superusers()
-            self.django_admin.synchronise_data_models_and_delete_stale_content_types()
 
     def populate_database(self, database_name):
         self._ensure_expected_paths_exist()
@@ -96,5 +95,5 @@ class RSRDataPopulator(object):
 
     def run_new_rsr_migrations(self):
         with self.data_host_file_system.cd(self.config.rsr_deployment_home):
-            self.feedback.comment('Running new RSR migrations')
-            self.django_admin.run_all_migrations_for(self.config.rsr_app_name)
+            self.feedback.comment('Running new RSR migrations and deleting any stale content types')
+            self.django_admin.run_all_migrations_and_delete_stale_content_types_for(self.config.rsr_app_name)

@@ -79,10 +79,6 @@ class DjangoAdmin(object):
         self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS,
                                                            self._admin_command(DjangoAdminCommand.SYNC_DB)))
 
-    def synchronise_data_models_and_delete_stale_content_types(self):
-        self._run_command_in_virtualenv(self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
-                                                           self._admin_command(DjangoAdminCommand.SYNC_DB)))
-
     def _respond_with(self, response, command):
         return 'echo %s | %s' % (response, command)
 
@@ -100,6 +96,10 @@ class DjangoAdmin(object):
 
     def run_all_migrations_for(self, app_name):
         self._migrate(app_name)
+
+    def run_all_migrations_and_delete_stale_content_types_for(self, app_name):
+        self._run_command_in_virtualenv(self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
+                                                           self._admin_command(DjangoAdminCommand.MIGRATE, app_name)))
 
     def skip_all_migrations_for(self, app_name):
         self._migrate(app_name, MigrationOption.SKIP_ALL)

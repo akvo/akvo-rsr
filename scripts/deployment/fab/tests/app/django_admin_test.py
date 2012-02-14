@@ -147,17 +147,6 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self.django_admin.initialise_database_without_superusers()
 
-    def test_can_synchronise_data_models_and_delete_stale_content_types(self):
-        """fab.tests.app.admin.django_admin_test  Can synchronise data models and delete stale content types"""
-
-        sync_data_models_command = self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
-                                                      self._expected_admin_command(DjangoAdminCommand.SYNC_DB, CommandOption.NONE))
-
-        self._run_command_in_virtualenv(sync_data_models_command)
-        self.mox.ReplayAll()
-
-        self.django_admin.synchronise_data_models_and_delete_stale_content_types()
-
     def _respond_with(self, response, command):
         return 'echo %s | %s' % (response, command)
 
@@ -201,6 +190,17 @@ class DjangoAdminTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.django_admin.run_all_migrations_for('rsr_app')
+
+    def test_can_run_all_migrations_for_specified_app_and_delete_stale_content_types(self):
+        """fab.tests.app.admin.django_admin_test  Can run all migrations for a specified app and delete stale content types"""
+
+        run_migrations_command = self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
+                                                    self._expected_admin_command(DjangoAdminCommand.MIGRATE, 'rsr_app'))
+
+        self._run_command_in_virtualenv(run_migrations_command)
+        self.mox.ReplayAll()
+
+        self.django_admin.run_all_migrations_and_delete_stale_content_types_for('rsr_app')
 
     def test_can_skip_all_migrations_for_specified_app(self):
         """fab.tests.app.admin.django_admin_test  Can skip all migrations for a specified app"""

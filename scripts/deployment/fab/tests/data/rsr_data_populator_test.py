@@ -83,7 +83,6 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self._change_remote_dir_to(self.data_populator_config.rsr_deployment_home)
         self.mock_feedback.comment('Initialising database')
         self.mock_django_admin.initialise_database_without_superusers()
-        self.mock_django_admin.synchronise_data_models_and_delete_stale_content_types()
         self.mox.ReplayAll()
 
         self.data_populator.initialise_database()
@@ -156,8 +155,8 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         """fab.tests.data.rsr_data_populator_test  Can run new RSR migrations"""
 
         self._change_remote_dir_to(self.data_populator_config.rsr_deployment_home)
-        self.mock_feedback.comment('Running new RSR migrations')
-        self.mock_django_admin.run_all_migrations_for(self.data_populator_config.rsr_app_name)
+        self.mock_feedback.comment('Running new RSR migrations and deleting any stale content types')
+        self.mock_django_admin.run_all_migrations_and_delete_stale_content_types_for(self.data_populator_config.rsr_app_name)
         self.mox.ReplayAll()
 
         self.data_populator.run_new_rsr_migrations()
