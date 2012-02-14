@@ -83,6 +83,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self._change_remote_dir_to(self.data_populator_config.rsr_deployment_home)
         self.mock_feedback.comment('Initialising database')
         self.mock_django_admin.initialise_database_without_superusers()
+        self.mock_django_admin.synchronise_data_models_and_delete_stale_content_types()
         self.mox.ReplayAll()
 
         self.data_populator.initialise_database()
