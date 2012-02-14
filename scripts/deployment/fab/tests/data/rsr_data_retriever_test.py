@@ -13,7 +13,6 @@ from testing.helpers.execution import TestRunner, TestSuiteLoader
 import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
 
-from fab.app.admin import DjangoAdmin
 from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
@@ -27,9 +26,9 @@ from fab.os.filesystem import FileSystem, LocalFileSystem
 
 class StubbedRSRDataRetriever(RSRDataRetriever):
 
-    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, django_admin,
-                 settings_reader, data_handler, feedback, time_stamp_formatter, last_migration_file):
-        super(StubbedRSRDataRetriever, self).__init__(data_retriever_config, data_host_file_system, local_file_system, django_admin,
+    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, settings_reader,
+                 data_handler, feedback, time_stamp_formatter, last_migration_file):
+        super(StubbedRSRDataRetriever, self).__init__(data_retriever_config, data_host_file_system, local_file_system,
                                                       settings_reader, data_handler, feedback, time_stamp_formatter)
         self.last_migration_file = last_migration_file
 
@@ -44,7 +43,6 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
         self.mock_data_host_file_system = self.mox.CreateMock(FileSystem)
         self.mock_local_file_system = self.mox.CreateMock(LocalFileSystem)
-        self.mock_django_admin = self.mox.CreateMock(DjangoAdmin)
         self.mock_settings_reader = self.mox.CreateMock(DjangoSettingsReader)
         self.mock_data_handler = self.mox.CreateMock(DataHandler)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
@@ -52,10 +50,9 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_last_migration_file = self.mox.CreateMock(file)
 
         self.data_retriever = StubbedRSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
-                                                      self.mock_local_file_system, self.mock_django_admin,
-                                                      self.mock_settings_reader, self.mock_data_handler,
-                                                      self.mock_feedback, self.mock_time_stamp_formatter,
-                                                      self.mock_last_migration_file)
+                                                      self.mock_local_file_system, self.mock_settings_reader,
+                                                      self.mock_data_handler, self.mock_feedback,
+                                                      self.mock_time_stamp_formatter, self.mock_last_migration_file)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
@@ -87,7 +84,6 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self._ensure_data_archives_can_be_stored()
         self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
-        self._record_last_applied_migration(last_rsr_migration)
         self._extract_data_to(rsr_data_extract_path)
         self._compress_and_download_data_extract(rsr_data_extract_path)
         self.mox.ReplayAll()
@@ -106,13 +102,6 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
     def _ensure_rsr_log_file_is_writable(self):
         self.mock_feedback.comment('Ensuring RSR log file is writable')
         self.mock_data_host_file_system.make_file_writable_for_all_users(self.data_retriever_config.rsr_log_file_path)
-
-    def _record_last_applied_migration(self, last_rsr_migration):
-        self.mock_feedback.comment('Recording last applied RSR database migration')
-        self._change_dir_to(self.data_retriever_config.rsr_app_path)
-        self.mock_django_admin.last_applied_migration_for(self.data_retriever_config.rsr_app_name).AndReturn(last_rsr_migration)
-        self.mock_last_migration_file.write(last_rsr_migration + '\n')
-        self.mock_last_migration_file.close()
 
     def _extract_data_to(self, data_extract_path):
         self.mock_settings_reader.rsr_database_name().AndReturn('some_rsrdb')
