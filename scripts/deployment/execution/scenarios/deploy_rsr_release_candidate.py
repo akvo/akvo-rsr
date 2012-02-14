@@ -37,14 +37,11 @@ def deploy_release_candidate(scenario_runner, release_config_spec):
 def rebuild_rsr_database_with_new_migrations(scenario_runner, release_config_spec):
     scenario_runner.run_step('fetch_rsr_data')
     scenario_runner.run_step('rebuild_rsr_database', release_config_spec)
-
-def apply_new_database_migrations(scenario_runner, release_config_spec):
     scenario_runner.run_step('run_new_database_migrations', release_config_spec)
 
 def deploy_rsr_release_candidate(scenario_runner, release_config_spec):
     deploy_release_candidate(scenario_runner, release_config_spec)
     rebuild_rsr_database_with_new_migrations(scenario_runner, release_config_spec)
-    apply_new_database_migrations(scenario_runner, release_config_spec)
 
 
 if __name__ == '__main__':
