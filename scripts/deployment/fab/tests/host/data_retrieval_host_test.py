@@ -7,7 +7,10 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
+
+import fab.tests.templates.database_credentials_template
+from database_credentials import DatabaseCredentials
 
 from fab.data.retriever import RSRDataRetriever
 from fab.host.dataretrieval import DataRetrievalHost
@@ -24,15 +27,7 @@ class DataRetrievalHostTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance"""
 
-        self.assertIsInstance(DataRetrievalHost.create(), DataRetrievalHost)
-
-    def test_can_record_last_applied_migration(self):
-        """fab.tests.host.data_retrieval_host_test  Can record the last applied database migration number"""
-
-        self.mock_data_retriever.record_last_applied_migration()
-        self.mox.ReplayAll()
-
-        self.data_retrieval_host.record_last_applied_migration()
+        self.assertIsInstance(DataRetrievalHost.create_with(DatabaseCredentials()), DataRetrievalHost)
 
     def test_can_fetch_data_from_host(self):
         """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""
@@ -46,6 +41,6 @@ class DataRetrievalHostTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(DataRetrievalHostTest)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from fab.tests.test_settings import TEST_MODE
     TestRunner(TEST_MODE).run_test_suite(suite())
