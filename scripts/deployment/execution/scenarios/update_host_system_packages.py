@@ -15,8 +15,8 @@ import execution.verification
 
 
 def update_host_system_packages(scenario_runner, host_config_specification):
-    scenario_runner.run_step('verify_system_packages', host_config_specification)
-    scenario_runner.run_step('update_system_python_packages', host_config_specification)
+    scenario_runner.run_step('1_verify_system_packages', host_config_specification)
+    scenario_runner.run_step('2_update_system_python_packages', host_config_specification)
 
 
 if __name__ == '__main__':
