@@ -33,11 +33,11 @@
           <td class="small">
             {% if item.label|lower in item.OTHER_LABELS %}
               {% blocktrans with label=item.other_extra|capfirst %}
-                {{ label }} costs:
+                {{ label }}:
               {% endblocktrans %}
             {% else %}
               {% blocktrans with label=item.label|capfirst %}
-                {{ label }} costs:
+                {{ label }}:
               {% endblocktrans %}
             {% endif %}
           </td>
