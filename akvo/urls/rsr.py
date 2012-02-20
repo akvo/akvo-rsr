@@ -51,22 +51,12 @@ urlpatterns = patterns('',
     url(r'^rsr/donate/paypal/thanks/$', 'akvo.rsr.views.paypal_thanks', name='paypal_thanks'), 
     url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
     url(r'^rsr/donate/paypal/ipn/$', csrf_exempt(paypal_ipn), name='paypal_ipn'),
+    
+    url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
+    url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
+    url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
 )
 
-if getattr(settings, 'LIVE_EARTH_ENABLED', False):
-    urlpatterns += patterns('',
-        url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
-    )
-
-if getattr(settings, 'WALKING_FOR_WATER_ENABLED', False):
-    urlpatterns += patterns('',
-        url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
-    )
-
-if getattr(settings, 'RABOBANK_ENABLED', False):
-    urlpatterns += patterns('',
-        url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
-    )
 
 urlpatterns += patterns('',
 
