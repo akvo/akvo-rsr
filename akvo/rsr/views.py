@@ -1219,11 +1219,9 @@ def setup_donation(request, p):
     return {'project': p}
 
 @fetch_project
-def donate(request, p, engine, has_sponsor_banner=False):
+def donate(request, p, engine):
     if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
         return redirect('project_main', project_id=p.id)
-    # if get_object_or_404(Organisation, pk=getattr(settings, 'LIVE_EARTH_ID', 0)) in p.sponsor_partners():
-    #     has_sponsor_banner = True
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
@@ -1267,7 +1265,6 @@ def donate(request, p, engine, has_sponsor_banner=False):
                         'project': p,
                         'payment_engine': engine,
                         'mollie_order_url': order_url,
-                        'has_sponsor_banner': has_sponsor_banner,
                     },
                     context_instance=RequestContext(request))
             elif engine == 'paypal':
@@ -1296,7 +1293,6 @@ def donate(request, p, engine, has_sponsor_banner=False):
                                        'pp_form': pp_form, 
                                        'pp_button': pp_button,
                                        'project': p,
-                                       'has_sponsor_banner': has_sponsor_banner
                                        },
                                       context_instance=RequestContext(request))
     else:
@@ -1307,7 +1303,6 @@ def donate(request, p, engine, has_sponsor_banner=False):
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'project': p,
-                               'has_sponsor_banner': has_sponsor_banner,
                             }, 
                             context_instance=RequestContext(request))
 
