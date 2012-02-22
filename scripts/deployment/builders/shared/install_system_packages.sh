@@ -15,8 +15,10 @@ PIP_REQUIREMENTS_DIR="$(cd "$SHARED_SCRIPTS_HOME/../../pip/requirements" && pwd)
 
 function exit_if_pip_not_installed
 {
+    PIP_PATH=`which pip`
+
     # check if pip is installed
-    if [ -z "`which pip`" ]; then
+    if [ -z "$PIP_PATH" ]; then
         printf "\n>> pip not installed or not on the PATH\n\n"
         exit -1
     fi
