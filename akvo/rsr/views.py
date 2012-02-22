@@ -299,13 +299,16 @@ def _redirect_from_landing_page_with_partner_site_id(partner_site_id):
     return HttpResponsePermanentRedirect(partner_site.get_absolute_url)
 
 def liveearth(request):
-    return _redirect_from_landing_page_with_partner_site_id(51)
+    org_id = getattr(settings, 'LIVE_EARTH_ID', 51)
+    return _redirect_from_landing_page_with_partner_site_id(org_id)
 
 def walking_for_water(request):
-    return _redirect_from_landing_page_with_partner_site_id(35)
+    org_id = getattr(settings, 'WALKING_FOR_WATER_ID', 35)
+    return _redirect_from_landing_page_with_partner_site_id(org_id)
 
 def rabobank(request):
-    return _redirect_from_landing_page_with_partner_site_id(21)
+    org_id = getattr(settings, 'RABOBANK_ID', 21)
+    return _redirect_from_landing_page_with_partner_site_id(org_id)
 
 @render_to('rsr/project/project_directory.html')
 def projectlist(request):
