@@ -1,37 +1,17 @@
 #!/bin/bash
 
-function display_usage_and_exit
-{
-    printf "Usage: rebuild_system_env.sh <mode>\n"
-    printf "       where <mode> is ether 'dev' or 'ci'\n"
-    exit -1
-}
+THIS_SCRIPT=$0
+EXECUTION_MODE=$1
 
-# exit if execution mode parameter is missing
-if [ -z "$1" ]; then
-    display_usage_and_exit
-fi
-
-SCRIPT_HOME="$(cd `dirname $0` && pwd)"
-MODE="$1"
-
-source "$SCRIPT_HOME/set_config_home.sh" $MODE
-
-PIP_REQUIREMENTS_DIR="$(cd "$SCRIPT_HOME/../../pip/requirements" && pwd)"
 EXPECTED_PIP_VERSION="1.0.2"
 
-CURRENT_USER="`whoami`"
+SHARED_SCRIPTS_HOME="$(cd `dirname $THIS_SCRIPT` && pwd)"
+CONFIG_DIR="$(cd $SHARED_SCRIPTS_HOME/../config && pwd)"
 
-# exit if not running with sudo or as root
-if [ $CURRENT_USER != "root" ]; then
-    printf ">> This script should be executed with sudo to facilitate installation of system Python packages\n"
-    printf ">> Current user: $CURRENT_USER\n"
-    exit -1
-fi
+source "$SHARED_SCRIPTS_HOME/verifiers/exit_if_execution_mode_missing.sh" "`basename $THIS_SCRIPT`" $EXECUTION_MODE
+source "$SHARED_SCRIPTS_HOME/verifiers/exit_if_not_using_sudo.sh"
 
-source "$SCRIPT_HOME/ensure_config_files_exist.sh"
-
-source "$CONFIG_HOME/python_system.config"
+source "$CONFIG_DIR/load_config.sh" "python_system.config" $EXECUTION_MODE
 
 PY_PATH="$PY_BIN_PATH/python"
 
@@ -100,7 +80,8 @@ function ensure_distribute_and_pip_are_installed
         if [ "$INSTALLED_PIP_VERSION_NUMBER" = "$EXPECTED_PIP_VERSION" ]; then
             printf "\n>> Found expected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
         else
-            printf "\n>> Found outdated or unexpected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
+            printf "\n>> Expected pip version: $EXPECTED_PIP_VERSION\n"
+            printf ">> Found outdated or unexpected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
             install_distribute_and_pip
         fi
     else
@@ -109,34 +90,5 @@ function ensure_distribute_and_pip_are_installed
     fi
 }
 
-function install_packages_with_pip
-{
-    # Function parameters:
-    #   $1: pip requirements file name
-    #   $2: requirements description
 
-    cd "$PACKAGE_DOWNLOAD_DIR"
-    printf "\n>> Installing/upgrading $2 packages:\n"
-    pip install -M -r "$PIP_REQUIREMENTS_DIR/$1"
-}
-
-function install_system_packages
-{
-    printf "\n>> Current system packages:\n"
-    pip freeze
-
-    install_packages_with_pip "0_system.txt" "system"
-    install_packages_with_pip "1_deployment.txt" "deployment"
-
-    printf "\n>> Installed system packages:\n"
-    pip freeze
-}
-
-function rebuild_system_environment
-{
-    ensure_distribute_and_pip_are_installed
-    install_system_packages
-}
-
-
-rebuild_system_environment
+ensure_distribute_and_pip_are_installed
