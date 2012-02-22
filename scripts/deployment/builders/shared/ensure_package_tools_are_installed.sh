@@ -72,20 +72,21 @@ function ensure_distribute_and_pip_are_installed
 {
     PIP_PATH=`which pip`
 
+    printf "\n>> Expected pip version: $EXPECTED_PIP_VERSION\n"
+
     # check if pip is already installed
     if [ -n "$PIP_PATH" ]; then
         FULL_PIP_VERSION_DETAILS=`pip --version`
         INSTALLED_PIP_VERSION_NUMBER=${FULL_PIP_VERSION_DETAILS:4:${#EXPECTED_PIP_VERSION}}
 
         if [ "$INSTALLED_PIP_VERSION_NUMBER" = "$EXPECTED_PIP_VERSION" ]; then
-            printf "\n>> Found expected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
+            printf ">> Found expected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
         else
-            printf "\n>> Expected pip version: $EXPECTED_PIP_VERSION\n"
             printf ">> Found outdated or unexpected pip version: $FULL_PIP_VERSION_DETAILS\n\n"
             install_distribute_and_pip
         fi
     else
-        printf "\n>> Expected pip version not installed\n\n"
+        printf ">> pip not installed\n\n"
         install_distribute_and_pip
     fi
 }
