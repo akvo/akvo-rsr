@@ -2040,19 +2040,16 @@ class PartnerSite(models.Model):
     def favicon(self):
         return self.custom_favicon or None
 
-    @classmethod
-    def get_partner_site_url_for_org(cls, org):
+    def get_absolute_url(self):
         url = ''
-        partner_site = get_object_or_404(PartnerSite, organisation=org)
-
-        if partner_site.cname:
+        if self.cname:
             return partner_site.cname
 
         protocol = 'http'
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = '%ss' % protocol
 
-        url = '%s://%s.%s' % (protocol, partner_site.hostname, settings.APP_DOMAIN_NAME)
+        url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
         return url
 
 
