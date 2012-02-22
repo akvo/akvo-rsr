@@ -7,9 +7,14 @@ DEPLOYMENT_SCRIPTS_HOME="$(cd "$BUILDER_SCRIPTS_HOME/.." && pwd)"
 SHARED_SCRIPTS_HOME="$BUILDER_SCRIPTS_HOME/shared"
 
 # exit if python not installed
-if [ -z "`which python`" ]; then
-    printf "\n>> Python not installed or not on the PATH\n\n"
+CURRENT_PY_PATH="`which python`"
+
+if [ -z "$CURRENT_PY_PATH" ]; then
+    printf "\n>> Python not installed or not on the PATH\n"
+    printf ">> Current path: $PATH\n\n"
     exit -1
+else
+    printf "\n>> Using python at: $CURRENT_PY_PATH\n\n"
 fi
 
 python "$DEPLOYMENT_SCRIPTS_HOME/verifiers/verify_system_packages.py"
@@ -23,10 +28,4 @@ fi
 CI_EXECUTION_MODE='ci' # for the continuous integration server
 
 cd "$SHARED_SCRIPTS_HOME"
-sudo "./ensure_package_tools_are_installed.sh" $CI_EXECUTION_MODE
-
-printf "\n>> Clearing path hashes\n\n"
-hash -r
-
-cd "$SHARED_SCRIPTS_HOME"
-sudo "./install_system_packages.sh" $CI_EXECUTION_MODE
+sudo "./update_system_env.sh" $CI_EXECUTION_MODE
