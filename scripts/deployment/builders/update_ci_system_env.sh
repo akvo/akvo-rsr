@@ -23,10 +23,10 @@ fi
 CI_EXECUTION_MODE='ci' # for the continuous integration server
 
 cd "$SHARED_SCRIPTS_HOME"
-sudo source "./ensure_package_tools_are_installed.sh" $CI_EXECUTION_MODE
+sudo "./ensure_package_tools_are_installed.sh" $CI_EXECUTION_MODE
 
 printf "\n>> Clearing path hashes\n\n"
 hash -r
 
 cd "$SHARED_SCRIPTS_HOME"
-sudo source "./install_system_packages.sh" $CI_EXECUTION_MODE
+sudo "./install_system_packages.sh" $CI_EXECUTION_MODE
