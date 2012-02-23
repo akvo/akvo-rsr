@@ -38,7 +38,8 @@ function exit_if_pip_not_installed
 
     # check if pip is installed
     if [ -z "$PIP_PATH" ]; then
-        printf "\n>> pip not installed or not on the PATH\n\n"
+        printf "\n>> pip not installed or not on the PATH\n"
+        printf "\n>> Current path: $PATH\n\n"
         exit -1
     fi
 }
