@@ -17,17 +17,20 @@ if [ $? -ne 0 ]; then
     exit -1
 fi
 
-DEV_EXECUTION_MODE='dev'
+CI_EXECUTION_MODE='ci'
 
-source "$CONFIG_DIR/load_config.sh" "rsr_env.config" $DEV_EXECUTION_MODE
+source "$CONFIG_DIR/load_config.sh" "python_system.config" $CI_EXECUTION_MODE
 
-function ensure_rsr_virtualenv_exists
+VIRTUALENV_NAME="ci_develop"
+CI_VIRTUALENV_PATH="$VIRTUALENVS_HOME/$VIRTUALENV_NAME"
+
+function ensure_ci_virtualenv_exists
 {
-    if [ ! -d "$RSR_VIRTUALENV_PATH" ]; then
-        printf "\n>> Creating RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
-        virtualenv --no-site-packages --distribute "$RSR_VIRTUALENV_PATH"
+    if [ ! -d "$CI_VIRTUALENV_PATH" ]; then
+        printf "\n>> Creating CI virtualenv at $CI_VIRTUALENV_PATH\n"
+        virtualenv --no-site-packages --distribute "$CI_VIRTUALENV_PATH"
     else
-        printf "\n>> Updating existing RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
+        printf "\n>> Updating existing CI virtualenv at $CI_VIRTUALENV_PATH\n"
     fi
 }
 
@@ -54,29 +57,29 @@ function install_packages_with_pip
     pip install -M -r "$PIP_REQUIREMENTS_DIR/$REQUIREMENTS_FILE_NAME"
 }
 
-function install_rsr_and_infrastructure_packages
+function install_all_ci_packages
 {
     printf "\n>> Fresh virtualenv should only contain the distribute and wsgiref packages:\n"
     pip freeze
 
     install_packages_with_pip "1_deployment.txt" "deployment"
-    install_packages_with_pip "2_rsr.txt" "RSR"
     install_packages_with_pip "3_testing.txt" "testing"
+    install_packages_with_pip "4_ci.txt" "continuous integration"
 
     printf "\n>> Packages installed in the $VIRTUALENV_NAME virtualenv:\n"
     pip freeze
 }
 
-function install_rsr_packages_within_virtualenv
+function rebuild_ci_virtualenv
 {
-    ensure_rsr_virtualenv_exists
+    ensure_ci_virtualenv_exists
 
     printf "\n>> Working on virtualenv: $VIRTUALENV_NAME\n"
-    source "$RSR_VIRTUALENV_PATH/bin/activate"
+    source "$CI_VIRTUALENV_PATH/bin/activate"
 
     # proceed if no errors occur when switching to the named virtualenv
     if [ $? -eq 0 ]; then
-        install_rsr_and_infrastructure_packages
+        install_all_ci_packages
         printf "\n>> Deactivating virtualenv: $VIRTUALENV_NAME\n"
         deactivate
     else
@@ -87,4 +90,4 @@ function install_rsr_packages_within_virtualenv
 
 
 exit_if_pip_not_installed
-install_rsr_packages_within_virtualenv
+rebuild_ci_virtualenv
