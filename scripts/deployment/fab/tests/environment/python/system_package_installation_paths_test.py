@@ -9,7 +9,7 @@ import os, unittest2
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
-from fab.config.values.standard import CIDeploymentHostConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 
 

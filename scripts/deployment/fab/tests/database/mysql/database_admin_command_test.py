@@ -12,8 +12,6 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
 
-from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.values.standard import CIDeploymentHostConfig
 from fab.database.mysql.admincommand import DatabaseAdminCommand
 from fab.database.mysql.commandexecution import MySQLResponseData, SQLStatementExecutor
 from fab.helpers.feedback import ExecutionFeedback
@@ -32,13 +30,13 @@ class DatabaseAdminCommandTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.database.mysql.database_admin_command_test  Can create a DatabaseAdminCommand instance"""
 
-        database_config = RSRDatabaseConfig(DatabaseCredentials(), CIDeploymentHostConfig.for_test())
+        database_credentials = DatabaseCredentials()
         mock_host_controller = self.mox.CreateMock(RemoteHostController)
         mock_host_controller.feedback = self.mock_feedback
 
         self.mox.ReplayAll()
 
-        self.assertIsInstance(DatabaseAdminCommand.create_with(database_config, mock_host_controller), DatabaseAdminCommand)
+        self.assertIsInstance(DatabaseAdminCommand.create_with(database_credentials, mock_host_controller), DatabaseAdminCommand)
 
     def test_can_check_for_existing_database(self):
         """fab.tests.database.mysql.database_admin_command_test  Can check for an existing database"""

@@ -7,12 +7,13 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.config.rsr.credentials.custom_user_credentials_test import CustomUserCredentialsTest
 from fab.tests.config.rsr.credentials.database_credentials_test import DatabaseCredentialsTest
 from fab.tests.config.rsr.credentials.user_credentials_test import UserCredentialsTest
 
 
 def credentials_suite():
-    return TestSuiteLoader().create_suite_from_classes([DatabaseCredentialsTest, UserCredentialsTest])
+    return TestSuiteLoader().create_suite_from_classes([CustomUserCredentialsTest, DatabaseCredentialsTest, UserCredentialsTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

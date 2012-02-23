@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+
+from fab.config.rsr.host import DeploymentHostConfig, RepositoryBranch
+from fab.config.values.host import DeploymentHostPaths, HostAlias
+
+
+# Configure this class if you're deploying to your own VM or if you require a different configuration set
+# from those already made possible with the fab.config.rsr.host and fab.config.values.host modules.
+
+class CustomDeploymentHostConfig(object):
+
+    HOST_PATHS  = { 'config_home':                  '/usr/local/etc/other',
+                    'repo_checkout_home':           '/some/repo/home',
+                    'virtualenvs_home':             '/some/virtualenvs/home',
+                    'static_media_home':            '/some/www',
+                    'logging_home':                 '/some/log/home',
+                    'deployment_processing_home':   '/var/tmp/something'}
+
+    @staticmethod
+    def create():
+        return DeploymentHostConfig(RepositoryBranch.DEVELOP, 'rsrdb_develop', 'some.server.org:ssh_port',
+                                    DeploymentHostPaths(CustomDeploymentHostConfig.HOST_PATHS))

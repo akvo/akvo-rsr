@@ -53,8 +53,9 @@
 	            scrollwheel: false,
 	            zoom: zoom,
                 streetViewControl: false
-	        };
+            };
 
+            {% if organisations %}
             var markerIcon = "{{ marker_icon }}";
             var smallIcon = new google.maps.MarkerImage(markerIcon,
                 null, null, null, new google.maps.Size(10.5,17));
@@ -94,8 +95,13 @@
 	                organisation_{{ organisation.id }}_infowindow.open(map, organisation_{{ organisation.id }}_marker);
 	            });
                 {% endif %}
+<<<<<<< HEAD
             {% endfor %}
             {% endif %}
+=======
+            {% endif %}
+	        {% endfor %}
+>>>>>>> 1d1104678ac134f25021a5a0cda2f3625ebe3d09
 
 	    }
 

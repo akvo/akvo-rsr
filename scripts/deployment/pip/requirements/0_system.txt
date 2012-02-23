@@ -4,7 +4,7 @@
 Mercurial==2.0.2
 
 # Requirements for building supervisor
-meld3==0.6.7
+meld3==0.6.8
 
 # System modules -- these would normally be installed outside a virtualenv
 virtualenv==1.7
