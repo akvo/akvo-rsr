@@ -1081,6 +1081,14 @@ class BudgetItem(models.Model):
     def __unicode__(self):
         return self.label.__unicode__()
 
+    def get_label(self):
+        "Needed since we have to have a vanilla __unicode__() method for the admin"
+        if self.label.label in self.OTHER_LABELS:
+            # display "other" if other_extra is empty
+            return self.other_extra.strip() or _(u"other")
+        else:
+            return self.__unicode__()
+
     class Meta:
         ordering            = ('label',)
         verbose_name        = _('budget item')
