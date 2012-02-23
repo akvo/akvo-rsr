@@ -41,7 +41,6 @@ function install_system_packages
     pip freeze
 
     install_packages_with_pip "0_system.txt" "system"
-    install_packages_with_pip "1_deployment.txt" "deployment"
 
     printf "\n>> Installed system packages:\n"
     pip freeze
