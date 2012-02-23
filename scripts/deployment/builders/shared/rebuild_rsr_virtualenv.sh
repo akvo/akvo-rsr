@@ -1,9 +1,14 @@
 #!/bin/bash
 
-OSX_DIR="$(cd `dirname $0` && pwd)"
-CONFIG_DIR="$OSX_DIR/config"
+THIS_SCRIPT=$0
+EXECUTION_MODE=$1
 
-DEPLOYMENT_SCRIPTS_DIR="$(cd "$OSX_DIR/../.." && pwd)"
+SHARED_SCRIPTS_HOME="$(cd `dirname $THIS_SCRIPT` && pwd)"
+CONFIG_DIR="$(cd $SHARED_SCRIPTS_HOME/../config && pwd)"
+
+source "$SHARED_SCRIPTS_HOME/verifiers/exit_if_execution_mode_missing.sh" "`basename $THIS_SCRIPT`" $EXECUTION_MODE
+
+DEPLOYMENT_SCRIPTS_DIR="$(cd "$SHARED_SCRIPTS_HOME/../.." && pwd)"
 PIP_REQUIREMENTS_DIR="$DEPLOYMENT_SCRIPTS_DIR/pip/requirements"
 VERIFIERS_DIR="$DEPLOYMENT_SCRIPTS_DIR/verifiers"
 
@@ -15,11 +20,7 @@ if [ $? -ne 0 ]; then
     exit -1
 fi
 
-source "$OSX_DIR/ensure_osx_config_files_exist.sh"
-source "$OSX_DIR/ensure_required_dirs_exist.sh"
-
-source "$CONFIG_DIR/rsr_env.config"
-source "$CONFIG_DIR/osx_build_flags_env_64.config"
+source "$CONFIG_DIR/load_config.sh" "rsr_env.config" $EXECUTION_MODE
 
 function ensure_rsr_virtualenv_exists
 {
@@ -31,16 +32,26 @@ function ensure_rsr_virtualenv_exists
     fi
 }
 
+function exit_if_pip_not_installed
+{
+    PIP_PATH=`which pip`
+
+    # check if pip is installed
+    if [ -z "$PIP_PATH" ]; then
+        printf "\n>> pip not installed or not on the PATH\n\n"
+        exit -1
+    fi
+}
+
 function install_packages_with_pip
 {
-    # Function parameters:
-    #   $1: pip requirements file name
-    #   $2: requirements description
+    # function parameters:
+    REQUIREMENTS_FILE_NAME=$1
+    PACKAGE_SET_NAME=$2
 
-    source "$CONFIG_DIR/osx_build_flags_env_64.config"
     cd "$PACKAGE_DOWNLOAD_DIR"
-    printf "\n>> Installing/upgrading $2 packages: (with 64-bit architecture)\n"
-    pip install -M -r "$PIP_REQUIREMENTS_DIR/$1"
+    printf "\n>> Installing/upgrading $PACKAGE_SET_NAME packages:\n"
+    pip install -M -r "$PIP_REQUIREMENTS_DIR/$REQUIREMENTS_FILE_NAME"
 }
 
 function install_rsr_and_infrastructure_packages
@@ -61,7 +72,7 @@ function install_rsr_packages_within_virtualenv
     ensure_rsr_virtualenv_exists
 
     printf "\n>> Working on virtualenv: $VIRTUALENV_NAME\n"
-    workon $VIRTUALENV_NAME
+    source "$RSR_VIRTUALENV_PATH/bin/activate"
 
     # proceed if no errors occur when switching to the named virtualenv
     if [ $? -eq 0 ]; then
@@ -75,4 +86,5 @@ function install_rsr_packages_within_virtualenv
 }
 
 
+exit_if_pip_not_installed
 install_rsr_packages_within_virtualenv
