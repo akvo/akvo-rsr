@@ -28,14 +28,7 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE',
 
 
 def is_rsr(domain):
-    """
-    Test if an incoming request should be handled as a regular instance of Akvo RSR.
-
-    >>> is_rsr('test2.akvo.org')
-    True
-    >>> is_rsr('connect4change.akvoapp.org')
-    False
-    """
+    """Test if an incoming request should be handled as a regular instance of Akvo RSR."""
     dev_domains = ('localhost', '127.0.0.1', PARTNER_SITES_DEVELOPMENT_DOMAIN)
     if domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains:
         return True
@@ -43,14 +36,7 @@ def is_rsr(domain):
 
 
 def is_partner_site(domain):
-    """
-    Test if an incoming request should be handled as a partner site instance.
-
-    >>> is_partner_site('connect4change.akvoapp.org')
-    True
-    >>> is_partner_site('test.akvo.org')
-    False
-    """
+    """Test if an incoming request should be handled as a partner site instance."""
     domain_parts = domain.split('.')
     if len(domain_parts) >= 3:
         domain_name = '%s.%s' % tuple(domain_parts[-2:])
