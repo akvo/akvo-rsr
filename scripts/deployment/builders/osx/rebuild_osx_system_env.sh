@@ -4,7 +4,7 @@ OSX_DIR="$(cd `dirname $0` && pwd)"
 CONFIG_DIR="$OSX_DIR/config"
 PIP_REQUIREMENTS_DIR="$(cd "$OSX_DIR/../../pip/requirements" && pwd)"
 
-EXPECTED_PIP_VERSION="1.0.2"
+EXPECTED_PIP_VERSION="1.1"
 
 CURRENT_USER="`whoami`"
 
