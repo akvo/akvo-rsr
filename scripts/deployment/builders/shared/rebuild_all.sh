@@ -16,9 +16,8 @@ if [ $? -ne 0 ]; then
     exit -1
 fi
 
-# ensure the PATH contains Python
-if [[ "$PATH" != *"$PY_BIN_PATH"* ]]; then
-    export PATH="$PY_BIN_PATH:$PATH"
+if [ "$EXECUTION_MODE" == 'ci' ]; then
+    "$SHARED_SCRIPTS_HOME/rebuild_ci_virtualenv.sh"
+else
+    "$SHARED_SCRIPTS_HOME/rebuild_rsr_virtualenv.sh"
 fi
-
-source "$SHARED_SCRIPTS_HOME/rebuild_rsr_virtualenv.sh" $EXECUTION_MODE
