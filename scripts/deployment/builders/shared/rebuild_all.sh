@@ -16,4 +16,4 @@ if [ $? -ne 0 ]; then
     exit -1
 fi
 
-"$SHARED_SCRIPTS_HOME/rebuild_rsr_virtualenv.sh" $EXECUTION_MODE
+source "$SHARED_SCRIPTS_HOME/rebuild_rsr_virtualenv.sh" $EXECUTION_MODE
