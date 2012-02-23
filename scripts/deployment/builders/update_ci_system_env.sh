@@ -28,4 +28,4 @@ fi
 CI_EXECUTION_MODE='ci' # for the continuous integration server
 
 cd "$SHARED_SCRIPTS_HOME"
-sudo "./update_system_env.sh" $CI_EXECUTION_MODE
+sudo -i "./update_system_env.sh" $CI_EXECUTION_MODE
