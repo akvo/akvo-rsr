@@ -15,35 +15,36 @@ import execution.scenarios.runner
 from execution.scenarios.rebuild_rsr_database_and_run_new_migrations import rebuild_rsr_database_and_run_new_migrations
 from execution.scenarios.update_host_system_and_deploy_rsr import update_host_system_and_deploy_rsr
 
+from fab.config.rsr.host import RepositoryBranch
 from fab.config.spec import HostConfigSpecification
 
 
-def display_usage_and_exit_if_release_parameters_are_missing():
-    if len(sys.argv) < 4:
-        print '>> Some missing parameters'
-        print 'Usage: %s <host_alias> <repository_branch> <rsr_database_name>' % os.path.basename(__file__)
-        print '       where the host alias is either: test, test2 or uat\n'
+def display_usage_and_exit_if_release_number_parameter_is_missing():
+    if len(sys.argv) < 2:
+        print 'Usage: %s <release_number>' % os.path.basename(__file__)
+        print '       where the release number is of the form 2.0.3\n'
         sys.exit(1)
 
-def exit_if_attempting_deployment_to_live_server(host_alias):
+def confirm_deployment_to_live_server(host_alias):
     if host_alias == 'live':
-        print '>> Deployment of release candidate to live server (www.akvo.org) is not permitted\n'
-        sys.exit(1)
+        confirm_live_deployment = raw_input('>> Confirm deployment to live server? (www.akvo.org) [yes/no] ')
+        if confirm_live_deployment.lower() != 'yes':
+            sys.exit(1)
 
-def deploy_rsr_release_candidate(scenario_runner, release_config_spec):
+def deploy_rsr_release(scenario_runner, release_config_spec):
     update_host_system_and_deploy_rsr(scenario_runner, release_config_spec)
     rebuild_rsr_database_and_run_new_migrations(scenario_runner, release_config_spec)
 
 
 if __name__ == '__main__':
-    display_usage_and_exit_if_release_parameters_are_missing()
+    display_usage_and_exit_if_release_number_parameter_is_missing()
 
-    host_alias = sys.argv[1]
-    repository_branch = sys.argv[2]
-    rsr_database_name = sys.argv[3]
+    host_alias = 'live'
+    release_branch = 'release/%s' % sys.argv[1]
+    rsr_database_name = 'rsrdb_202'
 
-    exit_if_attempting_deployment_to_live_server(host_alias)
+    confirm_deployment_to_live_server(host_alias)
 
-    release_config_spec = HostConfigSpecification().create_standard_with(host_alias, repository_branch, rsr_database_name)
+    release_config_spec = HostConfigSpecification().create_standard_with(host_alias, release_branch, rsr_database_name)
 
-    deploy_rsr_release_candidate(execution.scenarios.runner.ScenarioRunner(), release_config_spec)
+    deploy_rsr_release(execution.scenarios.runner.ScenarioRunner(), release_config_spec)

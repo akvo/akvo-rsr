@@ -26,6 +26,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
@@ -2038,6 +2039,21 @@ class PartnerSite(models.Model):
     @property
     def favicon(self):
         return self.custom_favicon or None
+
+    @classmethod
+    def get_partner_site_url_for_org(cls, org):
+        url = ''
+        partner_site = get_object_or_404(PartnerSite, organisation=org)
+
+        if partner_site.cname:
+            return partner_site.cname
+
+        protocol = 'http'
+        if getattr(settings, 'HTTPS_SUPPORT', True):
+            protocol = '%ss' % protocol
+
+        url = '%s://%s.%s' % (protocol, partner_site.hostname, settings.APP_DOMAIN_NAME)
+        return url
 
 
 # signals!

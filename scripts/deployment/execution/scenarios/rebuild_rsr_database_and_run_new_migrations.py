@@ -10,16 +10,18 @@ import imp, os, sys
 VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../verifiers'))
 imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_syspath_contains_deployment_scripts_home.py'))
 
-from execution.scenarios.runner import ScenarioRunner
-
+import execution.scenarios.runner
 import execution.verification
 
 
-def prepare_database_for_migrations(scenario_runner, deployment_host_config_specification):
-    scenario_runner.run_step('fetch_rsr_data')
-    scenario_runner.run_step('rebuild_rsr_database', deployment_host_config_specification) # performs a backup as well
+def rebuild_rsr_database_and_run_new_migrations(scenario_runner, host_config_specification):
+    scenario_runner.run_step('5_fetch_rsr_data')
+    scenario_runner.run_step('6_rebuild_rsr_database', host_config_specification)
+    scenario_runner.run_step('7_run_new_database_migrations', host_config_specification)
 
 
 if __name__ == '__main__':
     execution.verification.display_usage_and_exit_if_host_config_spec_is_missing(os.path.basename(__file__))
-    prepare_database_for_migrations(ScenarioRunner(), sys.argv[1])
+    host_config_specification = sys.argv[1]
+
+    rebuild_rsr_database_and_run_new_migrations(execution.scenarios.runner.ScenarioRunner(), host_config_specification)

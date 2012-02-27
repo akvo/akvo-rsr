@@ -13,8 +13,6 @@ from testing.helpers.execution import TestSuiteLoader, TestRunner
 import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
 
-from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.database.mysql.commandexecution import SQLStatementExecutor
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
@@ -24,14 +22,14 @@ class SQLStatementExecutorTest(mox.MoxTestBase):
 
     def setUp(self):
         super(SQLStatementExecutorTest, self).setUp()
-        database_config = RSRDatabaseConfig(DatabaseCredentials(), CIDeploymentHostConfig.for_test())
-        self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_config.admin_user, database_config.admin_password)
+        database_credentials = DatabaseCredentials()
+        self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_credentials.admin_user, database_credentials.admin_password)
 
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_host_controller.feedback = self.mock_feedback
 
-        self.statement_executor = SQLStatementExecutor(database_config, self.mock_host_controller)
+        self.statement_executor = SQLStatementExecutor(database_credentials, self.mock_host_controller)
 
     def test_can_execute_single_statement(self):
         """fab.tests.database.mysql.sql_statement_executor_test  Can execute a single statement"""

@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
@@ -12,7 +13,11 @@ from testing.helpers.execution import TestRunner, TestSuiteLoader
 from fab.app.admin import CommandOption, CommandResponse, DjangoAdmin, DjangoAdminCommand
 from fab.app.admin import FixtureOption, Migration, MigrationOption, MigrationStatusIndicator
 from fab.config.rsr.codebase import RSRCodebaseConfig
+from fab.config.rsr.deployment import RSRDeploymentConfig
+from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.environment.python.virtualenv import VirtualEnv
+from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import LocalHostController, RemoteHostController
 
 
 class DjangoAdminTest(mox.MoxTestBase):
@@ -20,8 +25,13 @@ class DjangoAdminTest(mox.MoxTestBase):
     def setUp(self):
         super(DjangoAdminTest, self).setUp()
         self.mock_virtualenv = self.mox.CreateMock(VirtualEnv)
+        self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
 
-        self.django_admin = DjangoAdmin(self.mock_virtualenv)
+        self.rsr_app_path = '/path/to/rsr'
+        self.mock_host_controller.feedback = self.mock_feedback
+
+        self.django_admin = DjangoAdmin(self.rsr_app_path, self.mock_virtualenv, self.mock_host_controller)
 
     def test_has_expected_admin_commands(self):
         """fab.tests.app.admin.django_admin_test  Has expected Django admin commands"""
@@ -41,6 +51,7 @@ class DjangoAdminTest(mox.MoxTestBase):
         """fab.tests.app.admin.django_admin_test  Has expected command responses"""
 
         self.assertEqual('no', CommandResponse.NO_SUPER_USERS)
+        self.assertEqual('yes', CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES)
 
     def test_has_expected_fixture_options(self):
         """fab.tests.app.admin.django_admin_test  Has expected data fixture options"""
@@ -65,6 +76,24 @@ class DjangoAdminTest(mox.MoxTestBase):
         self.assertEqual('--fake', MigrationOption.SKIP_TO)
         self.assertEqual('--list', MigrationOption.LIST_ALL)
 
+    def test_can_create_instance_for_local_host(self):
+        """fab.tests.app.admin.django_admin_test  Can create a DjangoAdmin instance for a local deployment host"""
+
+        self._verify_instance_creation_for(LocalHostController)
+
+    def test_can_create_instance_for_remote_host(self):
+        """fab.tests.app.admin.django_admin_test  Can create a DjangoAdmin instance for a remote deployment host"""
+
+        self._verify_instance_creation_for(RemoteHostController)
+
+    def _verify_instance_creation_for(self, host_controller_class):
+
+        mock_host_controller = self.mox.CreateMock(host_controller_class)
+        mock_host_controller.feedback = self.mock_feedback
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(DjangoAdmin.create_with('/path/to/rsr/virtualenv', '/path/to/rsr',  mock_host_controller), DjangoAdmin)
+
     def test_can_read_specified_django_setting(self):
         """fab.tests.app.admin.django_admin_test  Can read a specified Django setting"""
 
@@ -72,6 +101,9 @@ class DjangoAdminTest(mox.MoxTestBase):
                                                                                                      CommandOption.NONE)
         expected_setting_string = "some_setting_name = ['list', 'of', 'stuff']"
 
+        self._change_dir_rsr_app_home()
+        self._hide_command_and_output()
+        self.mock_feedback.comment('Reading Django app setting: some_setting_name')
         self._run_command_in_virtualenv(expected_find_setting_command, expected_setting_string)
         self.mox.ReplayAll()
 
@@ -95,11 +127,21 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self.django_admin.load_data_fixture('/some/data/fixture.xml.zip')
 
+    def test_can_configure_django_sites(self):
+        """fab.tests.app.admin.django_admin_test  Can configure Django sites"""
+
+        self._change_dir_rsr_app_home()
+        self._run_command_in_virtualenv('python %s' % RSRCodebaseConfig.CONFIGURE_SITES_SCRIPT_PATH)
+        self.mox.ReplayAll()
+
+        self.django_admin.configure_sites()
+
     def test_can_initialise_database_without_superusers(self):
         """fab.tests.app.admin.django_admin_test  Can initialise a database without adding super users"""
 
         initialise_database_command = self._respond_with(CommandResponse.NO_SUPER_USERS,
                                                          self._expected_admin_command(DjangoAdminCommand.SYNC_DB, CommandOption.NONE))
+
         self._run_command_in_virtualenv(initialise_database_command)
         self.mox.ReplayAll()
 
@@ -107,14 +149,6 @@ class DjangoAdminTest(mox.MoxTestBase):
 
     def _respond_with(self, response, command):
         return 'echo %s | %s' % (response, command)
-
-    def test_can_synchronise_data_models(self):
-        """fab.tests.app.admin.django_admin_test  Can synchronise data models"""
-
-        self._run_admin_command(DjangoAdminCommand.SYNC_DB, CommandOption.NONE)
-        self.mox.ReplayAll()
-
-        self.django_admin.synchronise_data_models()
 
     def test_can_find_last_applied_migration_for_specified_app(self):
         """fab.tests.app.admin.django_admin_test  Can find the last applied migration for a specified app"""
@@ -157,6 +191,17 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self.django_admin.run_all_migrations_for('rsr_app')
 
+    def test_can_run_all_migrations_for_specified_app_and_delete_stale_content_types(self):
+        """fab.tests.app.admin.django_admin_test  Can run all migrations for a specified app and delete stale content types"""
+
+        run_migrations_command = self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
+                                                    self._expected_admin_command(DjangoAdminCommand.MIGRATE, 'rsr_app'))
+
+        self._run_command_in_virtualenv(run_migrations_command)
+        self.mox.ReplayAll()
+
+        self.django_admin.run_all_migrations_and_delete_stale_content_types_for('rsr_app')
+
     def test_can_skip_all_migrations_for_specified_app(self):
         """fab.tests.app.admin.django_admin_test  Can skip all migrations for a specified app"""
 
@@ -184,6 +229,12 @@ class DjangoAdminTest(mox.MoxTestBase):
 
     def _expected_admin_command(self, command, options):
         return 'python %s %s %s'.strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
+
+    def _change_dir_rsr_app_home(self):
+        return self.mock_host_controller.cd(self.rsr_app_path).AndReturn(fabric.api.cd(self.rsr_app_path))
+
+    def _hide_command_and_output(self):
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
 
 
 def suite():

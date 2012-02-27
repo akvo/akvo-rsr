@@ -7,8 +7,8 @@
 
 class CommandExecutor(object):
 
-    def __init__(self, database_config, host_controller):
-        self.admin_credentials = "--user='%s' --password='%s'" % (database_config.admin_user, database_config.admin_password)
+    def __init__(self, database_credentials, host_controller):
+        self.admin_credentials = "--user='%s' --password='%s'" % (database_credentials.admin_user, database_credentials.admin_password)
         self.host_controller = host_controller
         self.feedback = host_controller.feedback
 
@@ -48,6 +48,21 @@ class DatabaseCopier(CommandExecutor):
 
         self.feedback.comment("Copying database '%s' to '%s'" % (original_database_name, duplicate_database_name))
         self._execute_command("%s | %s" % (dump_original_database, import_into_new_database))
+
+
+class DataHandler(CommandExecutor):
+
+    def extract_data_to(self, data_extract_file_path, database_name):
+        extract_data_command = self._command_with_credentials('mysqldump', database_name)
+
+        self.feedback.comment("Extracting data from '%s' to %s" % (database_name, data_extract_file_path))
+        self._execute_command('%s > %s' % (extract_data_command, data_extract_file_path))
+
+    def load_data_from(self, data_extract_file_path, database_name):
+        import_data_command = self._command_with_credentials('mysql', database_name)
+
+        self.feedback.comment("Importing data from %s into '%s'" % (data_extract_file_path, database_name))
+        self._execute_command('%s < %s' % (import_data_command, data_extract_file_path))
 
 
 class MySQLResponseData(object):

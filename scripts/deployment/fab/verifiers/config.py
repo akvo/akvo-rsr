@@ -8,8 +8,8 @@
 import imp, os
 
 from fab.app.admin import DjangoAdmin
+from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.deployment import RSRDeploymentConfig
-from fab.environment.python.virtualenv import VirtualEnv
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
@@ -32,20 +32,21 @@ class ConfigFileVerifier(object):
 
 class RSRSettingsVerifier(object):
 
-    def __init__(self, deployment_host_config, deployment_config, django_admin, host_file_system, feedback):
+    def __init__(self, deployment_host_config, deployment_config, settings_reader, host_file_system, feedback):
         self.deployment_database_name = deployment_host_config.rsr_database_name
         self.deployment_config = deployment_config
-        self.django_admin = django_admin
+        self.settings_reader = settings_reader
         self.host_file_system = host_file_system
         self.feedback = feedback
 
     @staticmethod
     def create_with(deployment_host_config, host_controller):
         deployment_config = RSRDeploymentConfig.create_with(deployment_host_config)
+        django_admin = DjangoAdmin.create_with(deployment_config.current_virtualenv_path, deployment_config.rsr_deployment_home, host_controller)
 
         return RSRSettingsVerifier(deployment_host_config,
                                    deployment_config,
-                                   DjangoAdmin(VirtualEnv(deployment_config.current_virtualenv_path, host_controller)),
+                                   DjangoSettingsReader(django_admin),
                                    FileSystem(host_controller),
                                    host_controller.feedback)
 
@@ -54,7 +55,7 @@ class RSRSettingsVerifier(object):
         self.host_file_system.exit_if_file_does_not_exist(self.deployment_config.deployed_rsr_settings_file)
 
     def exit_if_settings_have_mismatched_database_name(self):
-        rsr_database_name_from_settings = self.django_admin.read_setting('DATABASES')['default']['NAME']
+        rsr_database_name_from_settings = self.settings_reader.rsr_database_name()
 
         if rsr_database_name_from_settings == self.deployment_database_name:
             self.feedback.comment('Deployment database name matches expected RSR database name in settings: %s' % self.deployment_database_name)
