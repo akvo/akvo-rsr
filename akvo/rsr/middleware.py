@@ -12,14 +12,39 @@ from django.contrib.sites.models import Site
 from django.http import Http404
 from django.shortcuts import redirect
 
-from djangotoolbox.utils import make_tls_property
-
 from akvo.rsr.models import PartnerSite
 
 
-PARTNER_SITES_ORGANISATION_ID = settings.__class__.PARTNER_SITES_ORGANISATION_ID = make_tls_property()
-SITE_ID = settings.__class__.SITE_ID = make_tls_property()
+def make_tls_property(default=None):
+    """Creates a class-wide instance property with a thread-specific value."""
+    class TLSProperty(object):
+        def __init__(self):
+            from threading import local
+            self.local = local()
+        
+        def __get__(self, instance, cls):
+            if not instance:
+                return self
+            return self.value
+        
+        def __set__(self, instance, value):
+            self.value = value
+        
+        def _get_value(self):
+            return getattr(self.local, 'value', default)
+        
+        def _set_value(self, value):
+            self.local.value = value
+        value = property(_get_value, _set_value)
 
+    return TLSProperty()
+
+
+DEFAULT_SITE_ID = getattr(settings, 'SITE_ID', None)
+settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
+
+DEFAULT_PARTNER_SITE = getattr(settings, 'PARTNER_SITE', None)
+settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
 PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings, 'PARTNER_SITES_DEVELOPMENT_DOMAIN', 'akvoapp.dev')
 PARTNER_SITES_DOMAINS = getattr(settings, 'PARTNER_SITES_DOMAINS',
@@ -37,9 +62,9 @@ def is_rsr(domain):
 
 def is_partner_site(domain):
     """Predicate to determine if an incoming request domain should be handled as a partner site instance."""
-    domain_parts = domain.split('.')
+    domain_parts = tuple(domain.split('.'))
     if len(domain_parts) >= 3:
-        domain_name = '%s.%s' % tuple(domain_parts[-2:])
+        domain_name = '%s.%s' % domain_parts[-2:]
         if domain_name in PARTNER_SITES_DOMAINS:
             return True
     return False
@@ -50,15 +75,15 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
         domain = request.get_host().split(':')[0]
         if is_rsr(domain):  # Vanilla Akvo RSR instance
-            site, _created = Site.objects.get_or_create(domain=domain, name=domain)
+            site, created = Site.objects.get_or_create(domain=domain, name=domain)
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
                 if partner_site is not None:
-                    site, _created = Site.objects.get_or_create(domain=hostname, name=hostname)
-            except LookupError:
+                    site, created = Site.objects.get_or_create(domain=hostname, name=hostname)
+            except:
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
@@ -66,12 +91,12 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
                 if partner_site is not None:
-                    site, _created = Site.objects.get_or_create(domain=partner_site.hostname, name=partner_site.hostname)
-            except LookupError:
+                    site, created = Site.objects.get_or_create(domain=partner_site.hostname, name=partner_site.hostname)
+            except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
-            request.partner_site = partner_site
-            request.organisation_id = PARTNER_SITES_ORGANISATION_ID = partner_site.organisation.id
+            request.partner_site = settings.PARTNER_SITE = partner_site
+            request.organisation_id = partner_site.organisation.id
             request.urlconf = 'akvo.urls.partner_sites'
-        SITE_ID = site.id
+        settings.SITE_ID = site.id
         return
