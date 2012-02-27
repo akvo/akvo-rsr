@@ -2,6 +2,9 @@
 isodate==0.4.7
 rdflib==3.2.0
 
+# Requirements for building splinter
+lxml==2.3.3
+
 # Requirements for building lettuce
 multiprocessing==2.6.2.1
 
