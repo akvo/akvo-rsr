@@ -296,12 +296,12 @@ def filteredprojectlist(request, org_id):
 
 def _redirect_from_landing_page_with_partner_site_id(partner_site_id):
     partner_site = get_object_or_404(PartnerSite, pk=partner_site_id)
-    return HttpResponsePermanentRedirect(partner_site.get_absolute_url)
+    return HttpResponsePermanentRedirect(partner_site.get_absolute_url())
 
 def liveearth(request):
     org_id = getattr(settings, 'LIVE_EARTH_ID', 51)
     return _redirect_from_landing_page_with_partner_site_id(org_id)
-
+ 
 def walking_for_water(request):
     org_id = getattr(settings, 'WALKING_FOR_WATER_ID', 35)
     return _redirect_from_landing_page_with_partner_site_id(org_id)

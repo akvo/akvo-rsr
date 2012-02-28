@@ -2043,12 +2043,12 @@ class PartnerSite(models.Model):
     def get_absolute_url(self):
         url = ''
         if self.cname:
-            return partner_site.cname
-
+            return self.cname
+    
         protocol = 'http'
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = '%ss' % protocol
-
+    
         url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
         return url
 
