@@ -87,5 +87,4 @@ def suite():
     return TestSuiteLoader().load_tests_from(RSRSettingsVerifierTest)
 
 if __name__ == '__main__':
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+    TestRunner().run_test_suite(suite())

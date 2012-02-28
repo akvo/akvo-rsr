@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.tasks.database.backup_rsr_database_test import BackupRSRDatabaseTest
 from fab.tests.tasks.database.rebuild_rsr_database_test import RebuildRSRDatabaseTest
@@ -17,6 +17,5 @@ def database_tasks_suite():
     return TestSuiteLoader().create_suite_from_classes([BackupRSRDatabaseTest, RebuildRSRDatabaseTest,
                                                         RSRDatabaseTaskTest, RunNewDatabaseMigrationsTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(database_tasks_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(database_tasks_suite())
