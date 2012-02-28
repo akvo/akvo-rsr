@@ -39,9 +39,11 @@ def deploy_rsr_release(scenario_runner, release_config_spec):
 if __name__ == '__main__':
     display_usage_and_exit_if_release_number_parameter_is_missing()
 
+    release_number = sys.argv[1]
+
     host_alias = 'live'
-    release_branch = 'release/%s' % sys.argv[1]
-    rsr_database_name = 'rsrdb_202'
+    release_branch = 'release/%s' % release_number
+    rsr_database_name = 'rsrdb_%s' % release_number.replace('.', '')
 
     confirm_deployment_to_live_server(host_alias)
 
