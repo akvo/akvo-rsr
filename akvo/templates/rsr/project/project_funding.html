@@ -34,15 +34,9 @@
         {% for item in project.budget_items.all %}
           <tr>
             <td>
-                {% if item.label|lower in item.OTHER_LABELS %}
-                  {% blocktrans with label=item.other_extra|capfirst %}
-                    {{ label }}:
-                  {% endblocktrans %}
-                {% else %}
-                  {% blocktrans with label=item.label|capfirst %}
-                    {{ label }}:
-                  {% endblocktrans %}
-                {% endif %}
+              {% blocktrans with label=item.get_label|capfirst %}
+                {{ label }}:
+              {% endblocktrans %}
             </td>
             <td class="text_right">{{project.get_currency_display|safe}} {{item.amount|round|intcomma}}</td>
           </tr>
