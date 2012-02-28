@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.database.mysql.data_handler_test import DataHandlerTest
 from fab.tests.database.mysql.database_admin_command_test import DatabaseAdminCommandTest
@@ -19,6 +19,5 @@ def mysql_database_suite():
     return TestSuiteLoader().create_suite_from_classes([DataHandlerTest, DatabaseAdminCommandTest, DatabaseAdminTest,
                                                         DatabaseCopierTest, MySQLResponseDataTest, SQLStatementExecutorTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(mysql_database_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(mysql_database_suite())

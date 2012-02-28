@@ -26,7 +26,6 @@ scripts/deployment/builders/ubuntu/install_python27_config.py
 scripts/deployment/fab/config/custom.py
 scripts/deployment/fab/config/rsr/credentials/custom.py
 scripts/deployment/fab/config/rsr/credentials/database.py
-scripts/deployment/fab/tests/test_settings.py
 scripts/deployment/update_ci_server_config.py
 
 ## Tests
@@ -72,3 +71,13 @@ tmtags
 
 #PyCharm
 .idea
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+.\#*

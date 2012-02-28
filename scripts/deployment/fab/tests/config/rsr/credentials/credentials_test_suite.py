@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.config.rsr.credentials.custom_user_credentials_test import CustomUserCredentialsTest
 from fab.tests.config.rsr.credentials.database_credentials_test import DatabaseCredentialsTest
@@ -15,6 +15,5 @@ from fab.tests.config.rsr.credentials.user_credentials_test import UserCredentia
 def credentials_suite():
     return TestSuiteLoader().create_suite_from_classes([CustomUserCredentialsTest, DatabaseCredentialsTest, UserCredentialsTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(credentials_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(credentials_suite())

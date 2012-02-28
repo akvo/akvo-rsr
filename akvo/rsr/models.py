@@ -26,6 +26,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
@@ -146,10 +147,10 @@ class Location(models.Model):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER       = 'field'
-    FUNDING_PARTNER     = 'funding'
-    SPONSOR_PARTNER     = 'sponsor'
-    SUPPORT_PARTNER     = 'support'
+    FIELD_PARTNER       = u'field'
+    FUNDING_PARTNER     = u'funding'
+    SPONSOR_PARTNER     = u'sponsor'
+    SUPPORT_PARTNER     = u'support'
 
     PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
     PARTNER_LABELS      = [_('Field partner'), _('Funding partner'), _('Sponsor partner'), _('Support partner'),]
@@ -159,7 +160,7 @@ class Partnership(models.Model):
     project = models.ForeignKey('Project',)
     partner_type = models.CharField(max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
-        _('funding amount (Only for funding partners)'),
+        _('funding amount'),
         max_digits=10,
         decimal_places=2,
         blank=True,
@@ -644,26 +645,8 @@ class Project(models.Model):
         def dollars(self):
             return self.filter(currency='USD')
 
-        def budget_employment(self):
-            return self.filter(budgetitem__item__exact='employment').annotate(budget_employment=Sum('budgetitem__amount'),)
-
-        def budget_building(self):
-            return self.filter(budgetitem__item__exact='building').annotate(budget_building=Sum('budgetitem__amount'),)
-
-        def budget_training(self):
-            return self.filter(budgetitem__item__exact='training').annotate(budget_training=Sum('budgetitem__amount'),)
-
-        def budget_maintenance(self):
-            return self.filter(budgetitem__item__exact='maintenance').annotate(budget_maintenance=Sum('budgetitem__amount'),)
-
-        def budget_management(self):
-            return self.filter(budgetitem__item__exact='management').annotate(budget_management=Sum('budgetitem__amount'),)
-
-        def budget_other(self):
-            return self.filter(budgetitem__item__exact='other').annotate(budget_other=Sum('budgetitem__amount'),)
-
         def budget_total(self):
-            return self.annotate(budget_total=Sum('budgetitem__amount'),).distinct()
+            return self.annotate(budget_total=Sum('budget_items__amount'),).distinct()
 
         def donated(self):
             return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(donated=Sum('invoice__amount_received'),).distinct()
@@ -778,7 +761,6 @@ class Project(models.Model):
                     )
             pledged['pledged'] = "%s)" % pledged['pledged']
             funding_queries.update(pledged)
-            #return self.annotate(budget_total=Sum('budgetitem__amount'),).extra(select=funding_queries).distinct()
             return self.extra(select=funding_queries)
 
         def need_funding(self):
@@ -991,24 +973,6 @@ class Project(models.Model):
         decimal_result = Decimal(str(result))
         return decimal_result
 
-    def budget_employment(self):
-        return Project.objects.budget_employment().get(pk=self.pk).budget_employment
-
-    def budget_building(self):
-        return Project.objects.budget_building().get(pk=self.pk).budget_building
-
-    def budget_training(self):
-        return Project.objects.budget_training().get(pk=self.pk).budget_training
-
-    def budget_maintenance(self):
-        return Project.objects.budget_maintenance().get(pk=self.pk).budget_maintenance
-
-    def budget_management(self):
-        return Project.objects.budget_management().get(pk=self.pk).budget_management
-
-    def budget_other(self):
-        return Project.objects.budget_other().get(pk=self.pk).budget_other
-
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
 
@@ -1071,40 +1035,61 @@ class Project(models.Model):
 
 
 class Benchmark(models.Model):
-    project = models.ForeignKey(Project, related_name=_(u'benchmarks'), )
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name=_(u'benchmarks'), )
     category = models.ForeignKey(Category, verbose_name=_(u'category'), )
     name = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
     value = models.IntegerField(_(u'benchmark value'), )
 
     def __unicode__(self):
-        return _(u'Category: %s, Benchmark: %d %s') % (self.category, self.value, self.name, )
+        return _(
+            u'Category: %(category)s, Benchmark: %(value)d %(name)s'
+        ) % {
+            'category': self.category,
+            'value': self.value,
+            'name': self.name,
+        }
 
     class Meta:
-        ordering=['category__name', 'name__order']
-        verbose_name=_('benchmark')
-        verbose_name_plural=_('benchmarks')
+        ordering            =  ('category__name', 'name__order')
+        verbose_name        = _('benchmark')
+        verbose_name_plural = _('benchmarks')
+
+
+class BudgetItemLabel(models.Model):
+    label = models.CharField(_('label'), max_length=20, unique=True)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        ordering            = ('label',)
+        verbose_name        = _('budget item label')
+        verbose_name_plural = _('budget item labels')
 
 
 class BudgetItem(models.Model):
-    ITEM_CHOICES = (
-        ('employment', _('employment')),
-        ('building', _('building')),
-        ('training', _('training')),
-        ('maintenance', _('maintenance')),
-        ('management', _('management')),
-        ('other', _('other')),
+    OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
+
+    project     = models.ForeignKey(Project, verbose_name=_('project'), related_name='budget_items')
+    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_('label'),)
+    other_extra = models.CharField(
+        max_length=20, null=True, blank=True, verbose_name=_('"Other" labels extra info'),
+        help_text=_('Extra information about the exact nature of an "other" budget item.'),
     )
-    project = models.ForeignKey(Project,)
-    item = models.CharField(max_length=20, choices=ITEM_CHOICES, verbose_name=_('Item'))
-    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Amount'))
+    amount      = models.DecimalField(_('amount'), max_digits=10, decimal_places=2,)
+
+    def __unicode__(self):
+        return self.label.__unicode__()
 
     class Meta:
-        verbose_name = _('Budget item')
-        verbose_name_plural = _('Budget items')
-        unique_together= ('project', 'item')
+        ordering            = ('label',)
+        verbose_name        = _('budget item')
+        verbose_name_plural = _('budget items')
+        unique_together     = ('project', 'label')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
+
 
 class PublishingStatus(models.Model):
     """
@@ -1119,6 +1104,7 @@ class PublishingStatus(models.Model):
     #other objects than projects
     project = models.OneToOneField(Project,)
     status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+
     class Meta:
         verbose_name        = _('publishing status')
         verbose_name_plural = _('publishing statuses')
@@ -2053,6 +2039,21 @@ class PartnerSite(models.Model):
     @property
     def favicon(self):
         return self.custom_favicon or None
+
+    @classmethod
+    def get_partner_site_url_for_org(cls, org):
+        url = ''
+        partner_site = get_object_or_404(PartnerSite, organisation=org)
+
+        if partner_site.cname:
+            return partner_site.cname
+
+        protocol = 'http'
+        if getattr(settings, 'HTTPS_SUPPORT', True):
+            protocol = '%ss' % protocol
+
+        url = '%s://%s.%s' % (protocol, partner_site.hostname, settings.APP_DOMAIN_NAME)
+        return url
 
 
 # signals!

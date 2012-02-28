@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.os.linux.ubuntu_package_info_test import UbuntuPackageInfoTest
 from fab.tests.os.linux.ubuntu_package_inspector_test import UbuntuPackageInspectorTest
@@ -14,6 +14,5 @@ from fab.tests.os.linux.ubuntu_package_inspector_test import UbuntuPackageInspec
 def linux_suite():
     return TestSuiteLoader().create_suite_from_classes([UbuntuPackageInspectorTest, UbuntuPackageInfoTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(linux_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(linux_suite())
