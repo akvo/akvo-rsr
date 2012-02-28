@@ -7,29 +7,37 @@
 
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.database.mysql.admin import DatabaseAdmin
+from fab.verifiers.config import RSRSettingsVerifier
 
 
 class DatabaseHost(object):
     """DatabaseHost encapsulates database deployment actions"""
 
-    def __init__(self, database_config, database_admin):
+    def __init__(self, settings_verifier, database_config, database_admin):
+        self.settings_verifier = settings_verifier
         self.database_config = database_config
         self.database_admin = database_admin
 
     @staticmethod
-    def create_with(database_config, deployment_host_config, host_controller):
-        return DatabaseHost(database_config, DatabaseAdmin.create_with(database_config, deployment_host_config, host_controller))
+    def create_with(database_credentials, deployment_host_config, host_controller):
+        return DatabaseHost(RSRSettingsVerifier.create_with(deployment_host_config, host_controller),
+                            RSRDatabaseConfig(database_credentials, deployment_host_config.rsr_database_name),
+                            DatabaseAdmin.create_with(database_credentials, deployment_host_config, host_controller))
 
     def backup_rsr_database(self):
+        self._verify_database_configuration()
         self.database_admin.create_timestamped_backup_database(self.database_config.rsr_database)
 
     def rebuild_rsr_database(self):
+        self._verify_database_configuration()
         self.database_admin.rebuild_database(self.database_config.rsr_database,
                                              self.database_config.rsr_user,
                                              self.database_config.rsr_password)
 
-    def convert_database_for_migrations(self):
-        self.database_admin.convert_database_for_migrations()
+    def run_new_migrations(self):
+        self._verify_database_configuration()
+        self.database_admin.run_new_rsr_migrations()
 
-    def run_all_migrations(self):
-        self.database_admin.run_all_migrations()
+    def _verify_database_configuration(self):
+        self.settings_verifier.exit_if_local_rsr_settings_not_deployed()
+        self.settings_verifier.exit_if_settings_have_mismatched_database_name()

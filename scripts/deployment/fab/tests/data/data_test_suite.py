@@ -7,12 +7,13 @@
 
 from testing.helpers.execution import TestSuiteLoader, TestRunner
 
+from fab.tests.data.data_fixture_validator_test import DataFixtureValidatorTest
 from fab.tests.data.rsr_data_populator_test import RSRDataPopulatorTest
 from fab.tests.data.rsr_data_retriever_test import RSRDataRetrieverTest
 
 
 def data_suite():
-    return TestSuiteLoader().create_suite_from_classes([RSRDataPopulatorTest, RSRDataRetrieverTest])
+    return TestSuiteLoader().create_suite_from_classes([DataFixtureValidatorTest, RSRDataPopulatorTest, RSRDataRetrieverTest])
 
 if __name__ == "__main__":
     from fab.tests.test_settings import TEST_MODE

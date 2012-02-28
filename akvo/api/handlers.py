@@ -32,7 +32,7 @@ class LEProjectHandler(OrgProjectsHandler):
     All projects connected to Live Earth
     """
     def read(self, request):
-        return super(LEProjectHandler, self).read(request, settings.LIVE_EARTH_ID)
+        return super(LEProjectHandler, self).read(request, getattr(settings, 'LIVE_EARTH_ID', 147))
 
 
 class UpdateHandler(AnonymousBaseHandler):
