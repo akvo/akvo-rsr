@@ -40,7 +40,7 @@ if __name__ == '__main__':
         test_mode = sys.argv[1]
         if test_mode == TestMode.CONTINUOUS_INTEGRATION:
             test_runner = TestRunner(test_mode)
-        else:
+        elif test_mode != TestMode.NORMAL:
             raise SystemExit('## Unrecognised test mode: %s\n' % test_mode)
 
     print 'Test suite root: %s\n' % os.path.realpath(os.path.dirname(__file__))

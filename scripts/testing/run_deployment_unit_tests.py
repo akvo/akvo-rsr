@@ -14,7 +14,9 @@ DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__
 class TestExecutionMode(object):
 
     CI  = 'ci'
-    DEV = 'dev'
+    NORMAL = 'normal'
+
+    allowed_modes = [CI, NORMAL]
 
 
 class DeploymentTestsRunner(object):
@@ -27,7 +29,7 @@ class DeploymentTestsRunner(object):
         print '>> Using virtualenv at: %s\n' % self.virtualenv_path
         self._ensure_config_file_exists('custom.py')
         self._ensure_config_file_exists('database.py')
-        self._run_within_virtualenv(os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'fab/tests/all_test_suites.py'))
+        self._run_within_virtualenv(self._run_all_test_suites_command())
 
     def _ensure_config_file_exists(self, config_file_name):
         if not os.path.exists(self._credentials_path_for(config_file_name)):
@@ -40,37 +42,46 @@ class DeploymentTestsRunner(object):
     def _credentials_path_for(self, credentials_file_name):
         return os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'fab/config/rsr/credentials', credentials_file_name)
 
+    def _run_all_test_suites_command(self):
+        return ' '.join([os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'fab/tests/all_test_suites.py'), self.execution_mode])
+
     def _run_within_virtualenv(self, command):
         exit_code = subprocess.call('source %s/bin/activate && %s' % (self.virtualenv_path, command), shell=True, executable='/bin/bash')
 
         if exit_code != 0:
-            raise SystemExit('Deployment unit tests failed as above')
+            raise SystemExit('\n## Deployment unit tests failed as above\n')
 
+
+def display_usage_and_exit(error_message):
+    print error_message
+    raise SystemExit("Usage: run_deployment_unit_tests <virtualenv_path> [execution_mode]\n" + \
+                     "       where execution_mode is either 'normal' (default) or 'ci'\n")
 
 def verify_execution_parameters():
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        raise SystemExit("Usage: run_deployment_unit_tests <virtualenv_path> [execution_mode]\n" + \
-                         "       where execution_mode is either 'dev' (default) or 'ci'\n")
+    if len(sys.argv) < 2:
+        display_usage_and_exit('## Missing parameters')
+    elif len(sys.argv) > 3:
+        display_usage_and_exit('## Too many parameters: %s' % ' '.join(sys.argv[1:]))
 
     virtualenv_path = sys.argv[1]
 
     if not os.path.exists(virtualenv_path):
-        raise SystemExit('## Invalid virtualenv path: %s\n' % virtualenv_path)
+        display_usage_and_exit('## Invalid virtualenv path: %s' % virtualenv_path)
 
     if len(sys.argv) == 3:
         execution_mode = sys.argv[2]
 
-        if execution_mode != TestExecutionMode.CI and execution_mode != TestExecutionMode.DEV:
-            raise SystemExit('## Unrecognised test execution mode: %s\n' % execution_mode)
+        if execution_mode not in TestExecutionMode.allowed_modes:
+            display_usage_and_exit('## Unrecognised test execution mode: %s' % execution_mode)
 
 
 if __name__ == '__main__':
     verify_execution_parameters()
 
     virtualenv_path = sys.argv[1]
-    execution_mode = TestExecutionMode.CI
+    execution_mode = TestExecutionMode.NORMAL
 
-    if len(sys.argv) < 3:
-        execution_mode = TestExecutionMode.DEV
+    if len(sys.argv) == 3:
+        execution_mode = sys.argv[2]
 
     DeploymentTestsRunner(execution_mode, virtualenv_path).run_unit_tests()
