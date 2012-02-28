@@ -27,7 +27,7 @@ class TestMode(object):
 
 class TestRunner(object):
 
-    def __init__(self, test_mode):
+    def __init__(self, test_mode=TestMode.NORMAL):
         self.test_mode = test_mode
 
     def run_test_suite(self, suite):

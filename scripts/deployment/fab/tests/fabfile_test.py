@@ -7,7 +7,7 @@
 
 import py, subprocess, unittest2
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 
 class FabFileTest(unittest2.TestCase):
@@ -35,6 +35,5 @@ class FabFileTest(unittest2.TestCase):
 def suite():
     return TestSuiteLoader().load_tests_from(FabFileTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.environment.python.pip_installer_test import PipInstallerTest
 from fab.tests.environment.python.pythonbrew_test import PythonBrewTest
@@ -20,6 +20,5 @@ def python_environment_suite():
     return TestSuiteLoader().create_suite_from_classes([PipInstallerTest, PythonBrewTest, PythonInstallerTest, SystemPackageInstallationPathsTest,
                                                         SystemPythonPackageInstallerTest, VirtualEnvInstallerTest, VirtualEnvTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(python_environment_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(python_environment_suite())

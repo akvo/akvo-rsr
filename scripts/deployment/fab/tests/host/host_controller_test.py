@@ -7,7 +7,7 @@
 
 import unittest2
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.host.controller import HostController, HostControllerMode, LocalHostController, RemoteHostController
 
@@ -28,6 +28,5 @@ class HostControllerTest(unittest2.TestCase):
 def suite():
     return TestSuiteLoader().load_tests_from(HostControllerTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

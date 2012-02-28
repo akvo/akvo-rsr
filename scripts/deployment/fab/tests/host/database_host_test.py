@@ -7,7 +7,7 @@
 
 import imp, mox, os
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
@@ -89,6 +89,5 @@ class DatabaseHostTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(DatabaseHostTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())
