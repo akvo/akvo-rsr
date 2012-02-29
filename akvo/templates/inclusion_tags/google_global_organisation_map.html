@@ -2,8 +2,6 @@
 {% load url from future %}
 
 
-{% if organisations %}
-
 <style type="text/css" media="screen">
 	.mapInfoWindow {
 		min-height:150px;
@@ -55,7 +53,7 @@
 	            scrollwheel: false,
 	            zoom: zoom,
                 streetViewControl: false
-	        };
+            };
 
             var markerIcon = "{{ marker_icon }}";
             var smallIcon = new google.maps.MarkerImage(markerIcon,
@@ -64,6 +62,7 @@
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 
+            {% if organisations %}
 	        {% for organisation in organisations %}
 	            var organisation_{{ organisation.id }}_marker = new google.maps.Marker({
                     {% if map_type == 'static' %}
@@ -95,6 +94,7 @@
 	                organisation_{{ organisation.id }}_infowindow.open(map, organisation_{{ organisation.id }}_marker);
 	            });
                 {% endif %}
+            {% endif %}
 	        {% endfor %}
 
 	    }
@@ -109,6 +109,4 @@
     <div id="map_canvas" style="width: 100%; height: 100%;"></div>
 {% else %}
     <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-{% endif %}
-
 {% endif %}

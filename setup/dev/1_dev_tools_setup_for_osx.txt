@@ -13,6 +13,6 @@ Dev tools for Akvo development
 3)  Install Homebrew: https://github.com/mxcl/homebrew/wiki/installation
 
 4)  Install the following packages with Homebrew:
-    a) brew install git-flow  # used as part of the Akvo dev process
-    b) brew install jpeg      # used for building the Python Image Library (PIL)
-    c) brew install gmp       # for building some extensions in pycrypto
+    a) brew install git-flow    # used as part of the Akvo dev process
+    b) brew install imagemagick # used for building the Python Image Library (PIL)
+    c) brew install gmp         # for building some extensions in pycrypto

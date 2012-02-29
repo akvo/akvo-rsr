@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
@@ -19,6 +20,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
+import os.path
 
 from permissions.models import Role
 
@@ -359,10 +361,19 @@ class SponsorPartnerInline(admin.TabularInline):
         formset.request = request
         return formset
 
+
+class BudgetItemLabelAdmin(admin.ModelAdmin):
+    list_display = (u'label',)
+
+admin.site.register(get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
+
+
 class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
-    extra = len(model.ITEM_CHOICES)
-    max_num = len(model.ITEM_CHOICES)
+    extra = 1
+    class Media:
+        css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\','/'),)}
+        js = (os.path.join(settings.MEDIA_URL, 'akvo/js/src/rsr_admin.js').replace('\\','/'),)
 
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
 

@@ -127,13 +127,7 @@
         <div class="whitebox">
           <p class="grey small pad10" style="margin: 0;">
             <a href="{% url 'project_main' project.id %}">{% trans 'Project permalink' %}</a><br />
-            {% if can_add_update %}
-              <a href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
-            {% else %}
-              {% if not user.username %}
-                <a href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">{% trans "Sign in" %}</a> {% trans "to add update" %}
-              {% endif %}
-            {% endif %}
+            <a href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
           </p>
         </div>
       {% endblock project_tools %}
