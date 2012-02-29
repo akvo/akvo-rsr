@@ -32,6 +32,7 @@ def exit_if_attempting_deployment_to_live_server(host_alias):
 
 def deploy_rsr_release_candidate(scenario_runner, release_config_spec):
     update_host_system_and_deploy_rsr(scenario_runner, release_config_spec)
+    scenario_runner.run_step('5_fetch_rsr_data')
     rebuild_rsr_database_and_run_new_migrations(scenario_runner, release_config_spec)
 
 

@@ -1,4 +1,4 @@
-Last changed: 30 January 2012, bw
+Last changed: 22 February 2012, bw
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -6,6 +6,46 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR v 2.0.3 release notes
+-------------------------------------------
+22 February 2012, (Code name: Dewberry) bw
+
+Overview
+------------
+
+New features & changes
+----------------
+### Expanded and customizable budget line items 
+This release reworks how line items for project budgets are handled within RSR. Up to this point there have been 6 budget line items: building, employment, maintenance, management, training and other. Release 2.0.3 removes "other" and adds the fields other 1, other 2, other 3. Organisation administrators and project editors can enter custom labels for these line items in their budgets.
+
+Additionally, Akvo's administrators now have the flexibility to expand the list of common budget items. The list of choices should be expanded cautiously as the commonly-used forms become obvious. Having a standard list helps users compare & understand financial plans across multiple projects and organisations.
+
+### Size of photos and videos in updates.
+The photos and embedded videos on an individual update page are now larger, making details easier to see.
+
+### Custom landing page URLs redirected to appropriate partner sites.
+Landing page functionality is deprecated in favor of partner sites.
+
+
+Bug fixes
+---------
+### Enter/Return does not post form on Sign in page.
+Certain browsers did not post the sign in form when Enter/Return key was hit; this is now fixed.
+
+### Latest Updates missing on project comments page.
+Fixed a bug where Latest Updates section did not appear on the project comments page.
+
+### Funding amounts field appears for non-funding partners.
+Fixed a bug in the changed partner types code whereby it was possible to set funding amounts for other partner types.
+
+### Map display when there are no projects or none fitting selection criteria.
+The main partner site page includes a map displaying all organisation projects. When there were not yet any projects or filtering returned no matching projects the map completely disappeared, leaving only a display glitch. This is now fixed.
+
+### Partner site workflow issues when signing in to add an update.
+Fixed page routing to match expectations.
+
+
 
 Akvo RSR v 2.0.2 release notes
 -------------------------------------------

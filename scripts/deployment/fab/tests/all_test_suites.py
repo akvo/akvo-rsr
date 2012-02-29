@@ -5,12 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os
+import imp, os, sys
 
 DEPLOYMENT_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
-imp.load_source("syspath_verification", os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_testing_path_dependencies.py'))
+imp.load_source('syspath_verification', os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'verifiers/ensure_syspath_contains_testing_path_dependencies.py'))
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestMode, TestRunner, TestSuiteLoader
 
 from fab.tests.fabfile_test import suite as fabfile_suite
 from fab.tests.app.app_test_suite import app_suite
@@ -33,7 +33,15 @@ def unit_test_suites():
                                                      dependency_suite(), environment_suite(), formatting_suite(), helpers_suite(),
                                                      host_suite(), os_suite(), security_suite(), tasks_suite(), verifiers_suite()])
 
-if __name__ == "__main__":
-    print "Test suite root: %s\n" % os.path.realpath(os.path.dirname(__file__))
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(unit_test_suites())
+if __name__ == '__main__':
+    test_runner = TestRunner()
+
+    if len(sys.argv) > 1:
+        test_mode = sys.argv[1]
+        if test_mode == TestMode.CONTINUOUS_INTEGRATION:
+            test_runner = TestRunner(test_mode)
+        elif test_mode != TestMode.NORMAL:
+            raise SystemExit('## Unrecognised test mode: %s\n' % test_mode)
+
+    print 'Test suite root: %s\n' % os.path.realpath(os.path.dirname(__file__))
+    test_runner.run_test_suite(unit_test_suites())

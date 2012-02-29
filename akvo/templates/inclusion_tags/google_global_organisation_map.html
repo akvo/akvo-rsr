@@ -55,7 +55,6 @@
                 streetViewControl: false
             };
 
-            {% if organisations %}
             var markerIcon = "{{ marker_icon }}";
             var smallIcon = new google.maps.MarkerImage(markerIcon,
                 null, null, null, new google.maps.Size(10.5,17));
@@ -63,6 +62,7 @@
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 
+            {% if organisations %}
 	        {% for organisation in organisations %}
 	            var organisation_{{ organisation.id }}_marker = new google.maps.Marker({
                     {% if map_type == 'static' %}

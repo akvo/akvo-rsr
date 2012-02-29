@@ -293,23 +293,22 @@ def filteredprojectlist(request, org_id):
     page = project_list_data(request, projects)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
 
-def liveearth(request):
-    org_id = getattr(settings, 'LIVE_EARTH_ID', 147)
-    org = get_object_or_404(Organisation, pk=org_id)
-    url = PartnerSite.get_partner_site_url_for_org(org)
-    return HttpResponsePermanentRedirect(url)
+def _redirect_from_landing_page_with_partner_site_id(partner_site_id):
+    partner_site = get_object_or_404(PartnerSite, pk=partner_site_id)
+    return HttpResponseRedirect(partner_site.get_absolute_url())
+    # return HttpResponsePermanentRedirect(partner_site.get_absolute_url())
 
+def liveearth(request):
+    org_id = getattr(settings, 'LIVE_EARTH_ID', 51)
+    return _redirect_from_landing_page_with_partner_site_id(org_id)
+ 
 def walking_for_water(request):
-    org_id = getattr(settings, 'WALKING_FOR_WATER_ID', 113)
-    org = get_object_or_404(Organisation, pk=org_id)
-    url = PartnerSite.get_partner_site_url_for_org(org)
-    return HttpResponsePermanentRedirect(url)
+    org_id = getattr(settings, 'WALKING_FOR_WATER_ID', 35)
+    return _redirect_from_landing_page_with_partner_site_id(org_id)
 
 def rabobank(request):
-    org_id = getattr(settings, 'RABOBANK_ID', 180)
-    org = get_object_or_404(Organisation, pk=org_id)
-    url = PartnerSite.get_partner_site_url_for_org(org)
-    return HttpResponsePermanentRedirect(url)
+    org_id = getattr(settings, 'RABOBANK_ID', 21)
+    return _redirect_from_landing_page_with_partner_site_id(org_id)
 
 @render_to('rsr/project/project_directory.html')
 def projectlist(request):
