@@ -10,7 +10,7 @@ def setUp():
     world.browser = Browser('firefox')
 
 @after.all
-def tearDown(total):
+def tearDown(test_results):
     world.browser.quit()
 
 @step(u'Go to home page')
