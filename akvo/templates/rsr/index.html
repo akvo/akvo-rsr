@@ -44,7 +44,7 @@
 		</div>
 		<div class="span-12 last">
 			{% for update in updates %}
-				<div class="span-4{% if forloop.last %} last{% endif %}">
+				<div id="project_update_{{ forloop.counter0 }}" class="span-4{% if forloop.last %} last{% endif %}">
                     <div class="white_box" style="min-height: 370px;">
                         {% if update.video %}
                             <div class="clearfix">
