@@ -13,19 +13,19 @@ def setUp():
 def tearDown(test_results):
     world.browser.quit()
 
-@step(u'Go to home page')
+@step('Go to home page')
 def go_to_home_page(step):
     world.browser.visit('http://%s' % SITE_UNDER_TEST)
 
-@step(u'Then I should see the title "([^"]*)"')
+@step('Then I should see the title "([^"]*)"')
 def then_i_should_see_the_title(step, expected_title):
     assert world.browser.title == expected_title
 
-@step(u'And I also see a "([^"]*)" link')
-def and_i_also_see_link(step, link_text):
-    assert world.browser.find_link_by_text('Projects')
+@step('And I also see a "([^"]*)" link')
+def and_i_also_see_link(step, expected_link_text):
+    assert world.browser.find_link_by_text(expected_link_text)
     
-@step(u'And I also see a "([^"]*)" link')
+@step('And I also see a "([^"]*)" link')
 def and_i_also_see_a_projects_link(step, projects_link):
     assert world.browser.find_link_by_text(projects_link)
 
