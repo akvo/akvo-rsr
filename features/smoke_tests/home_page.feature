@@ -7,3 +7,9 @@ Feature: Home page navigation
     Go to home page
     Then I should see the title "Akvo.org - See it happen"
     And I also see a "Projects" link
+
+  Scenario: Home page displays recent project updates
+    Go to home page
+    Then I should see "Most recent project updates"
+    Then I click on the first project update
+    Then I expect to see the page for the selected update
