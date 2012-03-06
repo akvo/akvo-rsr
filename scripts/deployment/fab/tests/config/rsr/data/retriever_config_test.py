@@ -7,8 +7,9 @@
 
 import imp, os, unittest2
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
+from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
 
@@ -20,6 +21,11 @@ class RSRDataRetrieverConfigTest(unittest2.TestCase):
         self.data_host_paths = DataHostPaths()
 
         self.data_retriever_config = RSRDataRetrieverConfig(self.data_host_paths)
+
+    def test_has_rsr_app_name(self):
+        """fab.tests.config.rsr.data.retriever_config_test  Has RSR app name"""
+
+        self.assertEqual(RSRCodebaseConfig.RSR_APP_NAME, self.data_retriever_config.rsr_app_name)
 
     def test_has_data_archives_home(self):
         """fab.tests.config.rsr.data.retriever_config_test  Has data archives home"""
@@ -53,6 +59,5 @@ class RSRDataRetrieverConfigTest(unittest2.TestCase):
 def suite():
     return TestSuiteLoader().load_tests_from(RSRDataRetrieverConfigTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

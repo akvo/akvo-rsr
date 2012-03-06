@@ -18,14 +18,14 @@ class ScenarioRunner(object):
 
         if host_config_specification:
             print '>> Running deployment step [%s] with host config specification [%s]' % (step_name, host_config_specification)
-            exit_code = subprocess.call([deployment_script_path, host_config_specification])
+            self._run_step([deployment_script_path, host_config_specification])
         else:
             print '>> Running deployment step [%s]' % step_name
-            exit_code = subprocess.call(deployment_script_path)
+            self._run_step(deployment_script_path)
 
-        self._stop_scenario_execution_if_deployment_step_failed(exit_code)
-
-    def _stop_scenario_execution_if_deployment_step_failed(self, exit_code):
-        # we should already see a failure message when a deployment fails
-        if exit_code != 0:
+    def _run_step(self, script_path_with_host_config):
+        try:
+            subprocess.check_call(script_path_with_host_config)
+        except subprocess.CalledProcessError:
+            # we should already see a failure message when a deployment fails
             raise SystemExit

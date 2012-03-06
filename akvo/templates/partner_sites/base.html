@@ -16,13 +16,10 @@
   {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
   {% block head %}{% endblock head %}
 
-  {% comment %}
-    
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">
     !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
   </script>
-  {% endcomment %}
 </head>
 <body>
   <div class="bottom_gradient_bar pad_bottom10">
