@@ -1,4 +1,4 @@
-eature: Signing in to Akvo RSR
+Feature: Signing in to Akvo RSR
     As a registered user 
     I want to be able to sign in to my Akvo account
     In order to access cool premium features.
