@@ -52,9 +52,6 @@ urlpatterns = patterns('',
     url(r'^rsr/donate/500/$', direct_to_template, {'template': 'rsr/donate_500.html'}, name='donate_500'),
     url(r'^rsr/donate/paypal/ipn/$', csrf_exempt(paypal_ipn), name='paypal_ipn'),
     
-    url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
-    url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
-    url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
 )
 
 
@@ -90,6 +87,11 @@ urlpatterns += patterns('',
     url(r'^rsr/organisations/(?P<org_type>[_a-zA-Z]+)/$', 'akvo.rsr.views.orglist', name='rsr_org_list_filtered'),
     url(r'^rsr/organisation/(?P<org_id>\d+)/$', 'akvo.rsr.views.orgdetail', name='organisation_main'),
 
+    # Landing pages
+    url(r'^rsr/liveearth/$', 'akvo.rsr.views.liveearth', name='live_earth_landing_page',),
+    url(r'^rsr/walking-for-water/$', 'akvo.rsr.views.walking_for_water', name='wfw_landing_page',),
+    url(r'^rsr/rabobank/$', 'akvo.rsr.views.rabobank', name='rabobank_landing_page',),
+    
     # Account
     url(r'^rsr/signin/$', 'akvo.rsr.views.login', {'template_name': 'rsr/sign_in.html'}, name='signin'),
     url(r'^rsr/signout/$', 'akvo.rsr.views.signout', name='signout'),

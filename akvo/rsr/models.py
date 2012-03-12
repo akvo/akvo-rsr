@@ -1081,6 +1081,14 @@ class BudgetItem(models.Model):
     def __unicode__(self):
         return self.label.__unicode__()
 
+    def get_label(self):
+        "Needed since we have to have a vanilla __unicode__() method for the admin"
+        if self.label.label in self.OTHER_LABELS:
+            # display "other" if other_extra is empty
+            return self.other_extra.strip() or _(u"other")
+        else:
+            return self.__unicode__()
+
     class Meta:
         ordering            = ('label',)
         verbose_name        = _('budget item')
@@ -2040,19 +2048,16 @@ class PartnerSite(models.Model):
     def favicon(self):
         return self.custom_favicon or None
 
-    @classmethod
-    def get_partner_site_url_for_org(cls, org):
+    def get_absolute_url(self):
         url = ''
-        partner_site = get_object_or_404(PartnerSite, organisation=org)
-
-        if partner_site.cname:
-            return partner_site.cname
-
+        if self.cname:
+            return self.cname
+    
         protocol = 'http'
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = '%ss' % protocol
-
-        url = '%s://%s.%s' % (protocol, partner_site.hostname, settings.APP_DOMAIN_NAME)
+    
+        url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
         return url
 
 
