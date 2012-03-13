@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.config.environment.linux.linux_config_test_suite import linux_config_suite
 
@@ -13,6 +13,5 @@ from fab.tests.config.environment.linux.linux_config_test_suite import linux_con
 def environment_config_suite():
     return TestSuiteLoader().create_suite_from_list([linux_config_suite()])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(environment_config_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(environment_config_suite())

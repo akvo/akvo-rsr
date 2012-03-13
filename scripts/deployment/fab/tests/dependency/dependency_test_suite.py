@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.dependency.system_package_dependency_test import SystemPackageDependencyTest
 from fab.tests.dependency.system_package_dependency_collection_test import SystemPackageDependencyCollectionTest
@@ -17,6 +17,5 @@ def dependency_suite():
 
     return TestSuiteLoader().create_suite_from_list([dependency_suite, dependency_verifier_suite()])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(dependency_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(dependency_suite())

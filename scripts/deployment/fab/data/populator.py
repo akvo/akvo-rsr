@@ -10,20 +10,22 @@ import os
 from fab.app.admin import DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
+from fab.database.mysql.commandexecution import DataHandler
 from fab.os.filesystem import FileSystem, LocalFileSystem
 
 
 class RSRDataPopulator(object):
 
-    def __init__(self, data_populator_config, data_host_file_system, local_file_system, django_admin, feedback):
+    def __init__(self, data_populator_config, data_host_file_system, local_file_system, django_admin, data_handler, feedback):
         self.config = data_populator_config
         self.data_host_file_system = data_host_file_system
         self.local_file_system = local_file_system
         self.django_admin = django_admin
+        self.data_handler = data_handler
         self.feedback = feedback
 
     @staticmethod
-    def create_with(deployment_host_config, host_controller):
+    def create_with(database_credentials, deployment_host_config, host_controller):
         data_populator_config = RSRDataPopulatorConfig.create_with(deployment_host_config)
         django_admin = DjangoAdmin.create_with(data_populator_config.rsr_env_path, data_populator_config.rsr_deployment_home, host_controller)
 
@@ -31,6 +33,7 @@ class RSRDataPopulator(object):
                                 FileSystem(host_controller),
                                 LocalFileSystem(),
                                 django_admin,
+                                DataHandler(database_credentials, host_controller),
                                 host_controller.feedback)
 
     def initialise_database(self):
@@ -39,14 +42,14 @@ class RSRDataPopulator(object):
             self.feedback.comment('Initialising database')
             self.django_admin.initialise_database_without_superusers()
 
-    def populate_database(self):
+    def populate_database(self, database_name):
         self._ensure_expected_paths_exist()
 
         data_archive_file_path = os.path.join(self.config.data_archives_home, self._find_latest_data_archive())
-        data_fixture_file_path = data_archive_file_path.rstrip('.zip')
+        data_extract_file_path = data_archive_file_path.rstrip('.zip')
 
-        self._upload_and_unpack_data_archive(data_archive_file_path, data_fixture_file_path)
-        self._populate_rsr_database(data_fixture_file_path)
+        self._upload_and_unpack_data_archive(data_archive_file_path, data_extract_file_path)
+        self._populate_rsr_database(data_extract_file_path, database_name)
 
     def _ensure_expected_paths_exist(self):
         self.local_file_system.exit_if_directory_does_not_exist(self.config.data_archives_home)
@@ -62,42 +65,22 @@ class RSRDataPopulator(object):
         else:
             self.feedback.abort('No local data archives available for uploading from: %s' % self.config.data_archives_home)
 
-    def _upload_and_unpack_data_archive(self, data_archive_file_path, data_fixture_file_path):
-        if self.data_host_file_system.file_exists(data_fixture_file_path):
-            self.feedback.comment('Found latest data fixture at: %s' % data_fixture_file_path)
+    def _upload_and_unpack_data_archive(self, data_archive_file_path, data_extract_file_path):
+        if self.data_host_file_system.file_exists(data_extract_file_path):
+            self.feedback.comment('Found latest data extract at: %s' % data_extract_file_path)
         else:
             self.feedback.comment('Uploading and unpacking latest data archive:')
             self.data_host_file_system.upload_file(data_archive_file_path, self.config.data_archives_home)
             self.data_host_file_system.decompress_data_archive(data_archive_file_path, self.config.data_archives_home)
             self.data_host_file_system.delete_file(data_archive_file_path)
 
-    def _populate_rsr_database(self, data_fixture_file_path):
-        # NB: this sequence only works when running against the corresponding codebase to the
-        #     last applied migration set, which is usually code from the master branch
+    def _populate_rsr_database(self, data_extract_file_path, rsr_database_name):
         with self.data_host_file_system.cd(self.config.rsr_deployment_home):
-            self._run_all_migrations_for_django_apps()
-            self._run_rsr_migrations_to_last_applied()
             self.feedback.comment('Loading RSR data')
-            self.django_admin.load_data_fixture(data_fixture_file_path)
-            self.django_admin.configure_sites()
+            self.data_handler.load_data_from(data_extract_file_path, rsr_database_name)
 
     def _data_archive_path(self, latest_data_archive_name):
         return os.path.join(self.config.data_archives_home, latest_data_archive_name)
-
-    def _run_all_migrations_for_django_apps(self):
-        self.feedback.comment('Running all migrations for Django apps')
-        for app_name in self.config.django_apps_to_migrate:
-            self.django_admin.run_all_migrations_for(app_name)
-
-    def _run_rsr_migrations_to_last_applied(self):
-        with self.local_file_system.cd(self.config.data_archives_home):
-            last_migration_file = self._open_last_migration_file()
-            last_applied_migration = last_migration_file.readline().strip()
-            last_migration_file.close()
-
-            with self.data_host_file_system.cd(self.config.rsr_deployment_home):
-                self.feedback.comment('Running RSR migrations to number %s' % last_applied_migration)
-                self.django_admin.migrate_app_to(last_applied_migration, self.config.rsr_app_name)
 
     def _read_last_applied_migration(self):
         with self.local_file_system.cd(self.config.data_archives_home):
@@ -112,5 +95,5 @@ class RSRDataPopulator(object):
 
     def run_new_rsr_migrations(self):
         with self.data_host_file_system.cd(self.config.rsr_deployment_home):
-            self.feedback.comment('Running new RSR migrations')
-            self.django_admin.run_all_migrations_for(self.config.rsr_app_name)
+            self.feedback.comment('Running new RSR migrations and deleting any stale content types')
+            self.django_admin.run_all_migrations_and_delete_stale_content_types_for(self.config.rsr_app_name)

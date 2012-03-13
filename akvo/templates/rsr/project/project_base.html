@@ -143,23 +143,19 @@
 		<div class="white_box">
 			<div class="space20">
 				<div style="width:45%; float:left; padding-top:10px;">
-					<a class="aqua awesome" href="{% url 'project_get_widget' project.id %}">{% trans 'Get a widget' %}</a>
+					<a class="aqua awesome" href="{% url 'project_add_update' project.id %}">{% trans 'Add update' %}</a>
 				</div>
 				<div style="width:45%; float:right;">
 					<p style="margin:0;" class="tiny grey">
-						{% trans 'Embed a live link to this project to your web site or blog.' %}
+            {% trans 'Sign in to add an update to your project.' %}
 					</p>
 				</div>
 				<div class="clear"></div>
 				<br />
 				<hr />
-					
+        
 				<p class="small grey">
-					{% if can_add_update %}
-						<a href="{% url 'project_add_update' project.id %}">{% trans 'Add update' %}</a> {% trans 'to this project.' %}<br />	
-					{% else %}
-						<a href="{% url 'signin' %}?next={{request.path}}">{% trans 'Sign in' %}</a>  {% trans 'to add update' %}<br />
-					{% endif %}			
+          <a href="{% url 'project_get_widget' project.id %}">{% trans 'Get a widget' %}</a> {% trans "for your web site" %}<br />
 					<a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans 'to this project' %}<br />
 					<a href="/rsr/rss/updates/{{project.id}}/">{% trans 'Subscribe' %}</a> {% trans 'to the RSS feed of this project ' %}
 				</p>

@@ -7,7 +7,7 @@
 
 import mox, os
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.os.filesystem import LocalFileSystem
 from fab.verifiers.config import ConfigFileVerifier
@@ -58,6 +58,5 @@ class ConfigFileVerifierTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(ConfigFileVerifierTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

@@ -28,7 +28,8 @@ class CommandOption(object):
 
 class CommandResponse(object):
 
-    NO_SUPER_USERS = 'no'
+    NO_SUPER_USERS                      = 'no'
+    YES_TO_DELETE_STALE_CONTENT_TYPES   = 'yes'
 
 
 class FixtureOption(object):
@@ -69,19 +70,17 @@ class DjangoAdmin(object):
     def read_setting(self, setting_name):
         with self._change_dir_rsr_app_home():
             with self.host_controller.hide_command_and_output():
-                self.feedback.comment('Reading setting: %s' % setting_name)
+                self.feedback.comment('Reading Django app setting: %s' % setting_name)
                 find_setting_command = '%s | grep %s' % (self._admin_command(DjangoAdminCommand.DIFF_SETTINGS), setting_name)
                 setting_value = self._run_command_in_virtualenv(find_setting_command).split(' = ')[-1]
                 return ast.literal_eval(setting_value)
 
     def initialise_database_without_superusers(self):
-        self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS, self._admin_command(DjangoAdminCommand.SYNC_DB)))
+        self._run_command_in_virtualenv(self._respond_with(CommandResponse.NO_SUPER_USERS,
+                                                           self._admin_command(DjangoAdminCommand.SYNC_DB)))
 
     def _respond_with(self, response, command):
         return 'echo %s | %s' % (response, command)
-
-    def synchronise_data_models(self):
-        self._run_command(DjangoAdminCommand.SYNC_DB)
 
     def last_applied_migration_for(self, app_name):
         migration_listing = self._migrate(app_name, MigrationOption.LIST_ALL).split('\r\n')
@@ -97,6 +96,10 @@ class DjangoAdmin(object):
 
     def run_all_migrations_for(self, app_name):
         self._migrate(app_name)
+
+    def run_all_migrations_and_delete_stale_content_types_for(self, app_name):
+        self._run_command_in_virtualenv(self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
+                                                           self._admin_command(DjangoAdminCommand.MIGRATE, app_name)))
 
     def skip_all_migrations_for(self, app_name):
         self._migrate(app_name, MigrationOption.SKIP_ALL)

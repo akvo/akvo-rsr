@@ -293,7 +293,6 @@ def filteredprojectlist(request, org_id):
     page = project_list_data(request, projects)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
 
-
 def _redirect_from_landing_page_with_partner_site_id(partner_site_id):
     partner_site = get_object_or_404(PartnerSite, pk=partner_site_id)
     return HttpResponseRedirect(partner_site.get_absolute_url())

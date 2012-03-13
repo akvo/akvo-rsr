@@ -51,7 +51,7 @@
             {% endif %}
           </div>
           <p class="small grey marg_bottom0 marg_top0">
-            <span id="id_title_tips" class="hide"><span id="id_title_tips_length">50</span> {% trans 'characters left' %}</span>&nbsp;
+            <span id="id_title_tips"><span id="id_title_tips_length">50</span> {% trans 'characters left' %}</span>&nbsp;
           </p>
         </div>
 
@@ -74,8 +74,8 @@
             {% endif %}
           </div>
           <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_photo_tips" class="hide"></span>&nbsp;
-            </p>
+            <span id="id_photo_tips" class="hide"></span>&nbsp;
+          </p>
         </div>
 
         <div id="photo_meta" style="display:none;">
@@ -88,7 +88,7 @@
               {% endif %}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_photo_caption_tips" class="hide"><span id="id_photo_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_photo_caption_tips"><span id="id_photo_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
 
@@ -101,10 +101,10 @@
               {% endif %}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_photo_credit_tips" class="hide"><span id="id_photo_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_photo_credit_tips"><span id="id_photo_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
-          <p class="tiny marg_top0"><a style="color:red;" id="clear_photo" href="#">{% trans "Remove photo" %}</a></p>
+          <p class="tiny marg_top10"><a style="color:red;" id="clear_photo" href="#">{% trans "Remove photo" %}</a></p>
         </div>
 
         <div class="clearfix marg_top20">
@@ -137,7 +137,7 @@
               {{form.video_caption}}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_video_caption_tips" class="hide"><span id="id_video_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_video_caption_tips"><span id="id_video_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
           <div class="clearfix">
@@ -149,7 +149,7 @@
               {% endif %}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_video_credit_tips" class="hide"><span id="id_video_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_video_credit_tips"><span id="id_video_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
           <p class="tiny"><a style="color:red;" id="clear_video" href="#">{% trans "Remove video" %}</a></p>
@@ -184,6 +184,7 @@
     }
   });
 
+  /*
   jQ("input[type='text']").on("focusin", function(event){
     jQ('#' + jQ(this).attr('id') + '_tips').show();
   });
@@ -191,6 +192,7 @@
   jQ("input[type='text']").on("focusout", function(event){
     jQ('#' + jQ(this).attr('id') + '_tips').hide();
   });
+  */
   
   jQ('#id_photo').on("change", function(event){
     if (jQ('#id_photo').val() != '') {
