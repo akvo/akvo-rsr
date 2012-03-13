@@ -67,6 +67,11 @@
 
         <div class="clearfix marg_top20">
           {{form.photo.label_tag}}
+          {% if update and update.photo %}
+            <img style="margin-bottom:30px;" src="{% thumbnail update.photo 200x150 crop autocrop sharpen upscale %}">
+          {% else %}
+            <h1>no photo</h1>
+          {% endif %}
           <div class="input">
             {{form.photo}}
             {% if form.photo.errors %}
@@ -226,7 +231,6 @@
     }
     jQ('#video_tips').show();
   });
-  
 
   jQ('#clear_video').on("click", function(event){
     jQ('#id_video').val('');
