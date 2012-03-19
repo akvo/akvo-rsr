@@ -182,11 +182,9 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mock_virtualenv.list_installed_packages()
 
     def _expected_pip_install_command(self, quietly, time_stamped_rsr_env_name):
-        quiet_mode_switch = "-q " if quietly else ""
-        return "pip install %s-M -E %s -r %s --log=%s" % (quiet_mode_switch,
-                                                          self.virtualenv_installer_config.rsr_env_path,
-                                                          self._expected_pip_requirements_file_path(),
-                                                          self._expected_pip_log_file_path(time_stamped_rsr_env_name))
+        return "pip install %s-M -r %s --log=%s" % ("-q " if quietly else "",
+                                                    self._expected_pip_requirements_file_path(),
+                                                    self._expected_pip_log_file_path(time_stamped_rsr_env_name))
 
     def _expected_pip_requirements_file_path(self):
         pip_requirements_file = self.pip_requirements_url.split('/')[-1]
