@@ -22,88 +22,79 @@
 	}
 </style>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	
-	<script type="text/javascript" charset="utf-8">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>	
+<script type="text/javascript" charset="utf-8">
+  var jQ = jQuery.noConflict();
 
-        var jQ = jQuery.noConflict();
+  function loadGlobalMap() {
+    var center = new google.maps.LatLng(0,0);
+    {% for organisation in organisations %}
+      var organisation_{{ organisation.id }}_url = "{{organisation.get_absolute_url}}";
+      var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude }};
+      var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude }};
+      var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);
+      var zoom = {{ zoom }};
+    {% endfor %}
 
-	    function loadGlobalMap() {
+    var mapCanvas = document.getElementById('map_canvas');
+    var mapOptions = {
+      {% if map_type == 'static' %}
+        draggable: false,
+        disableDefaultUI: true,
+      {% endif %}
+      center: center,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false,
+      zoom: zoom,
+      streetViewControl: false
+    };
 
-	        var center = new google.maps.LatLng(0,0);
+    var markerIcon = "{{ marker_icon }}";
+    var smallIcon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
+    var normalIcon = new google.maps.MarkerImage(markerIcon);
 
-	        {% for organisation in organisations %}
-                var organisation_{{ organisation.id }}_url = "{{organisation.get_absolute_url}}";
-	            var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude }};
-	            var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude }};
-	            var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);
-                var zoom = {{ zoom }};
-	        {% endfor %}
+    var map = new google.maps.Map(mapCanvas, mapOptions);
 
-	        var mapCanvas = document.getElementById('map_canvas');
-
-	        var mapOptions = {
-                {% if map_type == 'static' %}
-                    draggable: false,
-                    disableDefaultUI: true,
-                {% endif %}
-	            center: center,
-	            mapTypeId: google.maps.MapTypeId.ROADMAP,
-	            scrollwheel: false,
-	            zoom: zoom,
-                streetViewControl: false
-            };
-
-            var markerIcon = "{{ marker_icon }}";
-            var smallIcon = new google.maps.MarkerImage(markerIcon,
-                null, null, null, new google.maps.Size(10.5,17));
-            var normalIcon = new google.maps.MarkerImage(markerIcon);
-
-	        var map = new google.maps.Map(mapCanvas, mapOptions);
-
-            {% if organisations %}
-	        {% for organisation in organisations %}
-	            var organisation_{{ organisation.id }}_marker = new google.maps.Marker({
-                    {% if map_type == 'static' %}
-                        icon: smallIcon,
-                    {% else %}
-                        icon: normalIcon,
-                    {% endif %}
-	                map: map,
-	                position: organisation_{{ organisation.id }}_coordinates,
-	                title: 'Organisation {{ organisation.id }}'
-	            });
-
-                {% if map_type != 'static' %}
-					var organisation_{{ organisation.id }}_info = '<div class="mapInfoWindow">' +
-		                '<a href="' + organisation_{{ organisation.id }}_url + '">' +
-	                    '{{ organisation.name|smart_truncate:35}}</a><br>' +
-	                    '<a href="' + organisation_{{ organisation.id }}_url + '">' +
-		                '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
-						'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
-						'{{organisation.primary_location.country.continent}}<br />' +
-						'{{organisation.primary_location.country}}' +
-						'{% if organisation.primary_location.city and organisation.primary_location.country %},{% endif %} {{organisation.primary_location.city}}</p></div>' +
-		                '</div>';
-	
-	            var organisation_{{ organisation.id }}_infowindow = new google.maps.InfoWindow({
-	                content: organisation_{{ organisation.id }}_info
-	            });
-	            google.maps.event.addListener(organisation_{{ organisation.id }}_marker, 'click', function() {
-	                organisation_{{ organisation.id }}_infowindow.open(map, organisation_{{ organisation.id }}_marker);
-	            });
-                {% endif %}
-            {% endif %}
-	        {% endfor %}
-
-	    }
-
-        jQ(document).ready(function() {
-            loadGlobalMap();
+    {% if organisations %}
+      {% for organisation in organisations %}
+        var organisation_{{ organisation.id }}_marker = new google.maps.Marker({
+          {% if map_type == 'static' %}
+            icon: smallIcon,
+          {% else %}
+            icon: normalIcon,
+          {% endif %}
+          map: map,
+          position: organisation_{{ organisation.id }}_coordinates, title: 'Organisation {{ organisation.id }}'
         });
 
-	</script>
+        {% if map_type != 'static' %}
+          var organisation_{{ organisation.id }}_info = '<div class="mapInfoWindow">' +
+            '<a href="' + organisation_{{ organisation.id }}_url + '">' +
+            '{{ organisation.name|smart_truncate:35}}</a><br>' +
+            '<a href="' + organisation_{{ organisation.id }}_url + '">' +
+            '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
+            '<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
+            '{{organisation.primary_location.country.continent}}<br />' +
+            '{{organisation.primary_location.country}}' +
+            '{% if organisation.primary_location.city and organisation.primary_location.country %},{% endif %} {{organisation.primary_location.city}}</p></div>' +
+            '</div>';
+
+          var organisation_{{ organisation.id }}_infowindow = new google.maps.InfoWindow({
+            content: organisation_{{ organisation.id }}_info
+          });
+          google.maps.event.addListener(organisation_{{ organisation.id }}_marker, 'click', function() {
+            organisation_{{ organisation.id }}_infowindow.open(map, organisation_{{ organisation.id }}_marker);
+          });
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  }
+
+  jQ(document).ready(function() {
+    loadGlobalMap();
+  });
+</script>
 
 {% if width == 0 and height == 0 %}
     <div id="map_canvas" style="width: 100%; height: 100%;"></div>
