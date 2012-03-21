@@ -51,7 +51,7 @@
             {% endif %}
           </div>
           <p class="small grey marg_bottom0 marg_top0">
-            <span id="id_title_tips" class="hide"><span id="id_title_tips_length">50</span> {% trans 'characters left' %}</span>&nbsp;
+            <span id="id_title_tips"><span id="id_title_tips_length">50</span> {% trans 'characters left' %}</span>&nbsp;
           </p>
         </div>
 
@@ -67,6 +67,11 @@
 
         <div class="clearfix marg_top20">
           {{form.photo.label_tag}}
+          {% if update and update.photo %}
+            <img style="margin-bottom:30px;" src="{% thumbnail update.photo 200x150 crop autocrop sharpen upscale %}">
+          {% else %}
+            <h1>no photo</h1>
+          {% endif %}
           <div class="input">
             {{form.photo}}
             {% if form.photo.errors %}
@@ -74,8 +79,8 @@
             {% endif %}
           </div>
           <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_photo_tips" class="hide"></span>&nbsp;
-            </p>
+            <span id="id_photo_tips" class="hide"></span>&nbsp;
+          </p>
         </div>
 
         <div id="photo_meta" style="display:none;">
@@ -88,7 +93,7 @@
               {% endif %}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_photo_caption_tips" class="hide"><span id="id_photo_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_photo_caption_tips"><span id="id_photo_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
 
@@ -101,10 +106,10 @@
               {% endif %}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_photo_credit_tips" class="hide"><span id="id_photo_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_photo_credit_tips"><span id="id_photo_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
-          <p class="tiny marg_top0"><a style="color:red;" id="clear_photo" href="#">{% trans "Remove photo" %}</a></p>
+          <p class="tiny marg_top10"><a style="color:red;" id="clear_photo" href="#">{% trans "Remove photo" %}</a></p>
         </div>
 
         <div class="clearfix marg_top20">
@@ -116,8 +121,18 @@
               <span class="red small">{{form.video.errors.0}}</span>
             {% endif %}
           </div>
-          {# if form.video.errors #}
-          {% if 0 %}
+          <p class="small red marg_bottom0 marg_top0">
+            <span id="video_tips">
+              {% if form.video.errors %}
+                {{form.video.errors.0}}
+              {% else %}
+                &nbsp;
+              {% endif %}
+            </span>
+
+          {% comment %}
+          {% if form.video.errors %}
+          {# if 0 #}
               <p class="small red marg_bottom0 marg_top0">
                 <span class="red small">{{form.video.errors.0}}</span>
               </p>
@@ -129,6 +144,7 @@
               &nbsp;
             </p>
           {% endif %}
+          {% endcomment %}
         </div>
         <div id="video_meta" style="{% if not form.video.errors and not form.video_caption.errors and not form.video_credit.errors and not form.video_credit.value and not form.video_caption.value %}display:none;{% endif %}">
           <div class="clearfix">
@@ -137,7 +153,7 @@
               {{form.video_caption}}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_video_caption_tips" class="hide"><span id="id_video_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_video_caption_tips"><span id="id_video_caption_tips_length">75</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
           <div class="clearfix">
@@ -149,7 +165,7 @@
               {% endif %}
             </div>
             <p class="small grey marg_bottom0 marg_top0">
-              <span id="id_video_credit_tips" class="hide"><span id="id_video_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
+              <span id="id_video_credit_tips"><span id="id_video_credit_tips_length">25</span> {% trans 'characters left' %}</span>&nbsp;
             </p>
           </div>
           <p class="tiny"><a style="color:red;" id="clear_video" href="#">{% trans "Remove video" %}</a></p>
@@ -173,7 +189,6 @@
 
 {% block jq_ready %}
   var video_warning = '{% trans "The url provided is not a valid Blip, Vimeo or YouTube video" %}';
-  var video_ok = '{% trans "Valid url :-)" %}';
 
   {# Text element length check #}
   jQ("input[type='text']").on("keyup", function(event){
@@ -184,14 +199,6 @@
     }
   });
 
-  jQ("input[type='text']").on("focusin", function(event){
-    jQ('#' + jQ(this).attr('id') + '_tips').show();
-  });
-
-  jQ("input[type='text']").on("focusout", function(event){
-    jQ('#' + jQ(this).attr('id') + '_tips').hide();
-  });
-  
   jQ('#id_photo').on("change", function(event){
     if (jQ('#id_photo').val() != '') {
       jQ('#photo_meta').show('slow');
@@ -206,30 +213,15 @@
     jQ('#id_photo_credit').val(''); 
     jQ('#photo_meta').hide('slow');
   });
-
+  
   jQ('#id_video').on("focusin", function(event){
-    if (jQ(this).val() == ''){
-      jQ('#video_tips').show();
-    }
     jQ('#video_meta').show('slow');
   });
-
+  
   jQ('#id_video').on("focusout", function(event){
     var url = jQ(this).val();
-    if (url == ''){
-       jQ('#video_meta').hide('slow');
-    }
-    if (validate_movie(url) || url == '' ) {
-      jQ('#video_tips').hide();
-      jQ('#video_tips').removeClass('red');
-      jQ('#video_tips').removeClass('green');
-    } 
-  });
-
-  jQ('#id_video').on("keyup", function(event){
-    var url = jQ(this).val();
     if (validate_movie(url)) {
-      jQ('#video_tips').html(video_ok);
+      jQ('#video_tips').html('&nbsp;');
       jQ('#video_tips').removeClass('red');
       jQ('#video_tips').addClass('green');
     } else {

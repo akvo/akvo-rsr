@@ -39,7 +39,7 @@
            	margin-left: 20px;
            	background-color:#FFFFE0; 
            	border:3px outset #EEE8AA; 
-           	color:yellow;
+           	/*color:yellow;*/
             padding: 10px;
 
           }
@@ -50,18 +50,20 @@
         	  margin-left: 20px;
           }
   			</style>
-  			<div class="notice">
+  			<div class="notice" style="background-color:#ffffe0;">
       	  <div class="noticebutton">
-      		  <a class="aqua awesome" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
+      		  <a class="aqua awesome" style="color:#fff;" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
       		</div>
-      		<p class="nano-lede">Find a typo?  :)</p>
-      		<p class="nano-lede">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
+      		<p class="nano-lede grey">Find a typo?  :)</p>
+      		<p class="nano-lede grey">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
       	</div>
     	{% endif %}
     
     
     {% if update.text_location == 'B' %}
-      {{ update.text|linebreaks }}
+      <p class="small grey">
+        {{ update.text|linebreaks }}
+      </p>
     {% endif %}	
     {% if update.video %}
       <div class="marg20">
@@ -84,7 +86,9 @@
       </div>
     {% endif %}
     {% if update.text_location == 'E' %}
-      {{ update.text|linebreaks }}
+      <p class="small grey">
+        {{ update.text|linebreaks }}
+      </p>
     {% endif %}
     <hr style="margin-bottom:5px;" />
     <div class="txt_right">
