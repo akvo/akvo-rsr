@@ -51,6 +51,7 @@ class DjangoAdminTest(mox.MoxTestBase):
         """fab.tests.app.admin.django_admin_test  Has expected command responses"""
 
         self.assertEqual('no', CommandResponse.NO_SUPER_USERS)
+        self.assertEqual('yes', CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES)
 
     def test_has_expected_fixture_options(self):
         """fab.tests.app.admin.django_admin_test  Has expected data fixture options"""
@@ -102,7 +103,7 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self._change_dir_rsr_app_home()
         self._hide_command_and_output()
-        self.mock_feedback.comment('Reading setting: some_setting_name')
+        self.mock_feedback.comment('Reading Django app setting: some_setting_name')
         self._run_command_in_virtualenv(expected_find_setting_command, expected_setting_string)
         self.mox.ReplayAll()
 
@@ -140,6 +141,7 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         initialise_database_command = self._respond_with(CommandResponse.NO_SUPER_USERS,
                                                          self._expected_admin_command(DjangoAdminCommand.SYNC_DB, CommandOption.NONE))
+
         self._run_command_in_virtualenv(initialise_database_command)
         self.mox.ReplayAll()
 
@@ -147,14 +149,6 @@ class DjangoAdminTest(mox.MoxTestBase):
 
     def _respond_with(self, response, command):
         return 'echo %s | %s' % (response, command)
-
-    def test_can_synchronise_data_models(self):
-        """fab.tests.app.admin.django_admin_test  Can synchronise data models"""
-
-        self._run_admin_command(DjangoAdminCommand.SYNC_DB, CommandOption.NONE)
-        self.mox.ReplayAll()
-
-        self.django_admin.synchronise_data_models()
 
     def test_can_find_last_applied_migration_for_specified_app(self):
         """fab.tests.app.admin.django_admin_test  Can find the last applied migration for a specified app"""
@@ -197,6 +191,17 @@ class DjangoAdminTest(mox.MoxTestBase):
 
         self.django_admin.run_all_migrations_for('rsr_app')
 
+    def test_can_run_all_migrations_for_specified_app_and_delete_stale_content_types(self):
+        """fab.tests.app.admin.django_admin_test  Can run all migrations for a specified app and delete stale content types"""
+
+        run_migrations_command = self._respond_with(CommandResponse.YES_TO_DELETE_STALE_CONTENT_TYPES,
+                                                    self._expected_admin_command(DjangoAdminCommand.MIGRATE, 'rsr_app'))
+
+        self._run_command_in_virtualenv(run_migrations_command)
+        self.mox.ReplayAll()
+
+        self.django_admin.run_all_migrations_and_delete_stale_content_types_for('rsr_app')
+
     def test_can_skip_all_migrations_for_specified_app(self):
         """fab.tests.app.admin.django_admin_test  Can skip all migrations for a specified app"""
 
@@ -236,5 +241,4 @@ def suite():
     return TestSuiteLoader().load_tests_from(DjangoAdminTest)
 
 if __name__ == '__main__':
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+    TestRunner().run_test_suite(suite())

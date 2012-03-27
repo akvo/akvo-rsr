@@ -14,6 +14,5 @@ from fab.tests.config.loader.deployment_config_loader_test import DeploymentConf
 def config_loader_suite():
     return TestSuiteLoader().create_suite_from_classes([ConfigTypeTest, DeploymentConfigLoaderTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(config_loader_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(config_loader_suite())

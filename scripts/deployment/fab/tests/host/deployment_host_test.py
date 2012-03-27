@@ -7,7 +7,7 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.helpers.internet import Internet
@@ -270,6 +270,5 @@ class DeploymentHostTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(DeploymentHostTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

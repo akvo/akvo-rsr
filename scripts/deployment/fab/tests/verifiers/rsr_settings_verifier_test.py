@@ -9,7 +9,7 @@ import mox, os
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.app.admin import DjangoAdmin
+from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.helpers.feedback import ExecutionFeedback
@@ -24,11 +24,11 @@ class RSRSettingsVerifierTest(mox.MoxTestBase):
         super(RSRSettingsVerifierTest, self).setUp()
         self.deployment_host_config = CIDeploymentHostConfig.for_test()
         self.deployment_config = RSRDeploymentConfig.create_with(self.deployment_host_config)
-        self.mock_django_admin = self.mox.CreateMock(DjangoAdmin)
+        self.mock_settings_reader = self.mox.CreateMock(DjangoSettingsReader)
         self.mock_host_file_system = self.mox.CreateMock(FileSystem)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.settings_verifier = RSRSettingsVerifier(self.deployment_host_config, self.deployment_config, self.mock_django_admin,
+        self.settings_verifier = RSRSettingsVerifier(self.deployment_host_config, self.deployment_config, self.mock_settings_reader,
                                                      self.mock_host_file_system, self.mock_feedback)
 
     def test_can_create_instance_for_local_deployment_host(self):
@@ -60,11 +60,10 @@ class RSRSettingsVerifierTest(mox.MoxTestBase):
     def test_will_exit_if_settings_do_not_match_expected_database_name(self):
         """fab.tests.verifiers.rsr_settings_verifier_test  Will exit if deployed settings do not match expected database name"""
 
-        deployed_database_settings = { 'default': { 'NAME': 'deployed_database_name' } }
         mismatched_database_settings_message = 'Cannot deploy to database [%s] when deployed RSR settings use [deployed_database_name]' % \
                                                 self.deployment_host_config.rsr_database_name
 
-        self.mock_django_admin.read_setting('DATABASES').AndReturn(deployed_database_settings)
+        self.mock_settings_reader.rsr_database_name().AndReturn('deployed_database_name')
         self.mock_feedback.abort(mismatched_database_settings_message).AndRaise(SystemExit(mismatched_database_settings_message))
         self.mox.ReplayAll()
 
@@ -76,9 +75,7 @@ class RSRSettingsVerifierTest(mox.MoxTestBase):
     def test_will_confirm_if_deployment_database_name_matches_expected_database_name_from_settings(self):
         """fab.tests.verifiers.rsr_settings_verifier_test  Will confirm if deployment database name matches expected database name from settings"""
 
-        deployed_database_settings = { 'default': { 'NAME': self.deployment_host_config.rsr_database_name } }
-
-        self.mock_django_admin.read_setting('DATABASES').AndReturn(deployed_database_settings)
+        self.mock_settings_reader.rsr_database_name().AndReturn(self.deployment_host_config.rsr_database_name)
         self.mock_feedback.comment('Deployment database name matches expected RSR database name in settings: %s' % \
                                     self.deployment_host_config.rsr_database_name)
         self.mox.ReplayAll()
@@ -90,5 +87,4 @@ def suite():
     return TestSuiteLoader().load_tests_from(RSRSettingsVerifierTest)
 
 if __name__ == '__main__':
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+    TestRunner().run_test_suite(suite())

@@ -7,7 +7,7 @@
 
 import unittest2
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 
@@ -70,8 +70,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         expected_packages = ['python-support', 'python-central', 'libxml2', 'libxml2-dev', 'libgpg-error0',
                              'libgcrypt11', 'libxslt1.1', 'libxslt1-dev', 'python-libxml2', 'python-libxslt1',
-                             'libgmp3c2', 'libgmpxx4ldbl', 'libgmp3-dev', 'python-gmpy', 'libfreetype6',
-                             'libjpeg62', 'libjpeg62-dev']
+                             'libfreetype6', 'libjpeg62', 'libjpeg62-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
@@ -142,6 +141,5 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 def suite():
     return TestSuiteLoader().load_tests_from(SystemPackageSpecificationsTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

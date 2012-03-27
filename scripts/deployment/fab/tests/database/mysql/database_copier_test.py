@@ -8,13 +8,11 @@
 import imp, mox
 import fabric.api
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 import fab.tests.templates.database_credentials_template
 from database_credentials import DatabaseCredentials
 
-from fab.config.rsr.database import RSRDatabaseConfig
-from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.database.mysql.commandexecution import DatabaseCopier
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
@@ -24,14 +22,14 @@ class DatabaseCopierTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseCopierTest, self).setUp()
-        database_config = RSRDatabaseConfig(DatabaseCredentials(), CIDeploymentHostConfig.for_test())
-        self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_config.admin_user, database_config.admin_password)
+        database_credentials = DatabaseCredentials()
+        self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_credentials.admin_user, database_credentials.admin_password)
 
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_host_controller.feedback = self.mock_feedback
 
-        self.database_copier = DatabaseCopier(database_config, self.mock_host_controller)
+        self.database_copier = DatabaseCopier(database_credentials, self.mock_host_controller)
 
     def test_can_create_duplicate_database(self):
         """fab.tests.database.mysql.database_copier_test  Can create duplicate database"""
@@ -51,6 +49,5 @@ class DatabaseCopierTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(DatabaseCopierTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

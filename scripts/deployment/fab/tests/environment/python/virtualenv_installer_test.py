@@ -8,7 +8,7 @@
 import fabric.api
 import mox, os
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
@@ -182,11 +182,9 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         self.mock_virtualenv.list_installed_packages()
 
     def _expected_pip_install_command(self, quietly, time_stamped_rsr_env_name):
-        quiet_mode_switch = "-q " if quietly else ""
-        return "pip install %s-M -E %s -r %s --log=%s" % (quiet_mode_switch,
-                                                          self.virtualenv_installer_config.rsr_env_path,
-                                                          self._expected_pip_requirements_file_path(),
-                                                          self._expected_pip_log_file_path(time_stamped_rsr_env_name))
+        return "pip install %s-M -r %s --log=%s" % ("-q " if quietly else "",
+                                                    self._expected_pip_requirements_file_path(),
+                                                    self._expected_pip_log_file_path(time_stamped_rsr_env_name))
 
     def _expected_pip_requirements_file_path(self):
         pip_requirements_file = self.pip_requirements_url.split('/')[-1]
@@ -212,6 +210,5 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(VirtualEnvInstallerTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())
