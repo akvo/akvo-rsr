@@ -100,8 +100,7 @@ class VirtualEnvInstaller(object):
         self.permissions.set_web_group_permissions_on_directory(self.package_download_dir)
 
     def _pip_install_command(self, pip_requirements_file, quietly):
-        quite_mode_switch = "-q " if quietly else ""
-        pip_install_command_base = "pip install %s-M -E %s" % (quite_mode_switch, self.virtualenv_path)
+        pip_install_command_base = "pip install %s-M" % ("-q " if quietly else "")
 
         return "%s -r %s --log=%s" % (pip_install_command_base, pip_requirements_file, self._time_stamped_pip_install_log_file_path())
 
