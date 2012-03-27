@@ -15,7 +15,7 @@ Feature: Project listing pages smoke testing
 
   Scenario: I can navigate to a project displayed in the project list
     Go to project listing page
-    When I click on the link of the fist project in the project list
+    When I click on the link of the first project in the project list
     Then I see the main page of that project
 
   Scenario: I can get a list of all projects in a Focus Area

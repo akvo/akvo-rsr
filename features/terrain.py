@@ -3,7 +3,7 @@
 from lettuce import after, before, step, world
 from splinter.browser import Browser
 
-world.SITE_UNDER_TEST = 'test.akvo.org'
+world.SITE_UNDER_TEST = 'www.akvo.org'
 
 @before.all
 def setUp():

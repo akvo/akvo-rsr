@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from lettuce import after, before, step, world
-from splinter.browser import Browser
+from lettuce import step, world
 
 
 @step(u'Go to project listing page')
@@ -25,7 +24,7 @@ def then_i_click_on_the_group1_link_at_the_bottom_of_the_list(step, group1):
 
 
 # Scenario: I can navigate to a project displayed in the project list
-@step(u'When I click on the link of the fist project in the project list')
+@step(u'When I click on the link of the first project in the project list')
 def when_i_click_on_the_link_of_the_fist_project_in_the_project_list(step):
     project_link = world.browser.find_by_tag('table').first.find_by_tag('td').first.find_by_tag('a').first.find_by_tag('p').last
     world.project_title = project_link.text

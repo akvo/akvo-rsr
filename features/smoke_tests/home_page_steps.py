@@ -36,10 +36,6 @@ def then_i_click_on_the_first_project_update(step):
 def then_i_expect_to_see_details_for_the_selected_update(step):
     assert world.browser.is_text_present(world.project_update_title)
 
-@step('Then I expect to see the page for the selected update')
-def then_i_expect_to_see_details_for_the_selected_update(step):
-    assert world.browser.is_text_present(world.project_update_title)
-
 
 # Scenario: Home page displays recent blog posts
 @step(u'Then I click on the first blog post')
