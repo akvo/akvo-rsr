@@ -7,7 +7,7 @@
 
 {% block breadcrum_right %}
   {{block.super}}
-  | <a href="#">Project updates</a>
+  | <a href="#">{% trans "Project updates" %}</a>
 {% endblock breadcrum_right %}
 
 {% block breadcrum_items %}
@@ -72,13 +72,6 @@
           </div>
           <div class="clear"></div>
 
-          {% comment %}
-          <h2 class="marg_top40">
-            <a href="{% url 'update_list' project.id %}">
-              {% trans "Project updates" %}
-            </a>
-          </h2>
-          {% endcomment %}
           {% for update in updates|slice:":3" %}
             {% if update.video or update.photo %}
               <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %}">
