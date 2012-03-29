@@ -16,7 +16,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Max, Sum
 from django.db.models.query import QuerySet
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
@@ -64,7 +64,8 @@ from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed,
-    act_on_log_entry, user_activated_callback
+    act_on_log_entry, user_activated_callback, update_project_total_budget,
+    update_project_donations, update_project_pledged
 )
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
@@ -552,6 +553,13 @@ class Project(models.Model):
 
     locations = generic.GenericRelation(Location)
 
+    # denormalized data
+    # =================
+    total_budget = models.DecimalField(_('total budget'), max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+    donations = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+    pending_donations = models.PositiveIntegerField(blank=True, null=True, default=0)
+    pledged = models.DecimalField(_('pledged'), max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
     #http://simonwillison.net/2008/May/1/orm/
@@ -563,21 +571,56 @@ class Project(models.Model):
         return ('project_main', (), {'project_id': self.pk})
 
     def all_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE)
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
 
     def anonymous_donations_amount_received(self):
         amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
         amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         return amount or 0
+
+    # de-normalized fields support
+    def get_total_budget(self):
+        return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    def update_total_budget(self):
+        self.total_budget = self.get_total_budget()
+        self.save()
+
+    def get_donations(self):
+        return Invoice.objects.filter(project__exact=self).filter(
+            status__exact=PAYPAL_INVOICE_STATUS_COMPLETE
+        ).aggregate(Sum('amount_received'))['amount_received__sum'] or 0
+
+    def update_donations(self):
+        self.donations = self.get_donations()
+        self.save()
+
+    def get_pending_donations(self):
+        return Invoice.objects.filter(project__exact=self).filter(
+            status__exact=PAYPAL_INVOICE_STATUS_PENDING
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    def update_pending_donations(self):
+        self.pending_donations = self.get_pending_donations()
+        self.save()
+
+    def get_pledged(self):
+        return Partnership.objects.filter(project__exact=self).filter(
+            partner_type__exact=Partnership.FUNDING_PARTNER
+        ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
+
+    def update_pledged(self):
+        self.pledged = self.get_pledged()
+        self.save()
 
     @property
     def view_count(self):
@@ -2080,5 +2123,14 @@ post_save.connect(act_on_log_entry, sender=LogEntry)
 pre_save.connect(change_name_of_file_on_change, sender=Organisation)
 pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
+
+post_save.connect(update_project_total_budget, sender=BudgetItem)
+post_save.connect(update_project_donations, sender=Invoice)
+post_save.connect(update_project_pledged, sender=Partnership)
+
+post_delete.connect(update_project_total_budget, sender=BudgetItem)
+post_delete.connect(update_project_donations, sender=Invoice)
+post_delete.connect(update_project_pledged, sender=Partnership)
+
 
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)
