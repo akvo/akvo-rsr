@@ -87,7 +87,7 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
         domain = request.get_host().split(':')[0]
         if is_rsr(domain):  # Vanilla Akvo RSR instance
-            get_or_create_site(domain)
+            site = get_or_create_site(domain)
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
