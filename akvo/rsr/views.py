@@ -813,7 +813,7 @@ class MobileNumberForm(forms.Form):
         """
         cd = self.cleaned_data
         if not 'phone_number' in cd:
-            raise forms.ValidationError(_(u'Field phone_number missing from MobileForm.'))        
+            raise forms.ValidationError(u'Field phone_number missing from MobileForm.')
         if cd['phone_number']:
             if self.has_changed():
                 try:
