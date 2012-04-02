@@ -41,23 +41,21 @@
 		<hr />
 		
 		{% if form.first_name.errors or form.last_name.errors %}
-        <div class="error">
-            <p class="c1">{% trans 'A problem occurred' %}</p>
-            {% if form.first_name.errors %}
-            <p>{{ form.first_name.errors|join:", " }}</p>
-            {% endif %}
-            {% if form.last_name.errors %}
-            <p>{{ form.last_name.errors|join:", " }}</p>
-            {% endif %}
-        </div>
-        {% endif %}
+			<div class="error">
+				<p class="c1">{% trans 'A problem occurred' %}</p>
+				{% if form.first_name.errors %}
+					<p>{{ form.first_name.errors|join:", " }}</p>
+				{% endif %}
+				{% if form.last_name.errors %}
+					<p>{{ form.last_name.errors|join:", " }}</p>
+				{% endif %}
+			</div>
+		{% endif %}
 			<h3>{% trans 'Change your name:' %}</h3>
 			{{ form.first_name }}
-            <p class="small grey">{% trans 'Your first (given) name' %}.</p>
-            
-            {{ form.last_name }}
-            <p class="small grey">{% trans 'Your last (family) name' %}.</p>
-			
+			<p class="small grey">{% trans 'Your first (given) name' %}.</p>
+			{{ form.last_name }}
+			<p class="small grey">{% trans 'Your last (family) name' %}.</p>
 			<p class="small grey">{% trans 'Your first and last name will be displayed when you post comments or updates to Akvo.' %}</p>
 		<div class="clear"></div>
 		<hr />

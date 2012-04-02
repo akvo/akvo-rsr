@@ -4,14 +4,14 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'home' %}"><span>Projects home</span></a></li>
-  <li id="last_breadcrum_item">Map</li>
+  <li><a href="{% url 'home' %}"><span>{% trans "Projects home" %}</span></a></li>
+  <li id="last_breadcrum_item">{% trans "Map" %}</li>
 {% endblock breadcrum_items %}
 
 
 {% block content %}
   <div class="sixteen columns">
-    <h1>Project map</h1>
+    <h1>{% trans "Project map" %}</h1>
     {% google_organisation_projects_map organisation 'dynamic' 940 500 2 %}
   </div>
 {% endblock content %}
