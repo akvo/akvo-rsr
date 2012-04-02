@@ -71,14 +71,14 @@ def is_partner_site(domain):
 
 
 def get_or_create_site(domain):
-    try:
-        sites = Site.objects.filter(domain=domain)
+    sites = Site.objects.filter(domain=domain)
+    if sites:
         site, duplicates = sites[0], sites[1:]
         if duplicates:
             for duplicate in duplicates:
-                duplicate.delete()
-    except DoesNotExist:
-        site = Site(domain=domain, name=name)
+            duplicate.delete()
+    else:
+        site = Site(domain=domain, name=domain)
     return site
 
 
