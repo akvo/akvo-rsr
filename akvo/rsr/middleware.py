@@ -76,7 +76,7 @@ def get_or_create_site(domain):
         site, duplicates = sites[0], sites[1:]
         if duplicates:
             for duplicate in duplicates:
-            duplicate.delete()
+                duplicate.delete()
     else:
         site = Site(domain=domain, name=domain)
     return site
