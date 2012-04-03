@@ -238,7 +238,7 @@ class InvoiceForm(forms.ModelForm):
 
     def clean(self):
         cd = self.cleaned_data
-        funding_needed = self.project.funding_still_needed()
+        funding_needed = self.project.funds_needed
         if 'amount' in cd:
             if cd['amount'] > funding_needed:
                 raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))

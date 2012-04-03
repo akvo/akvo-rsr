@@ -105,10 +105,11 @@ class BaseProjectListView(BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectListView, self).get_context_data(**kwargs)
-        if context['filtered_projects'].form.data:
-            continent_code = context['filtered_projects'].form.data.get('continent', '')
-            country_id = context['filtered_projects'].form.data.get('locations__country', '')
-            org_id = context['filtered_projects'].form.data.get('organisation', '')
+        form_data = context['filtered_projects'].form.data
+        if form_data:
+            continent_code = form_data.get('continent', '')
+            country_id = form_data.get('locations__country', '')
+            org_id = form_data.get('organisation', '')
             context['search_country'] = Country.objects.get(pk=int(country_id)) if country_id else ''
             context['search_continent'] = dict(CONTINENTS)[continent_code] if continent_code else ''
             context['search_organisation'] = Organisation.objects.get(pk=int(org_id)) if org_id else ''
@@ -133,7 +134,7 @@ class BaseProjectListView(BaseListView):
     def get_queryset(self):
         projects = get_object_or_404(
             Organisation, pk=self.request.organisation_id
-        ).published_projects().funding().latest_update_fields().order_by('-id')
+        ).published_projects().latest_update_fields().order_by('-id')
         return ProjectFilterSet(
             self.request.GET.copy() or None,
             queryset=projects,

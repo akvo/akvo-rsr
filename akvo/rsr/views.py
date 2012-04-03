@@ -174,7 +174,8 @@ def index(request, cms_id=None):
     news_image = ''
     news_title = ''
 
-    projects = Project.objects.published().funding()
+    projects = Project.objects.published()
+    projects_budget = projects.budget()['budget'] or 0
     orgs = Organisation.objects.all()
 
     people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
@@ -205,7 +206,7 @@ def index(request, cms_id=None):
         'orgs': orgs,
         'projects': projects,
         'people_served': people_served,
-        'projects_total_total_budget': round(projects.total_total_budget() / 100000) / 10.0,
+        'projects_budget': round(projects_budget / 100000) / 10.0,
         'updates': updates,
     })
     return context_dict
@@ -259,7 +260,7 @@ def project_list(request, slug='all'):
         else:
             queryset = Project.objects.published().filter(categories__focus_area=focus_area)
 
-    queryset = queryset.funding().latest_update_fields().distinct().order_by('-pk')
+    queryset = queryset.latest_update_fields().distinct().order_by('-pk')
 
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
 
@@ -285,10 +286,10 @@ def filteredprojectlist(request, org_id):
     o: organisation
     '''
     #for use in akvo at a glance
-    projs = Project.objects.published().funding()
+    projs = Project.objects.published()#.funding()
     # get all projects the org is asociated with
     o = get_object_or_404(Organisation, pk=org_id)
-    projects = o.published_projects().funding()
+    projects = o.published_projects()#.funding()
     showcases = projects.order_by('?')[:3]
     page = project_list_data(request, projects)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
@@ -316,7 +317,7 @@ def projectlist(request):
     To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
     '''
     # Get relevant projects
-    projects = Project.objects.published().status_not_archived().funding().select_related()
+    projects = Project.objects.published().status_not_archived().select_related()#.funding()
     # Get projects either by using the query or all
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
@@ -926,13 +927,11 @@ def commentform(request, project_id):
     
 @render_to('rsr/organisation/organisation.html')
 def orgdetail(request, org_id):
-    o = get_object_or_404(Organisation, pk=org_id)
-    org_projects = o.published_projects().status_not_cancelled().status_not_complete()
-    #org_projects = org_projects.status_not_cancelled().status_not_complete()
-    org_partners = o.partners().distinct()
+    organisation = get_object_or_404(Organisation, pk=org_id)
+    org_projects = organisation.published_projects().status_not_cancelled().status_not_complete()
+    org_partners = organisation.partners().distinct()
     return {
-        'org': o, 
-        'o': o, #TODO: fix template and remove
+        'organisation': organisation,
         'org_projects': org_projects, 
         'org_partners': org_partners,
         'site_section': 'projects',
@@ -1010,7 +1009,7 @@ def projectpartners(request, project_id):
 
 @render_to('rsr/project/project_funding.html')  
 def projectfunding(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)    
+    project = get_object_or_404(Project, pk=project_id)
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.projectcomment_set.all().order_by('-time')[:3]
@@ -1149,10 +1148,9 @@ def project_list_widget(request, template='project-list', org_id=0):
         o = get_object_or_404(Organisation, pk=org_id)
         #p = o.published_projects().status_not_archived().status_not_cancelled().funding()
         p = o.published_projects()
-        p = p.status_not_archived().status_not_cancelled().funding()
-
+        p = p.status_not_archived().status_not_cancelled()#.funding()
     else:
-        p = Project.objects.published().status_not_archived().status_not_cancelled().funding()
+        p = Project.objects.published().status_not_archived().status_not_cancelled()#.funding()
     order_by = request.GET.get('order_by', 'name')
     #p = p.annotate(last_update=Max('project_updates__time'))
     p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
@@ -1164,7 +1162,7 @@ def project_list_widget(request, template='project-list', org_id=0):
     #    p = p.order_by(order_by,'name')
     elif order_by == 'last_update':
         p = p.order_by('-last_update', 'name')
-    elif order_by in ['total_budget', 'funds_needed']:
+    elif order_by in ['budget', 'funds_needed']:
         p = p.extra(order_by = ['-%s' % order_by, 'name'])
     else:
         p = p.order_by(order_by, 'name')
@@ -1367,7 +1365,7 @@ def global_map(request):
 
 @render_to('rsr/akvo_at_a_glance.html')
 def data_overview(request):
-    projects = Project.objects.published().funding()
+    projects = Project.objects.published()#.funding()
     orgs = Organisation.objects.all()
     rsr_cache_seconds = getattr(settings, 'RSR_CACHE_SETTINGS', 300)
     template_context = dict(orgs=orgs, projects=projects,
