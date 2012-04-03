@@ -96,16 +96,16 @@
               {% if p.project_plan_detail %}
                 <li><a href="#tab_project_plan"><span>{% trans 'Project plan' %}</span></a></li>
               {% endif %}
-              {% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
-                <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
-              {% endif %}
+              <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
               <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
             </ul>
             <div id="tab_background" class="tab">
               {# <h4 style="font-weight:bold">{% trans 'Background' %}</h4> #}
               <p>{{p.context|linebreaks}}</p>
-              <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
-              <p>{{p.current_status_detail|linebreaks}}</p>
+              {% if p.current_status_detail%}
+                <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
+                <p>{{p.current_status_detail|linebreaks}}</p>
+              {% endif %}
             </div>
             {% if p.project_plan_detail %}
               <div id="tab_project_plan" class="tab">
@@ -204,11 +204,44 @@
       {% endif%}
     ];
   </script>
+
+  <script type="text/javascript">
+    var benchmarks_folded = true;
+    var benchmarks_height = 0;
+    var benchmarks_more = '{% trans "View more" %}...';
+    var benchmarks_less = '{% trans "View less" %}...';
+
+    function init_benchmarks() {
+      if ( $('#benchmarks_inner').height() > 200 ) {
+        $('#benchmarks_switch').show();
+      }
+      benchmarks_height = $('#benchmarks_inner').height();
+      $('#benchmarks_switch').html(benchmarks_more);
+    }
+
+    function handle_benchmarks() {
+      if (benchmarks_folded) {
+        $('#benchmarks').animate({
+          height: benchmarks_height + "px"
+        }, 1000);
+        $('#benchmarks_switch').html(benchmarks_less);
+      } else {
+        $('#benchmarks').animate({
+          height: "200px"
+        }, 1000);
+        $('#benchmarks_switch').html(benchmarks_more);
+      }
+      benchmarks_folded = !benchmarks_folded;
+    }
+  </script>
 {% endblock js %}
+
 
 {% block jq_ready %}
   jQ('#project_tabs').tabs();
   {{block.super}}
   Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
   $('#galleria').galleria({data_source: galleria_data});
+  init_benchmarks();
+  $('#benchmarks_switch').click(function () { handle_benchmarks() });
 {% endblock jq_ready %}

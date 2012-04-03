@@ -181,7 +181,8 @@ div.counter_badge span {
   background-color: #00b200 !important;
   height: 12px;
 }
-.no_border_table, .no_border_table td {
+.no_border_table,
+.no_border_table td {
   border: none;
 }
 .no_border_table td {
@@ -286,4 +287,8 @@ td {
 }
 .tiny_table tr {
   border: none;
+}
+#benchmarks {
+  height: 200px;
+  overflow: hidden;
 }
