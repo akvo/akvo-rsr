@@ -537,18 +537,18 @@ class ProjectAdmin(admin.ModelAdmin):
         }),
         (_(u'Project budget'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The request posted date is filled in for you automatically when you create a project. When the project implementation phase is complete, enter the <em>Date complete</em> here.</p>'),
-            'fields': ('currency',  'total_budget','date_request_posted', 'date_complete',),
+            'fields': ('currency',  'budget','date_request_posted', 'date_complete',),
             }),
         (_(u'Aggregates'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Aggregate financial data</p>'),
-            'fields': (('donations',  'pending_donations','pledged',), ),
+            'fields': (('funds',  'funds_needed',), ),
             }),
         )
     #list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
     #                'city', 'project_plan_summary', 'show_current_image', 'is_published',)
     list_display = ('id', 'name', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     list_filter = ('currency', 'status', )
-    readonly_fields = ('total_budget', 'donations',  'pending_donations','pledged',)
+    readonly_fields = ('budget', 'funds',  'funds_needed',)
     #form = ProjectAdminModelForm
     form = ProjectAdminForm
     def get_actions(self, request):

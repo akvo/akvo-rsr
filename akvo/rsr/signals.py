@@ -232,27 +232,21 @@ def cleanup_reporters(profile, user):
     if not profile.validation == profile.VALIDATED:
         get_model('rsr', 'SmsReporter').objects.filter(userprofile=profile).delete()
 
-def update_project_total_budget(sender, **kwargs):
+def update_project_budget(sender, **kwargs):
     """
     called when BudgetItem objects are added/changed/deleted
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
-        kwargs['instance'].project.update_total_budget()
+        kwargs['instance'].project.update_budget()
+        kwargs['instance'].project.update_funds()
+        kwargs['instance'].project.update_funds_needed()
 
-def update_project_donations(sender, **kwargs):
+def update_project_funding(sender, **kwargs):
     """
-    called when Invoice objects are added/changed/deleted
+    called when Invoice or Partnership objects are added/changed/deleted
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
-        kwargs['instance'].project.update_donations()
-        kwargs['instance'].project.update_pending_donations()
-
-def update_project_pledged(sender, **kwargs):
-    """
-    called when Partnership objects are added/changed/deleted
-    """
-    # kwargs['raw'] is True when we're running manage.py loaddata
-    if not kwargs.get('raw', False):
-        kwargs['instance'].project.update_pledged()
+        kwargs['instance'].project.update_funds()
+        kwargs['instance'].project.update_funds_needed()
