@@ -1757,7 +1757,7 @@ class ProjectUpdate(models.Model):
         return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
-        return u'Project update for %s' % self.project.name
+        return u'Project update for %(project_name)s' % {'project_name': self.project.name}
 
 
 class ProjectComment(models.Model):
@@ -1916,7 +1916,9 @@ class Invoice(models.Model):
         return (self.amount - self.amount_received)
 
     def __unicode__(self):
-        return u'Invoice %s (Project: %s)' % (self.id, self.project)
+        return u'Invoice %(invoice_id)s (Project: %(project_name)s)' % {
+            'invoice_id': self.id, 'project_name':self.project
+        }
 
     class Meta:
         verbose_name = _('invoice')
@@ -2029,7 +2031,7 @@ class PartnerSite(models.Model):
     enabled = models.BooleanField(_('enabled'), default=True)
 
     def __unicode__(self):
-        return u'Partner site for %s' % self.organisation.name
+        return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
 
     @property
     def logo(self):

@@ -43,16 +43,6 @@
 
   <div class="container">
     <div class="breadcrum_back marg_bottom20 clearfix">
-      {% comment %}
-      <div style="float:right;">
-        <p class="normal" style="margin: 4px 10px 0 0; font-size:12px">
-          {% block breadcrum_right %}
-            Feeds: 
-            <a href="#">All projects</a>
-          {% endblock breadcrum_right %}
-        </p>
-      </div>
-      {% endcomment %}
       <ul class="breadcrum">
         {% block breadcrum_items %}
           {% if return_url %}
@@ -65,36 +55,7 @@
     </div>
     {% block content %}{% endblock content %}
   </div>
-  {% comment %}
-  <div class="container">
-    <footer>
-      <div class="two_col_left">
-          <p class="small">
-            Contact <a href="{{organisation.url}}">{{organisation}}</a> at 
-            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>.
-          </p>
-      </div>
-      <div class="two_col_right" style="text-align:right;">
-          <p class="small">
-            Powered by <a href="http://www.akvoapp.org">Akvo</a>
-          </p>
-      </div>
-      <div class="clear"></div>
-    </footer>
-    <div style="background-color:#111; margin-top:80px">
-      <h1 style="color:#ACCC7D;">Development information</h1>
-      {% if queries %}
-        <h2 style="margin:10px; color:#ACCC7D">{{ queries|length }} Quer{{ queries|pluralize:"y,ies" }}</h2>
-        <p style="font-size:12px; color:#888; margin:10px;">
-          {% for query in queries %}
-            {{query}}<br /><br />
-          {% endfor %}
-        </p>
-      {% endif %}
-    </div>
-  </div>
-  {% endcomment %}
-  
+
   <div class="top_gradient_bar pad_bottom10 marg_top40">
     <div class="container pad_top10">
       <div class="two_col_left">
