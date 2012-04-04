@@ -2,11 +2,11 @@
 
 from django import forms
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
 from django.contrib.contenttypes import generic
+from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
@@ -529,7 +529,7 @@ class ProjectAdmin(admin.ModelAdmin):
         #}),
         (_(u'Project details'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Context, Plan Detail, Status Detail and Sustainability fields to tell people more about the project.</p>'),
-            'fields': ('context', 'project_plan_detail', 'current_status_detail', 'sustainability', ),
+            'fields': ('context', 'project_plan', 'current_status', 'sustainability', ),
         }),
         (_(u'Project meta info'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The project meta information fields are not public. They allow you to make notes to other members of your organisation or partners with access to your projects on the RSR Admin pages.</p>'),
