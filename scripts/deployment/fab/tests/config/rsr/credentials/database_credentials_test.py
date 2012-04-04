@@ -5,20 +5,39 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import mox, os
+import simplejson as json
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
+from fab.config.rsr.credentials.database import DatabaseCredentials
+from fab.verifiers.config import RSRCredentialsVerifier
 
 
-class DatabaseCredentialsTest(unittest2.TestCase):
+class FakeDeploymentConfig(object):
+
+    def __init__(self, database_credentials_file_path):
+        self.deployed_database_credentials_file = database_credentials_file_path
+
+class DatabaseCredentialsTest(mox.MoxTestBase):
+
+    FAB_SCRIPTS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../..'))
+    CREDENTIALS_TEMPLATE_PATH = os.path.join(FAB_SCRIPTS_HOME, 'config/rsr/credentials/database.json.template')
 
     def setUp(self):
         super(DatabaseCredentialsTest, self).setUp()
 
-        self.database_credentials = DatabaseCredentials()
+        self.database_credentials = DatabaseCredentials(json.load(open(self.CREDENTIALS_TEMPLATE_PATH)))
+
+    def test_can_load_with_given_deployment_config(self):
+        """fab.tests.config.rsr.credentials.database_credentials_test  Can load with given deployment config"""
+
+        mock_credentials_verifier = self.mox.CreateMock(RSRCredentialsVerifier)
+
+        mock_credentials_verifier.exit_if_database_credentials_not_available()
+        self.mox.ReplayAll()
+
+        DatabaseCredentials.load_with(FakeDeploymentConfig(self.CREDENTIALS_TEMPLATE_PATH), mock_credentials_verifier)
 
     def test_has_admin_user(self):
         """fab.tests.config.rsr.credentials.database_credentials_test  Has database admin user"""
