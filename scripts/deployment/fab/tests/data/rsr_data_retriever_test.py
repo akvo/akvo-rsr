@@ -58,10 +58,9 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
 
         self.assertIsInstance(RSRDataRetriever.create_with(database_credentials, mock_host_controller), RSRDataRetriever)
 
-    def test_can_record_last_applied_migration_and_fetch_data_from_database(self):
-        """fab.tests.data.rsr_data_retriever_test  Can record last applied migration and fetch data from database"""
+    def test_can_fetch_data_from_database(self):
+        """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""
 
-        last_rsr_migration = '0048'
         time_stamped_data_extract_name = 'rsrdb_utc_timestamp'
         self.mock_time_stamp_formatter.append_timestamp('rsrdb').AndReturn(time_stamped_data_extract_name)
         rsr_data_extract_path = os.path.join(self.data_retriever_config.data_archives_home, '%s.sql' % time_stamped_data_extract_name)
