@@ -169,37 +169,47 @@
         {% endfor %}
       {% endif%}
       ];
-    </script>
+  </script>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
     var benchmarks_folded = true;
     var benchmarks_height = 0;
-    var benchmarks_more = '{% trans "View more" %}...';
-    var benchmarks_less = '{% trans "View less" %}...';
+    var benchmarks_initial_height = 0;
+    var benchmarks_more = '{% trans "View more..." %}';
+    var benchmarks_less = '{% trans "View less..." %}';
+    var benchmarks_arrow_more = '&#x25bc;';
+    var benchmarks_arrow_less = '&#x25b2;';
 
     function init_benchmarks() {
-      if ( $('#benchmarks_inner').height() > 200 ) {
+      benchmarks_initial_height = $('#benchmarks').height();
+      if ( $('#benchmarks_inner').height() > (benchmarks_initial_height - 10) ) {
         $('#benchmarks_switch').show();
+        $('#benchmarks_switch_arrow').show();
       }
       benchmarks_height = $('#benchmarks_inner').height();
       $('#benchmarks_switch').html(benchmarks_more);
+      $('#benchmarks_switch_arrow').html(benchmarks_arrow_more);
     }
 
     function handle_benchmarks() {
       if (benchmarks_folded) {
         $('#benchmarks').animate({
           height: benchmarks_height + "px"
-        }, 1000);
+        }, 500);
         $('#benchmarks_switch').html(benchmarks_less);
+        $('#benchmarks_switch_arrow').html(benchmarks_arrow_less);
       } else {
         $('#benchmarks').animate({
-          height: "200px"
-        }, 1000);
+          height: benchmarks_initial_height + "px"
+        }, 500);
         $('#benchmarks_switch').html(benchmarks_more);
+        $('#benchmarks_switch_arrow').html(benchmarks_arrow_more);
       }
       benchmarks_folded = !benchmarks_folded;
     }
   </script>
+
+
 {% endblock js %}
 
 
@@ -211,4 +221,5 @@
 
   init_benchmarks();
   $('#benchmarks_switch').click(function () { handle_benchmarks() });
+  $('#benchmarks_switch_arrow').click(function () { handle_benchmarks() });
 {% endblock jq_ready %}
