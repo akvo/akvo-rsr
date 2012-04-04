@@ -538,8 +538,8 @@ class Project(models.Model):
     goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
     goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
-    current_status_detail = ProjectLimitedTextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
-    project_plan_detail = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
+    current_status_detail = ProjectLimitedTextField(_('Current status'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
+    project_plan_detail = models.TextField(_('Project plan'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     context = ProjectLimitedTextField(_('context'), blank=True, max_length=1000, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
