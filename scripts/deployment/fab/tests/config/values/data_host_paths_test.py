@@ -14,25 +14,30 @@ from fab.config.values.host import DataHostPaths, HostPathValues
 
 class DataHostPathsTest(unittest2.TestCase):
 
+    def test_has_config_home(self):
+        """fab.tests.config.values.data_host_paths_test  Has configuration home"""
+
+        self.assertEqual(HostPathValues.LIVE['config_home'], DataHostPaths().config_home)
+
     def test_has_django_apps_home(self):
         """fab.tests.config.values.data_host_paths_test  Has Django apps home"""
 
-        self.assertEqual('/var/lib/django', DataHostPaths().django_apps_home)
+        self.assertEqual(HostPathValues.LIVE['repo_checkout_home'], DataHostPaths().django_apps_home)
 
     def test_has_virtualenvs_home(self):
         """fab.tests.config.values.data_host_paths_test  Has virtualenvs home"""
 
-        self.assertEqual(HostPathValues.DEFAULT['virtualenvs_home'], DataHostPaths().virtualenvs_home)
+        self.assertEqual(HostPathValues.LIVE['virtualenvs_home'], DataHostPaths().virtualenvs_home)
 
     def test_has_logging_home(self):
         """fab.tests.config.values.data_host_paths_test  Has logging home"""
 
-        self.assertEqual(HostPathValues.DEFAULT['logging_home'], DataHostPaths().logging_home)
+        self.assertEqual(HostPathValues.LIVE['logging_home'], DataHostPaths().logging_home)
 
     def test_has_deployment_processing_home(self):
         """fab.tests.config.values.data_host_paths_test  Has deployment processing home"""
 
-        self.assertEqual(HostPathValues.DEFAULT['deployment_processing_home'], DataHostPaths().deployment_processing_home)
+        self.assertEqual(HostPathValues.LIVE['deployment_processing_home'], DataHostPaths().deployment_processing_home)
 
 
 def suite():
