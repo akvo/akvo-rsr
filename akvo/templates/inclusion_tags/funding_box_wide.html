@@ -8,7 +8,12 @@
 		{% if project.funding_still_needed|round = 0 %}
 			<div class="fundingbox-funded" style="padding-top:15px; padding-bottom:0px;">	
 				<div class="fullyfunded-text">
-					<p>{% trans 'Raised' %}:&nbsp;{{project.get_currency_display|safe}}&nbsp;{{project.funding_total_given|round|intcomma}}</p>
+					<p>
+						{% comment %}Translators: This sum is for the project funds box{% endcomment %}
+						{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
+							Raised:&nbsp;{{currency}}&nbsp;{{funds}}
+						{% endblocktrans %}
+					</p>
 				</div>
 				<p class="grey fullyfunded-text" style="margin-bottom:15px;">{% trans 'This project is' %}<br />
 					<span class="green" style="font-weight:bold; ">{% trans 'Fully funded' %}</span>
