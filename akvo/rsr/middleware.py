@@ -53,7 +53,7 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE',
 
 
 def is_rsr(domain):
-    """Predicate to determine if an incoming request domain should be handled as a regular instance of Akvo RSR."""
+    "Predicate to determine if an incoming request domain should be handled as a regular instance of Akvo RSR."
     dev_domains = ('localhost', '127.0.0.1', 'akvo.dev')
     if domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains:
         return True
@@ -61,7 +61,7 @@ def is_rsr(domain):
 
 
 def is_partner_site(domain):
-    """Predicate to determine if an incoming request domain should be handled as a partner site instance."""
+    "Predicate to determine if an incoming request domain should be handled as a partner site instance."
     domain_parts = tuple(domain.split('.'))
     if len(domain_parts) >= 3:
         domain_name = '%s.%s' % domain_parts[-2:]
@@ -71,6 +71,10 @@ def is_partner_site(domain):
 
 
 def get_or_create_site(domain):
+    """Helper function to get or create a `django.contrib.sites.models.Site` object.
+    Also takes care of removing any duplicates.
+    
+    """
     sites = Site.objects.filter(domain=domain)
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
@@ -79,6 +83,7 @@ def get_or_create_site(domain):
                 duplicate.delete()
     else:
         site = Site(domain=domain, name=domain)
+        site.save()
     return site
 
 
@@ -87,14 +92,11 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
         domain = request.get_host().split(':')[0]
         if is_rsr(domain):  # Vanilla Akvo RSR instance
-            site = get_or_create_site(domain)
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
-                if partner_site is not None:
-                    site = get_or_create_site(hostname)
             except:
                 pass
             if partner_site is None or not partner_site.enabled:
@@ -102,13 +104,12 @@ class PartnerSitesRouterMiddleware(object):
         else:  # Partner site instance on partner-nominated domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
-                if partner_site is not None:
-                    site = get_or_create_site(partner_site.hostname)
             except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
-            request.partner_site = settings.PARTNER_SITE = partner_site
-            request.organisation_id = partner_site.organisation.id
-            request.urlconf = 'akvo.urls.partner_sites'
+                request.partner_site = settings.PARTNER_SITE = partner_site
+                request.organisation_id = partner_site.organisation.id
+                request.urlconf = 'akvo.urls.partner_sites'
+        site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
