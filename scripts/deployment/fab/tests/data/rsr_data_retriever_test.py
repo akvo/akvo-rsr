@@ -10,9 +10,6 @@ import mox, os
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
@@ -22,6 +19,7 @@ from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem, LocalFileSystem
+from fab.tests.template.loader import TemplateLoader
 
 
 class StubbedRSRDataRetriever(RSRDataRetriever):
@@ -65,7 +63,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self._can_create_instance_for(RemoteHostController)
 
     def _can_create_instance_for(self, host_controller_class):
-        database_credentials = DatabaseCredentials()
+        database_credentials = TemplateLoader.load_database_credentials()
 
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback

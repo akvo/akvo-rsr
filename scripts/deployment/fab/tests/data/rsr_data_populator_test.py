@@ -10,9 +10,6 @@ import mox, os
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.app.admin import DjangoAdmin
 from fab.config.rsr.codebase import RSRCodebaseConfig
 from fab.config.rsr.data.populator import RSRDataPopulatorConfig
@@ -22,6 +19,7 @@ from fab.database.mysql.commandexecution import DataHandler
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem
+from fab.tests.template.loader import TemplateLoader
 
 
 class StubbedRSRDataPopulator(RSRDataPopulator):
@@ -73,8 +71,9 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         mock_host_controller.feedback = self.mock_feedback
         self.mox.ReplayAll()
 
-        self.assertIsInstance(RSRDataPopulator.create_with(DatabaseCredentials(), self.deployment_host_config, mock_host_controller),
-                              RSRDataPopulator)
+        data_populator = RSRDataPopulator.create_with(TemplateLoader.load_database_credentials(), self.deployment_host_config, mock_host_controller)
+
+        self.assertIsInstance(data_populator, RSRDataPopulator)
 
     def test_can_initialise_database(self):
         """fab.tests.data.rsr_data_populator_test  Can initialise a database"""
