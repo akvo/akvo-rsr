@@ -47,7 +47,7 @@ add_introspection_rules([], ["^akvo\.rsr\.fields\.LongitudeField"])
 
 from akvo.gateway.models import GatewayNumber, Gateway
 
-from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField
+from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
 from akvo.rsr.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
@@ -521,7 +521,7 @@ class Project(models.Model):
     status = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
     categories = models.ManyToManyField(Category, related_name='projects',)
     partners = models.ManyToManyField(Organisation, through=Partnership, related_name='projects',)
-    project_plan_summary = models.TextField(_('summary of project plan'), max_length=220, help_text=_('Briefly summarize the project (220 characters).'))
+    project_plan_summary = ProjectLimitedTextField(_('summary of project plan'), max_length=400, help_text=_('Briefly summarize the project (400 characters).'))
     current_image = ImageWithThumbnailsField(
                         _('project photo'),
                         blank=True,
@@ -530,17 +530,18 @@ class Project(models.Model):
                         help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
-    goals_overview = models.TextField(_('overview'), max_length=500, help_text=_('Describe what the project hopes to accomplish (500 characters).'))
+    goals_overview = ProjectLimitedTextField(_('overview'), max_length=600, help_text=_('Describe what the project hopes to accomplish (600 characters).'))
+
     goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
     goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
     goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
     goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
     goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
-    current_status_detail = models.TextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
+    current_status_detail = ProjectLimitedTextField(_('Current status detail'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
     project_plan_detail = models.TextField(_('Project plan detail'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
-    context = models.TextField(_('context'), blank=True, max_length=500, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (500 characters).'))
+    context = ProjectLimitedTextField(_('context'), blank=True, max_length=1000, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
     project_rating = models.IntegerField(_('Project rating'), default=0)
     notes = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
@@ -1032,6 +1033,11 @@ class Project(models.Model):
         )
         verbose_name=_('project')
         verbose_name_plural=_('projects')
+
+
+#class Goal(models.Model):
+#    project = models.ForeignKey(Project, related_name='goals')
+#    text = models.CharField(_('goal'), blank=True, max_length=100, help_text=_('(100 characters)'))
 
 
 class Benchmark(models.Model):
