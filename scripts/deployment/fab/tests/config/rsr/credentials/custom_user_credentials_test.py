@@ -7,7 +7,7 @@
 
 import imp, os, unittest2
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 CUSTOM_USER_CREDENTIALS_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../../config/rsr/credentials/custom.py.template'))
 imp.load_source('user_credentials', CUSTOM_USER_CREDENTIALS_TEMPLATE_PATH)
@@ -31,5 +31,4 @@ def suite():
     return TestSuiteLoader().load_tests_from(CustomUserCredentialsTest)
 
 if __name__ == '__main__':
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+    TestRunner().run_test_suite(suite())

@@ -4,7 +4,4 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-# Test settings for the fab.tests package
-
-# options are 'normal' or 'ci' for continuous integration
-TEST_MODE = 'ci'
+# Initialiser for the RSR projects.filtering module.

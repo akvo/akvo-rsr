@@ -28,14 +28,12 @@
                 streetViewControl: false
 	        };
 
-            {% if projects %}
             var markerIcon = "{{ marker_icon }}";
             var smallIcon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
             var normalIcon = new google.maps.MarkerImage(markerIcon);
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 			
-
             {% if projects %}
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({

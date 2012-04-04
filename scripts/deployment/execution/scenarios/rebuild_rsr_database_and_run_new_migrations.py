@@ -15,9 +15,8 @@ import execution.verification
 
 
 def rebuild_rsr_database_and_run_new_migrations(scenario_runner, host_config_specification):
-    scenario_runner.run_step('fetch_rsr_data')
-    scenario_runner.run_step('rebuild_rsr_database', host_config_specification)
-    scenario_runner.run_step('run_new_database_migrations', host_config_specification)
+    scenario_runner.run_step('6_rebuild_rsr_database', host_config_specification)
+    scenario_runner.run_step('7_run_new_database_migrations', host_config_specification)
 
 
 if __name__ == '__main__':

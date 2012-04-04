@@ -1,4 +1,4 @@
-Last changed: 30 January 2012, bw
+Last changed: 27 March 2012, ogl
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -7,7 +7,75 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
-Akvo RSR v 2.0.2 release notes
+Akvo RSR ver 2.0.4 release notes
+----
+27 March 2012, (Code name: Eggplant) ogl
+
+
+Overview
+----
+This is primarily a maintenance release.
+
+New features & changes
+----
+### Switched the 'Get a widget' button and 'Add update' link
+[PT story 25207905](https://www.pivotaltracker.com/story/show/25207905) The 'Get a widget' button and 'Add update' link in the 'Tools for this page' section of a project page have been switched around since users would more frequently be viewing a project page to provide project updates rather than to get project widgets.
+
+Fixes
+----
+### Corrected display of global organisation map
+[PT story 26632783](https://www.pivotaltracker.com/story/show/26632783) The global organisation map now displays without errors.
+
+### Corrected highlighted text colour for selected text on partner sites
+[PT story 24968667](https://www.pivotaltracker.com/story/show/24968667) The highlighted text colour on partner sites is now blue, as is the convention for selected text, instead of pink.
+
+### Corrected validation process when entering video project updates on partner sites
+[PT story 24054429](https://www.pivotaltracker.com/story/show/24054429) The validation process now waits for the video URL to be entered before validating.
+
+### Corrected styling on project update pages for parter sites
+[22289553](https://www.pivotaltracker.com/story/show/22289553) Corrected colour differences of photo and video captions and credits on partner sites.
+
+
+
+Akvo RSR ver 2.0.3 release notes
+-------------------------------------------
+22 February 2012, (Code name: Dewberry) bw
+
+
+New features & changes
+----------------
+### Expanded and customizable budget line items 
+This release reworks how line items for project budgets are handled within RSR. Up to this point there have been 6 budget line items: building, employment, maintenance, management, training and other. Release 2.0.3 removes "other" and adds the fields other 1, other 2, other 3. Organisation administrators and project editors can enter custom labels for these line items in their budgets.
+
+Additionally, Akvo's administrators now have the flexibility to expand the list of common budget items. The list of choices should be expanded cautiously as the commonly-used forms become obvious. Having a standard list helps users compare & understand financial plans across multiple projects and organisations.
+
+### Size of photos and videos in updates.
+The photos and embedded videos on an individual update page are now larger, making details easier to see.
+
+### Custom landing page URLs redirected to appropriate partner sites.
+Landing page functionality is deprecated in favor of partner sites.
+
+
+Bug fixes
+---------
+### Enter/Return does not post form on Sign in page.
+Certain browsers did not post the sign in form when Enter/Return key was hit; this is now fixed.
+
+### Latest Updates missing on project comments page.
+Fixed a bug where Latest Updates section did not appear on the project comments page.
+
+### Funding amounts field appears for non-funding partners.
+Fixed a bug in the changed partner types code whereby it was possible to set funding amounts for other partner types.
+
+### Map display when there are no projects or none fitting selection criteria.
+The main partner site page includes a map displaying all organisation projects. When there were not yet any projects or filtering returned no matching projects the map completely disappeared, leaving only a display glitch. This is now fixed.
+
+### Partner site workflow issues when signing in to add an update.
+Fixed page routing to match expectations.
+
+
+
+Akvo RSR ver 2.0.2 release notes
 -------------------------------------------
 30 January 2012, (Code name: Carrot) bw
 
@@ -53,7 +121,7 @@ Removed old template files associated with the PvW/DWS project, which will be ma
 ---
 
 
-Akvo RSR v 2.0.1 release notes
+Akvo RSR ver 2.0.1 release notes
 -------------------------------------------
 29 November 2011, (Code name: Elderberry) kad
 
@@ -109,7 +177,7 @@ Link to funding details have disappeared on Partner Sites.
 
 ---
 
-Akvo RSR v 2.0 release notes
+Akvo RSR ver 2.0 release notes
 -------------------------------------------
 28 October 2011, (Code name: Garlic) tbp
 
@@ -175,7 +243,7 @@ The link to the latest blog news article was not shown on the home page.
 
 ---
 
-Akvo RSR v 1.0.11 release notes
+Akvo RSR ver 1.0.11 release notes
 -------------------------------------------
 17 October 2011, (Code name: Rhubarb) pb & bw
 
@@ -218,7 +286,7 @@ Bug fixes
 ---
 
 
-Akvo RSR v 1.0.10 release notes
+Akvo RSR ver 1.0.10 release notes
 -------------------------------------------
 17 October 2011 / Deployed 4 July 2011, (Code name: Granite) pb
 
@@ -243,7 +311,7 @@ Fixed broken benchmarks list which caused the project page to render incorrectly
 After the addition of the SMS gateway application, the cron script to detect stale invoices was no longer able to run. The script now functions as expected.
 
 
-Akvo RSR v 1.0.9 release notes
+Akvo RSR ver 1.0.9 release notes
 -------------------------------------------
 28 June 2011, (Code name: Quadrant) pb
 
@@ -270,7 +338,7 @@ More information about the new template syntax can be found [here](https://docs.
 
 ---
 
-Akvo RSR v 1.0.8 release notes
+Akvo RSR ver 1.0.8 release notes
 -------------------------------------------
 29 April 2011, (Code name: Blockbuster) bw
 
@@ -290,7 +358,7 @@ First steps toward the ability for users to send text updates from a particular 
 
 ---
 
-Akvo RSR v 1.0.7 release notes
+Akvo RSR ver 1.0.7 release notes
 -------------------------------------------
 5 April 2011, (Code name: Lustre) bw
 
@@ -369,7 +437,7 @@ Update photos set to display at the end of the update are now behaving properly.
 
 ---
 
-Akvo RSR v 1.0.6 release notes
+Akvo RSR ver 1.0.6 release notes
 -------------------------------------------
 15 Mar 2011, (Code name: Sextant) kad
 
@@ -394,7 +462,7 @@ In Internet Explorer 7 the mini gallery of project photos on the project page wo
 
 ---
 
-Akvo RSR v 1.0.5 release notes
+Akvo RSR ver 1.0.5 release notes
 ------------------------------
 9 Mar 2011, (Code name: Encore) tbp
 
@@ -411,7 +479,7 @@ Modified the formatting of the release notes for release 1.0.1-1.0.4 to be more 
 
 ---
 
-Akvo RSR v 1.0.4 release notes
+Akvo RSR ver 1.0.4 release notes
 ------------------------------
 28 Feb 2011, (Code name: Crossbow) pb
 
@@ -453,7 +521,7 @@ A bug in the image gallery code on the project main page resulted in a rendering
 
 ---
 
-Akvo RSR v 1.0.3 release notes
+Akvo RSR ver 1.0.3 release notes
 ------------------------------
 9 Feb 2011, (Code name: Primrose) bw
 
@@ -486,7 +554,7 @@ Certain searches on the organisation listing page returned duplicate entries. Th
 
 ---
 
-Akvo RSR v1.0.2 release notes
+Akvo RSR ver 1.0.2 release notes
 -----------------------------
 18 Jan 2011 (Code name: Hailstorm) ogl
 
@@ -510,7 +578,7 @@ The All Updates page for a particular project now displays titles for all update
 
 ---
 
-Akvo RSR v 1.0.1 release notes
+Akvo RSR ver 1.0.1 release notes
 -------------------------------------------
 14 Jan 2011, (Code name: Indigo) bw
 Note: The original 16 Dec 2010 release notes have been edited to better document changes made in 1.0.1.
@@ -545,7 +613,7 @@ The following improvements have been made to the MiniCMS.
 
 ---
 
-Akvo RSR v 1.0.0 release notes
+Akvo RSR ver 1.0.0 release notes
 -------------------------------------------
 4 Nov 2010, (Code name: One Oh) tbp
 

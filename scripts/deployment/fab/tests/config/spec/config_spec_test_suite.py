@@ -13,6 +13,5 @@ from fab.tests.config.spec.host_config_specification_test import HostConfigSpeci
 def config_spec_suite():
     return TestSuiteLoader().create_suite_from_classes([HostConfigSpecificationTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(config_spec_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(config_spec_suite())

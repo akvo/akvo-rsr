@@ -15,8 +15,8 @@ import execution.verification
 
 
 def install_rsr_virtualenv_and_codebase(scenario_runner, host_config_specification):
-    scenario_runner.run_step('rebuild_rsr_virtualenv', host_config_specification)
-    scenario_runner.run_step('install_rsr_codebase', host_config_specification)
+    scenario_runner.run_step('3_rebuild_rsr_virtualenv', host_config_specification)
+    scenario_runner.run_step('4_install_rsr_codebase', host_config_specification)
 
 
 if __name__ == '__main__':

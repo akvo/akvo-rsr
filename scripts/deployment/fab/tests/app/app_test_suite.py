@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.app.django_admin_test import DjangoAdminTest
 from fab.tests.app.django_settings_reader_test import DjangoSettingsReaderTest
@@ -15,6 +15,5 @@ from fab.tests.app.rsr_app_deployer_test import RSRAppDeployerTest
 def app_suite():
     return TestSuiteLoader().create_suite_from_classes([DjangoAdminTest, DjangoSettingsReaderTest, RSRAppDeployerTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(app_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(app_suite())
