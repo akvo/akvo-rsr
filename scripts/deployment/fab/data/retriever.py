@@ -42,9 +42,6 @@ class RSRDataRetriever(object):
                                 host_controller.feedback,
                                 TimeStampFormatter())
 
-    def _create_last_migration_file(self, last_migration_file_path):
-        return open(last_migration_file_path, 'w')
-
     def fetch_data_from_database(self):
         self._ensure_data_archives_can_be_stored()
         self._exit_if_rsr_env_paths_not_found()

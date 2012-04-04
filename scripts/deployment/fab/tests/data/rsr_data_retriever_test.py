@@ -22,18 +22,6 @@ from fab.os.filesystem import FileSystem, LocalFileSystem
 from fab.tests.template.loader import TemplateLoader
 
 
-class StubbedRSRDataRetriever(RSRDataRetriever):
-
-    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, settings_reader,
-                 data_handler, feedback, time_stamp_formatter, last_migration_file):
-        super(StubbedRSRDataRetriever, self).__init__(data_retriever_config, data_host_file_system, local_file_system,
-                                                      settings_reader, data_handler, feedback, time_stamp_formatter)
-        self.last_migration_file = last_migration_file
-
-    def _create_last_migration_file(self, last_migration_file_path):
-        return self.last_migration_file
-
-
 class RSRDataRetrieverTest(mox.MoxTestBase):
 
     def setUp(self):
@@ -45,12 +33,11 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_data_handler = self.mox.CreateMock(DataHandler)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
-        self.mock_last_migration_file = self.mox.CreateMock(file)
 
-        self.data_retriever = StubbedRSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
-                                                      self.mock_local_file_system, self.mock_settings_reader,
-                                                      self.mock_data_handler, self.mock_feedback,
-                                                      self.mock_time_stamp_formatter, self.mock_last_migration_file)
+        self.data_retriever = RSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
+                                               self.mock_local_file_system, self.mock_settings_reader,
+                                               self.mock_data_handler, self.mock_feedback,
+                                               self.mock_time_stamp_formatter)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
