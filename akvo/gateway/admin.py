@@ -25,15 +25,15 @@ class GatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'host_name', 'send_path', 'numbers', )
     inlines = [GatewayNumberInLine, ]
     fieldsets = (
-        (_(u'Gateway general info'), {
+        (u'Gateway general info', {
             'fields': (
                 'name', 'host_name', 'send_path',
             ),
          }),
-        (_(u'Query string variable names'), {
-            'description': _(u'''<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">
-                                The names of the query string varibles for mo sms http callback.
-                            </p>'''),
+        (u'Query string variable names', {
+            'description': u'''<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">
+                                The names of the query string variables for mo sms http callback.
+                            </p>''',
             'fields': (
                 'sender', 'receiver', 'message', 'timestamp', 'msg_id',
             ),
