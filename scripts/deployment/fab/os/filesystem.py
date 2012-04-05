@@ -164,3 +164,6 @@ class LocalFileSystem(FileSystem):
 
     def __init__(self):
         super(LocalFileSystem, self).__init__(LocalHostController())
+
+    def open_file(self, local_file_path):
+        return open(local_file_path, 'r')
