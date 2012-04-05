@@ -9,13 +9,11 @@ from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.verifiers.config_file_verifier_test import ConfigFileVerifierTest
 from fab.tests.verifiers.deployment_user_verifier_test import DeploymentUserVerifierTest
-from fab.tests.verifiers.rsr_credentials_verifier_test import RSRCredentialsVerifierTest
 from fab.tests.verifiers.rsr_settings_verifier_test import RSRSettingsVerifierTest
 
 
 def verifiers_suite():
-    return TestSuiteLoader().create_suite_from_classes([ConfigFileVerifierTest, DeploymentUserVerifierTest,
-                                                        RSRCredentialsVerifierTest, RSRSettingsVerifierTest])
+    return TestSuiteLoader().create_suite_from_classes([ConfigFileVerifierTest, DeploymentUserVerifierTest, RSRSettingsVerifierTest])
 
 if __name__ == '__main__':
     TestRunner().run_test_suite(verifiers_suite())

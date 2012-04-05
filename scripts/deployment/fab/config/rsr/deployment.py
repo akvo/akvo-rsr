@@ -35,7 +35,6 @@ class RSRDeploymentConfig(object):
         self.static_media_db_path       = os.path.join(self.rsr_static_media_home, 'db')
 
         self.host_config_home                   = deployment_host_paths.config_home
-        self.deployed_database_credentials_file = os.path.join(self.host_config_home, 'credentials/database.json')
         self.local_rsr_settings_file_name       = RSRCodebaseConfig.LOCAL_SETTINGS_FILE
         self.deployed_rsr_settings_file         = os.path.join(self.host_config_home, self.local_rsr_settings_file_name)
         self.mod_python_file_name               = RSRCodebaseConfig.MOD_PYTHON_FILE

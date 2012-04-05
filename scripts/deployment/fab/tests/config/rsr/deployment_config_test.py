@@ -121,13 +121,6 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(self.deployment_host_paths.config_home, self.deployment_config.host_config_home)
 
-    def test_has_deployed_database_credentials_file(self):
-        """fab.tests.config.rsr.deployment_config_test  Has deployed database credentials file path"""
-
-        expected_database_credentials_file_path = os.path.join(self.deployment_host_paths.config_home, 'credentials/database.json')
-
-        self.assertEqual(expected_database_credentials_file_path, self.deployment_config.deployed_database_credentials_file)
-
     def test_has_local_rsr_settings_file_name(self):
         """fab.tests.config.rsr.deployment_config_test  Has local RSR settings file name"""
 

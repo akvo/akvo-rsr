@@ -39,7 +39,6 @@ class TaskRunnerTest(mox.MoxTestBase):
         mock_config_file_verifier = self.mox.CreateMock(ConfigFileVerifier)
 
         mock_config_file_verifier.exit_if_custom_user_credentials_not_found()
-        mock_config_file_verifier.exit_if_database_credentials_not_found()
         self.mox.ReplayAll()
 
         self.assertIsInstance(TaskRunner.create(mock_config_file_verifier, self.mock_config_loader, self.mock_process_runner), TaskRunner)

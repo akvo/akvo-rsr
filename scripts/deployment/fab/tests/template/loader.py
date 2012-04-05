@@ -17,5 +17,9 @@ class TemplateLoader(object):
     CREDENTIALS_TEMPLATE_PATH = os.path.join(FAB_SCRIPTS_HOME, 'config/rsr/credentials/database.json.template')
 
     @classmethod
+    def load_database_credentials_data(cls):
+        return json.load(open(cls.CREDENTIALS_TEMPLATE_PATH))
+
+    @classmethod
     def load_database_credentials(cls):
-        return DatabaseCredentials(json.load(open(cls.CREDENTIALS_TEMPLATE_PATH)))
+        return DatabaseCredentials(cls.load_database_credentials_data())

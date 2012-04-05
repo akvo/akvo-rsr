@@ -27,21 +27,6 @@ class ConfigFileVerifier(object):
         self.local_file_system.exit_if_file_does_not_exist(os.path.join(self.DEPLOYMENT_SCRIPTS_HOME, relative_deployment_file_path))
 
 
-class RSRCredentialsVerifier(object):
-
-    def __init__(self, deployment_config, file_system):
-        self.deployment_config = deployment_config
-        self.file_system = file_system
-
-    @staticmethod
-    def create_with(deployment_host_config, host_controller):
-        return RSRCredentialsVerifier(RSRDeploymentConfig.create_with(deployment_host_config),
-                                      FileSystem(host_controller))
-
-    def exit_if_database_credentials_not_available(self):
-        self.file_system.exit_if_file_does_not_exist(self.deployment_config.deployed_database_credentials_file)
-
-
 class RSRSettingsVerifier(object):
 
     def __init__(self, deployment_host_config, deployment_config, settings_reader, host_file_system, feedback):

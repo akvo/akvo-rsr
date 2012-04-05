@@ -30,7 +30,6 @@ class TaskRunner(object):
     @staticmethod
     def create(config_file_verifier=ConfigFileVerifier(), config_loader=DeploymentConfigLoader(), process_runner=ProcessRunner()):
         config_file_verifier.exit_if_custom_user_credentials_not_found()
-        config_file_verifier.exit_if_database_credentials_not_found()
 
         from fab.config.rsr.credentials.custom import CustomUserCredentials
 

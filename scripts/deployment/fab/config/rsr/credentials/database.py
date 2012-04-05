@@ -5,19 +5,25 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import simplejson as json
-
-
 class DatabaseCredentials(object):
 
-    def __init__(self, database_credentials):
-        self.admin_user     = database_credentials['admin_user']
-        self.admin_password = database_credentials['admin_password']
-        self.rsr_user       = database_credentials['rsr_user']
-        self.rsr_password   = database_credentials['rsr_password']
+    DATABASE_CREDENTIALS_FILE_NAME = 'database.json'
 
-    @staticmethod
-    def load_with(deployment_config, credentials_verifier):
-        credentials_verifier.exit_if_database_credentials_not_available()
+    def __init__(self, credentials_data):
+        self.admin_user     = credentials_data['admin_user']
+        self.admin_password = credentials_data['admin_password']
+        self.rsr_user       = credentials_data['rsr_user']
+        self.rsr_password   = credentials_data['rsr_password']
 
-        return DatabaseCredentials(json.load(open(deployment_config.deployed_database_credentials_file)))
+    @classmethod
+    def read_with(cls, credentials_file_reader):
+        return DatabaseCredentials(credentials_file_reader.read_data_from(cls.DATABASE_CREDENTIALS_FILE_NAME))
+
+    def __eq__(self, database_credentials):
+        return (self.admin_user     == database_credentials.admin_user and
+                self.admin_password == database_credentials.admin_password and
+                self.rsr_user       == database_credentials.rsr_user and
+                self.rsr_password   == database_credentials.rsr_password)
+
+    def __ne__(self, database_credentials):
+        return not self.__eq__(database_credentials)
