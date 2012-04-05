@@ -13,7 +13,7 @@ from fab.config.loader import DeploymentConfigLoader
 from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.rsr.host import CIDeploymentHostConfig, DataHostConfig
 from fab.config.spec import HostConfigSpecification
-from fab.config.values.host import HostAlias
+from fab.config.values.host import HostAlias, SSHConnection
 from fab.tasks.data.retrieval import FetchRSRData
 from fab.tasks.database.backup import BackupRSRDatabase
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
@@ -81,14 +81,10 @@ class TaskRunnerTest(mox.MoxTestBase):
     def test_can_run_data_retrieval_task(self):
         """fab.tests.tasks.task_runner_test  Can run data retrieval task"""
 
-        data_host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.DATA)
-        data_host_config = DataHostConfig()
-
-        self.mock_config_loader.parse(data_host_config_spec).AndReturn(data_host_config)
-        self.mock_process_runner.execute(self._expected_fabric_call_with(FetchRSRData, None, data_host_config.ssh_connection))
+        self.mock_process_runner.execute(self._expected_fabric_call_with(FetchRSRData, None, SSHConnection.for_host(HostAlias.DATA)))
         self.mox.ReplayAll()
 
-        self.task_runner.run_data_retrieval_task(FetchRSRData, data_host_config_spec)
+        self.task_runner.run_data_retrieval_task(FetchRSRData, HostAlias.DATA)
 
     def test_will_raise_systemexit_if_task_execution_fails(self):
         """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
