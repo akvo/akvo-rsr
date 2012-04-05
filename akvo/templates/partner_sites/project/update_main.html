@@ -54,8 +54,12 @@
       	  <div class="noticebutton">
       		  <a class="aqua awesome" style="color:#fff;" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
       		</div>
-      		<p class="nano-lede grey">Find a typo?  :)</p>
-      		<p class="nano-lede grey">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
+      		<p class="nano-lede grey">{% trans "Find a typo? :)" %}</p>
+      		<p class="nano-lede grey">
+						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}
+							You posted this update at {{posted}}. You can edit this update until {{ expired }}, at which time it will become locked and final.	
+						{% endblocktrans %}
+					</p>
       	</div>
     	{% endif %}
     
