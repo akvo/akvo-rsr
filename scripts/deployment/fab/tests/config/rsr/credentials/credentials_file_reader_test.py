@@ -10,7 +10,7 @@ import simplejson as json
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.rsr.credentials.reader import CredentialsFileReader
+from fab.config.rsr.credentials.reader import CredentialsFileReader, RemoteCredentialsFileReader
 from fab.config.values.host import DataHostPaths, DeploymentHostPaths
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
@@ -57,6 +57,11 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         CredentialsFileReader.create_with(host_paths, mock_host_controller)
+
+    def test_can_create_remote_credentials_file_reader_instance_for_data_host(self):
+        """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can create a RemoteCredentialsFileReader instance for a data host"""
+
+        RemoteCredentialsFileReader.create_with(DataHostPaths())
 
     def test_can_read_data_from_given_credentials_file(self):
         """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read data from a given credentials file name"""

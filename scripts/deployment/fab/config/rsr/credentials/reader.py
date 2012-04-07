@@ -8,19 +8,20 @@
 import os
 import simplejson as json
 
-from fab.os.filesystem import FileSystem, LocalFileSystem
+from fab.host.controller import RemoteHostController
+from fab.os.filesystem import FileSystem, LocalFileSystem, RemoteFileSystem
 
 
 class CredentialsFileReader(object):
 
-    def __init__(self, host_paths, host_file_system, local_file_system):
+    def __init__(self, host_paths, host_file_system, local_file_system=LocalFileSystem()):
         self.host_paths = host_paths
         self.host_file_system = host_file_system
         self.local_file_system = local_file_system
 
     @staticmethod
     def create_with(host_paths, host_controller):
-        return CredentialsFileReader(host_paths, FileSystem(host_controller), LocalFileSystem())
+        return CredentialsFileReader(host_paths, FileSystem(host_controller))
 
     def read_data_from(self, credentials_file_name):
         deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials', credentials_file_name)
@@ -35,3 +36,9 @@ class CredentialsFileReader(object):
         self.local_file_system.delete_file(local_credentials_file)
 
         return credentials_data
+
+class RemoteCredentialsFileReader(CredentialsFileReader):
+
+    @staticmethod
+    def create_with(host_paths):
+        return RemoteCredentialsFileReader(host_paths, RemoteFileSystem())
