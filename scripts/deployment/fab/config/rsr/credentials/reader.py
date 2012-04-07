@@ -25,10 +25,11 @@ class CredentialsFileReader(object):
 
     def read_data_from(self, credentials_file_name):
         deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials', credentials_file_name)
-        local_credentials_file = os.path.join(self.host_paths.deployment_processing_home, 'credentials', credentials_file_name)
+        local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
+        local_credentials_file = os.path.join(local_credentials_home, credentials_file_name)
 
         self.host_file_system.exit_if_file_does_not_exist(deployed_credentials_file)
-        self.host_file_system.download_file(deployed_credentials_file, self.host_paths.deployment_processing_home)
+        self.host_file_system.download_file(deployed_credentials_file, local_credentials_home)
 
         with self.local_file_system.open_file(local_credentials_file) as credentials_file:
             credentials_data = json.load(credentials_file)

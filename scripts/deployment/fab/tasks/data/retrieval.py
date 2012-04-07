@@ -26,7 +26,7 @@ class FetchRSRData(fabric.tasks.Task):
         self._configure_data_retrieval_host().fetch_latest_data()
 
     def _configure_data_retrieval_host(self):
-        credentials_reader = fab.config.rsr.credentials.reader.CredentialsFileReader.create_with(fab.config.values.host.DataHostPaths(), host_controller)
+        credentials_reader = fab.config.rsr.credentials.reader.CredentialsFileReader.create_with(fab.config.values.host.DataHostPaths(), self.host_controller)
         database_credentials = fab.config.rsr.credentials.database.DatabaseCredentials.read_with(credentials_reader)
 
         return fab.host.dataretrieval.DataRetrievalHost.create_with(database_credentials)

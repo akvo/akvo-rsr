@@ -67,10 +67,11 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
         """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read data from a given credentials file name"""
 
         deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials/some_credentials_file.json')
-        local_credentials_file = os.path.join(self.host_paths.deployment_processing_home, 'credentials/some_credentials_file.json')
+        local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
+        local_credentials_file = os.path.join(local_credentials_home, 'some_credentials_file.json')
 
         self.mock_host_file_system.exit_if_file_does_not_exist(deployed_credentials_file)
-        self.mock_host_file_system.download_file(deployed_credentials_file, self.host_paths.deployment_processing_home)
+        self.mock_host_file_system.download_file(deployed_credentials_file, local_credentials_home)
         self.mock_local_file_system.open_file(local_credentials_file).AndReturn(self._open_credentials_data_file())
         self.mock_local_file_system.delete_file(local_credentials_file)
         self.mox.ReplayAll()
