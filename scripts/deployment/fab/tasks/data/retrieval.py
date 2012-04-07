@@ -8,8 +8,10 @@
 import fabric.tasks
 
 import fab.config.rsr.credentials.database
+import fab.config.rsr.credentials.reader
+import fab.config.values.host
+import fab.host.controller
 import fab.host.dataretrieval
-import fab.verifiers.config
 
 
 class FetchRSRData(fabric.tasks.Task):
@@ -17,16 +19,16 @@ class FetchRSRData(fabric.tasks.Task):
 
     name = "fetch_rsr_data"
 
-    def __init__(self, config_file_verifier=fab.verifiers.config.ConfigFileVerifier()):
-        self.config_file_verifier = config_file_verifier
+    def __init__(self, host_controller=fab.host.controller.RemoteHostController()):
+        self.host_controller = host_controller
 
     def run(self):
-        self.config_file_verifier.exit_if_database_credentials_not_found()
-        self.data_retrieval_host = self._configure_data_retrieval_host()
-        self.data_retrieval_host.fetch_latest_data()
+        self._configure_data_retrieval_host().fetch_latest_data()
 
     def _configure_data_retrieval_host(self):
-        database_credentials = fab.config.rsr.credentials.database.DatabaseCredentials()
+        credentials_reader = fab.config.rsr.credentials.reader.CredentialsFileReader.create_with(fab.config.values.host.DataHostPaths(), host_controller)
+        database_credentials = fab.config.rsr.credentials.database.DatabaseCredentials.read_with(credentials_reader)
+
         return fab.host.dataretrieval.DataRetrievalHost.create_with(database_credentials)
 
 
