@@ -66,7 +66,6 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         self.mock_virtualenv_deployment_host.remove_previously_downloaded_package_sources()
         self.mock_virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_url)
-        self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_url)
         self.mock_virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         self.mock_virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
         self.mox.ReplayAll()
