@@ -8,7 +8,7 @@ django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.2
 django-piston==0.2.3
-django-rosetta==0.6.3
+django-rosetta==0.6.6
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
