@@ -10,4 +10,4 @@ simplejson==2.5.0
 # Fabric requirements
 ssh==1.7.13
 pycrypto==2.5
-Fabric==1.4.0
+Fabric==1.4.1
