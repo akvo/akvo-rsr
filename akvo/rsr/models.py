@@ -113,14 +113,10 @@ class Country(models.Model):
 
 
 class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0,
-        help_text=_('Go to <a href="http://itouchmap.com/latlong.html"'
-                  'target="_blank">iTouchMap.com</a> '
-                  'to get the decimal coordinates of your project'))
-    longitude = LongitudeField(_('longitude'), default=0,
-        help_text=_('Go to <a href="http://itouchmap.com/latlong.html"'
-                  'target="_blank">iTouchMap.com</a> '
-                  'to get the decimal coordinates of your project'))
+    _help_text = _('Go to <a href="http://itouchmap.com/latlong.html" target="_blank">iTouchMap.com</a> '
+                   'to get the decimal coordinates of your project.')
+    latitude = LatitudeField(_('latitude'), default=0, help_text=_help_text)
+    longitude = LongitudeField(_('longitude'), default=0, help_text=_help_text)
     city = models.CharField(_('city'), blank=True, max_length=255)
     state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)
@@ -1757,7 +1753,7 @@ class ProjectUpdate(models.Model):
         return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
-        return u'Project update for %s' % self.project.name
+        return u'Project update for %(project_name)s' % {'project_name': self.project.name}
 
 
 class ProjectComment(models.Model):
@@ -1916,7 +1912,9 @@ class Invoice(models.Model):
         return (self.amount - self.amount_received)
 
     def __unicode__(self):
-        return u'Invoice %s (Project: %s)' % (self.id, self.project)
+        return u'Invoice %(invoice_id)s (Project: %(project_name)s)' % {
+            'invoice_id': self.id, 'project_name':self.project
+        }
 
     class Meta:
         verbose_name = _('invoice')
@@ -2029,7 +2027,7 @@ class PartnerSite(models.Model):
     enabled = models.BooleanField(_('enabled'), default=True)
 
     def __unicode__(self):
-        return u'Partner site for %s' % self.organisation.name
+        return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
 
     @property
     def logo(self):
