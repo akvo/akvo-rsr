@@ -23,21 +23,21 @@ sorl-thumbnail==3.2.5
 -e git://github.com/zzgvh/djangoembed.git#egg=djangoembed
 
 # General requirements
-BeautifulSoup==3.2.0
-httplib2==0.7.2
-lxml==2.3.3
-pytz==2011n
+BeautifulSoup==3.2.1
+httplib2==0.7.4
+lxml==2.3.4
+pytz==2012b
 simplejson==2.5.0
 
 # RSR requirements
-Markdown==2.1.0
+Markdown==2.1.1
 PIL==1.1.7
 python-memcached==1.48
 template-utils==0.4p2
 
 # Database requirements
 MySQL-python==1.2.3
-South==0.7.3
+South==0.7.4
 
 # App container
 gunicorn==0.13.4
