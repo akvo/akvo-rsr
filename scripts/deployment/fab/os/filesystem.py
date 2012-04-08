@@ -7,7 +7,7 @@
 
 import os
 
-from fab.host.controller import LocalHostController
+from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.path import PathInfo
 from fab.os.symlink import SymlinkInfo
 
@@ -164,3 +164,12 @@ class LocalFileSystem(FileSystem):
 
     def __init__(self):
         super(LocalFileSystem, self).__init__(LocalHostController())
+
+    def open_file(self, local_file_path):
+        return open(local_file_path, 'r')
+
+
+class RemoteFileSystem(FileSystem):
+
+    def __init__(self):
+        super(RemoteFileSystem, self).__init__(RemoteHostController())

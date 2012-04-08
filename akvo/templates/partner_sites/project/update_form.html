@@ -67,10 +67,8 @@
 
         <div class="clearfix marg_top20">
           {{form.photo.label_tag}}
-          {% if update and update.photo %}
+          {% if update.photo %}
             <img style="margin-bottom:30px;" src="{% thumbnail update.photo 200x150 crop autocrop sharpen upscale %}">
-          {% else %}
-            <h1>no photo</h1>
           {% endif %}
           <div class="input">
             {{form.photo}}
@@ -83,7 +81,7 @@
           </p>
         </div>
 
-        <div id="photo_meta" style="display:none;">
+        <div id="photo_meta" {% if not update.photo %}style="display:none;" {% endif %}>
           <div class="clearfix">
             {{form.photo_caption.label_tag}}
             <div class="input">
@@ -114,7 +112,7 @@
 
         <div class="clearfix marg_top20">
           {{form.video.label_tag}}
-          <span class="tiny grey">{% trans "Youtube, Blip or Vimeo" %}</span>
+          <span class="tiny grey">{% trans "Paste video URL" %}</span>
           <div class="input">
             {{form.video}}
             {% if 0 %}
@@ -129,22 +127,6 @@
                 &nbsp;
               {% endif %}
             </span>
-
-          {% comment %}
-          {% if form.video.errors %}
-          {# if 0 #}
-              <p class="small red marg_bottom0 marg_top0">
-                <span class="red small">{{form.video.errors.0}}</span>
-              </p>
-          {% else %}
-             <p class="small grey marg_bottom0 marg_top0">
-              <span id="video_tips" class="">
-                {# trans "Supported providers: Blip, Vimeo, YouTube" #} &nbsp;
-              </span>
-              &nbsp;
-            </p>
-          {% endif %}
-          {% endcomment %}
         </div>
         <div id="video_meta" style="{% if not form.video.errors and not form.video_caption.errors and not form.video_credit.errors and not form.video_credit.value and not form.video_caption.value %}display:none;{% endif %}">
           <div class="clearfix">
@@ -174,9 +156,9 @@
         <div class="clearfix">
           <div class="input marg_top15">
             {% if update %}
-              <a class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Save update' %}</a>
+              <a id="action_button" class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Save update' %}</a>
             {% else %}
-              <a class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Add update' %}</a>
+              <a id="action_button" class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Add update' %}</a>
             {% endif %}
           </div>
         </div>
@@ -188,7 +170,10 @@
 {% endblock project_content %}
 
 {% block jq_ready %}
-  var video_warning = '{% trans "The url provided is not a valid Blip, Vimeo or YouTube video" %}';
+  var video_warning_old = '{% trans "The url provided is not a valid Blip, Vimeo or YouTube video" %}';
+  var video_warning = '{% trans "Invalid video URL. Currently Blip.TV, Vimeo and YouTube are supported." %}';
+
+  
 
   {# Text element length check #}
   jQ("input[type='text']").on("keyup", function(event){
@@ -220,20 +205,32 @@
   
   jQ('#id_video').on("focusout", function(event){
     var url = jQ(this).val();
-    if (validate_movie(url)) {
+
+    // if url length == 0
+    if (url.length < 1) {
       jQ('#video_tips').html('&nbsp;');
+      jQ('#id_video_caption').val('');
+      jQ('#id_video_credit').val(''); 
       jQ('#video_tips').removeClass('red');
-      jQ('#video_tips').addClass('green');
+      jQ('#video_meta').hide('slow');
+      jQ('#action_button').focus();
     } else {
-      jQ('#video_tips').html(video_warning);
-      jQ('#video_tips').removeClass('green');
-      jQ('#video_tips').addClass('red');
+      if (validate_movie(url)) {
+        jQ('#video_tips').html('&nbsp;');
+        jQ('#video_tips').removeClass('red');
+        jQ('#video_tips').addClass('green');
+      } else {
+        jQ('#video_tips').html(video_warning);
+        jQ('#video_tips').removeClass('green');
+        jQ('#video_tips').addClass('red');
+      }
+      jQ('#video_tips').show();
     }
-    jQ('#video_tips').show();
   });
 
   jQ('#clear_video').on("click", function(event){
     jQ('#id_video').val('');
+    jQ('#video_tips').html('&nbsp;');
     jQ('#id_video_caption').val('');
     jQ('#id_video_credit').val('');
     jQ('#video_meta').hide('slow');
