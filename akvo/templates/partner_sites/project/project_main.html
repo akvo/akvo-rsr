@@ -68,9 +68,9 @@
           <p>{{project.context|linebreaks}}</p>
           <h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
           <p>{{project.goals_overview|linebreaks}}</p>
-          {% if project.current_status_detail %}
+          {% if project.current_status %}
             <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
-            <p>{{project.current_status_detail|linebreaks}}</p>
+            <p>{{project.current_status|linebreaks}}</p>
           {% endif %}
         </div>
         {% if project.project_plan %}
