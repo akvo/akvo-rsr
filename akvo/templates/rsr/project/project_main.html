@@ -93,7 +93,7 @@
           <div id="project_tabs">
             <ul class="small">
               <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
-              {% if p.project_plan_detail %}
+              {% if p.project_plan %}
                 <li><a href="#tab_project_plan"><span>{% trans 'Project plan' %}</span></a></li>
               {% endif %}
               <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
@@ -107,9 +107,9 @@
                 <p>{{p.current_status_detail|linebreaks}}</p>
               {% endif %}
             </div>
-            {% if p.project_plan_detail %}
+            {% if p.project_plan %}
               <div id="tab_project_plan" class="tab">
-                <p>{{p.project_plan_detail|linebreaks}}</p>
+                <p>{{p.project_plan|linebreaks}}</p>
               </div>
             {% endif %}
             <div id="tab_goals" class="tab">
