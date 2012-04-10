@@ -112,16 +112,16 @@
 							<p>{{p.project_plan_detail|linebreaks}}</p>
 						</div>
 						{% if p.goal_1 or p.goal_2 or p.goal_3 or p.goal_4 or p.goal_5 %}
-						<div id="tab_outcomes" class="tab">
+							<div id="tab_outcomes" class="tab">
 								<h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
 								<ul style="margin-top:15px;">
 									{% if p.goal_1 %}<li>{{p.goal_1}}</li>{% endif %}
-				                    {% if p.goal_2 %}<li>{{p.goal_2}}</li>{% endif %}
-				                    {% if p.goal_3 %}<li>{{p.goal_3}}</li>{% endif %}
-				                    {% if p.goal_4 %}<li>{{p.goal_4}}</li>{% endif %}
-				                    {% if p.goal_5 %}<li>{{p.goal_5}}</li>{% endif %}
-								</ul>							
-						</div>										
+									{% if p.goal_2 %}<li>{{p.goal_2}}</li>{% endif %}
+									{% if p.goal_3 %}<li>{{p.goal_3}}</li>{% endif %}
+									{% if p.goal_4 %}<li>{{p.goal_4}}</li>{% endif %}
+									{% if p.goal_5 %}<li>{{p.goal_5}}</li>{% endif %}
+								</ul>
+							</div>
 						{% endif %}
 						<div id="tab_sustainability" class="tab">
 							{# <h4 style="font-weight:bold">p.sustainability</h4> #}
