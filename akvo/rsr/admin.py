@@ -78,30 +78,14 @@ class LocationInline(generic.GenericStackedInline):
     model = get_model('rsr', 'location')
     extra = 0
 
-class OrganisationAdminForm(forms.ModelForm):
-    pass
-    #def save(self, *args, **kwargs):
-    #    from dbgp.client import brk
-    #    brk(host="localhost", port=9000)
-    #    foo = super(OrganisationAdminForm, self).save(commit=False, *args, **kwargs)
-    #    pass        
-
-    #def __init__(self, *args, **kwargs):
-    #    # request is needed when validating
-    #    super(OrganisationAdminForm, self).__init__(*args, **kwargs)
-
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-#        (_(u'Partnership type(s)'), {'fields': (('field_partner', 'support_partner', 'funding_partner', 'sponsor_partner', ),)}),
-        #(_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'city', 'state', 'country', 'url', 'map', )}),
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
-        #(_(u'Contact information'), {'fields': ('address_1', 'address_2', 'postcode', 'phone', 'mobile', 'fax',  'contact_person',  'contact_email',  ), }),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )    
     inlines = (LocationInline,)
     list_display = ('name', 'long_name', 'website', )
-    form = OrganisationAdminForm
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -121,8 +105,6 @@ class OrganisationAdmin(admin.ModelAdmin):
         super(OrganisationAdmin, self).__init__(model, admin_site)
 
     def queryset(self, request):
-        #from dbgp.client import brk
-        #brk(host="localhost", port=9000)            
         qs = super(OrganisationAdmin, self).queryset(request)
         opts = self.opts
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
@@ -218,7 +200,7 @@ class OrganisationAdmin(admin.ModelAdmin):
             inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
             inline_admin_formsets.append(inline_admin_formset)
             media = media + inline_admin_formset.media
-        
+
         context = {
             'title': _('Add %s') % force_unicode(opts.verbose_name),
             'adminform': adminForm,
@@ -411,7 +393,6 @@ class BenchmarknameInline(admin.TabularInline):
 
 class CategoryAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Category')
-    #inlines = (BenchmarknameInline,)
     list_display = ('name', 'focus_areas_html', 'category_benchmarks_html', )
 
 admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
@@ -478,73 +459,71 @@ class PartnershipInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        BudgetItemAdminInLine, LinkInline, PartnershipInline, #FundingPartnerInline, SponsorPartnerInline, FieldPartnerInline, SupportPartnerInline,
-        LocationInline, BenchmarkInline
+        BudgetItemAdminInLine, LinkInline, PartnershipInline, LocationInline, BenchmarkInline
     )
     save_as = True
     fieldsets = (
         (_(u'Project description'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(u"Give your project a short name and subtitle in RSR. These fields are the newspaper headline for your project: use them to attract attention to what you are doing."),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Give your project a short name and subtitle in RSR. These fields are the '
+                u'newspaper headline for your project: use them to attract attention to what you are doing.'
+            ),
            'fields': (
-               'name',
-               'subtitle',
-               'status',),
+               'name', 'subtitle', 'status',
+           ),
             }),
         (_(u'Categories'), {
-            'description': _(u'''
-                <p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">
-                    Please select all categories applicable to your project.
-                    (The Focus area(s) of each category is shown in paranthesis after the category name)
-                </p>
-            '''),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Please select all categories applicable to your project. '
+                u'(The Focus area(s) of each category is shown in parenthesis after the category name)'
+            ),
             'fields': (
-                #('category_water', 'category_sanitation', 'category_maintenance'),
-                #('category_training', 'category_education', 'category_product_development'), 'category_other',
                 ('categories',)
             ),
         }),
-
-        #(_(u'Location'), {
-        #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter the name of the city, village, town, etc where the project will be carried out. If the country is not yet on the drop-down list, you may use the + to add it.</p>'),
-        #    'fields': ('city', 'state', 'country',)
-        #}),
-
-        #(_(u'Location extra'), {
-        #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Enter more specific information you might have about the project location, for example a street address or a map image.</p>'),
-        #    'fields': (('location_1', 'location_2', 'postcode'), ('longitude', 'latitude'), 'map',),
-        #}),
-
         (_(u'Project info'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The summary should <em>briefly</em> explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished.</p>'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'The summary should <em>briefly</em> explain why the project is being carried out, '
+                u'where it is taking place, who will benefit and/or participate, what it specifically '
+                u'hopes to accomplish and how those specific goals will be accomplished.'
+            ),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
         }),
         (_(u'Goals'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
+                u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
+                u'The numbered fields can be used to list specific goals whose accomplishment '
+                u'will be used to measure overall project success.'
+            ),
             'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
         }),
-        #(_(u'Project target benchmarks'), {
-        #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
-        #    'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water',
-        #    'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
-        #}),
         (_(u'Project details'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Context, Plan Detail, Status Detail and Sustainability fields to tell people more about the project.</p>'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'In-depth information about your project should be put in this section. '
+                u'Use the Context, Plan Detail, Status Detail and Sustainability fields '
+                u'to tell people more about the project.'
+            ),
             'fields': ('context', 'project_plan_detail', 'current_status_detail', 'sustainability', ),
         }),
         (_(u'Project meta info'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The project meta information fields are not public. They allow you to make notes to other members of your organisation or partners with access to your projects on the RSR Admin pages.</p>'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'The project meta information fields are not public. '
+                u'They allow you to make notes to other members of your organisation or '
+                u'partners with access to your projects on the RSR Admin pages.'
+            ),
             'fields': ('project_rating', 'notes', ),
         }),
         (_(u'Project budget'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The request posted date is filled in for you automatically when you create a project. When the project implementation phase is complete, enter the <em>Date complete</em> here.</p>'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'The request posted date is filled in for you automatically when you create a project. '
+                u'When the project implementation phase is complete, enter the <em>Date complete</em> here.'
+            ),
             'fields': ('currency', 'date_request_posted', 'date_complete', ),
         }),
         )
-    #list_display = ('id', 'name', 'project_type', 'status', 'country', 'state',
-    #                'city', 'project_plan_summary', 'show_current_image', 'is_published',)
     list_display = ('id', 'name', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     list_filter = ('currency', 'status', )
-    #form = ProjectAdminModelForm
     form = ProjectAdminForm
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -828,6 +807,7 @@ class SmsReporterInline(admin.TabularInline):
                 db_field.rel.limit_choices_to = {'pk__in': user.get_profile().organisation.all_projects()}
 
         return super(SmsReporterInline, self).formfield_for_dbfield(db_field, **kwargs)
+
 
 class UserProfileAdminForm(forms.ModelForm):
     """
