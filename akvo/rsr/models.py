@@ -38,15 +38,6 @@ from workflows import WorkflowBase
 from permissions import PermissionBase
 from permissions.models import Role
 
-# needed to get custom fields work with South.
-# See http://south.aeracode.org/docs/customfields.html#extending-introspection
-#from south.modelsinspector import add_introspection_rules
-#add_introspection_rules([], ["^akvo\.rsr\.fields\.NullCharField"])
-#add_introspection_rules([], ["^akvo\.rsr\.fields\.LatitudeField"])
-#add_introspection_rules([], ["^akvo\.rsr\.fields\.LongitudeField"])
-#add_introspection_rules([], ["^akvo\.rsr\.fields\.LimitedTextField"])
-#add_introspection_rules([], ["^akvo\.rsr\.fields\.ProjectLimitedTextField"])
-
 from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
