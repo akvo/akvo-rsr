@@ -14,6 +14,6 @@ import fab.config.loader
 class BaseDeploymentTask(fabric.tasks.Task):
     """Base task for RSR deployment actions"""
 
-    def __init__(self):
+    def __init__(self, config_loader=fab.config.loader.DeploymentConfigLoader()):
         self.deployment_user = fabric.api.env.user
-        self.config_loader = fab.config.loader.DeploymentConfigLoader()
+        self.config_loader = config_loader

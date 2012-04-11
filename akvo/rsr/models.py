@@ -114,22 +114,10 @@ class Country(models.Model):
 
 
 class Location(models.Model):
-    latitude = LatitudeField(
-        _(u'latitude'), default=0,
-        help_text=_(
-            u'Go to <a href="http://itouchmap.com/latlong.html" '
-            u'target="_blank">iTouchMap.com</a> '
-            u'to get the decimal coordinates of your project'
-        )
-    )
-    longitude = LongitudeField(
-        _(u'longitude'), default=0,
-        help_text=_(
-            u'Go to <a href="http://itouchmap.com/latlong.html" '
-            u'target="_blank">iTouchMap.com</a> '
-            u'to get the decimal coordinates of your project'
-        )
-    )
+    _help_text = _(u'Go to <a href="http://itouchmap.com/latlong.html" target="_blank">iTouchMap.com</a> '
+                   u'to get the decimal coordinates of your project.')
+    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
+    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
     city = models.CharField(_(u'city'), blank=True, max_length=255)
     state = models.CharField(_(u'state'), blank=True, max_length=255)
     country = models.ForeignKey(Country, verbose_name=_(u'country'))
@@ -138,7 +126,7 @@ class Location(models.Model):
     postcode = models.CharField(_(u'postcode'), max_length=10, blank=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey(u'content_type', 'object_id')
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
     primary = models.BooleanField(_(u'primary location'), default=True)
 
     def __unicode__(self):
@@ -485,8 +473,7 @@ class MiniCMS(models.Model):
     label = models.CharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
     feature_box = models.TextField(
         u'feature box text', max_length=350,
-        help_text=_(
-            u'''Enter the text that will appear in the feature box of the home page. (350 characters)
+        help_text=_(dedent(u'''Enter the text that will appear in the feature box of the home page. (350 characters)
             <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
             <p>The outer &lt;div&gt; can use the classes<br/>
             <code>quarter, half, three_quarters and full</code><br/>
@@ -502,7 +489,7 @@ class MiniCMS(models.Model):
                 <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
             </p>
             <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>'''
-        )
+        ))
     )
     feature_image = models.ImageField(
         u'feature image', blank=True, upload_to=image_path,

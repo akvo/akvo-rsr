@@ -9,11 +9,9 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.data.retriever import RSRDataRetriever
 from fab.host.dataretrieval import DataRetrievalHost
+from fab.tests.template.loader import TemplateLoader
 
 
 class DataRetrievalHostTest(mox.MoxTestBase):
@@ -27,7 +25,7 @@ class DataRetrievalHostTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance"""
 
-        self.assertIsInstance(DataRetrievalHost.create_with(DatabaseCredentials()), DataRetrievalHost)
+        self.assertIsInstance(DataRetrievalHost.create_with(TemplateLoader.load_database_credentials()), DataRetrievalHost)
 
     def test_can_fetch_data_from_host(self):
         """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""

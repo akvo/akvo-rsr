@@ -9,9 +9,6 @@ import imp, mox, os
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.config.rsr.database import RSRDatabaseConfig
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.database.mysql.admin import DatabaseAdmin
@@ -19,6 +16,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.host.database import DatabaseHost
 from fab.verifiers.config import RSRSettingsVerifier
+from fab.tests.template.loader import TemplateLoader
 
 
 class DatabaseHostTest(mox.MoxTestBase):
@@ -26,7 +24,7 @@ class DatabaseHostTest(mox.MoxTestBase):
     def setUp(self):
         super(DatabaseHostTest, self).setUp()
         self.deployment_host_config = CIDeploymentHostConfig.for_test()
-        self.database_credentials = DatabaseCredentials()
+        self.database_credentials = TemplateLoader.load_database_credentials()
         self.database_config = RSRDatabaseConfig(self.database_credentials, self.deployment_host_config)
 
         self.mock_settings_verifier = self.mox.CreateMock(RSRSettingsVerifier)

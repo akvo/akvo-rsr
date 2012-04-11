@@ -118,9 +118,21 @@
       {% block project_tools %}
         <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
         <div class="whitebox">
-          <p class="grey small pad10" style="margin: 0;">
+          
+          <div style="width:45%; float:left; padding-top:15px; padding-left:10px;">
+            <a class="aqua awesome" href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
+          </div>
+          <div style="width:45%; float:right; padding-top:15px; padding-right:10px">
+            <p style="margin:0;" class="tiny grey">
+              {% if not user.username %}
+                {% trans 'Sign in to add an update to your project.' %}
+              {% endif %}
+            </p>
+          </div>
+          <div class="clear"></div>
+          <hr style="margin-bottom:0; margin-left:5px; margin-right:5px;" />
+          <p class="grey small pad10" style="margin:0;">
             <a href="{% url 'project_main' project.id %}">{% trans 'Project permalink' %}</a><br />
-            <a href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
           </p>
         </div>
       {% endblock project_tools %}

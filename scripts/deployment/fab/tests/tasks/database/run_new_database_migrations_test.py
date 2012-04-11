@@ -14,16 +14,15 @@ from fab.config.values.host import HostAlias
 from fab.host.controller import HostControllerMode
 from fab.host.database import DatabaseHost
 from fab.tasks.database.migrate import RunNewDatabaseMigrations
-from fab.verifiers.config import ConfigFileVerifier
 
 
 class StubbedRunNewDatabaseMigrations(RunNewDatabaseMigrations):
 
-    def __init__(self, config_verifier, configured_database_host):
-        super(StubbedRunNewDatabaseMigrations, self).__init__(config_verifier)
-        self.configured_database_host = configured_database_host
+    def __init__(self, database_host):
+        super(StubbedRunNewDatabaseMigrations, self).__init__()
+        self.configured_database_host = database_host
 
-    def _configure_database_host_with(self, host_controller_mode, host_config):
+    def _configure_database_host_with(self, host_controller, host_config):
         return self.configured_database_host
 
 
@@ -31,10 +30,9 @@ class RunNewDatabaseMigrationsTest(mox.MoxTestBase):
 
     def setUp(self):
         super(RunNewDatabaseMigrationsTest, self).setUp()
-        self.mock_config_verifier = self.mox.CreateMock(ConfigFileVerifier)
         self.mock_database_host = self.mox.CreateMock(DatabaseHost)
 
-        self.run_database_migrations_task = StubbedRunNewDatabaseMigrations(self.mock_config_verifier, self.mock_database_host)
+        self.run_database_migrations_task = StubbedRunNewDatabaseMigrations(self.mock_database_host)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.database.run_new_database_migrations_test  Has expected task name"""
