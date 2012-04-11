@@ -23,20 +23,29 @@ class CredentialsFileReader(object):
     def create_with(host_paths, host_controller):
         return CredentialsFileReader(host_paths, FileSystem(host_controller))
 
-    def read_deployed_credentials(self, credentials_file_name):
-        deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials', credentials_file_name)
+    def read_local_credentials(self, credentials_file_name, delete_after_reading=False):
         local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
         local_credentials_file = os.path.join(local_credentials_home, credentials_file_name)
 
-        self.host_file_system.exit_if_file_does_not_exist(deployed_credentials_file)
-        self.host_file_system.download_file(deployed_credentials_file, local_credentials_home)
+        self.local_file_system.exit_if_file_does_not_exist(local_credentials_file)
 
         with self.local_file_system.open_file(local_credentials_file) as credentials_file:
             credentials_data = json.load(credentials_file)
 
-        self.local_file_system.delete_file(local_credentials_file)
+        if delete_after_reading:
+            self.local_file_system.delete_file(local_credentials_file)
 
         return credentials_data
+
+    def read_deployed_credentials(self, credentials_file_name):
+        deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials', credentials_file_name)
+        local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
+
+        self.host_file_system.exit_if_file_does_not_exist(deployed_credentials_file)
+        self.host_file_system.download_file(deployed_credentials_file, local_credentials_home)
+
+        return self.read_local_credentials(credentials_file_name, delete_after_reading=True)
+
 
 class RemoteCredentialsFileReader(CredentialsFileReader):
 
