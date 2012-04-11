@@ -1,0 +1,13 @@
+#!/bin/bash
+
+PY_VERSION=2.7
+PY_BIN_PATH="/Library/Frameworks/Python.framework/Versions/$PY_VERSION/bin"
+PY_PACKAGES_BIN_PATH="$PY_BIN_PATH" # this might be "/usr/local/share/python" when using homebrew Python
+
+VIRTUALENVS_HOME="/var/virtualenvs"
+PACKAGE_DOWNLOAD_DIR="/var/tmp/python/packages"
+
+printf "\n>> Using Python $PY_VERSION at:                $PY_BIN_PATH\n"
+printf ">> Using Python packages installed at: $PY_PACKAGES_BIN_PATH\n>> "
+$PY_BIN_PATH/python --version
+printf "\n"

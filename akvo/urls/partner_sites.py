@@ -38,6 +38,14 @@ urlpatterns = patterns('',
         views.ProjectUpdateView.as_view(),
         name='update_main'),
 
+    url(r'^project/(?P<project_id>\d+)/update/$',
+        views.ProjectUpdateAddView.as_view(),
+        name='update_add'),
+
+    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$',
+        views.ProjectUpdateEditView.as_view(),
+        name='update_edit'),
+
     # Partners
     url(r'^organisations/$',
         views.PartnerListView.as_view(),
@@ -64,30 +72,17 @@ urlpatterns = patterns('',
     # Beta API
     url(r'^api/beta/projects_cordinates.json$',
         views.ProjectCordinates.as_view(),
-        #views.projects_cordinates,
         name="api_projects_cordinates"), 
     
+    # Auth
+    url(r'^rsr/signin/$',
+        views.SignInView.as_view(),
+        name="sign_in"),
+
+    url(r'^rsr/signout/$',
+        views.signout,
+        name='sign_out'),
 )
-
-if getattr(settings, 'PARTNER_SITES_AUTH', False):
-    urlpatterns += (
-        # Auth
-        url(r'^rsr/signin/$',
-            views.SignInView.as_view(),
-            name="sign_in"),
-
-        url(r'^rsr/signout/$',
-            views.signout,
-            name='sign_out'),
-
-        url(r'^project/(?P<project_id>\d+)/update/$',
-            views.ProjectUpdateAddView.as_view(),
-            name='update_add'),
-
-        url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$',
-            views.ProjectUpdateEditView.as_view(),
-            name='update_edit'),
-    )
 
 urlpatterns += counter_urls
 

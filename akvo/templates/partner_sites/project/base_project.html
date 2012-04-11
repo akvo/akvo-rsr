@@ -7,7 +7,7 @@
 
 {% block breadcrum_right %}
   {{block.super}}
-  | <a href="#">Project updates</a>
+  | <a href="#">{% trans "Project updates" %}</a>
 {% endblock breadcrum_right %}
 
 {% block breadcrum_items %}
@@ -72,13 +72,6 @@
           </div>
           <div class="clear"></div>
 
-          {% comment %}
-          <h2 class="marg_top40">
-            <a href="{% url 'update_list' project.id %}">
-              {% trans "Project updates" %}
-            </a>
-          </h2>
-          {% endcomment %}
           {% for update in updates|slice:":3" %}
             {% if update.video or update.photo %}
               <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %}">
@@ -125,15 +118,21 @@
       {% block project_tools %}
         <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
         <div class="whitebox">
-          <p class="grey small pad10" style="margin: 0;">
-            <a href="{% url 'project_main' project.id %}">{% trans 'Project permalink' %}</a><br />
-            {% if can_add_update %}
-              <a href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
-            {% else %}
+          
+          <div style="width:45%; float:left; padding-top:15px; padding-left:10px;">
+            <a class="aqua awesome" href="{% url 'update_add' project.id %}">{% trans 'Add update' %}</a>
+          </div>
+          <div style="width:45%; float:right; padding-top:15px; padding-right:10px">
+            <p style="margin:0;" class="tiny grey">
               {% if not user.username %}
-                <a href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">{% trans "Sign in" %}</a> {% trans "to add update" %}
+                {% trans 'Sign in to add an update to your project.' %}
               {% endif %}
-            {% endif %}
+            </p>
+          </div>
+          <div class="clear"></div>
+          <hr style="margin-bottom:0; margin-left:5px; margin-right:5px;" />
+          <p class="grey small pad10" style="margin:0;">
+            <a href="{% url 'project_main' project.id %}">{% trans 'Project permalink' %}</a><br />
           </p>
         </div>
       {% endblock project_tools %}

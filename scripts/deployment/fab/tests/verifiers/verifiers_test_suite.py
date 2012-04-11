@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.tests.verifiers.config_file_verifier_test import ConfigFileVerifierTest
 from fab.tests.verifiers.deployment_user_verifier_test import DeploymentUserVerifierTest
+from fab.tests.verifiers.rsr_settings_verifier_test import RSRSettingsVerifierTest
 
 
 def verifiers_suite():
-    return TestSuiteLoader().create_suite_from_classes([ConfigFileVerifierTest, DeploymentUserVerifierTest])
+    return TestSuiteLoader().create_suite_from_classes([ConfigFileVerifierTest, DeploymentUserVerifierTest, RSRSettingsVerifierTest])
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(verifiers_suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(verifiers_suite())

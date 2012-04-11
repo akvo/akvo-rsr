@@ -15,7 +15,7 @@ class UserCredentials(object):
     DEFAULT_SSH_ID_PATH = '~/.ssh/id_rsa'
 
     def __init__(self, deployment_user, sudo_password, ssh_id_file_path):
-        self.deployment_user    = subprocess.check_output('whoami').strip()
+        self.deployment_user    = deployment_user
         self.sudo_password      = sudo_password
         self.ssh_id_file_path   = os.path.expanduser(ssh_id_file_path)
 

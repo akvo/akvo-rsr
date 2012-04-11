@@ -7,10 +7,11 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.data.retriever import RSRDataRetriever
 from fab.host.dataretrieval import DataRetrievalHost
+from fab.tests.template.loader import TemplateLoader
 
 
 class DataRetrievalHostTest(mox.MoxTestBase):
@@ -24,7 +25,7 @@ class DataRetrievalHostTest(mox.MoxTestBase):
     def test_can_create_instance(self):
         """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance"""
 
-        self.assertIsInstance(DataRetrievalHost.create(), DataRetrievalHost)
+        self.assertIsInstance(DataRetrievalHost.create_with(TemplateLoader.load_database_credentials()), DataRetrievalHost)
 
     def test_can_fetch_data_from_host(self):
         """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""
@@ -38,6 +39,5 @@ class DataRetrievalHostTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(DataRetrievalHostTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

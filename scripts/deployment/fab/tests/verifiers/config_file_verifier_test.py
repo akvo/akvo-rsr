@@ -7,7 +7,7 @@
 
 import mox, os
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.os.filesystem import LocalFileSystem
 from fab.verifiers.config import ConfigFileVerifier
@@ -45,19 +45,9 @@ class ConfigFileVerifierTest(mox.MoxTestBase):
 
         self.config_file_verifier.exit_if_custom_user_credentials_not_found()
 
-    def test_will_exit_if_database_credentials_not_found(self):
-        """fab.tests.verifiers.config_file_verifier_test  Will exit if database credentials are not found"""
-
-        expected_database_credentials_path = os.path.join(self.expected_deployment_scripts_home, 'fab/config/rsr/credentials/database.py')
-        self.mock_local_file_system.exit_if_file_does_not_exist(expected_database_credentials_path)
-        self.mox.ReplayAll()
-
-        self.config_file_verifier.exit_if_database_credentials_not_found()
-
 
 def suite():
     return TestSuiteLoader().load_tests_from(ConfigFileVerifierTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

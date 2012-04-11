@@ -8,12 +8,12 @@
 import fabric.api
 import mox, os
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController
 from fab.os.command.stat import StatCommand
-from fab.os.filesystem import ArchiveOptions, FileSystem, LocalFileSystem
+from fab.os.filesystem import ArchiveOptions, FileSystem, LocalFileSystem, RemoteFileSystem
 from fab.os.path import PathType
 from fab.os.system import SystemType
 
@@ -32,6 +32,11 @@ class FileSystemTest(mox.MoxTestBase):
         """fab.tests.os.file_system_test  Can create a LocalFileSystem instance"""
 
         self.assertIsInstance(LocalFileSystem(), LocalFileSystem)
+
+    def test_can_crete_remotefilesystem_instance(self):
+        """fab.tests.os.file_system_test  Can create a RemoteFileSystem instance"""
+
+        self.assertIsInstance(RemoteFileSystem(), RemoteFileSystem)
 
     def test_can_change_directory(self):
         """fab.tests.os.file_system_test  Can change directory"""
@@ -466,6 +471,5 @@ class FileSystemTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(FileSystemTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

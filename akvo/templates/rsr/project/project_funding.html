@@ -31,42 +31,17 @@
 		<div class="space20">
 			<h3>{% trans 'Project Budget' %}</h3>
 			<table class="project_budget_table" style="border:none; margin-top:20px;">
-				{% if project.budget_employment %}
-				<tr>
-					<td>{% trans 'Employment costs' %}:</td>
-					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_employment|round|intcomma}}</td>
-				</tr>
-				{% endif %}
-				{% if project.budget_building %}
-				<tr>
-					<td>{% trans 'Building Material costs' %}:</td>
-					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_building|round|intcomma}}</td>
-				</tr>
-				{% endif %}
-				{% if project.budget_training %}
-				<tr>
-					<td>{% trans 'Training costs' %}:</td>
-					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_training|round|intcomma}}</td>
-				</tr>
-				{% endif %}
-				{% if project.budget_maintenance %}
-				<tr>
-					<td>{% trans 'Maintenance costs' %}:</td>
-					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_maintenance|round|intcomma}}</td>
-				</tr>
-				{% endif %}
-				{% if project.budget_management %}
-				<tr>
-					<td>{% trans 'Management costs' %}:</td>
-					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_management|round|intcomma}}</td>
-				</tr>
-				{% endif %}
-				{% if project.budget_other %}
-				<tr>
-					<td>{% trans 'Other costs' %}:</td>
-					<td class="text_right">{{project.get_currency_display|safe}} {{project.budget_other|round|intcomma}}</td>
-				</tr>
-				{% endif %}
+        {% for item in project.budget_items.all %}
+          <tr>
+            <td>
+              {% blocktrans with label=item.get_label|capfirst %}
+                {{ label }}:
+              {% endblocktrans %}
+            </td>
+            <td class="text_right">{{project.get_currency_display|safe}} {{item.amount|round|intcomma}}</td>
+          </tr>
+        {%  endfor %}
+
 				{% if project.budget_total %}
 				<tr>
 					<td><b>{% trans 'Total' %}:</b></td>

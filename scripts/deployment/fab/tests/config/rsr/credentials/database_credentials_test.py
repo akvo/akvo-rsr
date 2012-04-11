@@ -5,20 +5,33 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import mox
+import simplejson as json
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
+from fab.config.rsr.credentials.database import DatabaseCredentials
+from fab.config.rsr.credentials.reader import CredentialsFileReader
+from fab.tests.template.loader import TemplateLoader
 
 
-class DatabaseCredentialsTest(unittest2.TestCase):
+class DatabaseCredentialsTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseCredentialsTest, self).setUp()
 
-        self.database_credentials = DatabaseCredentials()
+        self.database_credentials = DatabaseCredentials(TemplateLoader.load_database_credentials_data())
+
+    def test_can_read_database_credentials_with_given_credentials_reader(self):
+        """fab.tests.config.rsr.credentials.database_credentials_test  Can read database credentials with a given credentials reader"""
+
+        expected_credentials_data = TemplateLoader.load_database_credentials_data()
+        mock_credentials_reader = self.mox.CreateMock(CredentialsFileReader)
+
+        mock_credentials_reader.read_data_from(DatabaseCredentials.DATABASE_CREDENTIALS_FILE_NAME).AndReturn(expected_credentials_data)
+        self.mox.ReplayAll()
+
+        self.assertEqual(DatabaseCredentials(expected_credentials_data), DatabaseCredentials.read_with(mock_credentials_reader))
 
     def test_has_admin_user(self):
         """fab.tests.config.rsr.credentials.database_credentials_test  Has database admin user"""
@@ -47,6 +60,5 @@ class DatabaseCredentialsTest(unittest2.TestCase):
 def suite():
     return TestSuiteLoader().load_tests_from(DatabaseCredentialsTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

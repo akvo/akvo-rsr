@@ -7,7 +7,7 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.environment.python.virtualenv import VirtualEnv
 from fab.helpers.feedback import ExecutionFeedback
@@ -21,7 +21,7 @@ class VirtualEnvTest(mox.MoxTestBase):
         self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
 
-        self.expected_virtualenv_path = "/some/env/path"
+        self.expected_virtualenv_path = '/some/env/path'
 
         self.mock_host_controller.feedback = self.mock_feedback
 
@@ -30,8 +30,8 @@ class VirtualEnvTest(mox.MoxTestBase):
     def test_can_list_installed_virtualenv_packages(self):
         """fab.tests.environment.python.virtualenv_test  Can list installed virtualenv packages"""
 
-        self.mock_feedback.comment("Installed packages:")
-        self.mock_host_controller.run(self._expected_call_within_virtualenv("pip freeze"))
+        self.mock_feedback.comment('Installed packages:')
+        self.mock_host_controller.run(self._expected_call_within_virtualenv('pip freeze'))
         self.mox.ReplayAll()
 
         self.virtualenv.list_installed_packages()
@@ -39,20 +39,20 @@ class VirtualEnvTest(mox.MoxTestBase):
     def test_can_run_command_within_virtualenv(self):
         """fab.tests.environment.python.virtualenv_test  Can run command from within the virtualenv"""
 
-        virtualenv_command = "command text"
+        virtualenv_command = 'command text'
+        command_response = 'some response'
 
-        self.mock_host_controller.run(self._expected_call_within_virtualenv(virtualenv_command))
+        self.mock_host_controller.run(self._expected_call_within_virtualenv(virtualenv_command)).AndReturn(command_response)
         self.mox.ReplayAll()
 
-        self.virtualenv.run_within_virtualenv(virtualenv_command)
+        self.assertEqual(command_response, self.virtualenv.run_within_virtualenv(virtualenv_command))
 
     def _expected_call_within_virtualenv(self, command):
-        return "source %s/bin/activate && %s" % (self.expected_virtualenv_path, command)
+        return 'source %s/bin/activate && %s' % (self.expected_virtualenv_path, command)
 
 
 def suite():
     return TestSuiteLoader().load_tests_from(VirtualEnvTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())

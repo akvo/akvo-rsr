@@ -63,16 +63,10 @@ textarea {
  * No text-shadow: twitter.com/miketaylr/status/12228805301
  * Also: hot pink!
  */
-::-moz-selection {
-  background: #fe57a1;
-  color: #fff;
-  text-shadow: none;
-}
-::selection {
-  background: #fe57a1;
-  color: #fff;
-  text-shadow: none;
-}
+/*::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }*/
+/*::selection { background: #fe57a1; color: #fff; text-shadow: none; }*/
+/*::-moz-selection { background: #71cdff; color: #fff; text-shadow: none; }
+::selection { background: #71cdff; color: #fff; text-shadow: none; }*/
 /* =============================================================================
    Links
    ========================================================================== */

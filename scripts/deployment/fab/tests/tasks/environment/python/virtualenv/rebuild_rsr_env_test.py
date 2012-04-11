@@ -7,7 +7,7 @@
 
 import mox
 
-from testing.helpers.execution import TestSuiteLoader, TestRunner
+from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.rsr.host import CIDeploymentHostConfig
@@ -66,7 +66,6 @@ class RebuildRSREnvTest(mox.MoxTestBase):
         self.mock_virtualenv_deployment_host.remove_previously_downloaded_package_sources()
         self.mock_virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.rsr_requirements_url)
-        self.mock_virtualenv_deployment_host.install_virtualenv_packages(self.virtualenv_installer_config.testing_requirements_url)
         self.mock_virtualenv_deployment_host.set_web_group_permissions_and_ownership_on_deployed_virtualenv()
         self.mock_virtualenv_deployment_host.ensure_virtualenv_symlinks_exist()
         self.mox.ReplayAll()
@@ -77,6 +76,5 @@ class RebuildRSREnvTest(mox.MoxTestBase):
 def suite():
     return TestSuiteLoader().load_tests_from(RebuildRSREnvTest)
 
-if __name__ == "__main__":
-    from fab.tests.test_settings import TEST_MODE
-    TestRunner(TEST_MODE).run_test_suite(suite())
+if __name__ == '__main__':
+    TestRunner().run_test_suite(suite())
