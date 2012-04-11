@@ -23,9 +23,7 @@
       <p class="grey small">
         {{ update.time|date:"d-M-Y" }},
         {%  url 'organisation_main' update.user.userprofile.organisation.id as user_org_url %}
-        {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.get_update_method_display as update_meth %}
-          by {{user_name}}, <a href="{{user_org_url}}">{{user_org}}</a>, via {{update_meth}}
-        {% endblocktrans %}
+        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
       </p>
     </div>
     {% counter_badge update %}
@@ -56,9 +54,7 @@
       		</div>
       		<p class="nano-lede grey">{% trans "Find a typo? :)" %}</p>
       		<p class="nano-lede grey">
-						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}
-							You posted this update at {{posted}}. You can edit this update until {{ expired }}, at which time it will become locked and final.	
-						{% endblocktrans %}
+						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expired }}, at which time it will become locked and final.{% endblocktrans %}
 					</p>
       	</div>
     	{% endif %}

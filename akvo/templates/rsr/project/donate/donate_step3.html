@@ -42,7 +42,7 @@
       <div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
         <p>
           <span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-          {% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
+          {% trans "We're sorry, but you must have Javascript enabled in your browser to proceed." %}
         </p>
       </div>
     </noscript>
@@ -158,9 +158,9 @@
     <hr style="margin-top:15px;"/>
 
     <div style="float:left; width:400px;">
-      {% blocktrans with project.get_currency_display|safe as currency %}
-      <h3>Amount you wish to donate (in {{currency}})</h3>
-            {% endblocktrans %}
+      <h3>
+        {% blocktrans with project.get_currency_display|safe as currency %}Amount you wish to donate (in {{currency}}){% endblocktrans %}
+      </h3>
       <div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
         <p class="grey">{% trans 'Amount' %}:</p>
       </div>
@@ -236,9 +236,7 @@
     <hr />
     <div style="width:500px; margin-left:auto; margin-right:auto; padding-top:20px;">
       <p style="margin-bottom:20px;" class="grey">
-        {% blocktrans with invoice.get_engine_display as engine %}
-          Click the Donate button to proceed to {{engine}} checkout. 
-        {% endblocktrans %}
+        {% blocktrans with invoice.get_engine_display as engine %}Click the Donate button to proceed to {{engine}} checkout.{% endblocktrans %}
         {% trans 'By clicking on the "Donate" button you agree to the' %} 
         <a href="/web/donation_policy/" 
           target="_blank">{% trans 'Terms and Conditions' %}

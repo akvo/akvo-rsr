@@ -202,7 +202,7 @@ class OrganisationAdmin(admin.ModelAdmin):
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'title': _(u'Add organisation'),
             'adminform': adminForm,
             'is_popup': request.REQUEST.has_key('_popup'),
             'show_delete': False,
@@ -665,7 +665,7 @@ class ProjectAdmin(admin.ModelAdmin):
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'title': _(u'Add project'),
             'adminform': adminForm,
             'is_popup': "_popup" in request.REQUEST,
             'show_delete': False,
@@ -754,7 +754,7 @@ class ProjectAdmin(admin.ModelAdmin):
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Change %s') % force_unicode(opts.verbose_name),
+            'title': _(u'Change project'),
             'adminform': adminForm,
             'object_id': object_id,
             'original': obj,
@@ -970,20 +970,20 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
     def featured_on(self, request, queryset):
         rows_updated = queryset.exclude(photo__exact='').update(featured=True)
         if rows_updated == 1:
-            message_bit = _(u'1 update was')
+            message_bit = u'1 update was'
         else:
-            message_bit = _(u'%d updates were')  % rows_updated
-        self.message_user(request, _(u'%s marked as featured.') % message_bit)
-    featured_on.short_description = _(u'Mark selected updates as featured')
+            message_bit = u'%d updates were'  % rows_updated
+        self.message_user(request, u'%s marked as featured.' % message_bit)
+    featured_on.short_description = u'Mark selected updates as featured'
             
     def featured_off(self, request, queryset):
         rows_updated = queryset.update(featured=False)
         if rows_updated == 1:
-            message_bit = _(u'1 update was')
+            message_bit = u'1 update was'
         else:
-            message_bit = _(u'%d updates were')  % rows_updated
-        self.message_user(request, _(u'%s removed from featured.') % message_bit)
-    featured_off.short_description = _(u'Remove selected updates from featured')
+            message_bit = u'%d updates were' % rows_updated
+        self.message_user(request, u'%s removed from featured.' % message_bit)
+    featured_off.short_description = u'Remove selected updates from featured'
             
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
     
@@ -1012,17 +1012,20 @@ class InvoiceAdmin(admin.ModelAdmin):
         if invalid_invoices:
             if valid_invoices:
                 for invoice in valid_invoices:
-                    self.message_user(request, ugettext('Invoice %d successfully voided.' % int(invoice.pk)))
+                    self.message_user(request, 'Invoice %d successfully voided.' % int(invoice.pk))
                 valid_invoices.update(status=2)
             for invoice in invalid_invoices:
                 # beth: put proper translation tag back in later--ugettext removed
-                msg = ('Invoice %d could not be voided. It is already %s.' % (invoice.pk, invoice.get_status_display().lower()))
+                # Translators: invoice_status can be
+                msg = u'Invoice %(invoice_id)d could not be voided. It is already %(invoice_status)s.' % dict(
+                    invoice_id=invoice.pk, invoice_status=invoice.get_status_display().lower()
+                )
                 self.message_user(request, msg)
         else:
             for invoice in queryset:
-                self.message_user(request, ugettext('Invoice %d successfully voided.' % int(invoice.pk)))
+                self.message_user(request, 'Invoice %d successfully voided.' % int(invoice.pk))
                 queryset.update(status=2)
-    void_invoices.short_description = _(u'Mark selected invoices as void')
+    void_invoices.short_description = u'Mark selected invoices as void'
     
 admin.site.register(get_model('rsr', 'invoice'), InvoiceAdmin)
     

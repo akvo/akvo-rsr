@@ -3,7 +3,7 @@
 {% blocktrans with project.pk as project_pk and project.name as project_name and update.text|slice:":30" as update_intro and update.get_absolute_url as update_url %}
 <p>Akvo has received an update from your phone to project {{project_pk}} - {{project_name}}, beginning with the text "{{update_intro}}".</p>
 
-<p>You can see the update <a href="http://{{domain}}{{update_url}}">here</a></p>
+<p>You can see the update <a href='http://{{domain}}{{update_url}}'>here</a></p>
 
 <p>The Akvo team</p>
 

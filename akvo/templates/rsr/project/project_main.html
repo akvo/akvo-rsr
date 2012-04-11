@@ -71,20 +71,12 @@
 				<div class="space20">
           {% if project.areas_and_categories %}
             <h3 class="black">
-              {% blocktrans count project.areas_and_categories|length as areas %}
-                Focus area
-              {% plural %}
-                Focus areas
-              {% endblocktrans %}
+              {% blocktrans count project.areas_and_categories|length as areas %}Focus area{% plural %}Focus areas{% endblocktrans %}
             </h3>
             {% for area in project.areas_and_categories %}
               <p><a href="{{area.area.get_absolute_url}}">{{area.area}}</a>
               <span class="small" style="padding-left: 2em;">
-                {% blocktrans count area.categories|length as cats %}
-                  Category:
-                {% plural %}
-                  Categories:
-                {% endblocktrans %}
+                {% blocktrans count area.categories|length as cats %}Category:{% plural %}Categories:{% endblocktrans %}
                 {{area.categories|join:", "}}
               </span>
             </p>
@@ -141,11 +133,7 @@
 					{% else %}
             {% if p.akvopedia_links %}
               <h4>
-                {% blocktrans count p.akvopedia_links.count as links %}
-                  Akvopedia article
-                {% plural %}
-                  Akvopedia articles
-                {% endblocktrans %}
+                {% blocktrans count p.akvopedia_links.count as links %}Akvopedia article{% plural %}Akvopedia articles{% endblocktrans %}
               </h4>
               {% for link in p.akvopedia_links %}
                 <p><a href="{{link.url}}">{{link.caption}}</a></p>
@@ -156,11 +144,7 @@
             {% endif %}
             {% if p.external_links %}
               <h4>
-                {% blocktrans count p.external_links.count as links %}
-                  External link
-                {% plural %}
-                  External links
-                {% endblocktrans %}
+                {% blocktrans count p.external_links.count as links %}External link{% plural %}External links{% endblocktrans %}
               </h4>
               <p class="small grey">
                 ({% trans 'Will open in new window' %})

@@ -44,7 +44,7 @@
       <div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
         <p>
           <span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-          {% trans 'We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed.' %}
+          {% trans "We're sorry, but you must have Javascript enabled in your browser to proceed." %}
         </p>
       </div>
     </noscript>
@@ -162,9 +162,9 @@
     <div style="float:left; width:400px;">
       <h3>{% trans 'Donation details' %}</h3>
       <div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
-        {% blocktrans with project.get_currency_display|safe as currency %}
-        <p class="grey">Amount in {{currency}}:</p>
-              {% endblocktrans %}
+        <p class="grey">
+          {% blocktrans with project.get_currency_display|safe as currency %}Amount in {{currency}}:{% endblocktrans %}
+        </p>
       </div>
       <div style="float:left;">
         <p style="font-weight:bold; margin-bottom:18px;">

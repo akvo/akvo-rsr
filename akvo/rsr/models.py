@@ -114,7 +114,7 @@ class Country(models.Model):
 
 
 class Location(models.Model):
-    _help_text = _(u'Go to <a href="http://itouchmap.com/latlong.html" target="_blank">iTouchMap.com</a> '
+    _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
