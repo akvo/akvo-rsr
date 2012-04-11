@@ -23,7 +23,7 @@ class CredentialsFileReader(object):
     def create_with(host_paths, host_controller):
         return CredentialsFileReader(host_paths, FileSystem(host_controller))
 
-    def read_data_from(self, credentials_file_name):
+    def read_deployed_credentials(self, credentials_file_name):
         deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials', credentials_file_name)
         local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
         local_credentials_file = os.path.join(local_credentials_home, credentials_file_name)

@@ -63,8 +63,8 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
 
         RemoteCredentialsFileReader.create_with(DataHostPaths())
 
-    def test_can_read_data_from_given_credentials_file(self):
-        """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read data from a given credentials file name"""
+    def test_can_read_deployed_credentials_file(self):
+        """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read a deployed credentials file"""
 
         deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials/some_credentials_file.json')
         local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
@@ -77,7 +77,7 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.assertEqual(json.load(self._open_credentials_data_file()),
-                         self.credentials_file_reader.read_data_from('some_credentials_file.json'))
+                         self.credentials_file_reader.read_deployed_credentials('some_credentials_file.json'))
 
     def _open_credentials_data_file(self):
         return open(TemplateLoader.CREDENTIALS_TEMPLATE_PATH, 'r')
@@ -92,7 +92,7 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         with self.assertRaises(SystemExit) as raised:
-            self.credentials_file_reader.read_data_from('non_existent_credentials_file.json')
+            self.credentials_file_reader.read_deployed_credentials('non_existent_credentials_file.json')
 
         self.assertEqual(file_not_found_message, raised.exception.message)
 
