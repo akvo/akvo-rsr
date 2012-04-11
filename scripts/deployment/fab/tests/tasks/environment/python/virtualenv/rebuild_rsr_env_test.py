@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.rsr.credentials.user import UserCredentials
+from fab.config.rsr.credentials.user import User
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.config.rsr.virtualenv import RSRVirtualEnvInstallerConfig
 from fab.config.spec import HostConfigSpecification
@@ -35,7 +35,7 @@ class RebuildRSREnvTest(mox.MoxTestBase):
     def setUp(self):
         super(RebuildRSREnvTest, self).setUp()
 
-        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_with(CIDeploymentHostConfig.for_test(), UserCredentials.CURRENT_USER)
+        self.virtualenv_installer_config = RSRVirtualEnvInstallerConfig.create_with(CIDeploymentHostConfig.for_test(), User.CURRENT)
         self.mock_virtualenv_deployment_host = self.mox.CreateMock(VirtualEnvDeploymentHost)
 
         self.rebuild_virtualenv_task = StubbedRebuildRSREnv(self.mock_virtualenv_deployment_host)
