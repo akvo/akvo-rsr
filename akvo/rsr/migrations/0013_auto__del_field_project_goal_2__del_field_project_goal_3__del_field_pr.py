@@ -7,51 +7,39 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        
+        # Deleting field 'Project.goal_2'
+        db.delete_column('rsr_project', 'goal_2')
 
-        # Renaming field 'Project.project_plan_detail'
-        db.rename_column('rsr_project', 'project_plan_detail', 'project_plan')
+        # Deleting field 'Project.goal_3'
+        db.delete_column('rsr_project', 'goal_3')
 
-        # Renaming field 'Project.current_status_detail'
-        db.rename_column('rsr_project', 'current_status_detail', 'current_status')
+        # Deleting field 'Project.goal_1'
+        db.delete_column('rsr_project', 'goal_1')
 
-        # Changing field 'Project.current_status'
-        db.alter_column('rsr_project', 'current_status', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
+        # Deleting field 'Project.goal_4'
+        db.delete_column('rsr_project', 'goal_4')
 
-        # Changing field 'Project.project_plan_summary'
-        db.alter_column('rsr_project', 'project_plan_summary', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Renaming field 'Project.project_plan_detail'
-        db.rename_column('rsr_project', 'context', 'background')
-
-        # Changing field 'Project.context'
-        db.alter_column('rsr_project', 'background', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Changing field 'Project.goals_overview'
-        db.alter_column('rsr_project', 'goals_overview', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Adding unique constraint on 'BudgetItemLabel', fields ['label']
-        db.create_unique('rsr_budgetitemlabel', ['label'])
+        # Deleting field 'Project.goal_5'
+        db.delete_column('rsr_project', 'goal_5')
 
 
     def backwards(self, orm):
         
-        # Removing unique constraint on 'BudgetItemLabel', fields ['label']
-        db.delete_unique('rsr_budgetitemlabel', ['label'])
+        # Adding field 'Project.goal_2'
+        db.add_column('rsr_project', 'goal_2', self.gf('django.db.models.fields.CharField')(default='', max_length=60, blank=True), keep_default=False)
 
-        # Renaming field 'Project.current_status'
-        db.rename_column('rsr_project', 'current_status', 'current_status_detail')
+        # Adding field 'Project.goal_3'
+        db.add_column('rsr_project', 'goal_3', self.gf('django.db.models.fields.CharField')(default='', max_length=60, blank=True), keep_default=False)
 
-        # Renaming field 'Project.project_plan'
-        db.rename_column('rsr_project', 'project_plan', 'project_plan_detail')
+        # Adding field 'Project.goal_1'
+        db.add_column('rsr_project', 'goal_1', self.gf('django.db.models.fields.CharField')(default='', max_length=60, blank=True), keep_default=False)
 
-        # Changing field 'Project.project_plan_summary'
-        db.alter_column('rsr_project', 'project_plan_summary', self.gf('django.db.models.fields.TextField')(max_length=220))
+        # Adding field 'Project.goal_4'
+        db.add_column('rsr_project', 'goal_4', self.gf('django.db.models.fields.CharField')(default='', max_length=60, blank=True), keep_default=False)
 
-        # Changing field 'Project.context'
-        db.alter_column('rsr_project', 'context', self.gf('django.db.models.fields.TextField')(max_length=500))
-
-        # Changing field 'Project.goals_overview'
-        db.alter_column('rsr_project', 'goals_overview', self.gf('django.db.models.fields.TextField')(max_length=500))
+        # Adding field 'Project.goal_5'
+        db.add_column('rsr_project', 'goal_5', self.gf('django.db.models.fields.CharField')(default='', max_length=60, blank=True), keep_default=False)
 
 
     models = {
@@ -159,6 +147,12 @@ class Migration(SchemaMigration):
             'link_to': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
+        },
+        'rsr.goal': {
+            'Meta': {'object_name': 'Goal'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'goals'", 'to': "orm['rsr.Project']"}),
+            'text': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
         },
         'rsr.invoice': {
             'Meta': {'object_name': 'Invoice'},
@@ -283,19 +277,14 @@ class Migration(SchemaMigration):
         },
         'rsr.project': {
             'Meta': {'object_name': 'Project'},
-            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
             'background': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
+            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
             'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
             'current_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'current_image_caption': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'current_status': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'date_complete': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_request_posted': ('django.db.models.fields.DateField', [], {'default': 'datetime.date.today'}),
-            'goal_1': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_2': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_3': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_4': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_5': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '45'}),

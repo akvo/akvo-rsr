@@ -7,51 +7,20 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-
-        # Renaming field 'Project.project_plan_detail'
-        db.rename_column('rsr_project', 'project_plan_detail', 'project_plan')
-
-        # Renaming field 'Project.current_status_detail'
-        db.rename_column('rsr_project', 'current_status_detail', 'current_status')
-
-        # Changing field 'Project.current_status'
-        db.alter_column('rsr_project', 'current_status', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Changing field 'Project.project_plan_summary'
-        db.alter_column('rsr_project', 'project_plan_summary', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Renaming field 'Project.project_plan_detail'
-        db.rename_column('rsr_project', 'context', 'background')
-
-        # Changing field 'Project.context'
-        db.alter_column('rsr_project', 'background', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Changing field 'Project.goals_overview'
-        db.alter_column('rsr_project', 'goals_overview', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
-
-        # Adding unique constraint on 'BudgetItemLabel', fields ['label']
-        db.create_unique('rsr_budgetitemlabel', ['label'])
+        
+        # Adding model 'Goal'
+        db.create_table('rsr_goal', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='goals', to=orm['rsr.Project'])),
+            ('text', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+        ))
+        db.send_create_signal('rsr', ['Goal'])
 
 
     def backwards(self, orm):
         
-        # Removing unique constraint on 'BudgetItemLabel', fields ['label']
-        db.delete_unique('rsr_budgetitemlabel', ['label'])
-
-        # Renaming field 'Project.current_status'
-        db.rename_column('rsr_project', 'current_status', 'current_status_detail')
-
-        # Renaming field 'Project.project_plan'
-        db.rename_column('rsr_project', 'project_plan', 'project_plan_detail')
-
-        # Changing field 'Project.project_plan_summary'
-        db.alter_column('rsr_project', 'project_plan_summary', self.gf('django.db.models.fields.TextField')(max_length=220))
-
-        # Changing field 'Project.context'
-        db.alter_column('rsr_project', 'context', self.gf('django.db.models.fields.TextField')(max_length=500))
-
-        # Changing field 'Project.goals_overview'
-        db.alter_column('rsr_project', 'goals_overview', self.gf('django.db.models.fields.TextField')(max_length=500))
+        # Deleting model 'Goal'
+        db.delete_table('rsr_goal')
 
 
     models = {
@@ -159,6 +128,12 @@ class Migration(SchemaMigration):
             'link_to': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
+        },
+        'rsr.goal': {
+            'Meta': {'object_name': 'Goal'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'goals'", 'to': "orm['rsr.Project']"}),
+            'text': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
         },
         'rsr.invoice': {
             'Meta': {'object_name': 'Invoice'},
@@ -283,8 +258,8 @@ class Migration(SchemaMigration):
         },
         'rsr.project': {
             'Meta': {'object_name': 'Project'},
-            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
             'background': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
+            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
             'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
             'current_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'current_image_caption': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),

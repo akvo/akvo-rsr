@@ -525,11 +525,11 @@ class Project(models.Model):
     current_image_caption = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_('overview of goals'), max_length=600, help_text=_('Describe what the project hopes to accomplish (600 characters).'))
 
-    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
-    goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
-    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
-    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
+#    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+#    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
+#    goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
+#    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
+#    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
     current_status = ProjectLimitedTextField(_('current status'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
     project_plan = models.TextField(_('project plan'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
@@ -1028,9 +1028,9 @@ class Project(models.Model):
         verbose_name_plural=_('projects')
 
 
-#class Goal(models.Model):
-#    project = models.ForeignKey(Project, related_name='goals')
-#    text = models.CharField(_('goal'), blank=True, max_length=100, help_text=_('(100 characters)'))
+class Goal(models.Model):
+    project = models.ForeignKey(Project, verbose_name=u'project', related_name='goals')
+    text = models.CharField(_(u'goal'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
 
 
 class Benchmark(models.Model):
