@@ -8,11 +8,24 @@
 import os, subprocess
 
 
-class UserCredentials(object):
+class User(object):
 
-    CURRENT_USER        = subprocess.check_output('whoami').strip()
-    NO_PASSWORD         = ''
-    DEFAULT_SSH_ID_PATH = '~/.ssh/id_rsa'
+    CURRENT     = subprocess.check_output('whoami').strip()
+    DEPLOYER    = 'deployer'
+
+
+class SudoPassword(object):
+
+    NONE = ''
+
+
+class SSHIDPath(object):
+
+    DEFAULT     = '~/.ssh/id_rsa'
+    DEPLOYER    = '~/.ssh/deployer'
+
+
+class UserCredentials(object):
 
     def __init__(self, deployment_user, sudo_password, ssh_id_file_path):
         self.deployment_user    = deployment_user
@@ -23,7 +36,11 @@ class UserCredentials(object):
 
     @staticmethod
     def default():
-        return UserCredentials(UserCredentials.CURRENT_USER, UserCredentials.NO_PASSWORD, UserCredentials.DEFAULT_SSH_ID_PATH)
+        return UserCredentials(User.CURRENT, SudoPassword.NONE, SSHIDPath.DEFAULT)
+
+    @staticmethod
+    def for_deployer_with_ssh_id(ssh_id_for_deployment=SSHIDPath.DEPLOYER):
+        return UserCredentials(User.DEPLOYER, SudoPassword.NONE, ssh_id_for_deployment)
 
     def _exit_if_ssh_id_not_found(self):
         if not os.path.exists(self.ssh_id_file_path):
