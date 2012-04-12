@@ -194,7 +194,7 @@ class ProjectUpdates(UpdateFeed):
         return _(u'Akvo RSR project %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.name}
 
     def description(self, obj):
-        return _(u'Project updates for project %(project_name)s' % {'project_name': obj.name}
+        return _(u'Project updates for project %(project_name)s' % {'project_name': obj.name})
 
     def items(self, obj):
         return ProjectUpdate.objects.filter(project__id__exact=obj.id).order_by('-time')

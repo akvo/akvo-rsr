@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-11 16:12+0200\n"
+"POT-Creation-Date: 2012-04-12 11:32+0200\n"
 "PO-Revision-Date: 2009-11-22 10:51\n"
 "Last-Translator: Beth Waaa <bethwaaa@mac.com>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -153,6 +153,11 @@ msgstr ""
 msgid "Akvo RSR project %(id)d: %(project_title)s"
 msgstr ""
 
+#: rsr/feeds.py:197
+#, python-format
+msgid "Project updates for project %(project_name)s"
+msgstr ""
+
 #: rsr/feeds.py:212
 #, python-format
 msgid "Projects of %(org_name)s"
@@ -179,11 +184,6 @@ msgstr ""
 
 #: rsr/feeds.py:236 templates/rsr/base.html:26
 msgid "Project updates for all Akvo RSR projects"
-msgstr ""
-
-#: rsr/feeds.py:197
-#, python-format
-msgid "Project updates for project %(project_name)s"
 msgstr ""
 
 #: rsr/fields.py:8
@@ -4585,7 +4585,7 @@ msgstr ""
 #: templates/rsr/project/donate/donate_step3.html:95
 #, python-format
 msgid ""
-"PayPal charges transaction fees of up to 3.9% of your donation amount + 35 "
+"PayPal charges transaction fees of up to 3.9%% of your donation amount + 35 "
 "Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the "
 "selected project."
 msgstr ""
@@ -4594,7 +4594,7 @@ msgstr ""
 #: templates/rsr/project/donate/donate_step3.html:98
 #, python-format
 msgid ""
-"PayPal charges transaction fees of up to 3.9% of your donation amount + 30 "
+"PayPal charges transaction fees of up to 3.9%% of your donation amount + 30 "
 "Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to "
 "the selected project."
 msgstr ""
@@ -4647,8 +4647,9 @@ msgstr ""
 
 #: templates/rsr/project/donate/donate_step2.html:138
 #: templates/rsr/project/donate/donate_step3.html:136
+#, python-format
 msgid ""
-"iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction "
+"iDeal charges up to 3.9%%+30 US Dollar cents of your donation in transaction "
 "fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go "
 "towards the selected project."
 msgstr ""

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-11 15:04+0200\n"
+"POT-Creation-Date: 2012-04-12 11:43+0200\n"
 "PO-Revision-Date: 2011-12-08 15:15+0000\n"
 "Last-Translator: Anke van Lenteren <anke@vanlenteren.com>\n"
 "Language-Team: Dutch (http://www.transifex.net/projects/p/akvo-rsr/language/"
@@ -186,6 +186,11 @@ msgstr "kan SMS-updates maken"
 msgid "Akvo RSR project %(id)d: %(project_title)s"
 msgstr "Akvo RSR-nr %(id)d: %(project_title)s"
 
+#: rsr/feeds.py:197
+#, python-format
+msgid "Project updates for project %(project_name)s"
+msgstr ""
+
 #: rsr/feeds.py:212
 #, fuzzy, python-format
 msgid "Projects of %(org_name)s"
@@ -213,11 +218,6 @@ msgstr "Alle Akvo RSR project-updates"
 #: rsr/feeds.py:236 templates/rsr/base.html:26
 msgid "Project updates for all Akvo RSR projects"
 msgstr "Project-updates voor alle Akvo RSR-projecten"
-
-#: rsr/feeds.py:197
-#, python-format
-msgid "Project updates for project %(project_name)s"
-msgstr ""
 
 #: rsr/fields.py:8
 msgid "CharField that stores NULL but returns an empty string"
@@ -1495,6 +1495,7 @@ msgstr "Organisatie"
 
 #: rsr/models.py:157 rsr/models.py:1039 rsr/models.py:1044 rsr/models.py:1080
 #: rsr/models.py:1669 rsr/models.py:1771
+#: templates/partner_sites/partners/partner_list.html:52
 #: templates/partner_sites/partners/partner_main.html:142
 #: templates/partner_sites/partners/partner_main.html:164
 #: templates/rsr/organisation/organisation.html:215
@@ -2349,39 +2350,25 @@ msgstr "Projecten toevoegen en bewerken."
 
 #: templates/admin/rsr/project/change_form.html:16
 msgid ""
-"\n"
-"          The project information in RSR presents your water or sanitation "
-"project to the Akvo community of users:\n"
-"          donors, support and field partners, sector professionals, and of "
-"course the wider online community.\n"
-"          Tell the <i>story</i> of the project by entering complete "
-"information, in common language and an active\n"
-"          (doing) voice.\n"
-"        "
+"The project information in RSR presents your water or sanitation project to "
+"the Akvo community of users: donors, support and field partners, sector "
+"professionals, and of course the wider online community. Tell the <i>story</"
+"i> of the project by entering complete information, in common language and "
+"an active (doing) voice."
 msgstr ""
-"\n"
-"          De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, "
-"support en field partners, in de sector werkzame \n"
-"          deskundigen en uiteraard de bredere online  gemeenschap) een "
-"overzicht van uw water- of sanitaire project.\n"
-"          Vertel het <i>verhaal</i> van het project door zo veel mogelijk "
-"informatie te geven - \n"
-"          in sprekende, duidelijke taal.\n"
-"        "
+"De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, support en "
+"field partners, in de sector werkzame deskundigen en uiteraard de bredere "
+"online gemeenschap) een overzicht van uw water- of sanitaire project. Vertel "
+"het <i>verhaal</i> van het project door zo veel mogelijk informatie te geven "
+"- in sprekende, duidelijke taal."
 
-#: templates/admin/rsr/project/change_form.html:24
+#: templates/admin/rsr/project/change_form.html:19
 msgid ""
-"\n"
-"          Please look over the whole page before beginning, so you can see "
-"where your information belongs on\n"
-"          RSR project forms.\n"
-"        "
+"Please look over the whole page before beginning, so you can see where your "
+"information belongs on RSR project forms."
 msgstr ""
-"\n"
-"          We raden u aan eerst de hele pagina door de lezen, zodat u kunt "
-"zien waar op het\n"
-"          RSR-formulier uw informatie thuishoort.\n"
-"        "
+"We raden u aan eerst de hele pagina door de lezen, zodat u kunt zien waar op "
+"het RSR-formulier uw informatie thuishoort."
 
 #: templates/admin/rsr/project/change_list.html:9
 msgid "Project listing"
@@ -2389,44 +2376,29 @@ msgstr "Lijst van projecten"
 
 #: templates/admin/rsr/project/change_list.html:11
 msgid ""
-"\n"
-"          Click the project ID number to view detailed information about a "
-"project.\n"
-"          Click a column header (for example, Country) to sort the project "
-"list by that criteria.\n"
-"        "
+"Click the project ID number to view detailed information about a project. "
+"Click a column header (for example, Country) to sort the project list by "
+"that criteria."
 msgstr ""
-"\n"
-"          Klik op het projectnummer voor meer informatie over het project.\n"
-"          Klik op een kolomkop (bijv. Land) om de projectlijst op dit "
-"kenmerk te rangschikken.\n"
-"        "
+"Klik op het projectnummer voor meer informatie over het project. Klik op een "
+"kolomkop (bijv. Land) om de projectlijst op dit kenmerk te rangschikken."
+
+#: templates/admin/rsr/project/change_list.html:14
+msgid ""
+"Organisation administrators will see an <em>Add project</em> button at the "
+"top right of the listing; push it to create a new project in RSR."
+msgstr ""
+"Administrators zullen rechts bovenaan de lijst <em>Project toevoegen</em> "
+"zien; klik hierop om een nieuw project in RSR te creëren."
 
 #: templates/admin/rsr/project/change_list.html:17
+#, fuzzy
 msgid ""
-"\n"
-"        Organisation administrators will see an <em>Add project</em> button "
-"at the top right of the listing;\n"
-"        push it to create a new project in RSR.\n"
-"      "
-msgstr ""
-"\n"
-"        Administrators zullen rechts bovenaan de lijst <em>Project "
-"toevoegen</em> zien;\n"
-"        klik hierop om een nieuw project in RSR te creëren.\n"
-"      "
-
-#: templates/admin/rsr/project/change_list.html:23
-msgid ""
-"\n"
-"        You can also create a new project from an existing project. Select "
-"and open the project you want to copy,\n"
-"        scroll to the bottom and click Save as new. The new project will be "
-"created in the project listing for you to\n"
-"        select and edit. The following information is <strong>not copied</"
-"strong>: project photo, locations, benchmarks,\n"
-"        individual donations, updates, comments.\n"
-"      "
+"You can also create a new project from an existing project. Select and open "
+"the project you want to copy, scroll to the bottom and click Save as new. "
+"The new project will be created in the project listing for you to select and "
+"edit. The following information is <strong>not copied</strong>: project "
+"photo, locations, benchmarks, individual donations, updates, comments."
 msgstr ""
 "\n"
 "        U kunt ook een nieuw project creëren van een bestaand project. "
@@ -2700,20 +2672,15 @@ msgstr "Uw emailadres:"
 msgid "Your mobile phone number:"
 msgstr "Uw mobiele telefoonnummer:"
 
-#: templates/notification/notice_settings.html:30
-#, python-format
-msgid "change under <a href=\"%(email_url)s\">Account</a>"
-msgstr "wijziging onder <a href=\"%(email_url)s\">Account</a>"
-
 #: templates/notification/notice_settings.html:34
 msgid "Note"
 msgstr "Aantekening"
 
 #: templates/notification/notice_settings.html:35
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "You do not have a verified email address to which notices can be sent. You "
-"can add one by going to <a href=\"%(email_url)s\">Account</a>."
+"can add one by going to <a href='%(email_url)s'>Account</a>."
 msgstr ""
 "U heeft geen geverifieerd emailadres waar mededelingen naar toe kunnen "
 "worden gestuurd. U kunt uw emailadres toevoegen door naar deze link te gaan "
@@ -2804,14 +2771,14 @@ msgstr ""
 "<p>Het Akvo-team</p>\n"
 
 #: templates/notification/phone_confirmed/notice.html:3
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "<p>Your mobile number, %(phone_number)s, is now confirmed for use updating "
 "projects in Akvo.</p>\n"
 "\n"
 "<p>You can now select what project or projects you want to send updates to "
-"<a href=\"%(url_myakvo_mobile)s\">here</a>.</p>\n"
+"<a href='%(url_myakvo_mobile)s'>here</a>.</p>\n"
 "\n"
 "\n"
 "<p>The Akvo team</p>\n"
@@ -2901,13 +2868,13 @@ msgstr ""
 "<p>Het Akvo-team</p>\n"
 
 #: templates/notification/update_received/notice.html:3
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "<p>Akvo has received an update from your phone to project %(project_pk)s - "
 "%(project_name)s, beginning with the text \"%(update_intro)s\".</p>\n"
 "\n"
-"<p>You can see the update <a href=\"http://%(domain)s%(update_url)s\">here</"
+"<p>You can see the update <a href='http://%(domain)s%(update_url)s'>here</"
 "a></p>\n"
 "\n"
 "<p>The Akvo team</p>\n"
@@ -2988,7 +2955,7 @@ msgid "Reset filter"
 msgstr "Start een nieuwe zoekactie"
 
 #: templates/partner_sites/home.html:70
-#, fuzzy, python-format
+#, python-format
 msgid "%(project_count)s project"
 msgid_plural "%(project_count)s projects"
 msgstr[0] ""
@@ -3000,7 +2967,7 @@ msgid "in %(search_country)s"
 msgstr ""
 
 #: templates/partner_sites/home.html:77
-#, fuzzy, python-format
+#, python-format
 msgid "in %(search_continent)s"
 msgstr ""
 
@@ -3033,7 +3000,7 @@ msgid "Not yet"
 msgstr "Nog geen updates"
 
 #: templates/partner_sites/home.html:168
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "        %(project_count)s project\n"
@@ -3094,45 +3061,16 @@ msgid "Project partners"
 msgstr "Project partners"
 
 #: templates/partner_sites/partners/partner_list.html:25
-#, fuzzy, python-format
+#: templates/partner_sites/partners/partner_list.html:61
+#, python-format
 msgid "%(partner_count)s partner"
 msgid_plural "%(partner_count)s partners"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/partner_sites/partners/partner_list.html:52
-#, fuzzy
-msgid ""
-"\n"
-"                  project"
-msgid_plural ""
-"projects \n"
-"                "
-msgstr[0] ""
-"\n"
-"        project\n"
-"      "
-msgstr[1] ""
-"\n"
-"        projecten\n"
-"      "
-
-#: templates/partner_sites/partners/partner_list.html:56
+#: templates/partner_sites/partners/partner_list.html:54
 msgid "No projects"
 msgstr "Geen projecten"
-
-#: templates/partner_sites/partners/partner_list.html:63
-#, fuzzy, python-format
-msgid ""
-"\n"
-"        %(partner_count)s partner\n"
-"      "
-msgid_plural ""
-"\n"
-"        %(partner_count)s partners\n"
-"      "
-msgstr[0] ""
-msgstr[1] ""
 
 #: templates/partner_sites/partners/partner_main.html:26
 #: templates/rsr/organisation/organisation.html:45
@@ -3556,7 +3494,7 @@ msgstr "Terug naar project-updates"
 #: templates/partner_sites/project/update_main.html:26
 #, fuzzy, python-format
 msgid ""
-"by %(user_name)s, <a href=\"%(user_org_url)s\">%(user_org)s</a>, via "
+"by %(user_name)s, <a href='%(user_org_url)s'>%(user_org)s</a>, via "
 "%(update_meth)s"
 msgstr ""
 "door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via "
@@ -3622,9 +3560,10 @@ msgstr ""
 "aktiveringssleutel voor uw account verlopen is. De sleutel is slechts "
 "%(exp_days)s dagen na registratie geldig."
 
-#: templates/registration/activate.html:36 templates/rsr/base_message.html:19
+#: templates/registration/activate.html:36
+#, fuzzy
 msgid ""
-"Please <a href=\"mailto:support@akvo.org\">contact us</a> if you have any "
+"Please <a href='mailto:support@akvo.org'>contact us</a> if you have any "
 "questions."
 msgstr ""
 "Gelieve <a href=\"mailto:support@akvo.org\">contact met ons op te nemen</a>  "
@@ -3868,10 +3807,11 @@ msgid "Select your organisation:"
 msgstr "Selecteer uw organisatie:"
 
 #: templates/registration/registration_form1.html:35
+#, fuzzy
 msgid ""
 "To set up your account, your organisation must be already registered with "
-"Akvo. If you do not see your organisation on the list above, <a href=\"/web/"
-"become_a_project_partner\">contact us</a> to begin registering your "
+"Akvo. If you do not see your organisation on the list above, <a href='/web/"
+"become_a_project_partner'>contact us</a> to begin registering your "
 "organisation. After registration is complete, please return to set up your "
 "account."
 msgstr ""
@@ -4217,6 +4157,14 @@ msgstr "Contactgegevens"
 msgid "Report a problem"
 msgstr "Een probleem rapporteren"
 
+#: templates/rsr/base_message.html:19
+msgid ""
+"Please <a href=\"mailto:support@akvo.org\">contact us</a> if you have any "
+"questions."
+msgstr ""
+"Gelieve <a href=\"mailto:support@akvo.org\">contact met ons op te nemen</a>  "
+"met eventuele vragen."
+
 #: templates/rsr/error_access_denied.html:6
 #: templates/rsr/error_access_denied.html:10
 #: templates/rsr/error_access_denied.html:14
@@ -4258,9 +4206,9 @@ msgid "RSS"
 msgstr "RSS"
 
 #: templates/rsr/index.html:71
-#, python-format
+#, fuzzy, python-format
 msgid ""
-"By %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via "
+"By %(user_name)s, <a href='%(org_url)s'>%(user_org)s</a>, via "
 "%(update_meth)s on %(update_time)s"
 msgstr ""
 "Door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via "
@@ -4684,10 +4632,9 @@ msgid "Detailed information"
 msgstr "Uitgebreide informatie"
 
 #: templates/rsr/project/project_update.html:48
-#, python-format
+#, fuzzy, python-format
 msgid ""
-"by %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via "
-"%(update_meth)s"
+"by %(user_name)s, <a href='{org_url}}'>%(user_org)s</a>, via %(update_meth)s"
 msgstr ""
 "door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via "
 "%(update_meth)s"
@@ -4928,7 +4875,7 @@ msgstr ""
 
 #: templates/rsr/project/donate/donate_step2.html:97
 #: templates/rsr/project/donate/donate_step3.html:95
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "PayPal charges transaction fees of up to 3.9% of your donation amount + 35 "
 "Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the "
@@ -4940,7 +4887,7 @@ msgstr ""
 
 #: templates/rsr/project/donate/donate_step2.html:100
 #: templates/rsr/project/donate/donate_step3.html:98
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "PayPal charges transaction fees of up to 3.9% of your donation amount + 30 "
 "Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to "
@@ -5006,11 +4953,11 @@ msgstr ""
 "gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:138
-#: templates/rsr/project/donate/donate_step3.html:136
+#, fuzzy
 msgid ""
-"iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction "
-"fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go "
-"towards the selected project."
+"iDeal charges up to 3.9% + 30 US Dollar cents of your donation in "
+"transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars "
+"will go towards the selected project."
 msgstr ""
 "iDeal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie in. "
 "Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het "
@@ -5107,18 +5054,28 @@ msgstr "Volgende..."
 msgid "Confirm Donation"
 msgstr "Donatie bevestigen"
 
+#: templates/rsr/project/donate/donate_step3.html:136
+#, fuzzy
+msgid ""
+"iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction "
+"fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go "
+"towards the selected project."
+msgstr ""
+"iDeal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie in. "
+"Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het "
+"door u gekozen project."
+
 #: templates/rsr/project/donate/donate_step3.html:162
 #, fuzzy, python-format
 msgid "Amount you wish to donate (in %(currency)s)"
-msgstr ""
-"Bedrag dat u wenst te doneren (in %(currency)s)"
+msgstr "Bedrag dat u wenst te doneren (in %(currency)s)"
 
 #: templates/rsr/project/donate/donate_step3.html:187
 msgid "Your name and email address"
 msgstr "Uw naam en emailadres"
 
 #: templates/rsr/project/donate/donate_step3.html:239
-#, fuzzy, python-format
+#, python-format
 msgid "Click the Donate button to proceed to %(engine)s checkout."
 msgstr ""
 
@@ -5201,7 +5158,7 @@ msgid "Dear"
 msgstr "Geachte"
 
 #: templates/rsr/project/donate/donation_confirmation_email.html:14
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Thank you for your contribution on <a href='%(site_url)s'>Akvo.org</a>. By "
 "giving, you have personally helped to improve the living conditions of "
@@ -5853,6 +5810,87 @@ msgstr "Via"
 msgid "Web"
 msgstr "website"
 
+#~ msgid ""
+#~ "\n"
+#~ "          The project information in RSR presents your water or "
+#~ "sanitation project to the Akvo community of users:\n"
+#~ "          donors, support and field partners, sector professionals, and "
+#~ "of course the wider online community.\n"
+#~ "          Tell the <i>story</i> of the project by entering complete "
+#~ "information, in common language and an active\n"
+#~ "          (doing) voice.\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "          De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, "
+#~ "support en field partners, in de sector werkzame \n"
+#~ "          deskundigen en uiteraard de bredere online  gemeenschap) een "
+#~ "overzicht van uw water- of sanitaire project.\n"
+#~ "          Vertel het <i>verhaal</i> van het project door zo veel mogelijk "
+#~ "informatie te geven - \n"
+#~ "          in sprekende, duidelijke taal.\n"
+#~ "        "
+
+#~ msgid ""
+#~ "\n"
+#~ "          Please look over the whole page before beginning, so you can "
+#~ "see where your information belongs on\n"
+#~ "          RSR project forms.\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "          We raden u aan eerst de hele pagina door de lezen, zodat u kunt "
+#~ "zien waar op het\n"
+#~ "          RSR-formulier uw informatie thuishoort.\n"
+#~ "        "
+
+#~ msgid ""
+#~ "\n"
+#~ "          Click the project ID number to view detailed information about "
+#~ "a project.\n"
+#~ "          Click a column header (for example, Country) to sort the "
+#~ "project list by that criteria.\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "          Klik op het projectnummer voor meer informatie over het "
+#~ "project.\n"
+#~ "          Klik op een kolomkop (bijv. Land) om de projectlijst op dit "
+#~ "kenmerk te rangschikken.\n"
+#~ "        "
+
+#~ msgid ""
+#~ "\n"
+#~ "        Organisation administrators will see an <em>Add project</em> "
+#~ "button at the top right of the listing;\n"
+#~ "        push it to create a new project in RSR.\n"
+#~ "      "
+#~ msgstr ""
+#~ "\n"
+#~ "        Administrators zullen rechts bovenaan de lijst <em>Project "
+#~ "toevoegen</em> zien;\n"
+#~ "        klik hierop om een nieuw project in RSR te creëren.\n"
+#~ "      "
+
+#~ msgid "change under <a href=\"%(email_url)s\">Account</a>"
+#~ msgstr "wijziging onder <a href=\"%(email_url)s\">Account</a>"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "                  project"
+#~ msgid_plural ""
+#~ "projects \n"
+#~ "                "
+#~ msgstr[0] ""
+#~ "\n"
+#~ "        project\n"
+#~ "      "
+#~ msgstr[1] ""
+#~ "\n"
+#~ "        projecten\n"
+#~ "      "
+
 #~ msgid "Add %s"
 #~ msgstr "%s toevoegen"
 
@@ -6483,42 +6521,6 @@ msgstr "website"
 
 #~ msgid "Error 500"
 #~ msgstr "Foutmelding 500"
-
-#~ msgid ""
-#~ "The project information in RSR presents your water or sanitation project "
-#~ "to the Akvo community of users: donors, support and field partners, "
-#~ "sector professionals, and of course the wider online community. Tell the "
-#~ "<i>story</i> of the project by entering complete information, in common "
-#~ "language and an active (doing) voice."
-#~ msgstr ""
-#~ "De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, support en "
-#~ "field partners, in de sector werkzame deskundigen en uiteraard de bredere "
-#~ "online gemeenschap) een overzicht van uw water- of sanitaire project. "
-#~ "Vertel het <i>verhaal</i> van het project door zo veel mogelijk "
-#~ "informatie te geven - in sprekende, duidelijke taal."
-
-#~ msgid ""
-#~ "Please look over the whole page before beginning, so you can see where "
-#~ "your information belongs on RSR project forms."
-#~ msgstr ""
-#~ "We raden u aan eerst de hele pagina door de lezen, zodat u kunt zien waar "
-#~ "op het RSR-formulier uw informatie thuishoort."
-
-#~ msgid ""
-#~ "Click the project ID number to view detailed information about a project. "
-#~ "Click a column header (for example, Country) to sort the project list by "
-#~ "that criteria."
-#~ msgstr ""
-#~ "Klik op het projectnummer voor meer informatie over het project. Klik op "
-#~ "een kolomkop (bijv. Land) om de projectlijst op dit kenmerk te "
-#~ "rangschikken."
-
-#~ msgid ""
-#~ "Organisation administrators will see an <em>Add project</em> button at "
-#~ "the top right of the listing; push it to create a new project in RSR."
-#~ msgstr ""
-#~ "Administrators zullen rechts bovenaan de lijst <em>Project toevoegen</em> "
-#~ "zien; klik hierop om een nieuw project in RSR te creëren."
 
 #~ msgid "Image missing"
 #~ msgstr "Foto ontbreekt"

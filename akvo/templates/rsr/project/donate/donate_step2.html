@@ -97,7 +97,7 @@
             {% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 35 Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the selected project.' %}
           {% endifequal %}
           {% ifequal project.currency 'USD' %}
-              {% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 30 Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to the selected project.' %}					
+              {% trans 'PayPal charges transaction fees of up to 3.9% of your donation amount + 30 Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to the selected project.' %}
           {% endifequal %}
         </p>
 
@@ -135,7 +135,7 @@
           {% trans 'Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you donate &euro;100, &euro;98.82 Euros will go towards the selected project.' %}
           {% endif %}
           {% if project.currency = 'USD' %}
-          {% trans 'iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
+          {% trans 'iDeal charges up to 3.9% + 30 US Dollar cents of your donation in transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go towards the selected project.' %}
           {% endif %}
         </p>
       </div>
