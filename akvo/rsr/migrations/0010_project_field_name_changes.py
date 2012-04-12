@@ -8,11 +8,11 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Deleting field 'Project.current_status_detail'
-        db.delete_column('rsr_project', 'current_status_detail')
+        # Renaming field 'Project.current_status_detail'
+        db.rename_column('rsr_project', 'current_status_detail', 'current_detail')
 
-        # Deleting field 'Project.project_plan_detail'
-        db.delete_column('rsr_project', 'project_plan_detail')
+        # Renaming field 'Project.project_plan_detail'
+        db.rename_column('rsr_project', 'project_plan_detail', 'project_plan')
 
         # Adding field 'Project.current_status'
         db.add_column('rsr_project', 'current_status', self.gf('akvo.rsr.fields.ProjectLimitedTextField')(default='', blank=True), keep_default=False)
@@ -44,11 +44,11 @@ class Migration(SchemaMigration):
         # Adding field 'Project.project_plan_detail'
         db.add_column('rsr_project', 'project_plan_detail', self.gf('django.db.models.fields.TextField')(default='', blank=True), keep_default=False)
 
-        # Deleting field 'Project.current_status'
-        db.delete_column('rsr_project', 'current_status')
+        # Renaming field 'Project.current_status'
+        db.rename_column('rsr_project', 'current_status', 'current_status_detail')
 
-        # Deleting field 'Project.project_plan'
-        db.delete_column('rsr_project', 'project_plan')
+        # Renaming field 'Project.project_plan'
+        db.rename_column('rsr_project', 'project_plan', 'project_plan_detail')
 
         # Changing field 'Project.project_plan_summary'
         db.alter_column('rsr_project', 'project_plan_summary', self.gf('django.db.models.fields.TextField')(max_length=220))
