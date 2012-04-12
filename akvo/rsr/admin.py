@@ -528,8 +528,8 @@ class ProjectAdmin(admin.ModelAdmin):
         #    'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
         #}),
         (_(u'Project details'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Context, Plan Detail, Status Detail and Sustainability fields to tell people more about the project.</p>'),
-            'fields': ('context', 'project_plan', 'current_status', 'sustainability', ),
+            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Background, Project plan, Current status and Sustainability fields to tell people more about the project.</p>'),
+            'fields': ('background', 'project_plan', 'current_status', 'sustainability', ),
         }),
         (_(u'Project meta info'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The project meta information fields are not public. They allow you to make notes to other members of your organisation or partners with access to your projects on the RSR Admin pages.</p>'),
@@ -603,7 +603,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     @csrf_protect_m
     @transaction.commit_on_success
-    def add_view(self, request, form_url='', extra_context=None):
+        def add_view(self, request, form_url='', extra_context=None):
         "The 'add' admin view for this model."
         model = self.model
         opts = model._meta

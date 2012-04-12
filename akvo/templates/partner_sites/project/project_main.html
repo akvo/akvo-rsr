@@ -65,7 +65,7 @@
           <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
         </ul>
         <div id="tab_background" class="tab">
-          <p>{{project.context|linebreaks}}</p>
+          <p>{{project.background|linebreaks}}</p>
           <h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
           <p>{{project.goals_overview|linebreaks}}</p>
           {% if project.current_status %}
