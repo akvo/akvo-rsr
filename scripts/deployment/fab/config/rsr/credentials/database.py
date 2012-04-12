@@ -17,7 +17,7 @@ class DatabaseCredentials(object):
 
     @classmethod
     def read_with(cls, credentials_file_reader):
-        return DatabaseCredentials(credentials_file_reader.read_data_from(cls.DATABASE_CREDENTIALS_FILE_NAME))
+        return DatabaseCredentials(credentials_file_reader.read_deployed_credentials(cls.DATABASE_CREDENTIALS_FILE_NAME))
 
     def __eq__(self, database_credentials):
         return (self.admin_user     == database_credentials.admin_user and

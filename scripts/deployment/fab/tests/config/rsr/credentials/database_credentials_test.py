@@ -28,7 +28,7 @@ class DatabaseCredentialsTest(mox.MoxTestBase):
         expected_credentials_data = TemplateLoader.load_database_credentials_data()
         mock_credentials_reader = self.mox.CreateMock(CredentialsFileReader)
 
-        mock_credentials_reader.read_data_from(DatabaseCredentials.DATABASE_CREDENTIALS_FILE_NAME).AndReturn(expected_credentials_data)
+        mock_credentials_reader.read_deployed_credentials(DatabaseCredentials.DATABASE_CREDENTIALS_FILE_NAME).AndReturn(expected_credentials_data)
         self.mox.ReplayAll()
 
         self.assertEqual(DatabaseCredentials(expected_credentials_data), DatabaseCredentials.read_with(mock_credentials_reader))
