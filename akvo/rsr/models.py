@@ -523,7 +523,7 @@ class Project(models.Model):
                         help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
-    goals_overview = ProjectLimitedTextField(_('overview'), max_length=600, help_text=_('Describe what the project hopes to accomplish (600 characters).'))
+    goals_overview = ProjectLimitedTextField(_('overview of goals'), max_length=600, help_text=_('Describe what the project hopes to accomplish (600 characters).'))
 
     goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
     goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
@@ -534,7 +534,7 @@ class Project(models.Model):
     current_status = ProjectLimitedTextField(_('Current status'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
     project_plan = models.TextField(_('Project plan'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
-    context = ProjectLimitedTextField(_('context'), blank=True, max_length=1000, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
+    background = ProjectLimitedTextField(_('background'), blank=True, max_length=1000, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
     project_rating = models.IntegerField(_('Project rating'), default=0)
     notes = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))

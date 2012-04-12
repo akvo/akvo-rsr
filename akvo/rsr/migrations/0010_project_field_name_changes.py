@@ -7,18 +7,24 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
-        # Renaming field 'Project.current_status_detail'
-        db.rename_column('rsr_project', 'current_status_detail', 'current_detail')
 
         # Renaming field 'Project.project_plan_detail'
         db.rename_column('rsr_project', 'project_plan_detail', 'project_plan')
 
+        # Renaming field 'Project.current_status_detail'
+        db.rename_column('rsr_project', 'current_status_detail', 'current_status')
+
+        # Changing field 'Project.current_status'
+        db.alter_column('rsr_project', 'current_status', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
+
         # Changing field 'Project.project_plan_summary'
         db.alter_column('rsr_project', 'project_plan_summary', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
 
+        # Renaming field 'Project.project_plan_detail'
+        db.rename_column('rsr_project', 'context', 'background')
+
         # Changing field 'Project.context'
-        db.alter_column('rsr_project', 'context', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
+        db.alter_column('rsr_project', 'background', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
 
         # Changing field 'Project.goals_overview'
         db.alter_column('rsr_project', 'goals_overview', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
