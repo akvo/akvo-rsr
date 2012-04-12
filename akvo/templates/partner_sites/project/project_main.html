@@ -80,14 +80,12 @@
         {% endif %}
         <div id="tab_goals" class="tab">
           <p>{{project.goals_overview|linebreaks}}</p>
-          {% if project.goal_1 or project.goal_2 or project.goal_3 or project.goal_4 or project.goal_5 %}
+          {% if project.goals.all %}
             <h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
             <ul style="margin-top:15px;">
-              {% if project.goal_1 %}<li>{{project.goal_1}}</li>{% endif %}
-              {% if project.goal_2 %}<li>{{project.goal_2}}</li>{% endif %}
-              {% if project.goal_3 %}<li>{{project.goal_3}}</li>{% endif %}
-              {% if project.goal_4 %}<li>{{project.goal_4}}</li>{% endif %}
-              {% if project.goal_5 %}<li>{{project.goal_5}}</li>{% endif %}
+              {% for goal in project.goals.all %}
+                <li>{{goal.text}}</li>
+              {% endfor %}
             </ul>
           {% endif %}
         </div>

@@ -439,6 +439,13 @@ class BenchmarkInline(admin.TabularInline):
     max_num = 0
 
 
+class GoalInline(admin.TabularInline):
+    model = get_model('rsr', 'goal')
+    fields = ('text',)
+    extra = 3
+    max_num = 8   
+
+
 class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         user = self.request.user
@@ -478,7 +485,7 @@ class PartnershipInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        BudgetItemAdminInLine, LinkInline, PartnershipInline, #FundingPartnerInline, SponsorPartnerInline, FieldPartnerInline, SupportPartnerInline,
+        GoalInline, BudgetItemAdminInLine, LinkInline, PartnershipInline,
         LocationInline, BenchmarkInline
     )
     save_as = True
@@ -518,10 +525,10 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The summary should <em>briefly</em> explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished.</p>'),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
         }),
-        (_(u'Goals'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
-            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
-        }),
+#        (_(u'Goals'), {
+#            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
+#            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
+#        }),
         #(_(u'Project target benchmarks'), {
         #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
         #    'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water',
