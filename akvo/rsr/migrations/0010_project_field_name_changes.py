@@ -14,12 +14,6 @@ class Migration(SchemaMigration):
         # Renaming field 'Project.project_plan_detail'
         db.rename_column('rsr_project', 'project_plan_detail', 'project_plan')
 
-        # Adding field 'Project.current_status'
-        db.add_column('rsr_project', 'current_status', self.gf('akvo.rsr.fields.ProjectLimitedTextField')(default='', blank=True), keep_default=False)
-
-        # Adding field 'Project.project_plan'
-        db.add_column('rsr_project', 'project_plan', self.gf('django.db.models.fields.TextField')(default='', blank=True), keep_default=False)
-
         # Changing field 'Project.project_plan_summary'
         db.alter_column('rsr_project', 'project_plan_summary', self.gf('akvo.rsr.fields.ProjectLimitedTextField')())
 
@@ -37,12 +31,6 @@ class Migration(SchemaMigration):
         
         # Removing unique constraint on 'BudgetItemLabel', fields ['label']
         db.delete_unique('rsr_budgetitemlabel', ['label'])
-
-        # Adding field 'Project.current_status_detail'
-        db.add_column('rsr_project', 'current_status_detail', self.gf('django.db.models.fields.TextField')(default='', max_length=600, blank=True), keep_default=False)
-
-        # Adding field 'Project.project_plan_detail'
-        db.add_column('rsr_project', 'project_plan_detail', self.gf('django.db.models.fields.TextField')(default='', blank=True), keep_default=False)
 
         # Renaming field 'Project.current_status'
         db.rename_column('rsr_project', 'current_status', 'current_status_detail')
