@@ -603,7 +603,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     @csrf_protect_m
     @transaction.commit_on_success
-        def add_view(self, request, form_url='', extra_context=None):
+    def add_view(self, request, form_url='', extra_context=None):
         "The 'add' admin view for this model."
         model = self.model
         opts = model._meta
