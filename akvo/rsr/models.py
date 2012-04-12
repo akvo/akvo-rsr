@@ -106,14 +106,10 @@ class Country(models.Model):
 
 
 class Location(models.Model):
-    latitude = LatitudeField(_('latitude'), default=0,
-        help_text=_('Go to <a href="http://itouchmap.com/latlong.html"'
-                  'target="_blank">iTouchMap.com</a> '
-                  'to get the decimal coordinates of your project'))
-    longitude = LongitudeField(_('longitude'), default=0,
-        help_text=_('Go to <a href="http://itouchmap.com/latlong.html"'
-                  'target="_blank">iTouchMap.com</a> '
-                  'to get the decimal coordinates of your project'))
+    _help_text = _('Go to <a href="http://itouchmap.com/latlong.html" target="_blank">iTouchMap.com</a> '
+                   'to get the decimal coordinates of your project.')
+    latitude = LatitudeField(_('latitude'), default=0, help_text=_help_text)
+    longitude = LongitudeField(_('longitude'), default=0, help_text=_help_text)
     city = models.CharField(_('city'), blank=True, max_length=255)
     state = models.CharField(_('state'), blank=True, max_length=255)
     country = models.ForeignKey(Country)

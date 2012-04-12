@@ -9,9 +9,6 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.data.populator import RSRDataPopulator
 from fab.database.mysql.admin import DatabaseAdmin
@@ -20,6 +17,7 @@ from fab.database.mysql.commandexecution import DatabaseCopier
 from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
+from fab.tests.template.loader import TemplateLoader
 
 
 class DatabaseAdminTest(mox.MoxTestBase):
@@ -39,7 +37,7 @@ class DatabaseAdminTest(mox.MoxTestBase):
         """fab.tests.database.mysql.database_admin_test  Can create a DatabaseAdmin instance"""
 
         deployment_host_config = CIDeploymentHostConfig.for_test()
-        database_credentials = DatabaseCredentials()
+        database_credentials = TemplateLoader.load_database_credentials()
         mock_host_controller = self.mox.CreateMock(RemoteHostController)
         mock_host_controller.feedback = self.mock_feedback
 

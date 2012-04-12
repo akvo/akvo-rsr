@@ -60,14 +60,16 @@ class HostPathValues(object):
 
 class DataHostPaths(object):
 
-    def __init__(self):
-        self.django_apps_home           = '/var/lib/django'
-        self.virtualenvs_home           = HostPathValues.DEFAULT['virtualenvs_home']
-        self.logging_home               = HostPathValues.DEFAULT['logging_home']
-        self.deployment_processing_home = HostPathValues.DEFAULT['deployment_processing_home']
+    def __init__(self, host_paths=HostPathValues.LIVE):
+        self.config_home                = host_paths['config_home']
+        self.django_apps_home           = host_paths['repo_checkout_home']
+        self.virtualenvs_home           = host_paths['virtualenvs_home']
+        self.logging_home               = host_paths['logging_home']
+        self.deployment_processing_home = host_paths['deployment_processing_home']
 
     def __eq__(self, host_paths):
-        return (self.django_apps_home           == host_paths.django_apps_home and
+        return (self.config_home                == host_paths.config_home and
+                self.django_apps_home           == host_paths.django_apps_home and
                 self.virtualenvs_home           == host_paths.virtualenvs_home and
                 self.logging_home               == host_paths.logging_home and
                 self.deployment_processing_home == host_paths.deployment_processing_home)

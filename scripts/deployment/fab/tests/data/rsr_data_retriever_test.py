@@ -10,9 +10,6 @@ import mox, os
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
@@ -22,18 +19,7 @@ from fab.format.timestamp import TimeStampFormatter
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
 from fab.os.filesystem import FileSystem, LocalFileSystem
-
-
-class StubbedRSRDataRetriever(RSRDataRetriever):
-
-    def __init__(self, data_retriever_config, data_host_file_system, local_file_system, settings_reader,
-                 data_handler, feedback, time_stamp_formatter, last_migration_file):
-        super(StubbedRSRDataRetriever, self).__init__(data_retriever_config, data_host_file_system, local_file_system,
-                                                      settings_reader, data_handler, feedback, time_stamp_formatter)
-        self.last_migration_file = last_migration_file
-
-    def _create_last_migration_file(self, last_migration_file_path):
-        return self.last_migration_file
+from fab.tests.template.loader import TemplateLoader
 
 
 class RSRDataRetrieverTest(mox.MoxTestBase):
@@ -47,12 +33,11 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_data_handler = self.mox.CreateMock(DataHandler)
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)
         self.mock_time_stamp_formatter = self.mox.CreateMock(TimeStampFormatter)
-        self.mock_last_migration_file = self.mox.CreateMock(file)
 
-        self.data_retriever = StubbedRSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
-                                                      self.mock_local_file_system, self.mock_settings_reader,
-                                                      self.mock_data_handler, self.mock_feedback,
-                                                      self.mock_time_stamp_formatter, self.mock_last_migration_file)
+        self.data_retriever = RSRDataRetriever(self.data_retriever_config, self.mock_data_host_file_system,
+                                               self.mock_local_file_system, self.mock_settings_reader,
+                                               self.mock_data_handler, self.mock_feedback,
+                                               self.mock_time_stamp_formatter)
 
     def test_can_create_instance_for_local_host(self):
         """fab.tests.data.rsr_data_retriever_test  Can create an RSRDataRetriever instance for a local host"""
@@ -65,7 +50,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self._can_create_instance_for(RemoteHostController)
 
     def _can_create_instance_for(self, host_controller_class):
-        database_credentials = DatabaseCredentials()
+        database_credentials = TemplateLoader.load_database_credentials()
 
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
@@ -73,10 +58,9 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
 
         self.assertIsInstance(RSRDataRetriever.create_with(database_credentials, mock_host_controller), RSRDataRetriever)
 
-    def test_can_record_last_applied_migration_and_fetch_data_from_database(self):
-        """fab.tests.data.rsr_data_retriever_test  Can record last applied migration and fetch data from database"""
+    def test_can_fetch_data_from_database(self):
+        """fab.tests.data.rsr_data_retriever_test  Can fetch data from database"""
 
-        last_rsr_migration = '0048'
         time_stamped_data_extract_name = 'rsrdb_utc_timestamp'
         self.mock_time_stamp_formatter.append_timestamp('rsrdb').AndReturn(time_stamped_data_extract_name)
         rsr_data_extract_path = os.path.join(self.data_retriever_config.data_archives_home, '%s.sql' % time_stamped_data_extract_name)

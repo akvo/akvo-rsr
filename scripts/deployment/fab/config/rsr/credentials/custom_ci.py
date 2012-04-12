@@ -5,10 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class DatabaseCredentials(object):
+from fab.config.rsr.credentials.user import SSHIDPath, UserCredentials
 
-    def __init__(self):
-        self.admin_user     = '[admin_user]'
-        self.admin_password = '[admin_password]'
-        self.rsr_user       = 'rsruser'
-        self.rsr_password   = '[some_password]'
+
+class CustomUserCredentials(object):
+
+    @staticmethod
+    def create():
+        return UserCredentials.for_deployer_with_ssh_id(SSHIDPath.DEPLOYER)

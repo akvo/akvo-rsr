@@ -9,7 +9,7 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-from fab.config.rsr.credentials.user import UserCredentials
+from fab.config.rsr.credentials.user import User
 from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
@@ -43,7 +43,7 @@ class InstallPythonTest(mox.MoxTestBase):
 
         install_python_task = StubbedInstallPython(mock_linux_host)
 
-        mock_linux_host.ensure_user_has_required_deployment_permissions(UserCredentials.CURRENT_USER)
+        mock_linux_host.ensure_user_has_required_deployment_permissions(User.CURRENT)
         mock_linux_host.ensure_python_is_installed_with_version('2.7.2')
         self.mox.ReplayAll()
 
