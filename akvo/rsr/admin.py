@@ -2,11 +2,11 @@
 
 from django import forms
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
 from django.contrib.contenttypes import generic
+from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
@@ -420,6 +420,13 @@ class BenchmarkInline(admin.TabularInline):
     max_num = 0
 
 
+class GoalInline(admin.TabularInline):
+    model = get_model('rsr', 'goal')
+    fields = ('text',)
+    extra = 3
+    max_num = 8   
+
+
 class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         user = self.request.user
@@ -459,7 +466,8 @@ class PartnershipInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        BudgetItemAdminInLine, LinkInline, PartnershipInline, LocationInline, BenchmarkInline
+        GoalInline, BudgetItemAdminInLine, LinkInline, PartnershipInline,
+        LocationInline, BenchmarkInline
     )
     save_as = True
     fieldsets = (
@@ -489,22 +497,22 @@ class ProjectAdmin(admin.ModelAdmin):
             ),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
         }),
-        (_(u'Goals'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
-                u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
-                u'The numbered fields can be used to list specific goals whose accomplishment '
-                u'will be used to measure overall project success.'
-            ),
-            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
-        }),
+#        (_(u'Goals'), {
+#            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+#                u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
+#                u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
+#                u'The numbered fields can be used to list specific goals whose accomplishment '
+#                u'will be used to measure overall project success.'
+#            ),
+#            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
+#        }),
         (_(u'Project details'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'In-depth information about your project should be put in this section. '
-                u'Use the Context, Plan Detail, Status Detail and Sustainability fields '
+                u'Use the Background, Project plan, Current status and Sustainability fields '
                 u'to tell people more about the project.'
             ),
-            'fields': ('context', 'project_plan_detail', 'current_status_detail', 'sustainability', ),
+            'fields': ('background', 'project_plan', 'current_status', 'sustainability', ),
         }),
         (_(u'Project meta info'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(

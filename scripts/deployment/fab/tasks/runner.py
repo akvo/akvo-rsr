@@ -56,6 +56,7 @@ class TaskRunner(object):
                                          task_with_parameters,
                                          '-H', ssh_connection,
                                          '-i', self.user_credentials.ssh_id_file_path,
+                                         '-u', self.user_credentials.deployment_user,
                                          '-p', self.user_credentials.sudo_password])
         except Exception:
             raise SystemExit('\n>> Deployment failed due to errors above.\n')
