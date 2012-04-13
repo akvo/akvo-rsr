@@ -102,11 +102,7 @@
       {% else %}
         {% if project.akvopedia_links %}
           <h4>
-            {% blocktrans count project.akvopedia_links.count as links %}
-              Akvopedia article
-            {% plural %}
-              Akvopedia articles
-            {% endblocktrans %}
+            {% blocktrans count project.akvopedia_links.count as links %}Akvopedia article{% plural %}Akvopedia articles{% endblocktrans %}
           </h4>
           {% for link in project.akvopedia_links %}
             <p><a href="{{link.url}}">{{link.caption}}</a></p>
@@ -117,11 +113,7 @@
         {% endif %}
         {% if project.external_links %}
            <span class="normal">
-            {% blocktrans count project.external_links.count as links %}
-              External link
-            {% plural %}
-              External links
-            {% endblocktrans %}
+            {% blocktrans count project.external_links.count as links %}External link{% plural %}External links{% endblocktrans %}
           </span>
           <p class="small grey">
             ({% trans 'Will open in new window' %})

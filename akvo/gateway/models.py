@@ -26,20 +26,20 @@ class Gateway(models.Model):
 
     """
     name        = models.SlugField(
-        _(u'gateway name'), max_length=30,
+        u'gateway name', max_length=30,
         help_text='''
             The name is used in the callback to determine the gateway used.
             For example if the name is "42it" the callback path will be /gateway/42it/
         '''
     )
-    host_name   = models.CharField(_(u'host name'), max_length=255, help_text=_(u'Host name to use when sending an SMS through the gateway'), )
-    send_path   = models.CharField(_(u'send message path'), max_length=255, help_text=_(u'Path at gateway when sending an SMS'), )
+    host_name   = models.CharField(u'host name', max_length=255, help_text=u'Host name to use when sending an SMS through the gateway', )
+    send_path   = models.CharField(u'send message path', max_length=255, help_text=u'Path at gateway when sending an SMS', )
 
-    sender      = models.CharField(_(u'sender'),    max_length=30, help_text=_(u"Sender's phone number"), )
-    receiver    = models.CharField(_(u'receiver'),  max_length=30, help_text=_(u'Receiving number at gateway'), )
-    message     = models.CharField(_(u'message'),   max_length=30, help_text=_(u'The message text'), )
-    timestamp   = models.CharField(_(u'timestamp'), max_length=30, help_text=_(u'Gateway timestamp'), )
-    msg_id      = models.CharField(_(u'msg_id'),    max_length=30, help_text=_(u'Gateway message id'), )
+    sender      = models.CharField(u'sender',    max_length=30, help_text=u"Sender's phone number", )
+    receiver    = models.CharField(u'receiver',  max_length=30, help_text=u'Receiving number at gateway', )
+    message     = models.CharField(u'message',   max_length=30, help_text=u'The message text', )
+    timestamp   = models.CharField(u'timestamp', max_length=30, help_text=u'Gateway timestamp', )
+    msg_id      = models.CharField(u'msg_id',    max_length=30, help_text=u'Gateway message id', )
 
     def __unicode__(self):
         return self.name
@@ -66,7 +66,7 @@ GW_SENDING_DATA_42IT = {
 
 class GatewayNumber(models.Model):
     gateway = models.ForeignKey(Gateway)     
-    number  = models.CharField(_(u'gateway number'), max_length=30)
+    number  = models.CharField(u'gateway number', max_length=30)
     
     def __unicode__(self):
         return self.number
@@ -103,12 +103,12 @@ class MoSms(models.Model):
         saved_at: time when the message is saved
     """
     
-    sender      = models.CharField(max_length=30, verbose_name=_(u'sender'),)
-    receiver    = models.CharField(max_length=30, verbose_name=_(u'receiver'),) #TODO: change to FK to GatewayNumber?
-    message     = models.TextField(blank=True, verbose_name=_(u'message'),) #degenerate, but possible...
-    timestamp   = models.CharField(max_length=50, verbose_name=_(u'timestamp'), blank=True,)
-    msg_id      = models.CharField(max_length=100, verbose_name=_(u'message ID'), blank=True,)
-    saved_at    = models.DateTimeField(verbose_name=_(u'time saved at'),)
+    sender      = models.CharField(max_length=30, verbose_name=u'sender',)
+    receiver    = models.CharField(max_length=30, verbose_name=u'receiver',) #TODO: change to FK to GatewayNumber?
+    message     = models.TextField(blank=True, verbose_name=u'message',) #degenerate, but possible...
+    timestamp   = models.CharField(max_length=50, verbose_name=u'timestamp', blank=True,)
+    msg_id      = models.CharField(max_length=100, verbose_name=u'message ID', blank=True,)
+    saved_at    = models.DateTimeField(verbose_name=u'time saved at',)
 
     @classmethod
     def new_sms(cls, request, gateway):

@@ -6,6 +6,7 @@
 
 from datetime import date, datetime, timedelta
 from decimal import Decimal
+from textwrap import dedent
 
 import logging
 logger = logging.getLogger('akvo.rsr')
@@ -76,12 +77,12 @@ class QuerySetManager(models.Manager):
             return getattr(self.get_query_set(), attr, *args)
 
 OLD_CONTINENTS = (
-    ("1", _('Africa')),
-    ("2", _('Asia')),
-    ("3", _('Australia')),
-    ("4", _('Europe')),
-    ("5", _('North America')),
-    ("6", _('South America')),
+    ("1", _(u'Africa')),
+    ("2", _(u'Asia')),
+    ("3", _(u'Australia')),
+    ("4", _(u'Europe')),
+    ("5", _(u'North America')),
+    ("6", _(u'South America')),
 )
 
 class Country(models.Model):
@@ -100,26 +101,26 @@ class Country(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('country')
-        verbose_name_plural = _('countries')
+        verbose_name = _(u'country')
+        verbose_name_plural = _(u'countries')
         ordering = ['name']
 
 
 class Location(models.Model):
-    _help_text = _('Go to <a href="http://itouchmap.com/latlong.html" target="_blank">iTouchMap.com</a> '
-                   'to get the decimal coordinates of your project.')
-    latitude = LatitudeField(_('latitude'), default=0, help_text=_help_text)
-    longitude = LongitudeField(_('longitude'), default=0, help_text=_help_text)
-    city = models.CharField(_('city'), blank=True, max_length=255)
-    state = models.CharField(_('state'), blank=True, max_length=255)
-    country = models.ForeignKey(Country)
-    address_1 = models.CharField(_('address 1'), max_length=255, blank=True)
-    address_2 = models.CharField(_('address 2'), max_length=255, blank=True)
-    postcode = models.CharField(_('postcode'), max_length=10, blank=True)
+    _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
+                   u'to get the decimal coordinates of your project.')
+    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
+    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
+    city = models.CharField(_(u'city'), blank=True, max_length=255)
+    state = models.CharField(_(u'state'), blank=True, max_length=255)
+    country = models.ForeignKey(Country, verbose_name=_(u'country'))
+    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True)
+    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True)
+    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-    primary = models.BooleanField(_('primary location'), default=True)
+    primary = models.BooleanField(_(u'primary location'), default=True)
 
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
@@ -142,14 +143,14 @@ class Partnership(models.Model):
     SUPPORT_PARTNER     = u'support'
 
     PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
-    PARTNER_LABELS      = [_('Field partner'), _('Funding partner'), _('Sponsor partner'), _('Support partner'),]
+    PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
     PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
-    organisation = models.ForeignKey('Organisation',)
-    project = models.ForeignKey('Project',)
-    partner_type = models.CharField(max_length=8, choices=PARTNER_TYPES,)
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'))
+    project = models.ForeignKey('Project', verbose_name=_(u'project'),)
+    partner_type = models.CharField(_(u'partner type'), max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
-        _('funding amount'),
+        _(u'funding amount'),
         max_digits=10,
         decimal_places=2,
         blank=True,
@@ -157,8 +158,8 @@ class Partnership(models.Model):
     )
 
     class Meta:
-        verbose_name = _('Project partner')
-        verbose_name_plural = _('Project partners')
+        verbose_name = _(u'project partner')
+        verbose_name_plural = _(u'project partners')
         ordering = ['partner_type']
 
     def __unicode__(self):
@@ -179,10 +180,10 @@ class Organisation(models.Model):
     ORG_TYPE_COM = 'C'
     ORG_TYPE_KNO = 'K'
     ORG_TYPES = (
-        (ORG_TYPE_NGO, _('NGO')),
-        (ORG_TYPE_GOV, _('Governmental')),
-        (ORG_TYPE_COM, _('Commercial')),
-        (ORG_TYPE_KNO, _('Knowledge institution')),
+        (ORG_TYPE_NGO, _(u'NGO')),
+        (ORG_TYPE_GOV, _(u'Governmental')),
+        (ORG_TYPE_COM, _(u'Commercial')),
+        (ORG_TYPE_KNO, _(u'Knowledge institution')),
     )
 
     def image_path(instance, file_name):
@@ -194,25 +195,25 @@ class Organisation(models.Model):
 #    funding_partner = models.BooleanField(_(u'funding partner'))
 #    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
 
-    name = models.CharField(_('name'), max_length=25, help_text=_('Short name which will appear in organisation and partner listings (25 characters).'))
-    long_name = models.CharField(_('long name'), blank=True, max_length=75, help_text=_('Full name of organisation (75 characters).'))
-    organisation_type = models.CharField(_('organisation type'), max_length=1, choices=ORG_TYPES)
+    name = models.CharField(_(u'name'), max_length=25, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
+    long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
+    organisation_type = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
 
-    logo = ImageWithThumbnailsField(_('logo'),
+    logo = ImageWithThumbnailsField(_(u'logo'),
                                     blank=True,
                                     upload_to=image_path,
                                     thumbnail={'size': (360,270)},
-                                    help_text=_('Logos should be approximately 360x270 pixels (approx. 100-200kb in size) on a white background.'),
+                                    help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
                                    )
     
-    url = models.URLField(blank=True, verify_exists = False, help_text=_('Enter the full address of your web site, beginning with http://.'))
+    url = models.URLField(blank=True, verify_exists = False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
 
-    phone = models.CharField(_('phone'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    mobile = models.CharField(_('mobile'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    fax = models.CharField(_('fax'), blank=True, max_length=20, help_text=_('(20 characters).'))
-    contact_person = models.CharField(_('contact person'), blank=True, max_length=30, help_text=_('Name of external contact person for your organisation.'))
-    contact_email = models.CharField(_('contact email'), blank=True, max_length=50, help_text=_('Email to which inquiries about your organisation should be sent.'))
-    description = models.TextField(_('description'), blank=True, help_text=_('Describe your organisation.') )
+    phone = models.CharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    mobile = models.CharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    fax = models.CharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    contact_person = models.CharField(_(u'contact person'), blank=True, max_length=30, help_text=_(u'Name of external contact person for your organisation.'))
+    contact_email = models.CharField(_(u'contact email'), blank=True, max_length=50, help_text=_(u'Email to which inquiries about your organisation should be sent.'))
+    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.') )
 
     locations = generic.GenericRelation(Location)
 
@@ -334,8 +335,8 @@ class Organisation(models.Model):
         }
 
     class Meta:
-        verbose_name=_('Organisation')
-        verbose_name_plural=_('Organisations')
+        verbose_name=_(u'organisation')
+        verbose_name_plural=_(u'organisations')
         ordering = ['name']
         permissions = (
             ("%s_organisation" % RSR_LIMITED_CHANGE, u'RSR limited change organisation'),
@@ -349,30 +350,31 @@ class OrganisationAccount(models.Model):
     it from the org admins.
     """
     ACCOUNT_LEVEL = (
-        ('free', _('Free')),
-        ('plus', _('Plus')),
-        ('premium', _('Premium')),
+        ('free', u'Free'),
+        ('plus', u'Plus'),
+        ('premium', u'Premium'),
     )
-    organisation    = models.OneToOneField(Organisation, primary_key=True)
-    account_level   = models.CharField(_('account level'), max_length=12, choices=ACCOUNT_LEVEL, default='free')
+    organisation    = models.OneToOneField(Organisation, verbose_name=u'organisation', primary_key=True)
+    account_level   = models.CharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
     class Meta:
-        verbose_name = _('organisation account')
-        verbose_name_plural = _('organisation accounts')
+        verbose_name = u'organisation account'
+        verbose_name_plural = u'organisation accounts'
+
 
 class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
-    name        = models.CharField(_('focus area name'), max_length=50, help_text=_('The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
-    slug        = models.SlugField(_('slug'), max_length=50, help_text=_('Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
-    description = models.TextField(_('description'), max_length=500, help_text=_('Enter the text that will appear on the focus area project listing page. (500 characters).'))
+    name        = models.CharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
+    slug        = models.SlugField(u'slug', max_length=50, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
+    description = models.TextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
     image       = ImageWithThumbnailsField(
-                    _('focus area image'),
+                    _(u'focus area image'),
                     upload_to=image_path,
                     thumbnail={'size': (20, 20), 'options': ('crop', )},
-                    help_text=_('The image that will appear on the focus area project listing page.'),
+                    help_text=_(u'The image that will appear on the focus area project listing page.'),
                 )
-    link_to     = models.URLField(_('accordion link'), max_length=200, blank=True, help_text=_('Where the link in the accordion for the focus area points if other than the focus area project listing.'))
+    link_to     = models.URLField(_(u'accordion link'), max_length=200, blank=True, help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.'))
 
     @models.permalink
     def get_absolute_url(self):
@@ -386,27 +388,27 @@ class FocusArea(models.Model):
         return self.name
 
     class Meta:
-        verbose_name=_('focus area')
-        verbose_name_plural=_('focus areas')
+        verbose_name = u'focus area'
+        verbose_name_plural = u'focus areas'
 
 class Benchmarkname(models.Model):
-    name    = models.CharField(_('benchmark name'), max_length=50, help_text=_('Enter a name for the benchmark. (50 characters).'))
-    order   = models.IntegerField(_(u'order'), default=0, help_text=_('Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
+    name    = models.CharField(_(u'benchmark name'), max_length=50, help_text=_(u'Enter a name for the benchmark. (50 characters).'))
+    order   = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
         return self.name
 
     class Meta:
         ordering = ['order', 'name',]
-        verbose_name = _('benchmark name')
-        verbose_name_plural = _('benchmark names')
+        verbose_name = _(u'benchmark name')
+        verbose_name_plural = _(u'benchmark names')
 
 
 class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name = models.CharField(_('category name'), max_length=50, help_text=_('Enter a name for the category. (50 characters).'))
+    name = models.CharField(_(u'category name'), max_length=50, help_text=_(u'Enter a name for the category. (50 characters).'))
     #icon                    = ImageWithThumbnailsField(
     #                            _('category icon'),
     #                            blank=True,
@@ -414,12 +416,12 @@ class Category(models.Model):
     #                            thumbnail={'size': (20, 20), 'options': ('crop', )},
     #                            help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
     #                        )
-    focus_area = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_('Select the Focus area(s) the category belongs to.'), )
-    benchmarknames = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_('Select the benchmark names for the category.'), )
+    focus_area = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_(u'Select the Focus area(s) the category belongs to.'), )
+    benchmarknames = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_(u'Select the benchmark names for the category.'), )
 
     class Meta:
-        verbose_name=_('category')
-        verbose_name_plural=_('categories')
+        verbose_name=_(u'category')
+        verbose_name_plural=_(u'categories')
 
     def __unicode__(self):
         return '%s (%s)' % (self.name, self.focus_areas())
@@ -444,12 +446,12 @@ CURRENCY_CHOICES = (
 )
 
 STATUSES = (
-    ('N', _('None')),
-    ('H', _('Needs funding')),
-    ('A', _('Active')),
-    ('C', _('Complete')),
-    ('L', _('Cancelled')),
-    ('R', _('Archived')),
+    ('N', _(u'None')),
+    ('H', _(u'Needs funding')),
+    ('A', _(u'Active')),
+    ('C', _(u'Complete')),
+    ('L', _(u'Cancelled')),
+    ('R', _(u'Archived')),
 )
 STATUSES_COLORS = {'N':'black', 'A':'#AFF167', 'H':'orange', 'C':'grey', 'R':'grey', 'L':'red', }
 
@@ -461,40 +463,44 @@ class MiniCMS(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
 
-    label = models.CharField(_(u'label'), max_length=50, help_text=_(u'The label is used for identification only'), )
-    feature_box = models.TextField(_(_(u'feature box text'), ), max_length=350, help_text=_(
-        '''Enter the text that will appear in the feature box of the home page. (350 characters)
-        <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
-        <p>The outer &lt;div&gt; can use the classes<br/>
-        <code>quarter, half, three_quarters and full</code><br/>
-        to specify the width of the text and
-        <code>bottom and right</code><br/> if a position other than top left is desired.</p>
-        <p>
-            The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
-            The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
-        </p>
-        <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.</p>
-        <p>
-            The following classes can be used to give text "Akvo colors":
-            <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
-        </p>
-        <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>
-        '''
-    ))
-    feature_image = models.ImageField(_('feature image'),
-                                      blank=True,
-                                      upload_to=image_path,
-                                      help_text=_('Ideally the image should be 645x363 pixels in size.'))
-    top_right_box = models.TextField(_(_(u'top right box text'), ), max_length=350, help_text=_('Enter the text that will appear in the top right box of the home page. (350 characters)'))
-    lower_height = models.IntegerField(_(u'accordion height'), default=500, )
-    active = models.BooleanField(_(u'currently active home page'), default=False)
+    label = models.CharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
+    feature_box = models.TextField(
+        u'feature box text', max_length=350,
+        help_text=_(dedent(u'''Enter the text that will appear in the feature box of the home page. (350 characters)
+            <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
+            <p>The outer &lt;div&gt; can use the classes<br/>
+            <code>quarter, half, three_quarters and full</code><br/>
+            to specify the width of the text and
+            <code>bottom and right</code><br/> if a position other than top left is desired.</p>
+            <p>
+                The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
+                The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
+            </p>
+            <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.</p>
+            <p>
+                The following classes can be used to give text "Akvo colors":
+                <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
+            </p>
+            <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>'''
+        ))
+    )
+    feature_image = models.ImageField(
+        u'feature image', blank=True, upload_to=image_path,
+        help_text=u'Ideally the image should be 645x363 pixels in size.'
+    )
+    top_right_box = models.TextField(
+        u'top right box text', max_length=350,
+        help_text=u'Enter the text that will appear in the top right box of the home page. (350 characters)'
+    )
+    lower_height = models.IntegerField(u'accordion height', default=500,)
+    active = models.BooleanField(u'currently active home page', default=False,)
 
     def __unicode__(self):
         return self.label
 
     class Meta:
-        verbose_name = _('MiniCMS')
-        verbose_name_plural = _('MiniCMS')
+        verbose_name = u'MiniCMS'
+        verbose_name_plural = u'MiniCMS'
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
@@ -505,21 +511,21 @@ class Project(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-    name = models.CharField(_('name'), max_length=45, help_text=_('A short descriptive name for your project (45 characters).'))
-    subtitle = models.CharField(_('subtitle'), max_length=75, help_text=_('A subtitle with more information on the project (75 characters).'))
-    status = models.CharField(_('status'), max_length=1, choices=STATUSES, default='N', help_text=_('Current project state.'))
-    categories = models.ManyToManyField(Category, related_name='projects',)
-    partners = models.ManyToManyField(Organisation, through=Partnership, related_name='projects',)
-    project_plan_summary = ProjectLimitedTextField(_('summary of project plan'), max_length=400, help_text=_('Briefly summarize the project (400 characters).'))
+    name = models.CharField(_(u'name'), max_length=45, help_text=_(u'A short descriptive name for your project (45 characters).'))
+    subtitle = models.CharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
+    status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, default='N', help_text=_(u'Current project state.'))
+    categories = models.ManyToManyField(Category, verbose_name=_(u'categories'), related_name='projects',)
+    partners = models.ManyToManyField(Organisation, verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
+    project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=220, help_text=_(u'Briefly summarize the project (220 characters).'))
     current_image = ImageWithThumbnailsField(
-                        _('project photo'),
+                        _(u'project photo'),
                         blank=True,
                         upload_to=image_path,
                         thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
-                        help_text=_('The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
+                        help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
-    current_image_caption = models.CharField(_('photo caption'), blank=True, max_length=50, help_text=_('Enter a caption for your project picture (50 characters).'))
-    goals_overview = ProjectLimitedTextField(_('overview of goals'), max_length=600, help_text=_('Describe what the project hopes to accomplish (600 characters).'))
+    current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
+    goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
 #    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
 #    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
@@ -527,18 +533,18 @@ class Project(models.Model):
 #    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
 #    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
-    current_status = ProjectLimitedTextField(_('current status'), blank=True, max_length=600, help_text=_('Description of current phase of project. (600 characters).'))
-    project_plan = models.TextField(_('project plan'), blank=True, help_text=_('Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
-    sustainability = models.TextField(_('sustainability'), help_text=_('Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
-    background = ProjectLimitedTextField(_('background'), blank=True, max_length=1000, help_text=_('Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
+    current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
+    project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
+    sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
+    background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
-    project_rating = models.IntegerField(_('project rating'), default=0)
-    notes = models.TextField(_('notes'), blank=True, help_text=_('(Unlimited number of characters).'))
+    project_rating = models.IntegerField(_(u'project rating'), default=0)
+    notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
 
     #budget
-    currency = models.CharField(_('currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-    date_request_posted = models.DateField(_('Date request posted'), default=date.today)
-    date_complete = models.DateField(_('Date complete'), null=True, blank=True)
+    currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    date_request_posted = models.DateField(_(u'date request posted'), default=date.today)
+    date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
     locations = generic.GenericRelation(Location)
 
@@ -891,7 +897,7 @@ class Project(models.Model):
             else:
                 update_info  = '%s<br/>' % update_info
         else:
-            update_info = "%s<br/><br/>" % (ugettext(u'No update yet'),)
+            update_info = u'%s<br/><br/>' % (ugettext(u'No update yet'),)
         # links to the project's support partners
         update_info = "%sSP: %s" % (update_info, ", ".join([u'<a href="%s">%s</a>' % (partner.get_absolute_url(), partner.name) for partner in self.support_partners()]))
         # links to the project's field partners
@@ -921,7 +927,7 @@ class Project(models.Model):
 
     def connected_to_user(self, user):
         '''
-        Test if a user is connected to self through an arganisation
+        Test if a user is connected to self through an organisation
         '''
         is_connected = False
         try:
@@ -1014,14 +1020,18 @@ class Project(models.Model):
 
     def show_status_large(self):
         "Show the current project status with background"
-        return mark_safe("<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        return mark_safe(
+            "<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (
+                STATUSES_COLORS[self.status], self.get_status_display()
+            )
+        )
 
     class Meta:
         permissions = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
         )
-        verbose_name=_('project')
-        verbose_name_plural=_('projects')
+        verbose_name=_(u'project')
+        verbose_name_plural=_(u'projects')
 
 
 class Goal(models.Model):
@@ -1046,32 +1056,33 @@ class Benchmark(models.Model):
 
     class Meta:
         ordering            =  ('category__name', 'name__order')
-        verbose_name        = _('benchmark')
-        verbose_name_plural = _('benchmarks')
+        verbose_name        = _(u'benchmark')
+        verbose_name_plural = _(u'benchmarks')
 
 
 class BudgetItemLabel(models.Model):
-    label = models.CharField(_('label'), max_length=20, unique=True)
+    label = models.CharField(_(u'label'), max_length=20, unique=True)
 
     def __unicode__(self):
         return self.label
 
     class Meta:
         ordering            = ('label',)
-        verbose_name        = _('budget item label')
-        verbose_name_plural = _('budget item labels')
+        verbose_name        = _(u'budget item label')
+        verbose_name_plural = _(u'budget item labels')
 
 
 class BudgetItem(models.Model):
+    # DON'T translate. Need model translations for this to work
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
-    project     = models.ForeignKey(Project, verbose_name=_('project'), related_name='budget_items')
-    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_('label'),)
+    project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
+    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
     other_extra = models.CharField(
-        max_length=20, null=True, blank=True, verbose_name=_('"Other" labels extra info'),
-        help_text=_('Extra information about the exact nature of an "other" budget item.'),
+        max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
+        help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
-    amount      = models.DecimalField(_('amount'), max_digits=10, decimal_places=2,)
+    amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -1079,15 +1090,15 @@ class BudgetItem(models.Model):
     def get_label(self):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
         if self.label.label in self.OTHER_LABELS:
-            # display "other" if other_extra is empty
-            return self.other_extra.strip() or _(u"other")
+            # display "other" if other_extra is empty. Translating here without translating the other labels seems corny
+            return self.other_extra.strip() or u"other"
         else:
             return self.__unicode__()
 
     class Meta:
         ordering            = ('label',)
-        verbose_name        = _('budget item')
-        verbose_name_plural = _('budget items')
+        verbose_name        = _(u'budget item')
+        verbose_name_plural = _(u'budget items')
         unique_together     = ('project', 'label')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
@@ -1100,8 +1111,8 @@ class PublishingStatus(models.Model):
     extend to other object types.
     """
     PUBLISHING_STATUS = (
-        ('unpublished', _('Unpublished')),
-        ('published', _('Published')),
+        ('unpublished', _(u'Unpublished')),
+        ('published', _(u'Published')),
     )
     #TODO: change to a generic relation if we want to have publishing stats on
     #other objects than projects
@@ -1109,8 +1120,8 @@ class PublishingStatus(models.Model):
     status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
 
     class Meta:
-        verbose_name        = _('publishing status')
-        verbose_name_plural = _('publishing statuses')
+        verbose_name        = _(u'publishing status')
+        verbose_name_plural = _(u'publishing statuses')
 
     def project_info(self):
         return self.project
@@ -1118,33 +1129,33 @@ class PublishingStatus(models.Model):
 
 class Link(models.Model):
     LINK_KINDS = (
-        ('A', _('Akvopedia entry')),
-        ('E', _('External link')),
+        ('A', _(u'Akvopedia entry')),
+        ('E', _(u'External link')),
     )
-    kind = models.CharField(_('kind'), max_length=1, choices=LINK_KINDS)
+    kind = models.CharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
     url = models.URLField(_(u'URL'))
-    caption = models.CharField(_('caption'), max_length=50)
-    project = models.ForeignKey(Project, related_name='links')
+    caption = models.CharField(_(u'caption'), max_length=50)
+    project = models.ForeignKey(Project, verbose_name=u'project', related_name='links')
 
     def __unicode__(self):
         return self.url
 
     def show_link(self):
-        return '<a href="%s">%s</a>' % (self.url, self.caption,)
+        return u'<a href="%s">%s</a>' % (self.url, self.caption,)
 
     class Meta:
-        verbose_name = _('link')
-        verbose_name_plural = _('links')
+        verbose_name = _(u'link')
+        verbose_name_plural = _(u'links')
 
 
 PHOTO_LOCATIONS = (
-    ('B', _('At the beginning of the update')),
-    ('E', _('At the end of the update')),
+    ('B', _(u'At the beginning of the update')),
+    ('E', _(u'At the end of the update')),
 )
 UPDATE_METHODS = (
-    ('W', _('web')),
-    ('E', _('e-mail')),
-    ('S', _('SMS')),
+    ('W', _(u'web')),
+    ('E', _(u'e-mail')),
+    ('S', _(u'SMS')),
 )
 
 class UserProfileManager(models.Manager):
@@ -1188,16 +1199,16 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     objects = UserProfileManager()
 
     # "constants" for use with SMS updating workflow
-    VALIDATED = 'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
-    WORKFLOW_SMS_UPDATE = 'SMS update' #Name of workflow for SMS updating
-    STATE_PHONE_NUMBER_ADDED = 'Phone number added' #Phone number has been added to the profile
-    #STATE_PHONE_NUMBER_VALIDATED = 'Phone number validated' #The phone has been validated with a validation code SMS
-    STATE_UPDATES_ENABLED = 'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
-    STATE_PHONE_DISABLED = 'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
-    TRANSITION_ADD_PHONE_NUMBER = 'Add phone number'
-    TRANSITION_VALIDATE_PHONE_NUMBER = 'Validate phone number'
-    TRANSITION_ENABLE_UPDATING = 'Enable updating'
-    TRANSITION_DISABLE_UPDATING = 'Disable updating'
+    VALIDATED = u'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
+    WORKFLOW_SMS_UPDATE = u'SMS update' #Name of workflow for SMS updating
+    STATE_PHONE_NUMBER_ADDED = u'Phone number added' #Phone number has been added to the profile
+    #STATE_PHONE_NUMBER_VALIDATED = u'Phone number validated' #The phone has been validated with a validation code SMS
+    STATE_UPDATES_ENABLED = u'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
+    STATE_PHONE_DISABLED = u'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
+    TRANSITION_ADD_PHONE_NUMBER = u'Add phone number'
+    TRANSITION_VALIDATE_PHONE_NUMBER = u'Validate phone number'
+    TRANSITION_ENABLE_UPDATING = u'Enable updating'
+    TRANSITION_DISABLE_UPDATING = u'Disable updating'
     GROUP_SMS_UPDATER = u'SMS updater'
     GROUP_SMS_MANAGER = u'SMS manager'
     ROLE_SMS_UPDATER = u'SMS updater'
@@ -1207,8 +1218,8 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     GATEWAY_42IT = '42it'
 
     class Meta:
-        verbose_name = _('user profile')
-        verbose_name_plural = _('user profiles')
+        verbose_name = _(u'user profile')
+        verbose_name_plural = _(u'user profiles')
 
     def __unicode__(self):
         return self.user.username
@@ -1236,7 +1247,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def get_is_active(self):
         return self.user.is_active
     get_is_active.boolean = True #make pretty icons in the admin list view
-    get_is_active.short_description = _('user is activated (may log in)')
+    get_is_active.short_description = _(u'user is activated (may log in)')
 
     def set_is_active(self, set_it):
         self.user.is_active = set_it
@@ -1256,7 +1267,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
     get_is_org_admin.boolean = True #make pretty icons in the admin list view
-    get_is_org_admin.short_description = _('user is an organisation administrator')
+    get_is_org_admin.short_description = _(u'user is an organisation administrator')
 
     def set_is_org_admin(self, set_it):
         if set_it:
@@ -1267,7 +1278,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def get_is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
     get_is_org_editor.boolean = True #make pretty icons in the admin list view
-    get_is_org_editor.short_description = _('user is a project editor')
+    get_is_org_editor.short_description = _(u'user is a project editor')
 
     def set_is_org_editor(self, set_it):
         if set_it:
@@ -1317,7 +1328,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
                 reporter.project = project
                 reporter.save()
                 self.enable_reporting(reporter)
-                logger.info('%s(): SMS updating set up for project %s, user %s.' % (who_am_i(), project, self.user))
+                logger.info(u'%s(): SMS updating set up for project %s, user %s.' % (who_am_i(), project, self.user))
             logger.debug("Exiting: %s()" % who_am_i())
             return reporter
         except:
@@ -1327,11 +1338,11 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
                 reporter = SmsReporter.objects.create(userprofile=self, project=project, gw_number=new_number)
                 if project:
                     self.enable_reporting(reporter)
-                    logger.info('%s(): SMS updating set up for project %s, user %s.' % (who_am_i(), project, self.user))
+                    logger.info(u'%s(): SMS updating set up for project %s, user %s.' % (who_am_i(), project, self.user))
                 logger.debug("Exiting: %s()" % who_am_i())
                 return reporter
             else:
-                logger.error("%s(): No numbers defined for gateway. Can't create a reporter for user %s ." % (who_am_i(), self.user))
+                logger.error(u"%s(): No numbers defined for gateway. Can't create a reporter for user %s ." % (who_am_i(), self.user))
                 logger.debug("Exiting: %s()" % who_am_i())
                 return None
 
@@ -1360,7 +1371,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         for sms_reporter in reporters:
             try:
                 sms_reporter.reporting_cancelled()
-                logger.info('SMS updating cancelled for project: %s Locals:\n %s\n\n' % (sms_reporter.project, locals(), ))
+                logger.info(u'SMS updating cancelled for project: %s Locals:\n %s\n\n' % (sms_reporter.project, locals(), ))
             except Exception, e:
                 logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
         #if self.validation == self.VALIDATED and self.reporters.count() < 1:
@@ -1654,33 +1665,33 @@ class ProjectUpdate(models.Model):
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
         return rsr_image_path(instance, file_name, path)
 
-    project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_('project'))
-    user = models.ForeignKey(User, verbose_name=_('user'))
-    title = models.CharField(_('title'), max_length=50, help_text=_('50 characters'))
-    text = models.TextField(_('text'), blank=True)
+    project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_(u'project'))
+    user = models.ForeignKey(User, verbose_name=_(u'user'))
+    title = models.CharField(_(u'title'), max_length=50, help_text=_(u'50 characters'))
+    text = models.TextField(_(u'text'), blank=True)
     #status = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo = ImageWithThumbnailsField(
-                blank=True,
-                upload_to=image_path,
-                thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-                help_text = _('The image should have 4:3 height:width ratio for best displaying result'),
-            )
-    photo_location = models.CharField(_('photo location'), max_length=1,
-                                       choices=PHOTO_LOCATIONS)
-    photo_caption = models.CharField(_('photo caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    photo_credit = models.CharField(_('photo credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    video = models.URLField(_('video URL'), blank=True, help_text=_('Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
-    video_caption = models.CharField(_('video caption'), blank=True, max_length=75, help_text=_('75 characters'))
-    video_credit = models.CharField(_('video credit'), blank=True, max_length=25, help_text=_('25 characters'))
-    update_method = models.CharField(_('update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time = models.DateTimeField(_('time'), auto_now_add=True)
-    time_last_updated = models.DateTimeField(_('time last updated'), auto_now=True)
-    featured = models.BooleanField(_('featured'))
+        _(u'photo'),
+        blank=True,
+        upload_to=image_path,
+        thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+        help_text = _(u'The image should have 4:3 height:width ratio for best displaying result'),
+    )
+    photo_location = models.CharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
+    photo_caption = models.CharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
+    photo_credit = models.CharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
+    video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
+    time = models.DateTimeField(_(u'time'), auto_now_add=True)
+    time_last_updated = models.DateTimeField(_(u'time last updated'), auto_now=True)
+    featured = models.BooleanField(_(u'featured'))
 
     class Meta:
         get_latest_by = "time"
-        verbose_name = _('project update')
-        verbose_name_plural = _('project updates')
+        verbose_name = _(u'project update')
+        verbose_name_plural = _(u'project updates')
 
     def img(self, value=''):
         try:
@@ -1692,7 +1703,7 @@ class ProjectUpdate(models.Model):
     def get_is_featured(self):
         return self.featured
     get_is_featured.boolean = True #make pretty icons in the admin list view
-    get_is_featured.short_description = _('update is featured')
+    get_is_featured.short_description = _(u'update is featured')
 
     def get_video_thumbnail_url(self, url=''):
         if self.video:
@@ -1756,19 +1767,19 @@ class ProjectUpdate(models.Model):
 
 
 class ProjectComment(models.Model):
-    project = models.ForeignKey(Project, verbose_name=_('project'))
-    user = models.ForeignKey(User, verbose_name=_('user'))
-    comment = models.TextField(_('comment'))
-    time = models.DateTimeField(_('time'))
+    project = models.ForeignKey(Project, verbose_name=_(u'project'))
+    user = models.ForeignKey(User, verbose_name=_(u'user'))
+    comment = models.TextField(_(u'comment'))
+    time = models.DateTimeField(_(u'time'))
 
 
 # Payment engines
 class PaymentGateway(models.Model):
-    name = models.CharField(max_length=255, help_text=_(u'Use a short, descriptive name.'))
+    name = models.CharField(max_length=255, help_text=u'Use a short, descriptive name.')
     description = models.TextField(blank=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
-    notification_email = models.EmailField(_(u'notification email'),
-        help_text=_(u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.'))
+    notification_email = models.EmailField(u'notification email',
+        help_text=u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.')
 
     def __unicode__(self):
         return u'%s - %s' % (self.name, self.get_currency_display())
@@ -1778,19 +1789,19 @@ class PaymentGateway(models.Model):
 
 class PayPalGateway(PaymentGateway):
     PAYPAL_LOCALE_CHOICES = (
-        ('US', _(u'US English')),
+        ('US', u'US English'),
     )
     account_email = models.EmailField()
     locale = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
 
     class Meta:
-        verbose_name = _(u'PayPal gateway')
+        verbose_name = u'PayPal gateway'
 
 class MollieGateway(PaymentGateway):
     partner_id = models.CharField(max_length=10)
 
     class Meta:
-        verbose_name = _(u'Mollie/iDEAL gateway')
+        verbose_name = u'Mollie/iDEAL gateway'
 
 class PaymentGatewaySelector(models.Model):
     project = models.OneToOneField(Project)
@@ -1801,7 +1812,7 @@ class PaymentGatewaySelector(models.Model):
         return u'%s - %s' % (self.project.id, self.project.name)
 
     class Meta:
-        verbose_name = _(u'Project payment gateway configuration')
+        verbose_name = u'Project payment gateway configuration'
 
 class InvoiceManager(models.Manager):
     def get_query_set(self):
@@ -1830,44 +1841,44 @@ class InvoiceManager(models.Manager):
 
 class Invoice(models.Model):
     STATUS_CHOICES = (
-        (PAYPAL_INVOICE_STATUS_PENDING, _('Pending')),
-        (PAYPAL_INVOICE_STATUS_VOID, _('Void')),
-        (PAYPAL_INVOICE_STATUS_COMPLETE, _('Complete')),
-        (PAYPAL_INVOICE_STATUS_STALE, _('Stale')),
+        (PAYPAL_INVOICE_STATUS_PENDING, 'Pending'),
+        (PAYPAL_INVOICE_STATUS_VOID, 'Void'),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, 'Complete'),
+        (PAYPAL_INVOICE_STATUS_STALE, 'Stale'),
     )
     PAYMENT_ENGINES = (
-        ('paypal', _('PayPal')),
-        ('ideal', _('iDEAL')),
+        ('paypal', u'PayPal'),
+        ('ideal', u'iDEAL'),
     )
     # Setup
-    test = models.BooleanField(_('test donation'),
-        help_text=_('This flag is set if the donation was made in test mode.'))
-    engine = models.CharField(_('payment engine'), choices=PAYMENT_ENGINES,
-        max_length=10, default='paypal')
-    user = models.ForeignKey(User, blank=True, null=True)
-    project = models.ForeignKey(Project)
+    test            = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
+    engine          = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
+    user            = models.ForeignKey(User, blank=True, null=True)
+    project         = models.ForeignKey(Project)
     # Common
-    amount = models.PositiveIntegerField(help_text=_('Amount requested by user.'))
-    amount_received = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,
-                                          help_text=_('Amount actually received after charges have been applied.'))
-    time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    status = models.PositiveSmallIntegerField(_('status'), choices=STATUS_CHOICES, default=1)
-    http_referer = models.CharField(_('HTTP referer'), max_length=255, blank=True)
-    campaign_code = models.CharField(_('Campaign code'), blank=True, max_length=15)
-    is_anonymous = models.BooleanField(_('anonymous donation'))
+    amount          = models.PositiveIntegerField(help_text=u'Amount requested by user.')
+    amount_received = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True,
+        help_text=u'Amount actually received after charges have been applied.'
+    )
+    time            = models.DateTimeField(auto_now_add=True)
+    name            = models.CharField(max_length=75, blank=True, null=True)
+    email           = models.EmailField(blank=True, null=True)
+    status          = models.PositiveSmallIntegerField('status', choices=STATUS_CHOICES, default=1)
+    http_referer    = models.CharField(u'HTTP referer', max_length=255, blank=True)
+    campaign_code   = models.CharField(u'Campaign code', blank=True, max_length=15)
+    is_anonymous    = models.BooleanField(u'anonymous donation')
     # PayPal
-    ipn = models.CharField(_('PayPal IPN'), blank=True, null=True, max_length=75)
+    ipn             = models.CharField(u'PayPal IPN', blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(_('mollie.nl bank ID'), max_length=4, choices=get_mollie_banklist(), blank=True)
-    transaction_id = models.CharField(_('mollie.nl transaction ID'), max_length=100, blank=True)
+    bank            = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
+    transaction_id  = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
 
     def get_favicon(self):
-        pass # @ grab favicon from HTTP_REFERER site
+        pass #TODO: @ grab favicon from HTTP_REFERER site
 
     @property
     def get_name(self):
@@ -1916,7 +1927,7 @@ class Invoice(models.Model):
         }
 
     class Meta:
-        verbose_name = _('invoice')
+        verbose_name = u'invoice'
 
 
 # PayPal IPN listener
@@ -1945,51 +1956,43 @@ class PartnerSite(models.Model):
     def custom_logo_path(instance, filename):
         return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
 
-    organisation = models.ForeignKey(Organisation, help_text=_('Select your organisation from the drop-down list.'))
-    hostname = models.CharField(_('Hostname'), max_length=50, unique=True,
-        help_text=_('''
-            <p>
-                Your hostname is used in the default web address of your partner site.
-                The web address created from  the hostname <em>myorganisation</em> would be
-                <em>http://myorganisation.akvoapp.org/</em>.
-            </p>
-        ''')
+    organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
+        help_text=_('Select your organisation from the drop-down list.')
     )
-    cname = NullCharField(_('CNAME'), max_length=100, unique=True, blank=True, null=True,
-        help_text=_('''
-            <p>
-                Enter a custom domain name for accessing the partner site,
-                for example <i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.
-            </p>
-        ''')
+    hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
+        help_text=_(
+            u'<p>Your hostname is used in the default web address of your partner site. '
+            u'The web address created from  the hostname <em>myorganisation</em> would be '
+            u'<em>http://myorganisation.akvoapp.org/</em>.</p>'
+        )
     )
-    custom_return_url = models.URLField(_('Return URL'), blank=True,
-        help_text=_('''
-            <p>
-                Enter the full URL (including http://) for the page to which users
-                should be returned when leaving the partner site.
-            </p>
-        ''')
+    cname = NullCharField(_(u'CNAME'), max_length=100, unique=True, blank=True, null=True,
+        help_text=_(
+            u'<p>Enter a custom domain name for accessing the partner site, '
+            u'for example <i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>'
+        )
     )
-    custom_css = models.FileField(_('Stylesheet'), blank=True, upload_to=custom_css_path)
-    custom_logo = models.FileField(_('Organisation banner logo'), blank=True, upload_to=custom_logo_path,
-        help_text=_('''
-            <p>
-                Upload a logo file for the banner at the top of the partner site page.
-                By default the logo currently used by www.akvo.org will be displayed.
-            </p>
-        ''')
+    custom_return_url = models.URLField(_(u'Return URL'), blank=True,
+        help_text=_(
+            u'<p>Enter the full URL (including http://) for the page to which users '
+            u'should be returned when leaving the partner site.</p>'
+        )
     )
-    custom_favicon = models.FileField(_('favicon'), blank=True, upload_to=custom_favicon_path,
-        help_text=_('''
-            <p>
-                A favicon (.ico file) is the 16x16 pixel image shown inside the browser's location bar,
-                on tabs and in the bookmark menu.
-            </p>
-        ''')
+    custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
+    custom_logo = models.FileField(_(u'organisation banner logo'), blank=True, upload_to=custom_logo_path,
+        help_text=_(
+            u'<p>Upload a logo file for the banner at the top of the partner site page. '
+            u'By default the logo currently used by www.akvo.org will be displayed.</p>'
+        )
     )
-    about_box = models.TextField(_(_(u'about box text'), ), max_length=500, blank=True,
-        help_text=_('''
+    custom_favicon = models.FileField(_(u'favicon'), blank=True, upload_to=custom_favicon_path,
+        help_text=_(
+            u"<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser's location bar, "
+            u'on tabs and in the bookmark menu.</p>'
+        )
+    )
+    about_box = models.TextField(_(u'about box text'), max_length=500, blank=True,
+        help_text=_(dedent(u'''
             Enter HTML that will make up the top left box of the home page. (500 characters)
             <p>
                 Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying position and width
@@ -2012,18 +2015,16 @@ class PartnerSite(models.Model):
                 <em>Tip:</em> When using a .css file, use the #about_box ID selector to apply a style only to
                 the About box.
             </p>
-        ''')
+        '''))
     )
-    about_image = models.ImageField(_('about box image'), blank=True, upload_to=about_image_path,
-        help_text=_('''
-            <p>
-                The background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall.
-                It is however optional.
-            </p>
-        ''')
+    about_image = models.ImageField(_(u'about box image'), blank=True, upload_to=about_image_path,
+        help_text=_(
+            u'<p>The background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall. '
+            u'It is however optional.</p>'
+        )
     )
 
-    enabled = models.BooleanField(_('enabled'), default=True)
+    enabled = models.BooleanField(_(u'enabled'), default=True)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
