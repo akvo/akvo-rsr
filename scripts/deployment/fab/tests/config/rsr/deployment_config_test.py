@@ -102,7 +102,7 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
     def test_has_django_media_admin_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has Django media admin path"""
 
-        expected_django_media_admin_path = os.path.join(self.expected_current_virtualenv_path, RSRDeploymentConfig.DJANGO_LIB_PATH, 'contrib/admin/media')
+        expected_django_media_admin_path = os.path.join(self.expected_current_virtualenv_path, RSRDeploymentConfig.DJANGO_LIB_PATH, 'contrib/admin/static/admin')
 
         self.assertEqual(expected_django_media_admin_path, self.deployment_config.django_media_admin_path)
 
