@@ -58,32 +58,37 @@
       <div id="project_tabs">
         <ul class="small">
           <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
-          {% if project.goal_1 or project.goal_2 or project.goal_3 or project.goal_4 or project.goal_5 %}
-            <li><a href="#tab_outcomes"><span>{% trans 'Outcomes' %}</span></a></li>
+          {% if project.project_plan %}
+            <li><a href="#tab_project_plan"><span>{% trans 'Project plan' %}</span></a></li>
           {% endif %}
+          <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
           <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
         </ul>
         <div id="tab_background" class="tab">
-          <p>{{project.context|linebreaks}}</p>
+          <p>{{project.background|linebreaks}}</p>
           <h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
           <p>{{project.goals_overview|linebreaks}}</p>
-          <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
-          <p>{{project.current_status_detail|linebreaks}}</p>
-          <h4 style="font-weight:bold">{% trans 'Project plan' %}</h4>
-          <p>{{project.project_plan_detail|linebreaks}}</p>
+          {% if project.current_status %}
+            <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
+            <p>{{project.current_status|linebreaks}}</p>
+          {% endif %}
         </div>
-        {% if project.goal_1 or project.goal_2 or project.goal_3 or project.goal_4 or project.goal_5 %}
-          <div id="tab_outcomes" class="tab">
-            <h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
-            <ul style="margin-top:15px;">
-              {% if project.goal_1 %}<li>{{project.goal_1}}</li>{% endif %}
-              {% if project.goal_2 %}<li>{{project.goal_2}}</li>{% endif %}
-              {% if project.goal_3 %}<li>{{project.goal_3}}</li>{% endif %}
-              {% if project.goal_4 %}<li>{{project.goal_4}}</li>{% endif %}
-              {% if project.goal_5 %}<li>{{project.goal_5}}</li>{% endif %}
-            </ul>
+        {% if project.project_plan %}
+          <div id="tab_project_plan" class="tab">
+            <p>{{project.project_plan|linebreaks}}</p>
           </div>
         {% endif %}
+        <div id="tab_goals" class="tab">
+          <p>{{project.goals_overview|linebreaks}}</p>
+          {% if project.goals.all %}
+            <h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
+            <ul style="margin-top:15px;">
+              {% for goal in project.goals.all %}
+                <li>{{goal.text}}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
         <div id="tab_sustainability" class="tab">
           <p>{{project.sustainability|linebreaks}}</p>
         </div>
@@ -162,7 +167,47 @@
         {% endfor %}
       {% endif%}
       ];
-    </script>
+  </script>
+
+  <script type="text/javascript">
+    var benchmarks_folded = true;
+    var benchmarks_height = 0;
+    var benchmarks_initial_height = 0;
+    var benchmarks_more = '{% trans "View more..." %}';
+    var benchmarks_less = '{% trans "View less..." %}';
+    var benchmarks_arrow_more = '&#x25bc;';
+    var benchmarks_arrow_less = '&#x25b2;';
+
+    function init_benchmarks() {
+      benchmarks_initial_height = $('#benchmarks').height();
+      if ( $('#benchmarks_inner').height() > (benchmarks_initial_height - 10) ) {
+        $('#benchmarks_switch').show();
+        $('#benchmarks_switch_arrow').show();
+      }
+      benchmarks_height = $('#benchmarks_inner').height();
+      $('#benchmarks_switch').html(benchmarks_more);
+      $('#benchmarks_switch_arrow').html(benchmarks_arrow_more);
+    }
+
+    function handle_benchmarks() {
+      if (benchmarks_folded) {
+        $('#benchmarks').animate({
+          height: benchmarks_height + "px"
+        }, 500);
+        $('#benchmarks_switch').html(benchmarks_less);
+        $('#benchmarks_switch_arrow').html(benchmarks_arrow_less);
+      } else {
+        $('#benchmarks').animate({
+          height: benchmarks_initial_height + "px"
+        }, 500);
+        $('#benchmarks_switch').html(benchmarks_more);
+        $('#benchmarks_switch_arrow').html(benchmarks_arrow_more);
+      }
+      benchmarks_folded = !benchmarks_folded;
+    }
+  </script>
+
+
 {% endblock js %}
 
 
@@ -171,4 +216,8 @@
   jQ('#project_tabs').tabs();
   Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
   jQ('#galleria').galleria({data_source: galleria_data});
+
+  init_benchmarks();
+  $('#benchmarks_switch').click(function () { handle_benchmarks() });
+  $('#benchmarks_switch_arrow').click(function () { handle_benchmarks() });
 {% endblock jq_ready %}

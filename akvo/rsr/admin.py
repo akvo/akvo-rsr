@@ -2,11 +2,11 @@
 
 from django import forms
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
 from django.contrib.contenttypes import generic
+from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
@@ -439,6 +439,13 @@ class BenchmarkInline(admin.TabularInline):
     max_num = 0
 
 
+class GoalInline(admin.TabularInline):
+    model = get_model('rsr', 'goal')
+    fields = ('text',)
+    extra = 3
+    max_num = 8   
+
+
 class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         user = self.request.user
@@ -478,7 +485,7 @@ class PartnershipInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        BudgetItemAdminInLine, LinkInline, PartnershipInline, #FundingPartnerInline, SponsorPartnerInline, FieldPartnerInline, SupportPartnerInline,
+        GoalInline, BudgetItemAdminInLine, LinkInline, PartnershipInline,
         LocationInline, BenchmarkInline
     )
     save_as = True
@@ -518,18 +525,18 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The summary should <em>briefly</em> explain why the project is being carried out, where it is taking place, who will benefit and/or participate, what it specifically hopes to accomplish and how those specific goals will be accomplished.</p>'),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
         }),
-        (_(u'Goals'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
-            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
-        }),
+#        (_(u'Goals'), {
+#            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">Describe what the project hopes to accomplish. Keep in mind the SMART criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. The numbered fields can be used to list specific goals whose accomplishment will be used to measure overall project success.</p>'),
+#            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
+#        }),
         #(_(u'Project target benchmarks'), {
         #    'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The benchmarks fields can be used to further show the measurable impact of the project in terms of number of systems installed, households improved, people trained, expected duration of impact, etc.</p>'),
         #    'fields': (('water_systems', 'sanitation_systems', 'hygiene_facilities'), ('improved_water',
         #    'improved_water_years'), ('improved_sanitation', 'improved_sanitation_years'), 'trainees', )#'mdg_count_water', 'mdg_count_sanitation', )
         #}),
         (_(u'Project details'), {
-            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Context, Plan Detail, Status Detail and Sustainability fields to tell people more about the project.</p>'),
-            'fields': ('context', 'project_plan_detail', 'current_status_detail', 'sustainability', ),
+            'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">In-depth information about your project should be put in this section. Use the Background, Project plan, Current status and Sustainability fields to tell people more about the project.</p>'),
+            'fields': ('background', 'project_plan', 'current_status', 'sustainability', ),
         }),
         (_(u'Project meta info'), {
             'description': _(u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">The project meta information fields are not public. They allow you to make notes to other members of your organisation or partners with access to your projects on the RSR Admin pages.</p>'),
