@@ -516,7 +516,7 @@ class Project(models.Model):
     status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, default='N', help_text=_(u'Current project state.'))
     categories = models.ManyToManyField(Category, verbose_name=_(u'categories'), related_name='projects',)
     partners = models.ManyToManyField(Organisation, verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
-    project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=220, help_text=_(u'Briefly summarize the project (220 characters).'))
+    project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
     current_image = ImageWithThumbnailsField(
                         _(u'project photo'),
                         blank=True,
@@ -1032,6 +1032,8 @@ class Project(models.Model):
         )
         verbose_name=_(u'project')
         verbose_name_plural=_(u'projects')
+        ordering            =  ('-id',)
+
 
 
 class Goal(models.Model):
