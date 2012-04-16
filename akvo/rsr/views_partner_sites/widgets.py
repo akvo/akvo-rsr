@@ -17,14 +17,18 @@ from django.core.urlresolvers import reverse
 #from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail.main import DjangoThumbnail
 
-from akvo.rsr.views_partner_sites.base import BaseProjectListView
+from akvo.rsr.views_partner_sites.base import BaseView, BaseProjectListView
 from akvo.rsr.models import Organisation, Project
 
 
 __all__ = [
+    'GetWidgetView',
     'ProjectMapView',
     'ProjectCordinates',
     ]
+
+class GetWidgetView(BaseView):
+    template_name = 'partner_sites/widgets/get_widget1.html'
 
 
 class ProjectMapView(TemplateView):
