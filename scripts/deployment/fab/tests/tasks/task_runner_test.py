@@ -116,6 +116,7 @@ class TaskRunnerTest(mox.MoxTestBase):
                 self._expected_task_with_parameters(task_class, expected_parameter_list),
                 '-H', expected_ssh_connection,
                 '-i', self.user_credentials.ssh_id_file_path,
+                '-u', self.user_credentials.deployment_user,
                 '-p', self.user_credentials.sudo_password]
 
     def _expected_task_with_parameters(self, task_class, expected_parameter_list):

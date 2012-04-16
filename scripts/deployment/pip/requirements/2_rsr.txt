@@ -3,7 +3,6 @@ Django==1.4
 
 # Django apps
 django-counter==0.1.6
-django-filter==0.5.3
 django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.2
@@ -13,6 +12,7 @@ django-rosetta==0.6.6
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
+-e git://github.com/alex/django-filter.git@51b39fca089f2cb1d3d3501d2e164635fbe52864#egg=django-filter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
 
 # Akvonaut apps

@@ -28,13 +28,13 @@ class DeploymentTestsRunner(object):
     def run_unit_tests(self):
         print '>> Using virtualenv at: %s\n' % self.virtualenv_path
         self._ensure_config_file_exists('custom.py')
-        self._ensure_config_file_exists('database.py')
         self._run_within_virtualenv(self._run_all_test_suites_command())
 
     def _ensure_config_file_exists(self, config_file_name):
         if not os.path.exists(self._credentials_path_for(config_file_name)):
             if self.execution_mode == TestExecutionMode.CI:
-                shutil.copy2(self._credentials_path_for('%s.template' % config_file_name), self._credentials_path_for(config_file_name))
+                ci_user_config_path = self._credentials_path_for(config_file_name.replace('.', '_ci.'))
+                shutil.copy2(ci_user_config_path, self._credentials_path_for(config_file_name))
             else:
                 raise SystemExit('## Missing credentials configuration file\n' + \
                                  '>> Copy the %s file and edit as necessary' % self._credentials_path_for('%s.template' % config_file_name))
