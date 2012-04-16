@@ -136,86 +136,6 @@ class OrganisationAdmin(admin.ModelAdmin):
                 return True
         return False
 
-    def add_view(self, request, form_url='', extra_context=None):
-        "The 'add' admin view for this model."
-        model = self.model
-        opts = model._meta
-        
-        if not self.has_add_permission(request):
-            raise PermissionDenied
-        
-        ModelForm = self.get_form(request)
-        formsets = []
-        if request.method == 'POST':
-            form = ModelForm(request.POST, request.FILES)
-            if form.is_valid():
-                form_validated = True
-                new_object = self.save_form(request, form, change=False)
-            else:
-                form_validated = False
-                new_object = self.model()
-            for FormSet in self.get_formsets(request):
-                formset = FormSet(data=request.POST, files=request.FILES,
-                                  instance=new_object,
-                                  save_as_new=request.POST.has_key("_saveasnew"))
-                formsets.append(formset)
-            if all_valid(formsets) and form_validated:
-                self.save_model(request, new_object, form, change=False)
-                ##add by gvh:
-                ##loop over all images and do a new save of them.
-                ##this has to be done since the initial save puts the images in
-                ##img/org/temp/ as we have no primary key to the org at that time
-                #for field_name, uploaded_file in request.FILES.items():
-                #    model_field = getattr(new_object, field_name)
-                #    model_field.save(uploaded_file.name, uploaded_file)
-                ##end add
-                form.save_m2m()
-                for formset in formsets:
-                    self.save_formset(request, form, formset, change=False)
-                
-                self.log_addition(request, new_object)
-                return self.response_add(request, new_object)
-        else:
-            # Prepare the dict of initial data from the request.
-            # We have to special-case M2Ms as a list of comma-separated PKs.
-            initial = dict(request.GET.items())
-            for k in initial:
-                try:
-                    f = opts.get_field(k)
-                except models.FieldDoesNotExist:
-                    continue
-                if isinstance(f, models.ManyToManyField):
-                    initial[k] = initial[k].split(",")
-            form = ModelForm(initial=initial)
-            for FormSet in self.get_formsets(request):
-                formset = FormSet(instance=self.model())
-                formsets.append(formset)
-        
-        adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)), self.prepopulated_fields)
-        media = self.media + adminForm.media
-        
-        inline_admin_formsets = []
-        for inline, formset in zip(self.inline_instances, formsets):
-            fieldsets = list(inline.get_fieldsets(request))
-            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
-            inline_admin_formsets.append(inline_admin_formset)
-            media = media + inline_admin_formset.media
-
-        context = {
-            'title': _(u'Add organisation'),
-            'adminform': adminForm,
-            'is_popup': request.REQUEST.has_key('_popup'),
-            'show_delete': False,
-            'media': mark_safe(media),
-            'inline_admin_formsets': inline_admin_formsets,
-            'errors': helpers.AdminErrorList(form, formsets),
-            'root_path': self.admin_site.root_path,
-            'app_label': opts.app_label,
-        }
-        context.update(extra_context or {})
-        return self.render_change_form(request, context, add=True)
-    add_view = transaction.commit_on_success(add_view)
-    
 admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
 
 
@@ -479,7 +399,7 @@ class ProjectAdmin(admin.ModelAdmin):
            'fields': (
                'name', 'subtitle', 'status',
            ),
-            }),
+        }),
         (_(u'Categories'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Please select all categories applicable to your project. '
@@ -497,15 +417,6 @@ class ProjectAdmin(admin.ModelAdmin):
             ),
             'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
         }),
-#        (_(u'Goals'), {
-#            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-#                u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
-#                u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
-#                u'The numbered fields can be used to list specific goals whose accomplishment '
-#                u'will be used to measure overall project success.'
-#            ),
-#            'fields': ('goals_overview', 'goal_1', 'goal_2', 'goal_3', 'goal_4', 'goal_5', )
-#        }),
         (_(u'Project details'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'In-depth information about your project should be put in this section. '
@@ -528,6 +439,15 @@ class ProjectAdmin(admin.ModelAdmin):
                 u'When the project implementation phase is complete, enter the <em>Date complete</em> here.'
             ),
             'fields': ('currency', 'date_request_posted', 'date_complete', ),
+        }),
+        (_(u'Goals'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
+                u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
+                u'The numbered fields can be used to list specific goals whose accomplishment '
+                u'will be used to measure overall project success.'
+            ),
+            'fields': ('goals_overview', )
         }),
         )
     list_display = ('id', 'name', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
