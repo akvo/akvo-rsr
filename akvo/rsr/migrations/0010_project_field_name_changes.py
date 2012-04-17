@@ -8,6 +8,9 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
 
+        # Renaming field 'Project.name'
+        db.rename_column('rsr_project', 'name', 'title')
+
         # Renaming field 'Project.project_plan_detail'
         db.rename_column('rsr_project', 'project_plan_detail', 'project_plan')
 
@@ -43,6 +46,9 @@ class Migration(SchemaMigration):
 
         # Renaming field 'Project.project_plan'
         db.rename_column('rsr_project', 'project_plan', 'project_plan_detail')
+
+        # Renamding field 'Project.title'
+        db.rename_column('rsr_project', 'title', 'name')
 
         # Changing field 'Project.project_plan_summary'
         db.alter_column('rsr_project', 'project_plan_summary', self.gf('django.db.models.fields.TextField')(max_length=220))
@@ -298,7 +304,7 @@ class Migration(SchemaMigration):
             'goal_5': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '45'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '45'}),
             'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'project_plan': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
