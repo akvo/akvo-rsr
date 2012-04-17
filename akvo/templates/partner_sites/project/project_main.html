@@ -25,7 +25,7 @@
 {% block project_content %}
   <section class="whitebox pad20 marg_bottom40">
     {% counter_badge project %}
-    <h2>{% trans "Description" %}</h2>
+    <h2>{% trans "Summary" %}</h2>
     {{project.project_plan_summary|linebreaks}}
     <div style="float:left; width:340px;">
       <div id="galleria" style="width:338px; height:350px;"></div>
@@ -66,8 +66,6 @@
         </ul>
         <div id="tab_background" class="tab">
           <p>{{project.background|linebreaks}}</p>
-          <h4 style="font-weight:bold">{% trans 'Goals overview' %}</h4>
-          <p>{{project.goals_overview|linebreaks}}</p>
           {% if project.current_status %}
             <h4 style="font-weight:bold">{% trans 'Current status' %}</h4>
             <p>{{project.current_status|linebreaks}}</p>
