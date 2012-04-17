@@ -511,7 +511,7 @@ class Project(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-    name = models.CharField(_(u'name'), max_length=45, help_text=_(u'A short descriptive name for your project (45 characters).'))
+    title = models.CharField(_(u'name'), max_length=45, help_text=_(u'A short descriptive title for your project (45 characters).'))
     subtitle = models.CharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
     status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, default='N', help_text=_(u'Current project state.'))
     categories = models.ManyToManyField(Category, verbose_name=_(u'categories'), related_name='projects',)
