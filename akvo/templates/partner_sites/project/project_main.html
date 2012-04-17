@@ -25,7 +25,7 @@
 {% block project_content %}
   <section class="whitebox pad20 marg_bottom40">
     {% counter_badge project %}
-    <h2>{% trans "Summary" %}</h2>
+    <h2 class="black">{% trans "Summary" %}</h2>
     {{project.project_plan_summary|linebreaks}}
     <div style="float:left; width:340px;">
       <div id="galleria" style="width:338px; height:350px;"></div>
@@ -57,12 +57,12 @@
     <div class="whitebox pad20" style="width:435px; float:left;">
       <div id="project_tabs">
         <ul class="small">
-          <li><a href="#tab_background"><span>{% trans 'Background' %}</span></a></li>
+          <li><a href="#tab_background"><span class="small">{% trans 'Background' %}</span></a></li>
           {% if project.project_plan %}
-            <li><a href="#tab_project_plan"><span>{% trans 'Project plan' %}</span></a></li>
+            <li><a href="#tab_project_plan"><span class="small">{% trans 'Project plan' %}</span></a></li>
           {% endif %}
-          <li><a href="#tab_goals"><span>{% trans 'Goals' %}</span></a></li>
-          <li><a href="#tab_sustainability"><span>{% trans 'Sustainability' %}</span></a></li>
+          <li><a href="#tab_goals"><span class="small">{% trans 'Goals' %}</span></a></li>
+          <li><a href="#tab_sustainability"><span class="small">{% trans 'Sustainability' %}</span></a></li>
         </ul>
         <div id="tab_background" class="tab">
           <p>{{project.background|linebreaks}}</p>
