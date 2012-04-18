@@ -872,7 +872,7 @@ class Project(models.Model):
                 return self._partners()
 
     def __unicode__(self):
-        return u'%s' % self.name
+        return u'%s' % self.title
 
     def updates_desc(self):
         "return ProjectUpdates for self, newest first"
