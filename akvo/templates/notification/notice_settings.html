@@ -27,12 +27,12 @@
         <p>
             {% trans "Your email address:" %} {{ user.email }}<br />
             {% trans "Your mobile phone number:" %} {{ user.get_profile.phone_number }}
-            <!--({% blocktrans %}change under <a href="{{ email_url }}">Account</a>{% endblocktrans %})-->
+            <!--(change under <a href="{{ email_url }}">Account</a>)-->
         </p>
     {% else %}
         <p>
             <span class="warning">{% trans "Note" %}</span>:
-            {% blocktrans %}You do not have a verified email address to which notices can be sent. You can add one by going to <a href="{{ email_url }}">Account</a>.{% endblocktrans %}
+            {% blocktrans %}You do not have a verified email address to which notices can be sent. You can add one by going to <a href='{{ email_url }}'>Account</a>.{% endblocktrans %}
         </p>
     {% endif %}
     

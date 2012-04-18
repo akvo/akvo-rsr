@@ -30,11 +30,7 @@
 
       {% for item in project.budget_items.all %}
         <tr>
-          <td class="small">
-            {% blocktrans with label=item.get_label|capfirst %}
-              {{ label }}:
-            {% endblocktrans %}
-          </td>
+          <td class="small">{{ label }}:</td>
           <td class="small txt_right">{{project.get_currency_display|safe}} {{item.amount|round|intcomma}}</td>
         </tr>
       {%  endfor %}
