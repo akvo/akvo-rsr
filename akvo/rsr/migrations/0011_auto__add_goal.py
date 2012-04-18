@@ -273,7 +273,7 @@ class Migration(SchemaMigration):
             'goal_5': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '45'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '45'}),
             'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'project_plan': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
