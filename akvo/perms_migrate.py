@@ -31,6 +31,12 @@
 import os, sys
 from optparse import OptionParser
 
+def pretty():
+    import pprint
+    import permissions_data
+    pp = pprint.PrettyPrinter()
+    pp.pprint(permissions_data.GROUP_LIST)
+    pp.pprint(permissions_data.PERMS_DICT)
 
 def dump():
     from django.contrib.auth.models import Group
@@ -140,6 +146,8 @@ def run_terminal_command(argv=None):
         load(options)
     elif action == 'dump':
         dump()
+    elif action == 'pretty':
+        pretty()
     else:
         parser.print_help()
         
