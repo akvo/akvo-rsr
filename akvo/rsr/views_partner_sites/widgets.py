@@ -30,6 +30,19 @@ __all__ = [
 class GetWidgetView(BaseView):
     template_name = 'partner_sites/widgets/get_widget1.html'
 
+    def post(self, request, *args, **kwargs):
+        self.template_name = 'partner_sites/widgets/get_widget2.html'
+
+        return self.render_to_response(self.get_post_context(request))
+        
+    def get_post_context(self, request):
+        widget_type = self.request.POST.get('widget-type', '')
+        project = get_object_or_404(Project, pk=self.kwargs['project_id']) 
+        return {
+            'widget_type': widget_type,
+            'project': project 
+            
+        }
 
 class ProjectMapView(TemplateView):
     template_name = 'partner_sites/widgets/projects_map.html'

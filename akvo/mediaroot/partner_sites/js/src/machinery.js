@@ -136,6 +136,10 @@ function preview_widget()
 	var akvo_widget_width = getWidth(akvo_widget_type);
     
     var akvo_url = '';
+    var widget_url = 'http://akvo.akvoapp.dev/widgets/projects/map/';
+    // widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor;
+    // widget_url += '&height='+ widget_height + '&width=' + widget_width + '&state=' + map_widget_state;
+    /*
     var widget_url = '';
 	if (akvo_widget_choice == 'random-from-org') {
 	    akvo_url = 'http://' + location.host + '/rsr/widget/one-from-organisation/' + akvo_widget_organisation + '/?widget=' + akvo_widget_type;
@@ -153,7 +157,7 @@ function preview_widget()
 	if (!(akvo_widget_site == '' || akvo_widget_site == 'Example: www.akvo.org')) {
 	    widget_url += '&site=' + akvo_widget_site;
 	}
-    
+    */
     
     var ifrm = document.createElement("IFRAME");
     if (akvo_widget_choice != 'project-map') {

@@ -68,6 +68,15 @@ ASSET_BUNDLES = {
             'galleria.js',
             ],
     },
+    'akvo_ps_machinery_js': {
+        'type': 'js',
+        'path': 'partner_sites/js/',
+        'compress': True,
+        'files': [
+            'machinery.js',
+            ],
+    },
+    
     'widget_cobranded_banner': {
         'type': 'css',
         'path': 'widgets/cobranded_banner/css/',
