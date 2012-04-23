@@ -12,6 +12,14 @@ Akvo RSR ver 2.0.5 release notes
 19 April 2012, (Code name: Fennel) pb
 
 
+Overview
+----
+This release addresses a problem whereby certain project fields were not being constrained in length as expected. Django >= 1.4 is now a requirement of Akvo RSR and, as such, several parts of the system were upgraded to support it.
+
+New features & changes
+----
+
+
 Akvo RSR ver 2.0.4 release notes
 ----
 27 March 2012, (Code name: Eggplant) ogl
