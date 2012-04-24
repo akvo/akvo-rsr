@@ -5,6 +5,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.util import unquote
+from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth.models import Group
 from django.contrib.contenttypes import generic
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
@@ -26,12 +28,21 @@ from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
-from akvo.rsr.utils import get_rsr_limited_change_permission
+from akvo.rsr.utils import get_rsr_limited_change_permission, permissions
 
 
 NON_FIELD_ERRORS = '__all__'
 
 csrf_protect_m = method_decorator(csrf_protect)
+
+
+admin.site.unregister(Group)
+class RSRGroupAdmin(GroupAdmin):
+
+    list_display = GroupAdmin.list_display + (permissions,)
+
+admin.site.register(Group, RSRGroupAdmin)
+
 
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (u'__unicode__', u'content_type', )
@@ -506,7 +517,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 return obj in projects
             else:
                 return True
-            return False
+        return False
 
     @csrf_protect_m
     @transaction.commit_on_success
