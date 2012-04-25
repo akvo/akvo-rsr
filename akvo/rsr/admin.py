@@ -393,11 +393,11 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = (
         (_(u'Project description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Give your project a short name and subtitle in RSR. These fields are the '
+                u'Give your project a short title and subtitle in RSR. These fields are the '
                 u'newspaper headline for your project: use them to attract attention to what you are doing.'
             ),
            'fields': (
-               'name', 'subtitle', 'status',
+               'title', 'subtitle', 'status',
            ),
         }),
         (_(u'Categories'), {
@@ -450,7 +450,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('goals_overview', )
         }),
         )
-    list_display = ('id', 'name', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+    list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     list_filter = ('currency', 'status', )
     form = ProjectAdminForm
     def get_actions(self, request):

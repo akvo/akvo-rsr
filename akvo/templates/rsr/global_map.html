@@ -75,7 +75,7 @@
 	            });
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
 					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
-	                '<h4>{{ project.name|smart_truncate:35}}</h4>' +
+	                '<h4>{{ project.title|smart_truncate:35}}</h4>' +
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" />' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
 					'<div id="project_location"><p class="small">' +

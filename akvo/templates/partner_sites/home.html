@@ -55,7 +55,7 @@
       <div class="clear"></div>
       <div style="width:45%; float:left;">
         <span class="tiny grey marg_left20">
-          {% trans 'Filter on project name or subtitle' %} 
+          {% trans 'Filter on project title or subtitle' %} 
         </span>
       </div>
       <div style="width:45%; float:right; text-align:right;">
@@ -104,7 +104,7 @@
                 {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0; height:90px;' %}
               </a>
               <a href="{% url 'project_main' project.id %}" style="margin-bottom:0">
-                  {{project.name}}
+                  {{project.title}}
               </a>
               <p class="tiny grey">
                 {{project.project_plan_summary|capfirst|smart_truncate:250}}

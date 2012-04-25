@@ -37,7 +37,7 @@
 			{{ invoice.get_name }}<br>
 			{{ invoice.get_email }}<br>
 			<br>
-			<a href="{{ project_url }}">{{ invoice.project.name|safe }}</a><br>
+			<a href="{{ project_url }}">{{ invoice.project.title|safe }}</a><br>
 			{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
 			{{ invoice.id }}<br>
 			{% if invoice.engine = "paypal" %}
