@@ -34,12 +34,12 @@
       <p class="small grey">{% trans "You can customise the top and bottom bar and title text colours on the next step." %}</p>
       <div class="pad20 whitebox marg_bottom40">
         <form name="projectMapForm" action="." method="post">{% csrf_token %}
-        
+          <input type="hidden" name="widget-type" value="project-map" />
           <h3>{% trans "Project map widget" %}</h3>
           <p class="small grey">{% trans "Shows a map of projects from your organisation. Users who click on this widget will go to Akvo.org." %}</p>
 
           <script type="text/javascript">
-            document.write('<iframe src="{% url 'widget_org_map' %}" width="600" height="330" frameborder="0" allowTransparency="true"> </iframe>');
+            document.write('<iframe src="{% url 'widget_org_map' %}" width="600" height="300" frameborder="0" allowTransparency="true"> </iframe>');
           </script>
         
           <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
@@ -47,7 +47,6 @@
               <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
             </a>
           </div>
-          <input type="hidden" name="widget-type" value="project-map" />
         </form>
       </div>
     </div>
