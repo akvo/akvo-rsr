@@ -300,14 +300,14 @@ class PublishingStatusAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
 
-class ProjectAdminForm(forms.ModelForm):
-    class Meta:
-        model = get_model('rsr', 'project')
-
-    def clean(self):
-        return self.cleaned_data
-
-admin.site.register(get_model('rsr', 'location'))
+#class ProjectAdminForm(forms.ModelForm):
+#    class Meta:
+#        model = get_model('rsr', 'project')
+#
+#    def clean(self):
+#        return self.cleaned_data
+#
+#admin.site.register(get_model('rsr', 'location'))
 
 
 class FocusAreaAdmin(admin.ModelAdmin):
@@ -463,7 +463,7 @@ class ProjectAdmin(admin.ModelAdmin):
         )
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     list_filter = ('currency', 'status', )
-    form = ProjectAdminForm
+#    form = ProjectAdminForm
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(ProjectAdmin, self).get_actions(request)
