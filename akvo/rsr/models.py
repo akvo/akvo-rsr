@@ -1775,7 +1775,7 @@ class ProjectUpdate(models.Model):
         return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
-        return u'Project update for %(project_name)s' % {'project_name': self.project.name}
+        return u'Project update for %(project_name)s' % {'project_name': self.project.title}
 
 
 class ProjectComment(models.Model):

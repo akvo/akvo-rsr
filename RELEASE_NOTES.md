@@ -17,6 +17,8 @@ This release addresses a problem whereby certain project fields were not being c
 
 New features & changes
 ----
+### Improved help text
+[PT story 25606657](https://www.pivotaltracker.com/story/show/25606657) Some fields in the admin interface that constrain input to a maximum number of characters did not have help text alerting the user to this limit. This has been remedied.
 
 
 Akvo RSR ver 2.0.4 release notes
