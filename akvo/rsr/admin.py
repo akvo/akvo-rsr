@@ -83,7 +83,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
-    )    
+    )
     inlines = (LocationInline,)
     list_display = ('name', 'long_name', 'website', )
 
@@ -93,7 +93,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         opts = self.opts
         if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
             del actions['delete_selected']
-        return actions    
+        return actions
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
@@ -119,7 +119,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         """
         Returns True if the given request has permission to change the given
         Django model instance.
-        
+
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
 
@@ -141,7 +141,7 @@ admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
 
 class OrganisationAccountAdmin(admin.ModelAdmin):
     list_display = (u'organisation', u'account_level', )
-    
+
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
@@ -188,7 +188,7 @@ def partner_clean(obj, field_name='organisation'):
         #wether we have found our own org in the found attribute.
         if not obj.instance.found:
             obj.instance.found = found
-    except AttributeError:    
+    except AttributeError:
         obj.instance.found = found
     try:
         # add the formset to attribute partner_formsets. This is to conveniently
@@ -197,7 +197,7 @@ def partner_clean(obj, field_name='organisation'):
     except AttributeError:
         obj.instance.partner_formsets = []
     obj.instance.partner_formsets.append(obj)
-    
+
 
 #class RSR_FundingPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
 #    # do cleaning looking for the user's org in the funding partner forms
@@ -221,7 +221,7 @@ def partner_clean(obj, field_name='organisation'):
 #see above
 class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
-        partner_clean(self, 'field_organisation')  
+        partner_clean(self, 'field_organisation')
 
 class FieldPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'fieldpartner')
@@ -236,7 +236,7 @@ class FieldPartnerInline(admin.TabularInline):
 #see above
 class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
-        partner_clean(self, 'support_organisation')  
+        partner_clean(self, 'support_organisation')
 
 class SupportPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'supportpartner')
@@ -251,7 +251,7 @@ class SupportPartnerInline(admin.TabularInline):
 #see above
 class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
-        partner_clean(self, 'sponsor_organisation')  
+        partner_clean(self, 'sponsor_organisation')
 
 class SponsorPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'sponsorpartner')
@@ -285,7 +285,7 @@ class BudgetAdminInLine(admin.TabularInline):
 
 class PublishingStatusAdmin(admin.ModelAdmin):
     list_display = (u'project_info', u'status', )
-    
+
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
 
@@ -321,7 +321,7 @@ admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
 class BenchmarknameAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Benchmarkname')
     list_display = ('name', 'order',)
-    
+
 admin.site.register(get_model('rsr', 'Benchmarkname'), BenchmarknameAdmin)
 
 
@@ -344,7 +344,7 @@ class GoalInline(admin.TabularInline):
     model = get_model('rsr', 'goal')
     fields = ('text',)
     extra = 3
-    max_num = 8   
+    max_num = 8
 
 
 class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
@@ -568,8 +568,15 @@ class ProjectAdmin(admin.ModelAdmin):
                 prefixes[prefix] = prefixes.get(prefix, 0) + 1
                 if prefixes[prefix] != 1 or not prefix:
                     prefix = "%s-%s" % (prefix, prefixes[prefix])
-                formset = FormSet(instance=self.model(), prefix=prefix,
-                                  queryset=inline.queryset(request))
+
+                # hack by GvH to get user's organisation preset as parter when adding a new project
+                if prefix == 'partnership_set':
+                    formset = FormSet(instance=self.model(), prefix=prefix, initial=[{'organisation': request.user.get_profile().organisation}],
+                                      queryset=inline.queryset(request))
+                else:
+                    formset = FormSet(instance=self.model(), prefix=prefix,
+                                      queryset=inline.queryset(request))
+                # end hack
                 formsets.append(formset)
 
         adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
