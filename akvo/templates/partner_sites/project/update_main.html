@@ -54,7 +54,7 @@
       		</div>
       		<p class="nano-lede grey">{% trans "Find a typo? :)" %}</p>
       		<p class="nano-lede grey">
-						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expired }}, at which time it will become locked and final.{% endblocktrans %}
+						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expires }}, at which time it will become locked and final.{% endblocktrans %}
 					</p>
       	</div>
     	{% endif %}
