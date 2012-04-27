@@ -10,7 +10,7 @@
 
 {% block maincontent %}
 
-<h1>Donate to {{project.name}}</h1>
+<h1>Donate to {{project.title}}</h1>
 <div class="white_box">
   <div>
     <div id="donate_step_box">
@@ -49,10 +49,10 @@
     <div class="clear"></div>
     <div style="float:left; width:400px;">
       <div class="donate_details_left">
-        <p>{% trans 'Project name' %}:</p>
+        <p>{% trans 'project.title' %}:</p>
       </div>
       <div class="donate_details_right">
-        <p><a href="{% url 'project_main' project.id %}">{{ project.name }}</a></p>
+        <p><a href="{% url 'project_main' project.id %}">{{ project.title }}</a></p>
       </div>
       <div class="clear"></div>
       <div class="donate_details_left">

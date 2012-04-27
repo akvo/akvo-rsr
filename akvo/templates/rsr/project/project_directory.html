@@ -105,7 +105,7 @@
 
 						<div id="q_help" style="padding-left:25px; margin-top:10px;">
 							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">
-								{% trans 'Filter on project name or subtitle' %}
+								{% trans 'Filter on project title or subtitle' %}
 							</p>
 						</div>
 					</div>
@@ -217,7 +217,7 @@
 {##}
 {#						<div id="q_help" style="padding-left:25px; margin-top:10px;">#}
 {#							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">#}
-{#								{% trans 'Filter on project name or subtitle' %}#}
+{#								{% trans 'Filter on project.title or subtitle' %}#}
 {#							</p>#}
 {#						</div>#}
 {#					</div>#}
@@ -260,7 +260,7 @@
                   <a href="{% url 'project_main' project.id %}">
                     {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
                     <p class="link_blue strong" style="margin-bottom:0">
-                        {{project.name}}
+                        {{project.title}}
                     </p> 
                   </a>
                   <p class="tiny grey">
