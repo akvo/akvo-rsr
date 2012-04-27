@@ -5,19 +5,19 @@
 <table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 	<tr>
 		<th>{% trans 'Budget' %}:</th>
-		<td>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</td>
+		<td>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</td>
 	</tr>					
 </table>
 <div class="fundingbox-progress-bar" id="progress_back" style="width:130px;">
-	<div id="progress_green" class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%;"> </div>
+	<div id="progress_green" class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funds project.budget 100 %}%;"> </div>
 </div>
 <table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 	<tr class="green">
 		<th>{% trans 'Raised' %}:</th>
-		<td>{{project.get_currency_display|safe}} {{project.funding_total_given|round|intcomma}}</td>
+		<td>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</td>
 	</tr>
 	<tr style="color:#FF5617">
 		<th>{% trans 'Needed' %}:</th>
-		<td>{{project.get_currency_display|safe}} {{project.funding_still_needed|round|intcomma}}</td>
+		<td>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</td>
 	</tr>
 </table>

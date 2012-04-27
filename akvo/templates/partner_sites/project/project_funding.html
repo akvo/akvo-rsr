@@ -39,10 +39,10 @@
         </tr>
       {%  endfor %}
 
-      {% if project.budget_total %}
+      {% if project.budget %}
         <tr>
           <td class="small"><b>{% trans 'Total' %}:</b></td>
-          <td  class="small txt_right"><b>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</b></td>
+          <td  class="small txt_right"><b>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</b></td>
         </tr>
       {% else %}
         <tr>

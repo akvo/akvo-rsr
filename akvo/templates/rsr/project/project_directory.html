@@ -307,23 +307,23 @@
 					{# --- funding start --- #}
 					<div style="text-align:center;">
 						<p class="small" style="margin:0;">
-							{{project.get_currency_display|safe}} {{project.total_budget|round|intcomma}}
+							{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}
 						</p>
 					</div>
 					<div class="fundingbox-progress-bar" style="height:5px;">
-						{% if project.total_budget %}
-						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %}%">
+						{% if project.budget %}
+						<div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funds|add:1 project.budget 100 %}%">
 						</div>
 						{% endif %}
 					</div>
 					<div style="text-align:center;">
 						<p class="tiny grey" style="margin:0;">
               {# |add:1 truncates so we get truc(funding_total_given+1) #}
-							{% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %} %
+							{% widthratio_trunc project.funds|add:1 project.budget 100 %} %
 						</p>
 					</div>
 					<div style="text-align:center;">
-						{% if project.funding_still_needed|round == 0 %}
+						{% if project.funds_needed|round == 0 %}
 							<p class="green" style="font-weight:bold;">
 								{% trans 'Fully funded' %}
 							</p>

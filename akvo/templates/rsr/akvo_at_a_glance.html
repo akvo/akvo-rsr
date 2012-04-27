@@ -141,7 +141,7 @@
 							</th>
 						</tr>
 						<tr>
-							<td>{{projects.status_not_cancelled.status_not_archived.euros.count}} project{{projects.status_not_cancelled.status_not_archived.euros.count|pluralize:"s"}} in Euros</td>
+							<td>{{projects.status_not_cancelled.status_not_archived.euro_projects_count}} project{{projects.status_not_cancelled.status_not_archived.euro_projects_count|pluralize:"s"}} in Euros</td>
 						</tr>
 						<tr style="color:green;">
 							<td>{% trans 'Raised' %}</td>
@@ -151,9 +151,9 @@
 							<td style="padding-bottom:5px;">{% trans 'Still needed' %}</td>
 							<td style="text-align:right;">{{projects.euros.0.get_currency_display|safe}} {{projects.status_not_cancelled.status_not_archived.euros.total_funds_needed|round|intcomma}}</td>
 						</tr>
-						{% if projects.status_not_cancelled.status_not_archived.dollars.count %}
+						{% if projects.status_not_cancelled.status_not_archived.dollar_projects_count %}
 						<tr>
-							<td>{{projects.status_not_cancelled.status_not_archived.dollars.count}} project{{projects.status_not_cancelled.status_not_archived.dollars.count|pluralize:"s"}} in US Dollars</td>
+							<td>{{projects.status_not_cancelled.status_not_archived.dollar_projects_count}} project{{projects.status_not_cancelled.status_not_archived.dollar_projects_count|pluralize:"s"}} in US Dollars</td>
 						</tr>
 						<tr style="color:green;">
 							<td>{% trans 'Raised' %}</td>

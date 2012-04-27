@@ -80,9 +80,9 @@
 					<th scope="col" id="partnerColumnHeader" class="tableHeaderCell">
 						{% trans 'Partners' %}
 					</th>
-					<th scope="col" id="fundingColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'total_budget' %}activeTableHeader{% endif %}{% if request_get.order_by = 'funds_needed' %}activeTableHeader{% endif %}">
-						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "total_budget" %}" target="_self" {% if request_get.order_by = 'funds_needed' %} style="font-weight:normal;" {%  endif %}>{% trans 'Total Budget' %}</a> <span style="font-weight: normal;">/</span><br /> 
-						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "funds_needed" %}" target="_self" {% if request_get.order_by = 'total_budget' %} style="font-weight:normal;" {% endif %}>{% trans 'Funding Needed' %}</a><br />
+					<th scope="col" id="fundingColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'budget' %}activeTableHeader{% endif %}{% if request_get.order_by = 'funds_needed' %}activeTableHeader{% endif %}">
+						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "budget" %}" target="_self" {% if request_get.order_by = 'funds_needed' %} style="font-weight:normal;" {%  endif %}>{% trans 'Total Budget' %}</a> <span style="font-weight: normal;">/</span><br />
+						<a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "funds_needed" %}" target="_self" {% if request_get.order_by = 'budget' %} style="font-weight:normal;" {% endif %}>{% trans 'Funding Needed' %}</a><br />
 					</th>
 				</tr>
 		</table>
