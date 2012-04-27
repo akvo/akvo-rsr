@@ -9,7 +9,6 @@ from decimal import Decimal
 from textwrap import dedent
 
 import logging
-
 logger = logging.getLogger('akvo.rsr')
 
 import oembed

@@ -452,7 +452,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('currency', 'date_request_posted', 'date_complete', ),
         }),
         (_(u'Aggregates'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">%s</p>' % _('Aggregate financial data'),
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _('Aggregate financial data'),
             'fields': (('funds',  'funds_needed',), ),
         }),
         (_(u'Goals'), {
