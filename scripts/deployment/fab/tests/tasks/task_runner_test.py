@@ -13,7 +13,7 @@ from fab.config.loader import DeploymentConfigLoader
 from fab.config.rsr.credentials.user import UserCredentials
 from fab.config.rsr.host import CIDeploymentHostConfig, DataHostConfig
 from fab.config.spec import HostConfigSpecification
-from fab.config.values.host import HostAlias
+from fab.config.values.host import HostAlias, SSHConnection
 from fab.tasks.data.retrieval import FetchRSRData
 from fab.tasks.database.backup import BackupRSRDatabase
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
@@ -39,7 +39,6 @@ class TaskRunnerTest(mox.MoxTestBase):
         mock_config_file_verifier = self.mox.CreateMock(ConfigFileVerifier)
 
         mock_config_file_verifier.exit_if_custom_user_credentials_not_found()
-        mock_config_file_verifier.exit_if_database_credentials_not_found()
         self.mox.ReplayAll()
 
         self.assertIsInstance(TaskRunner.create(mock_config_file_verifier, self.mock_config_loader, self.mock_process_runner), TaskRunner)
@@ -82,14 +81,10 @@ class TaskRunnerTest(mox.MoxTestBase):
     def test_can_run_data_retrieval_task(self):
         """fab.tests.tasks.task_runner_test  Can run data retrieval task"""
 
-        data_host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.DATA)
-        data_host_config = DataHostConfig()
-
-        self.mock_config_loader.parse(data_host_config_spec).AndReturn(data_host_config)
-        self.mock_process_runner.execute(self._expected_fabric_call_with(FetchRSRData, None, data_host_config.ssh_connection))
+        self.mock_process_runner.execute(self._expected_fabric_call_with(FetchRSRData, None, SSHConnection.for_host(HostAlias.DATA)))
         self.mox.ReplayAll()
 
-        self.task_runner.run_data_retrieval_task(FetchRSRData, data_host_config_spec)
+        self.task_runner.run_data_retrieval_task(FetchRSRData, HostAlias.DATA)
 
     def test_will_raise_systemexit_if_task_execution_fails(self):
         """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
@@ -121,6 +116,7 @@ class TaskRunnerTest(mox.MoxTestBase):
                 self._expected_task_with_parameters(task_class, expected_parameter_list),
                 '-H', expected_ssh_connection,
                 '-i', self.user_credentials.ssh_id_file_path,
+                '-u', self.user_credentials.deployment_user,
                 '-p', self.user_credentials.sudo_password]
 
     def _expected_task_with_parameters(self, task_class, expected_parameter_list):

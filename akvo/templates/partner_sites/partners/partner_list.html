@@ -22,11 +22,7 @@
     {% autosort partner_list as sorted_partner_list %}
     {% autopaginate partner_list 10 %} 
     <div class="table_top">
-      {% blocktrans count sorted_partner_list.count as partner_count %}
-        {{ partner_count }} partner
-      {% plural %}
-        {{ partner_count }} partners
-      {% endblocktrans %}
+      {% blocktrans count sorted_partner_list.count as partner_count %}{{ partner_count }} partner{% plural %}{{ partner_count }} partners{% endblocktrans %}
       {% paginate %}
     </div>
     <table id="partners" class="marg_bottom0 full_width white_back">
@@ -35,10 +31,6 @@
         <th class="normal">{% anchor organisation_type Type %}</th>
         <th class="normal">{% trans "Location" %}</th>
         <th class="normal">{% trans "Projects" %}</th>
-        {% comment %}
-        <th class="normal">{% anchor locations__country Location %}</th>
-        <th class="normal">{% anchor number_of_projects Projects %}</th>
-        {% endcomment %}
       </tr>
       {% for partner in partner_list %}
         <tr>
@@ -57,9 +49,7 @@
           <td class="small no_right_border{% if forloop.last %} no_bottom_border{% endif %}">
             {% if partner.published_projects.count %}
                 {{partner.published_projects.count}}
-                {% blocktrans count partner.published_projects.count as projects_count %}
-                  project{% plural %}projects 
-                {% endblocktrans %}
+                {% blocktrans count partner.published_projects.count as projects_count %}project{% plural %}projects{% endblocktrans %}
             {% else %}
               {% trans 'No projects' %}
             {% endif %}
@@ -68,11 +58,7 @@
       {% endfor %}
     </table>
     <div class="table_bottom">
-      {% blocktrans count sorted_partner_list.count as partner_count %}
-        {{ partner_count }} partner
-      {% plural %}
-        {{ partner_count }} partners
-      {% endblocktrans %}
+      {% blocktrans count sorted_partner_list.count as partner_count %}{{ partner_count }} partner{% plural %}{{ partner_count }} partners{% endblocktrans %}
       {% paginate %}
     </div>
   </div>

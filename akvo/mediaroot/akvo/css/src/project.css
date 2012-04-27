@@ -82,3 +82,8 @@ div#gallery_box_slider {
 	float:left;
 	margin:5px;
 	}
+
+#benchmarks {
+    height:120px;
+    overflow:hidden;
+  }

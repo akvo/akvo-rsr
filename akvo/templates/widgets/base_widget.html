@@ -1,6 +1,5 @@
 {% load i18n rsr_tags counter_tags humanize cache %}
 
-
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
@@ -31,7 +30,9 @@
 		</div>
 		<div id="content">
 		{% block content %}
-			<p style="margin:10px;"><a href="http://www.akvo.org">Akvo</a> is like a Wikipedia, eBay and YouTube for water and sanitation projects, rolled into one.</p>
+			<p style="margin:10px;">
+				{% blocktrans %}<a href='http://www.akvo.org'>Akvo</a> is like a Wikipedia, eBay and YouTube for water and sanitation projects, rolled into one.{% endblocktrans %}
+			</p>
 		{% endblock content %}
 		</div>
 		<div id="footer">

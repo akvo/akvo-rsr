@@ -6,7 +6,11 @@
 {% block title %}{{organisation.name}}{% endblock title %}
 
 {% block head %}
-  <link rel="alternate" type="application/rss+xml" title="{% trans 'Project updates for projects partnered by {{organisation.name}}' %}" id="gallery" href="{%  url 'rss_org_updates' organisation.id %}">
+  <link
+    rel="alternate" type="application/rss+xml"
+    title="{% blocktrans with org_name=organisation.name%}Project updates for projects partnered by {{org_name}}{% endblocktrans %}
+    id="gallery" href="{% url 'rss_org_updates' organisation.id %}"
+  >
 {% endblock head %}
 
 {% block breadcrum_items %}

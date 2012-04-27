@@ -34,7 +34,6 @@
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 			
-			
             {% if projects %}
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({

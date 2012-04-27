@@ -127,22 +127,6 @@
                 &nbsp;
               {% endif %}
             </span>
-
-          {% comment %}
-          {% if form.video.errors %}
-          {# if 0 #}
-              <p class="small red marg_bottom0 marg_top0">
-                <span class="red small">{{form.video.errors.0}}</span>
-              </p>
-          {% else %}
-             <p class="small grey marg_bottom0 marg_top0">
-              <span id="video_tips" class="">
-                {# trans "Supported providers: Blip, Vimeo, YouTube" #} &nbsp;
-              </span>
-              &nbsp;
-            </p>
-          {% endif %}
-          {% endcomment %}
         </div>
         <div id="video_meta" style="{% if not form.video.errors and not form.video_caption.errors and not form.video_credit.errors and not form.video_credit.value and not form.video_caption.value %}display:none;{% endif %}">
           <div class="clearfix">

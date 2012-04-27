@@ -8,6 +8,7 @@
 import os, subprocess, sys
 
 from fab.config.loader import ConfigType, DeploymentConfigLoader
+from fab.config.values.host import SSHConnection
 from fab.tasks.parameters import TaskParameters
 from fab.verifiers.config import ConfigFileVerifier
 
@@ -30,7 +31,6 @@ class TaskRunner(object):
     @staticmethod
     def create(config_file_verifier=ConfigFileVerifier(), config_loader=DeploymentConfigLoader(), process_runner=ProcessRunner()):
         config_file_verifier.exit_if_custom_user_credentials_not_found()
-        config_file_verifier.exit_if_database_credentials_not_found()
 
         from fab.config.rsr.credentials.custom import CustomUserCredentials
 
@@ -44,8 +44,8 @@ class TaskRunner(object):
         task_parameters = TaskParameters().compose_from(host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
         self._run_task(task_class, task_parameters, self.config_loader.parse(host_config_specification).ssh_connection)
 
-    def run_data_retrieval_task(self, task_class, host_config_specification):
-        self._run_task(task_class, None, self.config_loader.parse(host_config_specification).ssh_connection)
+    def run_data_retrieval_task(self, task_class, host_alias):
+        self._run_task(task_class, None, SSHConnection.for_host(host_alias))
 
     def _run_task(self, task_class, task_parameters, ssh_connection):
         self._run_fabric_script(self._task_with_parameters(task_class, task_parameters), ssh_connection)
@@ -56,6 +56,7 @@ class TaskRunner(object):
                                          task_with_parameters,
                                          '-H', ssh_connection,
                                          '-i', self.user_credentials.ssh_id_file_path,
+                                         '-u', self.user_credentials.deployment_user,
                                          '-p', self.user_credentials.sudo_password])
         except Exception:
             raise SystemExit('\n>> Deployment failed due to errors above.\n')
