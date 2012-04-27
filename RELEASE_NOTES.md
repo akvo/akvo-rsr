@@ -11,6 +11,15 @@ Akvo RSR ver 2.0.5 release notes
 ----
 19 April 2012, (Code name: Fennel) pb
 
+Overview
+----
+This release addresses a problem whereby certain project fields were not being constrained in length consistently. Django >= 1.4 is now a requirement of Akvo RSR and, as such, several parts of the system have been upgraded to support it.
+
+New features & changes
+----
+### Improved help text
+[PT story 25606657](https://www.pivotaltracker.com/story/show/25606657) Some fields in the admin interface that constrain input to a maximum number of characters did not have help text alerting the user to this limit. This has been remedied.
+
 
 Akvo RSR ver 2.0.4 release notes
 ----
