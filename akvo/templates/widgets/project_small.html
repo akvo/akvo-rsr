@@ -53,7 +53,7 @@
 		</div>
 		<div id="content">
 			<div id="heightconstrain">
-				<h2 id="project_title" style="margin-top:5px;"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+				<h2 id="project_title" style="margin-top:5px;"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:35}}</a></h2>
                 <div class="photo_frame">
                     <a href="{% url 'project_main' project.id %}">
                         {% project_thumb project 150 113 %}
