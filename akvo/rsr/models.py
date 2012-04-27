@@ -1084,6 +1084,7 @@ class BudgetItem(models.Model):
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
+    # Translators: This is the amount of an budget item in a currancy (€ or $)
     amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
@@ -2020,10 +2021,9 @@ class PartnerSite(models.Model):
         '''))
     )
     about_image = models.ImageField(_(u'about box image'), blank=True, upload_to=about_image_path,
-        help_text=_(
-            u'<p>The background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall. '
-            u'It is however optional.</p>'
-        )
+        help_text=_(u'''<p>The optional background image for the About box
+            <em>must</em> be 470 pixels wide and 250 pixels tall.</p>
+        ''')
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)

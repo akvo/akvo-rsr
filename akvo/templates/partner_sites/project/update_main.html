@@ -52,10 +52,14 @@
       	  <div class="noticebutton">
       		  <a class="aqua awesome" style="color:#fff;" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
       		</div>
-      		<p class="nano-lede grey">{% trans "Find a typo? :)" %}</p>
       		<p class="nano-lede grey">
-						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expired }}, at which time it will become locked and final.{% endblocktrans %}
-					</p>
+				{% comment %}Translators: When you just have added an update you have a window of time to edit it {% endcomment %}
+				{% trans "Found a typo?" %}
+			</p>
+      		<p class="nano-lede grey">
+				{% comment %}Translators: When you have added a new update. You posted this on "date". You can edit this update until "time", at which... {% endcomment %}
+				{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expired }}; at which time it will become locked and final.{% endblocktrans %}
+			</p>
       	</div>
     	{% endif %}
     
