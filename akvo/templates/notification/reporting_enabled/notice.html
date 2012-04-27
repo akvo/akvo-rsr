@@ -1,7 +1,7 @@
 {% load i18n %}
-{% blocktrans with project.pk as project_pk and project.name as project_name %}
+{% blocktrans with project.pk as project_pk and project.title as project_title %}
 <p>Your mobile number, {{phone_number}}, is now enabled to send SMS updates to
-project {{project_pk}} - {{project_name}}.</p>
+project {{project_pk}} - {{project_title}}.</p>
 
 <p>Make sure that you send reports to this number: {{gw_number}}. You should have
 received several SMSs from Akvo with that number but it has not been explicitly
