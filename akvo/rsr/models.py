@@ -1785,8 +1785,8 @@ class ProjectComment(models.Model):
     time = models.DateTimeField(_(u'time'))
 
     class Meta:
-        verbose_name = u'project comment'
-        verbose_name_plural = u'project commens'
+        verbose_name = _(u'project comment')
+        verbose_name_plural = _(u'project comments')
         ordering = ('-id',)
 
 
