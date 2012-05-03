@@ -103,18 +103,50 @@
 		</div>
 	</div>
 	<div id="main_container" class="container">
-		{% block breadcrum  %}
-			<div class="span-18" style="margin-bottom:20px;">
-				<div id="breadcrum_back">
-					<ul id="breadcrum">
-						{% block breadcrum_items %}
-						<li><a href="/"><span>Home</span></a></li>
-						{% endblock breadcrum_items %}
-					</ul>
-					<div class="clear"></div>
-				</div>
-			</div>
-		{% endblock breadcrum %}
+      {% block breadcrum %}
+        <div class="span-18" style="margin-bottom:20px;">
+          <div class="span-14">
+            <div id="breadcrum_back">
+            <ul id="breadcrum">
+              {% block breadcrum_items %}
+              <li><a href="/"><span>Home</span></a></li>
+              {% endblock breadcrum_items %}
+            </ul>
+            <div class="clear"></div>
+          </div>
+        </div>
+        
+        <div class="span-4 last" style="margin-bottom:20px; text-align:right">
+          <form action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+            <select name="language" class="span-4 last" style="margin-top:3px">
+              {% for lang in LANGUAGES %}
+                <option value="{{ lang.0 }}" {% ifequal lang.0 request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+                    {{ lang.1 }}
+                </option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Go" />
+          </form>
+        </div>
+          </div>
+      {% endblock breadcrum %}
+    
+    {% comment %}
+      
+      {% block breadcrum  %}
+        <div class="span-18" style="margin-bottom:20px;">
+          <div id="breadcrum_back">
+            <ul id="breadcrum">
+              {% block breadcrum_items %}
+              <li><a href="/"><span>Home</span></a></li>
+              {% endblock breadcrum_items %}
+            </ul>
+            <div class="clear"></div>
+          </div>
+        </div>
+      {% endblock breadcrum %}
+    {% endcomment %}
 		
 		{% block maincontent %}
 			<h1>Akvo RSR</h1>
