@@ -1726,8 +1726,10 @@ class ProjectUpdate(models.Model):
                 pass
         return url
 
-    def get_video_oembed(self, height=435, html='', width=580):
-        "Render OEmbed HTML for the given video URL."
+    def get_video_oembed(self, html=''):
+        """Render OEmbed HTML for the given video URL.
+        This is to workaround a but between Django 1.4 and djangoembed template tags.
+        A full solution is required."""
         if self.video:
             try:
                 data = oembed.site.embed(self.video).get_data()
