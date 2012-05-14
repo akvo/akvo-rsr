@@ -64,7 +64,9 @@
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
         {# {{ update.video|oembed:"580x435" }} #}
-        {{ update.get_video_oembed }} 
+        <div style="width:580px; max-width:580px; overflow:scroll">
+          {{ update.get_video_oembed }}
+        </div>
       </div>
 {% if update.video_caption or update.video_credit %}
 <p class="small lightx1">
