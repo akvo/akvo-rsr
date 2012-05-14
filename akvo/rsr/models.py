@@ -1727,6 +1727,16 @@ class ProjectUpdate(models.Model):
                 pass
         return url
 
+    def get_video_oembed(self, height=435, html='', width=580):
+        "Render OEmbed HTML for the given video URL."
+        if self.video:
+            try:
+                data = oembed.site.embed(self.video).get_data()
+                html = data.get('html', '')
+            except:
+                pass
+        return mark_safe(html)
+
     def edit_window_has_expired(self):
         """Determine whether or not update timeout window has expired.
         The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and

@@ -63,9 +63,8 @@
     {% endif %}	
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
-        {% oembed 580x435 %}
-          {{ update.video }}
-        {% endoembed %}
+        {# {{ update.video|oembed:"580x435" }} #}
+        {{ update.get_video_oembed }} 
       </div>
 {% if update.video_caption or update.video_credit %}
 <p class="small lightx1">
