@@ -1720,8 +1720,7 @@ class ProjectUpdate(models.Model):
     def get_video_thumbnail_url(self, url=''):
         if self.video:
             try:
-                oembed_resource = oembed.site.embed(self.video)
-                data = oembed_resource.get_data()
+                data = oembed.site.embed(self.video).get_data()
                 url = data.get('thumbnail_url', '')
             except:
                 pass
