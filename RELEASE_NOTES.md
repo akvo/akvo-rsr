@@ -66,6 +66,12 @@ Improved the Add Update and Get a Widget UI components.
 Pivotal Tracker story:
 [26903241](https://www.pivotaltracker.com/story/show/26903241)
 
+### User permissions admin
+Improved the Admin UI for managing user permissions and groups and updated permissions for use with Django 1.4.
+
+Pivotal Tracker story:
+[28126391](https://www.pivotaltracker.com/story/show/28126391)
+
 Fixes
 ----
 ### Project updates
@@ -80,6 +86,18 @@ Replaced project goals overview in project admin.
 Pivotal Tracker stories:
 [28105979](https://www.pivotaltracker.com/story/show/28105979) and
 [28110191](https://www.pivotaltracker.com/story/show/28110191).
+
+### Partner sites
+Partner site project update edit form now retains previously entered data.
+
+Pivotal Tracker story:
+[23990641](https://www.pivotaltracker.com/story/show/23990641)
+
+### Akvo blog posts
+Corrected markup for blog posts so that they appear as expected on the Akvo home page.
+
+Pivotal Tracker story:
+[22517473](https://www.pivotaltracker.com/story/show/22517473)
 
 Non-functional changes
 ----
