@@ -36,8 +36,12 @@ class DeploymentTestsRunner(object):
                 ci_user_config_path = self._credentials_path_for(config_file_name.replace('.', '_ci.'))
                 shutil.copy2(ci_user_config_path, self._credentials_path_for(config_file_name))
             else:
-                raise SystemExit('## Missing credentials configuration file\n' + \
-                                 '>> Copy the %s file and edit as necessary' % self._credentials_path_for('%s.template' % config_file_name))
+                self._exit_with_missing_config_message(config_file_name)
+
+    def _exit_with_missing_config_message(self, config_file_name):
+        usage_message = 'Missing credentials configuration file' + \
+                        '\n## Copy the %s file and edit as necessary' % self._credentials_path_for('%s.template' % config_file_name)
+        self._exit_with(os.EX_USAGE, usage_message)
 
     def _credentials_path_for(self, credentials_file_name):
         return os.path.join(DEPLOYMENT_SCRIPTS_HOME, 'fab/config/rsr/credentials', credentials_file_name)
@@ -49,13 +53,18 @@ class DeploymentTestsRunner(object):
         exit_code = subprocess.call('source %s/bin/activate && %s' % (self.virtualenv_path, command), shell=True, executable='/bin/bash')
 
         if exit_code != 0:
-            raise SystemExit('\n## Deployment unit tests failed as above\n')
+            self._exit_with(exit_code, 'Deployment unit tests failed as above')
+
+    def _exit_with(self, error_code, error_message):
+        print '## %s\n' % error_message
+        raise SystemExit(error_code)
 
 
 def display_usage_and_exit(error_message):
     print error_message
-    raise SystemExit("Usage: run_deployment_unit_tests <virtualenv_path> [execution_mode]\n" + \
-                     "       where execution_mode is either 'normal' (default) or 'ci'\n")
+    print 'Usage: run_deployment_unit_tests <virtualenv_path> [execution_mode]\n' + \
+          '       where execution_mode is either \'normal\' (default) or \'ci\'\n'
+    sys.exit(os.EX_USAGE)
 
 def verify_execution_parameters():
     if len(sys.argv) < 2:
