@@ -29,7 +29,8 @@ Pivotal Tracker stories:
 In order to support custom goals within a project, a new Goal model has been created.
 
 Pivotal Tracker story:
-[27515615](https://www.pivotaltracker.com/story/show/27515615)
+[27515615](https://www.pivotaltracker.com/story/show/27515615) and
+[28809041](https://www.pivotaltracker.com/story/show/28809041)
 
 ### Project field constraints
 Due to a problem whereby certain project fields were not being consistently constrained, several changes have taken place under the hood to limit these fields going forward whilst maintaining support for the old data.
@@ -72,6 +73,12 @@ Improved the Admin UI for managing user permissions and groups and updated permi
 Pivotal Tracker story:
 [28126391](https://www.pivotaltracker.com/story/show/28126391)
 
+### Project admin
+Corrected project listing order subsequent to Django 1.4 upgrade.
+
+Pivotal Tracker story:
+[28107129](https://www.pivotaltracker.com/story/show/28107129)
+
 Fixes
 ----
 ### Project updates
@@ -81,17 +88,20 @@ Pivotal Tracker story:
 [26983111](https://www.pivotaltracker.com/story/show/26983111)
 
 ### RSR admin
-Replaced project goals overview in project admin.
+Replaced project goals overview in project admin.  Corrected project listing order subsequent to Django 1.4 upgrade.
 
 Pivotal Tracker stories:
-[28105979](https://www.pivotaltracker.com/story/show/28105979) and
-[28110191](https://www.pivotaltracker.com/story/show/28110191).
+[28105979](https://www.pivotaltracker.com/story/show/28105979),
+[28107129](https://www.pivotaltracker.com/story/show/28107129),
+[28110191](https://www.pivotaltracker.com/story/show/28110191) and
+[28874085](https://www.pivotaltracker.com/story/show/28874085)
 
 ### Partner sites
-Partner site project update edit form now retains previously entered data.
+Partner site project update edit form now retains previously entered data.  Budget line item text is now displayed as expected.
 
 Pivotal Tracker story:
-[23990641](https://www.pivotaltracker.com/story/show/23990641)
+[23990641](https://www.pivotaltracker.com/story/show/23990641) and
+[29684439](https://www.pivotaltracker.com/story/show/29684439)
 
 ### Akvo blog posts
 Corrected markup for blog posts so that they appear as expected on the Akvo home page.
@@ -118,7 +128,8 @@ Improvements were made to the RSR deployment process so that RSR instances can n
 Pivotal Tracker stories:
 [21406319](https://www.pivotaltracker.com/story/show/21406319),
 [23633289](https://www.pivotaltracker.com/story/show/23633289),
-[26763721](https://www.pivotaltracker.com/story/show/26763721)
+[26763721](https://www.pivotaltracker.com/story/show/26763721) and
+[29670447](https://www.pivotaltracker.com/story/show/29670447)
 
 Akvo RSR ver 2.0.4 release notes
 ----
