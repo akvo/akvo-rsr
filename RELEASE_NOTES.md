@@ -30,9 +30,18 @@ Initial preparation work has been done to support Dutch, French and Spanish loca
 
 ### Project field constraints
 
-Pivotal Tracker stories: [25606657](https://www.pivotaltracker.com/story/show/25606657)
+Due to a problem whereby certain project fields were not being consistently constrained, several changes have taken place under the hood to limit these fields going forward whilst maintaining support for the old data.
 
-### Partner site improvements behind the scenes
+More information about this problem can be found [here](http://www.akvo.org/blog/?p=5262).
+
+Pivotal Tracker stories: https://www.pivotaltracker.com/story/show/25606657, https://www.pivotaltracker.com/story/show/27251477
+
+### Project fields renamed
+To improve consistency between the Project PDF form and the Project sections of the Django admin interface, certain Project fields were renamed.
+
+Pivotal Tracker stories: https://www.pivotaltracker.com/story/show/27011303, https://www.pivotaltracker.com/story/show/27010245
+
+### Partner site routing middleware improvements
 It is now possible to configure in settings files which domain names the partner sites routing middleware will operate on. Previously this was hardcoded into the middleware. In addition to this, the routing middleware has been updated to work togeter with the Django Sites framework so as not to break third party applications which depend on the functionality of the Sites framework.
 
 Pivotal Tracker stories: [22953583](https://www.pivotaltracker.com/story/show/22953583) and [27234363](https://www.pivotaltracker.com/story/show/27234363)
