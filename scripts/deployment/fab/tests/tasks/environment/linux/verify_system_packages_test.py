@@ -10,7 +10,7 @@ import mox
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
-from fab.config.rsr.credentials.user import UserCredentials
+from fab.config.rsr.credentials.user import User
 from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.host.linux import LinuxHost
@@ -43,7 +43,7 @@ class VerifySystemPackagesTest(mox.MoxTestBase):
     def test_can_verify_expected_system_package_dependencies(self):
         """fab.tests.tasks.environment.linux.verify_system_packages_test  Can verify expected system package dependencies"""
 
-        self.mock_linux_host.ensure_user_has_required_deployment_permissions(UserCredentials.CURRENT_USER)
+        self.mock_linux_host.ensure_user_has_required_deployment_permissions(User.CURRENT)
         self.mock_linux_host.update_system_package_sources()
 
         for package_specifications in SystemPackageSpecifications.ALL_PACKAGES:

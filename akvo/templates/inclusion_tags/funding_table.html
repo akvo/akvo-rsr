@@ -7,7 +7,8 @@
 		<div style="padding:20px 0px; text-align:center;">
 			<div id="fundingbox_fully_funded">
 				<p style="margin:0;">
-					{% trans 'Raised' %}:&nbsp;{{project.get_currency_display|safe}}&nbsp;{{project.funding_total_given|round|intcomma}}
+					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
 				</p>
 			</div>
 			<p class="green" style="margin:0; padding:0;">

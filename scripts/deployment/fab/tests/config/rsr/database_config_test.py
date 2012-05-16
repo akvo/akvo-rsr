@@ -5,22 +5,19 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox, os
+import unittest2
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.tests.template.loader import TemplateLoader
 
 
-
-class RSRDatabaseConfigTest(mox.MoxTestBase):
+class RSRDatabaseConfigTest(unittest2.TestCase):
 
     def setUp(self):
         super(RSRDatabaseConfigTest, self).setUp()
-        self.database_credentials = DatabaseCredentials()
+        self.database_credentials = TemplateLoader.load_database_credentials()
 
         self.database_config = RSRDatabaseConfig(self.database_credentials, 'some_rsrdb')
 

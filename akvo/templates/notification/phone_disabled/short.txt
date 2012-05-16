@@ -1,2 +1,2 @@
 {% load i18n %}
-{% blocktrans with project.pk as project_pk and project.name as project_name %}Your mobile phone, {{phone_number}} has been disabled for SMS updating{% endblocktrans %}
+{% blocktrans with project.pk as project_pk and project.title as project_title %}Your mobile phone, {{phone_number}} has been disabled for SMS updating{% endblocktrans %}

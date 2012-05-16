@@ -34,7 +34,6 @@
 
 	        var map = new google.maps.Map(mapCanvas, mapOptions);
 			
-			
             {% if projects %}
 	        {% for project in projects %}
 	            var project_{{ project.id }}_marker = new google.maps.Marker({
@@ -51,7 +50,7 @@
                 {% if map_type != 'static' %}
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
 	                '<a href="' + project_{{ project.id }}_url + '">' +
-                    '{{ project.name|smart_truncate:35}}</a><br>' +
+                    '{{ project.title|smart_truncate:35}}</a><br>' +
                     '<a href="' + project_{{ project.id }}_url + '">' +
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +

@@ -82,11 +82,7 @@
     <div class="clear"></div>
 		<h1 class="h0">
 			{{sorted_projects.count}}
-      {% blocktrans count sorted_projects.count as project_count %}
-        project
-      {% plural %}
-        projects
-      {% endblocktrans %}
+      {% blocktrans count sorted_projects.count as project_count %}project{% plural %}projects{% endblocktrans %}
 		</h1>
 
 		<form action="." method="get" accept-charset="utf-8" name="filter_form">
@@ -94,7 +90,7 @@
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
 
-            {{ filter.form.name }}
+            {{ filter.form.title }}
             {{ filter.form.continent }}
             {{ filter.form.locations__country }}
             {{ filter.form.organisation }}
@@ -109,7 +105,7 @@
 
 						<div id="q_help" style="padding-left:25px; margin-top:10px;">
 							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">
-								{% trans 'Filter on project name or subtitle' %}
+								{% trans 'Filter on project title or subtitle' %}
 							</p>
 						</div>
 					</div>
@@ -221,7 +217,7 @@
 {##}
 {#						<div id="q_help" style="padding-left:25px; margin-top:10px;">#}
 {#							<p class="tiny grey" style="margin-bottom:0; padding-bottom:0;">#}
-{#								{% trans 'Filter on project name or subtitle' %}#}
+{#								{% trans 'Filter on project.title or subtitle' %}#}
 {#							</p>#}
 {#						</div>#}
 {#					</div>#}
@@ -234,11 +230,11 @@
       <div class="white_box">
         {% paginate %}
         <table id="projects">
-          <colgroup class="name_col"></colgroup>
+          <colgroup class="title_col"></colgroup>
           <colgroup span="6" class="colgroup"></colgroup>
           <tr>
             <th>
-              {% anchor name Name %}
+              {% anchor title Title %}
             </th>
             <th>{% anchor locations__country__name Location %}</th>
             <th>
@@ -264,7 +260,7 @@
                   <a href="{% url 'project_main' project.id %}">
                     {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0;' %}
                     <p class="link_blue strong" style="margin-bottom:0">
-                        {{project.name}}
+                        {{project.title}}
                     </p> 
                   </a>
                   <p class="tiny grey">

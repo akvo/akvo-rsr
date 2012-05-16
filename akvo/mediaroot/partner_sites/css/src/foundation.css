@@ -20,7 +20,9 @@ nav,
 section {
   display: block;
 }
-audio[controls], canvas, video {
+audio[controls],
+canvas,
+video {
   display: inline-block;
   *display: inline;
   *zoom: 1;
@@ -76,7 +78,8 @@ a:focus {
   outline: thin dotted;
 }
 /* Improve readability when focused and hovered in all browsers: people.opera.com/patrickl/experiments/keyboard/test */
-a:hover, a:active {
+a:hover,
+a:active {
   outline: 0;
 }
 /* =============================================================================
@@ -85,7 +88,8 @@ a:hover, a:active {
 abbr[title] {
   border-bottom: 1px dotted;
 }
-b, strong {
+b,
+strong {
   font-weight: bold;
 }
 blockquote {
@@ -131,7 +135,8 @@ pre {
 q {
   quotes: none;
 }
-q:before, q:after {
+q:before,
+q:after {
   content: "";
   content: none;
 }
@@ -139,7 +144,8 @@ small {
   font-size: 85%;
 }
 /* Position subscript and superscript content without affecting line-height: gist.github.com/413930 */
-sub, sup {
+sub,
+sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
@@ -154,14 +160,16 @@ sub {
 /* =============================================================================
    Lists
    ========================================================================== */
-ul, ol {
+ul,
+ol {
   margin: 1em 0;
   padding: 0 0 0 40px;
 }
 dd {
   margin: 0 0 0 40px;
 }
-nav ul, nav ol {
+nav ul,
+nav ol {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -231,7 +239,8 @@ textarea {
  * 1. Define line-height as normal to match FF3/4 (set using !important in the UA stylesheet)
  * 2. Correct inner spacing displayed oddly in IE6/7
  */
-button, input {
+button,
+input {
   line-height: normal;
   *overflow: visible;
 }
@@ -249,7 +258,8 @@ input[type="submit"] {
 /*
  * Consistent box sizing and appearance
  */
-input[type="checkbox"], input[type="radio"] {
+input[type="checkbox"],
+input[type="radio"] {
   box-sizing: border-box;
 }
 input[type="search"] {
@@ -261,7 +271,8 @@ input[type="search"] {
  * Remove inner padding and border in FF3/4
  * www.sitepen.com/blog/2008/05/14/the-devils-in-the-details-fixing-dojos-toolbar-buttons/ 
  */
-button::-moz-focus-inner, input::-moz-focus-inner {
+button::-moz-focus-inner,
+input::-moz-focus-inner {
   border: 0;
   padding: 0;
 }
@@ -271,7 +282,8 @@ textarea {
   vertical-align: top;
 }
 /* Colors for form validity */
-input:invalid, textarea:invalid {
+input:invalid,
+textarea:invalid {
   background-color: #f0dddd;
 }
 /* =============================================================================
@@ -320,7 +332,8 @@ table {
   width: 1px;
 }
 /* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: drupal.org/node/897638 */
-.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
   clip: auto;
   height: auto;
   margin: 0;
@@ -332,7 +345,8 @@ table {
 .invisible {
   visibility: hidden;
 }
-/* Contain floats: nicolasgallagher.com/micro-clearfix-hack/ */.clearfix:before, .clearfix:after {
+/* Contain floats: nicolasgallagher.com/micro-clearfix-hack/ */.clearfix:before,
+.clearfix:after {
   content: "";
   display: table;
 }
@@ -358,7 +372,8 @@ table {
     -ms-filter: none !important;
   }
   /* Black prints faster: sanbeiji.com/archives/953 */
-  a, a:visited {
+  a,
+  a:visited {
     color: #444 !important;
     text-decoration: underline;
   }
@@ -368,11 +383,14 @@ table {
   abbr[title]:after {
     content: " (" attr(title) ")";
   }
-  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
     content: "";
   }
   /* Don't show links for images, or javascript/internal links */
-  pre, blockquote {
+  pre,
+  blockquote {
     border: 1px solid #999;
     page-break-inside: avoid;
   }
@@ -380,7 +398,8 @@ table {
     display: table-header-group;
   }
   /* css-discuss.incutio.com/wiki/Printing_Tables */
-  tr, img {
+  tr,
+  img {
     page-break-inside: avoid;
   }
   img {
@@ -389,11 +408,14 @@ table {
   @page  {
     margin: 0.5cm;
   }
-  p, h2, h3 {
+  p,
+  h2,
+  h3 {
     orphans: 3;
     widows: 3;
   }
-  h2, h3 {
+  h2,
+  h3 {
     page-break-after: avoid;
   }
 }

@@ -58,7 +58,7 @@
 
 {% block content %}
 <div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:33}}</a></h2>
+		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:33}}</a></h2>
 		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:40}}</p>	
         <div class="photo_frame">
             <a href="{% url 'project_main' project.id %}">
@@ -97,10 +97,5 @@
 		
 		<p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">{% trans 'Akvo ref' %}: {{project.id}}</p>
 		
-		{% comment %}
-		<div id="name" style="clear:both; height:1px; overflow:hidden;"> </div>
-		<p class="miniFont lightgrey right" style="padding-right:9px;">{% trans 'Akvo Ref' %}: {{project.id}}</p>
-		<div id="name" style="clear:both; height:7px; overflow:hidden;"> </div>
-		{% endcomment %}
 </div>
 {% endblock content %}

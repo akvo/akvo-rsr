@@ -813,7 +813,7 @@ class MobileNumberForm(forms.Form):
         """
         cd = self.cleaned_data
         if not 'phone_number' in cd:
-            raise forms.ValidationError(_(u'Field phone_number missing from MobileForm.'))        
+            raise forms.ValidationError(u'Field phone_number missing from MobileForm.')
         if cd['phone_number']:
             if self.has_changed():
                 try:
@@ -1153,21 +1153,21 @@ def project_list_widget(request, template='project-list', org_id=0):
 
     else:
         p = Project.objects.published().status_not_archived().status_not_cancelled().funding()
-    order_by = request.GET.get('order_by', 'name')
+    order_by = request.GET.get('order_by', 'title')
     #p = p.annotate(last_update=Max('project_updates__time'))
     p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
     if order_by == 'country__continent':		
-        p = p.order_by(order_by, 'country__name','name')
+        p = p.order_by(order_by, 'primary_location__country__name','title')
     #elif order_by == 'country__name':
     #    p = p.order_by(order_by,'name')
     #elif order_by == 'status':
     #    p = p.order_by(order_by,'name')
     elif order_by == 'last_update':
-        p = p.order_by('-last_update', 'name')
+        p = p.order_by('-last_update', 'title')
     elif order_by in ['total_budget', 'funds_needed']:
-        p = p.extra(order_by = ['-%s' % order_by, 'name'])
+        p = p.extra(order_by = ['-%s' % order_by, 'title'])
     else:
-        p = p.order_by(order_by, 'name')
+        p = p.order_by(order_by, 'title')
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
             'bgcolor': bgcolor, 

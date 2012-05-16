@@ -5,24 +5,22 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, mox
+import mox
 import fabric.api
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
-import fab.tests.templates.database_credentials_template
-from database_credentials import DatabaseCredentials
-
 from fab.database.mysql.commandexecution import DatabaseCopier
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
+from fab.tests.template.loader import TemplateLoader
 
 
 class DatabaseCopierTest(mox.MoxTestBase):
 
     def setUp(self):
         super(DatabaseCopierTest, self).setUp()
-        database_credentials = DatabaseCredentials()
+        database_credentials = TemplateLoader.load_database_credentials()
         self.expected_admin_credentials = "--user='%s' --password='%s'" % (database_credentials.admin_user, database_credentials.admin_password)
 
         self.mock_feedback = self.mox.CreateMock(ExecutionFeedback)

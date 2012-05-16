@@ -1,5 +1,5 @@
 {% load i18n %}
-{% blocktrans with project.pk as project_pk and project.name as project_name and update.text|slice:":25" as update_intro and update.get_absolute_url as update_url %}
-Update received to project {{project_pk}} - {{project_name}},
+{% blocktrans with project.pk as project_pk and project.title as project_title and update.text|slice:":25" as update_intro and update.get_absolute_url as update_url %}
+Update received to project {{project_pk}} - {{project_title}},
 beginning with the text "{{update_intro}}". Direct link: http://{{domain}}{{update_url}}
 {% endblocktrans %}

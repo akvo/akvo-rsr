@@ -10,11 +10,10 @@ import imp, os, sys
 VERIFIERS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../verifiers'))
 imp.load_source("syspath_verification", os.path.join(VERIFIERS_HOME, 'ensure_syspath_contains_deployment_scripts_home.py'))
 
-from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 from fab.tasks.data.retrieval import FetchRSRData
 from fab.tasks.runner import TaskRunner
 
 
 if __name__ == '__main__':
-    TaskRunner.create().run_data_retrieval_task(FetchRSRData, HostConfigSpecification().create_preconfigured_with(HostAlias.DATA))
+    TaskRunner.create().run_data_retrieval_task(FetchRSRData, HostAlias.DATA)

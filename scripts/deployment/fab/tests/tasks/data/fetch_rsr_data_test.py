@@ -9,29 +9,30 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
+from fab.config.rsr.credentials.reader import CredentialsFileReader
+from fab.host.controller import RemoteHostController
 from fab.host.dataretrieval import DataRetrievalHost
 from fab.tasks.data.retrieval import FetchRSRData
-from fab.verifiers.config import ConfigFileVerifier
 
 
 class StubbedFetchRSRData(FetchRSRData):
 
-    def __init__(self, config_file_verifier, fake_data_retrieval_host):
-        super(StubbedFetchRSRData, self).__init__(config_file_verifier)
-        self.fake_data_retrieval_host = fake_data_retrieval_host
+    def __init__(self, host_controller, data_retrieval_host):
+        super(StubbedFetchRSRData, self).__init__(host_controller)
+        self.data_retrieval_host = data_retrieval_host
 
     def _configure_data_retrieval_host(self):
-        return self.fake_data_retrieval_host
+        return self.data_retrieval_host
 
 
 class FetchRSRDataTest(mox.MoxTestBase):
 
     def setUp(self):
         super(FetchRSRDataTest, self).setUp()
-        self.mock_config_file_verifier = self.mox.CreateMock(ConfigFileVerifier)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
         self.mock_data_retrieval_host = self.mox.CreateMock(DataRetrievalHost)
 
-        self.fetch_rsr_data_task = StubbedFetchRSRData(self.mock_config_file_verifier, self.mock_data_retrieval_host)
+        self.fetch_rsr_data_task = StubbedFetchRSRData(self.mock_host_controller, self.mock_data_retrieval_host)
 
     def test_has_expected_task_name(self):
         """fab.tests.tasks.data.fetch_rsr_data_test  Has expected task name"""
@@ -41,12 +42,13 @@ class FetchRSRDataTest(mox.MoxTestBase):
     def test_can_create_task_instance(self):
         """fab.tests.tasks.data.fetch_rsr_data_test  Can create task instance"""
 
-        self.assertIsInstance(FetchRSRData(), FetchRSRData)
+        mock_host_controller = self.mox.CreateMock(RemoteHostController)
+
+        self.assertIsInstance(FetchRSRData(mock_host_controller), FetchRSRData)
 
     def test_can_fetch_data_from_data_host(self):
         """fab.tests.tasks.data.fetch_rsr_data_test  Can fetch RSR data from the data host"""
 
-        self.mock_config_file_verifier.exit_if_database_credentials_not_found()
         self.mock_data_retrieval_host.fetch_latest_data()
         self.mox.ReplayAll()
 

@@ -3,10 +3,10 @@
 {% load url from future %}
 
 
-{% block title %}{% trans 'Donate to' %} {{project.name}}{% endblock title %}
+{% block title %}{% trans 'Donate to' %} {{project.title}}{% endblock title %}
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
-<li><a href="{% url 'project_main' project.id %}"><span>{{project.name}}</span></a></li>
+  <li><a href="{% url 'project_list' 'all' %}"><span>{% trans 'Projects' %}</span></a></li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project.title}}</span></a></li>
 {% endblock breadcrum_items %}

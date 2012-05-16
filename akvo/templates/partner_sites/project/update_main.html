@@ -23,9 +23,7 @@
       <p class="grey small">
         {{ update.time|date:"d-M-Y" }},
         {%  url 'organisation_main' update.user.userprofile.organisation.id as user_org_url %}
-        {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.get_update_method_display as update_meth %}
-          by {{user_name}}, <a href="{{user_org_url}}">{{user_org}}</a>, via {{update_meth}}
-        {% endblocktrans %}
+        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
       </p>
     </div>
     {% counter_badge update %}
@@ -54,8 +52,10 @@
       	  <div class="noticebutton">
       		  <a class="aqua awesome" style="color:#fff;" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
       		</div>
-      		<p class="nano-lede grey">Find a typo?  :)</p>
-      		<p class="nano-lede grey">You posted this update at {{ update.time_gmt|date:"H:i T" }}. You can edit this update until {{ update.expires_at|date:"H:i T" }}, at which time it will become locked and final.</p>
+      		<p class="nano-lede grey">{% trans "Find a typo? :)" %}</p>
+      		<p class="nano-lede grey">
+						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expires }}, at which time it will become locked and final.{% endblocktrans %}
+					</p>
       	</div>
     	{% endif %}
     
@@ -67,7 +67,10 @@
     {% endif %}	
     {% if update.video %}
       <div class="marg20">
-        {{update.video|oembed:"580x435"}}
+        <div style="width:580px; max-width:580px; overflow:scroll">
+          {# {{update.video|oembed:"580x435"}} #}
+          {{ update.get_video_oembed }}
+        </div>
       </div>
       {% if update.video_caption or update.video_credit %}
         <p class="grey small">
