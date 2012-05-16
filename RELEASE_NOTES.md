@@ -1,4 +1,4 @@
-Last changed: 15 May 2012, pb
+Last changed: 16 May 2012, pb, ogl
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -9,7 +9,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.0.5 release notes
 ----
-15 May 2012, (Code name: Fennel) pb
+15 May 2012, (Code name: Fennel) pb, ogl
 
 Overview
 ----
@@ -20,13 +20,27 @@ New features & changes
 ### Upgrade to Django 1.4
 The latest version of Django contains several backwards incompatible changes across the framework. Release 2.0.5 of Akvo RSR has been updated to support Django 1.4. In addition, some third-party Django apps also had to be patched or upgraded to support the upgrade to Django 1.4.
 
-Pivotal Tracker stories: https://www.pivotaltracker.com/story/show/27833485, https://www.pivotaltracker.com/story/show/27835435, https://www.pivotaltracker.com/story/show/26809039, https://www.pivotaltracker.com/story/show/28673101
+Pivotal Tracker stories:
+[26809039](https://www.pivotaltracker.com/story/show/26809039),
+[27784115](https://www.pivotaltracker.com/story/show/27784115),
+[27833485](https://www.pivotaltracker.com/story/show/27833485),
+[27835435](https://www.pivotaltracker.com/story/show/27835435),
+[27893279](https://www.pivotaltracker.com/story/show/27893279) and
+[28673101](https://www.pivotaltracker.com/story/show/28673101)
 
 ### New translations
 Initial preparation work has been done to support Dutch, French and Spanish localisations.
 
+Pivotal Tracker stories:
+[25221481](https://www.pivotaltracker.com/story/show/25221481),
+[26502217](https://www.pivotaltracker.com/story/show/26502217) and
+[26786625](https://www.pivotaltracker.com/story/show/26786625)
+
 ### Project goals improvements
-[PT story 27515615](https://www.pivotaltracker.com/story/show/27515615) In order to support custom goals within a project, a new Goal model has been created.
+In order to support custom goals within a project, a new Goal model has been created.
+
+Pivotal Tracker story:
+[27515615](https://www.pivotaltracker.com/story/show/27515615)
 
 ### Project field constraints
 
@@ -34,17 +48,48 @@ Due to a problem whereby certain project fields were not being consistently cons
 
 More information about this problem can be found [here](http://www.akvo.org/blog/?p=5262).
 
-Pivotal Tracker stories: https://www.pivotaltracker.com/story/show/25606657, https://www.pivotaltracker.com/story/show/27251477
+Pivotal Tracker stories:
+[25606657](https://www.pivotaltracker.com/story/show/25606657) and
+[27251477](https://www.pivotaltracker.com/story/show/27251477)
 
 ### Project fields renamed
 To improve consistency between the Project PDF form and the Project sections of the Django admin interface, certain Project fields were renamed.
 
-Pivotal Tracker stories: https://www.pivotaltracker.com/story/show/27011303, https://www.pivotaltracker.com/story/show/27010245
+Pivotal Tracker stories:
+[27010245](https://www.pivotaltracker.com/story/show/27010245) and
+[27011303](https://www.pivotaltracker.com/story/show/27011303)
 
 ### Partner site routing middleware improvements
-It is now possible to configure in settings files which domain names the partner sites routing middleware will operate on. Previously this was hardcoded into the middleware. In addition to this, the routing middleware has been updated to work togeter with the Django Sites framework so as not to break third party applications which depend on the functionality of the Sites framework.
+It is now possible to configure in settings files which domain names the partner sites routing middleware will operate on. Previously this was hardcoded into the middleware. In addition to this, the routing middleware has been updated to work together with the Django Sites framework so as not to break third party applications which depend on the functionality of the Sites framework.
 
-Pivotal Tracker stories: [22953583](https://www.pivotaltracker.com/story/show/22953583) and [27234363](https://www.pivotaltracker.com/story/show/27234363)
+Pivotal Tracker stories:
+[22953583](https://www.pivotaltracker.com/story/show/22953583) and
+[27234363](https://www.pivotaltracker.com/story/show/27234363)
+
+Fixes
+----
+### Project updates
+The "Sign in to add update" textual hint now disappears as expected when a user is already signed in.
+
+Pivotal Tracker story:
+[26983111](https://www.pivotaltracker.com/story/show/26983111)
+
+### RSR admin
+Replaced project goals overview in project admin.
+
+Pivotal Tracker stories:
+[28105979](https://www.pivotaltracker.com/story/show/28105979) and
+[28110191](https://www.pivotaltracker.com/story/show/28110191).
+
+Deployment & infrastructure changes
+----
+### Deployment automation
+Improvements were made to the RSR deployment process so that RSR instances can now be deployed automatically for testing purposes.
+
+Pivotal Tracker stories:
+[21406319](https://www.pivotaltracker.com/story/show/21406319),
+[23633289](https://www.pivotaltracker.com/story/show/23633289),
+[26763721](https://www.pivotaltracker.com/story/show/26763721)
 
 Akvo RSR ver 2.0.4 release notes
 ----
