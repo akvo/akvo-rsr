@@ -29,6 +29,9 @@
       <h3>{% trans "Step 2: Select colours for your widget and preview" %}</h3>
       <div class="pad20 whitebox marg_bottom40">
         <h3>{% trans "A: Bottom coloured bar" %}</h3>
+        <div id="warning_color">
+						<p>{% trans 'A color you entered is not recognized. Please change and try again.' %}</p>
+        </div>
         <div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
           <p>
             <select name="backgroundcolor_pulldown" id="backgroundcolor_pulldown" size="1">
@@ -50,17 +53,17 @@
               <option value="000000">{% trans 'Black' %} (#000000)</option>
               <option value="x">{% trans 'Other...' %}</option>
             </select><br />
-            <span class="grey" style="display:block; margin-left:4px; padding-top:7px;">
+            <span class="grey small" style="display:block; margin-left:4px; padding-top:7px;">
             {% trans 'Select colour' %}
             </span>
           </p>
         </div>
         <div style="float:left; width:600px;">
           <div id="backgroundcolor_other_section" style="float:left; width:100%; display:none;">
-            <div style="float:left; width:200px;">
+            <div style="float:left; width:200px; padding-top:13px">
               <p style="margin:0; padding:0;">
                 <input type="text" name="bgcolor" value="B50000" id="backgroundcolor_text" size="10" /><br />
-                <span class="grey">{% trans 'Enter a hex number' %}.</span>
+                <span class="grey small">{% trans 'Enter a hex number' %}.</span>
               </p>
             </div>
             <div style="float:left; width:400px; padding-top:10px;">

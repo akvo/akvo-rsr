@@ -41,6 +41,7 @@
       <img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
     </a>
   </div>
+ 
 
   <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -53,12 +54,21 @@
     jQuery = window.jQuery.noConflict(true);
     jQuery(document).ready(function($) {
       var map_element = jQuery('#map');
-      map_element.gmap().bind('init', function() {
+      {% if state == "static" %}
+        var mapOptions = {
+          draggable: false,
+          disableDefaultUI: true
+        }    
+      {% else %}
+        var mapOptions = {}
+      {% endif %}
+
+      map_element.gmap(mapOptions).bind('init', function() {
           $.getJSON('{{app_url}}/api/beta/projects_cordinates.json?callback=?', function(data) {
               $.each(data.projects, function(i, project) {
                   map_element.gmap('addMarker', { 
                       'position': new google.maps.LatLng(project.latitude, project.longitude), 
-                      'bounds': true 
+                      'bounds': true,
                   }).click(function() {
                       map_element.gmap('openInfoWindow', { 'content': project.content }, this);
                   });
@@ -69,3 +79,12 @@
   </script>
 </body>
 </html>
+
+{% comment %}
+  
+{% if map_type == 'static' %}
+        draggable: false,
+        disableDefaultUI: true,
+      {% endif %}
+{% endcomment %}
+
