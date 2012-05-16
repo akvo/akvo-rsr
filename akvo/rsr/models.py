@@ -1819,12 +1819,23 @@ class ProjectUpdate(models.Model):
     def get_video_thumbnail_url(self, url=''):
         if self.video:
             try:
-                oembed_resource = oembed.site.embed(self.video)
-                data = oembed_resource.get_data()
+                data = oembed.site.embed(self.video).get_data()
                 url = data.get('thumbnail_url', '')
             except:
                 pass
         return url
+
+    def get_video_oembed(self, html=''):
+        """Render OEmbed HTML for the given video URL.
+        This is to workaround a but between Django 1.4 and djangoembed template tags.
+        A full solution is required."""
+        if self.video:
+            try:
+                data = oembed.site.embed(self.video).get_data()
+                html = data.get('html', '')
+            except:
+                pass
+        return mark_safe(html)
 
     def edit_window_has_expired(self):
         """Determine whether or not update timeout window has expired.
@@ -1884,8 +1895,8 @@ class ProjectComment(models.Model):
     time = models.DateTimeField(_(u'time'))
 
     class Meta:
-        verbose_name = u'project comment'
-        verbose_name_plural = u'project commens'
+        verbose_name = _(u'project comment')
+        verbose_name_plural = _(u'project comments')
         ordering = ('-id',)
 
 

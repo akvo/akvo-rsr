@@ -90,7 +90,7 @@
 				<div class="round" style="border: 1px solid #ccc;">
 					<div class="space15">
 
-            {{ filter.form.name }}
+            {{ filter.form.title }}
             {{ filter.form.continent }}
             {{ filter.form.locations__country }}
             {{ filter.form.organisation }}
@@ -230,11 +230,11 @@
       <div class="white_box">
         {% paginate %}
         <table id="projects">
-          <colgroup class="name_col"></colgroup>
+          <colgroup class="title_col"></colgroup>
           <colgroup span="6" class="colgroup"></colgroup>
           <tr>
             <th>
-              {% anchor name Name %}
+              {% anchor title Title %}
             </th>
             <th>{% anchor locations__country__name Location %}</th>
             <th>
