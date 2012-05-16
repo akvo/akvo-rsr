@@ -41,7 +41,7 @@
     <div class="greybox pad10 marg_bottom10">
       <form action="." method="get" accept-charset="utf-8" name="filter_form" class="marg_bottom0">
         <div class="marg0; pad0">
-          {{ filtered_projects.form.name }}
+          {{ filtered_projects.form.title }}
           {{ filtered_projects.form.continent }}
           {{ filtered_projects.form.locations__country }}
           {{ filtered_projects.form.organisation }}
@@ -88,7 +88,7 @@
 
     <table id="projects" class="marg_bottom0 full_width white_back">
       <tr>
-        <th class="normal">{% anchor name Name %}</th>
+        <th class="normal">{% anchor title Title %}</th>
         <th class="normal">{% trans "Location" %}</th>
         {#<th class="normal">{% anchor locations__country Location %}</th>#}
         <th class="normal">{% anchor status Status %}</th>
