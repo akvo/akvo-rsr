@@ -17,17 +17,6 @@ This release addresses a problem whereby certain project fields were not being c
 
 New features & changes
 ----
-### Upgrade to Django 1.4
-The latest version of Django contains several backwards incompatible changes across the framework. Release 2.0.5 of Akvo RSR has been updated to support Django 1.4. In addition, some third-party Django apps also had to be patched or upgraded to support the upgrade to Django 1.4.
-
-Pivotal Tracker stories:
-[26809039](https://www.pivotaltracker.com/story/show/26809039),
-[27784115](https://www.pivotaltracker.com/story/show/27784115),
-[27833485](https://www.pivotaltracker.com/story/show/27833485),
-[27835435](https://www.pivotaltracker.com/story/show/27835435),
-[27893279](https://www.pivotaltracker.com/story/show/27893279) and
-[28673101](https://www.pivotaltracker.com/story/show/28673101)
-
 ### New translations
 Initial preparation work has been done to support Dutch, French and Spanish localisations.
 
@@ -43,7 +32,6 @@ Pivotal Tracker story:
 [27515615](https://www.pivotaltracker.com/story/show/27515615)
 
 ### Project field constraints
-
 Due to a problem whereby certain project fields were not being consistently constrained, several changes have taken place under the hood to limit these fields going forward whilst maintaining support for the old data.
 
 More information about this problem can be found [here](http://www.akvo.org/blog/?p=5262).
@@ -59,12 +47,24 @@ Pivotal Tracker stories:
 [27010245](https://www.pivotaltracker.com/story/show/27010245) and
 [27011303](https://www.pivotaltracker.com/story/show/27011303)
 
+### Project details
+Improved the layout for project details summary.
+
+Pivotal Tracker story:
+[27008303](https://www.pivotaltracker.com/story/show/27008303)
+
 ### Partner site routing middleware improvements
 It is now possible to configure in settings files which domain names the partner sites routing middleware will operate on. Previously this was hardcoded into the middleware. In addition to this, the routing middleware has been updated to work together with the Django Sites framework so as not to break third party applications which depend on the functionality of the Sites framework.
 
 Pivotal Tracker stories:
 [22953583](https://www.pivotaltracker.com/story/show/22953583) and
 [27234363](https://www.pivotaltracker.com/story/show/27234363)
+
+### Partner site UI improvements
+Improved the Add Update and Get a Widget UI components.
+
+Pivotal Tracker story:
+[26903241](https://www.pivotaltracker.com/story/show/26903241)
 
 Fixes
 ----
@@ -81,8 +81,19 @@ Pivotal Tracker stories:
 [28105979](https://www.pivotaltracker.com/story/show/28105979) and
 [28110191](https://www.pivotaltracker.com/story/show/28110191).
 
-Deployment & infrastructure changes
+Non-functional changes
 ----
+### Upgrade to Django 1.4
+The latest version of Django contains several backwards incompatible changes across the framework. Release 2.0.5 of Akvo RSR has been updated to support Django 1.4. In addition, some third-party Django apps also had to be patched or upgraded to support the upgrade to Django 1.4.
+
+Pivotal Tracker stories:
+[26809039](https://www.pivotaltracker.com/story/show/26809039),
+[27784115](https://www.pivotaltracker.com/story/show/27784115),
+[27833485](https://www.pivotaltracker.com/story/show/27833485),
+[27835435](https://www.pivotaltracker.com/story/show/27835435),
+[27893279](https://www.pivotaltracker.com/story/show/27893279) and
+[28673101](https://www.pivotaltracker.com/story/show/28673101)
+
 ### Deployment automation
 Improvements were made to the RSR deployment process so that RSR instances can now be deployed automatically for testing purposes.
 
