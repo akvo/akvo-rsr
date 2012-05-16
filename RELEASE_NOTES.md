@@ -1,4 +1,4 @@
-Last changed: 19 April 2012, pb
+Last changed: 15 May 2012, pb
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -9,7 +9,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.0.5 release notes
 ----
-19 April 2012, (Code name: Fennel) pb
+15 May 2012, (Code name: Fennel) pb
 
 Overview
 ----
@@ -17,9 +17,25 @@ This release addresses a problem whereby certain project fields were not being c
 
 New features & changes
 ----
-### Improved help text
-[PT story 25606657](https://www.pivotaltracker.com/story/show/25606657) Some fields in the admin interface that constrain input to a maximum number of characters did not have help text alerting the user to this limit. This has been remedied.
+### Upgrade to Django 1.4
+The latest version of Django contains several backwards incompatible changes across the framework. Release 2.0.5 of Akvo RSR has been updated to support Django 1.4. In addition, some third-party Django apps also had to be patched or upgraded to support the upgrade to Django 1.4.
 
+Pivotal Tracker stories: https://www.pivotaltracker.com/story/show/27833485, https://www.pivotaltracker.com/story/show/27835435, https://www.pivotaltracker.com/story/show/26809039, https://www.pivotaltracker.com/story/show/28673101
+
+### New translations
+Initial preparation work has been done to support Dutch, French and Spanish localisations.
+
+### Project goals improvements
+[PT story 27515615](https://www.pivotaltracker.com/story/show/27515615) In order to support custom goals within a project, a new Goal model has been created.
+
+### Project field constraints
+
+Pivotal Tracker stories: [25606657](https://www.pivotaltracker.com/story/show/25606657)
+
+### Partner site improvements behind the scenes
+It is now possible to configure in settings files which domain names the partner sites routing middleware will operate on. Previously this was hardcoded into the middleware. In addition to this, the routing middleware has been updated to work togeter with the Django Sites framework so as not to break third party applications which depend on the functionality of the Sites framework.
+
+Pivotal Tracker stories: [22953583](https://www.pivotaltracker.com/story/show/22953583) and [27234363](https://www.pivotaltracker.com/story/show/27234363)
 
 Akvo RSR ver 2.0.4 release notes
 ----
