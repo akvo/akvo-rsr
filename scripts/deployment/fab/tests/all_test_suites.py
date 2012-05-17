@@ -48,4 +48,4 @@ if __name__ == '__main__':
     test_result = test_runner.run_test_suite(unit_test_suites())
 
     if not test_result.wasSuccessful():
-        raise SystemExit(len(test_result.failures))
+        raise SystemExit(len(test_result.failures) + len(test_result.errors))
