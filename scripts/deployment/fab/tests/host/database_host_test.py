@@ -10,6 +10,7 @@ import imp, mox, os
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.rsr.database import RSRDatabaseConfig
+from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.database.mysql.admin import DatabaseAdmin
 from fab.helpers.feedback import ExecutionFeedback
@@ -43,9 +44,12 @@ class DatabaseHostTest(mox.MoxTestBase):
         self.assertIsInstance(self._create_database_host_instance_with(LocalHostController), DatabaseHost)
 
     def _create_database_host_instance_with(self, host_controller_class):
+        rsr_deployment_config = RSRDeploymentConfig.create_with(self.deployment_host_config)
+
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
 
+        mock_host_controller.sudo('chmod a+w %s' % rsr_deployment_config.log_file_path)
         self.mox.ReplayAll()
 
         return DatabaseHost.create_with(self.database_credentials, self.deployment_host_config, mock_host_controller)
