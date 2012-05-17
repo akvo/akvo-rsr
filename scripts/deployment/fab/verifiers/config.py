@@ -40,11 +40,12 @@ class RSRSettingsVerifier(object):
     def create_with(deployment_host_config, host_controller):
         deployment_config = RSRDeploymentConfig.create_with(deployment_host_config)
         django_admin = DjangoAdmin.create_with(deployment_config.current_virtualenv_path, deployment_config.rsr_deployment_home, host_controller)
+        host_file_system = FileSystem(host_controller)
 
         return RSRSettingsVerifier(deployment_host_config,
                                    deployment_config,
-                                   DjangoSettingsReader(django_admin),
-                                   FileSystem(host_controller),
+                                   DjangoSettingsReader(deployment_config.log_file_path, host_file_system, django_admin),
+                                   host_file_system,
                                    host_controller.feedback)
 
     def exit_if_local_rsr_settings_not_deployed(self):

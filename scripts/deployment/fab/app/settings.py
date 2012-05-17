@@ -7,8 +7,10 @@
 
 class DjangoSettingsReader(object):
 
-    def __init__(self, django_admin):
+    def __init__(self, rsr_log_file_path, host_file_system, django_admin):
         self.django_admin = django_admin
+
+        host_file_system.make_file_writable_for_all_users(rsr_log_file_path)
 
     def rsr_database_name(self):
         return self.django_admin.read_setting('DATABASES')['default']['NAME']
