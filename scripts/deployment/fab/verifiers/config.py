@@ -7,7 +7,6 @@
 
 import imp, os
 
-from fab.app.admin import DjangoAdmin
 from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.os.filesystem import FileSystem, LocalFileSystem
@@ -39,13 +38,15 @@ class RSRSettingsVerifier(object):
     @staticmethod
     def create_with(deployment_host_config, host_controller):
         deployment_config = RSRDeploymentConfig.create_with(deployment_host_config)
-        django_admin = DjangoAdmin.create_with(deployment_config.current_virtualenv_path, deployment_config.rsr_deployment_home, host_controller)
-        host_file_system = FileSystem(host_controller)
+        settings_reader = DjangoSettingsReader.create_with(deployment_config.log_file_path,
+                                                           deployment_config.current_virtualenv_path,
+                                                           deployment_config.rsr_deployment_home,
+                                                           host_controller)
 
         return RSRSettingsVerifier(deployment_host_config,
                                    deployment_config,
-                                   DjangoSettingsReader(deployment_config.log_file_path, host_file_system, django_admin),
-                                   host_file_system,
+                                   settings_reader,
+                                   FileSystem(host_controller),
                                    host_controller.feedback)
 
     def exit_if_local_rsr_settings_not_deployed(self):

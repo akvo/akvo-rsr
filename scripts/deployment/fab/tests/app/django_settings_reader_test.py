@@ -11,6 +11,8 @@ from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.app.admin import DjangoAdmin
 from fab.app.settings import DjangoSettingsReader
+from fab.host.controller import LocalHostController, RemoteHostController
+from fab.helpers.feedback import ExecutionFeedback
 from fab.os.filesystem import FileSystem
 
 
@@ -22,6 +24,28 @@ class DjangoSettingsReaderTest(mox.MoxTestBase):
         self.mock_django_admin = self.mox.CreateMock(DjangoAdmin)
 
         self.rsr_log_file_path = '/path/to/rsr.log'
+
+    def test_can_create_instance_for_local_host(self):
+        """fab.tests.app.settings.django_settings_reader_test  Can create DjangoSettingsReader instance for local host"""
+
+        self._can_create_instance_for(LocalHostController)
+
+    def test_can_create_instance_for_remote_host(self):
+        """fab.tests.app.settings.django_settings_reader_test  Can create DjangoSettingsReader instance for remote host"""
+
+        self._can_create_instance_for(RemoteHostController)
+
+    def _can_create_instance_for(self, host_controller_class):
+        rsr_env_path = '/path/to/rsr/env'
+        rsr_app_path = '/path/to/rsr/app'
+
+        mock_host_controller = self.mox.CreateMock(host_controller_class)
+        mock_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
+        mock_host_controller.sudo('chmod a+w %s' % self.rsr_log_file_path)
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(DjangoSettingsReader.create_with(self.rsr_log_file_path, rsr_env_path, rsr_app_path, mock_host_controller),
+                              DjangoSettingsReader)
 
     def test_initialiser_ensures_log_file_is_writable_before_reading_settings(self):
         """fab.tests.app.settings.django_settings_reader_test  Initialiser ensures log file is writable before reading settings"""
