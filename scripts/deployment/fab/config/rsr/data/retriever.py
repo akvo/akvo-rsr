@@ -17,4 +17,4 @@ class RSRDataRetrieverConfig(object):
         self.data_archives_home = os.path.join(data_host_paths.deployment_processing_home, 'data_archives')
         self.rsr_env_path       = os.path.join(data_host_paths.virtualenvs_home, 'current')
         self.rsr_app_path       = os.path.join(data_host_paths.django_apps_home, 'current')
-        self.rsr_log_file_path  = os.path.join(data_host_paths.logging_home, 'akvo.log')
+        self.rsr_log_file_path  = os.path.join(data_host_paths.logging_home, RSRCodebaseConfig.LOG_FILE)

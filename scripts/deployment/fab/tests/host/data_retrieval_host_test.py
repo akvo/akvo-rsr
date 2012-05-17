@@ -9,7 +9,11 @@ import mox
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
+from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
+from fab.config.values.host import DataHostPaths
 from fab.data.retriever import RSRDataRetriever
+from fab.helpers.feedback import ExecutionFeedback
+from fab.host.controller import RemoteHostController
 from fab.host.dataretrieval import DataRetrievalHost
 from fab.tests.template.loader import TemplateLoader
 
@@ -22,10 +26,16 @@ class DataRetrievalHostTest(mox.MoxTestBase):
 
         self.data_retrieval_host = DataRetrievalHost(self.mock_data_retriever)
 
-    def test_can_create_instance(self):
-        """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance"""
+    def test_can_create_instance_for_remote_host(self):
+        """fab.tests.host.data_retrieval_host_test  Can create a DataRetrievalHost instance for a remote host"""
 
-        self.assertIsInstance(DataRetrievalHost.create_with(TemplateLoader.load_database_credentials()), DataRetrievalHost)
+        mock_remote_host_controller = self.mox.CreateMock(RemoteHostController)
+        mock_remote_host_controller.feedback = self.mox.CreateMock(ExecutionFeedback)
+        mock_remote_host_controller.sudo('chmod a+w %s' % RSRDataRetrieverConfig(DataHostPaths()).rsr_log_file_path)
+        self.mox.ReplayAll()
+
+        self.assertIsInstance(DataRetrievalHost.create_with(TemplateLoader.load_database_credentials(), mock_remote_host_controller),
+                              DataRetrievalHost)
 
     def test_can_fetch_data_from_host(self):
         """fab.tests.host.data_retrieval_host_test  Can fetch data from the host"""

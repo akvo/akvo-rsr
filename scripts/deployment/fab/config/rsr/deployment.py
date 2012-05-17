@@ -39,6 +39,7 @@ class RSRDeploymentConfig(object):
         self.deployed_rsr_settings_file         = os.path.join(self.host_config_home, self.local_rsr_settings_file_name)
         self.mod_python_file_name               = RSRCodebaseConfig.MOD_PYTHON_FILE
         self.deployed_mod_python_file           = os.path.join(self.host_config_home, self.mod_python_file_name)
+        self.log_file_path                      = os.path.join(deployment_host_paths.logging_home, RSRCodebaseConfig.LOG_FILE)
 
     @staticmethod
     def create_with(deployment_host_config, deployment_user=None):

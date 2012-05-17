@@ -1,5 +1,5 @@
 # Package installation requirements
-distribute==0.6.24
+distribute==0.6.25
 
 # Package inspection requirements
 pypi-tools==0.0.2
@@ -10,4 +10,4 @@ simplejson==2.5.0
 # Fabric requirements
 ssh==1.7.13
 pycrypto==2.5
-Fabric==1.4.0
+Fabric==1.4.1

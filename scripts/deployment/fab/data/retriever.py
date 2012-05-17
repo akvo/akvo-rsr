@@ -7,7 +7,6 @@
 
 import os
 
-from fab.app.admin import DjangoAdmin
 from fab.app.settings import DjangoSettingsReader
 from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
@@ -32,12 +31,15 @@ class RSRDataRetriever(object):
     def create_with(database_credentials, host_controller):
         data_retriever_config = RSRDataRetrieverConfig(DataHostPaths())
         host_file_system = FileSystem(host_controller)
-        django_admin = DjangoAdmin.create_with(data_retriever_config.rsr_env_path, data_retriever_config.rsr_app_path, host_controller)
+        settings_reader = DjangoSettingsReader.create_with(data_retriever_config.rsr_log_file_path,
+                                                           data_retriever_config.rsr_env_path,
+                                                           data_retriever_config.rsr_app_path,
+                                                           host_controller)
 
         return RSRDataRetriever(data_retriever_config,
                                 host_file_system,
                                 LocalFileSystem(),
-                                DjangoSettingsReader(django_admin),
+                                settings_reader,
                                 DataHandler(database_credentials, host_controller),
                                 host_controller.feedback,
                                 TimeStampFormatter())
