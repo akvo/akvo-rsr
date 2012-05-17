@@ -10,9 +10,7 @@
 				<div class="fullyfunded-text">
 					<p>
 						{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-						{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
-							Raised:&nbsp;{{currency}}&nbsp;{{funds}}
-						{% endblocktrans %}
+						{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
 					</p>
 				</div>
 				<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />

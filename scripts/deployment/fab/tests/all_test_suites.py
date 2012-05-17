@@ -41,7 +41,11 @@ if __name__ == '__main__':
         if test_mode == TestMode.CONTINUOUS_INTEGRATION:
             test_runner = TestRunner(test_mode)
         elif test_mode != TestMode.NORMAL:
-            raise SystemExit('## Unrecognised test mode: %s\n' % test_mode)
+            print '## Unrecognised test mode: %s\n' % test_mode
+            raise SystemExit(os.EX_SOFTWARE)
 
     print 'Test suite root: %s\n' % os.path.realpath(os.path.dirname(__file__))
-    test_runner.run_test_suite(unit_test_suites())
+    test_result = test_runner.run_test_suite(unit_test_suites())
+
+    if not test_result.wasSuccessful():
+        raise SystemExit(len(test_result.failures))

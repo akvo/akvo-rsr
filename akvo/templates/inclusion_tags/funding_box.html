@@ -10,9 +10,7 @@
 			<div class="fullyfunded-text">
 				<p>
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
-						{{currency}}: {{funds}}
-					{% endblocktrans %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}{{currency}}: {{funds}}{% endblocktrans %}
 				</p>
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -25,18 +23,14 @@
 				<th>{% trans 'Raised' %}:</th>
 				<td>
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
-						{{currency}}: {{funds}}
-					{% endblocktrans %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}{{currency}}: {{funds}}{% endblocktrans %}
 				</td>
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
 				<td>
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_still_needed|round|intcomma %}
-						{{currency}}: {{funds}}
-					{% endblocktrans %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_still_needed|round|intcomma %}{{currency}}: {{funds}}{% endblocktrans %}
 				</td>
 			</tr>	
 		</table>
@@ -50,9 +44,7 @@
 				<th>{% trans 'Total budget' %}:</th>
 				<td>
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.budget_total|round|intcomma %}
-						{{currency}}: {{funds}}
-					{% endblocktrans %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.budget_total|round|intcomma %}{{currency}}: {{funds}}{% endblocktrans %}
 				</td>
 			</tr>					
 		</table>

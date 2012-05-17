@@ -45,7 +45,7 @@
     <h2 style="padding-top:20px;">{{ update.title|capfirst }}</h2>
     <p class="grey small">
       {{ update.time|date:"d-M-Y" }},
-      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href='{org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
     </p>
   </div>
   <div class="counter_badge">
@@ -63,9 +63,10 @@
     {% endif %}	
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
-        {% oembed 580x435 %}
-          {{ update.video }}
-        {% endoembed %}
+        {# {{ update.video|oembed:"580x435" }} #}
+        <div style="width:580px; max-width:580px; overflow:scroll">
+          {{ update.get_video_oembed }}
+        </div>
       </div>
 {% if update.video_caption or update.video_credit %}
 <p class="small lightx1">
