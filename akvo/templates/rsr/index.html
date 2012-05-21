@@ -119,6 +119,18 @@
 		</div>
 	</div>
 	<div class="span-6 last">
+
+    <form action="/i18n/setlang/" method="post" id="langugeForm">
+      {% csrf_token %}
+      <select name="language" id="languageChooser" class="span-6 last" style="margin-top:3px">
+        {% for lang in LANGUAGES %}
+          <option value="{{ lang.0 }}" {% ifequal lang.0 request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+            {{ lang.1 }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+
 		<div id="index_right_top" class="white_box" >
 			<div class="space20">
         		{{cms.top_right_box|apply_markup:"markdown"}}

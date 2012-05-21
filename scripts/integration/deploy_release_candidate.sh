@@ -15,17 +15,15 @@ if [ -z "$1" ]; then
     display_usage_and_exit
 fi
 
-SCRIPTS_HOME="$(cd `dirname "$THIS_SCRIPT"`/.. && pwd)"
-
-CI_VIRTUALENV_PATH="/var/virtualenvs/ci_develop"
-CI_EXECUTION_MODE="ci"
-
-"$SCRIPTS_HOME/testing/run_deployment_unit_tests.py" "$CI_VIRTUALENV_PATH" $CI_EXECUTION_MODE
+INTEGRATION_SCRIPTS_HOME="$(cd `dirname "$THIS_SCRIPT"` && pwd)"
 
 RELEASE_CANDIDATE_HOST_ALIAS="test"
 RELEASE_BRANCH="release/$1"
 RSR_DATABASE="rsrdb_rc"
 
-source "$CI_VIRTUALENV_PATH/bin/activate"
-"$SCRIPTS_HOME/deployment/execution/scenarios/deploy_rsr_release_candidate.py" $RELEASE_CANDIDATE_HOST_ALIAS $RELEASE_BRANCH $RSR_DATABASE
-deactivate
+"$INTEGRATION_SCRIPTS_HOME/run_tests_and_deploy_build.sh" "$RELEASE_CANDIDATE_HOST_ALIAS" "$RELEASE_BRANCH" "$RSR_DATABASE"
+DEPLOYMENT_FAILURES=$? # last exit code
+
+if [ $DEPLOYMENT_FAILURES -ne 0 ]; then # propagate failure exit code
+    exit $DEPLOYMENT_FAILURES
+fi

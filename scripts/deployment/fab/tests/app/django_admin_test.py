@@ -101,9 +101,9 @@ class DjangoAdminTest(mox.MoxTestBase):
                                                                                                      CommandOption.NONE)
         expected_setting_string = "some_setting_name = ['list', 'of', 'stuff']"
 
-        self._change_dir_rsr_app_home()
-        self._hide_command_and_output()
+        self._change_dir_to_rsr_app_home()
         self.mock_feedback.comment('Reading Django app setting: some_setting_name')
+        self._hide_command_and_output()
         self._run_command_in_virtualenv(expected_find_setting_command, expected_setting_string)
         self.mox.ReplayAll()
 
@@ -130,7 +130,7 @@ class DjangoAdminTest(mox.MoxTestBase):
     def test_can_configure_django_sites(self):
         """fab.tests.app.admin.django_admin_test  Can configure Django sites"""
 
-        self._change_dir_rsr_app_home()
+        self._change_dir_to_rsr_app_home()
         self._run_command_in_virtualenv('python %s' % RSRCodebaseConfig.CONFIGURE_SITES_SCRIPT_PATH)
         self.mox.ReplayAll()
 
@@ -230,7 +230,7 @@ class DjangoAdminTest(mox.MoxTestBase):
     def _expected_admin_command(self, command, options):
         return 'python %s %s %s'.strip() % (RSRCodebaseConfig.MANAGE_SCRIPT_PATH, command, options)
 
-    def _change_dir_rsr_app_home(self):
+    def _change_dir_to_rsr_app_home(self):
         return self.mock_host_controller.cd(self.rsr_app_path).AndReturn(fabric.api.cd(self.rsr_app_path))
 
     def _hide_command_and_output(self):
