@@ -77,7 +77,6 @@ ASSET_BUNDLES = {
             'machinery.js',
             ],
     },
-    
     'widget_cobranded_banner': {
         'type': 'css',
         'path': 'widgets/cobranded_banner/css/',
