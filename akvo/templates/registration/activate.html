@@ -29,11 +29,11 @@
 			{% trans 'Your account will be activated as soon as we have reviewed your request.' %}
 		</p>
 	{% else %}
-		<h1>{% trans 'We&#x27;re sorry, the account activation failed' %}</h1>
+		<h1>{% trans "We're sorry, the account activation failed" %}</h1>
 		<p>
 			{% blocktrans with expiration_days|apnumber as exp_days %}Either your activation link was incorrect, or the activation key for your account has expired. Activation keys are only valid for {{ exp_days }} days after registration.{% endblocktrans %}
 		</p>
-	    <p class="grey">{% trans 'Please <a href="mailto:support@akvo.org">contact us</a> if you have any questions.' %}
+	    <p class="grey">{% trans "Please <a href='mailto:support@akvo.org'>contact us</a> if you have any questions." %}
 		</p>
 	
 	{% endif %}

@@ -57,7 +57,8 @@ ASSET_BUNDLES = {
             'utils.css',
             'buttons.css',
             'forms.css',
-            'auth.css'
+            'auth.css',
+            'get_widget.css'
             ],
     },
     'partner_sites_script': {
@@ -66,6 +67,14 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': [
             'galleria.js',
+            ],
+    },
+    'akvo_ps_machinery_js': {
+        'type': 'js',
+        'path': 'partner_sites/js/',
+        'compress': True,
+        'files': [
+            'machinery.js',
             ],
     },
     'widget_cobranded_banner': {

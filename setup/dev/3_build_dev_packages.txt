@@ -1,4 +1,0 @@
-Configure your Python packages and RSR virtualenv
--------------------------------------------------
-1)  Run scripts/deployment/builders/rebuild_osx_dev_env.sh to install or update the required system Python packages and
-    create a new RSR virtualenv instance -- follow any prompts to create configuration files as necessary.

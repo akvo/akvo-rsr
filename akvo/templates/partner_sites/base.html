@@ -42,7 +42,7 @@
   </div>
 
   <div class="container">
-    <div class="breadcrum_back marg_bottom20 clearfix">
+    <article class="breadcrum_back marg_bottom20 clearfix">
       <ul class="breadcrum">
         {% block breadcrum_items %}
           {% if return_url %}
@@ -52,7 +52,21 @@
           {% endif %}
         {% endblock breadcrum_items %}
       </ul>
-    </div>
+      
+    </article>
+    <aside>
+      <form action="/i18n/setlang/" method="post" id="langugeForm" style="padding-left:0">
+        {% csrf_token %}
+        <select name="language" id="languageChooser" style="margin-top:3px; width:290px">
+          {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% ifequal lang.0 request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+                {{ lang.1 }}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </aside>
+    <div class="clear"></div>
     {% block content %}{% endblock content %}
   </div>
 

@@ -33,11 +33,7 @@
 			<table class="project_budget_table" style="border:none; margin-top:20px;">
         {% for item in project.budget_items.all %}
           <tr>
-            <td>
-              {% blocktrans with label=item.get_label|capfirst %}
-                {{ label }}:
-              {% endblocktrans %}
-            </td>
+            <td>{{ item.get_label|capfirst }}:</td>
             <td class="text_right">{{project.get_currency_display|safe}} {{item.amount|round|intcomma}}</td>
           </tr>
         {%  endfor %}

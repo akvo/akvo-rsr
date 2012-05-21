@@ -86,28 +86,6 @@ class TaskRunnerTest(mox.MoxTestBase):
 
         self.task_runner.run_data_retrieval_task(FetchRSRData, HostAlias.DATA)
 
-    def test_will_raise_systemexit_if_task_execution_fails(self):
-        """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails"""
-
-        self._should_exit_when_deployment_fails_with(Exception('Some deployment problem'))
-
-    def test_will_raise_systemexit_if_task_execution_fails_due_to_io_errors(self):
-        """fab.tests.tasks.task_runner_test  Will raise a SystemExit exception if task execution fails due to an IOError"""
-
-        self._should_exit_when_deployment_fails_with(IOError('Some IO problem'))
-
-    def _should_exit_when_deployment_fails_with(self, deployment_failure):
-        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
-
-        self._load_host_config_from(host_config_spec)
-        self.mock_process_runner.execute(mox.IgnoreArg()).AndRaise(deployment_failure)
-        self.mox.ReplayAll()
-
-        with self.assertRaises(SystemExit) as raised:
-            self.task_runner.run_remote_deployment_task(BackupRSRDatabase, host_config_spec)
-
-        self.assertIn('Deployment failed due to errors above', raised.exception.message)
-
     def _load_host_config_from(self, expected_host_config_spec):
         self.mock_config_loader.parse(expected_host_config_spec).AndReturn(self.deployment_host_config)
 

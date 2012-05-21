@@ -1,4 +1,4 @@
-{% load i18n thumbnail rsr_filters %}
+{% load i18n thumbnail rsr_filters l10n %}
 {% load url from future %}
 
 
@@ -6,11 +6,11 @@
 	<script>
 		function loadGlobalMap() {
 	    	var center = new google.maps.LatLng(0,0);
-			var zoom = {{ zoom }};
+        var zoom = {{ zoom }};
 	        {% for project in projects %}
                 var project_{{ project.id }}_url = "{% url 'project_main' project_id=project.id %}";
-	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
-	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
+	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude|unlocalize }};
+	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude|unlocalize }};
 	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
 	        {% endfor %}			
 
@@ -50,7 +50,7 @@
                 {% if map_type != 'static' %}
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
 	                '<a href="' + project_{{ project.id }}_url + '">' +
-                    '{{ project.name|smart_truncate:35}}</a><br>' +
+                    '{{ project.title|smart_truncate:35}}</a><br>' +
                     '<a href="' + project_{{ project.id }}_url + '">' +
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" /></a>' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +

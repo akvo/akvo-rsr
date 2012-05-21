@@ -21,6 +21,7 @@ class RSRCodebaseConfig(object):
     RSR_SETTINGS_HOME           = 'akvo/settings'
     LOCAL_SETTINGS_FILE         = '60-local.conf'
     MOD_PYTHON_FILE             = 'akvo_modpython.py'
+    LOG_FILE                    = 'akvo.log'
 
     RSR_MEDIA_ROOT              = 'akvo/mediaroot'
 

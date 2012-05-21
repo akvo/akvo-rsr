@@ -24,9 +24,7 @@
 	
 	{% if account_level == 'free' %}
 		<p class="small">
-			{% blocktrans  %}
-				Sign in for more widget types, available to <a href="http://{{current_site}}/web/fees_plus">Akvo RSR Plus accounts</a>.	
-			{% endblocktrans %}
+			{% blocktrans  %}Sign in for more widget types, available to <a href='http://{{current_site}}/web/fees_plus'>Akvo RSR Plus accounts</a>.{% endblocktrans %}
 		</p>
 	{% endif %}
 </div>
@@ -82,7 +80,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-narrow-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -153,7 +151,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-narrow-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -224,7 +222,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-short-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -295,7 +293,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-banner-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -368,7 +366,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="cobranded-leader-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -439,7 +437,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="feature-side-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -510,7 +508,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-updates-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -581,7 +579,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-contribute-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>
@@ -652,7 +650,7 @@
 								name="widget-choice" value="specific-project" 
 								checked="checked" /> 
 							<label for="project-small-specific-project">
-								{% trans 'Use the' %} {{project.name}} {% trans 'project.' %}
+								{% trans 'Use the' %} {{project.title}} {% trans 'project.' %}
 							</label>
 						</li>
 						<li>

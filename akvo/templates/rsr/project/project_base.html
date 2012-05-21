@@ -3,10 +3,10 @@
 {% load url from future %}
 
 
-{% block title %}{{project.name}}{% endblock title %}
+{% block title %}{{project.title}}{% endblock title %}
 
 {% block head %}
-  <link rel="alternate" type="application/rss+xml" title="Updates to {{project.name}}" id="gallery" href="{%  url 'rss_project_updates' project.id %}">
+  <link rel="alternate" type="application/rss+xml" title="Updates to {{project.title}}" id="gallery" href="{%  url 'rss_project_updates' project.id %}">
 {% endblock head %}
 
 {% block breadcrum_items %}
@@ -37,7 +37,7 @@
 
 <div class="two_column_left">
   <a href="{% url 'project_main' project.id %}">
-    <h1 style="margin-bottom:5px;">{{project.name}}</h1>
+    <h1 style="margin-bottom:5px;">{{project.title}}</h1>
   </a>
   <div style="float:right; width:100px; text-align:right;">
     <a href="{%  url 'rss_project_updates' project.id %}">

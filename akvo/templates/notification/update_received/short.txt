@@ -1,2 +1,2 @@
 {% load i18n %}
-{% blocktrans with project.pk as project_pk and project.name as project_name %}SMS update received to project {{project_pk}} - {{project_name}}{% endblocktrans %}
+{% blocktrans with project.pk as project_pk and project.title as project_title %}SMS update received to project {{project_pk}} - {{project_title}}{% endblocktrans %}

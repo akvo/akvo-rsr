@@ -74,7 +74,7 @@
 	</div>
 	<div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
 		<div style="padding-left:10px;">
-			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:30}}</a></h2>
+			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:30}}</a></h2>
 			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:40}}</p>
 			<div style="float:left; width:125px;">
                 <a href="{% url 'project_main' project.id %}">

@@ -1,21 +1,26 @@
 {% load i18n %}
 {% load url from future %}
 
-
 {% if benchmarks %}
-  {% for benchmark in benchmarks %}
-    {% ifchanged benchmark.category.name %}
-      {% if not forloop.first %}
-        </ul>
-      {% endif %}
-      <h3>{% trans "Category:" %} {{benchmark.category.name}}</h3>
-      <ul class="simplelist">
-    {% endifchanged %}
-    {% if benchmark.value %}
-      <li>{{benchmark.value}} {{benchmark.name}}</li>
-    {% endif %}
-    {% if forloop.last %}
-      </ul>
-    {% endif %}
-  {% endfor %}
+  <div id="benchmarks">
+    <div id="benchmarks_inner">
+      {% for benchmark in benchmarks %}
+        {% ifchanged benchmark.category.name %}
+          {% if not forloop.first %}</ul>{% endif %}
+          <h3>{{benchmark.category.name}}</h3>
+          <ul class="simplelist">
+        {% endifchanged %}
+        {% if benchmark.value %}
+          <li>{{benchmark.value}} {{benchmark.name}}</li>
+        {% endif %}
+        {% if forloop.last %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div style="text-align:right;">
+    <a id="benchmarks_switch" class="small" style="display:none;" href="#"></a>
+    <a id="benchmarks_switch_arrow" class="small" style="display:none; margin-left:15px;" href="#"></a>
+  </div>
 {% endif %}
