@@ -1224,7 +1224,7 @@ def donate(request, p, engine):
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
-            description = u'Akvo-%d-%s' % (p.id, p.name)
+            description = u'Akvo-%d-%s' % (p.id, p.title)
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
