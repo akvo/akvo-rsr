@@ -30,10 +30,11 @@ class GetWidgetView(BaseView):
 
     def post(self, request, *args, **kwargs):
         self.template_name = 'partner_sites/widgets/get_widget2.html'
+        context = dict(self.get_context_data().items()
+                       + self.get_post_context().items())
+        return self.render_to_response(context)
 
-        return self.render_to_response(self.get_post_context(request))
-
-    def get_post_context(self, request):
+    def get_post_context(self):
         widget_type = self.request.POST.get('widget-type', '')
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         return {
