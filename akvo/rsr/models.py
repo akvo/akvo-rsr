@@ -111,12 +111,12 @@ class Location(models.Model):
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
-    city = models.CharField(_(u'city'), blank=True, max_length=255)
-    state = models.CharField(_(u'state'), blank=True, max_length=255)
+    city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
+    state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
     country = models.ForeignKey(Country, verbose_name=_(u'country'))
-    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True)
-    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True)
-    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True)
+    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
+    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
+    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -134,6 +134,9 @@ class Location(models.Model):
                 if qs.count() != 0:
                     self.primary = False
         super(Location, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-primary',]
 
 
 class Partnership(models.Model):
@@ -211,8 +214,8 @@ class Organisation(models.Model):
     phone = models.CharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     mobile = models.CharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     fax = models.CharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    contact_person = models.CharField(_(u'contact person'), blank=True, max_length=30, help_text=_(u'Name of external contact person for your organisation.'))
-    contact_email = models.CharField(_(u'contact email'), blank=True, max_length=50, help_text=_(u'Email to which inquiries about your organisation should be sent.'))
+    contact_person = models.CharField(_(u'contact person'), blank=True, max_length=30, help_text=_(u'Name of external contact person for your organisation (30 characters).'))
+    contact_email = models.CharField(_(u'contact email'), blank=True, max_length=50, help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'))
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.') )
 
     locations = generic.GenericRelation(Location)
@@ -393,6 +396,8 @@ class FocusArea(models.Model):
     class Meta:
         verbose_name = u'focus area'
         verbose_name_plural = u'focus areas'
+        ordering = ['name',]
+
 
 class Benchmarkname(models.Model):
     name    = models.CharField(_(u'benchmark name'), max_length=50, help_text=_(u'Enter a name for the benchmark. (50 characters).'))
@@ -425,6 +430,7 @@ class Category(models.Model):
     class Meta:
         verbose_name=_(u'category')
         verbose_name_plural=_(u'categories')
+        ordering = ['name',]
 
     def __unicode__(self):
         return '%s (%s)' % (self.name, self.focus_areas())
@@ -499,11 +505,12 @@ class MiniCMS(models.Model):
     active = models.BooleanField(u'currently active home page', default=False,)
 
     def __unicode__(self):
-        return self.label
+        return '%d: %s' % (self.id, self.label)
 
     class Meta:
         verbose_name = u'MiniCMS'
         verbose_name_plural = u'MiniCMS'
+        ordering = ['-active', '-id',]
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
@@ -1030,12 +1037,12 @@ class Project(models.Model):
         )
 
     class Meta:
-        permissions = (
+        permissions         = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
         )
-        verbose_name=_(u'project')
-        verbose_name_plural=_(u'projects')
-        ordering            =  ('-id',)
+        verbose_name        = _(u'project')
+        verbose_name_plural = _(u'projects')
+        ordering            = ['-id',]
 
 
 
@@ -1087,6 +1094,7 @@ class BudgetItem(models.Model):
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
+    # Translators: This is the amount of an budget item in a currancy (€ or $)
     amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
@@ -1127,6 +1135,7 @@ class PublishingStatus(models.Model):
     class Meta:
         verbose_name        = _(u'publishing status')
         verbose_name_plural = _(u'publishing statuses')
+        ordering            = ('-status', 'project')
 
     def project_info(self):
         return self.project
@@ -1225,6 +1234,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     class Meta:
         verbose_name = _(u'user profile')
         verbose_name_plural = _(u'user profiles')
+        ordering = ['user__username',]
 
     def __unicode__(self):
         return self.user.username
@@ -1697,6 +1707,7 @@ class ProjectUpdate(models.Model):
         get_latest_by = "time"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
+        ordering = ['-id',]
 
     def img(self, value=''):
         try:
@@ -1713,12 +1724,23 @@ class ProjectUpdate(models.Model):
     def get_video_thumbnail_url(self, url=''):
         if self.video:
             try:
-                oembed_resource = oembed.site.embed(self.video)
-                data = oembed_resource.get_data()
+                data = oembed.site.embed(self.video).get_data()
                 url = data.get('thumbnail_url', '')
             except:
                 pass
         return url
+
+    def get_video_oembed(self, html=''):
+        """Render OEmbed HTML for the given video URL.
+        This is to workaround a but between Django 1.4 and djangoembed template tags.
+        A full solution is required."""
+        if self.video:
+            try:
+                data = oembed.site.embed(self.video).get_data()
+                html = data.get('html', '')
+            except:
+                pass
+        return mark_safe(html)
 
     def edit_window_has_expired(self):
         """Determine whether or not update timeout window has expired.
@@ -1768,7 +1790,7 @@ class ProjectUpdate(models.Model):
         return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
-        return u'Project update for %(project_name)s' % {'project_name': self.project.name}
+        return u'Project update for %(project_name)s' % {'project_name': self.project.title}
 
 
 class ProjectComment(models.Model):
@@ -1776,6 +1798,11 @@ class ProjectComment(models.Model):
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = models.TextField(_(u'comment'))
     time = models.DateTimeField(_(u'time'))
+
+    class Meta:
+        verbose_name = _(u'project comment')
+        verbose_name_plural = _(u'project comments')
+        ordering = ('-id',)
 
 
 # Payment engines
@@ -1933,6 +1960,7 @@ class Invoice(models.Model):
 
     class Meta:
         verbose_name = u'invoice'
+        ordering = ['-id',]
 
 
 # PayPal IPN listener
@@ -2023,10 +2051,9 @@ class PartnerSite(models.Model):
         '''))
     )
     about_image = models.ImageField(_(u'about box image'), blank=True, upload_to=about_image_path,
-        help_text=_(
-            u'<p>The background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall. '
-            u'It is however optional.</p>'
-        )
+        help_text=_(u'''<p>The optional background image for the About box
+            <em>must</em> be 470 pixels wide and 250 pixels tall.</p>
+        ''')
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
@@ -2062,6 +2089,11 @@ class PartnerSite(models.Model):
     
         url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
         return url
+
+    class Meta:
+        verbose_name = u'partner site'
+        verbose_name_plural = u'partner sites'
+        ordering = ('organisation__name',)
 
 
 # signals!

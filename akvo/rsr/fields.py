@@ -15,7 +15,7 @@ from south.modelsinspector import add_introspection_rules
 
 class NullCharField(models.CharField):
 
-    description = _("CharField that stores NULL but returns an empty string")
+    description = "CharField that stores NULL but returns an empty string"
 
     def to_python(self, value):
         if isinstance(value, models.CharField):

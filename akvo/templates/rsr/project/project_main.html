@@ -107,7 +107,7 @@
             <div id="tab_goals" class="tab">
               <p>{{p.goals_overview|linebreaks}}</p>
               {% if project.goals.all %}
-                <h4 style="font-weight:bold">{% trans 'Expected outcomes' %}</h4>
+                <h4 style="font-weight:bold">{% trans 'Goals' %}</h4>
                 <ul style="margin-top:15px;">
                   {% for goal in project.goals.all %}
                     <li>{{goal.text}}</li>

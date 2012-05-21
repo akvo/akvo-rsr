@@ -39,7 +39,9 @@
               {% partner_sites_funding_box project %}
             </div>
             <div style="float:right; width:110px;" >
-              <h3 style="color:#96FFFF;">{% trans "Schedule" %}</h3>
+              <h3 style="color:#96FFFF;">
+				{% comment %}Translators: Heading in the top right blue box on Partner sites, http://akvo.akvoapp.org/project/276/ {% endcomment %}
+				{% trans "Schedule" %}</h3>
               <p class="white tiny">
                 {% trans "Begun" %}<br />
                 <span class="fat">{{project.date_request_posted}}</span>

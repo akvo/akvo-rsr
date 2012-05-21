@@ -1,4 +1,4 @@
-{% load i18n thumbnail rsr_filters %}
+{% load i18n thumbnail rsr_filters l10n %}
 {% load url from future %}
 
 
@@ -31,8 +31,8 @@
     var center = new google.maps.LatLng(0,0);
     {% for organisation in organisations %}
       var organisation_{{ organisation.id }}_url = "{{organisation.get_absolute_url}}";
-      var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude }};
-      var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude }};
+      var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude|unlocalize }};
+      var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude|unlocalize }};
       var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);
       var zoom = {{ zoom }};
     {% endfor %}

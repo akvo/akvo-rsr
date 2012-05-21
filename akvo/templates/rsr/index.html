@@ -68,6 +68,7 @@
               					<h2 class="link_blue">{{update.title|smart_truncate:40}}</h2>
             				</a>
             				<p class="small grey last">
+								{% comment %}Translators: This is for the home page recent updates, "on a date"{% endcomment %}
               					{% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth and update.time|date:"Y-m-d" as update_time %}By {{user_name}}, <a href='{{org_url}}'>{{user_org}}</a>, via {{update_meth}} on {{update_time}}{% endblocktrans %}
               					<br/>{{update.project.primary_location.country}}
             				</p>
@@ -118,6 +119,18 @@
 		</div>
 	</div>
 	<div class="span-6 last">
+
+    <form action="/i18n/setlang/" method="post" id="langugeForm">
+      {% csrf_token %}
+      <select name="language" id="languageChooser" class="span-6 last" style="margin-top:3px">
+        {% for lang in LANGUAGES %}
+          <option value="{{ lang.0 }}" {% ifequal lang.0 request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+            {{ lang.1 }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+
 		<div id="index_right_top" class="white_box" >
 			<div class="space20">
         		{{cms.top_right_box|apply_markup:"markdown"}}

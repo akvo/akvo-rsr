@@ -30,24 +30,24 @@ class ProjectFilterSet(django_filters.FilterSet):
         else:
             return qs
 
-    def filter_by_project_names(qs, what):
+    def filter_by_project_title(qs, what):
         if what:
             if qs.filter_and:
                 bits = what.split(' ')
-                query = Q(name__icontains=bits[0])
+                query = Q(title__icontains=bits[0])
                 query = query&Q(subtitle__icontains=bits[0])
                 if len(bits) > 1:
                     for bit in bits[1:]:
-                        query = query&Q(name__icontains=bit)
+                        query = query&Q(title__icontains=bit)
                         query = query&Q(subtitle__icontains=bit)
                 return qs.filter(query)
             else:
                 bits = what.split(' ')
-                query = Q(name__icontains=bits[0])
+                query = Q(title__icontains=bits[0])
                 query = query|Q(subtitle__icontains=bits[0])
                 if len(bits) > 1:
                     for bit in bits[1:]:
-                        query = query|Q(name__icontains=bit)
+                        query = query|Q(title__icontains=bit)
                         query = query|Q(subtitle__icontains=bit)
                 return qs.filter(query)
         return qs
@@ -74,7 +74,7 @@ class ProjectFilterSet(django_filters.FilterSet):
             return qs.filter(**{'total_budget__range': (int(what.start) if what.start else 0, int(what.stop) if what.stop else sys.maxint)})
         return qs
 
-    name            = django_filters.CharFilter(action=filter_by_project_names)
+    title            = django_filters.CharFilter(action=filter_by_project_title)
     andor           = django_filters.BooleanFilter(widget=widgets.CheckboxInput(check_test=check_test), action=filter_andor, label=_(u'All words'))
     continent       = django_filters.ChoiceFilter(name='locations__country__continent_code')
     organisation    = django_filters.ModelChoiceFilter(name='name', action=filter_by_org,)
@@ -86,8 +86,8 @@ class ProjectFilterSet(django_filters.FilterSet):
         organisation_id = kwargs.pop('organisation_id', None)
         super(ProjectFilterSet, self).__init__(*args, **kwargs)
 
-        self.filters['name'].field.widget.input_type = 'search'
-        self.filters['name'].field.widget.attrs = {'results': '5', 'autosave': 'project_search', 'placeholder': _(u'Project name or subtitle')}
+        self.filters['title'].field.widget.input_type = 'search'
+        self.filters['title'].field.widget.attrs = {'results': '5', 'autosave': 'project_search', 'placeholder': _(u'Project title or subtitle')}
         
         choices = [('', _(u'All continents'))]
         choices.extend(list(CONTINENTS))
@@ -112,7 +112,7 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ['organisation', 'andor', 'name', 'locations__country', 'continent', 'status', 'budget_total', 'currency', 'categories',]
+        fields = ['organisation', 'andor', 'title', 'locations__country', 'continent', 'status', 'budget_total', 'currency', 'categories',]
 
 def remove_empty_querydict_items(request_get):
     #querydicts are immutable
