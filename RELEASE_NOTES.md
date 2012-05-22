@@ -9,7 +9,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.0.5 release notes
 ----
-15 May 2012, (Code name: Fennel) pb, ogl
+15 May 2012, (Code name: Fennel) pb, ogl, ac
 
 Overview
 ----
@@ -46,7 +46,8 @@ To improve consistency between the Project PDF form and the Project sections of 
 
 Pivotal Tracker stories:
 [27010245](https://www.pivotaltracker.com/story/show/27010245),
-[27011303](https://www.pivotaltracker.com/story/show/27011303) and
+[27011303](https://www.pivotaltracker.com/story/show/27011303),
+[29704721](https://www.pivotaltracker.com/story/show/29704721) and
 [29907631](https://www.pivotaltracker.com/story/show/29907631)
 
 ### Project details
