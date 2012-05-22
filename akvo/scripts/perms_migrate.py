@@ -38,7 +38,9 @@ import permissions_data
 
 def pretty():
     pp = pprint.PrettyPrinter()
+    print "GROUP_LIST = ",
     pp.pprint(permissions_data.GROUP_LIST)
+    print "PERMS_DICT = ",
     pp.pprint(permissions_data.PERMS_DICT)
 
 def dump():

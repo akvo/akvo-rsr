@@ -125,17 +125,21 @@ function preview_widget()
 	var widget_height = '';
 	var widget_width = '';
 	var map_widget_state = '';
-	if (akvo_widget_choice == 'project-map') {
+	if (akvo_widget_type == 'project-map') {
 	    widget_height = jQ('#widget_height').val();
 	    widget_width = jQ('#widget_width').val();
 	    map_widget_state = jQ('input:radio[name=map_state]:checked').val();
-	}
+	} 
 
 	// Create the iframe variables
 	var akvo_widget_height = getHeight(akvo_widget_type);
 	var akvo_widget_width = getWidth(akvo_widget_type);
     
     var akvo_url = '';
+    var widget_url = 'http://akvo.akvoapp.dev/widgets/projects/map/';
+    widget_url = widget_url + '?bgcolor=' + bgcolor;
+    widget_url = widget_url + '&height='+ widget_height + '&width=' + widget_width + '&state=' + map_widget_state;
+    /*
     var widget_url = '';
 	if (akvo_widget_choice == 'random-from-org') {
 	    akvo_url = 'http://' + location.host + '/rsr/widget/one-from-organisation/' + akvo_widget_organisation + '/?widget=' + akvo_widget_type;
@@ -153,10 +157,10 @@ function preview_widget()
 	if (!(akvo_widget_site == '' || akvo_widget_site == 'Example: www.akvo.org')) {
 	    widget_url += '&site=' + akvo_widget_site;
 	}
-    
+    */
     
     var ifrm = document.createElement("IFRAME");
-    if (akvo_widget_choice != 'project-map') {
+    if (akvo_widget_type != 'project-map') {
         var akvo_widget = document.getElementById('jswidget');
         // If the iframe exists update otherwise create the iframe and add it to our anchor div.
         if(akvo_widget) 
@@ -179,6 +183,7 @@ function preview_widget()
         var widget = jQ('#jswidget');
         if (widget) {
             widget.remove();
+            console.log("Removed old widget");
         }
         //ifrm = document.createElement("IFRAME");
         ifrm.setAttribute("src", widget_url);
@@ -195,7 +200,7 @@ function preview_widget()
 	// Update the widget code snippet
 	// Show code only if valid!!!!
 	var codesnippet = '<iframe src="' + widget_url + '" '; 
-	if (akvo_widget_choice != 'project-map') {
+	if (akvo_widget_type != 'project-map') {
 	    codesnippet += 'height="' + akvo_widget_height + '" width="' + akvo_widget_width + '" frameborder="0" allowTransparency="true"> </iframe>';
 	} else {
 	    codesnippet += 'height="' + widget_height + '" width="' + widget_width + '" frameborder="0" allowTransparency="true"> </iframe>';

@@ -251,6 +251,9 @@ class Organisation(models.Model):
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
             return self.filter(partnership__partner_type__exact=partner_type).distinct()
+        
+        def allpartners(self):
+            return self.distinct()
 
         def fieldpartners(self):
             return self.partners(Partnership.FIELD_PARTNER)

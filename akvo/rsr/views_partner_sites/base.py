@@ -8,14 +8,14 @@
 from __future__ import absolute_import
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS
-from akvo.rsr.models import Organisation, Project, Country
+from akvo.rsr.models import Organisation, Country, Project
+
 
 __all__ = [
     'BaseProjectListView',
@@ -99,6 +99,17 @@ class BaseListView(DebugViewMixin, PartnerSitesMixin, ListView):
         return super(BaseListView, self).get_context_data(**kwargs)
 
 
+# class BaseProjectListView(BaseListView):
+#     """List view that extends BaseListView with a project list queryset"""
+#     context_object_name = 'projects_list'
+# 
+#     def get_queryset(self):
+#         projects = get_object_or_404(Organisation, pk=self.request.organisation_id) \
+#             .published_projects().funding().latest_update_fields().order_by('-id')
+#         return projects
+
+
+## ----------
 class BaseProjectListView(BaseListView):
     """List view that extends BaseListView with a project list queryset"""
     context_object_name = 'filtered_projects'

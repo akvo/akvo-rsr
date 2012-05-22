@@ -16,7 +16,17 @@ from fab.verifiers.config import ConfigFileVerifier
 class ProcessRunner(object):
 
     def execute(self, command_with_parameters):
-        subprocess.check_call(command_with_parameters)
+        try:
+            return subprocess.check_call(command_with_parameters)
+        except subprocess.CalledProcessError as processError:
+            self._exit_if_command_fails(processError.returncode)
+        except Exception as raised:
+            if hasattr(raised, 'errno'):
+                self._exit_if_command_fails(raised.errno)
+
+    def _exit_if_command_fails(self, command_return_code):
+        if command_return_code != os.EX_OK:
+            raise SystemExit(command_return_code)
 
 
 class TaskRunner(object):
@@ -51,15 +61,12 @@ class TaskRunner(object):
         self._run_fabric_script(self._task_with_parameters(task_class, task_parameters), ssh_connection)
 
     def _run_fabric_script(self, task_with_parameters, ssh_connection):
-        try:
-            self.process_runner.execute(['fab', '-f', self.FABFILE_PATH,
-                                         task_with_parameters,
-                                         '-H', ssh_connection,
-                                         '-i', self.user_credentials.ssh_id_file_path,
-                                         '-u', self.user_credentials.deployment_user,
-                                         '-p', self.user_credentials.sudo_password])
-        except Exception:
-            raise SystemExit('\n>> Deployment failed due to errors above.\n')
+        self.process_runner.execute(['fab', '-f', self.FABFILE_PATH,
+                                     task_with_parameters,
+                                     '-H', ssh_connection,
+                                     '-i', self.user_credentials.ssh_id_file_path,
+                                     '-u', self.user_credentials.deployment_user,
+                                     '-p', self.user_credentials.sudo_password])
 
     def _task_with_parameters(self, task_class, task_parameters):
         if task_parameters:

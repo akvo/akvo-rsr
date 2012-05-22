@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n l10n %}
 
 
 <div id="map_canvas" style="width:{{width}}px;height:{{height}}px;"></div>
@@ -8,8 +8,8 @@
         canvas: document.getElementById('map_canvas'),
         options: {
             zoom: {{zoom}},
-            center: new google.maps.LatLng({{object.primary_location.latitude}},
-                                           {{object.primary_location.longitude}}),
+            center: new google.maps.LatLng({{object.primary_location.latitude|unlocalize}},
+                                           {{object.primary_location.longitude|unlocalize}}),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             scrollwheel: false,
             streetViewControl: false

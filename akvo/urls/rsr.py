@@ -158,6 +158,8 @@ urlpatterns += patterns('',
 
     #django-piston
     (r'^rsr/api/', include('akvo.api.urls')),
+
+    (r'^i18n/', include('django.conf.urls.i18n')),
 )    
         
 

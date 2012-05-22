@@ -586,9 +586,10 @@ class ProjectAdmin(admin.ModelAdmin):
                 if prefixes[prefix] != 1 or not prefix:
                     prefix = "%s-%s" % (prefix, prefixes[prefix])
 
-                # hack by GvH to get user's organisation preset as parter when adding a new project
+                # hack by GvH to get user's organisation preset as partner when adding a new project
                 if prefix == 'partnership_set':
-                    formset = FormSet(instance=self.model(), prefix=prefix, initial=[{'organisation': request.user.get_profile().organisation}],
+                    formset = FormSet(instance=self.model(), prefix=prefix,
+                                      initial=[{'organisation': request.user.get_profile().organisation}],
                                       queryset=inline.queryset(request))
                 else:
                     formset = FormSet(instance=self.model(), prefix=prefix,

@@ -1,5 +1,5 @@
 {% extends "rsr/base_sheet.html" %}
-{% load i18n thumbnail rsr_filters %}
+{% load i18n thumbnail rsr_filters l10n %}
 {% load url from future %}
 
 
@@ -50,8 +50,8 @@
 	        var center = new google.maps.LatLng(0,0);
 
 	        {% for project in projects %}
-	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
-	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
+	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude|unlocalize }};
+	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude|unlocalize }};
 	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
 	        {% endfor %}
 
