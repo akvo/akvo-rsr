@@ -764,7 +764,7 @@ class MobileProjectForm(forms.Form):
         profile = kwargs.pop('profile', None)
         forms.Form.__init__(self, *args, **kwargs)
         if profile and profile.available_gateway_numbers():
-            self.fields['project'].choices = ((u'', u'---------'),) + tuple([(p.id, "%s - %s" % (unicode(p.pk), p.name)) for p in profile.my_unreported_projects()])
+            self.fields['project'].choices = ((u'', u'---------'),) + tuple([(p.id, "%s - %s" % (unicode(p.pk), p.title)) for p in profile.my_unreported_projects()])
 
     def clean(self):
         return self.cleaned_data
@@ -1163,7 +1163,7 @@ def donate(request, p, engine):
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
-            description = u'Akvo-%d-%s' % (p.id, p.name)
+            description = u'Akvo-%d-%s' % (p.id, p.title)
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
