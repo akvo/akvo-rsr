@@ -1,4 +1,4 @@
-Last changed: 21 May 2012, pb, ogl
+Last changed: 22 May 2012, pb, ogl, ac
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
