@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 06:49-0700\n"
+"POT-Creation-Date: 2012-05-22 07:25-0700\n"
 "PO-Revision-Date: 2010-03-03 01:29\n"
 "Last-Translator: Malte Beckmann <malte@akvo.org>\n"
 "Language-Team: translation <translation@akvo.org>\n"
@@ -2137,10 +2137,6 @@ msgstr "Zeit"
 msgid "time last updated"
 msgstr "Letzte Aktualisierung"
 
-#: rsr/models.py:1704
-msgid "featured"
-msgstr ""
-
 #: rsr/models.py:1708
 #, fuzzy
 msgid "project update"
@@ -2150,11 +2146,6 @@ msgstr "Projekt Aktualisierungen"
 #, fuzzy
 msgid "project updates"
 msgstr "Projekt Aktualisierungen"
-
-#: rsr/models.py:1722
-#, fuzzy
-msgid "update is featured"
-msgstr "Aktualisierungsmethode"
 
 #: rsr/models.py:1799
 msgid "comment"
@@ -5858,6 +5849,10 @@ msgstr "Via"
 #: templates/widgets/project_updates.html:95
 msgid "Web"
 msgstr "Web"
+
+#, fuzzy
+#~ msgid "update is featured"
+#~ msgstr "Aktualisierungsmethode"
 
 #~ msgid "Use the"
 #~ msgstr "Benutzen von"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 06:50-0700\n"
+"POT-Creation-Date: 2012-05-22 07:26-0700\n"
 "PO-Revision-Date: 2011-12-08 15:15+0000\n"
 "Last-Translator: Anke van Lenteren <anke@vanlenteren.com>\n"
 "Language-Team: Dutch (http://www.transifex.net/projects/p/akvo-rsr/language/"
@@ -2128,10 +2128,6 @@ msgstr "tijd"
 msgid "time last updated"
 msgstr "Tijdstip meest recente update"
 
-#: rsr/models.py:1704
-msgid "featured"
-msgstr "uitgelicht"
-
 #: rsr/models.py:1708
 msgid "project update"
 msgstr "project-update"
@@ -2139,11 +2135,6 @@ msgstr "project-update"
 #: rsr/models.py:1709
 msgid "project updates"
 msgstr "project-updates"
-
-#: rsr/models.py:1722
-#, fuzzy
-msgid "update is featured"
-msgstr "Aangevinkte updates uitlichten"
 
 #: rsr/models.py:1799
 msgid "comment"
@@ -5864,6 +5855,13 @@ msgstr "Via"
 #: templates/widgets/project_updates.html:95
 msgid "Web"
 msgstr "website"
+
+#~ msgid "featured"
+#~ msgstr "uitgelicht"
+
+#, fuzzy
+#~ msgid "update is featured"
+#~ msgstr "Aangevinkte updates uitlichten"
 
 #~ msgid "Use the"
 #~ msgstr "Gebruik het"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 06:50-0700\n"
+"POT-Creation-Date: 2012-05-22 07:26-0700\n"
 "PO-Revision-Date: 2009-11-22 10:41\n"
 "Last-Translator: Beth Waaa <bethwaaa@mac.com>\n"
 "Language-Team: sv <LL@li.org>\n"
@@ -2052,20 +2052,12 @@ msgstr ""
 msgid "time last updated"
 msgstr ""
 
-#: rsr/models.py:1704
-msgid "featured"
-msgstr ""
-
 #: rsr/models.py:1708
 msgid "project update"
 msgstr ""
 
 #: rsr/models.py:1709
 msgid "project updates"
-msgstr ""
-
-#: rsr/models.py:1722
-msgid "update is featured"
 msgstr ""
 
 #: rsr/models.py:1799
