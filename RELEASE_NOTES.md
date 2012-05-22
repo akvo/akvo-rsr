@@ -1,4 +1,4 @@
-Last changed: 16 May 2012, pb, ogl
+Last changed: 22 May 2012, pb, ogl, ac
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -9,7 +9,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.0.5 release notes
 ----
-15 May 2012, (Code name: Fennel) pb, ogl
+15 May 2012, (Code name: Fennel) pb, ogl, ac
 
 Overview
 ----
@@ -45,8 +45,10 @@ Pivotal Tracker stories:
 To improve consistency between the Project PDF form and the Project sections of the Django admin interface, certain Project fields were renamed.
 
 Pivotal Tracker stories:
-[27010245](https://www.pivotaltracker.com/story/show/27010245) and
-[27011303](https://www.pivotaltracker.com/story/show/27011303)
+[27010245](https://www.pivotaltracker.com/story/show/27010245),
+[27011303](https://www.pivotaltracker.com/story/show/27011303),
+[29704721](https://www.pivotaltracker.com/story/show/29704721) and
+[29907631](https://www.pivotaltracker.com/story/show/29907631)
 
 ### Project details
 Improved the layout for project details summary.
@@ -79,6 +81,9 @@ Corrected project listing order subsequent to Django 1.4 upgrade.
 Pivotal Tracker story:
 [28107129](https://www.pivotaltracker.com/story/show/28107129)
 
+### Project Page UI Changes
+In addition to some of the field changes, there have been some important modiofications in the layout and design of the Project Page. Within the Summary area this includes restricting the amount of space available for the Summary and adding a View More button for the Project Indicators, allowing the viewer to choose if they want to see all of the Indicators. Further in the Project Page, a new Tab has been added called Goals, and moved some of the information within these tabs to be more evenly distributed. The tabs are set out in chronological order, so it reads more like a story from left to right with the past, present and future.
+
 Fixes
 ----
 ### Project updates
@@ -98,10 +103,12 @@ Pivotal Tracker stories:
 
 ### Partner sites
 Partner site project update edit form now retains previously entered data.  Budget line item text is now displayed as expected.
+Fixed the sign-in process when partner sites are hosted on partner's own domain.
 
-Pivotal Tracker story:
-[23990641](https://www.pivotaltracker.com/story/show/23990641) and
-[29684439](https://www.pivotaltracker.com/story/show/29684439)
+Pivotal Tracker stories:
+[23990641](https://www.pivotaltracker.com/story/show/23990641),
+[29684439](https://www.pivotaltracker.com/story/show/29684439) and
+[29907575](https://www.pivotaltracker.com/story/show/29907575)
 
 ### Akvo blog posts
 Corrected markup for blog posts so that they appear as expected on the Akvo home page.
