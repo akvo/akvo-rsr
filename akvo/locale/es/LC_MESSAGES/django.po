@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 06:25-0700\n"
+"POT-Creation-Date: 2012-05-22 06:49-0700\n"
 "PO-Revision-Date: 2009-11-22 10:51\n"
 "Last-Translator: Beth Waaa <bethwaaa@mac.com>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -2525,16 +2525,16 @@ msgstr ""
 
 #: templates/notification/notice_settings.html:23
 #: templates/rsr/project/get-a-widget/machinery_step1.html:65
-#: templates/rsr/project/get-a-widget/machinery_step1.html:136
-#: templates/rsr/project/get-a-widget/machinery_step1.html:207
-#: templates/rsr/project/get-a-widget/machinery_step1.html:278
-#: templates/rsr/project/get-a-widget/machinery_step1.html:351
-#: templates/rsr/project/get-a-widget/machinery_step1.html:422
-#: templates/rsr/project/get-a-widget/machinery_step1.html:493
-#: templates/rsr/project/get-a-widget/machinery_step1.html:564
-#: templates/rsr/project/get-a-widget/machinery_step1.html:635
-#: templates/rsr/project/get-a-widget/machinery_step1.html:709
-#: templates/rsr/project/get-a-widget/machinery_step1.html:767
+#: templates/rsr/project/get-a-widget/machinery_step1.html:138
+#: templates/rsr/project/get-a-widget/machinery_step1.html:211
+#: templates/rsr/project/get-a-widget/machinery_step1.html:284
+#: templates/rsr/project/get-a-widget/machinery_step1.html:359
+#: templates/rsr/project/get-a-widget/machinery_step1.html:432
+#: templates/rsr/project/get-a-widget/machinery_step1.html:505
+#: templates/rsr/project/get-a-widget/machinery_step1.html:578
+#: templates/rsr/project/get-a-widget/machinery_step1.html:651
+#: templates/rsr/project/get-a-widget/machinery_step1.html:727
+#: templates/rsr/project/get-a-widget/machinery_step1.html:785
 msgid "Settings"
 msgstr ""
 
@@ -3334,29 +3334,29 @@ msgid ""
 msgstr ""
 
 #: templates/partner_sites/widgets/get_widget1.html:38
-#: templates/rsr/project/get-a-widget/machinery_step1.html:755
+#: templates/rsr/project/get-a-widget/machinery_step1.html:773
 msgid "Project map widget"
 msgstr ""
 
 #: templates/partner_sites/widgets/get_widget1.html:39
-#: templates/rsr/project/get-a-widget/machinery_step1.html:757
+#: templates/rsr/project/get-a-widget/machinery_step1.html:775
 msgid ""
 "Shows a map of projects from your organisation. Users who click on this "
 "widget will go to Akvo.org."
 msgstr ""
 
 #: templates/partner_sites/widgets/get_widget1.html:47
-#: templates/rsr/project/get-a-widget/machinery_step1.html:110
-#: templates/rsr/project/get-a-widget/machinery_step1.html:181
-#: templates/rsr/project/get-a-widget/machinery_step1.html:252
-#: templates/rsr/project/get-a-widget/machinery_step1.html:323
-#: templates/rsr/project/get-a-widget/machinery_step1.html:396
-#: templates/rsr/project/get-a-widget/machinery_step1.html:467
-#: templates/rsr/project/get-a-widget/machinery_step1.html:538
-#: templates/rsr/project/get-a-widget/machinery_step1.html:609
-#: templates/rsr/project/get-a-widget/machinery_step1.html:680
-#: templates/rsr/project/get-a-widget/machinery_step1.html:741
-#: templates/rsr/project/get-a-widget/machinery_step1.html:799
+#: templates/rsr/project/get-a-widget/machinery_step1.html:112
+#: templates/rsr/project/get-a-widget/machinery_step1.html:185
+#: templates/rsr/project/get-a-widget/machinery_step1.html:258
+#: templates/rsr/project/get-a-widget/machinery_step1.html:331
+#: templates/rsr/project/get-a-widget/machinery_step1.html:406
+#: templates/rsr/project/get-a-widget/machinery_step1.html:479
+#: templates/rsr/project/get-a-widget/machinery_step1.html:552
+#: templates/rsr/project/get-a-widget/machinery_step1.html:625
+#: templates/rsr/project/get-a-widget/machinery_step1.html:698
+#: templates/rsr/project/get-a-widget/machinery_step1.html:759
+#: templates/rsr/project/get-a-widget/machinery_step1.html:817
 msgid "Select and Proceed..."
 msgstr ""
 
@@ -3535,17 +3535,17 @@ msgstr ""
 #: templates/rsr/project/update_form.html:210
 #: templates/rsr/project/donate/donate_step2.html:269
 #: templates/rsr/project/donate/donate_step3.html:248
-#: templates/rsr/project/get-a-widget/machinery_step1.html:105
-#: templates/rsr/project/get-a-widget/machinery_step1.html:176
-#: templates/rsr/project/get-a-widget/machinery_step1.html:247
-#: templates/rsr/project/get-a-widget/machinery_step1.html:318
-#: templates/rsr/project/get-a-widget/machinery_step1.html:391
-#: templates/rsr/project/get-a-widget/machinery_step1.html:462
-#: templates/rsr/project/get-a-widget/machinery_step1.html:533
-#: templates/rsr/project/get-a-widget/machinery_step1.html:604
-#: templates/rsr/project/get-a-widget/machinery_step1.html:675
-#: templates/rsr/project/get-a-widget/machinery_step1.html:736
-#: templates/rsr/project/get-a-widget/machinery_step1.html:794
+#: templates/rsr/project/get-a-widget/machinery_step1.html:107
+#: templates/rsr/project/get-a-widget/machinery_step1.html:180
+#: templates/rsr/project/get-a-widget/machinery_step1.html:253
+#: templates/rsr/project/get-a-widget/machinery_step1.html:326
+#: templates/rsr/project/get-a-widget/machinery_step1.html:401
+#: templates/rsr/project/get-a-widget/machinery_step1.html:474
+#: templates/rsr/project/get-a-widget/machinery_step1.html:547
+#: templates/rsr/project/get-a-widget/machinery_step1.html:620
+#: templates/rsr/project/get-a-widget/machinery_step1.html:693
+#: templates/rsr/project/get-a-widget/machinery_step1.html:754
+#: templates/rsr/project/get-a-widget/machinery_step1.html:812
 #: templates/rsr/project/get-a-widget/machinery_step2.html:215
 msgid "Cancel"
 msgstr ""
@@ -5196,149 +5196,141 @@ msgid "Project widget with Donation link (170 pixels wide by 840 pixels high)"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:55
-#: templates/rsr/project/get-a-widget/machinery_step1.html:126
-#: templates/rsr/project/get-a-widget/machinery_step1.html:197
-#: templates/rsr/project/get-a-widget/machinery_step1.html:268
-#: templates/rsr/project/get-a-widget/machinery_step1.html:340
-#: templates/rsr/project/get-a-widget/machinery_step1.html:412
-#: templates/rsr/project/get-a-widget/machinery_step1.html:483
-#: templates/rsr/project/get-a-widget/machinery_step1.html:554
-#: templates/rsr/project/get-a-widget/machinery_step1.html:625
+#: templates/rsr/project/get-a-widget/machinery_step1.html:128
+#: templates/rsr/project/get-a-widget/machinery_step1.html:201
+#: templates/rsr/project/get-a-widget/machinery_step1.html:274
+#: templates/rsr/project/get-a-widget/machinery_step1.html:348
+#: templates/rsr/project/get-a-widget/machinery_step1.html:422
+#: templates/rsr/project/get-a-widget/machinery_step1.html:495
+#: templates/rsr/project/get-a-widget/machinery_step1.html:568
+#: templates/rsr/project/get-a-widget/machinery_step1.html:641
 msgid ""
 "Shows basic description and allows donations. Users who click on this widget "
 "will go to Akvo.org."
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:58
-#: templates/rsr/project/get-a-widget/machinery_step1.html:129
-#: templates/rsr/project/get-a-widget/machinery_step1.html:200
-#: templates/rsr/project/get-a-widget/machinery_step1.html:271
-#: templates/rsr/project/get-a-widget/machinery_step1.html:343
-#: templates/rsr/project/get-a-widget/machinery_step1.html:415
-#: templates/rsr/project/get-a-widget/machinery_step1.html:486
-#: templates/rsr/project/get-a-widget/machinery_step1.html:557
-#: templates/rsr/project/get-a-widget/machinery_step1.html:628
-#: templates/rsr/project/get-a-widget/machinery_step1.html:701
-#: templates/rsr/project/get-a-widget/machinery_step1.html:760
+#: templates/rsr/project/get-a-widget/machinery_step1.html:131
+#: templates/rsr/project/get-a-widget/machinery_step1.html:204
+#: templates/rsr/project/get-a-widget/machinery_step1.html:277
+#: templates/rsr/project/get-a-widget/machinery_step1.html:351
+#: templates/rsr/project/get-a-widget/machinery_step1.html:425
+#: templates/rsr/project/get-a-widget/machinery_step1.html:498
+#: templates/rsr/project/get-a-widget/machinery_step1.html:571
+#: templates/rsr/project/get-a-widget/machinery_step1.html:644
+#: templates/rsr/project/get-a-widget/machinery_step1.html:719
+#: templates/rsr/project/get-a-widget/machinery_step1.html:778
 msgid "Sample"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:68
-#: templates/rsr/project/get-a-widget/machinery_step1.html:139
-#: templates/rsr/project/get-a-widget/machinery_step1.html:210
-#: templates/rsr/project/get-a-widget/machinery_step1.html:281
-#: templates/rsr/project/get-a-widget/machinery_step1.html:354
-#: templates/rsr/project/get-a-widget/machinery_step1.html:425
-#: templates/rsr/project/get-a-widget/machinery_step1.html:496
-#: templates/rsr/project/get-a-widget/machinery_step1.html:567
-#: templates/rsr/project/get-a-widget/machinery_step1.html:638
-#: templates/rsr/project/get-a-widget/machinery_step1.html:712
-#: templates/rsr/project/get-a-widget/machinery_step1.html:770
+#: templates/rsr/project/get-a-widget/machinery_step1.html:141
+#: templates/rsr/project/get-a-widget/machinery_step1.html:214
+#: templates/rsr/project/get-a-widget/machinery_step1.html:287
+#: templates/rsr/project/get-a-widget/machinery_step1.html:362
+#: templates/rsr/project/get-a-widget/machinery_step1.html:435
+#: templates/rsr/project/get-a-widget/machinery_step1.html:508
+#: templates/rsr/project/get-a-widget/machinery_step1.html:581
+#: templates/rsr/project/get-a-widget/machinery_step1.html:654
+#: templates/rsr/project/get-a-widget/machinery_step1.html:730
+#: templates/rsr/project/get-a-widget/machinery_step1.html:788
 msgid "Enter the web address where you will embed this widget"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:71
-#: templates/rsr/project/get-a-widget/machinery_step1.html:142
-#: templates/rsr/project/get-a-widget/machinery_step1.html:213
-#: templates/rsr/project/get-a-widget/machinery_step1.html:284
-#: templates/rsr/project/get-a-widget/machinery_step1.html:357
-#: templates/rsr/project/get-a-widget/machinery_step1.html:428
-#: templates/rsr/project/get-a-widget/machinery_step1.html:499
-#: templates/rsr/project/get-a-widget/machinery_step1.html:570
-#: templates/rsr/project/get-a-widget/machinery_step1.html:641
-#: templates/rsr/project/get-a-widget/machinery_step1.html:715
-#: templates/rsr/project/get-a-widget/machinery_step1.html:773
-#: templates/rsr/project/get-a-widget/machinery_step1.html:898
+#: templates/rsr/project/get-a-widget/machinery_step1.html:144
+#: templates/rsr/project/get-a-widget/machinery_step1.html:217
+#: templates/rsr/project/get-a-widget/machinery_step1.html:290
+#: templates/rsr/project/get-a-widget/machinery_step1.html:365
+#: templates/rsr/project/get-a-widget/machinery_step1.html:438
+#: templates/rsr/project/get-a-widget/machinery_step1.html:511
+#: templates/rsr/project/get-a-widget/machinery_step1.html:584
+#: templates/rsr/project/get-a-widget/machinery_step1.html:657
+#: templates/rsr/project/get-a-widget/machinery_step1.html:733
+#: templates/rsr/project/get-a-widget/machinery_step1.html:791
+#: templates/rsr/project/get-a-widget/machinery_step1.html:916
 msgid "Example"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:83
-#: templates/rsr/project/get-a-widget/machinery_step1.html:154
-#: templates/rsr/project/get-a-widget/machinery_step1.html:225
-#: templates/rsr/project/get-a-widget/machinery_step1.html:296
-#: templates/rsr/project/get-a-widget/machinery_step1.html:369
-#: templates/rsr/project/get-a-widget/machinery_step1.html:440
-#: templates/rsr/project/get-a-widget/machinery_step1.html:511
-#: templates/rsr/project/get-a-widget/machinery_step1.html:582
-#: templates/rsr/project/get-a-widget/machinery_step1.html:653
-msgid "Use the"
+#: templates/rsr/project/get-a-widget/machinery_step1.html:156
+#: templates/rsr/project/get-a-widget/machinery_step1.html:229
+#: templates/rsr/project/get-a-widget/machinery_step1.html:302
+#: templates/rsr/project/get-a-widget/machinery_step1.html:377
+#: templates/rsr/project/get-a-widget/machinery_step1.html:450
+#: templates/rsr/project/get-a-widget/machinery_step1.html:523
+#: templates/rsr/project/get-a-widget/machinery_step1.html:596
+#: templates/rsr/project/get-a-widget/machinery_step1.html:669
+#, python-format
+msgid ""
+"\n"
+"                  Use the %(project_title)s project.\n"
+"                "
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:83
-#: templates/rsr/project/get-a-widget/machinery_step1.html:154
-#: templates/rsr/project/get-a-widget/machinery_step1.html:225
-#: templates/rsr/project/get-a-widget/machinery_step1.html:296
-#: templates/rsr/project/get-a-widget/machinery_step1.html:369
-#: templates/rsr/project/get-a-widget/machinery_step1.html:440
-#: templates/rsr/project/get-a-widget/machinery_step1.html:511
-#: templates/rsr/project/get-a-widget/machinery_step1.html:582
-#: templates/rsr/project/get-a-widget/machinery_step1.html:653
-msgid "project."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:90
-#: templates/rsr/project/get-a-widget/machinery_step1.html:161
-#: templates/rsr/project/get-a-widget/machinery_step1.html:232
-#: templates/rsr/project/get-a-widget/machinery_step1.html:303
-#: templates/rsr/project/get-a-widget/machinery_step1.html:376
-#: templates/rsr/project/get-a-widget/machinery_step1.html:447
-#: templates/rsr/project/get-a-widget/machinery_step1.html:518
-#: templates/rsr/project/get-a-widget/machinery_step1.html:589
-#: templates/rsr/project/get-a-widget/machinery_step1.html:660
+#: templates/rsr/project/get-a-widget/machinery_step1.html:92
+#: templates/rsr/project/get-a-widget/machinery_step1.html:165
+#: templates/rsr/project/get-a-widget/machinery_step1.html:238
+#: templates/rsr/project/get-a-widget/machinery_step1.html:311
+#: templates/rsr/project/get-a-widget/machinery_step1.html:386
+#: templates/rsr/project/get-a-widget/machinery_step1.html:459
+#: templates/rsr/project/get-a-widget/machinery_step1.html:532
+#: templates/rsr/project/get-a-widget/machinery_step1.html:605
+#: templates/rsr/project/get-a-widget/machinery_step1.html:678
 msgid "Display a random project from this organisation"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:124
+#: templates/rsr/project/get-a-widget/machinery_step1.html:126
 msgid ""
 "Cobranded narrow project widget with Donation link (170 pixels wide by 911 "
 "pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:195
+#: templates/rsr/project/get-a-widget/machinery_step1.html:199
 msgid ""
 "Cobranded short project widget with Donation link (170 pixels wide by 627 "
 "pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:266
+#: templates/rsr/project/get-a-widget/machinery_step1.html:272
 msgid "Cobranded banner widget (468 pixels wide by 234 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:338
+#: templates/rsr/project/get-a-widget/machinery_step1.html:346
 msgid "Cobranded leader widget (728 pixels wide by 207 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:410
+#: templates/rsr/project/get-a-widget/machinery_step1.html:420
 msgid "Project widget with Donation link (202 pixels wide by 840 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:481
+#: templates/rsr/project/get-a-widget/machinery_step1.html:493
 msgid "Project widget with updates (202 pixels wide by 900 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:552
+#: templates/rsr/project/get-a-widget/machinery_step1.html:566
 msgid "Project with Donation Link (202 pixels wide by 570 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:623
+#: templates/rsr/project/get-a-widget/machinery_step1.html:639
 msgid "Small project (170 pixels wide by 312 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:696
+#: templates/rsr/project/get-a-widget/machinery_step1.html:714
 msgid "Project list widget (745 pixels wide by 730 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:698
+#: templates/rsr/project/get-a-widget/machinery_step1.html:716
 msgid ""
 "Shows list of projects from your organisation. Users who click on this "
 "widget will go to Akvo.org."
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:723
+#: templates/rsr/project/get-a-widget/machinery_step1.html:741
 msgid "Display a project list from this organisation:"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:781
+#: templates/rsr/project/get-a-widget/machinery_step1.html:799
 msgid "Display a project map from this organisation:"
 msgstr ""
 
