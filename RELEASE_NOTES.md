@@ -80,6 +80,9 @@ Corrected project listing order subsequent to Django 1.4 upgrade.
 Pivotal Tracker story:
 [28107129](https://www.pivotaltracker.com/story/show/28107129)
 
+### Project Page UI Changes
+In addition to some of the field changes, there have been some important modiofications in the layout and design of the Project Page. Within the Summary area this includes restricting the amount of space available for the Summary and adding a View More button for the Project Indicators, allowing the viewer to choose if they want to see all of the Indicators. Further in the Project Page, a new Tab has been added called Goals, and moved some of the information within these tabs to be more evenly distributed. The tabs are set out in chronological order, so it reads more like a story from left to right with the past, present and future.
+
 Fixes
 ----
 ### Project updates
