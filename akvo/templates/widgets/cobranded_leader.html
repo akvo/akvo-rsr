@@ -1,104 +1,101 @@
-{% load i18n rsr_tags rsr_filters thumbnail cache counter_tags humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail counter_tags humanize %}
 {% load url from future %}
-
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
-	<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
 
-	<title>Akvo.org - {% block title %}{% trans 'the open source for water and sanitation' %}{% endblock %}</title>
-	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}">
-	<meta name="author" content="Akvo.org">
-	
-	<meta http-equiv="Expires" content="Fri, 26 Mar 1999 23:59:59 GMT">	
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	
-	{% asset_bundle 'widget_cobranded_leader' %}
-	
+  <title>Akvo.org - {% block title %}{% trans 'the open source for water and sanitation' %}{% endblock %}</title>
+  <meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}">
+  <meta name="author" content="Akvo.org">
+
+  <meta http-equiv="Expires" content="Fri, 26 Mar 1999 23:59:59 GMT">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+
+  {% asset_bundle 'widget_cobranded_leader' %}
+
+  <style type="text/css" media="screen">
+    {% block inline_styles %}
+      #header {background-color:#{{bgcolor}};}
+      #header h1 {color:#{{textcolor}};}
+      h2 a {color:#{{bgcolor}} !important;}
+
+      #progress_back {
+        background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+      }
+      #progress_green {
+        background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+      }
+
+    {% endblock inline_styles %}
+  </style>
+
+  <!--[if IE]>
 	<style type="text/css" media="screen">
-	{% block inline_styles %}
-		#header {background-color:#{{bgcolor}};}
-		#header h1 {color:#{{textcolor}};}
-		h2 a {color:#{{bgcolor}} !important;}
-		
-		#progress_back {
-			background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
-		}
-		#progress_green {
-			background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
-		}
-			
-	{% endblock inline_styles %}
-	</style>
-	
-	<!--[if IE]>
-	<style type="text/css" media="screen">
-		.divider { 
+		.divider {
 			margin-top:1px !important;
 			margin-bottom:1px !important;
 		}
 	</style>
 	<![endif]-->
-	
-	<base target="_top" />
+
+  <base target="_top" />
 </head>
 <body style="background-color:transparent;">
 <div id="container" style="background-color:#fff;">
-	<div id="header">
-		<div style="float:right; margin-right:4px; margin-top:2px;">
-			<a href="{% url 'index' %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
-		</div>
-		<h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
+  <div id="header">
+    <div style="float:right; margin-right:4px; margin-top:2px;">
+      <a href="{% url 'index' %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
+    </div>
+    <h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
 		<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:20px; display:none;">
 			<span style="display:none;">{% counter project %}</span>
-        	{% cache 10 project.view_count %}
-        		{{ project.view_count|intcomma }} {% trans 'views' %}
-        	{% endcache %}
+      {{ project.view_count|intcomma }} {% trans 'views' %}
 		</span>
-	</div>
-	<div id="contentwrapper" style="float:left; width:100%;">
-		<div id="center" style="margin: 0px 280px 0 284px">
-			<div style="margin:10px; padding-left:20px; border-left:1px solid #ccc;">
-				<div style="height:80px;">
-					<p class="smallFont grey" style="font-size:0.9em; margin-top:15px;">{% trans 'Location' %}</p>
-					<p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.primary_location.country.continent}}</span><br />
-						  {{project.primary_location.city}}, {{project.primary_location.state}}, {{project.primary_location.country}}
-					</p>
-				</div>
-				<p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>
-				<p class="smallFont" style="padding-bottom:10px; font-size:0.9em;">{{project.show_status}}</p>
-			</div>
-		</div>
-	</div>
-	<div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
-		<div style="padding-left:10px;">
-			<h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:30}}</a></h2>
-			<p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:40}}</p>
-			<div style="float:left; width:125px;">
-                <a href="{% url 'project_main' project.id %}">
-                    {% project_thumb project 120 90 %}
-                </a>
-			</div>
-			<div style="float:left; width:140px; margin-right:-140px;">
-					<p id="project_plan_summary" style="margin-left:10px; font-size:0.9em; height:70px;" >
-						{{project.project_plan_summary|safe|smart_truncate:80}}
-						<a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
-					</p>
-					<p class="miniFont lightgrey" style="margin-top:4px; margin-left:10px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
-			</div>			
-		</div>
+  </div>
+  <div id="contentwrapper" style="float:left; width:100%;">
+    <div id="center" style="margin: 0px 280px 0 284px">
+      <div style="margin:10px; padding-left:20px; border-left:1px solid #ccc;">
+        <div style="height:80px;">
+          <p class="smallFont grey" style="font-size:0.9em; margin-top:15px;">{% trans 'Location' %}</p>
+          <p class="smallFont" style="font-size:0.9em;"><span class="capz">{{project.primary_location.country.continent}}</span><br />
+            {{project.primary_location.city}}, {{project.primary_location.state}}, {{project.primary_location.country}}
+          </p>
+        </div>
+        <p class="smallFont grey topmargin" style="font-size:0.9em;">{% trans 'Status' %}</p>
+        <p class="smallFont" style="padding-bottom:10px; font-size:0.9em;">{{project.show_status}}</p>
+      </div>
+    </div>
+  </div>
+  <div id="left" style="float:left; width: 284px; margin-left: -726px; margin-bottom:5px;">
+    <div style="padding-left:10px;">
+      <h2 id="project_title" style="margin-bottom:0px; margin-top:10px;"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:30}}</a></h2>
+      <p id="project_subtitle" class="grey" style="font-size:0.9em; margin-bottom:7px;">{{project.subtitle|smart_truncate:40}}</p>
+      <div style="float:left; width:125px;">
+        <a href="{% url 'project_main' project.id %}">
+          {% project_thumb project 120 90 %}
+        </a>
+      </div>
+      <div style="float:left; width:140px; margin-right:-140px;">
+        <p id="project_plan_summary" style="margin-left:10px; font-size:0.9em; height:70px;" >
+          {{project.project_plan_summary|safe|smart_truncate:80}}
+          <a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;&#x25BA;</a>
+        </p>
+        <p class="miniFont lightgrey" style="margin-top:4px; margin-left:10px; text-transform: capitalize; font-size:0.73em;">{% trans 'Akvo ref' %}: {{project.id}}</p>
+      </div>
+    </div>
 
-	</div>
-	<div id="right" style="float:left; width:280px; margin-left: -280px;">	
-		<div class="inner" style="margin-top:3px;">
-			{% funding_box_wide project %}
-		</div>
-	</div>
-	<div id="footer2">
-		<div id="" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px;">
-			<div id="partnerspace">
+  </div>
+  <div id="right" style="float:left; width:280px; margin-left: -280px;">
+    <div class="inner" style="margin-top:3px;">
+      {% funding_box_wide project %}
+    </div>
+  </div>
+  <div id="footer2">
+    <div id="" style="border-top:1px solid #ccc; margin-left:10px; margin-right:10px; font-size:0.9em; padding: 5px 0px;">
+      <div id="partnerspace">
         {% with project.partnership_set.all.0 as first_partner %}
           <p class="grey" style="margin-bottom:0px;">
             {% if first_partner.partner_type == 'field' %}{% trans 'Implemented by' %}{% endif %}
@@ -108,33 +105,33 @@
             <a href="{{first_partner.organisation.get_absolute_url}}">{{first_partner}}</a>
           </p>
         {% endwith %}
-			</div>
-		</div>
-	</div>	
+      </div>
+    </div>
+  </div>
 </div>
 
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script>
-	!window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.4.2.min.js"><\/script>')
+  !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.4.2.min.js"><\/script>')
 </script>
 
 <script type="text/javascript">
-	var $ = jQ = jQuery.noConflict();
-	var index = 1;
+  var $ = jQ = jQuery.noConflict();
+  var index = 1;
 
-	function Partner (orgName,logo,partnerType,url) {
-		this.orgName = orgName;
-		this.logo = logo;
-		this.partnerType = partnerType
-		this.url = url
-		this.getName = function () { return this.orgName; }
-		this.getLogo = function () { return this.logo; }
-		this.getType = function () { return this.partnerType; }
-		this.getUrl  = function () { return this.url; }
-	}
+  function Partner (orgName,logo,partnerType,url) {
+    this.orgName = orgName;
+    this.logo = logo;
+    this.partnerType = partnerType
+    this.url = url
+    this.getName = function () { return this.orgName; }
+    this.getLogo = function () { return this.logo; }
+    this.getType = function () { return this.partnerType; }
+    this.getUrl  = function () { return this.url; }
+  }
 
-	var partners = [];
+  var partners = [];
 
   {% for partner in project.partnership_set.all %}
     partners[partners.length] = new Partner('{{partner}}', '',
@@ -142,45 +139,45 @@
             '{{partner.organisation.get_absolute_url}}');
   {% endfor %}
 
-	function switchPartner(){
-		index == (partners.length-1) ? index = 0 : index++;
-		animatePartnerSwitch();
-	}
+  function switchPartner(){
+    index == (partners.length-1) ? index = 0 : index++;
+    animatePartnerSwitch();
+  }
 
-	function animatePartnerSwitch() 
-	{
-		// If no or one partner bail since there is nothing to animate
-		if(partners.length <=1){
-			return;
-		}
+  function animatePartnerSwitch()
+  {
+    // If no or one partner bail since there is nothing to animate
+    if(partners.length <=1){
+      return;
+    }
 
-		var newHTML = "";
-					
-		switch(partners[index].getType())
-		{
-			case "funding": newHTML += '<p class="grey">{% trans 'Underwritten by' %}'; break;
-			case "support": newHTML += '<p class="grey">{% trans 'Supported by' %}'; break;
-			case "field": 	newHTML += '<p class="grey">{% trans 'Implemented by' %}'; break;
-			default: newHTML += '<p class="grey">{% trans 'Presented by' %}'; break;
-		}
+    var newHTML = "";
 
-		newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
+    switch(partners[index].getType())
+    {
+      case "funding": newHTML += '<p class="grey">{% trans 'Underwritten by' %}'; break;
+      case "support": newHTML += '<p class="grey">{% trans 'Supported by' %}'; break;
+      case "field": 	newHTML += '<p class="grey">{% trans 'Implemented by' %}'; break;
+      default: newHTML += '<p class="grey">{% trans 'Presented by' %}'; break;
+    }
 
-		jQ("#partnerspace")
-			.animate({opacity: 1.0},7000) // Display time
-			.fadeOut(1000, function() {
-				jQ("#partnerspace").html(newHTML)
-			})
-			.animate({opacity: 1.0},1000)
-			.fadeIn(1000, switchPartner);
-	}
+    newHTML += ' <a href="' + partners[index].getUrl() + '">' + partners[index].getName() + '</a></p>';
 
-	jQ(document).ready(function()
-	{
-		// Kick start the animation loop
-		animatePartnerSwitch();
-	});
-	
+    jQ("#partnerspace")
+            .animate({opacity: 1.0},7000) // Display time
+            .fadeOut(1000, function() {
+              jQ("#partnerspace").html(newHTML)
+            })
+            .animate({opacity: 1.0},1000)
+            .fadeIn(1000, switchPartner);
+  }
+
+  jQ(document).ready(function()
+  {
+    // Kick start the animation loop
+    animatePartnerSwitch();
+  });
+
 </script>
 
 </body>

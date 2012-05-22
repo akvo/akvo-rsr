@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
 {% load url from future %}
 
 
@@ -19,15 +19,8 @@
 				{% trans 'Request posted' %} {{project.date_request_posted|date:"d-M-Y"}}				
 			</p>
 		</div>
-		<div class="counter_badge">
-			<span style="display:none;">{% counter project %}</span>
-			{% cache 10 project_view_count project.id %}
-				{{ project.view_count|intcomma }}
-			{% endcache %}
-			<br />
-			<span>{% trans 'views' %}</span>
-		</div>
-		<div class="clear"></div>
+    {% counter_badge project %}
+    <div class="clear"></div>
 		<div class="space20">
 			<h3>{% trans 'Project Budget' %}</h3>
 			<table class="project_budget_table" style="border:none; margin-top:20px;">

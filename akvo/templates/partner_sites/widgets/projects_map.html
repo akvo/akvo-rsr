@@ -32,9 +32,7 @@
     <div style="float:left; padding-top:3px; display:none;">
       <span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
       <span style="display:none">{% counter organisation %}</span>
-            {% cache 10 organisation.view_count %}
-              {{ organisation.view_count|intcomma }} {% trans 'views' %}
-            {% endcache %}
+        {{ organisation.view_count|intcomma }} {% trans 'views' %}
       </span>
     </div>
     <a href="http://akvo.org">
