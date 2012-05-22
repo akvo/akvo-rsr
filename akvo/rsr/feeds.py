@@ -191,10 +191,10 @@ class ProjectUpdates(UpdateFeed):
         return Project.objects.get(pk__exact=project_id)
 
     def title(self, obj):
-        return _(u'Akvo RSR project %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.name}
+        return _(u'Akvo RSR project %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.title}
 
     def description(self, obj):
-        return _(u'Project updates for project %(project_name)s' % {'project_name': obj.name})
+        return _(u'Project updates for project %(project_title)s' % {'project_title': obj.title})
 
     def items(self, obj):
         return ProjectUpdate.objects.filter(project__id__exact=obj.id).order_by('-time')
@@ -215,14 +215,22 @@ class OrganisationUpdates(UpdateFeed):
         if obj.name == obj.long_name:
             return _(u"Project updates for projects partnered by %(org_name)s") % {'org_name': obj.name}
         else:
-            return _(u"Project updates for projects partnered by %(org_name)s - %(long_name)s") % {'org_name': obj.name, 'long_name': obj.long_name}
+            return _(
+                u"Project updates for projects partnered by %(org_name)s - %(long_name)s"
+            ) % {'org_name': obj.name, 'long_name': obj.long_name}
 
     def items(self, obj):
         projects = Organisation.objects.get(pk=obj.id).projects.published()
         return ProjectUpdate.objects.filter(project__id__in=projects).order_by('-time')
 
     def item_title(self, item):
-        return _(u'Project %(project_id)d - %(project_title)s: %(update_title)s') % {'project_id': item.project.id, 'project_title': item.project.name, 'update_title': item.title}
+        return _(
+            u'Project %(project_id)d - %(project_title)s: %(update_title)s'
+        ) % {
+            'project_id': item.project.id,
+            'project_title': item.project.title,
+            'update_title': item.title
+        }
 
 
 class AllProjectUpdates(UpdateFeed):
@@ -239,4 +247,10 @@ class AllProjectUpdates(UpdateFeed):
         return ProjectUpdate.objects.filter(project__publishingstatus__status='published').order_by('-time')
 
     def item_title(self, item):
-        return _(u'Project %(project_id)d - %(project_title)s: %(update_title)s') % {'project_id': item.project.id, 'project_title': item.project.name, 'update_title': item.title}
+        return _(
+            u'Project %(project_id)d - %(project_title)s: %(update_title)s'
+        ) % {
+            'project_id': item.project.id,
+            'project_title': item.project.title,
+            'update_title': item.title
+        }

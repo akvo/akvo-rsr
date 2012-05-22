@@ -1837,7 +1837,7 @@ class PaymentGatewaySelector(models.Model):
     mollie_gateway = models.ForeignKey(MollieGateway, default=1)
 
     def __unicode__(self):
-        return u'%s - %s' % (self.project.id, self.project.name)
+        return u'%s - %s' % (self.project.id, self.project.title)
 
     class Meta:
         verbose_name = u'Project payment gateway configuration'
