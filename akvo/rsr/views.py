@@ -20,24 +20,26 @@ from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.sites.models import RequestSite
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
+from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from datetime import datetime
 from registration.models import RegistrationProfile
 import random
+import re
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
@@ -84,28 +86,7 @@ def render_to(template):
         return wrapper
     return renderer
 
-def set_low_bandwidth(request):
-    request.session['bandwidth'] = 'low'
-    return HttpResponseRedirect('/rsr/')
-
-def set_high_bandwidth(request):
-    request.session['bandwidth'] = 'high'
-    return HttpResponseRedirect('/rsr/')
-
-def set_test_cookie(request):
-    request.session.set_test_cookie()
-    return HttpResponseRedirect('/rsr/?nocookie=test')
-
-# This is defined in and imported from utils.py
-#def get_random_from_qs(qs, count):
-#    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
-#    qs_list = list(qs.values_list('pk', flat=True))
-#    random.shuffle(qs_list)
-#    return qs.filter(pk__in=qs_list[:count])
-
 # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
-import re
-from django.db.models import Q
 def normalize_query(query_string,
                     findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
                     normspace=re.compile(r'\s{2,}').sub):
@@ -196,7 +177,6 @@ def index(request, cms_id=None):
         'focus_areas': focus_areas,
         'cms': cms,
         'version': getattr(settings, 'URL_VALIDATOR_USER_AGENT', 'Django'),
-        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         'site_section': 'index',
         'blog_posts': blog_posts,
         'news_posts': news_posts,
@@ -233,7 +213,6 @@ def focusareas(request):
 
 
 @render_to('rsr/project/project_directory.html')
-#@render_to('rsr/project/project_list.html')
 def project_list(request, slug='all'):
     # remove empty query string variables
     query_dict = remove_empty_querydict_items(request.GET)
@@ -286,10 +265,10 @@ def filteredprojectlist(request, org_id):
     o: organisation
     '''
     #for use in akvo at a glance
-    projs = Project.objects.published()#.funding()
+    projs = Project.objects.published()
     # get all projects the org is asociated with
     o = get_object_or_404(Organisation, pk=org_id)
-    projects = o.published_projects()#.funding()
+    projects = o.published_projects()
     showcases = projects.order_by('?')[:3]
     page = project_list_data(request, projects)
     return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
@@ -297,7 +276,6 @@ def filteredprojectlist(request, org_id):
 def _redirect_from_landing_page_with_partner_site_id(partner_site_id):
     partner_site = get_object_or_404(PartnerSite, pk=partner_site_id)
     return HttpResponseRedirect(partner_site.get_absolute_url())
-    # return HttpResponsePermanentRedirect(partner_site.get_absolute_url())
 
 def liveearth(request):
     org_id = getattr(settings, 'LIVE_EARTH_ID', 51)
@@ -317,7 +295,7 @@ def projectlist(request):
     To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
     '''
     # Get relevant projects
-    projects = Project.objects.published().status_not_archived().select_related()#.funding()
+    projects = Project.objects.published().status_not_archived().select_related()
     # Get projects either by using the query or all
     query_string = ''
     if ('q' in request.GET) and request.GET['q'].strip():
@@ -342,7 +320,6 @@ def projectlist(request):
     page = paginator.page(request.GET.get('page', 1))
     return {
         'site_section': 'projects',
-        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         'page': page,
         'query_string': query_string,
         'request_get': request.GET,
@@ -398,7 +375,6 @@ def orglist(request, org_type='all'):
     projs = Project.objects.published()
     return {
         'site_section': 'index',
-        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         'lang': get_language(),
         'page': page,
         'projs': projs,
@@ -457,17 +433,8 @@ def partners_widget(request, org_type='all'):
         'order_by': order_by,
         'sort': sort_order,
         'mode': mode,
-        'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
     }
 
-
-class SigninForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'})) 
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input', 'size':'25', 'style':'margin: 0 20px'}))
-
-
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.views.decorators.cache import never_cache
 #copied from django.contrib.auth.views to be able to customize the form widget attrs
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
     "Displays the login form and handles the login action."
@@ -800,18 +767,12 @@ class MobileProjectForm(forms.Form):
             self.fields['project'].choices = ((u'', u'---------'),) + tuple([(p.id, "%s - %s" % (unicode(p.pk), p.name)) for p in profile.my_unreported_projects()])
 
     def clean(self):
-        """
-        
-        """
-        return self.cleaned_data            
+        return self.cleaned_data
             
 class MobileNumberForm(forms.Form):
     phone_number    = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'input', 'size':'25', 'maxlength':'15',}))
 
     def clean(self):
-        """
-        
-        """
         cd = self.cleaned_data
         if not 'phone_number' in cd:
             raise forms.ValidationError(u'Field phone_number missing from MobileForm.')
@@ -890,9 +851,7 @@ class CommentForm(ModelForm):
         'class':'textarea',
         'rows':'5',
         'cols':'75',
-        #'width': '480px',
-        #'style': 'margin:0 auto;'
-    }))    
+    }))
     class Meta:
         model   = ProjectComment
         exclude = ('time', 'project', 'user', )
@@ -913,18 +872,6 @@ def commentform(request, project_id):
             comment.save()
     return HttpResponseRedirect(reverse('project_comments', args=[project_id]))
 
-#def org_activities(organisation):
-#    # assoc resolves to all projects associated with organisation, where organisation can function in any of the three partner functions
-#    assoc = organisation.published_projects()
-#    orgs = Organisation.objects.all()
-#    # partners resolves to all orgs that are partners of any kind to the list of projects in assoc
-#    partners = (orgs.filter(field_partners__project__in = assoc.values('pk').query) | \
-#                orgs.filter(support_partners__project__in = assoc.values('pk').query) | \
-#                orgs.filter(funding_partners__project__in = assoc.values('pk').query)).distinct()
-#    # remove organisation from queryset
-#    return assoc, partners.exclude(id=organisation.id)
-
-    
 @render_to('rsr/organisation/organisation.html')
 def orgdetail(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
@@ -1108,10 +1055,6 @@ def templatedev(request, template_name):
     return render_to_response('dev/%s.html' % template_name,
         {'dev': dev, 'p': p, 'updates': updates, 'comments': comments, 'projects': projects, 'stats': stats, 'orgs': orgs, 'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, 'grid_projects': grid_projects, }, context_instance=RequestContext(request))
 
-class HttpResponseNoContent(HttpResponse):
-    status_code = 204
-    
-
 def select_project_widget(request, org_id, template=''):
     o = get_object_or_404(Organisation, pk=org_id) #TODO: better error handling for widgets than straight 404
     org_projects = o.published_projects()
@@ -1146,11 +1089,10 @@ def project_list_widget(request, template='project-list', org_id=0):
     site = request.GET.get('site', 'www.akvo.org')
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)
-        #p = o.published_projects().status_not_archived().status_not_cancelled().funding()
         p = o.published_projects()
-        p = p.status_not_archived().status_not_cancelled()#.funding()
+        p = p.status_not_archived().status_not_cancelled()
     else:
-        p = Project.objects.published().status_not_archived().status_not_cancelled()#.funding()
+        p = Project.objects.published().status_not_archived().status_not_cancelled()
     order_by = request.GET.get('order_by', 'title')
     #p = p.annotate(last_update=Max('project_updates__time'))
     p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
@@ -1175,7 +1117,6 @@ def project_list_widget(request, template='project-list', org_id=0):
             'request_get': request.GET, 
             'site': site,
             'lang': get_language(),
-            'RSR_CACHE_SECONDS': getattr(settings, 'RSR_CACHE_SECONDS', 300),
         },
         context_instance=RequestContext(request))
 
@@ -1365,9 +1306,9 @@ def global_map(request):
 
 @render_to('rsr/akvo_at_a_glance.html')
 def data_overview(request):
-    projects = Project.objects.published()#.funding()
+    projects = Project.objects.published()
     orgs = Organisation.objects.all()
-    rsr_cache_seconds = getattr(settings, 'RSR_CACHE_SETTINGS', 300)
-    template_context = dict(orgs=orgs, projects=projects,
-        RSR_CACHE_SECONDS=rsr_cache_seconds)
-    return template_context
+    return dict(
+        projects=projects,
+        orgs=orgs,
+    )
