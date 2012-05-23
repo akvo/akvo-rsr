@@ -1,4 +1,4 @@
-{% load counter_tags google_maps humanize i18n rsr_tags %}
+{% load google_maps humanize i18n rsr_tags %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -25,12 +25,6 @@
 <body>
 {% google_organisation_projects_map org state width height zoom %}
 <div id="footer">
-  <div style="float:left; padding-top:3px; display:none;">
-			<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
-  			<span style="display:none">{% counter org %}</span>
-        {{ org.view_count|intcomma }} {% trans 'views' %}
-			</span>
-  </div>
   <a href="http://akvo.org">
     <img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
   </a>

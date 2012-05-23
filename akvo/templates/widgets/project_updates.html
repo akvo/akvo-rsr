@@ -1,5 +1,5 @@
 {% extends "widgets/base_widget.html" %}
-{% load i18n rsr_tags rsr_filters thumbnail counter_tags humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail humanize %}
 {% load url from future %}
 
 
@@ -57,7 +57,6 @@
 	
 {% block header %}
 	<h1>{% trans 'Most Recent Update' %}</h1>
-	<span style="display:none;">{% counter project %}</span>
 {% endblock header %}
 
 {% block content %}<div id="heightconstrain">

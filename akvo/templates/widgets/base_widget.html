@@ -1,4 +1,4 @@
-{% load i18n rsr_tags counter_tags humanize %}
+{% load i18n rsr_tags humanize %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -33,14 +33,6 @@
   </div>
   <div id="footer">
     {% block footer %}
-      {% block  footer_counter %}
-        <div style="float:left; padding-top:6px; display:none;">
-				<span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
-					<span style="display:none;">{% counter project %}</span>
-          {{ project.view_count|intcomma }} {% trans 'views' %}
-				</span>
-        </div>
-      {% endblock footer_counter %}
       <div class="float:right;">
         <a href="http://akvo.org">
           <img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
