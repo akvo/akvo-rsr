@@ -46,9 +46,9 @@
       <ul class="breadcrum">
         {% block breadcrum_items %}
           {% if return_url %}
-            <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
+            <li><a href="{{ return_url }}"><span>{{organisation|truncatewords:3}}</span></a></li>
           {% else %}
-            <li class="last_breadcrum_item">{{organisation}}</li>
+            <li class="last_breadcrum_item">{{organisation|truncatewords:3}}</li>
           {% endif %}
         {% endblock breadcrum_items %}
       </ul>
