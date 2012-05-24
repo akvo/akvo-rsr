@@ -44,14 +44,14 @@
       <div id="paypal_donate_warning_main" style="float:right; width:380px; background-color:#FFEFEB; color:#FF0000; border:1px solid #FFDAD9; padding:10px;">
         <p>
           <span style="font-weight:bold;">{% trans 'A problem occurred' %}</span><br />
-          {% trans "We're sorry, but you must have Javascript enabled in your browser to proceed." %}
+          {% trans "We&#x27;re sorry, but you must have Javascript enabled in your browser to proceed." %}
         </p>
       </div>
     </noscript>
     <div class="clear"></div>
     <div style="float:left; width:400px;">
       <div class="donate_details_left">
-        <p>{% trans 'project.title' %}:</p>
+        <p>{% trans 'Project' %}:</p>
       </div>
       <div class="donate_details_right">
         <p><a href="{% url 'project_main' project.id %}">{{ project.title }}</a></p>
