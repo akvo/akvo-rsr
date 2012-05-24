@@ -2060,8 +2060,7 @@ class PartnerSite(models.Model):
     default_language = models.CharField(_(u'language'),
                                         max_length=5,
                                         choices=settings.LANGUAGES,
-                                        default='en')
-                                        # default=settings.LANGUAGE_CODE)
+                                        default=settings.LANGUAGE_CODE)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
