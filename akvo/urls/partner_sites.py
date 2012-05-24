@@ -8,14 +8,16 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from __future__ import absolute_import
 
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls.i18n import i18n_patterns
 from django_counter.urls import urlpatterns as counter_urls
 
 from akvo.rsr import views_partner_sites as views
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates
 
-urlpatterns = patterns('',
-    # Home
+
+urlpatterns = i18n_patterns('',
+
     url(r'^$',
         views.HomeView.as_view(),
         name='home'),
