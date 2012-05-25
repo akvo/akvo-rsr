@@ -117,7 +117,16 @@
         </div>
         
         <div class="span-4 last" style="margin-bottom:20px; text-align:right">
-          <form action="/i18n/setlang/" method="post" id="langugeForm">
+          <select name="language" id="languageChooser" style="margin-top:3px;" class="span-4 last">
+            {% for lang_code, lang_name in LANGUAGES %}
+              <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+                {{ lang_name }}
+              </option>
+            {% endfor %}
+          </select>
+
+          {% comment %}
+         <form action="/i18n/setlang/" method="post" id="langugeForm">
             {% csrf_token %}
             <select name="language" id="languageChooser" class="span-4 last" style="margin-top:3px">
               {% for lang in LANGUAGES %}
@@ -126,7 +135,9 @@
                 </option>
               {% endfor %}
             </select>
-          </form>
+          </form>            
+          {% endcomment %}
+ 
         </div>
       </div>
       {% endblock breadcrum %}
@@ -249,9 +260,7 @@
 		var $ = jQ = jQuery.noConflict();
 		
 		jQ(document).ready(function(){
-      jQ('#languageChooser').change(function() {
-        jQ('#langugeForm').submit();
-      });
+      jQ('#languageChooser').change(function() {window.location = jQ('#languageChooser option:selected').val();});
 			{% block jq_ready %}{% endblock jq_ready %}			
 		});		
 	</script>	
