@@ -9,8 +9,12 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.http import Http404
+from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
+from django.http import Http404, HttpResponseRedirect
+from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
+from django.utils import translation
+from django.utils.cache import patch_vary_headers
 
 from akvo.rsr.models import PartnerSite
 
@@ -21,18 +25,18 @@ def make_tls_property(default=None):
         def __init__(self):
             from threading import local
             self.local = local()
-        
+
         def __get__(self, instance, cls):
             if not instance:
                 return self
             return self.value
-        
+
         def __set__(self, instance, value):
             self.value = value
-        
+
         def _get_value(self):
             return getattr(self.local, 'value', default)
-        
+
         def _set_value(self, value):
             self.local.value = value
         value = property(_get_value, _set_value)
@@ -46,14 +50,25 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, 'PARTNER_SITE', None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings, 'PARTNER_SITES_DEVELOPMENT_DOMAIN', 'akvoapp.dev')
-PARTNER_SITES_DOMAINS = getattr(settings, 'PARTNER_SITES_DOMAINS',
-        ('akvoapp.org', 'akvotest.org', 'akvotest2.org', 'akvotest3.org', PARTNER_SITES_DEVELOPMENT_DOMAIN))
-PARTNER_SITES_MARKETING_SITE = getattr(settings, 'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
+PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
+                                        'PARTNER_SITES_DEVELOPMENT_DOMAIN',
+                                        'akvoapp.dev')
+PARTNER_SITES_DOMAINS = getattr(settings,
+                                'PARTNER_SITES_DOMAINS',
+                                (
+                                    'akvoapp.org',
+                                    'akvotest.org',
+                                    'akvotest2.org',
+                                    'akvotest3.org',
+                                    PARTNER_SITES_DEVELOPMENT_DOMAIN
+                                ))
+PARTNER_SITES_MARKETING_SITE = getattr(settings,
+    'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
 
 
 def is_rsr(domain):
-    "Predicate to determine if an incoming request domain should be handled as a regular instance of Akvo RSR."
+    """Predicate to determine if an incoming request domain should be handled
+    as a regular instance of Akvo RSR."""
     dev_domains = ('localhost', '127.0.0.1', 'akvo.dev')
     if domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains:
         return True
@@ -61,7 +76,8 @@ def is_rsr(domain):
 
 
 def is_partner_site(domain):
-    "Predicate to determine if an incoming request domain should be handled as a partner site instance."
+    """Predicate to determine if an incoming request domain should be
+    handled as a partner site instance."""
     domain_parts = tuple(domain.split('.'))
     if len(domain_parts) >= 3:
         domain_name = '%s.%s' % domain_parts[-2:]
@@ -72,9 +88,7 @@ def is_partner_site(domain):
 
 def get_or_create_site(domain):
     """Helper function to get or create a `django.contrib.sites.models.Site` object.
-    Also takes care of removing any duplicates.
-    
-    """
+    Also takes care of removing any duplicates."""
     sites = Site.objects.filter(domain=domain)
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
@@ -107,9 +121,61 @@ class PartnerSitesRouterMiddleware(object):
             except:
                 raise Http404
         if partner_site is not None and partner_site.enabled:
-                request.partner_site = settings.PARTNER_SITE = partner_site
-                request.organisation_id = partner_site.organisation.id
-                request.urlconf = 'akvo.urls.partner_sites'
+            request.partner_site = settings.PARTNER_SITE = partner_site
+            request.organisation_id = partner_site.organisation.id
+            request.urlconf = 'akvo.urls.partner_sites'
+            request.default_language = partner_site.default_language
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
+
+
+class PartnerSitesLocaleMiddleware(LocaleMiddleware):
+    """Partner sites aware version of Django's LocaleMiddleware. Since we
+    swap out the root urlconf for a partner sites specific one, and the
+    original Django LocaleMiddleware didn't like that."""
+
+    def process_request(self, request):
+        check_path = self.is_language_prefix_patterns_used(request)
+        language = translation.get_language_from_request(
+            request, check_path=check_path)
+        translation.activate(language)
+        request.LANGUAGE_CODE = translation.get_language()
+
+    def process_response(self, request, response):
+        # First set the default language, this will be used if there is none
+        # in the path
+        default_language = getattr(request, 'default_language', '')
+        if default_language:
+            translation.activate(default_language)
+
+        language = translation.get_language()
+        if (response.status_code == 404 and
+                not translation.get_language_from_path(request.path_info)
+                    and self.is_language_prefix_patterns_used(request)):
+            urlconf = getattr(request, 'urlconf', None)
+            language_path = '/%s%s' % (language, request.path_info)
+            if settings.APPEND_SLASH and not language_path.endswith('/'):
+                language_path = language_path + '/'
+
+            if is_valid_path(language_path, urlconf):
+                language_url = "%s://%s/%s%s" % (
+                    request.is_secure() and 'https' or 'http',
+                    request.get_host(), language, request.get_full_path())
+                return HttpResponseRedirect(language_url)
+        translation.deactivate()
+
+        patch_vary_headers(response, ('Accept-Language',))
+        if 'Content-Language' not in response:
+            response['Content-Language'] = language
+        return response
+
+    def is_language_prefix_patterns_used(self, request):
+        """
+        Returns `True` if the `LocaleRegexURLResolver` is used
+        at root level of the urlpatterns, else it returns `False`.
+        """
+        for url_pattern in get_resolver(request.urlconf).url_patterns:
+            if isinstance(url_pattern, LocaleRegexURLResolver):
+                return True
+        return False

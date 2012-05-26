@@ -18,7 +18,7 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li class="last_breadcrum_item">{{project}}</li>
+  <li class="last_breadcrum_item">{{project|truncatewords:3}}</li>
 {% endblock breadcrum_items %}
 
 

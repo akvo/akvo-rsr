@@ -906,9 +906,8 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
 
-    list_display    = ('id', 'project', 'user', 'text', 'time', 'get_is_featured', 'img',)    
-    list_filter     = ('featured', 'time', 'project', )
-    actions         = ['featured_on', 'featured_off']
+    list_display    = ('id', 'project', 'user', 'text', 'time', 'img',)    
+    list_filter     = ('time', 'project', )
     
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
@@ -918,25 +917,6 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
-    
-    def featured_on(self, request, queryset):
-        rows_updated = queryset.exclude(photo__exact='').update(featured=True)
-        if rows_updated == 1:
-            message_bit = _(u'1 update was')
-        else:
-            message_bit = _(u'%d updates were')  % rows_updated
-        self.message_user(request, _(u'%s marked as featured.') % message_bit)
-    featured_on.short_description = _(u'Mark selected updates as featured')
-            
-    def featured_off(self, request, queryset):
-        rows_updated = queryset.update(featured=False)
-        if rows_updated == 1:
-            message_bit = _(u'1 update was')
-        else:
-            message_bit = _(u'%d updates were')  % rows_updated
-        self.message_user(request, _(u'%s removed from featured.') % message_bit)
-    featured_off.short_description = _(u'Remove selected updates from featured')
-            
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
     
 

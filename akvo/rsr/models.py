@@ -1799,7 +1799,7 @@ class ProjectUpdate(models.Model):
     update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
     time = models.DateTimeField(_(u'time'), auto_now_add=True)
     time_last_updated = models.DateTimeField(_(u'time last updated'), auto_now=True)
-    featured = models.BooleanField(_(u'featured'))
+    # featured = models.BooleanField(_(u'featured'))
 
     class Meta:
         get_latest_by = "time"
@@ -1814,10 +1814,10 @@ class ProjectUpdate(models.Model):
             return value
     img.allow_tags = True
 
-    def get_is_featured(self):
-        return self.featured
-    get_is_featured.boolean = True #make pretty icons in the admin list view
-    get_is_featured.short_description = _(u'update is featured')
+    # def get_is_featured(self):
+    #     return self.featured
+    # get_is_featured.boolean = True #make pretty icons in the admin list view
+    # get_is_featured.short_description = _(u'update is featured')
 
     def get_video_thumbnail_url(self, url=''):
         if self.video:
@@ -2155,6 +2155,10 @@ class PartnerSite(models.Model):
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
+    default_language = models.CharField(_(u'language'),
+                                        max_length=5,
+                                        choices=settings.LANGUAGES,
+                                        default=settings.LANGUAGE_CODE)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}

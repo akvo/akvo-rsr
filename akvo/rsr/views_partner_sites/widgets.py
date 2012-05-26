@@ -39,7 +39,7 @@ class GetWidgetView(BaseView):
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         return {
             'widget_type': widget_type,
-            'project': project
+            'project': project,
         }
 
 

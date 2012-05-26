@@ -4,5 +4,5 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li><a href="{% url 'project_main' project.id %}"><span>{{project.title}}</span></a></li>
+<li><a href="{% url 'project_main' project.id %}"><span>{{project.title|truncatewords:3}}</span></a></li>
 {% endblock breadcrum_items %}

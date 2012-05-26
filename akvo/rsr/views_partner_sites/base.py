@@ -11,6 +11,7 @@ from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
+from django.utils import translation
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS
@@ -47,6 +48,13 @@ class PartnerSitesMixin(object):
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
         context['stylesheet'] = self.request.partner_site.stylesheet
+
+        # Playing with language
+        # print "get_language(): %s" % translation.get_language()
+        # print "get_language_from_request(): %s" % translation.get_language_from_request(self.request)
+        # print "get_language_from_path(): %s" % translation.get_language_from_path(self.request.path)
+        # print "path: %s" % self.request.path
+        # 
 
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = 'https://'

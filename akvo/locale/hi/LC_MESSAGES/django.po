@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-27 14:34+0200\n"
+"POT-Creation-Date: 2012-05-22 07:26-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: hi <LL@li.org>\n"
@@ -103,7 +103,9 @@ msgid ""
 msgstr ""
 
 #: rsr/admin.py:454 templates/partner_sites/project/project_main.html:64
+#: templates/partner_sites/project/project_main.html:82
 #: templates/rsr/project/project_main.html:91
+#: templates/rsr/project/project_main.html:110
 msgid "Goals"
 msgstr ""
 
@@ -115,24 +117,24 @@ msgid ""
 "will be used to measure overall project success."
 msgstr ""
 
-#: rsr/admin.py:603
+#: rsr/admin.py:611
 #, python-format
 msgid "Add %s"
 msgstr ""
 
-#: rsr/admin.py:758
+#: rsr/admin.py:766
 msgid "account is active"
 msgstr ""
 
-#: rsr/admin.py:759
+#: rsr/admin.py:767
 msgid "organisation administrator"
 msgstr ""
 
-#: rsr/admin.py:760
+#: rsr/admin.py:768
 msgid "organisation project editor"
 msgstr ""
 
-#: rsr/admin.py:761
+#: rsr/admin.py:769
 msgid "can create sms updates"
 msgstr ""
 
@@ -143,7 +145,7 @@ msgstr ""
 
 #: rsr/feeds.py:197
 #, python-format
-msgid "Project updates for project %(project_name)s"
+msgid "Project updates for project %(project_title)s"
 msgstr ""
 
 #: rsr/feeds.py:212
@@ -156,21 +158,21 @@ msgstr ""
 msgid "Project updates for projects partnered by %(org_name)s"
 msgstr ""
 
-#: rsr/feeds.py:218
+#: rsr/feeds.py:219
 #, python-format
 msgid "Project updates for projects partnered by %(org_name)s - %(long_name)s"
 msgstr ""
 
-#: rsr/feeds.py:225 rsr/feeds.py:242
+#: rsr/feeds.py:228 rsr/feeds.py:251
 #, python-format
 msgid "Project %(project_id)d - %(project_title)s: %(update_title)s"
 msgstr ""
 
-#: rsr/feeds.py:231
+#: rsr/feeds.py:239
 msgid "Akvo RSR all project updates"
 msgstr ""
 
-#: rsr/feeds.py:236 templates/rsr/base.html:26
+#: rsr/feeds.py:244 templates/rsr/base.html:26
 msgid "Project updates for all Akvo RSR projects"
 msgstr ""
 
@@ -182,20 +184,12 @@ msgstr ""
 msgid "Longitude coordinate."
 msgstr ""
 
-#: rsr/fields.py:53
-msgid "A TextField that honors the max_length param"
-msgstr ""
-
-#: rsr/fields.py:64
-msgid "A TextField that honors the max_length param for 'new' projects"
-msgstr ""
-
 #: rsr/filters.py:78
 msgid "All words"
 msgstr ""
 
 #: rsr/filters.py:90
-msgid "Project name or subtitle"
+msgid "Project title or subtitle"
 msgstr ""
 
 #: rsr/filters.py:92
@@ -1446,12 +1440,12 @@ msgstr ""
 msgid "Support partner"
 msgstr ""
 
-#: rsr/models.py:152 rsr/models.py:341 rsr/models.py:1978
+#: rsr/models.py:152 rsr/models.py:344 rsr/models.py:1992
 msgid "organisation"
 msgstr ""
 
-#: rsr/models.py:153 rsr/models.py:1040 rsr/models.py:1052 rsr/models.py:1088
-#: rsr/models.py:1680 rsr/models.py:1783
+#: rsr/models.py:153 rsr/models.py:1043 rsr/models.py:1055 rsr/models.py:1091
+#: rsr/models.py:1683 rsr/models.py:1797
 #: templates/partner_sites/partners/partner_list.html:52
 #: templates/partner_sites/partners/partner_main.html:142
 #: templates/partner_sites/partners/partner_main.html:164
@@ -1485,7 +1479,7 @@ msgstr ""
 msgid "Governmental"
 msgstr ""
 
-#: rsr/models.py:188 templates/rsr/base.html:174
+#: rsr/models.py:188 templates/rsr/base.html:206
 msgid "Commercial"
 msgstr ""
 
@@ -1571,570 +1565,570 @@ msgstr ""
 msgid "Describe your organisation."
 msgstr ""
 
-#: rsr/models.py:342
+#: rsr/models.py:345
 msgid "organisations"
 msgstr ""
 
-#: rsr/models.py:371
+#: rsr/models.py:374
 msgid ""
 "The name of the focus area. This will show as the title of the focus area "
 "project listing page. (30 characters)."
 msgstr ""
 
-#: rsr/models.py:372
+#: rsr/models.py:375
 msgid ""
 "Enter the \"slug\" i.e. a short word or hyphenated-words. This will be used "
 "in the URL of the focus area project listing page. (20 characters, only "
 "lower case letters, numbers, hyphen and underscore allowed.)."
 msgstr ""
 
-#: rsr/models.py:373
+#: rsr/models.py:376
 msgid ""
 "Enter the text that will appear on the focus area project listing page. (500 "
 "characters)."
 msgstr ""
 
-#: rsr/models.py:375
+#: rsr/models.py:378
 msgid "focus area image"
 msgstr ""
 
-#: rsr/models.py:378
+#: rsr/models.py:381
 msgid "The image that will appear on the focus area project listing page."
 msgstr ""
 
-#: rsr/models.py:380
+#: rsr/models.py:383
 msgid "accordion link"
 msgstr ""
 
-#: rsr/models.py:380
+#: rsr/models.py:383
 msgid ""
 "Where the link in the accordion for the focus area points if other than the "
 "focus area project listing."
 msgstr ""
 
-#: rsr/models.py:400 rsr/models.py:408 rsr/models.py:1054
+#: rsr/models.py:403 rsr/models.py:411 rsr/models.py:1057
 msgid "benchmark name"
 msgstr ""
 
-#: rsr/models.py:400
+#: rsr/models.py:403
 msgid "Enter a name for the benchmark. (50 characters)."
 msgstr ""
 
-#: rsr/models.py:401
+#: rsr/models.py:404
 msgid "order"
 msgstr ""
 
-#: rsr/models.py:401
+#: rsr/models.py:404
 msgid ""
 "Used to order the benchmarks when displayed. Larger numbers sink to the "
 "bottom of the list."
 msgstr ""
 
-#: rsr/models.py:409 rsr/models.py:425
+#: rsr/models.py:412 rsr/models.py:428
 msgid "benchmark names"
 msgstr ""
 
-#: rsr/models.py:416
+#: rsr/models.py:419
 msgid "category name"
 msgstr ""
 
-#: rsr/models.py:416
+#: rsr/models.py:419
 msgid "Enter a name for the category. (50 characters)."
 msgstr ""
 
-#: rsr/models.py:424
+#: rsr/models.py:427
 msgid "focus area"
 msgstr ""
 
-#: rsr/models.py:424
+#: rsr/models.py:427
 msgid "Select the Focus area(s) the category belongs to."
 msgstr ""
 
-#: rsr/models.py:425
+#: rsr/models.py:428
 msgid "Select the benchmark names for the category."
 msgstr ""
 
-#: rsr/models.py:428 rsr/models.py:1053
+#: rsr/models.py:431 rsr/models.py:1056
 msgid "category"
 msgstr ""
 
-#: rsr/models.py:429 rsr/models.py:524
+#: rsr/models.py:432 rsr/models.py:527
 msgid "categories"
 msgstr ""
 
-#: rsr/models.py:455
+#: rsr/models.py:458
 msgid "None"
 msgstr ""
 
-#: rsr/models.py:456
+#: rsr/models.py:459
 msgid "Needs funding"
 msgstr ""
 
-#: rsr/models.py:457 templates/partner_sites/partners/partner_main.html:94
+#: rsr/models.py:460 templates/partner_sites/partners/partner_main.html:94
 #: templates/rsr/akvo_at_a_glance.html:44
 #: templates/rsr/organisation/organisation.html:126
 msgid "Active"
 msgstr ""
 
-#: rsr/models.py:458 templates/partner_sites/partners/partner_main.html:102
+#: rsr/models.py:461 templates/partner_sites/partners/partner_main.html:102
 #: templates/rsr/akvo_at_a_glance.html:60
 #: templates/rsr/organisation/organisation.html:142
 msgid "Complete"
 msgstr ""
 
-#: rsr/models.py:459 templates/partner_sites/partners/partner_main.html:106
+#: rsr/models.py:462 templates/partner_sites/partners/partner_main.html:106
 #: templates/rsr/akvo_at_a_glance.html:68
 #: templates/rsr/organisation/organisation.html:150
 msgid "Cancelled"
 msgstr ""
 
-#: rsr/models.py:460
+#: rsr/models.py:463
 msgid "Archived"
 msgstr ""
 
-#: rsr/models.py:521 rsr/models.py:1682
+#: rsr/models.py:524 rsr/models.py:1685
 msgid "title"
 msgstr ""
 
-#: rsr/models.py:521
+#: rsr/models.py:524
 msgid "A short descriptive title for your project (45 characters)."
 msgstr ""
 
-#: rsr/models.py:522
+#: rsr/models.py:525
 msgid "subtitle"
 msgstr ""
 
-#: rsr/models.py:522
+#: rsr/models.py:525
 msgid "A subtitle with more information on the project (75 characters)."
 msgstr ""
 
-#: rsr/models.py:523
+#: rsr/models.py:526
 msgid "status"
 msgstr ""
 
-#: rsr/models.py:523
+#: rsr/models.py:526
 msgid "Current project state."
 msgstr ""
 
-#: rsr/models.py:525
+#: rsr/models.py:528
 msgid "partners"
 msgstr ""
 
-#: rsr/models.py:526
+#: rsr/models.py:529
 msgid "summary of project plan"
 msgstr ""
 
-#: rsr/models.py:526
+#: rsr/models.py:529
 msgid "Briefly summarize the project (400 characters)."
 msgstr ""
 
-#: rsr/models.py:528
+#: rsr/models.py:531
 msgid "project photo"
 msgstr ""
 
-#: rsr/models.py:532
+#: rsr/models.py:535
 msgid ""
 "The project image looks best in landscape format (4:3 width:height ratio), "
 "and should be less than 3.5 mb in size."
 msgstr ""
 
-#: rsr/models.py:534 rsr/models.py:1693
+#: rsr/models.py:537 rsr/models.py:1696
 msgid "photo caption"
 msgstr ""
 
-#: rsr/models.py:534
+#: rsr/models.py:537
 msgid "Enter a caption for your project picture (50 characters)."
 msgstr ""
 
-#: rsr/models.py:535
+#: rsr/models.py:538
 msgid "overview of goals"
 msgstr ""
 
-#: rsr/models.py:535
+#: rsr/models.py:538
 msgid "Describe what the project hopes to accomplish (600 characters)."
 msgstr ""
 
-#: rsr/models.py:543
+#: rsr/models.py:546
 msgid "current status"
 msgstr ""
 
-#: rsr/models.py:543
+#: rsr/models.py:546
 msgid "Description of current phase of project. (600 characters)."
 msgstr ""
 
-#: rsr/models.py:544
+#: rsr/models.py:547
 msgid "project plan"
 msgstr ""
 
-#: rsr/models.py:544
+#: rsr/models.py:547
 msgid ""
 "Detailed information about the project and plans for implementing: the what, "
 "how, who and when. (unlimited)."
 msgstr ""
 
-#: rsr/models.py:545
+#: rsr/models.py:548
 msgid "sustainability"
 msgstr ""
 
-#: rsr/models.py:545
+#: rsr/models.py:548
 msgid ""
 "Describe plans for sustaining/maintaining results after implementation is "
 "complete (unlimited)."
 msgstr ""
 
-#: rsr/models.py:546
+#: rsr/models.py:549
 msgid "background"
 msgstr ""
 
-#: rsr/models.py:546
+#: rsr/models.py:549
 msgid ""
 "Relevant background information, including geographic, political, "
 "environmental, social and/or cultural issues (1000 characters)."
 msgstr ""
 
-#: rsr/models.py:548
+#: rsr/models.py:551
 msgid "project rating"
 msgstr ""
 
-#: rsr/models.py:549
+#: rsr/models.py:552
 msgid "notes"
 msgstr ""
 
-#: rsr/models.py:549
+#: rsr/models.py:552
 msgid "(Unlimited number of characters)."
 msgstr ""
 
-#: rsr/models.py:552
+#: rsr/models.py:555
 msgid "currency"
 msgstr ""
 
-#: rsr/models.py:553
+#: rsr/models.py:556
 msgid "date request posted"
 msgstr ""
 
-#: rsr/models.py:554
+#: rsr/models.py:557
 msgid "date complete"
 msgstr ""
 
-#: rsr/models.py:907
+#: rsr/models.py:910
 msgid "No update yet"
 msgstr ""
 
-#: rsr/models.py:1041 templates/rsr/project/project_directory.html:66
+#: rsr/models.py:1044 templates/rsr/project/project_directory.html:66
 msgid "projects"
 msgstr ""
 
-#: rsr/models.py:1048
+#: rsr/models.py:1051
 msgid "goal"
 msgstr ""
 
-#: rsr/models.py:1048
+#: rsr/models.py:1051
 msgid "(100 characters)"
 msgstr ""
 
-#: rsr/models.py:1052 rsr/models.py:1069
+#: rsr/models.py:1055 rsr/models.py:1072
 msgid "benchmarks"
 msgstr ""
 
-#: rsr/models.py:1055
+#: rsr/models.py:1058
 msgid "benchmark value"
 msgstr ""
 
-#: rsr/models.py:1059
+#: rsr/models.py:1062
 #, python-format
 msgid "Category: %(category)s, Benchmark: %(value)d %(name)s"
 msgstr ""
 
-#: rsr/models.py:1068
+#: rsr/models.py:1071
 msgid "benchmark"
 msgstr ""
 
-#: rsr/models.py:1073 rsr/models.py:1089
+#: rsr/models.py:1076 rsr/models.py:1092
 msgid "label"
 msgstr ""
 
-#: rsr/models.py:1080
+#: rsr/models.py:1083
 msgid "budget item label"
 msgstr ""
 
-#: rsr/models.py:1081
+#: rsr/models.py:1084
 msgid "budget item labels"
 msgstr ""
 
-#: rsr/models.py:1091
+#: rsr/models.py:1094
 msgid "\"Other\" labels extra info"
 msgstr ""
 
-#: rsr/models.py:1092
+#: rsr/models.py:1095
 msgid "Extra information about the exact nature of an \"other\" budget item."
 msgstr ""
 
 #. Translators: This is the amount of an budget item in a currancy (€ or $)
-#: rsr/models.py:1095
+#: rsr/models.py:1098
 msgid "amount"
 msgstr ""
 
-#: rsr/models.py:1110
+#: rsr/models.py:1113
 msgid "budget item"
 msgstr ""
 
-#: rsr/models.py:1111
+#: rsr/models.py:1114
 msgid "budget items"
 msgstr ""
 
-#: rsr/models.py:1124
+#: rsr/models.py:1127
 msgid "Unpublished"
 msgstr ""
 
-#: rsr/models.py:1125
+#: rsr/models.py:1128
 msgid "Published"
 msgstr ""
 
-#: rsr/models.py:1133
+#: rsr/models.py:1136
 msgid "publishing status"
 msgstr ""
 
-#: rsr/models.py:1134
+#: rsr/models.py:1137
 msgid "publishing statuses"
 msgstr ""
 
-#: rsr/models.py:1143 templates/partner_sites/partners/partner_main.html:40
+#: rsr/models.py:1146 templates/partner_sites/partners/partner_main.html:40
 #: templates/rsr/organisation/organisation.html:59
 msgid "Akvopedia entry"
 msgstr ""
 
-#: rsr/models.py:1144 templates/partner_sites/project/project_main.html:114
+#: rsr/models.py:1147 templates/partner_sites/project/project_main.html:114
 #: templates/rsr/project/project_main.html:147
 msgid "External link"
 msgstr ""
 
-#: rsr/models.py:1146
+#: rsr/models.py:1149
 msgid "kind"
 msgstr ""
 
-#: rsr/models.py:1147
+#: rsr/models.py:1150
 msgid "URL"
 msgstr ""
 
-#: rsr/models.py:1148
+#: rsr/models.py:1151
 msgid "caption"
 msgstr ""
 
-#: rsr/models.py:1158
+#: rsr/models.py:1161
 msgid "link"
 msgstr ""
 
-#: rsr/models.py:1159
+#: rsr/models.py:1162
 msgid "links"
 msgstr ""
 
-#: rsr/models.py:1163
+#: rsr/models.py:1166
 msgid "At the beginning of the update"
 msgstr ""
 
-#: rsr/models.py:1164
+#: rsr/models.py:1167
 msgid "At the end of the update"
 msgstr ""
 
-#: rsr/models.py:1167
+#: rsr/models.py:1170
 msgid "web"
 msgstr ""
 
-#: rsr/models.py:1168
+#: rsr/models.py:1171
 msgid "e-mail"
 msgstr ""
 
-#: rsr/models.py:1169 templates/widgets/project_updates.html:101
+#: rsr/models.py:1172 templates/widgets/project_updates.html:101
 msgid "SMS"
 msgstr ""
 
-#: rsr/models.py:1208
+#: rsr/models.py:1211
 msgid "validation code"
 msgstr ""
 
-#: rsr/models.py:1232
+#: rsr/models.py:1235
 msgid "user profile"
 msgstr ""
 
-#: rsr/models.py:1233
+#: rsr/models.py:1236
 msgid "user profiles"
 msgstr ""
 
-#: rsr/models.py:1262
+#: rsr/models.py:1265
 msgid "user is activated (may log in)"
 msgstr ""
 
-#: rsr/models.py:1282
+#: rsr/models.py:1285
 msgid "user is an organisation administrator"
 msgstr ""
 
-#: rsr/models.py:1293
+#: rsr/models.py:1296
 msgid "user is a project editor"
 msgstr ""
 
-#: rsr/models.py:1548
+#: rsr/models.py:1551
 msgid "may create SMS project updates"
 msgstr ""
 
-#: rsr/models.py:1681 rsr/models.py:1784
+#: rsr/models.py:1684 rsr/models.py:1798
 msgid "user"
 msgstr ""
 
-#: rsr/models.py:1682 templates/rsr/project/update_form.html:49
+#: rsr/models.py:1685 templates/rsr/project/update_form.html:49
 msgid "50 characters"
 msgstr ""
 
-#: rsr/models.py:1683
+#: rsr/models.py:1686
 msgid "text"
 msgstr ""
 
-#: rsr/models.py:1686
+#: rsr/models.py:1689
 msgid "photo"
 msgstr ""
 
-#: rsr/models.py:1690
+#: rsr/models.py:1693
 msgid "The image should have 4:3 height:width ratio for best displaying result"
 msgstr ""
 
-#: rsr/models.py:1692
+#: rsr/models.py:1695
 msgid "photo location"
 msgstr ""
 
-#: rsr/models.py:1693 rsr/models.py:1696
+#: rsr/models.py:1696 rsr/models.py:1699
 msgid "75 characters"
 msgstr ""
 
-#: rsr/models.py:1694
+#: rsr/models.py:1697
 msgid "photo credit"
 msgstr ""
 
-#: rsr/models.py:1694 rsr/models.py:1697
+#: rsr/models.py:1697 rsr/models.py:1700
 msgid "25 characters"
 msgstr ""
 
-#: rsr/models.py:1695
+#: rsr/models.py:1698
 msgid "video URL"
 msgstr ""
 
-#: rsr/models.py:1695
+#: rsr/models.py:1698
 msgid "Supported providers: Blip, Vimeo, YouTube"
 msgstr ""
 
-#: rsr/models.py:1696
+#: rsr/models.py:1699
 msgid "video caption"
 msgstr ""
 
-#: rsr/models.py:1697
+#: rsr/models.py:1700
 msgid "video credit"
 msgstr ""
 
-#: rsr/models.py:1698
+#: rsr/models.py:1701
 msgid "update method"
 msgstr ""
 
-#: rsr/models.py:1699 rsr/models.py:1786
+#: rsr/models.py:1702 rsr/models.py:1800
 msgid "time"
 msgstr ""
 
-#: rsr/models.py:1700
+#: rsr/models.py:1703
 msgid "time last updated"
 msgstr ""
 
-#: rsr/models.py:1701
-msgid "featured"
-msgstr ""
-
-#: rsr/models.py:1705
+#: rsr/models.py:1708
 msgid "project update"
 msgstr ""
 
-#: rsr/models.py:1706
+#: rsr/models.py:1709
 msgid "project updates"
 msgstr ""
 
-#: rsr/models.py:1719
-msgid "update is featured"
-msgstr ""
-
-#: rsr/models.py:1785
+#: rsr/models.py:1799
 msgid "comment"
 msgstr ""
 
-#: rsr/models.py:1979
+#: rsr/models.py:1803
+msgid "project comment"
+msgstr ""
+
+#: rsr/models.py:1804
+msgid "project comments"
+msgstr ""
+
+#: rsr/models.py:1993
 msgid "Select your organisation from the drop-down list."
 msgstr ""
 
-#: rsr/models.py:1981
+#: rsr/models.py:1995
 msgid "hostname"
 msgstr ""
 
-#: rsr/models.py:1983
+#: rsr/models.py:1997
 msgid ""
 "<p>Your hostname is used in the default web address of your partner site. "
 "The web address created from  the hostname <em>myorganisation</em> would be "
 "<em>http://myorganisation.akvoapp.org/</em>.</p>"
 msgstr ""
 
-#: rsr/models.py:1988
+#: rsr/models.py:2002
 msgid "CNAME"
 msgstr ""
 
-#: rsr/models.py:1990
+#: rsr/models.py:2004
 msgid ""
 "<p>Enter a custom domain name for accessing the partner site, for example "
 "<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>"
 msgstr ""
 
-#: rsr/models.py:1994
+#: rsr/models.py:2008
 msgid "Return URL"
 msgstr ""
 
-#: rsr/models.py:1996
+#: rsr/models.py:2010
 msgid ""
 "<p>Enter the full URL (including http://) for the page to which users should "
 "be returned when leaving the partner site.</p>"
 msgstr ""
 
-#: rsr/models.py:2000
+#: rsr/models.py:2014
 msgid "stylesheet"
 msgstr ""
 
-#: rsr/models.py:2001
+#: rsr/models.py:2015
 msgid "organisation banner logo"
 msgstr ""
 
-#: rsr/models.py:2003
+#: rsr/models.py:2017
 msgid ""
 "<p>Upload a logo file for the banner at the top of the partner site page. By "
 "default the logo currently used by www.akvo.org will be displayed.</p>"
 msgstr ""
 
-#: rsr/models.py:2007
+#: rsr/models.py:2021
 msgid "favicon"
 msgstr ""
 
-#: rsr/models.py:2009
+#: rsr/models.py:2023
 msgid ""
 "<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser's "
 "location bar, on tabs and in the bookmark menu.</p>"
 msgstr ""
 
-#: rsr/models.py:2013
+#: rsr/models.py:2027
 msgid "about box text"
 msgstr ""
 
-#: rsr/models.py:2039
+#: rsr/models.py:2053
 msgid "about box image"
 msgstr ""
 
-#: rsr/models.py:2040
+#: rsr/models.py:2054
 msgid ""
 "<p>The optional background image for the About box\n"
 "            <em>must</em> be 470 pixels wide and 250 pixels tall.</p>\n"
 "        "
 msgstr ""
 
-#: rsr/models.py:2045
+#: rsr/models.py:2059
 msgid "enabled"
 msgstr ""
 
@@ -2310,6 +2304,7 @@ msgid ""
 msgstr ""
 
 #: templates/inclusion_tags/counter_badge.html:9
+#: templates/partner_sites/widgets/projects_map.html:36
 #: templates/rsr/project/project_comments.html:25
 #: templates/rsr/project/project_funding.html:28
 #: templates/rsr/project/project_main.html:34
@@ -2505,8 +2500,8 @@ msgid "Photo credit"
 msgstr ""
 
 #: templates/inclusion_tags/update_video.html:13
-#: templates/partner_sites/project/update_main.html:82
-#: templates/rsr/project/project_update.html:76
+#: templates/partner_sites/project/update_main.html:85
+#: templates/rsr/project/project_update.html:77
 #: templates/rsr/project/update_form.html:170
 msgid "Video credit"
 msgstr ""
@@ -2520,16 +2515,16 @@ msgstr ""
 
 #: templates/notification/notice_settings.html:23
 #: templates/rsr/project/get-a-widget/machinery_step1.html:65
-#: templates/rsr/project/get-a-widget/machinery_step1.html:136
-#: templates/rsr/project/get-a-widget/machinery_step1.html:207
-#: templates/rsr/project/get-a-widget/machinery_step1.html:278
-#: templates/rsr/project/get-a-widget/machinery_step1.html:351
-#: templates/rsr/project/get-a-widget/machinery_step1.html:422
-#: templates/rsr/project/get-a-widget/machinery_step1.html:493
-#: templates/rsr/project/get-a-widget/machinery_step1.html:564
-#: templates/rsr/project/get-a-widget/machinery_step1.html:635
-#: templates/rsr/project/get-a-widget/machinery_step1.html:709
-#: templates/rsr/project/get-a-widget/machinery_step1.html:767
+#: templates/rsr/project/get-a-widget/machinery_step1.html:138
+#: templates/rsr/project/get-a-widget/machinery_step1.html:211
+#: templates/rsr/project/get-a-widget/machinery_step1.html:284
+#: templates/rsr/project/get-a-widget/machinery_step1.html:359
+#: templates/rsr/project/get-a-widget/machinery_step1.html:432
+#: templates/rsr/project/get-a-widget/machinery_step1.html:505
+#: templates/rsr/project/get-a-widget/machinery_step1.html:578
+#: templates/rsr/project/get-a-widget/machinery_step1.html:651
+#: templates/rsr/project/get-a-widget/machinery_step1.html:727
+#: templates/rsr/project/get-a-widget/machinery_step1.html:785
 msgid "Settings"
 msgstr ""
 
@@ -2693,21 +2688,21 @@ msgstr ""
 msgid "Back to"
 msgstr ""
 
-#: templates/partner_sites/base.html:63
+#: templates/partner_sites/base.html:77
 msgid "Contact at "
 msgstr ""
 
-#: templates/partner_sites/base.html:69
+#: templates/partner_sites/base.html:83
 #: templates/partner_sites/auth/sign-in.html:47 templates/rsr/base.html:93
 #: templates/rsr/sign_in.html:6 templates/rsr/sign_in.html.py:43
 msgid "Sign in"
 msgstr ""
 
-#: templates/partner_sites/base.html:72
+#: templates/partner_sites/base.html:86
 msgid "Hello"
 msgstr ""
 
-#: templates/partner_sites/base.html:75 templates/rsr/base.html:97
+#: templates/partner_sites/base.html:89 templates/rsr/base.html:97
 msgid "Sign out"
 msgstr ""
 
@@ -2719,7 +2714,9 @@ msgstr ""
 #: templates/partner_sites/partners/partner_main.html:11
 #: templates/partner_sites/partners/partner_main.html:90
 #: templates/partner_sites/project/base_project.html:16
-#: templates/rsr/base.html:43 templates/rsr/index.html:135
+#: templates/partner_sites/widgets/get_widget1.html:11
+#: templates/partner_sites/widgets/get_widget2.html:11
+#: templates/rsr/base.html:43 templates/rsr/index.html:147
 #: templates/rsr/partners_widget.html:207
 #: templates/rsr/organisation/organisation_directory.html:178
 #: templates/rsr/project/project_base.html:14
@@ -2778,8 +2775,8 @@ msgstr ""
 
 #: templates/partner_sites/home.html:95
 #: templates/partner_sites/partners/partner_list.html:6
-#: templates/rsr/base.html:53 templates/rsr/base.html.py:141
-#: templates/rsr/base.html:170 templates/widgets/project_list.html:81
+#: templates/rsr/base.html:53 templates/rsr/base.html.py:173
+#: templates/rsr/base.html:202 templates/widgets/project_list.html:81
 msgid "Partners"
 msgstr ""
 
@@ -2830,8 +2827,8 @@ msgstr ""
 #: templates/partner_sites/partners/partner_list.html:12
 #: templates/partner_sites/partners/partner_list.html:21
 #: templates/partner_sites/partners/partner_main.html:12
-#: templates/partner_sites/project/base_project.html:143
-#: templates/rsr/index.html:139
+#: templates/partner_sites/project/base_project.html:144
+#: templates/rsr/index.html:151
 #: templates/rsr/organisation/organisation.html:265
 #: templates/rsr/project/project_base.html:171
 #: templates/rsr/project/project_partners.html:17
@@ -3036,10 +3033,33 @@ msgid "Sign in to add an update to your project."
 msgstr ""
 
 #: templates/partner_sites/project/base_project.html:137
-msgid "Project permalink"
+#: templates/partner_sites/widgets/get_widget1.html:6
+#: templates/partner_sites/widgets/get_widget1.html:12
+#: templates/partner_sites/widgets/get_widget1.html:21
+#: templates/partner_sites/widgets/get_widget2.html:6
+#: templates/partner_sites/widgets/get_widget2.html:12
+#: templates/partner_sites/widgets/get_widget2.html:21
+#: templates/rsr/project/project_base.html:160
+msgid "Get a widget"
 msgstr ""
 
-#: templates/partner_sites/project/base_project.html:167
+#: templates/partner_sites/project/base_project.html:137
+msgid "for your website"
+msgstr ""
+
+#: templates/partner_sites/project/base_project.html:138
+#: templates/partner_sites/project/update_main.html:102
+#: templates/rsr/project/project_base.html:161
+#: templates/rsr/project/project_update.html:90
+msgid "Permalink"
+msgstr ""
+
+#: templates/partner_sites/project/base_project.html:138
+#: templates/rsr/project/project_base.html:161
+msgid "to this project"
+msgstr ""
+
+#: templates/partner_sites/project/base_project.html:168
 #: templates/rsr/project/donate/donate_step2.html:68
 #: templates/rsr/project/donate/donate_step3.html:66
 #: templates/rsr/project/donate/donate_thanks.html:142
@@ -3140,11 +3160,6 @@ msgstr ""
 #: templates/partner_sites/project/project_main.html:70
 #: templates/rsr/project/project_main.html:98
 msgid "Current status"
-msgstr ""
-
-#: templates/partner_sites/project/project_main.html:82
-#: templates/rsr/project/project_main.html:110
-msgid "Expected outcomes"
 msgstr ""
 
 #: templates/partner_sites/project/project_main.html:96
@@ -3278,10 +3293,297 @@ msgid ""
 "(expires)s; at which time it will become locked and final."
 msgstr ""
 
-#: templates/partner_sites/project/update_main.html:99
-#: templates/rsr/project/project_base.html:161
-#: templates/rsr/project/project_update.html:89
-msgid "Permalink"
+#: templates/partner_sites/widgets/get_widget1.html:23
+#: templates/rsr/project/get-a-widget/machinery_step1.html:17
+msgid ""
+"The following steps will produce a snippet of Akvo widget code you can copy "
+"and paste into your own web site&#x27;s code."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:26
+#: templates/partner_sites/widgets/get_widget1.html:33
+#: templates/rsr/project/get-a-widget/machinery_step1.html:20
+msgid "Step 1: Select the type of widget you wish to use."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:27
+#: templates/rsr/project/get-a-widget/machinery_step1.html:21
+msgid "Step 2: Select colours and preview your widget."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:28
+#: templates/rsr/project/get-a-widget/machinery_step1.html:22
+msgid "Step 3: Copy the HTML code to your web site."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:34
+#: templates/rsr/project/get-a-widget/machinery_step1.html:47
+msgid ""
+"You can customise the top and bottom bar and title text colours on the next "
+"step."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:38
+#: templates/rsr/project/get-a-widget/machinery_step1.html:773
+msgid "Project map widget"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:39
+#: templates/rsr/project/get-a-widget/machinery_step1.html:775
+msgid ""
+"Shows a map of projects from your organisation. Users who click on this "
+"widget will go to Akvo.org."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget1.html:47
+#: templates/rsr/project/get-a-widget/machinery_step1.html:112
+#: templates/rsr/project/get-a-widget/machinery_step1.html:185
+#: templates/rsr/project/get-a-widget/machinery_step1.html:258
+#: templates/rsr/project/get-a-widget/machinery_step1.html:331
+#: templates/rsr/project/get-a-widget/machinery_step1.html:406
+#: templates/rsr/project/get-a-widget/machinery_step1.html:479
+#: templates/rsr/project/get-a-widget/machinery_step1.html:552
+#: templates/rsr/project/get-a-widget/machinery_step1.html:625
+#: templates/rsr/project/get-a-widget/machinery_step1.html:698
+#: templates/rsr/project/get-a-widget/machinery_step1.html:759
+#: templates/rsr/project/get-a-widget/machinery_step1.html:817
+msgid "Select and Proceed..."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:23
+#: templates/rsr/project/get-a-widget/machinery_step2.html:72
+msgid "This widget will show projects from the following organisation"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:29
+#: templates/rsr/project/get-a-widget/machinery_step2.html:80
+msgid "Step 2: Select colours for your widget and preview"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:31
+msgid "A: Bottom coloured bar"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:33
+#: templates/rsr/project/get-a-widget/machinery_step2.html:88
+msgid "A color you entered is not recognized. Please change and try again."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:38
+#: templates/rsr/project/get-a-widget/machinery_step2.html:96
+msgid "Akvo Red"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:39
+#: templates/rsr/project/get-a-widget/machinery_step2.html:97
+#: templates/rsr/project/get-a-widget/machinery_step2.html:149
+msgid "Gold"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:40
+#: templates/rsr/project/get-a-widget/machinery_step2.html:98
+#: templates/rsr/project/get-a-widget/machinery_step2.html:150
+msgid "DarkGoldenrod"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:41
+#: templates/rsr/project/get-a-widget/machinery_step2.html:99
+#: templates/rsr/project/get-a-widget/machinery_step2.html:151
+msgid "Red"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:42
+#: templates/rsr/project/get-a-widget/machinery_step2.html:100
+#: templates/rsr/project/get-a-widget/machinery_step2.html:152
+msgid "Dark Red"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:43
+#: templates/rsr/project/get-a-widget/machinery_step2.html:101
+#: templates/rsr/project/get-a-widget/machinery_step2.html:153
+msgid "DarkMagenta"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:44
+#: templates/rsr/project/get-a-widget/machinery_step2.html:102
+#: templates/rsr/project/get-a-widget/machinery_step2.html:154
+msgid "Indigo"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:45
+#: templates/rsr/project/get-a-widget/machinery_step2.html:103
+#: templates/rsr/project/get-a-widget/machinery_step2.html:155
+msgid "MidnightBlue"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:46
+#: templates/rsr/project/get-a-widget/machinery_step2.html:104
+#: templates/rsr/project/get-a-widget/machinery_step2.html:156
+msgid "MediumBlue"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:47
+#: templates/rsr/project/get-a-widget/machinery_step2.html:105
+#: templates/rsr/project/get-a-widget/machinery_step2.html:157
+msgid "DodgerBlue"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:48
+#: templates/rsr/project/get-a-widget/machinery_step2.html:106
+#: templates/rsr/project/get-a-widget/machinery_step2.html:158
+msgid "Teal"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:49
+#: templates/rsr/project/get-a-widget/machinery_step2.html:107
+#: templates/rsr/project/get-a-widget/machinery_step2.html:159
+msgid "SeaGreen"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:50
+#: templates/rsr/project/get-a-widget/machinery_step2.html:108
+#: templates/rsr/project/get-a-widget/machinery_step2.html:160
+msgid "DarkOliveGreen"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:51
+#: templates/rsr/project/get-a-widget/machinery_step2.html:109
+#: templates/rsr/project/get-a-widget/machinery_step2.html:161
+msgid "DimGray"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:52
+#: templates/rsr/project/get-a-widget/machinery_step2.html:110
+#: templates/rsr/project/get-a-widget/machinery_step2.html:162
+msgid "SlateGray"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:53
+#: templates/rsr/project/get-a-widget/machinery_step2.html:111
+#: templates/rsr/project/get-a-widget/machinery_step2.html:163
+msgid "Black"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:54
+#: templates/rsr/project/get-a-widget/machinery_step2.html:112
+#: templates/rsr/project/get-a-widget/machinery_step2.html:164
+msgid "Other..."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:57
+#: templates/rsr/project/get-a-widget/machinery_step2.html:115
+#: templates/rsr/project/get-a-widget/machinery_step2.html:167
+msgid "Select colour"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:66
+#: templates/rsr/project/get-a-widget/machinery_step2.html:124
+#: templates/rsr/project/get-a-widget/machinery_step2.html:176
+msgid "Enter a hex number"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:71
+#: templates/rsr/project/get-a-widget/machinery_step2.html:129
+#: templates/rsr/project/get-a-widget/machinery_step2.html:181
+msgid "View a list of"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:73
+#: templates/rsr/project/get-a-widget/machinery_step2.html:131
+#: templates/rsr/project/get-a-widget/machinery_step2.html:183
+msgid "standard colours"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:75
+#: templates/rsr/project/get-a-widget/machinery_step2.html:133
+#: templates/rsr/project/get-a-widget/machinery_step2.html:185
+msgid "external link, new window"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:84
+#: templates/rsr/project/get-a-widget/machinery_step2.html:195
+msgid "B: Set height of the widget"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:89
+msgid "C: Set width of the widget"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:94
+msgid "D: Set map state"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:105
+#: templates/registration/password_change_form.html:72
+#: templates/registration/password_reset_confirm.html:40
+#: templates/registration/password_reset_form.html:35
+#: templates/registration/registration_form1.html:41
+#: templates/registration/registration_form2.html:108
+#: templates/registration/update_form.html:65
+#: templates/rsr/myakvo/mobile_number.html:42
+#: templates/rsr/project/update_form.html:208
+#: templates/rsr/project/update_form.html:210
+#: templates/rsr/project/donate/donate_step2.html:269
+#: templates/rsr/project/donate/donate_step3.html:248
+#: templates/rsr/project/get-a-widget/machinery_step1.html:107
+#: templates/rsr/project/get-a-widget/machinery_step1.html:180
+#: templates/rsr/project/get-a-widget/machinery_step1.html:253
+#: templates/rsr/project/get-a-widget/machinery_step1.html:326
+#: templates/rsr/project/get-a-widget/machinery_step1.html:401
+#: templates/rsr/project/get-a-widget/machinery_step1.html:474
+#: templates/rsr/project/get-a-widget/machinery_step1.html:547
+#: templates/rsr/project/get-a-widget/machinery_step1.html:620
+#: templates/rsr/project/get-a-widget/machinery_step1.html:693
+#: templates/rsr/project/get-a-widget/machinery_step1.html:754
+#: templates/rsr/project/get-a-widget/machinery_step1.html:812
+#: templates/rsr/project/get-a-widget/machinery_step2.html:215
+msgid "Cancel"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:108
+#: templates/rsr/project/get-a-widget/machinery_step2.html:218
+msgid "Preview"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:114
+msgid "E: Review your widget"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:118
+#: templates/rsr/project/get-a-widget/machinery_step2.html:235
+msgid "Step 3: Copy the HTML code below for use on your web site"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:121
+#: templates/rsr/project/get-a-widget/machinery_step2.html:239
+msgid ""
+"You may repeat the steps above until you are satisﬁed with the appearance of "
+"your widget."
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:145
+#: templates/rsr/project/get-a-widget/machinery_step2.html:271
+msgid "Please review message below"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:146
+#: templates/rsr/project/get-a-widget/machinery_step2.html:272
+msgid "A: Hex color values should be 3 or 6 characters"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:147
+#: templates/rsr/project/get-a-widget/machinery_step2.html:273
+msgid "A: Not a valid hex number"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:148
+#: templates/rsr/project/get-a-widget/machinery_step2.html:274
+msgid "B: Hex color values should be 3 or 6 characters"
+msgstr ""
+
+#: templates/partner_sites/widgets/get_widget2.html:149
+#: templates/rsr/project/get-a-widget/machinery_step2.html:275
+msgid "B: Not a valid hex number"
 msgstr ""
 
 #: templates/registration/activate.html:8
@@ -3395,32 +3697,6 @@ msgstr ""
 #: templates/registration/password_change_form.html:64
 #: templates/registration/password_reset_confirm.html:34
 msgid "Retype the password to avoid mistakes."
-msgstr ""
-
-#: templates/registration/password_change_form.html:72
-#: templates/registration/password_reset_confirm.html:40
-#: templates/registration/password_reset_form.html:35
-#: templates/registration/registration_form1.html:41
-#: templates/registration/registration_form2.html:108
-#: templates/registration/update_form.html:65
-#: templates/rsr/myakvo/mobile_number.html:42
-#: templates/rsr/project/update_form.html:208
-#: templates/rsr/project/update_form.html:210
-#: templates/rsr/project/donate/donate_step2.html:269
-#: templates/rsr/project/donate/donate_step3.html:248
-#: templates/rsr/project/get-a-widget/machinery_step1.html:105
-#: templates/rsr/project/get-a-widget/machinery_step1.html:176
-#: templates/rsr/project/get-a-widget/machinery_step1.html:247
-#: templates/rsr/project/get-a-widget/machinery_step1.html:318
-#: templates/rsr/project/get-a-widget/machinery_step1.html:391
-#: templates/rsr/project/get-a-widget/machinery_step1.html:462
-#: templates/rsr/project/get-a-widget/machinery_step1.html:533
-#: templates/rsr/project/get-a-widget/machinery_step1.html:604
-#: templates/rsr/project/get-a-widget/machinery_step1.html:675
-#: templates/rsr/project/get-a-widget/machinery_step1.html:736
-#: templates/rsr/project/get-a-widget/machinery_step1.html:794
-#: templates/rsr/project/get-a-widget/machinery_step2.html:215
-msgid "Cancel"
 msgstr ""
 
 #: templates/registration/password_reset_complete.html:6
@@ -3743,11 +4019,11 @@ msgid "Focus Areas"
 msgstr ""
 
 #. Translators: This is the header for the About column in the footer
-#: templates/rsr/base.html:63 templates/rsr/base.html.py:152
+#: templates/rsr/base.html:63 templates/rsr/base.html.py:184
 msgid "About"
 msgstr ""
 
-#: templates/rsr/base.html:68 templates/rsr/base.html.py:190
+#: templates/rsr/base.html:68 templates/rsr/base.html.py:222
 msgid "Blog"
 msgstr ""
 
@@ -3756,11 +4032,11 @@ msgid "My Akvo"
 msgstr ""
 
 #. Translators: This is the main header in the footer
-#: templates/rsr/base.html:128
+#: templates/rsr/base.html:160
 msgid "About Akvo.org"
 msgstr ""
 
-#: templates/rsr/base.html:131
+#: templates/rsr/base.html:163
 msgid ""
 "We are a non-profit foundation headquartered in the Netherlands. We help "
 "connect doers and donors to transform communities in some of the poorest "
@@ -3769,72 +4045,75 @@ msgid ""
 "purposes."
 msgstr ""
 
-#: templates/rsr/base.html:136
+#: templates/rsr/base.html:168
 msgid "Policies"
 msgstr ""
 
-#: templates/rsr/base.html:138
+#: templates/rsr/base.html:170
 msgid "General terms of use"
 msgstr ""
 
-#: templates/rsr/base.html:139
+#: templates/rsr/base.html:171
 msgid "Privacy"
 msgstr ""
 
-#: templates/rsr/base.html:140
+#: templates/rsr/base.html:172
 msgid "Donations"
 msgstr ""
 
-#: templates/rsr/base.html:143
+#: templates/rsr/base.html:175
 msgid "Akvo API code of conduct"
 msgstr ""
 
-#: templates/rsr/base.html:145
+#: templates/rsr/base.html:177
 msgid "User submitted content"
 msgstr ""
 
-#: templates/rsr/base.html:146
+#: templates/rsr/base.html:178
 msgid "Licensing and copyrights"
 msgstr ""
 
 #. Translators: This is the About us link in the about column in footer
-#: templates/rsr/base.html:157
+#: templates/rsr/base.html:189
 msgid "About us"
 msgstr ""
 
-#: templates/rsr/base.html:159
+#: templates/rsr/base.html:191
 msgid "How it works"
 msgstr ""
 
-#: templates/rsr/base.html:160
+#: templates/rsr/base.html:192
 msgid "Team"
 msgstr ""
 
-#: templates/rsr/base.html:161
+#: templates/rsr/base.html:193
 msgid "Working at Akvo"
 msgstr ""
 
-#: templates/rsr/base.html:162
+#: templates/rsr/base.html:194
 msgid "Akvo FAQ"
 msgstr ""
 
-#: templates/rsr/base.html:164
+#: templates/rsr/base.html:196
 msgid "Press"
 msgstr ""
 
-#: templates/rsr/base.html:165
+#: templates/rsr/base.html:197
 msgid "Annual reports"
 msgstr ""
 
-#: templates/rsr/base.html:166
+#: templates/rsr/base.html:198
 msgid "Articles of incorporation"
 msgstr ""
 
-#: templates/rsr/base.html:172
+#: templates/rsr/base.html:204
 msgid "Strategic"
 msgstr ""
 
-#: templates/rsr/base.html:173 templates/rsr/global_map.html:77
+#: templates/rsr/base.html:205 templates/rsr/global_map.html:77
+#: templates/rsr/project/donate/donate_step2.html:54
+#: templates/rsr/project/donate/donate_step3.html:52
+#: templates/rsr/project/donate/donate_thanks.html:126
 #: templates/widgets/cobranded_banner.html:54
 #: templates/widgets/cobranded_leader.html:53
 #: templates/widgets/cobranded_narrow.html:64
@@ -3848,47 +4127,47 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: templates/rsr/base.html:175
+#: templates/rsr/base.html:207
 msgid "Knowledge institutes"
 msgstr ""
 
-#: templates/rsr/base.html:176
+#: templates/rsr/base.html:208
 msgid "Akvo investors"
 msgstr ""
 
-#: templates/rsr/base.html:180
+#: templates/rsr/base.html:212
 msgid "Developers"
 msgstr ""
 
-#: templates/rsr/base.html:182
+#: templates/rsr/base.html:214
 msgid "AkvoLabs"
 msgstr ""
 
-#: templates/rsr/base.html:183
+#: templates/rsr/base.html:215
 msgid "Source code"
 msgstr ""
 
-#: templates/rsr/base.html:187
+#: templates/rsr/base.html:219
 msgid "Admin"
 msgstr ""
 
-#: templates/rsr/base.html:189
+#: templates/rsr/base.html:221
 msgid "Akvo RSR login"
 msgstr ""
 
-#: templates/rsr/base.html:191
+#: templates/rsr/base.html:223
 msgid "CMS"
 msgstr ""
 
-#: templates/rsr/base.html:195
+#: templates/rsr/base.html:227
 msgid "Contact us"
 msgstr ""
 
-#: templates/rsr/base.html:198
+#: templates/rsr/base.html:230
 msgid "Contact info"
 msgstr ""
 
-#: templates/rsr/base.html:200
+#: templates/rsr/base.html:232
 msgid "Report a problem"
 msgstr ""
 
@@ -3952,27 +4231,27 @@ msgstr ""
 msgid "Read earlier blog posts"
 msgstr ""
 
-#: templates/rsr/index.html:129
+#: templates/rsr/index.html:141
 msgid "Right now in Akvo.org..."
 msgstr ""
 
-#: templates/rsr/index.html:146
+#: templates/rsr/index.html:158
 msgid "People served"
 msgstr ""
 
-#: templates/rsr/index.html:148
+#: templates/rsr/index.html:160
 msgid "In project budgets"
 msgstr ""
 
-#: templates/rsr/index.html:158
+#: templates/rsr/index.html:170
 msgid "Global project map"
 msgstr ""
 
-#: templates/rsr/index.html:164
+#: templates/rsr/index.html:176
 msgid "Project focus areas"
 msgstr ""
 
-#: templates/rsr/index.html:178
+#: templates/rsr/index.html:190
 msgid "Browse projects / read more"
 msgstr ""
 
@@ -4214,15 +4493,7 @@ msgid "See funding details"
 msgstr ""
 
 #: templates/rsr/project/project_base.html:160
-msgid "Get a widget"
-msgstr ""
-
-#: templates/rsr/project/project_base.html:160
 msgid "for your web site"
-msgstr ""
-
-#: templates/rsr/project/project_base.html:161
-msgid "to this project"
 msgstr ""
 
 #: templates/rsr/project/project_base.html:162
@@ -4540,15 +4811,9 @@ msgid "Project to receive your donation"
 msgstr ""
 
 #: templates/rsr/project/donate/donate_step2.html:47
-#: templates/rsr/project/donate/donate_step3.html:45
 msgid ""
-"We're sorry, but you must have Javascript enabled in your browser to proceed."
-msgstr ""
-
-#: templates/rsr/project/donate/donate_step2.html:54
-#: templates/rsr/project/donate/donate_step3.html:52
-#: templates/rsr/project/donate/donate_thanks.html:126
-msgid "project.title"
+"We&#x27;re sorry, but you must have Javascript enabled in your browser to "
+"proceed."
 msgstr ""
 
 #: templates/rsr/project/donate/donate_step2.html:91
@@ -4629,6 +4894,7 @@ msgid ""
 msgstr ""
 
 #: templates/rsr/project/donate/donate_step2.html:138
+#: templates/rsr/project/donate/donate_step3.html:136
 msgid ""
 "iDeal charges up to 3.9% + 30 US Dollar cents of your donation in "
 "transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars "
@@ -4726,11 +4992,9 @@ msgstr ""
 msgid "Confirm Donation"
 msgstr ""
 
-#: templates/rsr/project/donate/donate_step3.html:136
+#: templates/rsr/project/donate/donate_step3.html:45
 msgid ""
-"iDeal charges up to 3.9%+30 US Dollar cents of your donation in transaction "
-"fees. So if you donate 100 US Dollars, at least 95.80 US Dollars will go "
-"towards the selected project."
+"We're sorry, but you must have Javascript enabled in your browser to proceed."
 msgstr ""
 
 #: templates/rsr/project/donate/donate_step3.html:162
@@ -4895,24 +5159,6 @@ msgstr ""
 msgid "Get a widget to use on your web site"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:17
-msgid ""
-"The following steps will produce a snippet of Akvo widget code you can copy "
-"and paste into your own web site&#x27;s code."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:20
-msgid "Step 1: Select the type of widget you wish to use."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:21
-msgid "Step 2: Select colours and preview your widget."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:22
-msgid "Step 3: Copy the HTML code to your web site."
-msgstr ""
-
 #: templates/rsr/project/get-a-widget/machinery_step1.html:27
 #, python-format
 msgid ""
@@ -4930,184 +5176,146 @@ msgstr ""
 msgid "Step 1: Select the type of widget you wish to use"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:47
-msgid ""
-"You can customise the top and bottom bar and title text colours on the next "
-"step."
-msgstr ""
-
 #: templates/rsr/project/get-a-widget/machinery_step1.html:53
 msgid "Project widget with Donation link (170 pixels wide by 840 pixels high)"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:55
-#: templates/rsr/project/get-a-widget/machinery_step1.html:126
-#: templates/rsr/project/get-a-widget/machinery_step1.html:197
-#: templates/rsr/project/get-a-widget/machinery_step1.html:268
-#: templates/rsr/project/get-a-widget/machinery_step1.html:340
-#: templates/rsr/project/get-a-widget/machinery_step1.html:412
-#: templates/rsr/project/get-a-widget/machinery_step1.html:483
-#: templates/rsr/project/get-a-widget/machinery_step1.html:554
-#: templates/rsr/project/get-a-widget/machinery_step1.html:625
+#: templates/rsr/project/get-a-widget/machinery_step1.html:128
+#: templates/rsr/project/get-a-widget/machinery_step1.html:201
+#: templates/rsr/project/get-a-widget/machinery_step1.html:274
+#: templates/rsr/project/get-a-widget/machinery_step1.html:348
+#: templates/rsr/project/get-a-widget/machinery_step1.html:422
+#: templates/rsr/project/get-a-widget/machinery_step1.html:495
+#: templates/rsr/project/get-a-widget/machinery_step1.html:568
+#: templates/rsr/project/get-a-widget/machinery_step1.html:641
 msgid ""
 "Shows basic description and allows donations. Users who click on this widget "
 "will go to Akvo.org."
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:58
-#: templates/rsr/project/get-a-widget/machinery_step1.html:129
-#: templates/rsr/project/get-a-widget/machinery_step1.html:200
-#: templates/rsr/project/get-a-widget/machinery_step1.html:271
-#: templates/rsr/project/get-a-widget/machinery_step1.html:343
-#: templates/rsr/project/get-a-widget/machinery_step1.html:415
-#: templates/rsr/project/get-a-widget/machinery_step1.html:486
-#: templates/rsr/project/get-a-widget/machinery_step1.html:557
-#: templates/rsr/project/get-a-widget/machinery_step1.html:628
-#: templates/rsr/project/get-a-widget/machinery_step1.html:701
-#: templates/rsr/project/get-a-widget/machinery_step1.html:760
+#: templates/rsr/project/get-a-widget/machinery_step1.html:131
+#: templates/rsr/project/get-a-widget/machinery_step1.html:204
+#: templates/rsr/project/get-a-widget/machinery_step1.html:277
+#: templates/rsr/project/get-a-widget/machinery_step1.html:351
+#: templates/rsr/project/get-a-widget/machinery_step1.html:425
+#: templates/rsr/project/get-a-widget/machinery_step1.html:498
+#: templates/rsr/project/get-a-widget/machinery_step1.html:571
+#: templates/rsr/project/get-a-widget/machinery_step1.html:644
+#: templates/rsr/project/get-a-widget/machinery_step1.html:719
+#: templates/rsr/project/get-a-widget/machinery_step1.html:778
 msgid "Sample"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:68
-#: templates/rsr/project/get-a-widget/machinery_step1.html:139
-#: templates/rsr/project/get-a-widget/machinery_step1.html:210
-#: templates/rsr/project/get-a-widget/machinery_step1.html:281
-#: templates/rsr/project/get-a-widget/machinery_step1.html:354
-#: templates/rsr/project/get-a-widget/machinery_step1.html:425
-#: templates/rsr/project/get-a-widget/machinery_step1.html:496
-#: templates/rsr/project/get-a-widget/machinery_step1.html:567
-#: templates/rsr/project/get-a-widget/machinery_step1.html:638
-#: templates/rsr/project/get-a-widget/machinery_step1.html:712
-#: templates/rsr/project/get-a-widget/machinery_step1.html:770
+#: templates/rsr/project/get-a-widget/machinery_step1.html:141
+#: templates/rsr/project/get-a-widget/machinery_step1.html:214
+#: templates/rsr/project/get-a-widget/machinery_step1.html:287
+#: templates/rsr/project/get-a-widget/machinery_step1.html:362
+#: templates/rsr/project/get-a-widget/machinery_step1.html:435
+#: templates/rsr/project/get-a-widget/machinery_step1.html:508
+#: templates/rsr/project/get-a-widget/machinery_step1.html:581
+#: templates/rsr/project/get-a-widget/machinery_step1.html:654
+#: templates/rsr/project/get-a-widget/machinery_step1.html:730
+#: templates/rsr/project/get-a-widget/machinery_step1.html:788
 msgid "Enter the web address where you will embed this widget"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:71
-#: templates/rsr/project/get-a-widget/machinery_step1.html:142
-#: templates/rsr/project/get-a-widget/machinery_step1.html:213
-#: templates/rsr/project/get-a-widget/machinery_step1.html:284
-#: templates/rsr/project/get-a-widget/machinery_step1.html:357
-#: templates/rsr/project/get-a-widget/machinery_step1.html:428
-#: templates/rsr/project/get-a-widget/machinery_step1.html:499
-#: templates/rsr/project/get-a-widget/machinery_step1.html:570
-#: templates/rsr/project/get-a-widget/machinery_step1.html:641
-#: templates/rsr/project/get-a-widget/machinery_step1.html:715
-#: templates/rsr/project/get-a-widget/machinery_step1.html:773
-#: templates/rsr/project/get-a-widget/machinery_step1.html:898
+#: templates/rsr/project/get-a-widget/machinery_step1.html:144
+#: templates/rsr/project/get-a-widget/machinery_step1.html:217
+#: templates/rsr/project/get-a-widget/machinery_step1.html:290
+#: templates/rsr/project/get-a-widget/machinery_step1.html:365
+#: templates/rsr/project/get-a-widget/machinery_step1.html:438
+#: templates/rsr/project/get-a-widget/machinery_step1.html:511
+#: templates/rsr/project/get-a-widget/machinery_step1.html:584
+#: templates/rsr/project/get-a-widget/machinery_step1.html:657
+#: templates/rsr/project/get-a-widget/machinery_step1.html:733
+#: templates/rsr/project/get-a-widget/machinery_step1.html:791
+#: templates/rsr/project/get-a-widget/machinery_step1.html:916
 msgid "Example"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:83
-#: templates/rsr/project/get-a-widget/machinery_step1.html:154
-#: templates/rsr/project/get-a-widget/machinery_step1.html:225
-#: templates/rsr/project/get-a-widget/machinery_step1.html:296
-#: templates/rsr/project/get-a-widget/machinery_step1.html:369
-#: templates/rsr/project/get-a-widget/machinery_step1.html:440
-#: templates/rsr/project/get-a-widget/machinery_step1.html:511
-#: templates/rsr/project/get-a-widget/machinery_step1.html:582
-#: templates/rsr/project/get-a-widget/machinery_step1.html:653
-msgid "Use the"
+#: templates/rsr/project/get-a-widget/machinery_step1.html:156
+#: templates/rsr/project/get-a-widget/machinery_step1.html:229
+#: templates/rsr/project/get-a-widget/machinery_step1.html:302
+#: templates/rsr/project/get-a-widget/machinery_step1.html:377
+#: templates/rsr/project/get-a-widget/machinery_step1.html:450
+#: templates/rsr/project/get-a-widget/machinery_step1.html:523
+#: templates/rsr/project/get-a-widget/machinery_step1.html:596
+#: templates/rsr/project/get-a-widget/machinery_step1.html:669
+#, python-format
+msgid ""
+"\n"
+"                  Use the %(project_title)s project.\n"
+"                "
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:83
-#: templates/rsr/project/get-a-widget/machinery_step1.html:154
-#: templates/rsr/project/get-a-widget/machinery_step1.html:225
-#: templates/rsr/project/get-a-widget/machinery_step1.html:296
-#: templates/rsr/project/get-a-widget/machinery_step1.html:369
-#: templates/rsr/project/get-a-widget/machinery_step1.html:440
-#: templates/rsr/project/get-a-widget/machinery_step1.html:511
-#: templates/rsr/project/get-a-widget/machinery_step1.html:582
-#: templates/rsr/project/get-a-widget/machinery_step1.html:653
-msgid "project."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:90
-#: templates/rsr/project/get-a-widget/machinery_step1.html:161
-#: templates/rsr/project/get-a-widget/machinery_step1.html:232
-#: templates/rsr/project/get-a-widget/machinery_step1.html:303
-#: templates/rsr/project/get-a-widget/machinery_step1.html:376
-#: templates/rsr/project/get-a-widget/machinery_step1.html:447
-#: templates/rsr/project/get-a-widget/machinery_step1.html:518
-#: templates/rsr/project/get-a-widget/machinery_step1.html:589
-#: templates/rsr/project/get-a-widget/machinery_step1.html:660
+#: templates/rsr/project/get-a-widget/machinery_step1.html:92
+#: templates/rsr/project/get-a-widget/machinery_step1.html:165
+#: templates/rsr/project/get-a-widget/machinery_step1.html:238
+#: templates/rsr/project/get-a-widget/machinery_step1.html:311
+#: templates/rsr/project/get-a-widget/machinery_step1.html:386
+#: templates/rsr/project/get-a-widget/machinery_step1.html:459
+#: templates/rsr/project/get-a-widget/machinery_step1.html:532
+#: templates/rsr/project/get-a-widget/machinery_step1.html:605
+#: templates/rsr/project/get-a-widget/machinery_step1.html:678
 msgid "Display a random project from this organisation"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:110
-#: templates/rsr/project/get-a-widget/machinery_step1.html:181
-#: templates/rsr/project/get-a-widget/machinery_step1.html:252
-#: templates/rsr/project/get-a-widget/machinery_step1.html:323
-#: templates/rsr/project/get-a-widget/machinery_step1.html:396
-#: templates/rsr/project/get-a-widget/machinery_step1.html:467
-#: templates/rsr/project/get-a-widget/machinery_step1.html:538
-#: templates/rsr/project/get-a-widget/machinery_step1.html:609
-#: templates/rsr/project/get-a-widget/machinery_step1.html:680
-#: templates/rsr/project/get-a-widget/machinery_step1.html:741
-#: templates/rsr/project/get-a-widget/machinery_step1.html:799
-msgid "Select and Proceed..."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:124
+#: templates/rsr/project/get-a-widget/machinery_step1.html:126
 msgid ""
 "Cobranded narrow project widget with Donation link (170 pixels wide by 911 "
 "pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:195
+#: templates/rsr/project/get-a-widget/machinery_step1.html:199
 msgid ""
 "Cobranded short project widget with Donation link (170 pixels wide by 627 "
 "pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:266
+#: templates/rsr/project/get-a-widget/machinery_step1.html:272
 msgid "Cobranded banner widget (468 pixels wide by 234 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:338
+#: templates/rsr/project/get-a-widget/machinery_step1.html:346
 msgid "Cobranded leader widget (728 pixels wide by 207 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:410
+#: templates/rsr/project/get-a-widget/machinery_step1.html:420
 msgid "Project widget with Donation link (202 pixels wide by 840 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:481
+#: templates/rsr/project/get-a-widget/machinery_step1.html:493
 msgid "Project widget with updates (202 pixels wide by 900 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:552
+#: templates/rsr/project/get-a-widget/machinery_step1.html:566
 msgid "Project with Donation Link (202 pixels wide by 570 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:623
+#: templates/rsr/project/get-a-widget/machinery_step1.html:639
 msgid "Small project (170 pixels wide by 312 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:696
+#: templates/rsr/project/get-a-widget/machinery_step1.html:714
 msgid "Project list widget (745 pixels wide by 730 pixels high)"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:698
+#: templates/rsr/project/get-a-widget/machinery_step1.html:716
 msgid ""
 "Shows list of projects from your organisation. Users who click on this "
 "widget will go to Akvo.org."
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:723
+#: templates/rsr/project/get-a-widget/machinery_step1.html:741
 msgid "Display a project list from this organisation:"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step1.html:755
-msgid "Project map widget"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:757
-msgid ""
-"Shows a map of projects from your organisation. Users who click on this "
-"widget will go to Akvo.org."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step1.html:781
+#: templates/rsr/project/get-a-widget/machinery_step1.html:799
 msgid "Display a project map from this organisation:"
 msgstr ""
 
@@ -5123,129 +5331,8 @@ msgstr ""
 msgid "This widget will show the project"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step2.html:72
-msgid "This widget will show projects from the following organisation"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:80
-msgid "Step 2: Select colours for your widget and preview"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:88
-msgid "A color you entered is not recognized. Please change and try again."
-msgstr ""
-
 #: templates/rsr/project/get-a-widget/machinery_step2.html:90
 msgid "A: Top and bottom coloured bars"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:96
-msgid "Akvo Red"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:97
-#: templates/rsr/project/get-a-widget/machinery_step2.html:149
-msgid "Gold"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:98
-#: templates/rsr/project/get-a-widget/machinery_step2.html:150
-msgid "DarkGoldenrod"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:99
-#: templates/rsr/project/get-a-widget/machinery_step2.html:151
-msgid "Red"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:100
-#: templates/rsr/project/get-a-widget/machinery_step2.html:152
-msgid "Dark Red"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:101
-#: templates/rsr/project/get-a-widget/machinery_step2.html:153
-msgid "DarkMagenta"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:102
-#: templates/rsr/project/get-a-widget/machinery_step2.html:154
-msgid "Indigo"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:103
-#: templates/rsr/project/get-a-widget/machinery_step2.html:155
-msgid "MidnightBlue"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:104
-#: templates/rsr/project/get-a-widget/machinery_step2.html:156
-msgid "MediumBlue"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:105
-#: templates/rsr/project/get-a-widget/machinery_step2.html:157
-msgid "DodgerBlue"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:106
-#: templates/rsr/project/get-a-widget/machinery_step2.html:158
-msgid "Teal"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:107
-#: templates/rsr/project/get-a-widget/machinery_step2.html:159
-msgid "SeaGreen"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:108
-#: templates/rsr/project/get-a-widget/machinery_step2.html:160
-msgid "DarkOliveGreen"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:109
-#: templates/rsr/project/get-a-widget/machinery_step2.html:161
-msgid "DimGray"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:110
-#: templates/rsr/project/get-a-widget/machinery_step2.html:162
-msgid "SlateGray"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:111
-#: templates/rsr/project/get-a-widget/machinery_step2.html:163
-msgid "Black"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:112
-#: templates/rsr/project/get-a-widget/machinery_step2.html:164
-msgid "Other..."
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:115
-#: templates/rsr/project/get-a-widget/machinery_step2.html:167
-msgid "Select colour"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:124
-#: templates/rsr/project/get-a-widget/machinery_step2.html:176
-msgid "Enter a hex number"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:129
-#: templates/rsr/project/get-a-widget/machinery_step2.html:181
-msgid "View a list of"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:131
-#: templates/rsr/project/get-a-widget/machinery_step2.html:183
-msgid "standard colours"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:133
-#: templates/rsr/project/get-a-widget/machinery_step2.html:185
-msgid "external link, new window"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step2.html:144
@@ -5256,20 +5343,12 @@ msgstr ""
 msgid "White"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step2.html:195
-msgid "B: Set height of the widget"
-msgstr ""
-
 #: templates/rsr/project/get-a-widget/machinery_step2.html:199
 msgid "D: Set width of the widget"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step2.html:204
 msgid "C: Map state"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:218
-msgid "Preview"
 msgstr ""
 
 #: templates/rsr/project/get-a-widget/machinery_step2.html:225
@@ -5280,38 +5359,8 @@ msgstr ""
 msgid "C: Review your widget"
 msgstr ""
 
-#: templates/rsr/project/get-a-widget/machinery_step2.html:235
-msgid "Step 3: Copy the HTML code below for use on your web site"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:239
-msgid ""
-"You may repeat the steps above until you are satisﬁed with the appearance of "
-"your widget."
-msgstr ""
-
 #: templates/rsr/project/get-a-widget/machinery_step2.html:250
 msgid "Done"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:271
-msgid "Please review message below"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:272
-msgid "A: Hex color values should be 3 or 6 characters"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:273
-msgid "A: Not a valid hex number"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:274
-msgid "B: Hex color values should be 3 or 6 characters"
-msgstr ""
-
-#: templates/rsr/project/get-a-widget/machinery_step2.html:275
-msgid "B: Not a valid hex number"
 msgstr ""
 
 #: templates/widgets/cobranded_banner.html:10

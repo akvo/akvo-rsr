@@ -80,7 +80,6 @@ function preview_widget()
 	}
         
         if (akvo_widget_type != 'project-map') {
-            alert('In the non map code path');
 
             // Get Titlecolor string, validate that it's 3 or 6 characters and only has 0-f characters
             var txtcolor = '';
@@ -136,7 +135,7 @@ function preview_widget()
 	var akvo_widget_width = getWidth(akvo_widget_type);
     
     var akvo_url = '';
-    var widget_url = 'http://akvo.akvoapp.dev/widgets/projects/map/';
+    var widget_url = akvo_host + '/widgets/projects/map/';
     widget_url = widget_url + '?bgcolor=' + bgcolor;
     widget_url = widget_url + '&height='+ widget_height + '&width=' + widget_width + '&state=' + map_widget_state;
     /*

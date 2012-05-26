@@ -7,9 +7,9 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project|truncatewords:3}}</span></a></li>
   {% if update %}
-    <li><a href="{% url 'update_main' project.id update.id %}"><span>{{update}}</span></a></li>
+    <li><a href="{% url 'update_main' project.id update.id %}"><span>{{update|truncatewords:3}}</span></a></li>
     <li class="last_breadcrum_item">{% trans "Edit" %}</li>
   {% else %}
     <li class="last_breadcrum_item">{% trans "Add update" %}</li>
