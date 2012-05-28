@@ -103,7 +103,21 @@
 		</div>
 	</div>
 	<div id="main_container" class="container">
+
       {% block breadcrum %}
+
+        <div class="span-18" style="margin-bottom:20px;">
+          <div id="breadcrum_back">
+            <ul id="breadcrum">
+              {% block breadcrum_items %}
+              <li><a href="/"><span>Home</span></a></li>
+              {% endblock breadcrum_items %}
+            </ul>
+            <div class="clear"></div>
+          </div>
+        </div>
+
+				{% comment %}
         <div class="span-18" style="margin-bottom:20px;">
           <div class="span-14">
             <div id="breadcrum_back">
@@ -124,40 +138,11 @@
               </option>
             {% endfor %}
           </select>
-
-          {% comment %}
-         <form action="/i18n/setlang/" method="post" id="langugeForm">
-            {% csrf_token %}
-            <select name="language" id="languageChooser" class="span-4 last" style="margin-top:3px">
-              {% for lang in LANGUAGES %}
-                <option value="{{ lang.0 }}" {% ifequal lang.0 request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
-                    {{ lang.1 }}
-                </option>
-              {% endfor %}
-            </select>
-          </form>            
-          {% endcomment %}
- 
         </div>
       </div>
-      {% endblock breadcrum %}
-    
-    {% comment %}
-      
-      {% block breadcrum  %}
-        <div class="span-18" style="margin-bottom:20px;">
-          <div id="breadcrum_back">
-            <ul id="breadcrum">
-              {% block breadcrum_items %}
-              <li><a href="/"><span>Home</span></a></li>
-              {% endblock breadcrum_items %}
-            </ul>
-            <div class="clear"></div>
-          </div>
-        </div>
-      {% endblock breadcrum %}
-    {% endcomment %}
-		
+			{% endcomment %}
+    {% endblock breadcrum %}
+	
 		{% block maincontent %}
 			<h1>Akvo RSR</h1>
 		{% endblock maincontent %}
@@ -259,10 +244,11 @@
 	<script type="text/javascript">
 		var $ = jQ = jQuery.noConflict();
 		
-		jQ(document).ready(function(){
-      jQ('#languageChooser').change(function() {window.location = jQ('#languageChooser option:selected').val();});
-			{% block jq_ready %}{% endblock jq_ready %}			
-		});		
+		jQ(document).ready(function() {
+			//jQ('#languageChooser').change(function() {jQ('#langugeForm').submit();});
+      // jQ('#languageChooser').change(function() {window.location = jQ('#languageChooser option:selected').val();});
+	    {% block jq_ready %}{% endblock jq_ready %}
+	  });    		
 	</script>	
 </body>
 </html>
