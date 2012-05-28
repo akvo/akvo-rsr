@@ -32,7 +32,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cache, cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -121,7 +121,7 @@ def get_query(query_string, search_fields):
         
     return query
 
-
+@cache_page(getattr(settings, 'CACHE_SECONDS', 300))
 @render_to('rsr/index.html')
 def index(request, cms_id=None):
     '''
