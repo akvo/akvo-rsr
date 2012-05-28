@@ -166,10 +166,10 @@ urlpatterns += patterns('',
         'akvo.rsr.views.register2', name='register2'),
 
     url(r'^rsr/accounts/activate/(?P<activation_key>\w+)/$',
-        'akvo.rsr.views.activate', name='registration_activate', ),
+        'akvo.rsr.views.activate', name='registration_activate',),
 
     # url(r'^rsr/accounts/update/$',
-    #     'akvo.rsr.views.update_user_profile', name='registration_update', ),
+    #     'akvo.rsr.views.update_user_profile', name='registration_update',),
 
     url(r'^rsr/accounts/password/change/$',
         'akvo.rsr.views.password_change', name='password_change'),
@@ -233,7 +233,7 @@ urlpatterns += patterns('',
         'akvo.rsr.views.partners_widget', name='rsr_partners_widget'),
 
     url(r'^rsr/widget/one-from-organisation/(?P<org_id>\d+)/$',
-        'akvo.rsr.views.select_project_widget', name='select_project_widget', ),
+        'akvo.rsr.views.select_project_widget', name='select_project_widget',),
 
     url(r'^rsr/widget/(?P<template>[\w-]+)/project/(?P<project_id>\d+)/$',
         'akvo.rsr.views.project_widget', name='project_widget', ),

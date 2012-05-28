@@ -54,7 +54,7 @@ class ProjectMapView(TemplateView):
             protocol = 'http://'
 
         context['app_url'] = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
-                                            settings.APP_DOMAIN_NAME)
+                                          settings.APP_DOMAIN_NAME)
         context['domain_url'] = '%s%s' % (protocol, settings.DOMAIN_NAME)
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')

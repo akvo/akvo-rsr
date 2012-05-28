@@ -75,11 +75,6 @@ urlpatterns = i18n_patterns('',
         views.ProjectMapView.as_view(),
         name="widget_org_map"),
 
-    # Beta API
-    url(r'^api/beta/projects_cordinates.json$',
-        views.ProjectCordinates.as_view(),
-        name="api_projects_cordinates"),
-
     # Auth
     url(r'^rsr/signin/$',
         views.SignInView.as_view(),
@@ -88,6 +83,14 @@ urlpatterns = i18n_patterns('',
     url(r'^rsr/signout/$',
         views.signout,
         name='sign_out'),
+)
+
+# Non i18n
+urlpatterns += patterns('',
+   # Beta API
+    url(r'^api/beta/projects_cordinates.json$',
+        views.ProjectCordinates.as_view(),
+        name="api_projects_cordinates"),
 )
 
 urlpatterns += counter_urls
