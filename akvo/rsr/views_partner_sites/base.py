@@ -9,9 +9,9 @@ from __future__ import absolute_import
 
 from django.conf import settings
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
-from django.utils import translation
+from django.core.urlresolvers import reverse
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS
@@ -48,13 +48,6 @@ class PartnerSitesMixin(object):
             get_object_or_404(Organisation, pk=self.request.organisation_id)
         context['return_url'] = self.request.partner_site.return_url
         context['stylesheet'] = self.request.partner_site.stylesheet
-
-        # Playing with language
-        # print "get_language(): %s" % translation.get_language()
-        # print "get_language_from_request(): %s" % translation.get_language_from_request(self.request)
-        # print "get_language_from_path(): %s" % translation.get_language_from_path(self.request.path)
-        # print "path: %s" % self.request.path
-        # 
 
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = 'https://'
@@ -107,17 +100,6 @@ class BaseListView(DebugViewMixin, PartnerSitesMixin, ListView):
         return super(BaseListView, self).get_context_data(**kwargs)
 
 
-# class BaseProjectListView(BaseListView):
-#     """List view that extends BaseListView with a project list queryset"""
-#     context_object_name = 'projects_list'
-# 
-#     def get_queryset(self):
-#         projects = get_object_or_404(Organisation, pk=self.request.organisation_id) \
-#             .published_projects().funding().latest_update_fields().order_by('-id')
-#         return projects
-
-
-## ----------
 class BaseProjectListView(BaseListView):
     """List view that extends BaseListView with a project list queryset"""
     context_object_name = 'filtered_projects'
@@ -128,9 +110,12 @@ class BaseProjectListView(BaseListView):
             continent_code = context['filtered_projects'].form.data.get('continent', '')
             country_id = context['filtered_projects'].form.data.get('locations__country', '')
             org_id = context['filtered_projects'].form.data.get('organisation', '')
-            context['search_country'] = Country.objects.get(pk=int(country_id)) if country_id else ''
-            context['search_continent'] = dict(CONTINENTS)[continent_code] if continent_code else ''
-            context['search_organisation'] = Organisation.objects.get(pk=int(org_id)) if org_id else ''
+            context['search_country'] = Country.objects \
+                .get(pk=int(country_id)) if country_id else ''
+            context['search_continent'] = \
+                dict(CONTINENTS)[continent_code] if continent_code else ''
+            context['search_organisation'] = \
+                Organisation.objects.get(pk=int(org_id)) if org_id else ''
         return context
 
     def render_to_response(self, context):
