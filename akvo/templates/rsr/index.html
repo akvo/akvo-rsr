@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n webdesign rsr_filters thumbnail counter_tags cache humanize %}
+{% load i18n webdesign rsr_filters thumbnail counter_tags humanize %}
 {% load oembed_tags markup_tags google_maps %}
 {% load url from future %}
 
@@ -158,7 +158,7 @@
         		<div style="padding-left: 20px;">
           			<h1 class="white last" style="line-height: 1em">{{people_served|intcomma}}</h1>
           			<p class="small lt_grey">{% trans 'People served' %}</p>
-          			<h1 class="white last" style="line-height: 1em">&euro; {{projects_total_total_budget}}M</h1>
+          			<h1 class="white last" style="line-height: 1em">&euro; {{projects_budget}}M</h1>
           			<p class="small lt_grey last">{% trans 'In project budgets' %}</p>
         		</div>
       		</div>

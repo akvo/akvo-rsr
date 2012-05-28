@@ -6,6 +6,7 @@
 import inspect
 import random
 import logging
+
 logger = logging.getLogger('akvo.rsr')
 
 import sys
@@ -30,6 +31,7 @@ from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
+from django.http import HttpResponse
 from django.template import loader, Context
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -54,6 +56,8 @@ PAYPAL_INVOICE_STATUS_VOID      = 2
 PAYPAL_INVOICE_STATUS_COMPLETE  = 3
 PAYPAL_INVOICE_STATUS_STALE     = 4
 
+class HttpResponseNoContent(HttpResponse):
+    status_code = 204
 
 def permissions(self):
     """

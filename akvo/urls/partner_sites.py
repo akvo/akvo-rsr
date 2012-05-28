@@ -66,6 +66,11 @@ urlpatterns = i18n_patterns('',
         OrganisationUpdates(),
         name="rss_org_updates"),
 
+    # Widgets
+    url(r'^project/(?P<project_id>\d+)/widgets/$',
+        views.GetWidgetView.as_view(),
+        name="get_widget"),
+
     url(r'^widgets/projects/map/$',
         views.ProjectMapView.as_view(),
         name="widget_org_map"),
@@ -86,11 +91,6 @@ urlpatterns += patterns('',
     url(r'^api/beta/projects_cordinates.json$',
         views.ProjectCordinates.as_view(),
         name="api_projects_cordinates"),
-
-    # Widgets
-    url(r'^project/(?P<project_id>\d+)/widgets/$',
-        views.GetWidgetView.as_view(),
-        name="get_widget"),
 )
 
 urlpatterns += counter_urls

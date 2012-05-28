@@ -8,12 +8,20 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Deleting field 'ProjectUpdate.featured'
+        db.delete_column('rsr_projectupdate', 'featured')
+
         # Adding field 'PartnerSite.default_language'
         db.add_column('rsr_partnersite', 'default_language',
                       self.gf('django.db.models.fields.CharField')(default='en', max_length=5),
                       keep_default=False)
 
     def backwards(self, orm):
+        # Adding field 'ProjectUpdate.featured'
+        db.add_column('rsr_projectupdate', 'featured',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
+
         # Deleting field 'PartnerSite.default_language'
         db.delete_column('rsr_partnersite', 'default_language')
 
@@ -254,6 +262,7 @@ class Migration(SchemaMigration):
         'rsr.project': {
             'Meta': {'ordering': "['-id']", 'object_name': 'Project'},
             'background': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
+            'budget': ('django.db.models.fields.DecimalField', [], {'default': '0', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
             'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
             'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
             'current_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
@@ -261,6 +270,8 @@ class Migration(SchemaMigration):
             'current_status': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'date_complete': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_request_posted': ('django.db.models.fields.DateField', [], {'default': 'datetime.date.today'}),
+            'funds': ('django.db.models.fields.DecimalField', [], {'default': '0', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'funds_needed': ('django.db.models.fields.DecimalField', [], {'default': '0', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),

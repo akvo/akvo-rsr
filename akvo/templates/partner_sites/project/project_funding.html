@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags humanize rsr_filters %}
 {% load url from future %}
 
 {% block breadcrum_items %}
@@ -35,10 +35,10 @@
         </tr>
       {%  endfor %}
 
-      {% if project.budget_total %}
+      {% if project.budget %}
         <tr>
           <td class="small"><b>{% trans 'Total' %}:</b></td>
-          <td  class="small txt_right"><b>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</b></td>
+          <td  class="small txt_right"><b>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</b></td>
         </tr>
       {% else %}
         <tr>

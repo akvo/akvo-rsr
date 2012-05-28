@@ -17,17 +17,15 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Max, Sum
 from django.db.models.query import QuerySet
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django.shortcuts import get_object_or_404
 
 from django_counter.models import ViewCounter
 from mollie.ideal.utils import get_mollie_banklist
@@ -51,14 +49,15 @@ from akvo.rsr.utils import (
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
 from akvo.rsr.utils import (
-    groups_from_user, rsr_image_path, qs_column_sum,
+    groups_from_user, rsr_image_path,
     who_am_i, send_now, state_equals, to_gmt
 )
 from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed,
-    act_on_log_entry, user_activated_callback
+    act_on_log_entry, user_activated_callback, update_project_budget,
+    update_project_funding
 )
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
@@ -322,23 +321,61 @@ class Organisation(models.Model):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
 
-    def funding(self):
-        my_projs = self.published_projects().status_not_cancelled().status_not_archived()
-        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
-        # work because values_list used in qs_column_sum will not return more
-        # than one of the same value. This leads to the wrong sum when same amount
-        # has been pledged to multiple projects
-        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
-        return {
-            'total_euros': my_projs.euros().total_total_budget(),
-            'donated_euros': my_projs.euros().total_donated(),
-            'pledged_euros': all_active.euros().total_pledged(self),
-            'still_needed_euros': my_projs.euros().total_funds_needed(),
-            'total_dollars': my_projs.dollars().total_total_budget(),
-            'donated_dollars': my_projs.dollars().total_donated(),
-            'pledged_dollars': all_active.dollars().total_pledged(self),
-            'still_needed_dollars': my_projs.dollars().total_funds_needed()
-        }
+    # New API
+
+    def euros_pledged(self):
+        "How much € the organisation has pledged to projects it is a partner to"
+        return self.active_projects().euros().filter(
+            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+        ).aggregate(
+            euros_pledged=Sum('partnership__funding_amount')
+        )['euros_pledged'] or 0
+
+    def dollars_pledged(self):
+        "How much $ the organisation has pledged to projects"
+        return self.active_projects().dollars().filter(
+            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+        ).aggregate(
+            dollars_pledged=Sum('partnership__funding_amount')
+        )['dollars_pledged'] or 0
+
+    def euro_projects_count(self):
+        "How many projects with budget in € the organisation is a partner to"
+        return self.published_projects().euros().distinct().count()
+
+    def dollar_projects_count(self):
+        "How many projects with budget in $ the organisation is a partner to"
+        return self.published_projects().dollars().distinct().count()
+
+    def euro_funds_needed(self):
+        "How much is still needed to fully fund all projects with € budget that the organiastion is a partner to"
+        return self.published_projects().euros().distinct().aggregate(
+            euro_funds_needed=Sum('funds_needed'))['euro_funds_needed'] or 0
+
+    def dollar_funds_needed(self):
+        "How much is still needed to fully fund all projects with $ budget that the organiastion is a partner to"
+        return self.published_projects().dollars().distinct().aggregate(
+            dollar_funds_needed=Sum('funds_needed'))['dollar_funds_needed'] or 0
+
+    # New API end
+
+#    def funding(self):
+#        my_projs = self.active_projects()
+#        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
+#        # work because values_list used in qs_column_sum will not return more
+#        # than one of the same value. This leads to the wrong sum when same amount
+#        # has been pledged to multiple projects
+#        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
+#        return {
+#            'total_euros': my_projs.euros().total_total_budget(),
+#            'donated_euros': my_projs.euros().total_donated(),
+#            'pledged_euros': all_active.euros().total_pledged(self),
+#            'still_needed_euros': my_projs.euros().total_funds_needed(),
+#            'total_dollars': my_projs.dollars().total_total_budget(),
+#            'donated_dollars': my_projs.dollars().total_donated(),
+#            'pledged_dollars': all_active.dollars().total_pledged(self),
+#            'still_needed_dollars': my_projs.dollars().total_funds_needed()
+#        }
 
     class Meta:
         verbose_name=_(u'organisation')
@@ -558,6 +595,12 @@ class Project(models.Model):
 
     locations = generic.GenericRelation(Location)
 
+    # denormalized data
+    # =================
+    budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+    funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+    funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
     #http://simonwillison.net/2008/May/1/orm/
@@ -569,21 +612,71 @@ class Project(models.Model):
         return ('project_main', (), {'project_id': self.pk})
 
     def all_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3)
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE)
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).exclude(is_anonymous=True)
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=3).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
 
     def anonymous_donations_amount_received(self):
         amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
         amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
         return amount or 0
+
+    # New API, de-normalized fields support
+
+    def get_budget(self):
+        return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    def update_budget(self):
+        "Update de-normalized field"
+        self.budget = self.get_budget()
+        self.save()
+
+    def get_donations(self):
+        """ Confirmed donations to the project, after middleman fees"""
+        return Invoice.objects.filter(project__exact=self).filter(
+            status__exact=PAYPAL_INVOICE_STATUS_COMPLETE
+        ).aggregate(Sum('amount_received'))['amount_received__sum'] or 0
+
+    def get_pending_donations(self):
+        """ Unconfirmed donations, before middleman fees have been deducted"""
+        return Invoice.objects.filter(project__exact=self).filter(
+            status__exact=PAYPAL_INVOICE_STATUS_PENDING
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    def get_pledged(self):
+        """ How much is pledges by funding organisations"""
+        return Partnership.objects.filter(project__exact=self).filter(
+            partner_type__exact=Partnership.FUNDING_PARTNER
+        ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
+
+    def get_funds(self):
+        """ All money given to a project, including pending donations"""
+        return self.get_donations() + self.get_pending_donations() + self.get_pledged()
+
+    def update_funds(self):
+        "Update de-normalized field"
+        self.funds = self.get_funds()
+        self.save()
+
+    def get_funds_needed(self):
+        """ How much more is needed to fulfill the project's budget needs
+            Note that this may be a small negative if there's been an overshooting donation
+        """
+        return self.get_budget() - self.get_funds()
+
+    def update_funds_needed(self):
+        "Update de-normalized field"
+        self.funds_needed = self.get_funds_needed()
+        self.save()
+
+    # End new API
 
     @property
     def view_count(self):
@@ -601,6 +694,7 @@ class Project(models.Model):
         return
 
     class QuerySet(QuerySet):
+
         def has_primary_location(self):
             content_type = ContentType.objects.get_for_model(Project)
             locations = Location.objects.filter(content_type=content_type, primary=True)
@@ -651,160 +745,164 @@ class Project(models.Model):
         def dollars(self):
             return self.filter(currency='USD')
 
-        def budget_total(self):
-            return self.annotate(budget_total=Sum('budget_items__amount'),).distinct()
-
         def donated(self):
             return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(donated=Sum('invoice__amount_received'),).distinct()
 
-        def pledged(self, org=None):
-            if org:
-                self.filter(funding_organisation__exact=org)
-            return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
-
-        def funding(self, organisation=None):
-            '''create extra columns "funds_needed", "pledged" and "donated"
-            that calculate the respective values for each project in the queryset
+        #
+        def budget(self):
+            ''' aggregates the budgets of all the projects in the QS
+                n.b. non-chainable, doesn't return a QS
             '''
-            funding_queries = {
-                #how much money does the project need to be fully funded, given that all pending donations complete
-                'funds_needed':
-                    ''' (SELECT DISTINCT (
-                            SELECT CASE
-                                WHEN Sum(amount) IS NULL THEN 0
-                                ELSE Sum(amount)
-                            END
-                            FROM  rsr_budgetitem
-                            WHERE rsr_budgetitem.project_id = rsr_project.id
-                        ) - (
-                            SELECT CASE
-                                WHEN Sum(funding_amount) IS NULL THEN 0
-                                ELSE Sum(funding_amount)
-                            END
-                            FROM  rsr_partnership
-                            WHERE rsr_partnership.project_id = rsr_project.id
-                            AND   rsr_partnership.partner_type = '%s'
-                        ) - (
-                            SELECT CASE
-                                WHEN Sum(amount) IS NULL THEN 0
-                                ELSE Sum(amount)
-                            END
-                            FROM  rsr_invoice
-                            WHERE rsr_invoice.project_id = rsr_project.id
-                            AND   rsr_invoice.status = %d
-                        ) - (
-                            SELECT CASE
-                                WHEN Sum(amount_received) IS NULL THEN 0
-                                ELSE Sum(amount_received)
-                            END
-                            FROM  rsr_invoice
-                            WHERE rsr_invoice.project_id = rsr_project.id
-                            AND   rsr_invoice.status = %d
-                        ))
-                        ''' % (
-                            Partnership.FUNDING_PARTNER,
-                            PAYPAL_INVOICE_STATUS_PENDING,
-                            PAYPAL_INVOICE_STATUS_COMPLETE
-                        ),
-                    #how much money has been donated by individual donors, including pending donations
-                    'donated':
-                        ''' (SELECT DISTINCT (
-                                SELECT CASE
-                                    WHEN Sum(amount) IS NULL THEN 0
-                                    ELSE Sum(amount)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ) + (
-                                SELECT CASE
-                                    WHEN Sum(amount_received) IS NULL THEN 0
-                                    ELSE Sum(amount_received)
-                                END
-                                FROM rsr_invoice
-                                WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            ))
-                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
-                    #how much donated money from individuals is pending
-                    'pending':
-                        ''' (SELECT CASE
-                                WHEN Sum(amount) IS NULL THEN 0
-                                ELSE Sum(amount)
-                            END
-                            FROM rsr_invoice
-                            WHERE rsr_invoice.project_id = rsr_project.id
-                                AND rsr_invoice.status = %d
-                            )
-                        ''' % PAYPAL_INVOICE_STATUS_PENDING,
-                    #the total budget for the project as per the budgetitems
-                    'total_budget':
-                        ''' (SELECT CASE
-                                WHEN SUM(amount) IS NULL THEN 0
-                                ELSE SUM(amount)
-                            END
-                            FROM rsr_budgetitem
-                            WHERE rsr_budgetitem.project_id = rsr_project.id)
-                        ''',
-                }
-                #how much has been pledged by organisations. if an org param is supplied
-                #this is modified to show huw much _that_ org has pledged to each project
-            pledged = {
-                'pledged':
-                    ''' (SELECT CASE
-                            WHEN Sum(funding_amount) IS NULL THEN 0
-                            ELSE Sum(funding_amount)
-                        END
-                        FROM rsr_partnership
-                        WHERE rsr_partnership.project_id = rsr_project.id
-                        AND   rsr_partnership.partner_type = '%s'
-                    ''' % (Partnership.FUNDING_PARTNER,)
-            }
-            if organisation:
-                pledged['pledged'] = '''%s
-                    AND rsr_partnership.organisation_id = %d''' % (
-                        pledged['pledged'], organisation.pk
-                    )
-            pledged['pledged'] = "%s)" % pledged['pledged']
-            funding_queries.update(pledged)
-            return self.extra(select=funding_queries)
+            return self.aggregate(budget=Sum('budget'),)
 
-        def need_funding(self):
-            "projects that projects need funding"
-            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
-            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
-            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
+#        def pledged(self, org=None):
+#            if org:
+#                self.filter(funding_organisation__exact=org)
+#            return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
 
-        def need_funding_count(self):
-            "how many projects need funding"
-            return len(self.need_funding())
+#        def funding(self, organisation=None):
+#            '''create extra columns "funds_needed", "pledged" and "donated"
+#            that calculate the respective values for each project in the queryset
+#            '''
+#            funding_queries = {
+#                #how much money does the project need to be fully funded, given that all pending donations complete
+#                'funds_needed':
+#                    ''' (SELECT DISTINCT (
+#                            SELECT CASE
+#                                WHEN Sum(amount) IS NULL THEN 0
+#                                ELSE Sum(amount)
+#                            END
+#                            FROM  rsr_budgetitem
+#                            WHERE rsr_budgetitem.project_id = rsr_project.id
+#                        ) - (
+#                            SELECT CASE
+#                                WHEN Sum(funding_amount) IS NULL THEN 0
+#                                ELSE Sum(funding_amount)
+#                            END
+#                            FROM  rsr_partnership
+#                            WHERE rsr_partnership.project_id = rsr_project.id
+#                            AND   rsr_partnership.partner_type = '%s'
+#                        ) - (
+#                            SELECT CASE
+#                                WHEN Sum(amount) IS NULL THEN 0
+#                                ELSE Sum(amount)
+#                            END
+#                            FROM  rsr_invoice
+#                            WHERE rsr_invoice.project_id = rsr_project.id
+#                            AND   rsr_invoice.status = %d
+#                        ) - (
+#                            SELECT CASE
+#                                WHEN Sum(amount_received) IS NULL THEN 0
+#                                ELSE Sum(amount_received)
+#                            END
+#                            FROM  rsr_invoice
+#                            WHERE rsr_invoice.project_id = rsr_project.id
+#                            AND   rsr_invoice.status = %d
+#                        ))
+#                        ''' % (
+#                            Partnership.FUNDING_PARTNER,
+#                            PAYPAL_INVOICE_STATUS_PENDING,
+#                            PAYPAL_INVOICE_STATUS_COMPLETE
+#                        ),
+#                    #how much money has been donated by individual donors, including pending donations
+#                    'donated':
+#                        ''' (SELECT DISTINCT (
+#                                SELECT CASE
+#                                    WHEN Sum(amount) IS NULL THEN 0
+#                                    ELSE Sum(amount)
+#                                END
+#                                FROM rsr_invoice
+#                                WHERE rsr_invoice.project_id = rsr_project.id
+#                                AND rsr_invoice.status = %d
+#                            ) + (
+#                                SELECT CASE
+#                                    WHEN Sum(amount_received) IS NULL THEN 0
+#                                    ELSE Sum(amount_received)
+#                                END
+#                                FROM rsr_invoice
+#                                WHERE rsr_invoice.project_id = rsr_project.id
+#                                AND rsr_invoice.status = %d
+#                            ))
+#                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
+#                    #how much donated money from individuals is pending
+#                    'pending':
+#                        ''' (SELECT CASE
+#                                WHEN Sum(amount) IS NULL THEN 0
+#                                ELSE Sum(amount)
+#                            END
+#                            FROM rsr_invoice
+#                            WHERE rsr_invoice.project_id = rsr_project.id
+#                                AND rsr_invoice.status = %d
+#                            )
+#                        ''' % PAYPAL_INVOICE_STATUS_PENDING,
+#                    #the total budget for the project as per the budgetitems
+#                    'total_budget':
+#                        ''' (SELECT CASE
+#                                WHEN SUM(amount) IS NULL THEN 0
+#                                ELSE SUM(amount)
+#                            END
+#                            FROM rsr_budgetitem
+#                            WHERE rsr_budgetitem.project_id = rsr_project.id)
+#                        ''',
+#                }
+#                #how much has been pledged by organisations. if an org param is supplied
+#                #this is modified to show huw much _that_ org has pledged to each project
+#            pledged = {
+#                'pledged':
+#                    ''' (SELECT CASE
+#                            WHEN Sum(funding_amount) IS NULL THEN 0
+#                            ELSE Sum(funding_amount)
+#                        END
+#                        FROM rsr_partnership
+#                        WHERE rsr_partnership.project_id = rsr_project.id
+#                        AND   rsr_partnership.partner_type = '%s'
+#                    ''' % (Partnership.FUNDING_PARTNER,)
+#            }
+#            if organisation:
+#                pledged['pledged'] = '''%s
+#                    AND rsr_partnership.organisation_id = %d''' % (
+#                        pledged['pledged'], organisation.pk
+#                    )
+#            pledged['pledged'] = "%s)" % pledged['pledged']
+#            funding_queries.update(pledged)
+#            return self.extra(select=funding_queries)
 
-        def total_funds_needed(self):
-            "how much money the projects still need"
-            return qs_column_sum(self.funding(), 'funds_needed')
+#        def need_funding(self):
+#            "projects that projects need funding"
+#            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
+#            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
+#            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
 
-        def total_total_budget(self):
-            "how much money the projects still need"
-            return qs_column_sum(self.funding(), 'total_budget')
-
-        def total_pledged(self, org=None):
-            '''
-            how much money has been commited to the projects
-            if org is supplied, only money pledeg by that org is calculated
-            '''
-            return qs_column_sum(self.funding(org), 'pledged')
-
-        def total_donated(self):
-            "how much money has bee donated by individuals"
-            return qs_column_sum(self.funding(), 'donated')
-
-        def total_pending(self):
-            "individual donations still pending"
-            return qs_column_sum(self.funding(), 'pending')
-
-        def total_pending_negative(self):
-            "individual donations still pending NEGATIVE (used by akvo at a glance)"
-            return -qs_column_sum(self.funding(), 'pending')
+#        def need_funding_count(self):
+#            "how many projects need funding"
+#            return len(self.need_funding())
+#
+#        def total_funds_needed(self):
+#            "how much money the projects still need"
+#            return qs_column_sum(self.funding(), 'funds_needed')
+#
+#        def total_total_budget(self):
+#            "how much money the projects still need"
+#            return qs_column_sum(self.funding(), 'total_budget')
+#
+#        def total_pledged(self, org=None):
+#            '''
+#            how much money has been commited to the projects
+#            if org is supplied, only money pledeg by that org is calculated
+#            '''
+#            return qs_column_sum(self.funding(org), 'pledged')
+#
+#        def total_donated(self):
+#            "how much money has bee donated by individuals"
+#            return qs_column_sum(self.funding(), 'donated')
+#
+#        def total_pending(self):
+#            "individual donations still pending"
+#            return qs_column_sum(self.funding(), 'pending')
+#
+#        def total_pending_negative(self):
+#            "individual donations still pending NEGATIVE (used by akvo at a glance)"
+#            return -qs_column_sum(self.funding(), 'pending')
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
@@ -958,26 +1056,26 @@ class Project(models.Model):
     def external_links(self):
         return self.links.filter(kind='E')
 
-    #shortcuts to funding/budget data for a single project
-    def funding_pledged(self, organisation=None):
-        return Project.objects.funding(organisation).get(pk=self.pk).pledged
-
-    def funding_donated(self):
-        return Project.objects.funding().get(pk=self.pk).donated
-
-    def funding_total_given(self):
-        # Decimal(str(result)) conversion is necessary
-        # because SQLite doesn't handle decimals natively
-        # See item 16 here: http://www.sqlite.org/faq.html
-        # MySQL and PostgreSQL are not affected by this limitation
-        result = self.funding_pledged() + self.funding_donated()
-        decimal_result = Decimal(str(result))
-        return decimal_result
-
-    def funding_still_needed(self):
-        result =  Project.objects.funding().get(pk=self.pk).funds_needed
-        decimal_result = Decimal(str(result))
-        return decimal_result
+#    #shortcuts to funding/budget data for a single project
+#    def funding_pledged(self, organisation=None):
+#        return Project.objects.funding(organisation).get(pk=self.pk).pledged
+#
+#    def funding_donated(self):
+#        return Project.objects.funding().get(pk=self.pk).donated
+#
+#    def funding_total_given(self):
+#        # Decimal(str(result)) conversion is necessary
+#        # because SQLite doesn't handle decimals natively
+#        # See item 16 here: http://www.sqlite.org/faq.html
+#        # MySQL and PostgreSQL are not affected by this limitation
+#        result = self.funding_pledged() + self.funding_donated()
+#        decimal_result = Decimal(str(result))
+#        return decimal_result
+#
+#    def funding_still_needed(self):
+#        result =  Project.objects.funding().get(pk=self.pk).funds_needed
+#        decimal_result = Decimal(str(result))
+#        return decimal_result
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
@@ -2119,5 +2217,14 @@ post_save.connect(act_on_log_entry, sender=LogEntry)
 pre_save.connect(change_name_of_file_on_change, sender=Organisation)
 pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
+
+post_save.connect(update_project_budget, sender=BudgetItem)
+post_save.connect(update_project_funding, sender=Invoice)
+post_save.connect(update_project_funding, sender=Partnership)
+
+post_delete.connect(update_project_budget, sender=BudgetItem)
+post_delete.connect(update_project_funding, sender=Invoice)
+post_delete.connect(update_project_funding, sender=Partnership)
+
 
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)

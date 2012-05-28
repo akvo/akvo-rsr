@@ -3,18 +3,18 @@
 
 
 <div class="round white_back" style="border:1px solid #7BBDCD">
-  {% if project.funding_still_needed|round = 0 %}
+  {% if project.funds_needed|round = 0 %}
     <div style="text-align:center">
       <p class="black normal marg_bottom0">
-        {{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}
+        {{project.get_currency_display|safe}} {{project.budget|round|intcomma}}
       </p>
       <div class="fundingbox-progress-bar" style="height:3px;">
-        {% if project.budget_total %}
-          <div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%;"> </div>
+        {% if project.budget %}
+          <div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funds project.budget 100 %}%;"> </div>
         {% endif %}
       </div>
       <p class="green small marg_top0 marg_bottom5">
-        {% widthratio_trunc project.funding_total_given|add:1 project.budget_total 100 %}% {% trans "Raised" %}
+        {% widthratio_trunc project.funds|add:1 project.budget 100 %}% {% trans "Raised" %}
       </p>
       <p class="green marg_top5 marg_bottom15 fat">
         {% trans "Fully funded" %}
@@ -24,17 +24,17 @@
     <table class="tiny_table" style="width:143px">
       <tr>
         <td>{{project.get_currency_display|safe}}</td>
-        <td>{{project.budget_total|round|intcomma}}</td>
+        <td>{{project.budget|round|intcomma}}</td>
         <td>{% trans "Requested" %}</td>
       </tr>
       <tr class="green">
         <td class="green">{{project.get_currency_display|safe}}</td>
-        <td>{{project.funding_total_given|round|intcomma}}</td>
+        <td>{{project.funds|round|intcomma}}</td>
         <td>{% trans "Raised" %}</td>
       </tr>
       <tr class="red">
         <td>{{project.get_currency_display|safe}}</td>
-        <td>{{project.funding_still_needed|round|intcomma}}</td>
+        <td>{{project.funds_needed|round|intcomma}}</td>
         <td>{% trans "Still needed" %}</td>
       </tr>
     </table>

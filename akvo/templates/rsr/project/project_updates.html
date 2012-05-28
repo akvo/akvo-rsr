@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail %}
 {% load url from future %}
 
 
@@ -17,16 +17,6 @@
       </span>
       <h2 style="padding-top:20px;">{% trans 'Project updates' %}</h2>
     </div>
-    {% comment %}
-    <div class="counter_badge">
-      <span style="display:none;">{% counter project %}</span>
-      {% cache 10 project.view_count %}
-        {{ project.view_count|intcomma }}
-      {% endcache %}
-      <br />
-      <span>{% trans 'views' %}</span>
-    </div>
-    {% endcomment %}
     <div class="clear"></div>
     <div class="space20">
       {% if not updates %}
