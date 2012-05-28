@@ -1,4 +1,4 @@
-{% load cache counter_tags google_maps humanize i18n rsr_tags %}
+{% load cache google_maps humanize i18n rsr_tags %}
 
 {% load url from future %}
 
@@ -29,14 +29,6 @@
 <body>
   <div id="map" style="height:{{height|add:-30}}px; width:{{width}}px;"></div>
   <div id="footer">
-    <div style="float:left; padding-top:3px; display:none;">
-      <span style="color:#{{textcolor}}; font-size:10px; font-weight:normal; margin-left:10px;">
-      <span style="display:none">{% counter organisation %}</span>
-            {% cache 10 organisation.view_count %}
-              {{ organisation.view_count|intcomma }} {% trans 'views' %}
-            {% endcache %}
-      </span>
-    </div>
     <a href="http://akvo.org">
       <img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
     </a>

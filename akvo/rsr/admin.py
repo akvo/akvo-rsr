@@ -451,6 +451,10 @@ class ProjectAdmin(admin.ModelAdmin):
             ),
             'fields': ('currency', 'date_request_posted', 'date_complete', ),
         }),
+        (_(u'Aggregates'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _('Aggregate financial data'),
+            'fields': (('funds',  'funds_needed',), ),
+        }),
         (_(u'Goals'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
@@ -463,7 +467,9 @@ class ProjectAdmin(admin.ModelAdmin):
         )
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     list_filter = ('currency', 'status', )
-#    form = ProjectAdminForm
+    readonly_fields = ('budget', 'funds',  'funds_needed',)
+    #form = ProjectAdminForm
+
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(ProjectAdmin, self).get_actions(request)
@@ -911,7 +917,6 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
-            
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
     
 
