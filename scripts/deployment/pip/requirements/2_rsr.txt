@@ -21,14 +21,13 @@ sorl-thumbnail==3.2.5
 -e git://github.com/zzgvh/django-notification.git#egg=django_notification
 -e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
 -e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
-#-e git://github.com/zzgvh/djangoembed.git#egg=djangoembed
 
 # General requirements
 BeautifulSoup==3.2.1
 httplib2==0.7.4
 lxml==2.3.4
-pytz==2012b
-simplejson==2.5.0
+pytz==2012c
+simplejson==2.5.2
 
 # RSR requirements
 Markdown==2.1.1
@@ -38,8 +37,8 @@ template-utils==0.4p2
 
 # Database requirements
 MySQL-python==1.2.3
-South==0.7.4
+South==0.7.5
 
 # App container
-gunicorn==0.13.4
+gunicorn==0.14.3
 wsgiref==0.1.2
