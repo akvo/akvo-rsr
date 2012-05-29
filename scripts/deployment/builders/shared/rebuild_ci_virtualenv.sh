@@ -55,6 +55,11 @@ function install_packages_with_pip
     cd "$PACKAGE_DOWNLOAD_DIR"
     printf "\n>> Installing/upgrading $PACKAGE_SET_NAME packages:\n"
     pip install -M -r "$PIP_REQUIREMENTS_DIR/$REQUIREMENTS_FILE_NAME"
+
+    if [ $? -ne 0 ]; then
+        printf "\n## Package installation failed as above\n"
+        exit -1
+    fi
 }
 
 function install_all_ci_packages
